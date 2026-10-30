@@ -18,6 +18,50 @@
  * `Promise<boolean>`; a rejection is treated as "do not open" rather than an
  * unhandled rejection (§83 — a node-level failure must not crash the page).
  *
+ * ## Additive props (AUI-OPT-03, AGENTS.md §112.3a — wd-collapse-item has none)
+ *
+ * Title icon, three sources with one precedence chain (sn-cell's pattern):
+ *
+ *   - `titleIconData` — an inline `IconData` object; built-in set icons
+ *     (`sn-icon-set`) are imported by the consumer and passed as objects, so
+ *     no global registration step is needed.
+ *   - `titleIconUrl` — an image URL, rendered as `<image>`.
+ *   - `titleIcon` — a name forwarded to SnIcon: registry (`registerSnIcons`) →
+ *     built-in catalogue (kebab-case, resolves with zero registration) →
+ *     async providers (`prefix:rest`).
+ *
+ * Precedence: data object > image URL > name — the same order sn-cell uses.
+ *
+ *   - `iconSize` — chevron + title icon geometry; named tiers
+ *     `tiny|small|medium|large|xlarge` map to `--sn-mp-icon-size-*`, numbers
+ *     stay px, unknown strings pass through. Falls back to the container's
+ *     `iconSize` and then to the family default (one glyph scale per panel).
+ *   - `iconColor` — inline colour for both icons; pass a
+ *     `var(--sn-mp-color-*)` token (§112.5). Falls back to the container's
+ *     `iconColor`.
+ *   - `iconStrokeWidth` — SVG stroke weight for both icons; defaults to the
+ *     `--sn-mp-icon-stroke-width` design unit (2). An SVG presentation
+ *     attribute cannot resolve `var()`, so the weight travels as a number.
+ *   - `card` — per-panel card; falls back to the container's `card`.
+ *
+ * ## Icon colour / size standard (family-wide)
+ *
+ * | Slot        | Rest                            | Expanded                        |
+ * | ----------- | ------------------------------- | ------------------------------- |
+ * | Chevron     | `--sn-mp-color-text-tertiary`   | `--sn-mp-color-action-primary`  |
+ * | Title icon  | `--sn-mp-color-text-secondary`  | `--sn-mp-color-action-primary`  |
+ *
+ * Geometry comes from one length token per panel: `--sn-mp-icon-size-medium`
+ * by default, overridable by tier name or an explicit length. The chevron sits
+ * in a pill that picks up `--sn-mp-color-action-primary-soft` while open, so
+ * the state reads at a glance without a second glyph.
+ *
+ * ## Chevron
+ *
+ * Always the built-in `ChevronDown` object, rotating 180° through the
+ * `--expanded` class (a CSS class, not an inline transform, so App targets get
+ * the same motion and the state is inspectable from the DOM).
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -27,8 +71,14 @@
 
 import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
 import { ChevronDown } from '../sn-icon/sn-icon-set';
-import { SN_COLLAPSE_KEY, type SnCollapseItemBeforeExpand } from './sn-collapse-types';
+import {
+  resolveSnCollapseIconSize,
+  SN_COLLAPSE_ICON_STROKE_WIDTH,
+  SN_COLLAPSE_KEY,
+  type SnCollapseItemBeforeExpand,
+} from './sn-collapse-types';
 
 defineOptions({ name: 'SnCollapseItem' });
 
@@ -54,6 +104,23 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-03, AGENTS.md §112.3a) ────────────────────────── */
+
+    /** 标题图标数据对象（内置图标集 / 自定义 IconData），优先级最高。 */
+    titleIconData?: IconData;
+    /** 标题图标名：registry（`registerSnIcons`）→ 内置目录（kebab-case）→ Provider 依次解析。 */
+    titleIcon?: string;
+    /** 标题图片地址：渲染为 `<image>`，优先级低于 `titleIconData`、高于 `titleIcon`。 */
+    titleIconUrl?: string;
+    /** 图标尺寸：数字按 px；档位名映射 `--sn-mp-icon-size-*`；未设置时继承容器。 */
+    iconSize?: string | number | undefined;
+    /** 图标颜色（箭头 + 标题图标）；请传 `var(--sn-mp-color-*)` token；未设置时继承容器。 */
+    iconColor?: string;
+    /** 图标描边宽度（箭头 + 标题图标）；默认 `--sn-mp-icon-stroke-width`（2）。 */
+    iconStrokeWidth?: number | undefined;
+    /** 卡片形态：该面板渲染为独立圆角卡片；未显式设置时继承 sn-collapse 的 card。 */
+    card?: boolean | undefined;
   }>(),
   {
     name: '',
@@ -65,6 +132,15 @@ const props = withDefaults(
     customBodyStyle: '',
     customClass: '',
     customStyle: '',
+    titleIcon: '',
+    titleIconUrl: '',
+    iconColor: '',
+    iconStrokeWidth: SN_COLLAPSE_ICON_STROKE_WIDTH,
+    /* Inheritance-resolving boolean: `undefined` is the "not set" marker, so the
+       computed can fall back to the container. Vue would otherwise cast an
+       absent boolean to `false` and make the container's `card` dead
+       (sn-form-item's resolveBool contract). */
+    card: undefined,
   },
 );
 
@@ -94,6 +170,40 @@ const bodyStyle = computed(() => {
   }
   if (props.customBodyStyle) parts.push(props.customBodyStyle);
   return parts.length > 0 ? parts.join('; ') : undefined;
+});
+
+/** Card mode (additive): an explicit per-panel prop wins over the container. */
+const effectiveCard = computed(() => props.card ?? collapse?.card.value ?? false);
+
+/** One glyph scale per panel: own prop → container → family default token. */
+const effectiveIconSize = computed<string | number>(() =>
+  resolveSnCollapseIconSize(props.iconSize ?? collapse?.iconSize.value),
+);
+
+/**
+ * Which title-icon source renders. Data object wins over the image URL, which
+ * wins over the name — exactly the priority sn-cell documents.
+ */
+const titleIconSource = computed<'data' | 'url' | 'name' | 'none'>(() => {
+  if (props.titleIconData !== undefined) return 'data';
+  if (props.titleIconUrl !== '') return 'url';
+  if (props.titleIcon !== '') return 'name';
+  return 'none';
+});
+
+/** Inline colour shared by the chevron and the title icon (additive). */
+const effectiveIconColor = computed(() => props.iconColor || collapse?.iconColor.value || '');
+
+/** Inline colour style; an empty prop keeps the class-level token default. */
+const iconColorStyle = computed(() =>
+  effectiveIconColor.value ? `color: ${effectiveIconColor.value}` : undefined,
+);
+
+/** Size box for the image icon path, mirroring `effectiveIconSize`. */
+const iconBoxStyle = computed(() => {
+  const size = effectiveIconSize.value;
+  const len = typeof size === 'number' ? `${size}px` : size;
+  return `width: ${len}; height: ${len};`;
 });
 
 /** Runs the veto hook, treating a rejection as "stay closed". */
@@ -133,7 +243,9 @@ const rootClass = computed(() => [
   {
     'sn-collapse-item--expanded': expanded.value,
     'sn-collapse-item--disabled': props.disabled,
-    'sn-collapse-item--border': props.border,
+    // A card owns its outline — the shared divider would double up.
+    'sn-collapse-item--border': props.border && !effectiveCard.value,
+    'sn-collapse-item--card': effectiveCard.value,
   },
   props.customClass,
 ]);
@@ -151,20 +263,50 @@ const rootClass = computed(() => [
       @tap="onTap"
     >
       <view class="sn-collapse-item__title">
-        <slot
-          name="title"
-          :expanded="isExpandedForSlot"
-          :disabled="isDisabledForSlot"
-          :is-first="false"
-        >
-          <text class="sn-collapse-item__title-text">{{ title }}</text>
-        </slot>
+        <!-- Icon precedence (additive): data object > image URL > name chain. -->
+        <SnIcon
+          v-if="titleIconSource === 'data'"
+          class="sn-collapse-item__title-icon"
+          :style="iconColorStyle"
+          :icon="titleIconData"
+          :size="effectiveIconSize"
+          :stroke-width="iconStrokeWidth"
+        />
+        <image
+          v-else-if="titleIconSource === 'url'"
+          class="sn-collapse-item__title-image"
+          :src="titleIconUrl"
+          mode="aspectFill"
+          :style="iconBoxStyle"
+          aria-hidden="true"
+        />
+        <SnIcon
+          v-else-if="titleIconSource === 'name'"
+          class="sn-collapse-item__title-icon"
+          :style="iconColorStyle"
+          :icon="titleIcon"
+          :size="effectiveIconSize"
+          :stroke-width="iconStrokeWidth"
+        />
+
+        <view class="sn-collapse-item__title-body">
+          <slot
+            name="title"
+            :expanded="isExpandedForSlot"
+            :disabled="isDisabledForSlot"
+            :is-first="false"
+          >
+            <text class="sn-collapse-item__title-text">{{ title }}</text>
+          </slot>
+        </view>
       </view>
       <view class="sn-collapse-item__arrow" aria-hidden="true">
         <SnIcon
+          class="sn-collapse-item__chevron"
           :icon="ChevronDown"
-          :size="28"
-          :style="expanded ? 'transform: rotate(180deg)' : 'transform: rotate(0deg)'"
+          :size="effectiveIconSize"
+          :stroke-width="iconStrokeWidth"
+          :style="iconColorStyle"
         />
       </view>
     </view>
@@ -197,6 +339,15 @@ const rootClass = computed(() => [
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
+/* Card mode (additive): token chrome per panel; the shared divider is already
+   suppressed in the root class, so a card never doubles up with it. */
+.sn-collapse-item--card {
+  overflow: hidden;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+
 .sn-collapse-item__header {
   display: flex;
   align-items: center;
@@ -221,6 +372,32 @@ const rootClass = computed(() => [
   display: flex;
   flex: 1 1 auto;
   align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  min-width: 0;
+}
+
+/* Title icons (additive) sit in the secondary text slot; the panel lifts them
+   to the action colour once open, so the title and the chevron flip together
+   instead of painting two glyph colours side by side. */
+.sn-collapse-item__title-icon {
+  flex: 0 0 auto;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+/* Image icon path — the size box rides the inline style. */
+.sn-collapse-item__title-image {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: var(--sn-mp-radius-sm);
+}
+
+.sn-collapse-item--expanded .sn-collapse-item__title-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-collapse-item__title-body {
+  display: flex;
+  align-items: center;
   min-width: 0;
 }
 
@@ -232,13 +409,35 @@ const rootClass = computed(() => [
   text-overflow: ellipsis;
 }
 
+/* Chevron pill: padding + full radius build the target around whatever glyph
+   length `iconSize` resolves to, so the tap affordance scales with the token
+   instead of a hard-coded box (§112.5). */
 .sn-collapse-item__arrow {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
+  justify-content: center;
   margin-left: var(--sn-mp-spacing-2);
-  color: var(--sn-mp-color-text-secondary);
-  transition: transform 0.2s ease;
+  padding: var(--sn-mp-spacing-1);
+  border-radius: var(--sn-mp-radius-full);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Chevron colour + rotation ride classes (not inline styles): App targets get
+   the same transition, and the state stays inspectable from the DOM. */
+.sn-collapse-item__chevron {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-collapse-item--expanded .sn-collapse-item__chevron {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-collapse-item--expanded .sn-collapse-item__arrow {
+  background-color: var(--sn-mp-color-action-primary-soft);
+  transform: rotate(180deg);
 }
 
 .sn-collapse-item__body {

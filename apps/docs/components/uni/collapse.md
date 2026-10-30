@@ -20,6 +20,18 @@
 
 <Demo name="collapse-mp-viewmore" description="viewmore 查看更多模式，v-model 为布尔值；line-num 控制收起显示行数；底部渲染展开 / 收起按钮。" />
 
+## 卡片形态
+
+`card` 让每个面板渲染为独立圆角卡片：容器转为透明、面板之间使用 token 间距，卡片自带圆角 / 描边 / 阴影，共享分割线自动让位。既可在 `sn-collapse` 上开启让整组继承，也可在单个 `sn-collapse-item` 上开启；面板上的显式设置优先于容器。
+
+<Demo name="collapse-mp-card" description="collapse card 让每个面板独立成卡，卡片标题可配图标；单个面板也可用 card 脱离容器形态单独成卡。" />
+
+## 标题图标与图标尺寸
+
+面板标题支持图标，三种来源按优先级解析：`titleIconData`（内置图标集对象）> `titleIconUrl`（图片）> `titleIcon`（名称解析链：内置目录 kebab 名 / 注册表名）。`iconSize` 统一箭头与标题图标的尺寸，档位名映射 `--sn-mp-icon-size-*`，数字按 px、其它字符串原样透传；`iconColor` 只接受 `var(--sn-mp-color-*)` token。容器上的 `iconSize` / `iconColor` 会被面板继承，面板自身设置优先。
+
+<Demo name="collapse-mp-icon" description="标题图标三种来源：内置图标集对象、图片地址、名称解析链；iconSize 档位 tiny/small/medium/large 与自定义长度；iconColor 走颜色 token。" />
+
 ## more 插槽、item 边框与 before-expend
 
 `more` 插槽替换 viewmore 模式的展开 / 收起区域，`custom-more-slot-class` 给它追加类名；item 的 `border=false` 去掉下边框；`before-expend` 在展开前拦截：
@@ -57,6 +69,9 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | `customMoreSlotClass` | `string`                        | `''`    | `more` 插槽外部自定义类名                                                |
 | `customClass`         | `string`                        | `''`    | 根节点自定义类名                                                         |
 | `customStyle`         | `string`                        | `''`    | 根节点自定义 inline style                                                |
+| `card`                | `boolean`                       | `false` | 卡片形态：每个面板渲染为独立圆角卡片，容器透明并以 token 间距分行         |
+| `iconSize`            | `string \| number`              | `undefined` | 图标尺寸（箭头与标题图标共享）：档位名 tiny / small / medium / large / xlarge 映射 `--sn-mp-icon-size-*`，数字按 px，其它字符串透传；面板自身设置优先 |
+| `iconColor`           | `string`                        | `''`    | 图标颜色（箭头与标题图标共享）：传 `var(--sn-mp-color-*)` token；面板自身设置优先 |
 
 ### sn-collapse-item
 
@@ -71,8 +86,15 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | `customBodyStyle` | `string`                                | `''`        | 内容容器自定义样式        |
 | `customClass`     | `string`                                | `''`        | 根节点自定义类名          |
 | `customStyle`     | `string`                                | `''`        | 根节点自定义 inline style |
+| `titleIconData`   | `IconData`                              | `undefined` | 标题图标数据对象（内置图标集对象 / 自定义），优先级最高 |
+| `titleIconUrl`    | `string`                                | `''`        | 标题图片地址，渲染为 `<image>`；优先级低于 `titleIconData`、高于 `titleIcon` |
+| `titleIcon`       | `string`                                | `''`        | 标题图标名：registry（`registerSnIcons`）→ 内置目录（kebab-case）→ Provider 依次解析 |
+| `iconSize`        | `string \| number`                      | `undefined` | 图标尺寸（箭头 + 标题图标）；未设置时继承 `sn-collapse` 的 `iconSize`，再回退到 `--sn-mp-icon-size-medium` |
+| `iconColor`       | `string`                                | `''`        | 图标颜色（箭头 + 标题图标）；未设置时继承 `sn-collapse` 的 `iconColor` |
+| `iconStrokeWidth` | `number`                                | `2`         | 图标描边宽度（箭头 + 标题图标），对应 `--sn-mp-icon-stroke-width` |
+| `card`            | `boolean`                               | `undefined` | 卡片形态：该面板渲染为独立圆角卡片；未显式设置时继承 `sn-collapse` 的 `card` |
 
-> `beforeExpend` 拼写沿用 wot-ui 原名（上游笔误），以保持 prop 面 1:1。它只在**展开**时生效；收起不询问。Promise reject 视为「不展开」，不会抛出未处理异常。
+> `beforeExpend` 保留了历史拼写（`Expend` 而非 `Expand`）以兼容既有调用方。它只在**展开**时生效；收起不询问。Promise reject 视为「不展开」，不会抛出未处理异常。
 
 ## Events
 
@@ -103,13 +125,35 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | ----------------------------------------------- | ----------------------------------- |
 | `--sn-mp-color-background-surface`              | 面板底色                            |
 | `--sn-mp-color-background-soft`                 | 标题点击态底色                      |
-| `--sn-mp-color-border-subtle`                   | 面板分割线                          |
+| `--sn-mp-color-border-subtle`                   | 面板分割线 / 卡片描边               |
 | `--sn-mp-color-text-primary`                    | 标题文字色                          |
-| `--sn-mp-color-text-secondary`                  | 内容与箭头文字色                    |
-| `--sn-mp-color-action-primary`                  | 展开 / 收起按钮文字色               |
+| `--sn-mp-color-text-secondary`                  | 内容与标题图标文字色                |
+| `--sn-mp-color-text-tertiary`                   | 折叠箭头文字色                      |
+| `--sn-mp-color-action-primary`                  | 展开 / 收起按钮与展开态图标文字色   |
+| `--sn-mp-color-action-primary-soft`             | 展开态箭头底色                      |
 | `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | 标题 / 内容字号                     |
 | `--sn-mp-font-line-height-normal`               | 内容行高（`line-num` 收起按此计算） |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4`       | 头部内边距 / 内容内边距             |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 箭头内边距 / 标题图标间距 / 卡片间距 / 头部内边距 |
+| `--sn-mp-radius-lg` / `--sn-mp-radius-full`     | 卡片圆角 / 箭头药丸圆角             |
+| `--sn-mp-shadow-sm`                             | 卡片阴影                            |
+| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge` | `iconSize` 档位名对应的图标尺寸 |
+| `--sn-mp-icon-stroke-width`                     | SVG 图标描边宽度（默认 2）          |
+
+图标标准（全家族统一）：
+
+| 位置       | 默认（收起）                    | 展开态                          |
+| ---------- | ------------------------------- | ------------------------------- |
+| 折叠箭头   | `--sn-mp-color-text-tertiary`   | `--sn-mp-color-action-primary`  |
+| 标题图标   | `--sn-mp-color-text-secondary`  | `--sn-mp-color-action-primary`  |
+
+箭头默认走 `--sn-mp-icon-size-medium`，标题图标与箭头共用同一档位；视图模式下 `more` 区的箭头取 `--sn-mp-icon-size-small`（容器传 `iconSize` 时随之覆盖）。
+
+## AI Patch Boundary
+
+- AI 可通过 Patch 修改 `title` / `titleIconData` / `titleIcon` / `titleIconUrl` / `iconSize` / `iconColor` / `iconStrokeWidth` / `card` / `border` / `disabled` / `beforeExpend` 等展示与交互配置。
+- `v-model`（`update:modelValue`）与 `toggleAll` 方法属于展开状态契约；`change` 事件属于宿主业务信号，Patch 只应调整初始 `modelValue`，不应伪造事件。
+- 插槽内容（`title` / `default` / `more`）属于业务数据，Patch 只应调整容器配置，不应改写插槽内部结构。
+- 颜色 / 尺寸必须走 `--sn-mp-color-*` / `--sn-mp-icon-size-*` token，Patch 不得写入颜色或尺寸字面量。
 
 ## 无障碍
 

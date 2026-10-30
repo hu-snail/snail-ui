@@ -2,9 +2,9 @@
  * sn-collapse / sn-collapse-item unit tests — uni-end collapse panels.
  *
  * Behaviour only (AGENTS.md §46): the three v-model shapes (normal /
- * accordion / view-more), the disabled guard, the beforeExpend veto and the
- * toggleAll method. No rpx numbers in assertions — happy-dom discards lengths
- * it cannot parse.
+ * accordion / view-more), the disabled guard, the beforeExpend veto, the
+ * toggleAll method and the additive icon / card surface. No rpx numbers in
+ * assertions — happy-dom discards lengths it cannot parse.
  */
 
 import { describe, it, expect, vi } from 'vitest';
@@ -12,6 +12,9 @@ import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import SnCollapse from './sn-collapse.vue';
 import SnCollapseItem from './sn-collapse-item.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Bell, ChevronDown, Truck } from '../sn-icon/sn-icon-set';
+import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
 
 /** Harness: a collapse container with N named panels. */
 function mountCollapse(
@@ -528,16 +531,18 @@ describe('sn-collapse', () => {
       expect(body.attributes('style')).toContain('padding: 8px');
     });
 
-    it('rotates the arrow 180 degrees while expanded', () => {
+    it('marks the panel expanded and rotates the chevron through the class', () => {
+      // Rotation rides `.sn-collapse-item--expanded .sn-collapse-item__arrow`
+      // instead of an inline transform, so App targets animate it too.
       const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
-      expect(closed.find('.sn-collapse-item__arrow .sn-icon').attributes('style')).toContain(
-        'rotate(0deg)',
+      expect(closed.find('.sn-collapse-item').classes()).not.toContain(
+        'sn-collapse-item--expanded',
       );
+      expect(closed.find('.sn-collapse-item__arrow .sn-icon').exists()).toBe(true);
 
       const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
-      expect(open.find('.sn-collapse-item__arrow .sn-icon').attributes('style')).toContain(
-        'rotate(180deg)',
-      );
+      expect(open.find('.sn-collapse-item').classes()).toContain('sn-collapse-item--expanded');
+      expect(open.find('.sn-collapse-item__arrow .sn-icon').exists()).toBe(true);
     });
   });
 
@@ -597,6 +602,281 @@ describe('sn-collapse', () => {
       expect(wrapper.findAll('.sn-collapse-item--expanded')).toHaveLength(0);
       await wrapper.findAll('.sn-collapse-item__header')[0]!.trigger('tap');
       expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual(['a']);
+    });
+  });
+
+  describe('title icons (additive)', () => {
+    it('renders an IconData object passed through titleIconData', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-icon svg').exists()).toBe(true);
+    });
+
+    it('renders an image when titleIconUrl is set', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconUrl: 'https://example.com/a.png' },
+      ]);
+      const img = wrapper.find('.sn-collapse-item__title-image');
+      expect(img.exists()).toBe(true);
+      expect(img.attributes('src')).toBe('https://example.com/a.png');
+    });
+
+    it('resolves a built-in catalogue name without registration', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIcon: 'bell' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-icon svg').exists()).toBe(true);
+    });
+
+    it('resolves a registered name', () => {
+      registerSnIcons({ 'collapse-truck': Truck });
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIcon: 'collapse-truck' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-icon svg').exists()).toBe(true);
+      clearSnIcons();
+    });
+
+    it('prefers titleIconData over the name track', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIcon: 'bell', titleIconData: Truck },
+      ]);
+      expect(wrapper.findAll('.sn-collapse-item__title-icon')).toHaveLength(1);
+      expect(wrapper.find('.sn-collapse-item__title-icon svg').exists()).toBe(true);
+    });
+
+    it('prefers titleIconData over titleIconUrl', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell, titleIconUrl: 'https://example.com/a.png' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-image').exists()).toBe(false);
+      expect(wrapper.find('.sn-collapse-item__title-icon').exists()).toBe(true);
+    });
+
+    it('prefers titleIconUrl over the name track', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIcon: 'bell', titleIconUrl: 'https://example.com/a.png' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-image').exists()).toBe(true);
+      expect(wrapper.find('.sn-collapse-item__title-icon').exists()).toBe(false);
+    });
+
+    it('renders no title icon when all three sources are unset', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A' }]);
+      expect(wrapper.find('.sn-collapse-item__title-icon').exists()).toBe(false);
+      expect(wrapper.find('.sn-collapse-item__title-image').exists()).toBe(false);
+    });
+
+    it('keeps the title slot usable beside the title icon', () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnCollapse, { modelValue: ['a'] }, {
+              default: () => [
+                h(
+                  SnCollapseItem,
+                  { name: 'a', title: 'ignored', titleIconData: Bell },
+                  {
+                    title: () => h('text', { class: 'custom-title' }, 'slot'),
+                  },
+                ),
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      expect(wrapper.find('.custom-title').text()).toBe('slot');
+      expect(wrapper.find('.sn-collapse-item__title-icon svg').exists()).toBe(true);
+    });
+  });
+
+  describe('icon geometry (additive)', () => {
+    it('sizes the chevron from the medium icon token by default', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A' }]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-medium)',
+      );
+    });
+
+    it('maps the item iconSize tier name to the mp icon-size token', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', iconSize: 'large', titleIconData: Bell },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-large)',
+      );
+      expect(wrapper.find('.sn-collapse-item__title-icon').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-large)',
+      );
+    });
+
+    it('lets the container iconSize reach every panel and the title icons', () => {
+      const wrapper = mountCollapse({ modelValue: [], iconSize: 'xlarge' }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+        { name: 'b', title: 'B' },
+      ]);
+      const chevrons = wrapper.findAll('.sn-collapse-item__chevron');
+      expect(chevrons).toHaveLength(2);
+      for (const chevron of chevrons) {
+        expect(chevron.attributes('style')).toContain('var(--sn-mp-icon-size-xlarge)');
+      }
+      expect(wrapper.find('.sn-collapse-item__title-icon').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-xlarge)',
+      );
+    });
+
+    it('lets an explicit item iconSize win over the container', () => {
+      const wrapper = mountCollapse({ modelValue: [], iconSize: 'xlarge' }, [
+        { name: 'a', title: 'A', iconSize: 'tiny' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-tiny)',
+      );
+    });
+
+    it('passes unknown iconSize strings through', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', iconSize: '2em' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain('width: 2em');
+    });
+
+    it('sizes the image icon with the same resolved length', () => {
+      const wrapper = mountCollapse({ modelValue: [], iconSize: 'small' }, [
+        { name: 'a', title: 'A', titleIconUrl: 'https://example.com/a.png' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__title-image').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-small)',
+      );
+    });
+
+    it('forwards the neutral stroke width to both glyph slots', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+      ]);
+      const icons = wrapper.findAllComponents(SnIcon);
+      // Chevron + title icon.
+      expect(icons).toHaveLength(2);
+      for (const icon of icons) {
+        expect(icon.props('strokeWidth')).toBe(2);
+      }
+    });
+
+    it('forwards an explicit iconStrokeWidth to both glyph slots', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell, iconStrokeWidth: 1.5 },
+      ]);
+      for (const icon of wrapper.findAllComponents(SnIcon)) {
+        expect(icon.props('strokeWidth')).toBe(1.5);
+      }
+    });
+
+    it('keeps the chevron on the built-in ChevronDown object', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A' }]);
+      const chevron = wrapper.findComponent('.sn-collapse-item__chevron');
+      expect(chevron.props('icon')).toEqual(ChevronDown);
+    });
+  });
+
+  describe('icon colour (additive)', () => {
+    it('applies iconColor to the chevron and the title icon', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell, iconColor: 'var(--sn-mp-color-feedback-warning)' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-warning)',
+      );
+      expect(wrapper.find('.sn-collapse-item__title-icon').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-warning)',
+      );
+    });
+
+    it('lets the container iconColor reach a panel that sets none', () => {
+      const wrapper = mountCollapse({ modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-info)',
+      );
+      expect(wrapper.find('.sn-collapse-item__title-icon').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-info)',
+      );
+    });
+
+    it('lets an explicit item iconColor win over the container', () => {
+      const wrapper = mountCollapse({ modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' }, [
+        { name: 'a', title: 'A', iconColor: 'var(--sn-mp-color-feedback-danger)' },
+      ]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-danger)',
+      );
+    });
+
+    it('leaves the icon colours to the token classes when unset', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', titleIconData: Bell }]);
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style') ?? '').not.toContain(
+        'color:',
+      );
+      expect(wrapper.find('.sn-collapse-item__title-icon').attributes('style') ?? '').not.toContain(
+        'color:',
+      );
+    });
+
+    it('colours the view-more chevron from the container iconColor', () => {
+      const wrapper = mountCollapse(
+        { viewmore: true, modelValue: false, iconColor: 'var(--sn-mp-color-feedback-info)' },
+        [{ name: 'a' }],
+      );
+      expect(wrapper.find('.sn-collapse__more-chevron').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-info)',
+      );
+    });
+  });
+
+  describe('card mode (additive)', () => {
+    it('adds the card class on the container and every panel', () => {
+      const wrapper = mountCollapse({ modelValue: [], card: true });
+      expect(wrapper.find('.sn-collapse').classes()).toContain('sn-collapse--card');
+      expect(wrapper.findAll('.sn-collapse-item--card')).toHaveLength(3);
+    });
+
+    it('suppresses the shared divider in card mode', () => {
+      const wrapper = mountCollapse({ modelValue: [], card: true }, [
+        { name: 'a', title: 'A', border: true },
+      ]);
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
+        'sn-collapse-item--border',
+      );
+    });
+
+    it('keeps the divider when card mode is off', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', border: true }]);
+      expect(wrapper.find('.sn-collapse-item').classes()).toContain('sn-collapse-item--border');
+    });
+
+    it('lets an explicit item card win over the container', () => {
+      const wrapper = mountCollapse({ modelValue: [], card: true }, [
+        { name: 'a', title: 'A', card: false },
+      ]);
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
+        'sn-collapse-item--card',
+      );
+    });
+
+    it('lets an item turn card mode on without the container', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', card: true }]);
+      expect(wrapper.find('.sn-collapse-item').classes()).toContain('sn-collapse-item--card');
+      expect(wrapper.find('.sn-collapse').classes()).not.toContain('sn-collapse--card');
+    });
+
+    it('carries a title icon inside a card header', () => {
+      const wrapper = mountCollapse({ modelValue: [], card: true }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+      ]);
+      expect(wrapper.find('.sn-collapse-item--card .sn-collapse-item__title-icon').exists()).toBe(
+        true,
+      );
     });
   });
 });

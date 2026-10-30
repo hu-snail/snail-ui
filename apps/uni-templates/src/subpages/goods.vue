@@ -8,13 +8,21 @@
  * 微信小程序端导航行按胶囊几何让位（common/capsule）。
  */
 import { computed, ref } from 'vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import SnCountDown from '@snui/uni-src/components/sn-count-down/sn-count-down.vue';
 import SnDivider from '@snui/uni-src/components/sn-divider/sn-divider.vue';
+import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
+import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnProgress from '@snui/uni-src/components/sn-progress/sn-progress.vue';
 import SnRate from '@snui/uni-src/components/sn-rate/sn-rate.vue';
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
+import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
+import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
+import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import { getCapsuleMetrics } from '../common/capsule';
 import { BadgeCheckIcon, HeadsetIcon, StoreIcon } from '../common/icons';
 import {
@@ -142,19 +150,17 @@ function goBack(): void {
               <view class="goods-nav__back" role="button" aria-label="返回" @tap="goBack">
                 <SnIcon :icon="ChevronLeft" size="44rpx" color="#1a1c1d" />
               </view>
-              <scroll-view class="goods-nav__tabs" scroll-x :show-scrollbar="false">
-                <view class="goods-nav__tabs-track">
-                  <view
-                    v-for="(t, i) in TABS"
-                    :key="t"
-                    class="goods-tab"
-                    :class="{ 'is-active': activeTab === i }"
-                    @tap="activeTab = i"
-                  >
-                    <text class="goods-tab__text">{{ t }}</text>
-                  </view>
-                </view>
-              </scroll-view>
+              <!-- 页内 Tab：sn-tabs 只承载页签头（无内容面板），v-model 同步激活项 -->
+              <SnTabs
+                v-model="activeTab"
+                color="#a83200"
+                inactive-color="#5c4037"
+                line-width="32rpx"
+                line-height="4rpx"
+                custom-style="flex: 1; min-width: 0; --sn-mp-color-background-surface: transparent;"
+              >
+                <SnTab v-for="t in TABS" :key="t" :title="t" />
+              </SnTabs>
               <view class="goods-nav__acts">
                 <view class="goods-nav__act" role="button" aria-label="搜索" @tap="toast('搜索')">
                   <SnIcon :icon="Search" size="38rpx" color="#1a1c1d" />
@@ -179,7 +185,6 @@ function goBack(): void {
         <!-- 主图轮播：SnSwiper（图片模式 / 循环 / 当前页 v-model 全走组件契约） -->
         <view class="goods-hero">
           <SnSwiper
-            class="goods-hero__swiper"
             :list="HERO_SLIDES"
             image-mode="aspectFit"
             height="750rpx"
@@ -199,7 +204,9 @@ function goBack(): void {
             <text class="goods-hero__auth-text">官方正品 · 假一赔四</text>
           </view>
           <view class="goods-hero__count">
-            <text class="goods-hero__count-text">{{ heroIndex + 1 }} / {{ HERO_IMAGES.length }}</text>
+            <text class="goods-hero__count-text"
+              >{{ heroIndex + 1 }} / {{ HERO_IMAGES.length }}</text
+            >
           </view>
         </view>
 
@@ -224,15 +231,25 @@ function goBack(): void {
           </view>
           <view class="goods-subsidy__right">
             <text class="goods-subsidy__timer-label">距结束仅剩</text>
-            <view class="goods-subsidy__timer">
-              <text class="goods-subsidy__timer-chip">05</text>
-              <text class="goods-subsidy__timer-colon">:</text>
-              <text class="goods-subsidy__timer-chip">24</text>
-              <text class="goods-subsidy__timer-colon">:</text>
-              <text class="goods-subsidy__timer-chip">18</text>
-            </view>
+            <!-- 倒计时：sn-count-down 提供时钟与格式化，形态由默认插槽自定义 -->
+            <SnCountDown :time="5 * 3600000 + 24 * 60000 + 18000">
+              <template #default="t">
+                <view class="goods-subsidy__timer">
+                  <text class="goods-subsidy__timer-chip">{{
+                    String(t.hours).padStart(2, '0')
+                  }}</text>
+                  <text class="goods-subsidy__timer-colon">:</text>
+                  <text class="goods-subsidy__timer-chip">{{
+                    String(t.minutes).padStart(2, '0')
+                  }}</text>
+                  <text class="goods-subsidy__timer-colon">:</text>
+                  <text class="goods-subsidy__timer-chip">{{
+                    String(t.seconds).padStart(2, '0')
+                  }}</text>
+                </view>
+              </template>
+            </SnCountDown>
             <SnProgress
-              class="goods-subsidy__track"
               :percentage="86"
               hide-text
               color="#ffddb5"
@@ -247,7 +264,8 @@ function goBack(): void {
           <view class="goods-title-row">
             <text class="goods-title">
               <text class="goods-title__badge">天猫自营</text>
-              Apple/苹果 AirPods Pro (第二代) 配备USB-C接口 MagSafe无线充电盒 H2芯片 主动降噪入耳式蓝牙无线耳机
+              Apple/苹果 AirPods Pro (第二代) 配备USB-C接口 MagSafe无线充电盒 H2芯片
+              主动降噪入耳式蓝牙无线耳机
             </text>
             <view class="goods-help" @tap="toast('帮我选')">
               <SnIcon :icon="Star" size="40rpx" color="#a83200" />
@@ -255,19 +273,25 @@ function goBack(): void {
             </view>
           </view>
 
-          <view class="goods-rank">
-            <view class="goods-rank__left">
-              <SnIcon :icon="BadgeCheckIcon" size="30rpx" color="#a83200" />
-              <text class="goods-rank__text">主动降噪耳机热卖榜 · 第1名</text>
-            </view>
-            <text class="goods-rank__sold">月销 5万+</text>
-          </view>
+          <!-- 榜单：sn-cell 承载（前缀图标 + 标题 + 右侧销量） -->
+          <SnCell
+            title="主动降噪耳机热卖榜 · 第1名"
+            value="月销 5万+"
+            prefix-icon="crown"
+            icon-color="#a83200"
+            custom-style="background-color: #f3f3f5; border-radius: 12rpx; padding: 8rpx 16rpx; --sn-mp-color-text-primary: #a83200; --sn-mp-font-size-md: 20rpx;"
+          />
 
           <view class="goods-coupons">
             <view class="goods-coupons__list">
-              <view v-for="c in COUPONS" :key="c" class="goods-coupon">
-                <text class="goods-coupon__text">{{ c }}</text>
-              </view>
+              <SnTag
+                v-for="c in COUPONS"
+                :key="c"
+                bg-color="#ffdad8"
+                color="#bb0025"
+                custom-style="margin: 0 8rpx 0 0;"
+                >{{ c }}</SnTag
+              >
             </view>
             <view class="goods-coupons__more" @tap="toast('领券')">
               <text class="goods-coupons__more-text">领券</text>
@@ -276,10 +300,17 @@ function goBack(): void {
           </view>
         </view>
 
-        <!-- 履约保障 -->
-        <view class="goods-card">
-          <view class="goods-row" @tap="toast('配送地址')">
-            <text class="goods-row__label">发货</text>
+        <!-- 履约保障：sn-cell-group + sn-cell（单元格契约由组件定义） -->
+        <SnCellGroup
+          border
+          custom-style="margin: 0 16rpx; padding: 4rpx 24rpx; border-radius: 24rpx; background: #ffffff; box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);"
+        >
+          <SnCell
+            title="发货"
+            is-link
+            custom-title-class="goods-row__label"
+            @click="toast('配送地址')"
+          >
             <view class="goods-row__main">
               <view class="goods-row__line">
                 <text class="goods-row__strong">现货</text>
@@ -287,41 +318,45 @@ function goBack(): void {
               </view>
               <text class="goods-row__sub">配送至 浙江省 杭州市 余杭区 文一西路969号</text>
             </view>
-            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
-          </view>
-          <view class="goods-row" @tap="toast('服务保障')">
-            <text class="goods-row__label">保障</text>
+          </SnCell>
+          <SnCell
+            title="保障"
+            is-link
+            custom-title-class="goods-row__label"
+            @click="toast('服务保障')"
+          >
             <view class="goods-row__main goods-row__main--inline">
               <view v-for="s in SERVICES" :key="s" class="goods-service">
                 <view class="goods-service__dot" />
                 <text class="goods-service__text">{{ s }}</text>
               </view>
             </view>
-            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
-          </view>
-          <view class="goods-row" @tap="toast('选择规格')">
-            <text class="goods-row__label">选择</text>
-            <view class="goods-row__main goods-row__main--inline">
+          </SnCell>
+          <SnCell
+            title="选择"
+            is-link
+            custom-title-class="goods-row__label"
+            @click="toast('选择规格')"
+          >
+            <template #prefix>
               <view class="goods-sku-thumb">
                 <SnImg :src="SKU_IMAGE" mode="aspectFit" width="100%" height="100%" />
               </view>
+            </template>
+            <view class="goods-row__main goods-row__main--inline">
               <text class="goods-row__value">已选：USB-C充电盒版，白色，1件</text>
-              <view class="goods-sku-count">
-                <text class="goods-sku-count__text">共2种配置可选</text>
-              </view>
+              <SnTag bg-color="#e8e8ea" color="#5c4037">共2种配置可选</SnTag>
             </view>
-            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
-          </view>
-          <view class="goods-row" @tap="toast('参数')">
-            <text class="goods-row__label">参数</text>
-            <view class="goods-row__main">
-              <text class="goods-row__value goods-row__value--truncate">
-                蓝牙5.3 · H2芯片 · 主动降噪 · IP54抗汗抗水
-              </text>
-            </view>
-            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
-          </view>
-        </view>
+          </SnCell>
+          <SnCell
+            title="参数"
+            value="蓝牙5.3 · H2芯片 · 主动降噪 · IP54抗汗抗水"
+            is-link
+            ellipsis
+            custom-title-class="goods-row__label"
+            @click="toast('参数')"
+          />
+        </SnCellGroup>
 
         <!-- 宝贝评价 -->
         <view class="goods-card">
@@ -338,9 +373,14 @@ function goBack(): void {
 
           <scroll-view class="goods-review-tags" scroll-x :show-scrollbar="false">
             <view class="goods-review-tags__track">
-              <view v-for="t in REVIEW_TAGS" :key="t" class="goods-review-tag">
-                <text class="goods-review-tag__text">{{ t }}</text>
-              </view>
+              <SnTag
+                v-for="t in REVIEW_TAGS"
+                :key="t"
+                bg-color="#f3f3f5"
+                color="#1a1c1d"
+                custom-style="margin-right: 8rpx; flex-shrink: 0;"
+                >{{ t }}</SnTag
+              >
             </view>
           </scroll-view>
 
@@ -361,7 +401,6 @@ function goBack(): void {
                 </view>
               </view>
               <SnRate
-                class="goods-review__stars"
                 :model-value="5"
                 readonly
                 size="28rpx"
@@ -450,15 +489,23 @@ function goBack(): void {
               </view>
             </view>
           </view>
-          <view class="goods-store__metrics">
-            <view v-for="m in STORE_METRICS" :key="m.label" class="goods-store__metric">
-              <text class="goods-store__metric-label">{{ m.label }}</text>
-              <view class="goods-store__metric-score">
-                <text class="goods-store__metric-value">{{ m.score }}</text>
-                <text class="goods-store__metric-up">高</text>
-              </view>
-            </view>
-          </view>
+          <!-- 店铺口碑指标：sn-grid 三等分 -->
+          <SnGrid
+            :column="3"
+            custom-style="border-radius: 14rpx; background-color: #f9f9fb; padding: 12rpx 0;"
+          >
+            <SnGridItem v-for="m in STORE_METRICS" :key="m.label" :text="m.label">
+              <template #text>
+                <view class="goods-store__metric">
+                  <text class="goods-store__metric-label">{{ m.label }}</text>
+                  <view class="goods-store__metric-score">
+                    <text class="goods-store__metric-value">{{ m.score }}</text>
+                    <text class="goods-store__metric-up">高</text>
+                  </view>
+                </view>
+              </template>
+            </SnGridItem>
+          </SnGrid>
         </view>
 
         <!-- 图文详情 -->
@@ -467,7 +514,8 @@ function goBack(): void {
             content-position="center"
             color="#e5beb2"
             custom-style="padding: 8rpx 0; --sn-mp-color-text-secondary: #5c4037; --sn-mp-color-background-surface: #f9f9fb;"
-          >图文详情</SnDivider>
+            >图文详情</SnDivider
+          >
 
           <view v-for="b in DETAIL_BLOCKS" :key="b.title" class="goods-detail__block">
             <view class="goods-detail__media">
@@ -506,7 +554,8 @@ function goBack(): void {
               <text
                 class="goods-actionbar__icon-text"
                 :class="{ 'goods-actionbar__icon-text--on': favorited }"
-              >{{ favorited ? '已收藏' : '收藏' }}</text>
+                >{{ favorited ? '已收藏' : '收藏' }}</text
+              >
             </view>
           </view>
           <view class="goods-actionbar__buy">
@@ -559,29 +608,6 @@ function goBack(): void {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.85);
 }
-.goods-nav__tabs {
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-}
-.goods-nav__tabs-track {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-}
-.goods-tab {
-  flex-shrink: 0;
-  padding: 8rpx 16rpx;
-}
-.goods-tab__text {
-  color: #5c4037;
-  font-size: 26rpx;
-  font-weight: 600;
-}
-.goods-tab.is-active .goods-tab__text {
-  color: #a83200;
-  font-weight: 700;
-}
 .goods-nav__acts {
   display: flex;
   align-items: center;
@@ -623,10 +649,6 @@ function goBack(): void {
   width: 100%;
   height: 750rpx;
   background: #ffffff;
-}
-.goods-hero__swiper {
-  width: 100%;
-  height: 100%;
 }
 .goods-hero__video {
   position: absolute;
@@ -830,30 +852,6 @@ function goBack(): void {
 }
 
 /* 榜单 */
-.goods-rank {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-  background: #f3f3f5;
-}
-.goods-rank__left {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
-  min-width: 0;
-}
-.goods-rank__text {
-  color: #a83200;
-  font-size: 20rpx;
-  font-weight: 700;
-}
-.goods-rank__sold {
-  color: #5c4037;
-  font-size: 20rpx;
-  flex-shrink: 0;
-}
 
 /* 优惠券 */
 .goods-coupons {
@@ -868,16 +866,6 @@ function goBack(): void {
   gap: 8rpx;
   min-width: 0;
 }
-.goods-coupon {
-  padding: 2rpx 10rpx;
-  border-radius: 6rpx;
-  background: #ffdad8;
-}
-.goods-coupon__text {
-  color: #bb0025;
-  font-size: 18rpx;
-  font-weight: 500;
-}
 .goods-coupons__more {
   display: flex;
   align-items: center;
@@ -891,10 +879,23 @@ function goBack(): void {
 }
 
 /* 履约行 */
-.goods-row {
+.goods-row__main {
   display: flex;
-  align-items: flex-start;
-  gap: 12rpx;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+  min-width: 0;
+}
+.goods-row__main--inline {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+.goods-row__line {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
 }
 .goods-row__label {
   width: 72rpx;
@@ -903,24 +904,6 @@ function goBack(): void {
   font-size: 22rpx;
   font-weight: 600;
   line-height: 1.5;
-}
-.goods-row__main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-.goods-row__main--inline {
-  flex-direction: row;
-  align-items: center;
-  gap: 8rpx;
-  overflow: hidden;
-}
-.goods-row__line {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
 }
 .goods-row__strong {
   color: #a83200;
@@ -933,11 +916,6 @@ function goBack(): void {
   color: #1a1c1d;
   font-size: 22rpx;
   line-height: 1.5;
-}
-.goods-row__value--truncate {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 .goods-row__sub {
   color: #5c4037;
@@ -966,16 +944,6 @@ function goBack(): void {
   border-radius: 8rpx;
   background: #f3f3f5;
   overflow: hidden;
-}
-.goods-sku-count {
-  flex-shrink: 0;
-  padding: 2rpx 10rpx;
-  border-radius: 6rpx;
-  background: #e8e8ea;
-}
-.goods-sku-count__text {
-  color: #5c4037;
-  font-size: 18rpx;
 }
 
 /* 区块标题 */
@@ -1029,16 +997,6 @@ function goBack(): void {
   display: inline-flex;
   align-items: center;
   gap: 8rpx;
-}
-.goods-review-tag {
-  flex-shrink: 0;
-  padding: 6rpx 16rpx;
-  border-radius: 999rpx;
-  background: #f3f3f5;
-}
-.goods-review-tag__text {
-  color: #1a1c1d;
-  font-size: 18rpx;
 }
 .goods-review {
   display: flex;
@@ -1099,9 +1057,6 @@ function goBack(): void {
 .goods-review__spec {
   color: #5c4037;
   font-size: 18rpx;
-}
-.goods-review__stars {
-  flex-shrink: 0;
 }
 .goods-review__text {
   color: #1a1c1d;
@@ -1284,18 +1239,11 @@ function goBack(): void {
   color: #ffffff;
   font-weight: 600;
 }
-.goods-store__metrics {
-  display: flex;
-  padding: 12rpx 0;
-  border-radius: 14rpx;
-  background: #f9f9fb;
-}
 .goods-store__metric {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4rpx;
+  gap: 2rpx;
 }
 .goods-store__metric-label {
   color: #5c4037;
@@ -1303,12 +1251,12 @@ function goBack(): void {
 }
 .goods-store__metric-score {
   display: flex;
-  align-items: center;
-  gap: 2rpx;
+  align-items: baseline;
+  gap: 4rpx;
 }
 .goods-store__metric-value {
-  color: #bb0025;
-  font-size: 24rpx;
+  color: #a83200;
+  font-size: 26rpx;
   font-weight: 700;
 }
 .goods-store__metric-up {

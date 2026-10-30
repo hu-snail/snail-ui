@@ -20,6 +20,18 @@ With `viewmore`, `v-model` is a `boolean` and the body collapses to `line-num` l
 
 <Demo name="collapse-mp-viewmore" description="viewmore makes v-model a boolean; line-num sets the collapsed line count; a toggle button renders at the bottom." />
 
+## Card form
+
+`card` renders every panel as its own rounded card: the container goes transparent, the panels stack with a token gap, each card draws its own radius / border / shadow and the shared divider steps aside. Turn it on at `sn-collapse` level to have the whole group inherit it, or on a single `sn-collapse-item`; an explicit panel value wins over the container.
+
+<Demo name="collapse-mp-card" description="collapse card gives every panel its own card with a configurable title icon; a single panel can be a card on its own." />
+
+## Title icon and icon size
+
+A panel title accepts an icon resolved from three sources in priority order: `titleIconData` (a built-in set object) > `titleIconUrl` (an image) > `titleIcon` (a name chain: built-in catalogue kebab names / registered names). `iconSize` unifies the chevron and the title icon — tier names map to `--sn-mp-icon-size-*`, numbers are px and any other string passes through. `iconColor` takes a `var(--sn-mp-color-*)` token only. The container's `iconSize` / `iconColor` are inherited by panels; a panel-level value wins.
+
+<Demo name="collapse-mp-icon" description="Three title-icon sources: a built-in set object, an image URL and the name chain; iconSize tiers tiny/small/medium/large plus a custom length; iconColor takes a colour token." />
+
 ## The more slot, item border and before-expend
 
 The `more` slot replaces the viewmore expand / collapse area and `custom-more-slot-class` appends a class to it; item `border=false` drops the bottom rule; `before-expend` guards the expand:
@@ -57,6 +69,9 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | `customMoreSlotClass` | `string`                        | `''`    | Extra class around the `more` slot                                                              |
 | `customClass`         | `string`                        | `''`    | Extra class on the root node                                                                    |
 | `customStyle`         | `string`                        | `''`    | Inline style on the root node                                                                   |
+| `card`                | `boolean`                       | `false` | Card form: every panel becomes its own rounded card; the container goes transparent and stacks the panels with a token gap |
+| `iconSize`            | `string \| number`              | `undefined` | Icon size (chevron + title icons): tiers tiny / small / medium / large / xlarge map to `--sn-mp-icon-size-*`, numbers are px and other strings pass through; a panel value wins |
+| `iconColor`           | `string`                        | `''`    | Icon colour (chevron + title icons): pass a `var(--sn-mp-color-*)` token; a panel value wins |
 
 ### sn-collapse-item
 
@@ -71,8 +86,15 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | `customBodyStyle` | `string`                                | `''`        | Inline style on the body container |
 | `customClass`     | `string`                                | `''`        | Extra class on the panel root      |
 | `customStyle`     | `string`                                | `''`        | Inline style on the panel root     |
+| `titleIconData`   | `IconData`                              | `undefined` | Title-icon data object (built-in set object / custom); highest priority |
+| `titleIconUrl`    | `string`                                | `''`        | Title image URL rendered as `<image>`; below `titleIconData`, above `titleIcon` |
+| `titleIcon`       | `string`                                | `''`        | Title icon name: registry (`registerSnIcons`) → built-in catalogue (kebab-case) → provider |
+| `iconSize`        | `string \| number`                      | `undefined` | Icon size (chevron + title icon); inherits the container `iconSize`, then `--sn-mp-icon-size-medium` |
+| `iconColor`       | `string`                                | `''`        | Icon colour (chevron + title icon); inherits the container `iconColor` |
+| `iconStrokeWidth` | `number`                                | `2`         | Icon stroke weight (chevron + title icon), mirrors `--sn-mp-icon-stroke-width` |
+| `card`            | `boolean`                               | `undefined` | Card form for this panel; inherits the container `card` when unset |
 
-> `beforeExpend` keeps wot-ui's original spelling (an upstream typo) so the prop surface stays 1:1. It runs only when **opening**; collapsing never asks. A rejected promise is treated as "stay closed" and is not rethrown.
+> `beforeExpend` keeps its historical spelling (`Expend`, not `Expand`) for backward compatibility. It runs only when **opening**; collapsing never asks. A rejected promise is treated as "stay closed" and is not rethrown.
 
 ## Events
 
@@ -103,13 +125,35 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | ----------------------------------------------- | ----------------------------------------------- |
 | `--sn-mp-color-background-surface`              | Panel surface                                   |
 | `--sn-mp-color-background-soft`                 | Title tap feedback                              |
-| `--sn-mp-color-border-subtle`                   | Panel divider                                   |
+| `--sn-mp-color-border-subtle`                   | Panel divider / card outline                    |
 | `--sn-mp-color-text-primary`                    | Title colour                                    |
-| `--sn-mp-color-text-secondary`                  | Body and arrow colour                           |
-| `--sn-mp-color-action-primary`                  | Expand / collapse label colour                  |
+| `--sn-mp-color-text-secondary`                  | Body and title-icon colour                      |
+| `--sn-mp-color-text-tertiary`                   | Chevron colour                                  |
+| `--sn-mp-color-action-primary`                  | Expand / collapse label and open-state icon colour |
+| `--sn-mp-color-action-primary-soft`             | Open-state chevron backing                      |
 | `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | Title / body size                               |
 | `--sn-mp-font-line-height-normal`               | Body line height (`line-num` clamps against it) |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4`       | Header / body padding                           |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Chevron padding / title-icon gap / card gap / header padding |
+| `--sn-mp-radius-lg` / `--sn-mp-radius-full`     | Card radius / chevron pill radius               |
+| `--sn-mp-shadow-sm`                             | Card shadow                                     |
+| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge` | Icon lengths behind the `iconSize` tiers  |
+| `--sn-mp-icon-stroke-width`                     | SVG icon stroke width (2 by default)            |
+
+Icon standard (one per family):
+
+| Slot       | Rest                           | Open                            |
+| ---------- | ------------------------------ | ------------------------------- |
+| Chevron    | `--sn-mp-color-text-tertiary`  | `--sn-mp-color-action-primary`  |
+| Title icon | `--sn-mp-color-text-secondary` | `--sn-mp-color-action-primary`  |
+
+The chevron defaults to `--sn-mp-icon-size-medium` and shares that tier with the title icon; the view-more chevron uses `--sn-mp-icon-size-small` (overridden when the container sets `iconSize`).
+
+## AI Patch Boundary
+
+- An AI may patch `title` / `titleIconData` / `titleIcon` / `titleIconUrl` / `iconSize` / `iconColor` / `iconStrokeWidth` / `card` / `border` / `disabled` / `beforeExpend` and other presentation or interaction settings.
+- `v-model` (`update:modelValue`) and the `toggleAll` method are the open-state contract; the `change` event is a host business signal — a patch may adjust the initial `modelValue` but must not fabricate events.
+- Slot content (`title` / `default` / `more`) is business data; a patch should adjust container settings only, never rewrite the slot structure.
+- Colours and sizes must go through `--sn-mp-color-*` / `--sn-mp-icon-size-*` tokens; a patch must never inject colour or size literals.
 
 ## Accessibility
 
@@ -120,9 +164,9 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 
 ## Dark mode
 
-Every colour in `sn-collapse` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the panel surface flips to the dark surface, the divider uses the dark border token, the title moves to the dark primary text and the body to the dark secondary text.
+Every colour in `sn-collapse` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the panel surface flips to the dark surface, the divider uses the dark border token, the title moves to the dark primary text, the body and title icons to the dark secondary text, and the chevron to the dark tertiary text. Cards keep their token-driven outline and shadow.
 
-Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
+Verify it by wrapping the component in `sn-config-provider` with `theme="dark"`.
 
 ## Related
 

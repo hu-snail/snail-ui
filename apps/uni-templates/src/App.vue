@@ -3,16 +3,59 @@ import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import '@snui/uni/styles';
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Heart, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import { ChartColumnIcon, MapPinIcon, SparklesIcon } from './common/icons';
+import {
+  Crown,
+  Heart,
+  Home,
+  MessageCircle,
+  Search,
+  ShoppingCart,
+  User,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  BikeIcon,
+  CarIcon,
+  ChartColumnIcon,
+  CirclePlayIcon,
+  ClapperboardIcon,
+  CrossIcon,
+  LayoutGridIcon,
+  MapPinIcon,
+  ScissorsIcon,
+  ShoppingBagIcon,
+  SparklesIcon,
+  TicketIcon,
+  UtensilsIcon,
+  BedDoubleIcon,
+} from './common/icons';
 
-// 注册模板工程用到的字符串名图标（sn-empty / sn-cell 的 registry 查找）。
+/**
+ * 注册模板工程用到的字符串名图标：sn-empty / sn-cell / sn-grid-item /
+ * sn-tabbar-item 等组件按**名称**解析图标，模板页因此只需传 `icon="home"`。
+ */
 registerSnIcons({
   sparkles: SparklesIcon,
   heart: Heart,
   user: User,
   'map-pin': MapPinIcon,
   'chart-column': ChartColumnIcon,
+  home: Home,
+  search: Search,
+  'message-circle': MessageCircle,
+  'shopping-cart': ShoppingCart,
+  'circle-play': CirclePlayIcon,
+  crown: Crown,
+  // 商城金刚区（2×5 服务矩阵）
+  bike: BikeIcon,
+  utensils: UtensilsIcon,
+  bed: BedDoubleIcon,
+  ticket: TicketIcon,
+  clapperboard: ClapperboardIcon,
+  'shopping-bag': ShoppingBagIcon,
+  cross: CrossIcon,
+  scissors: ScissorsIcon,
+  car: CarIcon,
+  'layout-grid': LayoutGridIcon,
 });
 
 onLaunch(() => {});

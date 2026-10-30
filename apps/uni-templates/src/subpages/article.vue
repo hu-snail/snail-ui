@@ -10,11 +10,15 @@
  */
 import { computed, ref } from 'vue';
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
+import SnCard from '@snui/uni-src/components/sn-card/sn-card.vue';
 import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
 import SnDivider from '@snui/uni-src/components/sn-divider/sn-divider.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import SnProgress from '@snui/uni-src/components/sn-progress/sn-progress.vue';
+import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
+import SnRichText from '@snui/uni-src/components/sn-rich-text/sn-rich-text.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import SnVideoPreview from '@snui/uni-src/components/sn-video-preview/sn-video-preview.vue';
 import { getCapsuleMetrics } from '../common/capsule';
@@ -46,7 +50,8 @@ const ARTICLE = {
   lead: '核心导读：这是我国目前起飞规模最大、飞行高度最高的可重复使用火箭垂直起降（VTVL）飞行试验，标志着重型可回收航天动力进入工程实用化攻坚阶段，为空间站常态化、低成本补给奠定关键基石。',
   p1: '北京时间5月18日清晨，西北戈壁腹地的酒泉卫星发射中心传来激荡人心的轰鸣。伴随着发动机矢量喷管喷出的炽热尾焰，我国自主研制的新一代可重复使用试验箭腾空而起，在空中平稳爬升至预定10公里高度后完成关机转向滑行，并在降落段精准点火反推，四支轻量化碳纤维着陆缓冲腿稳稳锚固于靶心着陆台。',
   p2: '相比此前数公里的低空悬停，十公里级跳跃试验是跨越低空风切变层、验证超声速大动压下高空精确制导律的关键节点。在整个试验周期内，箭上自研三冗余航电系统完成了多级变推力协同控制，节流深度低至35%，发动机深节流工况下的燃烧稳定性得到了充分验证。',
-  quote: '航天动力工程总师在现地受访时指出：“不仅要把火箭送上去，关键在于低成本、高可靠性地收回来。此次验证的着陆缓冲吸能机构采用了新型蜂窝铝复合吸能芯体，不仅重量降低了42%，同时支持全箭免拆卸无损翻新，单次发射周转准备期预计可压缩至7天以内。”',
+  quote:
+    '航天动力工程总师在现地受访时指出：“不仅要把火箭送上去，关键在于低成本、高可靠性地收回来。此次验证的着陆缓冲吸能机构采用了新型蜂窝铝复合吸能芯体，不仅重量降低了42%，同时支持全箭免拆卸无损翻新，单次发射周转准备期预计可压缩至7天以内。”',
   p3: '展望2026年，我国将基于此项核心技术实施首飞入轨并回收，届时中国空间站将拥有更灵活的高频物资投送保障手段，各类空间科学实验样本和精密载荷实现“随叫随到”的常态化天地往返。',
   editor: '责任编辑：航天观察组 · 审校：李思远',
   copyright:
@@ -59,6 +64,42 @@ const VIDEO_COVER =
   'https://images.unsplash.com/photo-1517976487492-5750f3195933?w=1024&h=576&fit=crop&q=70';
 /** 演示视频源（公开样片；真实项目由宿主注入自有地址）。 */
 const VIDEO_SRC = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
+
+/* ── 正文富文本（sn-rich-text 渲染；视频/数据卡保持组件插槽在前） ─────── */
+
+/** tag 级排版：正文 34rpx/1.78 两端对齐，段落间距 28rpx。 */
+const BODY_TAG_STYLES: Record<string, string> = {
+  p: 'margin: 0 0 28rpx; text-align: justify;',
+  figure: 'margin: 0 0 28rpx;',
+  figcaption:
+    'padding: 12rpx 12rpx 0; color: #8e706e; font-size: 22rpx; line-height: 1.5; text-align: center;',
+  img: 'width: 100%; border-radius: 20rpx;',
+};
+
+/** class 级排版：导读盒 / 版权盒 / 分段首尾归零（避免与页面 gap 叠加）。 */
+const BODY_CLASS_STYLES: Record<string, string> = {
+  lead: 'margin: 0; padding: 20rpx 24rpx 20rpx 32rpx; border-left: 8rpx solid #b0242b; border-radius: 12rpx; background-color: #f6f3f2; color: #5a413f; font-size: 28rpx; font-style: italic; line-height: 1.65;',
+  legal:
+    'margin: 0; padding: 20rpx; border-radius: 12rpx; background-color: #f6f3f2; color: #8e706e; font-size: 22rpx; line-height: 1.6;',
+  flush: 'margin: 0;',
+};
+
+/** 视频块之前：导读 + 段落一 + 发射图 + 段落二。 */
+const BODY_TOP = [
+  `<p class="lead">${ARTICLE.lead}</p>`,
+  `<p>${ARTICLE.p1}</p>`,
+  `<figure><img src="${LAUNCH_IMAGE}" /><figcaption>图注：可重复使用运载火箭在试验场成功实施垂直起飞与精准着陆（摄影：张扬 / 科技前沿）</figcaption></figure>`,
+  `<p class="flush">${ARTICLE.p2}</p>`,
+].join('');
+
+/** 数据对比卡之前：受访引述。 */
+const BODY_QUOTE = `<p class="flush">${ARTICLE.quote}</p>`;
+
+/** 话题标签之前：展望段落 + 版权声明盒。 */
+const BODY_TAIL = [
+  `<p>${ARTICLE.p3}</p>`,
+  `<p class="legal">${ARTICLE.editor}<br/>${ARTICLE.copyright}</p>`,
+].join('');
 
 /* ── 互动状态 ─────────────────────────────────────────────────────────── */
 const following = ref(false);
@@ -94,6 +135,12 @@ function toast(text: string): void {
 function goBack(): void {
   uni.navigateBack();
 }
+
+/** 评论排序（sn-segmented 选项）。 */
+const COMMENT_SORTS = [
+  { label: '最热', value: 'hot' },
+  { label: '最新', value: 'latest' },
+];
 
 /* ── 热门评论 ─────────────────────────────────────────────────────────── */
 interface CommentEntry {
@@ -204,9 +251,7 @@ const RECS: RecEntry[] = [
     id: 3,
     title: '三维重演：10公里垂直起降火箭在下坠过程中如何克服强侧风？',
     kind: 'video',
-    images: [
-      'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=320&h=240&fit=crop&q=70',
-    ],
+    images: ['https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=320&h=240&fit=crop&q=70'],
     source: '硬核力学讲堂',
     meta: '5.2万次播放',
     badge: '视频',
@@ -308,23 +353,14 @@ function shuffleRecs(): void {
           </view>
         </view>
 
-        <!-- 核心导读 -->
-        <view class="art-lead">
-          <view class="art-lead__bar" />
-          <text class="art-lead__text">{{ ARTICLE.lead }}</text>
-        </view>
-
-        <!-- 正文段落 -->
-        <text class="art-para">{{ ARTICLE.p1 }}</text>
-
-        <view class="art-figure">
-          <view class="art-figure__media">
-            <SnImg :src="LAUNCH_IMAGE" mode="aspectFill" width="100%" height="100%" />
-          </view>
-          <text class="art-figure__caption">图注：可重复使用运载火箭在试验场成功实施垂直起飞与精准着陆（摄影：张扬 / 科技前沿）</text>
-        </view>
-
-        <text class="art-para">{{ ARTICLE.p2 }}</text>
+        <!-- 核心导读 + 正文段落 + 发射配图（sn-rich-text 富文本渲染） -->
+        <SnRichText
+          :content="BODY_TOP"
+          :tag-style="BODY_TAG_STYLES"
+          :class-styles="BODY_CLASS_STYLES"
+          selectable
+          custom-style="--sn-mp-rich-text-color: #1b1c1c; --sn-mp-rich-text-font-size: 34rpx; --sn-mp-rich-text-line-height: 1.78;"
+        />
 
         <!-- 视频块：封面 + 播放浮层（点击交给 SnVideoPreview 全屏播放） -->
         <view class="art-video">
@@ -356,7 +392,14 @@ function shuffleRecs(): void {
           <text class="art-figure__caption">视频回放：着陆腿展开瞬间多角度雷达与机载遥测全景</text>
         </view>
 
-        <text class="art-para">{{ ARTICLE.quote }}</text>
+        <!-- 受访引述（富文本渲染） -->
+        <SnRichText
+          :content="BODY_QUOTE"
+          :tag-style="BODY_TAG_STYLES"
+          :class-styles="BODY_CLASS_STYLES"
+          selectable
+          custom-style="--sn-mp-rich-text-color: #1b1c1c; --sn-mp-rich-text-font-size: 34rpx; --sn-mp-rich-text-line-height: 1.78;"
+        />
 
         <!-- 数据对比卡 -->
         <view class="art-stats">
@@ -372,12 +415,18 @@ function shuffleRecs(): void {
               <text class="art-metric__label">每公斤近地轨道货运成本</text>
               <text class="art-metric__delta">降幅 ~76%</text>
             </view>
-            <view class="art-metric__track">
-              <view class="art-metric__bar art-metric__bar--base" style="width: 100%" />
-            </view>
-            <view class="art-metric__track">
-              <view class="art-metric__bar art-metric__bar--target" style="width: 24%" />
-            </view>
+            <SnProgress
+              :percentage="100"
+              hide-text
+              color="#8e706e"
+              custom-style="--sn-mp-color-background-subtle: #e5e2e1;"
+            />
+            <SnProgress
+              :percentage="24"
+              hide-text
+              color="#b0242b"
+              custom-style="--sn-mp-color-background-subtle: #e5e2e1;"
+            />
             <view class="art-metric__legend">
               <text class="art-metric__legend-text">传统一次性载荷 (基准值: 100%)</text>
               <text class="art-metric__legend-text">本次可回收箭体目标 (24%)</text>
@@ -395,21 +444,24 @@ function shuffleRecs(): void {
                 <text class="art-freq-card__value">6-8次</text>
               </view>
               <text class="art-freq-arrow">→</text>
-              <view class="art-freq-card art-freq-card--accent">
-                <text class="art-freq-card__label art-freq-card__label--accent">可复用常态运力</text>
+              <view class="art-freq-card">
+                <text class="art-freq-card__label art-freq-card__label--accent"
+                  >可复用常态运力</text
+                >
                 <text class="art-freq-card__value art-freq-card__value--accent">36+次</text>
               </view>
             </view>
           </view>
         </view>
 
-        <text class="art-para">{{ ARTICLE.p3 }}</text>
-
-        <!-- 版权声明 -->
-        <view class="art-legal">
-          <text class="art-legal__text">{{ ARTICLE.editor }}</text>
-          <text class="art-legal__text">{{ ARTICLE.copyright }}</text>
-        </view>
+        <!-- 展望段落 + 版权声明（富文本渲染） -->
+        <SnRichText
+          :content="BODY_TAIL"
+          :tag-style="BODY_TAG_STYLES"
+          :class-styles="BODY_CLASS_STYLES"
+          selectable
+          custom-style="--sn-mp-rich-text-color: #1b1c1c; --sn-mp-rich-text-font-size: 34rpx; --sn-mp-rich-text-line-height: 1.78;"
+        />
 
         <!-- 话题标签 -->
         <view class="art-tags">
@@ -421,7 +473,8 @@ function shuffleRecs(): void {
             color="#5a413f"
             custom-style="margin: 0 12rpx 12rpx 0;"
             @click="toast(t)"
-          >{{ t }}</SnTag>
+            >{{ t }}</SnTag
+          >
         </view>
 
         <!-- 互动栏 -->
@@ -430,7 +483,9 @@ function shuffleRecs(): void {
             <view class="art-engage__circle" :class="{ 'art-engage__circle--on': liked }">
               <SnIcon :icon="ThumbsUp" size="52rpx" :color="liked ? '#b0242b' : '#5a413f'" />
             </view>
-            <text class="art-engage__label" :class="{ 'art-engage__label--on': liked }">{{ likeCount }} 赞</text>
+            <text class="art-engage__label" :class="{ 'art-engage__label--on': liked }"
+              >{{ likeCount }} 赞</text
+            >
           </view>
           <view class="art-engage__item" @tap="toast('感谢您的赞赏')">
             <view class="art-engage__circle art-engage__circle--reward">
@@ -440,9 +495,15 @@ function shuffleRecs(): void {
           </view>
           <view class="art-engage__item" @tap="toggleDislike">
             <view class="art-engage__circle" :class="{ 'art-engage__circle--muted': disliked }">
-              <SnIcon :icon="ThumbsDownIcon" size="48rpx" :color="disliked ? '#b0242b' : '#5a413f'" />
+              <SnIcon
+                :icon="ThumbsDownIcon"
+                size="48rpx"
+                :color="disliked ? '#b0242b' : '#5a413f'"
+              />
             </view>
-            <text class="art-engage__label art-engage__label--muted">{{ disliked ? '已反馈' : '不喜欢' }}</text>
+            <text class="art-engage__label art-engage__label--muted">{{
+              disliked ? '已反馈' : '不喜欢'
+            }}</text>
           </view>
         </view>
 
@@ -453,22 +514,11 @@ function shuffleRecs(): void {
               <text class="art-comments__title">热门评论</text>
               <text class="art-comments__count">(1,842)</text>
             </view>
-            <view class="art-comments__seg">
-              <view
-                class="art-comments__seg-item"
-                :class="{ 'is-active': commentSort === 'hot' }"
-                @tap="commentSort = 'hot'"
-              >
-                <text class="art-comments__seg-text">最热</text>
-              </view>
-              <view
-                class="art-comments__seg-item"
-                :class="{ 'is-active': commentSort === 'latest' }"
-                @tap="commentSort = 'latest'"
-              >
-                <text class="art-comments__seg-text">最新</text>
-              </view>
-            </view>
+            <SnSegmented
+              v-model="commentSort"
+              :options="COMMENT_SORTS"
+              custom-style="width: 220rpx; --sn-mp-font-size-md: 22rpx; --sn-mp-spacing-2: 6rpx; --sn-mp-spacing-3: 16rpx; --sn-mp-radius-md: 999rpx; --sn-mp-radius-sm: 999rpx; --sn-mp-color-background-subtle: #f0eded; --sn-mp-color-action-primary: #1b1c1c;"
+            />
           </view>
 
           <view v-for="c in sortedComments" :key="c.id" class="art-comment">
@@ -483,7 +533,9 @@ function shuffleRecs(): void {
                 </view>
                 <view class="art-comment__like" @tap="likeComment(c)">
                   <SnIcon :icon="ThumbsUp" size="30rpx" :color="c.liked ? '#b0242b' : '#8e706e'" />
-                  <text class="art-comment__like-count" :class="{ 'is-on': c.liked }">{{ c.likes }}</text>
+                  <text class="art-comment__like-count" :class="{ 'is-on': c.liked }">{{
+                    c.likes
+                  }}</text>
                 </view>
               </view>
               <text class="art-comment__meta">{{ c.location }} · {{ c.time }}</text>
@@ -517,7 +569,12 @@ function shuffleRecs(): void {
             </view>
           </view>
 
-          <view v-for="r in visibleRecs" :key="r.id" class="art-rec" @tap="toast('打开推荐内容')">
+          <SnCard
+            v-for="r in visibleRecs"
+            :key="r.id"
+            custom-style="background-color: #ffffff; --sn-mp-card-padding: 20rpx; --sn-mp-card-radius: 20rpx; gap: 14rpx; box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03); margin-bottom: 20rpx;"
+            @click="toast('打开推荐内容')"
+          >
             <template v-if="r.kind === 'triple'">
               <text class="art-rec__title">{{ r.title }}</text>
               <view class="art-rec__triple">
@@ -551,7 +608,13 @@ function shuffleRecs(): void {
                   </view>
                 </view>
                 <view class="art-rec__side-thumb">
-                  <SnImg :src="r.images[0]" mode="aspectFill" width="100%" height="100%" radius="8" />
+                  <SnImg
+                    :src="r.images[0]"
+                    mode="aspectFill"
+                    width="100%"
+                    height="100%"
+                    radius="8"
+                  />
                   <view v-if="r.kind === 'video'" class="art-rec__play">
                     <SnIcon :icon="Play" size="32rpx" color="#1b1c1c" />
                   </view>
@@ -559,7 +622,7 @@ function shuffleRecs(): void {
                 </view>
               </view>
             </template>
-          </view>
+          </SnCard>
         </view>
 
         <!-- 页末水印 -->
@@ -567,7 +630,8 @@ function shuffleRecs(): void {
           content-position="center"
           color="#e5e2e1"
           custom-style="margin: 24rpx 0; --sn-mp-color-text-secondary: #8e706e; --sn-mp-color-background-surface: #fcf9f8;"
-        >今日头条 · 智能推荐已就绪</SnDivider>
+          >今日头条 · 智能推荐已就绪</SnDivider
+        >
       </view>
 
       <!-- ═══ #bottom：评论操作栏 ═══ -->
@@ -578,7 +642,12 @@ function shuffleRecs(): void {
             <text class="art-actionbar__placeholder">写评论...</text>
           </view>
           <view class="art-actionbar__acts">
-            <view class="art-actionbar__act" role="button" aria-label="评论区" @tap="toast('评论区')">
+            <view
+              class="art-actionbar__act"
+              role="button"
+              aria-label="评论区"
+              @tap="toast('评论区')"
+            >
               <SnBadge
                 :value="48"
                 type="danger"
@@ -590,13 +659,28 @@ function shuffleRecs(): void {
                 <SnIcon :icon="MessageCircle" size="46rpx" color="#5a413f" />
               </SnBadge>
             </view>
-            <view class="art-actionbar__act" role="button" :aria-label="liked ? '取消点赞' : '点赞'" @tap="toggleLike">
+            <view
+              class="art-actionbar__act"
+              role="button"
+              :aria-label="liked ? '取消点赞' : '点赞'"
+              @tap="toggleLike"
+            >
               <SnIcon :icon="ThumbsUp" size="46rpx" :color="liked ? '#b0242b' : '#5a413f'" />
             </view>
-            <view class="art-actionbar__act" role="button" :aria-label="starred ? '取消收藏' : '收藏'" @tap="starred = !starred">
+            <view
+              class="art-actionbar__act"
+              role="button"
+              :aria-label="starred ? '取消收藏' : '收藏'"
+              @tap="starred = !starred"
+            >
               <SnIcon :icon="Star" size="46rpx" :color="starred ? '#b0242b' : '#5a413f'" />
             </view>
-            <view class="art-actionbar__act" role="button" aria-label="分享到外部" @tap="toast('分享到外部')">
+            <view
+              class="art-actionbar__act"
+              role="button"
+              aria-label="分享到外部"
+              @tap="toast('分享到外部')"
+            >
               <SnIcon :icon="Share2" size="46rpx" color="#5a413f" />
             </view>
           </view>
@@ -805,49 +889,8 @@ function shuffleRecs(): void {
 }
 
 /* 核心导读 */
-.art-lead {
-  position: relative;
-  padding: 20rpx 24rpx 20rpx 32rpx;
-  border-radius: 12rpx;
-  background: #f6f3f2;
-  overflow: hidden;
-}
-.art-lead__bar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 8rpx;
-  background: #b0242b;
-}
-.art-lead__text {
-  color: #5a413f;
-  font-size: 28rpx;
-  font-style: italic;
-  line-height: 1.65;
-}
-
-/* 正文段落 */
-.art-para {
-  color: #1b1c1c;
-  font-size: 34rpx;
-  line-height: 1.78;
-  text-align: justify;
-}
 
 /* 配图 */
-.art-figure {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-.art-figure__media {
-  width: 100%;
-  height: 430rpx;
-  border-radius: 20rpx;
-  background: #f0eded;
-  overflow: hidden;
-}
 .art-figure__caption {
   padding: 0 12rpx;
   color: #8e706e;
@@ -1001,22 +1044,6 @@ function shuffleRecs(): void {
 .art-metric__delta--blue {
   color: #005ea4;
 }
-.art-metric__track {
-  height: 24rpx;
-  border-radius: 999rpx;
-  background: #e5e2e1;
-  overflow: hidden;
-}
-.art-metric__bar {
-  height: 100%;
-  border-radius: 999rpx;
-}
-.art-metric__bar--base {
-  background: #8e706e;
-}
-.art-metric__bar--target {
-  background: #b0242b;
-}
 .art-metric__legend {
   display: flex;
   align-items: center;
@@ -1066,19 +1093,6 @@ function shuffleRecs(): void {
 }
 
 /* 版权声明 */
-.art-legal {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-  padding: 20rpx;
-  border-radius: 12rpx;
-  background: #f6f3f2;
-}
-.art-legal__text {
-  color: #8e706e;
-  font-size: 22rpx;
-  line-height: 1.6;
-}
 
 /* 话题标签 */
 .art-tags {
@@ -1162,29 +1176,6 @@ function shuffleRecs(): void {
 .art-comments__count {
   color: #8e706e;
   font-size: 22rpx;
-}
-.art-comments__seg {
-  display: flex;
-  align-items: center;
-  padding: 4rpx;
-  border-radius: 999rpx;
-  background: #f0eded;
-}
-.art-comments__seg-item {
-  padding: 8rpx 20rpx;
-  border-radius: 999rpx;
-}
-.art-comments__seg-item.is-active {
-  background: #ffffff;
-  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.06);
-}
-.art-comments__seg-text {
-  color: #8e706e;
-  font-size: 20rpx;
-  font-weight: 600;
-}
-.art-comments__seg-item.is-active .art-comments__seg-text {
-  color: #1b1c1c;
 }
 .art-comment {
   display: flex;
@@ -1329,15 +1320,6 @@ function shuffleRecs(): void {
 .art-recs__shuffle-text {
   color: #8e706e;
   font-size: 20rpx;
-}
-.art-rec {
-  display: flex;
-  flex-direction: column;
-  gap: 14rpx;
-  padding: 20rpx;
-  border-radius: 20rpx;
-  background: #ffffff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
 }
 .art-rec__title {
   color: #1b1c1c;

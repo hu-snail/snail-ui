@@ -67,3 +67,32 @@ MP data-URL 形态收敛过的窄接口（§32/§113.3），不支持任意 SVG 
 本会话无浏览器自动化工具（`mcp__node_repl__js` 不可用），三页只做了
 **构建期 + dev 模块解析 + MP 产物静态校验**，未做截图比对。复核方式见
 Task Completion Report 的 Validation 小节。
+
+---
+
+## 根因 4：页面 `class` 挂在 snui 组件根节点 → 小程序端样式全丢
+
+**现场**：模板页给 `<SnCell class="goods-card">`、`<SnProgress class="xxx">`
+等组件根节点挂页面 class 并在页面 `<style>` 里写规则。H5 端正常（Vue scoped
+CSS 会把父作用域 id 打到子组件根节点），微信小程序端整条规则失效。
+
+**根因**：mp-weixin 产物组件 json 无 `styleIsolation`（默认 `isolated`），页面
+wxss 与组件内部节点隔离；页面 class 无论是直接 `class` 还是组件转发的
+`custom-class`，其样式声明都留在页面 wxss 里，够不到组件内部/根节点。
+uni-demo 全库 0 处 `class` 挂组件、995 处 `custom-class`/`custom-style` 的
+约定即由此而来。
+
+**教训**：
+
+- 跨端样式定制走 `custom-style`（内联样式，不受 wxss 隔离影响），或组件
+  暴露的 CSS 变量令牌（`--sn-mp-*`，随 custom-style 下发后向内级联）。
+- 需要改组件内部文字颜色时用令牌（如 `--sn-mp-color-text-primary`），不要
+  用 `custom-title-class` + 页面 CSS —— 同样过不了隔离。
+
+**反模式**：`<SnCard class="my-card">` + 页面样式表 `.my-card { ... }`。
+
+**适用范围**：所有 uni-app 多端项目（小程序端）。
+
+**对应代码**：apps/uni-templates/src/subpages/{mall,goods,article}.vue（已修）；
+遗留：`subpages/address.vue:34`、`subpages/form.vue:47` 仍是 `class` 挂
+`<SnButton>`（先于本任务存在，待单独 task 修复）。

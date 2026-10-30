@@ -8,16 +8,21 @@
  */
 import { computed, onUnmounted, ref } from 'vue';
 import SnCountDown from '@snui/uni-src/components/sn-count-down/sn-count-down.vue';
-import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
+import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
+import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnProgress from '@snui/uni-src/components/sn-progress/sn-progress.vue';
+import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
+import SnSticky from '@snui/uni-src/components/sn-sticky/sn-sticky.vue';
+import SnTabbar from '@snui/uni-src/components/sn-tabbar/sn-tabbar.vue';
+import SnTabbarItem from '@snui/uni-src/components/sn-tabbar/sn-tabbar-item.vue';
+import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import {
   BedDoubleIcon,
   BikeIcon,
   CarIcon,
-  CirclePlayIcon,
   ClapperboardIcon,
   CrossIcon,
   FlameIcon,
@@ -34,15 +39,11 @@ import {
   ChevronDown,
   ChevronRight,
   Clock,
-  Home,
   MapPin,
-  MessageCircle,
   Plus,
-  Search,
   ShoppingBag,
   ShoppingCart,
   Star,
-  User,
 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import { getCapsuleMetrics } from '../common/capsule';
 
@@ -55,7 +56,11 @@ const navStyle = computed(() => ({
 const statusStyle = computed(() => ({ height: `${capsule.statusBarHeight}px` }));
 
 /* ── 顶部搜索热词轮播（3.2s 步进，与参考稿一致） ─────────────────────── */
-const TICKER_WORDS = ['霸王茶姬买一送一 · 满30减15', '冰镇无籽麒麟西瓜 9.9元整颗', '海底捞外送全单立减20元'];
+const TICKER_WORDS = [
+  '霸王茶姬买一送一 · 满30减15',
+  '冰镇无籽麒麟西瓜 9.9元整颗',
+  '海底捞外送全单立减20元',
+];
 const tickerIndex = ref(0);
 const tickerTimer = setInterval(() => {
   tickerIndex.value = (tickerIndex.value + 1) % TICKER_WORDS.length;
@@ -63,6 +68,8 @@ const tickerTimer = setInterval(() => {
 onUnmounted(() => clearInterval(tickerTimer));
 
 const HOT_PILLS = ['瑞幸咖啡', '小龙虾烧烤', '汉堡王半价', '鲜花特惠', '24h急送药', '奈雪的茶'];
+/** 搜索关键词（sn-search v-model）。 */
+const keyword = ref('');
 
 /* ── 金刚区 2×5 ───────────────────────────────────────────────────────── */
 const CATS = [
@@ -84,11 +91,11 @@ const activeChannel = ref(0);
 
 /* ── 底部标签栏 ───────────────────────────────────────────────────────── */
 const TABS = [
-  { label: '首页', icon: Home, badge: '' },
-  { label: '逛逛', icon: CirclePlayIcon, badge: '' },
-  { label: '消息', icon: MessageCircle, badge: '3' },
-  { label: '购物车', icon: ShoppingCart, badge: '8' },
-  { label: '我的', icon: User, badge: '' },
+  { label: '首页', icon: 'home', badge: '' },
+  { label: '逛逛', icon: 'circle-play', badge: '' },
+  { label: '消息', icon: 'message-circle', badge: '3' },
+  { label: '购物车', icon: 'shopping-cart', badge: '8' },
+  { label: '我的', icon: 'user', badge: '' },
 ];
 
 /* ── 商品流数据源（sn-paging 分页） ───────────────────────────────────── */
@@ -117,18 +124,12 @@ interface FeedCard {
 }
 
 const IMG = {
-  chicken:
-    'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=480&h=480&fit=crop&q=70',
-  grape:
-    'https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=480&h=480&fit=crop&q=70',
-  hotpot:
-    'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=480&h=480&fit=crop&q=70',
-  tea:
-    'https://images.unsplash.com/photo-1558857563-b371033873b8?w=480&h=480&fit=crop&q=70',
-  coffee:
-    'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=480&h=480&fit=crop&q=70',
-  burger:
-    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=480&h=480&fit=crop&q=70',
+  chicken: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=480&h=480&fit=crop&q=70',
+  grape: 'https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=480&h=480&fit=crop&q=70',
+  hotpot: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=480&h=480&fit=crop&q=70',
+  tea: 'https://images.unsplash.com/photo-1558857563-b371033873b8?w=480&h=480&fit=crop&q=70',
+  coffee: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=480&h=480&fit=crop&q=70',
+  burger: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=480&h=480&fit=crop&q=70',
 };
 
 const FEED_POOL: FeedCard[] = [
@@ -304,6 +305,20 @@ function grabCoupon(): void {
 function tapFeature(word: string): void {
   uni.showToast({ title: `「${word}」演示入口`, icon: 'none' });
 }
+/** 金刚区点击（sn-grid 透出被点项的 index）。 */
+function onCatTap(payload: { index: number }): void {
+  const cat = CATS[payload.index];
+  if (cat) tapFeature(cat.label);
+}
+/** 搜索确认（sn-search 键盘搜索 / 尾部按钮共用）。 */
+function onSearch(value: string): void {
+  tapFeature(value === '' ? '搜索' : `搜索 ${value}`);
+}
+/** 底部标签栏切换（演示页仅提示，不改变路由）。 */
+function onTabChange(payload: { value: number | string }): void {
+  const tab = TABS[Number(payload.value)];
+  if (tab) tapFeature(tab.label);
+}
 </script>
 
 <template>
@@ -355,56 +370,77 @@ function tapFeature(word: string): void {
               </view>
             </view>
             <view class="mall-hero__acts">
-              <view class="mall-hero__act" role="button" aria-label="扫一扫" @tap="tapFeature('扫一扫')">
+              <view
+                class="mall-hero__act"
+                role="button"
+                aria-label="扫一扫"
+                @tap="tapFeature('扫一扫')"
+              >
                 <SnIcon :icon="ScanLineIcon" size="44rpx" color="#111111" />
               </view>
-              <view class="mall-hero__act mall-hero__act--dot" role="button" aria-label="消息通知" @tap="tapFeature('消息通知')">
+              <view
+                class="mall-hero__act mall-hero__act--dot"
+                role="button"
+                aria-label="消息通知"
+                @tap="tapFeature('消息通知')"
+              >
                 <SnIcon :icon="Bell" size="44rpx" color="#111111" />
               </view>
             </view>
           </view>
 
-          <view class="mall-hero__bar" @tap="tapFeature(TICKER_WORDS[tickerIndex])">
-            <SnIcon :icon="Search" size="40rpx" color="#81765f" />
-            <view class="mall-hero__ticker">
-              <view
-                class="mall-hero__ticker-track"
-                :style="{ transform: `translateY(${-tickerIndex * 40}rpx)` }"
-              >
-                <text v-for="w in TICKER_WORDS" :key="w" class="mall-hero__ticker-line">{{ w }}</text>
+          <!-- 全局搜索：sn-search 承载输入与键盘确认，热词轮播作为 placeholder -->
+          <SnSearch
+            v-model="keyword"
+            variant="filled"
+            hide-cancel
+            :placeholder="TICKER_WORDS[tickerIndex]"
+            custom-style="background-color: #ffffff; border-radius: 999rpx; padding: 8rpx 8rpx 8rpx 24rpx;"
+            @search="onSearch"
+          >
+            <template #input-suffix>
+              <view class="mall-hero__bar-btn" @click.stop="onSearch(keyword)">
+                <text class="mall-hero__bar-btn-text">搜索</text>
               </view>
-            </view>
-            <view class="mall-hero__bar-btn">
-              <text class="mall-hero__bar-btn-text">搜索</text>
-            </view>
-          </view>
+            </template>
+          </SnSearch>
 
           <scroll-view class="mall-hero__hots" scroll-x :show-scrollbar="false">
             <view class="mall-hero__hots-track">
-              <view
+              <SnTag
                 v-for="(w, i) in HOT_PILLS"
                 :key="w"
-                class="mall-hot"
-                @tap="tapFeature(w)"
+                round
+                bg-color="rgba(255, 255, 255, 0.6)"
+                :color="i === 0 ? '#e51932' : '#111111'"
+                custom-style="margin-right: 16rpx; flex-shrink: 0;"
+                @click="tapFeature(w)"
               >
-                <SnIcon v-if="i === 0" :icon="FlameIcon" size="26rpx" color="#e51932" />
-                <text class="mall-hot__text" :class="{ 'mall-hot__text--red': i === 0 }">{{ w }}</text>
-              </view>
+                <template #icon>
+                  <SnIcon v-if="i === 0" :icon="FlameIcon" size="26rpx" color="#e51932" />
+                </template>
+                {{ w }}
+              </SnTag>
             </view>
           </scroll-view>
         </view>
 
-        <!-- 金刚区 2×5 -->
+        <!-- 金刚区 2×5：sn-grid 布局 + sn-grid-item（圆底与图标走 icon 插槽，角标走 value） -->
         <view class="mall-cats">
-          <view v-for="c in CATS" :key="c.label" class="mall-cat" @tap="tapFeature(c.label)">
-            <view class="mall-cat__icon" :style="{ background: c.bg }">
-              <SnIcon :icon="c.icon" size="52rpx" :color="c.color" />
-              <view v-if="c.badge" class="mall-cat__badge">
-                <text class="mall-cat__badge-text">{{ c.badge }}</text>
-              </view>
-            </view>
-            <text class="mall-cat__label">{{ c.label }}</text>
-          </view>
+          <SnGrid :column="5" icon-size="52rpx" @click="onCatTap">
+            <SnGridItem
+              v-for="c in CATS"
+              :key="c.label"
+              :text="c.label"
+              :value="c.badge || undefined"
+            >
+              <template #icon>
+                <view class="mall-cat__icon" :style="{ background: c.bg }">
+                  <SnIcon :icon="c.icon" size="52rpx" :color="c.color" />
+                </view>
+              </template>
+            </SnGridItem>
+          </SnGrid>
         </view>
 
         <!-- 营销区：天天神券 + 秒杀 / 大牌 -->
@@ -429,11 +465,17 @@ function tapFeature(word: string): void {
                 <SnCountDown :time="2 * 3600000 + 18 * 60000 + 45000">
                   <template #default="t">
                     <view class="mall-mkt__countdown-chips">
-                      <text class="mall-mkt__countdown-chip">{{ String(t.hours).padStart(2, '0') }}</text>
+                      <text class="mall-mkt__countdown-chip">{{
+                        String(t.hours).padStart(2, '0')
+                      }}</text>
                       <text class="mall-mkt__countdown-colon">:</text>
-                      <text class="mall-mkt__countdown-chip">{{ String(t.minutes).padStart(2, '0') }}</text>
+                      <text class="mall-mkt__countdown-chip">{{
+                        String(t.minutes).padStart(2, '0')
+                      }}</text>
                       <text class="mall-mkt__countdown-colon">:</text>
-                      <text class="mall-mkt__countdown-chip">{{ String(t.seconds).padStart(2, '0') }}</text>
+                      <text class="mall-mkt__countdown-chip">{{
+                        String(t.seconds).padStart(2, '0')
+                      }}</text>
                     </view>
                   </template>
                 </SnCountDown>
@@ -458,7 +500,13 @@ function tapFeature(word: string): void {
               </view>
               <view class="mall-flash__row">
                 <view class="mall-flash__thumb">
-                  <SnImg :src="IMG.coffee" mode="aspectFill" width="100%" height="100%" radius="16" />
+                  <SnImg
+                    :src="IMG.coffee"
+                    mode="aspectFill"
+                    width="100%"
+                    height="100%"
+                    radius="16"
+                  />
                 </view>
                 <view class="mall-flash__info">
                   <view class="mall-flash__prices">
@@ -466,11 +514,10 @@ function tapFeature(word: string): void {
                     <text class="mall-flash__orig">¥28</text>
                   </view>
                   <SnProgress
-                    class="mall-flash__track"
                     :percentage="86"
                     hide-text
                     color="#ff3141"
-                    custom-style="--sn-mp-color-background-subtle: #eae7e7;"
+                    custom-style="margin-top: 12rpx; --sn-mp-color-background-subtle: #eae7e7;"
                   />
                   <text class="mall-flash__hint">已抢86% · 马上抢光</text>
                 </view>
@@ -484,7 +531,13 @@ function tapFeature(word: string): void {
               </view>
               <view class="mall-flash__row">
                 <view class="mall-flash__thumb">
-                  <SnImg :src="IMG.burger" mode="aspectFill" width="100%" height="100%" radius="16" />
+                  <SnImg
+                    :src="IMG.burger"
+                    mode="aspectFill"
+                    width="100%"
+                    height="100%"
+                    radius="16"
+                  />
                 </view>
                 <view class="mall-flash__info">
                   <text class="mall-flash__name">麦当劳 双人经典餐</text>
@@ -498,23 +551,23 @@ function tapFeature(word: string): void {
           </view>
         </view>
 
-        <!-- 频道胶囊（H5 吸顶；MP 保持文档流） -->
-        <view class="mall-channels">
+        <!-- 频道胶囊：sn-sticky 吸顶 + sn-tag 胶囊（active 态由 tag 配色表达） -->
+        <SnSticky :offset-top="0" custom-class="mall-channels">
           <scroll-view class="mall-channels__scroll" scroll-x :show-scrollbar="false">
             <view class="mall-channels__track">
-              <view
+              <SnTag
                 v-for="(name, i) in CHANNELS"
                 :key="name"
-                class="mall-channel"
-                :class="{ 'is-active': activeChannel === i }"
-                @tap="activeChannel = i"
+                round
+                :bg-color="activeChannel === i ? '#ffc300' : '#ffffff'"
+                :color="activeChannel === i ? '#251a00' : '#4f4632'"
+                custom-style="margin-right: 16rpx; flex-shrink: 0; box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);"
+                @click="activeChannel = i"
+                >{{ name }}</SnTag
               >
-                <text class="mall-channel__text">{{ name }}</text>
-                <view v-if="activeChannel === i" class="mall-channel__dot" />
-              </view>
             </view>
           </scroll-view>
-        </view>
+        </SnSticky>
 
         <!-- 双列瀑布商品流 -->
         <view class="mall-waterfall">
@@ -560,10 +613,22 @@ function tapFeature(word: string): void {
                     <text class="mall-card__price">{{ card.price }}</text>
                     <text class="mall-card__orig">{{ card.orig }}</text>
                   </view>
-                  <view v-if="card.action === 'buy'" class="mall-card__buy" role="button" aria-label="抢购" @tap.stop="addCart(card.title)">
+                  <view
+                    v-if="card.action === 'buy'"
+                    class="mall-card__buy"
+                    role="button"
+                    aria-label="抢购"
+                    @tap.stop="addCart(card.title)"
+                  >
                     <text class="mall-card__buy-text">抢购</text>
                   </view>
-                  <view v-else class="mall-card__plus" role="button" aria-label="加入购物车" @tap.stop="addCart(card.title)">
+                  <view
+                    v-else
+                    class="mall-card__plus"
+                    role="button"
+                    aria-label="加入购物车"
+                    @tap.stop="addCart(card.title)"
+                  >
                     <SnIcon
                       :icon="card.action === 'cart' ? ShoppingCart : Plus"
                       size="28rpx"
@@ -578,31 +643,24 @@ function tapFeature(word: string): void {
       </view>
 
       <!-- ═══ #bottom：底部标签栏 ═══ -->
+      <!-- ═══ #bottom：底部标签栏（sn-tabbar，角标由组件渲染） ═══ -->
       <template #bottom>
-        <view class="mall-tabbar">
-          <view
-            v-for="(tab, i) in TABS"
+        <SnTabbar
+          :model-value="0"
+          safe-area-inset-bottom
+          active-color="#111111"
+          inactive-color="#9aa0a6"
+          custom-style="background-color: #ffffff; box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);"
+          @change="onTabChange"
+        >
+          <SnTabbarItem
+            v-for="tab in TABS"
             :key="tab.label"
-            class="mall-tab"
-            :class="{ 'is-active': i === 0 }"
-            @tap="tapFeature(tab.label)"
-          >
-            <view class="mall-tab__icon">
-              <SnBadge
-                :value="tab.badge"
-                :hidden="!tab.badge"
-                type="danger"
-                bg-color="#e51932"
-                shape="circle"
-                top="-8rpx"
-                right="-18rpx"
-              >
-                <SnIcon :icon="tab.icon" size="48rpx" :color="i === 0 ? '#111111' : '#9aa0a6'" />
-              </SnBadge>
-            </view>
-            <text class="mall-tab__label" :class="{ 'mall-tab__label--on': i === 0 }">{{ tab.label }}</text>
-          </view>
-        </view>
+            :title="tab.label"
+            :icon="tab.icon"
+            :value="tab.badge || undefined"
+          />
+        </SnTabbar>
       </template>
     </SnPaging>
   </view>
@@ -741,35 +799,6 @@ function tapFeature(word: string): void {
   border-radius: 50%;
   background: #ff3141;
 }
-.mall-hero__bar {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  padding: 8rpx 8rpx 8rpx 20rpx;
-  border-radius: 999rpx;
-  background: #ffffff;
-}
-.mall-hero__ticker {
-  flex: 1;
-  min-width: 0;
-  height: 40rpx;
-  overflow: hidden;
-}
-.mall-hero__ticker-track {
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.5s ease;
-}
-.mall-hero__ticker-line {
-  height: 40rpx;
-  line-height: 40rpx;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: #111111;
-  font-size: 26rpx;
-  font-weight: 500;
-}
 .mall-hero__bar-btn {
   flex-shrink: 0;
   padding: 12rpx 28rpx;
@@ -791,25 +820,17 @@ function tapFeature(word: string): void {
   align-items: center;
   gap: 16rpx;
 }
-.mall-hot {
-  display: flex;
-  align-items: center;
-  gap: 4rpx;
-  flex-shrink: 0;
-  padding: 6rpx 16rpx;
-  border-radius: 999rpx;
-  background: rgba(255, 255, 255, 0.6);
-}
-.mall-hot__text {
-  color: #111111;
-  font-size: 22rpx;
-  font-weight: 700;
-}
-.mall-hot__text--red {
-  color: #e51932;
-}
 
 /* ── 金刚区 ───────────────────────────────────────────────────────────── */
+/* 金刚区：sn-grid 负责布局与文字，圆底与图标由 #icon 插槽渲染 */
+.mall-cat__icon {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .mall-cats {
   display: flex;
   flex-wrap: wrap;
@@ -818,42 +839,6 @@ function tapFeature(word: string): void {
   border-radius: 24rpx;
   background: #ffffff;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-}
-.mall-cat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 20%;
-  margin-bottom: 20rpx;
-}
-.mall-cat__icon {
-  position: relative;
-  width: 84rpx;
-  height: 84rpx;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.mall-cat__badge {
-  position: absolute;
-  top: -10rpx;
-  right: -18rpx;
-  padding: 2rpx 8rpx;
-  border-radius: 999rpx;
-  background: #ff3141;
-}
-.mall-cat__badge-text {
-  color: #ffffff;
-  font-size: 18rpx;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.mall-cat__label {
-  margin-top: 12rpx;
-  color: #111111;
-  font-size: 22rpx;
-  font-weight: 600;
 }
 
 /* ── 营销区 ───────────────────────────────────────────────────────────── */
@@ -1070,9 +1055,6 @@ function tapFeature(word: string): void {
   font-size: 22rpx;
   text-decoration: line-through;
 }
-.mall-flash__track {
-  margin-top: 12rpx;
-}
 .mall-flash__hint {
   display: block;
   margin-top: 4rpx;
@@ -1105,35 +1087,6 @@ function tapFeature(word: string): void {
   display: inline-flex;
   align-items: center;
   gap: 16rpx;
-}
-.mall-channel {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  flex-shrink: 0;
-  padding: 12rpx 24rpx;
-  border-radius: 999rpx;
-  background: #ffffff;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
-}
-.mall-channel__text {
-  color: #4f4632;
-  font-size: 26rpx;
-  font-weight: 600;
-}
-.mall-channel.is-active {
-  background: #ffc300;
-}
-.mall-channel.is-active .mall-channel__text {
-  color: #251a00;
-  font-size: 28rpx;
-  font-weight: 700;
-}
-.mall-channel__dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  background: #251a00;
 }
 
 /* ── 双列瀑布 ─────────────────────────────────────────────────────────── */
@@ -1329,32 +1282,4 @@ function tapFeature(word: string): void {
 }
 
 /* ── 底部标签栏 ───────────────────────────────────────────────────────── */
-.mall-tabbar {
-  display: flex;
-  align-items: stretch;
-  background: #ffffff;
-  padding-bottom: env(safe-area-inset-bottom);
-  box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);
-}
-.mall-tab {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4rpx;
-  padding: 12rpx 0 10rpx;
-}
-.mall-tab__icon {
-  position: relative;
-  display: flex;
-}
-.mall-tab__label {
-  color: #9aa0a6;
-  font-size: 22rpx;
-}
-.mall-tab__label--on {
-  color: #111111;
-  font-weight: 600;
-}
 </style>

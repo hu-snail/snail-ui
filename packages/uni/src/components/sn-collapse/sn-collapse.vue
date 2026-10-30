@@ -27,6 +27,26 @@
  * async query per panel and would jitter on font load; the CSS clamp is
  * deterministic and costs nothing at runtime.
  *
+ * ## Additive props (AUI-OPT-03, AGENTS.md §112.3a — wd-collapse has neither)
+ *
+ *   - `card` — every panel paints its own rounded card: the container goes
+ *     transparent and stacks the panels with a token gap, each item draws its
+ *     radius / border / shadow from tokens (`sn-collapse-item` inherits it).
+ *     Panels stop drawing the shared divider so a card never doubles up.
+ *   - `iconSize` — one icon geometry for the whole family: the chevron of every
+ *     panel and any title icon inherit it unless the item sets its own. Named
+ *     tiers `tiny|small|medium|large|xlarge` map to `--sn-mp-icon-size-*`;
+ *     numbers stay px, unknown strings pass through.
+ *   - `iconColor` — one icon colour for the whole family, inherited by every
+ *     panel whose own `iconColor` is unset; pass a `var(--sn-mp-color-*)` token.
+ *
+ * ## Icon colour / size standard
+ *
+ * Chevron: `--sn-mp-color-text-tertiary` at rest → `--sn-mp-color-action-primary`
+ * while open. Title icons: `--sn-mp-color-text-secondary` → action-primary.
+ * Geometry: one `--sn-mp-icon-size-*` length per panel (medium by default).
+ * Stroke: `--sn-mp-icon-stroke-width` (2) unless an item overrides it.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -35,7 +55,11 @@
  */
 
 import { computed, provide, ref, toRef, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ChevronDown } from '../sn-icon/sn-icon-set';
 import {
+  resolveSnCollapseIconSize,
+  SN_COLLAPSE_ICON_STROKE_WIDTH,
   SN_COLLAPSE_KEY,
   type SnCollapseModelValue,
   type SnCollapseToggleAllOptions,
@@ -63,6 +87,15 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-03, AGENTS.md §112.3a) ────────────────────────── */
+
+    /** 卡片形态：每个面板渲染为独立圆角卡片，容器透明并以 token 间距分行。 */
+    card?: boolean;
+    /** 图标尺寸（面板箭头与标题图标共享）：数字按 px，档位名映射 `--sn-mp-icon-size-*`，其它字符串透传。 */
+    iconSize?: string | number | undefined;
+    /** 图标颜色（面板箭头与标题图标共享）：传 `var(--sn-mp-color-*)` token；面板自身设置优先。 */
+    iconColor?: string;
   }>(),
   {
     modelValue: () => [] as string[],
@@ -73,6 +106,8 @@ const props = withDefaults(
     customMoreSlotClass: '',
     customClass: '',
     customStyle: '',
+    card: false,
+    iconColor: '',
   },
 );
 
@@ -224,6 +259,9 @@ provide(SN_COLLAPSE_KEY, {
   lineNum: toRef(props, 'lineNum'),
   viewmoreExpanded,
   toggleViewmore,
+  card: toRef(props, 'card'),
+  iconSize: toRef(props, 'iconSize'),
+  iconColor: toRef(props, 'iconColor'),
   registerName,
   unregisterName,
 });
@@ -236,9 +274,30 @@ const rootClass = computed(() => [
   {
     'sn-collapse--accordion': props.accordion,
     'sn-collapse--viewmore': props.viewmore,
+    'sn-collapse--card': props.card,
   },
   props.customClass,
 ]);
+
+/**
+ * View-more chevron geometry — one tier below the panel glyph so the control
+ * never outsizes the headings it collapses (the `more` line sits at
+ * `--sn-mp-font-size-sm`).
+ */
+const MORE_ICON_SIZE_TIER = 'var(--sn-mp-icon-size-small)';
+
+/** View-more chevron length: the family `iconSize` override, else the tier. */
+const moreIconSize = computed<string | number>(() => {
+  const size = props.iconSize;
+  if (size === undefined) return MORE_ICON_SIZE_TIER;
+  if (typeof size === 'number') return size;
+  return resolveSnCollapseIconSize(size, MORE_ICON_SIZE_TIER);
+});
+
+/** View-more chevron colour: the family `iconColor`, else the action token. */
+const moreIconStyle = computed(() =>
+  props.iconColor === '' ? undefined : `color: ${props.iconColor}`,
+);
 </script>
 
 <template>
@@ -255,6 +314,15 @@ const rootClass = computed(() => [
     >
       <slot name="more" :expanded="viewmoreExpanded">
         <text class="sn-collapse__more-text">{{ viewmoreExpanded ? '收起' : '展开' }}</text>
+        <view :class="['sn-collapse__more-arrow', { 'sn-collapse__more-arrow--up': viewmoreExpanded }]">
+          <SnIcon
+            class="sn-collapse__more-chevron"
+            :icon="ChevronDown"
+            :size="moreIconSize"
+            :stroke-width="SN_COLLAPSE_ICON_STROKE_WIDTH"
+            :style="moreIconStyle"
+          />
+        </view>
       </slot>
     </view>
   </view>
@@ -267,6 +335,13 @@ const rootClass = computed(() => [
   flex-direction: column;
   width: 100%;
   background-color: var(--sn-mp-color-background-surface);
+}
+
+/* Card mode (additive): the container goes transparent and the panels stack
+   with a token gap — each item paints its own chrome. */
+.sn-collapse--card {
+  gap: var(--sn-mp-spacing-3);
+  background-color: transparent;
 }
 
 .sn-collapse__more {
@@ -282,7 +357,24 @@ const rootClass = computed(() => [
 }
 
 .sn-collapse__more-text {
+  margin-right: var(--sn-mp-spacing-1);
   color: var(--sn-mp-color-action-primary);
   font-size: var(--sn-mp-font-size-sm);
+}
+
+/* View-more chevron: shares the panel chevron's colour token and flips through
+   a class so the rotation animates on App targets too (§116.2). */
+.sn-collapse__more-arrow {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.sn-collapse__more-arrow--up {
+  transform: rotate(180deg);
+}
+
+.sn-collapse__more-chevron {
+  color: var(--sn-mp-color-action-primary);
 }
 </style>
