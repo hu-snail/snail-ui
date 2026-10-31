@@ -15,6 +15,10 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnFab from './sn-fab.vue';
+// Raw SFC source for CSS-level regression guards (vitest 的 import.meta.url
+// 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
+// file"；?raw 走 Vite 资产管线，两端一致)。
+import fabSource from './sn-fab.vue?raw';
 
 describe('sn-fab', () => {
   it('renders the trigger with the default plus icon', () => {
@@ -283,5 +287,23 @@ describe('sn-fab', () => {
     const wrapper = mount(SnFab);
     const iconStyle = wrapper.find('.sn-fab__trigger .sn-icon').attributes('style') ?? '';
     expect(iconStyle).toContain('var(--sn-mp-icon-size-');
+  });
+
+  it('lets the open-state transform cancel the direction offset', () => {
+    // Regression guard: the direction offset rules and the open rule used to
+    // share specificity (0,1,0) with the direction rules declared later, so
+    // the resting menu kept its 24rpx offset INTO the trigger and the last
+    // action item was visibly covered by the button — in every direction.
+    // happy-dom cannot compute rpx token styles, so this is guarded at the
+    // source level: the open rule must be the compound selector
+    // `.sn-fab__menu.sn-fab__menu--open` (0,2,0), which beats any direction
+    // rule regardless of source order.
+    const style = fabSource.slice(fabSource.indexOf('<style'));
+    expect(style).toMatch(
+      /\.sn-fab__menu\.sn-fab__menu--open\s*\{[^}]*transform:\s*translate\(0,\s*0\)/,
+    );
+    // The bare `--open` selector must not carry the transform any more —
+    // reintroducing it would silently reopen the overlap in all directions.
+    expect(style).not.toMatch(/^\.sn-fab__menu--open\s*\{[^}]*transform:/m);
   });
 });

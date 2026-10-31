@@ -51,9 +51,11 @@ defineOptions({ name: 'SnFab' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
-onMounted(() => registerOutsideClosable(instanceId, () => {
-  if (props.active) emit('update:active', false);
-}));
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    if (props.active) emit('update:active', false);
+  }),
+);
 onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Color theme. Mirrors `wd-fab` `type`. */
@@ -358,7 +360,9 @@ function onTouchEnd(): void {
   position: fixed;
   display: flex;
   align-items: center;
-  gap: var(--sn-mp-spacing-3);
+  /* 24rpx：菜单与触发按钮的净距。此前 16rpx 加上方向偏移的样式缺陷
+   * （见下 --open 规则），弹出的动作项会被按钮盖住一角。 */
+  gap: var(--sn-mp-spacing-4);
   box-sizing: border-box;
 }
 
@@ -419,6 +423,13 @@ function onTouchEnd(): void {
 .sn-fab__menu--open {
   opacity: 1;
   visibility: visible;
+}
+
+/* 展开态必须取消方向规则的收起偏移。方向规则与 --open 同为单类选择器、
+ * 且声明在 --open 之后（同特异性按源顺序取胜），展开后的菜单会一直带着
+ * 24rpx 朝按钮的位移——四个方向的动作项都被触发按钮盖住一角。复合
+ * 选择器（0,2,0）恒压过任何方向规则，与源顺序无关。 */
+.sn-fab__menu.sn-fab__menu--open {
   transform: translate(0, 0);
 }
 
