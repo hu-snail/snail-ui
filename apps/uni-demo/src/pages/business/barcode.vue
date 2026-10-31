@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'">
+  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

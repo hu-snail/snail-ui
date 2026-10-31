@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'间隔槽'" :title-en="'Gap'">
+  <DemoPageShell :title-zh="'间隔槽'" :title-en="'Gap'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'单元格'" :title-en="'Cell'">
+  <DemoPageShell :title-zh="'单元格'" :title-en="'Cell'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

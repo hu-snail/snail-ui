@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'签名'" :title-en="'Signature'">
+  <DemoPageShell :title-zh="'签名'" :title-en="'Signature'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

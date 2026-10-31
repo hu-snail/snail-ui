@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'二维码'" :title-en="'Qr Code'">
+  <DemoPageShell :title-zh="'二维码'" :title-en="'Qr Code'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

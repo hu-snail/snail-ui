@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'">
+  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

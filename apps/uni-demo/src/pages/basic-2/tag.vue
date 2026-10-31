@@ -15,7 +15,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'标签'" :title-en="'Tag'">
+  <DemoPageShell :title-zh="'标签'" :title-en="'Tag'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

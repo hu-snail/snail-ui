@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'水波进度球'" :title-en="'Liquid'">
+  <DemoPageShell :title-zh="'水波进度球'" :title-en="'Liquid'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

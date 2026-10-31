@@ -22,7 +22,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'按钮'" :title-en="'Button'">
+  <DemoPageShell :title-zh="'按钮'" :title-en="'Button'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

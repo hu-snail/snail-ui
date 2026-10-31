@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'环形进度条'" :title-en="'Circle'">
+  <DemoPageShell :title-zh="'环形进度条'" :title-en="'Circle'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

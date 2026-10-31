@@ -15,7 +15,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'文本域'" :title-en="'Textarea'">
+  <DemoPageShell :title-zh="'文本域'" :title-en="'Textarea'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

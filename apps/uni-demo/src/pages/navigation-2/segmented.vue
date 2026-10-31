@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分段器'" :title-en="'Segmented'">
+  <DemoPageShell :title-zh="'分段器'" :title-en="'Segmented'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

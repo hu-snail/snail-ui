@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'拼图验证'" :title-en="'Captcha'">
+  <DemoPageShell :title-zh="'拼图验证'" :title-en="'Captcha'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

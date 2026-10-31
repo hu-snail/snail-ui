@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'密码输入框'" :title-en="'Password Input'">
+  <DemoPageShell :title-zh="'密码输入框'" :title-en="'Password Input'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'">
+  <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'全局配置'" :title-en="'Config Provider'">
+  <DemoPageShell :title-zh="'全局配置'" :title-en="'Config Provider'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

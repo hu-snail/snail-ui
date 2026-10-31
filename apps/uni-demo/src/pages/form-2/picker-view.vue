@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'选择器视图'" :title-en="'Picker View'">
+  <DemoPageShell :title-zh="'选择器视图'" :title-en="'Picker View'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

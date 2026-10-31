@@ -10,7 +10,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'根节点传送'" :title-en="'Root Portal'">
+  <DemoPageShell :title-zh="'根节点传送'" :title-en="'Root Portal'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

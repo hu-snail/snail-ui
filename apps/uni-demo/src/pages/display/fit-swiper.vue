@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'自适应轮播'" :title-en="'Fit Swiper'">
+  <DemoPageShell :title-zh="'自适应轮播'" :title-en="'Fit Swiper'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'数字滚动'" :title-en="'Count To'">
+  <DemoPageShell :title-zh="'数字滚动'" :title-en="'Count To'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

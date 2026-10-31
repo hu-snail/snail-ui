@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'动作面板'" :title-en="'Action Sheet'">
+  <DemoPageShell :title-zh="'动作面板'" :title-en="'Action Sheet'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

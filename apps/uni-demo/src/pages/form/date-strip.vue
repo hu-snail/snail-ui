@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'日期条'" :title-en="'Date Strip'">
+  <DemoPageShell :title-zh="'日期条'" :title-en="'Date Strip'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

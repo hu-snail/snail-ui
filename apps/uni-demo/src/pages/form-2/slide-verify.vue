@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'滑动验证'" :title-en="'Slide Verify'">
+  <DemoPageShell :title-zh="'滑动验证'" :title-en="'Slide Verify'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

@@ -9,7 +9,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'ai-chat'" :title-en="'Ai Chat'">
+  <DemoPageShell :title-zh="'ai-chat'" :title-en="'Ai Chat'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

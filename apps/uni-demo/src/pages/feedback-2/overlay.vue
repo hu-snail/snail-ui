@@ -10,7 +10,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'遮罩层'" :title-en="'Overlay'">
+  <DemoPageShell :title-zh="'遮罩层'" :title-en="'Overlay'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

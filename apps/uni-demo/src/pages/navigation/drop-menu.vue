@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'">
+  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

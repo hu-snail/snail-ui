@@ -10,7 +10,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'监听元素尺寸'" :title-en="'Resize'">
+  <DemoPageShell :title-zh="'监听元素尺寸'" :title-en="'Resize'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

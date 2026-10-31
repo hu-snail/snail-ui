@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'复选框'" :title-en="'Checkbox'">
+  <DemoPageShell :title-zh="'复选框'" :title-en="'Checkbox'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

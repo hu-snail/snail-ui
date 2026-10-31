@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'浮动面板'" :title-en="'Floating Panel'">
+  <DemoPageShell :title-zh="'浮动面板'" :title-en="'Floating Panel'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

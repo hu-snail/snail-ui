@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分割线'" :title-en="'Divider'">
+  <DemoPageShell :title-zh="'分割线'" :title-en="'Divider'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">

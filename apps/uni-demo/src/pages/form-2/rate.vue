@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'评分'" :title-en="'Rate'">
+  <DemoPageShell :title-zh="'评分'" :title-en="'Rate'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">
