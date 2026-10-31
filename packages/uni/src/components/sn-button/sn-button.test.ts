@@ -286,6 +286,14 @@ describe('sn-button', () => {
     expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
   });
 
+  it('normalizes an unbound string loading-size ("48") to rpx', () => {
+    /* Template attributes deliver numbers as unitless strings; forwarded raw
+     * they write `width: 48` — invalid CSS that blew the spinner up to the
+     * SVG default intrinsic size. */
+    const wrapper = mount(SnButton, { props: { loading: true, loadingSize: '48' } });
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+  });
+
   it('lets loading-props size fall through when the flat prop is untouched', () => {
     const wrapper = mount(SnButton, {
       props: { loading: true, loadingProps: { size: 64 } },
@@ -347,8 +355,10 @@ describe('sn-button (style-object and iconfont API)', () => {
 
   it('normalizes a numeric iconSize to rpx and passes unit strings through', () => {
     const numeric = mount(SnButton, { props: { iconName: 'check', iconSize: 20 } });
+    const unitless = mount(SnButton, { props: { iconName: 'check', iconSize: '48' } });
     const unit = mount(SnButton, { props: { iconName: 'check', iconSize: '1.5em' } });
     expect(numeric.findComponent({ name: 'SnIcon' }).props('size')).toBe('20rpx');
+    expect(unitless.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
     expect(unit.findComponent({ name: 'SnIcon' }).props('size')).toBe('1.5em');
   });
 

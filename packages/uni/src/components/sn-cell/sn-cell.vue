@@ -65,6 +65,7 @@ import { computed, inject } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { ChevronRight } from '../sn-icon/sn-icon-set';
+import { toRpxSize } from '../../utils/sn-size';
 import { SN_CELL_GROUP_KEY, type SnCellValueAlign } from './sn-cell-types';
 
 defineOptions({ name: 'SnCell' });
@@ -258,8 +259,7 @@ const effectiveIconSize = computed<string>(() => {
   /* Literal (not ICON_SIZE_TIERS.medium): the index signature reads
    * `string | undefined` under noUncheckedIndexedAccess. */
   if (size === undefined) return 'var(--sn-mp-icon-size-medium)';
-  if (typeof size === 'number') return `${size}rpx`;
-  return ICON_SIZE_TIERS[size] ?? size;
+  return ICON_SIZE_TIERS[size] ?? toRpxSize(size);
 });
 
 /** Size box for the image icon path, mirroring `effectiveIconSize`. */

@@ -44,6 +44,14 @@ sn-img-cropper / sn-image-preview / sn-curtain / sn-avatar。
 注意其中 16/18/20 等小尺寸原按 px 调过视觉，归一时需 ×2 转 rpx（375 视口下
 视觉不变，其它宽度恢复随设备缩放）。
 
+## 补充（2026-10-31）：无单位字符串尺寸的洞已在渲染边界堵上
+
+组件透传的**无单位数字字符串**（模板未绑定属性，如 `loading-size="48"`）写进
+CSS `width` 是非法值，浏览器忽略后 SVG 按默认内在尺寸撑到 ~300px（"巨大加
+载圈"）。`utils/sn-size.ts` 的 `toRpxSize`（number / unitless string → rpx，
+带单位字符串透传）已接入 sn-icon 盒子 / sn-button / sn-cell；sn-icon 的数字
+契约仍是 px（number → px，未变），仅字符串形态在渲染边界归一。
+
 ## 备选方案（未采纳）
 
 直接翻转 `sn-icon` 裸数字语义为 rpx（对齐 sn-loading）：一处修复全局生效，

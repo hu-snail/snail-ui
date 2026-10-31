@@ -218,6 +218,13 @@ describe('sn-cell', () => {
       clearSnIcons();
     });
 
+    it('normalizes a unitless string iconSize ("48") to rpx', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconData: Bell, iconSize: '48' },
+      });
+      expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+    });
+
     it('accepts a cssIcon string as the class prefix', () => {
       const wrapper = mount(SnCell, {
         props: { title: 'A', prefixIcon: 'user', cssIcon: 'icon' },

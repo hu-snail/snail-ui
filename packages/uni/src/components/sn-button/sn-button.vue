@@ -14,6 +14,7 @@
 import { computed, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
+import { toRpxSize } from '../../utils/sn-size';
 
 defineOptions({ name: 'SnButton' });
 
@@ -95,9 +96,10 @@ const props = withDefaults(
      */
     iconName?: string;
     /**
-     * Icon size forwarded to the embedded sn-icon. Bare numbers are rpx
-     * design-canvas values (small 28 / medium 32 / large 40 auto-fit);
-     * strings with a unit (`'32rpx'` / `'1.5em'`) pass through verbatim. */
+     * Icon size forwarded to the embedded sn-icon. Bare numbers and unitless
+     * numeric strings are rpx design-canvas values (small 28 / medium 32 /
+     * large 40 auto-fit); strings with a unit (`'32rpx'` / `'1.5em'`) pass
+     * through verbatim. */
     iconSize?: number | string;
     /** 圆形按钮（icon-only）：宽高相等、全圆角，配合内置图标使用。 */
     circle?: boolean;
@@ -228,16 +230,12 @@ const spinnerColor = computed<string>(() => {
  * small/medium buttons).
  *
  * Units: the auto-fit numbers follow the `--sn-mp-icon-size-*` rpx tokens
- * (750 design canvas). sn-icon renders bare numbers as px, so every numeric
- * size is normalized to an `rpx` string here before forwarding — otherwise a
- * 32rpx glyph renders 32px and drowns a 28rpx label.
+ * (750 design canvas). Sizes are normalized through `toRpxSize` before
+ * forwarding — sn-icon renders bare numbers as px and an unbound attribute
+ * like `loading-size="48"` arrives as a unitless string, which is invalid
+ * CSS and used to blow the spinner up to the SVG default size.
  */
 const ICON_SIZE_BY_SIZE_PRESET = { small: 28, medium: 32, large: 40 } as const;
-
-/** Bare number → rpx design value; strings with a unit pass through. */
-function toRpxSize(size: number | string): string {
-  return typeof size === 'number' ? `${size}rpx` : size;
-}
 
 const effectiveIconSize = computed<string>(() =>
   toRpxSize(props.iconSize ?? ICON_SIZE_BY_SIZE_PRESET[props.size] ?? 32),
