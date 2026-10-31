@@ -213,7 +213,8 @@ describe('sn-cell', () => {
       const wrapper = mount(SnCell, {
         props: { title: 'A', prefixIcon: 'Star', iconSize: 40 },
       });
-      expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain('width: 40px');
+      // 裸数字按 rpx 画布值归一；happy-dom 丢弃 rpx 长度，改查转发的 size prop。
+      expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('40rpx');
       clearSnIcons();
     });
 

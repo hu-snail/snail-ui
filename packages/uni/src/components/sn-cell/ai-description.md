@@ -54,7 +54,7 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `label`            | `string`                        | `''`        | Row content; placeholder shows only when value is empty.             |
 | `prefixIcon`       | `string`                        | `''`        | Leading icon name.                                                   |
 | `suffixIcon`       | `string`                        | `''`        | Trailing icon name.                                                  |
-| `iconSize`         | `string \| number`              | `undefined` | Tier names (tiny/small/medium/large/xlarge) map to `--sn-mp-icon-size-*`; numbers are px. |
+| `iconSize`         | `string \| number`              | `undefined` | Tier names (tiny/small/medium/large/xlarge) map to `--sn-mp-icon-size-*` (default: medium); bare numbers are rpx design values. |
 | `iconColor`         | `string`                       | `''`        | SVG icon colour (pass `var(--sn-mp-color-*)` token). Additive (AUI-OPT-01). |
 | `prefixIconData`    | `IconData`                     | `undefined` | Leading icon data object (built-in set / custom), wins over `prefixIcon`. Additive (AUI-OPT-01). |
 | `suffixIconData`    | `IconData`                     | `undefined` | Trailing icon data object (built-in set / custom), wins over `suffixIcon`. Additive (AUI-OPT-01). |

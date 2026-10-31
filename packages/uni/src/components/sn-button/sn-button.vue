@@ -94,7 +94,10 @@ const props = withDefaults(
      * `registerSnIcons()` at app bootstrap).
      */
     iconName?: string;
-    /** rpx / pixel size forwarded to the embedded sn-icon. Default: auto-fit the size preset (small 28 / medium 32 / large 40). */
+    /**
+     * Icon size forwarded to the embedded sn-icon. Bare numbers are rpx
+     * design-canvas values (small 28 / medium 32 / large 40 auto-fit);
+     * strings with a unit (`'32rpx'` / `'1.5em'`) pass through verbatim. */
     iconSize?: number | string;
     /** 圆形按钮（icon-only）：宽高相等、全圆角，配合内置图标使用。 */
     circle?: boolean;
@@ -221,17 +224,28 @@ const spinnerColor = computed<string>(() => {
 
 /**
  * Icon size auto-fit — when `iconSize` is unset the glyph scales with the
- * button size preset instead of a fixed 32rpx (which read oversized on
+ * button size preset instead of a fixed value (which read oversized on
  * small/medium buttons).
+ *
+ * Units: the auto-fit numbers follow the `--sn-mp-icon-size-*` rpx tokens
+ * (750 design canvas). sn-icon renders bare numbers as px, so every numeric
+ * size is normalized to an `rpx` string here before forwarding — otherwise a
+ * 32rpx glyph renders 32px and drowns a 28rpx label.
  */
 const ICON_SIZE_BY_SIZE_PRESET = { small: 28, medium: 32, large: 40 } as const;
-const effectiveIconSize = computed<number | string>(
-  () => props.iconSize ?? ICON_SIZE_BY_SIZE_PRESET[props.size] ?? 32,
+
+/** Bare number → rpx design value; strings with a unit pass through. */
+function toRpxSize(size: number | string): string {
+  return typeof size === 'number' ? `${size}rpx` : size;
+}
+
+const effectiveIconSize = computed<string>(() =>
+  toRpxSize(props.iconSize ?? ICON_SIZE_BY_SIZE_PRESET[props.size] ?? 32),
 );
-const spinnerSize = computed<number | string>(() => {
-  if (props.loadingSize !== 32) return props.loadingSize;
+const spinnerSize = computed<string>(() => {
+  if (props.loadingSize !== 32) return toRpxSize(props.loadingSize);
   const fromProps = props.loadingProps?.size;
-  if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps;
+  if (fromProps !== undefined) return toRpxSize(fromProps);
   /* Untouched flat prop and no loading-props size → follow the icon auto-fit. */
   return effectiveIconSize.value;
 });
@@ -343,7 +357,7 @@ function onTap(event: Event): void {
         <slot name="loading">
           <SnIcon
             :icon="LOADER_CIRCLE"
-            :size="`${spinnerSize}rpx`"
+            :size="spinnerSize"
             :color="spinnerColor || undefined"
           />
         </slot>

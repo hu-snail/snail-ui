@@ -35,8 +35,8 @@
  *   - `card` — independent card look per row: radius / border / shadow from
  *     tokens, the inner hairline suppressed. Inherited from sn-cell-group.
  *   - `iconSize` also accepts the named tiers `tiny|small|medium|large|xlarge`
- *     which map to the `--sn-mp-icon-size-*` tokens; numbers stay px and
- *     unknown strings pass through (backward compatible).
+ *     which map to the `--sn-mp-icon-size-*` tokens; bare numbers are rpx
+ *     design values and unknown strings pass through (backward compatible).
  *
  * ## Name-track resolution chain
  *
@@ -85,7 +85,7 @@ const props = withDefaults(
     prefixIcon?: string;
     /** 后置图标名：解析链同 `prefixIcon`。 */
     suffixIcon?: string;
-    /** 图标大小：数字按 px；档位名 tiny/small/medium/large/xlarge 映射 `--sn-mp-icon-size-*`；其它字符串透传。 */
+    /** 图标大小：裸数字按 rpx（750 设计稿）；档位名 tiny/small/medium/large/xlarge 映射 `--sn-mp-icon-size-*`；其它字符串透传。 */
     iconSize?: string | number | undefined;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
     iconPrefix?: string;
@@ -240,7 +240,10 @@ const displayValue = computed<string>(() => {
 
 /**
  * Named size tiers map to the mp icon-size tokens (§112.5 — no fallback
- * values); numbers stay px and unknown strings pass through.
+ * values). Bare numbers are rpx design-canvas values (uni 750 canvas) and are
+ * normalized to `rpx` strings — sn-icon renders bare numbers as px, which made
+ * the default glyph (and the link arrow) read 2× oversized next to the label.
+ * Unknown strings pass through.
  */
 const ICON_SIZE_TIERS: Readonly<Record<string, string>> = {
   tiny: 'var(--sn-mp-icon-size-tiny)',
@@ -250,19 +253,17 @@ const ICON_SIZE_TIERS: Readonly<Record<string, string>> = {
   xlarge: 'var(--sn-mp-icon-size-xlarge)',
 };
 
-const effectiveIconSize = computed<number | string>(() => {
+const effectiveIconSize = computed<string>(() => {
   const size = props.iconSize;
-  if (size === undefined) return 32;
-  if (typeof size === 'number') return size;
+  /* Literal (not ICON_SIZE_TIERS.medium): the index signature reads
+   * `string | undefined` under noUncheckedIndexedAccess. */
+  if (size === undefined) return 'var(--sn-mp-icon-size-medium)';
+  if (typeof size === 'number') return `${size}rpx`;
   return ICON_SIZE_TIERS[size] ?? size;
 });
 
 /** Size box for the image icon path, mirroring `effectiveIconSize`. */
-const iconBoxStyle = computed(() => {
-  const size = effectiveIconSize.value;
-  const len = typeof size === 'number' ? `${size}px` : size;
-  return `width: ${len}; height: ${len};`;
-});
+const iconBoxStyle = computed(() => `width: ${effectiveIconSize.value}; height: ${effectiveIconSize.value};`);
 
 /** Inline colour for the SVG icons (additive); unset keeps the token default. */
 const iconColorStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));
@@ -407,7 +408,7 @@ const rootClass = computed(() => [
     </view>
 
     <view v-if="isLink" class="sn-cell__arrow" aria-hidden="true">
-      <SnIcon :icon="ChevronRight" :size="32" :style="arrowIconStyle" />
+      <SnIcon :icon="ChevronRight" size="32rpx" :style="arrowIconStyle" />
     </view>
     <slot v-else name="suffix">
       <SnIcon

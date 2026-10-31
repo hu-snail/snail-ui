@@ -338,9 +338,18 @@ describe('sn-button (style-object and iconfont API)', () => {
     const medium = mount(SnButton, { props: { iconName: 'check' } });
     const small = mount(SnButton, { props: { iconName: 'check', size: 'small' } });
     const large = mount(SnButton, { props: { iconName: 'check', size: 'large' } });
-    expect(medium.findComponent({ name: 'SnIcon' }).props('size')).toBe(32);
-    expect(small.findComponent({ name: 'SnIcon' }).props('size')).toBe(28);
-    expect(large.findComponent({ name: 'SnIcon' }).props('size')).toBe(40);
+    /* Preset numbers are rpx design values — normalized before hitting sn-icon,
+     * whose bare-number box would otherwise render them as px (2× oversized). */
+    expect(medium.findComponent({ name: 'SnIcon' }).props('size')).toBe('32rpx');
+    expect(small.findComponent({ name: 'SnIcon' }).props('size')).toBe('28rpx');
+    expect(large.findComponent({ name: 'SnIcon' }).props('size')).toBe('40rpx');
+  });
+
+  it('normalizes a numeric iconSize to rpx and passes unit strings through', () => {
+    const numeric = mount(SnButton, { props: { iconName: 'check', iconSize: 20 } });
+    const unit = mount(SnButton, { props: { iconName: 'check', iconSize: '1.5em' } });
+    expect(numeric.findComponent({ name: 'SnIcon' }).props('size')).toBe('20rpx');
+    expect(unit.findComponent({ name: 'SnIcon' }).props('size')).toBe('1.5em');
   });
 
   it('applies the circle (icon-only) shape classes', () => {
