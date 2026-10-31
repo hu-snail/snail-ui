@@ -1,0 +1,131 @@
+/**
+ * 首页卡片图标 —— 组件 key → sn-icon 内置目录名（string icon API）。
+ *
+ * 目录清单见 packages/uni/src/components/sn-icon/sn-icon-catalog.ts（111 个
+ * lucide 图标）。这里只做语义映射：查不到时按分组回退，保证新增 demo 不会
+ * 出现空图标；分组也查不到时回退 `layout-grid`。
+ */
+
+const GROUP_ICONS: Record<string, string> = {
+  basic: 'layout-grid',
+  'basic-2': 'layout-grid',
+  navigation: 'list',
+  'navigation-2': 'list',
+  form: 'pen-line',
+  'form-2': 'pen-line',
+  feedback: 'message-circle',
+  'feedback-2': 'message-circle',
+  display: 'image',
+  business: 'chart-bar',
+  more: 'ellipsis',
+};
+
+const COMP_ICONS: Record<string, string> = {
+  // 基础
+  avatar: 'user',
+  badge: 'badge-check',
+  button: 'plus',
+  cell: 'list',
+  'config-provider': 'settings',
+  divider: 'minus',
+  fab: 'move',
+  gap: 'chevrons-up',
+  icon: 'star',
+  layout: 'layout-grid',
+  resize: 'corners-down-right',
+  'root-portal': 'external-link',
+  tag: 'bookmark',
+  text: 'file-text',
+  transition: 'refresh-cw',
+  // 导航
+  backtop: 'arrow-up',
+  collapse: 'chevrons-down',
+  'drop-menu': 'chevron-down',
+  grid: 'layout-grid',
+  'index-bar': 'list',
+  navbar: 'menu',
+  pagination: 'ellipsis',
+  popover: 'message-circle',
+  segmented: 'sliders-horizontal',
+  sidebar: 'menu',
+  steps: 'list',
+  sticky: 'bookmark',
+  tabbar: 'layout-grid',
+  tabs: 'folder',
+  tooltip: 'message-circle',
+  tour: 'circle-help',
+  // 录入
+  calendar: 'calendar',
+  'calendar-view': 'calendar',
+  captcha: 'shield-check',
+  cascader: 'chevrons-right',
+  checkbox: 'circle-check',
+  'date-strip': 'calendar',
+  'datetime-picker': 'clock',
+  'datetime-picker-view': 'clock',
+  form: 'file-text',
+  input: 'pen-line',
+  'input-number': 'plus',
+  keyboard: 'table',
+  'password-input': 'lock',
+  picker: 'chevron-down',
+  'picker-view': 'list',
+  radio: 'circle-check',
+  rate: 'star',
+  search: 'search',
+  'select-picker': 'list',
+  signature: 'pen-line',
+  'slide-verify': 'move',
+  slider: 'sliders-horizontal',
+  'sort-button': 'arrow-down',
+  switch: 'activity',
+  textarea: 'file-text',
+  upload: 'upload',
+  // 反馈
+  'action-sheet': 'menu',
+  circle: 'activity',
+  curtain: 'layout-grid',
+  dialog: 'message-circle',
+  empty: 'inbox',
+  'floating-panel': 'layout-grid',
+  loading: 'rotate-cw',
+  loadmore: 'ellipsis',
+  'notice-bar': 'bell',
+  notify: 'bell',
+  overlay: 'layout-grid',
+  popup: 'layout-grid',
+  progress: 'activity',
+  skeleton: 'layout-grid',
+  'swipe-action': 'move',
+  toast: 'message-circle',
+  // 展示
+  card: 'wallet',
+  'count-down': 'clock',
+  'count-to': 'trending-up',
+  'fit-swiper': 'image',
+  'image-preview': 'eye',
+  img: 'image',
+  'img-cropper': 'camera',
+  'qr-code': 'table',
+  'rich-text': 'file-text',
+  swiper: 'image',
+  table: 'table',
+  'video-preview': 'camera',
+  watermark: 'percent',
+  // 业务
+  barcode: 'chart-bar',
+  dialer: 'chart-pie',
+  liquid: 'activity',
+  lucky: 'layout-grid',
+  scratchcard: 'eraser',
+  typing: 'message-circle',
+  // 更多
+  'ai-chat': 'message-circle',
+  'ai-message-list': 'message-circle',
+  paging: 'chevrons-right',
+};
+
+/** 组件 key → 目录图标名；未知组件按分组回退。 */
+export function homeIcon(key: string, group: string): string {
+  return COMP_ICONS[key] ?? GROUP_ICONS[group] ?? 'layout-grid';
+}

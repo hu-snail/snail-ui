@@ -35,6 +35,14 @@ export interface SnCellGroupContext {
   valueAlign: Ref<SnCellValueAlign>;
   /** Group-level insert (rounded container) flag. */
   insert: Ref<boolean>;
+  /**
+   * Register this cell so the group knows which row is last — the last row
+   * drops its hairline (App has no `:last-child`, §116.2). Registration
+   * happens on mount, so order follows DOM order for static and keyed lists.
+   */
+  registerCell: () => { id: number; unregister: () => void };
+  /** Id of the currently last registered cell (0 when the group is empty). */
+  lastCellId: Ref<number>;
 }
 
 export const SN_CELL_GROUP_KEY: InjectionKey<SnCellGroupContext> = Symbol('sn-cell-group');

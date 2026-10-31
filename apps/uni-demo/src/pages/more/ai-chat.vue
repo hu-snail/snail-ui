@@ -25,7 +25,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 32rpx;
 }
 
 /* 场景模块：无卡片底（弥散渐变背景直接透出），标题外置在页面背景上，

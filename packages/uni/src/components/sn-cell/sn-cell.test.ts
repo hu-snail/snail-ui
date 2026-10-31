@@ -594,6 +594,31 @@ describe('sn-cell-group', () => {
     expect(mountGroup({ card: true }).find('.sn-cell-group__body--card').exists()).toBe(false);
   });
 
+  it('drops the hairline on the last row of a group', async () => {
+    const { default: SnCellGroup } = await import('./sn-cell-group.vue');
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnCellGroup, { border: true }, {
+            default: () => [
+              h(SnCell, { title: 'First' }),
+              h(SnCell, { title: 'Last' }),
+            ],
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    /* Registration happens in onMounted; let the re-render flush. */
+    await wrapper.vm.$nextTick();
+    const cells = wrapper.findAll('.sn-cell');
+    expect(cells[0]!.find('.sn-cell__hairline').exists()).toBe(true);
+    expect(cells[1]!.find('.sn-cell__hairline').exists()).toBe(false);
+  });
+
+  it('keeps the hairline on a standalone cell (no group, no :last-child)', () => {
+    expect(mount(SnCell, { props: { title: 'A', border: true } }).find('.sn-cell__hairline').exists()).toBe(true);
+  });
+
   it('applies the large size class on the group', () => {
     expect(mountGroup({ size: 'large' }).find('.sn-cell-group').classes()).toContain(
       'sn-cell-group--large',

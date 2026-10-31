@@ -62,7 +62,7 @@
  *   - 分组容器 — 用 sn-cell-group
  */
 
-import { computed, inject } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { ChevronRight } from '../sn-icon/sn-icon-set';
@@ -221,6 +221,34 @@ defineSlots<{
 
 const group = inject(SN_CELL_GROUP_KEY, null);
 
+/**
+ * Last-row divider suppression: the group tracks mounted cells (App has no
+ * `:last-child`, §116.2) and the last one drops its hairline — the container
+ * edge or the next section already draws that line.
+ */
+const myCellId = ref(0);
+let unregisterCell: (() => void) | null = null;
+
+onMounted(() => {
+  if (group !== null) {
+    const handle = group.registerCell();
+    myCellId.value = handle.id;
+    unregisterCell = handle.unregister;
+  }
+});
+
+onBeforeUnmount(() => {
+  unregisterCell?.();
+  unregisterCell = null;
+});
+
+const isLastInGroup = computed(
+  () =>
+    group !== null &&
+    myCellId.value !== 0 &&
+    group.lastCellId.value === myCellId.value,
+);
+
 /** Effective flags: explicit prop wins, group value fills the gaps. */
 const effectiveBorder = computed(() => props.border ?? group?.border.value ?? false);
 const effectiveCenter = computed(() => props.center ?? group?.center.value ?? false);
@@ -333,7 +361,7 @@ const rootClass = computed(() => [
     @tap="onTap"
   >
     <view
-      v-if="effectiveBorder && !effectiveCard"
+      v-if="effectiveBorder && !effectiveCard && !isLastInGroup"
       class="sn-cell__hairline"
       aria-hidden="true"
     />
@@ -469,12 +497,14 @@ const rootClass = computed(() => [
   background-color: var(--sn-mp-color-background-soft);
 }
 
-/* Card rows (additive): token-driven chrome. The inner hairline is already
-   suppressed in the template, so a card never doubles up with a divider. */
+/* Card rows (additive): token-driven chrome, the lightest elevation — a
+   one-row surface with `sm` reads too heavy next to the group card. The
+   inner hairline is already suppressed in the template, so a card never
+   doubles up with a divider. */
 .sn-cell--card {
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-lg);
-  box-shadow: var(--sn-mp-shadow-sm);
+  box-shadow: var(--sn-mp-shadow-xs);
 }
 
 /* Hairline is a real element, not `::after`: App has no pseudo-elements
