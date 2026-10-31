@@ -8,8 +8,9 @@
  *     a ~0.42 ratio to the 96rpx button.
  *   - Action items are pills (icon + text); expansion is driven by
  *     v-model:active and slides out sequentially along direction="up".
- *   - Tapping an item records the feedback and collapses the menu; copy is
- *     kept in parity with fab-mp-basic.vue.
+ *   - Copy: Publish post / Take photo / Upload image, icons colored per
+ *     action (semantic tokens); copy stays in parity with fab-mp-basic.vue.
+ *   - Tapping an item records the feedback and collapses the menu.
  *
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
  * the phone screen (the real runtime keeps `position: fixed`).
@@ -33,7 +34,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Pill action items</text>
       <text class="sn-fab-demo__hint-text">
-        Tap the bottom-right trigger; items slide out upwards one by one. Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
+        Tap the bottom-right trigger; items slide out upwards one by one. Last picked:
+        {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
     </view>
 
@@ -46,29 +48,41 @@ function pick(label: string): void {
       <view
         class="sn-fab-demo__pill"
         role="button"
-        aria-label="Compose"
-        @tap="pick('Compose')"
+        aria-label="Publish post"
+        @tap="pick('Publish post')"
       >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
-        <text class="sn-fab-demo__pill-text">Compose</text>
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--publish"
+          :icon="Edit"
+          size="var(--sn-mp-icon-size-medium)"
+        />
+        <text class="sn-fab-demo__pill-text">Publish post</text>
       </view>
       <view
         class="sn-fab-demo__pill"
         role="button"
-        aria-label="Camera"
-        @tap="pick('Camera')"
+        aria-label="Take photo"
+        @tap="pick('Take photo')"
       >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
-        <text class="sn-fab-demo__pill-text">Camera</text>
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--photo"
+          :icon="Camera"
+          size="var(--sn-mp-icon-size-medium)"
+        />
+        <text class="sn-fab-demo__pill-text">Take photo</text>
       </view>
       <view
         class="sn-fab-demo__pill"
         role="button"
-        aria-label="Upload photo"
-        @tap="pick('Upload photo')"
+        aria-label="Upload image"
+        @tap="pick('Upload image')"
       >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
-        <text class="sn-fab-demo__pill-text">Upload</text>
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--upload"
+          :icon="Image"
+          size="var(--sn-mp-icon-size-medium)"
+        />
+        <text class="sn-fab-demo__pill-text">Upload image</text>
       </view>
     </SnFab>
   </view>
@@ -116,6 +130,19 @@ function pick(label: string): void {
 
 .sn-fab-demo__pill-icon {
   color: var(--sn-mp-color-text-secondary);
+}
+
+/* Per-action icon colors (semantic tokens — follows theme / style pack). */
+.sn-fab-demo__pill-icon--publish {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-fab-demo__pill-icon--photo {
+  color: var(--sn-mp-color-feedback-success);
+}
+
+.sn-fab-demo__pill-icon--upload {
+  color: var(--sn-mp-color-feedback-warning);
 }
 
 .sn-fab-demo__pill-text {

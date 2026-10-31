@@ -7,6 +7,8 @@
  *     档位，与 96rpx 按钮径保持约 0.42 的视觉比例。
  *   - 动作项为胶囊（icon + text），收起 / 展开由 v-model:active 驱动，
  *     沿 direction="up" 向上依次滑出。
+ *   - 文案统一为「发布文章 / 拍照上传 / 上传图片」，图标按动作分色
+ *     （primary / success / warning 语义 token）。
  *   - 点动作项记录反馈并收起菜单；文案与 fab-mp-basic.en.vue 对等。
  *
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
@@ -31,7 +33,9 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">胶囊动作项</text>
       <text class="sn-fab-demo__hint-text">
-        点右下角触发按钮，动作项沿上方依次滑出。最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+        点右下角触发按钮，动作项沿上方依次滑出。最近选择：{{
+          lastAction === '' ? '尚未选择' : lastAction
+        }}
       </text>
     </view>
 
@@ -41,31 +45,28 @@ function pick(label: string): void {
       direction="up"
       custom-class="sn-demo-contained"
     >
-      <view
-        class="sn-fab-demo__pill"
-        role="button"
-        aria-label="写文章"
-        @tap="pick('写文章')"
-      >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
-        <text class="sn-fab-demo__pill-text">写文章</text>
+      <view class="sn-fab-demo__pill" role="button" aria-label="发布文章" @tap="pick('发布文章')">
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--publish"
+          :icon="Edit"
+          size="var(--sn-mp-icon-size-medium)"
+        />
+        <text class="sn-fab-demo__pill-text">发布文章</text>
       </view>
-      <view
-        class="sn-fab-demo__pill"
-        role="button"
-        aria-label="拍照"
-        @tap="pick('拍照')"
-      >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
-        <text class="sn-fab-demo__pill-text">拍照</text>
+      <view class="sn-fab-demo__pill" role="button" aria-label="拍照上传" @tap="pick('拍照上传')">
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--photo"
+          :icon="Camera"
+          size="var(--sn-mp-icon-size-medium)"
+        />
+        <text class="sn-fab-demo__pill-text">拍照上传</text>
       </view>
-      <view
-        class="sn-fab-demo__pill"
-        role="button"
-        aria-label="上传图片"
-        @tap="pick('上传图片')"
-      >
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
+      <view class="sn-fab-demo__pill" role="button" aria-label="上传图片" @tap="pick('上传图片')">
+        <SnIcon
+          class="sn-fab-demo__pill-icon sn-fab-demo__pill-icon--upload"
+          :icon="Image"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">上传图片</text>
       </view>
     </SnFab>
@@ -114,6 +115,19 @@ function pick(label: string): void {
 
 .sn-fab-demo__pill-icon {
   color: var(--sn-mp-color-text-secondary);
+}
+
+/* 三个动作项图标分色（语义 token，跟随主题 / 风格包切换，不做硬编码色值）。 */
+.sn-fab-demo__pill-icon--publish {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-fab-demo__pill-icon--photo {
+  color: var(--sn-mp-color-feedback-success);
+}
+
+.sn-fab-demo__pill-icon--upload {
+  color: var(--sn-mp-color-feedback-warning);
 }
 
 .sn-fab-demo__pill-text {
