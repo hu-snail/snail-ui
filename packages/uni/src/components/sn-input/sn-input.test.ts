@@ -43,6 +43,28 @@ describe('sn-input', () => {
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([42]);
   });
 
+  it('passes in-progress number literals through as strings while typing', async () => {
+    /* Coercing "12." to 12 would re-render :value with a different string
+     * than the field shows and the controlled patch would eat the dot. */
+    const wrapper = mount(SnInput, {
+      props: { type: 'number', modelValue: 0 },
+    });
+    await wrapper.find('input').setValue('12.');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['12.']);
+  });
+
+  it('mirrors native input events in real time (capture-phase, pre-throttle)', async () => {
+    /* uni-input throttles its component-level input events to 10Hz; the
+     * capture-phase mirror on the field element must deliver every
+     * keystroke's value immediately. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = '12';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['12']);
+    wrapper.unmount();
+  });
+
   it('emits input event on every keystroke', async () => {
     const wrapper = mount(SnInput, { props: { modelValue: '' } });
     await wrapper.find('input').setValue('a');
@@ -153,6 +175,30 @@ describe('sn-input', () => {
     await wrapper.find('.sn-input__clear-btn').trigger('tap');
     expect(wrapper.emitted('clear')).toHaveLength(1);
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['']);
+  });
+
+  it('refocuses the field after clear when focusWhenClear is on (default)', async () => {
+    /* Tapping × blurs the field; without the refocus the next keystrokes go
+     * nowhere and the clear icon "never comes back". */
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, modelValue: 'abc' },
+      attachTo: document.body,
+    });
+    await wrapper.find('input').trigger('focus');
+    await wrapper.find('.sn-input__clear-btn').trigger('tap');
+    expect(document.activeElement).toBe(wrapper.find('input').element);
+    wrapper.unmount();
+  });
+
+  it('skips the refocus after clear when focusWhenClear is off', async () => {
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, modelValue: 'abc', focusWhenClear: false },
+      attachTo: document.body,
+    });
+    await wrapper.find('input').trigger('focus');
+    await wrapper.find('.sn-input__clear-btn').trigger('tap');
+    expect(document.activeElement).not.toBe(wrapper.find('input').element);
+    wrapper.unmount();
   });
 
   it('renders textarea when type is textarea', () => {
@@ -656,6 +702,9 @@ describe('sn-input', () => {
     expect(source).toMatch(/\.sn-input__icon-glyph\s*\{[^}]*var\(--sn-input-icon-size\)/);
     expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
     expect(source).toMatch(/\.sn-input__password-toggle-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    /* The clear button is a circular delete chip: token disc + surface ×. */
+    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*background:\s*var\(--sn-input-icon-color\)/);
+    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*color:\s*var\(--sn-mp-color-background-surface\)/);
   });
 
   it('hides the suffix area while the clear button is shown', () => {

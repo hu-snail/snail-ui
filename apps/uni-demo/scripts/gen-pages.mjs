@@ -128,6 +128,15 @@ const SCENARIO_LABEL_OVERRIDES = {
 };
 
 /**
+ * 组件页画布底色覆盖：输入框页用纯白画布对比深浅组件底色（仅浅色主题，
+ * 深色维持暗色画布）。空缺 = 默认中性灰。同步写入 pages.json 的
+ * backgroundColor（滚动过界后的窗口底色）。
+ */
+const PAGE_BG_OVERRIDES = {
+  input: '#ffffff',
+};
+
+/**
  * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
@@ -318,7 +327,10 @@ const pagesJson = {
     root: `pages/${sub.root}`,
     pages: sub.comps.map((comp) => ({
       path: comp.key,
-      style: { navigationBarTitleText: comp.title },
+      style: {
+        navigationBarTitleText: comp.title,
+        ...(PAGE_BG_OVERRIDES[comp.key] ? { backgroundColor: PAGE_BG_OVERRIDES[comp.key] } : {}),
+      },
     })),
   })),
   globalStyle: {
@@ -403,7 +415,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'">
+  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
     <view class="page">
 ${modules}
     </view>

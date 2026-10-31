@@ -9,6 +9,9 @@
  *   同步导航栏颜色（尽力而为）。
  * - 语言：中/英切换，文案与导航栏标题联动；组件中文名/描述暂无英文数据，
  *   英文模式下组件名用 key 的 Title Case（gen-pages 生成 titleEn）。
+ * - 切换按钮（风格包 / 语言 / 深浅色）只保留在总览页（`brand`）：
+ *   组件演示页是纯净预览，顶栏按钮会挤占 demo 视口并干扰截图对比；
+ *   语言与主题状态本身仍是模块级单例，切完回演示页依旧生效。
  *
  * 图标数据内联自 lucide（ISC，与 packages/uni sn-icon-set 同源约定）。
  */
@@ -28,8 +31,13 @@ const props = withDefaults(
     titleZh?: string;
     /** 导航栏标题（英文）。 */
     titleEn?: string;
+    /**
+     * 画布底色覆盖（如输入框页用纯白对比深浅组件底色）。空串 = 默认中性灰；
+     * 深色主题下仍按字面值生效（由调用方决定是否覆盖）。
+     */
+    bg?: string;
   }>(),
-  { brand: false, titleZh: '', titleEn: '' },
+  { brand: false, titleZh: '', titleEn: '', bg: '' },
 );
 
 const {
@@ -88,6 +96,15 @@ const PaletteIcon: IconData = {
   ],
 };
 
+/**
+ * 画布样式：bg 覆盖只在浅色主题生效（深色维持暗色画布，白色画布在深色下
+ * 不可读）；风格包变量始终透传，二者叠加。
+ */
+const shellStyle = computed(() => {
+  if (!props.bg || isDark.value) return stylePackVars;
+  return [stylePackVars, { background: props.bg }];
+});
+
 const langLabel = computed(() => t('切换语言', 'Switch language'));
 const themeLabel = computed(() =>
   isDark.value ? t('切换到浅色', 'Switch to light') : t('切换到深色', 'Switch to dark'),
@@ -115,7 +132,7 @@ watch(
     class="demo-shell"
     @tap="closeOutside"
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
-    :style="stylePackVars"
+    :style="shellStyle"
   >
     <view class="demo-shell__bar">
       <view v-if="brand" class="demo-shell__brand">
@@ -124,7 +141,7 @@ watch(
           {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
         </text>
       </view>
-      <view class="demo-shell__actions">
+      <view v-if="brand" class="demo-shell__actions">
         <view
           class="demo-shell__btn"
           role="button"

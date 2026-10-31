@@ -25,7 +25,7 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, markRaw, nextTick, onMounted, ref, useSlots } from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
@@ -289,13 +289,28 @@ let snInputUid = 0;
 const inputId = `sn-input-${++snInputUid}`;
 const slots = useSlots();
 
-/** Native `<input>` / `<textarea>` — only one exists at a time (v-if / v-else). */
-const nativeEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null);
+/**
+ * Native `<input>` / `<textarea>` — only one exists at a time (v-if / v-else).
+ * In compiled uni apps the ref points at the uni-input wrapper instance,
+ * which exposes `$triggerInput` (immediate value application) — used by the
+ * clear flow to beat uni's 100ms debounced external value sync.
+ */
+type NativeFieldRef = (HTMLInputElement | HTMLTextAreaElement) & {
+  $triggerInput?: (detail: { value: string }) => void;
+  $el?: Element;
+};
+const nativeEl = ref<NativeFieldRef | null>(null);
 
 // uni 的 input 组件 `focus` prop 语义：挂载后自动聚焦。H5 / 测试环境通过真实
 // .focus() 实现；MP 编译目标由 uni 运行时按同名 prop 处理。
 onMounted(() => {
   if (props.focus) nativeEl.value?.focus();
+  attachNativeInputMirror();
+});
+
+onBeforeUnmount(() => {
+  detachNativeMirror?.();
+  detachNativeMirror = null;
 });
 
 /** DOM-bound value (always string). */
@@ -354,13 +369,62 @@ const defaultClearIcon = markRaw(XIcon);
  */
 const ICON_SIZE_VAR = 'var(--sn-input-icon-size)';
 
+/**
+ * Coerce a typed value to number only when the coercion is lossless in
+ * string form ("42", "12.5"). Intermediate literals ("12.", "012") stay
+ * strings: coercing them would re-render `:value` with a different string
+ * than the field shows, and the controlled patch would eat the character
+ * the user just typed. Full coercion happens on change / confirm (commit
+ * points).
+ */
+function coerceTyping(raw: string): number | string {
+  if (props.type !== 'number' && props.type !== 'digit') return raw;
+  const n = Number(raw);
+  return String(n) === raw ? n : raw;
+}
+
 function onInput(event: Event): void {
+  /* The capture-phase mirror already delivered this exact native event in
+   * real time; uni's component-level emit (possibly throttled) only wraps
+   * the same object. MP has no mirror and takes this path for every key. */
+  if (event && event === lastMirroredEvent) return;
   const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  const raw = target.value;
-  const next: number | string =
-    (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
+  const next = coerceTyping(target.value);
   emit('update:modelValue', next);
   emit('input', next, event);
+}
+
+/**
+ * uni-input throttles its component-level `input` events to one per 100ms
+ * (fast typing drops intermediate values, so counters and v-model readouts
+ * visibly lag). On H5 the native `input` event still reaches the wrapper in
+ * capture phase — BEFORE uni's own field listener fires and stopPropagation()s
+ * the bubble phase — so mirroring it here keeps the model real-time. MP fires
+ * unthrottled component events and has no DOM; the mirror stays H5-only.
+ */
+let detachNativeMirror: (() => void) | null = null;
+/** The native event the mirror already delivered — uni's component-level
+ * `input` emit re-wraps the SAME event object, so identity dedupes it. */
+let lastMirroredEvent: Event | null = null;
+
+function attachNativeInputMirror(): void {
+  if (typeof document === 'undefined') return;
+  /* Listen on an ANCESTOR of the field (uni-input element in compiled apps,
+   * the component root in raw tests) so the capture-phase handler runs
+   * before the field's own listeners — and before uni's stopPropagation. */
+  const field = nativeEl.value;
+  const host = (field?.$el ?? field?.parentElement ?? field) as Element | null | undefined;
+  if (!host || typeof host.addEventListener !== 'function') return;
+  const handler = (event: Event): void => {
+    const target = event.target as HTMLInputElement | null;
+    if (!target || typeof target.value !== 'string') return;
+    lastMirroredEvent = event;
+    const next = coerceTyping(target.value);
+    emit('update:modelValue', next);
+    emit('input', next, event);
+  };
+  host.addEventListener('input', handler, true);
+  detachNativeMirror = () => host.removeEventListener('input', handler, true);
 }
 
 function onChange(event: Event): void {
@@ -390,16 +454,35 @@ function onConfirm(event: Event): void {
   void event;
 }
 
+/**
+ * Refocus the field after a clear tap (`focusWhenClear`). Tapping × blurs
+ * the field, so without this the next keystrokes go nowhere and the clear
+ * icon "never comes back". Imperative DOM focus — a template `:focus`
+ * binding would go through patchDOMProp and clobber the element's focus
+ * method on the raw-test path; MP keyboards are raised by user taps and
+ * stay out of scope here.
+ */
+function refocusField(): void {
+  if (typeof document === 'undefined') return;
+  const field = nativeEl.value;
+  if (!field) return;
+  const el = (field.$el ?? field) as Element;
+  const input: HTMLInputElement | HTMLTextAreaElement | null =
+    el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
+      ? el
+      : el.querySelector('input, textarea');
+  input?.focus();
+}
+
 function onClear(): void {
   emit('update:modelValue', '');
   emit('clear');
+  /* uni-input applies external value changes through a 100ms debounce; a
+   * keystroke inside that window cancels the pending sync and resurrects
+   * the pre-clear text. The exposed setter applies the empty value now. */
+  nativeEl.value?.$triggerInput?.({ value: '' });
   if (!props.focusWhenClear) return;
-  nextTick(() => {
-    /* Re-focus is intentionally a no-op on uni-end because the soft
-     * keyboard is dismissed on blur in MP environments; consumers that
-     * want to programmatically re-focus should listen for the `clear`
-     * event and call .focus() on the input ref themselves. */
-  });
+  refocusField();
 }
 
 function onClickRoot(event: Event): void {
@@ -596,7 +679,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="onClear"
       >
-        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="ICON_SIZE_VAR" /></slot>
+        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="'62%'" /></slot>
       </view>
     </view>
 
@@ -844,7 +927,10 @@ textarea.sn-input__native {
   justify-content: center;
   width: var(--sn-input-icon-size);
   height: var(--sn-input-icon-size);
-  color: var(--sn-input-icon-color);
+  /* Circular delete chip: token-colored disc with a surface-toned × so the
+   * glyph stays legible in dark mode / style packs (both vars flip). */
+  background: var(--sn-input-icon-color);
+  color: var(--sn-mp-color-background-surface);
   border-radius: 50%;
   line-height: 1;
   cursor: pointer;

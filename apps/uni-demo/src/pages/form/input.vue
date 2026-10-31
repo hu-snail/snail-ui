@@ -25,7 +25,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'">
+  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'" :bg="'#ffffff'">
     <view class="page">
       <view class="module">
         <view class="module__head">

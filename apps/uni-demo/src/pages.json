@@ -274,7 +274,8 @@
         {
           "path": "input",
           "style": {
-            "navigationBarTitleText": "输入框"
+            "navigationBarTitleText": "输入框",
+            "backgroundColor": "#ffffff"
           }
         },
         {
