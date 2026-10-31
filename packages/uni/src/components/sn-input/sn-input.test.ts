@@ -65,6 +65,21 @@ describe('sn-input', () => {
     wrapper.unmount();
   });
 
+  it('reads the value from uni synthetic input events (detail.value, POJO target)', async () => {
+    /* uni-h5 component-level input events are synthetic objects: the target
+     * is a plain { id, dataset, offsetTop, offsetLeft } with NO `.value`,
+     * and the text rides `detail.value`. Reading target.value yields
+     * undefined and cleared the field on every keystroke in compiled apps. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    const synthetic = new Event('input', { bubbles: true });
+    Object.defineProperty(synthetic, 'target', { value: { id: 'demo', dataset: {} } });
+    Object.defineProperty(synthetic, 'detail', { value: { value: 'abc', cursor: 3 } });
+    input.dispatchEvent(synthetic);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['abc']);
+    wrapper.unmount();
+  });
+
   it('emits input event on every keystroke', async () => {
     const wrapper = mount(SnInput, { props: { modelValue: '' } });
     await wrapper.find('input').setValue('a');

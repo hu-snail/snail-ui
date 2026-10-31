@@ -107,3 +107,35 @@ uni-h5.es.js + happy-dom）拿到三条行为契约：
 完全绕开 uni-h5 的 Input 包装层** —— 节流/防抖/数字拦截这一整类行为只有
 拿真实 uni-h5 Input 写复现才看得见。凡涉及输入事件时序的改动，先在
 uni-h5.es.js 的 useValueSync/useField 契约上对一遍。
+
+## 终极根因：uni 组件级 input 事件的 target 是 POJO（2026-10-31 第三轮，"输入框无法输入"）
+
+镜像修复合入后用户报输入框彻底无法输入。用真实 uni-h5 Input 探针（h() 挂载 +
+onInput 监听）确认事件形态：
+
+```
+EVENT SHAPES: [{ isSynthetic: true, targetValue: undefined, detailValue: "abc", ctor: "Object" }]
+```
+
+uni-h5 的 `useCustomEvent` → `normalizeCustomEvent` 把事件重打包为
+`{ type, timeStamp, target: normalizeTarget(el), detail }`，其中
+`normalizeTarget` 返回 `{ id, dataset, offsetTop, offsetLeft }` —— **POJO，
+没有 .value**；打字文本在 `detail.value`。
+
+sn-input 的 onInput 一直读 `event.target.value` → undefined →
+emit('update:modelValue', undefined) → nativeValue 守卫成 '' → :value='' →
+uni 防抖同步把字段清空。**这在编译产物里从来如此**（此前的表现是"打完字
+约 100ms 后文字消失"，被用户描述为图标/监听问题）；镜像合入后正确值后面
+紧跟一个 undefined 覆盖，退化为完全无法输入。
+
+修复：`readEventValue(event)` 双形态取值 —— `detail.value`（synthetic）
+优先，回退 `target.value`（原生/mirror）；onChange/onConfirm 同步换用。
+回归测试用 defineProperty 伪造 synthetic 形态（POJO target + detail）。
+
+端到端契约（真实 uni Input + sn-input 绑定形态，harness 验证后未入库——
+依赖本机 pnpm store 绝对路径）：快速击键逐字实时 ✓、synthetic 不再覆盖 ✓、
+清除立即落值且不复活 ✓、清除后续打 ✓。
+
+**教训（覆盖前一条）**：uni 端组件里 `event.target.value` 是错误写法——
+组件级事件一律 `event.detail.value`。凡 uni-h5 内置组件（input/textarea/
+picker…）的事件，先打一个形态探针再写 handler。

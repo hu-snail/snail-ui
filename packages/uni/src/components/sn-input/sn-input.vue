@@ -383,13 +383,29 @@ function coerceTyping(raw: string): number | string {
   return String(n) === raw ? n : raw;
 }
 
+/**
+ * Read the typed value off either event shape. uni-h5's component-level
+ * `input` events are SYNTHETIC objects: `target` is a plain
+ * `{ id, dataset, offsetTop, offsetLeft }` with no `.value`, and the typed
+ * text rides `detail.value`. Native (mirror-captured) events carry the real
+ * field on `target` and have no `detail`. Reading `target.value` off the
+ * synthetic shape yields `undefined` — which cleared the field on every
+ * keystroke in compiled apps.
+ */
+function readEventValue(event: Event): string {
+  const detail = (event as unknown as { detail?: { value?: unknown } }).detail;
+  if (detail && typeof detail.value === 'string') return detail.value;
+  const target = event.target as HTMLInputElement | null;
+  if (target && typeof target.value === 'string') return target.value;
+  return '';
+}
+
 function onInput(event: Event): void {
   /* The capture-phase mirror already delivered this exact native event in
    * real time; uni's component-level emit (possibly throttled) only wraps
    * the same object. MP has no mirror and takes this path for every key. */
   if (event && event === lastMirroredEvent) return;
-  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  const next = coerceTyping(target.value);
+  const next = coerceTyping(readEventValue(event));
   emit('update:modelValue', next);
   emit('input', next, event);
 }
@@ -428,8 +444,7 @@ function attachNativeInputMirror(): void {
 }
 
 function onChange(event: Event): void {
-  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  const raw = target.value;
+  const raw = readEventValue(event);
   const next: number | string =
     (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
   emit('change', next, event);
@@ -446,10 +461,9 @@ function onBlur(event: Event): void {
 }
 
 function onConfirm(event: Event): void {
+  const raw = readEventValue(event) || nativeValue.value;
   const next: number | string =
-    (props.type === 'number' || props.type === 'digit') && nativeValue.value !== ''
-      ? Number(nativeValue.value)
-      : nativeValue.value;
+    (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
   emit('confirm', next);
   void event;
 }
