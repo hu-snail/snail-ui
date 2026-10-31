@@ -58,6 +58,9 @@ defineOptions({ name: 'SnFab' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
+// The trigger therefore binds `@tap.stop` (outside-close contract) — without
+// it the opening tap bubbles to the page root and instantly re-closes the
+// menu, which reads as "the button does nothing".
 onMounted(() =>
   registerOutsideClosable(instanceId, () => {
     if (props.active) emit('update:active', false);
@@ -304,7 +307,8 @@ function fanItemStyle(action: SnFabAction, index: number): string {
   const color = action.color === undefined ? '' : ` color: ${action.color};`;
   return (
     `transform: translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale}); ` +
-    `opacity: ${opacity}; transition-delay: ${delay}ms;${color}`
+    `opacity: ${opacity}; visibility: ${open ? 'visible' : 'hidden'}; ` +
+    `transition-delay: ${delay}ms;${color}`
   );
 }
 
@@ -498,7 +502,7 @@ function onTouchEnd(): void {
       role="button"
       :aria-expanded="active ? 'true' : 'false'"
       :aria-disabled="disabled ? 'true' : 'false'"
-      @tap="toggle"
+      @tap.stop="toggle"
       @touchstart="onTouchStart"
       @touchmove.stop.prevent="onTouchMove"
       @touchend="onTouchEnd"
@@ -678,5 +682,9 @@ function onTouchEnd(): void {
 .sn-fab__fan-item-text {
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-primary);
+  /* 动作项绝对定位在 0×0 锚点容器内：width:auto 收缩到 min-content，
+   * CJK 文案会被逐字换行。nowrap 令最小内容宽度 = 整行，胶囊恢复
+   * 「图标 + 文字」的自然宽度。 */
+  white-space: nowrap;
 }
 </style>

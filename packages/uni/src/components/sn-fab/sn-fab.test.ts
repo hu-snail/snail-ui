@@ -14,7 +14,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { defineComponent, ref } from 'vue';
 import SnFab from './sn-fab.vue';
+import { closeOutside } from '../../utils/outside-close';
 // Raw SFC source for CSS-level regression guards (vitest 的 import.meta.url
 // 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
 // file"；?raw 走 Vite 资产管线，两端一致)。
@@ -393,6 +395,7 @@ describe('sn-fab', () => {
       const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
       expect(closedStyle).toContain('translate(0px, 0px) scale(0.4)');
       expect(closedStyle).toContain('opacity: 0');
+      expect(closedStyle).toContain('visibility: hidden');
       expect(closedStyle).toContain('transition-delay: 0ms');
 
       const open = mount(SnFab, {
@@ -405,6 +408,9 @@ describe('sn-fab', () => {
       expect(styles[2]).toContain('transition-delay: 80ms');
       expect(styles[2]).toContain('scale(1)');
       expect(styles[2]).toContain('opacity: 1');
+      // visibility must flip inline — the class keeps the items hidden and
+      // nothing else overrides it (regression: open fans rendered nothing).
+      expect(styles[2]).toContain('visibility: visible');
     });
 
     it('tints an item through the action color', () => {
@@ -443,6 +449,54 @@ describe('sn-fab', () => {
       await items[0]?.trigger('tap');
       expect(wrapper.emitted('action')).toBeUndefined();
       expect(wrapper.emitted('update:active')).toBeUndefined();
+    });
+  });
+
+  describe('page-root closeOutside integration', () => {
+    // Mirrors DemoPageShell: a page root whose @tap closes every registered
+    // overlay. Without `@tap.stop` on the trigger, the opening tap bubbles to
+    // this root, closeOutside fires in the same gesture, and the menu flips
+    // open and shut within one frame — "the button does nothing".
+    function mountInShell(fabProps: Record<string, unknown>) {
+      const Shell = defineComponent({
+        components: { SnFab },
+        props: { fabProps: { type: Object, required: true } },
+        template: `
+          <view class="page-root" @tap="closeOutside">
+            <SnFab v-bind="fabProps" :active="active" @update:active="active = $event" />
+          </view>
+        `,
+        setup() {
+          const active = ref(false);
+          return { active, closeOutside };
+        },
+      });
+      return mount(Shell, { props: { fabProps } });
+    }
+
+    it('stays open when the trigger tap bubbles to the page root (line mode)', async () => {
+      const host = mountInShell({});
+      await host.find('.sn-fab__trigger').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--open');
+    });
+
+    it('stays open when the trigger tap bubbles to the page root (fan mode)', async () => {
+      const host = mountInShell({
+        mode: 'fan',
+        actions: [{ icon: Star, text: '收藏' }, { icon: Heart }],
+      });
+      await host.find('.sn-fab__trigger').trigger('tap');
+      const style = host.find('.sn-fab__fan-item').attributes('style') ?? '';
+      expect(style).toContain('scale(1)');
+      expect(style).toContain('opacity: 1');
+    });
+
+    it('still closes when tapping the page root outside the fab', async () => {
+      const host = mountInShell({});
+      await host.find('.sn-fab__trigger').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--open');
+      await host.find('.page-root').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).not.toContain('sn-fab__menu--open');
     });
   });
 });
