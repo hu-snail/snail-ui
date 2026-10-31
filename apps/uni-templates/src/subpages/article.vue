@@ -331,7 +331,8 @@ function shuffleRecs(): void {
         <view class="art-byline">
           <view class="art-byline__author">
             <view class="art-byline__avatar-wrap">
-              <SnAvatar text="科" :size="88" />
+              <!-- 设计稿 w-11（44px @430 画布）→ 76rpx；数字会被按 px 解释 -->
+              <SnAvatar text="科" size="76rpx" />
               <view class="art-byline__v">
                 <text class="art-byline__v-text">V</text>
               </view>
@@ -522,7 +523,8 @@ function shuffleRecs(): void {
           </view>
 
           <view v-for="c in sortedComments" :key="c.id" class="art-comment">
-            <SnAvatar :text="c.initial" :size="72" />
+            <!-- 设计稿 w-9（36px @430 画布）→ 64rpx -->
+            <SnAvatar :text="c.initial" size="64rpx" />
             <view class="art-comment__body">
               <view class="art-comment__head">
                 <view class="art-comment__name-row">
@@ -830,8 +832,8 @@ function shuffleRecs(): void {
   position: absolute;
   right: -2rpx;
   bottom: -2rpx;
-  width: 30rpx;
-  height: 30rpx;
+  width: 28rpx;
+  height: 28rpx;
   border-radius: 50%;
   background: #f59e0b;
   display: flex;
