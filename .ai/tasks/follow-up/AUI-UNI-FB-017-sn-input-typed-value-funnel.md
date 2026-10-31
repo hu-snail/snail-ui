@@ -1,70 +1,76 @@
-# AUI-UNI-FB-017 — sn-input 输入链路：合成事件重放去重失效（每键双 emit）
+# AUI-UNI-FB-017 — sn-input 真实 Chrome 无法输入（uni-input 陈旧 state2 回写）+ ExFAT 监听失效
 
-日期：2026-10-31
-状态：DONE（commit 6663042）
+日期：2026-10-31 ～ 11-01
+状态：DONE
 
-## 现场
+## 现场（时间线还原）
 
-- 用户报告「input 无法输入」，后补充「圆角和边框背景能输入，其他模块都不行」。
-- uni-demo H5 dev server（最新源码）实测输入链路正常：17 个 demo 块逐一真实键入全部生效
-  （仅 number 字段拒插字母，浏览器原生行为）。
-- 用户实际测试面 = docs 预览 iframe 的 GitHub Pages 部署站。线上行为复现（真实键入采样）：
-  t=0 字段显示 `helloX`，**~150ms 后被回写清空**——旧代码 `onInput` 读 `e.target.value`
-  （合成事件下 `undefined`）→ emit 进 v-model → 受控回写清空。
-- 「圆角 / 边框背景」是仅有的**没有 v-model 监听**的两个 demo（radius = 静态 model-value + readonly；
-  bordered-bg = 无 model 绑定）：emit 出的坏值无人接收、字段不被回写，于是“能输入”。
-  这个 能/不能 分界就是旧构建的指纹。
-- 线上 sn-input chunk 指纹为 `d6db7e9`（2026-10-31 17:13「读 detail.value」修复）**之前**的版本；
-  部署 workflow（`uni-demo-deploy.yml`）只认 push 到 `main`。即修复早已 commit，但从未到达任何构建/部署面。
+1. 用户报告「input 无法输入」，后补充「圆角和边框背景能输入，其他模块都不行」。
+2. 前一轮（6663042 等）在 **WebKit 内置浏览器 + happy-dom** 里验证"全部正常"，据此把矛头指向
+   部署站陈旧——**对真实 Chrome 的判断是错的**：用户在真实 Chrome 上对 5174 依然无法输入。
+3. 真实 Chrome（playwright-core + channel:'chrome'）复现：
+   - 裸 `<input>` / 注入的同位置克隆（脱离 Vue 管理）：正常；
+   - Vue 管理的 sn-input 字段：keydown/keypress/beforeinput/input 全部触发、无 preventDefault、
+     `data:"a"` 存在，**但字段值从不变化**——Blink 的键入编辑命令被整体丢弃；
+   - `document.execCommand('insertText')` 在同一字段可用 → 键事件编辑管线特有的问题。
+4. 部署站（GitHub Pages）独立确认仍是 `d6db7e9` 之前的构建（真实键入 ~150ms 后清空），
+   与本问题叠加但相互独立。
 
-## 根因 1（用户可见）：部署面陈旧
+## 根因 1（本 bug 核心）：uni-input 陈旧 state2 回写吃掉键入字符
 
-feature 分支上的修复不会自动部署；docs 预览永远指向 Pages 上的旧构建。
-**解法**：合并到 `main`（CI 自动重新部署 uni-demo H5）。本地联调可用
-`UNI_DEMO_PREVIEW_BASE=http://localhost:<port> pnpm dev:docs` 让 docs 预览指向本地 dev server。
+uni-h5 的 Input 组件渲染读取**内部 `state2.value`**（不是 `value` prop），其自身字段监听在
+**bubble 相位**才把 DOM 值同步进 `state2`。而 sn-input 为了计数器/清空按钮的实时性，每个键都会
+重渲染（`lastTypedValue` 驱动）——重渲染级联到 uni-input 时，uni 自己的监听器还没跑，
+**渲染读到的是陈旧的 `state2`，uni-h5-vue 的 patchDOMProp 随即把陈旧文本写回字段**，
+Blink 刚插入的字符被覆盖。HTML 规范在**每个事件监听器回调结束后**运行微任务检查点，
+Chrome 逐键命中；WebKit 的时序恰好幸免——这就是"内置浏览器全绿、真实 Chrome 全挂"的原因。
 
-## 根因 2（代码缺陷）：事件身份去重永不生效
+证据链：裸 uni-input + 相同绑定（`data-sn-bisect` 对照）正常；同位置脱离 Vue 管理的克隆正常；
+属性全消融、invoker 摘除均不影响 → 唯一变量是 Vue 对该元素的活动性补丁。
 
-uni-h5 的 `useCustomEvent` 每次 emit 都**新建**合成事件对象
-（`{ type, timeStamp, target: normalizeTarget(el), currentTarget, detail }`），
-sn-input 里 `event === lastMirroredEvent` 的身份比对永远为 false →
-H5 上每个键交付两次（镜像一次 + uni 组件级重放一次）：两次 `update:modelValue`、
-两次 `input` 事件（且两个事件对象不同）。
+## 修复（sn-input-field.vue 子组件 + 三重防线）
 
-**解法**：改为单一管道 `deliverTypingValue()` 按值去重（`lastTypedValue` memo）；
-`watch(modelValue)` 在「外部写入 ≠ 上次交付值」时重置 memo，
-避免「父组件外部改值后用户删回原值」被误去重（自有 v-model 回声恒等于 memo，不会误重置）。
+1. **uni-input 隔离进 `SnInputField` 子组件**：uni-input 的 vnode 的 props 在键入期间全部
+   身份/值稳定（外部写入才变化的 `value`、缓存的 `nativeClass`），父组件每键重渲染在
+   `shouldUpdateComponent` 处被拦下，不再级联触碰字段。
+2. **回显抑制（externalValue / boundNativeValue）**：`value` prop 只跟随外部模型写入；
+   自有 v-model 回声不改变该 prop（同时省掉每键一轮 vdom 往返）。
+3. **capture 相位 $triggerInput 同步**：字段镜像在 capture 相位调用 uni 自己暴露的
+   `$triggerInput({value})`，把 `state2` 与 DOM 从捕获时刻起锁定一致——此后任何重渲染的
+   回写都是同值 no-op。对残余级联的兜底防线。
 
-## 根因 3（顺手修复）：空 confirm 回退到旧 model
+回归测试 105/105（含 5 条链路回归）；真实 Chrome 17 个 demo 块逐一真实键入（含中文）
+16/16 可输入块全部生效（number 字段拒插字母为浏览器原生行为）。
 
-`onConfirm` 旧实现 `readEventValue(event) || nativeValue.value`——
-confirm 携带 `detail.value: ""`（用户清空后按确认）时 `""` 为 falsy，回退成旧值。
-现在 `eventDetailValue(event) ?? nativeValue.value`：有 detail 就用 detail（空也生效），
-仅当事件完全无 detail（测试裸派发）才回退 model。
+## 根因 2（dev 基础设施）：ExFAT 卷上 vite 监听完全失效
 
-## 回归测试
+仓库位于 `/Volumes/JZ-miniGo`（**ExFAT**）——FSEvents 在 ExFAT 上不可用，chokidar 收不到任何
+文件事件 → vite 永不失效模块 → **dev server 自启动起一直服务陈旧编译产物**（重启也一样，
+因为失效依赖根本不存在的文件事件）。这解释了：
 
-`packages/uni/src/components/sn-input/sn-input.test.ts`：
+- 用户在 5174 上"怎么改都不生效"的体感；
+- 8f3ee5b 的 watch 重包含修复"无效"（ExFAT 下没有事件，重包含 glob 无济于事）；
+- 本轮调试中大量"修复无效"的假象——**修复从未到达浏览器**。
 
-- `delivers one update per keystroke when uni replays it as a fresh synthetic event`
-- `re-delivers after an external model write lands on a different value`
-- `does not dedupe consecutive distinct keystrokes`
-- `emits an empty confirm (not the stale model) when the detail carries an empty value`
-- `reads the value from uni synthetic input events (detail.value, POJO target)`（既有）
+**修复**：`apps/uni-demo/vite.config.ts` 的 `server.watch` 加 `usePolling: true, interval: 300`
+（外置卷上轮询是唯一可靠方式），并补上 `preserveSymlinks` 解析出的真实路径
+（`packages/uni/src/**` 等）的重包含。**在这个仓库里改组件源码后，dev server 必须能感知——
+卷格式不变的话此配置不能删。**
 
 ## 经验
 
-- uni 组件级事件的 target 是 POJO（`normalizeTarget`），text 恒在 `detail.value`；
-  且每次 emit 都是新对象——**对 uni 事件做身份去重永远是死代码**，只能按值去重。
-- 部署类预览（docs iframe Pages 站）诊断时先比对线上 chunk 指纹与源码修复点，
-  别把「构建面过期」当成「源码 bug」修。
-- 「部分 demo 能输入、部分不能」这类分界本身就是线索：能输入的恰好是不受控
-  （无 v-model）的字段 = 受控回写链路坏了的典型指纹。
+- **"部分模块能输入、部分不能"的分界 = 不受控字段幸存** —— 受控回写链路坏了的指纹；
+  但同款分界也可能来自"陈旧构建"，两层层叠时先用 chunk 指纹 + 全新浏览器会话分离变量。
+- **WebKit/happy-dom 全绿 ≠ Chrome 可用**：涉及原生输入框受控循环的组件，必须用真实
+  Chrome 验证（playwright-core + channel:'chrome' 即可，无需装浏览器）。
+- **ExFAT/网络卷上开发：vite 必须 usePolling**；否则"改了没生效"会被误诊为代码问题，
+  且污染所有基于 dev server 的实验结论（本轮多处实验因此作废）。
+- **受控输入组件包第三方输入器（uni-input 等）时**：绝不能假设"父级重渲染不会发生在
+  键入中途"——必须把第三方组件的 vnode props 做到键入期间全稳定，或让其内部状态与 DOM
+  在最早相位锁步。
 
-## Follow-up（本次未修，范围外）
+## Follow-up（未修，另行登记）
 
-- **uni-h5 运行时丢弃 `readonly`**：`uni-h5.es.js` 的 Input 渲染里，普通分支的原生
-  input 根本不绑定 `readonly`（只有 disabled+fixDisabledColor 分支映射 readonly）。
-  H5 端 sn-input 的 `readonly` 字段（圆角 demo、states demo 只读字段）实际可编辑，
-  只有 cursor 样式生效；MP 端正常。修复方向：sn-input 在 H5 宿主对 readonly 字段
-  拦截 `beforeinput`/keydown（capture 镜像机制可复用）。
+- uni-h5 运行时丢弃 `readonly`：H5 端 readonly 字段实际可编辑（MP 正常）。
+- 部署站陈旧：合并 main 触发 `uni-demo-deploy.yml` 后消失；本地联调用
+  `UNI_DEMO_PREVIEW_BASE=http://localhost:5174 pnpm dev:docs`。

@@ -25,10 +25,11 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
+import { computed, getCurrentInstance, markRaw, onMounted, ref, useSlots, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
+import SnInputField from './sn-input-field.vue';
 
 defineOptions({ name: 'SnInput' });
 
@@ -285,30 +286,18 @@ defineSlots<{
 
 // uni 的 vue 运行时（uni-h5-vue / mp 编译目标）不导出 Vue 3.5 的 useId，
 // 改用模块级计数器生成稳定的 DOM id（label 关联用，无需跨端唯一语义）。
-let snInputUid = 0;
-const inputId = `sn-input-${++snInputUid}`;
 const slots = useSlots();
-
-/**
- * Template ref on the inner field. In raw/test environments this is the
- * native element; in compiled uni apps it is the uni-input wrapper's
- * EXPOSED object, which only carries `$triggerInput` — no `focus`, no
- * `$el`. All DOM access therefore goes through the component's own root
- * element (see `rootElement`), and `$triggerInput` stays on this ref for
- * the clear flow.
- */
-type NativeFieldRef = (HTMLInputElement | HTMLTextAreaElement) | {
-  $triggerInput?: (detail: { value: string }) => void;
-};
-const nativeEl = ref<NativeFieldRef | null>(null);
 
 const instance = getCurrentInstance();
 
+/** SnInputField child ref — instant clear-sync, bypasses uni's debounce. */
+const fieldRef = ref<{ syncValue: (text: string) => void } | null>(null);
+
 /**
  * sn-input's own root element — the stable ancestor of the inner field for
- * the capture-phase mirror and imperative focus. Template refs on the
- * uni-input wrapper only expose `$triggerInput`, so the DOM must come from
- * the component instance itself.
+ * the capture-phase mirror and imperative focus. The uni-input element lives
+ * inside the SnInputField child (see sn-input-field.vue for why), so DOM
+ * access goes through the component instance's root element.
  */
 function rootElement(): Element | null {
   return ((instance?.proxy as { $el?: Element } | null)?.$el ?? null);
@@ -317,29 +306,49 @@ function rootElement(): Element | null {
 /** The inner native field, reached through the root element. */
 function fieldInputElement(): HTMLInputElement | HTMLTextAreaElement | null {
   const root = rootElement();
-  if (root) {
-    if (root instanceof HTMLInputElement || root instanceof HTMLTextAreaElement) return root;
-    return root.querySelector('input, textarea');
-  }
-  const direct = nativeEl.value;
-  return direct instanceof HTMLInputElement || direct instanceof HTMLTextAreaElement ? direct : null;
+  if (!root) return null;
+  if (root instanceof HTMLInputElement || root instanceof HTMLTextAreaElement) return root;
+  return root.querySelector('input, textarea');
 }
 
 // uni 的 input 组件 `focus` prop 语义：挂载后自动聚焦。H5 / 测试环境通过真实
 // .focus() 实现；MP 编译目标由 uni 运行时按同名 prop 处理。
 onMounted(() => {
   if (props.focus) refocusField();
-  attachNativeInputMirror();
 });
 
-onBeforeUnmount(() => {
-  detachNativeMirror?.();
-  detachNativeMirror = null;
+/**
+ * Last value this instance delivered upstream through the typing pipeline —
+ * the dedupe memo AND the reactive source for the field UI (counter, clear
+ * button), which must track what the user typed, not just external writes.
+ */
+const lastTypedValue = ref<string | number | null>(null);
+
+/**
+ * External model writes only — bound to the field child's `value` prop. Our
+ * own v-model echo must NOT reach uni-input: its render reads the internal
+ * `state2.value`, not the prop, so a mid-keystroke update re-asserts the
+ * STALE internal text over the field and eats the character Blink just
+ * inserted. uni-input owns the in-flight typing state; this prop is a
+ * one-way external sync channel. See sn-input-field.vue.
+ */
+const externalValue = ref(props.modelValue);
+
+/** Field UI value (always string) — typed deliveries + external writes. Drives
+ *  the counter and the clear button, which live OUTSIDE uni-input, so tracking
+ *  our own deliveries here is safe and keeps them real-time. */
+const nativeValue = computed<string>(() => {
+  if (lastTypedValue.value !== null) return String(lastTypedValue.value);
+  return externalValue.value === null || externalValue.value === undefined
+    ? ''
+    : String(externalValue.value);
 });
 
-/** DOM-bound value (always string). */
-const nativeValue = computed<string>(() =>
-  props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue),
+/** External-writes-only value for the field child — see externalValue. */
+const boundNativeValue = computed<string>(() =>
+  externalValue.value === null || externalValue.value === undefined
+    ? ''
+    : String(externalValue.value),
 );
 
 const isTextarea = computed(() => props.type === 'textarea');
@@ -430,9 +439,6 @@ function readEventValue(event: Event): string {
   return '';
 }
 
-/** Last value this instance delivered upstream through the typing pipeline. */
-let lastTypedValue: string | number | null = null;
-
 /**
  * Single upstream funnel for every typed value, whatever carrier brought it
  * (H5 capture mirror, uni component-level replay, MP component event).
@@ -441,17 +447,12 @@ let lastTypedValue: string | number | null = null;
  * keystroke into a FRESH synthetic object (throttled to ~10Hz), so an
  * identity check never matches and H5 delivered every keystroke twice —
  * two model writes and two parent `input` events per key. A value guard
- * drops only that redundant replay. The one hole — an EXTERNAL model write
- * landing on the last typed value between keystrokes (parent set "abc"
- * after we delivered "ab"; backspacing to "ab" must re-deliver) — is closed
- * by the modelValue watcher below, which resets the memo whenever the echo
- * differs from what we last sent. Our own v-model round-trip always equals
- * the memo and passes through without resetting it.
+ * drops only that redundant replay.
  */
 function deliverTypingValue(raw: string, event: Event): void {
   const next = coerceTyping(raw);
-  if (next === lastTypedValue) return;
-  lastTypedValue = next;
+  if (next === lastTypedValue.value) return;
+  lastTypedValue.value = next;
   emit('update:modelValue', next);
   emit('input', next, event);
 }
@@ -459,44 +460,19 @@ function deliverTypingValue(raw: string, event: Event): void {
 watch(
   () => props.modelValue,
   (value) => {
-    if (coerceTyping(value === null || value === undefined ? '' : String(value)) !== lastTypedValue) {
-      lastTypedValue = null;
-    }
+    const normalized = coerceTyping(value === null || value === undefined ? '' : String(value));
+    if (normalized === lastTypedValue.value) return; // own v-model echo — uni-input owns the field
+    lastTypedValue.value = null;
+    externalValue.value = value;
   },
 );
 
 function onInput(event: Event): void {
-  /* The capture-phase mirror already delivered this native keystroke in
-   * real time; uni's component-level replay (throttled) carries the same
+  /* The field child's capture-phase mirror delivers every native keystroke
+   * in real time; uni's component-level replay (throttled) carries the same
    * value in synthetic shape and is deduped in the funnel. MP has no mirror
    * and takes this path alone for every keystroke. */
   deliverTypingValue(readEventValue(event), event);
-}
-
-/**
- * uni-input throttles its component-level `input` events to one per 100ms
- * (fast typing drops intermediate values, so counters and v-model readouts
- * visibly lag). On H5 the native `input` event still reaches the wrapper in
- * capture phase — BEFORE uni's own field listener fires and stopPropagation()s
- * the bubble phase — so mirroring it here keeps the model real-time. MP fires
- * unthrottled component events and has no DOM; the mirror stays H5-only.
- */
-let detachNativeMirror: (() => void) | null = null;
-
-function attachNativeInputMirror(): void {
-  if (typeof document === 'undefined') return;
-  /* Listen on sn-input's own root element — an ANCESTOR of the inner field —
-   * so the capture-phase handler runs before the field's own listeners and
-   * before uni's stopPropagation. */
-  const host = rootElement();
-  if (!host || typeof host.addEventListener !== 'function') return;
-  const handler = (event: Event): void => {
-    const target = event.target as HTMLInputElement | null;
-    if (!target || typeof target.value !== 'string') return;
-    deliverTypingValue(target.value, event);
-  };
-  host.addEventListener('input', handler, true);
-  detachNativeMirror = () => host.removeEventListener('input', handler, true);
 }
 
 function onChange(event: Event): void {
@@ -545,10 +521,8 @@ function onClear(): void {
   emit('clear');
   /* uni-input applies external value changes through a 100ms debounce; a
    * keystroke inside that window cancels the pending sync and resurrects
-   * the pre-clear text. The wrapper's exposed setter applies it now
-   * (raw-element refs — tests / H5 without a wrapper — skip this). */
-  const wrapper = nativeEl.value as { $triggerInput?: (d: { value: string }) => void } | null;
-  wrapper?.$triggerInput?.({ value: '' });
+   * the pre-clear text. The field child's exposed sync applies it now. */
+  fieldRef.value?.syncValue('');
   if (!props.focusWhenClear) return;
   refocusField();
 }
@@ -605,22 +579,10 @@ const wrapperStyle = computed(() => {
 });
 
 /**
- * Uni-app MP-only native input attributes grouped into a single computed
- * so vue-tsc doesn't choke on `<input>` not declaring them on its
- * intrinsic HTMLInputElement interface. They're all standard MP runtime
- * hints — uni-app compiles them through to the underlying MP renderer.
- * （MP 端模板不支持 v-bind="obj" 展开，这些属性已在模板中显式逐条绑定。）
+ * Uni-app MP-only native input attributes are bound on the SnInputField child
+ * (see sn-input-field.vue) — the same attribute set, grouped there so
+ * vue-tsc sees one prop boundary instead of raw `<input>` intrinsics.
  */
-
-/** Placeholder styling is a native input attribute, not a `::placeholder`
- * rule: App has no pseudo-elements (§116.2). The default keeps the token
- * color that the CSS rule used to supply. */
-const DEFAULT_PLACEHOLDER_STYLE =
-  'color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary)); opacity: 1';
-const placeholderStyleAttr = computed(
-  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
-);
-const placeholderClassAttr = computed(() => props.placeholderClass || undefined);
 </script>
 
 <template>
@@ -653,53 +615,19 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       </view>
     </view>
 
-    <textarea
-      v-if="isTextarea"
-      ref="nativeEl"
-      :id="inputId"
-      :class="['sn-input__native', placeholderClass, customInputClass]"
-      :value="nativeValue"
-      :placeholder="placeholder"
-      :placeholder-style="placeholderStyleAttr"
-      :placeholder-class="placeholderClassAttr"
-      :disabled="disabled"
-      :readonly="readonly"
-      :maxlength="maxlength"
-      :rows="textareaRows"
-      :aria-label="ariaLabel"
-      :aria-invalid="ariaInvalid"
-      :aria-required="required ? 'true' : undefined"
-      :confirm-type="confirmType"
-      :hold-keyboard="holdKeyboard"
-      :adjust-position="adjustPosition"
-      :always-embed="alwaysEmbed"
-      :cursor-spacing="cursorSpacing"
-      :confirm-hold="confirmHold"
-      :ignore-composition-event="ignoreCompositionEvent"
-      :enable-native="enableNative"
-      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-      :selection-start="
-        selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
-      "
-      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
-      @input="onInput"
-      @change="onChange"
-      @focus="onFocus"
-      @blur="onBlur"
-      @confirm="onConfirm"
-    />
-
-    <input
-      v-else
-      ref="nativeEl"
-      :id="inputId"
-      :class="['sn-input__native', placeholderClass, customInputClass]"
+    <!-- The uni-input element lives in SnInputField: its props are
+         identity/value-stable during typing (external-only value, cached
+         class), so this component's per-keystroke UI re-render can never
+         cascade into uni-input and clobber the field. See sn-input-field.vue. -->
+    <SnInputField
+      ref="fieldRef"
+      :value="boundNativeValue"
+      :is-textarea="isTextarea"
       :type="effectivePasswordType"
       :inputmode="inputmode"
-      :value="nativeValue"
       :placeholder="placeholder"
-      :placeholder-style="placeholderStyleAttr"
-      :placeholder-class="placeholderClassAttr"
+      :placeholder-style="placeholderStyle"
+      :placeholder-class="placeholderClass"
       :disabled="disabled"
       :readonly="readonly"
       :maxlength="maxlength"
@@ -710,6 +638,8 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
+      :rows="textareaRows"
+      :custom-input-class="customInputClass"
       :confirm-type="confirmType"
       :hold-keyboard="holdKeyboard"
       :adjust-position="adjustPosition"
@@ -718,11 +648,9 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :confirm-hold="confirmHold"
       :ignore-composition-event="ignoreCompositionEvent"
       :enable-native="enableNative"
-      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-      :selection-start="
-        selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
-      "
-      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
+      :cursor="cursor"
+      :selection-start="selectionStart"
+      :selection-end="selectionEnd"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
