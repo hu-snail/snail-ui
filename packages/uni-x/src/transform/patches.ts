@@ -39,10 +39,14 @@ const iconDataUrl = computed<string | undefined>(() => {
   if (icon === null) return undefined
   const vb: string = icon.viewBox ?? '0 0 24 24'
   const stroke: string = props.color === 'currentColor' ? '#1a1a1a' : props.color
+  // Material-style solid glyphs (render: 'fill') must be filled, not stroked:
+  // a stroke would trace the outline into a hollow double line.
+  const isFill: boolean = icon.render === 'fill'
   const body: string = icon.paths
-    .map(
-      (d) =>
-        \`<path d="\${d}" fill="none" stroke="\${stroke}" stroke-width="\${props.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>\`,
+    .map((d) =>
+      isFill
+        ? \`<path d="\${d}" fill="\${stroke}"/>\`
+        : \`<path d="\${d}" fill="none" stroke="\${stroke}" stroke-width="\${props.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>\`,
     )
     .join('')
   const svg: string = \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="\${vb}">\${body}</svg>\`
@@ -62,9 +66,9 @@ const iconDataUrl = computed<string | undefined>(() => {
       v-else-if="displayIcon"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
-      fill="none"
-      :stroke="color"
-      :stroke-width="effectiveStrokeWidth"
+      :fill="isFillIcon ? color : 'none'"
+      :stroke="isFillIcon ? 'none' : color"
+      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"
@@ -110,27 +114,27 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'status-icon [data-status] attribute selector → status modifier class',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'error\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='error'] {",
       replacement: '.sn-form-item__status-icon--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'warning\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='warning'] {",
       replacement: '.sn-form-item__status-icon--warning {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'success\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='success'] {",
       replacement: '.sn-form-item__status-icon--success {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status=\'error\'] {',
+      anchor: ".sn-form-item__message[data-status='error'] {",
       replacement: '.sn-form-item__message--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status=\'warning\'] {',
+      anchor: ".sn-form-item__message[data-status='warning'] {",
       replacement: '.sn-form-item__message--warning {',
       note: 'attribute selector rewritten',
     },

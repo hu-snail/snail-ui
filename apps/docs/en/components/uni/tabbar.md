@@ -22,7 +22,7 @@
 
 ## Colour overrides and name values
 
-`active-color` / `inactive-color` override the label colour inline; an item with `name` uses that name as its value, otherwise the registration index:
+`active-color` / `inactive-color` override the whole item colour inline (icon strokes resolve through `currentColor` alongside the label); an item with `name` uses that name as its value, otherwise the registration index:
 
 <Demo name="tabbar-mp-color" description="active-color / inactive-color overrides; index-based and name-based v-model shapes." />
 
@@ -54,8 +54,8 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 | `bordered`            | `boolean`                                | `false`     | Hairline top border                           |
 | `safeAreaInsetBottom` | `boolean`                                | `false`     | Bottom safe-area padding                      |
 | `shape`               | `'default' \| 'round'`                   | `'default'` | Bar shape                                     |
-| `activeColor`         | `string`                                 | `''`        | Active label colour (empty = token default)   |
-| `inactiveColor`       | `string`                                 | `''`        | Inactive label colour (empty = token default) |
+| `activeColor`         | `string`                                 | `''`        | Active item colour (icon + label, empty = token default)   |
+| `inactiveColor`       | `string`                                 | `''`        | Inactive item colour (icon + label, empty = token default) |
 | `placeholder`         | `boolean`                                | `false`     | Reserve the bar height in flow when fixed     |
 | `zIndex`              | `number`                                 | `10`        | Stacking level (written only when fixed)      |
 | `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch          |

@@ -96,3 +96,59 @@ uni-demo 全库 0 处 `class` 挂组件、995 处 `custom-class`/`custom-style` 
 **对应代码**：apps/uni-templates/src/subpages/{mall,goods,article}.vue（已修）；
 遗留：`subpages/address.vue:34`、`subpages/form.vue:47` 仍是 `class` 挂
 `<SnButton>`（先于本任务存在，待单独 task 修复）。
+
+---
+
+## 根因 5：设计稿图标系统是 Material 实心字形，`IconData` 原本只能描边渲染
+
+**现场**：三个设计稿（商城 / 商品详情 / 图文详情）全部使用 Material Symbols
+（HTML 里 `material-symbols-outlined`，金刚区另加 `FILL 1`）。模板最初用
+lucide 近似字形 + `SnIcon` 默认描边渲染，tabbar/金刚区与设计稿明显不符。
+
+**根因**：`IconData` 只有 `viewBox` + `paths`，`SnIcon` 固定
+`fill="none" + stroke`。Material 字形的 path 是**实心轮廓面**，描边渲染会
+画出双线空壳。已为 `IconData` 增加**可选** `render: 'stroke' | 'fill'`
+（默认 `'stroke'`，存量图标零变化），uni-x 补丁同步按 fill 生成 data URL。
+
+**教训**：接到"图标不像"先确认设计稿的图标**系统**（字体族 + FILL 轴），
+再决定是换数据还是换渲染模式；字形近似替代解决不了系统性偏差。
+
+**对应代码**：packages/uni/src/components/sn-icon/sn-icon.vue（IconData.render）
+、apps/uni-templates/src/common/material-icons.ts（设计稿字形集，命名 =
+设计稿 glyph 名）。
+
+## 根因 6：sn-tabbar-item 激活色只染文字、图标尺寸硬编码 44px
+
+**现场**：页面传 `active-color="#1b1b1c"` 后标签变深色，图标仍是主题蓝
+（`--sn-mp-color-action-primary`）；且图标视觉上比设计稿大一倍。
+
+**根因**：
+1. 解析出的激活/未激活色只内联在 `<text>` 上，图标（`currentColor` 描边）
+   继承的是根节点的令牌色 → 已改为把颜色内联到 item 根节点，图标随
+   `currentColor` 一并解析。
+2. 图标 `:size="44"` 是数字 → `SnIcon` 按 **px** 解释；750 画布下应为
+   48rpx（= 24px）。回归测试守住了「必须 rpx」。
+
+**对应代码**：packages/uni/src/components/sn-tabbar/sn-tabbar-item.vue。
+
+## 根因 7：sn-cell-group 缺 box-sizing，width:100% + 内联 padding 溢出视口
+
+**现场**：商品详情履约卡在 group 上内联 `margin + padding` 后，卡片右缘
+冲出屏幕，行内容贴边（用户截图"右侧没有间距"）。
+
+**根因**：`.sn-cell-group { width: 100% }` 无 `box-sizing: border-box`，
+页面传入 padding 后内容盒 = 100% 宽 → 整体超出视口。已补 `border-box`
+（与 sn-cell 一致）；页面侧把 margin/圆角/阴影移到外层壳 view，group 只
+管承载行。
+
+**对应代码**：packages/uni/src/components/sn-cell/sn-cell-group.vue；
+apps/uni-templates/src/subpages/goods.vue（.goods-fulfil 壳）。
+
+## 附带修复
+
+- `sn-tabs` 激活横条颜色曾固定 `--sn-mp-color-action-primary`，`color`
+  prop 只染文字 → 横条现跟随 `color`（空值回落令牌）。
+- 页面误用 `custom-title-class` 设标题**列宽**（该 class 落在标题文字上 →
+  "选择"竖排折行）→ 改用组件契约 `title-width`。
+- 设计稿履约/SKU 行的省略与不收缩（`truncate` + `shrink-0`）已在页面样式
+  落实：`.goods-row__value--ellipsis`、SnTag `flex-shrink: 0`。

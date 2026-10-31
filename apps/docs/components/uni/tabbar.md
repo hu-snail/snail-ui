@@ -22,7 +22,7 @@
 
 ## 颜色覆盖与 name 取值
 
-`active-color` / `inactive-color` 内联覆盖文案颜色；子项传 `name` 时以 `name` 为值，否则用注册索引：
+`active-color` / `inactive-color` 内联覆盖整项颜色（图标描边经 `currentColor` 与文字一并解析）；子项传 `name` 时以 `name` 为值，否则用注册索引：
 
 <Demo name="tabbar-mp-color" description="active-color / inactive-color 颜色覆盖；索引取值与 name 取值两种 v-model 写法。" />
 
@@ -54,8 +54,8 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 | `bordered`            | `boolean`                                | `false`     | 是否显示顶部边框                    |
 | `safeAreaInsetBottom` | `boolean`                                | `false`     | 是否设置底部安全区                  |
 | `shape`               | `'default' \| 'round'`                   | `'default'` | 标签栏形状                          |
-| `activeColor`         | `string`                                 | `''`        | 激活标签颜色（空 = 令牌默认）       |
-| `inactiveColor`       | `string`                                 | `''`        | 未激活标签颜色（空 = 令牌默认）     |
+| `activeColor`         | `string`                                 | `''`        | 激活标签颜色（图标 + 文字，空 = 令牌默认） |
+| `inactiveColor`       | `string`                                 | `''`        | 未激活标签颜色（图标 + 文字，空 = 令牌默认） |
 | `placeholder`         | `boolean`                                | `false`     | 固定时是否生成等高占位元素          |
 | `zIndex`              | `number`                                 | `10`        | 组件层级（仅在 `fixed` 时写入）     |
 | `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | 切换前钩子，返回 `false` 可阻止切换 |

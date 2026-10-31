@@ -109,6 +109,8 @@ const MyFlag: IconData = {
 
 `@snui/uni` 主入口的 shortcut set（`ChevronRight`、`Search`、`Settings` 等 ~22 个）保持 tree-shakeable：named import 只打包引用到的图标。
 
+`IconData` 支持可选字段 `render: 'stroke' | 'fill'`（默认 `'stroke'`）。lucide 形态的路径是轮廓线，按 stroke 描出；Material Symbols / Material Icons 的路径是实心轮廓面，必须声明 `render: 'fill'` 才会按填充渲染（`strokeWidth` 不参与）。
+
 ## 基础用法
 
 <Demo name="icon-mp-basic" description="5 个内置 shortcut 图标（ChevronRight / Search / Settings / Heart / Trash）。每个 named import 是一个独立的 ESM 数据模块。" />
@@ -183,3 +185,4 @@ interface IconData {
 - [web 端 SnIcon](/components/web/icon)
 - [lucide 官方图标库](https://lucide.dev/icons)
 - [Iconify](https://iconify.design) / [iconfont.cn](https://www.iconfont.cn)
+

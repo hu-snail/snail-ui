@@ -109,6 +109,8 @@ const MyFlag: IconData = {
 
 The `@snui/uni` shortcut set (`ChevronRight`, `Search`, `Settings`, ~22 icons) stays tree-shakeable: named imports bundle only the referenced icons.
 
+`IconData` accepts an optional `render: 'stroke' | 'fill'` field (default `'stroke'`). Lucide-style paths are outlines drawn with `stroke`; Material Symbols / Material Icons paths are solid glyph faces and must declare `render: 'fill'` to render filled (`strokeWidth` is ignored in that mode).
+
 ## Basic usage
 
 <Demo name="icon-mp-basic" description="5 shortcut icons (ChevronRight / Search / Settings / Heart / Trash). Each named import is an independent ESM module." />

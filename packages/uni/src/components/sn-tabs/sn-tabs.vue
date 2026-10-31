@@ -322,7 +322,11 @@ const lineStyle = computed(() => {
   const parts: string[] = [];
   if (width) parts.push(`width: ${width}`);
   if (height) parts.push(`height: ${height}`);
-  return parts.length > 0 ? parts.join('; ') : undefined;
+  // 横条是激活态的一部分，跟随 `color`（回归：曾固定 action-primary，
+  // 页面传入主题色后条仍是默认蓝）。空值回落令牌。
+  const line = props.color !== '' ? props.color : 'var(--sn-mp-color-action-primary)';
+  parts.push(`background-color: ${line}`);
+  return parts.join('; ');
 });
 
 /** Inline label colour: `color` on the active pane, `inactiveColor` elsewhere.

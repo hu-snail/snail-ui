@@ -20,20 +20,21 @@ import SnTabbar from '@snui/uni-src/components/sn-tabbar/sn-tabbar.vue';
 import SnTabbarItem from '@snui/uni-src/components/sn-tabbar/sn-tabbar-item.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import {
-  BedDoubleIcon,
-  BikeIcon,
-  CarIcon,
-  ClapperboardIcon,
-  CrossIcon,
-  FlameIcon,
-  LayoutGridIcon,
-  QuoteIcon,
-  ScanLineIcon,
-  ScissorsIcon,
-  SunIcon,
-  TicketIcon,
-  UtensilsIcon,
-} from '../common/icons';
+  AppsIcon,
+  BedIcon,
+  ConfirmationNumberIcon,
+  LocalFireDepartmentIcon,
+  MedicalServicesIcon,
+  MopedIcon,
+  MovieIcon,
+  PedalBikeIcon,
+  RestaurantIcon,
+  SpaIcon,
+  StarFilledIcon,
+  ShoppingBagIcon as MaterialShoppingBagIcon,
+  WbSunnyIcon,
+} from '../common/material-icons';
+import { LayoutGridIcon, QuoteIcon, ScanLineIcon, SunIcon } from '../common/icons';
 import {
   Bell,
   ChevronDown,
@@ -72,17 +73,25 @@ const HOT_PILLS = ['瑞幸咖啡', '小龙虾烧烤', '汉堡王半价', '鲜花
 const keyword = ref('');
 
 /* ── 金刚区 2×5 ───────────────────────────────────────────────────────── */
+/* 配色 / 字形逐项取自设计稿：圆底用各自的 container / fixed 色，字形取
+ * 对应的 on-* 前景色（Material FILL 1 变体）。 */
 const CATS = [
-  { label: '外卖', icon: BikeIcon, bg: '#ffc300', color: '#111111', badge: '热卖' },
-  { label: '美食团购', icon: UtensilsIcon, bg: '#ffbf8a', color: '#834700', badge: '-15元' },
-  { label: '酒店民宿', icon: BedDoubleIcon, bg: '#ffdf9a', color: '#251a00', badge: '' },
-  { label: '休闲娱乐', icon: TicketIcon, bg: '#ffdad8', color: '#410006', badge: '' },
-  { label: '电影演出', icon: ClapperboardIcon, bg: '#eae7e7', color: '#4f4632', badge: '' },
-  { label: '美团买菜', icon: ShoppingBag, bg: '#ffdcc2', color: '#6d3a00', badge: '30分达' },
-  { label: '看病买药', icon: CrossIcon, bg: '#ffdad8', color: '#930019', badge: '24h送' },
-  { label: '丽人美发', icon: ScissorsIcon, bg: '#fff3c4', color: '#785a00', badge: '' },
-  { label: '骑车打车', icon: CarIcon, bg: '#eae7e7', color: '#4f4632', badge: '' },
-  { label: '全部分类', icon: LayoutGridIcon, bg: '#e5e2e1', color: '#4f4632', badge: '' },
+  { label: '外卖', icon: MopedIcon, bg: '#ffc300', color: '#1b1b1c', badge: '热卖' },
+  { label: '美食团购', icon: RestaurantIcon, bg: '#ffbf8a', color: '#834700', badge: '-15元' },
+  { label: '酒店民宿', icon: BedIcon, bg: '#ffdf9a', color: '#251a00', badge: '' },
+  { label: '休闲娱乐', icon: ConfirmationNumberIcon, bg: '#ffdad8', color: '#410006', badge: '' },
+  { label: '电影演出', icon: MovieIcon, bg: '#eae7e7', color: '#4f4632', badge: '' },
+  {
+    label: '美团买菜',
+    icon: MaterialShoppingBagIcon,
+    bg: '#ffdcc2',
+    color: '#8f4e00',
+    badge: '30分达',
+  },
+  { label: '看病买药', icon: MedicalServicesIcon, bg: '#ffdad8', color: '#bb0022', badge: '24h送' },
+  { label: '丽人美发', icon: SpaIcon, bg: '#fff3c4', color: '#785a00', badge: '' },
+  { label: '骑车打车', icon: PedalBikeIcon, bg: '#eae7e7', color: '#4f4632', badge: '' },
+  { label: '全部分类', icon: AppsIcon, bg: '#e5e2e1', color: '#4f4632', badge: '' },
 ];
 
 /* ── 频道胶囊 ─────────────────────────────────────────────────────────── */
@@ -340,7 +349,7 @@ function onTabChange(payload: { value: number | string }): void {
             <view class="mall-nav__row" :style="navStyle">
               <view class="mall-nav__place" @tap="tapFeature('切换地址')">
                 <SnIcon :icon="MapPin" size="40rpx" color="#111111" />
-                <text class="mall-nav__place-text">上海</text>
+                <text class="mall-nav__place-text">Home</text>
                 <SnIcon :icon="ChevronDown" size="30rpx" color="#111111" />
               </view>
               <view class="mall-nav__search" @tap="tapFeature('奶茶爆款半价')">
@@ -642,15 +651,16 @@ function onTabChange(payload: { value: number | string }): void {
         </view>
       </view>
 
-      <!-- ═══ #bottom：底部标签栏 ═══ -->
       <!-- ═══ #bottom：底部标签栏（sn-tabbar，角标由组件渲染） ═══ -->
       <template #bottom>
+        <!-- 设计稿：激活 on-surface #1b1b1c / 未激活 on-surface-variant #4f4632，
+             标签 11px 700，图标 24px 描边字形 -->
         <SnTabbar
           :model-value="0"
           safe-area-inset-bottom
-          active-color="#111111"
-          inactive-color="#9aa0a6"
-          custom-style="background-color: #ffffff; box-shadow: 0 -4rpx 24rpx rgba(0, 0, 0, 0.04);"
+          active-color="#1b1b1c"
+          inactive-color="#4f4632"
+          custom-style="background-color: #fcf9f8; box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.04); --sn-mp-font-size-xs: 22rpx; --sn-mp-font-weight-medium: 700;"
           @change="onTabChange"
         >
           <SnTabbarItem

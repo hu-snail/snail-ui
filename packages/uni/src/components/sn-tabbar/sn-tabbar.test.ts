@@ -300,13 +300,48 @@ describe('sn-tabbar-item', () => {
     expect(wrapper.find('.sn-tabbar-item__css-icon').classes()).toContain('sn-home');
   });
 
-  it('applies the bar activeColor inline on the active item only', () => {
-    const wrapper = mountBar({ modelValue: 0, activeColor: 'rgb(1, 2, 3)' });
-    const items = wrapper.findAll('.sn-tabbar-item');
-    expect(items[0]!.find('.sn-tabbar-item__title').attributes('style')).toContain(
-      'color: rgb(1, 2, 3)',
-    );
-    expect(items[1]!.find('.sn-tabbar-item__title').attributes('style')).toBeUndefined();
+  it('applies the bar activeColor on the item root so the icon inherits it', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Home } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Home });
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabbar,
+            { modelValue: 0, activeColor: 'rgb(1, 2, 3)', inactiveColor: 'rgb(4, 5, 6)' },
+            {
+              default: () => [
+                h(SnTabbarItem, { title: 'A', icon: 'Home' }),
+                h(SnTabbarItem, { title: 'B', icon: 'Home' }),
+              ],
+            },
+          );
+      },
+    });
+    const items = mount(Harness).findAll('.sn-tabbar-item');
+    // 回归：颜色曾只落在 <text> 上，图标（currentColor 描边）保留主题默认色。
+    expect(items[0]!.attributes('style')).toContain('color: rgb(1, 2, 3)');
+    expect(items[0]!.find('.sn-tabbar-item__icon .sn-icon').exists()).toBe(true);
+    expect(items[1]!.attributes('style')).toContain('color: rgb(4, 5, 6)');
+    clearSnIcons();
+  });
+
+  it('sizes the svg icon in rpx so it follows the 750 canvas', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Home } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Home });
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnTabbar, {}, { default: () => [h(SnTabbarItem, { title: 'A', icon: 'Home' })] });
+      },
+    });
+    // 回归：图标曾按 44（px）渲染 —— 750 画布下放大一倍且不随屏宽缩放。
+    // happy-dom 会丢弃 rpx 长度，无法从 style 属性断言，改查转发的 size prop。
+    const icon = mount(Harness).findComponent({ name: 'SnIcon' });
+    expect(icon.props('size')).toBe('48rpx');
+    clearSnIcons();
   });
 
   it('exposes the active flag through the default slot scope', () => {
@@ -365,13 +400,12 @@ describe('sn-tabbar-item', () => {
       expect(wrapper.find('.sn-tabbar__placeholder').attributes('aria-hidden')).toBe('true');
     });
 
-    it('applies inactiveColor to non-active item titles', () => {
+    it('applies inactiveColor to non-active items', () => {
       const wrapper = mountBar({ modelValue: 0, inactiveColor: 'rgb(7, 8, 9)' });
       const items = wrapper.findAll('.sn-tabbar-item');
-      expect(items[0]!.find('.sn-tabbar-item__title').attributes('style')).toBeUndefined();
-      expect(items[1]!.find('.sn-tabbar-item__title').attributes('style')).toContain(
-        'color: rgb(7, 8, 9)',
-      );
+      // 颜色落在 item 根节点（icon 描边经 currentColor 一并解析），label 继承。
+      expect(items[0]!.attributes('style')).toBeUndefined();
+      expect(items[1]!.attributes('style')).toContain('color: rgb(7, 8, 9)');
     });
 
     it('applies activeColor over inactiveColor per item state', () => {
@@ -380,9 +414,9 @@ describe('sn-tabbar-item', () => {
         activeColor: 'rgb(1, 2, 3)',
         inactiveColor: 'rgb(7, 8, 9)',
       });
-      const titles = wrapper.findAll('.sn-tabbar-item__title');
-      expect(titles[0]!.attributes('style')).toContain('color: rgb(1, 2, 3)');
-      expect(titles[1]!.attributes('style')).toContain('color: rgb(7, 8, 9)');
+      const items = wrapper.findAll('.sn-tabbar-item');
+      expect(items[0]!.attributes('style')).toContain('color: rgb(1, 2, 3)');
+      expect(items[1]!.attributes('style')).toContain('color: rgb(7, 8, 9)');
     });
   });
 });

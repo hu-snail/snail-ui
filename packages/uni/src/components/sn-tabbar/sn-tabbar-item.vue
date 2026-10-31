@@ -34,6 +34,13 @@ import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types';
 
 defineOptions({ name: 'SnTabbarItem' });
 
+/**
+ * 图标边长（rpx，750 画布 → 48rpx = 24px，与 `--sn-mp-icon-size-xlarge`
+ * 同档）。必须是 rpx 字符串：数字在 `SnIcon` 里按 **px** 解释，会让图标
+ * 比同画布下的其它几何大一倍且不随屏宽缩放。
+ */
+const TABBAR_ICON_SIZE = '48rpx';
+
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tabbar-item` 1:1 surface ────────────────────────────── */
@@ -90,11 +97,21 @@ const itemValue = computed<SnTabbarValue>(() => props.name ?? registeredIndex);
 
 const isActive = computed(() => tabbar?.isActive(itemValue.value) ?? false);
 
-/** Active / inactive label colour, only emitted when the bar overrides it. */
-const labelColor = computed<string | undefined>(() => {
+/** Active / inactive colour, emitted on the root so icon, label and any
+ * slotted glyph all resolve it (icon strokes paint with `currentColor`). */
+const activeColor = computed<string | undefined>(() => {
   if (!tabbar) return undefined;
   const custom = isActive.value ? tabbar.activeColor.value : tabbar.inactiveColor.value;
   return custom === '' ? undefined : custom;
+});
+
+/** Root inline style: caller style first, the resolved active/inactive colour last. */
+const rootStyle = computed<string | undefined>(() => {
+  const parts: string[] = [];
+  if (props.customStyle) parts.push(props.customStyle);
+  const custom = activeColor.value;
+  if (custom) parts.push(`color: ${custom}`);
+  return parts.length === 0 ? undefined : parts.join(';');
 });
 
 const iconData = computed<IconData | null>(() => {
@@ -137,7 +154,7 @@ const rootClass = computed(() => [
   <view
     data-snui-component="tabbar-item"
     :class="rootClass"
-    :style="customStyle || undefined"
+    :style="rootStyle"
     role="tab"
     :aria-selected="isActive"
     :aria-label="title || undefined"
@@ -148,7 +165,7 @@ const rootClass = computed(() => [
       <view class="sn-tabbar-item__inner">
         <view class="sn-tabbar-item__icon">
           <slot name="icon" :active="isActive">
-            <SnIcon v-if="iconData" :icon="iconData" :size="44" />
+            <SnIcon v-if="iconData" :icon="iconData" :size="TABBAR_ICON_SIZE" />
             <text
               v-else-if="cssIconClass"
               :class="['sn-tabbar-item__css-icon', cssIconClass]"
@@ -163,12 +180,7 @@ const rootClass = computed(() => [
             <text v-if="badgeText" class="sn-tabbar-item__badge-text">{{ badgeText }}</text>
           </view>
         </view>
-        <text
-          v-if="title"
-          class="sn-tabbar-item__title"
-          :style="labelColor ? `color: ${labelColor}` : undefined"
-          >{{ title }}</text
-        >
+        <text v-if="title" class="sn-tabbar-item__title">{{ title }}</text>
       </view>
     </slot>
   </view>
@@ -219,7 +231,7 @@ const rootClass = computed(() => [
 }
 
 .sn-tabbar-item__css-icon {
-  font-size: var(--sn-mp-icon-size-large);
+  font-size: var(--sn-mp-icon-size-xlarge);
   line-height: 1;
   color: inherit;
 }
