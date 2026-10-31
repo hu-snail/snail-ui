@@ -5,9 +5,6 @@
  * symmetric across ends.
  *
  * Untestable in happy-dom:
- *  - focusWhenClear re-focus after clear: uni-end intentionally leaves the
- *    re-focus to the consumer (soft keyboard is dismissed on MP blur);
- *    there is no observable DOM behavior to assert.
  *  - the programmatic `focus` prop path: happy-dom's `.focus()` updates
  *    `document.activeElement` but dispatches no focus event, so the
  *    `--focused` class flip cannot be observed there (the event-driven path
@@ -77,6 +74,60 @@ describe('sn-input', () => {
     Object.defineProperty(synthetic, 'detail', { value: { value: 'abc', cursor: 3 } });
     input.dispatchEvent(synthetic);
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['abc']);
+    wrapper.unmount();
+  });
+
+  it('delivers one update per keystroke when uni replays it as a fresh synthetic event', async () => {
+    /* uni-input re-wraps each native keystroke into a NEW synthetic object
+     * (throttled), so event-identity dedupe never matched and H5 delivered
+     * every key twice — two model writes + two parent input events. The
+     * funnel dedupes by VALUE: the replay of an already-delivered value is
+     * dropped. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const replay = new Event('input', { bubbles: true });
+    Object.defineProperty(replay, 'target', { value: { id: 'demo', dataset: {} } });
+    Object.defineProperty(replay, 'detail', { value: { value: 'ab', cursor: 2 } });
+    input.dispatchEvent(replay);
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
+    expect(wrapper.emitted('input')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('re-delivers after an external model write lands on a different value', async () => {
+    /* The dedupe memo must not swallow a user edit that brings the field
+     * back to the last TYPED value after the parent moved the model
+     * elsewhere: type "ab", parent sets "abc", user backspaces to "ab". */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await wrapper.setProps({ modelValue: 'abc' });
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const values = wrapper.emitted('update:modelValue')?.map((args) => args[0]);
+    expect(values).toEqual(['ab', 'ab']);
+    wrapper.unmount();
+  });
+
+  it('does not dedupe consecutive distinct keystrokes', async () => {
+    const wrapper = mount(SnInput, { props: { modelValue: '' } });
+    await wrapper.find('input').setValue('a');
+    await wrapper.find('input').setValue('ab');
+    expect(wrapper.emitted('update:modelValue')?.map((args) => args[0])).toEqual(['a', 'ab']);
+  });
+
+  it('emits an empty confirm (not the stale model) when the detail carries an empty value', async () => {
+    /* Confirm events carry detail.value; an explicit empty confirm used to
+     * fall back to the stale model through the `||` in the old reader. */
+    const wrapper = mount(SnInput, { props: { modelValue: 'hello' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    const confirm = new Event('confirm');
+    Object.defineProperty(confirm, 'detail', { value: { value: '' } });
+    input.dispatchEvent(confirm);
+    expect(wrapper.emitted('confirm')?.at(-1)).toEqual(['']);
     wrapper.unmount();
   });
 

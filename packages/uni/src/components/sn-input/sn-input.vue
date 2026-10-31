@@ -25,7 +25,7 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
+import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
@@ -407,6 +407,12 @@ function coerceTyping(raw: string): number | string {
   return String(n) === raw ? n : raw;
 }
 
+/** The `detail.value` string of a uni component-level event, if it carries one. */
+function eventDetailValue(event: Event): string | null {
+  const detail = (event as unknown as { detail?: { value?: unknown } }).detail;
+  return detail && typeof detail.value === 'string' ? detail.value : null;
+}
+
 /**
  * Read the typed value off either event shape. uni-h5's component-level
  * `input` events are SYNTHETIC objects: `target` is a plain
@@ -417,21 +423,54 @@ function coerceTyping(raw: string): number | string {
  * keystroke in compiled apps.
  */
 function readEventValue(event: Event): string {
-  const detail = (event as unknown as { detail?: { value?: unknown } }).detail;
-  if (detail && typeof detail.value === 'string') return detail.value;
+  const detailValue = eventDetailValue(event);
+  if (detailValue !== null) return detailValue;
   const target = event.target as HTMLInputElement | null;
   if (target && typeof target.value === 'string') return target.value;
   return '';
 }
 
-function onInput(event: Event): void {
-  /* The capture-phase mirror already delivered this exact native event in
-   * real time; uni's component-level emit (possibly throttled) only wraps
-   * the same object. MP has no mirror and takes this path for every key. */
-  if (event && event === lastMirroredEvent) return;
-  const next = coerceTyping(readEventValue(event));
+/** Last value this instance delivered upstream through the typing pipeline. */
+let lastTypedValue: string | number | null = null;
+
+/**
+ * Single upstream funnel for every typed value, whatever carrier brought it
+ * (H5 capture mirror, uni component-level replay, MP component event).
+ *
+ * Dedupe is BY VALUE, not by event identity: uni-input re-wraps each native
+ * keystroke into a FRESH synthetic object (throttled to ~10Hz), so an
+ * identity check never matches and H5 delivered every keystroke twice —
+ * two model writes and two parent `input` events per key. A value guard
+ * drops only that redundant replay. The one hole — an EXTERNAL model write
+ * landing on the last typed value between keystrokes (parent set "abc"
+ * after we delivered "ab"; backspacing to "ab" must re-deliver) — is closed
+ * by the modelValue watcher below, which resets the memo whenever the echo
+ * differs from what we last sent. Our own v-model round-trip always equals
+ * the memo and passes through without resetting it.
+ */
+function deliverTypingValue(raw: string, event: Event): void {
+  const next = coerceTyping(raw);
+  if (next === lastTypedValue) return;
+  lastTypedValue = next;
   emit('update:modelValue', next);
   emit('input', next, event);
+}
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (coerceTyping(value === null || value === undefined ? '' : String(value)) !== lastTypedValue) {
+      lastTypedValue = null;
+    }
+  },
+);
+
+function onInput(event: Event): void {
+  /* The capture-phase mirror already delivered this native keystroke in
+   * real time; uni's component-level replay (throttled) carries the same
+   * value in synthetic shape and is deduped in the funnel. MP has no mirror
+   * and takes this path alone for every keystroke. */
+  deliverTypingValue(readEventValue(event), event);
 }
 
 /**
@@ -443,9 +482,6 @@ function onInput(event: Event): void {
  * unthrottled component events and has no DOM; the mirror stays H5-only.
  */
 let detachNativeMirror: (() => void) | null = null;
-/** The native event the mirror already delivered — uni's component-level
- * `input` emit re-wraps the SAME event object, so identity dedupes it. */
-let lastMirroredEvent: Event | null = null;
 
 function attachNativeInputMirror(): void {
   if (typeof document === 'undefined') return;
@@ -457,10 +493,7 @@ function attachNativeInputMirror(): void {
   const handler = (event: Event): void => {
     const target = event.target as HTMLInputElement | null;
     if (!target || typeof target.value !== 'string') return;
-    lastMirroredEvent = event;
-    const next = coerceTyping(target.value);
-    emit('update:modelValue', next);
-    emit('input', next, event);
+    deliverTypingValue(target.value, event);
   };
   host.addEventListener('input', handler, true);
   detachNativeMirror = () => host.removeEventListener('input', handler, true);
@@ -484,11 +517,13 @@ function onBlur(event: Event): void {
 }
 
 function onConfirm(event: Event): void {
-  const raw = readEventValue(event) || nativeValue.value;
+  /* uni-h5 / MP confirm events carry `detail.value`; raw dispatches (tests)
+   * carry nothing. An explicit empty confirm must stay empty — the model
+   * fallback applies only when the event has no detail payload at all. */
+  const raw = eventDetailValue(event) ?? nativeValue.value;
   const next: number | string =
     (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
   emit('confirm', next);
-  void event;
 }
 
 /**
