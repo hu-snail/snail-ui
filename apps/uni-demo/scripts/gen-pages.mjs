@@ -313,7 +313,7 @@ for (const sub of subpackages) {
     ].join('\n');
     const modules = comp.demos
       .map(
-        (demo, i) => `      <view class="module demo-glass">
+        (demo, i) => `      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('${scenarioLabel(demo.scenario)}', '${scenarioLabelEn(demo.scenario)}') }}</text>
         </view>
@@ -344,13 +344,15 @@ ${modules}
   padding: 24rpx;
 }
 
+/* 场景模块：无卡片底（弥散渐变背景直接透出），标题外置在页面背景上，
+ * demo 内容紧随其下；仅用间距分节。 */
 .module {
-  margin-bottom: 24rpx;
+  margin-bottom: 40rpx;
   /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
 }
 
 .module__head {
-  padding: 24rpx 24rpx 0;
+  padding: 0 8rpx 16rpx;
 }
 
 .module__title {
@@ -360,7 +362,7 @@ ${modules}
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>
 `;

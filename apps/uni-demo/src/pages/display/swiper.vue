@@ -20,7 +20,7 @@ const { t } = useDemoUi();
 <template>
   <DemoPageShell :title-zh="'轮播'" :title-en="'Swiper'">
     <view class="page">
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
@@ -28,7 +28,7 @@ const { t } = useDemoUi();
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('coverflow', 'Coverflow') }}</text>
         </view>
@@ -36,7 +36,7 @@ const { t } = useDemoUi();
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
@@ -44,7 +44,7 @@ const { t } = useDemoUi();
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('data', 'Data') }}</text>
         </view>
@@ -52,7 +52,7 @@ const { t } = useDemoUi();
           <Demo3 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('indicator', 'Indicator') }}</text>
         </view>
@@ -60,7 +60,7 @@ const { t } = useDemoUi();
           <Demo4 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('indicator-position', 'Indicator Position') }}</text>
         </view>
@@ -68,7 +68,7 @@ const { t } = useDemoUi();
           <Demo5 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('multiple', 'Multiple') }}</text>
         </view>
@@ -76,7 +76,7 @@ const { t } = useDemoUi();
           <Demo6 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('playback', 'Playback') }}</text>
         </view>
@@ -84,7 +84,7 @@ const { t } = useDemoUi();
           <Demo7 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
         </view>
@@ -92,7 +92,7 @@ const { t } = useDemoUi();
           <Demo8 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('video', 'Video') }}</text>
         </view>
@@ -109,13 +109,15 @@ const { t } = useDemoUi();
   padding: 24rpx;
 }
 
+/* 场景模块：无卡片底（弥散渐变背景直接透出），标题外置在页面背景上，
+ * demo 内容紧随其下；仅用间距分节。 */
 .module {
-  margin-bottom: 24rpx;
+  margin-bottom: 40rpx;
   /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
 }
 
 .module__head {
-  padding: 24rpx 24rpx 0;
+  padding: 0 8rpx 16rpx;
 }
 
 .module__title {
@@ -125,6 +127,6 @@ const { t } = useDemoUi();
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

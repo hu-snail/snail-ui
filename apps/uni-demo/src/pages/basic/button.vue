@@ -24,7 +24,7 @@ const { t } = useDemoUi();
 <template>
   <DemoPageShell :title-zh="'按钮'" :title-en="'Button'">
     <view class="page">
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
@@ -32,7 +32,7 @@ const { t } = useDemoUi();
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
@@ -40,7 +40,7 @@ const { t } = useDemoUi();
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('单元格', 'Cell') }}</text>
         </view>
@@ -48,7 +48,7 @@ const { t } = useDemoUi();
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
@@ -56,7 +56,7 @@ const { t } = useDemoUi();
           <Demo3 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('表单类型', 'Form type') }}</text>
         </view>
@@ -64,7 +64,7 @@ const { t } = useDemoUi();
           <Demo4 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('悬停', 'Hover') }}</text>
         </view>
@@ -72,7 +72,7 @@ const { t } = useDemoUi();
           <Demo5 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('图标按钮', 'Icon Button') }}</text>
         </view>
@@ -80,7 +80,7 @@ const { t } = useDemoUi();
           <Demo6 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('loading-props', 'Loading Props') }}</text>
         </view>
@@ -88,7 +88,7 @@ const { t } = useDemoUi();
           <Demo7 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('mp-open-type', 'Mp Open Type') }}</text>
         </view>
@@ -96,7 +96,7 @@ const { t } = useDemoUi();
           <Demo8 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('open-type', 'Open Type') }}</text>
         </view>
@@ -104,7 +104,7 @@ const { t } = useDemoUi();
           <Demo9 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('形状', 'Shape') }}</text>
         </view>
@@ -112,7 +112,7 @@ const { t } = useDemoUi();
           <Demo10 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('尺寸', 'Size') }}</text>
         </view>
@@ -120,7 +120,7 @@ const { t } = useDemoUi();
           <Demo11 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('状态', 'State') }}</text>
         </view>
@@ -128,7 +128,7 @@ const { t } = useDemoUi();
           <Demo12 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('变体', 'Variants') }}</text>
         </view>
@@ -145,13 +145,15 @@ const { t } = useDemoUi();
   padding: 24rpx;
 }
 
+/* 场景模块：无卡片底（弥散渐变背景直接透出），标题外置在页面背景上，
+ * demo 内容紧随其下；仅用间距分节。 */
 .module {
-  margin-bottom: 24rpx;
+  margin-bottom: 40rpx;
   /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
 }
 
 .module__head {
-  padding: 24rpx 24rpx 0;
+  padding: 0 8rpx 16rpx;
 }
 
 .module__title {
@@ -161,6 +163,6 @@ const { t } = useDemoUi();
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

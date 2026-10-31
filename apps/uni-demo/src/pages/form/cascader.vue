@@ -17,7 +17,7 @@ const { t } = useDemoUi();
 <template>
   <DemoPageShell :title-zh="'级联选择器'" :title-en="'Cascader'">
     <view class="page">
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
@@ -25,7 +25,7 @@ const { t } = useDemoUi();
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('卡片', 'Card') }}</text>
         </view>
@@ -33,7 +33,7 @@ const { t } = useDemoUi();
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
@@ -41,7 +41,7 @@ const { t } = useDemoUi();
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('字段', 'Fields') }}</text>
         </view>
@@ -49,7 +49,7 @@ const { t } = useDemoUi();
           <Demo3 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('lazy-confirm', 'Lazy Confirm') }}</text>
         </view>
@@ -57,7 +57,7 @@ const { t } = useDemoUi();
           <Demo4 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('动作面板', 'Action sheet') }}</text>
         </view>
@@ -65,7 +65,7 @@ const { t } = useDemoUi();
           <Demo5 />
         </view>
       </view>
-      <view class="module demo-glass">
+      <view class="module">
         <view class="module__head">
           <text class="module__title">{{ t('strict-lazy', 'Strict Lazy') }}</text>
         </view>
@@ -82,13 +82,15 @@ const { t } = useDemoUi();
   padding: 24rpx;
 }
 
+/* 场景模块：无卡片底（弥散渐变背景直接透出），标题外置在页面背景上，
+ * demo 内容紧随其下；仅用间距分节。 */
 .module {
-  margin-bottom: 24rpx;
+  margin-bottom: 40rpx;
   /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
 }
 
 .module__head {
-  padding: 24rpx 24rpx 0;
+  padding: 0 8rpx 16rpx;
 }
 
 .module__title {
@@ -98,6 +100,6 @@ const { t } = useDemoUi();
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>
