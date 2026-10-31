@@ -11,22 +11,24 @@ onHide(() => {});
 <style>
 /* 全局主题变量与动画（demo-shell / demo-glass 体系，见 DemoPageShell）。 */
 page {
-  --demo-page-bg: #f8f8f8;
-  /* 卡片：近白渐变 + 白描边 + 柔影（首页双列卡与组件页玻璃卡共用） */
-  --demo-card-bg: linear-gradient(150deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
-  --demo-card-border: rgba(255, 255, 255, 0.9);
-  --demo-card-shadow: 0 12rpx 32rpx rgba(76, 60, 140, 0.08);
+  --demo-page-bg: #f8fafc;
+  /* 画布渐变（组件规范视觉稿）：slate-50 → slate-200，分区卡片浮在其上。 */
+  --demo-page-canvas: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 55%, #e7eaf0 100%);
+  /* 卡片：白底 + slate 描边 + 柔影（首页双列卡与组件页场景卡共用）。 */
+  --demo-card-bg: rgba(255, 255, 255, 0.92);
+  --demo-card-border: rgba(226, 232, 240, 0.8);
+  --demo-card-shadow: 0 8rpx 32rpx -8rpx rgba(15, 23, 42, 0.06);
   --demo-btn-bg: rgba(255, 255, 255, 0.66);
   --demo-btn-border: rgba(255, 255, 255, 0.85);
   --demo-search-bg: rgba(255, 255, 255, 0.88);
-  --demo-chip-bg: rgba(255, 255, 255, 0.66);
-  --demo-chip-border: rgba(255, 255, 255, 0.9);
+  --demo-chip-bg: rgba(241, 245, 249, 0.9);
+  --demo-chip-border: rgba(226, 232, 240, 0.8);
   --demo-icon-bg: linear-gradient(135deg, #eaf1ff, #dbe7ff);
   --demo-icon-fg: #4c7cf0;
   --demo-title: #1c2030;
   --demo-text: #565d73;
   --demo-text-3: #8f97ad;
-  background-color: #f8f8f8;
+  background-color: #f8fafc;
 }
 
 /* 组件 token 锚定（关键修复）：tokens-mp 的 --sn-mp-* 颜色别名在某些环境
@@ -87,6 +89,7 @@ page {
 .demo-shell--dark {
   --sn-mp-color-control-knob: #e4e4e7;
   --demo-page-bg: #121020;
+  --demo-page-canvas: linear-gradient(180deg, #171526 0%, #121020 100%);
   --demo-card-bg: linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   --demo-card-border: rgba(255, 255, 255, 0.1);
   --demo-card-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.4);

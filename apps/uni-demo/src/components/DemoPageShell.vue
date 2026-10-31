@@ -3,8 +3,8 @@
  * DemoPageShell —— 演示工程页面壳：中性浅灰画布 +
  * 语言/主题图标按钮（ADR-0005 演示工程全局 UI）。
  *
- * - 背景：纯色浅灰（`--demo-page-bg`，浅色 #f8f8f8 / 深色 #121020），
- *   组件预览的中性画布；装饰色块已移除。
+ * - 背景：纵向浅灰渐变画布（`--demo-page-canvas`，组件规范视觉稿；
+ *   深色为暗色渐变），场景卡片浮在其上；`--demo-page-bg` 作回退色。
  * - 主题：根节点挂 `demo-shell--dark` 切换 CSS 变量（见 App.vue 全局段）；
  *   同步导航栏颜色（尽力而为）。
  * - 语言：中/英切换，文案与导航栏标题联动；组件中文名/描述暂无英文数据，
@@ -174,7 +174,9 @@ watch(
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  background-color: var(--demo-page-bg);
+  /* 组件规范视觉稿画布：纵向浅灰渐变（slate-50 → slate-200），分区卡片
+   * 浮在其上；--demo-page-bg 作无渐变环境的回退色。 */
+  background: var(--demo-page-canvas, var(--demo-page-bg));
   color: var(--demo-title);
 }
 
