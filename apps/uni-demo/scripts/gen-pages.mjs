@@ -36,6 +36,7 @@ const SCENARIO_LABELS = {
   basic: '基础用法',
   behavior: '行为',
   size: '尺寸',
+  sizes: '尺寸',
   shape: '形状',
   state: '状态',
   states: '状态',
@@ -103,12 +104,58 @@ const SCENARIO_LABELS = {
   range: '日期范围',
   formatter: '自定义文案',
   nav: '导航按钮',
+  'no-border': '无边框',
+  radius: '圆角',
+  'align-compact': '对齐与紧凑',
+  'bordered-bg-radius': '边框与背景',
+  'clear-focus': '清空与聚焦',
+  'clearable-count': '清空与字数',
+  'native-attrs': '原生属性',
+  'password-toggle': '密码显隐',
+  'prefix-suffix': '前后图标',
+  runtime: '运行时属性',
+  'word-limit': '字数统计',
+};
+
+/**
+ * 组件级场景标题覆盖：key 为 `<comp>-<scenario>`。同一 scenario key 在不同
+ * 组件下语义不同（input 的 states 是禁用/只读、status 是校验状态），全局
+ * 映射表无法表达时在这里按组件消歧。
+ */
+const SCENARIO_LABEL_OVERRIDES = {
+  'input-states': '禁用与只读',
+  'input-status': '校验状态',
+};
+
+/**
+ * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
+ * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
+ */
+const DEMO_ORDER = {
+  'input-mp-basic': 1,
+  'input-mp-types': 2,
+  'input-mp-sizes': 3,
+  'input-mp-radius': 4,
+  'input-mp-bordered-bg-radius': 5,
+  'input-mp-prefix-suffix': 6,
+  'input-mp-slots': 7,
+  'input-mp-clearable-count': 8,
+  'input-mp-clear-focus': 9,
+  'input-mp-password-toggle': 10,
+  'input-mp-word-limit': 11,
+  'input-mp-status': 12,
+  'input-mp-states': 13,
+  'input-mp-align-compact': 14,
+  'input-mp-native-attrs': 15,
+  'input-mp-runtime': 16,
+  'input-mp-custom-class': 17,
 };
 
 const SCENARIO_LABELS_EN = {
   basic: 'Basic usage',
   behavior: 'Behavior',
   size: 'Size',
+  sizes: 'Sizes',
   shape: 'Shape',
   state: 'State',
   states: 'State',
@@ -172,17 +219,37 @@ const SCENARIO_LABELS_EN = {
   range: 'Date range',
   formatter: 'Custom text',
   nav: 'Navigation',
+  'no-border': 'No border',
+  radius: 'Radius',
+  'align-compact': 'Alignment & compact',
+  'bordered-bg-radius': 'Border & background',
+  'clear-focus': 'Clear & focus',
+  'clearable-count': 'Clearable & count',
+  'native-attrs': 'Native attributes',
+  'password-toggle': 'Password toggle',
+  'prefix-suffix': 'Prefix & suffix icons',
+  runtime: 'Runtime attributes',
+  'word-limit': 'Word limit',
 };
 
-function scenarioLabel(scenario) {
+const SCENARIO_LABEL_OVERRIDES_EN = {
+  'input-states': 'Disabled & readonly',
+  'input-status': 'Validation status',
+};
+
+function scenarioLabel(comp, scenario) {
   if (scenario === undefined || scenario === '') return SCENARIO_LABELS.basic;
-  return SCENARIO_LABELS[scenario] ?? scenario;
+  return SCENARIO_LABEL_OVERRIDES[`${comp}-${scenario}`] ?? SCENARIO_LABELS[scenario] ?? scenario;
 }
 
 /** 场景英文标题：映射表优先，未收录的 key 用 Title Case 兜底。 */
-function scenarioLabelEn(scenario) {
+function scenarioLabelEn(comp, scenario) {
   if (scenario === undefined || scenario === '') return SCENARIO_LABELS_EN.basic;
-  return SCENARIO_LABELS_EN[scenario] ?? titleEnOf(scenario);
+  return (
+    SCENARIO_LABEL_OVERRIDES_EN[`${comp}-${scenario}`] ??
+    SCENARIO_LABELS_EN[scenario] ??
+    titleEnOf(scenario)
+  );
 }
 
 // ── 扫描 demo 源（src/pages/<group>/demos/） ────────────────────────────────
@@ -222,7 +289,11 @@ for (const { file } of demoFiles) {
   byComp.get(comp).push({ name, scenario, hasEn: enNames.has(name) });
 }
 for (const list of byComp.values()) {
-  list.sort((a, b) => a.name.localeCompare(b.name));
+/** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
+const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
+for (const list of byComp.values()) {
+  list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
+}
 }
 
 // ── 组件分组与元数据（分组/切分单源见 scripts/subpackages.mjs） ─────────────
@@ -315,7 +386,7 @@ for (const sub of subpackages) {
       .map(
         (demo, i) => `      <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('${scenarioLabel(demo.scenario)}', '${scenarioLabelEn(demo.scenario)}') }}</text>
+          <text class="module__title">{{ t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}') }}</text>
         </view>
         <view class="module__body">
           <Demo${i} />
@@ -382,7 +453,7 @@ const manifest = {
           page: `pages/${sub.root}/${comp.key}`,
           demos: comp.demos.map((demo) => ({
             name: demo.name,
-            title: scenarioLabel(demo.scenario),
+            title: scenarioLabel(comp.key, demo.scenario),
             hasEn: demo.hasEn,
           })),
         },

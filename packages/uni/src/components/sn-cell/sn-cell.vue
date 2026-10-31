@@ -482,7 +482,9 @@ const rootClass = computed(() => [
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  /* Vertical rhythm tuned +4rpx per design review (16rpx read cramped under
+     large titles); horizontal keeps the spacing token. */
+  padding: 20rpx var(--sn-mp-spacing-4);
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);

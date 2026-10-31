@@ -5,6 +5,7 @@ import Demo1 from './demos/cell-mp-card.vue';
 import Demo2 from './demos/cell-mp-icon.vue';
 import Demo3 from './demos/cell-mp-layout.vue';
 import Demo4 from './demos/cell-mp-link.vue';
+import Demo5 from './demos/cell-mp-no-border.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -53,6 +54,14 @@ const { t } = useDemoUi();
         </view>
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <text class="module__title">{{ t('无边框', 'No border') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>
