@@ -5,8 +5,9 @@
  * `center`, `layout`, `valueAlign`, plus the group's own `border`). The group
  * provides them through `provide()`; a cell only falls back to the group value
  * when its own prop is `undefined`, so an explicit per-cell prop still wins.
- * `card` is the AUI additive card mode (AGENTS.md §112.3a) and follows the
- * same inherit-or-override contract.
+ * The group's `card` flag is NOT part of the context — it styles the group
+ * container itself (one card for the whole group, AGENTS.md §112.3a); a
+ * per-row card is a cell-level `card` prop only.
  */
 
 import type { InjectionKey, Ref } from 'vue';
@@ -32,10 +33,8 @@ export interface SnCellGroupContext {
   layout: Ref<SnCellLayout>;
   /** Group-level value alignment. */
   valueAlign: Ref<SnCellValueAlign>;
-  /** Group-level card style flag. */
+  /** Group-level insert (rounded container) flag. */
   insert: Ref<boolean>;
-  /** Group-level per-row card flag (additive). */
-  card: Ref<boolean>;
 }
 
 export const SN_CELL_GROUP_KEY: InjectionKey<SnCellGroupContext> = Symbol('sn-cell-group');

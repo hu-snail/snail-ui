@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * Demo: sn-cell — 卡片形态（card：每行一张独立圆角卡片）。
+ * Demo: sn-cell — 卡片形态（card：整组一张卡）。
  *
- * 上：sn-cell-group card 模式，组透明、行间用 token 间距分开，每行自带
- * 圆角 / 描边 / 阴影；下：sn-cell card 脱离分组单独成卡，间距由外层用
- * 同一 token 保持一致。
+ * 上：sn-cell-group card 模式，整组渲染为一张圆角卡片（token 圆角 / 描边 /
+ * 阴影），行间以内嵌分割线分开；下：sn-cell card 脱离分组单独成卡，间距由
+ * 外层用同一 token 保持一致。
  */
 import { Camera, CreditCard, Gift, Truck, Wallet } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
@@ -13,7 +13,7 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__label">分组卡片（sn-cell-group card，每行一张卡，行间距走 token）</text>
+    <text class="sn-demo__label">分组卡片（sn-cell-group card，整组一张卡，行间内嵌分割线）</text>
     <SnCellGroup title="快捷入口" card>
       <SnCell title="扫一扫" :prefix-icon-data="Camera" is-link />
       <SnCell title="收付款" :prefix-icon-data="CreditCard" is-link />

@@ -14,11 +14,11 @@
  *
  * ## Inherited props
  *
- * `border` / `titleWidth` / `center` / `layout` / `valueAlign` / `card` are
- * documented upstream as "继承自 CellGroup" (`card` is the AUI additive
- * below). Each stays `undefined` here and only falls back to the injected
- * group value when unset — so an explicit per-cell prop always wins, and a
- * cell outside a group keeps a sane default. See `sn-cell-types.ts`.
+ * `border` / `titleWidth` / `center` / `layout` / `valueAlign` are documented
+ * upstream as "继承自 CellGroup". Each stays `undefined` here and only falls
+ * back to the injected group value when unset — so an explicit per-cell prop
+ * always wins, and a cell outside a group keeps a sane default. See
+ * `sn-cell-types.ts`.
  *
  * ## Additive props (AUI-OPT-01, AGENTS.md §112.3a — wd-cell has none of these)
  *
@@ -32,8 +32,9 @@
  *     name.
  *   - `iconColor` — inline colour for the SVG icons; pass
  *     `var(--sn-mp-color-*)` tokens (§112.5).
- *   - `card` — independent card look per row: radius / border / shadow from
- *     tokens, the inner hairline suppressed. Inherited from sn-cell-group.
+ *   - `card` — independent card look for this row: radius / border / shadow
+ *     from tokens, the inner hairline suppressed. The group-level card form
+ *     (one card around the whole group) lives on sn-cell-group itself.
  *   - `iconSize` also accepts the named tiers `tiny|small|medium|large|xlarge`
  *     which map to the `--sn-mp-icon-size-*` tokens; bare numbers are rpx
  *     design values and unknown strings pass through (backward compatible).
@@ -153,7 +154,7 @@ const props = withDefaults(
     suffixIconUrl?: string;
     /** 图标颜色（仅 SVG 图标；请传 `var(--sn-mp-color-*)` token）。 */
     iconColor?: string;
-    /** 卡片形态：整行渲染为圆角独立卡片；组内未显式设置时继承 sn-cell-group 的 card。 */
+    /** 卡片形态：该行渲染为独立圆角卡片（脱离分组或组内显式开启时生效）；组的整卡形态由 sn-cell-group 的 card 承担。 */
     card?: boolean | undefined;
   }>(),
   {
@@ -268,8 +269,10 @@ const iconBoxStyle = computed(() => `width: ${effectiveIconSize.value}; height: 
 /** Inline colour for the SVG icons (additive); unset keeps the token default. */
 const iconColorStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));
 
-/** Card look per row (additive): explicit prop wins, then the group. */
-const effectiveCard = computed(() => props.card ?? group?.card.value ?? false);
+/** Card look for THIS row (additive): a standalone cell or an explicit opt-in
+ * renders as its own card. A group's `card` styles the group container itself
+ * (one card for the whole group) and is deliberately not inherited per row. */
+const effectiveCard = computed(() => props.card ?? false);
 
 /** Font-icon class list for either side. */
 function cssIconClass(name: string | undefined): string {

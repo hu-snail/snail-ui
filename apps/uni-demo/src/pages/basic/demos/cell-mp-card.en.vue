@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-cell — card form (card: every row renders as its own rounded card). */
+/** Demo: sn-cell — card form (card: the whole group renders as ONE rounded card). */
 import { Camera, CreditCard, Gift, Truck, Wallet } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
@@ -7,7 +7,7 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__label">Card group (sn-cell-group card — token gap between carded rows)</text>
+    <text class="sn-demo__label">Card group (sn-cell-group card — one card, inner hairlines)</text>
     <SnCellGroup title="Quick actions" card>
       <SnCell title="Scan" :prefix-icon-data="Camera" is-link />
       <SnCell title="Pay & collect" :prefix-icon-data="CreditCard" is-link />

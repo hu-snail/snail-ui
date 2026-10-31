@@ -11,7 +11,7 @@
 
 List row plus its grouping container. The group owns the card surface and
 section heading; rows inherit `border` / `titleWidth` / `center` / `layout` /
-`valueAlign` / `card` through `provide`/`inject`, and an explicit row prop always wins.
+`valueAlign` through `provide`/`inject`, and an explicit row prop always wins.
 
 ## Import
 
@@ -40,7 +40,7 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `valueAlign`  | inherit-able | `'right'`      | Values inherited by every row.   |
 | `titleWidth`  | inherit-able | `undefined`    | Values inherited by every row.   |
 | `center`      | inherit-able | `false`        | Values inherited by every row.   |
-| `card`        | inherit-able | `false`        | Per-row card style, inherited.   |
+| `card`        | `boolean`      | `false`        | Whole group renders as ONE elevated rounded card; rows separated by inner hairlines. Additive (AUI-OPT-01). |
 | `customClass` | `string`     | `''`           | Root forwarding.                 |
 | `customStyle` | `string`     | `''`           | Root forwarding.                 |
 
@@ -60,7 +60,7 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `suffixIconData`    | `IconData`                     | `undefined` | Trailing icon data object (built-in set / custom), wins over `suffixIcon`. Additive (AUI-OPT-01). |
 | `prefixIconUrl`     | `string`                       | `''`        | Leading image URL via `<image>`; below `prefixIconData`, above `prefixIcon`. Additive (AUI-OPT-01). |
 | `suffixIconUrl`     | `string`                       | `''`        | Trailing image URL via `<image>`; below `suffixIconData`, above `suffixIcon`. Additive (AUI-OPT-01). |
-| `card`              | `boolean`                      | `undefined` | Card style: row renders as an independent rounded card; inherits group when unset. Additive (AUI-OPT-01). |
+| `card`              | `boolean`                      | `undefined` | Card style: THIS row renders as an independent rounded card (hairline suppressed). The group card form lives on sn-cell-group. Additive (AUI-OPT-01). |
 | `iconPrefix`       | `string`                        | `''`        | Iconfont class prefix.                                               |
 | `cssIcon`          | `boolean \| string`             | `false`     | Render a font icon.                                                  |
 | `to`               | `string`                        | `''`        | Link behaviour; `to` / `replace` are forwarded through `click` only. |

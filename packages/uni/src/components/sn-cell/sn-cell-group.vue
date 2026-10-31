@@ -22,11 +22,13 @@
  *
  * ## Additive: `card` (AUI-OPT-01, AGENTS.md §112.3a)
  *
- * `insert` paints the whole group as one rounded card; `card` (additive) turns
- * every row into its own independent card instead — the group goes transparent,
- * the body gains a token gap and the group outline is dropped (each cell draws
- * its own radius / border / shadow from tokens). `border` stays accepted but
- * has no effect in card mode, so a card group never renders a doubled outline.
+ * `insert` paints the whole group as one rounded card; `card` (additive) is
+ * the elevated form of the same idea — the whole group renders as ONE card
+ * (token radius / border / shadow), rows separated by the cells' inner
+ * hairlines instead of per-row cards. A standalone `sn-cell card` still makes
+ * that single row a card; inside a card group rows stay plain unless a cell
+ * explicitly opts in. `border` draws the container outline in card mode, so
+ * the card never doubles up with per-row outlines.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -62,7 +64,7 @@ const props = withDefaults(
     titleWidth?: string | number | undefined;
     /** 是否使内容垂直居中，子单元格继承。 */
     center?: boolean;
-    /** 卡片形态（additive）：每行渲染为独立圆角卡片，组背景透明并以 token 间距分行。 */
+    /** 卡片形态（additive）：整组渲染为一张圆角卡片，行间以内嵌分割线分开。 */
     card?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
@@ -101,15 +103,14 @@ provide(SN_CELL_GROUP_KEY, {
   layout: toRef(props, 'layout'),
   valueAlign: toRef(props, 'valueAlign'),
   insert: toRef(props, 'insert'),
-  card: toRef(props, 'card'),
 });
 
 const rootClass = computed(() => [
   'sn-cell-group',
   {
     'sn-cell-group--insert': props.insert,
-    // Card mode owns the row outlines — the group outline would double up.
-    'sn-cell-group--bordered': props.border && !props.card,
+    // Card mode draws its container outline through the bordered combo too.
+    'sn-cell-group--bordered': props.border,
     'sn-cell-group--large': props.size === 'large',
     'sn-cell-group--card': props.card,
   },
@@ -137,7 +138,7 @@ const rootClass = computed(() => [
         </slot>
       </view>
     </view>
-    <view :class="['sn-cell-group__body', { 'sn-cell-group__body--card': props.card }]">
+    <view class="sn-cell-group__body">
       <slot />
     </view>
   </view>
@@ -152,20 +153,20 @@ const rootClass = computed(() => [
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.sn-cell-group--insert {
+/* Rounded container shared by insert (wot-ui parity) and card (additive):
+ * the whole group becomes ONE card; rows inside stay contiguous and are
+ * separated by the cells' own hairlines. */
+.sn-cell-group--insert,
+.sn-cell-group--card {
   margin: var(--sn-mp-spacing-3);
   border-radius: var(--sn-mp-radius-lg);
   overflow: hidden;
 }
 
-/* Card mode (additive): every row paints its own card, so the group goes
-   transparent and the body spreads the rows with a token gap. */
+/* Card mode (additive) — the elevated card look: token shadow on top of the
+   insert container treatment. */
 .sn-cell-group--card {
-  background-color: transparent;
-}
-
-.sn-cell-group__body--card {
-  gap: var(--sn-mp-spacing-3);
+  box-shadow: var(--sn-mp-shadow-sm);
 }
 
 .sn-cell-group--bordered {
@@ -173,7 +174,8 @@ const rootClass = computed(() => [
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
-.sn-cell-group--insert.sn-cell-group--bordered {
+.sn-cell-group--insert.sn-cell-group--bordered,
+.sn-cell-group--card.sn-cell-group--bordered {
   border: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 

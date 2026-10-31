@@ -571,25 +571,27 @@ describe('sn-cell-group', () => {
     expect(mountGroup().find('.sn-cell').classes()).not.toContain('sn-cell--insert');
   });
 
-  it('inherits card into cells inside a card group', () => {
-    expect(mountGroup({ card: true }).find('.sn-cell').classes()).toContain('sn-cell--card');
+  it('does NOT card the rows inside a card group — the group itself is the card', () => {
+    const wrapper = mountGroup({ card: true });
+    expect(wrapper.find('.sn-cell-group').classes()).toContain('sn-cell-group--card');
+    expect(wrapper.find('.sn-cell').classes()).not.toContain('sn-cell--card');
   });
 
-  it('lets an explicit cell card=false win over a card group', () => {
-    expect(
-      mountGroup({ card: true }, { card: false }).find('.sn-cell').classes(),
-    ).not.toContain('sn-cell--card');
+  it('still cards a row that explicitly opts in inside a card group', () => {
+    expect(mountGroup({ card: true }, { card: true }).find('.sn-cell').classes()).toContain(
+      'sn-cell--card',
+    );
   });
 
-  it('drops the group outline in card mode', () => {
+  it('keeps the container outline in card mode (bordered combo)', () => {
     const wrapper = mountGroup({ card: true, border: true });
     const group = wrapper.find('.sn-cell-group');
     expect(group.classes()).toContain('sn-cell-group--card');
-    expect(group.classes()).not.toContain('sn-cell-group--bordered');
+    expect(group.classes()).toContain('sn-cell-group--bordered');
   });
 
-  it('marks the body with the card gap class', () => {
-    expect(mountGroup({ card: true }).find('.sn-cell-group__body--card').exists()).toBe(true);
+  it('keeps rows contiguous in card mode (no per-row gap class)', () => {
+    expect(mountGroup({ card: true }).find('.sn-cell-group__body--card').exists()).toBe(false);
   });
 
   it('applies the large size class on the group', () => {
