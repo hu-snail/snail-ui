@@ -5,12 +5,17 @@
 
 ## 现场
 
-- 用户报告「input 无法输入」。
-- uni-demo H5 dev server（最新源码）实测输入链路正常（text / number / textarea / clear-再输入全通）。
-- docs 端 uni 预览 iframe 的是 GitHub Pages 部署站（`uni-demo-deploy.yml` 只在 push 到 `main` 时部署），
-  线上 sn-input chunk 指纹为 `d6db7e9`（2026-10-31 17:13「读 detail.value」修复）**之前**的版本：
-  `onInput` 仍读 `e.target.value`，uni 合成事件下为 `undefined` → 每敲一键 model 被写坏、字段清空。
-  即：修复早已 commit，但从未到达任何构建/部署面（部署站、本地 dist、docs public bundle 全部过期）。
+- 用户报告「input 无法输入」，后补充「圆角和边框背景能输入，其他模块都不行」。
+- uni-demo H5 dev server（最新源码）实测输入链路正常：17 个 demo 块逐一真实键入全部生效
+  （仅 number 字段拒插字母，浏览器原生行为）。
+- 用户实际测试面 = docs 预览 iframe 的 GitHub Pages 部署站。线上行为复现（真实键入采样）：
+  t=0 字段显示 `helloX`，**~150ms 后被回写清空**——旧代码 `onInput` 读 `e.target.value`
+  （合成事件下 `undefined`）→ emit 进 v-model → 受控回写清空。
+- 「圆角 / 边框背景」是仅有的**没有 v-model 监听**的两个 demo（radius = 静态 model-value + readonly；
+  bordered-bg = 无 model 绑定）：emit 出的坏值无人接收、字段不被回写，于是“能输入”。
+  这个 能/不能 分界就是旧构建的指纹。
+- 线上 sn-input chunk 指纹为 `d6db7e9`（2026-10-31 17:13「读 detail.value」修复）**之前**的版本；
+  部署 workflow（`uni-demo-deploy.yml`）只认 push 到 `main`。即修复早已 commit，但从未到达任何构建/部署面。
 
 ## 根因 1（用户可见）：部署面陈旧
 
@@ -53,3 +58,13 @@ confirm 携带 `detail.value: ""`（用户清空后按确认）时 `""` 为 fals
   且每次 emit 都是新对象——**对 uni 事件做身份去重永远是死代码**，只能按值去重。
 - 部署类预览（docs iframe Pages 站）诊断时先比对线上 chunk 指纹与源码修复点，
   别把「构建面过期」当成「源码 bug」修。
+- 「部分 demo 能输入、部分不能」这类分界本身就是线索：能输入的恰好是不受控
+  （无 v-model）的字段 = 受控回写链路坏了的典型指纹。
+
+## Follow-up（本次未修，范围外）
+
+- **uni-h5 运行时丢弃 `readonly`**：`uni-h5.es.js` 的 Input 渲染里，普通分支的原生
+  input 根本不绑定 `readonly`（只有 disabled+fixDisabledColor 分支映射 readonly）。
+  H5 端 sn-input 的 `readonly` 字段（圆角 demo、states demo 只读字段）实际可编辑，
+  只有 cursor 样式生效；MP 端正常。修复方向：sn-input 在 H5 宿主对 readonly 字段
+  拦截 `beforeinput`/keydown（capture 镜像机制可复用）。
