@@ -761,6 +761,22 @@ describe('sn-tabs nav scroll-into-view', () => {
     expect(mountTabs().find('.sn-tabs__nav').attributes('scroll-with-animation')).toBe('false');
   });
 
+  it('renders no pane shell for header-only tabs (pure nav usage)', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnTabs, { modelValue: 0 }, {
+            default: () =>
+              Array.from({ length: 3 }, (_, i) => h(SnTab, { title: `Tab ${i}`, name: i })),
+          });
+      },
+    });
+    // 回归：空面板壳带 24rpx padding，会把 nav 顶出垂直居中位置。
+    const pane = mount(Harness).find('.sn-tab');
+    expect(pane.exists()).toBe(true);
+    expect(pane.classes()).toContain('sn-tab--empty');
+  });
+
   it('leaves the target empty with no panes registered', () => {
     const Harness = defineComponent({
       setup() {

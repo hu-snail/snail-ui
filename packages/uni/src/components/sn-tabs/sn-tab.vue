@@ -42,7 +42,7 @@
  *   - 面板切换动画编排 — 由 sn-tabs 的 animated / duration 决定
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, useSlots, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { nextUid } from '../../utils/uid';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { SN_TABS_KEY, type SnTabBadgeProps, type SnTabsValue } from './sn-tabs-types';
@@ -92,6 +92,13 @@ defineSlots<{
 }>();
 
 const tabs = inject(SN_TABS_KEY, null);
+
+const slots = useSlots();
+
+/** Whether the caller supplied pane content. Header-only tabs (pure nav
+ * usage) render no pane shell — an empty pane's padding would otherwise
+ * push the nav off-centre inside the container. */
+const hasPaneContent = computed(() => typeof slots.default === 'function');
 
 /** The container renders the pane list inside a native `<swiper>` when swipeable. */
 const inSwiper = computed(() => tabs?.swiperMode.value ?? false);
@@ -144,6 +151,10 @@ const rootClass = computed(() => [
     /* swiper-item is laid out by the native swiper; only the flow branch
      * needs the active display rule. */
     'sn-tab--active': !inSwiper.value && active.value,
+    /* Header-only usage (pure nav tabs): keep the shell for customClass,
+     * but drop the padding so an empty active pane cannot push the nav
+     * off-centre inside the container. */
+    'sn-tab--empty': !hasPaneContent.value,
   },
   props.customClass,
 ]);
@@ -185,5 +196,8 @@ const rootClass = computed(() => [
 
 .sn-tab--active {
   display: block;
+}
+.sn-tab--empty {
+  padding: 0;
 }
 </style>
