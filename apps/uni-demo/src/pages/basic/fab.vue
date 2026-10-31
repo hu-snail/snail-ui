@@ -3,8 +3,10 @@
 import Demo0 from './demos/fab-mp-basic.vue';
 import Demo1 from './demos/fab-mp-direction.vue';
 import Demo2 from './demos/fab-mp-disabled.vue';
-import Demo3 from './demos/fab-mp-icons.vue';
-import Demo4 from './demos/fab-mp-position.vue';
+import Demo3 from './demos/fab-mp-drag.vue';
+import Demo4 from './demos/fab-mp-fan.vue';
+import Demo5 from './demos/fab-mp-icons.vue';
+import Demo6 from './demos/fab-mp-position.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -13,7 +15,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'悬浮按钮'" :title-en="'Fab'">
+  <DemoPageShell :title-zh="'悬浮按钮'" :title-en="'Fab'" :bg="''">
     <view class="page">
       <view class="module">
         <view class="module__head">
@@ -41,7 +43,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('图标', 'Icons') }}</text>
+          <text class="module__title">{{ t('拖拽', 'Drag') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -49,10 +51,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('位置', 'Position') }}</text>
+          <text class="module__title">{{ t('扇形展开', 'Fan') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <text class="module__title">{{ t('图标', 'Icons') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <text class="module__title">{{ t('位置', 'Position') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

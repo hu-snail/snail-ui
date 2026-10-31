@@ -51,7 +51,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单元格',
         titleEn: 'Cell',
         desc: '列表行容器，可组合图标与箭头',
-        count: 5,
+        count: 6,
       },
       {
         key: 'config-provider',
@@ -75,7 +75,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '悬浮按钮',
         titleEn: 'Fab',
         desc: '可拖拽的悬浮操作按钮',
-        count: 5,
+        count: 7,
       },
       {
         key: 'gap',
@@ -375,7 +375,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '输入框',
         titleEn: 'Input',
         desc: '单行文本输入',
-        count: 16,
+        count: 17,
       },
       {
         key: 'input-number',

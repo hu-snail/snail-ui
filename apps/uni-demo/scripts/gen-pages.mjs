@@ -68,6 +68,8 @@ const SCENARIO_LABELS = {
   layout: '布局',
   guard: '拦截',
   position: '位置',
+  fan: '扇形展开',
+  drag: '拖拽',
   label: '标签',
   export: '导出',
   text: '文本',

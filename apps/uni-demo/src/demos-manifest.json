@@ -256,6 +256,16 @@
           "hasEn": true
         },
         {
+          "name": "fab-mp-drag",
+          "title": "拖拽",
+          "hasEn": true
+        },
+        {
+          "name": "fab-mp-fan",
+          "title": "扇形展开",
+          "hasEn": true
+        },
+        {
           "name": "fab-mp-icons",
           "title": "图标",
           "hasEn": true

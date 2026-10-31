@@ -19,6 +19,7 @@ import SnFab from './sn-fab.vue';
 // 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
 // file"；?raw 走 Vite 资产管线，两端一致)。
 import fabSource from './sn-fab.vue?raw';
+import { Camera, Coffee, Heart, Star } from '../sn-icon/sn-icon-set';
 
 describe('sn-fab', () => {
   it('renders the trigger with the default plus icon', () => {
@@ -305,5 +306,143 @@ describe('sn-fab', () => {
     // The bare `--open` selector must not carry the transform any more —
     // reintroducing it would silently reopen the overlap in all directions.
     expect(style).not.toMatch(/^\.sn-fab__menu--open\s*\{[^}]*transform:/m);
+  });
+
+  describe('fan mode (AUI-OPT-19)', () => {
+    const fanActions = [
+      { icon: Star, text: '收藏' },
+      { icon: Heart, text: '喜欢' },
+      { icon: Coffee },
+    ];
+
+    /** Extract the px translate pair from a fan item's inline style. */
+    function fanOffset(wrapper: ReturnType<typeof mount>, index: number): [number, number] {
+      const style = wrapper.findAll('.sn-fab__fan-item')[index]?.attributes('style') ?? '';
+      const match = /translate\((-?[\d.]+)px, (-?[\d.]+)px\)/.exec(style);
+      expect(match).not.toBeNull();
+      return [Number(match?.[1]), Number(match?.[2])];
+    }
+
+    it('renders structured items instead of the slot in fan mode', () => {
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', actions: fanActions },
+        slots: { default: '<view class="slot-item">x</view>' },
+      });
+      expect(wrapper.findAll('.sn-fab__fan-item')).toHaveLength(3);
+      expect(wrapper.find('.sn-fab__fan-item--pill').exists()).toBe(true);
+      expect(wrapper.find('.sn-fab__fan-item--icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-fab__fan-item svg').exists()).toBe(true);
+      expect(wrapper.find('.slot-item').exists()).toBe(false);
+    });
+
+    it('keeps the default slot contract in line mode', () => {
+      const wrapper = mount(SnFab, { slots: { default: '<view class="slot-item">x</view>' } });
+      expect(wrapper.findAll('.sn-fab__fan-item')).toHaveLength(0);
+      expect(wrapper.find('.slot-item').exists()).toBe(true);
+    });
+
+    it('fans symmetrically around straight up from bottom-center', () => {
+      // R = 96px, 45° step → angles 225° / 270° / 315° (screen coords,
+      // y down): (±67.88, -67.88) · (0, -96) — the classic centre fan.
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', position: 'bottom-center', active: true, actions: fanActions },
+      });
+      const [x1, y1] = fanOffset(wrapper, 0);
+      const [x2, y2] = fanOffset(wrapper, 1);
+      const [x3, y3] = fanOffset(wrapper, 2);
+      expect(x1).toBeCloseTo(-67.88, 1);
+      expect(y1).toBeCloseTo(-67.88, 1);
+      expect(x2).toBeCloseTo(0, 1);
+      expect(y2).toBeCloseTo(-96, 1);
+      expect(x1).toBeCloseTo(-x3, 1);
+      expect(y1).toBeCloseTo(y3, 1);
+    });
+
+    it('fans into the up-left quadrant as an oblique fan from right-bottom', () => {
+      // Corner anchors cap the span at 90°: angles 180° / 225° / 270° —
+      // first item straight left, last straight up.
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', position: 'right-bottom', active: true, actions: fanActions },
+      });
+      const [x1, y1] = fanOffset(wrapper, 0);
+      const [x3, y3] = fanOffset(wrapper, 2);
+      expect(x1).toBeCloseTo(-96, 1);
+      expect(y1).toBeCloseTo(0, 1);
+      expect(x3).toBeCloseTo(0, 1);
+      expect(y3).toBeCloseTo(-96, 1);
+    });
+
+    it('scales the arc with fanRadius', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          position: 'bottom-center',
+          fanRadius: 140,
+          active: true,
+          actions: fanActions,
+        },
+      });
+      const [, y2] = fanOffset(wrapper, 1);
+      expect(y2).toBeCloseTo(-140, 1);
+    });
+
+    it('blooms out of the trigger centre with a per-item stagger', () => {
+      const closed = mount(SnFab, {
+        props: { mode: 'fan', actions: fanActions },
+      });
+      const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
+      expect(closedStyle).toContain('translate(0px, 0px) scale(0.4)');
+      expect(closedStyle).toContain('opacity: 0');
+      expect(closedStyle).toContain('transition-delay: 0ms');
+
+      const open = mount(SnFab, {
+        props: { mode: 'fan', active: true, actions: fanActions },
+      });
+      const styles = open
+        .findAll('.sn-fab__fan-item')
+        .map((item) => item.attributes('style') ?? '');
+      expect(styles[1]).toContain('transition-delay: 40ms');
+      expect(styles[2]).toContain('transition-delay: 80ms');
+      expect(styles[2]).toContain('scale(1)');
+      expect(styles[2]).toContain('opacity: 1');
+    });
+
+    it('tints an item through the action color', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          active: true,
+          actions: [{ icon: Camera, color: 'var(--sn-mp-color-feedback-danger)' }],
+        },
+      });
+      expect(wrapper.find('.sn-fab__fan-item').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-danger)',
+      );
+    });
+
+    it('emits action with the payload and auto-closes on item tap', async () => {
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', active: true, actions: fanActions },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      await items[1]?.trigger('tap');
+      expect(wrapper.emitted('action')?.[0]).toEqual([fanActions[1], 1]);
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([false]);
+    });
+
+    it('ignores taps on disabled fan items', async () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          active: true,
+          actions: [{ icon: Star, disabled: true }, { icon: Heart }],
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.attributes('aria-disabled')).toBe('true');
+      await items[0]?.trigger('tap');
+      expect(wrapper.emitted('action')).toBeUndefined();
+      expect(wrapper.emitted('update:active')).toBeUndefined();
+    });
   });
 });

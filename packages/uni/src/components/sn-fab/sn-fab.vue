@@ -32,6 +32,13 @@
  *     `top` / `bottom`, AUI-OPT-02) and the root lays the menu out strictly
  *     along the chosen direction — even for side-centred anchors, where the
  *     reference layout used to force a horizontal stack.
+ *   - `mode: 'fan'` + `actions` + `fanRadius` (AUI-OPT-19): an arc-shaped
+ *     expansion the reference does not have. Corner anchors bloom an oblique
+ *     quadrant fan into the screen, edge-centre anchors a symmetric fan
+ *     (bottom-center = the classic centre fan), with a staggered back-out
+ *     animation. `actions` is a structured item source rendered by the
+ *     component (MP-safe: per-item geometry must be inline style) and its
+ *     items auto-close the fan on tap.
  *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  *
@@ -79,6 +86,28 @@ type FabPosition =
  */
 type FabDirection = 'up' | 'down' | 'left' | 'right' | 'top' | 'bottom';
 
+/**
+ * Expansion shape. `line` is the wd-fab stack (1:1 parity); `fan` arranges
+ * the action items along an arc around the trigger — additive (AUI-OPT-19,
+ * registered in AGENTS.md §112.3a).
+ */
+type FabMode = 'line' | 'fan';
+
+/**
+ * Fan-mode action item (additive, AUI-OPT-19 — wd-fab has no structured
+ * action model; the default slot stays the line-mode contract).
+ */
+export interface SnFabAction {
+  /** Icon: built-in registry name or an inline IconData object. */
+  icon: string | IconData;
+  /** Optional label — turns the item into an icon+text pill. */
+  text?: string;
+  /** Icon tint (CSS color; prefer `var(--sn-mp-color-*)` tokens). */
+  color?: string;
+  /** Disabled item: dimmed, taps blocked. */
+  disabled?: boolean;
+}
+
 /** Per-edge gap. Mirrors `wd-fab` `gap`. */
 export interface SnFabGap {
   /** Distance from the top edge. */
@@ -105,6 +134,12 @@ const props = withDefaults(
     draggable?: boolean;
     /** Menu expansion direction (`up` / `down` alias `top` / `bottom`). */
     direction?: FabDirection;
+    /** Expansion shape: stack (`line`, wd-fab 1:1) or arc (`fan`, additive). */
+    mode?: FabMode;
+    /** Fan-mode action items (structured source; the slot is ignored in fan mode). */
+    actions?: SnFabAction[];
+    /** Fan radius in px — distance from the trigger centre to an item centre. */
+    fanRadius?: number;
     /** Disable the whole button. */
     disabled?: boolean;
     /** Icon while collapsed (registry name). */
@@ -136,6 +171,9 @@ const props = withDefaults(
     position: 'right-bottom',
     draggable: false,
     direction: 'up',
+    mode: 'line',
+    actions: () => [],
+    fanRadius: 96,
     disabled: false,
     inactiveIcon: 'plus',
     activeIcon: 'close',
@@ -163,6 +201,7 @@ defineSlots<{
 const emit = defineEmits<{
   (e: 'update:active', value: boolean): void;
   (e: 'click'): void;
+  (e: 'action', action: SnFabAction, index: number): void;
 }>();
 
 /** Drag offset accumulated from the touch gesture. */
@@ -191,6 +230,10 @@ const triggerIcon = computed(() =>
  * icon scale (AGENTS.md §34 — no hard-coded geometry).
  */
 const TRIGGER_ICON_SIZE = 'var(--sn-mp-icon-size-large)';
+/** Fan pill glyph rides the medium tier (matches the line-mode pill demos). */
+const FAN_PILL_ICON_SIZE = 'var(--sn-mp-icon-size-medium)';
+/** Fan bubble glyph rides the large tier (matches the direction demo). */
+const FAN_BUBBLE_ICON_SIZE = 'var(--sn-mp-icon-size-large)';
 
 /** Canonical direction: `up` / `down` normalize to `top` / `bottom`. */
 const resolvedDirection = computed<'top' | 'bottom' | 'left' | 'right'>(() => {
@@ -206,6 +249,93 @@ const resolvedGap = computed(() => ({
   bottom: props.bottom ?? props.gap.bottom ?? DEFAULT_GAP.bottom,
   left: props.left ?? props.gap.left ?? DEFAULT_GAP.left,
 }));
+
+/* ── Fan mode (additive, AUI-OPT-19) ─────────────────────────────────── */
+
+const isFan = computed(() => props.mode === 'fan');
+
+/**
+ * Fan geometry per anchor preset. Screen coordinates: 0° = right, 90° =
+ * down, 180° = left, 270° = up. Corner anchors open an oblique quadrant
+ * fan (90° span) pointing into the screen; edge-centre anchors open a
+ * symmetric half-plane fan (120° span) — `bottom-center` is the classic
+ * centre fan spreading evenly around straight up.
+ */
+const FAN_GEOMETRY: Record<FabPosition, { center: number; span: number }> = {
+  'left-top': { center: 45, span: 90 },
+  'right-top': { center: 135, span: 90 },
+  'right-bottom': { center: 225, span: 90 },
+  'left-bottom': { center: 315, span: 90 },
+  'top-center': { center: 90, span: 120 },
+  'bottom-center': { center: 270, span: 120 },
+  'left-center': { center: 0, span: 120 },
+  'right-center': { center: 180, span: 120 },
+};
+
+/** Angular step between neighbouring items before the span cap kicks in. */
+const FAN_STEP_DEG = 45;
+/** Stagger between neighbouring items while the fan blooms open. */
+const FAN_STAGGER_MS = 40;
+
+/** Angle of each action item, evenly spread under the preset's span cap. */
+const fanAngles = computed<number[]>(() => {
+  const count = props.actions.length;
+  if (count === 0) return [];
+  const { center, span } = FAN_GEOMETRY[props.position];
+  if (count === 1) return [center];
+  const spread = Math.min(FAN_STEP_DEG * (count - 1), span);
+  return Array.from({ length: count }, (_, i) => center - spread / 2 + (spread * i) / (count - 1));
+});
+
+/**
+ * Inline style per fan item. Geometry is computed here (WXSS has no trig
+ * functions) and applied as a transform; collapsed, every item rests on the
+ * trigger centre so the fan visibly blooms out of the button. The
+ * back-out easing in the class adds the overshoot that makes it silky.
+ */
+function fanItemStyle(action: SnFabAction, index: number): string {
+  const radians = (fanAngles.value[index] ?? 0) * (Math.PI / 180);
+  const open = props.active;
+  const x = open ? Math.round(Math.cos(radians) * props.fanRadius * 100) / 100 : 0;
+  const y = open ? Math.round(Math.sin(radians) * props.fanRadius * 100) / 100 : 0;
+  const scale = open ? 1 : 0.4;
+  const opacity = open ? (action.disabled ? 0.5 : 1) : 0;
+  const delay = open ? index * FAN_STAGGER_MS : 0;
+  const color = action.color === undefined ? '' : ` color: ${action.color};`;
+  return (
+    `transform: translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale}); ` +
+    `opacity: ${opacity}; transition-delay: ${delay}ms;${color}`
+  );
+}
+
+/** Icon-only items render as bubbles; labelled items as icon+text pills. */
+function fanItemClass(action: SnFabAction): string[] {
+  return [
+    'sn-fab__fan-item',
+    action.text === undefined ? 'sn-fab__fan-item--icon' : 'sn-fab__fan-item--pill',
+  ];
+}
+
+function fanItemLabel(action: SnFabAction, index: number): string {
+  if (action.text !== undefined && action.text !== '') return action.text;
+  if (typeof action.icon === 'string') return action.icon;
+  return `action-${index + 1}`;
+}
+
+function resolveActionIcon(action: SnFabAction): IconData {
+  if (typeof action.icon === 'string') {
+    return resolveIconByName(action.icon) ?? PlusIcon;
+  }
+  return action.icon;
+}
+
+function onActionTap(action: SnFabAction, index: number): void {
+  if (action.disabled) return;
+  emit('action', action, index);
+  // Structured actions auto-close the fan. wd-fab's slot items stay manual
+  // (the demo closes them itself) — documented divergence, AUI-OPT-19.
+  if (props.active) emit('update:active', false);
+}
 
 /**
  * Anchor placement in px. One branch per `position` preset so the two
@@ -269,11 +399,17 @@ const triggerClass = computed(() => [
   { 'sn-fab__trigger--active': props.active },
 ]);
 
-const menuClass = computed(() => [
-  'sn-fab__menu',
-  `sn-fab__menu--${resolvedDirection.value}`,
-  { 'sn-fab__menu--open': props.active },
-]);
+const menuClass = computed(() =>
+  isFan.value
+    ? // Fan items position themselves; the container is a 0×0 anchor point
+      // and must not inherit the line-mode direction offset / open fade.
+      ['sn-fab__menu', 'sn-fab__menu--fan']
+    : [
+        'sn-fab__menu',
+        `sn-fab__menu--${resolvedDirection.value}`,
+        { 'sn-fab__menu--open': props.active },
+      ],
+);
 
 function toggle(): void {
   if (props.disabled) return;
@@ -332,7 +468,29 @@ function onTouchEnd(): void {
 <template>
   <view data-snui-component="fab" :class="rootClass" :style="`${rootStyle}; ${anchorStyle}`">
     <view :class="menuClass" :aria-hidden="active ? 'false' : 'true'">
-      <slot />
+      <template v-if="isFan">
+        <view
+          v-for="(action, index) in actions"
+          :key="`${fanItemLabel(action, index)}-${index}`"
+          :class="fanItemClass(action)"
+          :style="fanItemStyle(action, index)"
+          role="button"
+          :aria-label="fanItemLabel(action, index)"
+          :aria-disabled="action.disabled ? 'true' : 'false'"
+          @tap="onActionTap(action, index)"
+        >
+          <SnIcon
+            :icon="resolveActionIcon(action)"
+            :size="action.text === undefined ? FAN_BUBBLE_ICON_SIZE : FAN_PILL_ICON_SIZE"
+          />
+          <text v-if="action.text !== undefined" class="sn-fab__fan-item-text">
+            {{ action.text }}
+          </text>
+        </view>
+      </template>
+      <template v-else>
+        <slot />
+      </template>
     </view>
 
     <view
@@ -466,5 +624,59 @@ function onTouchEnd(): void {
 }
 .sn-fab--right {
   flex-direction: row-reverse;
+}
+
+/* ── Fan mode (additive, AUI-OPT-19) ─────────────────────────────────── */
+
+/* The container is a 0×0 anchor point at the trigger centre; items are
+ * absolutely positioned and fly out along the arc via inline transforms
+ * (per-item geometry + stagger are computed in JS — WXSS has no trig).
+ * Declared after the line-mode rules so it wins the closed-state
+ * opacity/visibility of the shared `.sn-fab__menu` base. */
+.sn-fab__menu--fan {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: block;
+  width: 0;
+  height: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+.sn-fab__fan-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  height: 72rpx;
+  padding: 0 var(--sn-mp-spacing-5);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: var(--sn-mp-shadow-sm);
+  opacity: 0;
+  visibility: hidden;
+  /* Back-out overshoot = the silky bloom; the geometry and the per-item
+   * stagger delay arrive via inline style (fanItemStyle). */
+  transition:
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.2s ease,
+    visibility 0s linear;
+  will-change: transform;
+}
+
+/* Icon-only bubble variant (labelled items keep the pill box above). */
+.sn-fab__fan-item--icon {
+  width: 88rpx;
+  height: 88rpx;
+  padding: 0;
+  justify-content: center;
+}
+
+.sn-fab__fan-item-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-primary);
 }
 </style>
