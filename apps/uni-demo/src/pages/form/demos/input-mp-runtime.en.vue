@@ -20,7 +20,7 @@ const styled = ref('');
     <SnInput v-model="held" hold-keyboard adjust-position placeholder="Keyboard up + auto scroll" />
 
     <text class="sn-input-demo__caption">cursor + selection-start / selection-end</text>
-    <SnInput v-model="preselect" :cursor="5" selection-start="2" selection-end="8" />
+    <SnInput v-model="preselect" :cursor="5" :selection-start="2" :selection-end="8" />
 
     <text class="sn-input-demo__caption">placeholderStyle (inline placeholder styling)</text>
     <SnInput

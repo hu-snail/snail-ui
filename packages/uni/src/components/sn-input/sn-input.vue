@@ -25,7 +25,7 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
+import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
@@ -290,21 +290,45 @@ const inputId = `sn-input-${++snInputUid}`;
 const slots = useSlots();
 
 /**
- * Native `<input>` / `<textarea>` — only one exists at a time (v-if / v-else).
- * In compiled uni apps the ref points at the uni-input wrapper instance,
- * which exposes `$triggerInput` (immediate value application) — used by the
- * clear flow to beat uni's 100ms debounced external value sync.
+ * Template ref on the inner field. In raw/test environments this is the
+ * native element; in compiled uni apps it is the uni-input wrapper's
+ * EXPOSED object, which only carries `$triggerInput` — no `focus`, no
+ * `$el`. All DOM access therefore goes through the component's own root
+ * element (see `rootElement`), and `$triggerInput` stays on this ref for
+ * the clear flow.
  */
-type NativeFieldRef = (HTMLInputElement | HTMLTextAreaElement) & {
+type NativeFieldRef = (HTMLInputElement | HTMLTextAreaElement) | {
   $triggerInput?: (detail: { value: string }) => void;
-  $el?: Element;
 };
 const nativeEl = ref<NativeFieldRef | null>(null);
+
+const instance = getCurrentInstance();
+
+/**
+ * sn-input's own root element — the stable ancestor of the inner field for
+ * the capture-phase mirror and imperative focus. Template refs on the
+ * uni-input wrapper only expose `$triggerInput`, so the DOM must come from
+ * the component instance itself.
+ */
+function rootElement(): Element | null {
+  return ((instance?.proxy as { $el?: Element } | null)?.$el ?? null);
+}
+
+/** The inner native field, reached through the root element. */
+function fieldInputElement(): HTMLInputElement | HTMLTextAreaElement | null {
+  const root = rootElement();
+  if (root) {
+    if (root instanceof HTMLInputElement || root instanceof HTMLTextAreaElement) return root;
+    return root.querySelector('input, textarea');
+  }
+  const direct = nativeEl.value;
+  return direct instanceof HTMLInputElement || direct instanceof HTMLTextAreaElement ? direct : null;
+}
 
 // uni 的 input 组件 `focus` prop 语义：挂载后自动聚焦。H5 / 测试环境通过真实
 // .focus() 实现；MP 编译目标由 uni 运行时按同名 prop 处理。
 onMounted(() => {
-  if (props.focus) nativeEl.value?.focus();
+  if (props.focus) refocusField();
   attachNativeInputMirror();
 });
 
@@ -425,11 +449,10 @@ let lastMirroredEvent: Event | null = null;
 
 function attachNativeInputMirror(): void {
   if (typeof document === 'undefined') return;
-  /* Listen on an ANCESTOR of the field (uni-input element in compiled apps,
-   * the component root in raw tests) so the capture-phase handler runs
-   * before the field's own listeners — and before uni's stopPropagation. */
-  const field = nativeEl.value;
-  const host = (field?.$el ?? field?.parentElement ?? field) as Element | null | undefined;
+  /* Listen on sn-input's own root element — an ANCESTOR of the inner field —
+   * so the capture-phase handler runs before the field's own listeners and
+   * before uni's stopPropagation. */
+  const host = rootElement();
   if (!host || typeof host.addEventListener !== 'function') return;
   const handler = (event: Event): void => {
     const target = event.target as HTMLInputElement | null;
@@ -469,23 +492,17 @@ function onConfirm(event: Event): void {
 }
 
 /**
- * Refocus the field after a clear tap (`focusWhenClear`). Tapping × blurs
- * the field, so without this the next keystrokes go nowhere and the clear
- * icon "never comes back". Imperative DOM focus — a template `:focus`
- * binding would go through patchDOMProp and clobber the element's focus
- * method on the raw-test path; MP keyboards are raised by user taps and
- * stay out of scope here.
+ * Refocus the field after a clear tap (`focusWhenClear`) and for the mount
+ * `focus` prop. Tapping × blurs the field, so without this the next
+ * keystrokes go nowhere and the clear icon "never comes back". Imperative
+ * DOM focus reached through the component root — the uni-input wrapper's
+ * exposed object carries no `focus` and a template `:focus` binding would
+ * clobber the element method on the raw-test path. MP keyboards are raised
+ * by user taps and stay out of scope here.
  */
 function refocusField(): void {
   if (typeof document === 'undefined') return;
-  const field = nativeEl.value;
-  if (!field) return;
-  const el = (field.$el ?? field) as Element;
-  const input: HTMLInputElement | HTMLTextAreaElement | null =
-    el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
-      ? el
-      : el.querySelector('input, textarea');
-  input?.focus();
+  fieldInputElement()?.focus();
 }
 
 function onClear(): void {
@@ -493,8 +510,10 @@ function onClear(): void {
   emit('clear');
   /* uni-input applies external value changes through a 100ms debounce; a
    * keystroke inside that window cancels the pending sync and resurrects
-   * the pre-clear text. The exposed setter applies the empty value now. */
-  nativeEl.value?.$triggerInput?.({ value: '' });
+   * the pre-clear text. The wrapper's exposed setter applies it now
+   * (raw-element refs — tests / H5 without a wrapper — skip this). */
+  const wrapper = nativeEl.value as { $triggerInput?: (d: { value: string }) => void } | null;
+  wrapper?.$triggerInput?.({ value: '' });
   if (!props.focusWhenClear) return;
   refocusField();
 }
