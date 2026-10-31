@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — radius presets (AUI additive, tiers map to --sn-mp-radius-*). */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 </script>
 
 <template>

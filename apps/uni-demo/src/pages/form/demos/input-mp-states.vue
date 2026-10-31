@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — disabled / readonly / required 控件状态。 */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — radius 圆角档位（AUI 追加，档位映射 --sn-mp-radius-*）。 */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 </script>
 
 <template>

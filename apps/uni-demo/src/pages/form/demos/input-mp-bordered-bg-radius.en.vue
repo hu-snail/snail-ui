@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — border / bg variants (radius has its own scenario). */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 </script>
 
 <template>

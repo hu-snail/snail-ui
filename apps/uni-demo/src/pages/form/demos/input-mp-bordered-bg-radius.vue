@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — border 边框 / bg 背景（圆角见 radius 场景）。 */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 </script>
 
 <template>
