@@ -173,6 +173,7 @@ const rootClass = computed(() => [
 .sn-cell-group {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   width: 100%;
   background-color: var(--sn-mp-color-background-surface);
 }

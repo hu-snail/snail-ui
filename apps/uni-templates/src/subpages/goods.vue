@@ -24,6 +24,7 @@ import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import { getCapsuleMetrics } from '../common/capsule';
+import { DescriptionIcon } from '../common/material-icons';
 import { BadgeCheckIcon, HeadsetIcon, StoreIcon } from '../common/icons';
 import {
   ChevronLeft,
@@ -157,7 +158,7 @@ function goBack(): void {
                 inactive-color="#5c4037"
                 line-width="32rpx"
                 line-height="4rpx"
-                custom-style="flex: 1; min-width: 0; --sn-mp-color-background-surface: transparent;"
+                custom-style="flex: 1; min-width: 0; height: 100%; justify-content: center; --sn-mp-color-background-surface: transparent; --sn-mp-font-size-md: 24rpx;"
               >
                 <SnTab v-for="t in TABS" :key="t" :title="t" />
               </SnTabs>
@@ -186,6 +187,7 @@ function goBack(): void {
         <view class="goods-hero">
           <SnSwiper
             :list="HERO_SLIDES"
+            radius="0"
             image-mode="aspectFit"
             height="750rpx"
             :loop="true"
@@ -301,62 +303,70 @@ function goBack(): void {
         </view>
 
         <!-- 履约保障：sn-cell-group + sn-cell（单元格契约由组件定义） -->
-        <SnCellGroup
-          border
-          custom-style="margin: 0 16rpx; padding: 4rpx 24rpx; border-radius: 24rpx; background: #ffffff; box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);"
-        >
-          <SnCell
-            title="发货"
-            is-link
-            custom-title-class="goods-row__label"
-            @click="toast('配送地址')"
-          >
-            <view class="goods-row__main">
-              <view class="goods-row__line">
-                <text class="goods-row__strong">现货</text>
-                <text class="goods-row__value">24小时内闪电发货 · 顺丰速运包邮次日达</text>
+        <view class="goods-fulfil">
+          <SnCellGroup border custom-style="border-radius: 24rpx; background: #ffffff;">
+            <SnCell
+              title="发货"
+              is-link
+              title-width="84rpx"
+              custom-title-class="goods-row__label"
+              custom-style="--sn-mp-color-text-primary: #4f4632;"
+              @click="toast('配送地址')"
+            >
+              <view class="goods-row__main">
+                <view class="goods-row__line">
+                  <text class="goods-row__strong">现货</text>
+                  <text class="goods-row__value">24小时内闪电发货 · 顺丰速运包邮次日达</text>
+                </view>
+                <text class="goods-row__sub">配送至 浙江省 杭州市 余杭区 文一西路969号</text>
               </view>
-              <text class="goods-row__sub">配送至 浙江省 杭州市 余杭区 文一西路969号</text>
-            </view>
-          </SnCell>
-          <SnCell
-            title="保障"
-            is-link
-            custom-title-class="goods-row__label"
-            @click="toast('服务保障')"
-          >
-            <view class="goods-row__main goods-row__main--inline">
-              <view v-for="s in SERVICES" :key="s" class="goods-service">
-                <view class="goods-service__dot" />
-                <text class="goods-service__text">{{ s }}</text>
+            </SnCell>
+            <SnCell
+              title="保障"
+              is-link
+              title-width="84rpx"
+              custom-title-class="goods-row__label"
+              custom-style="--sn-mp-color-text-primary: #4f4632;"
+              @click="toast('服务保障')"
+            >
+              <view class="goods-row__main goods-row__main--inline">
+                <view v-for="s in SERVICES" :key="s" class="goods-service">
+                  <view class="goods-service__dot" />
+                  <text class="goods-service__text">{{ s }}</text>
+                </view>
               </view>
-            </view>
-          </SnCell>
-          <SnCell
-            title="选择"
-            is-link
-            custom-title-class="goods-row__label"
-            @click="toast('选择规格')"
-          >
-            <template #prefix>
-              <view class="goods-sku-thumb">
-                <SnImg :src="SKU_IMAGE" mode="aspectFit" width="100%" height="100%" />
+            </SnCell>
+            <SnCell
+              title="选择"
+              is-link
+              title-width="84rpx"
+              custom-title-class="goods-row__label"
+              custom-style="--sn-mp-color-text-primary: #4f4632;"
+              @click="toast('选择规格')"
+            >
+              <view class="goods-row__main goods-row__main--inline">
+                <view class="goods-sku-thumb">
+                  <SnImg :src="SKU_IMAGE" mode="aspectFit" width="100%" height="100%" />
+                </view>
+                <text class="goods-row__value goods-row__value--ellipsis"
+                  >已选：USB-C充电盒版，白色，1件</text
+                >
+                <SnTag bg-color="#e8e8ea" color="#5c4037" custom-style="flex-shrink: 0;"
+                  >共2种配置可选</SnTag
+                >
               </view>
-            </template>
-            <view class="goods-row__main goods-row__main--inline">
-              <text class="goods-row__value">已选：USB-C充电盒版，白色，1件</text>
-              <SnTag bg-color="#e8e8ea" color="#5c4037">共2种配置可选</SnTag>
-            </view>
-          </SnCell>
-          <SnCell
-            title="参数"
-            value="蓝牙5.3 · H2芯片 · 主动降噪 · IP54抗汗抗水"
-            is-link
-            ellipsis
-            custom-title-class="goods-row__label"
-            @click="toast('参数')"
-          />
-        </SnCellGroup>
+            </SnCell>
+            <SnCell
+              title="参数"
+              value="蓝牙5.3 · H2芯片 · 主动降噪 · IP54抗汗抗水"
+              is-link
+              ellipsis
+              custom-title-class="goods-row__label"
+              custom-style="--sn-mp-color-text-primary: #4f4632;"
+              @click="toast('参数')"
+            />
+          </SnCellGroup>
+        </view>
 
         <!-- 宝贝评价 -->
         <view class="goods-card">
@@ -512,10 +522,14 @@ function goBack(): void {
         <view class="goods-detail">
           <SnDivider
             content-position="center"
-            color="#e5beb2"
-            custom-style="padding: 8rpx 0; --sn-mp-color-text-secondary: #5c4037; --sn-mp-color-background-surface: #f9f9fb;"
-            >图文详情</SnDivider
+            color="#e5e2e1"
+            custom-style="margin: 16rpx 0; padding: 8rpx 0; --sn-mp-color-text-secondary: #4f4632; --sn-mp-color-background-surface: #f9f9fb;"
           >
+            <view class="goods-detail__legend">
+              <SnIcon :icon="DescriptionIcon" size="28rpx" color="#4f4632" />
+              <text class="goods-detail__legend-text">图文详情</text>
+            </view>
+          </SnDivider>
 
           <view v-for="b in DETAIL_BLOCKS" :key="b.title" class="goods-detail__block">
             <view class="goods-detail__media">
@@ -878,6 +892,15 @@ function goBack(): void {
   font-weight: 600;
 }
 
+/* 履约卡片壳：margin/圆角/阴影在外层 view（sn-cell-group 自身 width:100%） */
+.goods-fulfil {
+  margin: 0 16rpx;
+  border-radius: 24rpx;
+  background: #ffffff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
 /* 履约行 */
 .goods-row__main {
   display: flex;
@@ -916,6 +939,14 @@ function goBack(): void {
   color: #1a1c1d;
   font-size: 22rpx;
   line-height: 1.5;
+}
+.goods-row__main--inline .goods-sku-thumb {
+  margin-right: 2rpx;
+}
+.goods-row__value--ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .goods-row__sub {
   color: #5c4037;
@@ -1190,11 +1221,15 @@ function goBack(): void {
   gap: 6rpx;
 }
 .goods-store__name {
+  overflow: hidden;
   color: #1a1c1d;
   font-size: 26rpx;
   font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .goods-store__official {
+  flex-shrink: 0;
   padding: 0 6rpx;
   border-radius: 4rpx;
   background: #bb0025;
@@ -1202,6 +1237,7 @@ function goBack(): void {
 .goods-store__official-text {
   color: #ffffff;
   font-size: 16rpx;
+  white-space: nowrap;
 }
 .goods-store__sub {
   display: flex;
@@ -1265,6 +1301,16 @@ function goBack(): void {
 }
 
 /* 图文详情 */
+.goods-detail__legend {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.goods-detail__legend-text {
+  color: #4f4632;
+  font-size: 24rpx;
+  font-weight: 600;
+}
 .goods-detail {
   display: flex;
   flex-direction: column;
