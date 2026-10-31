@@ -276,6 +276,6 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     closeIconColorHover: 'var(--aui-color-text-primary)',
     closeColor: 'transparent',
     closeColorHover: 'var(--aui-color-background-subtle)',
-    maskColor: 'var(--aui-color-background-overlay)',
+    maskColor: 'color-mix(in srgb, var(--aui-color-background-overlay) 55%, transparent)',
   },
 };
