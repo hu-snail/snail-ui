@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * DemoPageShell —— 演示工程页面壳：渐变弥散背景 + 渐显呼吸动画 +
+ * DemoPageShell —— 演示工程页面壳：中性浅灰画布 +
  * 语言/主题图标按钮（ADR-0005 演示工程全局 UI）。
  *
- * - 弥散背景：三个 radial-gradient 色块（radial 自带柔边，不依赖 filter
- *   blur 的小程序兼容性），缓慢呼吸 + 入场渐显。
+ * - 背景：纯色浅灰（`--demo-page-bg`，浅色 #f8f8f8 / 深色 #121020），
+ *   组件预览的中性画布；装饰色块已移除。
  * - 主题：根节点挂 `demo-shell--dark` 切换 CSS 变量（见 App.vue 全局段）；
  *   同步导航栏颜色（尽力而为）。
  * - 语言：中/英切换，文案与导航栏标题联动；组件中文名/描述暂无英文数据，
@@ -75,6 +75,18 @@ const MoonIcon: IconData = {
   viewBox: '0 0 24 24',
   paths: ['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'],
 };
+// 风格包按钮（调色板）——此前模板引用但未定义，按钮渲染为空胶囊。
+// 色点是 `h.01` + round linecap：sn-icon 只渲染 path，不做 circle 元素。
+const PaletteIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: [
+    'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z',
+    'M13.5 6.5h.01',
+    'M17.5 10.5h.01',
+    'M8.5 7.5h.01',
+    'M6.5 12.5h.01',
+  ],
+};
 
 const langLabel = computed(() => t('切换语言', 'Switch language'));
 const themeLabel = computed(() =>
@@ -105,13 +117,6 @@ watch(
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
     :style="stylePackVars"
   >
-    <!-- 渐变弥散背景：radial 色块自带柔边，随呼吸动画缓慢起伏 -->
-    <view class="demo-shell__blobs" aria-hidden="true">
-      <view class="demo-shell__blob demo-shell__blob--1" />
-      <view class="demo-shell__blob demo-shell__blob--2" />
-      <view class="demo-shell__blob demo-shell__blob--3" />
-    </view>
-
     <view class="demo-shell__bar">
       <view v-if="brand" class="demo-shell__brand">
         <text class="demo-shell__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
@@ -154,51 +159,6 @@ watch(
   overflow: hidden;
   background-color: var(--demo-page-bg);
   color: var(--demo-title);
-}
-
-/* ── 弥散色块 ─────────────────────────────────────────────────────────── */
-.demo-shell__blobs {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
-}
-
-.demo-shell__blob {
-  position: absolute;
-  border-radius: 50%;
-  /* 入场渐显 + 呼吸往复（相位错开，避免整齐划一） */
-  animation:
-    demo-fade-in 0.9s ease both,
-    demo-breathe 7s ease-in-out 0.9s infinite;
-}
-
-.demo-shell__blob--1 {
-  width: 560rpx;
-  height: 560rpx;
-  top: -160rpx;
-  left: -160rpx;
-  background: var(--demo-blob-1);
-}
-
-.demo-shell__blob--2 {
-  width: 480rpx;
-  height: 480rpx;
-  top: 180rpx;
-  right: -180rpx;
-  background: var(--demo-blob-2);
-  animation-delay: 0.9s, 2.4s;
-}
-
-.demo-shell__blob--3 {
-  width: 420rpx;
-  height: 420rpx;
-  top: 620rpx;
-  left: 80rpx;
-  background: var(--demo-blob-3);
-  animation-delay: 0.9s, 4.6s;
 }
 
 /* ── 顶栏：品牌区 + 切换按钮 ──────────────────────────────────────────── */
@@ -260,7 +220,7 @@ watch(
   font-weight: 600;
 }
 
-/* 内容位于色块之上 */
+/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。 */
 .demo-shell__body {
   position: relative;
 }

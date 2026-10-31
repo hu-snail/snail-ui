@@ -15,9 +15,9 @@ const LANG_KEY = 'snui-demo-lang';
 const THEME_KEY = 'snui-demo-theme';
 
 /** 浅色页面底色（与 App.vue 的 --demo-page-bg 保持一致）。 */
-const BG_LIGHT = '#eef1f8';
+const BG_LIGHT = '#f8f8f8';
 /** 深色页面底色。 */
-const BG_DARK = '#10131c';
+const BG_DARK = '#121020';
 
 function readStored(key: string): string | undefined {
   try {
