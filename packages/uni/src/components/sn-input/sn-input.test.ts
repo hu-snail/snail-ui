@@ -709,6 +709,19 @@ describe('sn-input', () => {
     }
   });
 
+  it('declares border-bottom after every radius tier so square corners win', () => {
+    /* The classList always carries a radius class (default tier included);
+     * equal-specificity rules resolve by stylesheet order, so the
+     * bottom-edge variant must come later or the field gets rounded. */
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    const style = source.slice(source.indexOf('<style'));
+    const bottom = style.indexOf('.sn-input--border-bottom');
+    expect(bottom).toBeGreaterThan(-1);
+    for (const tier of ['default', 'sm', 'lg', 'xl', 'pill', 'square']) {
+      expect(bottom).toBeGreaterThan(style.indexOf(`.sn-input--radius-${tier}`));
+    }
+  });
+
   it('keeps the field-level icon size and color contract on tokens', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
     expect(source).toContain('--sn-input-icon-size: var(--sn-mp-icon-size-medium)');

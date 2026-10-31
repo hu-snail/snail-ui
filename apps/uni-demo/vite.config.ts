@@ -21,6 +21,19 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@snui/uni-src', '@snui/templates-src'],
   },
+  server: {
+    watch: {
+      // vite 默认忽略整个 node_modules，而组件包经 @snui/uni-src 符号链接
+      // （node_modules/@snui/uni → packages/uni）进入编译 —— 不重新包含的话
+      // packages/uni/src 的改动不会触发 HMR，dev server 一直跑旧组件代码。
+      ignored: [
+        '**/node_modules/**',
+        '!**/node_modules/@snui/uni/src/**',
+        '!**/node_modules/@snui/templates/src/**',
+        '!**/node_modules/@snui/style-packs/src/**',
+      ],
+    },
+  },
   resolve: {
     // MP 构建的 chunk 命名按 inputDir 相对路径计算（uni-mp-vite
     // createChunkFileNames），模块 id 落在工程外会生成 `../` 非法 pattern。

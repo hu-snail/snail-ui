@@ -752,9 +752,34 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
     background-color 0.18s ease-out;
 }
 
+/* Radius presets — tiers ride the shared `--sn-mp-radius-*` scale so fields
+ * can sit on cards (sm) or hero search bars (xl) without one-off values.
+ * Declared BEFORE the border variants: `border='bottom'` must always win the
+ * radius (a bottom-edge row is square regardless of the `radius` tier — the
+ * classList carries `radius-default` even then, and equal specificity means
+ * later-in-stylesheet wins). */
+.sn-input--radius-default {
+  border-radius: var(--sn-mp-input-radius, 12rpx);
+}
+.sn-input--radius-sm {
+  border-radius: var(--sn-mp-radius-sm);
+}
+.sn-input--radius-lg {
+  border-radius: var(--sn-mp-radius-lg);
+}
+.sn-input--radius-xl {
+  border-radius: var(--sn-mp-radius-xl);
+}
+.sn-input--radius-pill {
+  border-radius: 999rpx;
+}
+.sn-input--radius-square {
+  border-radius: 0;
+}
+
 /* Border variants — `border='all'` is the default; `border='bottom'` only
- * shows a bottom edge (typical for inline form rows that sit on a card);
- * `border='none'` drops the border entirely. */
+ * shows a bottom edge (typical for inline form rows that sit on a card) and
+ * forces square corners; `border='none'` drops the border entirely. */
 .sn-input--border-all {
   border: 2rpx solid var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
 }
@@ -781,27 +806,6 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 }
 .sn-input--bg-soft {
   background-color: var(--sn-mp-color-background-soft);
-}
-
-/* Radius presets — tiers ride the shared `--sn-mp-radius-*` scale so fields
- * can sit on cards (sm) or hero search bars (xl) without one-off values. */
-.sn-input--radius-default {
-  border-radius: var(--sn-mp-input-radius, 12rpx);
-}
-.sn-input--radius-sm {
-  border-radius: var(--sn-mp-radius-sm);
-}
-.sn-input--radius-lg {
-  border-radius: var(--sn-mp-radius-lg);
-}
-.sn-input--radius-xl {
-  border-radius: var(--sn-mp-radius-xl);
-}
-.sn-input--radius-pill {
-  border-radius: 999rpx;
-}
-.sn-input--radius-square {
-  border-radius: 0;
 }
 
 /* Focus state — border color soft outer ring so users can see
