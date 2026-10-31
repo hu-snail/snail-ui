@@ -152,3 +152,9 @@ apps/uni-templates/src/subpages/goods.vue（.goods-fulfil 壳）。
   "选择"竖排折行）→ 改用组件契约 `title-width`。
 - 设计稿履约/SKU 行的省略与不收缩（`truncate` + `shrink-0`）已在页面样式
   落实：`.goods-row__value--ellipsis`、SnTag `flex-shrink: 0`。
+
+## 已知同类遗留
+
+- `subpages/xhs.vue:38`（`:size="36"`）、`subpages/contacts.vue:23`（`:size="64"`）
+  仍是 SnAvatar 数字尺寸（按 px 解释、不随屏缩放）。这两个页面先于本轮任务
+  存在且没有对应设计稿基准，待各自任务按设计稿换算成 rpx。
