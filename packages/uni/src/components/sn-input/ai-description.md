@@ -69,6 +69,22 @@ aliases with fallbacks to existing `--sn-mp-color-*` tokens.
 | `--sn-mp-input-placeholder-color`  | `--sn-mp-color-text-tertiary`      | Placeholder text |
 | `--sn-mp-input-padding-x`          | `20rpx`                            | Horizontal pad   |
 | `--sn-mp-input-radius`             | `12rpx`                            | Corner radius    |
+| `--sn-input-icon-size`             | `var(--sn-mp-icon-size-medium)`    | In-field glyph size (prefix / suffix / clear / password toggle) |
+| `--sn-input-icon-color`            | `var(--sn-mp-color-text-tertiary)` | In-field glyph color |
+
+## Radius presets (additive)
+
+`radius` tiers map to the shared radius token scale; `default` keeps
+`--sn-mp-input-radius` (12rpx):
+
+| Tier      | Radius                    |
+| --------- | ------------------------- |
+| `sm`      | `--sn-mp-radius-sm` (8rpx) |
+| `default` | `--sn-mp-input-radius`    |
+| `lg`      | `--sn-mp-radius-lg` (16rpx) |
+| `xl`      | `--sn-mp-radius-xl` (24rpx) |
+| `pill`    | fully rounded             |
+| `square`  | 0                         |
 
 ## Accessibility
 

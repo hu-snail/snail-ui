@@ -1,12 +1,9 @@
 <script setup lang="ts">
-/** Demo: sn-input — prefix / suffix / clear-icon / count slots (uni-end). */
+/** Demo: sn-input — prefix / suffix / clear-icon / count 插槽。 */
 import { ref } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
-import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
 import { ChevronRight, Search, X } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-
-registerSnIcons({ ChevronRight, Search, X });
 
 const search = ref('');
 const url = ref('');
@@ -14,19 +11,19 @@ const bio = ref('Hi, I am using @snui/uni.');
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="search" placeholder="Search…" clearable>
+  <view class="sn-input-demo">
+    <SnInput v-model="search" placeholder="插槽自定义图标" clearable>
       <template #prefix>
-        <SnIcon :icon="Search" :size="28" />
+        <SnIcon :icon="Search" size="var(--sn-input-icon-size)" />
       </template>
       <template #clear-icon>
-        <SnIcon :icon="X" :size="24" />
+        <SnIcon :icon="X" size="var(--sn-input-icon-size)" />
       </template>
     </SnInput>
 
     <SnInput v-model="url" placeholder="https://" type="url">
       <template #suffix>
-        <SnIcon :icon="ChevronRight" :size="28" />
+        <SnIcon :icon="ChevronRight" size="var(--sn-input-icon-size)" />
       </template>
     </SnInput>
 
@@ -37,10 +34,9 @@ const bio = ref('Hi, I am using @snui/uni.');
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
 </style>

@@ -36,11 +36,19 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 ## Prefix / Suffix Icon
 
-<Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon via SnIcon; iconPrefix / iconSuffix / cssIcon css-class fallbacks." />
+Name mode renders through the SnIcon resolution chain (`registerSnIcons` registry → built-in catalogue → provider); size and color follow `--sn-input-icon-size` / `--sn-input-icon-color`. `cssIcon` mode treats the name as a plain CSS class instead.
 
-## Border / Background / Radius
+<Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon through the SnIcon resolution chain; iconPrefix / iconSuffix / cssIcon css-class fallbacks." />
 
-<Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius preset." />
+## Radius (`radius`)
+
+Radius tiers map to the shared `--sn-mp-radius-*` tokens; `pill` is the search-bar shape, `square` is right-angled.
+
+<Demo name="input-mp-radius" description="radius: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square', tiers map to --sn-mp-radius-*." />
+
+## Border / Background
+
+<Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg: 'surface' | 'transparent' | 'soft'; customBg." />
 
 ## alignRight / compact / inputmode
 
@@ -58,7 +66,7 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 ## Word-count alias (`showWordLimit`)
 
-`showWordLimit` is the wot-ui alias of `showCount`; both are equivalent and both need `maxlength`.
+`showWordLimit` is an alias of `showCount`; both are equivalent and both need `maxlength`.
 
 <Demo name="input-mp-word-limit" description="showWordLimit + maxlength; equivalent to showCount." />
 
@@ -86,7 +94,7 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | Native input type.                                                                        |
 | `size`                    | `'small' \| 'medium' \| 'large'`                                                                                                                  | `'medium'`  | rpx height / font-size.                                                                   |
 | `placeholder`             | `string`                                                                                                                                          | `''`        | Placeholder text.                                                                         |
-| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | Inline CSS injected into `::placeholder`.                                                 |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | Inline placeholder styling (native `placeholder-style` passthrough; no pseudo-element on App).                                                 |
 | `placeholderClass`        | `string`                                                                                                                                          | `''`        | Extra class on placeholder.                                                               |
 | `disabled`                | `boolean`                                                                                                                                         | `false`     | Disabled.                                                                                 |
 | `readonly`                | `boolean`                                                                                                                                         | `false`     | Read-only.                                                                                |
@@ -110,7 +118,7 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | Alias: `true / false` ↔ `'all' / 'none'`.                                                 |
 | `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | Background tone.                                                                          |
 | `customBg`                | `string`                                                                                                                                          | `''`        | Inline bg override.                                                                       |
-| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | Radius preset.                                                                            |
+| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                                       | `'default'` | Radius tier (maps to `--sn-mp-radius-*`; `default` = `--sn-mp-input-radius`).             |
 | `alignRight`              | `boolean`                                                                                                                                         | `false`     | Right-align value.                                                                        |
 | `compact`                 | `boolean`                                                                                                                                         | `false`     | Compact layout.                                                                           |
 | `focus`                   | `boolean`                                                                                                                                         | `false`     | Auto-focus on mount.                                                                      |
@@ -161,6 +169,18 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `suffix-icon` | Custom SnIcon tail content.                           |
 | `clear-icon`  | Custom × button content.                              |
 | `count`       | Custom counter (receives `{ current, max }`).         |
+
+## Tokens
+
+Every glyph inside the field (prefix / suffix / clear × / password eye) shares one size and one color; override on any ancestor:
+
+| Token                    | Default                            | Description                              |
+| ------------------------ | ---------------------------------- | ---------------------------------------- |
+| `--sn-input-icon-size`   | `var(--sn-mp-icon-size-medium)`    | In-field icon edge length (32rpx).       |
+| `--sn-input-icon-color`  | `var(--sn-mp-color-text-tertiary)` | In-field icon color.                     |
+| `--sn-mp-input-radius`   | `12rpx`                            | Default radius (`radius="default"`).     |
+| `--sn-mp-input-padding-x`| `20rpx`                            | Horizontal padding.                      |
+| `--sn-mp-input-bg`       | `--sn-mp-color-background-surface` | Background (`bg="surface"`).             |
 
 ## Source
 

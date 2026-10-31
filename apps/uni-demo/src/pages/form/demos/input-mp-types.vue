@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-input — every supported `type` variant (uni-end). */
+/** Demo: sn-input — type 类型 (uni-end)。 */
 import { reactive } from 'vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
@@ -15,22 +15,21 @@ const form = reactive({
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="form.text" type="text" placeholder="Text" />
-    <SnInput v-model="form.email" type="email" placeholder="Email" />
-    <SnInput v-model="form.password" type="password" placeholder="Password" />
-    <SnInput v-model="form.number" type="number" :min="0" :max="100" />
-    <SnInput v-model="form.tel" type="tel" placeholder="Phone" />
-    <SnInput v-model="form.url" type="url" placeholder="https://" />
-    <SnInput v-model="form.search" type="search" placeholder="Search…" />
+  <view class="sn-input-demo">
+    <SnInput v-model="form.text" type="text" placeholder="文本 text" />
+    <SnInput v-model="form.email" type="email" placeholder="邮箱 email" />
+    <SnInput v-model="form.password" type="password" placeholder="密码 password" />
+    <SnInput v-model="form.number" type="number" :min="0" :max="100" placeholder="数字 number" />
+    <SnInput v-model="form.tel" type="tel" placeholder="电话 tel" />
+    <SnInput v-model="form.url" type="url" placeholder="链接 url" />
+    <SnInput v-model="form.search" type="search" placeholder="搜索 search" />
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
 </style>

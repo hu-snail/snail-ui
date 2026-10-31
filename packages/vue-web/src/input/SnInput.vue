@@ -134,11 +134,16 @@ const props = withDefaults(
      */
     bg?: 'surface' | 'transparent' | 'soft';
     /**
-     * Border-radius preset. `default` matches the design system radius;
-     * `pill` gives a fully rounded field (search-bar style); `square`
-     * is right-angled.
+     * Border-radius preset (AUI additive). Tiers map to the web radius
+     * tokens; `default` keeps `--sn-web-input-radius`:
+     *  - `sm`      — `--sn-web-radius-sm`
+     *  - `default` — `--sn-web-input-radius`
+     *  - `lg`      — `--sn-web-radius-lg`
+     *  - `xl`      — `--sn-web-radius-xl`
+     *  - `pill`    — fully rounded field (search-bar style)
+     *  - `square`  — right-angled
      */
-    radius?: 'default' | 'pill' | 'square';
+    radius?: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square';
     /** Right-align the value (numeric / amount fields). */
     alignRight?: boolean;
     /**
@@ -549,9 +554,19 @@ const wrapperStyle = computed(() => {
   background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
 }
 
-/* Radius presets */
+/* Radius presets — tiers ride the shared `--sn-web-radius-*` scale
+ * (symmetric with the uni-end sn-input tiers). */
 .sn-input--radius-default {
   border-radius: var(--sn-web-input-radius, 6px);
+}
+.sn-input--radius-sm {
+  border-radius: var(--sn-web-radius-sm);
+}
+.sn-input--radius-lg {
+  border-radius: var(--sn-web-radius-lg);
+}
+.sn-input--radius-xl {
+  border-radius: var(--sn-web-radius-xl);
 }
 .sn-input--radius-pill {
   border-radius: 999px;

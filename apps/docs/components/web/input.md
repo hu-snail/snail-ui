@@ -40,7 +40,7 @@
 
 ## 边框 / 背景 / 圆角
 
-<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 三种圆角。" />
+<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 圆角档位。" />
 
 ## 右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）
 
@@ -90,7 +90,7 @@
 | `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | 别名：`true === border: 'all'`，`false === border: 'none'`。                |
 | `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | 背景色调。                                                                  |
 | `customBg`                | `string`                                                                                                                                          | `''`        | 内联 `background-color` 覆盖。                                              |
-| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | 圆角预设。                                                                  |
+| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                               | `'default'` | 圆角档位（映射 `--sn-web-radius-*`，`default` = `--sn-web-input-radius`）。  |
 | `alignRight`              | `boolean`                                                                                                                                         | `false`     | 字段值右对齐（金额字段常用）。                                              |
 | `compact`                 | `boolean`                                                                                                                                         | `false`     | 紧凑布局 — strip padding + bg 让 input 嵌套进 FormItem。                    |
 | `focus`                   | `boolean`                                                                                                                                         | `false`     | 挂载即 focus。                                                              |

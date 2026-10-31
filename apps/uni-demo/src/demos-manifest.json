@@ -175,6 +175,11 @@
           "name": "cell-mp-link",
           "title": "link",
           "hasEn": true
+        },
+        {
+          "name": "cell-mp-no-border",
+          "title": "无边框",
+          "hasEn": true
         }
       ]
     },
@@ -1373,73 +1378,8 @@
       "page": "pages/form/input",
       "demos": [
         {
-          "name": "input-mp-align-compact",
-          "title": "align-compact",
-          "hasEn": true
-        },
-        {
           "name": "input-mp-basic",
           "title": "基础用法",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-bordered-bg-radius",
-          "title": "bordered-bg-radius",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-clear-focus",
-          "title": "clear-focus",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-clearable-count",
-          "title": "clearable-count",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-custom-class",
-          "title": "自定义类名",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-native-attrs",
-          "title": "native-attrs",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-password-toggle",
-          "title": "password-toggle",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-prefix-suffix",
-          "title": "prefix-suffix",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-runtime",
-          "title": "runtime",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-sizes",
-          "title": "sizes",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-slots",
-          "title": "插槽",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-states",
-          "title": "状态",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-status",
-          "title": "状态",
           "hasEn": true
         },
         {
@@ -1448,8 +1388,78 @@
           "hasEn": true
         },
         {
+          "name": "input-mp-sizes",
+          "title": "尺寸",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-radius",
+          "title": "圆角",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-bordered-bg-radius",
+          "title": "边框与背景",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-prefix-suffix",
+          "title": "前后图标",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-slots",
+          "title": "插槽",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-clearable-count",
+          "title": "清空与字数",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-clear-focus",
+          "title": "清空与聚焦",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-password-toggle",
+          "title": "密码显隐",
+          "hasEn": true
+        },
+        {
           "name": "input-mp-word-limit",
-          "title": "word-limit",
+          "title": "字数统计",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-status",
+          "title": "校验状态",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-states",
+          "title": "禁用与只读",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-align-compact",
+          "title": "对齐与紧凑",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-native-attrs",
+          "title": "原生属性",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-runtime",
+          "title": "运行时属性",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-custom-class",
+          "title": "自定义类名",
           "hasEn": true
         }
       ]

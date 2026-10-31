@@ -36,11 +36,19 @@
 
 ## 前缀 / 后缀图标（`prefixIcon` / `suffixIcon`）
 
-<Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon 通过 SnIcon 渲染；iconPrefix / iconSuffix / cssIcon 三种 css class 模式。" />
+名称模式经 SnIcon 解析链（`registerSnIcons` 注册表 → 内置目录 → Provider）渲染，尺寸与颜色由 `--sn-input-icon-size` / `--sn-input-icon-color` 统一约定；`cssIcon` 模式把名称直接当 CSS class 渲染。
 
-## 边框 / 背景 / 圆角
+<Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon 经 SnIcon 解析链渲染；iconPrefix / iconSuffix / cssIcon 三种 css class 模式。" />
 
-<Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 三种圆角。" />
+## 圆角（`radius`）
+
+圆角档位映射共享的 `--sn-mp-radius-*` token；`pill` 全圆角（搜索条常用），`square` 直角。
+
+<Demo name="input-mp-radius" description="radius: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square'，档位映射 --sn-mp-radius-*。" />
+
+## 边框 / 背景（`border` / `bg`）
+
+<Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg: 'surface' | 'transparent' | 'soft'；customBg。" />
 
 ## 右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）
 
@@ -58,7 +66,7 @@
 
 ## 字数统计别名（`showWordLimit`）
 
-`showWordLimit` 是 `showCount` 的 wot-ui 别名，两者等价，都需配合 `maxlength`。
+`showWordLimit` 是 `showCount` 的别名，两者等价，都需配合 `maxlength`。
 
 <Demo name="input-mp-word-limit" description="showWordLimit + maxlength；与 showCount 等价。" />
 
@@ -86,7 +94,7 @@
 | `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | 原生 input type。                                                                    |
 | `size`                    | `'small' \| 'medium' \| 'large'`                                                                                                                  | `'medium'`  | rpx 高度 / 字号。                                                                    |
 | `placeholder`             | `string`                                                                                                                                          | `''`        | 占位符。                                                                             |
-| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | 行内 CSS 注入 `::placeholder` 伪元素。                                               |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | 占位符内联样式（原生 `placeholder-style` 透传，App 端无伪元素）。                     |
 | `placeholderClass`        | `string`                                                                                                                                          | `''`        | 占位符上的额外 class。                                                               |
 | `disabled`                | `boolean`                                                                                                                                         | `false`     | 禁用。                                                                               |
 | `readonly`                | `boolean`                                                                                                                                         | `false`     | 只读。                                                                               |
@@ -111,7 +119,7 @@
 | `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | 别名：true/false ↔ 'all'/'none'。                                                    |
 | `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | 背景色调。                                                                           |
 | `customBg`                | `string`                                                                                                                                          | `''`        | 内联背景色覆盖。                                                                     |
-| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | 圆角预设。                                                                           |
+| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                                         | `'default'` | 圆角档位（映射 `--sn-mp-radius-*`，`default` = `--sn-mp-input-radius`）。             |
 | `alignRight`              | `boolean`                                                                                                                                         | `false`     | 字段值右对齐。                                                                       |
 | `compact`                 | `boolean`                                                                                                                                         | `false`     | 紧凑布局。                                                                           |
 | `focus`                   | `boolean`                                                                                                                                         | `false`     | 挂载即 focus。                                                                       |
@@ -162,6 +170,18 @@
 | `suffix-icon` | SnIcon 自定义后置内容。                    |
 | `clear-icon`  | 自定义 × 按钮内容。                        |
 | `count`       | 自定义计数（接收 `{ current, max }`）。    |
+
+## Tokens
+
+域内图标（前置 / 后置 / 清空 × / 密码眼睛）共用一档尺寸与颜色，宿主可在任意祖先节点覆盖：
+
+| Token                    | Default                            | Description                            |
+| ------------------------ | ---------------------------------- | -------------------------------------- |
+| `--sn-input-icon-size`   | `var(--sn-mp-icon-size-medium)`    | 域内图标边长（32rpx）。                |
+| `--sn-input-icon-color`  | `var(--sn-mp-color-text-tertiary)` | 域内图标颜色。                         |
+| `--sn-mp-input-radius`   | `12rpx`                            | 默认圆角（`radius="default"`）。       |
+| `--sn-mp-input-padding-x`| `20rpx`                            | 水平内边距。                           |
+| `--sn-mp-input-bg`       | `--sn-mp-color-background-surface` | 背景色（`bg="surface"`）。             |
 
 ## Source
 

@@ -40,7 +40,7 @@ Controlled input. Renders a native `<input>` / `<textarea>` styled through the t
 
 ## Border / Background / Radius
 
-<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius preset." />
+<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius tiers." />
 
 ## alignRight / compact / inputmode
 
@@ -90,7 +90,7 @@ Multi-line textarea via `type="textarea"`. See input-slots for an inline bio exa
 | `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | Alias: `true === 'all'`, `false === 'none'`.                                             |
 | `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | Background tone.                                                                         |
 | `customBg`                | `string`                                                                                                                                          | `''`        | Inline `background-color` override.                                                      |
-| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | Radius preset.                                                                           |
+| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                               | `'default'` | Radius tier (maps to `--sn-web-radius-*`; `default` = `--sn-web-input-radius`).          |
 | `alignRight`              | `boolean`                                                                                                                                         | `false`     | Right-align value (amount fields).                                                       |
 | `compact`                 | `boolean`                                                                                                                                         | `false`     | Strip padding + bg so input nests inside FormItem.                                       |
 | `focus`                   | `boolean`                                                                                                                                         | `false`     | Auto-focus on mount.                                                                     |

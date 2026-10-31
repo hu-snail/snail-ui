@@ -7,26 +7,21 @@ const value = ref('hello');
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="value" placeholder="Type something…" />
-    <view class="sn-demo__meta"
-      >v-model = <text class="sn-demo__code">{{ value }}</text></view
-    >
+  <view class="sn-input-demo">
+    <SnInput v-model="value" placeholder="Type something" clearable />
+    <text class="sn-input-demo__caption">v-model = {{ value }}</text>
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
-.sn-demo__meta {
+.sn-input-demo__caption {
+  margin-top: 8rpx;
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
-}
-.sn-demo__code {
-  font-family: monospace;
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

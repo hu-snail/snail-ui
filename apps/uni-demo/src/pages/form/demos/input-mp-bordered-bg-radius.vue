@@ -1,35 +1,31 @@
 <script setup lang="ts">
-/** Demo: sn-input — bordered / bg / radius variants (uni-end). */
-import { ref } from 'vue';
-import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
-
-const a = ref('');
-const b = ref('');
-const c = ref('');
-const d = ref('search');
-const e = ref('');
+/** Demo: sn-input — border 边框 / bg 背景（圆角见 radius 场景）。 */
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="a" placeholder="bordered (default)" />
-    <SnInput v-model="b" placeholder="borderless" :bordered="false" />
+  <view class="sn-input-demo">
+    <text class="sn-input-demo__caption">border 边框</text>
+    <SnInput placeholder="border=&quot;all&quot;（默认，四边描边）" />
+    <SnInput placeholder="border=&quot;bottom&quot;（仅下边框，行内表单）" border="bottom" />
+    <SnInput placeholder="border=&quot;none&quot;（无边框）" border="none" />
+    <SnInput placeholder="bordered=false（旧布尔别名 → none）" :bordered="false" />
 
-    <SnInput v-model="c" placeholder="surface (default)" bg="surface" />
-    <SnInput v-model="d" placeholder="transparent" bg="transparent" :bordered="false" />
-    <SnInput v-model="e" placeholder="soft" bg="soft" />
-
-    <SnInput model-value="default radius" radius="default" readonly />
-    <SnInput model-value="pill radius (search bar)" radius="pill" readonly />
-    <SnInput model-value="square radius" radius="square" readonly />
+    <text class="sn-input-demo__caption">bg 背景</text>
+    <SnInput placeholder="bg=&quot;surface&quot;（默认，卡片底）" bg="surface" />
+    <SnInput placeholder="bg=&quot;transparent&quot;（透出页面底色）" bg="transparent" border="none" />
+    <SnInput placeholder="bg=&quot;soft&quot;（次级填充）" bg="soft" />
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
+}
+.sn-input-demo__caption {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

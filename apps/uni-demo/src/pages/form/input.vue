@@ -1,21 +1,22 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— input 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/input-mp-align-compact.vue';
-import Demo1 from './demos/input-mp-basic.vue';
-import Demo2 from './demos/input-mp-bordered-bg-radius.vue';
-import Demo3 from './demos/input-mp-clear-focus.vue';
-import Demo4 from './demos/input-mp-clearable-count.vue';
-import Demo5 from './demos/input-mp-custom-class.vue';
-import Demo6 from './demos/input-mp-native-attrs.vue';
-import Demo7 from './demos/input-mp-password-toggle.vue';
-import Demo8 from './demos/input-mp-prefix-suffix.vue';
-import Demo9 from './demos/input-mp-runtime.vue';
-import Demo10 from './demos/input-mp-sizes.vue';
-import Demo11 from './demos/input-mp-slots.vue';
+import Demo0 from './demos/input-mp-basic.vue';
+import Demo1 from './demos/input-mp-types.vue';
+import Demo2 from './demos/input-mp-sizes.vue';
+import Demo3 from './demos/input-mp-radius.vue';
+import Demo4 from './demos/input-mp-bordered-bg-radius.vue';
+import Demo5 from './demos/input-mp-prefix-suffix.vue';
+import Demo6 from './demos/input-mp-slots.vue';
+import Demo7 from './demos/input-mp-clearable-count.vue';
+import Demo8 from './demos/input-mp-clear-focus.vue';
+import Demo9 from './demos/input-mp-password-toggle.vue';
+import Demo10 from './demos/input-mp-word-limit.vue';
+import Demo11 from './demos/input-mp-status.vue';
 import Demo12 from './demos/input-mp-states.vue';
-import Demo13 from './demos/input-mp-status.vue';
-import Demo14 from './demos/input-mp-types.vue';
-import Demo15 from './demos/input-mp-word-limit.vue';
+import Demo13 from './demos/input-mp-align-compact.vue';
+import Demo14 from './demos/input-mp-native-attrs.vue';
+import Demo15 from './demos/input-mp-runtime.vue';
+import Demo16 from './demos/input-mp-custom-class.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -28,7 +29,7 @@ const { t } = useDemoUi();
     <view class="page">
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('align-compact', 'Align Compact') }}</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -36,7 +37,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
+          <text class="module__title">{{ t('类型', 'Type') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -44,7 +45,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('bordered-bg-radius', 'Bordered Bg Radius') }}</text>
+          <text class="module__title">{{ t('尺寸', 'Sizes') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -52,7 +53,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('clear-focus', 'Clear Focus') }}</text>
+          <text class="module__title">{{ t('圆角', 'Radius') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -60,7 +61,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('clearable-count', 'Clearable Count') }}</text>
+          <text class="module__title">{{ t('边框与背景', 'Border & background') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -68,7 +69,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('自定义类名', 'Custom class') }}</text>
+          <text class="module__title">{{ t('前后图标', 'Prefix & suffix icons') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -76,7 +77,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('native-attrs', 'Native Attrs') }}</text>
+          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -84,7 +85,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('password-toggle', 'Password Toggle') }}</text>
+          <text class="module__title">{{ t('清空与字数', 'Clearable & count') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -92,7 +93,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('prefix-suffix', 'Prefix Suffix') }}</text>
+          <text class="module__title">{{ t('清空与聚焦', 'Clear & focus') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
@@ -100,7 +101,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('runtime', 'Runtime') }}</text>
+          <text class="module__title">{{ t('密码显隐', 'Password toggle') }}</text>
         </view>
         <view class="module__body">
           <Demo9 />
@@ -108,7 +109,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('sizes', 'Sizes') }}</text>
+          <text class="module__title">{{ t('字数统计', 'Word limit') }}</text>
         </view>
         <view class="module__body">
           <Demo10 />
@@ -116,7 +117,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
+          <text class="module__title">{{ t('校验状态', 'Validation status') }}</text>
         </view>
         <view class="module__body">
           <Demo11 />
@@ -124,7 +125,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('状态', 'State') }}</text>
+          <text class="module__title">{{ t('禁用与只读', 'Disabled & readonly') }}</text>
         </view>
         <view class="module__body">
           <Demo12 />
@@ -132,7 +133,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('状态', 'Status') }}</text>
+          <text class="module__title">{{ t('对齐与紧凑', 'Alignment & compact') }}</text>
         </view>
         <view class="module__body">
           <Demo13 />
@@ -140,7 +141,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('类型', 'Type') }}</text>
+          <text class="module__title">{{ t('原生属性', 'Native attributes') }}</text>
         </view>
         <view class="module__body">
           <Demo14 />
@@ -148,10 +149,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <view class="module__head">
-          <text class="module__title">{{ t('word-limit', 'Word Limit') }}</text>
+          <text class="module__title">{{ t('运行时属性', 'Runtime attributes') }}</text>
         </view>
         <view class="module__body">
           <Demo15 />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <text class="module__title">{{ t('自定义类名', 'Custom class') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo16 />
         </view>
       </view>
     </view>

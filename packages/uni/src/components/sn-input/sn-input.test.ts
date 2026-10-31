@@ -18,6 +18,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnInput from './sn-input.vue';
 
@@ -625,6 +627,35 @@ describe('sn-input', () => {
       slots: { 'suffix-icon': '<view data-testid="si" />' },
     });
     expect(wrapper.find('[data-testid="si"]').exists()).toBe(true);
+  });
+
+  it('renders a named prefixIcon through SnIcon (string icon API)', () => {
+    const wrapper = mount(SnInput, { props: { prefixIcon: 'search' } });
+    const glyph = wrapper.find('.sn-input__icon-glyph');
+    expect(glyph.exists()).toBe(true);
+    expect(glyph.find('svg').exists()).toBe(true);
+  });
+
+  it('renders a named suffixIcon through SnIcon (string icon API)', () => {
+    const wrapper = mount(SnInput, { props: { suffixIcon: 'chevron-right' } });
+    expect(wrapper.find('.sn-input__suffix svg').exists()).toBe(true);
+  });
+
+  it('applies the sm / lg / xl radius tiers', () => {
+    for (const radius of ['sm', 'lg', 'xl'] as const) {
+      const wrapper = mount(SnInput, { props: { radius } });
+      expect(wrapper.classes()).toContain(`sn-input--radius-${radius}`);
+    }
+  });
+
+  it('keeps the field-level icon size and color contract on tokens', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    expect(source).toContain('--sn-input-icon-size: var(--sn-mp-icon-size-medium)');
+    expect(source).toContain('--sn-input-icon-color: var(--sn-mp-color-text-tertiary)');
+    /* Every in-field glyph spot consumes the tokens — no one-off sizes. */
+    expect(source).toMatch(/\.sn-input__icon-glyph\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    expect(source).toMatch(/\.sn-input__password-toggle-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
   });
 
   it('hides the suffix area while the clear button is shown', () => {

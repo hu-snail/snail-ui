@@ -354,6 +354,13 @@ describe('SnInput', () => {
     const wrapper = mount(SnInput, { props: { radius: 'square' } });
     expect(wrapper.classes()).toContain('sn-input--radius-square');
   });
+
+  it('applies the sm / lg / xl radius tiers', () => {
+    for (const radius of ['sm', 'lg', 'xl'] as const) {
+      const wrapper = mount(SnInput, { props: { radius } });
+      expect(wrapper.classes()).toContain(`sn-input--radius-${radius}`);
+    }
+  });
 });
 
 describe('SnInput password toggle visuals', () => {

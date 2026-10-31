@@ -142,10 +142,16 @@ const props = withDefaults(
     /** Custom hex / rbg / named color overrides the bg tone. */
     customBg?: string;
     /**
-     * Border-radius preset. `default` matches the design system radius;
-     * `pill` gives a fully rounded field; `square` is right-angled.
+     * Border-radius preset (AUI additive). Tiers map to the mp radius
+     * tokens; `default` keeps `--sn-mp-input-radius`:
+     *  - `sm`      — `--sn-mp-radius-sm` (8rpx)
+     *  - `default` — `--sn-mp-input-radius` (12rpx)
+     *  - `lg`      — `--sn-mp-radius-lg` (16rpx)
+     *  - `xl`      — `--sn-mp-radius-xl` (24rpx)
+     *  - `pill`    — fully rounded field
+     *  - `square`  — right-angled
      */
-    radius?: 'default' | 'pill' | 'square';
+    radius?: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square';
     /** Right-align the value (numeric / amount fields). */
     alignRight?: boolean;
     /**
@@ -340,6 +346,14 @@ const passwordToggleIcon = computed<IconData>(() => markRaw(passwordVisible.valu
  *  proxy the IconData record. */
 const defaultClearIcon = markRaw(XIcon);
 
+/**
+ * Glyph size for every icon inside the field (prefix / suffix / clear /
+ * password toggle). A CSS-var string passes through sn-icon's size
+ * normalization untouched, so the token stays overridable at runtime —
+ * same pattern as sn-cell's `effectiveIconSize`.
+ */
+const ICON_SIZE_VAR = 'var(--sn-input-icon-size)';
+
 function onInput(event: Event): void {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement;
   const raw = target.value;
@@ -479,7 +493,12 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         v-if="!slots.prefix && (prefixIcon || iconPrefix)"
         :class="cssIcon ? prefixIcon || iconPrefix : 'sn-input__icon-glyph'"
       >
-        <slot name="prefix-icon" />
+        <slot name="prefix-icon">
+          <!-- Name mode resolves through the sn-icon chain
+            (registry → built-in catalogue → provider), mirroring the web
+            SnInput — the glyph used to render as an empty box here. -->
+          <SnIcon v-if="!cssIcon" :icon="prefixIcon || iconPrefix" :size="ICON_SIZE_VAR" />
+        </slot>
       </view>
     </view>
 
@@ -566,7 +585,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="passwordVisible = !passwordVisible"
-        ><SnIcon :icon="passwordToggleIcon" :size="20"
+        ><SnIcon :icon="passwordToggleIcon" :size="ICON_SIZE_VAR"
       /></view>
     </view>
 
@@ -577,7 +596,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="onClear"
       >
-        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="20" /></slot>
+        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="ICON_SIZE_VAR" /></slot>
       </view>
     </view>
 
@@ -592,7 +611,9 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         v-if="!slots.suffix && (suffixIcon || iconSuffix)"
         :class="cssIcon ? suffixIcon || iconSuffix : 'sn-input__icon-glyph'"
       >
-        <slot name="suffix-icon" />
+        <slot name="suffix-icon">
+          <SnIcon v-if="!cssIcon" :icon="suffixIcon || iconSuffix" :size="ICON_SIZE_VAR" />
+        </slot>
       </view>
     </view>
 
@@ -611,6 +632,12 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
  * `--sn-mp-*` alias layer that ships from `@snui/tokens-mp`.
  */
 .sn-input {
+  /* Input-family icon contract — every glyph inside the field (prefix /
+   * suffix / clear / password toggle) shares one size and one color. The
+   * defaults anchor on `--sn-mp-*` tokens so dark mode and style packs
+   * follow automatically (§116.2 — no literal colors). */
+  --sn-input-icon-size: var(--sn-mp-icon-size-medium);
+  --sn-input-icon-color: var(--sn-mp-color-text-tertiary);
   display: inline-flex;
   align-items: center;
   gap: 12rpx;
@@ -659,9 +686,19 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   background-color: var(--sn-mp-color-background-soft);
 }
 
-/* Radius presets */
+/* Radius presets — tiers ride the shared `--sn-mp-radius-*` scale so fields
+ * can sit on cards (sm) or hero search bars (xl) without one-off values. */
 .sn-input--radius-default {
   border-radius: var(--sn-mp-input-radius, 12rpx);
+}
+.sn-input--radius-sm {
+  border-radius: var(--sn-mp-radius-sm);
+}
+.sn-input--radius-lg {
+  border-radius: var(--sn-mp-radius-lg);
+}
+.sn-input--radius-xl {
+  border-radius: var(--sn-mp-radius-xl);
 }
 .sn-input--radius-pill {
   border-radius: 999rpx;
@@ -766,13 +803,15 @@ textarea.sn-input__native {
   cursor: pointer;
 }
 
-/* Icon glyph slot — host project can `<view slot="prefix-icon">` here. */
+/* Icon glyph slot — host project can `<view slot="prefix-icon">` here;
+ * name-mode SnIcons land in the same box. */
 .sn-input__icon-glyph {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  color: var(--sn-input-icon-color);
 }
 
 /* Password show/hide toggle */
@@ -785,12 +824,10 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  background: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  color: var(--sn-input-icon-color);
   border-radius: 50%;
-  font-size: 24rpx;
   line-height: 1;
   cursor: pointer;
 }
@@ -805,12 +842,10 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  background: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  color: var(--sn-input-icon-color);
   border-radius: 50%;
-  font-size: 24rpx;
   line-height: 1;
   cursor: pointer;
 }
@@ -853,6 +888,11 @@ textarea.sn-input__native {
 }
 .snui-skin-doodle .sn-input__password-toggle-btn,
 .snui-skin-doodle .sn-input__clear-btn {
+  /* Ink border eats into the token-sized box — grow the box so the glyph
+   * still fits (border-box keeps the outer size predictable). */
+  box-sizing: border-box;
+  width: 48rpx;
+  height: 48rpx;
   border: 4rpx solid #1a1a1a;
   box-shadow: 2rpx 2rpx 0 #1a1a1a;
 }
