@@ -1,10 +1,10 @@
 /**
  * sn-plate-input unit tests — uni-end plate field with a popup car keyboard.
  *
- * Behaviour only (AGENTS.md §46): box rendering, the tap-to-open contract,
- * the v-model flow through sn-keyboard, maxlength capping, the car-language
- * lifecycle and the visibility contract (uncontrolled + controlled). No rpx
- * numbers in assertions.
+ * Behaviour only (AGENTS.md §46): box rendering, the tap-to-toggle contract,
+ * the scrim-free keyboard, the v-model flow through sn-keyboard, maxlength
+ * capping, the car-language lifecycle and the visibility contract
+ * (uncontrolled + controlled). No rpx numbers in assertions.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -95,20 +95,40 @@ describe('sn-plate-input', () => {
       expect(w.find('.sn-keyboard__title').text()).toBe('车牌号');
     });
 
+    it('renders the keyboard without a scrim', async () => {
+      const w = mount(SnPlateInput);
+      await w.find('.sn-plate-input__boxes').trigger('tap');
+      expect(w.find('.sn-keyboard').exists()).toBe(true);
+      expect(w.find('.sn-popup__modal').exists()).toBe(false);
+    });
+
     it('marks the open state on the root', async () => {
       const w = mount(SnPlateInput);
       await w.find('.sn-plate-input__boxes').trigger('tap');
       expect(w.classes()).toContain('sn-plate-input--open');
     });
 
-    it('emits open once — re-tapping the open field is a no-op', async () => {
+    it('toggles closed on the second field tap (scrim-free collapse)', async () => {
+      const w = mount(SnPlateInput);
+      await w.find('.sn-plate-input__boxes').trigger('tap');
+      expect(w.find('.sn-keyboard').exists()).toBe(true);
+      await w.find('.sn-plate-input__boxes').trigger('tap');
+      // the popup leave animation unmounts the panel async; the visible
+      // contract is observable through the event and the root state class
+      expect(w.emitted('update:visible')?.at(-1)).toEqual([false]);
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.classes()).not.toContain('sn-plate-input--open');
+    });
+
+    it('emits open then close across a full toggle cycle', async () => {
       const w = mount(SnPlateInput);
       await w.find('.sn-plate-input__boxes').trigger('tap');
       await w.find('.sn-plate-input__boxes').trigger('tap');
       expect(w.emitted('open')).toHaveLength(1);
+      expect(w.emitted('close')).toHaveLength(1);
     });
 
-    it('does not open when disabled', async () => {
+    it('does not toggle when disabled', async () => {
       const w = mount(SnPlateInput, { props: { disabled: true } });
       await w.find('.sn-plate-input__boxes').trigger('tap');
       expect(w.find('.sn-keyboard').exists()).toBe(false);
@@ -125,18 +145,13 @@ describe('sn-plate-input', () => {
       expect(w.classes()).not.toContain('sn-plate-input--open');
     });
 
-    it('closes from the scrim tap', async () => {
-      const w = mount(SnPlateInput);
-      await w.find('.sn-plate-input__boxes').trigger('tap');
-      await w.find('.sn-popup__modal').trigger('tap');
-      expect(w.emitted('close')).toHaveLength(1);
-    });
-
-    it('honours a one-way controlled `visible` without re-emitting open', async () => {
+    it('honours a one-way controlled `visible` (open, tap keeps it open)', async () => {
       const w = mount(SnPlateInput, { props: { visible: true } });
       expect(w.find('.sn-keyboard').exists()).toBe(true);
+      // controlled: the bound prop wins, so the tap cannot toggle it closed
       await w.find('.sn-plate-input__boxes').trigger('tap');
-      expect(w.emitted('open')).toBeUndefined();
+      expect(w.find('.sn-keyboard').exists()).toBe(true);
+      expect(w.emitted('update:visible')?.at(-1)).toEqual([false]);
     });
   });
 

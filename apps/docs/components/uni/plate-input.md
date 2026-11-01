@@ -1,12 +1,12 @@
 # PlateInput 车牌输入框（uni 端 / 移动端）
 
-`sn-plate-input` 是 `@snui/uni` 的车牌输入框：每个车牌位一个方框，点击方框行弹起共享的 `sn-keyboard`（`mode: 'car'`）车牌虚拟键盘——省份 → 字母/数字布局自动切换、长按退格连删、弹层与安全区归键盘所有，本组件只接值与显隐。easycom 自动注册（`components/sn-plate-input/sn-plate-input.vue` → `<sn-plate-input>`），几何值使用 `rpx`。光标是纯 CSS（静态 2rpx 竖条，仅键盘弹出时显示），没有定时器，因此无需清理。
+`sn-plate-input` 是 `@snui/uni` 的车牌输入框：每个车牌位一个方框，点击方框行弹起无蒙层的共享 `sn-keyboard`（`mode: 'car'`）车牌虚拟键盘——省份 → 字母/数字布局自动切换、长按退格连删、弹层与安全区归键盘所有，页面保持可见可交互，本组件只接值与显隐。easycom 自动注册（`components/sn-plate-input/sn-plate-input.vue` → `<sn-plate-input>`），几何值使用 `rpx`。光标是纯 CSS（静态 2rpx 竖条，仅键盘弹出时显示），没有定时器，因此无需清理。
 
 ## 基础用法
 
-点击方框行弹起车牌键盘：省份键盘选完第一个字自动切到字母/数字布局，长按删除键连删；清空后下一块车牌重新从省份开始。
+点击方框行弹起车牌键盘：省份键盘选完第一个字自动切到字母/数字布局，长按删除键连删；再点一次字段或点完成收起；清空后下一块车牌重新从省份开始。
 
-<Demo name="plate-input-mp-basic" description="点击方框行弹起 sn-keyboard(mode='car') 车牌键盘：省份→字母/数字自动切换，长按删除连删。" />
+<Demo name="plate-input-mp-basic" description="点击格子弹起无蒙层车牌键盘（sn-keyboard mode='car'）：省份→字母/数字自动切换、长按删除连删，再点一次字段或点完成收起。" />
 
 ## 新能源车牌与禁用态
 
@@ -27,13 +27,13 @@
 
 ## Events
 
-| 事件名              | 说明                     | 参数               |
-| ------------------- | ------------------------ | ------------------ |
-| `update:modelValue` | 值变化时（已截断到格数） | `(value: string)`  |
-| `change`            | 值变化时（同 tick）      | `(value: string)`  |
-| `update:visible`    | 键盘显隐变化             | `(value: boolean)` |
-| `open`              | 点击字段、键盘即将弹起   | —                  |
-| `close`             | 键盘收起（完成 / 遮罩）  | —                  |
+| 事件名              | 说明                            | 参数               |
+| ------------------- | ------------------------------- | ------------------ |
+| `update:modelValue` | 值变化时（已截断到格数）        | `(value: string)`  |
+| `change`            | 值变化时（同 tick）             | `(value: string)`  |
+| `update:visible`    | 键盘显隐变化                    | `(value: boolean)` |
+| `open`              | 点击字段、键盘即将弹起          | —                  |
+| `close`             | 键盘收起（再点字段 / 完成按钮） | —                  |
 
 ## Slots
 

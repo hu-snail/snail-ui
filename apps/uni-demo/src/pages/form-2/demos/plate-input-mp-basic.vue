@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-plate-input — 点击格子弹起 sn-keyboard(mode='car') 车牌键盘：省份→字母/数字自动切换，长按删除连删。 */
+/** Demo: sn-plate-input — 点击格子弹起无蒙层车牌键盘（sn-keyboard mode='car'）：省份→字母/数字自动切换、长按删除连删，再点一次字段或点完成收起。 */
 import { ref } from 'vue';
 import SnPlateInput from '@snui/uni-src/components/sn-plate-input/sn-plate-input.vue';
 

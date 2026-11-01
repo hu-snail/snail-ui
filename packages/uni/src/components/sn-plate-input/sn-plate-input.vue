@@ -13,7 +13,11 @@
  * hold-to-repeat delete, the popup chrome and the safe-area padding are all
  * owned by the keyboard, this file only wires value + visibility. The `tap`
  * trigger sits on the box row, not the root, so taps inside the keyboard
- * popup (scrim included) never bubble back into `open()`.
+ * popup never bubble back into the toggle.
+ *
+ * No scrim: the keyboard renders `modal=false`（Human 指令 2026-11-01，页面
+ * 保持可见），`hide-on-click-outside` 关掉（它靠蒙层承接外部点击）。收起
+ * 路径 = 再点一次字段（toggle）或头部完成按钮。
  *
  * The keyboard car language (`v-model:car-lang`) lives here because
  * `autoSwitchLang` is a controlled prop: without a bound state the auto
@@ -104,9 +108,13 @@ function setVisible(next: boolean): void {
   else emit('close');
 }
 
-function open(): void {
-  if (props.disabled || isOpen.value) return;
-  setVisible(true);
+/**
+ * Toggle on tap: no scrim means a second tap on the field is the natural
+ * collapse gesture — open when closed, close when open.
+ */
+function onFieldTap(): void {
+  if (props.disabled) return;
+  setVisible(!isOpen.value);
 }
 
 /* ── Car language: held here so the keyboard's auto-switch can land ──────── */
@@ -156,7 +164,7 @@ const rootStyle = computed(() => props.customStyle);
       class="sn-plate-input__boxes"
       role="group"
       :aria-label="'plate number, ' + chars.length + ' of ' + boxCount"
-      @tap="open"
+      @tap="onFieldTap"
     >
       <view
         v-for="index in boxCount"
@@ -188,6 +196,8 @@ const rootStyle = computed(() => props.customStyle);
       mode="car"
       auto-switch-lang
       :maxlength="boxCount"
+      :modal="false"
+      :hide-on-click-outside="false"
       v-model:car-lang="carLang"
       @update:model-value="onKeyboardValue"
       @update:visible="onKeyboardVisible"

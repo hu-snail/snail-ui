@@ -39,23 +39,25 @@ import SnPlateInput from '@snui/uni-src/components/sn-plate-input/sn-plate-input
 
 ## Events
 
-| Name                | Payload            | When                                          |
-| ------------------- | ------------------ | --------------------------------------------- |
-| `update:modelValue` | `(value: string)`  | Value changed (value clamped to `maxlength`). |
-| `change`            | `(value: string)`  | Same tick as `update:modelValue`.             |
-| `update:visible`    | `(value: boolean)` | Keyboard visibility changed.                  |
-| `open`              | —                  | Field tapped, keyboard about to open.         |
-| `close`             | —                  | Keyboard closed (close button / scrim).       |
+| Name                | Payload            | When                                              |
+| ------------------- | ------------------ | ------------------------------------------------- |
+| `update:modelValue` | `(value: string)`  | Value changed (value clamped to `maxlength`).     |
+| `change`            | `(value: string)`  | Same tick as `update:modelValue`.                 |
+| `update:visible`    | `(value: boolean)` | Keyboard visibility changed.                      |
+| `open`              | —                  | Field tapped, keyboard about to open.             |
+| `close`             | —                  | Keyboard collapsed (field re-tap / close button). |
 
 ## Behavior
 
-- Tapping the box row opens `sn-keyboard` (mode `'car'`): province → letter/digit
-  layouts, hold-to-repeat delete, safe-area padding — all keyboard-owned.
+- Tapping the box row opens `sn-keyboard` (mode `'car'`) **without a scrim**:
+  province → letter/digit layouts, hold-to-repeat delete, safe-area padding —
+  all keyboard-owned; the page behind stays visible and interactive.
 - `auto-switch-lang` is on: the first province char flips the layout to letters.
 - The car language resets to 省份 whenever the value is emptied, so the next
   plate starts over.
-- The `tap` trigger sits on the box row, so taps inside the keyboard popup
-  (scrim included) never bubble back into `open()`.
+- Tapping the field again collapses the keyboard (no scrim to tap); the
+  `tap` trigger sits on the box row, so taps inside the keyboard popup
+  never bubble back into the toggle.
 - The caret is a static CSS bar shown while open — no timers, nothing to dispose.
 
 ## Tokens Consumed (end: mp)

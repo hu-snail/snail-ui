@@ -1,12 +1,12 @@
 # PlateInput · uni-app
 
-`sn-plate-input` is the license-plate entry field of `@snui/uni`: one box per plate position, tapping the box row raises the shared `sn-keyboard` (`mode: 'car'`) — province → letter/digit auto-switching, hold-to-repeat delete, popup chrome and safe-area all owned by the keyboard; this component only wires value + visibility. easycom auto-registration (`components/sn-plate-input/sn-plate-input.vue` → `<sn-plate-input>`); geometry in `rpx`. The caret is pure CSS (a static 2rpx bar shown while the keyboard is open), so there is no timer to dispose.
+`sn-plate-input` is the license-plate entry field of `@snui/uni`: one box per plate position, tapping the box row raises the shared `sn-keyboard` (`mode: 'car'`) — province → letter/digit auto-switching, hold-to-repeat delete, popup chrome and safe-area all owned by the keyboard — rendered without a scrim, so the page stays visible and interactive; this component only wires value + visibility. easycom auto-registration (`components/sn-plate-input/sn-plate-input.vue` → `<sn-plate-input>`); geometry in `rpx`. The caret is pure CSS (a static 2rpx bar shown while the keyboard is open), so there is no timer to dispose.
 
 ## Basic usage
 
-Tap the box row to raise the plate keyboard: picking the first province character flips to the letter/digit layout; holding delete repeats; clearing starts the next plate back on provinces.
+Tap the box row to raise the plate keyboard: picking the first province character flips to the letter/digit layout; holding delete repeats; tapping the field again or the close button collapses it; clearing starts the next plate back on provinces.
 
-<Demo name="plate-input-mp-basic" description="Tap the boxes to raise the shared car keyboard (province → letters auto-switch, hold-to-repeat delete)." />
+<Demo name="plate-input-mp-basic" description="Tap the boxes to raise the scrim-free car keyboard (province → letters auto-switch, hold-to-repeat delete); tap the field again or close to collapse." />
 
 ## New-energy plates & disabled
 
@@ -27,13 +27,13 @@ Tap the box row to raise the plate keyboard: picking the first province characte
 
 ## Events
 
-| Event               | Description                              | Params             |
-| ------------------- | ---------------------------------------- | ------------------ |
-| `update:modelValue` | Value changed (clamped to the box count) | `(value: string)`  |
-| `change`            | Value changed (same tick)                | `(value: string)`  |
-| `update:visible`    | Keyboard visibility changed              | `(value: boolean)` |
-| `open`              | Field tapped, keyboard about to open     | —                  |
-| `close`             | Keyboard closed (close button / scrim)   | —                  |
+| Event               | Description                                      | Params             |
+| ------------------- | ------------------------------------------------ | ------------------ |
+| `update:modelValue` | Value changed (clamped to the box count)         | `(value: string)`  |
+| `change`            | Value changed (same tick)                        | `(value: string)`  |
+| `update:visible`    | Keyboard visibility changed                      | `(value: boolean)` |
+| `open`              | Field tapped, keyboard about to open             | —                  |
+| `close`             | Keyboard collapsed (field re-tap / close button) | —                  |
 
 ## Slots
 
