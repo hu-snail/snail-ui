@@ -13,9 +13,9 @@
 
 ### 基础用法
 
-`v-model` 绑定聚合列表，`@query` 里发请求，拿到数据后 `completeByTotal` 汇报；末页不足一页（或达到 total）时自动判停。
+`v-model` 绑定聚合列表，`@query` 里发请求，拿到数据后 `completeByTotal` 汇报；末页不足一页（或达到 total）时自动判停。上方的胶囊切换器可实时切换加载动画形态（`refresherLoadingType`）与下拉区配色预设（背景 / 文案 / 图标三件套）。
 
-<Demo name="paging-mp-basic" description="下拉刷新 / 触底自动翻页 / completeByTotal 判停。" />
+<Demo name="paging-mp-basic" description="下拉刷新 / 触底自动翻页 / completeByTotal 判停；胶囊实时切换加载动画形态与下拉区配色。" />
 
 ### 空态与失败重试
 
@@ -27,7 +27,7 @@
 
 ### 下拉进入二楼
 
-<Demo name="paging-mp-second-floor" description="secondFloorEnabled 开启后，下拉越过阈值松手即滑入全屏二楼（secondFloor 插槽，独立滚动）；上滑可拉回列表；胶囊切换器实时切换加载动画类型与下拉背景配色。" />
+<Demo name="paging-mp-second-floor" description="secondFloorEnabled 开启后，下拉越过阈值松手即滑入全屏二楼（secondFloor 插槽，独立滚动）；上滑可拉回列表。" />
 
 ### 弹窗内下拉刷新加载
 

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — second floor + capsule switchers (EN).
+ * Demo: sn-paging (uni-end) — second floor (EN).
  *
  * - secondFloorEnabled on: releasing past the threshold (100px) slides in the
  *   fullscreen second floor (release intercepts the refresh; uni-h5's
  *   synthetic release echo is neutralized by the component's arming latch)
  * - The floor can be dragged back by swiping up (content at bottom or not
  *   scrollable); closeSecondFloor() works programmatically
- * - sn-segmented capsules switch refresherLoadingType (spinner shape) and
- *   refresherBackground (pull-area background presets) live
+ * - The pull area and the floor share a dark theme (loading/theme capsules
+ *   live on the basic-usage demo)
  */
 import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 import {
   Bell,
   Calendar,
@@ -24,7 +23,6 @@ import {
   MessageCircle,
   Star,
 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
@@ -42,8 +40,6 @@ const PAGE_SIZE = 8;
 const list = ref<DemoRow[]>([]);
 const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
-const loadingType = ref<LoadingType>('circular');
-const floorBackground = ref('#0b1220');
 
 /** Second-floor grid: 8 icons + colors cycled into 16 "mini program" tiles. */
 const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];
@@ -63,19 +59,6 @@ const floorApps: FloorApp[] = Array.from({ length: 16 }, (_, i) => ({
   color: FLOOR_COLORS[i % FLOOR_COLORS.length],
 }));
 
-const loadingTypeOptions = [
-  { label: 'Circular', value: 'circular' },
-  { label: 'Spinner', value: 'spinner' },
-  { label: 'Dots', value: 'dots' },
-  { label: 'Wave', value: 'wave' },
-];
-
-const backgroundOptions = [
-  { label: 'Deep', value: '#0b1220' },
-  { label: 'Indigo', value: '#1e1b4b' },
-  { label: 'Pine', value: '#14342b' },
-];
-
 function query(pageNo: number, pageSize: number): void {
   setTimeout(() => {
     const start = (pageNo - 1) * pageSize;
@@ -94,10 +77,6 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="floor-controls">
-      <SnSegmented v-model="loadingType" :options="loadingTypeOptions" />
-      <SnSegmented v-model="floorBackground" :options="backgroundOptions" />
-    </view>
     <view class="floor-hint">
       <text class="floor-hint__text">
         Pull past the threshold and release to enter the fullscreen second floor; swipe up inside
@@ -110,10 +89,9 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         v-model="list"
         :default-page-size="PAGE_SIZE"
         second-floor-enabled
-        :refresher-background="floorBackground"
+        refresher-background="#0b1220"
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
-        :refresher-loading-type="loadingType"
         second-floor-background="#121a2b"
         @query="query"
         @second-floor-change="onSecondFloorChange"
@@ -145,12 +123,6 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 </template>
 
 <style scoped>
-.floor-controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sn-mp-spacing-2);
-}
-
 .floor-hint {
   padding: 0 var(--sn-mp-spacing-1);
 }

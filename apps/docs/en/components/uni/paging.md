@@ -25,9 +25,11 @@ component aggregates pages and pushes them out via `v-model`.
 
 Bind the aggregated list with `v-model`, request inside `@query`, and report
 with `completeByTotal`. The sequence stops when the last page is shorter than
-the page size or the total is reached.
+the page size or the total is reached. The capsule switchers above the frame
+flip the loading-spinner shape (`refresherLoadingType`) and the pull-area
+theme presets (background / text / icon) live.
 
-<Demo name="paging-mp-basic" description="Pull-to-refresh, auto load-more, completeByTotal stopping." />
+<Demo name="paging-mp-basic" description="Pull-to-refresh, auto load-more, completeByTotal stopping; capsules switch the spinner shape and pull-area theme live." />
 
 ### Empty and fail-retry states
 
@@ -39,7 +41,7 @@ the page size or the total is reached.
 
 ### Pull down to the second floor
 
-<Demo name="paging-mp-second-floor" description="With secondFloorEnabled, releasing past the threshold slides in the fullscreen second floor (secondFloor slot, own scroll area); swipe up to drag it back; the capsule switchers flip the loading animation type and the pull-area background live." />
+<Demo name="paging-mp-second-floor" description="With secondFloorEnabled, releasing past the threshold slides in the fullscreen second floor (secondFloor slot, own scroll area); swipe up to drag it back." />
 
 ### Pull-to-refresh inside a popup
 

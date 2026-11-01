@@ -1,17 +1,15 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — 下拉进入二楼 + 加载动画/配色胶囊切换。
+ * Demo: sn-paging (uni-end) — 下拉进入二楼。
  *
  * - secondFloorEnabled 开启：下拉越过阈值（默认 100px）松手即滑入全屏二楼
  *   （松手拦截刷新、不发 query；uni-h5 松手补发的 pulling 事件由组件锁存兜底）
  * - 二楼内容无法滚动（或滚到底）时上滑可拉回列表；也可用 closeSecondFloor()
- * - sn-segmented 胶囊切换器实时切换 refresherLoadingType（加载圈形态）与
- *   refresherBackground（下拉区背景预设）
+ * - 下拉区与二楼浮层使用配套的深色配色（加载动画/配色切换见基础用法 demo）
  */
 import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 import {
   Bell,
   Calendar,
@@ -22,7 +20,6 @@ import {
   MessageCircle,
   Star,
 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
@@ -40,8 +37,6 @@ const PAGE_SIZE = 8;
 const list = ref<DemoRow[]>([]);
 const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
-const loadingType = ref<LoadingType>('circular');
-const floorBackground = ref('#0b1220');
 
 /** 二楼九宫格内容：循环 8 个图标与底色，凑 16 个「小程序」入口。 */
 const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];const FLOOR_COLORS = [
@@ -59,19 +54,6 @@ const floorApps: FloorApp[] = Array.from({ length: 16 }, (_, i) => ({
   icon: FLOOR_ICONS[i % FLOOR_ICONS.length],
   color: FLOOR_COLORS[i % FLOOR_COLORS.length],
 }));
-
-const loadingTypeOptions = [
-  { label: '圆环', value: 'circular' },
-  { label: '放射', value: 'spinner' },
-  { label: '圆点', value: 'dots' },
-  { label: '波浪', value: 'wave' },
-];
-
-const backgroundOptions = [
-  { label: '深空', value: '#0b1220' },
-  { label: '靛蓝', value: '#1e1b4b' },
-  { label: '松绿', value: '#14342b' },
-];
 
 function query(pageNo: number, pageSize: number): void {
   setTimeout(() => {
@@ -91,10 +73,6 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="floor-controls">
-      <SnSegmented v-model="loadingType" :options="loadingTypeOptions" />
-      <SnSegmented v-model="floorBackground" :options="backgroundOptions" />
-    </view>
     <view class="floor-hint">
       <text class="floor-hint__text">
         下拉越过阈值松手进入全屏二楼；二楼内上滑（内容到底后）可拉回列表（已进入 {{ floorVisits }} 次）
@@ -106,10 +84,9 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         v-model="list"
         :default-page-size="PAGE_SIZE"
         second-floor-enabled
-        :refresher-background="floorBackground"
+        refresher-background="#0b1220"
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
-        :refresher-loading-type="loadingType"
         second-floor-background="#121a2b"
         @query="query"
         @second-floor-change="onSecondFloorChange"
@@ -141,12 +118,6 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 </template>
 
 <style scoped>
-.floor-controls {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sn-mp-spacing-2);
-}
-
 .floor-hint {
   padding: 0 var(--sn-mp-spacing-1);
 }

@@ -1,26 +1,52 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — Basic usage: v-model + @query + completeByTotal.
+ * Demo: sn-paging (uni-end) — Basic usage + loading/theme capsules (EN).
  *
- * - The host issues the request inside @query and reports back with
- *   completeByTotal
- * - sn-paging aggregates paged data and pushes it back via v-model; rows are
- *   rendered through the default slot
- * - Pull-to-refresh and load-more-on-bottom are handled by the native
- *   scroll-view, with no gesture simulation inside the component
+ * - v-model + @query + completeByTotal: the sequence stops on a short last page
+ * - sn-segmented capsules switch refresherLoadingType (spinner shape) and
+ *   refresherBackground / refresherTextColor / refresherIconColor live
  */
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
+import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
   label: string;
 }
 
+type ThemeName = 'default' | 'sky' | 'deep' | 'rose';
+
 const TOTAL = 35;
 const PAGE_SIZE = 10;
 const list = ref<DemoRow[]>([]);
 const paging = ref<InstanceType<typeof SnPaging> | null>(null);
+
+const loadingType = ref<LoadingType>('circular');
+const themeName = ref<ThemeName>('default');
+
+const loadingTypeOptions = [
+  { label: 'Circular', value: 'circular' },
+  { label: 'Spinner', value: 'spinner' },
+  { label: 'Dots', value: 'dots' },
+  { label: 'Wave', value: 'wave' },
+];
+
+/** Pull-area theme presets: background / text / icon swap together. */
+const PULL_THEMES: Record<ThemeName, { bg: string; text: string; icon: string }> = {
+  default: { bg: '', text: '', icon: '' },
+  sky: { bg: '#e0f2fe', text: '#0c4a6e', icon: '#0284c7' },
+  deep: { bg: '#0b1220', text: '#e2e8f0', icon: '#38bdf8' },
+  rose: { bg: '#fff1f2', text: '#881337', icon: '#e11d48' },
+};
+const themeOptions = [
+  { label: 'Default', value: 'default' },
+  { label: 'Sky', value: 'sky' },
+  { label: 'Deep', value: 'deep' },
+  { label: 'Rose', value: 'rose' },
+];
+const theme = computed(() => PULL_THEMES[themeName.value]);
 
 function query(pageNo: number, pageSize: number): void {
   setTimeout(() => {
@@ -32,12 +58,41 @@ function query(pageNo: number, pageSize: number): void {
     paging.value?.completeByTotal(rows, TOTAL);
   }, 600);
 }
+
+function onLoadingTypeChange(value: string | number): void {
+  loadingType.value = value as LoadingType;
+}
+
+function onThemeChange(value: string | number): void {
+  themeName.value = value as ThemeName;
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
+    <view class="paging-controls">
+      <SnSegmented
+        :model-value="loadingType"
+        :options="loadingTypeOptions"
+        @update:model-value="onLoadingTypeChange"
+      />
+      <SnSegmented
+        :model-value="themeName"
+        :options="themeOptions"
+        @update:model-value="onThemeChange"
+      />
+    </view>
     <view class="paging-frame">
-      <SnPaging ref="paging" v-model="list" :default-page-size="PAGE_SIZE" @query="query">
+      <SnPaging
+        ref="paging"
+        v-model="list"
+        :default-page-size="PAGE_SIZE"
+        :refresher-background="theme.bg"
+        :refresher-text-color="theme.text"
+        :refresher-icon-color="theme.icon"
+        :refresher-loading-type="loadingType"
+        @query="query"
+      >
         <view v-for="row in list" :key="row.id" class="paging-row">
           <text class="paging-row__label">{{ row.label }}</text>
           <text class="paging-row__index">{{ row.id }} / {{ TOTAL }}</text>
@@ -49,6 +104,12 @@ function query(pageNo: number, pageSize: number): void {
 </template>
 
 <style scoped>
+.paging-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+}
+
 .paging-frame {
   box-sizing: border-box;
   height: 560rpx;
