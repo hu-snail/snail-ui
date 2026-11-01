@@ -88,7 +88,7 @@ to a spinner while refreshing and to a check glyph on the success hold.
 | --------- | ----------- |
 | Native gesture first | On uni hosts the pull physics belong to the platform scroll-view; the component updates state only at `refresherpulling` transitions — no per-move setData, which is what keeps low-end MP devices smooth |
 | Incremental damping (browser hosts) | Each gesture delta scales by 0.75 below the threshold and by 0.35 past it, with a per-event cap — the pull tracks the finger, then resists |
-| Pull clamp | Max pull = `refresherThreshold × 2.4`; a hard yank can never run away, and release springs back (rubber band) |
+| Pull clamp | Max pull = `refresherThreshold × 3`; a hard yank can never run away, and release springs back (rubber band) |
 | Transform-only rendering | Pull offsets go through `transform: translateY` (compositor path) — no height changes, no layout; the spring-back rides a CSS transition |
 | rAF coalescing | Gesture deltas coalesce through `requestAnimationFrame` and report whole pixels — at most one style write per frame |
 

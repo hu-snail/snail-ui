@@ -65,7 +65,7 @@
  *   - 虚拟列表 / use-page-scroll 模式 — 登记为后续任务
  */
 
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
 import type { LoadingType } from '../sn-loading/sn-loading-types';
@@ -88,6 +88,14 @@ const REFRESHER_HEIGHT_PX = 50;
 const SECOND_FLOOR_SHOW_DELAY_MS = 100;
 /** Drag-back distance that dismisses the second floor, in px. */
 const FLOOR_CLOSE_THRESHOLD_PX = 80;
+/**
+ * Hysteresis gap below the refresh threshold: pulling events that report
+ * less than this de-arm the second floor. uni-h5 fires a synthetic
+ * `refresherpulling` with `dy === refresherThreshold` right before
+ * `refresherrefresh` on release — the gap keeps that echo from cancelling
+ * the armed second floor.
+ */
+const SECOND_FLOOR_DEARM_GAP_PX = 1;
 
 /** Visual phase of the custom refresher slot. */
 type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'secondFloor' | 'refreshing' | 'complete';
@@ -271,6 +279,16 @@ let f2Scrollable = false;
 let f2FloorHeight = 0;
 let f2TouchStartY = 0;
 let f2DragEngaged = false;
+/**
+ * Second-floor arming latch. The visual `refresherPhase` is recomputed from
+ * every pulling event, but platforms emit pulling events around the release
+ * itself (uni-h5 synthesizes one with `dy === refresherThreshold` before
+ * `refresherrefresh`; WeChat keeps reporting during the settle-back), which
+ * would clobber the phase before the release can be intercepted. The latch
+ * records "the pull crossed into the second-floor zone" and only de-arms
+ * when a pull reports clearly below the refresh threshold again.
+ */
+let secondFloorArmed = false;
 
 /** Whether scroll-to-bottom loads the next page. */
 const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
@@ -451,6 +469,7 @@ function clearSecondFloorTimer(): void {
 function startRefresh(animate: boolean): void {
   if (isLoading.value) return;
   clearCompleteHold();
+  secondFloorArmed = false;
   pageNo.value = props.defaultPageNo;
   noMore.value = false;
   phase.value = 'refresh';
@@ -532,11 +551,22 @@ function endRefreshAnimation(): void {
   }, props.refresherCompleteDuration);
 }
 
+/** Update the second-floor arming latch from a pull report. */
+function updateSecondFloorArm(pull: number): void {
+  if (!props.secondFloorEnabled) {
+    secondFloorArmed = false;
+    return;
+  }
+  if (pull >= props.secondFloorThreshold) secondFloorArmed = true;
+  else if (pull < props.refresherThreshold - SECOND_FLOOR_DEARM_GAP_PX) secondFloorArmed = false;
+}
+
 function onRefresherPulling(event: { detail?: { dy?: number } }): void {
   if (refresherTriggered.value || isLoading.value) return;
   const dy = Math.max(0, event.detail?.dy ?? 0);
+  updateSecondFloorArm(dy);
   refresherPhase.value =
-    props.secondFloorEnabled && dy >= props.secondFloorThreshold
+    props.secondFloorEnabled && (secondFloorArmed || dy >= props.secondFloorThreshold)
       ? 'secondFloor'
       : dy >= props.refresherThreshold
         ? 'ready'
@@ -545,12 +575,21 @@ function onRefresherPulling(event: { detail?: { dy?: number } }): void {
 
 function onRefresherRefresh(): void {
   if (!props.refresherEnabled) return;
+  /* The echo of our own programmatic lock (uni-h5 re-emits `refresherrefresh`
+   * when `refresher-triggered` flips true) — never a user release. */
+  if (refresherTriggered.value) return;
   /* Released inside the second-floor zone: intercept the refresh, collapse
    * the native pull and open the overlay instead — no query is emitted. */
-  if (refresherPhase.value === 'secondFloor') {
-    refresherTriggered.value = false;
+  if (props.secondFloorEnabled && (refresherPhase.value === 'secondFloor' || secondFloorArmed)) {
+    secondFloorArmed = false;
+    /* Adopt the native hold, then drop it a tick later: uni-h5 only resets
+     * its held pull on a true→false transition of `refresher-triggered`. */
+    refresherTriggered.value = true;
     refresherPhase.value = 'idle';
     openSecondFloor();
+    void nextTick(() => {
+      refresherTriggered.value = false;
+    });
     return;
   }
   if (isLoading.value) {
@@ -565,6 +604,7 @@ function onRefresherRefresh(): void {
 }
 
 function onRefresherSettled(): void {
+  secondFloorArmed = false;
   if (!refresherTriggered.value) refresherPhase.value = 'idle';
 }
 
@@ -590,10 +630,11 @@ function onScroll(event: unknown): void {
 function onSimulatedPull(distance: number): void {
   if (isLoading.value) return;
   pullDistance.value = distance;
+  updateSecondFloorArm(distance);
   refresherPhase.value =
     distance <= 0
       ? 'idle'
-      : props.secondFloorEnabled && distance >= props.secondFloorThreshold
+      : props.secondFloorEnabled && (secondFloorArmed || distance >= props.secondFloorThreshold)
         ? 'secondFloor'
         : distance >= props.refresherThreshold
           ? 'ready'
@@ -602,6 +643,7 @@ function onSimulatedPull(distance: number): void {
 
 /** Browser fallback release inside the second-floor zone. */
 function onSimulatedSecondFloorArm(): void {
+  secondFloorArmed = false;
   pullDistance.value = 0;
   refresherPhase.value = 'idle';
   openSecondFloor();

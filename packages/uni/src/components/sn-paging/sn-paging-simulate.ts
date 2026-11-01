@@ -64,8 +64,12 @@ const PULL_RATE = 0.75;
 const OUT_RATE = 0.65;
 /** Cap for one event's finger jump — a sudden yank must not teleport the pull. */
 const DELTA_CAP_PX = 100;
-/** Total pull clamp, as a multiple of the arming threshold. */
-export const MAX_PULL_RATIO = 2.4;
+/**
+ * Total pull clamp, as a multiple of the arming threshold. Kept generous so
+ * the second-floor zone (default 100px vs a 45px threshold) stays comfortably
+ * reachable inside the rubber band.
+ */
+export const MAX_PULL_RATIO = 3;
 
 /**
  * Install the fallback gestures on `el`. Returns a dispose function; returns

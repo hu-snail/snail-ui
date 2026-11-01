@@ -3,7 +3,8 @@
  * Demo: sn-paging (uni-end) — second floor + capsule switchers (EN).
  *
  * - secondFloorEnabled on: releasing past the threshold (100px) slides in the
- *   fullscreen second-floor overlay and never fires a refresh query
+ *   fullscreen second floor (release intercepts the refresh; uni-h5's
+ *   synthetic release echo is neutralized by the component's arming latch)
  * - The floor can be dragged back by swiping up (content at bottom or not
  *   scrollable); closeSecondFloor() works programmatically
  * - sn-segmented capsules switch refresherLoadingType (spinner shape) and
@@ -13,12 +14,27 @@ import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
-import { ChevronUp, Sparkles } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Bell,
+  Calendar,
+  Camera,
+  Heart,
+  Home,
+  Mail,
+  MessageCircle,
+  Star,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
   label: string;
+}
+
+interface FloorApp {
+  label: string;
+  icon: (typeof FLOOR_ICONS)[number];
+  color: string;
 }
 
 const TOTAL = 24;
@@ -28,6 +44,24 @@ const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
 const loadingType = ref<LoadingType>('circular');
 const floorBackground = ref('#0b1220');
+
+/** Second-floor grid: 8 icons + colors cycled into 16 "mini program" tiles. */
+const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];
+const FLOOR_COLORS = [
+  '#3b82f6',
+  '#8b5cf6',
+  '#ec4899',
+  '#f59e0b',
+  '#10b981',
+  '#06b6d4',
+  '#ef4444',
+  '#6366f1',
+];
+const floorApps: FloorApp[] = Array.from({ length: 16 }, (_, i) => ({
+  label: `App ${i + 1}`,
+  icon: FLOOR_ICONS[i % FLOOR_ICONS.length],
+  color: FLOOR_COLORS[i % FLOOR_COLORS.length],
+}));
 
 const loadingTypeOptions = [
   { label: 'Circular', value: 'circular' },
@@ -80,7 +114,7 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
         :refresher-loading-type="loadingType"
-        second-floor-background="#0b1220"
+        second-floor-background="#121a2b"
         @query="query"
         @second-floor-change="onSecondFloorChange"
       >
@@ -89,20 +123,19 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         </view>
         <template #secondFloor>
           <view class="floor">
-            <view class="floor__head">
-              <SnIcon :icon="Sparkles" :size="18" class="floor__spark" />
-              <text class="floor__title">Welcome to the second floor</text>
-              <view class="floor__close" @click="paging?.closeSecondFloor()">
-                <SnIcon :icon="ChevronUp" :size="14" />
-                <text class="floor__close-text">Back to list</text>
+            <text class="floor__title">My Mini Programs</text>
+            <view class="floor__grid">
+              <view v-for="app in floorApps" :key="app.label" class="floor__item">
+                <view class="floor__item-icon" :style="{ background: app.color }">
+                  <SnIcon :icon="app.icon" :size="22" color="#ffffff" />
+                </view>
+                <text class="floor__item-label">{{ app.label }}</text>
               </view>
             </view>
-            <view class="floor__body">
-              <text class="floor__text">
-                This is the second floor: pull past the threshold and release to land here — a good
-                spot for campaigns, personal panels or promo blocks. Swipe past the bottom of the
-                content and the floor follows your finger back to the list.
-              </text>
+            <view class="floor__footer">
+              <view class="floor__back" @click="paging?.closeSecondFloor()">
+                <text class="floor__back-text">Back to Home</text>
+              </view>
             </view>
           </view>
         </template>
@@ -150,54 +183,75 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
+/* Second floor: fullscreen dark panel — title + 4-column icon grid + bottom
+ * back bar. */
 .floor {
   box-sizing: border-box;
-  min-height: 100%;
-  padding: var(--sn-mp-spacing-6);
-}
-
-.floor__head {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-2);
-}
-
-.floor__spark {
-  color: #38bdf8;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 120rpx 40rpx calc(48rpx + env(safe-area-inset-bottom));
 }
 
 .floor__title {
-  flex: 1;
-  color: #e2e8f0;
-  font-size: var(--sn-mp-font-size-lg);
+  color: #f1f5f9;
+  font-size: var(--sn-mp-font-size-xl);
   font-weight: 600;
   line-height: var(--sn-mp-font-line-height-normal);
+  text-align: center;
 }
 
-.floor__close {
+.floor__grid {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-1);
-  padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);
-  border: 2rpx solid rgba(226, 232, 240, 0.35);
-  border-radius: var(--sn-mp-radius-full);
-  color: #e2e8f0;
+  flex-wrap: wrap;
+  margin-top: 72rpx;
 }
 
-.floor__close-text {
-  color: inherit;
+.floor__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 25%;
+  margin-bottom: 48rpx;
+}
+
+.floor__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 32rpx;
+}
+
+.floor__item-label {
+  margin-top: 14rpx;
+  color: rgba(241, 245, 249, 0.82);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
-.floor__body {
-  margin-top: var(--sn-mp-spacing-5);
+.floor__footer {
+  margin-top: auto;
+  padding-top: 56rpx;
 }
 
-.floor__text {
-  color: #94a3b8;
+.floor__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 96rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.floor__back-text {
+  color: #e2e8f0;
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
 }

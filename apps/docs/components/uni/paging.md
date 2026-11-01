@@ -62,7 +62,7 @@ function query(pageNo: number, pageSize: number): void {
 | ---- | ---- |
 | 原生手势优先 | uni 端拉动物理交给平台 scroll-view，组件只在 `refresherpulling` 的状态切换点更新一次数据，无逐帧 setData（低端小程序设备不掉帧的关键） |
 | 增量阻尼（浏览器宿主） | 阈值内每帧位移按 0.75 缩放，越过阈值再衰减到 0.35，单帧突增封顶——跟手但越拉越沉 |
-| 拉距钳制 | 最大拉距 = `refresherThreshold × 2.4`，猛拽不会一拉到底，松手弹性回弹（皮筋效果） |
+| 拉距钳制 | 最大拉距 = `refresherThreshold × 3`，猛拽不会一拉到底，松手弹性回弹（皮筋效果） |
 | 纯 transform 渲染 | 下拉位移全部走 `transform: translateY`（合成器路径），不修改高度、不触发布局；回弹由 CSS transition 完成 |
 | rAF 合帧 | 手势位移经 `requestAnimationFrame` 合并、按整数像素上报，每帧至多一次样式写入 |
 

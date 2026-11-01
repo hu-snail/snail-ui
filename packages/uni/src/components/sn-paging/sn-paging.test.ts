@@ -17,8 +17,8 @@ import { nextTick } from 'vue';
 import SnPaging from './sn-paging.vue';
 
 /** Defaults driving the physics numbers below (see sn-paging-simulate.ts). */
-/** Pull clamp = threshold × MAX_PULL_RATIO(2.4); visible hold strip = 50px. */
-const MAX_PULL = 108;
+/** Pull clamp = threshold × MAX_PULL_RATIO(3); visible hold strip = 50px. */
+const MAX_PULL = 135;
 const HOLD_PX = 50;
 
 /** v-model round-trip harness: every `update:modelValue` rebinds the prop. */
@@ -390,12 +390,14 @@ describe('sn-paging', () => {
 
     it('a hard yank never exceeds the rubber-band clamp', async () => {
       const { wrapper } = mountPaging({ auto: false });
-      // 600px single jump → delta capped at 100 × 0.75 = 75, then a second
-      // capped jump past the threshold damps to 0.35 and clamps at maxPull.
+      // 600px single jump → delta capped at 100 × 0.75 = 75, then two more
+      // capped jumps past the threshold damp to 0.35 (75+35+35=145) and the
+      // total clamps at maxPull.
       const scroller = wrapper.find('scroll-view');
       await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
       await scroller.trigger('touchmove', { touches: [{ clientY: 900 }] });
       await scroller.trigger('touchmove', { touches: [{ clientY: 1200 }] });
+      await scroller.trigger('touchmove', { touches: [{ clientY: 1500 }] });
       await frame();
       expect(refresherStyleAttr(wrapper)).toContain('translateY(0px)');
       await scroller.trigger('touchend');
@@ -495,7 +497,9 @@ describe('sn-paging', () => {
     await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
     await wrapper.find('scroll-view').trigger('refresherrefresh');
     await flush();
-    // The interception IS the contract: no refresh query may fire.
+    // The interception IS the contract: no refresh query may fire. The
+    // triggered hold is adopted and dropped again within one tick so the
+    // native pull restores instead of staying locked.
     expect(queryCalls(wrapper)).toHaveLength(0);
     expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
     expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
@@ -505,6 +509,40 @@ describe('sn-paging', () => {
     vi.advanceTimersByTime(100);
     await flush();
     expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+  });
+
+  it('the uni-h5 release echo cannot cancel the armed second floor', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountIdle({ secondFloorEnabled: true });
+    // uni-h5 synthesizes a final `refresherpulling` with dy === threshold
+    // right before `refresherrefresh` — the arming latch must survive it.
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 45 } });
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    await flush();
+    expect(queryCalls(wrapper)).toHaveLength(0);
+    expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
+  });
+
+  it('pulling back below the threshold de-arms the second floor', async () => {
+    const { wrapper } = mountIdle({ secondFloorEnabled: true });
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+
+    // The user actively pulls the gesture back down — the latch clears.
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 20 } });
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('继续下拉刷新');
+
+    await wrapper.find('scroll-view').trigger('refresherabort');
+    await flush();
+    expect(queryCalls(wrapper)).toHaveLength(0);
+    expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
   });
 
     it('renders the second-floor slot inside a scroll area', async () => {

@@ -2,8 +2,8 @@
 /**
  * Demo: sn-paging (uni-end) — 下拉进入二楼 + 加载动画/配色胶囊切换。
  *
- * - secondFloorEnabled 开启：下拉越过阈值（默认 100px）松手滑入全屏二楼浮层，
- *   松手拦截刷新、不发 query
+ * - secondFloorEnabled 开启：下拉越过阈值（默认 100px）松手即滑入全屏二楼
+ *   （松手拦截刷新、不发 query；uni-h5 松手补发的 pulling 事件由组件锁存兜底）
  * - 二楼内容无法滚动（或滚到底）时上滑可拉回列表；也可用 closeSecondFloor()
  * - sn-segmented 胶囊切换器实时切换 refresherLoadingType（加载圈形态）与
  *   refresherBackground（下拉区背景预设）
@@ -12,12 +12,27 @@ import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
-import { ChevronUp, Sparkles } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Bell,
+  Calendar,
+  Camera,
+  Heart,
+  Home,
+  Mail,
+  MessageCircle,
+  Star,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
   label: string;
+}
+
+interface FloorApp {
+  label: string;
+  icon: (typeof FLOOR_ICONS)[number];
+  color: string;
 }
 
 const TOTAL = 24;
@@ -27,6 +42,23 @@ const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
 const loadingType = ref<LoadingType>('circular');
 const floorBackground = ref('#0b1220');
+
+/** 二楼九宫格内容：循环 8 个图标与底色，凑 16 个「小程序」入口。 */
+const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];const FLOOR_COLORS = [
+  '#3b82f6',
+  '#8b5cf6',
+  '#ec4899',
+  '#f59e0b',
+  '#10b981',
+  '#06b6d4',
+  '#ef4444',
+  '#6366f1',
+];
+const floorApps: FloorApp[] = Array.from({ length: 16 }, (_, i) => ({
+  label: `小程序${i + 1}`,
+  icon: FLOOR_ICONS[i % FLOOR_ICONS.length],
+  color: FLOOR_COLORS[i % FLOOR_COLORS.length],
+}));
 
 const loadingTypeOptions = [
   { label: '圆环', value: 'circular' },
@@ -78,7 +110,7 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
         :refresher-loading-type="loadingType"
-        second-floor-background="#0b1220"
+        second-floor-background="#121a2b"
         @query="query"
         @second-floor-change="onSecondFloorChange"
       >
@@ -87,18 +119,19 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         </view>
         <template #secondFloor>
           <view class="floor">
-            <view class="floor__head">
-              <SnIcon :icon="Sparkles" :size="18" class="floor__spark" />
-              <text class="floor__title">欢迎来到二楼</text>
-              <view class="floor__close" @click="paging?.closeSecondFloor()">
-                <SnIcon :icon="ChevronUp" :size="14" />
-                <text class="floor__close-text">回到列表</text>
+            <text class="floor__title">我的小程序</text>
+            <view class="floor__grid">
+              <view v-for="app in floorApps" :key="app.label" class="floor__item">
+                <view class="floor__item-icon" :style="{ background: app.color }">
+                  <SnIcon :icon="app.icon" :size="22" color="#ffffff" />
+                </view>
+                <text class="floor__item-label">{{ app.label }}</text>
               </view>
             </view>
-            <view class="floor__body">
-              <text class="floor__text">
-                这里是二楼：下拉越过阈值松手即达，适合放活动入口、个性化面板或运营位。内容滚到底后继续上滑，浮层跟手拉回列表。
-              </text>
+            <view class="floor__footer">
+              <view class="floor__back" @click="paging?.closeSecondFloor()">
+                <text class="floor__back-text">回到首页</text>
+              </view>
             </view>
           </view>
         </template>
@@ -146,54 +179,74 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
+/* 二楼：全屏深色面板（截屏样式）——标题 + 4 列图标网格 + 底部回到首页。 */
 .floor {
   box-sizing: border-box;
-  min-height: 100%;
-  padding: var(--sn-mp-spacing-6);
-}
-
-.floor__head {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-2);
-}
-
-.floor__spark {
-  color: #38bdf8;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 120rpx 40rpx calc(48rpx + env(safe-area-inset-bottom));
 }
 
 .floor__title {
-  flex: 1;
-  color: #e2e8f0;
-  font-size: var(--sn-mp-font-size-lg);
+  color: #f1f5f9;
+  font-size: var(--sn-mp-font-size-xl);
   font-weight: 600;
   line-height: var(--sn-mp-font-line-height-normal);
+  text-align: center;
 }
 
-.floor__close {
+.floor__grid {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-1);
-  padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);
-  border: 2rpx solid rgba(226, 232, 240, 0.35);
-  border-radius: var(--sn-mp-radius-full);
-  color: #e2e8f0;
+  flex-wrap: wrap;
+  margin-top: 72rpx;
 }
 
-.floor__close-text {
-  color: inherit;
+.floor__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 25%;
+  margin-bottom: 48rpx;
+}
+
+.floor__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 32rpx;
+}
+
+.floor__item-label {
+  margin-top: 14rpx;
+  color: rgba(241, 245, 249, 0.82);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
-.floor__body {
-  margin-top: var(--sn-mp-spacing-5);
+.floor__footer {
+  margin-top: auto;
+  padding-top: 56rpx;
 }
 
-.floor__text {
-  color: #94a3b8;
+.floor__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 96rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.floor__back-text {
+  color: #e2e8f0;
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
 }
