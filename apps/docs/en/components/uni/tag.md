@@ -28,9 +28,9 @@ Beyond the square baseline, `shape` offers five special forms: `round` pill, `sk
 
 ## Icons
 
-Three icon tracks: a string name resolves through the built-in chain (registry → built-in catalog), so catalog names work without registration; an `IconData` object is imported from `sn-icon-set` and passed straight in; `iconUrl` renders a bitmap `<image>` sized by the icon tiers. Precedence: `icon` slot > `iconUrl` > `icon` > `cssIcon` font glyph:
+Three icon tracks: a string name resolves through the built-in chain (registry → built-in catalog), so catalog names work without registration; an `IconData` object is imported from `sn-icon-set` and passed straight in; `iconUrl` renders a bitmap `<image>` scaled with the tag font (`--sn-tag-icon-size`, default 1.15em). Precedence: `icon` slot > `iconUrl` > `icon` > `cssIcon` font glyph:
 
-<Demo name="tag-mp-icon" description="Built-in catalog names (no registration) and IconData objects (named imports from sn-icon-set); iconUrl bitmap icons sized by the icon tiers." />
+<Demo name="tag-mp-icon" description="Built-in catalog names (no registration) and IconData objects (named imports from sn-icon-set); iconUrl bitmap icons scale with the tag font." />
 
 ## Closable / new tag
 
@@ -112,7 +112,8 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 | `--sn-mp-color-background-subtle`                                    | `default` type tint          |
 | `--sn-mp-color-text-on-primary`                                      | Label colour on a solid fill |
 | `--sn-mp-color-text-secondary`                                       | `default` type label colour  |
-| `--sn-mp-icon-size-{medium,large,xlarge}`                            | Vector / bitmap icon box     |
+| `--sn-tag-icon-size` (default `1.15em`)                             | Vector / bitmap icon box, scales with the tag font |
+| `--sn-tag-close-icon-size` (default `0.9em`)                         | Close-button icon size       |
 | `--sn-mp-font-size-{xs,sm,md,lg}`                                    | Font size per size step      |
 | `--sn-mp-font-weight-bold`                                           | Doodle skin weight           |
 | `--sn-mp-radius-{sm,md,lg,full}`                                     | Corner / pill / marker shape |

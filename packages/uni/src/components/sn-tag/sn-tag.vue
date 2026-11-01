@@ -12,8 +12,9 @@
  *   - `shape` — special-shape variants `skew` / `ribbon` / `fold` / `ticket`;
  *     `round` stays as the legacy sugar for `shape: 'round'`. When both are
  *     given, `shape` wins (same semantics as the web-end SnTag).
- *   - `iconUrl` — bitmap icon rendered as `<image>`, sized by the
- *     `--sn-mp-icon-size-*` tiers; wins over `icon`, loses to the icon slot.
+ *   - `iconUrl` — bitmap icon rendered as `<image>`, sized by
+ *     `--sn-tag-icon-size` (scales with the tag font); wins over `icon`,
+ *     loses to the icon slot.
  *   - `icon` also accepts an inline `IconData` object (the same dual track as
  *     sn-button: string = registry / built-in catalog name, object = direct
  *     SVG data).
@@ -217,17 +218,15 @@ const cssIconClass = computed<string>(() => {
 });
 
 /**
- * Icon boxes ride the `--sn-mp-icon-size-*` tiers (rpx, device-scaled):
- * small tags take the large tier, every other size the xlarge tier — the
- * same 20px / 24px the component used before, now token-driven (§34).
+ * Icon boxes scale with the tag's own font-size (`--sn-tag-icon-size`,
+ * default 1.15em) instead of the global icon tiers — the global xlarge tier
+ * (48rpx) is ~2× a tag's 22–28rpx text and visually swamps the pill. Hosts
+ * override the vars per §34; em keeps every size tier and custom font
+ * override proportional.
  */
-const iconBoxSize = computed(() =>
-  props.size === 'small' ? 'var(--sn-mp-icon-size-large)' : 'var(--sn-mp-icon-size-xlarge)',
-);
+const iconBoxSize = computed(() => 'var(--sn-tag-icon-size)');
 
-const closeIconSize = computed(() =>
-  props.size === 'small' ? 'var(--sn-mp-icon-size-medium)' : 'var(--sn-mp-icon-size-large)',
-);
+const closeIconSize = computed(() => 'var(--sn-tag-close-icon-size)');
 
 /** Draft text of the inline "new tag" input. */
 const draftValue = ref('');
@@ -282,15 +281,12 @@ const rootStyle = computed(() => {
     <slot name="icon">
       <!--
         Icon chain: bitmap (iconUrl) → vector data (object / registry) →
-        iconfont glyph (cssIcon). The image box scales with the same
-        icon-size tiers as the vector icon (CSS classes below).
+        iconfont glyph (cssIcon). Both boxes scale with the tag font via
+        --sn-tag-icon-size (CSS below).
       -->
       <image
         v-if="iconUrl"
-        :class="[
-          'sn-tag__image',
-          { 'sn-tag__image--small': size === 'small', 'sn-tag__upright': isSkew },
-        ]"
+        :class="['sn-tag__image', { 'sn-tag__upright': isSkew }]"
         :src="iconUrl"
         mode="aspectFit"
         aria-hidden="true"
@@ -351,6 +347,11 @@ const rootStyle = computed(() => {
  * assigned from real `--sn-mp-*` tokens per type class. */
 
 .sn-tag {
+  /* Icon boxes scale with the tag's own font-size (em) instead of the global
+   * icon tiers — 40/48rpx boxes were ~2× the 22–28rpx tag text and swamped
+   * the pill. Override the two vars to rescale (§34). */
+  --sn-tag-icon-size: 1.15em;
+  --sn-tag-close-icon-size: 0.9em;
   --snui-tag-bg: var(--sn-mp-color-feedback-info);
   --snui-tag-soft: var(--sn-mp-color-background-subtle);
   --snui-tag-accent: var(--sn-mp-color-text-secondary);
@@ -613,17 +614,12 @@ const rootStyle = computed(() => {
   font-size: inherit;
 }
 
-/* Bitmap icon box: same icon-size tiers as the vector icon (small tags take
- * the large tier, all other sizes the xlarge tier). */
+/* Bitmap icon box: scales with the tag font via --sn-tag-icon-size, same
+ * contract as the vector icon box. */
 .sn-tag__image {
   flex: 0 0 auto;
-  width: var(--sn-mp-icon-size-xlarge);
-  height: var(--sn-mp-icon-size-xlarge);
-}
-
-.sn-tag__image--small {
-  width: var(--sn-mp-icon-size-large);
-  height: var(--sn-mp-icon-size-large);
+  width: var(--sn-tag-icon-size);
+  height: var(--sn-tag-icon-size);
 }
 
 .sn-tag__close {

@@ -28,9 +28,9 @@
 
 ## 图标
 
-图标三轨：字符串图标名经内置解析链（注册表 → 内置目录）解析，无需注册即可使用目录名；`IconData` 对象从 `sn-icon-set` 具名导入后直接传入；`iconUrl` 渲染位图 `<image>`，尺寸与图标档位对齐。优先级：`icon` 插槽 > `iconUrl` > `icon` > `cssIcon` 字体图标：
+图标三轨：字符串图标名经内置解析链（注册表 → 内置目录）解析，无需注册即可使用目录名；`IconData` 对象从 `sn-icon-set` 具名导入后直接传入；`iconUrl` 渲染位图 `<image>`，尺寸随标签字号缩放（`--sn-tag-icon-size`，默认 1.15em）。优先级：`icon` 插槽 > `iconUrl` > `icon` > `cssIcon` 字体图标：
 
-<Demo name="tag-mp-icon" description="icon 内置目录名（无需注册）与 IconData 对象（sn-icon-set 具名导入）；iconUrl 位图图标，尺寸随图标档位。" />
+<Demo name="tag-mp-icon" description="icon 内置目录名（无需注册）与 IconData 对象（sn-icon-set 具名导入）；iconUrl 位图图标，尺寸随标签字号缩放。" />
 
 ## 可关闭 / 新增标签
 
@@ -112,7 +112,8 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 | `--sn-mp-color-background-subtle`                                    | `default` 类型的浅色底       |
 | `--sn-mp-color-text-on-primary`                                      | 实心变体的文字色             |
 | `--sn-mp-color-text-secondary`                                       | `default` 类型的文字色       |
-| `--sn-mp-icon-size-{medium,large,xlarge}`                            | 矢量 / 位图图标盒尺寸        |
+| `--sn-tag-icon-size`（默认 `1.15em`）                              | 矢量 / 位图图标盒尺寸，随标签字号缩放 |
+| `--sn-tag-close-icon-size`（默认 `0.9em`）                          | 关闭按钮图标尺寸             |
 | `--sn-mp-font-size-{xs,sm,md,lg}`                                    | 各档尺寸的字号               |
 | `--sn-mp-font-weight-bold`                                           | Doodle 皮肤字重              |
 | `--sn-mp-radius-{sm,md,lg,full}`                                     | 圆角 / 胶囊 / 标记形态       |
