@@ -5,7 +5,7 @@
  * Reference library: z-paging (https://z-paging.zxlee.cn) — registered as a
  * user-directed exception in AGENTS.md §112.4a (the wot-ui spec ships no
  * paging container; its `wd-loading` / `wd-loadmore` remain the references
- * for the embedded indicators). The prop surface below is a curated z-paging
+ * for the embedded indicators). The prop surface is a curated z-paging
  * subset; wot-ui / naive-ui exclusive props must not leak in.
  *
  * File path follows uni-app easycom convention:
@@ -16,16 +16,29 @@
  *
  * The refresher is `scroll-view`'s own (`refresher-enabled` +
  * `refresher-triggered` + the `refresher` slot) and load-more is the native
- * `@scrolltolower`. No touch listeners, no JS-driven pull simulation, no
- * layout reads — the gesture runs on the platform's scroll layer and JS only
- * reacts to state transitions. That is what keeps the component light: the
- * pull physics is the host's, not ours.
+ * `@scrolltolower`. On uni hosts JS only reacts to *state transitions*
+ * (`@refresherpulling` flips idle → pulling → ready → secondFloor): the pull
+ * physics is the platform's and there is no per-move setData, which is the
+ * z-paging rule for keeping low-end MP devices smooth.
  *
  * The one exception is the plain-browser host (the docs preview): there the
  * `scroll-view` is an inert custom element with no uni runtime behind it, so
- * `sn-paging-simulate.ts` installs a minimal touch/scroll fallback — drag
- * below the top pulls, a geometry check near the bottom loads. Real uni
- * targets never wire it up.
+ * `sn-paging-simulate.ts` installs the full gesture — z-paging incremental
+ * damping (×0.75 in-zone, ×0.35 past the threshold, per-event delta cap),
+ * a hard pull clamp (rubber band + bounded travel) and rAF-coalesced whole-
+ * px reports. The distance is rendered with `transform` only (never height),
+ * so dragging never triggers layout; release springs back through a CSS
+ * transition. Real uni targets never wire it up.
+ *
+ * ## Second floor (二楼)
+ *
+ * Pulling past `secondFloorThreshold` (z-paging `refresherF2Threshold`)
+ * arms the "release to enter" state; releasing there intercepts the refresh
+ * and slides a root-level overlay (the `#secondFloor` slot over its own
+ * scroll-view) in from the top — z-paging's `zp-f2-content` mechanics
+ * (`translateY(-100%) → 0` with a tracked timer so the first frame paints
+ * before the transition). `openSecondFloor()` / `closeSecondFloor()` drive
+ * the same overlay programmatically; `secondFloorChange` reports both.
  *
  * ## Data flow (one-way out via v-model)
  *
@@ -51,8 +64,8 @@
 import { computed, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
-import { ChevronDown } from '../sn-icon/sn-icon-set';
-import { createBrowserPagingGesture } from './sn-paging-simulate';
+import { Check, ChevronDown } from '../sn-icon/sn-icon-set';
+import { MAX_PULL_RATIO, createBrowserPagingGesture } from './sn-paging-simulate';
 
 defineOptions({ name: 'SnPaging' });
 
@@ -64,11 +77,13 @@ defineOptions({ name: 'SnPaging' });
 const isBrowserHost =
   typeof document !== 'undefined' && typeof (globalThis as { uni?: unknown }).uni === 'undefined';
 
-/** Expanded refresher height in px (100rpx at the 750→375 docs mapping). */
+/** Visible refresher strip while refreshing, in px (100rpx at 750→375). */
 const REFRESHER_HEIGHT_PX = 50;
+/** Park delay before the second-floor overlay starts its slide-in. */
+const SECOND_FLOOR_SHOW_DELAY_MS = 100;
 
 /** Visual phase of the custom refresher slot. */
-type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'refreshing' | 'complete';
+type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'secondFloor' | 'refreshing' | 'complete';
 /** Visual phase of the load-more footer. */
 type LoadMorePhase = 'default' | 'loading' | 'noMore' | 'fail';
 /** Which kind of query is in flight. */
@@ -100,6 +115,24 @@ const props = withDefaults(
     refresherCompleteText?: string;
     /** How long the success text holds, in ms; 0 skips the hold. */
     refresherCompleteDuration?: number;
+    /** Background of the pull area (native `refresher-background` on MP). */
+    refresherBackground?: string;
+    /** Refresher text color; the spinner follows when unset. */
+    refresherTextColor?: string;
+    /** Refresher icon / spinner color. */
+    refresherIconColor?: string;
+    /* ── second floor (z-paging refresherF2 subset) ──────────────────── */
+
+    /** Enable pull-down-to-enter second floor. */
+    secondFloorEnabled?: boolean;
+    /** Release distance that enters the second floor, in px. */
+    secondFloorThreshold?: number;
+    /** Slide-in/out duration of the second-floor overlay, in ms. */
+    secondFloorDuration?: number;
+    /** Refresher text while the pull is inside the second-floor zone. */
+    refresherSecondFloorText?: string;
+    /** Background of the second-floor overlay. */
+    secondFloorBackground?: string;
     /* ── load-more (z-paging subset) ─────────────────────────────────── */
 
     /** Enable loading the next page on scroll-to-bottom. */
@@ -114,6 +147,8 @@ const props = withDefaults(
     loadMoreNoMoreText?: string;
     /** Footer text after a failure; tapping it retries. */
     loadMoreFailText?: string;
+    /** Load-more text color; the footer spinner follows it when set. */
+    loadMoreTextColor?: string;
     /* ── empty / root ────────────────────────────────────────────────── */
 
     /** Text of the built-in empty view. */
@@ -137,12 +172,21 @@ const props = withDefaults(
     refresherRefreshingText: '正在刷新...',
     refresherCompleteText: '刷新成功',
     refresherCompleteDuration: 500,
+    refresherBackground: '',
+    refresherTextColor: '',
+    refresherIconColor: '',
+    secondFloorEnabled: false,
+    secondFloorThreshold: 100,
+    secondFloorDuration: 200,
+    refresherSecondFloorText: '松开进入二楼',
+    secondFloorBackground: '',
     loadMoreEnabled: true,
     lowerThreshold: 50,
     loadMoreDefaultText: '点击加载更多',
     loadMoreLoadingText: '正在加载中...',
     loadMoreNoMoreText: '没有更多了',
     loadMoreFailText: '加载失败，点击重试',
+    loadMoreTextColor: '',
     emptyText: '暂无数据',
     safeAreaInsetBottom: false,
     customClass: '',
@@ -157,6 +201,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', list: unknown[]): void;
   /** scroll-view `@scroll` passthrough (e.g. feeding sn-backtop). */
   (e: 'scroll', event: unknown): void;
+  /** Second-floor overlay opened ('go') or closed ('close'). */
+  (e: 'secondFloorChange', phase: 'go' | 'close'): void;
 }>();
 
 defineSlots<{
@@ -170,6 +216,10 @@ defineSlots<{
   empty?(): unknown;
   /** Replaces the built-in refresher content (icon + text). */
   refresher?(): unknown;
+  /** Replaces the built-in load-more footer; receives `{ phase }`. */
+  footer?(slotProps: { phase: LoadMorePhase }): unknown;
+  /** Second-floor overlay content; rendered over its own scroll area. */
+  secondFloor?(): unknown;
 }>();
 
 const pageNo = ref(props.defaultPageNo);
@@ -187,25 +237,30 @@ const refresherPhase = ref<RefresherPhase>('idle');
 const loadMorePhase = ref<LoadMorePhase>('default');
 /** Live pull distance in px — only driven by the browser fallback. */
 const pullDistance = ref(0);
+/** Second-floor overlay is mounted (may still be parked off-screen). */
+const secondFloorVisible = ref(false);
+/** Second-floor overlay is slid in (drives the translateY transition). */
+const secondFloorOpen = ref(false);
 /** scroll-view host element; an inert element on browser hosts. */
 const scrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null);
 let completeHoldTimer: ReturnType<typeof setTimeout> | null = null;
+let secondFloorTimer: ReturnType<typeof setTimeout> | null = null;
 let disposeGesture: (() => void) | null = null;
 
 /** Whether scroll-to-bottom loads the next page. */
 const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
 
-const isRefresherReady = computed(
-  () =>
-    refresherPhase.value === 'ready' ||
-    refresherPhase.value === 'refreshing' ||
-    refresherPhase.value === 'complete',
+/** Browser-only reveal-box height: fixed tall box the pull translates in. */
+const maxPullPx = computed(() =>
+  Math.max(props.refresherThreshold * MAX_PULL_RATIO, REFRESHER_HEIGHT_PX + 10),
 );
 
 const refresherText = computed(() => {
   switch (refresherPhase.value) {
     case 'ready':
       return props.refresherPullingText;
+    case 'secondFloor':
+      return props.refresherSecondFloorText;
     case 'refreshing':
       return props.refresherRefreshingText;
     case 'complete':
@@ -245,26 +300,120 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
+/** Phases where the pull distance is live (browser drag). */
+const isDraggingPhase = computed(
+  () =>
+    refresherPhase.value === 'pulling' ||
+    refresherPhase.value === 'ready' ||
+    refresherPhase.value === 'secondFloor',
+);
+
+const isHoldPhase = computed(
+  () => refresherPhase.value === 'refreshing' || refresherPhase.value === 'complete',
+);
+
+const DRAG_TRANSITION = 'none';
+/** Spring-back curve for release-below-threshold and post-refresh collapse. */
+const SETTLE_TRANSITION = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+/** Short ease used when the release arms the refresh (pull → hold strip). */
+const ARM_TRANSITION = 'transform 0.2s ease-out';
+
 /**
- * Inline height for the refresher area on browser hosts, where the native
- * refresher cannot drive it. On uni hosts this stays `undefined` and the
- * scroll-view owns the refresher geometry.
+ * Inline geometry for the refresher reveal box on browser hosts: a fixed
+ * `maxPull`-tall box parked above the content (`margin-top`), translated
+ * down by the damped pull — transform only, no layout. Its content sits in
+ * the bottom `REFRESHER_HEIGHT_PX` strip so the visible hold strip centers
+ * icon + text. On uni hosts this stays `undefined` and the scroll-view owns
+ * the refresher geometry.
  */
 const refresherStyle = computed(() => {
   if (!isBrowserHost) return undefined;
-  if (refresherPhase.value === 'refreshing' || refresherPhase.value === 'complete') {
-    return `height: ${REFRESHER_HEIGHT_PX}px`;
+  const max = maxPullPx.value;
+  const visible = isDraggingPhase.value ? pullDistance.value : isHoldPhase.value ? REFRESHER_HEIGHT_PX : 0;
+  const transition = isDraggingPhase.value
+    ? DRAG_TRANSITION
+    : isHoldPhase.value
+      ? ARM_TRANSITION
+      : SETTLE_TRANSITION;
+  const parts = [
+    `height: ${max}px`,
+    `margin-top: -${max}px`,
+    `padding-bottom: ${Math.max(max - REFRESHER_HEIGHT_PX, 0)}px`,
+    `transform: translateY(${Math.round(visible - max)}px)`,
+    `transition: ${transition}`,
+  ];
+  if (props.refresherBackground) parts.push(`background: ${props.refresherBackground}`);
+  return parts.join('; ');
+});
+
+/**
+ * Inline offset for the scroll content on browser hosts: the list rides the
+ * same damped pull (native-overscroll look) and holds the refresh strip.
+ */
+const bodyStyle = computed(() => {
+  if (!isBrowserHost) return undefined;
+  const offset = isDraggingPhase.value
+    ? pullDistance.value
+    : isHoldPhase.value
+      ? REFRESHER_HEIGHT_PX
+      : 0;
+  const transition = isDraggingPhase.value
+    ? DRAG_TRANSITION
+    : isHoldPhase.value
+      ? ARM_TRANSITION
+      : SETTLE_TRANSITION;
+  return `transform: translateY(${Math.round(offset)}px); transition: ${transition}`;
+});
+
+/** Icon / spinner color for the whole refresher content (inheritable). */
+const refresherContentStyle = computed(() =>
+  props.refresherIconColor ? `color: ${props.refresherIconColor}` : undefined,
+);
+
+const refresherTextStyle = computed(() =>
+  props.refresherTextColor ? `color: ${props.refresherTextColor}` : undefined,
+);
+
+/**
+ * Arrow rotation: continuous with the damped pull on the browser host, a
+ * phase flip (with the shared 0.2s transform transition) on uni hosts —
+ * per-move setData there is what makes low-end MP devices janky.
+ */
+const refresherIconStyle = computed(() => {
+  let deg: number;
+  if (isBrowserHost && isDraggingPhase.value) {
+    deg = Math.min(pullDistance.value / Math.max(props.refresherThreshold, 1), 1) * 180;
+  } else {
+    deg = refresherPhase.value === 'ready' || refresherPhase.value === 'secondFloor' ? 180 : 0;
   }
-  const dragging = refresherPhase.value === 'pulling' || refresherPhase.value === 'ready';
-  const height = dragging ? pullDistance.value : 0;
-  const transition = dragging ? 'none' : 'height 0.2s ease';
-  return `height: ${Math.round(height)}px; transition: ${transition}`;
+  return `transform: rotate(${Math.round(deg)}deg)`;
+});
+
+const footerTextStyle = computed(() =>
+  props.loadMoreTextColor ? `color: ${props.loadMoreTextColor}` : undefined,
+);
+
+/** Second-floor overlay: parked above, slides in once mounted. */
+const secondFloorStyle = computed(() => {
+  const parts = [
+    `transform: translateY(${secondFloorOpen.value ? '0%' : '-100%'})`,
+    `transition: transform ${props.secondFloorDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`,
+  ];
+  if (props.secondFloorBackground) parts.push(`background: ${props.secondFloorBackground}`);
+  return parts.join('; ');
 });
 
 function clearCompleteHold(): void {
   if (completeHoldTimer !== null) {
     clearTimeout(completeHoldTimer);
     completeHoldTimer = null;
+  }
+}
+
+function clearSecondFloorTimer(): void {
+  if (secondFloorTimer !== null) {
+    clearTimeout(secondFloorTimer);
+    secondFloorTimer = null;
   }
 }
 
@@ -356,11 +505,24 @@ function endRefreshAnimation(): void {
 function onRefresherPulling(event: { detail?: { dy?: number } }): void {
   if (refresherTriggered.value || isLoading.value) return;
   const dy = Math.max(0, event.detail?.dy ?? 0);
-  refresherPhase.value = dy >= props.refresherThreshold ? 'ready' : 'pulling';
+  refresherPhase.value =
+    props.secondFloorEnabled && dy >= props.secondFloorThreshold
+      ? 'secondFloor'
+      : dy >= props.refresherThreshold
+        ? 'ready'
+        : 'pulling';
 }
 
 function onRefresherRefresh(): void {
   if (!props.refresherEnabled) return;
+  /* Released inside the second-floor zone: intercept the refresh, collapse
+   * the native pull and open the overlay instead — no query is emitted. */
+  if (refresherPhase.value === 'secondFloor') {
+    refresherTriggered.value = false;
+    refresherPhase.value = 'idle';
+    openSecondFloor();
+    return;
+  }
   if (isLoading.value) {
     /* A query is already in flight — collapse the gesture, never stack. */
     refresherTriggered.value = false;
@@ -394,12 +556,66 @@ function onScroll(event: unknown): void {
   emit('scroll', event);
 }
 
-/** Browser fallback pull update: drive the phase + inline height together. */
+/** Browser fallback pull update: drive the phase; styles read the distance. */
 function onSimulatedPull(distance: number): void {
   if (isLoading.value) return;
   pullDistance.value = distance;
   refresherPhase.value =
-    distance <= 0 ? 'idle' : distance >= props.refresherThreshold ? 'ready' : 'pulling';
+    distance <= 0
+      ? 'idle'
+      : props.secondFloorEnabled && distance >= props.secondFloorThreshold
+        ? 'secondFloor'
+        : distance >= props.refresherThreshold
+          ? 'ready'
+          : 'pulling';
+}
+
+/** Browser fallback release inside the second-floor zone. */
+function onSimulatedSecondFloorArm(): void {
+  pullDistance.value = 0;
+  refresherPhase.value = 'idle';
+  openSecondFloor();
+}
+
+/**
+ * Slide the second-floor overlay in (z-paging `goF2`). The overlay mounts
+ * parked at `translateY(-100%)`; the tracked delay lets that first frame
+ * paint before the transition retargets to `0` (§41/§42: the timer is
+ * cleared on unmount and on every open/close).
+ */
+function openSecondFloor(): void {
+  const wasClosing = secondFloorTimer !== null;
+  clearSecondFloorTimer();
+  if (secondFloorVisible.value && secondFloorOpen.value) {
+    if (wasClosing) emit('secondFloorChange', 'go');
+    return;
+  }
+  if (!secondFloorVisible.value) {
+    secondFloorOpen.value = false;
+    secondFloorVisible.value = true;
+  }
+  emit('secondFloorChange', 'go');
+  secondFloorTimer = setTimeout(() => {
+    secondFloorTimer = null;
+    secondFloorOpen.value = true;
+  }, SECOND_FLOOR_SHOW_DELAY_MS);
+}
+
+/** Slide the second-floor overlay out (z-paging `closeF2`). */
+function closeSecondFloor(): void {
+  if (!secondFloorVisible.value) return;
+  clearSecondFloorTimer();
+  emit('secondFloorChange', 'close');
+  if (!secondFloorOpen.value) {
+    /* Cancelled before the slide-in started — unmount outright. */
+    secondFloorVisible.value = false;
+    return;
+  }
+  secondFloorOpen.value = false;
+  secondFloorTimer = setTimeout(() => {
+    secondFloorTimer = null;
+    secondFloorVisible.value = false;
+  }, props.secondFloorDuration + 50);
 }
 
 /** Trigger a refresh with the refresher animation (z-paging `refresh`). */
@@ -437,21 +653,33 @@ onMounted(() => {
   disposeGesture = createBrowserPagingGesture(el, {
     isRefresherEnabled: () => props.refresherEnabled,
     refresherThreshold: () => props.refresherThreshold,
+    isSecondFloorEnabled: () => props.secondFloorEnabled,
+    secondFloorThreshold: () => props.secondFloorThreshold,
     lowerThreshold: () => props.lowerThreshold,
     isBusy: () => isLoading.value,
     onPull: onSimulatedPull,
     onRefreshArm: onRefresherRefresh,
+    onSecondFloorArm: onSimulatedSecondFloorArm,
     onReachBottom: onScrollToLower,
   });
 });
 
 onBeforeUnmount(() => {
   clearCompleteHold();
+  clearSecondFloorTimer();
   disposeGesture?.();
   disposeGesture = null;
 });
 
-defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
+defineExpose({
+  refresh,
+  reload,
+  complete,
+  completeByTotal,
+  completeByNoMore,
+  openSecondFloor,
+  closeSecondFloor,
+});
 </script>
 
 <template>
@@ -473,6 +701,7 @@ defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
       scroll-y
       :refresher-enabled="refresherEnabled"
       refresher-default-style="none"
+      :refresher-background="refresherBackground || undefined"
       :refresher-threshold="refresherThreshold"
       :refresher-triggered="refresherTriggered"
       :lower-threshold="lowerThreshold"
@@ -486,51 +715,83 @@ defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
       <!-- `slot="refresher"` (not `#refresher`): the attribute form is what the
        * uni compilers map onto the native refresher slot on MP / App, and plain
        * attribute content survives SSR compilation of custom elements. On
-       * browser hosts the inline height stands in for the native geometry. -->
+       * browser hosts the inline transform stands in for the native geometry:
+       * a fixed tall reveal box parked above the content, translated down by
+       * the damped pull. -->
       <view
         slot="refresher"
         class="sn-paging__refresher"
-        :style="refresherStyle"
+        :style="[refresherStyle, refresherContentStyle]"
         aria-hidden="true"
       >
         <slot name="refresher">
+          <SnLoading
+            v-if="refresherPhase === 'refreshing'"
+            size="32px"
+            text=""
+            inherit-color
+          />
           <SnIcon
+            v-else-if="refresherPhase === 'complete'"
             class="sn-paging__refresher-icon"
-            :class="{ 'sn-paging__refresher-icon--ready': isRefresherReady }"
+            :icon="Check"
+            :size="26"
+          />
+          <SnIcon
+            v-else
+            class="sn-paging__refresher-icon"
+            :style="refresherIconStyle"
             :icon="ChevronDown"
             :size="32"
           />
-          <text class="sn-paging__refresher-text">{{ refresherText }}</text>
+          <text class="sn-paging__refresher-text" :style="refresherTextStyle">
+            {{ refresherText }}
+          </text>
         </slot>
       </view>
 
-      <slot />
+      <!-- Content rides the pull on browser hosts (transform only); static on
+       * uni hosts where the native overscroll moves the whole content. -->
+      <view class="sn-paging__body" :style="bodyStyle">
+        <slot />
 
-      <view v-if="isEmpty" class="sn-paging__empty">
-        <slot name="empty">
-          <text class="sn-paging__empty-text">{{ emptyText }}</text>
-        </slot>
-      </view>
-
-      <view
-        v-if="showFooter"
-        class="sn-paging__footer"
-        role="status"
-        aria-live="polite"
-        :aria-busy="isLoading"
-        @click="onFooterTap"
-      >
-        <view v-if="isLoading" class="sn-paging__footer-spinner">
-          <SnLoading :size="28" text="" />
+        <view v-if="isEmpty" class="sn-paging__empty">
+          <slot name="empty">
+            <text class="sn-paging__empty-text">{{ emptyText }}</text>
+          </slot>
         </view>
-        <text
-          class="sn-paging__footer-text"
-          :class="{ 'sn-paging__footer-text--fail': isFooterFail }"
+
+        <view
+          v-if="showFooter"
+          class="sn-paging__footer"
+          role="status"
+          aria-live="polite"
+          :aria-busy="isLoading"
+          @click="onFooterTap"
         >
-          {{ footerText }}
-        </text>
+          <slot name="footer" :phase="loadMorePhase">
+            <view v-if="isLoading" class="sn-paging__footer-spinner">
+              <SnLoading :size="28" text="" :color="loadMoreTextColor ?? ''" />
+            </view>
+            <text
+              class="sn-paging__footer-text"
+              :class="{ 'sn-paging__footer-text--fail': isFooterFail }"
+              :style="footerTextStyle"
+            >
+              {{ footerText }}
+            </text>
+          </slot>
+        </view>
       </view>
     </scroll-view>
+
+    <!-- Second floor: a root-level overlay that slides in from the top
+     * (z-paging `zp-f2-content` mechanics); content scrolls independently. -->
+    <view v-if="secondFloorVisible" class="sn-paging__f2" :style="secondFloorStyle" @touchmove.stop>
+      <scroll-view scroll-y class="sn-paging__f2-scroll">
+        <slot name="secondFloor" />
+      </scroll-view>
+    </view>
 
     <view class="sn-paging__fixed sn-paging__fixed--bottom">
       <slot name="bottom" />
@@ -541,6 +802,7 @@ defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-paging {
+  position: relative;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -579,21 +841,39 @@ defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
   width: 100%;
   height: 100rpx;
   overflow: hidden;
+  color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-paging__refresher-icon {
-  color: var(--sn-mp-color-text-secondary);
   transition: transform 0.2s ease;
 }
 
-.sn-paging__refresher-icon--ready {
-  transform: rotate(180deg);
-}
-
 .sn-paging__refresher-text {
-  color: var(--sn-mp-color-text-secondary);
+  color: inherit;
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.sn-paging__body {
+  width: 100%;
+}
+
+.sn-paging__f2 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.sn-paging__f2-scroll {
+  width: 100%;
+  height: 100%;
+  /* Plain-CSS hosts (docs preview) need the rule; uni hosts manage their own
+   * scroll layer and ignore it. */
+  overflow-y: auto;
 }
 
 .sn-paging__empty {

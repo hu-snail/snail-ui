@@ -2,16 +2,24 @@
  * sn-paging unit tests — uni-end pull-to-refresh + load-more container.
  *
  * Behaviour only (AGENTS.md §46): the query/complete contract, page
- * aggregation, no-more inference, failure retry, the refresher lock and the
- * empty view. `scroll-view` renders as a plain host element here, so gesture
- * handlers are driven via element events and the custom `#refresher` slot
- * content (dropped for host elements) is covered by code review instead.
+ * aggregation, no-more inference, failure retry, the refresher lock, the
+ * empty view, the second-floor (F2) overlay, the pull physics contract
+ * (damped + clamped, transform-only) and the background/color forwarding.
+ * `scroll-view` renders as a plain host element here, so gesture handlers
+ * are driven via element events; the vitest host has `document` and no
+ * `uni`, which is exactly the docs-preview environment where the browser
+ * gesture fallback is the active path.
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnPaging from './sn-paging.vue';
+
+/** Defaults driving the physics numbers below (see sn-paging-simulate.ts). */
+/** Pull clamp = threshold × MAX_PULL_RATIO(2.4); visible hold strip = 50px. */
+const MAX_PULL = 108;
+const HOLD_PX = 50;
 
 /** v-model round-trip harness: every `update:modelValue` rebinds the prop. */
 function mountPaging(props: Record<string, unknown> = {}) {
@@ -36,8 +44,40 @@ async function flush(): Promise<void> {
   await nextTick();
 }
 
+/**
+ * Let a coalesced gesture report land (the fallback reports through
+ * requestAnimationFrame, with a 16ms setTimeout fallback in this host).
+ */
+async function frame(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  await flush();
+}
+
 function queryCalls(wrapper: ReturnType<typeof mount>): unknown[][] {
   return wrapper.emitted('query') ?? [];
+}
+
+function refresherStyleAttr(wrapper: ReturnType<typeof mount>): string {
+  return wrapper.find('.sn-paging__refresher').attributes('style') ?? '';
+}
+
+function bodyStyleAttr(wrapper: ReturnType<typeof mount>): string {
+  return wrapper.find('.sn-paging__body').attributes('style') ?? '';
+}
+
+/** Simulate a drag: start, a series of moves (raw clientY), end/cancel. */
+async function drag(
+  wrapper: ReturnType<typeof mount>,
+  moves: number[],
+  end: 'touchend' | 'touchcancel' = 'touchend',
+): Promise<void> {
+  const scroller = wrapper.find('scroll-view');
+  await scroller.trigger('touchstart', { touches: [{ clientY: moves[0] }] });
+  for (const y of moves.slice(1)) {
+    await scroller.trigger('touchmove', { touches: [{ clientY: y }] });
+  }
+  await frame();
+  await scroller.trigger(end);
 }
 
 afterEach(() => {
@@ -197,6 +237,15 @@ describe('sn-paging', () => {
       await wrapper.find('.sn-paging__footer').trigger('click');
       expect(queryCalls(wrapper)[1]).toEqual([2, 10]);
     });
+
+    it('renders the custom footer slot content', async () => {
+      const wrapper = mount(SnPaging, {
+        props: { modelValue: [], 'onUpdate:modelValue': () => {} },
+        slots: { footer: '<view class="custom-footer">自定义加载</view>' },
+      });
+      await flush();
+      expect(wrapper.find('.custom-footer').text()).toBe('自定义加载');
+    });
   });
 
   describe('failures', () => {
@@ -316,42 +365,68 @@ describe('sn-paging', () => {
     });
   });
 
-  describe('browser gesture fallback', () => {
-    /* The vitest host has `document` and no `uni`, so the fallback is the
-     * active gesture path here — exactly the docs-preview environment. */
+  describe('browser gesture fallback (pull physics)', () => {
+    it('a pull past the threshold arms the refresh and holds the strip', async () => {
+      const { wrapper } = mountPaging({ auto: false });
+      // 80px finger travel × 0.75 in-zone rate → 60px pull (≥ 45 threshold).
+      await drag(wrapper, [300, 380]);
+      expect(queryCalls(wrapper)).toEqual([[1, 10]]);
+      await flush();
+      expect(refresherStyleAttr(wrapper)).toContain(`translateY(${HOLD_PX - MAX_PULL}px)`);
+      expect(refresherStyleAttr(wrapper)).toContain('transition: transform 0.2s ease-out');
+      expect(bodyStyleAttr(wrapper)).toContain(`translateY(${HOLD_PX}px)`);
+    });
 
-    it('a pull past the threshold triggers the refresh query', async () => {
+    it('a pull below the threshold springs back without querying', async () => {
+      const { wrapper } = mountPaging({ auto: false });
+      // 50px travel × 0.75 → 37.5px pull (< 45 threshold).
+      await drag(wrapper, [300, 350]);
+      expect(queryCalls(wrapper)).toHaveLength(0);
+      await flush();
+      expect(refresherStyleAttr(wrapper)).toContain(`translateY(-${MAX_PULL}px)`);
+      expect(refresherStyleAttr(wrapper)).toContain('cubic-bezier');
+      expect(bodyStyleAttr(wrapper)).toContain('translateY(0px)');
+    });
+
+    it('a hard yank never exceeds the rubber-band clamp', async () => {
+      const { wrapper } = mountPaging({ auto: false });
+      // 600px single jump → delta capped at 100 × 0.75 = 75, then a second
+      // capped jump past the threshold damps to 0.35 and clamps at maxPull.
+      const scroller = wrapper.find('scroll-view');
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await scroller.trigger('touchmove', { touches: [{ clientY: 900 }] });
+      await scroller.trigger('touchmove', { touches: [{ clientY: 1200 }] });
+      await frame();
+      expect(refresherStyleAttr(wrapper)).toContain('translateY(0px)');
+      await scroller.trigger('touchend');
+      // Releasing inside the clamp still arms the refresh (past the threshold).
+      expect(queryCalls(wrapper)).toEqual([[1, 10]]);
+    });
+
+    it('the arrow rotates continuously with the pull on browser hosts', async () => {
       const { wrapper } = mountPaging({ auto: false });
       const scroller = wrapper.find('scroll-view');
       await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
       await scroller.trigger('touchmove', { touches: [{ clientY: 380 }] });
-      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain(
-        'transition: none',
+      await frame();
+      // 60px pull reaches the 45px threshold → 180°.
+      expect(wrapper.find('.sn-paging__refresher-icon').attributes('style')).toContain(
+        'rotate(180deg)',
       );
-
       await scroller.trigger('touchend');
-      expect(queryCalls(wrapper)).toEqual([[1, 10]]);
-      await flush();
-      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain('height: 50px');
     });
 
-    it('a pull below the threshold snaps back without querying', async () => {
+    it('a cancelled gesture springs back and never arms', async () => {
       const { wrapper } = mountPaging({ auto: false });
-      const scroller = wrapper.find('scroll-view');
-      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
-      await scroller.trigger('touchmove', { touches: [{ clientY: 360 }] });
-      await scroller.trigger('touchend');
+      await drag(wrapper, [300, 900], 'touchcancel');
       expect(queryCalls(wrapper)).toHaveLength(0);
       await flush();
-      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain('height: 0px');
+      expect(refresherStyleAttr(wrapper)).toContain(`translateY(-${MAX_PULL}px)`);
     });
 
     it('dragging is ignored while a query is in flight', async () => {
       const { wrapper } = mountPaging();
-      const scroller = wrapper.find('scroll-view');
-      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
-      await scroller.trigger('touchmove', { touches: [{ clientY: 380 }] });
-      await scroller.trigger('touchend');
+      await drag(wrapper, [300, 380]);
       expect(queryCalls(wrapper)).toHaveLength(1);
     });
 
@@ -373,6 +448,137 @@ describe('sn-paging', () => {
       const { wrapper } = mountPaging({ auto: false, refresherEnabled: false });
       await wrapper.find('scroll-view').trigger('refresherrefresh');
       expect(queryCalls(wrapper)).toHaveLength(0);
+    });
+  });
+
+describe('second floor', () => {
+  /** Mount without the auto query so pull events reach the handler. */
+  function mountIdle(props: Record<string, unknown> = {}) {
+    return mountPaging({ auto: false, ...props });
+  }
+
+  it('a native pull past the threshold arms the second-floor state', async () => {
+    const { wrapper } = mountIdle({ secondFloorEnabled: true });
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+  });
+
+  it('releasing in the zone opens the overlay instead of querying', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountIdle({ secondFloorEnabled: true });
+    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    await flush();
+    // The interception IS the contract: no refresh query may fire.
+    expect(queryCalls(wrapper)).toHaveLength(0);
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+    expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
+    expect(wrapper.emitted('secondFloorChange')).toEqual([['go']]);
+    expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-100%)');
+
+    vi.advanceTimersByTime(100);
+    await flush();
+    expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+  });
+
+    it('renders the second-floor slot inside a scroll area', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnPaging, {
+        props: { secondFloorEnabled: true, modelValue: [], 'onUpdate:modelValue': () => {} },
+        slots: { secondFloor: '<view class="custom-f2">二楼内容</view>' },
+      });
+      wrapper.vm.openSecondFloor();
+      vi.advanceTimersByTime(100);
+      await flush();
+      expect(wrapper.find('.custom-f2').text()).toBe('二楼内容');
+      expect(wrapper.find('.sn-paging__f2-scroll').exists()).toBe(true);
+    });
+
+    it('closeSecondFloor slides the overlay out and unmounts it', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountPaging({ secondFloorEnabled: true });
+      wrapper.vm.openSecondFloor();
+      vi.advanceTimersByTime(100);
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+
+      wrapper.vm.closeSecondFloor();
+      await flush();
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go'], ['close']]);
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-100%)');
+
+      vi.advanceTimersByTime(250);
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
+    });
+
+    it('a browser release inside the zone opens the overlay, not a query', async () => {
+      const { wrapper } = mountPaging({ secondFloorEnabled: true, auto: false });
+      // Two capped jumps: 100×0.75 = 75, then 100×0.35 = 35 → clamp 108 ≥ 100.
+      await drag(wrapper, [300, 900, 1200]);
+      expect(queryCalls(wrapper)).toHaveLength(0);
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go']]);
+      // Real-timer wait: the slide-in starts after the show delay.
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+    });
+
+    it('secondFloorEnabled=false keeps the plain refresh contract', async () => {
+      const { wrapper } = mountIdle();
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 200 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开立即刷新');
+
+      await wrapper.find('scroll-view').trigger('refresherrefresh');
+      expect(queryCalls(wrapper)[0]).toEqual([1, 10]);
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
+    });
+
+    it('respects a custom secondFloorThreshold', async () => {
+      const { wrapper } = mountIdle({ secondFloorEnabled: true, secondFloorThreshold: 140 });
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开立即刷新');
+    });
+  });
+
+  describe('background / color forwarding', () => {
+    it('refresherBackground reaches the native attribute and the reveal box', async () => {
+      const { wrapper } = mountPaging({ auto: false, refresherBackground: '#0b1220' });
+      expect(wrapper.find('scroll-view').attributes('refresher-background')).toBe('#0b1220');
+      expect(refresherStyleAttr(wrapper)).toContain('background: #0b1220');
+    });
+
+    it('refresherBackground stays unset by default', () => {
+      const { wrapper } = mountPaging({ auto: false });
+      expect(wrapper.find('scroll-view').attributes('refresher-background')).toBeUndefined();
+      expect(refresherStyleAttr(wrapper)).not.toContain('background');
+    });
+
+    it('refresher text and icon colors bind inline', async () => {
+      const { wrapper } = mountPaging({
+        auto: false,
+        refresherTextColor: '#e2e8f0',
+        refresherIconColor: '#38bdf8',
+      });
+      expect(refresherStyleAttr(wrapper)).toContain('color: #38bdf8');
+      expect(wrapper.find('.sn-paging__refresher-text').attributes('style')).toContain(
+        'color: #e2e8f0',
+      );
+    });
+
+    it('loadMoreTextColor binds to the footer text', async () => {
+      const { wrapper } = mountPaging({ auto: false, loadMoreTextColor: '#f59e0b' });
+      // With auto=false a query must be in flight for `complete` to apply.
+      wrapper.vm.reload();
+      wrapper.vm.complete(['a']);
+      await flush();
+      expect(wrapper.find('.sn-paging__footer-text').attributes('style')).toContain(
+        'color: #f59e0b',
+      );
     });
   });
 
@@ -487,6 +693,14 @@ describe('sn-paging (refresher lifecycle edges)', () => {
     await flush();
     // Unmount with a pending success hold and a bound gesture: no dangling
     // timer may fire afterwards.
+    wrapper.unmount();
+    expect(() => vi.advanceTimersByTime(1000)).not.toThrow();
+  });
+
+  it('disposes a pending second-floor timer on unmount', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountPaging({ secondFloorEnabled: true });
+    wrapper.vm.openSecondFloor();
     wrapper.unmount();
     expect(() => vi.advanceTimersByTime(1000)).not.toThrow();
   });
