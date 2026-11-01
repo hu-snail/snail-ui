@@ -1,7 +1,7 @@
 <script setup lang="ts">
-/** Demo: sn-password-input — Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focused` drives the caret (pair it with the keyboard visibility). */
+/** Demo: sn-code-input — sn-code-input 方框密码框：length 控制格子数，mask 控制是否显示圆点，focused 与键盘显隐联动。 */
 import { ref } from 'vue';
-import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-password-input.vue';
+import SnCodeInput from '@snui/uni-src/components/sn-code-input/sn-code-input.vue';
 
 const pin = ref('123');
 const focused = ref(true);
@@ -10,22 +10,14 @@ const mask = ref(true);
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPasswordInput
-      v-model="pin"
-      :length="6"
-      :mask="mask"
-      :focused="focused"
-      info="Enter the 6-digit PIN"
-    />
+    <SnCodeInput v-model="pin" :length="6" :mask="mask" :focused="focused" info="请输入 6 位密码" />
     <view class="sn-demo__row">
-      <view class="sn-demo__button" @tap="focused = !focused">{{
-        focused ? 'Blur' : 'Focus'
-      }}</view>
+      <view class="sn-demo__button" @tap="focused = !focused">{{ focused ? '失焦' : '聚焦' }}</view>
       <view class="sn-demo__button sn-demo__button--ghost" @tap="mask = !mask">{{
-        mask ? 'Plain' : 'Dots'
+        mask ? '明文' : '圆点'
       }}</view>
     </view>
-    <text class="sn-demo__meta">Value: {{ pin || '(empty)' }}</text>
+    <text class="sn-demo__meta">当前值：{{ pin || '（空）' }}</text>
   </view>
 </template>
 

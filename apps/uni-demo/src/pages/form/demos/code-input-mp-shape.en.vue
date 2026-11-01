@@ -1,7 +1,7 @@
 <script setup lang="ts">
-/** Demo: sn-password-input — `shape='box'` (default) vs `shape='underline'` cell shapes. */
+/** Demo: sn-code-input — `shape='box'` (default) vs `shape='underline'` cell shapes. */
 import { ref } from 'vue';
-import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-password-input.vue';
+import SnCodeInput from '@snui/uni-src/components/sn-code-input/sn-code-input.vue';
 
 const box = ref('12');
 const line = ref('34');
@@ -9,8 +9,8 @@ const line = ref('34');
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPasswordInput v-model="box" :length="4" shape="box" info="Box (default)" />
-    <SnPasswordInput v-model="line" :length="4" shape="underline" info="Underline" />
+    <SnCodeInput v-model="box" :length="4" shape="box" info="Box (default)" />
+    <SnCodeInput v-model="line" :length="4" shape="underline" info="Underline" />
     <text class="sn-demo__meta"
       >shape='box' | 'underline' — focus / error borders follow automatically</text
     >

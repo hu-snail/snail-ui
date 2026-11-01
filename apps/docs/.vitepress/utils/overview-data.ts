@@ -71,7 +71,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-form', title: '表单', desc: '校验与布局容器' },
       { name: 'sn-input', title: '输入框', desc: '单行文本输入' },
       { name: 'sn-textarea', title: '文本域', desc: '多行文本输入' },
-      { name: 'sn-password-input', title: '密码输入框', desc: '密码 / 验证码输入' },
+      { name: 'sn-code-input', title: '验证码输入框', desc: '验证码 / 密码方框输入' },
       { name: 'sn-keyboard', title: '虚拟键盘', desc: '自定义数字键盘' },
       { name: 'sn-keyboard-panel', title: '键盘面板', desc: '内嵌键盘视图' },
       { name: 'sn-plate-input', title: '车牌输入框', desc: '点击弹起车牌键盘录入' },

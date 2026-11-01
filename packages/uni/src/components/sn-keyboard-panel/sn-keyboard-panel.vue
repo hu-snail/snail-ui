@@ -22,7 +22,7 @@
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
- *   - 输入框本体 — 用 sn-input / sn-password-input
+ *   - 输入框本体 — 用 sn-input / sn-code-input
  *   - 面板的显隐与定位 — 由宿主容器决定
  */
 

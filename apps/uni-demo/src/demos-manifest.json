@@ -1174,6 +1174,44 @@
         }
       ]
     },
+    "code-input": {
+      "group": "form",
+      "title": "验证码输入框",
+      "desc": "验证码 / 密码方框输入",
+      "page": "pages/form/code-input",
+      "demos": [
+        {
+          "name": "code-input-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-shape",
+          "title": "形状",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-background",
+          "title": "格子背景",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-no-border",
+          "title": "无边框",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-error-gutter",
+          "title": "明文与错误态",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-custom-style",
+          "title": "自定义样式",
+          "hasEn": true
+        }
+      ]
+    },
     "date-strip": {
       "group": "form",
       "title": "日期条",
@@ -1549,39 +1587,6 @@
         {
           "name": "keyboard-panel-mp-basic",
           "title": "基础用法",
-          "hasEn": true
-        }
-      ]
-    },
-    "password-input": {
-      "group": "form",
-      "title": "密码输入框",
-      "desc": "密码 / 验证码输入",
-      "page": "pages/form/password-input",
-      "demos": [
-        {
-          "name": "password-input-mp-basic",
-          "title": "基础用法",
-          "hasEn": true
-        },
-        {
-          "name": "password-input-mp-shape",
-          "title": "形状",
-          "hasEn": true
-        },
-        {
-          "name": "password-input-mp-background",
-          "title": "格子背景",
-          "hasEn": true
-        },
-        {
-          "name": "password-input-mp-error-gutter",
-          "title": "明文与错误态",
-          "hasEn": true
-        },
-        {
-          "name": "password-input-mp-custom-style",
-          "title": "自定义样式",
           "hasEn": true
         }
       ]

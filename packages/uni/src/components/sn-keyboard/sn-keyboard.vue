@@ -50,7 +50,7 @@
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
- *   - 输入框本体 — 用 sn-input / sn-password-input
+ *   - 输入框本体 — 用 sn-input / sn-code-input
  *   - 车牌业务校验 — 由宿主处理
  */
 

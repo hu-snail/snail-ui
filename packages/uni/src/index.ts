@@ -80,7 +80,7 @@ export { default as SnOverlay } from './components/sn-overlay/sn-overlay.vue';
 export { default as SnPagination } from './components/sn-pagination/sn-pagination.vue';
 export { default as SnPaging } from './components/sn-paging/sn-paging.vue';
 export { default as SnPlateInput } from './components/sn-plate-input/sn-plate-input.vue';
-export { default as SnPasswordInput } from './components/sn-password-input/sn-password-input.vue';
+export { default as SnCodeInput } from './components/sn-code-input/sn-code-input.vue';
 export { default as SnPicker } from './components/sn-picker/sn-picker.vue';
 export { default as SnPickerView } from './components/sn-picker-view/sn-picker-view.vue';
 export { default as SnPopover } from './components/sn-popover/sn-popover.vue';

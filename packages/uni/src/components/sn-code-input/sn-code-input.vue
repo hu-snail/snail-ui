@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * sn-password-input (uni-end) — boxed password / PIN field.
+ * sn-code-input (uni-end) — boxed verification-code / PIN field.
  *
  * Reference library: wot-ui `wd-password-input`
  *   (https://wot-ui.cn/component/password-input.html)
@@ -9,7 +9,10 @@
  *   - `shape: 'box' | 'underline'` — additive（Human 指令 2026-11-01）；方框 /
  *     下划线两种格子形状，参考库无对应 prop。
  *   - `background` — additive（Human 指令 2026-11-01）；格子背景色，重指
- *     `--sn-password-input-box-bg`，参考库只有 CSS var 没有 prop。
+ *     `--sn-code-input-box-bg`，参考库只有 CSS var 没有 prop。
+ *   - `border: 'all' | 'none'` — additive（Human 指令 2026-11-01）；`none`
+ *     去掉两种形状下的全部边框（含下划线底线），纯背景色格子；命名对齐
+ *     sn-input 的 `border`。
  *   - `gutter` 默认值 0 → 8（16rpx）：参考库默认 0 时格子贴死，错误态视觉
  *     尤其差（Human 指令 2026-11-01「密码不正确格子没有间距」）。显式传 0
  *     仍可回到贴合布局。
@@ -17,8 +20,8 @@
  * AGENTS.md §112.
  *
  * File path follows uni-app easycom convention:
- *   components/sn-password-input/sn-password-input.vue
- * → auto-registered as `<sn-password-input>` in any .vue that uses it.
+ *   components/sn-code-input/sn-code-input.vue
+ * → auto-registered as `<sn-code-input>` in any .vue that uses it.
  *
  * ## Structure
  *
@@ -54,7 +57,7 @@
 
 import { computed, nextTick, ref } from 'vue';
 
-defineOptions({ name: 'SnPasswordInput' });
+defineOptions({ name: 'SnCodeInput' });
 
 const props = withDefaults(
   defineProps<{
@@ -70,6 +73,12 @@ const props = withDefaults(
     errorInfo?: string;
     /** Gap between boxes. A number is treated as an rpx design value. */
     gutter?: number | string;
+    /**
+     * Cell border: `all` (default) draws the reference frame; `none` strips
+     * every border in both shapes — background-only cells (additive). Named
+     * after sn-input's `border`.
+     */
+    border?: 'all' | 'none';
     /** Box shape: framed `box` cells or borderless `underline` cells (additive). */
     shape?: 'box' | 'underline';
     /** Cell background color (any CSS color or `var(--sn-mp-color-*)`, additive). */
@@ -89,6 +98,7 @@ const props = withDefaults(
     info: '',
     errorInfo: '',
     gutter: 8,
+    border: 'all',
     shape: 'box',
     background: '',
     length: 6,
@@ -176,12 +186,13 @@ function onTap(): void {
 }
 
 const rootClass = computed(() => [
-  'sn-password-input',
+  'sn-code-input',
   {
-    'sn-password-input--mask': props.mask,
-    'sn-password-input--underline': props.shape === 'underline',
-    'sn-password-input--focused': props.focused,
-    'sn-password-input--error': props.errorInfo !== '',
+    'sn-code-input--mask': props.mask,
+    'sn-code-input--border-none': props.border === 'none',
+    'sn-code-input--underline': props.shape === 'underline',
+    'sn-code-input--focused': props.focused,
+    'sn-code-input--error': props.errorInfo !== '',
   },
   props.customClass,
 ]);
@@ -190,10 +201,10 @@ const rootStyle = computed(() => {
   const vars: string[] = [];
   if (props.gutter !== 0 && props.gutter !== '') {
     const gap = typeof props.gutter === 'number' ? `${props.gutter * 2}rpx` : props.gutter;
-    vars.push(`--sn-password-input-gap: ${gap}`);
+    vars.push(`--sn-code-input-gap: ${gap}`);
   }
   if (props.background !== '') {
-    vars.push(`--sn-password-input-box-bg: ${props.background}`);
+    vars.push(`--sn-code-input-box-bg: ${props.background}`);
   }
   const base = vars.join('; ');
   if (!props.customStyle) return base;
@@ -204,45 +215,45 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
 </script>
 
 <template>
-  <view :class="rootClass" :style="rootStyle" :data-snui-component="'password-input'">
+  <view :class="rootClass" :style="rootStyle" :data-snui-component="'code-input'">
     <view
-      class="sn-password-input__boxes"
+      class="sn-code-input__boxes"
       role="group"
-      :aria-label="'password, ' + chars.length + ' of ' + boxCount"
+      :aria-label="'code, ' + chars.length + ' of ' + boxCount"
       @tap="onTap"
     >
       <view
         v-for="index in boxCount"
         :key="index"
         :class="[
-          'sn-password-input__box',
+          'sn-code-input__box',
           {
-            'sn-password-input__box--filled': index - 1 < chars.length,
-            'sn-password-input__box--active': focused && caretIndex === index - 1,
-            'sn-password-input__box--error': errorInfo !== '',
+            'sn-code-input__box--filled': index - 1 < chars.length,
+            'sn-code-input__box--active': focused && caretIndex === index - 1,
+            'sn-code-input__box--error': errorInfo !== '',
           },
         ]"
         :aria-label="`digit ${index}`"
       >
-        <text v-if="index - 1 < chars.length" class="sn-password-input__char">{{
+        <text v-if="index - 1 < chars.length" class="sn-code-input__char">{{
           displayAt(index - 1)
         }}</text>
         <view
           v-else-if="focused && caretIndex === index - 1"
-          class="sn-password-input__caret"
+          class="sn-code-input__caret"
           aria-hidden="true"
         />
       </view>
     </view>
 
     <input
-      class="sn-password-input__native"
+      class="sn-code-input__native"
       type="text"
       inputmode="numeric"
       :value="modelValue"
       :maxlength="boxCount"
       :focus="focused && focusPulse"
-      aria-label="password"
+      aria-label="code"
       @input="onInput"
       @focus="onFocus"
       @blur="onBlur"
@@ -250,10 +261,7 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
 
     <text
       v-if="message"
-      :class="[
-        'sn-password-input__message',
-        { 'sn-password-input__message--error': errorInfo !== '' },
-      ]"
+      :class="['sn-code-input__message', { 'sn-code-input__message--error': errorInfo !== '' }]"
     >
       {{ message }}
     </text>
@@ -263,20 +271,20 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
 <style scoped>
 /* uni side: --sn-mp-* aliases only (rpx units). */
 
-.sn-password-input {
+.sn-code-input {
   display: block;
   width: 100%;
   font-family: inherit;
 }
 
-.sn-password-input__boxes {
+.sn-code-input__boxes {
   display: flex;
   align-items: center;
-  gap: var(--sn-password-input-gap, 16rpx);
+  gap: var(--sn-code-input-gap, 16rpx);
   width: 100%;
 }
 
-.sn-password-input__box {
+.sn-code-input__box {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -285,51 +293,62 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
   height: 88rpx;
   box-sizing: border-box;
   border: 2rpx solid var(--sn-mp-color-input-border);
-  border-radius: var(--sn-password-input-radius, var(--sn-mp-radius-md));
-  background-color: var(--sn-password-input-box-bg, var(--sn-mp-color-input-bg));
+  border-radius: var(--sn-code-input-radius, var(--sn-mp-radius-md));
+  background-color: var(--sn-code-input-box-bg, var(--sn-mp-color-input-bg));
   color: var(--sn-mp-color-input-text);
 }
 
-.sn-password-input__box--error {
+.sn-code-input__box--error {
   border-color: var(--sn-mp-color-feedback-danger);
 }
 
-.sn-password-input__box--active {
+.sn-code-input__box--active {
   border-color: var(--sn-mp-color-input-border-focus);
 }
 
 /* Underline shape — borderless cells over a bottom rule (additive). The
  * three-class state rules re-assert the bottom border color because the
  * base underline rule would otherwise out-cascade `--active` / `--error`. */
-.sn-password-input--underline .sn-password-input__box {
+.sn-code-input--underline .sn-code-input__box {
   border: none;
   border-bottom: 4rpx solid var(--sn-mp-color-input-border);
   border-radius: 0;
-  background-color: var(--sn-password-input-box-bg, transparent);
+  background-color: var(--sn-code-input-box-bg, transparent);
 }
 
-.sn-password-input--underline .sn-password-input__box--active {
+.sn-code-input--underline .sn-code-input__box--active {
   border-bottom-color: var(--sn-mp-color-input-border-focus);
 }
 
-.sn-password-input--underline .sn-password-input__box--error {
+.sn-code-input--underline .sn-code-input__box--error {
   border-bottom-color: var(--sn-mp-color-feedback-danger);
 }
 
-.sn-password-input__char {
+/* Border none — background-only cells in both shapes; state colors have no
+ * border left to paint, so they degrade to the background/border hooks the
+ * host may still set. Sits after the shape rules to win the cascade. */
+.sn-code-input--border-none .sn-code-input__box {
+  border: none;
+}
+
+.sn-code-input--border-none.sn-code-input--underline .sn-code-input__box {
+  border: none;
+}
+
+.sn-code-input__char {
   font-size: var(--sn-mp-font-size-xl);
   line-height: 1;
 }
 
 /* Static caret — no animation timer, so nothing to dispose. */
-.sn-password-input__caret {
+.sn-code-input__caret {
   width: 2rpx;
   height: 40rpx;
   background-color: var(--sn-mp-color-action-primary);
 }
 
 /* The native input is the keyboard source only; it must never be visible. */
-.sn-password-input__native {
+.sn-code-input__native {
   position: absolute;
   width: 2rpx;
   height: 2rpx;
@@ -337,28 +356,34 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
   pointer-events: none;
 }
 
-.sn-password-input__message {
+.sn-code-input__message {
   display: block;
   margin-top: var(--sn-mp-spacing-2);
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-tertiary);
 }
 
-.sn-password-input__message--error {
+.sn-code-input__message--error {
   color: var(--sn-mp-color-feedback-danger);
 }
 
 /* Doodle skin — heavier box outline. */
-.snui-skin-doodle .sn-password-input__box {
+.snui-skin-doodle .sn-code-input__box {
   border-width: 4rpx;
   border-color: var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-radius-xs);
 }
 
 /* Doodle underline — the hand-drawn look keeps the bottom rule only. */
-.snui-skin-doodle .sn-password-input--underline .sn-password-input__box {
+.snui-skin-doodle .sn-code-input--underline .sn-code-input__box {
   border: none;
   border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
   border-radius: 0;
+}
+
+/* Doodle + border-none — the hand-drawn outline yields to the prop. */
+.sn-code-input--border-none .snui-skin-doodle .sn-code-input__box,
+.snui-skin-doodle .sn-code-input--border-none .sn-code-input__box {
+  border: none;
 }
 </style>

@@ -20,7 +20,7 @@
  * province→letter switch would never land. The language resets to 省份
  * (`zh`) whenever the value is cleared, so a fresh plate starts over.
  *
- * The caret is the same static CSS bar as sn-password-input — no timers, so
+ * The caret is the same static CSS bar as sn-code-input — no timers, so
  * nothing to dispose (AGENTS.md §41).
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
@@ -248,7 +248,7 @@ const rootStyle = computed(() => props.customStyle);
   background-color: var(--sn-mp-color-action-primary);
 }
 
-/* Doodle skin — heavier box outline, same read as sn-password-input. */
+/* Doodle skin — heavier box outline, same read as sn-code-input. */
 .snui-skin-doodle .sn-plate-input__box {
   border-width: 4rpx;
   border-color: var(--sn-mp-color-text-primary);

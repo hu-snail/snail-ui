@@ -1,10 +1,11 @@
 <script setup lang="ts">
-// 由 scripts/gen-pages.mjs 生成，勿手改 —— password-input 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/password-input-mp-basic.vue';
-import Demo1 from './demos/password-input-mp-shape.vue';
-import Demo2 from './demos/password-input-mp-background.vue';
-import Demo3 from './demos/password-input-mp-error-gutter.vue';
-import Demo4 from './demos/password-input-mp-custom-style.vue';
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— code-input 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/code-input-mp-basic.vue';
+import Demo1 from './demos/code-input-mp-shape.vue';
+import Demo2 from './demos/code-input-mp-background.vue';
+import Demo3 from './demos/code-input-mp-no-border.vue';
+import Demo4 from './demos/code-input-mp-error-gutter.vue';
+import Demo5 from './demos/code-input-mp-custom-style.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -15,9 +16,9 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
-    :title-zh="'密码输入框'"
-    :title-en="'Password Input'"
-    :desc="'密码 / 验证码输入'"
+    :title-zh="'验证码输入框'"
+    :title-en="'Code Input'"
+    :desc="'验证码 / 密码方框输入'"
     :bg="''"
   >
     <view class="page">
@@ -40,15 +41,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('明文与错误态', 'Plain text & error')" badge="error-gutter" />
+        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
+        <DemoModuleHead :title="t('明文与错误态', 'Plain text & error')" badge="error-gutter" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

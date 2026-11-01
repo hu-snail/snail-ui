@@ -1,7 +1,7 @@
 <script setup lang="ts">
-/** Demo: sn-password-input — shape='box' 方框（默认）与 shape='underline' 下划线两种格子形状。 */
+/** Demo: sn-code-input — shape='box' 方框（默认）与 shape='underline' 下划线两种格子形状。 */
 import { ref } from 'vue';
-import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-password-input.vue';
+import SnCodeInput from '@snui/uni-src/components/sn-code-input/sn-code-input.vue';
 
 const box = ref('12');
 const line = ref('34');
@@ -9,8 +9,8 @@ const line = ref('34');
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPasswordInput v-model="box" :length="4" shape="box" info="方框（默认）" />
-    <SnPasswordInput v-model="line" :length="4" shape="underline" info="下划线" />
+    <SnCodeInput v-model="box" :length="4" shape="box" info="方框（默认）" />
+    <SnCodeInput v-model="line" :length="4" shape="underline" info="下划线" />
     <text class="sn-demo__meta">shape='box' | 'underline'，聚焦 / 错误态边色自动跟随</text>
   </view>
 </template>

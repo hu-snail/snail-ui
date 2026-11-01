@@ -285,6 +285,13 @@
           }
         },
         {
+          "path": "code-input",
+          "style": {
+            "navigationBarTitleText": "验证码输入框",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "date-strip",
           "style": {
             "navigationBarTitleText": "日期条",
@@ -338,13 +345,6 @@
           "path": "keyboard-panel",
           "style": {
             "navigationBarTitleText": "键盘面板",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "password-input",
-          "style": {
-            "navigationBarTitleText": "密码输入框",
             "navigationStyle": "custom"
           }
         }
