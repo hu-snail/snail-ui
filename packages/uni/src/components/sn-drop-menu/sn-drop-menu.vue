@@ -62,10 +62,11 @@
  *
  * ## Direction
  *
- * `direction` was already declared for parity; the up leg now anchors the
- * scrim to the bar's top edge (`bottom: 100%`) instead of leaving it below the
- * bar (where it covered nothing while the panel opened upwards), and the bar
- * arrow rests pointing up so the glyph always reads "what a tap does next".
+ * `direction` was already declared for parity; the up leg anchors the panel
+ * to the bar's top edge and the bar arrow rests pointing up so the glyph
+ * always reads "what a tap does next". The scrim is a full-viewport fixed
+ * layer in both directions (it used to be an absolute block inside the bar
+ * width — a dark rectangle mid-page in real layouts).
  *
  * ## Option icons (additive, AUI-OPT-16, AGENTS.md §112.3a)
  *
@@ -119,9 +120,11 @@ defineOptions({ name: 'SnDropMenu' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
-onMounted(() => registerOutsideClosable(instanceId, () => {
-  if (isOpen.value) void close();
-}));
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    if (isOpen.value) void close();
+  }),
+);
 onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Menu expansion direction. Mirrors `wd-drop-menu` `direction`. */
@@ -682,26 +685,21 @@ const popupStyle = computed(() => {
 
 /* ── Scrim ─────────────────────────────────────────────────────────────── */
 
-/* Anchored to the edge the panel opens away from, so it always covers the
- * page behind the list: below the bar for `down`, above it for `up` (an
- * upward panel used to leave the scrim parked underneath the bar, where it
- * dimmed nothing the user could see). */
+/* Full-viewport fixed layer, the wd read: a filter bar sits in a scrolling
+ * page, so an absolutely positioned scrim would only span the menu bar's
+ * width and park a dark block mid-page (reproduced in the demo H5 build).
+ * The scrim follows the panel's stacking context (the raised root), still
+ * under dialogs and toasts. It sits after the bar in DOM order, so tapping
+ * the covered bar area hits the scrim first — the close-on-outside read. */
 .sn-drop-menu__modal {
-  position: absolute;
-  left: 0;
+  position: fixed;
+  top: 0;
   right: 0;
-  height: 200vh;
+  bottom: 0;
+  left: 0;
   background-color: var(--sn-mp-color-background-overlay);
   opacity: 0;
   transition: opacity var(--sn-drop-menu-duration) ease;
-}
-
-.sn-drop-menu--down .sn-drop-menu__modal {
-  top: 100%;
-}
-
-.sn-drop-menu--up .sn-drop-menu__modal {
-  bottom: 100%;
 }
 
 .sn-drop-menu--open .sn-drop-menu__modal {

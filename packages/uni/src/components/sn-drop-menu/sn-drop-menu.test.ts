@@ -18,6 +18,8 @@
  * No `rpx` values in assertions — happy-dom drops lengths it cannot parse.
  */
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, it, expect, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnDropMenu from './sn-drop-menu.vue';
@@ -421,6 +423,21 @@ describe('sn-drop-menu', () => {
       await w.find('.sn-drop-menu__modal').trigger('tap');
       await flushPromises();
       expect(w.emitted('close')).toHaveLength(1);
+    });
+
+    /* The scrim used to be an absolute block inside the menu bar's width — a
+     * dark rectangle parked mid-page in any real scrolling layout (reproduced
+     * in the demo H5 build). happy-dom discards stylesheets, so the geometry
+     * invariant is pinned on the source text like sn-pagination's cascade
+     * guard: the scrim must be a fixed full-viewport layer. */
+    it('pins the scrim as a full-viewport fixed layer (source invariant)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-drop-menu.vue'), 'utf8');
+      const rule = source.indexOf('.sn-drop-menu__modal {');
+      expect(rule).toBeGreaterThan(-1);
+      expect(source.slice(rule)).toMatch(
+        /\.sn-drop-menu__modal \{[^}]*position: fixed;[^}]*top: 0;[^}]*bottom: 0;[^}]*left: 0;/,
+      );
+      expect(source).not.toMatch(/\.sn-drop-menu__modal \{[^}]*position: absolute/);
     });
 
     it('keeps the menu open on a scrim tap when closeOnClickModal is false', async () => {
