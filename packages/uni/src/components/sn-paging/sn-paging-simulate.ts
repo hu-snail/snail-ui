@@ -17,13 +17,17 @@
  *
  * ## Pull physics (rubber band)
  *
- * Incremental damping, mirroring the z-paging refresher contract:
- * every gesture delta scales by `PULL_RATE` (0.75) while the pull is below
- * the arming threshold; past the threshold each delta keeps only
- * `1 - OUT_RATE` (0.35) of itself, and a single-event finger jump is capped —
- * so the pull chases the finger, then resists, then stops: the rubber band.
- * The total pull is clamped to `MAX_PULL_RATIO × threshold` so one hard yank
- * can never run away.
+ * Incremental damping mirroring the z-paging refresher contract, with a
+ * *progressive* out-of-zone rate: below the arming threshold every gesture
+ * delta keeps `PULL_RATE` (0.75); past the threshold each delta keeps
+ * `1 - OUT_RATE`, where OUT_RATE itself grows linearly with the pull —
+ * `currentDis / maxPull` — so the band stiffens as it stretches (the classic
+ * rubber band: chases the finger, resists, then locks up) instead of fading
+ * at a constant 0.35. A single-event finger jump stays capped, and the total
+ * pull is hard-clamped to `maxPull` so one yank can never run away.
+ *
+ * `maxPull` comes from the host: `refresherMaxDistance` when set, otherwise
+ * `refresherThreshold × MAX_PULL_RATIO` (the legacy 3× behaviour).
  *
  * Reports are coalesced through `requestAnimationFrame` and rounded to whole
  * pixels — at most one style write per frame, and the component renders the
@@ -40,6 +44,10 @@ export interface BrowserPagingGestureOptions {
   isRefresherEnabled: () => boolean;
   /** Arming pull distance in px (prop-driven). */
   refresherThreshold: () => number;
+  /** Hard pull clamp in px (0/negative = `refresherThreshold × MAX_PULL_RATIO`). */
+  refresherMaxDistance: () => number;
+  /** Base share REMOVED from each delta just past the threshold (0..1). */
+  refresherOutRate: () => number;
   /** Whether the second floor is armed on release (prop-driven). */
   isSecondFloorEnabled: () => boolean;
   /** Release distance that enters the second floor, in px (prop-driven). */
@@ -60,14 +68,12 @@ export interface BrowserPagingGestureOptions {
 
 /** Share of each gesture delta kept while below the arming threshold. */
 const PULL_RATE = 0.75;
-/** Share REMOVED from each delta once past the arming threshold. */
-const OUT_RATE = 0.65;
 /** Cap for one event's finger jump — a sudden yank must not teleport the pull. */
 const DELTA_CAP_PX = 100;
 /**
- * Total pull clamp, as a multiple of the arming threshold. Kept generous so
- * the second-floor zone (default 100px vs a 45px threshold) stays comfortably
- * reachable inside the rubber band.
+ * Total pull clamp multiplier used when `refresherMaxDistance` is not set.
+ * Kept generous so the second-floor zone (default 100px vs a 45px threshold)
+ * stays comfortably reachable inside the rubber band.
  */
 export const MAX_PULL_RATIO = 3;
 
@@ -111,6 +117,13 @@ export function createBrowserPagingGesture(
     }
   };
 
+  /** Effective hard clamp: explicit max distance, else the legacy ratio. */
+  const maxPullOf = (): number => {
+    const explicit = options.refresherMaxDistance();
+    if (explicit > 0) return explicit;
+    return options.refresherThreshold() * MAX_PULL_RATIO;
+  };
+
   const onTouchStart = (event: TouchEvent): void => {
     const touch = event.touches[0];
     if (!touch) return;
@@ -128,9 +141,21 @@ export function createBrowserPagingGesture(
     lastRawY = rawY;
     if (delta > 0) {
       if (delta > DELTA_CAP_PX) delta = DELTA_CAP_PX;
-      delta *= currentDis >= options.refresherThreshold() ? 1 - OUT_RATE : PULL_RATE;
+      const maxPull = maxPullOf();
+      if (currentDis >= options.refresherThreshold()) {
+        // Progressive rubber band: the deeper the pull, the larger the share
+        // removed from each new delta (outRate at the threshold → 1 at the
+        // clamp). Keeps the visible band from ever feeling weightless.
+        const progress =
+          (currentDis - options.refresherThreshold()) /
+          Math.max(maxPull - options.refresherThreshold(), 1);
+        const outRate = Math.min(1, Math.max(options.refresherOutRate(), progress));
+        delta *= 1 - outRate;
+      } else {
+        delta *= PULL_RATE;
+      }
     }
-    const maxPull = options.refresherThreshold() * MAX_PULL_RATIO;
+    const maxPull = maxPullOf();
     currentDis = Math.max(0, Math.min(currentDis + delta, maxPull));
     scheduleReport();
     if (currentDis > 0 && event.cancelable) event.preventDefault();

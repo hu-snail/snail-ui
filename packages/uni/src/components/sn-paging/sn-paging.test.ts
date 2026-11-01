@@ -65,6 +65,17 @@ function bodyStyleAttr(wrapper: ReturnType<typeof mount>): string {
   return wrapper.find('.sn-paging__body').attributes('style') ?? '';
 }
 
+/**
+ * Live pull distance from the reveal-box transform on a browser host:
+ * `translateY(pull - maxPull)` on the refresher strip; negative while idle.
+ */
+function pullDistanceOf(wrapper: ReturnType<typeof mount>): number {
+  const style = refresherStyleAttr(wrapper);
+  const match = /translateY\((-?\d+(?:\.\d+)?)px\)/.exec(style);
+  if (match === null) return 0;
+  return Math.round(Number(match[1]) + MAX_PULL);
+}
+
 /** Simulate a drag: start, a series of moves (raw clientY), end/cancel. */
 async function drag(
   wrapper: ReturnType<typeof mount>,
@@ -432,6 +443,73 @@ describe('sn-paging', () => {
       expect(queryCalls(wrapper)).toHaveLength(1);
     });
 
+    it('refresherMaxDistance clamps the browser pull tighter than the 3x legacy', async () => {
+      // maxPull = 90: a 600px yank (delta capped at 100, kept at 0.75 in-zone
+      // then progressively damped) can never exceed the 90px clamp.
+      const { wrapper } = mountPaging({
+        auto: false,
+        refresherMaxDistance: 90,
+        refresherThreshold: 45,
+      });
+      await drag(wrapper, [300, 900]);
+      await flush();
+      // 90 < MAX_PULL(135): the reveal box geometry follows the prop — the
+      // box is 90px tall and, while the refresh holds the strip, parks at
+      // translateY(HOLD_PX − maxPull) = −40.
+      expect(refresherStyleAttr(wrapper)).toContain('height: 90px');
+      expect(refresherStyleAttr(wrapper)).toContain(`translateY(${HOLD_PX - 90}px)`);
+      // Releasing past the 45px threshold still arms the refresh.
+      expect(queryCalls(wrapper)).toEqual([[1, 10]]);
+    });
+
+    it('the browser band stiffens progressively past the threshold', async () => {
+      // Two equal 100px capped jumps from 0: the first (in-zone, 0.75) lands
+      // at 75; the second crosses the threshold and is damped by the band —
+      // strictly less than the legacy constant 0.35 share would give, and
+      // monotonically less as the pull approaches the clamp.
+      const { wrapper } = mountPaging({ auto: false });
+      const scroller = wrapper.find('scroll-view');
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await scroller.trigger('touchmove', { touches: [{ clientY: 400 }] });
+      await frame();
+      const first = pullDistanceOf(wrapper);
+      await scroller.trigger('touchmove', { touches: [{ clientY: 500 }] });
+      await frame();
+      const second = pullDistanceOf(wrapper);
+      await scroller.trigger('touchmove', { touches: [{ clientY: 600 }] });
+      await frame();
+      const third = pullDistanceOf(wrapper);
+      // First jump: 100 × 0.75 = 75 (in-zone rate untouched).
+      expect(first).toBe(75);
+      // Second jump crosses the 45px threshold at band progress 1/3: the
+      // base outRate (0.65) still dominates → 75 + 35 = 110, the legacy
+      // share as the floor.
+      expect(second).toBe(110);
+      // Third jump at band progress ~0.72: outRate = max(0.65, 0.72) = 0.72
+      // → 110 + 28 = 138 → clamped at 135. The added share (28) is strictly
+      // below the constant 0.35 share (35) — the stiffening IS the band.
+      expect(third).toBe(135);
+      await scroller.trigger('touchend');
+    });
+
+    it('refresherOutRate=1 locks the band right past the threshold', async () => {
+      const { wrapper } = mountPaging({ auto: false, refresherOutRate: 1 });
+      // 80px travel → 60px pull in-zone; every further delta keeps nothing.
+      const scroller = wrapper.find('scroll-view');
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await scroller.trigger('touchmove', { touches: [{ clientY: 380 }] });
+      await frame();
+      const first = pullDistanceOf(wrapper);
+      await scroller.trigger('touchmove', { touches: [{ clientY: 900 }] });
+      await frame();
+      const second = pullDistanceOf(wrapper);
+      expect(first).toBe(60);
+      // 60 ≥ threshold(45): the next 500px yank is fully absorbed (delta
+      // capped at 100 anyway) and the pull cannot pass 60 + ε.
+      expect(second).toBeLessThanOrEqual(61);
+      await scroller.trigger('touchend');
+    });
+
     it('scrolling near the bottom loads the next page', async () => {
       const { wrapper } = mountPaging();
       wrapper.vm.completeByTotal(['a', 'b'], 30);
@@ -479,71 +557,71 @@ describe('sn-paging', () => {
   });
 
   describe('second floor', () => {
-  /** Mount without the auto query so pull events reach the handler. */
-  function mountIdle(props: Record<string, unknown> = {}) {
-    return mountPaging({ auto: false, ...props });
-  }
+    /** Mount without the auto query so pull events reach the handler. */
+    function mountIdle(props: Record<string, unknown> = {}) {
+      return mountPaging({ auto: false, ...props });
+    }
 
-  it('a native pull past the threshold arms the second-floor state', async () => {
-    const { wrapper } = mountIdle({ secondFloorEnabled: true });
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
-    await flush();
-    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
-  });
+    it('a native pull past the threshold arms the second-floor state', async () => {
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+    });
 
-  it('releasing in the zone opens the overlay instead of querying', async () => {
-    vi.useFakeTimers();
-    const { wrapper } = mountIdle({ secondFloorEnabled: true });
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
-    await wrapper.find('scroll-view').trigger('refresherrefresh');
-    await flush();
-    // The interception IS the contract: no refresh query may fire. The
-    // triggered hold is adopted and dropped again within one tick so the
-    // native pull restores instead of staying locked.
-    expect(queryCalls(wrapper)).toHaveLength(0);
-    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
-    expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
-    expect(wrapper.emitted('secondFloorChange')).toEqual([['go']]);
-    expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-100%)');
+    it('releasing in the zone opens the overlay instead of querying', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+      await wrapper.find('scroll-view').trigger('refresherrefresh');
+      await flush();
+      // The interception IS the contract: no refresh query may fire. The
+      // triggered hold is adopted and dropped again within one tick so the
+      // native pull restores instead of staying locked.
+      expect(queryCalls(wrapper)).toHaveLength(0);
+      expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go']]);
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-100%)');
 
-    vi.advanceTimersByTime(100);
-    await flush();
-    expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
-    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
-  });
+      vi.advanceTimersByTime(100);
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+      expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+    });
 
-  it('the uni-h5 release echo cannot cancel the armed second floor', async () => {
-    vi.useFakeTimers();
-    const { wrapper } = mountIdle({ secondFloorEnabled: true });
-    // uni-h5 synthesizes a final `refresherpulling` with dy === threshold
-    // right before `refresherrefresh` — the arming latch must survive it.
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 45 } });
-    await flush();
-    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+    it('the uni-h5 release echo cannot cancel the armed second floor', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      // uni-h5 synthesizes a final `refresherpulling` with dy === threshold
+      // right before `refresherrefresh` — the arming latch must survive it.
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 45 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
 
-    await wrapper.find('scroll-view').trigger('refresherrefresh');
-    await flush();
-    expect(queryCalls(wrapper)).toHaveLength(0);
-    expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
-  });
+      await wrapper.find('scroll-view').trigger('refresherrefresh');
+      await flush();
+      expect(queryCalls(wrapper)).toHaveLength(0);
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(true);
+    });
 
-  it('pulling back below the threshold de-arms the second floor', async () => {
-    const { wrapper } = mountIdle({ secondFloorEnabled: true });
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
-    await flush();
-    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
+    it('pulling back below the threshold de-arms the second floor', async () => {
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开进入二楼');
 
-    // The user actively pulls the gesture back down — the latch clears.
-    await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 20 } });
-    await flush();
-    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('继续下拉刷新');
+      // The user actively pulls the gesture back down — the latch clears.
+      await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 20 } });
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('继续下拉刷新');
 
-    await wrapper.find('scroll-view').trigger('refresherabort');
-    await flush();
-    expect(queryCalls(wrapper)).toHaveLength(0);
-    expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
-  });
+      await wrapper.find('scroll-view').trigger('refresherabort');
+      await flush();
+      expect(queryCalls(wrapper)).toHaveLength(0);
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
+    });
 
     it('renders the second-floor slot inside a scroll area', async () => {
       vi.useFakeTimers();

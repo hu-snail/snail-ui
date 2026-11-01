@@ -65,7 +65,15 @@
  *   - 虚拟列表 / use-page-scroll 模式 — 登记为后续任务
  */
 
-import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  type ComponentPublicInstance,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
 import type { LoadingType } from '../sn-loading/sn-loading-types';
@@ -81,6 +89,21 @@ defineOptions({ name: 'SnPaging' });
  */
 const isBrowserHost =
   typeof document !== 'undefined' && typeof (globalThis as { uni?: unknown }).uni === 'undefined';
+
+/**
+ * uni-h5 host (real uni runtime on a browser platform): the scroll-view IS
+ * the uni-h5 implementation with its native refresher — whose pull tracks
+ * the raw finger distance with no damping and no clamp. This is the only
+ * host where the native-refresher takeover (see `paintNativePull`) applies;
+ * MP / App own their refresher natively, plain-browser hosts use the
+ * simulate fallback.
+ */
+const isUniH5Host = !isBrowserHost && typeof document !== 'undefined';
+
+/** Share of each gesture delta kept while below the arming threshold. */
+const PULL_RATE = 0.75;
+/** Cap for one event's finger jump — a sudden yank must not teleport the pull. */
+const DELTA_CAP_PX = 100;
 
 /** Visible refresher strip while refreshing, in px (100rpx at 750→375). */
 const REFRESHER_HEIGHT_PX = 50;
@@ -138,6 +161,18 @@ const props = withDefaults(
     refresherIconColor?: string;
     /** Refresher loading-spinner shape (`sn-loading` `type`). */
     refresherLoadingType?: LoadingType;
+    /**
+     * Hard pull clamp in px (z-paging `movingDistance`, additive).
+     * `0` = `refresherThreshold × 3` (legacy behaviour).
+     */
+    refresherMaxDistance?: number;
+    /**
+     * Base share removed from each gesture delta once the pull passes the
+     * arming threshold, 0..1 (additive). The band stiffens progressively to
+     * full stop at the clamp; a higher value feels firmer, a lower one more
+     * elastic. 0.65 keeps the legacy constant-damping feel as the floor.
+     */
+    refresherOutRate?: number;
     /* ── second floor (z-paging refresherF2 subset) ──────────────────── */
 
     /** Enable pull-down-to-enter second floor. */
@@ -195,6 +230,8 @@ const props = withDefaults(
     refresherTextColor: '',
     refresherIconColor: '',
     refresherLoadingType: 'circular',
+    refresherMaxDistance: 0,
+    refresherOutRate: 0.65,
     secondFloorEnabled: false,
     secondFloorThreshold: 100,
     secondFloorDuration: 200,
@@ -293,9 +330,19 @@ let secondFloorArmed = false;
 /** Whether scroll-to-bottom loads the next page. */
 const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
 
-/** Browser-only reveal-box height: fixed tall box the pull translates in. */
+/**
+ * Browser-only reveal-box height: fixed tall box the pull translates in.
+ * `refresherMaxDistance` (0 = legacy `threshold × 3`) sets the hard clamp;
+ * always at least the visible hold strip + a small margin so the strip can
+ * fully reveal.
+ */
 const maxPullPx = computed(() =>
-  Math.max(props.refresherThreshold * MAX_PULL_RATIO, REFRESHER_HEIGHT_PX + 10),
+  Math.max(
+    props.refresherMaxDistance > 0
+      ? props.refresherMaxDistance
+      : props.refresherThreshold * MAX_PULL_RATIO,
+    REFRESHER_HEIGHT_PX + 10,
+  ),
 );
 
 const refresherText = computed(() => {
@@ -372,7 +419,11 @@ const ARM_TRANSITION = 'transform 0.2s ease-out';
 const refresherStyle = computed(() => {
   if (!isBrowserHost) return undefined;
   const max = maxPullPx.value;
-  const visible = isDraggingPhase.value ? pullDistance.value : isHoldPhase.value ? REFRESHER_HEIGHT_PX : 0;
+  const visible = isDraggingPhase.value
+    ? pullDistance.value
+    : isHoldPhase.value
+      ? REFRESHER_HEIGHT_PX
+      : 0;
   const transition = isDraggingPhase.value
     ? DRAG_TRANSITION
     : isHoldPhase.value
@@ -563,7 +614,15 @@ function updateSecondFloorArm(pull: number): void {
 
 function onRefresherPulling(event: { detail?: { dy?: number } }): void {
   if (refresherTriggered.value || isLoading.value) return;
-  const dy = Math.max(0, event.detail?.dy ?? 0);
+  const rawDy = Math.max(0, event.detail?.dy ?? 0);
+  /* uni-h5 takeover: the native refresher tracks the RAW finger distance
+   * (no damping, no clamp — its `refresherHeight = y - startY` line). We
+   * keep the native pull for the first strip-height of travel (platform
+   * look) and run the damped rubber band on top: the reported pull drives
+   * the phase machine exactly as before, and `paintNativePull` rewrites the
+   * native strip height to the damped value so the band visibly stiffens.
+   * MP keeps its fully native refresher (platform-owned feel). */
+  const dy = dampNativePull(rawDy);
   updateSecondFloorArm(dy);
   refresherPhase.value =
     props.secondFloorEnabled && (secondFloorArmed || dy >= props.secondFloorThreshold)
@@ -571,6 +630,127 @@ function onRefresherPulling(event: { detail?: { dy?: number } }): void {
       : dy >= props.refresherThreshold
         ? 'ready'
         : 'pulling';
+}
+
+/* ── uni-h5 native-refresher takeover (damped rubber band) ─────────────── */
+
+/**
+ * Per-pull incremental damp state. `lastRaw` tracks the raw finger distance
+ * of the previous pulling event so each event only damps its own delta
+ * (z-paging incremental damping), `dis` is the damped pull reported to the
+ * phase machine, and `nativeTouched` records whether the native strip is
+ * currently overridden so release/refresh can hand it back.
+ */
+let nativePullLastRaw = 0;
+let nativePullDis = 0;
+let nativePullActive = false;
+
+/** Effective hard clamp in px for the current props. */
+function maxPullOf(): number {
+  const explicit = props.refresherMaxDistance;
+  if (explicit > 0) return explicit;
+  return props.refresherThreshold * MAX_PULL_RATIO;
+}
+
+/**
+ * Damp one raw pulling report and repaint the native strip. Returns the
+ * damped distance for the phase machine. Below the visible hold strip the
+ * native pull runs untouched (the platform's first 50px look); past it the
+ * incremental rubber band takes over: each delta keeps `1 - outRate`, where
+ * `outRate` grows from `refresherOutRate` toward 1 as the pull approaches
+ * the clamp, so the band chases the finger, resists, then locks up.
+ */
+function dampNativePull(rawDy: number): number {
+  if (!isUniH5Host) {
+    /* MP / App and the test/browser hosts: the pulling `dy` comes from the
+     * native refresher contract, where the platform gesture has already
+     * applied its own damping. Pass it straight through — the takeover
+     * below is uni-h5-only (that is the one host whose native refresher
+     * tracks the raw finger distance with no damping and no clamp). */
+    return rawDy;
+  }
+  const hold = REFRESHER_HEIGHT_PX;
+  if (rawDy <= hold) {
+    /* First strip-height: native territory. Reset the band state so a
+     * re-pull after release starts the damping from the strip again. */
+    nativePullLastRaw = rawDy;
+    nativePullDis = rawDy;
+    nativePullActive = false;
+    return rawDy;
+  }
+  if (!nativePullActive) {
+    /* Entering the band zone: the previous raw distance is the strip. */
+    nativePullActive = true;
+    nativePullLastRaw = hold;
+    nativePullDis = hold;
+  }
+  const maxPull = Math.max(maxPullOf(), hold);
+  nativePullDis = dampRaw(rawDy);
+  /* Never advertise a pull past the clamp (keeps thresholds honest). */
+  nativePullDis = Math.min(nativePullDis, maxPull);
+  paintNativePull(Math.round(nativePullDis), maxPull);
+  return nativePullDis;
+}
+
+/**
+ * Incremental damping for the uni-h5 takeover. In-zone deltas keep
+ * PULL_RATE; past the threshold the kept share shrinks linearly toward zero
+ * as the pull approaches the clamp (progressive rubber band). The session
+ * state (last raw distance + damped distance) lives in the module lets above.
+ */
+function dampRaw(rawDy: number): number {
+  const threshold = props.refresherThreshold;
+  const maxPull = Math.max(maxPullOf(), threshold);
+  let delta = rawDy - nativePullLastRaw;
+  if (delta < 0) delta = 0;
+  if (delta > DELTA_CAP_PX) delta = DELTA_CAP_PX;
+  let next: number;
+  if (nativePullDis < threshold) {
+    next = nativePullDis + delta * PULL_RATE;
+  } else {
+    const progress = (nativePullDis - threshold) / Math.max(maxPull - threshold, 1);
+    const outRate = Math.min(1, Math.max(props.refresherOutRate, progress));
+    next = nativePullDis + delta * (1 - outRate);
+  }
+  nativePullLastRaw = rawDy;
+  return Math.round(Math.min(Math.max(next, 0), maxPull));
+}
+
+/**
+ * Scroll-view host element for the native-refresher repaint. On uni-h5 the
+ * template ref is the component instance — the strip lives under its root
+ * element; on plain-browser hosts the ref is the element itself.
+ */
+function nativeScrollRoot(): HTMLElement | null {
+  const target = scrollEl.value;
+  if (target === null) return null;
+  if (target instanceof HTMLElement) return target;
+  const el = (target as { $el?: unknown }).$el;
+  return el instanceof HTMLElement ? el : null;
+}
+
+/**
+ * Rewrite the native refresher strip height on uni-h5. The strip node is
+ * looked up defensively (`uni-scroll-view-refresher` is a uni-h5 internal
+ * class); a miss silently skips the repaint and the native raw-distance
+ * behaviour returns — the takeover is a pure visual enhancement.
+ */
+function paintNativePull(pull: number, maxPull: number): void {
+  const root = nativeScrollRoot();
+  if (root === null) return;
+  const strip = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  if (!strip) return;
+  /* The clamp rides `max-height`, NOT `height`: uni-h5's render pass
+   * rewrites the strip `height` to the raw finger distance on every pulling
+   * event (its `refresherHeight` state), and a Vue patchStyle
+   * `setProperty` on the same property replaces an inline `!important`
+   * declaration. `max-height` is a different property — uni-h5 never
+   * writes it, so our clamp survives every patch, and the effective strip
+   * height (what the content below is laid out against) is exactly the
+   * damped pull. `resetNativePull` removes it when the gesture settles. */
+  strip.style.setProperty('max-height', `${Math.round(pull)}px`, 'important');
+  strip.style.setProperty('overflow', 'hidden', 'important');
+  void maxPull;
 }
 
 function onRefresherRefresh(): void {
@@ -605,7 +785,28 @@ function onRefresherRefresh(): void {
 
 function onRefresherSettled(): void {
   secondFloorArmed = false;
+  resetNativePull();
   if (!refresherTriggered.value) refresherPhase.value = 'idle';
+}
+
+/**
+ * Hand the native refresher strip back: clear the takeover's inline
+ * height/transform overrides so uni-h5's own state machine repaints the
+ * strip (hold at threshold while refreshing, 0 on restore), and reset the
+ * incremental band session. A no-op when the takeover never painted.
+ */
+function resetNativePull(): void {
+  nativePullLastRaw = 0;
+  nativePullDis = 0;
+  nativePullActive = false;
+  if (!isUniH5Host) return;
+  const root = nativeScrollRoot();
+  if (root === null) return;
+  const strip = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  if (strip) {
+    strip.style.removeProperty('max-height');
+    strip.style.removeProperty('overflow');
+  }
 }
 
 function onScrollToLower(): void {
@@ -844,6 +1045,8 @@ onMounted(() => {
   disposeGesture = createBrowserPagingGesture(el, {
     isRefresherEnabled: () => props.refresherEnabled,
     refresherThreshold: () => props.refresherThreshold,
+    refresherMaxDistance: () => props.refresherMaxDistance,
+    refresherOutRate: () => props.refresherOutRate,
     isSecondFloorEnabled: () => props.secondFloorEnabled,
     secondFloorThreshold: () => props.secondFloorThreshold,
     lowerThreshold: () => props.lowerThreshold,
@@ -881,7 +1084,7 @@ defineExpose({
     data-snui-component="paging"
   >
     <!-- Unconditional fixed wrappers: with no slot content they collapse to
-     * zero height, and `$slots` lookups stay out of the template (§116). -->
+      * zero height, and `$slots` lookups stay out of the template (§116). -->
     <view class="sn-paging__fixed sn-paging__fixed--top">
       <slot name="top" />
     </view>
