@@ -394,6 +394,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         count: 6,
       },
       {
+        key: 'keyboard-panel',
+        group: 'form',
+        title: '键盘面板',
+        titleEn: 'Keyboard Panel',
+        desc: '内嵌键盘视图',
+        count: 1,
+      },
+      {
         key: 'password-input',
         group: 'form',
         title: '密码输入框',
@@ -849,7 +857,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: 'paging',
         titleEn: 'Paging',
         desc: '',
-        count: 4,
+        count: 5,
       },
     ],
   },

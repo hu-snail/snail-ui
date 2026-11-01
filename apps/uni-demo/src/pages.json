@@ -291,6 +291,12 @@
           }
         },
         {
+          "path": "keyboard-panel",
+          "style": {
+            "navigationBarTitleText": "键盘面板"
+          }
+        },
+        {
           "path": "password-input",
           "style": {
             "navigationBarTitleText": "密码输入框"

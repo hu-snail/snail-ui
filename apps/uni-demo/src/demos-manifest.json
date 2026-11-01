@@ -1540,6 +1540,19 @@
         }
       ]
     },
+    "keyboard-panel": {
+      "group": "form",
+      "title": "键盘面板",
+      "desc": "内嵌键盘视图",
+      "page": "pages/form/keyboard-panel",
+      "demos": [
+        {
+          "name": "keyboard-panel-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        }
+      ]
+    },
     "password-input": {
       "group": "form",
       "title": "密码输入框",
@@ -2957,6 +2970,11 @@
         {
           "name": "paging-mp-scroll",
           "title": "滚动",
+          "hasEn": true
+        },
+        {
+          "name": "paging-mp-second-floor",
+          "title": "second-floor",
           "hasEn": true
         },
         {

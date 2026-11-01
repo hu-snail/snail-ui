@@ -62,6 +62,14 @@ import {
   ChevronDown as ChevronDownIcon,
   Keyboard as KeyboardCollapseIcon,
 } from '../sn-icon/sn-icon-set';
+import {
+  COLLAPSE_KEY,
+  DELETE_VALUE,
+  KEY_PRESSED,
+  buildCarRows,
+  buildDigitRows,
+  createDeleteHold,
+} from './sn-keyboard-keys';
 import type { CarKeyboardLang, KeyboardKey, KeyboardMode } from './sn-keyboard-types';
 
 defineOptions({ name: 'SnKeyboard' });
@@ -153,18 +161,6 @@ const emit = defineEmits<{
 
 /* ── Key data ──────────────────────────────────────────────────────────── */
 
-const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-/**
- * Bottom-row slot key when no `extraKey` fills it — the collapse-to-system
- * glyph. Tapping it closes the panel (same contract as the header close
- * button); wd-keyboard renders the same key for an empty extra slot.
- */
-const COLLAPSE_KEY: KeyboardKey = { text: '', value: '__collapse__' };
-
-/** Press-feedback class applied through uni `hover-class` (§116.2). */
-const KEY_PRESSED = 'sn-keyboard__key--pressed';
-
 /** Extra keys normalized to an array. */
 const extraKeys = computed<string[]>(() => {
   const value = props.extraKey;
@@ -173,149 +169,17 @@ const extraKeys = computed<string[]>(() => {
 });
 
 /** Digit rows for the default / custom layouts (3 columns). */
-const digitRows = computed<KeyboardKey[][]>(() => {
-  let digits = [...DIGITS];
-  if (props.randomKeyOrder) digits = shuffle(digits);
-  const extra = extraKeys.value;
-  // wd-keyboard contract: one extra-key slot in the default grid, two in the
-  // custom layout (which has the wider bottom row beside the action column).
-  // Custom mode keeps three slots so the bottom row stays on the 3-column
-  // grid — delete lives in the action column there, not under the grid.
-  //
-  // An unsupplied slot renders the collapse glyph (close action) instead of
-  // leaving a hole in the sheet — the reference keypads never show one, and
-  // `0` keeps its natural single-column width.
-  const slotCount = props.mode === 'custom' ? 2 : 1;
-  const slots = Array.from({ length: slotCount }, (_, index) => extra[index] ?? '');
-  // Delete lives under the grid in default mode only; custom mode keeps it in
-  // the action column.
-  const hasDelete = props.mode !== 'custom' && props.showDeleteKey;
-  const bottom: KeyboardKey[] = slots.map((slot) =>
-    slot === '' ? COLLAPSE_KEY : { text: slot, value: slot },
-  );
-  bottom.push({
-    text: '0',
-    value: '0',
-    // Fill every column the row did not consume — a bare hole is never right.
-    span: 3 - bottom.length - (hasDelete ? 1 : 0),
-  });
-  if (hasDelete) bottom.push({ text: '', value: '__delete__' });
-  const rows: KeyboardKey[][] = [];
-  for (let i = 0; i < digits.length; i += 3) {
-    rows.push(digits.slice(i, i + 3).map((digit) => ({ text: digit, value: digit })));
-  }
-  rows.push(bottom);
-  return rows;
-});
+const digitRows = computed<KeyboardKey[][]>(() =>
+  buildDigitRows({
+    mode: props.mode,
+    extraKeys: extraKeys.value,
+    showDeleteKey: props.showDeleteKey,
+    randomKeyOrder: props.randomKeyOrder,
+  }),
+);
 
-/** Deterministic Fisher-Yates — the seed is the render index, not Math.random. */
-function shuffle(items: string[]): string[] {
-  const list = [...items];
-  for (let i = list.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(((i + 1) * 7919) % (i + 1));
-    const a = list[i];
-    const b = list[j];
-    if (a !== undefined && b !== undefined) {
-      list[i] = b;
-      list[j] = a;
-    }
-  }
-  return list;
-}
-
-/** Car-plate keys per language. */
-const CAR_ZH = [
-  '京',
-  '沪',
-  '粤',
-  '津',
-  '冀',
-  '晋',
-  '蒙',
-  '辽',
-  '吉',
-  '黑',
-  '苏',
-  '浙',
-  '皖',
-  '闽',
-  '赣',
-  '鲁',
-  '豫',
-  '鄂',
-  '湘',
-  '桂',
-  '琼',
-  '川',
-  '贵',
-  '云',
-  '陕',
-  '甘',
-  '青',
-  '宁',
-  '新',
-  '渝',
-  '藏',
-  '使',
-  '领',
-  '警',
-  '学',
-  '港',
-  '澳',
-];
-const CAR_EN = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '0',
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
-];
-
-/** Keys per car-plate row — the 37 province keys fill 10 / 10 / 10 / 7. */
-const CAR_COLUMNS = 10;
-
-const carKeys = computed<string[]>(() => (props.carLang === 'zh' ? CAR_ZH : CAR_EN));
-
-/** Car keys chunked into rows of `CAR_COLUMNS` (see layout notes above). */
-const carRows = computed<string[][]>(() => {
-  const keys = carKeys.value;
-  const rows: string[][] = [];
-  for (let i = 0; i < keys.length; i += CAR_COLUMNS) {
-    rows.push(keys.slice(i, i + CAR_COLUMNS));
-  }
-  return rows;
-});
+/** Car-plate rows for the current language (10 keys per row). */
+const carRows = computed<string[][]>(() => buildCarRows(props.carLang));
 
 const rootClass = computed(() =>
   [
@@ -355,11 +219,11 @@ function writeValue(next: string): void {
 }
 
 function onKeyTap(key: KeyboardKey): void {
-  if (key.value === '__delete__') {
+  if (key.value === DELETE_VALUE) {
     onDeleteTap();
     return;
   }
-  if (key.value === '__collapse__') {
+  if (key.value === COLLAPSE_KEY.value) {
     close();
     return;
   }
@@ -367,12 +231,6 @@ function onKeyTap(key: KeyboardKey): void {
   if (props.modelValue.length >= props.maxlength) return;
   emit('input', key.value);
   writeValue(props.modelValue + key.value);
-}
-
-function onDelete(): void {
-  if (props.modelValue.length === 0) return;
-  emit('delete');
-  writeValue(props.modelValue.slice(0, -1));
 }
 
 function onScrimTap(): void {
@@ -388,68 +246,40 @@ function onTouchMove(event: Event): void {
 
 /* ── Delete key: hold to repeat ────────────────────────────────────────── */
 
-const REPEAT_DELAY = 420;
-const REPEAT_INTERVAL = 70;
-
-let holdDelayTimer: ReturnType<typeof setTimeout> | null = null;
-let holdTickTimer: ReturnType<typeof setInterval> | null = null;
-/** True once the hold loop already deleted — swallows the trailing `tap`. */
-let holdConsumed = false;
-
-function clearHold(): void {
-  if (holdDelayTimer !== null) {
-    clearTimeout(holdDelayTimer);
-    holdDelayTimer = null;
-  }
-  if (holdTickTimer !== null) {
-    clearInterval(holdTickTimer);
-    holdTickTimer = null;
-  }
-}
-
-function startHold(): void {
-  clearHold();
-  holdConsumed = false;
-  holdDelayTimer = setTimeout(() => {
-    holdDelayTimer = null;
-    holdTickTimer = setInterval(() => {
-      if (props.modelValue.length === 0) {
-        clearHold();
-        return;
-      }
-      holdConsumed = true;
-      onDelete();
-    }, REPEAT_INTERVAL);
-  }, REPEAT_DELAY);
-}
+const deleteHold = createDeleteHold(
+  () => props.modelValue.length > 0,
+  () => {
+    emit('delete');
+    writeValue(props.modelValue.slice(0, -1));
+  },
+);
 
 function onDeleteTap(): void {
   // `touchend` fires before `tap`: a completed hold has already deleted, so the
   // tap would otherwise eat one extra character.
-  if (holdConsumed) {
-    holdConsumed = false;
-    return;
-  }
-  onDelete();
+  if (deleteHold.consumeTap()) return;
+  if (props.modelValue.length === 0) return;
+  emit('delete');
+  writeValue(props.modelValue.slice(0, -1));
 }
 
 function onKeyTouchStart(key: KeyboardKey): void {
-  if (key.value !== '__delete__' || !props.showDeleteKey) return;
-  startHold();
+  if (key.value !== DELETE_VALUE || !props.showDeleteKey) return;
+  deleteHold.start();
 }
 
 function onKeyTouchEnd(): void {
-  clearHold();
+  deleteHold.end();
 }
 
 watch(
   () => props.visible,
   (visible) => {
-    if (!visible) clearHold();
+    if (!visible) deleteHold.clear();
   },
 );
 
-onBeforeUnmount(clearHold);
+onBeforeUnmount(deleteHold.clear);
 
 /* ── Car language switch ───────────────────────────────────────────────── */
 
@@ -542,13 +372,13 @@ const plateLangLabel = computed(() => (props.carLang === 'zh' ? 'ABC' : '中'));
               :key="`${rowIndex}-${keyIndex}`"
               :class="[
                 'sn-keyboard__key',
-                key.value === '__delete__' ? 'sn-keyboard__key--delete' : '',
+                key.value === DELETE_VALUE ? 'sn-keyboard__key--delete' : '',
               ]"
               role="button"
               :aria-label="
-                key.value === '__delete__'
+                key.value === DELETE_VALUE
                   ? deleteLabel
-                  : key.value === '__collapse__'
+                  : key.value === COLLAPSE_KEY.value
                     ? collapseLabel
                     : key.text
               "
@@ -560,13 +390,13 @@ const plateLangLabel = computed(() => (props.carLang === 'zh' ? 'ABC' : '中'));
               @touchcancel="onKeyTouchEnd"
             >
               <SnIcon
-                v-if="key.value === '__delete__'"
+                v-if="key.value === DELETE_VALUE"
                 class="sn-keyboard__key-icon"
                 :icon="BackspaceIcon"
                 :size="40"
               />
               <SnIcon
-                v-else-if="key.value === '__collapse__'"
+                v-else-if="key.value === COLLAPSE_KEY.value"
                 class="sn-keyboard__key-icon"
                 :icon="KeyboardCollapseIcon"
                 :size="36"
@@ -593,7 +423,7 @@ const plateLangLabel = computed(() => (props.carLang === 'zh' ? 'ABC' : '中'));
             :aria-label="deleteLabel"
             hover-class="sn-keyboard__aside-key--pressed"
             @tap="onDeleteTap"
-            @touchstart="startHold"
+            @touchstart="deleteHold.start"
             @touchend="onKeyTouchEnd"
             @touchcancel="onKeyTouchEnd"
           >
@@ -631,7 +461,7 @@ const plateLangLabel = computed(() => (props.carLang === 'zh' ? 'ABC' : '中'));
             :aria-label="deleteLabel"
             :hover-class="KEY_PRESSED"
             @tap="onDeleteTap"
-            @touchstart="startHold"
+            @touchstart="deleteHold.start"
             @touchend="onKeyTouchEnd"
             @touchcancel="onKeyTouchEnd"
           >

@@ -67,6 +67,7 @@ export { default as SnIndexBar } from './components/sn-index-bar/sn-index-bar.vu
 export { default as SnInput } from './components/sn-input/sn-input.vue';
 export { default as SnInputNumber } from './components/sn-input-number/sn-input-number.vue';
 export { default as SnKeyboard } from './components/sn-keyboard/sn-keyboard.vue';
+export { default as SnKeyboardPanel } from './components/sn-keyboard-panel/sn-keyboard-panel.vue';
 export { default as SnLayout } from './components/sn-layout/sn-layout.vue';
 export { default as SnLiquid } from './components/sn-liquid/sn-liquid.vue';
 export { default as SnLoading } from './components/sn-loading/sn-loading.vue';
