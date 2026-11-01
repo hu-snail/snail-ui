@@ -31,6 +31,20 @@
  * MP renderer, so it is a static 2rpx bar that only shows while `focused`).
  * No `setInterval` is used, so there is nothing to dispose (AGENTS.md §41).
  *
+ * ## Input plumbing (MP compat)
+ *
+ * - The typed value is read from `event.detail.value` first (the uni-app
+ *   normalized input event carries it on BOTH ends — H5 `trigger('input', …,
+ *   detail)`, MP native) with `event.target.value` as the plain-DOM fallback;
+ *   reading `target.value` alone crashes on MP (`undefined.slice()`).
+ * - Tapping the box row re-arms the hidden input (the reference `focus`
+ *   contract: "点击密码输入框时触发"). Once the field is not actually
+ *   focused — never focused (mobile H5 blocks gesture-less autofocus) or
+ *   blurred for real — the `:focus` attribute is pulsed false → true across
+ *   a tick: the H5 runtime (`useAutoFocus` watches the `focus` prop) and MP
+ *   both re-arm on that transition. A static `:focus="focused"` can never be
+ *   re-entered because the attribute never *changes* after mount.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -38,7 +52,7 @@
  *   - 键盘本体 — 用 sn-keyboard（`focused` 与它的 visible 联动）
  */
 
-import { computed } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
 defineOptions({ name: 'SnPasswordInput' });
 
@@ -109,19 +123,56 @@ function displayAt(index: number): string {
 /** Index of the box the caret sits in (the first empty box). */
 const caretIndex = computed(() => (chars.value.length >= boxCount.value ? -1 : chars.value.length));
 
+/**
+ * uni-app normalizes the input event with the typed value on `event.detail`
+ * (H5 runtime `trigger('input', …, detail)`, MP native alike);
+ * `event.target.value` is only the plain-DOM fallback.
+ */
+function readInputValue(event: Event): string {
+  const detail = (event as { detail?: { value?: unknown } }).detail;
+  if (detail && typeof detail.value === 'string') return detail.value;
+  const target = event.target as HTMLInputElement | null;
+  return typeof target?.value === 'string' ? target.value : '';
+}
+
 function onInput(event: Event): void {
-  const raw = (event.target as HTMLInputElement).value;
-  const next = raw.slice(0, boxCount.value);
+  const next = readInputValue(event).slice(0, boxCount.value);
   emit('update:modelValue', next);
   emit('change', next);
 }
 
+/**
+ * Real focus state as reported by the native input's own events. Defaults to
+ * `false` so the very first tap always pulses — mobile H5 blocks gesture-less
+ * autofocus, so "mounted but never focused" is the common state there.
+ */
+const isNativeFocused = ref(false);
+
 function onFocus(event: Event): void {
+  isNativeFocused.value = true;
   emit('focus', event);
 }
 
 function onBlur(event: Event): void {
+  isNativeFocused.value = false;
   emit('blur', event);
+}
+
+/**
+ * Tap-to-focus (the reference contract: focus fires on tapping the field).
+ * While the field is genuinely focused a tap must NOT pulse — the false →
+ * true transition would bounce the soft keyboard. Fail-open by design: if
+ * the native focus/blur events never arrive, every tap pulses and the field
+ * can never get stuck dead.
+ */
+const focusPulse = ref(props.focused);
+
+function onTap(): void {
+  if (!props.focused || isNativeFocused.value) return;
+  focusPulse.value = false;
+  nextTick(() => {
+    focusPulse.value = true;
+  });
 }
 
 const rootClass = computed(() => [
@@ -158,6 +209,7 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
       class="sn-password-input__boxes"
       role="group"
       :aria-label="'password, ' + chars.length + ' of ' + boxCount"
+      @tap="onTap"
     >
       <view
         v-for="index in boxCount"
@@ -189,7 +241,7 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
       inputmode="numeric"
       :value="modelValue"
       :maxlength="boxCount"
-      :focus="focused"
+      :focus="focused && focusPulse"
       aria-label="password"
       @input="onInput"
       @focus="onFocus"

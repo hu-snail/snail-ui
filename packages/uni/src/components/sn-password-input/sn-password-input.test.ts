@@ -2,8 +2,9 @@
  * sn-password-input unit tests — uni-end boxed password field.
  *
  * Behaviour only (AGENTS.md §46): box count, masking, the caret position,
- * the input write path and the message precedence. No rpx numbers in
- * assertions.
+ * the input write path (uni-app detail payload + DOM fallback), the message
+ * precedence, the tap-to-focus pulse and the forwarding contract. No rpx
+ * numbers in assertions.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -40,6 +41,10 @@ describe('sn-password-input', () => {
     it('marks filled boxes', () => {
       const w = mount(SnPasswordInput, { props: { modelValue: '123' } });
       expect(w.findAll('.sn-password-input__box--filled')).toHaveLength(3);
+    });
+
+    it('marks the wrapper data component', () => {
+      expect(mount(SnPasswordInput).attributes('data-snui-component')).toBe('password-input');
     });
   });
 
@@ -82,6 +87,89 @@ describe('sn-password-input', () => {
       const w = mount(SnPasswordInput, { props: { length: 4 } });
       await w.find('.sn-password-input__native').setValue('123456');
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['1234']);
+    });
+  });
+
+  /* ── MP input plumbing: the uni-app normalized event payload ── */
+
+  describe('input value sources', () => {
+    it('reads the typed value from the uni-app normalized event.detail', async () => {
+      const w = mount(SnPasswordInput);
+      await w.find('.sn-password-input__native').trigger('input', { detail: { value: '42' } });
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['42']);
+      expect(w.emitted('change')?.[0]).toEqual(['42']);
+    });
+
+    it('falls back to event.target.value when no detail is present', async () => {
+      const w = mount(SnPasswordInput);
+      await w.find('.sn-password-input__native').setValue('77');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['77']);
+    });
+
+    it('truncates a detail-payload value past `length`', async () => {
+      const w = mount(SnPasswordInput, { props: { length: 3 } });
+      await w.find('.sn-password-input__native').trigger('input', { detail: { value: '98765' } });
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['987']);
+    });
+
+    it('treats a malformed detail payload as empty input', async () => {
+      const w = mount(SnPasswordInput);
+      await w.find('.sn-password-input__native').trigger('input', { detail: { value: 9 } });
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['']);
+    });
+  });
+
+  /* ── Tap-to-focus pulse: a blurred / never-focused field re-arms ── */
+
+  describe('tap-to-focus', () => {
+    /**
+     * In plain Vue `:focus` lands on the DOM property `el.focus` (the method
+     * name wins the `key in el` check), so the pulse is observed via
+     * property writes: a pulse writes `false` then `true`.
+     */
+    function trackFocusWrites(w: ReturnType<typeof mount>): unknown[] {
+      const el = w.find('.sn-password-input__native').element as unknown as { focus: unknown };
+      const writes: unknown[] = [];
+      let current = el.focus;
+      Object.defineProperty(el, 'focus', {
+        get: () => current,
+        set: (value: unknown) => {
+          writes.push(value);
+          current = value;
+        },
+      });
+      return writes;
+    }
+
+    it('pulses on tap after a real blur so the field re-arms', async () => {
+      const w = mount(SnPasswordInput, { props: { focused: true } });
+      const writes = trackFocusWrites(w);
+      await w.find('.sn-password-input__native').trigger('blur');
+      await w.find('.sn-password-input__boxes').trigger('tap');
+      expect(writes).toEqual([false, true]);
+    });
+
+    it('pulses on the very first tap even before any focus event', async () => {
+      const w = mount(SnPasswordInput, { props: { focused: true } });
+      const writes = trackFocusWrites(w);
+      await w.find('.sn-password-input__boxes').trigger('tap');
+      expect(writes).toEqual([false, true]);
+    });
+
+    it('never pulses while the field is genuinely focused', async () => {
+      const w = mount(SnPasswordInput, { props: { focused: true } });
+      const writes = trackFocusWrites(w);
+      await w.find('.sn-password-input__native').trigger('focus');
+      await w.find('.sn-password-input__boxes').trigger('tap');
+      // no false→true bounce that would dismiss the soft keyboard
+      expect(writes).toEqual([]);
+    });
+
+    it('stays silent when focused is false (external keyboard control)', async () => {
+      const w = mount(SnPasswordInput, { props: { focused: false } });
+      const writes = trackFocusWrites(w);
+      await w.find('.sn-password-input__boxes').trigger('tap');
+      expect(writes).toEqual([]);
     });
   });
 
@@ -247,12 +335,8 @@ describe('sn-password-input', () => {
     expect(w.classes()).toContain('my-pin');
   });
 
-  it('marks the wrapper data component', () => {
-    expect(mount(SnPasswordInput).attributes('data-snui-component')).toBe('password-input');
-  });
-
-  /* Untestable in happy-dom: the soft-keyboard linkage (`focused` ↔ sn-keyboard
-   * visible) and the hidden native input's real focus behavior — `:focus` maps
-   * to the HTMLElement.focus DOM slot in plain Vue, so no attribute or focus
-   * change is observable here. The focus/blur re-emit path is covered above. */
+  /* Untestable in happy-dom: the real soft-keyboard behaviors — whether the
+   * false→true pulse actually re-arms uni-h5 `useAutoFocus` / the MP native
+   * input, and hover-class press states. The pulse sequence itself (false
+   * then true, suppressed while genuinely focused) is covered above. */
 });
