@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'气泡'" :title-en="'Popover'" :bg="''">
+  <DemoPageShell :title-zh="'气泡'" :title-en="'Popover'" :desc="'锚点弹出气泡卡片'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

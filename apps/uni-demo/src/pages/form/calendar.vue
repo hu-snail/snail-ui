@@ -17,7 +17,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'日历选择器'" :title-en="'Calendar'" :bg="''">
+  <DemoPageShell
+    :title-zh="'日历选择器'"
+    :title-en="'Calendar'"
+    :desc="'日期区间选择弹层'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

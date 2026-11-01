@@ -15,7 +15,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'" :bg="''">
+  <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'" :desc="'自定义数字键盘'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

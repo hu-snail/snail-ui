@@ -12,7 +12,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'自适应轮播'" :title-en="'Fit Swiper'" :bg="''">
+  <DemoPageShell
+    :title-zh="'自适应轮播'"
+    :title-en="'Fit Swiper'"
+    :desc="'贴合内容高度的金刚区轮播'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

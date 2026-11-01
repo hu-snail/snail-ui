@@ -15,7 +15,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'单元格'" :title-en="'Cell'" :bg="''">
+  <DemoPageShell
+    :title-zh="'单元格'"
+    :title-en="'Cell'"
+    :desc="'列表行容器，可组合图标与箭头'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

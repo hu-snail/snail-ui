@@ -11,7 +11,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'根节点传送'" :title-en="'Root Portal'" :bg="''">
+  <DemoPageShell
+    :title-zh="'根节点传送'"
+    :title-en="'Root Portal'"
+    :desc="'内容挂到页面根节点'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

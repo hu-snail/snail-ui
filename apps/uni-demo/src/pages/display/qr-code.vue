@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'二维码'" :title-en="'Qr Code'" :bg="''">
+  <DemoPageShell :title-zh="'二维码'" :title-en="'Qr Code'" :desc="'二维码生成与导出'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

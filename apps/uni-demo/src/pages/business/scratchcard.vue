@@ -13,7 +13,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'刮刮乐'" :title-en="'Scratchcard'" :bg="''">
+  <DemoPageShell
+    :title-zh="'刮刮乐'"
+    :title-en="'Scratchcard'"
+    :desc="'刮层擦除与阈值回调'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

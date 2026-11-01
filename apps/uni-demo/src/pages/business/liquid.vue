@@ -13,7 +13,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'水波进度球'" :title-en="'Liquid'" :bg="''">
+  <DemoPageShell
+    :title-zh="'水波进度球'"
+    :title-en="'Liquid'"
+    :desc="'水波动画的进度展示'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

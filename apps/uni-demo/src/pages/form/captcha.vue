@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'拼图验证'" :title-en="'Captcha'" :bg="''">
+  <DemoPageShell :title-zh="'拼图验证'" :title-en="'Captcha'" :desc="'拖动拼图对齐缺口'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

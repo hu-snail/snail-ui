@@ -13,7 +13,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'大转盘'" :title-en="'Dialer'" :bg="''">
+  <DemoPageShell
+    :title-zh="'大转盘'"
+    :title-en="'Dialer'"
+    :desc="'抽奖转盘，run 指定落点'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

@@ -14,7 +14,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'时间选择器视图'" :title-en="'Datetime Picker View'" :bg="''">
+  <DemoPageShell
+    :title-zh="'时间选择器视图'"
+    :title-en="'Datetime Picker View'"
+    :desc="'内嵌时间滚轮'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

@@ -16,7 +16,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'文本域'" :title-en="'Textarea'" :bg="''">
+  <DemoPageShell :title-zh="'文本域'" :title-en="'Textarea'" :desc="'多行文本输入'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

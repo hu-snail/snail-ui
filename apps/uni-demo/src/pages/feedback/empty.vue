@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'缺省提示'" :title-en="'Empty'" :bg="''">
+  <DemoPageShell :title-zh="'缺省提示'" :title-en="'Empty'" :desc="'空状态占位'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

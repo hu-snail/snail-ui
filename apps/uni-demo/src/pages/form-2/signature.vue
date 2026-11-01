@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'签名'" :title-en="'Signature'" :bg="''">
+  <DemoPageShell :title-zh="'签名'" :title-en="'Signature'" :desc="'手写签名板'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

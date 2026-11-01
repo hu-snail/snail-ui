@@ -12,7 +12,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'密码输入框'" :title-en="'Password Input'" :bg="''">
+  <DemoPageShell
+    :title-zh="'密码输入框'"
+    :title-en="'Password Input'"
+    :desc="'密码 / 验证码输入'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

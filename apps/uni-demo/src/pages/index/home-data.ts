@@ -857,7 +857,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: 'paging',
         titleEn: 'Paging',
         desc: '',
-        count: 5,
+        count: 6,
       },
     ],
   },

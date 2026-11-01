@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'输入中'" :title-en="'Typing'" :bg="''">
+  <DemoPageShell :title-zh="'输入中'" :title-en="'Typing'" :desc="'聊天输入中跳动圆点'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

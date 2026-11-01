@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'骨架屏'" :title-en="'Skeleton'" :bg="''">
+  <DemoPageShell :title-zh="'骨架屏'" :title-en="'Skeleton'" :desc="'加载占位骨架'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('animation', 'Animation')" badge="animation" />

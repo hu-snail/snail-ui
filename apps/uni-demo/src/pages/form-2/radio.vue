@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'单选框'" :title-en="'Radio'" :bg="''">
+  <DemoPageShell :title-zh="'单选框'" :title-en="'Radio'" :desc="'单选控件'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

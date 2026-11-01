@@ -26,7 +26,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'" :bg="'#ffffff'">
+  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'" :desc="'单行文本输入'" :bg="'#ffffff'">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

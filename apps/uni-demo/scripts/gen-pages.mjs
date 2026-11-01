@@ -345,7 +345,11 @@ const pagesJson = {
   pages: [
     {
       path: 'pages/index/index',
-      style: { navigationBarTitleText: 'snui 组件演示' },
+      style: {
+        navigationBarTitleText: 'snui 组件演示',
+        // 通栏：画布渐变铺满视口，首页品牌区自行承担顶部（DemoPageShell blend）。
+        navigationStyle: 'custom',
+      },
     },
   ],
   subPackages: subpackages.map((sub) => ({
@@ -354,6 +358,9 @@ const pagesJson = {
       path: comp.key,
       style: {
         navigationBarTitleText: comp.title,
+        // 通栏：原生导航栏退位，DemoPageShell 渲染毛玻璃悬浮头部（背景与
+        // 内容区渐变一致）；个别页面需要原生栏时在此覆盖为 default。
+        navigationStyle: 'custom',
         ...(PAGE_BG_OVERRIDES[comp.key] ? { backgroundColor: PAGE_BG_OVERRIDES[comp.key] } : {}),
       },
     })),
@@ -442,7 +449,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
+  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'" :desc="'${comp.desc.replace(/'/g, "\\'")}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
     <view class="page">
 ${modules}
     </view>

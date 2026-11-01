@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'搜索框'" :title-en="'Search'" :bg="''">
+  <DemoPageShell :title-zh="'搜索框'" :title-en="'Search'" :desc="'搜索输入与联想'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

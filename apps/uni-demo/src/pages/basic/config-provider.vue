@@ -12,7 +12,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'全局配置'" :title-en="'Config Provider'" :bg="''">
+  <DemoPageShell
+    :title-zh="'全局配置'"
+    :title-en="'Config Provider'"
+    :desc="'主题 / 风格包 / 变量注入'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

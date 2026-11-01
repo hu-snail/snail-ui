@@ -17,6 +17,7 @@
  */
 import { computed, onMounted, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { ChevronLeft as ChevronLeftIcon } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { useDemoUi } from '../state/demo-ui';
 // wot-ui useQueue 对齐:页面根节点监听冒泡,点任意空白处关闭所有弹窗
@@ -31,13 +32,23 @@ const props = withDefaults(
     titleZh?: string;
     /** 导航栏标题（英文）。 */
     titleEn?: string;
+    /** 组件一句话描述（通栏头部副标题，仅中文模式显示；desc 是中文单源）。 */
+    desc?: string;
+    /**
+     * 顶部导航形态（可配置）：
+     * - `blend`（默认）：通栏 —— pages.json 声明 `navigationStyle: custom`，
+     *   画布渐变直接铺到状态栏，顶部渲染半透明毛玻璃悬浮头部（页内返回键 +
+     *   居中标题），与内容区背景完全一致。
+     * - `native`：uni 原生导航栏（底色经 applyNavBar 对齐画布顶色）。
+     */
+    navStyle?: 'native' | 'blend';
     /**
      * 画布底色覆盖（如输入框页用纯白对比深浅组件底色）。空串 = 默认中性灰；
      * 深色主题下仍按字面值生效（由调用方决定是否覆盖）。
      */
     bg?: string;
   }>(),
-  { brand: false, titleZh: '', titleEn: '', bg: '' },
+  { brand: false, titleZh: '', titleEn: '', desc: '', navStyle: 'blend', bg: '' },
 );
 
 const {
@@ -117,6 +128,36 @@ function syncNavBar(): void {
   }
 }
 
+/**
+ * 通栏头部的返回键：有历史栈时回上一页，直接打开内页（无历史）时回首页。
+ * 该 uni H5 运行时不挂全局 `uni` 路由 API（`window.uni` 为空壳，工程内
+ * `uni.*` 调用均静默降级），H5 走 hash 路由的历史栈兜底。
+ */
+function goBack(): void {
+  const api = globalThis.uni as
+    | {
+        navigateBack?: (options?: { fail?: () => void }) => void;
+        reLaunch?: (options: { url: string }) => void;
+      }
+    | undefined;
+  if (typeof api?.navigateBack === 'function') {
+    api.navigateBack({
+      fail: () => api.reLaunch?.({ url: '/pages/index/index' }),
+    });
+    return;
+  }
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  window.location.hash = '#/pages/index/index';
+}
+
+const isBlend = computed(() => props.navStyle === 'blend');
+const headerTitle = computed(() =>
+  lang.value === 'en' && props.titleEn !== '' ? props.titleEn : props.titleZh,
+);
+
 onMounted(() => {
   syncNavBar();
 });
@@ -134,6 +175,29 @@ watch(
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
     :style="shellStyle"
   >
+    <view
+      v-if="isBlend && !brand"
+      class="demo-shell__topbar"
+    >
+      <view class="demo-shell__topbar-slot">
+        <view
+          class="demo-shell__back"
+          role="button"
+          :aria-label="t('返回', 'Back')"
+          hover-class="demo-shell__back--pressed"
+          @tap="goBack"
+        >
+          <SnIcon :icon="ChevronLeftIcon" :size="20" />
+        </view>
+      </view>
+      <view class="demo-shell__topbar-center">
+        <text class="demo-shell__topbar-title">{{ headerTitle }}</text>
+        <text v-if="desc !== '' && lang === 'zh'" class="demo-shell__topbar-sub">{{ desc }}</text>
+      </view>
+      <view class="demo-shell__topbar-slot demo-shell__topbar-slot--end" />
+    </view>
+    <view v-else-if="isBlend" class="demo-shell__statuspad" />
+
     <view class="demo-shell__bar">
       <view v-if="brand" class="demo-shell__brand">
         <text class="demo-shell__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
@@ -173,11 +237,89 @@ watch(
 .demo-shell {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
   /* 组件规范视觉稿画布：纵向浅灰渐变（slate-50 → slate-200），分区卡片
-   * 浮在其上；--demo-page-bg 作无渐变环境的回退色。 */
+   * 浮在其上；--demo-page-bg 作无渐变环境的回退色。不设 overflow 裁切：
+   * 会在通栏头部上方形成滚动容器，position: sticky 随之失效。 */
   background: var(--demo-page-canvas, var(--demo-page-bg));
   color: var(--demo-title);
+}
+
+/* ── 通栏头部：毛玻璃悬浮条（navigationStyle: custom 时替代原生导航栏） ── */
+
+.demo-shell__topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--status-bar-height, 0px) 24rpx 0;
+  background: var(--demo-header-bg);
+  border-bottom: 1px solid var(--demo-card-border);
+  /* 毛玻璃只作用于头部自身及其后代（返回键），不构成 .demo-shell__body 里
+   * fixed 弹层 demo 的 containing block。 */
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
+}
+
+.demo-shell__statuspad {
+  height: var(--status-bar-height, 0px);
+}
+
+.demo-shell__topbar-slot {
+  display: flex;
+  align-items: center;
+  flex: 0 0 132rpx;
+  min-width: 0;
+}
+
+.demo-shell__topbar-slot--end {
+  justify-content: flex-end;
+}
+
+.demo-shell__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: -12rpx;
+  border-radius: var(--sn-mp-radius-full);
+  color: var(--demo-title);
+  transition: background-color 120ms ease;
+}
+
+.demo-shell__back--pressed {
+  background-color: var(--demo-chip-bg);
+}
+
+.demo-shell__topbar-center {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 12rpx 0;
+}
+
+.demo-shell__topbar-title {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 32rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--demo-title);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.demo-shell__topbar-sub {
+  margin-top: 2rpx;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 20rpx;
+  color: var(--demo-text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* ── 顶栏：品牌区 + 切换按钮 ──────────────────────────────────────────── */

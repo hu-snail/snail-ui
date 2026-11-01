@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :bg="''">
+  <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :desc="'侧滑菜单'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

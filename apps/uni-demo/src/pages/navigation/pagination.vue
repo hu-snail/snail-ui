@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'" :bg="''">
+  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'" :desc="'页码切换'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

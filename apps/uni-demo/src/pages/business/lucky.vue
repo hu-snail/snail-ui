@@ -13,7 +13,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'抽奖九宫格'" :title-en="'Lucky'" :bg="''">
+  <DemoPageShell
+    :title-zh="'抽奖九宫格'"
+    :title-en="'Lucky'"
+    :desc="'play / stop 两段式抽奖'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

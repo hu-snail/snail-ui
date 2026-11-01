@@ -16,7 +16,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'悬浮按钮'" :title-en="'Fab'" :bg="''">
+  <DemoPageShell :title-zh="'悬浮按钮'" :title-en="'Fab'" :desc="'可拖拽的悬浮操作按钮'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

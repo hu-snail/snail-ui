@@ -18,7 +18,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'标签页'" :title-en="'Tabs'" :bg="''">
+  <DemoPageShell :title-zh="'标签页'" :title-en="'Tabs'" :desc="'可滚动标签页与内容联动'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('animate', 'Animate')" badge="animate" />

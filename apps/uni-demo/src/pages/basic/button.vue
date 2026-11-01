@@ -22,7 +22,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'按钮'" :title-en="'Button'" :bg="''">
+  <DemoPageShell
+    :title-zh="'按钮'"
+    :title-en="'Button'"
+    :desc="'多种类型与变体的主操作按钮'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

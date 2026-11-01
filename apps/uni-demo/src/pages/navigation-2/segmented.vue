@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分段器'" :title-en="'Segmented'" :bg="''">
+  <DemoPageShell :title-zh="'分段器'" :title-en="'Segmented'" :desc="'分段选择控件'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

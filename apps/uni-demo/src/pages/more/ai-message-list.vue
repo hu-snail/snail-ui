@@ -10,7 +10,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'ai-message-list'" :title-en="'Ai Message List'" :bg="''">
+  <DemoPageShell :title-zh="'ai-message-list'" :title-en="'Ai Message List'" :desc="''" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

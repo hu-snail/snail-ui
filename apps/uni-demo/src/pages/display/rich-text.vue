@@ -15,7 +15,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'富文本'" :title-en="'Rich Text'" :bg="''">
+  <DemoPageShell
+    :title-zh="'富文本'"
+    :title-en="'Rich Text'"
+    :desc="'HTML 内容：图文、表格与媒体'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

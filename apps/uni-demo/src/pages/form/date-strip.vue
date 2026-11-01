@@ -15,7 +15,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'日期条'" :title-en="'Date Strip'" :bg="''">
+  <DemoPageShell
+    :title-zh="'日期条'"
+    :title-en="'Date Strip'"
+    :desc="'横向日期快速选择条'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'评分'" :title-en="'Rate'" :bg="''">
+  <DemoPageShell :title-zh="'评分'" :title-en="'Rate'" :desc="'星级评分'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

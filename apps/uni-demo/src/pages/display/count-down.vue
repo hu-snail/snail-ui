@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'倒计时'" :title-en="'Count Down'" :bg="''">
+  <DemoPageShell :title-zh="'倒计时'" :title-en="'Count Down'" :desc="'秒 / 时间戳倒计时'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('autostart', 'Autostart')" badge="autostart" />

@@ -10,7 +10,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'键盘面板'" :title-en="'Keyboard Panel'" :bg="''">
+  <DemoPageShell
+    :title-zh="'键盘面板'"
+    :title-en="'Keyboard Panel'"
+    :desc="'内嵌键盘视图'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

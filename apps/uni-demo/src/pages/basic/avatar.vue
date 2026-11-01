@@ -15,7 +15,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'头像'" :title-en="'Avatar'" :bg="''">
+  <DemoPageShell
+    :title-zh="'头像'"
+    :title-en="'Avatar'"
+    :desc="'圆形 / 方形头像与徽标组合'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

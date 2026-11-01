@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'间隔槽'" :title-en="'Gap'" :bg="''">
+  <DemoPageShell :title-zh="'间隔槽'" :title-en="'Gap'" :desc="'固定高度的占位间隔'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

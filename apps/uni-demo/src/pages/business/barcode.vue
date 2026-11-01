@@ -13,7 +13,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'" :bg="''">
+  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'" :desc="'EAN-13 条码渲染'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" />

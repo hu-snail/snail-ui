@@ -15,7 +15,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'折叠面板'" :title-en="'Collapse'" :bg="''">
+  <DemoPageShell
+    :title-zh="'折叠面板'"
+    :title-en="'Collapse'"
+    :desc="'可展开收起的内容分组'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('accordion', 'Accordion')" badge="accordion" />

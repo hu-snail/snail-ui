@@ -14,7 +14,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'弹框'" :title-en="'Dialog'" :bg="''">
+  <DemoPageShell :title-zh="'弹框'" :title-en="'Dialog'" :desc="'模态对话框'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('actions', 'Actions')" badge="actions" />

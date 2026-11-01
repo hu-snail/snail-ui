@@ -16,7 +16,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'级联选择器'" :title-en="'Cascader'" :bg="''">
+  <DemoPageShell :title-zh="'级联选择器'" :title-en="'Cascader'" :desc="'多级联动选择'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

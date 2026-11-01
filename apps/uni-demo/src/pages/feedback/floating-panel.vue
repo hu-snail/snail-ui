@@ -12,7 +12,12 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'浮动面板'" :title-en="'Floating Panel'" :bg="''">
+  <DemoPageShell
+    :title-zh="'浮动面板'"
+    :title-en="'Floating Panel'"
+    :desc="'可拖动高度面板'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'滑动验证'" :title-en="'Slide Verify'" :bg="''">
+  <DemoPageShell :title-zh="'滑动验证'" :title-en="'Slide Verify'" :desc="'滑块拼图验证'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

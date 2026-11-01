@@ -12,7 +12,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'布局'" :title-en="'Layout'" :bg="''">
+  <DemoPageShell :title-zh="'布局'" :title-en="'Layout'" :desc="'Row / Col 栅格布局'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('align', 'Align')" badge="align" />

@@ -2968,6 +2968,11 @@
           "hasEn": true
         },
         {
+          "name": "paging-mp-popup",
+          "title": "弹窗",
+          "hasEn": true
+        },
+        {
           "name": "paging-mp-scroll",
           "title": "滚动",
           "hasEn": true

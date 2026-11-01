@@ -16,7 +16,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'上传'" :title-en="'Upload'" :bg="''">
+  <DemoPageShell :title-zh="'上传'" :title-en="'Upload'" :desc="'文件 / 图片上传'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />

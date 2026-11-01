@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'图片裁剪'" :title-en="'Img Cropper'" :bg="''">
+  <DemoPageShell :title-zh="'图片裁剪'" :title-en="'Img Cropper'" :desc="'裁剪几何交互'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('导出', 'Export')" badge="export" />

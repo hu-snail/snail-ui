@@ -11,7 +11,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'遮罩层'" :title-en="'Overlay'" :bg="''">
+  <DemoPageShell :title-zh="'遮罩层'" :title-en="'Overlay'" :desc="'页面遮罩'" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
