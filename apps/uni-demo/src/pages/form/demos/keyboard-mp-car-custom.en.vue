@@ -13,6 +13,8 @@ const open2 = ref(false);
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__button" @tap="open = true">Plate keypad</view>
     <text class="sn-demo__meta">Plate: {{ plate || '(empty)' }}</text>
+    <view class="sn-demo__button" @tap="open2 = true">Custom keypad</view>
+    <text class="sn-demo__meta">Custom: {{ custom || '(empty)' }}</text>
     <SnKeyboard
       v-model="plate"
       v-model:visible="open"
@@ -20,14 +22,16 @@ const open2 = ref(false);
       auto-switch-lang
       title="Plate number"
       :maxlength="8"
+      close-text="Done"
     />
     <SnKeyboard
       v-model="custom"
       v-model:visible="open2"
       mode="custom"
-      extra-key="00"
+      :extra-key="['00', '.']"
       close-text="Done"
       title="Custom"
+      :maxlength="8"
     />
   </view>
 </template>

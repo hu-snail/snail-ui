@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'步骤条'" :title-en="'Steps'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('连接线', 'Connector')" badge="connector" :index="1" />
+        <DemoModuleHead :title="t('连接线', 'Connector')" badge="connector" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="2" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('节点', 'Node')" badge="node" :index="3" />
+        <DemoModuleHead :title="t('节点', 'Node')" badge="node" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('space', 'Space')" badge="space" :index="4" />
+        <DemoModuleHead :title="t('space', 'Space')" badge="space" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" :index="5" />
+        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
         <view class="module__body">
           <Demo5 />
         </view>

@@ -17,23 +17,19 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'搜索框'" :title-en="'Search'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('cancel-states', 'Cancel States')"
-          badge="cancel-states"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('cancel-states', 'Cancel States')" badge="cancel-states" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('input-attrs', 'Input Attrs')" badge="input-attrs" :index="2" />
+        <DemoModuleHead :title="t('input-attrs', 'Input Attrs')" badge="input-attrs" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -42,14 +38,13 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('placeholder-style', 'Placeholder Style')"
           badge="placeholder-style"
-          :index="3"
         />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" :index="4" />
+        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
         <view class="module__body">
           <Demo4 />
         </view>

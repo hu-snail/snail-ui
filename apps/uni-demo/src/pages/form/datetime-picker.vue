@@ -19,51 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'时间选择器'" :title-en="'Datetime Picker'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" :index="1" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('columns-bounds', 'Columns Bounds')"
-          badge="columns-bounds"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('columns-bounds', 'Columns Bounds')" badge="columns-bounds" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" :index="3" />
+        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" :index="4" />
+        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('动作面板', 'Action sheet')" badge="sheet" :index="5" />
+        <DemoModuleHead :title="t('动作面板', 'Action sheet')" badge="sheet" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('time-confirm', 'Time Confirm')"
-          badge="time-confirm"
-          :index="6"
-        />
+        <DemoModuleHead :title="t('time-confirm', 'Time Confirm')" badge="time-confirm" />
         <view class="module__body">
           <Demo6 />
         </view>

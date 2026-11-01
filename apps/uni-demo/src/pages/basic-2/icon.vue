@@ -21,59 +21,55 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'图标'" :title-en="'Icon'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('css', 'Css')" badge="css" :index="1" />
+        <DemoModuleHead :title="t('css', 'Css')" badge="css" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" :index="2" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标总览', 'Gallery')" badge="gallery" :index="3" />
+        <DemoModuleHead :title="t('图标总览', 'Gallery')" badge="gallery" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('Iconify 按需', 'Iconify on demand')"
-          badge="iconify"
-          :index="4"
-        />
+        <DemoModuleHead :title="t('Iconify 按需', 'Iconify on demand')" badge="iconify" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('name', 'Name')" badge="name" :index="5" />
+        <DemoModuleHead :title="t('name', 'Name')" badge="name" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('registry', 'Registry')" badge="registry" :index="6" />
+        <DemoModuleHead :title="t('registry', 'Registry')" badge="registry" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" :index="7" />
+        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('目录用法', 'Catalog names')" badge="string" :index="8" />
+        <DemoModuleHead :title="t('目录用法', 'Catalog names')" badge="string" />
         <view class="module__body">
           <Demo8 />
         </view>

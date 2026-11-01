@@ -11,7 +11,14 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__button" @tap="open = true">Open keypad</view>
     <text class="sn-demo__meta">Value: {{ amount || '(empty)' }}</text>
-    <SnKeyboard v-model="amount" v-model:visible="open" :maxlength="6" title="Amount" />
+    <SnKeyboard
+      v-model="amount"
+      v-model:visible="open"
+      :maxlength="6"
+      title="Amount"
+      extra-key="."
+      close-text="Done"
+    />
   </view>
 </template>
 

@@ -17,35 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'计数器'" :title-en="'Input Number'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('commit-hooks', 'Commit Hooks')"
-          badge="commit-hooks"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('commit-hooks', 'Commit Hooks')" badge="commit-hooks" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('controls', 'Controls')" badge="controls" :index="2" />
+        <DemoModuleHead :title="t('controls', 'Controls')" badge="controls" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" :index="3" />
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('theme-state', 'Theme State')" badge="theme-state" :index="4" />
+        <DemoModuleHead :title="t('theme-state', 'Theme State')" badge="theme-state" />
         <view class="module__body">
           <Demo4 />
         </view>

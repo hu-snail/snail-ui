@@ -16,7 +16,7 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'分割线'" :title-en="'Divider'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -25,20 +25,19 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('content-position', 'Content Position')"
           badge="content-position"
-          :index="1"
         />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('hairline', 'Hairline')" badge="hairline" :index="2" />
+        <DemoModuleHead :title="t('hairline', 'Hairline')" badge="hairline" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" :index="3" />
+        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
         <view class="module__body">
           <Demo3 />
         </view>

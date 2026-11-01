@@ -16,29 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'单选框'" :title-en="'Radio'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('colors-custom', 'Colors Custom')"
-          badge="colors-custom"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('colors-custom', 'Colors Custom')" badge="colors-custom" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" :index="2" />
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" :index="3" />
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
           <Demo3 />
         </view>

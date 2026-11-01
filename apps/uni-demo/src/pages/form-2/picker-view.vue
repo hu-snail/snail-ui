@@ -16,13 +16,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'选择器视图'" :title-en="'Picker View'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('cascade', 'Cascade')" badge="cascade" :index="1" />
+        <DemoModuleHead :title="t('cascade', 'Cascade')" badge="cascade" />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -31,18 +31,13 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('immediate-custom', 'Immediate Custom')"
           badge="immediate-custom"
-          :index="2"
         />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('keys-geometry', 'Keys Geometry')"
-          badge="keys-geometry"
-          :index="3"
-        />
+        <DemoModuleHead :title="t('keys-geometry', 'Keys Geometry')" badge="keys-geometry" />
         <view class="module__body">
           <Demo3 />
         </view>

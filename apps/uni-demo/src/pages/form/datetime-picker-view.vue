@@ -17,35 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'时间选择器视图'" :title-en="'Datetime Picker View'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('columns', 'Columns')" badge="columns" :index="1" />
+        <DemoModuleHead :title="t('columns', 'Columns')" badge="columns" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('range-boundary', 'Range Boundary')"
-          badge="range-boundary"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('range-boundary', 'Range Boundary')" badge="range-boundary" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('time-bounds', 'Time Bounds')" badge="time-bounds" :index="3" />
+        <DemoModuleHead :title="t('time-bounds', 'Time Bounds')" badge="time-bounds" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('time-format', 'Time Format')" badge="time-format" :index="4" />
+        <DemoModuleHead :title="t('time-format', 'Time Format')" badge="time-format" />
         <view class="module__body">
           <Demo4 />
         </view>

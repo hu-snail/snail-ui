@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'单元格'" :title-en="'Cell'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" :index="1" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="2" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" :index="3" />
+        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('link', 'Link')" badge="link" :index="4" />
+        <DemoModuleHead :title="t('link', 'Link')" badge="link" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" :index="5" />
+        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" />
         <view class="module__body">
           <Demo5 />
         </view>

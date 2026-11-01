@@ -17,31 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'气泡'" :title-en="'Popover'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('高度', 'Height')" badge="height" :index="1" />
+        <DemoModuleHead :title="t('高度', 'Height')" badge="height" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('menu', 'Menu')" badge="menu" :index="2" />
+        <DemoModuleHead :title="t('menu', 'Menu')" badge="menu" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('弹出位置', 'Placement')" badge="placement" :index="3" />
+        <DemoModuleHead :title="t('弹出位置', 'Placement')" badge="placement" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('slot', 'Slot')" badge="slot" :index="4" />
+        <DemoModuleHead :title="t('slot', 'Slot')" badge="slot" />
         <view class="module__body">
           <Demo4 />
         </view>

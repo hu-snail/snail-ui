@@ -16,25 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" :index="1" />
+        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" :index="2" />
+        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" :index="3" />
+        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" />
         <view class="module__body">
           <Demo3 />
         </view>

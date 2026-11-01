@@ -17,35 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'开关'" :title-en="'Switch'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('appearance', 'Appearance')" badge="appearance" :index="0" />
+        <DemoModuleHead :title="t('appearance', 'Appearance')" badge="appearance" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="1" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('css-icons', 'Css Icons')" badge="css-icons" :index="2" />
+        <DemoModuleHead :title="t('css-icons', 'Css Icons')" badge="css-icons" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" :index="3" />
+        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('loading-custom', 'Loading Custom')"
-          badge="loading-custom"
-          :index="4"
-        />
+        <DemoModuleHead :title="t('loading-custom', 'Loading Custom')" badge="loading-custom" />
         <view class="module__body">
           <Demo4 />
         </view>

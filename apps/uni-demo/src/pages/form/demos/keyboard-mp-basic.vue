@@ -11,7 +11,14 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__button" @tap="open = true">打开键盘</view>
     <text class="sn-demo__meta">当前值：{{ amount || '（空）' }}</text>
-    <SnKeyboard v-model="amount" v-model:visible="open" :maxlength="6" title="金额" />
+    <SnKeyboard
+      v-model="amount"
+      v-model:visible="open"
+      :maxlength="6"
+      title="金额"
+      extra-key="."
+      close-text="完成"
+    />
   </view>
 </template>
 

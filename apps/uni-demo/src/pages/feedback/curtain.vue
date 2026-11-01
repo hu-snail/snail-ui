@@ -17,35 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'幕帘'" :title-en="'Curtain'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" :index="1" />
+        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('close-position', 'Close Position')"
-          badge="close-position"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('close-position', 'Close Position')" badge="close-position" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" :index="3" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('点图片关闭', 'Image Tap')" badge="image-tap" :index="4" />
+        <DemoModuleHead :title="t('点图片关闭', 'Image Tap')" badge="image-tap" />
         <view class="module__body">
           <Demo4 />
         </view>

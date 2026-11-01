@@ -17,31 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" :index="1" />
+        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" :index="2" />
+        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="3" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('panel', 'Panel')" badge="panel" :index="4" />
+        <DemoModuleHead :title="t('panel', 'Panel')" badge="panel" />
         <view class="module__body">
           <Demo4 />
         </view>

@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'日期条'" :title-en="'Date Strip'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" :index="1" />
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义文案', 'Custom text')" badge="formatter" :index="2" />
+        <DemoModuleHead :title="t('自定义文案', 'Custom text')" badge="formatter" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" :index="3" />
+        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('导航按钮', 'Navigation')" badge="nav" :index="4" />
+        <DemoModuleHead :title="t('导航按钮', 'Navigation')" badge="nav" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('日期范围', 'Date range')" badge="range" :index="5" />
+        <DemoModuleHead :title="t('日期范围', 'Date range')" badge="range" />
         <view class="module__body">
           <Demo5 />
         </view>

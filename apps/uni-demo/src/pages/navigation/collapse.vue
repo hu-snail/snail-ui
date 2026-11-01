@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'折叠面板'" :title-en="'Collapse'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('accordion', 'Accordion')" badge="accordion" :index="0" />
+        <DemoModuleHead :title="t('accordion', 'Accordion')" badge="accordion" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="1" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" :index="2" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="3" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" :index="4" />
+        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('viewmore', 'Viewmore')" badge="viewmore" :index="5" />
+        <DemoModuleHead :title="t('viewmore', 'Viewmore')" badge="viewmore" />
         <view class="module__body">
           <Demo5 />
         </view>

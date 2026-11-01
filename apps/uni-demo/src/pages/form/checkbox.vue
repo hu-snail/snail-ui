@@ -16,17 +16,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'复选框'" :title-en="'Checkbox'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('group-limits', 'Group Limits')"
-          badge="group-limits"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('group-limits', 'Group Limits')" badge="group-limits" />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -35,14 +31,13 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('standalone-style', 'Standalone Style')"
           badge="standalone-style"
-          :index="2"
         />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" :index="3" />
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
           <Demo3 />
         </view>

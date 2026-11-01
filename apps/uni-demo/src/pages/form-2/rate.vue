@@ -16,7 +16,7 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'评分'" :title-en="'Rate'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -25,20 +25,19 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('css-icon-disabled', 'Css Icon Disabled')"
           badge="css-icon-disabled"
-          :index="1"
         />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('half-color', 'Half Color')" badge="half-color" :index="2" />
+        <DemoModuleHead :title="t('half-color', 'Half Color')" badge="half-color" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('icon-space', 'Icon Space')" badge="icon-space" :index="3" />
+        <DemoModuleHead :title="t('icon-space', 'Icon Space')" badge="icon-space" />
         <view class="module__body">
           <Demo3 />
         </view>

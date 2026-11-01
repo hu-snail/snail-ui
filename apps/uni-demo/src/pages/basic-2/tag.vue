@@ -19,47 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'标签'" :title-en="'Tag'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('closable', 'Closable')" badge="closable" :index="1" />
+        <DemoModuleHead :title="t('closable', 'Closable')" badge="closable" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('color-custom', 'Color Custom')"
-          badge="color-custom"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('color-custom', 'Color Custom')" badge="color-custom" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="3" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" :index="4" />
+        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" :index="5" />
+        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" :index="6" />
+        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
         <view class="module__body">
           <Demo6 />
         </view>

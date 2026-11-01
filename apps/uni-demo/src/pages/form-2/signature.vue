@@ -17,39 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'签名'" :title-en="'Signature'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('button-labels', 'Button Labels')"
-          badge="button-labels"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('button-labels', 'Button Labels')" badge="button-labels" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('export-parity', 'Export Parity')"
-          badge="export-parity"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('export-parity', 'Export Parity')" badge="export-parity" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('history', 'History')" badge="history" :index="3" />
+        <DemoModuleHead :title="t('history', 'History')" badge="history" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('pad-look', 'Pad Look')" badge="pad-look" :index="4" />
+        <DemoModuleHead :title="t('pad-look', 'Pad Look')" badge="pad-look" />
         <view class="module__body">
           <Demo4 />
         </view>

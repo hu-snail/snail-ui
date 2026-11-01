@@ -19,47 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'级联选择器'" :title-en="'Cascader'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" :index="1" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" :index="2" />
+        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" :index="3" />
+        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('lazy-confirm', 'Lazy Confirm')"
-          badge="lazy-confirm"
-          :index="4"
-        />
+        <DemoModuleHead :title="t('lazy-confirm', 'Lazy Confirm')" badge="lazy-confirm" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('动作面板', 'Action sheet')" badge="sheet" :index="5" />
+        <DemoModuleHead :title="t('动作面板', 'Action sheet')" badge="sheet" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('strict-lazy', 'Strict Lazy')" badge="strict-lazy" :index="6" />
+        <DemoModuleHead :title="t('strict-lazy', 'Strict Lazy')" badge="strict-lazy" />
         <view class="module__body">
           <Demo6 />
         </view>

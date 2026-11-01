@@ -17,31 +17,31 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'通知栏'" :title-en="'Notice Bar'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" :index="1" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('marquee', 'Marquee')" badge="marquee" :index="2" />
+        <DemoModuleHead :title="t('marquee', 'Marquee')" badge="marquee" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" :index="3" />
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" :index="4" />
+        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
         <view class="module__body">
           <Demo4 />
         </view>

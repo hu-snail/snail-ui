@@ -16,25 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'分段器'" :title-en="'Segmented'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" :index="1" />
+        <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('value', 'Value')" badge="value" :index="2" />
+        <DemoModuleHead :title="t('value', 'Value')" badge="value" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('value-alias', 'Value Alias')" badge="value-alias" :index="3" />
+        <DemoModuleHead :title="t('value-alias', 'Value Alias')" badge="value-alias" />
         <view class="module__body">
           <Demo3 />
         </view>

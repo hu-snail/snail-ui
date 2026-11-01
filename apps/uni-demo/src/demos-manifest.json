@@ -74,18 +74,48 @@
       "page": "pages/basic/button",
       "demos": [
         {
-          "name": "button-mp",
-          "title": "基础用法",
-          "hasEn": true
-        },
-        {
           "name": "button-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
+          "name": "button-mp-size",
+          "title": "尺寸",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-shape",
+          "title": "形状",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-variant",
+          "title": "变体",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-state",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-icon-button",
+          "title": "图标按钮",
+          "hasEn": true
+        },
+        {
           "name": "button-mp-cell",
           "title": "单元格",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-hover",
+          "title": "悬停",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-loading-props",
+          "title": "loading-props",
           "hasEn": true
         },
         {
@@ -99,48 +129,13 @@
           "hasEn": true
         },
         {
-          "name": "button-mp-hover",
-          "title": "悬停",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-icon-button",
-          "title": "图标按钮",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-loading-props",
-          "title": "loading-props",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-mp-open-type",
-          "title": "mp-open-type",
-          "hasEn": true
-        },
-        {
           "name": "button-mp-open-type",
           "title": "open-type",
           "hasEn": true
         },
         {
-          "name": "button-mp-shape",
-          "title": "形状",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-size",
-          "title": "尺寸",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-state",
-          "title": "状态",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-variant",
-          "title": "变体",
+          "name": "button-mp-mp-open-type",
+          "title": "mp-open-type",
           "hasEn": true
         }
       ]

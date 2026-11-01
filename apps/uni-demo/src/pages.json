@@ -638,7 +638,7 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "snui",
-    "navigationBarBackgroundColor": "#FFFFFF",
-    "backgroundColor": "#F7F7F7"
+    "navigationBarBackgroundColor": "#F8FAFC",
+    "backgroundColor": "#F8FAFC"
   }
 }

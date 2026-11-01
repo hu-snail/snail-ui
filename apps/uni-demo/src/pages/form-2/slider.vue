@@ -15,13 +15,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'滑块'" :title-en="'Slider'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('range-theme', 'Range Theme')" badge="range-theme" :index="1" />
+        <DemoModuleHead :title="t('range-theme', 'Range Theme')" badge="range-theme" />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -30,7 +30,6 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('vertical-popover-color', 'Vertical Popover Color')"
           badge="vertical-popover-color"
-          :index="2"
         />
         <view class="module__body">
           <Demo2 />

@@ -19,67 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'上传'" :title-en="'Upload'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('before-hooks', 'Before Hooks')"
-          badge="before-hooks"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('before-hooks', 'Before Hooks')" badge="before-hooks" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('disabled-status', 'Disabled Status')"
-          badge="disabled-status"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('disabled-status', 'Disabled Status')" badge="disabled-status" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('events-counter', 'Events Counter')"
-          badge="events-counter"
-          :index="3"
-        />
+        <DemoModuleHead :title="t('events-counter', 'Events Counter')" badge="events-counter" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('multiple-source', 'Multiple Source')"
-          badge="multiple-source"
-          :index="4"
-        />
+        <DemoModuleHead :title="t('multiple-source', 'Multiple Source')" badge="multiple-source" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('preview-custom', 'Preview Custom')"
-          badge="preview-custom"
-          :index="5"
-        />
+        <DemoModuleHead :title="t('preview-custom', 'Preview Custom')" badge="preview-custom" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('request-method', 'Request Method')"
-          badge="request-method"
-          :index="6"
-        />
+        <DemoModuleHead :title="t('request-method', 'Request Method')" badge="request-method" />
         <view class="module__body">
           <Demo6 />
         </view>

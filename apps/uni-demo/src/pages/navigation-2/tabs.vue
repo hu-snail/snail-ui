@@ -21,55 +21,55 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'标签页'" :title-en="'Tabs'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('animate', 'Animate')" badge="animate" :index="0" />
+        <DemoModuleHead :title="t('animate', 'Animate')" badge="animate" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('徽标', 'Badge')" badge="badge" :index="1" />
+        <DemoModuleHead :title="t('徽标', 'Badge')" badge="badge" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="2" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" :index="3" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('line', 'Line')" badge="line" :index="4" />
+        <DemoModuleHead :title="t('line', 'Line')" badge="line" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('分页联动', 'Paging sync')" badge="paging" :index="5" />
+        <DemoModuleHead :title="t('分页联动', 'Paging sync')" badge="paging" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" :index="6" />
+        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('轮播联动', 'Swiper sync')" badge="swiper" :index="7" />
+        <DemoModuleHead :title="t('轮播联动', 'Swiper sync')" badge="swiper" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" :index="8" />
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
           <Demo8 />
         </view>

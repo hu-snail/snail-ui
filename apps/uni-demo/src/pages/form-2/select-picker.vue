@@ -16,33 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'单复选选择器'" :title-en="'Select Picker'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('fields-size', 'Fields Size')" badge="fields-size" :index="1" />
+        <DemoModuleHead :title="t('fields-size', 'Fields Size')" badge="fields-size" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('loading-sheet', 'Loading Sheet')"
-          badge="loading-sheet"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('loading-sheet', 'Loading Sheet')" badge="loading-sheet" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('radio-filter', 'Radio Filter')"
-          badge="radio-filter"
-          :index="3"
-        />
+        <DemoModuleHead :title="t('radio-filter', 'Radio Filter')" badge="radio-filter" />
         <view class="module__body">
           <Demo3 />
         </view>

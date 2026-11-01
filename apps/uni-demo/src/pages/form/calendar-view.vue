@@ -16,37 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'日历面板'" :title-en="'Calendar View'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('formatter-week', 'Formatter Week')"
-          badge="formatter-week"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('formatter-week', 'Formatter Week')" badge="formatter-week" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('range-switch', 'Range Switch')"
-          badge="range-switch"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('range-switch', 'Range Switch')" badge="range-switch" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('same-day-time', 'Same Day Time')"
-          badge="same-day-time"
-          :index="3"
-        />
+        <DemoModuleHead :title="t('same-day-time', 'Same Day Time')" badge="same-day-time" />
         <view class="module__body">
           <Demo3 />
         </view>

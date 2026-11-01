@@ -2,13 +2,14 @@
 /**
  * Demo: sn-fab (uni-end) — fan expansion shape (AUI-OPT-19 additive).
  *
- *   - `mode="fan"`: items bloom along an arc out of the trigger centre
- *     (45° step; edge-centre anchors cap at 120°, corner anchors fix a 90°
- *     quadrant), with a back-out easing and a per-item stagger.
+ *   - `mode="fan"` + `fan-motion="fan"`: items unfold like a folding fan —
+ *     every rib sweeps along the arc from the folded centre angle to its
+ *     own angle, content counter-rotated to stay upright; 45° step,
+ *     edge-centre anchors cap at 120°, corner anchors fix a 90° quadrant.
  *   - bottom-center → symmetric centre fan; right-bottom / left-top →
  *     oblique quadrant fans pointing into the screen.
- *   - Items come from structured `actions` (icon = IconData, color from
- *     semantic tokens); tapping an item closes the fan and records the
+ *   - Items are icon bubbles only (structured actions, colors from
+ *     semantic tokens); tapping one closes the fan and records the
  *     feedback. Copy stays in parity with fab-mp-fan.vue.
  *
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
@@ -33,12 +34,13 @@ function pick(label: string): void {
   lastAction.value = label;
 }
 
-/* Centre fan (bottom-center): icon + text pills, palette from the basic demo. */
+/* Centre fan (bottom-center): icon bubbles, folding-fan arc sweep. */
 const centerActions: SnFabAction[] = [
-  { icon: Edit, text: 'Publish post', color: 'var(--sn-mp-color-action-primary)' },
-  { icon: Camera, text: 'Take photo', color: 'var(--sn-mp-color-feedback-success)' },
-  { icon: Star, text: 'Star', color: 'var(--sn-mp-color-feedback-warning)' },
+  { icon: Edit, color: 'var(--sn-mp-color-action-primary)' },
+  { icon: Camera, color: 'var(--sn-mp-color-feedback-success)' },
+  { icon: Star, color: 'var(--sn-mp-color-feedback-warning)' },
 ];
+const centerLabels = ['Publish post', 'Take photo', 'Star'];
 
 /* Oblique fan (right-bottom): icon bubbles, up-left quadrant. */
 const cornerActions: SnFabAction[] = [
@@ -59,23 +61,25 @@ const topActions: SnFabAction[] = [
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Fan expansion</text>
       <text class="sn-fab-demo__hint-text">
-        Centre anchors open a symmetric fan, side corners an oblique one; items auto-close on tap.
-        Last action: {{ lastAction === '' ? 'none yet' : lastAction }}
+        Centre anchors open a symmetric fan, side corners an oblique one — ribs sweep like a folding
+        fan; items auto-close on tap. Last action: {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
     </view>
 
     <SnFab
       v-model:active="actives.center"
       mode="fan"
+      fan-motion="fan"
       position="bottom-center"
       :actions="centerActions"
       custom-class="sn-demo-contained"
-      @action="(action: SnFabAction) => pick(action.text ?? '')"
+      @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
 
     <SnFab
       v-model:active="actives.corner"
       mode="fan"
+      fan-motion="fan"
       position="right-bottom"
       :actions="cornerActions"
       custom-class="sn-demo-contained"
@@ -85,6 +89,7 @@ const topActions: SnFabAction[] = [
     <SnFab
       v-model:active="actives.top"
       mode="fan"
+      fan-motion="fan"
       position="left-top"
       :actions="topActions"
       custom-class="sn-demo-contained"

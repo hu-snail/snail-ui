@@ -16,25 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'二维码'" :title-en="'Qr Code'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('canvas', 'Canvas')" badge="canvas" :index="1" />
+        <DemoModuleHead :title="t('canvas', 'Canvas')" badge="canvas" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('dot-type', 'Dot Type')" badge="dot-type" :index="2" />
+        <DemoModuleHead :title="t('dot-type', 'Dot Type')" badge="dot-type" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('导出', 'Export')" badge="export" :index="3" />
+        <DemoModuleHead :title="t('导出', 'Export')" badge="export" />
         <view class="module__body">
           <Demo3 />
         </view>

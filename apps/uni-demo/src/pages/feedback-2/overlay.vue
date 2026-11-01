@@ -14,13 +14,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'遮罩层'" :title-en="'Overlay'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" :index="1" />
+        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
         <view class="module__body">
           <Demo1 />
         </view>

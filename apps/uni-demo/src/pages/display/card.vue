@@ -14,13 +14,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'卡片'" :title-en="'Card'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" :index="1" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo1 />
         </view>

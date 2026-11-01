@@ -14,13 +14,13 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'图片裁剪'" :title-en="'Img Cropper'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('导出', 'Export')" badge="export" :index="0" />
+        <DemoModuleHead :title="t('导出', 'Export')" badge="export" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('ratio', 'Ratio')" badge="ratio" :index="1" />
+        <DemoModuleHead :title="t('ratio', 'Ratio')" badge="ratio" />
         <view class="module__body">
           <Demo1 />
         </view>

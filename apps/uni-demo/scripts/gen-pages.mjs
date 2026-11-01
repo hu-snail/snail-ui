@@ -143,6 +143,19 @@ const PAGE_BG_OVERRIDES = {
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
 const DEMO_ORDER = {
+  'button-mp-basic': 1,
+  'button-mp-size': 2,
+  'button-mp-shape': 3,
+  'button-mp-variant': 4,
+  'button-mp-state': 5,
+  'button-mp-icon-button': 6,
+  'button-mp-cell': 7,
+  'button-mp-hover': 8,
+  'button-mp-loading-props': 9,
+  'button-mp-custom': 10,
+  'button-mp-form-type': 11,
+  'button-mp-open-type': 12,
+  'button-mp-mp-open-type': 13,
   'input-mp-basic': 1,
   'input-mp-types': 2,
   'input-mp-sizes': 3,
@@ -338,8 +351,10 @@ const pagesJson = {
   globalStyle: {
     navigationBarTextStyle: 'black',
     navigationBarTitleText: 'snui',
-    navigationBarBackgroundColor: '#FFFFFF',
-    backgroundColor: '#F7F7F7',
+    // 与画布渐变顶色（--demo-page-canvas 起 #f8fafc）一致，导航栏不再以
+    // 白条割裂页面顶部。
+    navigationBarBackgroundColor: '#F8FAFC',
+    backgroundColor: '#F8FAFC',
   },
 };
 writeFileSync(`${pagesDir}../pages.json`, `${JSON.stringify(pagesJson, null, 2)}\n`);
@@ -401,7 +416,7 @@ for (const sub of subpackages) {
       .map((demo, i) => {
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
         return `      <view class="module">
-        <DemoModuleHead :title="t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}')"${badge} :index="${i}" />
+        <DemoModuleHead :title="t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}')"${badge} />
         <view class="module__body">
           <Demo${i} />
         </view>

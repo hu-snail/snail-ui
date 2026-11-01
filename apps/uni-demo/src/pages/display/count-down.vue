@@ -15,19 +15,19 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'倒计时'" :title-en="'Count Down'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('autostart', 'Autostart')" badge="autostart" :index="0" />
+        <DemoModuleHead :title="t('autostart', 'Autostart')" badge="autostart" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="1" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('control', 'Control')" badge="control" :index="2" />
+        <DemoModuleHead :title="t('control', 'Control')" badge="control" />
         <view class="module__body">
           <Demo2 />
         </view>

@@ -29,25 +29,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'输入框'" :title-en="'Input'" :bg="'#ffffff'">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="types" :index="1" />
+        <DemoModuleHead :title="t('类型', 'Type')" badge="types" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸', 'Sizes')" badge="sizes" :index="2" />
+        <DemoModuleHead :title="t('尺寸', 'Sizes')" badge="sizes" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('圆角', 'Radius')" badge="radius" :index="3" />
+        <DemoModuleHead :title="t('圆角', 'Radius')" badge="radius" />
         <view class="module__body">
           <Demo3 />
         </view>
@@ -56,108 +56,79 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('边框与背景', 'Border & background')"
           badge="bordered-bg-radius"
-          :index="4"
         />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('前后图标', 'Prefix & suffix icons')"
-          badge="prefix-suffix"
-          :index="5"
-        />
+        <DemoModuleHead :title="t('前后图标', 'Prefix & suffix icons')" badge="prefix-suffix" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" :index="6" />
+        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('清空与字数', 'Clearable & count')"
-          badge="clearable-count"
-          :index="7"
-        />
+        <DemoModuleHead :title="t('清空与字数', 'Clearable & count')" badge="clearable-count" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('清空与聚焦', 'Clear & focus')" badge="clear-focus" :index="8" />
+        <DemoModuleHead :title="t('清空与聚焦', 'Clear & focus')" badge="clear-focus" />
         <view class="module__body">
           <Demo8 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('密码显隐', 'Password toggle')"
-          badge="password-toggle"
-          :index="9"
-        />
+        <DemoModuleHead :title="t('密码显隐', 'Password toggle')" badge="password-toggle" />
         <view class="module__body">
           <Demo9 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字数统计', 'Word limit')" badge="word-limit" :index="10" />
+        <DemoModuleHead :title="t('字数统计', 'Word limit')" badge="word-limit" />
         <view class="module__body">
           <Demo10 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('校验状态', 'Validation status')" badge="status" :index="11" />
+        <DemoModuleHead :title="t('校验状态', 'Validation status')" badge="status" />
         <view class="module__body">
           <Demo11 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('禁用与只读', 'Disabled & readonly')"
-          badge="states"
-          :index="12"
-        />
+        <DemoModuleHead :title="t('禁用与只读', 'Disabled & readonly')" badge="states" />
         <view class="module__body">
           <Demo12 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('对齐与紧凑', 'Alignment & compact')"
-          badge="align-compact"
-          :index="13"
-        />
+        <DemoModuleHead :title="t('对齐与紧凑', 'Alignment & compact')" badge="align-compact" />
         <view class="module__body">
           <Demo13 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('原生属性', 'Native attributes')"
-          badge="native-attrs"
-          :index="14"
-        />
+        <DemoModuleHead :title="t('原生属性', 'Native attributes')" badge="native-attrs" />
         <view class="module__body">
           <Demo14 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('运行时属性', 'Runtime attributes')"
-          badge="runtime"
-          :index="15"
-        />
+        <DemoModuleHead :title="t('运行时属性', 'Runtime attributes')" badge="runtime" />
         <view class="module__body">
           <Demo15 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" :index="16" />
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
         <view class="module__body">
           <Demo16 />
         </view>

@@ -19,43 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'悬浮按钮'" :title-en="'Fab'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" :index="1" />
+        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" :index="2" />
+        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('拖拽', 'Drag')" badge="drag" :index="3" />
+        <DemoModuleHead :title="t('拖拽', 'Drag')" badge="drag" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('扇形展开', 'Fan')" badge="fan" :index="4" />
+        <DemoModuleHead :title="t('扇形展开', 'Fan')" badge="fan" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" :index="5" />
+        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('位置', 'Position')" badge="position" :index="6" />
+        <DemoModuleHead :title="t('位置', 'Position')" badge="position" />
         <view class="module__body">
           <Demo6 />
         </view>

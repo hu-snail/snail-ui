@@ -2,12 +2,12 @@
 /**
  * Demo: sn-fab (uni-end) — 扇形展开形态（AUI-OPT-19 additive）。
  *
- *   - `mode="fan"`：动作项沿圆弧从触发按钮中心绽放（45° 步进；居中锚点
- *     跨度封顶 120°，角部锚点固定 90° 象限），back-out 缓动 + 逐项错峰。
- *   - bottom-center → 正中间扇形（绕正上方对称铺开）；right-bottom /
- *     left-top → 斜扇形（朝屏幕内侧的象限）。
- *   - 动作项为结构化 `actions`（icon = IconData 对象，color 走语义
- *     token），点选后自动收起并记录反馈。文案与 fab-mp-fan.en.vue 对等。
+ *   - `mode="fan"` + `fan-motion="fan"`：动作项像折扇一样沿圆弧展开——
+ *     扇骨自折叠角（锚点中心角）扫到各自角度，内容反向旋转保持直立；
+ *     45° 步进，居中锚点跨度封顶 120°，角部锚点固定 90° 象限。
+ *   - bottom-center → 正中间扇形；right-bottom / left-top → 斜扇形。
+ *   - 动作项全部为图标气泡（结构化 actions，color 走语义 token），
+ *     点选后自动收起并记录反馈。文案与 fab-mp-fan.en.vue 对等。
  *
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
  * the phone screen (the real runtime keeps `position: fixed`).
@@ -31,12 +31,13 @@ function pick(label: string): void {
   lastAction.value = label;
 }
 
-/* 正中间扇形（bottom-center）：icon + 文字胶囊，配色沿用基础用法。 */
+/* 正中间扇形（bottom-center）：图标气泡，扇骨式弧线展开。 */
 const centerActions: SnFabAction[] = [
-  { icon: Edit, text: '发布文章', color: 'var(--sn-mp-color-action-primary)' },
-  { icon: Camera, text: '拍照上传', color: 'var(--sn-mp-color-feedback-success)' },
-  { icon: Star, text: '收藏', color: 'var(--sn-mp-color-feedback-warning)' },
+  { icon: Edit, color: 'var(--sn-mp-color-action-primary)' },
+  { icon: Camera, color: 'var(--sn-mp-color-feedback-success)' },
+  { icon: Star, color: 'var(--sn-mp-color-feedback-warning)' },
 ];
+const centerLabels = ['发布文章', '拍照上传', '收藏'];
 
 /* 斜扇形（right-bottom）：图标气泡，向左上象限展开。 */
 const cornerActions: SnFabAction[] = [
@@ -57,7 +58,7 @@ const topActions: SnFabAction[] = [
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">扇形展开</text>
       <text class="sn-fab-demo__hint-text">
-        居中锚点=正中间扇形，两侧角部=斜扇形；点动作项自动收起。最近动作：{{
+        居中锚点=正中间扇形，两侧角部=斜扇形，像折扇一样沿弧线展开；点动作项自动收起。最近动作：{{
           lastAction === '' ? '尚未选择' : lastAction
         }}
       </text>
@@ -66,15 +67,17 @@ const topActions: SnFabAction[] = [
     <SnFab
       v-model:active="actives.center"
       mode="fan"
+      fan-motion="fan"
       position="bottom-center"
       :actions="centerActions"
       custom-class="sn-demo-contained"
-      @action="(action: SnFabAction) => pick(action.text ?? '')"
+      @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
 
     <SnFab
       v-model:active="actives.corner"
       mode="fan"
+      fan-motion="fan"
       position="right-bottom"
       :actions="cornerActions"
       custom-class="sn-demo-contained"
@@ -84,6 +87,7 @@ const topActions: SnFabAction[] = [
     <SnFab
       v-model:active="actives.top"
       mode="fan"
+      fan-motion="fan"
       position="left-top"
       :actions="topActions"
       custom-class="sn-demo-contained"

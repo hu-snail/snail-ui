@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'富文本'" :title-en="'Rich Text'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('images', 'Images')" badge="images" :index="1" />
+        <DemoModuleHead :title="t('images', 'Images')" badge="images" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('links', 'Links')" badge="links" :index="2" />
+        <DemoModuleHead :title="t('links', 'Links')" badge="links" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('media', 'Media')" badge="media" :index="3" />
+        <DemoModuleHead :title="t('media', 'Media')" badge="media" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('styles', 'Styles')" badge="styles" :index="4" />
+        <DemoModuleHead :title="t('styles', 'Styles')" badge="styles" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('table', 'Table')" badge="table" :index="5" />
+        <DemoModuleHead :title="t('table', 'Table')" badge="table" />
         <view class="module__body">
           <Demo5 />
         </view>

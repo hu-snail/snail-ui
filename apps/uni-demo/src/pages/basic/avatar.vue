@@ -18,37 +18,37 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'头像'" :title-en="'Avatar'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('回退', 'Fallback')" badge="fallback" :index="1" />
+        <DemoModuleHead :title="t('回退', 'Fallback')" badge="fallback" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('头像组', 'Group')" badge="group" :index="2" />
+        <DemoModuleHead :title="t('头像组', 'Group')" badge="group" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字体图标', 'Iconfont')" badge="icon-font" :index="3" />
+        <DemoModuleHead :title="t('字体图标', 'Iconfont')" badge="icon-font" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" :index="4" />
+        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'Status')" badge="status" :index="5" />
+        <DemoModuleHead :title="t('状态', 'Status')" badge="status" />
         <view class="module__body">
           <Demo5 />
         </view>

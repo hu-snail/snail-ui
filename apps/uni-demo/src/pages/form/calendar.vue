@@ -20,57 +20,49 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'日历选择器'" :title-en="'Calendar'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" :index="1" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('grid-range', 'Grid Range')" badge="grid-range" :index="2" />
+        <DemoModuleHead :title="t('grid-range', 'Grid Range')" badge="grid-range" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" :index="3" />
+        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('hooks-parity', 'Hooks Parity')"
-          badge="hooks-parity"
-          :index="4"
-        />
+        <DemoModuleHead :title="t('hooks-parity', 'Hooks Parity')" badge="hooks-parity" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" :index="5" />
+        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('panel-sheet', 'Panel Sheet')" badge="panel-sheet" :index="6" />
+        <DemoModuleHead :title="t('panel-sheet', 'Panel Sheet')" badge="panel-sheet" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('shortcuts-range', 'Shortcuts Range')"
-          badge="shortcuts-range"
-          :index="7"
-        />
+        <DemoModuleHead :title="t('shortcuts-range', 'Shortcuts Range')" badge="shortcuts-range" />
         <view class="module__body">
           <Demo7 />
         </view>

@@ -19,51 +19,43 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'文本域'" :title-en="'Textarea'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('clear-trigger', 'Clear Trigger')"
-          badge="clear-trigger"
-          :index="1"
-        />
+        <DemoModuleHead :title="t('clear-trigger', 'Clear Trigger')" badge="clear-trigger" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('counter-clear', 'Counter Clear')"
-          badge="counter-clear"
-          :index="2"
-        />
+        <DemoModuleHead :title="t('counter-clear', 'Counter Clear')" badge="counter-clear" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" :index="3" />
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('mp-runtime', 'Mp Runtime')" badge="mp-runtime" :index="4" />
+        <DemoModuleHead :title="t('mp-runtime', 'Mp Runtime')" badge="mp-runtime" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('prefix-icon', 'Prefix Icon')" badge="prefix-icon" :index="5" />
+        <DemoModuleHead :title="t('prefix-icon', 'Prefix Icon')" badge="prefix-icon" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" :index="6" />
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
         <view class="module__body">
           <Demo6 />
         </view>

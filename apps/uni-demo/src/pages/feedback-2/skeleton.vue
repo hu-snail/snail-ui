@@ -17,19 +17,19 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'骨架屏'" :title-en="'Skeleton'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('animation', 'Animation')" badge="animation" :index="0" />
+        <DemoModuleHead :title="t('animation', 'Animation')" badge="animation" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="1" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" :index="2" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -38,14 +38,13 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('custom-class-forms', 'Custom Class Forms')"
           badge="custom-class-forms"
-          :index="3"
         />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" :index="4" />
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
         <view class="module__body">
           <Demo4 />
         </view>

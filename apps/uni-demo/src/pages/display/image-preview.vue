@@ -16,25 +16,25 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'图片预览'" :title-en="'Image Preview'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" :index="0" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" :index="1" />
+        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" :index="2" />
+        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('gestures', 'Gestures')" badge="gestures" :index="3" />
+        <DemoModuleHead :title="t('gestures', 'Gestures')" badge="gestures" />
         <view class="module__body">
           <Demo3 />
         </view>
