@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— password-input 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/password-input-mp-basic.vue';
-import Demo1 from './demos/password-input-mp-custom-style.vue';
-import Demo2 from './demos/password-input-mp-error-gutter.vue';
+import Demo1 from './demos/password-input-mp-shape.vue';
+import Demo2 from './demos/password-input-mp-background.vue';
+import Demo3 from './demos/password-input-mp-error-gutter.vue';
+import Demo4 from './demos/password-input-mp-custom-style.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -26,15 +28,27 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
+        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('error-gutter', 'Error Gutter')" badge="error-gutter" />
+        <DemoModuleHead :title="t('格子背景', 'Cell background')" badge="background" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('明文与错误态', 'Plain text & error')" badge="error-gutter" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

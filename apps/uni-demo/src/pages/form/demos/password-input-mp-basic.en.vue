@@ -5,17 +5,36 @@ import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-passw
 
 const pin = ref('123');
 const focused = ref(true);
+const mask = ref(true);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPasswordInput v-model="pin" :length="6" :focused="focused" info="Enter the 6-digit PIN" />
-    <view class="sn-demo__button" @tap="focused = !focused">Toggle focus</view>
+    <SnPasswordInput
+      v-model="pin"
+      :length="6"
+      :mask="mask"
+      :focused="focused"
+      info="Enter the 6-digit PIN"
+    />
+    <view class="sn-demo__row">
+      <view class="sn-demo__button" @tap="focused = !focused">{{
+        focused ? 'Blur' : 'Focus'
+      }}</view>
+      <view class="sn-demo__button sn-demo__button--ghost" @tap="mask = !mask">{{
+        mask ? 'Plain' : 'Dots'
+      }}</view>
+    </view>
     <text class="sn-demo__meta">Value: {{ pin || '(empty)' }}</text>
   </view>
 </template>
 
 <style scoped>
+.sn-demo__row {
+  display: flex;
+  gap: 16rpx;
+}
+
 .sn-demo__button {
   display: inline-flex;
   align-items: center;
@@ -26,6 +45,11 @@ const focused = ref(true);
   background-color: var(--sn-mp-color-action-primary);
   color: var(--sn-mp-color-text-on-primary);
   font-size: 28rpx;
+}
+
+.sn-demo__button--ghost {
+  background-color: var(--sn-mp-color-background-subtle);
+  color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-demo__meta {

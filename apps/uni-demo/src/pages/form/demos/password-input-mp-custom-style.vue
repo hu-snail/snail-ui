@@ -3,8 +3,9 @@
  * Demo: sn-password-input — customClass / customStyle。
  *
  * `custom-class` 追加在根节点上（与 `sn-password-input` 并列），`custom-style`
- * 是根节点的内联样式。注意组件自己的 `gutter` 会写 `--sn-password-input-gap`
- * 变量，`custom-style` 追加在其后，因此可以继续覆盖其它属性。
+ * 是根节点的内联样式。注意组件自己的 `gutter` / `background` 会写
+ * `--sn-password-input-*` 变量，`custom-style` 追加在其后，因此可以继续覆盖
+ * 其它属性。
  */
 import { ref } from 'vue';
 import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-password-input.vue';
@@ -25,6 +26,9 @@ const framed = ref('4567');
 
     <SnPasswordInput v-model="framed" :length="4" :gutter="12" custom-class="sn-demo__pin" />
     <text class="sn-demo__meta">只给 customClass：与组件自身的 gutter 变量并存</text>
+
+    <SnPasswordInput v-model="framed" :length="4" custom-class="sn-demo__pin sn-demo__pin--tall" />
+    <text class="sn-demo__meta">custom-class 重指几何 hook：格子加高、圆角加大</text>
   </view>
 </template>
 
@@ -44,5 +48,10 @@ const framed = ref('4567');
 /* custom-class 落在 sn-password-input 根节点上，需要 :deep 穿透组件边界。 */
 .sn-demo :deep(.sn-demo__pin) {
   border: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+/* 几何 hook 由宿主任意祖先重指，格子加高 + 大圆角。 */
+.sn-demo :deep(.sn-demo__pin--tall) {
+  --sn-password-input-box-bg: var(--sn-mp-color-background-sunken);
+  --sn-password-input-radius: var(--sn-mp-radius-xl);
 }
 </style>

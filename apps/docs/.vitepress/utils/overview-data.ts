@@ -74,6 +74,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-password-input', title: '密码输入框', desc: '密码 / 验证码输入' },
       { name: 'sn-keyboard', title: '虚拟键盘', desc: '自定义数字键盘' },
       { name: 'sn-keyboard-panel', title: '键盘面板', desc: '内嵌键盘视图' },
+      { name: 'sn-plate-input', title: '车牌输入框', desc: '点击弹起车牌键盘录入' },
       { name: 'sn-input-number', title: '计数器', desc: '步进数值输入' },
       { name: 'sn-search', title: '搜索框', desc: '搜索输入与联想' },
       { name: 'sn-checkbox', title: '复选框', desc: '多选控件' },

@@ -68,6 +68,7 @@ const COMP_ICONS: Record<string, string> = {
   'input-number': 'plus',
   keyboard: 'table',
   'password-input': 'lock',
+  'plate-input': 'car',
   picker: 'chevron-down',
   'picker-view': 'list',
   radio: 'circle-check',

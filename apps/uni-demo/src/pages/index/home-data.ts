@@ -407,7 +407,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '密码输入框',
         titleEn: 'Password Input',
         desc: '密码 / 验证码输入',
-        count: 3,
+        count: 5,
       },
     ],
   },
@@ -431,6 +431,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         titleEn: 'Picker View',
         desc: '内嵌滚轮选择',
         count: 4,
+      },
+      {
+        key: 'plate-input',
+        group: 'form-2',
+        title: '车牌输入框',
+        titleEn: 'Plate Input',
+        desc: '点击弹起车牌键盘录入',
+        count: 2,
       },
       {
         key: 'radio',

@@ -4,8 +4,16 @@
  *
  * Reference library: wot-ui `wd-password-input`
  *   (https://wot-ui.cn/component/password-input.html)
- * Per AGENTS.md §112, the prop surface below mirrors wd-password-input 1:1.
- * Anything new added here MUST also be added to the reference list in
+ * Per AGENTS.md §112, the prop surface below mirrors wd-password-input 1:1
+ * except for the registered deviations (AGENTS.md §112.3a):
+ *   - `shape: 'box' | 'underline'` — additive（Human 指令 2026-11-01）；方框 /
+ *     下划线两种格子形状，参考库无对应 prop。
+ *   - `background` — additive（Human 指令 2026-11-01）；格子背景色，重指
+ *     `--sn-password-input-box-bg`，参考库只有 CSS var 没有 prop。
+ *   - `gutter` 默认值 0 → 8（16rpx）：参考库默认 0 时格子贴死，错误态视觉
+ *     尤其差（Human 指令 2026-11-01「密码不正确格子没有间距」）。显式传 0
+ *     仍可回到贴合布局。
+ * Anything else added here MUST also be added to the reference list in
  * AGENTS.md §112.
  *
  * File path follows uni-app easycom convention:
@@ -48,6 +56,10 @@ const props = withDefaults(
     errorInfo?: string;
     /** Gap between boxes. A number is treated as an rpx design value. */
     gutter?: number | string;
+    /** Box shape: framed `box` cells or borderless `underline` cells (additive). */
+    shape?: 'box' | 'underline';
+    /** Cell background color (any CSS color or `var(--sn-mp-color-*)`, additive). */
+    background?: string;
     /** Number of boxes. */
     length?: number;
     /** Whether the field is focused (shows the caret). */
@@ -62,7 +74,9 @@ const props = withDefaults(
     mask: true,
     info: '',
     errorInfo: '',
-    gutter: 0,
+    gutter: 8,
+    shape: 'box',
+    background: '',
     length: 6,
     focused: true,
     customClass: '',
@@ -114,6 +128,7 @@ const rootClass = computed(() => [
   'sn-password-input',
   {
     'sn-password-input--mask': props.mask,
+    'sn-password-input--underline': props.shape === 'underline',
     'sn-password-input--focused': props.focused,
     'sn-password-input--error': props.errorInfo !== '',
   },
@@ -125,6 +140,9 @@ const rootStyle = computed(() => {
   if (props.gutter !== 0 && props.gutter !== '') {
     const gap = typeof props.gutter === 'number' ? `${props.gutter * 2}rpx` : props.gutter;
     vars.push(`--sn-password-input-gap: ${gap}`);
+  }
+  if (props.background !== '') {
+    vars.push(`--sn-password-input-box-bg: ${props.background}`);
   }
   const base = vars.join('; ');
   if (!props.customStyle) return base;
@@ -202,7 +220,7 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
 .sn-password-input__boxes {
   display: flex;
   align-items: center;
-  gap: var(--sn-password-input-gap, 0);
+  gap: var(--sn-password-input-gap, 16rpx);
   width: 100%;
 }
 
@@ -215,8 +233,8 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
   height: 88rpx;
   box-sizing: border-box;
   border: 2rpx solid var(--sn-mp-color-input-border);
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-input-bg);
+  border-radius: var(--sn-password-input-radius, var(--sn-mp-radius-md));
+  background-color: var(--sn-password-input-box-bg, var(--sn-mp-color-input-bg));
   color: var(--sn-mp-color-input-text);
 }
 
@@ -226,6 +244,24 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
 
 .sn-password-input__box--active {
   border-color: var(--sn-mp-color-input-border-focus);
+}
+
+/* Underline shape — borderless cells over a bottom rule (additive). The
+ * three-class state rules re-assert the bottom border color because the
+ * base underline rule would otherwise out-cascade `--active` / `--error`. */
+.sn-password-input--underline .sn-password-input__box {
+  border: none;
+  border-bottom: 4rpx solid var(--sn-mp-color-input-border);
+  border-radius: 0;
+  background-color: var(--sn-password-input-box-bg, transparent);
+}
+
+.sn-password-input--underline .sn-password-input__box--active {
+  border-bottom-color: var(--sn-mp-color-input-border-focus);
+}
+
+.sn-password-input--underline .sn-password-input__box--error {
+  border-bottom-color: var(--sn-mp-color-feedback-danger);
 }
 
 .sn-password-input__char {
@@ -265,5 +301,12 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
   border-width: 4rpx;
   border-color: var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-radius-xs);
+}
+
+/* Doodle underline — the hand-drawn look keeps the bottom rule only. */
+.snui-skin-doodle .sn-password-input--underline .sn-password-input__box {
+  border: none;
+  border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
+  border-radius: 0;
 }
 </style>

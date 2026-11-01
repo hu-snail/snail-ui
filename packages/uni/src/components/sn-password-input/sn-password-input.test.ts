@@ -128,16 +128,43 @@ describe('sn-password-input', () => {
   /* ── Extended coverage: bounds, a11y, v-model flow, forwarding ── */
 
   it('renders at least one box when length is 0', () => {
-    expect(mount(SnPasswordInput, { props: { length: 0 } }).findAll('.sn-password-input__box')).toHaveLength(1);
+    expect(
+      mount(SnPasswordInput, { props: { length: 0 } }).findAll('.sn-password-input__box'),
+    ).toHaveLength(1);
   });
 
   it('shows the caret by default (focused defaults to true)', () => {
     expect(mount(SnPasswordInput).find('.sn-password-input__caret').exists()).toBe(true);
   });
 
-  it('omits the gap custom property when gutter is 0', () => {
-    const w = mount(SnPasswordInput);
+  it('defaults to a 16rpx gap (gutter 8)', () => {
+    expect(mount(SnPasswordInput).attributes('style')).toContain('--sn-password-input-gap: 16rpx');
+  });
+
+  it('omits the gap custom property when gutter is explicitly 0', () => {
+    const w = mount(SnPasswordInput, { props: { gutter: 0 } });
     expect(w.attributes('style') ?? '').not.toContain('--sn-password-input-gap');
+  });
+
+  it('marks the underline shape on the root', () => {
+    expect(mount(SnPasswordInput).classes()).not.toContain('sn-password-input--underline');
+    const w = mount(SnPasswordInput, { props: { shape: 'underline' } });
+    expect(w.classes()).toContain('sn-password-input--underline');
+  });
+
+  it('forwards the cell background as a custom property', () => {
+    const w = mount(SnPasswordInput, {
+      props: { background: 'var(--sn-mp-color-background-sunken)' },
+    });
+    expect(w.attributes('style')).toContain(
+      '--sn-password-input-box-bg: var(--sn-mp-color-background-sunken)',
+    );
+  });
+
+  it('omits the background custom property by default', () => {
+    expect(mount(SnPasswordInput).attributes('style') ?? '').not.toContain(
+      '--sn-password-input-box-bg',
+    );
   });
 
   it('keeps the native input numeric with the box-count maxlength', () => {

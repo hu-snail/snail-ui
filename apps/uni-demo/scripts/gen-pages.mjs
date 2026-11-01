@@ -117,6 +117,10 @@ const SCENARIO_LABELS = {
   'native-attrs': '原生属性',
   'password-toggle': '密码显隐',
   'prefix-suffix': '前后图标',
+  shape: '形状',
+  background: '格子背景',
+  'error-gutter': '明文与错误态',
+  'new-energy': '新能源车牌',
   runtime: '运行时属性',
   'word-limit': '字数统计',
 };
@@ -181,6 +185,13 @@ const DEMO_ORDER = {
   'input-mp-native-attrs': 15,
   'input-mp-runtime': 16,
   'input-mp-custom-class': 17,
+  'password-input-mp-basic': 1,
+  'password-input-mp-shape': 2,
+  'password-input-mp-background': 3,
+  'password-input-mp-error-gutter': 4,
+  'password-input-mp-custom-style': 5,
+  'plate-input-mp-basic': 1,
+  'plate-input-mp-new-energy': 2,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -262,6 +273,10 @@ const SCENARIO_LABELS_EN = {
   'native-attrs': 'Native attributes',
   'password-toggle': 'Password toggle',
   'prefix-suffix': 'Prefix & suffix icons',
+  shape: 'Shape',
+  background: 'Cell background',
+  'error-gutter': 'Plain text & error',
+  'new-energy': 'New-energy plate',
   runtime: 'Runtime attributes',
   'word-limit': 'Word limit',
 };

@@ -11,7 +11,9 @@ Boxed password / PIN field: a hidden native input drives the keyboard while the 
 ## Reference Library
 
 Per AGENTS.md §112, the API surface mirrors wot-ui `wd-password-input`
-(https://wot-ui.cn/component/password-input.html). New props added here MUST also be
+(https://wot-ui.cn/component/password-input.html) except for the registered
+deviations (AGENTS.md §112.3a): `shape`（方框 / 下划线）、`background`（格子
+背景色）为 AUI 追加，`gutter` 默认值 0 → 8. New props added here MUST also be
 added to the parity list.
 
 ## Import
@@ -27,15 +29,17 @@ import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-passw
 
 ## Props
 
-| Name                          | Type               | Default | Description                            |
-| ----------------------------- | ------------------ | ------- | -------------------------------------- |
-| `modelValue`                  | `string`           | `''`    | Current value.                         |
-| `mask`                        | `boolean`          | `true`  | Render dots instead of characters.     |
-| `info` / `errorInfo`          | `string`           | `''`    | Helper / error text (error wins).      |
-| `gutter`                      | `number \| string` | `0`     | Gap between boxes.                     |
-| `length`                      | `number`           | `6`     | Number of boxes.                       |
-| `focused`                     | `boolean`          | `true`  | Show the caret in the first empty box. |
-| `customClass` / `customStyle` | `string`           | `''`    | Root forwarding.                       |
+| Name                          | Type                   | Default | Description                                |
+| ----------------------------- | ---------------------- | ------- | ------------------------------------------ |
+| `modelValue`                  | `string`               | `''`    | Current value.                             |
+| `mask`                        | `boolean`              | `true`  | Render dots instead of characters.         |
+| `info` / `errorInfo`          | `string`               | `''`    | Helper / error text (error wins).          |
+| `gutter`                      | `number \| string`     | `8`     | Gap between boxes (16rpx; `0` = flush).    |
+| `shape`                       | `'box' \| 'underline'` | `'box'` | Box shape (additive, §112.3a).             |
+| `background`                  | `string`               | `''`    | Cell background color (additive, §112.3a). |
+| `length`                      | `number`               | `6`     | Number of boxes.                           |
+| `focused`                     | `boolean`              | `true`  | Show the caret in the first empty box.     |
+| `customClass` / `customStyle` | `string`               | `''`    | Root forwarding.                           |
 
 ## Events
 
@@ -53,7 +57,8 @@ import SnPasswordInput from '@snui/uni-src/components/sn-password-input/sn-passw
 | `--sn-mp-color-feedback-danger`                                  | Error border + message                 |
 | `--sn-mp-color-action-primary`                                   | Caret                                  |
 | `--sn-mp-color-text-tertiary`                                    | Helper text                            |
-| `--sn-mp-radius-md`                                              | Box corners                            |
+| `--sn-mp-radius-md`（hook: `--sn-password-input-radius`）        | Box corners（下划线形状为 0）          |
+| `--sn-password-input-gap` / `-box-bg` / `-radius`                | Component-local hooks（prop 可重指）   |
 | `--sn-mp-font-size-xl` / `-sm`                                   | Glyph / message size                   |
 
 ## Accessibility

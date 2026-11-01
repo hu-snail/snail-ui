@@ -368,6 +368,13 @@
           }
         },
         {
+          "path": "plate-input",
+          "style": {
+            "navigationBarTitleText": "车牌输入框",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "radio",
           "style": {
             "navigationBarTitleText": "单选框",

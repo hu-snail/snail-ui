@@ -4,33 +4,47 @@
 
 ## Basic usage
 
-Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focused` drives the caret (pair it with the keyboard visibility).
+Boxed PIN field: `length` sets the box count, `mask` toggles the dots, `focused` drives the caret and the default `gutter=8` (16rpx gap) keeps cells apart — pass `gutter=0` for the flush layout.
 
 <Demo name="password-input-mp-basic" description="Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focused` drives the caret (pair it with the keyboard visibility)." />
 
+## Cell shape (`shape`)
+
+`shape='box'` (framed, default) vs `shape='underline'` (bottom rule only); focus / error border colors follow automatically, and `background` works in both shapes.
+
+<Demo name="password-input-mp-shape" description="`shape='box'` (default) vs `shape='underline'` cell shapes." />
+
+## Cell background (`background`)
+
+The `background` prop paints custom cell backgrounds: `var(--sn-mp-color-*)` tokens or any CSS color, riding `--sn-password-input-box-bg` and following dark mode automatically.
+
+<Demo name="password-input-mp-background" description="The `background` prop paints custom cell backgrounds (tokens or any CSS color)." />
+
 ## Plain text, error & gap (`mask` / `errorInfo` / `gutter`)
 
-`mask=false` shows the characters; `errorInfo` overrides `info` and turns the borders danger-colored; `gutter` sets the gap.
+`mask=false` shows the characters; `errorInfo` overrides `info` and turns the borders danger-colored. The default 16rpx gap is tunable via `gutter` (explicit 0 restores the flush layout).
 
-<Demo name="password-input-mp-error-gutter" description="`mask=false` shows the characters; `errorInfo` overrides `info` and turns the borders danger-colored; `gutter` sets the gap." />
+<Demo name="password-input-mp-error-gutter" description="`mask=false` shows the characters; `errorInfo` overrides `info` and turns the borders danger-colored; the default 16rpx gap is tunable via `gutter`." />
 
 ## Root class & inline style (`customClass` / `customStyle`)
 
-`custom-class` is appended to the root node (alongside `sn-password-input`) and `custom-style` is the root inline style; the component's own `gutter` variable comes first and `custom-style` is appended after it.
+`custom-class` is appended to the root node (alongside `sn-password-input`) and `custom-style` is the root inline style; the component's own `gutter` / `background` variables come first and `custom-style` is appended after it. The geometry hooks (`--sn-password-input-gap` / `-box-bg` / `-radius`) can be re-pointed from any host ancestor.
 
-<Demo name="password-input-mp-custom-style" description="`customClass` is appended to the root; `customStyle` is appended after the component's own gutter variable and can override other properties." />
+<Demo name="password-input-mp-custom-style" description="`customClass` is appended to the root; `customStyle` is appended after the component's own variables and can override other properties." />
 
 ## Props
 
-| Prop                          | Type               | Default | Description                           |
-| ----------------------------- | ------------------ | ------- | ------------------------------------- |
-| `modelValue`                  | `string`           | `''`    | Current value                         |
-| `mask`                        | `boolean`          | `true`  | Render dots instead of characters     |
-| `info` / `errorInfo`          | `string`           | `''`    | Helper / error text (error wins)      |
-| `gutter`                      | `number \| string` | `0`     | Gap between boxes                     |
-| `length`                      | `number`           | `6`     | Number of boxes                       |
-| `focused`                     | `boolean`          | `true`  | Show the caret in the first empty box |
-| `customClass` / `customStyle` | `string`           | `''`    | Root class / inline style             |
+| Prop                          | Type                   | Default | Description                               |
+| ----------------------------- | ---------------------- | ------- | ----------------------------------------- |
+| `modelValue`                  | `string`               | `''`    | Current value                             |
+| `mask`                        | `boolean`              | `true`  | Render dots instead of characters         |
+| `info` / `errorInfo`          | `string`               | `''`    | Helper / error text (error wins)          |
+| `gutter`                      | `number \| string`     | `8`     | Gap between boxes (16rpx; `0` = flush)    |
+| `shape`                       | `'box' \| 'underline'` | `'box'` | Cell shape (additive, §112.3a)            |
+| `background`                  | `string`               | `''`    | Cell background color (additive, §112.3a) |
+| `length`                      | `number`               | `6`     | Number of boxes                           |
+| `focused`                     | `boolean`              | `true`  | Show the caret in the first empty box     |
+| `customClass` / `customStyle` | `string`               | `''`    | Root class / inline style                 |
 
 ## Events
 
@@ -46,14 +60,15 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token                                                              | Purpose                                |
-| ------------------------------------------------------------------ | -------------------------------------- |
-| ``--sn-mp-color-input-bg` / `-border` / `-border-focus` / `-text`` | Box surface, border, focus ring, glyph |
-| `--sn-mp-color-feedback-danger`                                    | Error border + message                 |
-| `--sn-mp-color-action-primary`                                     | Caret                                  |
-| `--sn-mp-color-text-tertiary`                                      | Helper text                            |
-| `--sn-mp-radius-md`                                                | Box corners                            |
-| ``--sn-mp-font-size-xl` / `-sm``                                   | Glyph / message size                   |
+| Token                                                            | Purpose                                   |
+| ---------------------------------------------------------------- | ----------------------------------------- |
+| `--sn-password-input-gap` / `-box-bg` / `-radius`                | Component-local hooks (prop re-pointable) |
+| `--sn-mp-color-input-bg` / `-border` / `-border-focus` / `-text` | Box surface, border, focus ring, glyph    |
+| `--sn-mp-color-feedback-danger`                                  | Error border + message                    |
+| `--sn-mp-color-action-primary`                                   | Caret                                     |
+| `--sn-mp-color-text-tertiary`                                    | Helper text                               |
+| `--sn-mp-radius-md`                                              | Box corners (0 for underline)             |
+| `--sn-mp-font-size-xl` / `-sm`                                   | Glyph / message size                      |
 
 ## Accessibility
 

@@ -1565,13 +1565,23 @@
           "hasEn": true
         },
         {
-          "name": "password-input-mp-custom-style",
-          "title": "自定义样式",
+          "name": "password-input-mp-shape",
+          "title": "形状",
+          "hasEn": true
+        },
+        {
+          "name": "password-input-mp-background",
+          "title": "格子背景",
           "hasEn": true
         },
         {
           "name": "password-input-mp-error-gutter",
-          "title": "error-gutter",
+          "title": "明文与错误态",
+          "hasEn": true
+        },
+        {
+          "name": "password-input-mp-custom-style",
+          "title": "自定义样式",
           "hasEn": true
         }
       ]
@@ -1628,6 +1638,24 @@
         {
           "name": "picker-view-mp-keys-geometry",
           "title": "keys-geometry",
+          "hasEn": true
+        }
+      ]
+    },
+    "plate-input": {
+      "group": "form-2",
+      "title": "车牌输入框",
+      "desc": "点击弹起车牌键盘录入",
+      "page": "pages/form-2/plate-input",
+      "demos": [
+        {
+          "name": "plate-input-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "plate-input-mp-new-energy",
+          "title": "新能源车牌",
           "hasEn": true
         }
       ]
