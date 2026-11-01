@@ -47,9 +47,11 @@ theme presets (background / text / icon) live.
 
 <Demo name="paging-mp-popup" description="sn-paging embedded in an sn-popup bottom sheet: pull-to-refresh and load-more run inside the layer, closing the popup resets it." />
 
-### App case: channel tabs + detail page
+### App case: full-page feed app (compact preview + fullscreen scenario)
 
-<Demo name="paging-mp-app" description="#top search bar and tabs, #bottom fixed action bar (safe-area padded); tapping a row opens a detail page with its own paged reply list." />
+The compact preview is a complete sn-paging (pill channels + mini feed); tapping "Full page" opens a position: fixed fullscreen scenario — SnNavbar + channel tabs + feed cards + a #bottom fixed action bar (safe-area padded). Tapping a card opens the article detail page: body + like/save action row + an independent sn-paging reply list; going back preserves the level-1 scroll position.
+
+<Demo name="paging-mp-app" description="Full-page feed app: tap Full page in the compact preview for the fullscreen scenario (Navbar + tabs + #bottom safe-area action bar); tap a card for the article detail page with its own paged reply list." />
 
 ## Protocol
 

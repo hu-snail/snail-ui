@@ -2,8 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— paging 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/paging-mp-app.vue';
 import Demo1 from './demos/paging-mp-basic.vue';
-import Demo2 from './demos/paging-mp-scroll.vue';
-import Demo3 from './demos/paging-mp-states.vue';
+import Demo2 from './demos/paging-mp-popup.vue';
+import Demo3 from './demos/paging-mp-scroll.vue';
+import Demo4 from './demos/paging-mp-second-floor.vue';
+import Demo5 from './demos/paging-mp-states.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -13,7 +15,7 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'paging'" :title-en="'Paging'" :bg="''">
+  <DemoPageShell :title-zh="'paging'" :title-en="'Paging'" :desc="''" :bg="''">
     <view class="page">
       <view class="module">
         <DemoModuleHead :title="t('app', 'App')" badge="app" />
@@ -28,15 +30,27 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <DemoModuleHead :title="t('弹窗', 'Popup')" badge="popup" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('second-floor', 'Second Floor')" badge="second-floor" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

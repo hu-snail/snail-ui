@@ -22,9 +22,9 @@ Group content is fully custom, and `change` reports the active index:
 
 ## Full-page contacts directory
 
-A complete contacts screen: a search bar filters by keyword (empty groups are dropped so the index bar follows along), every row uses an `sn-avatar` text avatar (the colour maps stably from a name hash onto a token palette); `show-indicator` echoes the active letter in the middle of the list and `anchor-id` gives each group a stable DOM id for deep links:
+A complete contacts screen: the compact preview is directly interactive (keyword filter drops empty groups so the index bar follows along, `show-indicator` centre bubble, `sn-avatar` text avatars); tapping "Full page" opens a position: fixed whole-page scenario — SnNavbar + search filter + index-bar contacts + a bottom count bar; tapping a contact opens the profile page (phone / email / city / dept), and going back preserves the list scroll position. `anchor-id` gives each group a stable DOM id for deep links:
 
-<Demo name="index-bar-mp-contacts" description="Full-page contacts: built-in Search icon + keyword filter; sn-avatar text avatars; show-indicator centre bubble; stable anchor-group ids." />
+<Demo name="index-bar-mp-contacts" description="Full-page contacts: the compact preview is interactive (search filter); tap Full page for the fullscreen screen (Navbar + search + index bar + count bar); tap a contact for the profile page." />
 
 > **Contract slot**: `sticky` currently only toggles the `sn-index-bar--sticky` class on the root and ships no matching CSS rule, so it has no visible effect. The prop stays for contract parity.
 

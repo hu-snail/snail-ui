@@ -1,27 +1,39 @@
 <script setup lang="ts">
 /**
- * Demo: sn-index-bar — full-page contacts directory.
+ * Demo: sn-index-bar — full-page contacts (compact preview + fullscreen page
+ * + contact profile).
  *
- * A search bar filters the list on top; the body is a grouped contact list and
- * the right-hand `sn-index-bar` jumps to a group on tap. Avatars use
- * `sn-avatar` text avatars (the colour maps stably from a name hash onto a
- * token palette). The search box uses the built-in `Search` icon.
- *
- * Capabilities on display:
- *   - `show-indicator` echoes the current index in the middle of the list
- *     (additive, see the component description)
- *   - `anchor-id` gives each group a stable DOM id (additive) for deep links
+ * Compact preview: keyword filter + sn-index-bar contact list (show-indicator
+ * centre bubble, anchor-id stable group ids, sn-avatar text avatars); tap
+ * "整页演示" or any contact to enter the fullscreen whole-page scenario.
+ * Fullscreen page: a position: fixed overlay = the whole-page app demo —
+ *          SnNavbar + search filter + index-bar contacts + a bottom count bar;
+ *          tapping a contact opens the profile page (v-show layering keeps
+ *          the list scroll position when going back).
  */
 import { computed, ref } from 'vue';
 import SnIndexBar from '@snui/uni-src/components/sn-index-bar/sn-index-bar.vue';
 import SnIndexAnchor from '@snui/uni-src/components/sn-index-bar/sn-index-anchor.vue';
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Search } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
+import {
+  ChevronRight,
+  Mail,
+  MapPin,
+  Phone,
+  Search,
+  User,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 interface Contact {
   name: string;
   note: string;
+  role: string;
+  dept: string;
+  location: string;
+  phone: string;
+  mail: string;
 }
 
 interface ContactGroup {
@@ -33,54 +45,176 @@ const groups: ContactGroup[] = [
   {
     index: 'A',
     contacts: [
-      { name: 'Alice', note: 'Product' },
-      { name: 'Amy', note: 'Design' },
-      { name: 'Aaron', note: 'QA' },
+      {
+        name: 'Alice',
+        note: '产品',
+        role: '高级产品经理',
+        dept: '产品部',
+        location: '上海',
+        phone: '138-0000-1001',
+        mail: 'alice@snui.dev',
+      },
+      {
+        name: 'Amy',
+        note: '设计',
+        role: '视觉设计师',
+        dept: '设计中心',
+        location: '杭州',
+        phone: '138-0000-1002',
+        mail: 'amy@snui.dev',
+      },
+      {
+        name: 'Aaron',
+        note: '测试',
+        role: '测试工程师',
+        dept: '质量部',
+        location: '成都',
+        phone: '138-0000-1003',
+        mail: 'aaron@snui.dev',
+      },
     ],
   },
   {
     index: 'B',
     contacts: [
-      { name: 'Bob', note: 'Engineering' },
-      { name: 'Bella', note: 'Ops' },
-      { name: 'Ben', note: 'Engineering' },
+      {
+        name: 'Bob',
+        note: '研发',
+        role: '前端工程师',
+        dept: '客户端部',
+        location: '北京',
+        phone: '138-0000-2001',
+        mail: 'bob@snui.dev',
+      },
+      {
+        name: 'Bella',
+        note: '运营',
+        role: '用户运营',
+        dept: '运营部',
+        location: '广州',
+        phone: '138-0000-2002',
+        mail: 'bella@snui.dev',
+      },
+      {
+        name: 'Ben',
+        note: '研发',
+        role: '后端工程师',
+        dept: '服务端部',
+        location: '深圳',
+        phone: '138-0000-2003',
+        mail: 'ben@snui.dev',
+      },
     ],
   },
   {
     index: 'C',
     contacts: [
-      { name: 'Carl', note: 'Marketing' },
-      { name: 'Cindy', note: 'Finance' },
+      {
+        name: 'Carl',
+        note: '市场',
+        role: '品牌营销',
+        dept: '市场部',
+        location: '上海',
+        phone: '138-0000-3001',
+        mail: 'carl@snui.dev',
+      },
+      {
+        name: 'Cindy',
+        note: '财务',
+        role: '财务专员',
+        dept: '财务部',
+        location: '北京',
+        phone: '138-0000-3002',
+        mail: 'cindy@snui.dev',
+      },
     ],
   },
   {
     index: 'D',
-    contacts: [{ name: 'Dora', note: 'Legal' }],
+    contacts: [
+      {
+        name: 'Dora',
+        note: '法务',
+        role: '法务顾问',
+        dept: '法务部',
+        location: '北京',
+        phone: '138-0000-4001',
+        mail: 'dora@snui.dev',
+      },
+    ],
   },
   {
     index: 'L',
     contacts: [
-      { name: 'Leo', note: 'Engineering' },
-      { name: 'Lily', note: 'Design' },
+      {
+        name: 'Leo',
+        note: '研发',
+        role: '架构师',
+        dept: '架构组',
+        location: '杭州',
+        phone: '138-0000-5001',
+        mail: 'leo@snui.dev',
+      },
+      {
+        name: 'Lily',
+        note: '设计',
+        role: '交互设计师',
+        dept: '设计中心',
+        location: '上海',
+        phone: '138-0000-5002',
+        mail: 'lily@snui.dev',
+      },
     ],
   },
   {
     index: 'W',
     contacts: [
-      { name: 'Wang Wei', note: 'Engineering' },
-      { name: 'Wu Min', note: 'Support' },
+      {
+        name: '王伟',
+        note: '研发',
+        role: '小程序负责人',
+        dept: '客户端部',
+        location: '北京',
+        phone: '138-0000-6001',
+        mail: 'wangwei@snui.dev',
+      },
+      {
+        name: '吴敏',
+        note: '客服',
+        role: '客服主管',
+        dept: '客户成功部',
+        location: '合肥',
+        phone: '138-0000-6002',
+        mail: 'wumin@snui.dev',
+      },
     ],
   },
   {
     index: 'Z',
     contacts: [
-      { name: 'Zhang Tao', note: 'Product' },
-      { name: 'Zhao Min', note: 'Ops' },
+      {
+        name: '张涛',
+        note: '产品',
+        role: '产品总监',
+        dept: '产品部',
+        location: '深圳',
+        phone: '138-0000-7001',
+        mail: 'zhangtao@snui.dev',
+      },
+      {
+        name: '赵敏',
+        note: '运营',
+        role: '内容运营',
+        dept: '运营部',
+        location: '上海',
+        phone: '138-0000-7002',
+        mail: 'zhaomin@snui.dev',
+      },
     ],
   },
 ];
 
-/** Avatar colour rotation pool: all token-based, adapts under dark mode. */
+/** 头像底色轮转池：全部取自 token，暗色下自动适配。 */
 const AVATAR_COLORS = [
   'var(--sn-mp-color-action-primary)',
   'var(--sn-mp-color-feedback-success)',
@@ -92,7 +226,7 @@ const AVATAR_COLORS = [
   'var(--sn-mp-color-lightblue)',
 ];
 
-/** Name → stable colour (the same contact renders the same hue every time). */
+/** 姓名 → 稳定颜色（同一联系人每次渲染同色）。 */
 function colorOf(seed: string): string {
   let sum = 0;
   for (let i = 0; i < seed.length; i += 1) sum += seed.charCodeAt(i);
@@ -101,7 +235,7 @@ function colorOf(seed: string): string {
 
 const query = ref('');
 
-/** Keyword filter; empty groups are dropped so the index bar follows along. */
+/** 按关键字过滤；空组直接丢弃，索引栏随分组联动。 */
 const filtered = computed<ContactGroup[]>(() => {
   const keyword = query.value.trim().toLowerCase();
   return groups
@@ -111,12 +245,51 @@ const filtered = computed<ContactGroup[]>(() => {
     }))
     .filter((group) => group.contacts.length > 0);
 });
+
+/** 过滤后的联系人总数（全屏页底栏展示）。 */
+const totalCount = computed(() =>
+  filtered.value.reduce((sum, group) => sum + group.contacts.length, 0),
+);
+
+const FULLSCREEN_Z = '1200';
+const screen = ref<'compact' | 'page' | 'detail'>('compact');
+const current = ref<Contact>(groups[0]!.contacts[0]!);
+
+function enterFull(): void {
+  screen.value = 'page';
+}
+
+function openDetail(contact: Contact): void {
+  current.value = contact;
+  screen.value = 'detail';
+}
+
+function backToPage(): void {
+  screen.value = 'page';
+}
+
+function exitFull(): void {
+  screen.value = 'compact';
+  query.value = '';
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--contacts">
+    <!-- ── 紧凑预览：搜索 + 索引栏通讯录 ─────────────────────────────────── -->
     <view class="sn-demo__topbar">
-      <text class="sn-demo__title">Contacts</text>
+      <view class="sn-demo__title-row">
+        <text class="sn-demo__title">Contacts</text>
+        <view
+          class="sn-demo__expand"
+          role="button"
+          aria-label="Open full-page demo"
+          @tap="enterFull"
+        >
+          <text class="sn-demo__expand-text">Full page</text>
+          <SnIcon :icon="ChevronRight" :size="12" />
+        </view>
+      </view>
       <view class="sn-demo__search">
         <SnIcon :icon="Search" size="36rpx" class="sn-demo__search-icon" />
         <input
@@ -136,7 +309,12 @@ const filtered = computed<ContactGroup[]>(() => {
           :index="group.index"
           :anchor-id="`contact-group-${group.index}`"
         >
-          <view v-for="contact in group.contacts" :key="contact.name" class="sn-demo__contact">
+          <view
+            v-for="contact in group.contacts"
+            :key="contact.name"
+            class="sn-demo__contact"
+            @tap="openDetail(contact)"
+          >
             <SnAvatar :text="contact.name.slice(0, 2)" :bg-color="colorOf(contact.name)" />
             <view class="sn-demo__contact-main">
               <text class="sn-demo__contact-name">{{ contact.name }}</text>
@@ -148,6 +326,102 @@ const filtered = computed<ContactGroup[]>(() => {
 
       <view v-if="filtered.length === 0" class="sn-demo__empty">
         <text class="sn-demo__empty-text">No contacts found</text>
+      </view>
+    </view>
+
+    <!-- ── 全屏覆盖层：整个页面的通讯录应用场景 ─────────────────────────── -->
+    <view v-if="screen !== 'compact'" class="icx" :style="{ zIndex: FULLSCREEN_Z }">
+      <!-- 一级页：整页通讯录。v-show 保实例，返回不丢滚动位置。 -->
+      <view v-show="screen === 'page'" class="icx__page">
+        <SnNavbar
+          title="Contacts"
+          left-arrow
+          left-text="Demo"
+          safe-area-inset-top
+          bordered
+          @back="exitFull"
+        />
+        <view class="icx__searchbar">
+          <SnIcon :icon="Search" size="36rpx" class="icx__search-icon" />
+          <input
+            v-model="query"
+            class="icx__search-input"
+            placeholder="Search"
+            placeholder-style="color: var(--sn-mp-color-input-placeholder);"
+          />
+        </view>
+        <view class="icx__body">
+          <SnIndexBar custom-class="icx__bar" sticky show-indicator>
+            <SnIndexAnchor
+              v-for="group in filtered"
+              :key="group.index"
+              :index="group.index"
+              :anchor-id="`page-group-${group.index}`"
+            >
+              <view
+                v-for="contact in group.contacts"
+                :key="contact.name"
+                class="icx__row"
+                @tap="openDetail(contact)"
+              >
+                <SnAvatar :text="contact.name.slice(0, 2)" :bg-color="colorOf(contact.name)" />
+                <view class="icx__row-main">
+                  <text class="icx__row-name">{{ contact.name }}</text>
+                  <text class="icx__row-note">{{ contact.role }} · {{ contact.dept }}</text>
+                </view>
+                <SnIcon :icon="ChevronRight" :size="14" class="icx__row-arrow" />
+              </view>
+            </SnIndexAnchor>
+          </SnIndexBar>
+        </view>
+        <view class="icx__foot">
+          <text class="icx__foot-text">{{ totalCount }} contacts · index bar follows groups</text>
+        </view>
+      </view>
+
+      <!-- 二级页：联系人资料页 -->
+      <view v-show="screen === 'detail'" class="icx__page">
+        <SnNavbar
+          title="Profile"
+          left-arrow
+          left-text="Back"
+          safe-area-inset-top
+          bordered
+          @back="backToPage"
+        />
+        <view class="icd">
+          <view class="icd__hero">
+            <SnAvatar
+              :text="current.name.slice(0, 2)"
+              :bg-color="colorOf(current.name)"
+              size="large"
+            />
+            <text class="icd__name">{{ current.name }}</text>
+            <text class="icd__role">{{ current.role }}</text>
+          </view>
+          <view class="icd__card">
+            <view class="icd__row">
+              <SnIcon :icon="Phone" :size="14" class="icd__row-icon" />
+              <text class="icd__row-label">Phone</text>
+              <text class="icd__row-value">{{ current.phone }}</text>
+            </view>
+            <view class="icd__row">
+              <SnIcon :icon="Mail" :size="14" class="icd__row-icon" />
+              <text class="icd__row-label">Email</text>
+              <text class="icd__row-value">{{ current.mail }}</text>
+            </view>
+            <view class="icd__row">
+              <SnIcon :icon="MapPin" :size="14" class="icd__row-icon" />
+              <text class="icd__row-label">City</text>
+              <text class="icd__row-value">{{ current.location }}</text>
+            </view>
+            <view class="icd__row">
+              <SnIcon :icon="User" :size="14" class="icd__row-icon" />
+              <text class="icd__row-label">Dept</text>
+              <text class="icd__row-value">{{ current.dept }}</text>
+            </view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -173,10 +447,38 @@ const filtered = computed<ContactGroup[]>(() => {
   background-color: var(--sn-mp-color-background-soft);
 }
 
+.sn-demo__title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .sn-demo__title {
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-lg);
   font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.sn-demo__expand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 16rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-default);
+}
+
+.sn-demo__expand:active {
+  opacity: 0.7;
+}
+
+.sn-demo__expand-text {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
 }
 
 .sn-demo__search {
@@ -208,7 +510,7 @@ const filtered = computed<ContactGroup[]>(() => {
   min-height: 0;
 }
 
-/* custom-class lands on the sn-index-bar root, so :deep crosses the boundary. */
+/* custom-class 落在 sn-index-bar 根节点上，需要 :deep 穿透组件边界。 */
 .sn-demo :deep(.sn-demo__bar) {
   height: 100%;
 }
@@ -233,7 +535,6 @@ const filtered = computed<ContactGroup[]>(() => {
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
 }
-
 .sn-demo__contact-note {
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
@@ -248,6 +549,188 @@ const filtered = computed<ContactGroup[]>(() => {
 
 .sn-demo__empty-text {
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+/* ── 全屏覆盖层 ───────────────────────────────────────────────────────── */
+/* fixed 锚定视口（docs 预览 iframe 内即为手机屏）；壳层无 transform/backdrop
+ * 祖先（App.vue 约定），不会被卡片坐标系困住。 */
+.icx {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--sn-mp-color-background-surface);
+  animation: icx-in 0.24s ease both;
+}
+
+@keyframes icx-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* v-show 叠层的页面画布 */
+.icx__page {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.icx__searchbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  margin: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  padding: 0 var(--sn-mp-spacing-3);
+  height: 72rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-input-bg);
+}
+
+.icx__search-icon {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.icx__search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  color: var(--sn-mp-color-input-text);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.icx__body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* custom-class 落在组件根节点，:deep 穿透。 */
+.icx :deep(.icx__bar) {
+  height: 100%;
+}
+
+.icx__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.icx__row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.icx__row-name {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+}
+
+.icx__row-note {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+
+.icx__row-arrow {
+  color: var(--sn-mp-color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.icx__foot {
+  flex-shrink: 0;
+  padding: var(--sn-mp-spacing-3);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.icx__foot-text {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* ── 联系人资料页 ─────────────────────────────────────────────────────── */
+.icd {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-3);
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.icd__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  padding: var(--sn-mp-spacing-6) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.icd__name {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-xl);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.icd__role {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.icd__card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  overflow: hidden;
+}
+
+.icd__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-4);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.icd__row:last-child {
+  border-bottom: none;
+}
+
+.icd__row-icon {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.icd__row-label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  min-width: 72rpx;
+}
+
+.icd__row-value {
+  color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-sm);
 }
 </style>

@@ -33,9 +33,11 @@
 
 <Demo name="paging-mp-popup" description="sn-popup 底部弹层内嵌 sn-paging：弹层内独立完成下拉刷新与触底加载，关闭弹层自动复位。" />
 
-### 应用案例：频道 tabs + 二级页面
+### 应用案例：整页信息流 App（紧凑预览 + 全屏场景）
 
-<Demo name="paging-mp-app" description="#top 搜索栏与 tabs、#bottom 固定操作栏（安全区适配）；点条目进入二级页面的独立分页评论列表。" />
+紧凑预览是完整的 sn-paging（胶囊频道 + 迷你信息流）；点「整页演示」进入 position: fixed 全屏场景——SnNavbar + 频道 tabs + 信息流卡片 + #bottom 固定操作栏（安全区适配），点卡片进入文章详情页：正文 + 点赞收藏操作行 + 独立的 sn-paging 评论分页，返回后一级列表滚动位置保留。
+
+<Demo name="paging-mp-app" description="整页信息流 App：紧凑预览点「整页演示」进全屏场景（Navbar + tabs + #bottom 安全区操作栏）；点卡片进文章详情页，评论区是独立分页实例。" />
 
 ## 使用协议
 

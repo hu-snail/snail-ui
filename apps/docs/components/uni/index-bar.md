@@ -22,9 +22,9 @@
 
 ## 整页通讯录
 
-完整通讯录场景：顶部搜索栏按关键字过滤（空分组自动丢弃，索引栏随分组联动），每行联系人头像用 `sn-avatar` 文字头像（颜色由姓名哈希稳定映射到 token 色板）；`show-indicator` 在列表中央回显当前索引字母，`anchor-id` 给分组稳定的 DOM id 以便深链定位：
+完整通讯录场景：紧凑预览里搜索过滤 + 索引栏通讯录可直接交互（空分组自动丢弃、`show-indicator` 中央气泡、`sn-avatar` 文字头像）；点「整页演示」进入 position: fixed 全屏整页——SnNavbar + 搜索过滤 + 索引栏通讯录 + 底部联系人统计条；点联系人再进资料页（电话 / 邮箱 / 城市 / 部门），返回后列表滚动位置保留。`anchor-id` 给分组稳定的 DOM id 以便深链定位：
 
-<Demo name="index-bar-mp-contacts" description="整页通讯录：内置 Search 图标 + 搜索过滤；sn-avatar 文字头像；show-indicator 中央索引气泡；anchor-id 稳定分组 id。" />
+<Demo name="index-bar-mp-contacts" description="整页通讯录：紧凑预览搜索过滤可直接交互；点「整页演示」进全屏（Navbar + 搜索 + 索引栏 + 统计条）；点联系人进资料页。" />
 
 > **契约位**：`sticky` 当前只在根节点切换 `sn-index-bar--sticky` 类，没有配套的样式规则，因此页面上看不出差异。该 prop 保留以维持契约一致。
 
