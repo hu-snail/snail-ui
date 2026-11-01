@@ -35,14 +35,9 @@
  */
 
 import { computed } from 'vue';
+import type { LoadingDirection, LoadingType } from './sn-loading-types';
 
 defineOptions({ name: 'SnLoading' });
-
-/** Spinner shape. Mirrors `wd-loading` `type`. */
-type LoadingType = 'circular' | 'spinner' | 'dots' | 'wave';
-
-/** Layout direction of spinner + text. Mirrors `wd-loading` `direction`. */
-type LoadingDirection = 'vertical' | 'horizontal';
 
 const props = withDefaults(
   defineProps<{

@@ -27,7 +27,11 @@
 
 ### 下拉进入二楼
 
-<Demo name="paging-mp-second-floor" description="secondFloorEnabled 开启后，下拉越过阈值松手即滑入二楼浮层（secondFloor 插槽内容，独立滚动）；closeSecondFloor() 滑出返回列表。" />
+<Demo name="paging-mp-second-floor" description="secondFloorEnabled 开启后，下拉越过阈值松手即滑入全屏二楼（secondFloor 插槽，独立滚动）；上滑可拉回列表；胶囊切换器实时切换加载动画类型与下拉背景配色。" />
+
+### 弹窗内下拉刷新加载
+
+<Demo name="paging-mp-popup" description="sn-popup 底部弹层内嵌 sn-paging：弹层内独立完成下拉刷新与触底加载，关闭弹层自动复位。" />
 
 ### 应用案例：频道 tabs + 二级页面
 
@@ -87,15 +91,17 @@ function query(pageNo: number, pageSize: number): void {
 </sn-paging>
 ```
 
+- **全屏展开**：默认 `second-floor-fullscreen` 以 `position: fixed` 铺满视口（z-index 可经 `--sn-paging-f2-z-index` 覆盖）；设为 `false` 时浮层限制在组件盒内。
+- **上滑拉回**：二楼内容无法滚动（或已滚到底部）时继续上滑，浮层随手势跟手位移，松手超过 80px 即收回列表，否则弹回；内容可滚动时上滑优先滚动内容，滚到底后继续上滑才拉回。
 - 事件 `secondFloorChange('go' | 'close')` 在浮层开 / 关时触发，适合懒加载二楼数据。
 - 方法 `openSecondFloor()` / `closeSecondFloor()` 可编程控制（如二楼内放返回按钮）。
-- 二楼浮层在组件根部全屏展开，滚动手势被锁定在浮层内，不会穿透到底下列表。
 - 二楼仅在可拉到阈值的平台生效；若目标平台原生刷新拉距有限，可调低 `secondFloorThreshold`。
 
 ## 自定义加载区域
 
 - `#refresher`：整块替换刷新区内容（替换后组件不再渲染默认图标与文案）。
 - `#footer`：整块替换加载更多页脚，作用域参数 `{ phase }`（`default | loading | noMore | fail`），点击仍由组件接管（自动加载下一页 / 重试）。
+- 加载动画：`refresherLoadingType` 切换刷新区加载圈形态（`circular` / `spinner` / `dots` / `wave`，与 sn-loading 的 `type` 一致）；刷新区箭头与加载圈统一 18px 视觉尺寸。
 - 配色：`refresherTextColor`（文案）、`refresherIconColor`（箭头 / 加载圈）、`loadMoreTextColor`（页脚文字，加载圈跟随）；背景：`refresherBackground`（下拉区域，uni 端透传原生 `refresher-background`）、`secondFloorBackground`（二楼浮层）。
 
 ## API
@@ -118,9 +124,11 @@ function query(pageNo: number, pageSize: number): void {
 | `refresherBackground`       | `string`    | `''`                 | 下拉区域背景色（uni 端透传原生 `refresher-background`） |
 | `refresherTextColor`        | `string`    | `''`                 | 刷新区文案颜色                             |
 | `refresherIconColor`        | `string`    | `''`                 | 刷新区箭头 / 加载圈颜色                    |
+| `refresherLoadingType`      | `string`    | `circular`           | 刷新区加载圈形态（`circular` / `spinner` / `dots` / `wave`） |
 | `secondFloorEnabled`        | `boolean`   | `false`              | 是否开启下拉进入二楼                       |
 | `secondFloorThreshold`      | `number`    | `100`                | 进入二楼的松手距离（px）                   |
 | `secondFloorDuration`       | `number`    | `200`                | 二楼滑入 / 滑出时长（ms）                  |
+| `secondFloorFullscreen`     | `boolean`   | `true`               | 二楼是否铺满视口（`false` 限制在组件盒内） |
 | `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | 二楼区间内刷新区文案                       |
 | `secondFloorBackground`     | `string`    | `''`                 | 二楼浮层背景色                             |
 | `loadMoreEnabled`           | `boolean`   | `true`               | 是否开启触底自动加载                       |

@@ -39,7 +39,11 @@ the page size or the total is reached.
 
 ### Pull down to the second floor
 
-<Demo name="paging-mp-second-floor" description="With secondFloorEnabled, releasing past the threshold slides in the second-floor overlay (secondFloor slot, own scroll area); closeSecondFloor() slides back to the list." />
+<Demo name="paging-mp-second-floor" description="With secondFloorEnabled, releasing past the threshold slides in the fullscreen second floor (secondFloor slot, own scroll area); swipe up to drag it back; the capsule switchers flip the loading animation type and the pull-area background live." />
+
+### Pull-to-refresh inside a popup
+
+<Demo name="paging-mp-popup" description="sn-paging embedded in an sn-popup bottom sheet: pull-to-refresh and load-more run inside the layer, closing the popup resets it." />
 
 ### App case: channel tabs + detail page
 
@@ -116,12 +120,19 @@ content lives in the `#secondFloor` slot, over a dedicated scroll area.
 </sn-paging>
 ```
 
+- **Fullscreen expansion**: by default `second-floor-fullscreen` spreads the
+  overlay over the viewport with `position: fixed` (override the elevation
+  with `--sn-paging-f2-z-index`); set it to `false` to keep the overlay
+  inside the component box.
+- **Swipe-up drag-back**: when the floor content cannot scroll (or is
+  scrolled to its bottom), swiping up drags the floor with the finger —
+  releasing past 80px slides it back to the list, otherwise it springs back.
+  With scrollable content the up-swipe scrolls first; only past the bottom
+  does it drag the floor.
 - `secondFloorChange('go' | 'close')` fires when the overlay opens / closes —
   the hook for lazy-loading second-floor data.
 - `openSecondFloor()` / `closeSecondFloor()` drive the overlay
   programmatically (e.g. a back button inside the floor).
-- The overlay expands full-screen at the component root; its scroll gestures
-  are locked inside, never leaking to the list behind.
 - The second floor only engages on platforms that can pull past the
   threshold; lower `secondFloorThreshold` if the native refresher travel is
   limited on your target.
@@ -135,6 +146,9 @@ content lives in the `#secondFloor` slot, over a dedicated scroll area.
   component (auto load-next / retry).
 - Colors: `refresherTextColor` (texts), `refresherIconColor` (arrow /
   spinner), `loadMoreTextColor` (footer text; the spinner follows it).
+- Loading animation: `refresherLoadingType` switches the refresher spinner
+  shape (`circular` / `spinner` / `dots` / `wave`, matching sn-loading's
+  `type`); the arrow and spinner share one 18px visual footprint.
 - Backgrounds: `refresherBackground` (the pull area; forwards the native
   `refresher-background` on uni hosts), `secondFloorBackground` (the overlay).
 
@@ -158,9 +172,11 @@ content lives in the `#secondFloor` slot, over a dedicated scroll area.
 | `refresherBackground`       | `string`    | `''`                 | Pull-area background (forwards native `refresher-background`) |
 | `refresherTextColor`        | `string`    | `''`                 | Refresher text color                                  |
 | `refresherIconColor`        | `string`    | `''`                 | Refresher arrow / spinner color                       |
+| `refresherLoadingType`      | `string`    | `circular`           | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`) |
 | `secondFloorEnabled`        | `boolean`   | `false`              | Enable pull-down-to-enter second floor                |
 | `secondFloorThreshold`      | `number`    | `100`                | Release distance entering the second floor (px)       |
 | `secondFloorDuration`       | `number`    | `200`                | Overlay slide-in/out duration (ms)                    |
+| `secondFloorFullscreen`     | `boolean`   | `true`               | Spread the overlay over the viewport (`false` keeps it in the component box) |
 | `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | Refresher text inside the second-floor zone           |
 | `secondFloorBackground`     | `string`    | `''`                 | Second-floor overlay background                       |
 | `loadMoreEnabled`           | `boolean`   | `true`               | Enable auto load-more on scroll-to-bottom             |

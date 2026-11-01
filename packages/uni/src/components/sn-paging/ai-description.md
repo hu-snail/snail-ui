@@ -20,8 +20,11 @@ is no per-move setData. Plain browser hosts (the docs preview) get the full
 gesture via `sn-paging-simulate.ts`: z-paging-style incremental damping
 (×0.75 in-zone, ×0.35 past the threshold, per-event delta cap), a hard pull
 clamp (rubber band + bounded travel) and rAF-coalesced whole-px reports
-rendered with `transform` only. The host fetches data in `@query` and reports
-back through `complete*`; pages are aggregated and pushed out via `v-model`.
+rendered with `transform` only. The second-floor overlay expands fullscreen
+(`secondFloorFullscreen`, fixed) and is swipe-up draggable back to the list
+when its content cannot scroll further. The host fetches data in `@query` and
+reports back through `complete*`; pages are aggregated and pushed out via
+`v-model`.
 
 ## Import
 
@@ -53,9 +56,11 @@ import { SnPaging } from '@snui/uni';
 | `refresherBackground`       | `string`  | `''`                  | Pull-area background; forwards the native `refresher-background` on MP and paints the browser reveal box. |
 | `refresherTextColor`        | `string`  | `''`                  | Refresher text color (CSS color).                            |
 | `refresherIconColor`        | `string`  | `''`                  | Refresher arrow / spinner color (CSS color).                 |
+| `refresherLoadingType`      | `LoadingType` | `'circular'`      | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`). |
 | `secondFloorEnabled`        | `boolean` | `false`               | Enable pull-down-to-enter second floor (z-paging refresherF2). |
 | `secondFloorThreshold`      | `number`  | `100`                 | Release distance entering the second floor (px).             |
 | `secondFloorDuration`       | `number`  | `200`                 | Slide-in/out duration of the overlay (ms).                   |
+| `secondFloorFullscreen`     | `boolean` | `true`                | Spread the overlay over the viewport (fixed); `false` keeps it in the component box. |
 | `refresherSecondFloorText`  | `string`  | `'松开进入二楼'`      | Refresher text while the pull is inside the second-floor zone. |
 | `secondFloorBackground`     | `string`  | `''`                  | Background of the second-floor overlay.                      |
 | `loadMoreEnabled`           | `boolean` | `true`                | Enable next-page loading on scroll-to-bottom.                |
@@ -107,8 +112,10 @@ import { SnPaging } from '@snui/uni';
 
 `idle → pulling → ready → (secondFloor) → refreshing → complete → idle`.
 `pulling` shows the arrow rotating with the pull; `ready` / `secondFloor`
-flip it 180°; `refreshing` swaps it for the `sn-loading` spinner; `complete`
-shows a check glyph. The `#refresher` slot replaces the whole content.
+flip it 180°; `refreshing` swaps it for the `sn-loading` spinner (shape via
+`refresherLoadingType`); `complete` shows a check glyph. The arrow and the
+spinner share an 18px footprint. The `#refresher` slot replaces the whole
+content.
 
 ## Tokens Consumed (end: mp)
 

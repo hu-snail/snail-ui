@@ -451,7 +451,32 @@ describe('sn-paging', () => {
     });
   });
 
-describe('second floor', () => {
+  describe('refresher loading animation', () => {
+    it('defaults to the circular spinner at a matched 18px size', async () => {
+      const { wrapper } = mountPaging({ auto: false });
+      wrapper.vm.refresh();
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher .sn-loading--circular').exists()).toBe(true);
+      expect(wrapper.find('.sn-paging__refresher-icon').exists()).toBe(false);
+    });
+
+    it('refresherLoadingType switches the spinner shape', async () => {
+      const { wrapper } = mountPaging({ auto: false, refresherLoadingType: 'wave' });
+      wrapper.vm.refresh();
+      await flush();
+      expect(wrapper.find('.sn-paging__refresher .sn-loading--wave').exists()).toBe(true);
+      expect(wrapper.find('.sn-paging__refresher .sn-loading--circular').exists()).toBe(false);
+    });
+
+    it('keeps the pull arrow at the same 18px footprint as the spinner', () => {
+      const { wrapper } = mountPaging({ auto: false });
+      const style = wrapper.find('.sn-paging__refresher-icon').attributes('style') ?? '';
+      expect(style).toContain('width: 18px');
+      expect(style).toContain('height: 18px');
+    });
+  });
+
+  describe('second floor', () => {
   /** Mount without the auto query so pull events reach the handler. */
   function mountIdle(props: Record<string, unknown> = {}) {
     return mountPaging({ auto: false, ...props });
@@ -542,6 +567,107 @@ describe('second floor', () => {
       await wrapper.find('scroll-view').trigger('refresherpulling', { detail: { dy: 120 } });
       await flush();
       expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('松开立即刷新');
+    });
+
+    it('expands fullscreen by default and stays boxed when disabled', async () => {
+      vi.useFakeTimers();
+      const fullscreen = mountIdle({ secondFloorEnabled: true });
+      fullscreen.wrapper.vm.openSecondFloor();
+      vi.advanceTimersByTime(100);
+      await flush();
+      const f2 = fullscreen.wrapper.find('.sn-paging__f2');
+      expect(f2.classes()).toContain('sn-paging__f2--fullscreen');
+
+      const boxed = mountIdle({ secondFloorEnabled: true, secondFloorFullscreen: false });
+      boxed.wrapper.vm.openSecondFloor();
+      vi.advanceTimersByTime(100);
+      await flush();
+      expect(boxed.wrapper.find('.sn-paging__f2').classes()).not.toContain(
+        'sn-paging__f2--fullscreen',
+      );
+    });
+
+    it('a swipe-up past the threshold drags the floor and dismisses it', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      wrapper.vm.openSecondFloor();
+      await flush();
+      // Geometry must exist before the open timer fires the measurement.
+      const floor = wrapper.find('.sn-paging__f2-scroll');
+      const el = floor.element as HTMLElement;
+      Object.defineProperty(el, 'clientHeight', { value: 400, configurable: true });
+      Object.defineProperty(el, 'scrollHeight', { value: 400, configurable: true });
+      vi.advanceTimersByTime(100);
+      await flush();
+
+      await floor.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await floor.trigger('touchmove', { touches: [{ clientY: 200 }] });
+      await flush();
+      // dyUp = 100 → damped offset 90, dragging freezes the transition.
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-90px)');
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('transition: none');
+
+      await floor.trigger('touchmove', { touches: [{ clientY: 100 }] });
+      await floor.trigger('touchend');
+      await flush();
+      // dyUp = 200 → offset 180 ≥ 80 → dismisses from the dragged position.
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go'], ['close']]);
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(-100%)');
+      vi.advanceTimersByTime(250);
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').exists()).toBe(false);
+    });
+
+    it('a swipe-up below the threshold springs the floor back', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      wrapper.vm.openSecondFloor();
+      await flush();
+      const floor = wrapper.find('.sn-paging__f2-scroll');
+      const el = floor.element as HTMLElement;
+      Object.defineProperty(el, 'clientHeight', { value: 400, configurable: true });
+      Object.defineProperty(el, 'scrollHeight', { value: 400, configurable: true });
+      vi.advanceTimersByTime(100);
+      await flush();
+
+      await floor.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await floor.trigger('touchmove', { touches: [{ clientY: 280 }] });
+      await floor.trigger('touchend');
+      await flush();
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go']]);
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+      vi.useRealTimers();
+    });
+
+    it('a scrollable floor scrolls first and only dismisses at the bottom', async () => {
+      vi.useFakeTimers();
+      const { wrapper } = mountIdle({ secondFloorEnabled: true });
+      wrapper.vm.openSecondFloor();
+      await flush();
+      const floor = wrapper.find('.sn-paging__f2-scroll');
+      const el = floor.element as HTMLElement;
+      Object.defineProperty(el, 'clientHeight', { value: 400, configurable: true });
+      Object.defineProperty(el, 'scrollHeight', { value: 800, configurable: true });
+      vi.advanceTimersByTime(100);
+      await flush();
+
+      // At the top the up-drag belongs to the inner scroll — no floor drag.
+      await floor.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await floor.trigger('touchmove', { touches: [{ clientY: 100 }] });
+      await floor.trigger('touchend');
+      await flush();
+      expect(wrapper.find('.sn-paging__f2').attributes('style')).toContain('translateY(0%)');
+
+      // Scrolled to the bottom: the same gesture now dismisses the floor.
+      el.dispatchEvent(
+        new CustomEvent('scroll', { detail: { scrollTop: 400, scrollHeight: 800 } }),
+      );
+      await floor.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await floor.trigger('touchmove', { touches: [{ clientY: 100 }] });
+      await floor.trigger('touchend');
+      await flush();
+      expect(wrapper.emitted('secondFloorChange')).toEqual([['go'], ['close']]);
+      vi.useRealTimers();
     });
   });
 

@@ -34,11 +34,15 @@
  *
  * Pulling past `secondFloorThreshold` (z-paging `refresherF2Threshold`)
  * arms the "release to enter" state; releasing there intercepts the refresh
- * and slides a root-level overlay (the `#secondFloor` slot over its own
- * scroll-view) in from the top — z-paging's `zp-f2-content` mechanics
- * (`translateY(-100%) → 0` with a tracked timer so the first frame paints
- * before the transition). `openSecondFloor()` / `closeSecondFloor()` drive
- * the same overlay programmatically; `secondFloorChange` reports both.
+ * and slides the `#secondFloor` overlay in from the top — z-paging's
+ * `zp-f2-content` mechanics (`translateY(-100%) → 0` with a tracked timer so
+ * the first frame paints before the transition). The overlay expands
+ * full-screen (`secondFloorFullscreen`, `position: fixed`) or stays inside
+ * the component box, and it can be dragged back: swiping up when the floor
+ * content cannot scroll any further pulls the floor with the finger
+ * (damped, integer-px), releasing past 80px closes it, otherwise it springs
+ * back. `openSecondFloor()` / `closeSecondFloor()` drive the same overlay
+ * programmatically; `secondFloorChange` reports both.
  *
  * ## Data flow (one-way out via v-model)
  *
@@ -61,9 +65,10 @@
  *   - 虚拟列表 / use-page-scroll 模式 — 登记为后续任务
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
+import type { LoadingType } from '../sn-loading/sn-loading-types';
 import { Check, ChevronDown } from '../sn-icon/sn-icon-set';
 import { MAX_PULL_RATIO, createBrowserPagingGesture } from './sn-paging-simulate';
 
@@ -81,6 +86,8 @@ const isBrowserHost =
 const REFRESHER_HEIGHT_PX = 50;
 /** Park delay before the second-floor overlay starts its slide-in. */
 const SECOND_FLOOR_SHOW_DELAY_MS = 100;
+/** Drag-back distance that dismisses the second floor, in px. */
+const FLOOR_CLOSE_THRESHOLD_PX = 80;
 
 /** Visual phase of the custom refresher slot. */
 type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'secondFloor' | 'refreshing' | 'complete';
@@ -121,6 +128,8 @@ const props = withDefaults(
     refresherTextColor?: string;
     /** Refresher icon / spinner color. */
     refresherIconColor?: string;
+    /** Refresher loading-spinner shape (`sn-loading` `type`). */
+    refresherLoadingType?: LoadingType;
     /* ── second floor (z-paging refresherF2 subset) ──────────────────── */
 
     /** Enable pull-down-to-enter second floor. */
@@ -129,6 +138,8 @@ const props = withDefaults(
     secondFloorThreshold?: number;
     /** Slide-in/out duration of the second-floor overlay, in ms. */
     secondFloorDuration?: number;
+    /** Expand the overlay to the viewport (fixed) instead of the component box. */
+    secondFloorFullscreen?: boolean;
     /** Refresher text while the pull is inside the second-floor zone. */
     refresherSecondFloorText?: string;
     /** Background of the second-floor overlay. */
@@ -175,9 +186,11 @@ const props = withDefaults(
     refresherBackground: '',
     refresherTextColor: '',
     refresherIconColor: '',
+    refresherLoadingType: 'circular',
     secondFloorEnabled: false,
     secondFloorThreshold: 100,
     secondFloorDuration: 200,
+    secondFloorFullscreen: true,
     refresherSecondFloorText: '松开进入二楼',
     secondFloorBackground: '',
     loadMoreEnabled: true,
@@ -241,11 +254,23 @@ const pullDistance = ref(0);
 const secondFloorVisible = ref(false);
 /** Second-floor overlay is slid in (drives the translateY transition). */
 const secondFloorOpen = ref(false);
+/** Live drag-back offset in px (0 = parked at translateY(0)). */
+const f2DragOffset = ref(0);
 /** scroll-view host element; an inert element on browser hosts. */
 const scrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null);
+/** Second-floor scroll area host element, for the browser-host measurement. */
+const f2ScrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null);
 let completeHoldTimer: ReturnType<typeof setTimeout> | null = null;
 let secondFloorTimer: ReturnType<typeof setTimeout> | null = null;
 let disposeGesture: (() => void) | null = null;
+/* Floor drag-back session (module-scope to keep touchmove re-renders to the
+ * single f2DragOffset ref; none of these drive the template directly). */
+let f2ScrollTop = 0;
+let f2MaxScroll = 0;
+let f2Scrollable = false;
+let f2FloorHeight = 0;
+let f2TouchStartY = 0;
+let f2DragEngaged = false;
 
 /** Whether scroll-to-bottom loads the next page. */
 const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
@@ -393,12 +418,17 @@ const footerTextStyle = computed(() =>
   props.loadMoreTextColor ? `color: ${props.loadMoreTextColor}` : undefined,
 );
 
-/** Second-floor overlay: parked above, slides in once mounted. */
+/** Second-floor overlay: parked above, slides in once mounted. While the
+ * drag-back gesture holds the floor, the offset wins over the phase. */
 const secondFloorStyle = computed(() => {
-  const parts = [
-    `transform: translateY(${secondFloorOpen.value ? '0%' : '-100%'})`,
-    `transition: transform ${props.secondFloorDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`,
-  ];
+  const dragging = f2DragOffset.value > 0;
+  const transform = dragging
+    ? `translateY(-${f2DragOffset.value}px)`
+    : `translateY(${secondFloorOpen.value ? '0%' : '-100%'})`;
+  const transition = dragging
+    ? 'none'
+    : `transform ${props.secondFloorDuration}ms cubic-bezier(0.22, 0.61, 0.36, 1)`;
+  const parts = [`transform: ${transform}`, `transition: ${transition}`];
   if (props.secondFloorBackground) parts.push(`background: ${props.secondFloorBackground}`);
   return parts.join('; ');
 });
@@ -581,7 +611,8 @@ function onSimulatedSecondFloorArm(): void {
  * Slide the second-floor overlay in (z-paging `goF2`). The overlay mounts
  * parked at `translateY(-100%)`; the tracked delay lets that first frame
  * paint before the transition retargets to `0` (§41/§42: the timer is
- * cleared on unmount and on every open/close).
+ * cleared on unmount and on every open/close). The same tick measures the
+ * floor scroll geometry for the drag-back gesture.
  */
 function openSecondFloor(): void {
   const wasClosing = secondFloorTimer !== null;
@@ -590,6 +621,8 @@ function openSecondFloor(): void {
     if (wasClosing) emit('secondFloorChange', 'go');
     return;
   }
+  f2DragOffset.value = 0;
+  f2DragEngaged = false;
   if (!secondFloorVisible.value) {
     secondFloorOpen.value = false;
     secondFloorVisible.value = true;
@@ -598,6 +631,7 @@ function openSecondFloor(): void {
   secondFloorTimer = setTimeout(() => {
     secondFloorTimer = null;
     secondFloorOpen.value = true;
+    measureFloorScroll();
   }, SECOND_FLOOR_SHOW_DELAY_MS);
 }
 
@@ -606,6 +640,7 @@ function closeSecondFloor(): void {
   if (!secondFloorVisible.value) return;
   clearSecondFloorTimer();
   emit('secondFloorChange', 'close');
+  f2DragEngaged = false;
   if (!secondFloorOpen.value) {
     /* Cancelled before the slide-in started — unmount outright. */
     secondFloorVisible.value = false;
@@ -616,6 +651,120 @@ function closeSecondFloor(): void {
     secondFloorTimer = null;
     secondFloorVisible.value = false;
   }, props.secondFloorDuration + 50);
+}
+
+/* ── second-floor drag-back (swipe up dismisses the floor) ────────────── */
+
+/** The slice of `uni.createSelectorQuery()` the floor measurement needs. */
+interface FloorSelectorQuery {
+  in?(target: unknown): FloorSelectorQuery;
+  select(selector: string): FloorSelectorQuery;
+  fields(
+    options: { size: boolean; scrollOffset: boolean },
+    callback: (res: unknown) => void,
+  ): FloorSelectorQuery;
+  exec(): void;
+}
+
+interface FloorMeasuredNode {
+  height?: number;
+  scrollHeight?: number;
+}
+
+/** Narrowed `uni` global for the floor measurement (uni-x safe, §116.2). */
+interface FloorUniHost {
+  createSelectorQuery?: (() => FloorSelectorQuery) | undefined;
+}
+
+/**
+ * Measure the floor scroll geometry once per open: floor height caps the
+ * drag travel; scrollHeight vs clientHeight decides whether swiping up
+ * scrolls the content first or dismisses the floor right away.
+ */
+function measureFloorScroll(): void {
+  if (isBrowserHost) {
+    const el = f2ScrollEl.value;
+    if (!(el instanceof HTMLElement)) return;
+    f2FloorHeight = el.clientHeight;
+    f2Scrollable = el.scrollHeight > el.clientHeight + 1;
+    f2MaxScroll = Math.max(el.scrollHeight - el.clientHeight, 0);
+    return;
+  }
+  const query = (globalThis as { uni?: FloorUniHost }).uni?.createSelectorQuery?.();
+  const instance = getCurrentInstance()?.proxy;
+  if (!query || !instance) return;
+  const scoped = query.in ? query.in(instance) : query;
+  scoped
+    .select('.sn-paging__f2-scroll')
+    .fields({ size: true, scrollOffset: true }, (res: unknown) => {
+      const node = Array.isArray(res)
+        ? (res[0] as FloorMeasuredNode | null)
+        : (res as FloorMeasuredNode | null);
+      if (!node) return;
+      f2FloorHeight = node.height ?? 0;
+      const scrollHeight = node.scrollHeight ?? 0;
+      f2Scrollable = f2FloorHeight > 0 && scrollHeight > f2FloorHeight + 1;
+      f2MaxScroll = Math.max(scrollHeight - f2FloorHeight, 0);
+    })
+    .exec();
+}
+
+/** Floor `@scroll`: keeps the at-bottom detection in sync with lazy content. */
+function onFloorScroll(event: unknown): void {
+  const detail = (event as { detail?: { scrollTop?: number; scrollHeight?: number } }).detail;
+  const target = (event as { target?: { scrollTop?: number; scrollHeight?: number } }).target;
+  f2ScrollTop = detail?.scrollTop ?? target?.scrollTop ?? 0;
+  const scrollHeight = detail?.scrollHeight ?? target?.scrollHeight ?? 0;
+  if (f2FloorHeight > 0 && scrollHeight > 0) {
+    f2Scrollable = scrollHeight > f2FloorHeight + 1;
+    f2MaxScroll = Math.max(scrollHeight - f2FloorHeight, 0);
+  }
+}
+
+/** Swiping up may dismiss only when the content cannot scroll further. */
+function canDismissFloor(): boolean {
+  return f2FloorHeight > 0 && (!f2Scrollable || f2ScrollTop >= f2MaxScroll - 1);
+}
+
+function onFloorTouchStart(event: { touches?: Array<{ clientY?: number }> }): void {
+  const touch = event.touches?.[0];
+  if (touch?.clientY === undefined) return;
+  f2TouchStartY = touch.clientY;
+  f2DragEngaged = false;
+}
+
+function onFloorTouchMove(event: {
+  touches?: Array<{ clientY?: number }>;
+  cancelable?: boolean;
+  preventDefault?: () => void;
+}): void {
+  if (!secondFloorOpen.value) return;
+  const touch = event.touches?.[0];
+  if (touch?.clientY === undefined) return;
+  const dyUp = f2TouchStartY - touch.clientY;
+  if (dyUp <= 0) {
+    /* Finger went back below the start point — stand down. */
+    if (f2DragEngaged) {
+      f2DragEngaged = false;
+      f2DragOffset.value = 0;
+    }
+    return;
+  }
+  if (!f2DragEngaged) {
+    if (!canDismissFloor()) return;
+    f2DragEngaged = true;
+  }
+  /* 0.9 damped follow, clamped to one full floor height. */
+  f2DragOffset.value = Math.min(Math.round(dyUp * 0.9), f2FloorHeight);
+  if (f2DragOffset.value > 0 && event.cancelable) event.preventDefault?.();
+}
+
+function onFloorTouchEnd(): void {
+  if (!f2DragEngaged) return;
+  f2DragEngaged = false;
+  const offset = f2DragOffset.value;
+  f2DragOffset.value = 0;
+  if (offset >= FLOOR_CLOSE_THRESHOLD_PX) closeSecondFloor();
 }
 
 /** Trigger a refresh with the refresher animation (z-paging `refresh`). */
@@ -727,7 +876,8 @@ defineExpose({
         <slot name="refresher">
           <SnLoading
             v-if="refresherPhase === 'refreshing'"
-            size="32px"
+            :type="refresherLoadingType ?? 'circular'"
+            size="18px"
             text=""
             inherit-color
           />
@@ -735,14 +885,14 @@ defineExpose({
             v-else-if="refresherPhase === 'complete'"
             class="sn-paging__refresher-icon"
             :icon="Check"
-            :size="26"
+            :size="18"
           />
           <SnIcon
             v-else
             class="sn-paging__refresher-icon"
             :style="refresherIconStyle"
             :icon="ChevronDown"
-            :size="32"
+            :size="18"
           />
           <text class="sn-paging__refresher-text" :style="refresherTextStyle">
             {{ refresherText }}
@@ -785,10 +935,27 @@ defineExpose({
       </view>
     </scroll-view>
 
-    <!-- Second floor: a root-level overlay that slides in from the top
-     * (z-paging `zp-f2-content` mechanics); content scrolls independently. -->
-    <view v-if="secondFloorVisible" class="sn-paging__f2" :style="secondFloorStyle" @touchmove.stop>
-      <scroll-view scroll-y class="sn-paging__f2-scroll">
+    <!-- Second floor: an overlay that slides in from the top (z-paging
+     * `zp-f2-content` mechanics) — full-screen (fixed) by default or boxed
+     * inside the component root. Swipe-up drags it back: release past the
+     * threshold dismisses, otherwise it springs back. -->
+    <view
+      v-if="secondFloorVisible"
+      class="sn-paging__f2"
+      :class="{ 'sn-paging__f2--fullscreen': secondFloorFullscreen }"
+      :style="secondFloorStyle"
+      @touchmove.stop
+    >
+      <scroll-view
+        ref="f2ScrollEl"
+        scroll-y
+        class="sn-paging__f2-scroll"
+        @scroll="onFloorScroll"
+        @touchstart="onFloorTouchStart"
+        @touchmove="onFloorTouchMove"
+        @touchend="onFloorTouchEnd"
+        @touchcancel="onFloorTouchEnd"
+      >
         <slot name="secondFloor" />
       </scroll-view>
     </view>
@@ -864,8 +1031,13 @@ defineExpose({
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: var(--sn-paging-f2-z-index, 500);
   overflow: hidden;
+}
+
+/* Fullscreen mode lifts the floor to the viewport (MP fixed = viewport). */
+.sn-paging__f2--fullscreen {
+  position: fixed;
 }
 
 .sn-paging__f2-scroll {

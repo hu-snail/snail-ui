@@ -1,18 +1,20 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — second floor + custom refresher colors (EN).
+ * Demo: sn-paging (uni-end) — second floor + capsule switchers (EN).
  *
  * - secondFloorEnabled on: releasing past the threshold (100px) slides in the
- *   second-floor overlay and never fires a refresh query
- * - #secondFloor slot renders the floor content (own scroll area); data can
- *   be lazy-loaded on secondFloorChange('go'), closeSecondFloor() slides out
- * - refresherBackground / refresherTextColor / refresherIconColor theme the
- *   pull area; secondFloorBackground themes the overlay
+ *   fullscreen second-floor overlay and never fires a refresh query
+ * - The floor can be dragged back by swiping up (content at bottom or not
+ *   scrollable); closeSecondFloor() works programmatically
+ * - sn-segmented capsules switch refresherLoadingType (spinner shape) and
+ *   refresherBackground (pull-area background presets) live
  */
 import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 import { ChevronUp, Sparkles } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
@@ -24,6 +26,21 @@ const PAGE_SIZE = 8;
 const list = ref<DemoRow[]>([]);
 const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
+const loadingType = ref<LoadingType>('circular');
+const floorBackground = ref('#0b1220');
+
+const loadingTypeOptions = [
+  { label: 'Circular', value: 'circular' },
+  { label: 'Spinner', value: 'spinner' },
+  { label: 'Dots', value: 'dots' },
+  { label: 'Wave', value: 'wave' },
+];
+
+const backgroundOptions = [
+  { label: 'Deep', value: '#0b1220' },
+  { label: 'Indigo', value: '#1e1b4b' },
+  { label: 'Pine', value: '#14342b' },
+];
 
 function query(pageNo: number, pageSize: number): void {
   setTimeout(() => {
@@ -43,10 +60,14 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
+    <view class="floor-controls">
+      <SnSegmented v-model="loadingType" :options="loadingTypeOptions" />
+      <SnSegmented v-model="floorBackground" :options="backgroundOptions" />
+    </view>
     <view class="floor-hint">
       <text class="floor-hint__text">
-        Dark pull area → resists while pulling → release past the threshold to enter the second
-        floor (visited {{ floorVisits }} times)
+        Pull past the threshold and release to enter the fullscreen second floor; swipe up inside
+        (content at its bottom) to drag it back (visited {{ floorVisits }} times)
       </text>
     </view>
     <view class="paging-frame">
@@ -55,9 +76,10 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         v-model="list"
         :default-page-size="PAGE_SIZE"
         second-floor-enabled
-        refresher-background="#0b1220"
+        :refresher-background="floorBackground"
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
+        :refresher-loading-type="loadingType"
         second-floor-background="#0b1220"
         @query="query"
         @second-floor-change="onSecondFloorChange"
@@ -78,8 +100,8 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
             <view class="floor__body">
               <text class="floor__text">
                 This is the second floor: pull past the threshold and release to land here — a good
-                spot for campaigns, personal panels or promo blocks. Scroll gestures stay locked in
-                this layer and never leak to the list behind.
+                spot for campaigns, personal panels or promo blocks. Swipe past the bottom of the
+                content and the floor follows your finger back to the list.
               </text>
             </view>
           </view>
@@ -90,6 +112,12 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 </template>
 
 <style scoped>
+.floor-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+}
+
 .floor-hint {
   padding: 0 var(--sn-mp-spacing-1);
 }

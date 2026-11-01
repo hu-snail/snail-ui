@@ -1,18 +1,19 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — 下拉进入二楼 + 自定义刷新区配色。
+ * Demo: sn-paging (uni-end) — 下拉进入二楼 + 加载动画/配色胶囊切换。
  *
- * - secondFloorEnabled 开启：下拉越过阈值（默认 100px）松手滑入二楼浮层，
+ * - secondFloorEnabled 开启：下拉越过阈值（默认 100px）松手滑入全屏二楼浮层，
  *   松手拦截刷新、不发 query
- * - #secondFloor 插槽渲染二楼内容（内部独立滚动）；secondFloorChange('go')
- *   时懒加载二楼数据，closeSecondFloor() 滑出返回列表
- * - refresherBackground / refresherTextColor / refresherIconColor 定制下拉区
- *   配色，secondFloorBackground 定制二楼背景
+ * - 二楼内容无法滚动（或滚到底）时上滑可拉回列表；也可用 closeSecondFloor()
+ * - sn-segmented 胶囊切换器实时切换 refresherLoadingType（加载圈形态）与
+ *   refresherBackground（下拉区背景预设）
  */
 import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 import { ChevronUp, Sparkles } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import type { LoadingType } from '@snui/uni-src/components/sn-loading/sn-loading-types';
 
 interface DemoRow {
   id: number;
@@ -24,6 +25,21 @@ const PAGE_SIZE = 8;
 const list = ref<DemoRow[]>([]);
 const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
+const loadingType = ref<LoadingType>('circular');
+const floorBackground = ref('#0b1220');
+
+const loadingTypeOptions = [
+  { label: '圆环', value: 'circular' },
+  { label: '放射', value: 'spinner' },
+  { label: '圆点', value: 'dots' },
+  { label: '波浪', value: 'wave' },
+];
+
+const backgroundOptions = [
+  { label: '深空', value: '#0b1220' },
+  { label: '靛蓝', value: '#1e1b4b' },
+  { label: '松绿', value: '#14342b' },
+];
 
 function query(pageNo: number, pageSize: number): void {
   setTimeout(() => {
@@ -43,8 +59,14 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
+    <view class="floor-controls">
+      <SnSegmented v-model="loadingType" :options="loadingTypeOptions" />
+      <SnSegmented v-model="floorBackground" :options="backgroundOptions" />
+    </view>
     <view class="floor-hint">
-      <text class="floor-hint__text">深色下拉区 → 越拉越沉 → 越过阈值松手进入二楼（已进入 {{ floorVisits }} 次）</text>
+      <text class="floor-hint__text">
+        下拉越过阈值松手进入全屏二楼；二楼内上滑（内容到底后）可拉回列表（已进入 {{ floorVisits }} 次）
+      </text>
     </view>
     <view class="paging-frame">
       <SnPaging
@@ -52,9 +74,10 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
         v-model="list"
         :default-page-size="PAGE_SIZE"
         second-floor-enabled
-        refresher-background="#0b1220"
+        :refresher-background="floorBackground"
         refresher-text-color="#e2e8f0"
         refresher-icon-color="#38bdf8"
+        :refresher-loading-type="loadingType"
         second-floor-background="#0b1220"
         @query="query"
         @second-floor-change="onSecondFloorChange"
@@ -74,7 +97,7 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
             </view>
             <view class="floor__body">
               <text class="floor__text">
-                这里是二楼：下拉越过阈值松手即达，适合放活动入口、个性化面板或运营位。浮层滚动锁定在本层，不会穿透到列表。
+                这里是二楼：下拉越过阈值松手即达，适合放活动入口、个性化面板或运营位。内容滚到底后继续上滑，浮层跟手拉回列表。
               </text>
             </view>
           </view>
@@ -85,6 +108,12 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
 </template>
 
 <style scoped>
+.floor-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+}
+
 .floor-hint {
   padding: 0 var(--sn-mp-spacing-1);
 }
