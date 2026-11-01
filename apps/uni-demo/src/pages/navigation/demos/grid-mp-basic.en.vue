@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-grid — basic icon grid. */
+/** Demo: sn-grid — basic icon grid (built-in catalog kebab names). */
 import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
 import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 </script>
@@ -7,12 +7,12 @@ import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 <template>
   <view class="sn-demo sn-demo--column">
     <SnGrid :column="3" border>
-      <SnGridItem text="Home" icon="Home" />
-      <SnGridItem text="Search" icon="Search" />
-      <SnGridItem text="Messages" icon="Bell" :value="12" />
-      <SnGridItem text="Starred" icon="Star" />
-      <SnGridItem text="Settings" icon="Settings" />
-      <SnGridItem text="More" icon="MoreHorizontal" />
+      <SnGridItem text="Home" icon="house" />
+      <SnGridItem text="Search" icon="search" />
+      <SnGridItem text="Messages" icon="bell" :value="12" />
+      <SnGridItem text="Starred" icon="star" />
+      <SnGridItem text="Settings" icon="settings" />
+      <SnGridItem text="More" icon="ellipsis" />
     </SnGrid>
   </view>
 </template>

@@ -622,6 +622,11 @@
           "hasEn": true
         },
         {
+          "name": "grid-mp-kingkong",
+          "title": "金刚区",
+          "hasEn": true
+        },
+        {
           "name": "grid-mp-layout",
           "title": "布局",
           "hasEn": true

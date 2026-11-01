@@ -185,7 +185,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '宫格',
         titleEn: 'Grid',
         desc: '功能入口宫格',
-        count: 3,
+        count: 4,
       },
       {
         key: 'index-bar',

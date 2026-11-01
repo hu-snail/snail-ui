@@ -123,7 +123,8 @@ const SCENARIO_LABELS = {
   'new-energy': '新能源车牌',
   runtime: '运行时属性',
   'word-limit': '字数统计',
-};
+   kingkong: '金刚区',
+ };
 
 /**
  * 组件级场景标题覆盖：key 为 `<comp>-<scenario>`。同一 scenario key 在不同
@@ -280,7 +281,8 @@ const SCENARIO_LABELS_EN = {
   'new-energy': 'New-energy plate',
   runtime: 'Runtime attributes',
   'word-limit': 'Word limit',
-};
+   kingkong: 'Quick entry',
+ };
 
 const SCENARIO_LABEL_OVERRIDES_EN = {
   'input-states': 'Disabled & readonly',

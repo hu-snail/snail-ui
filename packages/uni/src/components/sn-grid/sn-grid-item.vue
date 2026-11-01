@@ -15,9 +15,9 @@
  *
  * A component must not own routing (§60 — AppBridge is the host capability
  * boundary). The pair is forwarded to the `click` payload so the host decides
- * between `navigateTo` / `switchTab` / `reLaunch` / `redirectTo`.
+  * between `navigateTo` / `switchTab` / `reLaunch` / `redirectTo`.
  *
- * Per AGENTS.md §32 this component handles rendering + interaction only.
+  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
  *   - 路由跳转 — 由宿主按 `click` 的 `url` / `linkType` 决定
@@ -28,7 +28,7 @@
 import { computed, inject, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
 import { SN_GRID_KEY } from './sn-grid-types';
 
 defineOptions({ name: 'SnGridItem' });
@@ -41,13 +41,13 @@ const props = withDefaults(
     text?: string;
     /** 是否超出隐藏显示省略号。 */
     ellipsis?: boolean;
-    /** 图标名称（经 `registerSnIcons()` 注册）。 */
+    /** 图标名称 — 解析链：`registerSnIcons()` 注册名 → 内置目录（kebab-case，如 `search` / `bell`）。 */
     icon?: string;
     /** 图标颜色（内联覆盖）。 */
     iconColor?: string;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
     iconPrefix?: string;
-    /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
+    /** CSS（字体）图标：`true` 把 `icon` 当作字形名拼 `iconPrefix-icon`；字符串则直接作为 class 前缀。 */
     cssIcon?: boolean | string;
     /** 是否显示图标右上角小红点。 */
     isDot?: boolean;
@@ -95,15 +95,15 @@ defineSlots<{
   text?(): unknown;
 }>();
 
-const grid = inject(SN_GRID_KEY, null);
-
-/** Share of the row this cell occupies. */
-const cellWidth = computed(() => {
-  const column = grid?.column.value ?? 3;
-  return `${100 / Math.max(1, column)}%`;
-});
-
-/** Gutter as symmetric padding (the grid supplies the outer half). */
+ const grid = inject(SN_GRID_KEY, null);
+ 
+ /** Share of the row this cell occupies. */
+ const cellWidth = computed(() => {
+   const column = grid?.column.value ?? 3;
+   return `${100 / Math.max(1, column)}%`;
+ });
+ 
+ /** Gutter as symmetric padding (the grid supplies the outer half). */
 const gutterStyle = computed(() => {
   const gutter = grid?.gutter.value ?? 0;
   if (gutter <= 0) return undefined;
@@ -112,9 +112,19 @@ const gutterStyle = computed(() => {
 
 const isClickable = computed(() => grid?.clickable.value ?? false);
 
+/**
+ * Icon resolution — the same chain `<SnIcon icon="...">` uses:
+ * registry (`registerSnIcons`) → built-in catalog (`sn-icon-catalog.ts`).
+ * A plain registry lookup would leave every catalog-only name (the 111
+ * kebab-case lucide names, e.g. `search` / `bell`) blank — the bug behind
+ * empty grid icons in demo screenshots. Registry stays first so a
+ * registered override still wins.
+ */
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null;
-  const resolved = resolveIconByName(props.icon);
+  /* `cssIcon` marks `icon` as a font-glyph class name (wot-ui semantics) —
+   * keep it off the data-resolution track. */
+  if (!props.icon || props.cssIcon) return null;
+  const resolved = resolveSnIconStringSync(props.icon);
   return resolved ? markRaw(resolved) : null;
 });
 
@@ -181,46 +191,51 @@ const rootStyle = computed(() => {
   >
     <view :class="contentClass">
       <slot>
-        <view
-          class="sn-grid-item__icon-wrap"
-          :class="{ 'sn-grid-item__icon-wrap--reverse': grid?.reverse.value }"
-        >
-          <slot name="icon">
-            <SnIcon
-              v-if="iconData"
-              class="sn-grid-item__icon"
-              :icon="iconData"
-              :size="grid?.iconSize.value ?? '28px'"
-              :style="iconColor ? `color: ${iconColor}` : undefined"
-            />
-            <text
-              v-else-if="cssIconClass"
-              :class="['sn-grid-item__icon', cssIconClass]"
-              aria-hidden="true"
-            />
-          </slot>
+        <!-- Square mode: one absolutely-positioned stack centred as a whole,
+             so icon + label keep their mutual spacing instead of being pinned
+             to fixed percentages that overlap in narrow cells. -->
+        <view class="sn-grid-item__stack">
           <view
-            v-if="isDot || badgeText"
-            class="sn-grid-item__badge"
-            :class="{ 'sn-grid-item__badge--dot': isDot }"
+            class="sn-grid-item__icon-wrap"
+            :class="{ 'sn-grid-item__icon-wrap--reverse': grid?.reverse.value }"
           >
-            <text v-if="badgeText" class="sn-grid-item__badge-text">{{ badgeText }}</text>
-          </view>
-        </view>
-
-        <view class="sn-grid-item__text-wrap">
-          <slot name="text">
-            <text
-              class="sn-grid-item__text"
-              :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
-              >{{ text }}</text
+            <slot name="icon">
+              <SnIcon
+                v-if="iconData"
+                class="sn-grid-item__icon"
+                :icon="iconData"
+                :size="grid?.iconSize.value ?? '28px'"
+                :style="iconColor ? `color: ${iconColor}` : undefined"
+              />
+              <text
+                v-else-if="cssIconClass"
+                :class="['sn-grid-item__icon', cssIconClass]"
+                aria-hidden="true"
+              />
+            </slot>
+            <view
+              v-if="isDot || badgeText"
+              class="sn-grid-item__badge"
+              :class="{ 'sn-grid-item__badge--dot': isDot }"
             >
-          </slot>
-        </view>
-      </slot>
-    </view>
-  </view>
-</template>
+               <text v-if="badgeText" class="sn-grid-item__badge-text">{{ badgeText }}</text>
+             </view>
+           </view>
+         </view>
+ 
+         <view class="sn-grid-item__text-wrap">
+           <slot name="text">
+             <text
+               class="sn-grid-item__text"
+               :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
+               >{{ text }}</text
+             >
+           </slot>
+         </view>
+       </slot>
+     </view>
+   </view>
+ </template>
 
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
@@ -258,30 +273,37 @@ const rootStyle = computed(() => {
   justify-content: center;
 }
 
-/* Square cells — padding-box trick, so no JS measurement is needed. */
-.sn-grid-item__content--square {
-  height: 0;
-  padding-bottom: 100%;
-  padding-top: 0;
-}
-
-.sn-grid-item__content--square .sn-grid-item__icon-wrap,
-.sn-grid-item__content--square .sn-grid-item__text-wrap {
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sn-grid-item__content--square .sn-grid-item__icon-wrap {
-  top: 28%;
-}
-
-.sn-grid-item__content--square .sn-grid-item__text-wrap {
-  top: 52%;
-}
+ /* The stack mirrors the content's flex layout so icon and label keep the
+  * gap-driven spacing in every mode; content lays out the stack as a single
+  * child (column / row / centring / top-align all keep working). */
+ .sn-grid-item__stack {
+   display: flex;
+   flex: 0 0 auto;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: var(--sn-mp-spacing-2);
+   min-width: 0;
+ }
+ 
+ .sn-grid-item__content--horizontal .sn-grid-item__stack {
+   flex-direction: row;
+ }
+ 
+ /* Square cells — padding-box trick, so no JS measurement is needed. */
+ .sn-grid-item__content--square {
+   height: 0;
+   padding-bottom: 100%;
+   padding-top: 0;
+ }
+ 
+ /* Square mode: the stack (icon + label as one block) is absolutely centred
+  * inside the padding-box square, so mutual spacing never depends on the cell
+  * width — the old fixed `top: 28% / 52%` pins overlapped in narrow cells. */
+ .sn-grid-item__content--square .sn-grid-item__stack {
+   position: absolute;
+   inset: 0;
+ }
 
 .sn-grid-item__content--reverse .sn-grid-item__icon-wrap {
   order: 2;

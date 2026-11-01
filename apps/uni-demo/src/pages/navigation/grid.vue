@@ -2,7 +2,8 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— grid 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/grid-mp-basic.vue';
 import Demo1 from './demos/grid-mp-feedback.vue';
-import Demo2 from './demos/grid-mp-layout.vue';
+import Demo2 from './demos/grid-mp-kingkong.vue';
+import Demo3 from './demos/grid-mp-layout.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +28,15 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
+        <DemoModuleHead :title="t('金刚区', 'Quick entry')" badge="kingkong" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>
