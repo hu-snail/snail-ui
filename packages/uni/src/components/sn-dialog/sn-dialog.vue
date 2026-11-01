@@ -581,8 +581,11 @@ const actionsClass = computed(() => [
   order: -1;
 }
 
-.sn-dialog__cancel,
-.sn-dialog__confirm {
+/* Horizontal layout: the two buttons split the row evenly. Scoped to the row —
+ * the same flex: 1 1 0 in the vertical column would also flex the HEIGHT and
+ * squash the 72rpx buttons down to their label line. */
+.sn-dialog__actions--horizontal .sn-dialog__cancel,
+.sn-dialog__actions--horizontal .sn-dialog__confirm {
   flex: 1 1 0;
 }
 
