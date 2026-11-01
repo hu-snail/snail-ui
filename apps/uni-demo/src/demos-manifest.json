@@ -1514,6 +1514,16 @@
           "hasEn": true
         },
         {
+          "name": "keyboard-mp-decimal",
+          "title": "小数点",
+          "hasEn": true
+        },
+        {
+          "name": "keyboard-mp-idcard",
+          "title": "身份证",
+          "hasEn": true
+        },
+        {
           "name": "keyboard-mp-car-custom",
           "title": "car-custom",
           "hasEn": true

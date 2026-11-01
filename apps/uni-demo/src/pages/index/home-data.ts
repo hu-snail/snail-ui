@@ -391,7 +391,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '虚拟键盘',
         titleEn: 'Keyboard',
         desc: '自定义数字键盘',
-        count: 4,
+        count: 6,
       },
       {
         key: 'password-input',

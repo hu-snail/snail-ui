@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-keyboard — sn-keyboard 数字键盘：maxlength 限长，delete 退格，close 收起；搭配只读输入框使用。 */
+/** Demo: sn-keyboard — 默认数字键盘：底行 [收起][0][⌫]，maxlength 限长；搭配只读输入框使用。 */
 import { ref } from 'vue';
 import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 
@@ -11,14 +11,7 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__button" @tap="open = true">打开键盘</view>
     <text class="sn-demo__meta">当前值：{{ amount || '（空）' }}</text>
-    <SnKeyboard
-      v-model="amount"
-      v-model:visible="open"
-      :maxlength="6"
-      title="金额"
-      extra-key="."
-      close-text="完成"
-    />
+    <SnKeyboard v-model="amount" v-model:visible="open" :maxlength="6" title="金额" />
   </view>
 </template>
 

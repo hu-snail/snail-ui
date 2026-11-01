@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— keyboard 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/keyboard-mp-basic.vue';
-import Demo1 from './demos/keyboard-mp-car-custom.vue';
-import Demo2 from './demos/keyboard-mp-labels.vue';
-import Demo3 from './demos/keyboard-mp-scrim.vue';
+import Demo1 from './demos/keyboard-mp-decimal.vue';
+import Demo2 from './demos/keyboard-mp-idcard.vue';
+import Demo3 from './demos/keyboard-mp-car-custom.vue';
+import Demo4 from './demos/keyboard-mp-labels.vue';
+import Demo5 from './demos/keyboard-mp-scrim.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,21 +24,33 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" />
+        <DemoModuleHead :title="t('小数点', 'Decimal')" badge="decimal" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" />
+        <DemoModuleHead :title="t('身份证', 'ID number')" badge="idcard" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" />
+        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

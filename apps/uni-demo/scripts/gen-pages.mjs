@@ -108,6 +108,8 @@ const SCENARIO_LABELS = {
   nav: '导航按钮',
   'no-border': '无边框',
   radius: '圆角',
+  decimal: '小数点',
+  idcard: '身份证',
   'align-compact': '对齐与紧凑',
   'bordered-bg-radius': '边框与背景',
   'clear-focus': '清空与聚焦',
@@ -143,6 +145,12 @@ const PAGE_BG_OVERRIDES = {
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
 const DEMO_ORDER = {
+  'keyboard-mp-basic': 1,
+  'keyboard-mp-decimal': 2,
+  'keyboard-mp-idcard': 3,
+  'keyboard-mp-car-custom': 4,
+  'keyboard-mp-labels': 5,
+  'keyboard-mp-scrim': 6,
   'button-mp-basic': 1,
   'button-mp-size': 2,
   'button-mp-shape': 3,
@@ -245,6 +253,8 @@ const SCENARIO_LABELS_EN = {
   nav: 'Navigation',
   'no-border': 'No border',
   radius: 'Radius',
+  decimal: 'Decimal',
+  idcard: 'ID number',
   'align-compact': 'Alignment & compact',
   'bordered-bg-radius': 'Border & background',
   'clear-focus': 'Clear & focus',

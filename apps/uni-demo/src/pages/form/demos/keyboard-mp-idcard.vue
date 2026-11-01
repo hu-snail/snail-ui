@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/** Demo: sn-keyboard — 身份证键盘：extra-key="X"（末位校验码），maxlength 18 位。 */
+import { ref } from 'vue';
+import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
+
+const idNumber = ref('');
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="sn-demo__button" @tap="open = true">打开键盘</view>
+    <text class="sn-demo__meta">证件号：{{ idNumber || '（空）' }}</text>
+    <SnKeyboard
+      v-model="idNumber"
+      v-model:visible="open"
+      :maxlength="18"
+      title="身份证号"
+      extra-key="X"
+      close-text="完成"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>
