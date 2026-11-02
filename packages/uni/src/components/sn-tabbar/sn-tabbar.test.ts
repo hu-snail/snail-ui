@@ -229,6 +229,18 @@ describe('sn-tabbar-item', () => {
     expect(items[0]!.find('.sn-tabbar-item__fab-button').exists()).toBe(false);
   });
 
+  it('paints the elevated action with the bar activeColor (theme sync)', () => {
+    const wrapper = mountBar({ activeColor: '#ff8f1f', elevate: { index: 1, icon: 'plus' } });
+    expect(wrapper.find('.sn-tabbar-item__fab-button').attributes('style')).toContain(
+      'background-color: #ff8f1f',
+    );
+    expect(
+      mountBar({ elevate: { index: 1, icon: 'plus' } })
+        .find('.sn-tabbar-item__fab-button')
+        .attributes('style'),
+    ).toBeUndefined();
+  });
+
   it('renders the numeric badge value', () => {
     const Harness = defineComponent({
       setup() {

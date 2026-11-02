@@ -115,6 +115,16 @@ const activeColor = computed<string | undefined>(() => {
   return custom === '' ? undefined : custom;
 });
 
+/**
+ * The elevated action paints with the bar's `activeColor` (theme sync — the
+ * round button is always the highlighted affordance); an empty prop keeps the
+ * CSS fallback (primary token).
+ */
+const fabStyle = computed<string | undefined>(() => {
+  const custom = tabbar ? tabbar.activeColor.value : '';
+  return custom === '' ? undefined : `background-color: ${custom}`;
+});
+
 /** Root inline style: caller style first, the resolved active/inactive colour last. */
 const rootStyle = computed<string | undefined>(() => {
   const parts: string[] = [];
@@ -201,6 +211,7 @@ const rootClass = computed(() => [
     <view
       v-if="isElevated"
       class="sn-tabbar-item__fab-button"
+      :style="fabStyle"
       role="tab"
       :aria-selected="isActive"
       :aria-label="title || 'elevated action'"
@@ -304,9 +315,9 @@ const rootClass = computed(() => [
 }
 
 /* ── 中心凸起项（additive）：上凸圆形主按钮。bar 在 --elevated 形态下加高
- * 到 128rpx，圆钮以 flex-start + 负 margin 上浮出栏顶 44rpx；__fab 是与栏同
- * 底色的「凸舌」（宽度 = 圆钮，随 --sn-tabbar-bar-bg 走玻璃形态），把凸出
- * 部分与栏体连成整体。 ──────────────────────────────────────────────────── */
+ * 到 128rpx，圆钮以 flex-start + 负 margin 上浮出栏顶；__fab 是与栏同底色
+ * 的半椭圆「穹顶」（随 --sn-tabbar-bar-bg 走玻璃形态），两侧再用
+ * radial-gradient 反圆角凹弧与栏顶衔接——白面沿曲线自然扬起，无硬折角。 ── */
 .sn-tabbar-item--elevate {
   align-items: flex-start;
 }
@@ -318,8 +329,37 @@ const rootClass = computed(() => [
   width: 104rpx;
   height: 44rpx;
   margin-left: -52rpx;
-  border-radius: 24rpx 24rpx 0 0;
+  border-radius: 52rpx 52rpx 0 0;
   background-color: var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface));
+}
+
+.sn-tabbar-item__fab::before,
+.sn-tabbar-item__fab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 20rpx;
+  height: 20rpx;
+}
+
+.sn-tabbar-item__fab::before {
+  left: -20rpx;
+  background-image: radial-gradient(
+    circle at 0 0,
+    transparent 0,
+    transparent 19rpx,
+    var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface)) 20rpx
+  );
+}
+
+.sn-tabbar-item__fab::after {
+  right: -20rpx;
+  background-image: radial-gradient(
+    circle at 100% 0,
+    transparent 0,
+    transparent 19rpx,
+    var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface)) 20rpx
+  );
 }
 
 .sn-tabbar-item__fab-button {
