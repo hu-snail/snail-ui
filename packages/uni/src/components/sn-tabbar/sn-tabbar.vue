@@ -160,6 +160,9 @@ provide(SN_TABBAR_KEY, {
 /** Public imperative API — host pages can drive the bar from code (§14). */
 defineExpose({ select });
 
+/** Whether the elevated center action is configured (drives placeholder height). */
+const hasElevate = computed(() => props.elevate !== null && props.elevate !== undefined);
+
 const rootClass = computed(() => [
   'sn-tabbar',
   `sn-tabbar--${props.shape}`,
@@ -168,7 +171,7 @@ const rootClass = computed(() => [
     'sn-tabbar--bordered': props.bordered,
     'sn-tabbar--safe-area': props.safeAreaInsetBottom,
     'sn-tabbar--glass': props.glass,
-    'sn-tabbar--elevated': props.elevate !== null && props.elevate !== undefined,
+    'sn-tabbar--elevated': hasElevate.value,
   },
   props.customClass,
 ]);
@@ -182,7 +185,12 @@ const rootStyle = computed(() => {
 </script>
 
 <template>
-  <view v-if="fixed && placeholder" class="sn-tabbar__placeholder" aria-hidden="true" />
+  <view
+    v-if="fixed && placeholder"
+    class="sn-tabbar__placeholder"
+    :class="{ 'sn-tabbar__placeholder--elevated': hasElevate }"
+    aria-hidden="true"
+  />
   <view data-snui-component="tabbar" :class="rootClass" :style="rootStyle" role="tablist">
     <slot />
   </view>
@@ -191,12 +199,15 @@ const rootStyle = computed(() => {
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-tabbar {
+  /* Items (slotted, own scope) read this to match the bar surface — the
+   * elevated fab + its ring follow glass mode with zero prop plumbing. */
+  --sn-tabbar-bar-bg: var(--sn-mp-color-background-surface);
   display: flex;
   align-items: stretch;
   box-sizing: border-box;
   width: 100%;
   height: 100rpx;
-  background-color: var(--sn-mp-color-background-surface);
+  background-color: var(--sn-tabbar-bar-bg);
 }
 
 .sn-tabbar--fixed {
@@ -229,29 +240,22 @@ const rootStyle = computed(() => {
   height: 100rpx;
 }
 
-.sn-tabbar--elevated + .sn-tabbar__placeholder,
-.sn-tabbar__placeholder + .sn-tabbar--elevated {
-  /* sibling order varies by slot layout; the pair contract is handled by the
-   * fixed+placeholder branch below */
-}
-
-/* fixed + placeholder + elevated: the placeholder must reserve the taller
- * bar (128rpx) — the DOM order is placeholder first, bar second. */
-.sn-tabbar--elevated {
-  min-height: 128rpx;
+/* fixed + placeholder + elevated: reserve the taller bar (128rpx). */
+.sn-tabbar__placeholder--elevated {
+  height: 128rpx;
 }
 
 /* ── Glass（additive）：半透明表面 + backdrop 高斯模糊。固定在底部时页面
  * 内容从栏后透出；暗色由 .sn-theme-dark 的玻璃色插槽翻转。 ────────────── */
 .sn-tabbar--glass {
-  background-color: var(--sn-mp-color-glass-bar, rgba(255, 255, 255, 0.72));
+  --sn-tabbar-bar-bg: var(--sn-mp-color-glass-bar, rgba(255, 255, 255, 0.72));
   backdrop-filter: blur(20rpx) saturate(1.6);
   -webkit-backdrop-filter: blur(20rpx) saturate(1.6);
 }
 
 .sn-theme-dark .sn-tabbar--glass,
 .sn-tabbar--glass.sn-theme-dark {
-  background-color: var(--sn-mp-color-glass-bar-dark, rgba(24, 24, 27, 0.72));
+  --sn-tabbar-bar-bg: var(--sn-mp-color-glass-bar-dark, rgba(24, 24, 27, 0.72));
 }
 
 /* 凸起中心项要向上溢出栏体：加高栏身给圆钮留呼吸空间（fixed + placeholder

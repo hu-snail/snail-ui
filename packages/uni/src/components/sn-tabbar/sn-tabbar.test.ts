@@ -171,6 +171,21 @@ describe('sn-tabbar', () => {
       expect(mountBar({ placeholder: true }).find('.sn-tabbar__placeholder').exists()).toBe(false);
     });
 
+    it('marks the bar and the placeholder as elevated when elevate is set', () => {
+      const wrapper = mountBar({
+        fixed: true,
+        placeholder: true,
+        elevate: { index: 2, icon: 'plus' },
+      });
+      expect(wrapper.find('.sn-tabbar').classes()).toContain('sn-tabbar--elevated');
+      expect(wrapper.find('.sn-tabbar__placeholder').classes()).toContain(
+        'sn-tabbar__placeholder--elevated',
+      );
+      expect(
+        mountBar({ fixed: true, placeholder: true }).find('.sn-tabbar__placeholder').classes(),
+      ).not.toContain('sn-tabbar__placeholder--elevated');
+    });
+
     it('adds the round shape class on the bar and its items', () => {
       const wrapper = mountBar({ shape: 'round' });
       expect(wrapper.find('.sn-tabbar').classes()).toContain('sn-tabbar--round');
@@ -202,6 +217,16 @@ describe('sn-tabbar-item', () => {
   it('renders the title', () => {
     const wrapper = mountBar({}, 1);
     expect(wrapper.find('.sn-tabbar-item__title').text()).toBe('Tab 0');
+  });
+
+  it('renders the elevated center action only on the configured index', () => {
+    const wrapper = mountBar({ elevate: { index: 1, icon: 'plus' } });
+    const items = wrapper.findAll('.sn-tabbar-item');
+    expect(items[1]!.classes()).toContain('sn-tabbar-item--elevate');
+    const fab = items[1]!.find('.sn-tabbar-item__fab-button');
+    expect(fab.exists()).toBe(true);
+    expect(fab.find('.sn-icon').exists()).toBe(true);
+    expect(items[0]!.find('.sn-tabbar-item__fab-button').exists()).toBe(false);
   });
 
   it('renders the numeric badge value', () => {

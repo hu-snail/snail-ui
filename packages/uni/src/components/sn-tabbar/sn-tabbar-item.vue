@@ -303,19 +303,23 @@ const rootClass = computed(() => [
   color: var(--sn-mp-color-text-on-primary);
 }
 
-/* ── 中心凸起项（additive）：上凸圆形主按钮。bar 在 --elevated 形态下加高，
- * 圆钮用负 margin 上浮出栏体，栏体为其让出（占位元素同高）。 ────────────── */
+/* ── 中心凸起项（additive）：上凸圆形主按钮。bar 在 --elevated 形态下加高
+ * 到 128rpx，圆钮以 flex-start + 负 margin 上浮出栏顶 44rpx；__fab 是与栏同
+ * 底色的「凸舌」（宽度 = 圆钮，随 --sn-tabbar-bar-bg 走玻璃形态），把凸出
+ * 部分与栏体连成整体。 ──────────────────────────────────────────────────── */
 .sn-tabbar-item--elevate {
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .sn-tabbar-item__fab {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: -44rpx;
+  left: 50%;
+  width: 104rpx;
   height: 44rpx;
-  background-color: var(--sn-mp-color-background-surface);
+  margin-left: -52rpx;
+  border-radius: 24rpx 24rpx 0 0;
+  background-color: var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface));
 }
 
 .sn-tabbar-item__fab-button {
@@ -330,7 +334,7 @@ const rootClass = computed(() => [
   background-color: var(--sn-mp-color-action-primary);
   color: var(--sn-mp-color-text-on-primary);
   box-shadow: var(--sn-mp-shadow-md);
-  border: 8rpx solid var(--sn-mp-color-background-surface);
+  border: 8rpx solid var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface));
   box-sizing: border-box;
 }
 
