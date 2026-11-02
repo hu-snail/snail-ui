@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— tabbar 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/tabbar-mp-badge.vue';
-import Demo1 from './demos/tabbar-mp-basic.vue';
-import Demo2 from './demos/tabbar-mp-color.vue';
+import Demo0 from './demos/tabbar-mp-basic.vue';
+import Demo1 from './demos/tabbar-mp-glass.vue';
+import Demo2 from './demos/tabbar-mp-elevate.vue';
 import Demo3 from './demos/tabbar-mp-fixed.vue';
+import Demo4 from './demos/tabbar-mp-fixed-switch.vue';
+import Demo5 from './demos/tabbar-mp-badge.vue';
+import Demo6 from './demos/tabbar-mp-color.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,19 +19,19 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'标签栏'" :title-en="'Tabbar'" :desc="'底部标签栏'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('徽标', 'Badge')" badge="badge" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('毛玻璃', 'Glass')" badge="glass" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('颜色', 'Color')" badge="color" />
+        <DemoModuleHead :title="t('中心凸起', 'Elevated center')" badge="elevate" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -37,6 +40,24 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('fixed', 'Fixed')" badge="fixed" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('固定底部切换', 'Fixed with capsule')" badge="fixed-switch" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('徽标', 'Badge')" badge="badge" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('颜色', 'Color')" badge="color" />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

@@ -29,7 +29,8 @@
 import { computed, inject, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
+import { Check as CheckIcon } from '../sn-icon/sn-icon-set';
 import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types';
 
 defineOptions({ name: 'SnTabbarItem' });
@@ -97,6 +98,15 @@ const itemValue = computed<SnTabbarValue>(() => props.name ?? registeredIndex);
 
 const isActive = computed(() => tabbar?.isActive(itemValue.value) ?? false);
 
+/** 凸起中心项配置（bar 下发）：命中当前项时走圆形主按钮渲染。 */
+const elevateConfig = computed(() => tabbar?.elevate.value ?? null);
+const isElevated = computed(
+  () =>
+    elevateConfig.value !== null &&
+    elevateConfig.value !== undefined &&
+    elevateConfig.value.index === registeredIndex,
+);
+
 /** Active / inactive colour, emitted on the root so icon, label and any
  * slotted glyph all resolve it (icon strokes paint with `currentColor`). */
 const activeColor = computed<string | undefined>(() => {
@@ -115,8 +125,11 @@ const rootStyle = computed<string | undefined>(() => {
 });
 
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null;
-  const resolved = resolveIconByName(props.icon);
+  if (!props.icon || props.cssIcon) return null;
+  // Full chain (registry → built-in catalogue): catalogue names like
+  // `house` / `search` / `user` resolve with zero registration, same as
+  // every other string-icon consumer.
+  const resolved = resolveSnIconStringSync(props.icon);
   return resolved ? markRaw(resolved) : null;
 });
 
@@ -144,6 +157,7 @@ const rootClass = computed(() => [
   {
     'sn-tabbar-item--active': isActive.value,
     'sn-tabbar-item--round': tabbar?.shape.value === 'round',
+    'sn-tabbar-item--elevate': isElevated.value,
     'sn-tabbar-item--dot': props.isDot,
   },
   props.customClass,
@@ -161,7 +175,8 @@ const rootClass = computed(() => [
     hover-class="sn-tabbar-item--pressed"
     @tap="onTap"
   >
-    <slot :active="isActive">
+    <view v-if="isElevated" class="sn-tabbar-item__fab" aria-hidden="true" />
+    <slot v-if="!isElevated" :active="isActive">
       <view class="sn-tabbar-item__inner">
         <view class="sn-tabbar-item__icon">
           <slot name="icon" :active="isActive">
@@ -183,6 +198,19 @@ const rootClass = computed(() => [
         <text v-if="title" class="sn-tabbar-item__title">{{ title }}</text>
       </view>
     </slot>
+    <view
+      v-if="isElevated"
+      class="sn-tabbar-item__fab-button"
+      role="tab"
+      :aria-selected="isActive"
+      :aria-label="title || 'elevated action'"
+    >
+      <SnIcon
+        v-if="elevateConfig && elevateConfig.icon"
+        :icon="resolveSnIconStringSync(elevateConfig.icon) ?? CheckIcon"
+        :size="TABBAR_ICON_SIZE"
+      />
+    </view>
   </view>
 </template>
 
@@ -273,6 +301,37 @@ const rootClass = computed(() => [
   font-size: var(--sn-mp-font-size-xs);
   line-height: 1;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+/* ── 中心凸起项（additive）：上凸圆形主按钮。bar 在 --elevated 形态下加高，
+ * 圆钮用负 margin 上浮出栏体，栏体为其让出（占位元素同高）。 ────────────── */
+.sn-tabbar-item--elevate {
+  align-items: flex-end;
+}
+
+.sn-tabbar-item__fab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 44rpx;
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.sn-tabbar-item__fab-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104rpx;
+  height: 104rpx;
+  margin-top: -52rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  box-shadow: var(--sn-mp-shadow-md);
+  border: 8rpx solid var(--sn-mp-color-background-surface);
+  box-sizing: border-box;
 }
 
 /* Doodle skin — heavier label. */

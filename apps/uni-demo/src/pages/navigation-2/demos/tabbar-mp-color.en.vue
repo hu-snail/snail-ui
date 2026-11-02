@@ -23,17 +23,17 @@ const namedValue = ref('inbox');
       inactive-color="var(--sn-mp-color-text-disabled)"
       bordered
     >
-      <SnTabbarItem title="Home" icon="Home" />
-      <SnTabbarItem title="Discover" icon="Search" />
-      <SnTabbarItem title="Me" icon="User" />
+      <SnTabbarItem title="Home" icon="house" />
+      <SnTabbarItem title="Discover" icon="search" />
+      <SnTabbarItem title="Me" icon="user" />
     </SnTabbar>
 
     <text class="sn-demo__meta">Index value: {{ indexValue }}</text>
 
     <SnTabbar v-model="namedValue" active-color="var(--sn-mp-color-feedback-success)" bordered>
-      <SnTabbarItem title="Inbox" name="inbox" icon="Bell" />
-      <SnTabbarItem title="Starred" name="star" icon="Star" />
-      <SnTabbarItem title="Settings" name="settings" icon="Settings" />
+      <SnTabbarItem title="Inbox" name="inbox" icon="bell" />
+      <SnTabbarItem title="Starred" name="star" icon="star" />
+      <SnTabbarItem title="Settings" name="settings" icon="settings" />
     </SnTabbar>
 
     <text class="sn-demo__meta">Name value: {{ namedValue }}</text>

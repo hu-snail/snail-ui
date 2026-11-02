@@ -10,9 +10,9 @@ const active = ref(0);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnTabbar v-model="active" shape="round" bordered>
-      <SnTabbarItem title="Messages" icon="Bell" :value="12" />
-      <SnTabbarItem title="Alerts" icon="Heart" is-dot />
-      <SnTabbarItem title="Mine" icon="User" :value="120" :max="99" />
+      <SnTabbarItem title="Messages" icon="bell" :value="12" />
+      <SnTabbarItem title="Alerts" icon="heart" is-dot />
+      <SnTabbarItem title="Mine" icon="user" :value="120" :max="99" />
     </SnTabbar>
     <text class="sn-demo__meta">A numeric badge above max renders 99+</text>
   </view>

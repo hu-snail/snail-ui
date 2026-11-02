@@ -21,17 +21,17 @@ const namedValue = ref('inbox');
       inactive-color="var(--sn-mp-color-text-disabled)"
       bordered
     >
-      <SnTabbarItem title="首页" icon="Home" />
-      <SnTabbarItem title="发现" icon="Search" />
-      <SnTabbarItem title="我的" icon="User" />
+      <SnTabbarItem title="首页" icon="house" />
+      <SnTabbarItem title="发现" icon="search" />
+      <SnTabbarItem title="我的" icon="user" />
     </SnTabbar>
 
     <text class="sn-demo__meta">索引取值：{{ indexValue }}</text>
 
     <SnTabbar v-model="namedValue" active-color="var(--sn-mp-color-feedback-success)" bordered>
-      <SnTabbarItem title="收件箱" name="inbox" icon="Bell" />
-      <SnTabbarItem title="收藏" name="star" icon="Star" />
-      <SnTabbarItem title="设置" name="settings" icon="Settings" />
+      <SnTabbarItem title="收件箱" name="inbox" icon="bell" />
+      <SnTabbarItem title="收藏" name="star" icon="star" />
+      <SnTabbarItem title="设置" name="settings" icon="settings" />
     </SnTabbar>
 
     <text class="sn-demo__meta">name 取值：{{ namedValue }}</text>

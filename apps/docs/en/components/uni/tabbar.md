@@ -47,20 +47,22 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 
 ### sn-tabbar
 
-| Prop                  | Type                                     | Default     | Description                                   |
-| --------------------- | ---------------------------------------- | ----------- | --------------------------------------------- |
-| `modelValue`          | `number \| string`                       | `0`         | Active index or item name                     |
-| `fixed`               | `boolean`                                | `false`     | Pin the bar to the bottom                     |
-| `bordered`            | `boolean`                                | `false`     | Hairline top border                           |
-| `safeAreaInsetBottom` | `boolean`                                | `false`     | Bottom safe-area padding                      |
-| `shape`               | `'default' \| 'round'`                   | `'default'` | Bar shape                                     |
-| `activeColor`         | `string`                                 | `''`        | Active item colour (icon + label, empty = token default)   |
-| `inactiveColor`       | `string`                                 | `''`        | Inactive item colour (icon + label, empty = token default) |
-| `placeholder`         | `boolean`                                | `false`     | Reserve the bar height in flow when fixed     |
-| `zIndex`              | `number`                                 | `10`        | Stacking level (written only when fixed)      |
-| `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch          |
-| `customClass`         | `string`                                 | `''`        | Extra class on the root node                  |
-| `customStyle`         | `string`                                 | `''`        | Inline style on the root node                 |
+| Prop                  | Type                                      | Default     | Description                                                 |
+| --------------------- | ----------------------------------------- | ----------- | ----------------------------------------------------------- |
+| `modelValue`          | `number \| string`                        | `0`         | Active index or item name                                   |
+| `fixed`               | `boolean`                                 | `false`     | Pin the bar to the bottom                                   |
+| `bordered`            | `boolean`                                 | `false`     | Hairline top border                                         |
+| `safeAreaInsetBottom` | `boolean`                                 | `false`     | Bottom safe-area padding                                    |
+| `shape`               | `'default' \| 'round'`                    | `'default'` | Bar shape                                                   |
+| `activeColor`         | `string`                                  | `''`        | Active item colour (icon + label, empty = token default)    |
+| `inactiveColor`       | `string`                                  | `''`        | Inactive item colour (icon + label, empty = token default)  |
+| `placeholder`         | `boolean`                                 | `false`     | Reserve the bar height in flow when fixed                   |
+| `zIndex`              | `number`                                  | `10`        | Stacking level (written only when fixed)                    |
+| `glass`               | `boolean`                                 | `false`     | Glass style: translucent surface + backdrop blur (additive) |
+| `elevate`             | `{ index: number; icon: string } \| null` | `null`      | Raised round center action (additive)                       |
+| `beforeChange`        | `(value) => boolean \| Promise<boolean>`  | `undefined` | Veto hook; `false` blocks the switch                        |
+| `customClass`         | `string`                                  | `''`        | Extra class on the root node                                |
+| `customStyle`         | `string`                                  | `''`        | Inline style on the root node                               |
 
 ### sn-tabbar-item
 

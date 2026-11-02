@@ -879,23 +879,38 @@
       "page": "pages/navigation-2/tabbar",
       "demos": [
         {
-          "name": "tabbar-mp-badge",
-          "title": "徽标",
-          "hasEn": true
-        },
-        {
           "name": "tabbar-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "tabbar-mp-color",
-          "title": "颜色",
+          "name": "tabbar-mp-glass",
+          "title": "毛玻璃",
+          "hasEn": true
+        },
+        {
+          "name": "tabbar-mp-elevate",
+          "title": "中心凸起",
           "hasEn": true
         },
         {
           "name": "tabbar-mp-fixed",
           "title": "fixed",
+          "hasEn": true
+        },
+        {
+          "name": "tabbar-mp-fixed-switch",
+          "title": "固定底部切换",
+          "hasEn": true
+        },
+        {
+          "name": "tabbar-mp-badge",
+          "title": "徽标",
+          "hasEn": true
+        },
+        {
+          "name": "tabbar-mp-color",
+          "title": "颜色",
           "hasEn": true
         }
       ]

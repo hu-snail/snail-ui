@@ -33,9 +33,9 @@ const active = ref(0);
         :z-index="40"
         custom-class="sn-demo-contained"
       >
-        <SnTabbarItem title="Home" icon="Home" />
-        <SnTabbarItem title="Discover" icon="Search" />
-        <SnTabbarItem title="Me" icon="User" />
+        <SnTabbarItem title="Home" icon="house" />
+        <SnTabbarItem title="Discover" icon="search" />
+        <SnTabbarItem title="Me" icon="user" />
       </SnTabbar>
     </view>
 

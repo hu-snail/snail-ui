@@ -10,9 +10,9 @@ const active = ref(0);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnTabbar v-model="active" bordered>
-      <SnTabbarItem title="首页" icon="Home" />
-      <SnTabbarItem title="发现" icon="Search" />
-      <SnTabbarItem title="我的" icon="User" />
+      <SnTabbarItem title="首页" icon="house" />
+      <SnTabbarItem title="发现" icon="search" />
+      <SnTabbarItem title="我的" icon="user" />
     </SnTabbar>
     <text class="sn-demo__meta">当前索引：{{ active }}</text>
   </view>

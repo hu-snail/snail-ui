@@ -10,9 +10,9 @@ const active = ref(0);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnTabbar v-model="active" bordered>
-      <SnTabbarItem title="Home" icon="Home" />
-      <SnTabbarItem title="Discover" icon="Search" />
-      <SnTabbarItem title="Mine" icon="User" />
+      <SnTabbarItem title="Home" icon="house" />
+      <SnTabbarItem title="Discover" icon="search" />
+      <SnTabbarItem title="Mine" icon="user" />
     </SnTabbar>
     <text class="sn-demo__meta">Active index: {{ active }}</text>
   </view>

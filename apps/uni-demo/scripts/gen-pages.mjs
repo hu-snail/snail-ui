@@ -121,6 +121,9 @@ const SCENARIO_LABELS = {
   background: '格子背景',
   'error-gutter': '明文与错误态',
   'new-energy': '新能源车牌',
+  glass: '毛玻璃',
+  elevate: '中心凸起',
+  'fixed-switch': '固定底部切换',
   runtime: '运行时属性',
   'word-limit': '字数统计',
   'lazy-load': '懒加载',
@@ -208,6 +211,13 @@ const DEMO_ORDER = {
   'waterfall-mp-lazy-load': 2,
   'waterfall-mp-responsive': 3,
   'waterfall-mp-masonry-off': 4,
+  'tabbar-mp-basic': 1,
+  'tabbar-mp-glass': 2,
+  'tabbar-mp-elevate': 3,
+  'tabbar-mp-fixed': 4,
+  'tabbar-mp-fixed-switch': 5,
+  'tabbar-mp-badge': 6,
+  'tabbar-mp-color': 7,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -293,6 +303,9 @@ const SCENARIO_LABELS_EN = {
   background: 'Cell background',
   'error-gutter': 'Plain text & error',
   'new-energy': 'New-energy plate',
+  glass: 'Glass',
+  elevate: 'Elevated center',
+  'fixed-switch': 'Fixed with capsule',
   runtime: 'Runtime attributes',
   'word-limit': 'Word limit',
   'lazy-load': 'Lazy load',

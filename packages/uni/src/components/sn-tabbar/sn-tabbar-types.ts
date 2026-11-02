@@ -30,6 +30,8 @@ export interface SnTabbarContext {
   inactiveColor: Ref<string>;
   /** Bar shape inherited by every item. */
   shape: Ref<SnTabbarShape>;
+  /** 凸起中心项配置；null = 无凸起（additive）。 */
+  elevate: Ref<{ index: number; icon: string } | null>;
 }
 
 export const SN_TABBAR_KEY: InjectionKey<SnTabbarContext> = Symbol('sn-tabbar');

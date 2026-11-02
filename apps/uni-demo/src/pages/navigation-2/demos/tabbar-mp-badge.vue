@@ -10,9 +10,9 @@ const active = ref(0);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnTabbar v-model="active" shape="round" bordered>
-      <SnTabbarItem title="消息" icon="Bell" :value="12" />
-      <SnTabbarItem title="通知" icon="Heart" is-dot />
-      <SnTabbarItem title="我的" icon="User" :value="120" :max="99" />
+      <SnTabbarItem title="消息" icon="bell" :value="12" />
+      <SnTabbarItem title="通知" icon="heart" is-dot />
+      <SnTabbarItem title="我的" icon="user" :value="120" :max="99" />
     </SnTabbar>
     <text class="sn-demo__meta">数字徽标超过 max 显示 99+</text>
   </view>
