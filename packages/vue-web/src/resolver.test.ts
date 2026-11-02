@@ -18,10 +18,21 @@ describe('SnUIResolver', () => {
       const result = resolver.resolve('SnButton');
 
       expect(result).toEqual({
-        name: 'default',
+        name: 'SnButton',
         from: '@snui/vue-web',
         sideEffects: '@snui/vue-web/styles',
       });
+    });
+
+    it('should resolve to a named export that exists on the package entry', () => {
+      const resolver = SnUIResolver();
+      const result = resolver.resolve('SnButton');
+
+      // Regression: the resolver once emitted `name: 'default'`, which does
+      // not exist on the named-export barrel — auto-imported components were
+      // undefined at runtime.
+      expect(result?.name).toBe('SnButton');
+      expect(indexExports).toHaveProperty('SnButton');
     });
 
     it('should honour a custom library option', () => {
