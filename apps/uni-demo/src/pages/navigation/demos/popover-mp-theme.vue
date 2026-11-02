@@ -26,7 +26,7 @@ const lightOpen = ref(false);
         v-model="darkOpen"
         mode="normal"
         content="暗黑主题气泡：深底浅字，描边与箭头随主题翻转，无需单独配色。"
-        placement="bottom"
+        placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
       >
@@ -41,7 +41,7 @@ const lightOpen = ref(false);
         v-model="lightOpen"
         mode="normal"
         content="浅色主题气泡：白底深字，与暗黑 pane 直观对照。"
-        placement="bottom"
+        placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
       >

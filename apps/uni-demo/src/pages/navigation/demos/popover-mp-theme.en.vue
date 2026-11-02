@@ -24,7 +24,7 @@ const lightOpen = ref(false);
         v-model="darkOpen"
         mode="normal"
         content="Dark-theme bubble: dark fill, light text; the border and arrow flip with the theme, no extra styling needed."
-        placement="bottom"
+        placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
       >
@@ -39,7 +39,7 @@ const lightOpen = ref(false);
         v-model="lightOpen"
         mode="normal"
         content="Light-theme bubble: white fill, dark text — a direct contrast with the dark pane."
-        placement="bottom"
+        placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
       >

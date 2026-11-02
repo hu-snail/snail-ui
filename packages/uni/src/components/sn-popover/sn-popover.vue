@@ -680,12 +680,14 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  left: 50%;
   margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(var(--sn-popover-offset-x));
+  /* True center: the pop center is pinned to the root center at any width
+   * (stretch + auto margins collapse to 0 once max-content outgrows the
+   * trigger, walking the pop — and the arrow's 50% — off the trigger).
+   * max-content is bounded by the viewport clamp, so a centered pop never
+   * crosses the screen edge by itself; offset-x rides the same transform. */
+  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
@@ -704,12 +706,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--bottom .sn-popover__pop {
   top: 100%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  left: 50%;
   margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(var(--sn-popover-offset-x));
+  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
