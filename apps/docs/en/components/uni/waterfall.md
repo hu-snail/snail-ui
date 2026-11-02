@@ -75,8 +75,26 @@ root (.sn-waterfall, flex row, column-gap)
 
 - **Placement is JS**: a new item goes to the currently shortest column; ties resolve leftwards.
 - **Layout inside a column is the platform's** (flex column + `row-gap`): no per-frame JS positioning, no absolute positioning, no transform bookkeeping — scrolling stays compositing-only.
-- **Measurement is a selector query**: mobile has no ResizeObserver, so `uni.createSelectorQuery` measures every item in one batch; it runs after mount and after the item count changes. The first measurement re-packs once; from then on only new keys trigger placement.
+- **Measurement is a selector query, and it only measures what is pending**: mobile has no ResizeObserver, so `uni.createSelectorQuery` batches only the items without a usable height; a round runs after mount and after the item set changes, and is skipped entirely when nothing is pending. The first measurement re-packs once; from then on only new keys trigger placement.
 - **Keying**: a child's `:key` is its placement identity; a keyless child falls back to its index (positional membership) — key your items when you append into a feed.
+
+## Methods
+
+| Name      | Signature | Description                                                                                                                                                                                                 |
+| --------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `refresh` | `(): void` | Re-measure every item (the new heights inform the next placement). Use it when images resolve later than the built-in policy (at most two attempts per item) — e.g. after a placeholder → real image swap. |
+
+## Performance
+
+The two hot paths are per-render JS and the per-batch native measurement; both written O(n) degrade as the feed grows (native round-trips accumulate O(n²)). What changed:
+
+| Path                     | Before                                            | Now                                                        | Measured                                                        |
+| ------------------------ | ------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------- |
+| Per-render placement check | `join('\0')` signature (array + long string)    | Key-by-key early-exit compare (append O(1), content O(n), zero allocation) | n=1000: 0.143ms → 0.0135ms; ~4000 → ~1 allocation per render |
+| Measurement volume       | Full wall every round                             | Pending items only                                          | 10 pages × 20 items: 1100 → 200 boxes (5.5×); 500-row wall + 20: 500 → 20 |
+| Unrelated re-render      | Full-wall query per update                        | O(1) counter gate — skipped when nothing is pending          | rowGap / parent state change → 0 queries                        |
+| Fixed-columns mount      | Always measured container + probed viewport       | Both only in `minColumnWidth` mode                           | fixed mode: 0 container queries, 0 viewport probes              |
+| Long-lived feed          | Heights of removed items never released           | Heights + pooled entries pruned on placement rebuild         | —                                                               |
 
 ## Theme variables
 

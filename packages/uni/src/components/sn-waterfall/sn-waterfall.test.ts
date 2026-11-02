@@ -28,34 +28,84 @@ import { resolve } from 'node:path';
 import SnWaterfall from './sn-waterfall.vue';
 import SnImg from '../sn-img/sn-img.vue';
 
+/** One recorded selector-query criterion. */
+interface QueryCall {
+  /** Selector the component asked for. */
+  selector: string;
+  /** Shape of the criterion (`select` / `selectAll`). */
+  mode: 'select' | 'selectAll';
+  /** Nodes the selector actually matched in the mounted DOM. */
+  matches: number;
+}
+
+/** The mounted component's root — the stub resolves selectors against it. */
+let stubRoot: Element | null = null;
+/** Queries the component issued, in order. */
+let queryCalls: QueryCall[] = [];
+/** Synchronous `getSystemInfoSync` probes the component issued. */
+let viewportProbes = 0;
+
 /**
- * Install a `uni.createSelectorQuery` stub returning fixed item heights.
+ * Install a `uni.createSelectorQuery` stub.
  *
- * `selectAll` rects are handed back in DOM order (column-major), mirroring
- * the real API; heights map 1:1 onto the rendered item boxes.
+ * The stub is selector-aware: it resolves the requested selector against the
+ * mounted DOM and hands back one rect per matched node, in DOM order — the
+ * real API's contract. That makes the measurement path testable rather than
+ * asserting against a fixed array: a round over the pending marker must ask
+ * for exactly the unmeasured nodes, and a re-render that added nothing may
+ * not query at all.
+ *
+ * Heights are supplied per matched node (`heights[i]` for the i-th match, 0
+ * when the array runs out), so a test controls what an item measures.
  */
-function installUniQuery(rects: number[], containerWidth = 375): void {
+function installUniQuery(heights: number[], containerWidth = 375): void {
+  queryCalls = [];
+  viewportProbes = 0;
   (globalThis as { uni?: unknown }).uni = {
-    getSystemInfoSync: () => ({ windowWidth: 375 }),
-    createSelectorQuery: () => ({
-      in: () => ({
-        selectAll: () => ({
-          boundingClientRect: (callback: (value: Array<{ height: number }>) => void) => ({
-            exec: () => callback(rects.map((height) => ({ height, width: containerWidth / 3 }))),
-          }),
+    getSystemInfoSync: () => {
+      viewportProbes += 1;
+      return { windowWidth: 375 };
+    },
+    createSelectorQuery: () => {
+      let selector = '';
+      let mode: 'select' | 'selectAll' = 'selectAll';
+      const query = {
+        in: () => query,
+        select: (next: string) => {
+          selector = next;
+          mode = 'select';
+          return query;
+        },
+        selectAll: (next: string) => {
+          selector = next;
+          mode = 'selectAll';
+          return query;
+        },
+        boundingClientRect: (
+          callback: (value: Array<{ height?: number; width?: number }>) => void,
+        ) => ({
+          exec: () => {
+            const nodes =
+              stubRoot === null ? [] : Array.from(stubRoot.querySelectorAll(selector));
+            queryCalls.push({ selector, mode, matches: nodes.length });
+            if (mode === 'select') {
+              callback([{ width: containerWidth, height: 600 }]);
+              return;
+            }
+            callback(nodes.map((_, index) => ({ height: heights[index] ?? 0, width: 100 })));
+          },
         }),
-        select: () => ({
-          boundingClientRect: (callback: (value: Array<{ width: number }>) => void) => ({
-            exec: () => callback([{ width: containerWidth, height: 600 }]),
-          }),
-        }),
-      }),
-    }),
+      };
+      return query;
+    },
   };
 }
 
 afterEach(() => {
   delete (globalThis as { uni?: unknown }).uni;
+  stubRoot = null;
+  queryCalls = [];
+  viewportProbes = 0;
 });
 
 /** Harness: a waterfall wrapping keyed text entries. */
@@ -71,7 +121,9 @@ function mountWaterfall(
         });
     },
   });
-  return mount(Harness, options);
+  const wrapper = mount(Harness, options);
+  stubRoot = wrapper.element;
+  return wrapper;
 }
 
 /** Entry texts grouped by column. */
@@ -236,6 +288,7 @@ describe('sn-waterfall', () => {
         },
       });
       const wrapper = mount(Harness);
+      stubRoot = wrapper.element;
       await flushPromises();
       expect(columnTexts(wrapper)).toEqual([['a'], ['b']]);
 
@@ -287,6 +340,161 @@ describe('sn-waterfall', () => {
       const wrapper = mountWaterfall(['a', 'b', 'c']);
       await flushPromises();
       expect(wrapper.findAll('.sn-waterfall__item')).toHaveLength(3);
+    });
+  });
+
+  /*
+   * Perf revisions: the measurement round asks only for the items without a
+   * usable height, an unrelated re-render issues no query at all, a
+   * fixed-columns mount skips the container/viewport probes, and the entry
+   * pool keeps the placement while content stays fresh.
+   */
+  describe('measurement cost + content freshness', () => {
+    /** Item queries the component issued (the pending-marker rounds). */
+    function itemQueries(): QueryCall[] {
+      return queryCalls.filter((call) => call.selector === '.sn-waterfall__item--pending');
+    }
+
+    it('measures only the pending items, not the whole wall', async () => {
+      const list = ref(['a', 'b', 'c', 'd']);
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnWaterfall, { columns: 2 }, {
+              default: () =>
+                list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
+            });
+        },
+      });
+      installUniQuery([100, 100, 100, 100]);
+      const wrapper = mount(Harness);
+      stubRoot = wrapper.element;
+      await flushPromises();
+
+      // First round: every item is unmeasured, so all four are asked for.
+      expect(itemQueries().map((call) => call.matches)).toEqual([4]);
+
+      queryCalls = [];
+      list.value = ['a', 'b', 'c', 'd', 'e', 'f'];
+      await wrapper.vm.$nextTick();
+      await flushPromises();
+
+      // Append of two: the round must ask for two boxes, not for six.
+      expect(itemQueries().map((call) => call.matches)).toEqual([2]);
+    });
+
+    it('issues no query when a re-render adds nothing unmeasured', async () => {
+      installUniQuery([100, 100, 100, 100]);
+      const wrapper = mountWaterfall(['a', 'b', 'c', 'd'], { props: { columns: 2 } });
+      await flushPromises();
+      expect(itemQueries()).toHaveLength(1);
+
+      queryCalls = [];
+      // A geometry change re-places the wall but adds no unmeasured item.
+      await wrapper.setProps({ rowGap: 24 });
+      await flushPromises();
+      expect(itemQueries()).toHaveLength(0);
+      expect(queryCalls).toHaveLength(0);
+    });
+
+    it('skips the container query and the viewport probe in fixed-columns mode', async () => {
+      installUniQuery([100, 100]);
+      const wrapper = mountWaterfall(['a', 'b'], { props: { columns: 2 } });
+      await flushPromises();
+
+      expect(viewportProbes).toBe(0);
+      expect(queryCalls.filter((call) => call.selector === '.sn-waterfall')).toHaveLength(0);
+      expect(wrapper.findAll('.sn-waterfall__column')).toHaveLength(2);
+    });
+
+    it('probes the viewport and the container once in responsive mode', async () => {
+      installUniQuery([100, 100], 375);
+      mountWaterfall(['a', 'b'], { props: { minColumnWidth: 160, columns: 2 } });
+      await flushPromises();
+
+      expect(viewportProbes).toBe(1);
+      expect(queryCalls.filter((call) => call.selector === '.sn-waterfall')).toHaveLength(1);
+    });
+
+    it('measures an item again after it left the wall and came back', async () => {
+      const list = ref(['a']);
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnWaterfall, { columns: 1 }, {
+              default: () =>
+                list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
+            });
+        },
+      });
+      installUniQuery([100]);
+      const wrapper = mount(Harness);
+      stubRoot = wrapper.element;
+      await flushPromises();
+
+      // Remove it (prunes the pooled entry + its height) …
+      queryCalls = [];
+      list.value = [];
+      await wrapper.vm.$nextTick();
+      await flushPromises();
+
+      // … and bring it back: it must measure itself again rather than inherit
+      // the height it had before it left.
+      list.value = ['a'];
+      await wrapper.vm.$nextTick();
+      await flushPromises();
+      expect(itemQueries().map((call) => call.matches)).toEqual([1]);
+    });
+
+    it('re-measures every item on refresh()', async () => {
+      installUniQuery([100, 100, 100]);
+      const wrapper = mountWaterfall(['a', 'b', 'c'], { props: { columns: 3 } });
+      await flushPromises();
+
+      queryCalls = [];
+      const wall = wrapper.findComponent(SnWaterfall);
+      (wall.vm as unknown as { refresh: () => void }).refresh();
+      await flushPromises();
+      expect(itemQueries().map((call) => call.matches)).toEqual([3]);
+    });
+
+    it('shows fresh slot content on a content-only re-render', async () => {
+      // Regression: the previous revision memoised the whole allocation and
+      // returned the old vnodes with it, so a re-render that changed content
+      // but not the keys kept showing the stale item.
+      const title = ref('first');
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnWaterfall, { columns: 2 }, {
+              default: () =>
+                ['a', 'b'].map((key) =>
+                  h('view', { key, class: 'entry' }, `${key}:${title.value}`),
+                ),
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      stubRoot = wrapper.element;
+      expect(wrapper.findAll('.entry').map((entry) => entry.text())).toEqual([
+        'a:first',
+        'b:first',
+      ]);
+
+      title.value = 'second';
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.entry').map((entry) => entry.text())).toEqual([
+        'a:second',
+        'b:second',
+      ]);
+      // …and the placement is untouched (two columns, one item each, order
+      // unchanged) — a content change must not re-place or re-measure.
+      expect(
+        wrapper
+          .findAll('.sn-waterfall__column')
+          .map((column) => column.findAll('.sn-waterfall__item').length),
+      ).toEqual([1, 1]);
+      expect(queryCalls).toHaveLength(0);
     });
   });
 
