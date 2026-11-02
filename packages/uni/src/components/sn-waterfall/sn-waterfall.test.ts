@@ -317,6 +317,19 @@ describe('sn-waterfall', () => {
       expect(off.find('.sn-img__image').attributes('lazy-load')).toBe('false');
     });
 
+    it('an explicit kebab-case :lazy-load also wins (template spelling)', () => {
+      // In a real template `:lazy-load="false"` lands on the vnode as the
+      // `lazy-load` key, not `lazyLoad` — probing only camelCase let the
+      // container cascade override an explicit off.
+      const off = mountWallWithImg({ lazyLoad: true }, { 'lazy-load': false });
+      expect(off.find('.sn-img__image').attributes('lazy-load')).toBe('false');
+    });
+
+    it('an explicit kebab-case :lazy-load="true" inside a non-lazy wall stays on', () => {
+      const on = mountWallWithImg({ lazyLoad: false }, { 'lazy-load': true });
+      expect(on.find('.sn-img__image').attributes('lazy-load')).toBe('true');
+    });
+
     it('images outside any waterfall keep the wd-img default (off)', () => {
       const wrapper = mount(SnImg, { props: { src: 'a.png' } });
       expect(wrapper.find('.sn-img__image').attributes('lazy-load')).toBe('false');

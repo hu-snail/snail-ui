@@ -152,11 +152,21 @@ const status = ref<'idle' | 'loading' | 'loaded' | 'error'>('loading');
  * its own `lazyLoad`. Prop detection: `withDefaults` fills a missing prop
  * with `false`, so the raw value cannot tell "off" from "not passed" — the
  * component therefore reads the prop's presence from the vnode instead of
- * its defaulted value. Outside any waterfall the inject is undefined and
- * the prop (default false) decides alone — the documented wd-img default.
+ * its defaulted value.
+ *
+ * The template may spell the prop either camelCase (`:lazyLoad`) or
+ * kebab-case (`:lazy-load`) and <image lazy-load> is a native MP attribute, so
+ * both key shapes must be probed: checking only `lazyLoad` let an explicit
+ * kebab-case `:lazy-load="false"` be overridden by the container cascade.
+ * Outside any waterfall the inject is undefined and the prop (default false)
+ * decides alone — the documented wd-img default.
  */
 const waterfall = inject(SN_WATERFALL_KEY, undefined as SnWaterfallContext | undefined);
-const hasLazyLoadProp = getCurrentInstance()?.vnode.props?.hasOwnProperty('lazyLoad') ?? false;
+const rawProps = getCurrentInstance()?.vnode.props;
+const hasLazyLoadProp =
+  rawProps !== null &&
+  rawProps !== undefined &&
+  (rawProps.lazyLoad !== undefined || rawProps['lazy-load'] !== undefined);
 const lazyLoadResolved = computed(() =>
   hasLazyLoadProp ? props.lazyLoad : (waterfall?.lazyLoad.value ?? props.lazyLoad),
 );
