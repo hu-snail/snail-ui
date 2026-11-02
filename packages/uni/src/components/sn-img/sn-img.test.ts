@@ -58,6 +58,13 @@ describe('sn-img', () => {
     expect(image.attributes('show-menu-by-longpress')).toBe('true');
   });
 
+  it('re-toggles lazyLoad when the prop changes', async () => {
+    const wrapper = mount(SnImg, { props: { src: 'a.png', lazyLoad: false } });
+    expect(wrapper.find('.sn-img__image').attributes('lazy-load')).toBe('false');
+    await wrapper.setProps({ lazyLoad: true });
+    expect(wrapper.find('.sn-img__image').attributes('lazy-load')).toBe('true');
+  });
+
   it('renders no image element without src', () => {
     const wrapper = mount(SnImg, { props: { src: '' } });
     expect(wrapper.find('.sn-img__image').exists()).toBe(false);

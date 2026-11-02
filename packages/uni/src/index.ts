@@ -137,6 +137,7 @@ export { default as SnTour } from './components/sn-tour/sn-tour.vue';
 export { default as SnTransition } from './components/sn-transition/sn-transition.vue';
 export { default as SnTyping } from './components/sn-typing/sn-typing.vue';
 export { default as SnUpload } from './components/sn-upload/sn-upload.vue';
+export { default as SnWaterfall } from './components/sn-waterfall/sn-waterfall.vue';
 export { default as SnVideoPreview } from './components/sn-video-preview/sn-video-preview.vue';
 export { default as SnWatermark } from './components/sn-watermark/sn-watermark.vue';
 export type {

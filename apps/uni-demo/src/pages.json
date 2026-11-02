@@ -663,6 +663,13 @@
           }
         },
         {
+          "path": "waterfall",
+          "style": {
+            "navigationBarTitleText": "瀑布流",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "watermark",
           "style": {
             "navigationBarTitleText": "水印",

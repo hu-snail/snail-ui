@@ -137,6 +137,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-qr-code', title: '二维码', desc: '二维码生成与导出' },
       { name: 'sn-table', title: '表格', desc: '数据表格' },
       { name: 'sn-rich-text', title: '富文本', desc: 'HTML 内容：图文、表格与媒体' },
+      { name: 'sn-waterfall', title: '瀑布流', desc: '多列砌墙容器，图片懒加载可配' },
     ],
   },
   {

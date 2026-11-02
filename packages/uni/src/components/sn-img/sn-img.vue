@@ -8,6 +8,16 @@
  * Anything new added here MUST also be added to the reference list in
  * AGENTS.md §112.
  *
+ * ## Lazy-load cascade (additive, AGENTS.md §112.3a)
+ *
+ * `lazyLoad` mirrors wd-img's `lazy-load` 1:1 when the prop is passed.
+ * When it is NOT passed, the component inherits the container-level config
+ * from an ancestor `sn-waterfall` (its `lazyLoad` prop) through
+ * provide/inject — a single switch on the container lazy-loads the whole
+ * image wall. Native `<image lazy-load>` only takes effect inside a
+ * scrollable area, which is exactly where a waterfall lives. An image
+ * outside any waterfall keeps the wd-img default (off).
+ *
  * File path follows uni-app easycom convention:
  *   components/sn-img/sn-img.vue
  * → auto-registered as `<sn-img>` in any .vue that uses it.
@@ -36,7 +46,8 @@
  *   - 头像（圆形 + 回退文案）— 用 sn-avatar
  */
 
-import { computed, ref, watch } from 'vue';
+import { computed, getCurrentInstance, inject, ref, watch } from 'vue';
+import { SN_WATERFALL_KEY, type SnWaterfallContext } from '../sn-waterfall/sn-waterfall-types';
 
 defineOptions({ name: 'SnImg' });
 
@@ -76,7 +87,11 @@ const props = withDefaults(
     round?: boolean;
     /** Corner radius — a bare number is treated as rpx. */
     radius?: string | number;
-    /** Lazy-load the image (uni `<image lazy-load>`). */
+    /**
+     * Lazy-load the image (uni `<image lazy-load>`). When the prop is not
+     * passed, an ancestor `sn-waterfall`'s container-level `lazyLoad`
+     * config is inherited (see the header note).
+     */
     lazyLoad?: boolean;
     /** Tap opens `uni.previewImage`. */
     enablePreview?: boolean;
@@ -101,6 +116,9 @@ const props = withDefaults(
     mode: 'scaleToFill',
     round: false,
     radius: '',
+    // wd-img default is `false`; the cascade below may override it when the
+    // prop is not passed. withDefaults cannot express "undefined = inherit",
+    // so the default stays false and the resolved computed does the merging.
     lazyLoad: false,
     enablePreview: false,
     showMenuByLongpress: false,
@@ -127,6 +145,21 @@ const emit = defineEmits<{
 
 /** Image load state. */
 const status = ref<'idle' | 'loading' | 'loaded' | 'error'>('loading');
+
+/**
+ * Waterfall lazy-load cascade (see the header note): an image inside a
+ * `sn-waterfall lazy-load` inherits the container's config unless it passes
+ * its own `lazyLoad`. Prop detection: `withDefaults` fills a missing prop
+ * with `false`, so the raw value cannot tell "off" from "not passed" — the
+ * component therefore reads the prop's presence from the vnode instead of
+ * its defaulted value. Outside any waterfall the inject is undefined and
+ * the prop (default false) decides alone — the documented wd-img default.
+ */
+const waterfall = inject(SN_WATERFALL_KEY, undefined as SnWaterfallContext | undefined);
+const hasLazyLoadProp = getCurrentInstance()?.vnode.props?.hasOwnProperty('lazyLoad') ?? false;
+const lazyLoadResolved = computed(() =>
+  hasLazyLoadProp ? props.lazyLoad : (waterfall?.lazyLoad.value ?? props.lazyLoad),
+);
 
 watch(
   () => props.src,
@@ -222,7 +255,7 @@ function onError(event: Event): void {
       :class="imageClass"
       :src="src"
       :mode="mode"
-      :lazy-load="lazyLoad"
+      :lazy-load="lazyLoadResolved"
       :show-menu-by-longpress="showMenuByLongpress"
       @load="onLoad"
       @error="onError"

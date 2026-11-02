@@ -321,6 +321,7 @@ const sidebar = {
         { text: 'sn-qr-code 二维码'.trim(), link: '/components/uni/qr-code' },
         { text: 'sn-table 表格'.trim(), link: '/components/uni/table' },
         { text: 'sn-rich-text 富文本'.trim(), link: '/components/uni/rich-text' },
+        { text: 'sn-waterfall 瀑布流'.trim(), link: '/components/uni/waterfall' },
       ],
     },
     {
@@ -652,6 +653,7 @@ const enSidebar = {
         { text: 'sn-qr-code', link: '/en/components/uni/qr-code' },
         { text: 'sn-table', link: '/en/components/uni/table' },
         { text: 'sn-rich-text', link: '/en/components/uni/rich-text' },
+        { text: 'sn-waterfall', link: '/en/components/uni/waterfall' },
       ],
     },
     {

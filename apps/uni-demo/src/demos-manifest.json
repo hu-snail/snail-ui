@@ -2772,6 +2772,34 @@
         }
       ]
     },
+    "waterfall": {
+      "group": "display",
+      "title": "瀑布流",
+      "desc": "多列砌墙容器，图片懒加载可配",
+      "page": "pages/display/waterfall",
+      "demos": [
+        {
+          "name": "waterfall-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "waterfall-mp-lazy-load",
+          "title": "懒加载",
+          "hasEn": true
+        },
+        {
+          "name": "waterfall-mp-responsive",
+          "title": "响应式",
+          "hasEn": true
+        },
+        {
+          "name": "waterfall-mp-masonry-off",
+          "title": "关闭瀑布流",
+          "hasEn": true
+        }
+      ]
+    },
     "watermark": {
       "group": "display",
       "title": "水印",

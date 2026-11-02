@@ -123,6 +123,9 @@ const SCENARIO_LABELS = {
   'new-energy': '新能源车牌',
   runtime: '运行时属性',
   'word-limit': '字数统计',
+  'lazy-load': '懒加载',
+  responsive: '响应式',
+  'masonry-off': '关闭瀑布流',
    kingkong: '金刚区',
  };
 
@@ -194,6 +197,10 @@ const DEMO_ORDER = {
   'code-input-mp-custom-style': 6,
   'plate-input-mp-basic': 1,
   'plate-input-mp-new-energy': 2,
+  'waterfall-mp-basic': 1,
+  'waterfall-mp-lazy-load': 2,
+  'waterfall-mp-responsive': 3,
+  'waterfall-mp-masonry-off': 4,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -281,6 +288,9 @@ const SCENARIO_LABELS_EN = {
   'new-energy': 'New-energy plate',
   runtime: 'Runtime attributes',
   'word-limit': 'Word limit',
+  'lazy-load': 'Lazy load',
+  responsive: 'Responsive',
+  'masonry-off': 'Masonry off',
    kingkong: 'Quick entry',
  };
 

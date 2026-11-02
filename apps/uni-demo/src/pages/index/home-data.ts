@@ -774,6 +774,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         count: 3,
       },
       {
+        key: 'waterfall',
+        group: 'display',
+        title: '瀑布流',
+        titleEn: 'Waterfall',
+        desc: '多列砌墙容器，图片懒加载可配',
+        count: 4,
+      },
+      {
         key: 'watermark',
         group: 'display',
         title: '水印',
