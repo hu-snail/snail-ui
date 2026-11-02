@@ -264,7 +264,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '标签栏',
         titleEn: 'Tabbar',
         desc: '底部标签栏',
-        count: 7,
+        count: 1,
       },
       {
         key: 'tabs',

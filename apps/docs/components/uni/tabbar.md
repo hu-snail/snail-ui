@@ -6,43 +6,7 @@
 
 `v-model` 绑定激活项的索引或名称，`sn-tabbar-item` 承载图标与文案：
 
-<Demo name="tabbar-mp-basic" description="v-model 绑定索引；icon 走内置图标目录 / 注册表（kebab-case 名，如 house / search）；bordered 顶部边框。" />
-
-## 徽标与形状
-
-`value` 显示数字徽标（超过 `max` 显示 `99+`），`is-dot` 显示点状徽标，`shape="round"` 切换圆形样式：
-
-<Demo name="tabbar-mp-badge" description="value 数字徽标；is-dot 点状徽标；max 上限；shape=round 圆形标签栏。" />
-
-## 毛玻璃风格（glass）
-
-`glass` 把栏背景换成半透明表面 + `backdrop-filter` 高斯模糊（20rpx blur + 1.6 饱和）；固定在底部时页面内容从栏后透出，`bordered` 照常叠加，暗色主题由 `.sn-theme-dark` 翻转玻璃色。
-
-<Demo name="tabbar-mp-glass" description="glass 毛玻璃栏：半透明表面 + 高斯模糊，滚动内容从栏后透出。" />
-
-## 中心凸起项（elevate）
-
-`elevate="{ index, icon }"` 把第 index 个标签渲染成上凸的圆形主按钮（主色底 + 白字形 + 表面色描边环），栏体加高让出空间；点击行为与普通标签一致，传 `null` 关闭。
-
-<Demo name="tabbar-mp-elevate" description="elevate 中心凸起：第 3 项渲染为上凸圆形发布按钮，点击同样切换。" />
-
-## 固定底部与安全区
-
-`fixed` 把标签栏贴到页面底部，`placeholder` 生成等高占位，`safe-area-inset-bottom` 补底部安全区，`z-index` 决定层级：
-
-<Demo name="tabbar-mp-fixed" description="fixed + placeholder + safe-area-inset-bottom + z-index 的固定底部标签栏。" />
-
-## 固定底部 + 形态切换
-
-胶囊在 标准／毛玻璃／凸起 三种形态间切换，栏始终 fixed 在页面底部——同一份 `v-model`，属性即形态。
-
-<Demo name="tabbar-mp-fixed-switch" description="切换胶囊在标准 / 毛玻璃 / 凸起三种形态间切换，栏固定在 stage 底部。" />
-
-## 颜色覆盖与 name 取值
-
-`active-color` / `inactive-color` 内联覆盖整项颜色（图标描边经 `currentColor` 与文字一并解析）；子项传 `name` 时以 `name` 为值，否则用注册索引：
-
-<Demo name="tabbar-mp-color" description="active-color / inactive-color 颜色覆盖；索引取值与 name 取值两种 v-model 写法。" />
+<Demo name="tabbar-mp-playground" description="标签栏固定在屏幕底部；形态胶囊（标准 / 毛玻璃 / 凸起）、边框 / 安全区 / 占位 / 徽标开关、激活色切换，全部设置项实时生效。" />
 
 ## 自动注册（easycom）
 

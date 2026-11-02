@@ -120,10 +120,8 @@ const SCENARIO_LABELS = {
   shape: '形状',
   background: '格子背景',
   'error-gutter': '明文与错误态',
+  playground: '完整演示',
   'new-energy': '新能源车牌',
-  glass: '毛玻璃',
-  elevate: '中心凸起',
-  'fixed-switch': '固定底部切换',
   runtime: '运行时属性',
   'word-limit': '字数统计',
   'lazy-load': '懒加载',
@@ -156,7 +154,14 @@ const PAGE_BG_OVERRIDES = {
  * 下拉菜单的面板是组件自身坐标系内的 absolute 层、遮罩是 fixed 全屏层——
  * 白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接浮在页面画布上。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu']);
+const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar']);
+
+/**
+ * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
+ * 整页就是 demo 本体。tabbar 的整页 playground（栏固定在屏幕底部、其余
+ * 全部是设置项）不需要「完整演示」标题占一行。
+ */
+const MODULE_HEADLESS_PAGES = new Set(['tabbar']);
 
 /**
  * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
@@ -211,13 +216,7 @@ const DEMO_ORDER = {
   'waterfall-mp-lazy-load': 2,
   'waterfall-mp-responsive': 3,
   'waterfall-mp-masonry-off': 4,
-  'tabbar-mp-basic': 1,
-  'tabbar-mp-glass': 2,
-  'tabbar-mp-elevate': 3,
-  'tabbar-mp-fixed': 4,
-  'tabbar-mp-fixed-switch': 5,
-  'tabbar-mp-badge': 6,
-  'tabbar-mp-color': 7,
+  'tabbar-mp-playground': 1,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -302,10 +301,8 @@ const SCENARIO_LABELS_EN = {
   shape: 'Shape',
   background: 'Cell background',
   'error-gutter': 'Plain text & error',
+  playground: 'Full playground',
   'new-energy': 'New-energy plate',
-  glass: 'Glass',
-  elevate: 'Elevated center',
-  'fixed-switch': 'Fixed with capsule',
   runtime: 'Runtime attributes',
   'word-limit': 'Word limit',
   'lazy-load': 'Lazy load',
@@ -471,14 +468,19 @@ for (const sub of subpackages) {
     }
   }
   for (const comp of sub.comps) {
+    const isHeadless = MODULE_HEADLESS_PAGES.has(comp.key);
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
-      `import DemoModuleHead from '../../components/DemoModuleHead.vue'`,
+      ...(isHeadless ? [] : [`import DemoModuleHead from '../../components/DemoModuleHead.vue'`]),
       `import DemoPageShell from '../../components/DemoPageShell.vue'`,
-      `import { useDemoUi } from '../../state/demo-ui';`,
+      ...(isHeadless ? [] : [`import { useDemoUi } from '../../state/demo-ui';`]),
     ].join('\n');
     const modules = comp.demos
       .map((demo, i) => {
+        if (isHeadless) {
+          // 无模块头页面：整页就是 demo 本体，不再包 .module 卡片与标题行。
+          return `      <Demo${i} />`;
+        }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
         return `      <view class="module">
         <DemoModuleHead :title="t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}')"${badge} />
@@ -491,9 +493,13 @@ for (const sub of subpackages) {
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
 ${imports}
-
+${
+  isHeadless
+    ? ''
+    : `
 // 场景标题双语（中/英切换见 DemoPageShell）。
-const { t } = useDemoUi();
+const { t } = useDemoUi();`
+}
 </script>
 
 <template>
@@ -522,7 +528,7 @@ ${modules}
   box-shadow: var(--demo-card-shadow);
 }
 ${
-  MODULE_BARE_PAGES.has(comp.key)
+  !isHeadless && MODULE_BARE_PAGES.has(comp.key)
     ? `
 /* ${comp.key}：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
  * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
