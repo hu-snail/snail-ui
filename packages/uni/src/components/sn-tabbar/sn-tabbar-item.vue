@@ -351,7 +351,8 @@ const rootClass = computed(() => [
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-action-primary);
   color: var(--sn-mp-color-text-on-primary);
-  box-shadow: var(--sn-mp-shadow-md);
+  /* 无投影：fab 的 box-shadow 会落在同色凸包上形成灰月牙，破坏「环与
+   * 凸包一体」的 illusion；凸起感由造型本身承担。 */
   border: 8rpx solid var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface));
   box-sizing: border-box;
 }
