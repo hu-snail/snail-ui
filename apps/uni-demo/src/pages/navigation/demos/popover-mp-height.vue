@@ -57,6 +57,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       <SnButton block>长菜单项 · 放大图标</SnButton>
     </SnPopover>
 
+    <view class="sn-popover-demo__space" />
+
     <text class="sn-demo__meta">已选择：{{ picked }}</text>
     <text class="sn-demo__hint">
       图标尺寸走 --sn-popover-menu-icon-size（此处 44rpx）：图标变大时行高随内容增长，不溢出。
@@ -69,6 +71,9 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
 }
 .sn-demo__meta {
   font-size: 24rpx;

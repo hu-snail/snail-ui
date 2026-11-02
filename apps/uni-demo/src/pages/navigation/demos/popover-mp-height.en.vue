@@ -58,6 +58,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       <SnButton block>Long menu label · bigger glyph</SnButton>
     </SnPopover>
 
+    <view class="sn-popover-demo__space" />
+
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
     <text class="sn-demo__hint">
       Glyph scale comes from --sn-popover-menu-icon-size (44rpx here): a bigger icon grows the row
@@ -71,6 +73,9 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
 }
 .sn-demo__meta {
   font-size: 24rpx;

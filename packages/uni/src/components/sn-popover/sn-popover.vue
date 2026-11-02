@@ -105,7 +105,11 @@ import {
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import {
+  closeOutside,
+  registerOutsideClosable,
+  unregisterOutsideClosable,
+} from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
 
@@ -537,6 +541,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   box-sizing: border-box;
   /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
+  --sn-popover-border: var(--sn-mp-color-border-subtle);
   --sn-popover-color: var(--sn-mp-color-text-primary);
   /* Glyph scale (see header): tier tokens, overridable via `custom-style`. */
   --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
@@ -568,7 +573,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
    * so an unclamped width overflows the screen near either edge. */
   max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-popover-bg);
   color: var(--sn-popover-color);
@@ -659,10 +664,16 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   position: absolute;
   width: 16rpx;
   height: 16rpx;
-  /* Solid fill like the tooltip arrow: a rotated bordered square shows a
-   * misplaced diamond outline that does not line up with the bubble border. */
   background-color: var(--sn-popover-bg);
+  /* Outline the diamond so the outside half reads against the page — a bare
+   * white diamond vanishes on an elevated (white) host surface, and the half
+   * inside the pop merges with the bubble fill either way. The border shares
+   * the pop's border token, so the arrow line continues the bubble edge. */
+  border: 2rpx solid var(--sn-popover-border);
+  border-bottom-color: transparent;
+  border-right-color: transparent;
   transform: rotate(45deg);
+  pointer-events: none;
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
@@ -761,6 +772,11 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
   bottom: -6rpx;
+  /* Points up: the outside half is the bottom-right of the rotated square. */
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: var(--sn-popover-border);
+  border-right-color: var(--sn-popover-border);
 }
 .sn-popover--top .sn-popover__arrow {
   left: calc(50% - 8rpx);
@@ -776,6 +792,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
   top: -6rpx;
+  /* Points down: the outside half is the top-left of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-left-color: var(--sn-popover-border);
 }
 .sn-popover--bottom .sn-popover__arrow {
   left: calc(50% - 8rpx);
@@ -791,6 +810,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
   right: -6rpx;
+  /* Points left: the outside half is the right edge of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-left-color: transparent;
+  border-right-color: var(--sn-popover-border);
 }
 .sn-popover--left .sn-popover__arrow {
   top: calc(50% - 8rpx);
@@ -806,6 +829,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
   left: -6rpx;
+  /* Points right: the outside half is the left edge of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-right-color: transparent;
+  border-left-color: var(--sn-popover-border);
 }
 .sn-popover--right .sn-popover__arrow {
   top: calc(50% - 8rpx);
