@@ -5,6 +5,7 @@ import Demo1 from './demos/popover-mp-height.vue';
 import Demo2 from './demos/popover-mp-menu.vue';
 import Demo3 from './demos/popover-mp-placement.vue';
 import Demo4 from './demos/popover-mp-slot.vue';
+import Demo5 from './demos/popover-mp-theme.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -44,6 +45,12 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('slot', 'Slot')" badge="slot" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

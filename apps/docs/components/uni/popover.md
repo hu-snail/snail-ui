@@ -13,7 +13,7 @@
 
 ### 基础用法
 
-`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部任意位置（透明遮罩接管外部点击）或再点一次触发器即可收起。
+`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部任意位置（页面根 closeOutside 通道，不挡页面点击）或再点一次触发器即可收起。
 
 <Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮；触发器切换，点击外部关闭。" />
 
@@ -47,6 +47,12 @@
 
 <Demo name="popover-mp-placement" description="12 个方位全部展示（网格布局），一次只开一个。" />
 
+### 暗黑主题
+
+气泡配色全部走 `--sn-popover-*` token，暗黑由 `sn-config-provider`（`.sn-theme-dark`）统一翻转：深底浅字，描边与箭头随主题跟随，无需单独配色。
+
+<Demo name="popover-mp-theme" description="暗黑 / 浅色两块 pane 对照（sn-config-provider theme），气泡深底浅字自动跟随主题。" />
+
 ### 兼容图标字段 / content 插槽 / 节点类名
 
 - 旧字段 `iconClass` 既可是图标名称，也可直接是图片地址（`http` / `//` / `/` / `./` 开头时按 `<image>` 渲染）
@@ -58,10 +64,10 @@
 
 ### 关闭行为
 
-- 默认 `closeOnClickOutside=true`：气泡打开时渲染一层**透明全屏遮罩**，点击气泡外任意位置关闭，且该次点击不会穿透到页面
-- 遮罩透明不压暗页面——气泡是轻量指针层，不是模态
-- 遮罩盖住相邻触发器，因此两个气泡之间切换是「先关后开」两次点击；需要一步切换时传 `closeOnClickOutside="false"`
-- 关闭外部点击后仍可保留页面根节点通道：页面根绑定 `@tap="closeOutside"`（`useQueue`），一次点击关闭所有已注册浮层
+- 默认 `closeOnClickOutside=true`：气泡打开时向外部关闭队列注册（`useQueue`），点击气泡外任意位置即关闭——**点击不吞**，同一手势仍会命中气泡下方的按钮
+- 触发器与气泡绑定 `@tap.stop`；触发器打开前主动派发一次 closeOutside，两个气泡之间**一次点击直接切换**
+- 页面根需绑定 `@tap="closeOutside"`（`useQueue`）作为派发通道，一次点击关闭所有已注册浮层
+- 传 `closeOnClickOutside="false"` 在挂载期注销外部关闭，仅保留触发器 / 关闭按钮路径
 
 ```vue
 <sn-popover v-model="open" :close-on-click-outside="false" content="一步切换模式">
@@ -71,22 +77,22 @@
 
 ## Props
 
-| 属性                  | 类型                               | 默认值     | 说明                                         |
-| --------------------- | ---------------------------------- | ---------- | -------------------------------------------- |
-| `modelValue`          | `boolean`                          | `false`    | 是否显示（`v-model`）                        |
-| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | `normal` 模式为字符串，`menu` 模式为选项数组 |
-| `mode`                | `'normal' \| 'menu'`               | `'normal'` | 显示模式                                     |
-| `placement`           | 12 档方向联合类型                  | `'bottom'` | 弹出位置                                     |
-| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | 偏移量（设计稿 px）                          |
-| `visibleArrow`        | `boolean`                          | `true`     | 是否显示箭头                                 |
-| `disabled`            | `boolean`                          | `false`    | 是否禁用                                     |
-| `showClose`           | `boolean`                          | `false`    | 是否显示关闭按钮                             |
-| `closeOnClickOutside` | `boolean`                          | `true`     | 点击气泡外部是否关闭（透明遮罩接管外部点击） |
-| `customClass`         | `string`                           | `''`       | 根节点自定义类名                             |
-| `customStyle`         | `string`                           | `''`       | 根节点自定义样式                             |
-| `customArrow`         | `string`                           | `''`       | 箭头节点自定义类名                           |
-| `customPop`           | `string`                           | `''`       | 气泡节点自定义类名                           |
-| `rootPortal`          | `boolean`                          | `false`    | **未实现**（小程序无 portal 宿主）           |
+| 属性                  | 类型                               | 默认值     | 说明                                             |
+| --------------------- | ---------------------------------- | ---------- | ------------------------------------------------ |
+| `modelValue`          | `boolean`                          | `false`    | 是否显示（`v-model`）                            |
+| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | `normal` 模式为字符串，`menu` 模式为选项数组     |
+| `mode`                | `'normal' \| 'menu'`               | `'normal'` | 显示模式                                         |
+| `placement`           | 12 档方向联合类型                  | `'bottom'` | 弹出位置                                         |
+| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | 偏移量（设计稿 px）                              |
+| `visibleArrow`        | `boolean`                          | `true`     | 是否显示箭头                                     |
+| `disabled`            | `boolean`                          | `false`    | 是否禁用                                         |
+| `showClose`           | `boolean`                          | `false`    | 是否显示关闭按钮                                 |
+| `closeOnClickOutside` | `boolean`                          | `true`     | 点击气泡外部是否关闭（走外部关闭队列，不吞点击） |
+| `customClass`         | `string`                           | `''`       | 根节点自定义类名                                 |
+| `customStyle`         | `string`                           | `''`       | 根节点自定义样式                                 |
+| `customArrow`         | `string`                           | `''`       | 箭头节点自定义类名                               |
+| `customPop`           | `string`                           | `''`       | 气泡节点自定义类名                               |
+| `rootPortal`          | `boolean`                          | `false`    | **未实现**（小程序无 portal 宿主）               |
 
 ### SnPopoverMenuItem
 
@@ -145,7 +151,6 @@
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="dialog"`，箭头 `aria-hidden="true"`
 - `menu` 模式选项带 `role="menuitem"` + `aria-disabled`
-- 外部关闭遮罩带 `aria-hidden="true"`，不参与读屏焦点
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式

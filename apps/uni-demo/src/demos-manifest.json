@@ -747,6 +747,11 @@
           "name": "popover-mp-slot",
           "title": "slot",
           "hasEn": true
+        },
+        {
+          "name": "popover-mp-theme",
+          "title": "主题",
+          "hasEn": true
         }
       ]
     },

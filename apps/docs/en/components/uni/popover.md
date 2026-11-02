@@ -13,7 +13,7 @@
 
 ### Basic usage
 
-In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble. Tapping anywhere outside the bubble (a transparent mask takes the outside tap) or the trigger again closes it.
+In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble. Tapping anywhere outside the bubble (page-root closeOutside channel — the same gesture still reaches other controls) or the trigger again closes it.
 
 <Demo name="popover-mp-basic" description="normal mode + close button; the trigger toggles it, an outside tap closes it." />
 
@@ -47,6 +47,14 @@ The legacy `iconClass` field keeps working: a URL-shaped value renders as an ima
 
 <Demo name="popover-mp-placement" description="All 12 directions in a grid, one open at a time." />
 
+### Dark theme
+
+Every bubble color rides the `--sn-popover-*` tokens; the dark values flip
+through `sn-config-provider` (`.sn-theme-dark`) as one unit — dark fill,
+light text, border and arrow following the theme with no extra styling.
+
+<Demo name="popover-mp-theme" description="Dark / light panes side by side (sn-config-provider theme); the bubble follows the theme automatically." />
+
 ### Legacy icon field / content slot / node classes
 
 - the legacy `iconClass` field is either an icon name or an image source (values starting with `http` / `//` / `/` / `./` render as `<image>`)
@@ -58,11 +66,6 @@ The legacy `iconClass` field keeps working: a URL-shaped value renders as an ima
 
 ### Close behavior
 
-- `closeOnClickOutside` defaults to `true`: while the bubble is open it renders a **transparent full-viewport mask**; a tap anywhere outside closes it and never reaches the page behind
-- the mask does not dim the page — a popover is a lightweight pointer surface, not a modal
-- the mask covers sibling triggers, so switching between two bubbles costs a close tap plus an open tap; pass `closeOnClickOutside="false"` to get one-gesture switching
-- the page-root channel stays available: bind `@tap="closeOutside"` (`useQueue`) on the page root to close every registered overlay at once
-
 ```vue
 <sn-popover v-model="open" :close-on-click-outside="false" content="one-gesture switching">
   <sn-button>More</sn-button>
@@ -71,22 +74,22 @@ The legacy `iconClass` field keeps working: a URL-shaped value renders as an ima
 
 ## Props
 
-| Prop                  | Type                               | Default    | Description                                                |
-| --------------------- | ---------------------------------- | ---------- | ---------------------------------------------------------- |
-| `modelValue`          | `boolean`                          | `false`    | Whether the bubble is shown (`v-model`)                    |
-| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | A string in `normal` mode, an option array in `menu` mode  |
-| `mode`                | `'normal' \| 'menu'`               | `'normal'` | Display mode                                               |
-| `placement`           | 12-direction union                 | `'bottom'` | Bubble anchor                                              |
-| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | Offset in design px                                        |
-| `visibleArrow`        | `boolean`                          | `true`     | Render the arrow                                           |
-| `disabled`            | `boolean`                          | `false`    | Disable the trigger                                        |
-| `showClose`           | `boolean`                          | `false`    | Render a close button                                      |
-| `closeOnClickOutside` | `boolean`                          | `true`     | Close on an outside tap (a transparent mask takes the tap) |
-| `customClass`         | `string`                           | `''`       | Root class                                                 |
-| `customStyle`         | `string`                           | `''`       | Root inline style                                          |
-| `customArrow`         | `string`                           | `''`       | Extra class on the arrow node                              |
-| `customPop`           | `string`                           | `''`       | Extra class on the bubble node                             |
-| `rootPortal`          | `boolean`                          | `false`    | **Not implemented** (no portal host on miniprogram)        |
+| Prop                  | Type                               | Default    | Description                                                       |
+| --------------------- | ---------------------------------- | ---------- | ----------------------------------------------------------------- |
+| `modelValue`          | `boolean`                          | `false`    | Whether the bubble is shown (`v-model`)                           |
+| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | A string in `normal` mode, an option array in `menu` mode         |
+| `mode`                | `'normal' \| 'menu'`               | `'normal'` | Display mode                                                      |
+| `placement`           | 12-direction union                 | `'bottom'` | Bubble anchor                                                     |
+| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | Offset in design px                                               |
+| `visibleArrow`        | `boolean`                          | `true`     | Render the arrow                                                  |
+| `disabled`            | `boolean`                          | `false`    | Disable the trigger                                               |
+| `showClose`           | `boolean`                          | `false`    | Render a close button                                             |
+| `closeOnClickOutside` | `boolean`                          | `true`     | Close on an outside tap (outside-close queue, tap passes through) |
+| `customClass`         | `string`                           | `''`       | Root class                                                        |
+| `customStyle`         | `string`                           | `''`       | Root inline style                                                 |
+| `customArrow`         | `string`                           | `''`       | Extra class on the arrow node                                     |
+| `customPop`           | `string`                           | `''`       | Extra class on the bubble node                                    |
+| `rootPortal`          | `boolean`                          | `false`    | **Not implemented** (no portal host on miniprogram)               |
 
 ### SnPopoverMenuItem
 
@@ -145,7 +148,6 @@ The legacy `iconClass` field keeps working: a URL-shaped value renders as an ima
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
-- The outside-close mask is `aria-hidden="true"` and takes no screen-reader focus
 - Interaction uses `@tap`; no keyboard focus trap on mobile
 
 ## Dark mode
