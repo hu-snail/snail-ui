@@ -68,6 +68,15 @@ const { t } = useDemoUi();
   box-shadow: var(--demo-card-shadow);
 }
 
+/* drop-menu：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .module__body {
   padding: 0;
 }

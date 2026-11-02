@@ -126,8 +126,8 @@ const SCENARIO_LABELS = {
   'lazy-load': '懒加载',
   responsive: '响应式',
   'masonry-off': '关闭瀑布流',
-   kingkong: '金刚区',
- };
+  kingkong: '金刚区',
+};
 
 /**
  * 组件级场景标题覆盖：key 为 `<comp>-<scenario>`。同一 scenario key 在不同
@@ -147,6 +147,13 @@ const SCENARIO_LABEL_OVERRIDES = {
 const PAGE_BG_OVERRIDES = {
   input: '#ffffff',
 };
+
+/**
+ * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
+ * 下拉菜单的面板是组件自身坐标系内的 absolute 层、遮罩是 fixed 全屏层——
+ * 白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接浮在页面画布上。
+ */
+const MODULE_BARE_PAGES = new Set(['drop-menu']);
 
 /**
  * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
@@ -291,8 +298,8 @@ const SCENARIO_LABELS_EN = {
   'lazy-load': 'Lazy load',
   responsive: 'Responsive',
   'masonry-off': 'Masonry off',
-   kingkong: 'Quick entry',
- };
+  kingkong: 'Quick entry',
+};
 
 const SCENARIO_LABEL_OVERRIDES_EN = {
   'input-states': 'Disabled & readonly',
@@ -351,11 +358,11 @@ for (const { file } of demoFiles) {
   byComp.get(comp).push({ name, scenario, hasEn: enNames.has(name) });
 }
 for (const list of byComp.values()) {
-/** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
-const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
-for (const list of byComp.values()) {
-  list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
-}
+  /** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
+  const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
+  for (const list of byComp.values()) {
+    list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
+  }
 }
 
 // ── 组件分组与元数据（分组/切分单源见 scripts/subpackages.mjs） ─────────────
@@ -500,6 +507,19 @@ ${modules}
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
+}
+${
+  MODULE_BARE_PAGES.has(comp.key)
+    ? `
+/* ${comp.key}：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}`
+    : ''
 }
 
 .module__body {
