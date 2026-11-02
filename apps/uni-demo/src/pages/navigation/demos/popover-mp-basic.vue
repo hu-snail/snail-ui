@@ -23,9 +23,12 @@ const open = ref(false);
       <SnButton type="primary" block>点击查看气泡</SnButton>
     </SnPopover>
 
+    <view class="sn-popover-demo__space" />
+
     <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
     <text class="sn-demo__hint"
-      >点击气泡外部任意位置即可关闭（透明遮罩接管外部点击）；再点一次触发器也可收起。</text
+      >点击气泡外部任意位置即可关闭（页面根 closeOutside
+      通道，不挡页面点击）；再点一次触发器也可收起。</text
     >
   </view>
 </template>
@@ -44,8 +47,13 @@ const open = ref(false);
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
+/* Docs-preview only — relative keeps the demo flow intact while the bubble
+ * stays anchored to the component root; the spacer below leaves room for the
+ * bottom-placed bubble instead of letting it cover the copy. */
 .sn-popover.sn-demo-contained {
-  position: absolute;
+  position: relative;
+}
+.sn-popover-demo__space {
+  height: 180rpx;
 }
 </style>

@@ -78,7 +78,7 @@
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnTooltip' });
 
@@ -271,8 +271,15 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
-  if (props.modelValue) close();
-  else open();
+  if (props.modelValue) {
+    close();
+    return;
+  }
+  // One-gesture switching (popover parity): the trigger stops propagation, so
+  // it dispatches the outside-close itself before opening — other open
+  // overlays fold in the same tap.
+  closeOutside();
+  open();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */

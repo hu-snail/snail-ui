@@ -106,7 +106,7 @@
  */
 
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
-import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
@@ -471,6 +471,12 @@ defineExpose({ getShowPop, open, close, toggle });
 
 function onBarTap(): void {
   if (props.disabled) return;
+  if (!isOpen.value) {
+    // One-gesture switching (popover/tooltip parity): the bar stops
+    // propagation, so it dispatches the outside-close itself before opening —
+    // other open overlays fold in the same tap.
+    closeOutside();
+  }
   void toggle();
 }
 

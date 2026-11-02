@@ -27,32 +27,23 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
- * ## Click-outside close (AUI-OPT-07)
+ * ## Click-outside close (AUI-OPT-07 — mask-free, tooltip parity)
  *
  * uni-app components cannot listen to taps outside their own subtree, so the
- * first cut left the tap to the host: the component registered an idempotent
- * close in `utils/outside-close.ts` and the page root had to bind the
- * dispatcher (`<view @tap="closeOutside"> … </view>`). That wiring is invisible
- * from the call site — a page that never binds it (or any ancestor that
- * swallows the tap) simply never outside-closes, and a `menu` bubble then has
- * no way out but its own rows.
+ * close rides the shared outside-close queue: while mounted (and
+ * `closeOnClickOutside` is on, the default) the bubble registers an
+ * idempotent close in `utils/outside-close.ts`, and the page root dispatches
+ * it —
  *
- * The bubble now captures the outside tap itself:
+ *     const { closeOutside } = useQueue();
+ *     <view @tap="closeOutside"> … page … </view>
  *
- *   - `closeOnClickOutside` (default `true`) renders a transparent
- *     full-viewport mask below the bubble. The mask binds `@tap.stop`
- *     (`catchtap` on miniprogram), so tapping anywhere outside the bubble
- *     closes it and the tap never reaches the page behind.
- *   - The mask is transparent: a popover is a pointer surface, not a modal, so
- *     the page must not dim (contrast wd-popover's page-root `closeOutside`
- *     demo, which needs no mask because the demo page wires the handler).
- *   - The page-root `closeOutside` channel is kept as a second path, so a host
- *     that wants one tap to close every overlay still gets it.
- *
- * Trade-off: an open bubble's mask covers sibling triggers, so switching
- * between two bubbles costs a close tap plus an open tap. Pass
- * `closeOnClickOutside="false"` to get one-gesture switching back (taps then
- * only close through the page-root channel).
+ * A tap outside the bubble then closes it AND still reaches whatever button
+ * sits under it — no full-viewport mask swallowed the gesture, so switching
+ * to a sibling trigger (or any other control) is one tap, not two. The
+ * trigger and the bubble bind `@tap.stop` so taps on them never reach the
+ * dispatcher. Pages that never bind the handler simply never outside-close;
+ * `closeOnClickOutside: false` unregisters the close while mounted.
  *
  * ## Auto height (AUI-OPT-07)
  *
@@ -114,22 +105,11 @@ import {
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
-
-// Second outside-close path: a page-root `@tap="closeOutside"` closes this
-// overlay too (the callback no-ops while the bubble is already closed). The
-// primary path is the bubble's own mask, see `closeOnClickOutside`.
-onMounted(() =>
-  registerOutsideClosable(instanceId, () => {
-    // Idempotent: an already-closed bubble must not emit another close.
-    if (isShown.value || isMounted.value) close();
-  }),
-);
-onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
@@ -215,9 +195,10 @@ const props = withDefaults(
     /** Render a close button inside the bubble. */
     showClose?: boolean;
     /**
-     * Close the bubble when the user taps outside it (additive, AUI-OPT-07):
-     * a transparent full-viewport mask captures the outside tap. Pass `false`
-     * to drop the mask and rely on the page-root `closeOutside` channel only.
+     * Close the bubble when the user taps outside it (additive, AUI-OPT-07).
+     * The close rides the page-root `closeOutside` channel and never swallows
+     * the tap — the same gesture still lands on whatever button sits under
+     * it. Pass `false` to unregister the outside-close while mounted.
      */
     closeOnClickOutside?: boolean;
     /** Extra class on the root node. */
@@ -357,13 +338,48 @@ function updatePosition(): void {
 
 defineExpose({ open, close, updatePosition });
 
+// Outside-close registration (tooltip parity — the transparent mask is gone):
+// while `closeOnClickOutside` is on, the mounted bubble registers an
+// idempotent close in the queue; a page-root `@tap="closeOutside"` closes it
+// WITHOUT swallowing the tap, so the very same gesture still reaches whatever
+// button sits under it. `false` unregisters, keeping the bubble open until
+// its own trigger or close button handles it.
+let outsideRegistered = false;
+
+function syncOutsideRegistration(): void {
+  if (props.closeOnClickOutside && !outsideRegistered) {
+    outsideRegistered = true;
+    registerOutsideClosable(instanceId, () => {
+      // Idempotent: an already-closed bubble must not emit another close.
+      if (isShown.value || isMounted.value) close();
+    });
+  } else if (!props.closeOnClickOutside && outsideRegistered) {
+    outsideRegistered = false;
+    unregisterOutsideClosable(instanceId);
+  }
+}
+
+onMounted(syncOutsideRegistration);
+watch(() => props.closeOnClickOutside, syncOutsideRegistration);
+onBeforeUnmount(() => {
+  if (outsideRegistered) unregisterOutsideClosable(instanceId);
+});
+
 function onTriggerTap(): void {
   if (props.disabled) return;
   // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
   // bubble (consumer ignoring the v-model event) must still close on the
   // second trigger tap.
-  if (isShown.value) close();
-  else open();
+  if (isShown.value) {
+    close();
+    return;
+  }
+  // One-gesture switching: the trigger stops propagation (it must not close
+  // its own bubble through the page root), so it dispatches the outside-close
+  // itself before opening — every other overlay on the page folds in the same
+  // tap that opens this one.
+  closeOutside();
+  open();
 }
 
 function onMenuTap(item: SnPopoverMenuItem, index: number): void {
@@ -453,18 +469,6 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       <slot />
     </view>
 
-    <!--
-      Outside-tap catcher (see the header): a transparent full-viewport mask
-      under the bubble. `@tap.stop` → catchtap on miniprogram, so the outside
-      tap closes the bubble and never reaches the page behind.
-    -->
-    <view
-      v-if="closeOnClickOutside && isShown"
-      class="sn-popover__mask"
-      aria-hidden="true"
-      @tap.stop="close"
-    />
-
     <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
@@ -541,22 +545,6 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover__trigger {
   display: block;
-}
-
-/* ── Outside-tap mask ──────────────────────────────────────────────────── */
-
-/* Transparent full-viewport tap catcher under the bubble (z-index 499 < the
- * pop's 500). An outside tap closes the bubble and never reaches the page
- * behind (`@tap.stop` → catchtap on miniprogram). Deliberately transparent:
- * a popover is a pointer surface, not a modal, so the page must not dim. See
- * the header for the two-bubble switching trade-off. */
-.sn-popover__mask {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 499;
 }
 
 /* ── Bubble ────────────────────────────────────────────────────────────── */

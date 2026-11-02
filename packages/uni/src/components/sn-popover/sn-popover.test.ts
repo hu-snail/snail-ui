@@ -414,31 +414,21 @@ describe('sn-popover (outside-tap switching via the queue)', () => {
   });
 });
 
-describe('sn-popover (outside-close mask, AUI-OPT-07)', () => {
-  it('renders the transparent mask while the bubble is shown', () => {
+describe('sn-popover (outside-close queue, AUI-OPT-07)', () => {
+  it('closes through the page-root closeOutside channel', async () => {
     const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
-    expect(w.find('.sn-popover__mask').exists()).toBe(true);
-  });
-
-  it('renders no mask while the bubble is closed', () => {
-    const w = mount(SnPopover, { props: { modelValue: false } });
-    expect(w.find('.sn-popover__mask').exists()).toBe(false);
-    expect(w.find('.sn-popover__pop').exists()).toBe(false);
-  });
-
-  it('closes the bubble when the mask is tapped', async () => {
-    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
-    await w.find('.sn-popover__mask').trigger('tap');
+    closeOutside();
+    await flushPromises();
     expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
     expect(w.emitted('close')).toHaveLength(1);
     expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
     expect(w.classes()).not.toContain('sn-popover--shown');
   });
 
-  it('drops the mask with the fade-out leg while the pop stays mounted', async () => {
+  it('renders no mask node — the close rides the queue, not a tap catcher', () => {
     const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
-    await w.setProps({ modelValue: false });
     expect(w.find('.sn-popover__mask').exists()).toBe(false);
+    // the pop itself stays in the tree while shown
     expect(w.find('.sn-popover__pop').exists()).toBe(true);
   });
 
@@ -449,18 +439,23 @@ describe('sn-popover (outside-close mask, AUI-OPT-07)', () => {
     expect(w.emitted('close')).toBeUndefined();
   });
 
-  it('renders no mask when closeOnClickOutside is false', () => {
-    const w = mount(SnPopover, {
-      props: { modelValue: true, closeOnClickOutside: false, content: 'A' },
-    });
-    expect(w.find('.sn-popover__mask').exists()).toBe(false);
-  });
-
-  it('keeps the page-root closeOutside channel when the mask is off', () => {
+  it('unregisters the outside-close while closeOnClickOutside is false', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, closeOnClickOutside: false, content: 'A' },
     });
     closeOutside();
+    expect(w.emitted('close')).toBeUndefined();
+  });
+
+  it('re-registers when closeOnClickOutside flips back to true', async () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, closeOnClickOutside: false, content: 'A' },
+    });
+    closeOutside();
+    expect(w.emitted('close')).toBeUndefined();
+    await w.setProps({ closeOnClickOutside: true });
+    closeOutside();
+    await flushPromises();
     expect(w.emitted('close')).toHaveLength(1);
   });
 
@@ -469,7 +464,8 @@ describe('sn-popover (outside-close mask, AUI-OPT-07)', () => {
     await w.find('.sn-popover__trigger').trigger('tap');
     await flushPromises();
     expect(w.classes()).toContain('sn-popover--shown');
-    await w.find('.sn-popover__mask').trigger('tap');
+    closeOutside();
+    await flushPromises();
     expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
     expect(w.classes()).not.toContain('sn-popover--shown');
   });
@@ -484,23 +480,20 @@ describe('sn-popover (outside-close mask, AUI-OPT-07)', () => {
     expect(w.classes()).not.toContain('sn-popover--shown');
   });
 
-  it('does not replay close / change when the mask tap also reaches the queue', async () => {
+  it('does not replay close / change when the queue fires twice in one gesture', async () => {
     const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
-    await w.find('.sn-popover__mask').trigger('tap');
-    // A page-root handler firing in the same gesture reaches the queue too.
+    closeOutside();
+    // A second dispatcher in the same gesture (nested roots) is idempotent.
     closeOutside();
     await flushPromises();
     expect(w.emitted('close')).toHaveLength(1);
     expect(w.emitted('change')).toHaveLength(1);
   });
 
-  it('anchors the mask to the viewport below the bubble (z-index < 500)', () => {
+  it('binds the trigger with tap.stop per the outside-close contract', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
-    const rule = source.indexOf('.sn-popover__mask {');
-    expect(rule).toBeGreaterThan(-1);
-    const block = source.slice(rule, source.indexOf('}', rule));
-    expect(block).toContain('position: fixed');
-    expect(block).toContain('z-index: 499');
+    expect(source).toContain('@tap.stop="onTriggerTap"');
+    expect(source).not.toContain('sn-popover__mask');
   });
 });
 

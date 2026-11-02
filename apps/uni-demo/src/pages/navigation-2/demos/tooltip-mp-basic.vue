@@ -14,12 +14,14 @@ const open = ref(false);
   <view class="sn-demo sn-demo--stack">
     <SnTooltip
       v-model="open"
-      content="点击外部无法关闭，需要再次点击触发器"
+      content="点击气泡外部任意位置即可关闭（页面根 closeOutside 通道）；再点一次触发器也可收起。"
       placement="bottom"
       custom-class="sn-demo-contained"
     >
       <SnButton type="primary" block>点我看提示</SnButton>
     </SnTooltip>
+
+    <view class="sn-tooltip-demo__space" />
 
     <text class="sn-tooltip-demo__meta"> 当前状态：{{ open ? '已显示' : '已关闭' }} </text>
   </view>
@@ -35,8 +37,13 @@ const open = ref(false);
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
+/* Docs-preview only — relative keeps the demo flow intact while the bubble
+ * stays anchored to the component root; the spacer below leaves room for the
+ * bottom-placed bubble. */
 .sn-tooltip.sn-demo-contained {
-  position: absolute;
+  position: relative;
+}
+.sn-tooltip-demo__space {
+  height: 180rpx;
 }
 </style>

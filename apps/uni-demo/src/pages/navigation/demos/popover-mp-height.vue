@@ -80,6 +80,6 @@ function onMenuClick(payload: { item: { content?: string } }): void {
 }
 /* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
 .sn-popover.sn-demo-contained {
-  position: absolute;
+  position: relative;
 }
 </style>
