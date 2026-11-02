@@ -316,8 +316,9 @@ const rootClass = computed(() => [
 
 /* ── 中心凸起项（additive）：上凸圆形主按钮。bar 在 --elevated 形态下加高
  * 到 128rpx，圆钮以 flex-start + 负 margin 上浮出栏顶；__fab 是与栏同底色
- * 的半椭圆「穹顶」（随 --sn-tabbar-bar-bg 走玻璃形态），两侧再用
- * radial-gradient 反圆角凹弧与栏顶衔接——白面沿曲线自然扬起，无硬折角。 ── */
+ * 的凸包座（随 --sn-tabbar-bar-bg 走玻璃 / 暗色），轮廓由一条 SVG 贝塞尔
+ * 曲线经 CSS mask 挖出——栏顶凹弧 → 穹顶 → 凹弧一次成形，与圆钮白环
+ * 相切过渡。mask 不生效的环境降级为半椭圆穹顶（border-radius 兜底）。 ── */
 .sn-tabbar-item--elevate {
   align-items: flex-start;
 }
@@ -326,40 +327,17 @@ const rootClass = computed(() => [
   position: absolute;
   top: -44rpx;
   left: 50%;
-  width: 104rpx;
+  width: 144rpx;
   height: 44rpx;
-  margin-left: -52rpx;
+  margin-left: -72rpx;
   border-radius: 52rpx 52rpx 0 0;
   background-color: var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface));
-}
-
-.sn-tabbar-item__fab::before,
-.sn-tabbar-item__fab::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  width: 20rpx;
-  height: 20rpx;
-}
-
-.sn-tabbar-item__fab::before {
-  left: -20rpx;
-  background-image: radial-gradient(
-    circle at 0 0,
-    transparent 0,
-    transparent 19rpx,
-    var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface)) 20rpx
-  );
-}
-
-.sn-tabbar-item__fab::after {
-  right: -20rpx;
-  background-image: radial-gradient(
-    circle at 100% 0,
-    transparent 0,
-    transparent 19rpx,
-    var(--sn-tabbar-bar-bg, var(--sn-mp-color-background-surface)) 20rpx
-  );
+  -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQgNDQiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik0wIDQ0QzggNDQgMTAgOCAzMiA2QzQ2IDQuNSA1OCAxLjUgNzIgMUM4NiAxLjUgOTggNC41IDExMiA2QzEzNCA4IDEzNiA0NCAxNDQgNDRaIiBmaWxsPSIjMDAwIi8+PC9zdmc+');
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNDQgNDQiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxwYXRoIGQ9Ik0wIDQ0QzggNDQgMTAgOCAzMiA2QzQ2IDQuNSA1OCAxLjUgNzIgMUM4NiAxLjUgOTggNC41IDExMiA2QzEzNCA4IDEzNiA0NCAxNDQgNDRaIiBmaWxsPSIjMDAwIi8+PC9zdmc+');
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
 }
 
 .sn-tabbar-item__fab-button {
