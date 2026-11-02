@@ -66,7 +66,6 @@ const lightOpen = ref(false);
   padding: 24rpx;
   border: 1px solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-md);
-  background: var(--sn-mp-color-background-surface);
 }
 .sn-popover-theme__label {
   margin-bottom: 16rpx;
