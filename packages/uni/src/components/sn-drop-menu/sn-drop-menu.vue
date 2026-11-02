@@ -543,7 +543,7 @@ const popupStyle = computed(() => {
       role="button"
       :aria-expanded="isOpen ? 'true' : 'false'"
       :aria-disabled="props.disabled ? 'true' : undefined"
-      @tap="onBarTap"
+      @tap.stop="onBarTap"
     >
       <text
         class="sn-drop-menu__label"
