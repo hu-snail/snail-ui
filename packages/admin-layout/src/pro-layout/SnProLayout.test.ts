@@ -159,3 +159,66 @@ describe('SnProLayout · shell props', () => {
     expect(wrapper.find('.sn-pro-layout__strip').exists()).toBe(false);
   });
 });
+
+describe('SnProLayout · settings + tabs', () => {
+  const tabs = [
+    { key: 'home', label: '首页', closable: false },
+    { key: 'user', label: '用户' },
+  ];
+
+  it('should hide the settings gear and drawer by default', () => {
+    const wrapper = mountLayout();
+    expect(wrapper.find('.sn-pro-header__gear').exists()).toBe(false);
+    expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(false);
+  });
+
+  it('should open the settings drawer from the header gear', async () => {
+    const wrapper = mountLayout({ showSettings: true, settingsLabel: '偏好' });
+    await wrapper.find('.sn-pro-header__gear').trigger('click');
+    const settings = wrapper.findComponent({ name: 'SnProSettings' });
+    expect(settings.props('show')).toBe(true);
+    expect(settings.props('tabType')).toBeUndefined(); // tab section hidden while tabs are off
+  });
+
+  it('should render the tab bar and forward select/close events when showTabs is set', async () => {
+    const wrapper = mountLayout({ showTabs: true, tabs, activeKey: 'user' });
+    const tabbar = wrapper.findComponent({ name: 'SnProTabbar' });
+    expect(tabbar.exists()).toBe(true);
+    expect(tabbar.props('tabs')).toEqual(tabs);
+    expect(tabbar.props('type')).toBe('chrome');
+    tabbar.vm.$emit('update:activeKey', 'home');
+    tabbar.vm.$emit('close', 'user');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('tab-select')?.[0]?.[0]).toBe('home');
+    expect(wrapper.emitted('tab-close')?.[0]?.[0]).toBe('user');
+  });
+
+  it('should forward theme preferences to the settings panel', () => {
+    const wrapper = mountLayout({
+      showSettings: true,
+      showTabs: true,
+      mode: 'dark',
+      primaryId: 'blue',
+      primaryColors: [{ id: 'blue', color: '#1677ff' }],
+      tabType: 'card',
+    });
+    const settings = wrapper.findComponent({ name: 'SnProSettings' });
+    expect(settings.props('mode')).toBe('dark');
+    expect(settings.props('primaryId')).toBe('blue');
+    expect(settings.props('tabType')).toBe('card');
+  });
+
+  it('should emit preference updates from the settings panel', async () => {
+    const wrapper = mountLayout({ showSettings: true });
+    const settings = wrapper.findComponent({ name: 'SnProSettings' });
+    settings.vm.$emit('update:layout', 'top');
+    settings.vm.$emit('update:mode', 'dark');
+    settings.vm.$emit('update:primaryId', 'violet');
+    settings.vm.$emit('update:tabType', 'bar');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('update:layout')?.[0]?.[0]).toBe('top');
+    expect(wrapper.emitted('update:mode')?.[0]?.[0]).toBe('dark');
+    expect(wrapper.emitted('update:primaryId')?.[0]?.[0]).toBe('violet');
+    expect(wrapper.emitted('update:tabType')?.[0]?.[0]).toBe('bar');
+  });
+});

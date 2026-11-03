@@ -11,6 +11,8 @@ export { default as SnProLayout } from './pro-layout/SnProLayout.vue';
 export { default as SnProLogo } from './pro-logo/SnProLogo.vue';
 export { default as SnProSider } from './pro-sider/SnProSider.vue';
 export { default as SnProHeader } from './pro-header/SnProHeader.vue';
+export { default as SnProTabbar } from './pro-tabbar/SnProTabbar.vue';
+export { default as SnProSettings } from './pro-settings/SnProSettings.vue';
 
 export {
   routesToMenuOptions,
@@ -25,4 +27,10 @@ export type {
   RoutesToMenuOptions,
 } from './menu/sn-admin-menu';
 
-export type { SnProLayoutMode } from './pro-layout/sn-pro-layout-types';
+export type {
+  SnProLayoutMode,
+  SnProTabType,
+  SnProTabItem,
+  SnProPrimaryColor,
+  SnProSettingsLabels,
+} from './pro-layout/sn-pro-layout-types';

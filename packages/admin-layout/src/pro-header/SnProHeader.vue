@@ -13,7 +13,7 @@
  * wins the middle column; otherwise the breadcrumb renders (top/mix breadcrumb
  * lives in the layout's content strip instead).
  */
-import { PanelLeft } from 'lucide-vue-next';
+import { PanelLeft, Settings } from 'lucide-vue-next';
 import { SnBreadcrumb, SnBreadcrumbItem, SnMenu } from '@snui/vue-web';
 import type { SnMenuOption } from '@snui/vue-web';
 import SnProLogo from '../pro-logo/SnProLogo.vue';
@@ -41,6 +41,10 @@ const props = withDefaults(
     activeKey?: string | number | null | undefined;
     /** Breadcrumb labels (side mode; ignored while menus are shown). */
     breadcrumb?: string[] | undefined;
+    /** Show the layout-settings gear in the actions area. Default false. */
+    showSettings?: boolean | undefined;
+    /** Accessible label for the settings gear. Default '布局设置'. */
+    settingsLabel?: string | undefined;
   }>(),
   {
     showBrand: false,
@@ -52,12 +56,15 @@ const props = withDefaults(
     menus: () => [],
     activeKey: null,
     breadcrumb: () => [],
+    showSettings: false,
+    settingsLabel: '布局设置',
   },
 );
 
 const emit = defineEmits<{
   (e: 'select', key: string | number | null, item: SnMenuOption): void;
   (e: 'toggle-collapse'): void;
+  (e: 'open-settings'): void;
 }>();
 
 defineSlots<{
@@ -109,6 +116,16 @@ defineSlots<{
     </div>
 
     <div class="sn-pro-header__actions">
+      <button
+        v-if="props.showSettings"
+        type="button"
+        class="sn-pro-header__gear"
+        :aria-label="props.settingsLabel"
+        :title="props.settingsLabel"
+        @click="emit('open-settings')"
+      >
+        <Settings :size="16" aria-hidden="true" />
+      </button>
       <slot />
     </div>
   </header>
@@ -148,6 +165,24 @@ defineSlots<{
 }
 
 .sn-pro-header__toggle:hover {
+  background-color: var(--sn-web-color-background-subtle);
+}
+
+.sn-pro-header__gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--sn-web-radius-md);
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  cursor: pointer;
+}
+
+.sn-pro-header__gear:hover {
   background-color: var(--sn-web-color-background-subtle);
 }
 

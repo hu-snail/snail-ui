@@ -30,13 +30,21 @@ import type { SnMenuOption } from '@snui/vue-web';
 import SnProSider from '../pro-sider/SnProSider.vue';
 import SnProHeader from '../pro-header/SnProHeader.vue';
 import SnProLayoutStrip from './SnProLayoutStrip.vue';
+import SnProTabbar from '../pro-tabbar/SnProTabbar.vue';
+import SnProSettings from '../pro-settings/SnProSettings.vue';
 import {
   findTopAncestorKey,
   menuChildrenOf,
   menuPathTo,
   stripMenuChildren,
 } from '../menu/sn-admin-menu';
-import type { SnProLayoutMode } from './sn-pro-layout-types';
+import type {
+  SnProLayoutMode,
+  SnProPrimaryColor,
+  SnProSettingsLabels,
+  SnProTabItem,
+  SnProTabType,
+} from './sn-pro-layout-types';
 
 defineOptions({ name: 'SnProLayout' });
 
@@ -76,6 +84,29 @@ const props = withDefaults(
     collapseLabel?: string | undefined;
     /** Breadcrumb labels. Omit → auto-derived from the active menu path. */
     breadcrumb?: string[] | undefined;
+    /** Show the settings gear in the header (opens the preferences drawer).
+     * Default false. */
+    showSettings?: boolean | undefined;
+    /** Accessible label for the settings gear. Default '布局设置'. */
+    settingsLabel?: string | undefined;
+    /** Localized copy for the settings panel; unspecified keys fall back to
+     * the built-in defaults. */
+    settingsLabels?: Partial<SnProSettingsLabels> | undefined;
+    /** Theme mode forwarded to the settings panel. Absent → its section
+     * hides. `v-model:mode`. */
+    mode?: 'light' | 'dark' | undefined;
+    /** Selected primary color id forwarded to the settings panel. Absent →
+     * its section hides. `v-model:primaryId`. */
+    primaryId?: string | undefined;
+    /** Swatches offered by the settings panel. */
+    primaryColors?: SnProPrimaryColor[] | undefined;
+    /** Show the visited-route tab bar under the header. Default false. */
+    showTabs?: boolean | undefined;
+    /** Tab bar entries (host-tracked visited routes). */
+    tabs?: SnProTabItem[] | undefined;
+    /** Tab strip style, switchable from the settings panel.
+     * `v-model:tabType`. Default 'chrome'. */
+    tabType?: SnProTabType | undefined;
   }>(),
   {
     layout: 'side',
@@ -95,15 +126,27 @@ const props = withDefaults(
     // force controlled mode. Explicit undefined keeps it uncontrolled
     // (same trick as @snui/vue-web SnLayoutSider, mirroring naive-ui).
     collapsed: undefined,
+    showSettings: false,
+    settingsLabel: '布局设置',
+    primaryColors: () => [],
+    showTabs: false,
+    tabs: () => [],
+    tabType: 'chrome',
   },
 );
-
 const emit = defineEmits<{
   (e: 'update:layout', mode: SnProLayoutMode): void;
   (e: 'update:collapsed', collapsed: boolean): void;
   (e: 'update:expandedKeys', keys: Array<string | number>): void;
   /** Menu click — the HOST navigates (router.push / perm check / …). */
   (e: 'select', key: string | number | null, item: SnMenuOption): void;
+  (e: 'update:mode', mode: 'light' | 'dark'): void;
+  (e: 'update:primaryId', id: string): void;
+  (e: 'update:tabType', type: SnProTabType): void;
+  /** Tab-bar click — the HOST navigates. */
+  (e: 'tab-select', key: string): void;
+  /** Tab close click — the HOST decides what closing means. */
+  (e: 'tab-close', key: string): void;
 }>();
 
 defineSlots<{
@@ -163,6 +206,15 @@ const showStrip = computed(
 function onSelect(key: string | number | null, item: SnMenuOption): void {
   emit('select', key, item);
 }
+
+// ── Settings drawer + tab bar forwards ────────────────────────────────────
+const settingsVisible = ref(false);
+function onTabSelect(key: string): void {
+  emit('tab-select', key);
+}
+function onTabClose(key: string): void {
+  emit('tab-close', key);
+}
 </script>
 
 <template>
@@ -195,11 +247,22 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
           :show-collapse="showCollapse"
           :collapse-label="collapseLabel"
           :breadcrumb="breadcrumbItems"
+          :show-settings="showSettings"
+          :settings-label="settingsLabel"
           @toggle-collapse="toggleCollapsed"
           @select="onSelect"
+          @open-settings="settingsVisible = true"
         >
           <slot name="actions" />
         </SnProHeader>
+        <SnProTabbar
+          v-if="showTabs"
+          :tabs="tabs"
+          :active-key="activeKey"
+          :type="tabType"
+          @update:active-key="onTabSelect"
+          @close="onTabClose"
+        />
         <div class="sn-pro-layout__content">
           <slot />
         </div>
@@ -219,13 +282,24 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
         :show-collapse="false"
         :menus="menus"
         :active-key="activeKey"
+        :show-settings="showSettings"
+        :settings-label="settingsLabel"
         @select="onSelect"
+        @open-settings="settingsVisible = true"
       >
         <slot name="actions" />
         <template #logo><slot name="logo" /></template>
       </SnProHeader>
       <section class="sn-pro-layout__body">
         <SnProLayoutStrip v-if="showStrip" :breadcrumb="breadcrumbItems" />
+        <SnProTabbar
+          v-if="showTabs"
+          :tabs="tabs"
+          :active-key="activeKey"
+          :type="tabType"
+          @update:active-key="onTabSelect"
+          @close="onTabClose"
+        />
         <div class="sn-pro-layout__content">
           <slot />
         </div>
@@ -245,7 +319,10 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
         :show-collapse="false"
         :menus="menus"
         :active-key="activeKey"
+        :show-settings="showSettings"
+        :settings-label="settingsLabel"
         @select="onSelect"
+        @open-settings="settingsVisible = true"
       >
         <slot name="actions" />
         <template #logo><slot name="logo" /></template>
@@ -272,6 +349,14 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
             :toggle-label="collapseLabel"
             :breadcrumb="breadcrumbItems"
             @toggle-collapse="toggleCollapsed"
+          />
+          <SnProTabbar
+            v-if="showTabs"
+            :tabs="tabs"
+            :active-key="activeKey"
+            :type="tabType"
+            @update:active-key="onTabSelect"
+            @close="onTabClose"
           />
           <div class="sn-pro-layout__content">
             <slot />
@@ -321,6 +406,14 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
           :breadcrumb="breadcrumbItems"
           @toggle-collapse="toggleCollapsed"
         />
+        <SnProTabbar
+          v-if="showTabs"
+          :tabs="tabs"
+          :active-key="activeKey"
+          :type="tabType"
+          @update:active-key="onTabSelect"
+          @close="onTabClose"
+        />
         <div class="sn-pro-layout__content">
           <slot />
         </div>
@@ -329,6 +422,21 @@ function onSelect(key: string | number | null, item: SnMenuOption): void {
         </footer>
       </section>
     </template>
+
+    <!-- ══ preferences drawer (shared across every shape) ══ -->
+    <SnProSettings
+      v-model:show="settingsVisible"
+      :layout="layout"
+      :mode="mode"
+      :primary-id="primaryId"
+      :primary-colors="primaryColors"
+      :tab-type="showTabs ? tabType : undefined"
+      :labels="settingsLabels"
+      @update:layout="(mode) => emit('update:layout', mode)"
+      @update:mode="(mode) => emit('update:mode', mode)"
+      @update:primary-id="(id) => emit('update:primaryId', id)"
+      @update:tab-type="(type) => emit('update:tabType', type)"
+    />
   </div>
 </template>
 

@@ -63,14 +63,37 @@ const layout = ref<'side' | 'top' | 'mix' | 'dual'>('side');
 
 ## 组件
 
-| 组件           | 职责                                                         |
-| -------------- | ------------------------------------------------------------ |
-| `SnProLayout`  | 主编排：四种形态的几何与菜单位置、折叠状态、面包屑、页脚插槽  |
-| `SnProLogo`    | logo 组件：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换 |
-| `SnProSider`   | 左侧栏组件：logo + 纵向 SnMenu，折叠 / 深色（inverted）      |
-| `SnProHeader`  | 顶部导航组件：折叠钮 + 横向菜单 + 面包屑 + 操作区插槽         |
+| 组件            | 职责                                                                       |
+| --------------- | -------------------------------------------------------------------------- |
+| `SnProLayout`   | 主编排：四种形态的几何与菜单位置、折叠状态、面包屑、页脚插槽、设置抽屉与标签栏接线 |
+| `SnProLogo`     | logo 组件：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换              |
+| `SnProSider`    | 左侧栏组件：logo + 纵向 SnMenu，折叠 / 深色（inverted）                    |
+| `SnProHeader`   | 顶部导航组件：折叠钮 + 横向菜单 + 面包屑 + 操作区插槽 + 设置齿轮            |
+| `SnProTabbar`   | 访问路由标签栏：基于 SnTabs 的五种样式，逐签关闭（affix 签由宿主传 `closable: false`） |
+| `SnProSettings` | 布局偏好抽屉：四形态卡片 / 亮暗模式 / 主色色板 / 标签栏样式，受控 props 省略即隐藏对应分区 |
 
-四个组件都可单独引入自行编排（`SnProLayout` 内部就是用它们拼的）。
+六个组件都可单独引入自行编排（`SnProLayout` 内部就是用它们拼的）。
+
+## 标签栏与设置面板
+
+两者都走「包管渲染、宿主管状态」的受控模式——标签列表、主题模式、主色
+预设全部由宿主持有并持久化，包只 emit 事件：
+
+```vue
+<SnProLayout
+  v-model:layout="layout" v-model:mode="mode" v-model:primary-id="primaryId"
+  v-model:tab-type="tabType"
+  show-settings :settings-labels="labels" :primary-colors="colors"
+  show-tabs :tabs="tabs"
+  @tab-select="(key) => router.push({ name: key })"
+  @tab-close="closeTab"
+>
+```
+
+- `tabs: SnProTabItem[]`（`{ key, label, closable? }`）由宿主按访问路由维护，
+  固定签传 `closable: false`；
+- 设置面板文案经 `settingsLabels` 本地化（包内不内置 i18n，未传的键用内置中文兜底）；
+- `mode` / `primaryId` / `tabType` 省略时对应分区隐藏（纯 additive）。
 
 ## 菜单来源
 

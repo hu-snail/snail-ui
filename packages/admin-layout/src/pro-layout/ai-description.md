@@ -19,12 +19,14 @@ AI 修改本组件时，不得引入上述右列任何能力——那会把业�
 
 ## 组件族
 
-| 组件          | 职责                                                   |
-| ------------- | ------------------------------------------------------ |
-| `SnProLayout` | 主编排：四形态几何、菜单位置、折叠、面包屑、页脚        |
-| `SnProLogo`   | 品牌 logo：图片 / 字母牌 + 标题，折叠收起，双插槽       |
-| `SnProSider`  | 左侧栏：brand + 纵向 SnMenu，折叠 / inverted 深色       |
-| `SnProHeader` | 顶栏：折叠钮 / 横向菜单 / 面包屑 / 操作区插槽           |
+| 组件            | 职责                                                                       |
+| --------------- | -------------------------------------------------------------------------- |
+| `SnProLayout`   | 主编排：四形态几何、菜单位置、折叠、面包屑、页脚、设置抽屉与标签栏接线      |
+| `SnProLogo`     | 品牌 logo：图片 / 字母牌 + 标题，折叠收起，双插槽                          |
+| `SnProSider`    | 左侧栏：brand + 纵向 SnMenu，折叠 / inverted 深色                          |
+| `SnProHeader`   | 顶栏：折叠钮 / 横向菜单 / 面包屑 / 操作区插槽 / 设置齿轮                   |
+| `SnProTabbar`   | 访问路由标签栏：SnTabs 五样式（line/card/bar/segment/chrome），逐签关闭     |
+| `SnProSettings` | 布局偏好抽屉：四形态卡片 / 亮暗 / 主色 / 标签样式；受控 props 省略即隐藏分区 |
 
 ## AI Patch Boundary
 
@@ -37,7 +39,11 @@ AI 修改本组件时，不得引入上述右列任何能力——那会把业�
 | `breadcrumb`      | ✅        | 显式传入优先；省略时按菜单路径自动推导          |
 | `logo/title/mark` | ✅        | 品牌三件套；`#logo` 插槽可整体替换              |
 | `siderWidth` 等   | ✅        | 几何参数                                        |
+| `showSettings` 系 | ✅        | 设置抽屉开关 + `settingsLabels` / `mode` / `primaryId` / `primaryColors` / `tabType`（v-model 转发，省略分区隐藏） |
+| `showTabs` 系     | ✅        | `tabs: SnProTabItem[]`（宿主维护，affix 传 `closable: false`）+ `tabType`；点击 / 关闭只 emit `tab-select` / `tab-close` |
 | 菜单点击后的导航  | ❌        | 永远 emit `select`，宿主实现                    |
+| 标签关闭后的路由收敛 | ❌     | 永远 emit `tab-close`，宿主决定跳到哪个邻居签   |
+| 主题 / 主色的真实换肤 | ❌    | 只 emit `update:mode` / `update:primaryId`，CSS 变量覆写在宿主 |
 | 登录态 / 权限过滤 | ❌        | 宿主在传入 `menus` 前自行过滤                   |
 
 ## 形态几何
@@ -73,4 +79,5 @@ mix / dual 下当前一级无可见子级时，二级栏自动消失（vben 行�
 ## 测试
 
 行为级：形态结构、折叠受控/非受控、select 事件、面包屑推导、插槽、
-菜单映射纯函数（含 hidden/order/隐藏子树/幂等）。
+菜单映射纯函数（含 hidden/order/隐藏子树/幂等）、标签栏渲染 / 关闭事件 /
+affix 不可关、设置面板分区显隐 / 各分区事件、labels 覆写。
