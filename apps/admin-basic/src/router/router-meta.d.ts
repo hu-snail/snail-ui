@@ -16,5 +16,7 @@ declare module 'vue-router' {
     i18nKey?: string;
     parentI18nKey?: string;
     icon?: string;
+    /** Pinned tab in the layout tab bar (non-closable affix tab). */
+    affix?: boolean;
   }
 }

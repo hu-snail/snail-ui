@@ -41,7 +41,7 @@ root.style.setProperty('--aui-color-action-primary-soft', vars.soft);`,
         },
         {
           heading: '新增主色预设',
-          paragraphs: ['向 PRIMARY_PRESETS 追加一条即可出现在头部取色器中；id 会持久化到 localStorage。'],
+          paragraphs: ['向 PRIMARY_PRESETS 追加一条即可出现在布局设置面板（页头齿轮）的取色区中；id 会持久化到 localStorage。'],
         },
         {
           heading: '自定义组件样式',
@@ -83,7 +83,7 @@ root.style.setProperty('--aui-color-action-primary-soft', vars.soft);`,
         },
         {
           heading: 'Add a preset',
-          paragraphs: ['Append one entry to PRIMARY_PRESETS and it appears in the header picker; the id persists to localStorage.'],
+          paragraphs: ['Append one entry to PRIMARY_PRESETS and it appears in the layout settings panel (header gear) swatch row; the id persists to localStorage.'],
         },
         {
           heading: 'Custom component styles',

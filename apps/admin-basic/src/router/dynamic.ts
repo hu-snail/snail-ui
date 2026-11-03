@@ -22,6 +22,9 @@ export const VIEW_COMPONENTS: Record<string, () => Promise<Component>> = {
   'docs-i18n': () => import('../views/docs/I18nGuideView.vue'),
 };
 
+/** Route keys pinned in the layout tab bar (non-closable affix tabs). */
+export const AFFIX_ROUTE_KEYS: ReadonlySet<string> = new Set(['home']);
+
 export interface NavOption {
   key: string;
   label: string;
@@ -38,6 +41,7 @@ export function menuToRoutes(nodes: MenuItem[], parentI18nKey?: string): RouteRe
       const meta: RouteMeta = { i18nKey: node.i18nKey };
       if (parentI18nKey !== undefined) meta.parentI18nKey = parentI18nKey;
       if (node.icon !== undefined) meta.icon = node.icon;
+      if (AFFIX_ROUTE_KEYS.has(node.key)) meta.affix = true;
       routes.push({
         path: node.path,
         name: node.key,

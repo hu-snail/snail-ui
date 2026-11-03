@@ -22,6 +22,12 @@ describe('menuToRoutes', () => {
     expect(routes[0]).toMatchObject({ path: '/home', meta: { i18nKey: 'menus.home', icon: 'house' } });
   });
 
+  it('should mark affix tabs from AFFIX_ROUTE_KEYS and leave the rest unmarked', () => {
+    const routes = menuToRoutes(TREE);
+    expect(routes[0]?.meta.affix).toBe(true);
+    expect(routes[1]?.meta.affix).toBeUndefined();
+  });
+
   it('should record the group i18n key as parent meta for breadcrumbs', () => {
     const routes = menuToRoutes(TREE);
     expect(routes[1]?.meta).toMatchObject({
