@@ -13,6 +13,7 @@ import Demo from '../components/Demo.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DialogStage from '../components/DialogStage.vue';
 import MpHome from '../components/MpHome.vue';
+import ChartCase from '../components/ChartCase.vue';
 import Layout from './Layout.vue';
 
 /**
@@ -25,6 +26,8 @@ import Layout from './Layout.vue';
  *   - DemoLabFab:    global FAB → Style + Theme + Preview (AUI-DOCS-018)
  *   - DialogStage:   modal overlay shell for the dialog demos (docs-only;
  *                    the library's overlay belongs to the future provider)
+ *   - ChartCase:     /echarts/<category> demo card — live chart + config panel
+ *                    (properties / palette / rounded-smooth) + copy-config
  *
  * Custom Layout.vue mounts DemoLabFab into the doc-after slot; the FAB itself
  * only renders when route.path starts with `/components/`.
@@ -47,5 +50,6 @@ export default {
     app.component('DemoLabFab', DemoLabFab);
     app.component('DialogStage', DialogStage);
     app.component('MpHome', MpHome);
+    app.component('ChartCase', ChartCase);
   },
 };

@@ -1112,3 +1112,21 @@ html[data-sn-template-end='uni']
 .dark .VPNavBar.home .VPNavBarHamburger .container span {
   background-color: rgb(240 244 252 / 0.86);
 }
+
+/* ── /echarts/<category> 案例网格 ─────────────────────────────────────────
+ * ChartCase 卡片自带外边距；放进网格时由网格控制间距，避免每张卡各自留白。
+ */
+.sn-chart-cases {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.sn-chart-cases .sn-chart-case {
+  margin: 0;
+}
+@media (max-width: 959px) {
+  .sn-chart-cases {
+    grid-template-columns: 1fr;
+  }
+}

@@ -409,6 +409,11 @@ const sidebar = {
         { text: '使用文档', link: '/echarts/usage' },
       ],
     },
+    { text: '折线图', link: '/echarts/line' },
+    { text: '面积图', link: '/echarts/area' },
+    { text: '柱状图', link: '/echarts/bar' },
+    { text: '饼图', link: '/echarts/pie' },
+    { text: '仪表盘', link: '/echarts/gauge' },
   ],
 };
 
@@ -763,6 +768,11 @@ const enSidebar = {
         { text: 'Usage', link: '/en/echarts/usage' },
       ],
     },
+    { text: 'Line', link: '/en/echarts/line' },
+    { text: 'Area', link: '/en/echarts/area' },
+    { text: 'Bar', link: '/en/echarts/bar' },
+    { text: 'Pie', link: '/en/echarts/pie' },
+    { text: 'Gauge', link: '/en/echarts/gauge' },
   ],
 };
 
