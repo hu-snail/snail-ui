@@ -572,74 +572,76 @@ function onTabChange(payload: { value: number | string }): void {
         </SnSticky>
 
         <!-- 双列瀑布商品流（sn-waterfall：最短列优先放置，追加不挪列） -->
-        <SnWaterfall class="mall-waterfall" :columns="2" :column-gap="16" :row-gap="16">
-          <view v-for="card in list" :key="card.id" class="mall-card" @tap="openGoods">
-            <view class="mall-card__media">
-              <SnImg :src="card.img" mode="aspectFill" width="100%" height="100%" lazy-load />
-              <view v-if="card.corner" class="mall-card__corner">
-                <text class="mall-card__corner-text">{{ card.corner }}</text>
+        <view class="mall-feed">
+          <SnWaterfall :columns="2" :column-gap="16" :row-gap="16">
+            <view v-for="card in list" :key="card.id" class="mall-card" @tap="openGoods">
+              <view class="mall-card__media">
+                <SnImg :src="card.img" mode="aspectFill" width="100%" height="100%" lazy-load />
+                <view v-if="card.corner" class="mall-card__corner">
+                  <text class="mall-card__corner-text">{{ card.corner }}</text>
+                </view>
+                <view
+                  class="mall-card__deliver"
+                  :class="{ 'mall-card__deliver--amber': card.deliverAmber }"
+                >
+                  <SnIcon :icon="Clock" size="22rpx" color="#ffffff" />
+                  <text class="mall-card__deliver-text">{{ card.deliver }}</text>
+                </view>
               </view>
-              <view
-                class="mall-card__deliver"
-                :class="{ 'mall-card__deliver--amber': card.deliverAmber }"
-              >
-                <SnIcon :icon="Clock" size="22rpx" color="#ffffff" />
-                <text class="mall-card__deliver-text">{{ card.deliver }}</text>
+              <view class="mall-card__body">
+                <text class="mall-card__title">{{ card.title }}</text>
+                <text v-if="card.sub" class="mall-card__sub">{{ card.sub }}</text>
+                <view v-if="card.quote" class="mall-card__quote">
+                  <SnIcon :icon="QuoteIcon" size="24rpx" color="#ff8f00" />
+                  <text class="mall-card__quote-text">{{ card.quote }}</text>
+                </view>
+                <view v-if="card.rating" class="mall-card__rating">
+                  <SnIcon :icon="Star" size="26rpx" color="#ffc300" />
+                  <text class="mall-card__rating-score">{{ card.rating }}</text>
+                  <text class="mall-card__rating-sold">{{ card.sold }}</text>
+                </view>
+                <view v-if="card.badges.length" class="mall-card__badges">
+                  <view
+                    v-for="b in card.badges"
+                    :key="b.text"
+                    class="mall-card__badge"
+                    :class="`mall-card__badge--${b.tone}`"
+                  >
+                    <text class="mall-card__badge-text">{{ b.text }}</text>
+                  </view>
+                </view>
+                <view class="mall-card__foot">
+                  <view class="mall-card__prices">
+                    <text class="mall-card__price">{{ card.price }}</text>
+                    <text class="mall-card__orig">{{ card.orig }}</text>
+                  </view>
+                  <view
+                    v-if="card.action === 'buy'"
+                    class="mall-card__buy"
+                    role="button"
+                    aria-label="抢购"
+                    @tap.stop="addCart(card.title)"
+                  >
+                    <text class="mall-card__buy-text">抢购</text>
+                  </view>
+                  <view
+                    v-else
+                    class="mall-card__plus"
+                    role="button"
+                    aria-label="加入购物车"
+                    @tap.stop="addCart(card.title)"
+                  >
+                    <SnIcon
+                      :icon="card.action === 'cart' ? ShoppingCart : Plus"
+                      size="28rpx"
+                      color="#251a00"
+                    />
+                  </view>
+                </view>
               </view>
             </view>
-            <view class="mall-card__body">
-              <text class="mall-card__title">{{ card.title }}</text>
-              <text v-if="card.sub" class="mall-card__sub">{{ card.sub }}</text>
-              <view v-if="card.quote" class="mall-card__quote">
-                <SnIcon :icon="QuoteIcon" size="24rpx" color="#ff8f00" />
-                <text class="mall-card__quote-text">{{ card.quote }}</text>
-              </view>
-              <view v-if="card.rating" class="mall-card__rating">
-                <SnIcon :icon="Star" size="26rpx" color="#ffc300" />
-                <text class="mall-card__rating-score">{{ card.rating }}</text>
-                <text class="mall-card__rating-sold">{{ card.sold }}</text>
-              </view>
-              <view v-if="card.badges.length" class="mall-card__badges">
-                <view
-                  v-for="b in card.badges"
-                  :key="b.text"
-                  class="mall-card__badge"
-                  :class="`mall-card__badge--${b.tone}`"
-                >
-                  <text class="mall-card__badge-text">{{ b.text }}</text>
-                </view>
-              </view>
-              <view class="mall-card__foot">
-                <view class="mall-card__prices">
-                  <text class="mall-card__price">{{ card.price }}</text>
-                  <text class="mall-card__orig">{{ card.orig }}</text>
-                </view>
-                <view
-                  v-if="card.action === 'buy'"
-                  class="mall-card__buy"
-                  role="button"
-                  aria-label="抢购"
-                  @tap.stop="addCart(card.title)"
-                >
-                  <text class="mall-card__buy-text">抢购</text>
-                </view>
-                <view
-                  v-else
-                  class="mall-card__plus"
-                  role="button"
-                  aria-label="加入购物车"
-                  @tap.stop="addCart(card.title)"
-                >
-                  <SnIcon
-                    :icon="card.action === 'cart' ? ShoppingCart : Plus"
-                    size="28rpx"
-                    color="#251a00"
-                  />
-                </view>
-              </view>
-            </view>
-          </view>
-        </SnWaterfall>
+          </SnWaterfall>
+        </view>
       </view>
 
       <!-- ═══ #bottom：底部标签栏（sn-tabbar，角标由组件渲染） ═══ -->
@@ -1091,7 +1093,7 @@ function onTabChange(payload: { value: number | string }): void {
 }
 
 /* ── 双列瀑布 ─────────────────────────────────────────────────────────── */
-.mall-waterfall {
+.mall-feed {
   margin: 8rpx 24rpx 0;
 }
 .mall-card {
