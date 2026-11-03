@@ -177,7 +177,7 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 | 插槽      | 说明                                       |
 | --------- | ------------------------------------------ |
 | default   | 路由内容（`<RouterView />`）               |
-| `actions` | 顶栏右侧操作区（用户菜单、主题切换…）      |
+| `actions` | 操作区：side/top/mix 在页头右侧，dual（无页头）在条带右侧（语言切换、用户菜单…） |
 | `logo`    | 品牌区整体替换                             |
 | `footer`  | 内容区下方的页脚                           |
 

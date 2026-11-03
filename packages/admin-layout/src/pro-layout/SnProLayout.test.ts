@@ -195,6 +195,17 @@ describe('SnProLayout · settings + tabs', () => {
     expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(true);
   });
 
+  it('should render the host actions slot in the dual strip (gear beside it)', async () => {
+    const wrapper = mountLayout(
+      { layout: 'dual', showSettings: true, showCollapse: false, breadcrumb: [] },
+      { actions: '<button class="lang-switch">EN</button>' },
+    );
+    const actions = wrapper.find('.sn-pro-layout__strip-actions');
+    expect(actions.exists()).toBe(true);
+    expect(actions.find('.lang-switch').exists()).toBe(true);
+    expect(actions.find('.sn-pro-layout__strip-gear').exists()).toBe(true);
+  });
+
   it('should render the tab bar and forward select/close events when showTabs is set', async () => {
     const wrapper = mountLayout({ showTabs: true, tabs, activeKey: 'user' });
     const tabbar = wrapper.findComponent({ name: 'SnProTabbar' });

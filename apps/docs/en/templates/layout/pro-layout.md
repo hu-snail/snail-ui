@@ -186,7 +186,7 @@ compositions.
 | Slot      | Description                                            |
 | --------- | ------------------------------------------------------ |
 | default   | Routed content (`<RouterView />`)                      |
-| `actions` | Header right-hand actions (user menu, theme switch, …) |
+| `actions` | Actions area: header right side in side/top/mix, the strip's right side in headerless dual (language switch, user menu, …) |
 | `logo`    | Full brand replacement                                 |
 | `footer`  | Footer under the content area                          |
 

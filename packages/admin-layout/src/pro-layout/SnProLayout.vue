@@ -401,16 +401,18 @@ function onTabClose(key: string): void {
       />
       <section class="sn-pro-layout__body">
         <SnProLayoutStrip
-          v-if="showStrip || showSettings"
+          v-if="showStrip || showSettings || $slots.actions"
           :show-toggle="stripToggleVisible"
           :toggle-label="collapseLabel"
           :breadcrumb="breadcrumbItems"
           @toggle-collapse="toggleCollapsed"
         >
-          <!-- dual has no SnProHeader, so its settings gear lives here —
-               every shape keeps a settings entry (the strip renders
-               whenever showSettings, even without toggle/breadcrumb). -->
-          <template v-if="showSettings" #actions>
+          <!-- dual has no SnProHeader, so its settings gear AND the host
+               actions slot (language switch, user menu, …) live here —
+               every shape keeps a full actions area (gear first, matching
+               the header's order), and the strip renders whenever
+               showSettings or the slot has content. -->
+          <template v-if="showSettings || $slots.actions" #actions>
             <button
               type="button"
               class="sn-pro-layout__strip-gear"
@@ -420,6 +422,7 @@ function onTabClose(key: string): void {
             >
               <Settings :size="16" aria-hidden="true" />
             </button>
+            <slot name="actions" />
           </template>
         </SnProLayoutStrip>
         <SnProTabbar

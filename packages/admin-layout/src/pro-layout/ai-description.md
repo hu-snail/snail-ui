@@ -53,12 +53,13 @@ side  [Sider(brand+menu)] [header(toggle+breadcrumb+actions+gear) / content / fo
 top   [header(brand+horizontal menu+actions+gear)] [strip(breadcrumb)] / content / footer
 mix   [header(brand+horizontal top menu+actions+gear)]
       [Sider(active top children, no brand)] [strip(toggle+breadcrumb) / content / footer]
-dual  [rail(top icons, brand mark)] [Sider(children, no brand)] [strip(toggle+breadcrumb+gear) / content / footer]
+dual  [rail(top icons, brand mark)] [Sider(children, no brand)] [strip(toggle+breadcrumb+gear+host actions) / content / footer]
 ```
 
 mix / dual 下当前一级无可见子级时，二级栏自动消失（vben 行为）。
-设置齿轮在每个形态都可达：side/top/mix 在页头，dual（无页头）在条带右侧，
-且 `showSettings` 时条带保证渲染（即使无折叠钮与面包屑）。
+设置齿轮与宿主 actions 插槽在每个形态都可达：side/top/mix 在页头，
+dual（无页头）在条带右侧（齿轮在前、宿主 actions 在后，顺序与页头一致），
+且条带在 `showSettings` 或 actions 插槽有内容时保证渲染。
 
 ## 菜单来源（两条合法路径）
 
