@@ -62,8 +62,9 @@ import '@snui/admin-layout/styles'; // 仅布局壳类；token 已由 @snui/vue-
 
 两条纯受控的 additive 能力，宿主不接就完全不渲染：
 
-- **设置抽屉**（`show-settings`）——页头齿轮打开偏好面板：四形态卡片、
-  亮暗模式、主色色板、标签栏样式。`mode` / `primaryId` / `tabType` 任一省略
+- **设置抽屉**（`show-settings`）——齿轮打开偏好面板：四形态卡片、
+  亮暗模式、主色色板、标签栏样式。齿轮在每个形态都可达（side/top/mix 在页头，
+  dual 无页头则放条带右侧）；`mode` / `primaryId` / `tabType` 任一省略
   即隐藏对应分区；文案经 `settingsLabels` 本地化，结果只通过
   `update:mode` / `update:primaryId` / `update:tabType` 事件交还宿主持久化；
 - **访问路由标签栏**（`show-tabs`）——`tabs: { key, label, closable? }[]`

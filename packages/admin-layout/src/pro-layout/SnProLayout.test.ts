@@ -180,6 +180,21 @@ describe('SnProLayout · settings + tabs', () => {
     expect(settings.props('tabType')).toBeUndefined(); // tab section hidden while tabs are off
   });
 
+  it('should open the settings drawer from the strip gear in dual (no header)', async () => {
+    // activeKey under a top group → the secondary column exists → strip shows
+    const wrapper = mountLayout({ layout: 'dual', activeKey: 'user', showSettings: true, settingsLabel: '偏好' });
+    expect(wrapper.find('.sn-pro-header__gear').exists()).toBe(false);
+    await wrapper.find('.sn-pro-layout__strip-gear').trigger('click');
+    expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(true);
+  });
+
+  it('should keep the strip gear reachable in dual even without toggle or breadcrumb', async () => {
+    // no collapsible column + no breadcrumb → the strip would hide; showSettings keeps it
+    const wrapper = mountLayout({ layout: 'dual', showCollapse: false, breadcrumb: [], showSettings: true });
+    await wrapper.find('.sn-pro-layout__strip-gear').trigger('click');
+    expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(true);
+  });
+
   it('should render the tab bar and forward select/close events when showTabs is set', async () => {
     const wrapper = mountLayout({ showTabs: true, tabs, activeKey: 'user' });
     const tabbar = wrapper.findComponent({ name: 'SnProTabbar' });

@@ -26,6 +26,7 @@
  *   </SnProLayout>
  */
 import { computed, ref } from 'vue';
+import { Settings } from 'lucide-vue-next';
 import type { SnMenuOption } from '@snui/vue-web';
 import SnProSider from '../pro-sider/SnProSider.vue';
 import SnProHeader from '../pro-header/SnProHeader.vue';
@@ -400,12 +401,27 @@ function onTabClose(key: string): void {
       />
       <section class="sn-pro-layout__body">
         <SnProLayoutStrip
-          v-if="showStrip"
+          v-if="showStrip || showSettings"
           :show-toggle="stripToggleVisible"
           :toggle-label="collapseLabel"
           :breadcrumb="breadcrumbItems"
           @toggle-collapse="toggleCollapsed"
-        />
+        >
+          <!-- dual has no SnProHeader, so its settings gear lives here —
+               every shape keeps a settings entry (the strip renders
+               whenever showSettings, even without toggle/breadcrumb). -->
+          <template v-if="showSettings" #actions>
+            <button
+              type="button"
+              class="sn-pro-layout__strip-gear"
+              :aria-label="settingsLabel"
+              :title="settingsLabel"
+              @click="settingsVisible = true"
+            >
+              <Settings :size="16" aria-hidden="true" />
+            </button>
+          </template>
+        </SnProLayoutStrip>
         <SnProTabbar
           v-if="showTabs"
           :tabs="tabs"
@@ -486,5 +502,25 @@ function onTabClose(key: string): void {
   padding: var(--sn-web-spacing-4) var(--sn-web-spacing-6);
   border-top: 1px solid var(--sn-web-color-border-subtle);
   background-color: var(--sn-web-color-background-elevated);
+}
+
+/* dual's settings gear — same surface as SnProHeader's gear (this shape has
+ * no header, so the gear lives in the strip's actions area). */
+.sn-pro-layout__strip-gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--sn-web-radius-md);
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  cursor: pointer;
+}
+
+.sn-pro-layout__strip-gear:hover {
+  background-color: var(--sn-web-color-background-subtle);
 }
 </style>

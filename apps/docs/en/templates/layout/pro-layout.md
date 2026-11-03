@@ -65,9 +65,11 @@ Bind `v-model:layout` to a host state — a settings panel can switch freely:
 
 Two controlled, purely additive capabilities — nothing renders unless wired:
 
-- **Settings drawer** (`show-settings`) — the header gear opens a preferences
+- **Settings drawer** (`show-settings`) — the gear opens a preferences
   panel: four layout-shape cards, light/dark mode, primary-color swatches and
-  the tab-bar style. Omitting `mode` / `primaryId` / `tabType` hides that
+  the tab-bar style. The gear is reachable in every shape (header for
+  side/top/mix; the strip's right side in headerless dual). Omitting `mode` /
+  `primaryId` / `tabType` hides that
   section; copy is localized through `settingsLabels`, and choices only leave
   the package via `update:mode` / `update:primaryId` / `update:tabType` for the
   host to persist;

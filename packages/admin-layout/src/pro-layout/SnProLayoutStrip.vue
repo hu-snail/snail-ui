@@ -48,6 +48,11 @@ const emit = defineEmits<{
         {{ item }}
       </SnBreadcrumbItem>
     </SnBreadcrumb>
+    <!-- Right-aligned actions area for headerless shapes (dual hosts its
+         settings gear here — the only shape without an SnProHeader). -->
+    <div v-if="$slots.actions" class="sn-pro-layout__strip-actions">
+      <slot name="actions" />
+    </div>
   </div>
 </template>
 
@@ -76,6 +81,13 @@ const emit = defineEmits<{
   background: transparent;
   color: var(--sn-web-color-text-secondary);
   cursor: pointer;
+}
+
+.sn-pro-layout__strip-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sn-web-spacing-2);
+  margin-left: auto;
 }
 
 .sn-pro-layout__strip-toggle:hover {

@@ -49,14 +49,16 @@ AI 修改本组件时，不得引入上述右列任何能力——那会把业�
 ## 形态几何
 
 ```text
-side  [Sider(brand+menu)] [header(toggle+breadcrumb+actions) / content / footer]
-top   [header(brand+horizontal menu+actions)] [strip(breadcrumb)] / content / footer
-mix   [header(brand+horizontal top menu+actions)]
+side  [Sider(brand+menu)] [header(toggle+breadcrumb+actions+gear) / content / footer]
+top   [header(brand+horizontal menu+actions+gear)] [strip(breadcrumb)] / content / footer
+mix   [header(brand+horizontal top menu+actions+gear)]
       [Sider(active top children, no brand)] [strip(toggle+breadcrumb) / content / footer]
-dual  [rail(top icons, brand mark)] [Sider(children, no brand)] [strip(toggle+breadcrumb) / content / footer]
+dual  [rail(top icons, brand mark)] [Sider(children, no brand)] [strip(toggle+breadcrumb+gear) / content / footer]
 ```
 
 mix / dual 下当前一级无可见子级时，二级栏自动消失（vben 行为）。
+设置齿轮在每个形态都可达：side/top/mix 在页头，dual（无页头）在条带右侧，
+且 `showSettings` 时条带保证渲染（即使无折叠钮与面包屑）。
 
 ## 菜单来源（两条合法路径）
 
