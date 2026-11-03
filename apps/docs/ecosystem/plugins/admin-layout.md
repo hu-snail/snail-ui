@@ -1,6 +1,6 @@
-# 中后台布局 SnProLayout
+# 中后台布局 @snui/admin-layout
 
-把中后台的**布局壳**做成一个可安装的模板：logo、侧栏、顶栏、内容区、页脚的位置与几何、四种布局形态、折叠状态——全部装进一个 `SnProLayout`。已在使用 `@snui/vue-web` 的项目安装后，用自己的 `layout.vue` 换掉即可。
+把中后台的**布局壳**做成一个可安装的官方插件包：logo、侧栏、顶栏、内容区、页脚的位置与几何、四种布局形态、折叠状态——全部装进 `SnProLayout`。已在使用 `@snui/vue-web` 的项目安装后，用自己的 `layout.vue` 换掉即可。
 
 > 平台：`Web` · 包：`@snui/admin-layout` · 状态：`@experimental`
 

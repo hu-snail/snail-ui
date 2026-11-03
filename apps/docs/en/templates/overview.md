@@ -36,7 +36,7 @@ collapse state all live inside one `SnProLayout`. Projects already using
 
 | Template                                   | Components                                                 | Platform | What it solves                                                                                   |
 | ------------------------------------------ | ---------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
-| [Admin layout](/en/templates/admin-layout/pro-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` | Web      | Admin shell: four switchable shapes, static-route or backend menus, breadcrumb and collapse       |
+| [Admin layout](/en/ecosystem/plugins/admin-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` | Web      | Admin shell: four switchable shapes, static-route or backend menus, breadcrumb and collapse       |
 
 It **handles layout only — no business features**: auth, requests, stores and
 route registration stay in the host.

@@ -1,9 +1,6 @@
-# Admin Layout SnProLayout
+# Admin Layout @snui/admin-layout
 
-An installable **layout shell** for admin dashboards: the logo, sider, top
-bar, content area, footer placement and geometry, four layout shapes and
-collapse state — all packed into one `SnProLayout`. Projects already using
-`@snui/vue-web` install the package and replace their own `layout.vue`.
+The admin **layout shell** ships as an official ecosystem plugin: the logo, sider, top bar, content area, footer placement and geometry, four layout shapes and collapse state — all packed into `SnProLayout`. Projects already using `@snui/vue-web` install the package and replace their own `layout.vue`.
 
 > Platform: `Web` · Package: `@snui/admin-layout` · Status: `@experimental`
 
