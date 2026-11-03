@@ -58,6 +58,20 @@ import '@snui/admin-layout/styles'; // 仅布局壳类；token 已由 @snui/vue-
 
 <Demo name="pro-layout-web-switch" description="四种形态共用同一份菜单数据，切换只动几何。" />
 
+## 设置抽屉与标签栏
+
+两条纯受控的 additive 能力，宿主不接就完全不渲染：
+
+- **设置抽屉**（`show-settings`）——页头齿轮打开偏好面板：四形态卡片、
+  亮暗模式、主色色板、标签栏样式。`mode` / `primaryId` / `tabType` 任一省略
+  即隐藏对应分区；文案经 `settingsLabels` 本地化，结果只通过
+  `update:mode` / `update:primaryId` / `update:tabType` 事件交还宿主持久化；
+- **访问路由标签栏**（`show-tabs`）——`tabs: { key, label, closable? }[]`
+  由宿主按访问路由维护（固定签传 `closable: false`），点击 / 关闭分别抛
+  `tab-select` / `tab-close`，导航与关闭后的路由收敛都在宿主。
+
+<Demo name="pro-layout-web-prefs" description="设置抽屉（形态 / 亮暗 / 主色 / 标签样式）+ 访问路由标签栏，固定签不可关。" />
+
 ## 菜单来源
 
 两种来源，最终都是同一份 `SnMenuOption[]`，布局对来源无感知：
@@ -110,8 +124,9 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 </template>
 ```
 
-品牌区、顶栏操作区、页脚都有插槽（`#logo` / `#actions` / `#footer`）；四个子
-组件（`SnProLogo` / `SnProSider` / `SnProHeader`）也可单独引入自行编排。
+品牌区、顶栏操作区、页脚都有插槽（`#logo` / `#actions` / `#footer`）；六个子
+组件（`SnProLogo` / `SnProSider` / `SnProHeader` / `SnProTabbar` /
+`SnProSettings`）也可单独引入自行编排。
 
 ## API
 
@@ -132,6 +147,15 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 | breadcrumb           | `string[]`                              | 自动推导  | 显式面包屑；省略时按菜单路径推导         |
 | accordion            | `boolean`                               | `false`   | 手风琴展开                               |
 | expandedKeys         | `(string \| number)[]`                  | —         | 受控展开；省略时菜单自持                 |
+| showSettings         | `boolean`                               | `false`   | 页头显示设置齿轮                         |
+| settingsLabel        | `string`                                | 内置中文  | 齿轮的无障碍标签                         |
+| settingsLabels       | `Partial<SnProSettingsLabels>`          | 内置中文  | 设置面板文案（面板 i18n 由宿主传入）     |
+| mode                 | `'light' \| 'dark'`                     | —         | 亮暗模式，`v-model:mode`；省略隐藏该分区 |
+| primaryId            | `string`                                | —         | 主色预设 id，`v-model:primaryId`；省略隐藏该分区 |
+| primaryColors        | `SnProPrimaryColor[]`                   | `[]`      | 主色色板（`{ id, color }`）              |
+| showTabs             | `boolean`                               | `false`   | 显示访问路由标签栏                       |
+| tabs                 | `SnProTabItem[]`                        | `[]`      | 标签列表（宿主维护；`closable: false` 为固定签） |
+| tabType              | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'` | 标签样式，`v-model:tabType` 可从设置面板切换 |
 
 ### Events
 
@@ -141,6 +165,11 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 | `update:layout`      | `(mode)`                          | `v-model:layout`                       |
 | `update:collapsed`   | `(collapsed)`                     | `v-model:collapsed`                    |
 | `update:expandedKeys`| `(keys)`                          | 受控展开同步                           |
+| `update:mode`        | `(mode)`                          | 设置面板亮暗切换                       |
+| `update:primaryId`   | `(id)`                            | 设置面板主色切换                       |
+| `update:tabType`     | `(type)`                          | 设置面板标签样式切换                   |
+| `tab-select`         | `(key)`                           | 标签点击——**导航由宿主实现**           |
+| `tab-close`          | `(key)`                           | 标签关闭——**关闭后的路由收敛由宿主实现** |
 
 ### Slots
 
@@ -158,6 +187,8 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 | `SnProLogo`   | `logo / title / mark / collapsed`                       | 品牌区；`#icon` 换标、默认插槽整替 |
 | `SnProSider`  | `menus / activeKey / collapsed / inverted / showBrand`  | 左侧栏；透传 SnMenu 事件         |
 | `SnProHeader` | `showBrand / menus / activeKey / breadcrumb / showCollapse` | 顶栏；横向菜单优先于面包屑   |
+| `SnProTabbar` | `tabs / activeKey / type`                               | 标签栏；基于 SnTabs 五样式    |
+| `SnProSettings` | `show / layout / mode / primaryId / primaryColors / tabType / labels` | 偏好抽屉；受控 props 省略即隐藏分区 |
 
 ## 主题与暗色
 
@@ -169,5 +200,6 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 ## AI 契约
 
 机器可读契约见包内 `src/pro-layout/ai-description.md`（含 AI Patch Boundary：
-`layout / menus / activeKey / collapsed / breadcrumb / 品牌三件套` 可 patch，
-导航、鉴权、请求永远 readonly-不可 patch）。
+`layout / menus / activeKey / collapsed / breadcrumb / 品牌三件套 / showSettings 系 /
+showTabs 系` 可 patch，导航、标签关闭后的路由收敛、真实换肤、鉴权、请求永远
+readonly-不可 patch）。
