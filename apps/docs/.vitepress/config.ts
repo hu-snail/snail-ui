@@ -41,6 +41,8 @@ const nav = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
+  { text: '生态插件', link: '/ecosystem/overview' },
+  { text: 'Echarts图表', link: '/echarts/overview' },
   { text: '模板', link: '/templates/overview' },
 ];
 
@@ -387,9 +389,25 @@ const sidebar = {
         { text: '模型配置', link: '/templates/ai/model-config' },
       ],
     },
+  ],
+  // 生态插件 — 独立于核心组件库的官方插件包，每个插件一页（文档 + 演示）。
+  '/ecosystem/': [
+    {
+      text: '概览',
+      items: [{ text: '生态插件总览', link: '/ecosystem/overview' }],
+    },
     {
       text: '布局',
-      items: [{ text: '中后台布局 SnProLayout', link: '/templates/layout/pro-layout' }],
+      items: [{ text: '中后台布局 @snui/admin-layout', link: '/ecosystem/plugins/admin-layout' }],
+    },
+  ],
+  '/echarts/': [
+    {
+      text: 'Echarts 图表',
+      items: [
+        { text: '图表总览', link: '/echarts/overview' },
+        { text: '使用文档', link: '/echarts/usage' },
+      ],
     },
   ],
 };
@@ -401,6 +419,8 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
+  { text: 'Ecosystem', link: '/en/ecosystem/overview' },
+  { text: 'ECharts', link: '/en/echarts/overview' },
   { text: 'Templates', link: '/en/templates/overview' },
 ];
 
@@ -720,9 +740,28 @@ const enSidebar = {
         { text: 'Model config', link: '/en/templates/ai/model-config' },
       ],
     },
+  ],
+  // Ecosystem plugins — official plugin packages outside the core component
+  // library, one page per plugin (docs + live demos).
+  '/en/ecosystem/': [
+    {
+      text: 'Overview',
+      items: [{ text: 'Ecosystem overview', link: '/en/ecosystem/overview' }],
+    },
     {
       text: 'Layout',
-      items: [{ text: 'Admin layout SnProLayout', link: '/en/templates/layout/pro-layout' }],
+      items: [
+        { text: 'Admin layout @snui/admin-layout', link: '/en/ecosystem/plugins/admin-layout' },
+      ],
+    },
+  ],
+  '/en/echarts/': [
+    {
+      text: 'ECharts',
+      items: [
+        { text: 'Overview', link: '/en/echarts/overview' },
+        { text: 'Usage', link: '/en/echarts/usage' },
+      ],
     },
   ],
 };

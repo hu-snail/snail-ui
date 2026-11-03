@@ -25,6 +25,7 @@ export const nav: DocsNavItem[] = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
+  { text: 'Echarts图表', link: '/echarts/overview' },
   { text: '模板', link: '/templates/overview' },
 ];
 
@@ -35,5 +36,6 @@ export const enNav: DocsNavItem[] = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
+  { text: 'ECharts', link: '/en/echarts/overview' },
   { text: 'Templates', link: '/en/templates/overview' },
 ];

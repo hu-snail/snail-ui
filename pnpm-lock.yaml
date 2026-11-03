@@ -100,6 +100,9 @@ importers:
       '@snui/ai':
         specifier: 'workspace:'
         version: link:../../packages/ai
+      '@snui/echarts':
+        specifier: 'workspace:'
+        version: link:../../packages/echarts
       '@snui/style-packs':
         specifier: 'workspace:'
         version: link:../../packages/style-packs
@@ -115,6 +118,9 @@ importers:
       '@snui/vue-web':
         specifier: 'workspace:'
         version: link:../../packages/vue-web
+      echarts:
+        specifier: ^5.6.0
+        version: 5.6.0
       lucide-vue-next:
         specifier: ^0.460.0
         version: 0.460.0(vue@3.5.43(typescript@5.9.3))

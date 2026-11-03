@@ -4,6 +4,9 @@ import '@snui/vue-web/styles';
 // @snui/admin-layout ships shell classes only — the token layer comes from
 // @snui/vue-web/styles above, so this import must stay after it.
 import '@snui/admin-layout/styles';
+// @snui/echarts ships the DOM-tooltip styles only, all token-driven; the token
+// layer still comes from @snui/vue-web/styles above, so this stays after it.
+import '@snui/echarts/styles';
 import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';

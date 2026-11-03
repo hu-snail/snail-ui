@@ -16,11 +16,13 @@
   "dependencies": {
     "@snui/ai": "workspace:",
     "@snui/admin-layout": "workspace:",
+    "@snui/echarts": "workspace:",
     "@snui/style-packs": "workspace:",
     "@snui/templates": "workspace:",
     "@snui/tokens": "workspace:",
     "@snui/uni": "workspace:",
     "@snui/vue-web": "workspace:",
+    "echarts": "^5.6.0",
     "lucide-vue-next": "^0.460.0",
     "shiki": "2.5.0"
   },
