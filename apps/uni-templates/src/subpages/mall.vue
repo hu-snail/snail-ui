@@ -331,6 +331,9 @@ function onTabChange(payload: { value: number | string }): void {
       :default-page-size="4"
       load-more-no-more-text="已经到底啦 · 下拉刷新探索更多身边超值好店"
       custom-style="background-color: #f7f7f7;"
+      refresher-background="#ffc300"
+      refresher-text-color="#111111"
+      refresher-icon-color="#111111"
       empty-text="附近暂无可抢优惠"
       @query="query"
     >
