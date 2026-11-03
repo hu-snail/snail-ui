@@ -5,6 +5,7 @@ import { i18n } from './i18n';
 import { createAppRouter } from './router';
 import { setupRouterGuard } from './router/guard';
 import '@snui/vue-web/styles';
+import '@snui/admin-layout/styles';
 import './styles/index.css';
 
 const app = createApp(App);

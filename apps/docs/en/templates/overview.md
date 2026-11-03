@@ -27,6 +27,20 @@ Templates currently have a single category, the **AI Suite**: it is split into o
 
 Web and uni-app differences are no longer separate pages: each template page documents them in its "End differences" section, with platform tags marking the available range.
 
+## Layout
+
+The admin layout shell ships as its own package `@snui/admin-layout` (`@experimental`):
+logo, sider, top bar, four layout shapes (`side` / `top` / `mix` / `dual`) and
+collapse state all live inside one `SnProLayout`. Projects already using
+`@snui/vue-web` install it and replace their own `layout.vue`.
+
+| Template                                   | Components                                                 | Platform | What it solves                                                                                   |
+| ------------------------------------------ | ---------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| [Admin layout](/en/templates/admin-layout/pro-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` | Web      | Admin shell: four switchable shapes, static-route or backend menus, breadcrumb and collapse       |
+
+It **handles layout only — no business features**: auth, requests, stores and
+route registration stay in the host.
+
 ## The unified template and its on-demand sub-templates
 
 Templates are **assembled**: the transcript, the input area and the model config are three independent blocks, and scheduling comes from the turn engine. Both page templates share one engine, so their queueing, abort and streaming behave identically:

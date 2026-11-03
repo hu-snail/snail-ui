@@ -387,6 +387,10 @@ const sidebar = {
         { text: '模型配置', link: '/templates/ai/model-config' },
       ],
     },
+    {
+      text: '布局',
+      items: [{ text: '中后台布局 SnProLayout', link: '/templates/layout/pro-layout' }],
+    },
   ],
 };
 
@@ -715,6 +719,10 @@ const enSidebar = {
         { text: 'Message list', link: '/en/templates/ai/message-list' },
         { text: 'Model config', link: '/en/templates/ai/model-config' },
       ],
+    },
+    {
+      text: 'Layout',
+      items: [{ text: 'Admin layout SnProLayout', link: '/en/templates/layout/pro-layout' }],
     },
   ],
 };

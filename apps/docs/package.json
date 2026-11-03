@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@snui/ai": "workspace:",
+    "@snui/admin-layout": "workspace:",
     "@snui/style-packs": "workspace:",
     "@snui/templates": "workspace:",
     "@snui/tokens": "workspace:",

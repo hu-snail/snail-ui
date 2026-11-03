@@ -56,8 +56,5 @@ export const useAppStore = defineStore('app', {
       this.locale = locale;
       persist(LOCALE_KEY, locale);
     },
-    toggleSider(): void {
-      this.siderCollapsed = !this.siderCollapsed;
-    },
   },
 });

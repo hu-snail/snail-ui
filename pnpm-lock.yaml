@@ -45,6 +45,9 @@ importers:
       '@alova/mock':
         specifier: ^2.0.22
         version: 2.0.22(alova@3.5.5)
+      '@snui/admin-layout':
+        specifier: 'workspace:'
+        version: link:../../packages/admin-layout
       '@snui/tokens':
         specifier: 'workspace:'
         version: link:../../packages/tokens
@@ -91,6 +94,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@snui/admin-layout':
+        specifier: 'workspace:'
+        version: link:../../packages/admin-layout
       '@snui/ai':
         specifier: 'workspace:'
         version: link:../../packages/ai
@@ -240,6 +246,43 @@ importers:
         specifier: 5.2.8
         version: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
 
+  packages/admin-layout:
+    dependencies:
+      '@snui/vue-web':
+        specifier: 'workspace:'
+        version: link:../vue-web
+      lucide-vue-next:
+        specifier: ^0.460.0
+        version: 0.460.0(vue@3.5.43(typescript@5.9.3))
+      vue:
+        specifier: ^3.5.43
+        version: 3.5.43(typescript@5.9.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^5.2.1
+        version: 5.2.4(vite@6.4.3(@types/node@22.20.5)(terser@5.51.2))(vue@3.5.43(typescript@5.9.3))
+      '@vue/test-utils':
+        specifier: ^2.4.6
+        version: 2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3))
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.5
+      happy-dom:
+        specifier: ^15.11.7
+        version: 15.11.7
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vite:
+        specifier: ^6.4.3
+        version: 6.4.3(@types/node@22.20.5)(terser@5.51.2)
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)(terser@5.51.2)
+      vue-tsc:
+        specifier: ^2.2.0
+        version: 2.2.12(typescript@5.9.3)
+
   packages/ai:
     dependencies:
       '@snui/cli':
@@ -284,14 +327,11 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)(terser@5.51.2)
 
-  packages/layout:
+  packages/echarts:
     dependencies:
       '@snui/vue-web':
         specifier: 'workspace:'
         version: link:../vue-web
-      lucide-vue-next:
-        specifier: ^0.460.0
-        version: 0.460.0(vue@3.5.43(typescript@5.9.3))
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@5.9.3)
@@ -302,6 +342,9 @@ importers:
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3))
+      echarts:
+        specifier: ^5.6.0
+        version: 5.6.0
       eslint:
         specifier: ^9.17.0
         version: 9.39.5
@@ -3023,6 +3066,9 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
+  echarts@5.6.0:
+    resolution: {integrity: sha512-oTbVTsXfKuEhxftHqL5xprgLoc0k7uScAwtryCgWF6hPYFLRwOUHiFmHGCBKP5NPFNkDVopOieyUqYGH8Fa3kA==}
+
   editorconfig@3.0.2:
     resolution: {integrity: sha512-T0ix8GhtxyKVfUFEcvdNDt3YGqlwkFHbD4/5bgFUDgFmxhI/cSRAeJ87/Sz//Cq8Eam6JX/e23RkoFO71P7aAA==}
     engines: {node: '>=20'}
@@ -4450,6 +4496,9 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
+  tslib@2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+
   turbo@2.11.7:
     resolution: {integrity: sha512-RhXHbqfvY6o3xt/zSHCwSNwLrZlXiqHzewi4eAj9PtZ1T1CqgMJ2yIDb7SKPTG9IikTm925mfzL6hldQVdyNWw==}
     hasBin: true
@@ -4881,6 +4930,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zrender@5.6.1:
+    resolution: {integrity: sha512-OFXkDJKcrlx5su2XbzJvj/34Q3m6PvyCZkVPHGYpcCJ52ek4U/ymZyfuV1nKE23AyBJ51E/6Yr0mhZ7xGTO4ag==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -7892,6 +7944,11 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
+  echarts@5.6.0:
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.6.1
+
   editorconfig@3.0.2:
     dependencies:
       '@one-ini/wasm': 0.2.1
@@ -9372,6 +9429,8 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
+  tslib@2.3.0: {}
+
   turbo@2.11.7:
     optionalDependencies:
       '@turbo/darwin-64': 2.11.7
@@ -9786,5 +9845,9 @@ snapshots:
   yaml@1.10.3: {}
 
   yocto-queue@0.1.0: {}
+
+  zrender@5.6.1:
+    dependencies:
+      tslib: 2.3.0
 
   zwitch@2.0.4: {}

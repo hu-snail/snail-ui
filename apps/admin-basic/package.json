@@ -2,7 +2,7 @@
   "name": "@snui/admin-basic",
   "version": "0.1.0",
   "private": true,
-  "description": "AUI Admin Basic — 中后台管理启动模板. @snui/vue-web (auto-imported via SnUIResolver) + alova request layer + @alova/mock service + vue-router dynamic routes + pinia + vue-i18n (zh/en) + dark/light & primary-color theming.",
+  "description": "AUI Admin Basic — 中后台管理启动模板. @snui/admin-layout layout shell (SnProLayout) + @snui/vue-web (auto-imported via SnUIResolver) + alova request layer + @alova/mock service + vue-router dynamic routes + pinia + vue-i18n (zh/en) + dark/light & primary-color theming.",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@alova/mock": "^2.0.22",
+    "@snui/admin-layout": "workspace:",
     "@snui/tokens": "workspace:",
     "@snui/vue-web": "workspace:",
     "alova": "^3.5.5",
