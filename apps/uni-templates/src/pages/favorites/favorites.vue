@@ -10,6 +10,7 @@ import SnEmpty from '@snui/uni-src/components/sn-empty/sn-empty.vue';
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import { likedIds, TEMPLATES } from '../../common/templates';
 import { useTplTheme } from '../../common/theme';
+import TplTabbar from '../../common/tpl-tabbar.vue';
 
 const { isDark } = useTplTheme();
 
@@ -19,7 +20,8 @@ function open(id: string): void {
   uni.navigateTo({ url: `/subpages/${id}` });
 }
 function goHome(): void {
-  uni.switchTab({ url: '/pages/index/index' });
+  // 原生 tabBar 已退役：tab 页之间是平级跳转，redirectTo 不留历史栈。
+  uni.redirectTo({ url: '/pages/index/index' });
 }
 </script>
 
@@ -46,6 +48,7 @@ function goHome(): void {
         </view>
       </view>
     </view>
+    <TplTabbar :active="2" />
   </view>
 </template>
 

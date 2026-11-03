@@ -6,6 +6,7 @@
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import { useTplTheme } from '../../common/theme';
+import TplTabbar from '../../common/tpl-tabbar.vue';
 
 const { isDark } = useTplTheme();
 
@@ -50,6 +51,7 @@ function about(): void {
         <SnCell title="关于模板库" label="组件与模板的适配说明" prefix-icon="sparkles" is-link clickable @click="about" />
       </view>
     </view>
+    <TplTabbar :active="3" />
   </view>
 </template>
 

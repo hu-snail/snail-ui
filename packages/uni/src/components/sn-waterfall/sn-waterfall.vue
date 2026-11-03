@@ -97,7 +97,7 @@ import {
   useSlots,
 } from 'vue';
 import type { VNodeChild } from 'vue';
-import { Comment, Fragment, isVNode } from 'vue';
+import { Fragment } from 'vue';
 import {
   allocateWaterfallColumns,
   parsePx,
@@ -169,6 +169,23 @@ const slots = useSlots();
  */
 const ItemNode = (renderProps: { node: VNodeChild }): VNodeChild => renderProps.node;
 
+/**
+ * Is this a vnode? (Vue 3 marks every vnode with `__v_isVNode`.)
+ *
+ * `isVNode` cannot be imported here: the mini-program runtime
+ * (`@dcloudio/uni-mp-vue`) ships a trimmed Vue build that does not export it,
+ * so importing the helper fails the MP build ("`isVNode` is not exported by
+ * …vue.runtime.esm.js"). The marker it tests is present in every build
+ * (Vue's own `isVNode` is exactly `value.__v_isVNode === true`).
+ */
+function isVNodeLike(value: unknown): boolean {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    (value as { __v_isVNode?: unknown }).__v_isVNode === true
+  );
+}
+
 function flattenSlotChildren(children: unknown): VNodeChild[] {
   const out: VNodeChild[] = [];
   const walk = (input: unknown): void => {
@@ -181,13 +198,15 @@ function flattenSlotChildren(children: unknown): VNodeChild[] {
     }
     // `<template v-for>` compiles to a Fragment vnode holding the repeated
     // items; recurse so data-driven item lists work.
-    if (isVNode(input) && input.type === Fragment) {
-      walk(input.children);
+    if (isVNodeLike(input) && (input as { type?: unknown }).type === Fragment) {
+      walk((input as { children?: unknown }).children);
       return;
     }
-    // A `v-if="false"` inside the slot leaves a Comment placeholder behind;
-    // it must not become an item box (each box is placed into a column).
-    if (isVNode(input) && input.type === Comment) {
+    // Any other symbol-typed vnode is a placeholder (`v-if="false"` leaves a
+    // Comment node behind, and `Comment` is also not exported by the MP
+    // runtime — see `isVNodeLike`). Those must not become item boxes: every
+    // box gets placed into a column.
+    if (isVNodeLike(input) && typeof (input as { type?: unknown }).type === 'symbol') {
       return;
     }
     out.push(input as VNodeChild);
@@ -222,7 +241,7 @@ const entryPool = new Map<string, WaterfallEntry>();
 let pendingCount = 0;
 
 function entryKeyOf(node: VNodeChild, index: number): string {
-  const key = isVNode(node) ? node.key : null;
+  const key = isVNodeLike(node) ? (node as { key?: unknown }).key : null;
   // Index fallback keeps keyless slots working; the `#`/`k:` prefixes keep an
   // index from colliding with a user key of the same text.
   return key === null || key === undefined ? `#${index}` : `k:${String(key)}`;

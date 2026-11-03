@@ -19,6 +19,7 @@ import SnSticky from '@snui/uni-src/components/sn-sticky/sn-sticky.vue';
 import SnTabbar from '@snui/uni-src/components/sn-tabbar/sn-tabbar.vue';
 import SnTabbarItem from '@snui/uni-src/components/sn-tabbar/sn-tabbar-item.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
+import SnWaterfall from '@snui/uni-src/components/sn-waterfall/sn-waterfall.vue';
 import {
   AppsIcon,
   BedIcon,
@@ -292,14 +293,6 @@ function query(pageNo: number, pageSize: number): void {
     );
   }, 300);
 }
-
-/** 真瀑布流：按奇偶拆双列，两列高度互不牵制。 */
-const feedColumns = computed<FeedCard[][]>(() => {
-  const left: FeedCard[] = [];
-  const right: FeedCard[] = [];
-  list.value.forEach((card, i) => (i % 2 === 0 ? left : right).push(card));
-  return [left, right];
-});
 
 /* ── 交互 ─────────────────────────────────────────────────────────────── */
 function openGoods(): void {
@@ -578,77 +571,75 @@ function onTabChange(payload: { value: number | string }): void {
           </scroll-view>
         </SnSticky>
 
-        <!-- 双列瀑布商品流 -->
-        <view class="mall-waterfall">
-          <view v-for="(column, col) in feedColumns" :key="col" class="mall-waterfall__col">
-            <view v-for="card in column" :key="card.id" class="mall-card" @tap="openGoods">
-              <view class="mall-card__media">
-                <SnImg :src="card.img" mode="aspectFill" width="100%" height="100%" lazy-load />
-                <view v-if="card.corner" class="mall-card__corner">
-                  <text class="mall-card__corner-text">{{ card.corner }}</text>
-                </view>
+        <!-- 双列瀑布商品流（sn-waterfall：最短列优先放置，追加不挪列） -->
+        <SnWaterfall class="mall-waterfall" :columns="2" :column-gap="16" :row-gap="16">
+          <view v-for="card in list" :key="card.id" class="mall-card" @tap="openGoods">
+            <view class="mall-card__media">
+              <SnImg :src="card.img" mode="aspectFill" width="100%" height="100%" lazy-load />
+              <view v-if="card.corner" class="mall-card__corner">
+                <text class="mall-card__corner-text">{{ card.corner }}</text>
+              </view>
+              <view
+                class="mall-card__deliver"
+                :class="{ 'mall-card__deliver--amber': card.deliverAmber }"
+              >
+                <SnIcon :icon="Clock" size="22rpx" color="#ffffff" />
+                <text class="mall-card__deliver-text">{{ card.deliver }}</text>
+              </view>
+            </view>
+            <view class="mall-card__body">
+              <text class="mall-card__title">{{ card.title }}</text>
+              <text v-if="card.sub" class="mall-card__sub">{{ card.sub }}</text>
+              <view v-if="card.quote" class="mall-card__quote">
+                <SnIcon :icon="QuoteIcon" size="24rpx" color="#ff8f00" />
+                <text class="mall-card__quote-text">{{ card.quote }}</text>
+              </view>
+              <view v-if="card.rating" class="mall-card__rating">
+                <SnIcon :icon="Star" size="26rpx" color="#ffc300" />
+                <text class="mall-card__rating-score">{{ card.rating }}</text>
+                <text class="mall-card__rating-sold">{{ card.sold }}</text>
+              </view>
+              <view v-if="card.badges.length" class="mall-card__badges">
                 <view
-                  class="mall-card__deliver"
-                  :class="{ 'mall-card__deliver--amber': card.deliverAmber }"
+                  v-for="b in card.badges"
+                  :key="b.text"
+                  class="mall-card__badge"
+                  :class="`mall-card__badge--${b.tone}`"
                 >
-                  <SnIcon :icon="Clock" size="22rpx" color="#ffffff" />
-                  <text class="mall-card__deliver-text">{{ card.deliver }}</text>
+                  <text class="mall-card__badge-text">{{ b.text }}</text>
                 </view>
               </view>
-              <view class="mall-card__body">
-                <text class="mall-card__title">{{ card.title }}</text>
-                <text v-if="card.sub" class="mall-card__sub">{{ card.sub }}</text>
-                <view v-if="card.quote" class="mall-card__quote">
-                  <SnIcon :icon="QuoteIcon" size="24rpx" color="#ff8f00" />
-                  <text class="mall-card__quote-text">{{ card.quote }}</text>
+              <view class="mall-card__foot">
+                <view class="mall-card__prices">
+                  <text class="mall-card__price">{{ card.price }}</text>
+                  <text class="mall-card__orig">{{ card.orig }}</text>
                 </view>
-                <view v-if="card.rating" class="mall-card__rating">
-                  <SnIcon :icon="Star" size="26rpx" color="#ffc300" />
-                  <text class="mall-card__rating-score">{{ card.rating }}</text>
-                  <text class="mall-card__rating-sold">{{ card.sold }}</text>
+                <view
+                  v-if="card.action === 'buy'"
+                  class="mall-card__buy"
+                  role="button"
+                  aria-label="抢购"
+                  @tap.stop="addCart(card.title)"
+                >
+                  <text class="mall-card__buy-text">抢购</text>
                 </view>
-                <view v-if="card.badges.length" class="mall-card__badges">
-                  <view
-                    v-for="b in card.badges"
-                    :key="b.text"
-                    class="mall-card__badge"
-                    :class="`mall-card__badge--${b.tone}`"
-                  >
-                    <text class="mall-card__badge-text">{{ b.text }}</text>
-                  </view>
-                </view>
-                <view class="mall-card__foot">
-                  <view class="mall-card__prices">
-                    <text class="mall-card__price">{{ card.price }}</text>
-                    <text class="mall-card__orig">{{ card.orig }}</text>
-                  </view>
-                  <view
-                    v-if="card.action === 'buy'"
-                    class="mall-card__buy"
-                    role="button"
-                    aria-label="抢购"
-                    @tap.stop="addCart(card.title)"
-                  >
-                    <text class="mall-card__buy-text">抢购</text>
-                  </view>
-                  <view
-                    v-else
-                    class="mall-card__plus"
-                    role="button"
-                    aria-label="加入购物车"
-                    @tap.stop="addCart(card.title)"
-                  >
-                    <SnIcon
-                      :icon="card.action === 'cart' ? ShoppingCart : Plus"
-                      size="28rpx"
-                      color="#251a00"
-                    />
-                  </view>
+                <view
+                  v-else
+                  class="mall-card__plus"
+                  role="button"
+                  aria-label="加入购物车"
+                  @tap.stop="addCart(card.title)"
+                >
+                  <SnIcon
+                    :icon="card.action === 'cart' ? ShoppingCart : Plus"
+                    size="28rpx"
+                    color="#251a00"
+                  />
                 </view>
               </view>
             </view>
           </view>
-        </view>
+        </SnWaterfall>
       </view>
 
       <!-- ═══ #bottom：底部标签栏（sn-tabbar，角标由组件渲染） ═══ -->
@@ -1101,16 +1092,7 @@ function onTabChange(payload: { value: number | string }): void {
 
 /* ── 双列瀑布 ─────────────────────────────────────────────────────────── */
 .mall-waterfall {
-  display: flex;
-  gap: 16rpx;
   margin: 8rpx 24rpx 0;
-}
-.mall-waterfall__col {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
 }
 .mall-card {
   border-radius: 24rpx;

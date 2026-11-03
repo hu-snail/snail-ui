@@ -1,17 +1,19 @@
 <script setup lang="ts">
 /**
- * 模板 Tab：探索 —— 原生 tabBar 第二项，占位引导页。
+ * 模板 Tab：探索 —— 组件标签栏（common/tpl-tabbar.vue）第二项，占位引导页。
  * 深浅色跟随系统（useTplTheme 同步原生 chrome，.sn-theme-dark 翻转变量）。
  */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnEmpty from '@snui/uni-src/components/sn-empty/sn-empty.vue';
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import { useTplTheme } from '../../common/theme';
+import TplTabbar from '../../common/tpl-tabbar.vue';
 
 const { isDark } = useTplTheme();
 
 function goHome(): void {
-  uni.switchTab({ url: '/pages/index/index' });
+  // 原生 tabBar 已退役：tab 页之间是平级跳转，redirectTo 不留历史栈。
+  uni.redirectTo({ url: '/pages/index/index' });
 }
 </script>
 
@@ -28,6 +30,7 @@ function goHome(): void {
         @click="goHome"
       >去逛模板</SnButton>
     </view>
+    <TplTabbar :active="1" />
   </view>
 </template>
 

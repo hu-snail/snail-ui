@@ -3,8 +3,9 @@
  * 模板总览首页（tab）—— 模板商店布局：
  *   sn-paging 根容器，#top 固定「搜索 + 热搜 + 分类 Tab」，默认插槽渲染
  *   精选位 + 排序条 + 双列模板卡瀑布流；页面无标题行，仅保留状态栏占位
- *   （微信胶囊浮于状态栏带内，天然无冲突）。深浅色跟随系统（useTplTheme），
- *   原生 tabBar 由 pages.json 声明。
+ *   （微信胶囊浮于状态栏带内，天然无冲突）。深浅色跟随系统（useTplTheme）；
+ *   底部标签栏是 sn-paging #bottom 里的 sn-tabbar（common/tpl-tabbar.vue），
+ *   不再是 pages.json 声明的原生 tabBar。
  */
 import { ref, watch } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -16,6 +17,7 @@ import { FlameIcon, SlidersIcon, SparklesIcon } from '../../common/icons';
 import { likedIds, TEMPLATES, TPL_CATEGORIES, TPL_SORTS, HOT_WORDS, type TplCat, type TplItem, type TplSortKey } from '../../common/templates';
 import { useTplTheme } from '../../common/theme';
 import TplCard from '../../common/tpl-card.vue';
+import TplTabbar from '../../common/tpl-tabbar.vue';
 
 const { isDark } = useTplTheme();
 
@@ -205,6 +207,11 @@ const FEATURE = {
             />
           </view>
         </view>
+
+        <!-- 底部标签栏：#bottom 插槽自身占位，故 :fixed="false" -->
+        <template #bottom>
+          <TplTabbar :active="0" :fixed="false" />
+        </template>
       </SnPaging>
     </view>
 
@@ -481,16 +488,11 @@ const FEATURE = {
   box-shadow: var(--tplh-shadow);
   z-index: 30;
 }
-/* #ifdef H5 */
+/* 组件标签栏在页面内（栏身 100rpx + 底部安全区），统计条统一抬到它之上：
+ * 原生 tabBar 时代 H5 / MP 的让位量不同，现在两端同一套值。 */
 .home-fab {
-  bottom: calc(100rpx + 16rpx);
+  bottom: calc(env(safe-area-inset-bottom) + 100rpx + 16rpx);
 }
-/* #endif */
-/* #ifndef H5 */
-.home-fab {
-  bottom: calc(env(safe-area-inset-bottom) + 16rpx);
-}
-/* #endif */
 .home-fab__dot {
   width: 14rpx;
   height: 14rpx;
