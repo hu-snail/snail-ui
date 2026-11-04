@@ -139,11 +139,59 @@ const EXTRA_PALETTE_FALLBACK = {
 } as const;
 
 /**
+ * Mix a hex colour toward white (`amount` 0..1) — the primitive behind the
+ * tint ramp. Operates on literals only: token references (`var(--x)`) are
+ * returned untouched, because a canvas cannot resolve a `var()` inside a
+ * gradient and a tint of an unknown colour is unknowable.
+ */
+export function tintColor(color: string, amount: number): string {
+  if (amount <= 0) return color;
+  const hex = color.trim();
+  const match = /^#([0-9a-f]{6})$/i.exec(hex) ?? /^#([0-9a-f]{3})$/i.exec(hex);
+  if (!match) return color;
+  const raw = match[1] ?? '';
+  const value =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((ch) => ch + ch)
+          .join('')
+      : raw;
+  const r = Number.parseInt(value.slice(0, 2), 16) ?? 0;
+  const g = Number.parseInt(value.slice(2, 4), 16) ?? 0;
+  const b = Number.parseInt(value.slice(4, 6), 16) ?? 0;
+  const mix = (channel: number): string =>
+    Math.round(channel + (255 - channel) * Math.min(Math.max(amount, 0), 1))
+      .toString(16)
+      .padStart(2, '0');
+  return `#${mix(r)}${mix(g)}${mix(b)}`;
+}
+
+/**
+ * The tint ramp: `primary` followed by progressively lighter steps of it.
+ *
+ * This is the *default* series colour cycle — the first series wears the UI
+ * library's own primary colour and every further series is a lighter step of
+ * the same hue, so a chart never introduces a colour the host hasn't chosen.
+ * 12 slots cover every realistic series count.
+ */
+export function buildTintRamp(primary: string, slots = 12): string[] {
+  const count = Math.max(1, slots);
+  // 0% → 72% toward white across the ramp, so the last slots stay visible on
+  // light backgrounds instead of washing out completely.
+  const step = 0.72 / (count - 1 || 1);
+  return Array.from({ length: count }, (_, i) => tintColor(primary, i * step));
+}
+
+/**
  * The series colour cycle, in ECharts order.
  *
- * Slots 1-5 are semantic (primary / success / warning / danger / info) so a
- * chart reads as part of the design system; slots 6-12 extend the ramp with
- * primitives. A caller can replace the whole cycle via `theme.palette`.
+ * **Default (no overrides): the primary tint ramp.** Slot 1 is the UI library's
+ * own primary (a token reference in `tokens` mode, a literal in `resolved`
+ * mode); slots 2+ are progressively lighter tints of that same hue — the chart
+ * shares the host's identity instead of importing its own rainbow. Callers who
+ * want semantic multi-hue charts pass `theme.palette` (wins verbatim) or the
+ * `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` overrides.
  */
 export function buildChartPalette(
   source: SnChartColorSource = 'tokens',
@@ -151,24 +199,50 @@ export function buildChartPalette(
   overrides: SnChartThemeConfig = {},
 ): string[] {
   const fallback = CHART_FALLBACK_COLORS[mode];
+
+  // A caller-supplied cycle always wins verbatim (§10).
+  if (overrides.palette && overrides.palette.length > 0) {
+    return [...overrides.palette];
+  }
+
   const primary =
     overrides.colorPrimary ?? pick(source, CHART_TOKEN_ALIASES.primary, fallback.primary);
+
+  // In `tokens` mode the primary is a `var(--…)` reference: the canvas resolves
+  // it live, but a tint of an unresolved colour is unknowable — so the ramp
+  // only literalises when the caller did. `resolved` mode (or an explicit
+  // `colorPrimary` literal) gets the true tint ramp; explicit semantic colours
+  // keep status-bearing series on-brand even inside a monochrome ramp.
   const success =
     overrides.colorSuccess ?? pick(source, CHART_TOKEN_ALIASES.success, fallback.success);
   const warning =
     overrides.colorWarning ?? pick(source, CHART_TOKEN_ALIASES.warning, fallback.warning);
   const danger = overrides.colorDanger ?? pick(source, CHART_TOKEN_ALIASES.danger, fallback.danger);
   const info = overrides.colorInfo ?? pick(source, CHART_TOKEN_ALIASES.info, fallback.info);
-
-  if (overrides.palette && overrides.palette.length > 0) {
-    return [...overrides.palette];
-  }
-
   const extras = (
     Object.keys(EXTRA_PALETTE_TOKENS) as Array<keyof typeof EXTRA_PALETTE_TOKENS>
   ).map((key) => (source === 'tokens' ? EXTRA_PALETTE_TOKENS[key] : EXTRA_PALETTE_FALLBACK[key]));
+  const semantic = [success, warning, danger, info];
+  const semanticLiteral = semantic.every((c) => !c.startsWith('var('));
 
-  return [primary, success, warning, danger, info, ...extras];
+  if (primary.startsWith('var(')) {
+    return [primary, ...semantic, ...extras];
+  }
+
+  const ramp = buildTintRamp(primary, 12);
+  return [
+    primary,
+    ...ramp.slice(1, 5),
+    ...(semanticLiteral
+      ? semantic
+      : [
+          tintColor(primary, 0.55),
+          tintColor(primary, 0.7),
+          tintColor(primary, 0.4),
+          tintColor(primary, 0.85),
+        ]),
+    ...ramp.slice(5),
+  ];
 }
 
 /** Resolve a colour from either the token reference or the literal fallback. */

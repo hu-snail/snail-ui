@@ -20,7 +20,7 @@
 | 小数位   | `tooltip.precision`                                          | `0`                |
 | 布局预设 | `layout`                                                     | `default`          |
 | 主题模式 | `theme-mode`                                                 | `auto`（跟随宿主） |
-| 主题色   | `theme.palette` 逐槽                                         | 案例自带配色       |
+| 主题色   | 默认跟随 UI 库主题（主色 + 逐级渐淡）；拾色后显式覆盖        | 跟随主题           |
 
 ## 相关页面
 

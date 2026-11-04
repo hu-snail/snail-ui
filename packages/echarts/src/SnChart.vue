@@ -89,6 +89,7 @@ import type {
   SnChartPointEvent,
   SnChartThemeConfig,
   SnChartThemeMode,
+  SnChartTokenColorMap,
   SnChartTooltipConfig,
   SnChartTooltipItem,
   SnChartTooltipModel,
@@ -199,6 +200,23 @@ let rafId = 0;
 
 const detectedMode = ref<SnChartThemeMode>('light');
 
+/**
+ * Token cascade resolved into literals.
+ *
+ * `null` until mount (SSR / tests): the theme then falls back to token
+ * references or the fallback table. `syncResolvedTokens()` refreshes this
+ * whenever the host cascade changes, which is what makes the default palette
+ * — and every icon coloured by it — track the UI library's theme live.
+ */
+const resolvedTokens = ref<SnChartTokenColorMap | null>(null);
+
+// Resolve at setup (not at mount): the first `createInstance` must already
+// paint with the cascade literals, otherwise the null → literals transition
+// after mount would flip the theme signature and rebuild the instance a tick
+// later (two `ready` events, first instance orphaned). On the server this is a
+// no-op — `resolveTokenColors()` returns null without a DOM.
+syncResolvedTokens();
+
 const resolvedMode = computed<SnChartThemeMode>(() =>
   props.themeMode === 'auto' || props.themeMode === undefined
     ? detectedMode.value
@@ -206,20 +224,24 @@ const resolvedMode = computed<SnChartThemeMode>(() =>
 );
 
 /**
- * Theme object. `colorSource` defaults to `'tokens'` for the live path (the
- * cascade repaints the canvas, no re-init needed); the caller can opt into
- * `'resolved'` literals for export / SSR.
+ * Theme object.
+ *
+ * The canvas cannot paint `var(--…)` strings, so the theme is built from the
+ * token cascade resolved into **literals** (`resolvedTokens`). That is what
+ * makes the default palette — primary slot and its fading tints — actually
+ * match the UI library, and what lets a cascade change (dark-mode flip, Style
+ * Pack switch) trigger a rebuild with the new colours everywhere, icons
+ * included.
+ *
+ * `colorSource` still selects the strategy: `'tokens'` (default) re-resolves
+ * and rebuilds whenever the cascade changes; `'resolved'` keeps the mount-time
+ * snapshot so an exported option stays stable.
  */
 const chartTheme = computed<Record<string, unknown>>(() => {
   const config = props.theme ?? {};
-  const source = config.colorSource ?? 'tokens';
-  // The probe element is the ambient `document`, not `chartRef`: reading the
-  // chart's own ref would make this computed depend on it, and the ref flips
-  // from null to the element during mount — re-creating the instance one tick
-  // after the first one was built (two `ready` events, first instance orphaned).
-  const resolved = source === 'resolved' ? resolveTokenColors() : undefined;
+  const resolved = resolvedTokens.value;
   return buildChartTheme({
-    config: { ...config, colorSource: source },
+    config,
     mode: resolvedMode.value,
     ...(resolved ? { resolved } : {}),
   });
@@ -619,6 +641,20 @@ let mediaQuery: MediaQueryList | null = null;
 
 function onHostThemeChange(): void {
   detectedMode.value = detectThemeMode();
+  syncResolvedTokens();
+}
+
+/**
+ * Re-resolve the token cascade into literals.
+ *
+ * `'resolved'` mode keeps its mount-time snapshot by design (an exported
+ * option must not drift when the host re-themes); every other mode re-resolves
+ * so the default palette — and the icons coloured by it — track the UI
+ * library's theme live.
+ */
+function syncResolvedTokens(): void {
+  if (props.theme?.colorSource === 'resolved' && resolvedTokens.value !== null) return;
+  resolvedTokens.value = resolveTokenColors();
 }
 
 function observeHostTheme(): void {
@@ -626,7 +662,12 @@ function observeHostTheme(): void {
   const host = document.documentElement;
   if (typeof MutationObserver === 'function') {
     themeObserver = new MutationObserver(onHostThemeChange);
-    themeObserver.observe(host, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    // `style` is watched too: a Style Pack can re-theme by writing custom
+    // properties straight onto `<html>`, with no class or data-theme change.
+    themeObserver.observe(host, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class', 'style'],
+    });
   }
   if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
     mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');

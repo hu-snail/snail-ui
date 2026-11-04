@@ -65,15 +65,19 @@ const option = ref({
 
 ## 主题色配置
 
-颜色默认是 `var(--sn-web-*)` 引用（`colorSource: 'tokens'`），所以：
+默认调色板 = **UI 库主色 + 逐级渐淡的辅助色**：第一根系列用 token 主色
+（`--sn-web-color-action-primary`），后续系列是同一色相逐级变浅的 tint——图表
+不会引入宿主没有选过的颜色。组件在客户端把级联解析成字面量（canvas 无法解析
+`var()`），所以：
 
 ```html
-<!-- 宿主整体切主题，图表跟着变，不需要重建 option -->
+<!-- 宿主整体切主题（data-theme / 风格包 / class），图表整体重建：
+     系列配色、图例图标、tooltip 全部同步成新主题 -->
 <html data-theme="dark"></html>
 ```
 
 ```vue
-<!-- 单图覆盖品牌色 / 文字色 / 字体 -->
+<!-- 单图覆盖品牌色 / 文字色 / 字体；辅助色随之从新主色渐淡 -->
 <SnChart
   :option="option"
   :theme="{
@@ -86,8 +90,15 @@ const option = ref({
 />
 ```
 
-`colorSource: 'resolved'` 会把 CSS 变量快照成字面量，用于导出图片 / SSR /
-非 DOM 宿主（`resolveTokenColors()` 读 `getComputedStyle` 的级联结果）。
+要完全自定义配色时传 `palette`（原样生效，§10 调用方优先）：
+
+```vue
+<SnChart :option="option" :theme="{ palette: ['#2080f0', '#18a058', '#f0a020'] }" />
+```
+
+`colorSource: 'resolved'` 在挂载时把 CSS 变量快照成字面量且**不再跟随级联变
+化**，用于导出图片 / SSR / 非 DOM 宿主（`resolveTokenColors()` 读
+`getComputedStyle` 的级联结果）；默认的 `'tokens'` 则跟随级联变化实时重建。
 
 ## 布局配置
 

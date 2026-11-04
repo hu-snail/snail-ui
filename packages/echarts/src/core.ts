@@ -13,6 +13,8 @@
 export {
   buildChartTheme,
   buildChartPalette,
+  buildTintRamp,
+  tintColor,
   buildChartCssVariables,
   resolveTokenColors,
   detectThemeMode,

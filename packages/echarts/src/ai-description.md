@@ -53,14 +53,14 @@ import { buildChartTheme, buildChartOption } from '@snui/echarts/core';
 
 | Field                                                         | Type                      | Description                                                                                                                                                                                                                             |
 | ------------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `palette`                                                     | `string[]`                | Full series colour cycle replacement.                                                                                                                                                                                                   |
+| `palette`                                                     | `string[]`                | Full series colour cycle replacement. Unset, the default is the UI theme primary plus progressively lighter tints of the same hue.                                                                                                      |
 | `colorPrimary`                                                | `string`                  | Brand colour (palette slot 0). Passed to ECharts verbatim.                                                                                                                                                                              |
 | `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` | `string`                  | Semantic feedback colours.                                                                                                                                                                                                              |
 | `textColor` / `textColorSecondary` / `textColorTertiary`      | `string`                  | Text ramp.                                                                                                                                                                                                                              |
 | `backgroundColor`                                             | `string`                  | Plot background. Default transparent (the host card paints it).                                                                                                                                                                         |
 | `borderColor`                                                 | `string`                  | Split line + axis line colour.                                                                                                                                                                                                          |
 | `fontFamily` / `fontSize`                                     | `string` / `number`       | Base font stack / size.                                                                                                                                                                                                                 |
-| `colorSource`                                                 | `'tokens' \| 'resolved'`  | `'tokens'` keeps `var(--sn-web-*)` references; `'resolved'` snapshots literals.                                                                                                                                                         |
+| `colorSource`                                                 | `'tokens' \| 'resolved'`  | Both resolve to literals on the client (a canvas cannot paint `var()`): `'tokens'` re-resolves and rebuilds on cascade changes; `'resolved'` snapshots at mount.                                                                        |
 | `themeOverrides`                                              | `Record<string, unknown>` | Extra theme keys, merged **recursively** into the generated theme and applied last. Arrays (e.g. `color`) replace wholesale; nested blocks such as `legend.textStyle` merge key by key, and an explicit `undefined` never erases a key. |
 
 ### `layout` presets
@@ -160,8 +160,9 @@ path data (wrapped into `path://`).
 ## Behaviour notes
 
 - **Weight class: heavy.** The component pulls ECharts (host dependency) and
-  inits a real chart instance. Colour tokens are CSS variables, so the canvas
-  does not re-init on a theme flip when `colorSource: 'tokens'`.
+  inits a real chart instance. Theme colours resolve from the token cascade on
+  the client and rebuild on a theme flip, so the palette — and the icons
+  coloured by it — always match the UI library's theme.
 - **The wrapper never fetches data.** `option` is the only input (§18).
 - **The custom tooltip disables ECharts' own tooltip** so the two never draw
   at once; `mode: 'native'` switches back.

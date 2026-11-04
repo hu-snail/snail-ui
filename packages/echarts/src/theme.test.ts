@@ -5,8 +5,10 @@ import {
   buildChartCssVariables,
   buildChartPalette,
   buildChartTheme,
+  buildTintRamp,
   detectThemeMode,
   resolveTokenColors,
+  tintColor,
 } from './theme';
 
 describe('chart theme', () => {
@@ -16,25 +18,33 @@ describe('chart theme', () => {
   });
 
   describe('buildChartPalette', () => {
-    it('should start with the semantic colours in token mode', () => {
+    it('should start with the primary token in tokens mode (literal ramp is unresolved)', () => {
       const palette = buildChartPalette('tokens', 'light');
       expect(palette[0]).toBe(`var(${CHART_TOKEN_ALIASES.primary})`);
+      // Without resolved literals the rest of the cycle stays token-based too.
       expect(palette[1]).toBe(`var(${CHART_TOKEN_ALIASES.success})`);
-      expect(palette[2]).toBe(`var(${CHART_TOKEN_ALIASES.warning})`);
-      expect(palette[3]).toBe(`var(${CHART_TOKEN_ALIASES.danger})`);
-      expect(palette[4]).toBe(`var(${CHART_TOKEN_ALIASES.info})`);
       expect(palette.length).toBeGreaterThan(5);
     });
 
-    it('should fall back to literal token defaults in resolved mode', () => {
+    it('should build the primary tint ramp from resolved literals', () => {
       const palette = buildChartPalette('resolved', 'light');
-      expect(palette[0]).toBe(CHART_FALLBACK_COLORS.light.primary);
-      expect(palette[1]).toBe(CHART_FALLBACK_COLORS.light.success);
+      const primary = CHART_FALLBACK_COLORS.light.primary;
+      expect(palette[0]).toBe(primary);
+      // Slot 1+ are lighter steps of the *same hue* — the default palette
+      // fades the primary instead of importing a rainbow.
+      expect(palette[1]).toMatch(/^#/);
+      expect(palette[1]).not.toBe(primary);
+      expect(palette[1]).toBe(tintColor(primary, 0.72 / 11));
+      for (let i = 1; i < 5; i += 1) {
+        expect(palette[i]).toBe(tintColor(primary, (0.72 / 11) * i));
+      }
     });
 
-    it('should honour an explicit brand colour at slot 0', () => {
+    it('should honour an explicit brand colour at slot 0 and tint from it', () => {
       const palette = buildChartPalette('tokens', 'light', { colorPrimary: '#ff5a00' });
       expect(palette[0]).toBe('#ff5a00');
+      expect(palette[1]).toBe(tintColor('#ff5a00', 0.72 / 11));
+      expect(palette[1]).not.toBe('#ff5a00');
     });
 
     it('should replace the whole cycle when a palette is supplied', () => {
@@ -42,9 +52,62 @@ describe('chart theme', () => {
       expect(palette).toEqual(['#111', '#222']);
     });
 
-    it('should use dark fallbacks in dark mode', () => {
+    it('should use the dark primary anchor in dark mode', () => {
       const palette = buildChartPalette('resolved', 'dark');
-      expect(palette[3]).toBe(CHART_FALLBACK_COLORS.dark.danger);
+      expect(palette[0]).toBe(CHART_FALLBACK_COLORS.dark.primary);
+      expect(palette[1]).toBe(tintColor(palette[0] ?? '#000000', 0.72 / 11));
+    });
+
+    it('should keep literal semantic overrides in the cycle', () => {
+      const palette = buildChartPalette('resolved', 'light', {
+        colorSuccess: '#00aa88',
+        colorDanger: '#dd2233',
+      });
+      expect(palette).toContain('#00aa88');
+      expect(palette).toContain('#dd2233');
+    });
+
+    it('should degrade to token slots when the primary is unresolved', () => {
+      // `var()` primaries cannot be tinted, so the cycle falls back to tokens
+      // instead of producing a ramp of identical, unresolvable strings.
+      const palette = buildChartPalette('tokens', 'light', { colorPrimary: 'var(--brand)' });
+      expect(palette[0]).toBe('var(--brand)');
+      expect(palette[1]).toBe(`var(${CHART_TOKEN_ALIASES.success})`);
+    });
+  });
+
+  describe('tintColor / buildTintRamp', () => {
+    it('should tint a hex colour toward white', () => {
+      expect(tintColor('#000000', 0)).toBe('#000000');
+      expect(tintColor('#000000', 1)).toBe('#ffffff');
+      expect(tintColor('#ff0000', 0.5)).toBe('#ff8080');
+      expect(tintColor('#336699', 0.25)).toBe('#668cb3');
+    });
+
+    it('should accept 3-digit hex and pass non-hex values through', () => {
+      expect(tintColor('#f00', 0.5)).toBe('#ff8080');
+      expect(tintColor('var(--x)', 0.5)).toBe('var(--x)');
+      expect(tintColor('not-a-color', 0.5)).toBe('not-a-color');
+    });
+
+    it('should build a monotonic ramp starting at the primary', () => {
+      const ramp = buildTintRamp('#1677ff', 6);
+      expect(ramp).toHaveLength(6);
+      expect(ramp[0]).toBe('#1677ff');
+      for (let i = 1; i < ramp.length; i += 1) {
+        const previous = Number.parseInt((ramp[i - 1] ?? '#000000').slice(1, 3), 16);
+        const current = Number.parseInt((ramp[i] ?? '#000000').slice(1, 3), 16);
+        expect(current).toBeGreaterThanOrEqual(previous);
+        expect(ramp[i]).toMatch(/^#[0-9a-f]{6}$/i);
+      }
+      // The last slot must actually be lighter — a ramp that never fades is
+      // indistinguishable from a monochrome cycle.
+      expect(ramp[ramp.length - 1]).not.toBe(ramp[0]);
+    });
+
+    it('should return the primary alone for a single-slot ramp', () => {
+      expect(buildTintRamp('#1677ff', 1)).toEqual(['#1677ff']);
+      expect(buildTintRamp('#1677ff', 0)).toEqual(['#1677ff']);
     });
   });
 

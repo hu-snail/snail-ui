@@ -203,12 +203,36 @@ describe('chart case registry', () => {
       expect(snippet).toContain('"Cash in"');
     });
 
+    it('should follow the UI theme when no palette slot is picked', () => {
+      const def = getChartCase('line-basic');
+      const snippet = buildCaseSnippet(def, cfgOf(def), def.labels.zh);
+      // No `theme` prop at all → the copied chart wears the host's token
+      // primary with fading tints, exactly like the live card.
+      expect(snippet).not.toContain(':theme=');
+      expect(snippet).not.toContain('const theme');
+    });
+
+    it('should bake picked slots and fall back to the curated colours', () => {
+      const def = getChartCase('bar-stack');
+      const snippet = buildCaseSnippet(
+        def,
+        cfgOf(def, { palette: [undefined, '#22c55e'] }),
+        def.labels.en,
+      );
+      expect(snippet).toContain(':theme="theme"');
+      expect(snippet).toContain('"#22c55e"');
+      // Unpicked slot 0 keeps the case's curated colour.
+      expect(snippet).toContain('"#18a058"');
+      // A copied config must never carry holes.
+      expect(snippet).not.toContain('undefined');
+    });
+
     it('should keep the copied option JSON-pure', () => {
       const def = getChartCase('line-multi');
       const snippet = buildCaseSnippet(def, cfgOf(def), def.labels.zh);
       const body = snippet.slice(
         snippet.indexOf('const option = '),
-        snippet.indexOf('const theme'),
+        snippet.indexOf('const layout'),
       );
       const json = body.replace('const option = ', '').trim().replace(/;$/, '');
       const parsed = JSON.parse(json) as Draft;

@@ -20,7 +20,7 @@ The first choice for trends and comparison. Every case ships a **config panel**:
 | Decimals   | `tooltip.precision`                                                                | `0`                       |
 | Layout     | `layout`                                                                           | `default`                 |
 | Theme mode | `theme-mode`                                                                       | `auto` (follows the host) |
-| Palette    | `theme.palette`, slot by slot                                                      | the case's own colours    |
+| Palette    | follows the UI theme by default (primary + fading tints); a pick overrides it      | follow theme              |
 
 ## Related pages
 

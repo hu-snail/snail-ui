@@ -12,15 +12,15 @@
 
 ## 面板里能改什么
 
-| 控制项   | 落到哪里             | 默认         |
-| -------- | -------------------- | ------------ |
-| 平滑     | `series[].smooth`    | 开           |
-| 图例     | `legend`             | 开           |
-| 触发方式 | `tooltip.trigger`    | `item`       |
-| 小数位   | `tooltip.precision`  | `0`          |
-| 布局预设 | `layout`             | `default`    |
-| 主题模式 | `theme-mode`         | `auto`       |
-| 主题色   | `theme.palette` 逐槽 | 案例自带配色 |
+| 控制项   | 落到哪里                                              | 默认      |
+| -------- | ----------------------------------------------------- | --------- |
+| 平滑     | `series[].smooth`                                     | 开        |
+| 图例     | `legend`                                              | 开        |
+| 触发方式 | `tooltip.trigger`                                     | `item`    |
+| 小数位   | `tooltip.precision`                                   | `0`       |
+| 布局预设 | `layout`                                              | `default` |
+| 主题模式 | `theme-mode`                                          | `auto`    |
+| 主题色   | 默认跟随 UI 库主题（主色 + 逐级渐淡）；拾色后显式覆盖 | 跟随主题  |
 
 面积填充本身走 `areaStyle.opacity`，由系列色自动派生明暗，不需要手配渐变。
 

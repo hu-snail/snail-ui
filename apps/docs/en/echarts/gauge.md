@@ -12,12 +12,12 @@ Single-value progress and scores. Ticks and the pointer are hidden by default, l
 
 ## What the panel changes
 
-| Control    | Maps to                       | Default                |
-| ---------- | ----------------------------- | ---------------------- |
-| Rounded    | `progress.roundCap`           | on                     |
-| Layout     | `layout`                      | `default`              |
-| Theme mode | `theme-mode`                  | `auto`                 |
-| Palette    | `theme.palette`, slot by slot | the case's own colours |
+| Control    | Maps to                                                                       | Default      |
+| ---------- | ----------------------------------------------------------------------------- | ------------ |
+| Rounded    | `progress.roundCap`                                                           | on           |
+| Layout     | `layout`                                                                      | `default`    |
+| Theme mode | `theme-mode`                                                                  | `auto`       |
+| Palette    | follows the UI theme by default (primary + fading tints); a pick overrides it | follow theme |
 
 A gauge has no category axis, no legend and no tooltip trigger, so the panel hides those controls — it only offers switches that mean something for the case type.
 

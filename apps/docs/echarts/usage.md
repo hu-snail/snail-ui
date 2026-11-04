@@ -112,17 +112,17 @@ const chart = ref<SnChartHandle | null>(null);
 
 `theme` 描述**意图**，Token ↔ ECharts theme 的映射由包完成。
 
-| 字段                                                          | 说明                                                                     |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `colorPrimary`                                                | 品牌色，占用调色板首位。                                                 |
-| `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` | 语义色。                                                                 |
-| `palette`                                                     | 系列配色循环，顺序即取色顺序。                                           |
-| `textColor` / `textColorSecondary` / `textColorTertiary`      | 文本阶梯。                                                               |
-| `backgroundColor`                                             | 绘图区背景，默认透明（由宿主卡片上色）。                                 |
-| `borderColor`                                                 | 分割线 / 轴线颜色。                                                      |
-| `fontFamily` / `fontSize`                                     | 字体栈 / 基准字号。                                                      |
-| `colorSource`                                                 | `'tokens'`（默认）保留 `var(--sn-web-*)` 引用；`'resolved'` 快照字面量。 |
-| `themeOverrides`                                              | 逃生口：任意键递归合并进 ECharts theme，未提到的键保留。                 |
+| 字段                                                          | 说明                                                                                                     |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `colorPrimary`                                                | 品牌色，占用调色板首位。                                                                                 |
+| `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` | 语义色。                                                                                                 |
+| `palette`                                                     | 系列配色循环。不传时默认 = UI 主题主色 + 逐级渐淡的辅助色，并跟随主题变化重建。                          |
+| `textColor` / `textColorSecondary` / `textColorTertiary`      | 文本阶梯。                                                                                               |
+| `backgroundColor`                                             | 绘图区背景，默认透明（由宿主卡片上色）。                                                                 |
+| `borderColor`                                                 | 分割线 / 轴线颜色。                                                                                      |
+| `fontFamily` / `fontSize`                                     | 字体栈 / 基准字号。                                                                                      |
+| `colorSource`                                                 | 浏览器端统一解析为字面量：`'tokens'`（默认）跟随级联变化重建，`'resolved'` 挂载时快照（导出 / SSR 用）。 |
+| `themeOverrides`                                              | 逃生口：任意键递归合并进 ECharts theme，未提到的键保留。                                                 |
 
 <Demo name="echarts-web-theme" description="品牌色 + 自定义调色板 + legend.textStyle 逃生口；颜色仍是 Token 引用，切暗色时画布跟着重绘。" />
 

@@ -14,15 +14,15 @@ Discrete comparison and composition. Rounding is **on by default**: bar tops are
 
 ## What the panel changes
 
-| Control    | Maps to                           | Default                |
-| ---------- | --------------------------------- | ---------------------- |
-| Rounded    | `series[].itemStyle.borderRadius` | on                     |
-| Legend     | `legend`                          | on                     |
-| Trigger    | `tooltip.trigger`                 | `item`                 |
-| Decimals   | `tooltip.precision`               | `0`                    |
-| Layout     | `layout`                          | `default`              |
-| Theme mode | `theme-mode`                      | `auto`                 |
-| Palette    | `theme.palette`, slot by slot     | the case's own colours |
+| Control    | Maps to                                                                       | Default      |
+| ---------- | ----------------------------------------------------------------------------- | ------------ |
+| Rounded    | `series[].itemStyle.borderRadius`                                             | on           |
+| Legend     | `legend`                                                                      | on           |
+| Trigger    | `tooltip.trigger`                                                             | `item`       |
+| Decimals   | `tooltip.precision`                                                           | `0`          |
+| Layout     | `layout`                                                                      | `default`    |
+| Theme mode | `theme-mode`                                                                  | `auto`       |
+| Palette    | follows the UI theme by default (primary + fading tints); a pick overrides it | follow theme |
 
 The stacked case (cash in / spend) applies `[6, 6, 0, 0]` to the last series only and `0` to the rest. Turning rounding off makes every edge square — useful next to a screenshot from another data source.
 

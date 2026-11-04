@@ -94,7 +94,7 @@ createApp(App).use(SnUIECharts); // registers <SnChart>
 ## Design principles
 
 1. **The `option` contract is unchanged.** Your option is merged last and always wins; the package only fills in derived configuration around it.
-2. **Tokens, not literals.** The default `colorSource: 'tokens'` keeps colours as `var(--sn-web-*)` references, so switching dark mode or a Style Pack repaints the canvas **without rebuilding the instance**. Switch to `'resolved'` snapshots for image export or non-DOM hosts.
+2. **Follows the UI library theme.** The default palette is the token primary plus progressively lighter tints; colours resolve to literals on the client (a canvas cannot paint `var()`), and a cascade change (dark mode / Style Pack) rebuilds the chart so the legend icons and series colours update together. `'resolved'` keeps the mount-time snapshot for image export or non-DOM hosts.
 3. **Platform differences are detected, not branched.** Theme mode probes `<html data-theme>` → `.dark` → `prefers-color-scheme` and then follows changes with a `MutationObserver` and a media-query listener.
 4. **Everything is disposable.** The instance, `ResizeObserver`, window listener, theme `MutationObserver`, media-query listener, every ECharts handler and any pending timer / rAF are released on unmount (§41); a resize queued right before unmount cannot touch a disposed instance (§82).
 

@@ -12,14 +12,14 @@
 
 ## 面板里能改什么
 
-| 控制项   | 落到哪里                          | 默认         |
-| -------- | --------------------------------- | ------------ |
-| 圆角     | `series[].itemStyle.borderRadius` | 开           |
-| 图例     | `legend`                          | 开           |
-| 小数位   | `tooltip.precision`               | `0`          |
-| 布局预设 | `layout`                          | `default`    |
-| 主题模式 | `theme-mode`                      | `auto`       |
-| 主题色   | `theme.palette` 逐槽              | 案例自带配色 |
+| 控制项   | 落到哪里                                              | 默认      |
+| -------- | ----------------------------------------------------- | --------- |
+| 圆角     | `series[].itemStyle.borderRadius`                     | 开        |
+| 图例     | `legend`                                              | 开        |
+| 小数位   | `tooltip.precision`                                   | `0`       |
+| 布局预设 | `layout`                                              | `default` |
+| 主题模式 | `theme-mode`                                          | `auto`    |
+| 主题色   | 默认跟随 UI 库主题（主色 + 逐级渐淡）；拾色后显式覆盖 | 跟随主题  |
 
 饼图的 tooltip 触发方式固定为 `item`（没有共享轴），所以面板上没有触发方式开关。
 

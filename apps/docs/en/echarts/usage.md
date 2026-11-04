@@ -112,17 +112,17 @@ const chart = ref<SnChartHandle | null>(null);
 
 `theme` states **intent**; the token ↔ ECharts theme mapping is the package's job.
 
-| Field                                                         | Description                                                                               |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `colorPrimary`                                                | Brand colour, occupying the first palette slot.                                           |
-| `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` | Semantic colours.                                                                         |
-| `palette`                                                     | Series colour cycle; order is the order colours are drawn.                                |
-| `textColor` / `textColorSecondary` / `textColorTertiary`      | Text ramp.                                                                                |
-| `backgroundColor`                                             | Plot background; transparent by default (the host card paints it).                        |
-| `borderColor`                                                 | Split-line / axis colour.                                                                 |
-| `fontFamily` / `fontSize`                                     | Font stack / base size.                                                                   |
-| `colorSource`                                                 | `'tokens'` (default) keeps `var(--sn-web-*)` references; `'resolved'` snapshots literals. |
-| `themeOverrides`                                              | Escape hatch: any key merged recursively into the ECharts theme, siblings preserved.      |
+| Field                                                         | Description                                                                                                                                  |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `colorPrimary`                                                | Brand colour, occupying the first palette slot.                                                                                              |
+| `colorSuccess` / `colorWarning` / `colorDanger` / `colorInfo` | Semantic colours.                                                                                                                            |
+| `palette`                                                     | Series colour cycle. Unset, the default is the UI theme primary plus progressively lighter tints, rebuilt when the theme changes.            |
+| `textColor` / `textColorSecondary` / `textColorTertiary`      | Text ramp.                                                                                                                                   |
+| `backgroundColor`                                             | Plot background; transparent by default (the host card paints it).                                                                           |
+| `borderColor`                                                 | Split-line / axis colour.                                                                                                                    |
+| `fontFamily` / `fontSize`                                     | Font stack / base size.                                                                                                                      |
+| `colorSource`                                                 | Both resolve to literals on the client: `'tokens'` (default) re-resolves on cascade changes, `'resolved'` snapshots at mount (export / SSR). |
+| `themeOverrides`                                              | Escape hatch: any key merged recursively into the ECharts theme, siblings preserved.                                                         |
 
 <Demo name="echarts-web-theme" description="A brand colour + custom palette + a legend.textStyle escape hatch; colours stay token references, so a dark-mode flip repaints the canvas." />
 

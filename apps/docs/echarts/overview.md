@@ -94,7 +94,7 @@ createApp(App).use(SnUIECharts); // 注册 <SnChart>
 ## 设计原则
 
 1. **`option` 契约不变。** 你写的 `option` 最后合并，永远优先；本包只往它周围补派生配置。
-2. **Token 而不是字面量。** 默认 `colorSource: 'tokens'`，颜色是 `var(--sn-web-*)` 引用，切暗色 / 切风格包时画布重绘而**不重建实例**。需要导出图片 / 非 DOM 宿主时再切 `'resolved'` 快照字面量。
+2. **跟随 UI 库主题。** 默认调色板 = token 主色 + 逐级渐淡的辅助色；颜色在客户端解析为字面量（canvas 无法解析 `var()`），级联变化（切暗色 / 换风格包）触发整体重建，图例图标与系列配色同步更新。需要导出图片 / 非 DOM 宿主时切 `'resolved'` 挂载快照。
 3. **平台差异用能力探测，不用分支复制。** 主题模式按 `<html data-theme>` → `.dark` → `prefers-color-scheme` 依次探测，并用 `MutationObserver` + 媒体查询跟随变化。
 4. **资源全部可释放。** 实例、`ResizeObserver`、窗口监听、主题 `MutationObserver`、媒体查询监听、全部 ECharts handler 与未完成的定时器 / rAF 在卸载时释放（§41）；卸载前排队的 resize 也碰不到已销毁的实例（§82）。
 

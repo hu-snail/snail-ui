@@ -38,7 +38,12 @@ export interface ChartCaseConfig {
   readonly trigger: 'item' | 'axis';
   readonly precision: number;
   readonly legend: boolean;
-  readonly palette: readonly string[];
+  /**
+   * Per-slot palette picks. `undefined` = "follow the UI library theme": the
+   * chart then wears the token primary with fading tints and re-renders when
+   * the host re-themes. A picked slot is an explicit override.
+   */
+  readonly palette: readonly (string | undefined)[];
 }
 
 /** One case definition. */
@@ -415,8 +420,24 @@ export function createDefaultConfig(def: ChartCaseDef): ChartCaseConfig {
     trigger: 'item',
     precision: 0,
     legend: true,
-    palette: [...def.palette],
+    // Empty by default: the chart follows the UI library's theme (token
+    // primary + fading tints). `def.palette` is the curated *suggestion* used
+    // to fill slots the visitor leaves unpicked after overriding one.
+    palette: [],
   };
+}
+
+/**
+ * Effective palette for a case under the current picks.
+ *
+ * `null` = pure theme-following (no slot picked) — the caller should not pass
+ * a `theme.palette` at all. Otherwise unpicked slots fall back to the case's
+ * curated colours so a two-series chart never collapses onto one hue.
+ */
+export function resolveCasePalette(def: ChartCaseDef, cfg: ChartCaseConfig): string[] | null {
+  const picks = cfg.palette;
+  if (!picks.some((v) => v !== undefined && v !== null)) return null;
+  return picks.map((v, i) => v ?? def.palette[i] ?? '#71717a');
 }
 
 /** Draft shape while building — plain and JSON-safe, ECharts-compatible. */
@@ -550,6 +571,9 @@ export function buildCaseSnippet(
 ): string {
   const option = buildCaseOption(def, cfg, labels);
   const tooltip = buildCaseTooltip(cfg);
+  // No slot picked → the snippet follows the UI theme too (no theme prop);
+  // a picked slot bakes the effective palette as literals.
+  const palette = resolveCasePalette(def, cfg);
   const lines: string[] = [
     '<script setup lang="ts">',
     "import { SnChart } from '@snui/echarts';",
@@ -557,18 +581,15 @@ export function buildCaseSnippet(
     '',
     `const option = ${JSON.stringify(option, null, 2)};`,
     '',
-    `const theme = ${JSON.stringify({ palette: [...cfg.palette] }, null, 2)};`,
-    `const layout = '${cfg.layout}';`,
-    `const tooltip = ${JSON.stringify(tooltip, null, 2)};`,
-    '</script>',
-    '',
-    '<template>',
-    `  <SnChart`,
-    '    :option="option"',
-    '    :theme="theme"',
-    '    :layout="layout"',
-    '    :tooltip="tooltip"',
   ];
+  if (palette) {
+    lines.push(`const theme = ${JSON.stringify({ palette }, null, 2)};`);
+  }
+  lines.push(`const layout = '${cfg.layout}';`);
+  lines.push(`const tooltip = ${JSON.stringify(tooltip, null, 2)};`);
+  lines.push('</script>', '', '<template>', '  <SnChart', '    :option="option"');
+  if (palette) lines.push('    :theme="theme"');
+  lines.push('    :layout="layout"', '    :tooltip="tooltip"');
   if (cfg.themeMode !== 'auto') lines.push(`    theme-mode="${cfg.themeMode}"`);
   lines.push(`    :height="${def.height}"`);
   lines.push('  />');

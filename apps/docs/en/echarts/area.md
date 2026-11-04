@@ -12,15 +12,15 @@ The filled form of a line: volume and composition over time. The fill is a trans
 
 ## What the panel changes
 
-| Control    | Maps to                       | Default                |
-| ---------- | ----------------------------- | ---------------------- |
-| Smooth     | `series[].smooth`             | on                     |
-| Legend     | `legend`                      | on                     |
-| Trigger    | `tooltip.trigger`             | `item`                 |
-| Decimals   | `tooltip.precision`           | `0`                    |
-| Layout     | `layout`                      | `default`              |
-| Theme mode | `theme-mode`                  | `auto`                 |
-| Palette    | `theme.palette`, slot by slot | the case's own colours |
+| Control    | Maps to                                                                       | Default      |
+| ---------- | ----------------------------------------------------------------------------- | ------------ |
+| Smooth     | `series[].smooth`                                                             | on           |
+| Legend     | `legend`                                                                      | on           |
+| Trigger    | `tooltip.trigger`                                                             | `item`       |
+| Decimals   | `tooltip.precision`                                                           | `0`          |
+| Layout     | `layout`                                                                      | `default`    |
+| Theme mode | `theme-mode`                                                                  | `auto`       |
+| Palette    | follows the UI theme by default (primary + fading tints); a pick overrides it | follow theme |
 
 The fill itself comes from `areaStyle.opacity` derived from the series colour — no gradient to hand-configure.
 

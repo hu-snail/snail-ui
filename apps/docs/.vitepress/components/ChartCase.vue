@@ -35,6 +35,7 @@ import {
   buildCaseTooltip,
   createDefaultConfig,
   getChartCase,
+  resolveCasePalette,
 } from '../echarts/registry';
 import type { ChartCaseConfig } from '../echarts/registry';
 
@@ -98,7 +99,18 @@ const title = computed(() => (isEn.value ? def.title.en : def.title.zh));
 const blurb = computed(() => (isEn.value ? def.blurb.en : def.blurb.zh));
 
 const option = computed(() => buildCaseOption(def, cfg, labels.value));
-const theme = computed(() => ({ palette: [...cfg.palette] }));
+/**
+ * Theme prop for the chart.
+ *
+ * No slot picked → `{}`: the chart follows the UI library's theme — token
+ * primary + fading tints — and re-renders when the host re-themes. Any picked
+ * slot turns into an explicit `theme.palette` (unpicked slots fall back to the
+ * case's curated colours).
+ */
+const theme = computed(() => {
+  const palette = resolveCasePalette(def, cfg);
+  return palette ? { palette } : {};
+});
 const tooltipCfg = computed(() => buildCaseTooltip(cfg));
 
 const themeModeOptions = computed(() => [
@@ -112,8 +124,13 @@ const triggerOptions = computed(() => [
 ]);
 const layoutOptions = ['default', 'compact', 'spacious', 'fullscreen', 'minimal'];
 
-/** Only the first N palette slots are editable (N = series count, capped). */
-const paletteSlots = computed(() => Math.min(def.paletteSlots, cfg.palette.length));
+/** Editable palette slots (capped by the case's series count at definition). */
+const paletteSlots = computed(() => def.paletteSlots);
+
+/** Normalise a picker emission: `null` (cleared) means "follow the theme". */
+function pickPalette(slot: number, value: string | null): void {
+  cfg.palette[slot - 1] = value ?? undefined;
+}
 
 function resetConfig(): void {
   Object.assign(cfg, createDefaultConfig(def));
@@ -227,9 +244,11 @@ async function copyText(text: string): Promise<void> {
           <SnColorPicker
             v-for="slot in paletteSlots"
             :key="slot"
-            v-model="cfg.palette[slot - 1]"
+            :model-value="cfg.palette[slot - 1] ?? null"
             size="small"
             :swatches="[...CHART_CASE_SWATCHES]"
+            :aria-label="`${t.palette} ${slot}`"
+            @update:model-value="(value) => pickPalette(slot, value)"
           />
         </div>
       </div>
