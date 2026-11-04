@@ -1234,23 +1234,12 @@ const wrapperStyle = computed<string>(() => {
 }
 
 .sn-tree-select-node--selected {
-  background-color: var(--sn-web-tree-select-node-bg-selected, rgba(22, 119, 255, 0.1));
+  background-color: var(
+    --sn-web-tree-select-node-bg-selected,
+    var(--sn-web-color-action-primary-soft)
+  );
   color: var(--sn-web-tree-select-node-text-color-selected, var(--sn-web-color-action-primary));
   font-weight: 500;
-}
-
-.sn-tree-select-node--selected::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: var(--sn-web-tree-select-node-selected-bar-width, 3px);
-  border-radius: var(--sn-web-tree-select-radius, 6px);
-  background-color: var(
-    --sn-web-tree-select-node-selected-bar-color,
-    var(--sn-web-color-action-primary)
-  );
 }
 
 .sn-tree-select-node__label {

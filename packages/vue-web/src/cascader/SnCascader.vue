@@ -1453,8 +1453,7 @@ watch(isMenuOpen, (open) => {
   font-weight: 500;
 }
 
-/* Selected leaf — primary-tinted fill; the leading accent bar doubles as
- * the check-mark affordance without an icon glyph. */
+/* Selected leaf — primary-soft fill + text accent (token-driven). */
 .sn-cascader-option--selected {
   background-color: var(
     --sn-web-cascader-option-bg-selected,
@@ -1462,20 +1461,6 @@ watch(isMenuOpen, (open) => {
   );
   color: var(--sn-web-cascader-option-text-color-selected, var(--sn-web-color-action-primary));
   font-weight: 500;
-}
-
-.sn-cascader-option--selected::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: var(--sn-web-cascader-option-selected-bar-width, 3px);
-  border-radius: var(--sn-web-cascader-radius, 6px);
-  background-color: var(
-    --sn-web-cascader-option-selected-bar-color,
-    var(--sn-web-color-action-primary)
-  );
 }
 
 .sn-cascader-option--disabled {

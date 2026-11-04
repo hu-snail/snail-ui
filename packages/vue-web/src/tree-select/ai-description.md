@@ -104,7 +104,7 @@ const options = [
 | `--sn-web-tree-select-node-min-height` / `-font-size` / `-text-color`                    | `30px` / `14px` / text-primary           | 节点行                    |
 | `--sn-web-tree-select-node-padding-x` / `-indent`                                        | `10px` / `16px`                          | 节点水平内边距 / 每级缩进 |
 | `--sn-web-tree-select-node-bg-hover`                                                     | `rgba(0,0,0,0.045)`                      | 高亮行底色                |
-| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected` / `-selected-bar-color` | rgba / action-primary / action-primary   | 选中行                    |
+| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected`                          | action-primary-soft / action-primary     | 选中行                    |
 | `--sn-web-tree-select-node-text-color-disabled`                                          | text-disabled                            | 禁用节点文字              |
 | `--sn-web-tree-select-switcher-color` / `-hover` / `-radius`                             | text-tertiary / text-primary / `4px`     | 展开箭头                  |
 | `--sn-web-tree-select-empty-color` / `-padding-y`                                        | text-tertiary / `12px`                   | 空状态                    |
