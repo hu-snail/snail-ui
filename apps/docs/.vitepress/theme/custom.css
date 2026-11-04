@@ -900,6 +900,20 @@ table.props code {
   }
 }
 
+/* 布局（admin-layout）的演示页：一行一个
+ * ---------------------------------------------------------------------
+ * 布局壳是横向铺开的（侧栏 + 顶栏 + 内容区），塞进两列瀑布流会被挤扁，
+ * 所以只在这几个页面取消分栏；站点其它页（表单、表格、组件演示）保持
+ * 上面的两列瀑布流不变。
+ *
+ * 选择器用「页面内的 article 上挂的 class」。页面 class 由
+ * `markdown.config` 里的 demoGrid 插件加在 `layout: doc` 的页面上
+ * （见 ./utils/demo-grid.ts 的 `ADMIN_LAYOUT_ROUTES`）。两条声明与上面的
+ * media query 特异性相同，靠书写顺序取胜，不需要 `!important`。 */
+.sn-layout-single-column .sn-demo-grid {
+  column-count: 1;
+}
+
 /* The card. Border is an airy hairline (naive-ui docs style): a translucent
  * line reads lighter than the flat divider token in light mode and keeps
  * enough presence in dark mode without a second token. */
@@ -1128,5 +1142,42 @@ html[data-sn-template-end='uni']
 @media (max-width: 959px) {
   .sn-chart-cases {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================================================
+   15. Docs canvas background — #f8f8f8 (dark aware)
+   ----------------------------------------------------------------------
+ * 文档内容区整体铺一层中性灰画布：白底 demo 卡 / 组件面板浮在其上，
+ * 层次与 naive-ui / shadcn 文档一致（需求：文档区域的背景全部 #f8f8f8）。
+ *
+ * 只动 `.VPContent`（导航栏、侧栏、首页画布各有自己的底色，不受影响）；
+ * 暗黑不硬编码 —— 跟随 `--vp-c-bg`，主题编辑器注入的深色变量照常生效。
+ * ===================================================================== */
+
+.VPContent {
+  background-color: #f8f8f8;
+}
+
+.dark .VPContent {
+  background-color: var(--vp-c-bg);
+}
+
+/* ── /echarts 总览案例墙（瀑布流） ────────────────────────────────────────
+ * CSS columns 实现真瀑布流：卡片保持自然高度、break-inside 防截断，无需
+ * JS 测量。列宽 340px 起、随视口自动 2~3 列；窄屏退化为单列。
+ */
+.sn-chart-masonry {
+  columns: 3 340px;
+  column-gap: 16px;
+  margin: 20px 0;
+}
+.sn-chart-masonry > * {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+@media (max-width: 959px) {
+  .sn-chart-masonry {
+    columns: 1 auto;
   }
 }

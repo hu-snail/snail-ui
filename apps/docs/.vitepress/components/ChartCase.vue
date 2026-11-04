@@ -177,7 +177,7 @@ async function copyText(text: string): Promise<void> {
 </script>
 
 <template>
-  <section class="sn-chart-case">
+  <section :id="def.id" class="sn-chart-case">
     <header class="sn-chart-case__head">
       <div class="sn-chart-case__heading">
         <h3 class="sn-chart-case__title">{{ title }}</h3>
@@ -259,6 +259,7 @@ async function copyText(text: string): Promise<void> {
 <style scoped>
 .sn-chart-case {
   margin: 20px 0;
+  scroll-margin-top: 80px;
   padding: 16px 16px 14px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;

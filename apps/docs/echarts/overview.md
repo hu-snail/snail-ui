@@ -77,6 +77,38 @@ createApp(App).use(SnUIECharts); // 注册 <SnChart>
 
 ---
 
+## 案例一览
+
+11 个可配置案例的瀑布流。每个卡片就是**真实渲染的图表**（跟随当前 UI 主题），点击卡片进入对应分类页的**配置面板**——调属性、换主题色、一键复制项目可用配置。
+
+<div class="sn-chart-masonry">
+
+<ChartCard id="line-basic" />
+
+<ChartCard id="line-multi" />
+
+<ChartCard id="area-soft" />
+
+<ChartCard id="area-multi" />
+
+<ChartCard id="bar-group" />
+
+<ChartCard id="bar-stack" />
+
+<ChartCard id="bar-h" />
+
+<ChartCard id="pie-ring" />
+
+<ChartCard id="pie-rose" />
+
+<ChartCard id="gauge-basic" />
+
+<ChartCard id="gauge-progress" />
+
+</div>
+
+---
+
 ## 能力地图
 
 | 能力                                               | 入口                             | 文档                                           |

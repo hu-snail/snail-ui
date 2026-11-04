@@ -77,6 +77,41 @@ createApp(App).use(SnUIECharts); // registers <SnChart>
 
 ---
 
+## Case gallery
+
+Eleven configurable cases in a masonry wall. Every card is a **live chart**
+(following the current UI theme); clicking one opens the **config panel** on
+its category page — tune the properties, retheme it, and copy a
+project-ready config in one click.
+
+<div class="sn-chart-masonry">
+
+<ChartCard id="line-basic" />
+
+<ChartCard id="line-multi" />
+
+<ChartCard id="area-soft" />
+
+<ChartCard id="area-multi" />
+
+<ChartCard id="bar-group" />
+
+<ChartCard id="bar-stack" />
+
+<ChartCard id="bar-h" />
+
+<ChartCard id="pie-ring" />
+
+<ChartCard id="pie-rose" />
+
+<ChartCard id="gauge-basic" />
+
+<ChartCard id="gauge-progress" />
+
+</div>
+
+---
+
 ## Capability map
 
 | Capability                                                            | Entry point                      | Docs                                                 |
