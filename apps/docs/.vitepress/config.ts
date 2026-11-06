@@ -2,8 +2,10 @@ import { defineConfig } from 'vitepress';
 import { fileURLToPath, URL } from 'node:url';
 import type { Options as MiniSearchOptions } from 'minisearch';
 import { rawDocSource } from './utils/raw-doc-source';
+import { docsSearchIndexPlugin } from './utils/docs-search-index-plugin';
 import { demoGrid } from './utils/demo-grid';
 import { EDIT_BASE } from './utils/edit-link';
+import { rpxTransform } from './utils/rpx-transform';
 
 /**
  * uni-demo 部署站（docs 预览 iframe 的目标，见 utils/uni-demo-base.ts）。
@@ -39,14 +41,40 @@ const nav = [
   { text: '组件 · Web', link: '/components/web/button' },
   { text: '组件 · uni-app', link: '/components/uni/button' },
   { text: '风格包', link: '/style-packs/overview' },
-  { text: '主题', link: '/theme/overview' },
+  // 主题入口直达编辑器（可视化调参 + Web / uni 双端实时预览），
+  // 与 .vitepress/config-nav.ts 的 nav 保持一致（那才是自定义导航的数据源）。
+  { text: '主题', link: '/theme/editor' },
   { text: 'AI 生态', link: '/ai/overview' },
   { text: '生态插件', link: '/ecosystem/overview' },
   { text: 'Echarts图表', link: '/echarts/overview' },
   { text: '模板', link: '/templates/overview' },
 ];
 
-const sidebar = {
+/**
+ * 侧栏组可折叠（展开/收起）。
+ *
+ * VitePress 只在分组项带有 `collapsed` 字段时才渲染收展 caret；给每个带
+ * 子项的分组补 `collapsed: false`（默认展开，点击 caret 收起）。递归处理，
+ * 深层子分组同样获得收展能力。
+ */
+function withCollapsibleGroups<T>(map: Record<string, T>): Record<string, T> {
+  const walk = (items: Array<Record<string, unknown>>): void => {
+    for (const item of items) {
+      const children = item['items'];
+      if (Array.isArray(children) && children.length > 0) {
+        item['collapsed'] = false;
+        walk(children as Array<Record<string, unknown>>);
+      }
+    }
+  };
+  for (const key of Object.keys(map)) {
+    const groups = map[key];
+    if (Array.isArray(groups)) walk(groups as Array<Record<string, unknown>>);
+  }
+  return map;
+}
+
+const sidebar = withCollapsibleGroups({
   '/guide/': [
     {
       text: '快速开始',
@@ -342,6 +370,7 @@ const sidebar = {
     {
       text: '主题与 Token',
       items: [
+        { text: '主题编辑器', link: '/theme/editor' },
         { text: 'Token 总览', link: '/theme/overview' },
         { text: 'Theme（颜色）', link: '/theme/theme' },
         { text: 'Style（形状）', link: '/theme/style' },
@@ -397,8 +426,15 @@ const sidebar = {
       items: [{ text: '生态插件总览', link: '/ecosystem/overview' }],
     },
     {
+      // 每种布局风格 = 独立一页（菜单里各占一项）。
       text: '布局',
-      items: [{ text: '中后台布局 @snui/admin-layout', link: '/ecosystem/plugins/admin-layout' }],
+      items: [
+        { text: '中后台布局 @snui/admin-layout', link: '/ecosystem/plugins/admin-layout' },
+        { text: 'standard 四形态壳', link: '/ecosystem/plugins/admin-layout/standard' },
+        { text: 'classic 经典企业后台', link: '/ecosystem/plugins/admin-layout/classic' },
+        { text: 'aurora 通屏背景', link: '/ecosystem/plugins/admin-layout/aurora' },
+        { text: 'workbench 工作台', link: '/ecosystem/plugins/admin-layout/workbench' },
+      ],
     },
   ],
   '/echarts/': [
@@ -415,7 +451,7 @@ const sidebar = {
     { text: '饼图', link: '/echarts/pie' },
     { text: '仪表盘', link: '/echarts/gauge' },
   ],
-};
+});
 
 const enNav = [
   { text: 'Guide', link: '/en/guide/web/intro' },
@@ -429,7 +465,7 @@ const enNav = [
   { text: 'Templates', link: '/en/templates/overview' },
 ];
 
-const enSidebar = {
+const enSidebar = withCollapsibleGroups({
   '/en/guide/': [
     {
       text: 'Getting started',
@@ -701,6 +737,7 @@ const enSidebar = {
     {
       text: 'Theme & Tokens',
       items: [
+        { text: 'Theme editor', link: '/en/theme/editor' },
         { text: 'Tokens overview', link: '/en/theme/overview' },
         { text: 'Theme (color)', link: '/en/theme/theme' },
         { text: 'Style (shape)', link: '/en/theme/style' },
@@ -756,7 +793,21 @@ const enSidebar = {
     {
       text: 'Layout',
       items: [
+        // One page (and one sidebar entry) per layout style.
         { text: 'Admin layout @snui/admin-layout', link: '/en/ecosystem/plugins/admin-layout' },
+        {
+          text: 'standard — four-shape shell',
+          link: '/en/ecosystem/plugins/admin-layout/standard',
+        },
+        { text: 'classic — enterprise admin', link: '/en/ecosystem/plugins/admin-layout/classic' },
+        {
+          text: 'aurora — full-bleed background',
+          link: '/en/ecosystem/plugins/admin-layout/aurora',
+        },
+        {
+          text: 'workbench — shared dashboard',
+          link: '/en/ecosystem/plugins/admin-layout/workbench',
+        },
       ],
     },
   ],
@@ -774,7 +825,7 @@ const enSidebar = {
     { text: 'Pie', link: '/en/echarts/pie' },
     { text: 'Gauge', link: '/en/echarts/gauge' },
   ],
-};
+});
 
 export default defineConfig({
   title: 'snail-aui — AI-Native UI 框架生态',
@@ -915,6 +966,16 @@ export default defineConfig({
 
   vite: {
     build: { target: 'es2022' },
+    // uni 端组件的 CSS 用 rpx 写尺寸，浏览器不认这个单位（整条声明会被丢弃，
+    // 于是按钮塌成纯文字、卡片没有内边距）。换算只发生在文档站编译期，
+    // 命中范围见 utils/rpx-transform.ts（@snui/uni dist + packages/uni/src）。
+    plugins: [
+      rpxTransform(),
+      // 文档检索：构建期扫描 md → 虚拟模块交给客户端检索引擎（SnSearchPanel）。
+      // 这里的路径只是兜底：dev 下 VitePress 会先打包 config，`import.meta.url`
+      // 指向打包产物；插件以 vite 的 `root`（= srcDir）为准。
+      docsSearchIndexPlugin(fileURLToPath(new URL('.', import.meta.url))),
+    ],
     define: {
       // 构建期注入 uni-demo / uni-templates 部署站地址（hash 路由），客户端代码不读 process.env。
       __UNI_DEMO_BASE__: JSON.stringify(UNI_DEMO_BASE),
@@ -923,12 +984,19 @@ export default defineConfig({
     resolve: {
       // Web demo 源直接引用包源码，vite + @vitejs/plugin-vue 按请求重编译 SFC
       // 并注入 scopeId，保证 scoped CSS 命中（dist 产物仍是发布事实源）。
-      // uni demo 不再由 docs 编译 —— 其源码单源于 apps/uni-demo，预览走部署站
-      // iframe（ADR-0005），故 @snui/uni-src 别名与 rpx 转换插件已退役。
+      //
+      // `@snui/uni-src`：主题编辑器（/theme/editor）的 uni 手机预览要渲染真实
+      // uni 组件。包根 @snui/uni 指向已编译 dist，其 SFC 的 scoped hash 与本站
+      // 重新编译出的不一致，样式会整体丢失；源码路径由本站同一套 vite +
+      // @vue/compiler-sfc 编译（与 uni-demo 的构建方式一致），组件内部的相对
+      // 导入（sn-icon 等）也解析到同一份源码，模块实例唯一。
+      // 组件 CSS 使用 rpx，由预览组件在运行时按 375 逻辑宽换算成 px。
+      // （uni 组件页的部署站 iframe 预览仍走 ADR-0005，不受影响。）
       alias: {
         '@snui/vue-web-src': fileURLToPath(
           new URL('../../../packages/vue-web/src', import.meta.url),
         ),
+        '@snui/uni-src': fileURLToPath(new URL('../../../packages/uni/src', import.meta.url)),
         '@snui/templates-src': fileURLToPath(
           new URL('../../../packages/templates/src', import.meta.url),
         ),
@@ -958,8 +1026,18 @@ export default defineConfig({
     },
   },
 
-  head: [
-    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+   head: [
+     // 文档页（非首页）默认悬浮：首帧渲染前挂 body.sn-nav-floating，
+     // 消除 hydration 前闪现默认通栏；首页保持滚动判断（SnDocsNav 接管）。
+     [
+       'script',
+       {},
+       `if (!/^\\/(en\\/?)?$/.test(location.pathname)) {
+   var add = function () { document.body.classList.add('sn-nav-floating'); };
+   document.body ? add() : document.addEventListener('DOMContentLoaded', add);
+ }`,
+     ],
+     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     [
       'link',
@@ -1012,3 +1090,4 @@ export default defineConfig({
    * so both root and en locales inherit a working search.
    */
 });
+
