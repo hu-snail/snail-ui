@@ -10,16 +10,12 @@
  * 行为映射 Bencho Seek 原件：
  *   - 帧率无关弹簧（dt 以 1/60s 计，阻尼取幂；settle 即停车）；
  *   - 点击先压缩（90ms「被按下」的节拍）再展开并聚焦；
- *   - 有值时失焦不收起（值是字段存在的理由）；
- *   - prefers-reduced-motion 直接落位；
- *   - Esc 清空并收起。
- *
- * 有值时失焦不收起（值是字段存在的理由）；
- *   - prefers-reduced-motion 直接落位；
- *   - Esc 清空并收起。
+ *   - 失焦时：有查询保持展开（值是字段存在的理由），空查询收回圆态；
+ *   - prefers-reduced-motion 直接落位。
  *
  * 输入 → SnSearchPanel 本地检索（构建期索引 + 倒排 TF-IDF 引擎，见
- * utils/docs-search-engine.ts）。↑↓ 选择、Enter 跳转、Esc 清空收起。
+ * utils/docs-search-engine.ts）。↑↓ 选择、Enter 跳转；Esc / 点击搜索框外部 /
+ * 选中结果三条路径都调 resetAndCollapse()：清空查询并收回 32px 圆态。
  * 导航条空间有限，常量按 band 高度缩放（SHUT=32 / LENS=15 / field=220）。
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -114,10 +110,7 @@ function start(): void {
 
 function onKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') {
-    value.value = '';
-    panelOpen.value = false;
-    open.value = false;
-    animateTo(SHUT);
+    resetAndCollapse();
     field.value?.blur();
     return;
   }
@@ -151,10 +144,7 @@ watch(open, (o) => {
 
 /** 面板选中跳转后：清空查询并收起整个搜索框。 */
 function onPanelClose(): void {
-  value.value = '';
-  panelOpen.value = false;
-  open.value = false;
-  animateTo(SHUT);
+  resetAndCollapse();
 }
 
 /** 点击字段外收起（面板点击会先 blur，由 panelOpen 延迟避免误收起）。 */
@@ -165,17 +155,23 @@ function away(): void {
   animateTo(SHUT);
 }
 
-/* ── 点击外部：关闭结果面板，并把搜索框收回圆态（保留查询） ─────────── */
+/* ── 收起：清空查询 + 关面板 + 字段收回圆态 ─────────────────────────────
+ * Esc / 点击外部 / 选中结果后都走这一条路径 —— 「收起」在三种入口下含义一致：
+ * 圆态里只留透镜，不会留下上一次的查询或结果。 */
 const root = ref<HTMLElement | null>(null);
-function onDocPointerDown(event: PointerEvent): void {
-  const target = event.target as Node | null;
-  if (!root.value || (target && root.value.contains(target))) return;
-  // 1) 结果面板立刻消失，2) 字段一并收回（宽度弹簧回到 32px 圆态）。
+function resetAndCollapse(): void {
+  value.value = '';
   panelOpen.value = false;
   open.value = false;
   animateTo(SHUT);
+}
+
+function onDocPointerDown(event: PointerEvent): void {
+  const target = event.target as Node | null;
+  if (!root.value || (target && root.value.contains(target))) return;
+  resetAndCollapse();
   // 输入框此刻可能仍持有焦点（capture 阶段早于浏览器换焦点），显式失焦，
-  // 避免「已收起却仍在输入态」的中间态；away() 在非空查询下不会重复收起。
+  // 避免「已收起却仍在输入态」的中间态。
   field.value?.blur();
 }
 function onFieldFocus(): void {
