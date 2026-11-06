@@ -1,0 +1,406 @@
+/**
+ * Button 组件详情页数据 —— 全部内容来自真实契约：
+ *   - Props / Events / Slots：packages/vue-web/src/button/SnButton.vue（defineProps 真实签名）
+ *   - Token：packages/tokens/src/component.ts DEFAULT_COMPONENT_TOKENS.button
+ *     + packages/tokens/styles/index.css 的 --aui-button-* / --sn-button-* 双族发射
+ *   - ai-description：packages/vue-web/src/button/ai-description.md
+ * 侧栏顺序中 Button 是 Basic 组第一个组件，故无上一篇。
+ */
+import type { SnDocPageData } from '../../components/doc-page/types';
+
+export const buttonDocPage: SnDocPageData = {
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'Button 按钮' }],
+  title: 'Button 按钮',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    { t: 'text', s: '最常用的交互原语，触发一个即时操作。提供 7 种语义类型、5 档尺寸、' },
+    { t: 'code', s: 'loading' },
+    { t: 'text', s: ' / ' },
+    { t: 'code', s: 'disabled' },
+    { t: 'text', s: ' 状态与 ' },
+    { t: 'code', s: 'text' },
+    { t: 'text', s: ' / ' },
+    { t: 'code', s: 'ghost' },
+    { t: 'text', s: ' / ' },
+    { t: 'code', s: 'dashed' },
+    { t: 'text', s: ' 变体，内置完整无障碍语义。Web 端直接消费 ' },
+    { t: 'code', s: '--sn-web-*' },
+    {
+      t: 'text',
+      s: ' 语义变量，与 Uni 端共享同一套 Token 级联 —— 主题编辑器换肤后本页所有演示实时跟随。',
+    },
+  ],
+  quickActions: [
+    {
+      icon: 'copy',
+      label: '复制引用代码 (import)',
+      copy: "import { SnButton } from '@snui/vue-web';",
+    },
+    {
+      icon: 'link',
+      label: 'GitHub 源码',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/vue-web/src/button',
+    },
+  ],
+
+  playground: {
+    fileLabel: 'SnButton.playground.vue',
+    stageLabel: '主要操作',
+  },
+
+  usage: {
+    hint: [
+      { t: 'text', s: '从 ' },
+      { t: 'code', s: '@snui/vue-web' },
+      { t: 'text', s: ' 直接引入 ' },
+      { t: 'code', s: 'SnButton' },
+      { t: 'text', s: ' 即用。' },
+      { t: 'code', s: 'loading' },
+      { t: 'text', s: ' 状态自带 spinner 并阻止重复点击，与 ' },
+      { t: 'code', s: 'disabled' },
+      { t: 'text', s: ' 一起在事件层生效。' },
+    ],
+    fileLabel: 'SubmitDemo.vue',
+    meta: 'Vue 3 / TypeScript',
+    code: [
+      '<script setup lang="ts">',
+      "import { ref } from 'vue';",
+      "import { SnButton } from '@snui/vue-web';",
+      '',
+      'const submitting = ref(false);',
+      '',
+      'async function onSubmit(): Promise<void> {',
+      '  submitting.value = true;',
+      '  try {',
+      '    await submitTicket();',
+      '  } finally {',
+      '    submitting.value = false;',
+      '  }',
+      '}',
+      '<\/script>',
+      '',
+      '<template>',
+      '  <SnButton type="primary" size="large" :loading="submitting" @click="onSubmit">',
+      '    提交工单',
+      '  </SnButton>',
+      '</template>',
+    ].join('\n'),
+  },
+
+  variants: {
+    hint: [
+      { t: 'text', s: '四组高频场景模式，全部为 ' },
+      { t: 'code', s: 'SnButton' },
+      { t: 'text', s: ' 的真实 props 组合 —— 配色随当前主题 / 风格包实时变化。' },
+    ],
+    cards: [
+      {
+        title: '语义类型 Semantic',
+        tag: '最高频',
+        tagTone: 'accent',
+        copy: 'type 直接映射业务语义：主操作 primary，成功 / 警告 / 危险反馈各有专属配色，default 用于中性操作。',
+        demos: [
+          { label: '默认', type: 'default' },
+          { label: '主要', type: 'primary' },
+          { label: '成功', type: 'success' },
+          { label: '警告', type: 'warning' },
+          { label: '危险', type: 'error' },
+        ],
+      },
+      {
+        title: '文字与幽灵 text / ghost',
+        tag: '轻量',
+        tagTone: 'plain',
+        copy: 'text 完全透明无边框，ghost 保留着色描边 —— 用于工具栏、卡片内嵌等低视觉权重场景。',
+        demos: [
+          { label: '文字按钮', type: 'primary', text: true },
+          { label: '幽灵按钮', type: 'primary', ghost: true },
+        ],
+      },
+      {
+        title: '虚线与强调 dashed / strong',
+        tag: '占位 / 突出',
+        tagTone: 'plain',
+        copy: 'dashed 虚线边框用于占位与过渡态视觉；strong 加重实心按钮阴影，强化首屏主 CTA。',
+        demos: [
+          { label: '虚线边框', dashed: true },
+          { label: '加重主色', type: 'primary', strong: true },
+        ],
+      },
+      {
+        title: '强调梯度 secondary / tertiary / quaternary',
+        tag: '层级化',
+        tagTone: 'ai',
+        copy: '同一语义下的三级弱化：secondary 反色 hover、tertiary 弱化填充、quaternary 纯文字，适配密集工具栏。',
+        demos: [
+          { label: 'secondary', type: 'primary', secondary: true },
+          { label: 'tertiary', type: 'primary', tertiary: true },
+          { label: 'quaternary', type: 'primary', quaternary: true },
+        ],
+      },
+    ],
+  },
+
+  tokens: {
+    hint: [
+      { t: 'text', s: 'Token 由 ' },
+      { t: 'code', s: '@snui/tokens' },
+      { t: 'text', s: ' 静态级联发射两族变量：' },
+      { t: 'code', s: '--aui-button-*' },
+      { t: 'text', s: '（原始级联输出）与 ' },
+      { t: 'code', s: '--sn-button-*' },
+      { t: 'text', s: '（品牌别名，组件实际消费）。语义色经由 ' },
+      { t: 'code', s: '--sn-web-color-action-*' },
+      { t: 'text', s: ' 下发，主题编辑器与风格包换肤即改写这一层。' },
+    ],
+    note: '100% 双端编译映射',
+    rows: [
+      {
+        name: 'height-tiny',
+        raw: '--aui-button-height-tiny',
+        alias: '--sn-button-height-tiny',
+        value: '24px',
+      },
+      {
+        name: 'height-small',
+        raw: '--aui-button-height-small',
+        alias: '--sn-button-height-small',
+        value: '32px',
+      },
+      {
+        name: 'height-medium',
+        raw: '--aui-button-height-medium',
+        alias: '--sn-button-height-medium',
+        value: '36px',
+      },
+      {
+        name: 'height-large',
+        raw: '--aui-button-height-large',
+        alias: '--sn-button-height-large',
+        value: '40px',
+      },
+      {
+        name: 'padding-x',
+        raw: '--aui-button-padding-x',
+        alias: '--sn-button-padding-x',
+        value: '16px',
+      },
+      {
+        name: 'radius',
+        raw: '--aui-button-radius',
+        alias: '--sn-button-radius',
+        value: '4px',
+        kind: 'curve',
+      },
+      {
+        name: 'font-size',
+        raw: '--aui-button-font-size',
+        alias: '--sn-button-font-size',
+        value: '14px',
+      },
+      {
+        name: 'focus-ring',
+        raw: '--aui-button-focus-ring',
+        alias: '--sn-button-focus-ring',
+        value: 'rgba(22, 119, 255, 0.25)',
+        swatch: 'rgba(22, 119, 255, 0.25)',
+      },
+      {
+        name: 'color-action-primary',
+        raw: '--aui-color-action-primary',
+        alias: '--sn-web-color-action-primary',
+        value: '#1677ff',
+        swatch: '#1677ff',
+      },
+    ],
+  },
+
+  props: {
+    hint: [
+      { t: 'text', s: '与 ' },
+      { t: 'code', s: 'SnButton.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineProps' },
+      { t: 'text', s: ' 签名 1:1 对齐；' },
+      { t: 'code', s: 'tag' },
+      { t: 'text', s: ' 切换根元素后，原生 button 专属行为（disabled / attrType）随之失效。' },
+    ],
+    rows: [
+      {
+        name: 'type',
+        type: "'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'tertiary'",
+        default: "'default'",
+        desc: '按钮语义类型，驱动配色与 hover 反馈。',
+      },
+      {
+        name: 'size',
+        type: "'tiny' | 'small' | 'medium' | 'large' | 'huge'",
+        default: "'medium'",
+        desc: '尺寸级别，联动高度与字号。',
+      },
+      { name: 'block', type: 'boolean', default: 'false', desc: '块级（占满父容器宽度）。' },
+      {
+        name: 'round',
+        type: 'boolean',
+        default: 'false',
+        desc: '胶囊形（border-radius: 999px）。',
+      },
+      { name: 'circle', type: 'boolean', default: 'false', desc: '圆形（正方形 padding）。' },
+      { name: 'text', type: 'boolean', default: 'false', desc: '文字按钮 — 透明背景、无边框。' },
+      { name: 'ghost', type: 'boolean', default: 'false', desc: '透明背景 + 着色边框。' },
+      { name: 'dashed', type: 'boolean', default: 'false', desc: '虚线边框。' },
+      { name: 'secondary', type: 'boolean', default: 'false', desc: '反色 hover（视觉变体）。' },
+      {
+        name: 'tertiary',
+        type: 'boolean',
+        default: 'false',
+        desc: '弱化主色填充（soft-bg variant）。',
+      },
+      { name: 'quaternary', type: 'boolean', default: 'false', desc: '文字型 tertiary。' },
+      { name: 'strong', type: 'boolean', default: 'false', desc: '加重阴影（实心按钮）。' },
+      {
+        name: 'color',
+        type: 'string',
+        default: '—',
+        desc: '自定义 CSS 颜色；--sn-button-color token 覆盖 type 配色。',
+      },
+      {
+        name: 'tag',
+        type: "'button' | 'a' | 'div' | 'span'",
+        default: "'button'",
+        desc: "根元素。'a' 时 disabled 失效（HTMLAnchorElement 不支持）。",
+      },
+      {
+        name: 'attrType',
+        type: "'button' | 'submit' | 'reset'",
+        default: "'button'",
+        desc: '原生 <button> 的 type 属性。',
+      },
+      {
+        name: 'disabled',
+        type: 'boolean',
+        default: 'false',
+        desc: '禁用。跳过 click 并设置 aria-disabled。',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        default: 'false',
+        desc: '加载中（spinner + 阻止 click + aria-busy）。',
+      },
+      { name: 'focusable', type: 'boolean', default: 'true', desc: '是否可 tab 聚焦。' },
+      { name: 'icon', type: 'IconComponent', default: '—', desc: '直接传 lucide 组件。' },
+      { name: 'iconName', type: 'string', default: '—', desc: '通过 registerSnIcons 注册表解析。' },
+      { name: 'iconPlacement', type: "'left' | 'right'", default: "'left'", desc: '图标位置。' },
+      { name: 'iconSize', type: 'number | string', default: '14', desc: '图标 px / CSS 长度。' },
+      {
+        name: 'showIcon',
+        type: 'boolean',
+        default: 'true',
+        desc: '是否显示图标。false 隐藏（loading 仍显示 spinner）。',
+      },
+      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签覆盖。' },
+      {
+        name: 'htmlType (deprecated)',
+        type: "'button' | 'submit' | 'reset'",
+        default: '—',
+        desc: 'attrType 的 legacy alias。',
+      },
+      {
+        name: 'bordered (deprecated)',
+        type: 'boolean',
+        default: 'true',
+        desc: '旧 border 标志，保留向后兼容。',
+      },
+    ],
+  },
+
+  ai: {
+    badge: 'ai-description.md · 已内置',
+    heading: '为 LLM 提供语义化组件契约',
+    copy: 'SnButton 携带 AI-Friendly 描述（用途 / Import / Props / Events / Slots / A11y），由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档；智能体无需解析 .vue 源码即可产出正确调用。',
+    chip: "import { SnButton } from '@snui/vue-web';",
+    chipCopy: "import { SnButton } from '@snui/vue-web';",
+    stats: [
+      { key: 'intent.action', value: 'SnButton', tone: 'accent' },
+      { key: 'intent.type', value: '"primary"', tone: 'cyan' },
+      { key: 'a11y', value: 'native button', tone: 'ok' },
+    ],
+  },
+
+  demos: [
+    {
+      name: 'button-web-basic',
+      title: '基础用法',
+      blurb: '六种语义类型：default / primary / info / success / warning / error。',
+    },
+    {
+      name: 'button-web-size',
+      title: '尺寸',
+      blurb: '5 档高度（tiny → huge），覆盖紧凑列表到首屏 CTA。',
+    },
+    {
+      name: 'button-web-shape',
+      title: '块级与圆角',
+      blurb: 'block 占满父容器宽度；round 应用胶囊形圆角。',
+    },
+    {
+      name: 'button-web-state',
+      title: '状态',
+      blurb: 'disabled 完全禁用；loading 显示 spinner 且不可点击。',
+    },
+    {
+      name: 'button-web-variant',
+      title: '变体',
+      blurb: 'text 文字按钮 / ghost 透明边框 / dashed 虚线边框。',
+    },
+    {
+      name: 'button-web-emphasis',
+      title: '强调梯度',
+      blurb: 'circle 圆形仅图标；strong 主色阴影；secondary / tertiary / quaternary。',
+    },
+    {
+      name: 'button-web-color',
+      title: '自定义颜色',
+      blurb: 'color prop 设置自定义 CSS 颜色 → --sn-button-color。',
+    },
+    {
+      name: 'button-web-tag',
+      title: '根标签切换',
+      blurb: "tag='a' 渲染为链接；tag='div' 渲染为容器；默认 button。",
+    },
+    {
+      name: 'button-web-doodle',
+      title: '涂鸦风格',
+      blurb: 'Doodle 风格包：粗墨边 + 硬阴影 + 波浪圆角。',
+    },
+    {
+      name: 'button-web-icon-placement',
+      title: '图标位置',
+      blurb: "iconPlacement 'right' 图标放右边；showIcon false 隐藏图标。",
+    },
+    {
+      name: 'button-web-attr-type',
+      title: '原生属性',
+      blurb: 'attrType 提交表单；focusable false 移除 tab 焦点。',
+    },
+  ],
+
+  pager: {
+    next: { text: 'Divider 分割线', link: '/components/web/divider' },
+  },
+
+  toc: [
+    { id: 'playground', text: '交互式演练 Playground' },
+    { id: 'usage', text: '代码用法 Usage' },
+    { id: 'variants', text: '样式变体 Variants' },
+    { id: 'demos', text: '案例 Demos' },
+    { id: 'tokens', text: 'Token 映射 Tokens' },
+    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
+  ],
+};
