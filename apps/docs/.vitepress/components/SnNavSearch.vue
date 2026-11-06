@@ -165,17 +165,18 @@ function away(): void {
   animateTo(SHUT);
 }
 
-/* ── 点击外部：关闭结果面板（保留查询，重新聚焦即恢复） ─────────────── */
+/* ── 点击外部：关闭结果面板，并把搜索框收回圆态（保留查询） ─────────── */
 const root = ref<HTMLElement | null>(null);
 function onDocPointerDown(event: PointerEvent): void {
   const target = event.target as Node | null;
   if (!root.value || (target && root.value.contains(target))) return;
+  // 1) 结果面板立刻消失，2) 字段一并收回（宽度弹簧回到 32px 圆态）。
   panelOpen.value = false;
-  // 空查询时连输入框一起收回，回到圆态。
-  if (!value.value.trim()) {
-    open.value = false;
-    animateTo(SHUT);
-  }
+  open.value = false;
+  animateTo(SHUT);
+  // 输入框此刻可能仍持有焦点（capture 阶段早于浏览器换焦点），显式失焦，
+  // 避免「已收起却仍在输入态」的中间态；away() 在非空查询下不会重复收起。
+  field.value?.blur();
 }
 function onFieldFocus(): void {
   // 重新聚焦且已有查询 → 结果面板回来（不用再敲一次字）。
