@@ -24,6 +24,10 @@
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useData } from 'vitepress';
+
+// 主题暗色态：模板里 sn-seek--dark / placeholder 文案都要用它。
+// 之前只 import 未调用 —— isDark 在渲染期 undefined（Vue warn）。
+const { isDark } = useData();
 import SnSearchPanel from './SnSearchPanel.vue';
 
 /* ── 几何常量（band 版） ─────────────────────────────────────────────── */
@@ -161,14 +165,37 @@ function away(): void {
   animateTo(SHUT);
 }
 
+/* ── 点击外部：关闭结果面板（保留查询，重新聚焦即恢复） ─────────────── */
+const root = ref<HTMLElement | null>(null);
+function onDocPointerDown(event: PointerEvent): void {
+  const target = event.target as Node | null;
+  if (!root.value || (target && root.value.contains(target))) return;
+  panelOpen.value = false;
+  // 空查询时连输入框一起收回，回到圆态。
+  if (!value.value.trim()) {
+    open.value = false;
+    animateTo(SHUT);
+  }
+}
+function onFieldFocus(): void {
+  // 重新聚焦且已有查询 → 结果面板回来（不用再敲一次字）。
+  if (value.value.trim()) panelOpen.value = true;
+}
+
+onMounted(() => {
+  // 捕获阶段：任何位置的按下都先判定是否在搜索框之外。
+  document.addEventListener('pointerdown', onDocPointerDown, true);
+});
+
 onBeforeUnmount(() => {
   cancelAnimationFrame(raf);
   clearTimeout(beat);
+  document.removeEventListener('pointerdown', onDocPointerDown, true);
 });
 </script>
 
 <template>
-  <div class="sn-seek" :class="{ 'sn-seek--dark': isDark }" :style="{ width: `${width}px` }">
+  <div ref="root" class="sn-seek" :class="{ 'sn-seek--dark': isDark }" :style="{ width: `${width}px` }">
     <div class="sn-seek__skin" :data-open="open" :data-press="press">
       <!-- 透镜：固定在左 inset，圆态居中 / 展开态即字段 padding -->
       <svg class="sn-seek__lens" viewBox="0 0 18 18" aria-hidden="true">
@@ -188,6 +215,7 @@ onBeforeUnmount(() => {
         :tabindex="open ? 0 : -1"
         @input="value = ($event.target as HTMLInputElement).value"
         @blur="away"
+        @focus="onFieldFocus"
         @keydown="onKeydown"
       />
       <!-- 展开前唯一的点击入口；展开后由字段自身接管 -->
@@ -227,8 +255,10 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 32px;
   border-radius: 999px;
-  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
-  border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
+  /* 透明底：搜索框坐在悬浮导航岛的磨砂玻璃上，自己再铺一层实色就成了「贴片」。
+   * 只留一圈极淡的描边；悬停 / 展开时才升一点浅底，焦点状态依然可辨。 */
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-border-default, var(--vp-c-divider)) 65%, transparent);
   overflow: hidden;
   transform: scale(var(--sk, 1)) translateY(var(--ly, 0));
   transition:
@@ -236,6 +266,11 @@ onBeforeUnmount(() => {
     background 220ms ease,
     border-color 220ms ease;
   cursor: pointer;
+}
+.sn-seek__skin:hover,
+.sn-seek__skin[data-open='true'] {
+  background: color-mix(in srgb, var(--vp-c-bg) 45%, transparent);
+  border-color: color-mix(in srgb, var(--sn-web-color-action-primary, var(--vp-c-brand-1)) 45%, transparent);
 }
 .sn-seek__skin[data-open='true'] {
   cursor: text;

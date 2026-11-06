@@ -1,29 +1,30 @@
 <script setup lang="ts">
 /**
- * SnSearchPanel — docs search results panel (inline dropdown below SnNavSearch).
+ * SnSearchPanel — docs search results panel (dropdown under SnNavSearch).
+ *
+ * ## Layout
+ *
+ * Three rows in a flex column, so the results list can never scroll over the
+ * capsule row or the key-hint footer:
+ *
+ *   head  — Web / uni-app / 全部 capsule, with a sliding thumb (the active
+ *           segment's pill is one element that translates + resizes, so the
+ *           switch reads as motion instead of a fill swap)
+ *   body  — the only scrollable region (`overflow-y: auto`)
+ *   foot  — key hints (left) + pager (right)
  *
  * ## Data flow
  *
  * Build-time corpus arrives via `virtual:sn-docs-search-index` (see
- * docs-search-index-plugin.ts). The raw doc list feeds a lazily-constructed
- * DocsSearchEngine module singleton — one index for the app's lifetime, cheap
- * per-keystroke queries (inverted index, no per-query scan of the corpus).
- *
- * ## Capsule filter (Web / uni)
- *
- * Component pages carry an `end` bucket ('web' | 'uni' | 'other'). The
- * capsule shows Web / uni-app / 全部 only when the current result set
- * contains component pages; picking Web or uni-app narrows to that end.
- *
- * ## Animation
- *
- * Panel expand/collapse uses the same frame-rate-independent spring as
- * SnNavSearch (dt-normalized, settle = stop), driving a CSS custom property
- * `--grow` (0→1) that scales opacity + translateY + clip. prefers-reduced-
- * motion snaps. List rendering caps at 12 hits — the engine returns ≤30.
+ * docs-search-index-plugin.ts), lazily imported on the first keystroke and
+ * fed to a module-level DocsSearchEngine singleton (inverted index, cheap
+ * per-query). Results are paginated PAGE_SIZE per page (the engine returns
+ * at most 30), while `activeIndex` stays an index over the *whole* filtered
+ * list: ↑/↓ walks across page boundaries and the pager follows.
  */
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useData, useRouter } from 'vitepress';
+import { SnPagination, SnTag } from '@snui/vue-web';
 import {
   DocsSearchEngine,
   type DocsSearchDoc,
@@ -34,18 +35,14 @@ const { isDark } = useData();
 const router = useRouter();
 
 /**
- * Module-level singleton + lazy chunk.
- *
- * The corpus (~1.4MB raw JSON for 443 pages) ships as its own chunk via a
- * dynamic `import()` of the virtual module — the theme bundle pays nothing
- * until the first search keystroke, and the engine is built once per session
- * (subsequent queries hit the warm inverted index).
+ * Module-level singleton + lazy chunk: the corpus (~1.4MB raw JSON for 443
+ * pages) ships as its own chunk, fetched on the first search keystroke.
  */
 let enginePromise: Promise<DocsSearchEngine> | null = null;
 function getEngine(): Promise<DocsSearchEngine> {
   if (!enginePromise) {
-    enginePromise = import('virtual:sn-docs-search-index').then((m) =>
-      new DocsSearchEngine(m.default as DocsSearchDoc[]),
+    enginePromise = import('virtual:sn-docs-search-index').then(
+      (m) => new DocsSearchEngine(m.default as DocsSearchDoc[]),
     );
   }
   return enginePromise;
@@ -60,7 +57,10 @@ const emit = defineEmits<{
   (e: 'close'): void;
 }>();
 
-/* ── 查询 → 结果（每次 keystroke；倒排索引查询廉价） ─────────────────── */
+/** Rows per page (the engine caps a query at 30 hits). */
+const PAGE_SIZE = 8;
+
+/** Hits of the current query (all pages — the pager slices them). */
 const hits = ref<DocsSearchHit[]>([]);
 watch(
   () => props.query,
@@ -68,46 +68,110 @@ watch(
     const trimmed = q.trim();
     if (!trimmed) {
       hits.value = [];
+      activeIndex.value = 0;
       return;
     }
     void getEngine().then((engine) => {
       // 引擎加载期间用户可能已继续输入——过期结果丢弃。
       if (props.query.trim() !== trimmed) return;
-      hits.value = engine.search(trimmed).slice(0, 12);
-      if (activeIndex.value >= hits.value.length) activeIndex.value = 0;
+      hits.value = engine.search(trimmed);
+      activeIndex.value = 0;
     });
   },
 );
 
 /* ── 端胶囊（Web / uni-app / 全部） ──────────────────────────────────── */
 type EndFilter = 'all' | 'web' | 'uni';
+const END_KEYS: readonly EndFilter[] = ['all', 'web', 'uni'] as const;
+const LABELS: Record<EndFilter, string> = { all: '全部', web: 'Web 端', uni: 'uni-app' };
+
 const endFilter = ref<EndFilter>('all');
 const hasComponentHits = computed(() => hits.value.some((h) => h.doc.end !== 'other'));
-const webCount = computed(() => hits.value.filter((h) => h.doc.end === 'web').length);
-const uniCount = computed(() => hits.value.filter((h) => h.doc.end === 'uni').length);
+function countOf(key: EndFilter): number {
+  if (key === 'all') return hits.value.length;
+  return hits.value.filter((h) => h.doc.end === key).length;
+}
 const filteredHits = computed(() =>
   endFilter.value === 'all' ? hits.value : hits.value.filter((h) => h.doc.end === endFilter.value),
 );
-watch(() => props.query, () => {
-  endFilter.value = 'all';
+
+/* ── 滑动 thumb：胶囊切换动画 ─────────────────────────────────────────── */
+const capTrack = ref<HTMLElement | null>(null);
+const capRefs = ref<Array<HTMLButtonElement | null>>([]);
+const thumb = ref({ x: 0, w: 0 });
+let thumbObserver: ResizeObserver | undefined;
+
+/** 把 thumb 移到当前段（offsetParent = track，故 offsetLeft 即轨道内坐标）。 */
+function syncThumb(): void {
+  const index = END_KEYS.indexOf(endFilter.value);
+  const el = capRefs.value[index];
+  if (!el) return;
+  thumb.value = { x: el.offsetLeft, w: el.offsetWidth };
+}
+
+watch([endFilter, () => filteredHits.value.length, hasComponentHits], () => {
+  void nextTick(syncThumb);
+});
+onMounted(() => {
+  void nextTick(syncThumb);
+  if (typeof ResizeObserver !== 'undefined') {
+    thumbObserver = new ResizeObserver(() => syncThumb());
+    if (capTrack.value) thumbObserver.observe(capTrack.value);
+  }
+});
+onBeforeUnmount(() => thumbObserver?.disconnect());
+
+/** 换查询时回到「全部」，换端时把选中项收回第一页。 */
+watch(
+  () => props.query,
+  () => {
+    endFilter.value = 'all';
+    activeIndex.value = 0;
+  },
+);
+watch(endFilter, () => {
+  activeIndex.value = 0;
+  scrollActiveIntoView();
 });
 
-const LABELS = {
-  all: '全部',
-  web: 'Web 端',
-  uni: 'uni-app',
-} as const;
+/* ── 分页 ────────────────────────────────────────────────────────────── */
+const pageCount = computed(() => Math.max(1, Math.ceil(filteredHits.value.length / PAGE_SIZE)));
+/** 当前页由 activeIndex 推导：↑↓ 跨页时页码自动跟随。 */
+const page = computed(() => Math.floor(activeIndex.value / PAGE_SIZE) + 1);
+const pagedHits = computed(() =>
+  filteredHits.value.slice((page.value - 1) * PAGE_SIZE, page.value * PAGE_SIZE),
+);
+
+function onPage(next: number): void {
+  const clamped = Math.min(Math.max(next, 1), pageCount.value);
+  activeIndex.value = (clamped - 1) * PAGE_SIZE;
+  scrollActiveIntoView();
+}
 
 /* ── 键盘导航 ────────────────────────────────────────────────────────── */
 const activeIndex = ref(0);
-watch(filteredHits, () => {
-  activeIndex.value = 0;
-});
+const listEl = ref<HTMLElement | null>(null);
 
+/** 全局下标 → 当前页内下标（用于 active 样式与 mouseenter 回写）。 */
+function globalIndex(localIndex: number): number {
+  return (page.value - 1) * PAGE_SIZE + localIndex;
+}
+
+function scrollActiveIntoView(): void {
+  void nextTick(() => {
+    const el = listEl.value?.children[activeIndex.value - (page.value - 1) * PAGE_SIZE] as
+      | HTMLElement
+      | undefined;
+    el?.scrollIntoView({ block: 'nearest' });
+  });
+}
+
+/** 跨页循环移动（列表为空时不动）。 */
 function move(delta: number): void {
-  const n = filteredHits.value.length;
-  if (n === 0) return;
-  activeIndex.value = (activeIndex.value + delta + n) % n;
+  const total = filteredHits.value.length;
+  if (total === 0) return;
+  activeIndex.value = (activeIndex.value + delta + total) % total;
+  scrollActiveIntoView();
 }
 
 function choose(hit: DocsSearchHit): void {
@@ -115,12 +179,12 @@ function choose(hit: DocsSearchHit): void {
   void router.go(hit.doc.url);
 }
 
-defineExpose({ move, chooseActive });
-
 function chooseActive(): void {
   const hit = filteredHits.value[activeIndex.value];
   if (hit) choose(hit);
 }
+
+defineExpose({ move, chooseActive });
 
 /* ── 展开动画（帧率无关弹簧，驱动 --grow） ───────────────────────────── */
 const grow = ref(0);
@@ -207,47 +271,63 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
     :class="{ 'sn-search-panel--dark': isDark }"
     :style="{ '--grow': grow }"
     :data-open="open"
-    role="listbox"
+    role="dialog"
     aria-label="搜索结果"
   >
-    <!-- 胶囊切换：仅组件结果存在时出现 -->
-    <div v-if="hasComponentHits" class="sn-search-panel__capsule" role="group" aria-label="按端筛选">
+    <!-- head：端胶囊。thumb 是一个会平移+变宽的元素，切换因此读作「滑动」 -->
+    <div
+      v-if="hasComponentHits"
+      ref="capTrack"
+      class="sn-search-panel__head"
+      role="group"
+      aria-label="按端筛选"
+    >
+      <span
+        class="sn-search-panel__thumb"
+        :style="{ transform: `translateX(${thumb.x}px)`, width: `${thumb.w}px` }"
+        aria-hidden="true"
+      />
       <button
-        v-for="key in (['all', 'web', 'uni'] as const)"
+        v-for="(key, i) in END_KEYS"
         :key="key"
+        :ref="(el) => (capRefs[i] = el as HTMLButtonElement | null)"
         type="button"
         class="sn-search-panel__cap"
         :class="{ 'sn-search-panel__cap--on': endFilter === key }"
         :aria-pressed="endFilter === key"
-        :disabled="key !== 'all' && (key === 'web' ? webCount : uniCount) === 0"
+        :disabled="countOf(key) === 0"
         @click="endFilter = key"
       >
         {{ LABELS[key] }}
-        <span v-if="key === 'web' && webCount" class="sn-search-panel__cap-n">{{ webCount }}</span>
-        <span v-else-if="key === 'uni' && uniCount" class="sn-search-panel__cap-n">{{ uniCount }}</span>
+        <span v-if="countOf(key)" class="sn-search-panel__cap-n">{{ countOf(key) }}</span>
       </button>
     </div>
 
-    <ul v-if="filteredHits.length" class="sn-search-panel__list">
+    <!-- body：唯一滚动区，绝不会压到胶囊或按键说明 -->
+    <ul v-if="pagedHits.length" ref="listEl" class="sn-search-panel__list" role="listbox">
       <li
-        v-for="(hit, i) in filteredHits"
+        v-for="(hit, i) in pagedHits"
         :key="hit.doc.url"
         class="sn-search-panel__item"
-        :class="{ 'sn-search-panel__item--active': i === activeIndex }"
+        :class="{ 'sn-search-panel__item--active': globalIndex(i) === activeIndex }"
         role="option"
-        :aria-selected="i === activeIndex"
-        @mouseenter="activeIndex = i"
+        :aria-selected="globalIndex(i) === activeIndex"
+        @mouseenter="activeIndex = globalIndex(i)"
         @click="choose(hit)"
       >
         <div class="sn-search-panel__row">
           <span class="sn-search-panel__title">{{ hit.doc.title }}</span>
           <span class="sn-search-panel__chips">
-            <span
+            <SnTag
               v-if="hit.doc.end !== 'other'"
-              class="sn-search-panel__end"
-              :data-end="hit.doc.end"
-            >{{ hit.doc.end === 'web' ? 'Web' : 'uni' }}</span>
-            <span class="sn-search-panel__cat">{{ hit.doc.category }}</span>
+              size="small"
+              round
+              :bordered="false"
+              :type="hit.doc.end === 'web' ? 'primary' : 'success'"
+            >
+              {{ hit.doc.end === 'web' ? 'Web' : 'uni-app' }}
+            </SnTag>
+            <SnTag size="small" round :bordered="false">{{ hit.doc.category }}</SnTag>
           </span>
         </div>
         <p v-if="partsOf(hit).length" class="sn-search-panel__snippet">
@@ -259,60 +339,136 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
       </li>
     </ul>
     <p v-else-if="query.trim()" class="sn-search-panel__empty">没有找到相关结果</p>
+
+    <!-- foot：左 = 按键说明，右 = 分页 -->
+    <div v-if="filteredHits.length" class="sn-search-panel__foot">
+      <p class="sn-search-panel__keys">
+        <kbd>↑</kbd><kbd>↓</kbd><span>选择</span>
+        <kbd>↵</kbd><span>打开</span>
+        <kbd>esc</kbd><span>关闭</span>
+      </p>
+      <SnPagination
+        class="sn-search-panel__pager"
+        simple
+        :page="page"
+        :page-count="pageCount"
+        @update:page="onPage"
+      />
+    </div>
   </div>
 </template>
 
 <style scoped>
+/* 三段式：head / body / foot。面板自身不滚动（overflow: hidden），
+ * 只有 body 里的列表滚动 —— 结果永远不可能滑到胶囊或说明行上面。 */
 .sn-search-panel {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
+  display: flex;
+  flex-direction: column;
   width: 420px;
   max-width: calc(100vw - 48px);
-  max-height: min(480px, 60vh);
-  overflow-y: auto;
+  max-height: min(460px, 60vh);
+  overflow: hidden;
   overscroll-behavior: contain;
-  border-radius: 14px;
-  border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
-  background: var(--sn-web-color-background, var(--vp-c-bg));
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+  border-radius: 18px;
+  /* 主题色渐变弥散 + 磨砂：结果要看得清，底色只留 10% 通透（不做全透），
+   * 主题色以两团径向光晕弥散在面板内；随主题换色（--vp-c-brand-*）自动跟随。 */
+  border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 20%, rgb(255 255 255 / 0.75));
+  background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent);
+  background-image:
+    radial-gradient(
+      120% 90% at 100% 0%,
+      color-mix(in srgb, var(--vp-c-brand-1) 18%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      100% 80% at 0% 100%,
+      color-mix(in srgb, var(--vp-c-brand-2) 12%, transparent),
+      transparent 58%
+    );
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 18px 48px -12px color-mix(in srgb, var(--vp-c-brand-1) 26%, transparent),
+    0 8px 24px -8px rgb(15 23 42 / 0.1),
+    inset 0 1px 0 0 color-mix(in srgb, var(--vp-c-bg) 70%, transparent);
   /* 弹簧驱动 --grow：透明度 / 上浮 / 缩放一次性完成，只合成 transform+opacity */
   opacity: var(--grow);
   transform: translateY(calc((1 - var(--grow)) * -6px)) scale(calc(0.98 + var(--grow) * 0.02));
   transform-origin: top left;
-  /* 关闭时的指针屏蔽由外层 .sn-seek__panel-anchor 承担 */
 }
 
-/* ── 端胶囊 ── */
-.sn-search-panel__capsule {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  display: inline-flex;
+/* 深色：同构——品牌光晕提亮，底色仍保 88% 不透明（可读性优先）。 */
+.sn-search-panel--dark {
+  border-color: color-mix(in srgb, var(--vp-c-brand-1) 26%, rgb(255 255 255 / 0.12));
+  background-color: color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  background-image:
+    radial-gradient(
+      120% 90% at 100% 0%,
+      color-mix(in srgb, var(--vp-c-brand-1) 26%, transparent),
+      transparent 64%
+    ),
+    radial-gradient(
+      100% 80% at 0% 100%,
+      color-mix(in srgb, var(--vp-c-brand-2) 16%, transparent),
+      transparent 60%
+    );
+  box-shadow:
+    0 18px 48px -12px color-mix(in srgb, var(--vp-c-brand-1) 30%, transparent),
+    0 10px 28px -8px rgb(0 0 0 / 0.5),
+    inset 0 1px 0 0 rgb(255 255 255 / 0.07);
+}
+
+/* ── head：端胶囊（含滑动 thumb） ── */
+.sn-search-panel__head {
+  position: relative; /* thumb 的定位基准（按钮 offsetLeft 即轨道内坐标） */
+  flex: 0 0 auto;
+  display: flex;
   gap: 2px;
-  margin: 8px 10px 4px;
-  padding: 2px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 12%, transparent);
+}
+.sn-search-panel__thumb {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  height: 26px;
   border-radius: 999px;
-  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
+  background: color-mix(in srgb, var(--vp-c-bg) 94%, transparent);
+  box-shadow:
+    0 1px 3px rgb(15 23 42 / 0.12),
+    0 0 0 1px color-mix(in srgb, var(--vp-c-brand-1) 22%, transparent);
+  pointer-events: none;
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 200ms ease;
+}
+.sn-search-panel--dark .sn-search-panel__thumb {
+  background: color-mix(in srgb, var(--vp-c-bg) 86%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--vp-c-brand-1) 30%, transparent),
+    0 1px 3px rgb(0 0 0 / 0.4);
 }
 .sn-search-panel__cap {
+  position: relative;
+  z-index: 1;
   border: 0;
   border-radius: 999px;
-  padding: 3px 10px;
+  padding: 4px 10px;
+  height: 26px;
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1;
   background: transparent;
   color: var(--sn-web-color-text-secondary, var(--vp-c-text-2));
   cursor: pointer;
-  transition:
-    background 160ms ease,
-    color 160ms ease;
+  transition: color 160ms ease;
 }
 .sn-search-panel__cap--on {
-  background: var(--sn-web-color-background, var(--vp-c-bg));
   color: var(--sn-web-color-text-primary, var(--vp-c-text-1));
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 .sn-search-panel__cap:disabled {
   opacity: 0.4;
@@ -324,24 +480,31 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
   opacity: 0.7;
 }
 
-/* ── 结果列表 ── */
+/* ── body：结果列表（唯一滚动区） ── */
 .sn-search-panel__list {
+  flex: 1 1 auto;
+  min-height: 0; /* flex 子项要能收缩才会交出滚动权 */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   list-style: none;
   margin: 0;
-  padding: 4px 6px 8px;
+  padding: 6px;
 }
 .sn-search-panel__item {
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background 120ms ease;
 }
 .sn-search-panel__item--active {
-  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
+  background: color-mix(in srgb, var(--vp-c-brand-1) 12%, transparent);
+}
+.sn-search-panel--dark .sn-search-panel__item--active {
+  background: color-mix(in srgb, var(--vp-c-brand-1) 20%, transparent);
 }
 .sn-search-panel__row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
@@ -358,27 +521,6 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
-}
-.sn-search-panel__end {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 999px;
-}
-.sn-search-panel__end[data-end='web'] {
-  color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  background: var(--vp-c-brand-soft);
-}
-.sn-search-panel__end[data-end='uni'] {
-  color: #0a8f4c;
-  background: rgba(16, 185, 129, 0.14);
-}
-.sn-search-panel--dark .sn-search-panel__end[data-end='uni'] {
-  color: #4ade80;
-}
-.sn-search-panel__cat {
-  font-size: 11px;
-  color: var(--sn-web-color-text-tertiary, var(--vp-c-text-3));
 }
 .sn-search-panel__snippet {
   margin: 3px 0 0;
@@ -397,14 +539,57 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
 }
 .sn-search-panel__empty {
   margin: 0;
-  padding: 18px 14px 20px;
+  padding: 20px 14px 24px;
   text-align: center;
   font-size: 12.5px;
   color: var(--sn-web-color-text-tertiary, var(--vp-c-text-3));
 }
 
+/* ── foot：按键说明（左）+ 分页（右） ── */
+.sn-search-panel__foot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-top: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 12%, transparent);
+}
+.sn-search-panel__keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--sn-web-color-text-tertiary, var(--vp-c-text-3));
+}
+.sn-search-panel__keys kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 5px;
+  border: 1px solid color-mix(in srgb, var(--vp-c-divider) 80%, transparent);
+  background: color-mix(in srgb, var(--vp-c-bg) 60%, transparent);
+  font-family: var(--vp-font-family-base);
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--sn-web-color-text-secondary, var(--vp-c-text-2));
+}
+.sn-search-panel__keys span {
+  margin-right: 4px;
+}
+/* 分页：simple 模式足够紧凑，字号随面板收一档 */
+.sn-search-panel__pager {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .sn-search-panel {
+  .sn-search-panel__thumb,
+  .sn-search-panel__item {
     transition: none;
   }
 }
