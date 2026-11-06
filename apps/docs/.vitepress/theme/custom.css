@@ -16,10 +16,18 @@
   --vp-c-brand-3: #69b1ff;
   --vp-c-brand-soft: rgba(22, 119, 255, 0.12);
 
-  /* Inter for text; code uses the OS mono stack (no bundled code face). */
-  --vp-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Self-hosted MiSans subsets (see .vitepress/theme/fonts/misans.generated.css):
+   * 400 for body copy, 600 for headings + bold runs, 700 for h1 — that split is
+   * the whole "headings vs. copy" contrast. The OS stacks after it only ever kick
+   * in for glyphs the subsets do not carry (emoji, ⌘ ⚠ ✅ …). */
+  --vp-font-family-base:
+    'MiSans Docs', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* Code keeps the OS mono stack — MiSans has no mono cut. 'MiSans Docs' sits
+   * after it purely so CJK inside code samples matches the prose instead of
+   * falling back to a second CJK face. */
   --vp-font-family-mono:
-    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'MiSans Docs', monospace;
   color-scheme: light;
   /* Chrome metrics: 56px top bar on a page-tinted translucent surface,
    * sidebar shares the page colour instead of a second grey plane. */
@@ -68,9 +76,12 @@
    2. Prose — headings, body copy, links, inline code
    ===================================================================== */
 
+/* Weight scale: MiSans renders heavier on screen than the OS CJK faces it
+ * replaced, so headings top out at Semibold — h1 Semibold, h2/h3 Medium — and
+ * the shipped cuts are 400 / 500 / 600. */
 .vp-doc h1 {
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.3;
   letter-spacing: -0.02em;
   margin-bottom: 8px;
@@ -82,14 +93,14 @@
 
 .vp-doc h2 {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.01em;
 }
 
 .vp-doc h3 {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.01em;
   margin-top: 32px;
@@ -103,7 +114,10 @@
   color: var(--vp-c-text-2);
 }
 
+/* Run-in bold sits one step above the Medium headings so a bold phrase inside
+ * copy never out-weighs the section title above it. */
 .vp-doc strong {
+  font-weight: 600;
   color: var(--vp-c-text-1);
 }
 
@@ -1444,17 +1458,21 @@ html[data-sn-template-end='uni']
     body.sn-nav-floating .VPNavBar.home {
       width: min(1200px, calc(100% - clamp(48px, 8vw, 128px))) !important;
       margin: 0 auto;
+      /* 首页悬浮岛去掉描边（要求：首页 nav 任何状态都无边线）。 */
+      border: 0 !important;
     }
 
   .dark body.sn-nav-floating .VPNavBar {
     border-color: rgb(255 255 255 / 0.1) !important;
     background: rgb(15 23 42 / 0.55) !important;
-    background: rgb(15 23 42 / 0.55) !important;
     box-shadow:
       0 12px 36px -8px rgb(0 0 0 / 0.4),
       inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
   }
-
+  /* 首页：暗色悬浮态同样去掉描边。 */
+  .dark body.sn-nav-floating .VPNavBar.home {
+    border: 0 !important;
+  }
   /* 内层一律透明，露出 band / 胶囊自身的底色 */
   .VPNavBar .wrapper,
   .VPNavBar .wrapper .container,

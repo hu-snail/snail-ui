@@ -55,3 +55,7 @@ apps/docs/.vitepress/.temp/
 !.changeset/config.json
 !.changeset/README.md
 !.changeset/*.md.bak
+
+# Python bytecode (apps/docs/scripts font generator)
+__pycache__/
+*.pyc
