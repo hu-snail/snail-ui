@@ -21,15 +21,16 @@ MiSans' 600/700 read noticeably heavier than the OS CJK faces at the same CSS
 weight, so the site is capped at Semibold rather than shipping the Bold cut.
 
 Usage:
-    python3 apps/docs/scripts/build-fonts.py --src /path/to/MiSans
+    python3 apps/docs/scripts/build-fonts.py --src /path/to/MiSans \
+        [--script-src /path/to/AidianSignatureTi-Regular.ttf]
 
 Requires a Python with `fonttools` and `brotli`
 (`python3 -m pip install fonttools brotli`). This is a dev-time generator only:
 nothing at build or runtime of the docs site depends on it.
 
 Outputs (all regenerated, never hand-edited):
-    .vitepress/theme/fonts/*.woff2
-    .vitepress/theme/fonts/misans.generated.css
+    .vitepress/theme/fonts/misans-*.woff2   + misans.generated.css
+    .vitepress/theme/fonts/aidian-script-latin.woff2 + script.generated.css
 """
 
 from __future__ import annotations
@@ -50,8 +51,17 @@ except ImportError:  # pragma: no cover - dev-time tool
 DOCS_ROOT = Path(__file__).resolve().parent.parent
 FONT_DIR = DOCS_ROOT / ".vitepress" / "theme" / "fonts"
 CSS_FILE = FONT_DIR / "misans.generated.css"
+SCRIPT_CSS = FONT_DIR / "script.generated.css"
 
 FONT_FAMILY = "MiSans Docs"
+
+# Aidian SignatureTi is a hand-written script face with Latin-only coverage
+# (120 glyphs: printable ASCII, zero CJK). It is a display accent for the
+# English headline on the landing hero and nothing else — it may never be
+# applied to running text, and Chinese must stay on MiSans.
+SCRIPT_SOURCE = "AidianSignatureTi-Regular.ttf"
+SCRIPT_FAMILY = "Aidian Script"
+SCRIPT_DEST = "aidian-script-latin.woff2"
 
 # The docs site only needs three cuts: body copy, section headings and the page
 # title (+ bold runs). MiSans Semibold/Bold render noticeably heavier than the
@@ -209,6 +219,57 @@ def human(num_bytes: int) -> str:
     return f"{num_bytes / 1024:.0f} KB"
 
 
+def build_script_face(src: Path, options: subset.Options) -> int:
+    """Subset Aidian SignatureTi to printable ASCII and emit its @font-face sheet."""
+    if not src.is_file():
+        sys.exit(f"missing script font: {src}")
+
+    probe = TTFont(str(src), lazy=True)
+    try:
+        available = set(probe.getBestCmap())
+    finally:
+        probe.close()
+
+    wanted = set(range(0x0020, 0x007F))
+    subset_cps = wanted & available
+    dropped = sorted(wanted - available)
+    if dropped:
+        print(f"  warning: script font lacks {len(dropped)} ASCII codepoint(s)")
+
+    dest = FONT_DIR / SCRIPT_DEST
+    size = subset_face(src, dest, subset_cps, options)
+    print(f"  {dest.name:34} {len(subset_cps):5d} glyphs  {human(size)}")
+
+    SCRIPT_CSS.write_text(
+        "\n".join(
+            [
+                "/* GENERATED FILE — do not edit.",
+                " *",
+                " * Aidian SignatureTi — a hand-written display face, Latin only",
+                " * (printable ASCII, no CJK). Built by apps/docs/scripts/build-fonts.py",
+                " * from the upstream TTF.",
+                " *",
+                " * Display use only: the landing hero headline and nothing else. It has",
+                " * no CJK and no bold, so any Chinese in a heading that uses this family",
+                " * must be handed to MiSans explicitly (see SnDocsHome.vue).",
+                " */",
+                "",
+                "@font-face {",
+                f"  font-family: '{SCRIPT_FAMILY}';",
+                "  font-style: normal;",
+                "  font-weight: 400;",
+                "  font-display: swap;",
+                f"  src: url('./{SCRIPT_DEST}') format('woff2');",
+                f"  unicode-range: {to_unicode_range(subset_cps)};",
+                "}",
+                "",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    return size
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -220,6 +281,11 @@ def main() -> int:
         "--docs-root",
         default=str(DOCS_ROOT),
         help="Docs site root scanned for the characters in use (default: apps/docs)",
+    )
+    parser.add_argument(
+        "--script-src",
+        default=None,
+        help="Path to AidianSignatureTi-Regular.ttf (enables the display accent)",
     )
     args = parser.parse_args()
 
@@ -313,9 +379,16 @@ def main() -> int:
             ]
     CSS_FILE.write_text("\n".join(lines), encoding="utf-8")
 
+    # --- 4. The script display accent --------------------------------------
+    if args.script_src:
+        script_total = build_script_face(Path(args.script_src).expanduser().resolve(), options)
+        report.append((SCRIPT_DEST, script_total))
+
     total = sum(size for _, size in report)
     print(
-        f"\n{len(report)} faces, {human(total)} total; wrote {CSS_FILE.relative_to(DOCS_ROOT)}"
+        f"\n{len(report)} files, {human(total)} total; wrote "
+        f"{CSS_FILE.relative_to(DOCS_ROOT)}"
+        + (f" + {SCRIPT_CSS.relative_to(DOCS_ROOT)}" if args.script_src else "")
     )
     return 0
 
