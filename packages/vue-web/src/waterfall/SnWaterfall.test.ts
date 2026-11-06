@@ -469,3 +469,34 @@ describe('SnWaterfall', () => {
     });
   });
 });
+
+describe('slot content updates (same keys)', () => {
+  // 回归：放置签名只含 key 时，内容变化而 key 不变的重渲染会命中
+  // 记忆化缓存、返回旧 vnode —— DOM 永不更新（预览/源码切换失效）。
+  it('re-renders item content when the slot content changes but keys stay', async () => {
+    const mode = ref<'preview' | 'code'>('preview');
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnWaterfall, { columns: 2 }, {
+            default: () => [
+              h('div', { key: 'a', class: 'entry' }, mode.value === 'preview' ? 'A-preview' : 'A-code'),
+              h('div', { key: 'b', class: 'entry' }, mode.value === 'preview' ? 'B-preview' : 'B-code'),
+            ],
+          },
+        );
+      },
+    });
+    const wrapper = mount(Harness);
+    expect(wrapper.find('.sn-waterfall__item .entry').text()).toBe('A-preview');
+
+    mode.value = 'code';
+    await nextTick();
+    expect(wrapper.find('.sn-waterfall__item .entry').text()).toBe('A-code');
+    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual(['A-code', 'B-code']);
+
+    mode.value = 'preview';
+    await nextTick();
+    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual(['A-preview', 'B-preview']);
+  });
+});
