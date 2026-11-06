@@ -18,18 +18,29 @@
  * Active route detection uses vitepress's `useRoute()` to set SnMenu v-model.
  */
 
-import { computed } from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useData, useRoute, useRouter } from 'vitepress';
-import { Moon, Search, Snail, Sun } from 'lucide-vue-next';
+import {
+  Bot,
+  ChartLine,
+  ChevronDown,
+  Layers,
+  LayoutGrid,
+  LayoutTemplate,
+  Moon,
+  Palette,
+  Puzzle,
+  Rocket,
+  Snail,
+  Smartphone,
+  Sun,
+} from 'lucide-vue-next';
+import SnNavSearch from './SnNavSearch.vue';
 import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web';
 import type { SnMenuOption } from '@snui/vue-web';
-import SnDocsSidebarToggle from './SnDocsSidebarToggle.vue';
-import { useSidebarCollapse } from '../utils/sidebar-collapse';
+import type { DocsNavItem } from '../config-nav';
 
-interface NavItem {
-  text: string;
-  link: string;
-}
+type NavItem = DocsNavItem;
 
 const props = withDefaults(
   defineProps<{
@@ -49,30 +60,129 @@ const route = useRoute();
 const router = useRouter();
 const { isDark } = useData();
 
-/** Sidebar state — the navbar hosts the expand control while collapsed. */
-const { collapsed } = useSidebarCollapse();
+
+/**
+ * 每个导航入口一个 lucide 图标（对照参考站点的导航）。
+ *
+ * 按 link 前缀匹配而不是文案 —— 中英两个 locale 的 `text` 不同，但 link
+ * 结构一致（enNav 只是多了 `/en` 前缀，匹配前先剥掉）。
+ */
+const NAV_ICONS: ReadonlyArray<readonly [prefix: string, icon: unknown]> = [
+  ['/guide', Rocket],
+  ['/components/web', LayoutGrid],
+  ['/components/uni', Smartphone],
+  ['/style-packs', Layers],
+  ['/theme', Palette],
+  ['/ai', Bot],
+  ['/ecosystem', Puzzle],
+  ['/echarts', ChartLine],
+  ['/templates', LayoutTemplate],
+];
+
+function navIcon(link: string): unknown {
+  const bare = link.replace(/^\/en(?=\/|$)/, '');
+  const hit = NAV_ICONS.find(([prefix]) => bare === prefix || bare.startsWith(`${prefix}/`));
+  // markRaw：组件对象进 reactive options 会触发 Vue 的性能警告
+  return hit ? markRaw(hit[1]) : undefined;
+}
 
 /** Map nav items → SnMenu options. Active state is derived from useRoute(). */
-const menuOptions = computed<SnMenuOption[]>(() =>
-  (props.items ?? []).map((it) => ({
+/** Map nav items → SnMenu options（icon 按 link 前缀匹配）。 */
+function toMenuOptions(items: NavItem[]): SnMenuOption[] {
+  return items.map((it) => ({
     key: it.link,
     label: it.text,
     href: it.link,
-  })),
-);
+    icon: navIcon(it.link),
+  }));
+}
 
-/** Active key = longest matching nav link prefix. */
+/** 带 children 的合并入口（如「生态」）在导航条上由自定义下拉渲染。 */
+const dropdownItem = computed<NavItem | undefined>(() =>
+  (props.items ?? []).find((it) => it.children && it.children.length > 0),
+);
+const dropdownIndex = computed(() =>
+  dropdownItem.value ? (props.items ?? []).indexOf(dropdownItem.value) : -1,
+);
+const menuOptionsBefore = computed<SnMenuOption[]>(() =>
+  toMenuOptions(
+    (props.items ?? []).slice(0, dropdownIndex.value < 0 ? undefined : dropdownIndex.value),
+  ),
+);
+const menuOptionsAfter = computed<SnMenuOption[]>(() =>
+  toMenuOptions(dropdownIndex.value >= 0 ? (props.items ?? []).slice(dropdownIndex.value + 1) : []),
+);
+const ecoIcon = computed(() => (dropdownItem.value ? navIcon(dropdownItem.value.link) : undefined));
+
+/**
+ * Active key = 最长匹配前缀。合并入口（match 额外前缀）与其 children
+ * 共用同一 active 判定；en 前缀在匹配前剥掉。
+ */
 const activeKey = computed<string | null>(() => {
-  const path = route.path;
-  let best: string | null = null;
+  const bare = route.path.replace(/\.html$/, '').replace(/^\/en(?=\/|$)/, '') || '/';
+  let best: { link: string; len: number } | null = null;
   for (const it of props.items ?? []) {
-    if (path === it.link || path.startsWith(`${it.link}/`) || path === `${it.link}.html`) {
-      if (best === null || it.link.length > best.length) best = it.link;
+    const prefixes = [
+      it.link.replace(/\.html$/, '').replace(/^\/en(?=\/|$)/, ''),
+      ...(it.match ?? []),
+    ];
+    const matched = prefixes.some((p) => bare === p || bare.startsWith(`${p}/`));
+    if (matched && (best === null || it.link.length > best.len)) {
+      best = { link: it.link, len: it.link.length };
     }
   }
-  return best;
+  return best ? best.link : null;
 });
 
+/** 二级菜单开合：点击展开，点击外部 / Esc 收起。 */
+const ecoOpen = ref(false);
+const ecoRoot = ref<HTMLElement | null>(null);
+const ecoActive = computed(
+  () => dropdownItem.value !== undefined && activeKey.value === dropdownItem.value.link,
+);
+function toggleEco(): void {
+  ecoOpen.value = !ecoOpen.value;
+}
+function goNavItem(link: string): void {
+  ecoOpen.value = false;
+  void router.go(link);
+}
+function onDocClick(event: MouseEvent): void {
+  if (ecoOpen.value && ecoRoot.value && !ecoRoot.value.contains(event.target as Node)) {
+    ecoOpen.value = false;
+  }
+}
+function onKeydown(event: KeyboardEvent): void {
+  if (event.key === 'Escape') ecoOpen.value = false;
+}
+
+ /** 导航悬浮：body.sn-nav-floating 驱动 §18 的胶囊岛 + 悬浮侧栏面板。
+  *  文档页默认即悬浮（不再做滚动判断）；首页保持原行为——滚动超过
+  *  8px 后才切到悬浮岛。 */
+ const isHome = computed(
+   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
+ );
+ const navFloating = ref(false);
+ function syncFloating(): void {
+   navFloating.value = isHome.value ? window.scrollY > 8 : true;
+ }
+ onMounted(() => {
+   syncFloating();
+   window.addEventListener('scroll', syncFloating, { passive: true });
+   document.addEventListener('click', onDocClick);
+   document.addEventListener('keydown', onKeydown);
+ });
+ onBeforeUnmount(() => {
+   window.removeEventListener('scroll', syncFloating);
+   document.removeEventListener('click', onDocClick);
+   document.removeEventListener('keydown', onKeydown);
+   document.body.classList.remove('sn-nav-floating');
+ });
+ watch(navFloating, (floating) => {
+   document.body.classList.toggle('sn-nav-floating', floating);
+ });
+ /** 路由在首页 ↔ 文档页之间切换时重算——scroll 监听不会因路由变化触发。 */
+ watch(isHome, () => syncFloating());
 /** Toggle dark mode by inverting the reactive `isDark` ref from vitepress.
  * Vitepress handles persistence (localStorage) + `<html class="dark">` for us,
  * so we just flip the boolean. */
@@ -80,16 +190,7 @@ function toggleTheme(): void {
   isDark.value = !isDark.value;
 }
 
-function openSearch(): void {
-  // Trigger vitepress's built-in search modal via keyboard shortcut handler.
-  const event = new KeyboardEvent('keydown', {
-    key: 'k',
-    metaKey: true,
-    ctrlKey: true,
-    bubbles: true,
-  });
-  window.dispatchEvent(event);
-}
+/* openSearch 已由 SnNavSearch 组件内聚（派发 ⌘K 触发 VitePress 搜索）。 */
 
 /** Locale switch — the docs site ships a zh root locale plus an `/en/` locale. */
 const isEn = computed<boolean>(() => route.path === '/en' || route.path.startsWith('/en/'));
@@ -139,32 +240,62 @@ function onLocaleClick(event: MouseEvent): void {
 <template>
   <SnConfigProvider skin="">
     <div class="sn-docs-nav" :class="{ 'sn-docs-nav--inverted': inverted }">
-      <SnDocsSidebarToggle v-if="collapsed" />
       <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
         <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
+      <div class="sn-docs-nav__search-slot">
+        <SnNavSearch />
+      </div>
       <div class="sn-docs-nav__menu">
         <SnMenu
           mode="horizontal"
-          :options="menuOptions"
+          :options="menuOptionsBefore"
+          :value="activeKey"
+          :inverted="inverted"
+          @update:value="() => {}"
+        />
+        <div v-if="dropdownItem" ref="ecoRoot" class="sn-docs-nav__dd">
+          <button
+            type="button"
+            class="sn-docs-nav__dd-trigger"
+            :class="{
+              'sn-docs-nav__dd-trigger--active': ecoActive,
+              'sn-docs-nav__dd-trigger--open': ecoOpen,
+            }"
+            :aria-expanded="ecoOpen"
+            aria-haspopup="menu"
+            @click="toggleEco"
+          >
+            <SnIcon v-if="ecoIcon" class="sn-docs-nav__dd-icon" :icon="ecoIcon" :size="15" />
+            {{ dropdownItem.text }}
+            <SnIcon class="sn-docs-nav__dd-chevron" :icon="ChevronDown" :size="14" />
+          </button>
+          <Transition name="sn-dd">
+            <div v-if="ecoOpen" class="sn-docs-nav__dd-panel" role="menu">
+              <a
+                v-for="child in dropdownItem.children"
+                :key="child.link"
+                role="menuitem"
+                class="sn-docs-nav__dd-item"
+                :href="child.link"
+                @click.prevent="goNavItem(child.link)"
+              >
+                {{ child.text }}
+              </a>
+            </div>
+          </Transition>
+        </div>
+        <SnMenu
+          v-if="menuOptionsAfter.length > 0"
+          mode="horizontal"
+          :options="menuOptionsAfter"
           :value="activeKey"
           :inverted="inverted"
           @update:value="() => {}"
         />
       </div>
       <div class="sn-docs-nav__actions">
-        <SnButton
-          class="sn-docs-nav__action sn-docs-nav__search"
-          variant="ghost"
-          size="small"
-          aria-label="Search docs"
-          @click="openSearch"
-        >
-          <SnIcon class="sn-docs-nav__action-icon" :icon="Search" />
-          <span class="sn-docs-nav__search-label">{{ isEn ? 'Search docs' : '搜索文档' }}</span>
-          <span class="sn-docs-nav__kbd" aria-hidden="true">⌘K</span>
-        </SnButton>
         <SnButton
           class="sn-docs-nav__action sn-docs-nav__locale"
           tag="a"
@@ -234,7 +365,15 @@ function onLocaleClick(event: MouseEvent): void {
  * SnMenu ships its own item chrome (filled active pill, larger type). The
  * overrides below re-dress its items as quiet text rows: no fill, tighter
  * type, wash-on-hover. */
+.sn-docs-nav__search-slot {
+  display: inline-flex;
+  flex-shrink: 0;
+}
 .sn-docs-nav__menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -261,10 +400,23 @@ function onLocaleClick(event: MouseEvent): void {
   background: var(--sn-web-color-background-subtle);
   color: var(--sn-web-color-text-primary);
 }
+/* ─────────── 选中态 ───────────
+ * 主题色浅底 + 主题色文字（对照参考站点的导航胶囊）。图标与文字一起
+ * 走 brand 色；inverted（首页深色画布）下保持浅色文字、底色用白 10% 透明。 */
 .sn-docs-nav__menu :deep(.sn-menu-item--active) {
-  background: transparent;
-  color: var(--sn-web-color-text-primary);
-  font-weight: 500;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+.sn-docs-nav__menu :deep(.sn-menu-item--active .sn-menu-item__icon) {
+  color: var(--vp-c-brand-1);
+}
+.sn-docs-nav--inverted .sn-docs-nav__menu :deep(.sn-menu-item--active) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+.sn-docs-nav--inverted .sn-docs-nav__menu :deep(.sn-menu-item--active .sn-menu-item__icon) {
+  color: #ffffff;
 }
 
 /* ─────────── Actions ───────────
@@ -374,5 +526,113 @@ function onLocaleClick(event: MouseEvent): void {
   border-color: rgb(255 255 255 / 0.24);
   background: rgb(255 255 255 / 0.08);
   color: rgb(240 244 252 / 0.62);
+}
+/* ─────────── 二级菜单（生态：点击展开） ───────────
+ * 触发器与 SnMenu 横向项同规格；面板为玻璃卡片，浅深色均由主题变量驱动。 */
+.sn-docs-nav__dd {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+.sn-docs-nav__dd-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 32px;
+  color: var(--sn-web-color-text-secondary);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.sn-docs-nav__dd-trigger:hover,
+.sn-docs-nav__dd-trigger--open {
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-docs-nav__dd-trigger--active {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+.sn-docs-nav--inverted .sn-docs-nav__dd-trigger--active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+.sn-docs-nav__dd-chevron {
+  transition: transform 0.2s ease;
+}
+.sn-docs-nav__dd-trigger--open .sn-docs-nav__dd-chevron {
+  transform: rotate(180deg);
+}
+.sn-docs-nav__dd-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 176px;
+  padding: 6px;
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--vp-c-bg) 92%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 12px 32px -8px rgb(15 23 42 / 0.14),
+    0 2px 8px -2px rgb(15 23 42 / 0.06);
+}
+.sn-docs-nav__dd-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: var(--sn-web-color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.14s,
+    color 0.14s;
+}
+.sn-docs-nav__dd-item:hover {
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-docs-nav--inverted .sn-docs-nav__dd-panel {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, #0f172a 88%, transparent);
+}
+.sn-docs-nav--inverted .sn-docs-nav__dd-item {
+  color: rgba(255, 255, 255, 0.8);
+}
+.sn-docs-nav--inverted .sn-docs-nav__dd-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.sn-dd-enter-active,
+.sn-dd-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.sn-dd-enter-from,
+.sn-dd-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-6px);
+}
+
+/* 悬浮态下，band 的发丝线交给胶囊边框接管 */
+:global(body.sn-nav-floating) .sn-docs-nav {
+  border-bottom-color: transparent;
 }
 </style>

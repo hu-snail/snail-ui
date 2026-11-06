@@ -26,6 +26,9 @@
 import { computed, watch } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import { useRoute } from 'vitepress';
+ import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
+ import SnSidebarBrand from '../components/SnSidebarBrand.vue';
+ import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DemoDock from '../components/DemoDock.vue';
 import { resetDock } from '../utils/demo-dock';
@@ -35,6 +38,7 @@ import SnDocsHome from '../components/SnDocsHome.vue';
 import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue';
 import SnDocsDocActions from '../components/SnDocsDocActions.vue';
 import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue';
+import { usesSingleColumnLayout } from '../utils/demo-grid';
 import { enNav, nav } from '../config-nav';
 import { useData } from 'vitepress';
 import { SnConfigProvider, enUS } from '@snui/vue-web';
@@ -45,8 +49,32 @@ const route = useRoute();
 const isHome = computed(
   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
 );
-const showFab = computed(() => route.path.startsWith('/components/'));
-const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
+ const showFab = computed(() => route.path.startsWith('/components/'));
+ const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
+ /**
+  * 端切换胶囊只在组件页显示：/components/web ↔ /components/uni 互跳是它
+  * 唯一的语义，指南 / 主题 / 模板 / 生态等页没有「端」概念，不需要它。
+  */
+ const showEndSwitch = computed(() => route.path.startsWith('/components/'));
+
+/**
+ * Demo cards: one per row on the admin-layout pages, the shared two-column
+ * waterfall everywhere else.
+ *
+ * The class rides on the layout root and custom.css §13 scopes the
+ * `.sn-layout-single-column .sn-demo-grid` override to it. Doing it here — and
+ * not by wrapping the markdown page — keeps the page markup valid: a raw
+ * `<div>` around a whole page would swallow the nested `<template #…>` blocks
+ * the compiled page template contains.
+ */
+const singleColumnLayout = computed(() => usesSingleColumnLayout(route.path));
+
+/**
+ * 主题编辑器页（/theme/editor）的侧栏移除与全宽画布由 **frontmatter** 承担
+ * （`sidebar: false` / `aside: false`，见 theme/editor.md）—— 这是 VitePress
+ * 的原生机制：`useSidebar()` 据此返回空分组，`VPContent` 直接不带
+ * `has-sidebar`，布局位移无需任何 CSS 覆盖。
+ */
 
 /** The `/en/` locale mirrors the root locale; swap the nav list with it. */
 const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'));
@@ -88,31 +116,30 @@ watch(
 
 <template>
   <SnConfigProvider :locale="siteLocale">
-    <DefaultTheme.Layout>
+    <DefaultTheme.Layout :class="singleColumnLayout ? 'sn-layout-single-column' : ''">
       <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
       <template #nav-bar-content-before>
         <SnDocsNav :items="navItems" :inverted="homeNavInverted" />
       </template>
 
-      <!-- 模板 section: pick the end you are building for. The capsule rides
-         vitepress's `sidebar-nav-before` slot, i.e. directly above the 概览
-         group, and filters the template entries down to that end's templates
-         (state: utils/template-end.ts, filter: custom.css §14). -->
-      <template v-if="showTemplateEnd" #sidebar-nav-before>
-        <SnDocsTemplateEnd />
-      </template>
+        <template #sidebar-nav-before>
+          <SnSidebarBrand />
+          <SnSidebarEndSwitch v-if="showEndSwitch" />
+          <SnDocsTemplateEnd v-if="showTemplateEnd" />
+        </template>
 
-      <!-- Sidebar collapse handle: a tab riding the sidebar's right border
-         line. It is mounted here, through `layout-top` — i.e. OUTSIDE
-         VPSidebar — because that element is `overflow: hidden` (a child
-         would be clipped at the border) and carries a transform (which
-         turns it into the containing block for fixed children, so
-         `position: fixed` inside it would resolve against the sidebar box,
-         not the viewport). custom.css §12 shows it only on desktop, only
-         when a sidebar is actually rendered, and only while expanded;
-         SnDocsNav takes over with the matching expand control once
-         collapsed. -->
+      <!-- Sidebar collapse handle: one tab glued to the sidebar's LEFT edge,
+         which stays in place in both states (collapsed it becomes the expand
+         affordance — no hunting for a button at the navbar's left). It is
+         mounted here, through `layout-top` — i.e. OUTSIDE VPSidebar —
+         because that element is `overflow: hidden` (a child would be clipped
+         at the edge it sits on) and carries a transform (which turns it into
+         the containing block for fixed children, so `position: fixed` inside
+         it would resolve against the sidebar box, not the viewport).
+         custom.css §12 shows it on desktop whenever a sidebar is rendered,
+         in both states, and animates the panel slide on collapse/expand. -->
       <template #layout-top>
+        <SnSidebarGroupIcons />
         <div class="sn-docs-sidebar-handle">
           <SnDocsSidebarToggle placement="handle" />
         </div>
