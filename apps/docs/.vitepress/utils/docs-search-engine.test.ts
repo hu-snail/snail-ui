@@ -131,6 +131,27 @@ describe('DocsSearchEngine', () => {
     const [hit] = engine.search('按钮');
     expect(hit?.snippet.length ?? 0).toBeGreaterThan(0);
   });
+
+  it('should keep the highest-scoring docs when candidates exceed the top-K cap', () => {
+    // 回归：TopK 曾经只 push 不淘汰根，上限形同虚设（候选全被返回）。
+    const many: DocsSearchDoc[] = Array.from({ length: 40 }, (_, i) =>
+      doc({
+        url: `/p-${i}`,
+        // 前 30 条命中标题（权重 6），后 10 条只在正文命中（权重 1）。
+        title: i < 30 ? `共用 标签 ${i}` : `页面 ${i}`,
+        text: '共用 参考文本 xxxxxxxxxxxxxxxxxxxx',
+      }),
+    );
+    const engine = new DocsSearchEngine(many);
+    const hits = engine.search('共用');
+
+    expect(hits.length).toBe(30);
+    // 留下的必须是标题命中那批（分数更高），而不是任意 30 条。
+    expect(hits.every((h) => Number(h.doc.url.slice(3)) < 30)).toBe(true);
+    for (let i = 1; i < hits.length; i += 1) {
+      expect(hits[i - 1]!.score).toBeGreaterThanOrEqual(hits[i]!.score);
+    }
+  });
 });
 
 describe('docs-search-source', () => {

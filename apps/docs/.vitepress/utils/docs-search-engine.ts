@@ -113,7 +113,14 @@ class FieldIndex {
   }
 }
 
-/** Top-K min-heap over scored docs (root = lowest score of the current top). */
+/**
+ * Bounded top-K min-heap (root = lowest score currently retained).
+ *
+ * `offer` pushes then — once the heap exceeds K — evicts the root, so the
+ * structure never holds more than K entries. (Without the eviction the heap
+ * grows with the candidate set: every doc above the floor piled up, and the
+ * "top 30" cap silently became "all of them".)
+ */
 class TopK {
   private heap: Array<{ id: number; score: number }> = [];
 
@@ -131,42 +138,56 @@ class TopK {
     return a.score < b.score;
   }
 
+  private swap(a: number, b: number): void {
+    [this.heap[a], this.heap[b]] = [this.heap[b]!, this.heap[a]!];
+  }
+
+  private siftUp(from: number): void {
+    let i = from;
+    while (i > 0) {
+      const parent = (i - 1) >> 1;
+      if (!TopK.less(this.heap[i]!, this.heap[parent]!)) break;
+      this.swap(i, parent);
+      i = parent;
+    }
+  }
+
+  private siftDown(from: number): void {
+    let i = from;
+    for (;;) {
+      const l = i * 2 + 1;
+      const r = l + 1;
+      let m = i;
+      if (l < this.heap.length && TopK.less(this.heap[l]!, this.heap[m]!)) m = l;
+      if (r < this.heap.length && TopK.less(this.heap[r]!, this.heap[m]!)) m = r;
+      if (m === i) break;
+      this.swap(i, m);
+      i = m;
+    }
+  }
+
+  /** Remove and return the root (the lowest retained score). */
+  private popRoot(): { id: number; score: number } {
+    const root = this.heap[0]!;
+    const last = this.heap.pop()!;
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.siftDown(0);
+    }
+    return root;
+  }
+
   offer(id: number, score: number): void {
     if (this.heap.length >= TOP_K && score <= (this.heap[0]?.score ?? 0)) return;
     this.heap.push({ id, score });
-    let i = this.heap.length - 1;
-    while (i > 0) {
-      const parent = (i - 1) >> 1;
-      if (TopK.less(this.heap[i]!, this.heap[parent]!)) {
-        [this.heap[i], this.heap[parent]] = [this.heap[parent]!, this.heap[i]!];
-        i = parent;
-      } else break;
-    }
+    this.siftUp(this.heap.length - 1);
+    if (this.heap.length > TOP_K) this.popRoot();
   }
 
   /** Pop-all → ascending; reverse for the final descending result order. */
   drain(): Array<{ id: number; score: number }> {
     const out: Array<{ id: number; score: number }> = [];
-    const heap = this.heap;
-    while (heap.length > 0) {
-      const top = heap[0]!;
-      const last = heap.pop()!;
-      if (heap.length > 0) {
-        heap[0] = last;
-        let i = 0;
-        for (;;) {
-          const l = i * 2 + 1;
-          const r = l + 1;
-          let m = i;
-          if (l < heap.length && TopK.less(heap[l]!, heap[m]!)) m = l;
-          if (r < heap.length && TopK.less(heap[r]!, heap[m]!)) m = r;
-          if (m === i) break;
-          [heap[i], heap[m]] = [heap[m]!, heap[i]!];
-          i = m;
-        }
-      }
-      out.push(top);
-    }
+    while (this.heap.length > 0) out.push(this.popRoot());
     out.reverse();
     return out;
   }
