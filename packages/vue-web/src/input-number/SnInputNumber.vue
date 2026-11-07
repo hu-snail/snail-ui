@@ -7,9 +7,17 @@
  *
  * Steppers follow naive-ui's InputNumber: transparent icon text-buttons —
  * `buttonPlacement="right"` (default) renders the − / + pair side by side in
- * the tail; `"both"` splits minus into the head (prefix side) and plus into
- * the tail. No divider chrome; the icon tints with the action colour on
+ * the tail, `"left"` mirrors that pair into the head, and `"both"` splits minus
+ * into the head (prefix side) and plus into the tail with the value centred
+ * between them. No divider chrome; the icon tints with the action colour on
  * hover and fades to the disabled colour at bounds.
+ *
+ * Each button can carry a background plate (`buttonBackground` →
+ * `--sn-web-input-number-btn-bg`). Because `both` pulls the pair apart, only
+ * that placement paints the hover plate (`buttonHoverBackground` →
+ * `--sn-web-input-number-btn-hover-bg`) so the two loose steppers read as
+ * discrete buttons. The glyphs themselves are replaceable through the
+ * `minus-icon` / `plus-icon` slots.
  *
  * Per AGENTS.md §30/31: contract declared via defineProps/defineEmits/
  * defineSlots + CSS variables. a11y: role="spinbutton" on the native input
@@ -17,6 +25,8 @@
  */
 
 import { computed, onBeforeUnmount, ref, useSlots } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { MinusIcon, PlusIcon } from './sn-input-number-icons';
 
 defineOptions({ name: 'SnInputNumber' });
 
@@ -45,7 +55,11 @@ const props = withDefaults(
     /** Render the + / − stepper buttons. */
     showButton?: boolean;
     /** Where the stepper buttons are placed. */
-    buttonPlacement?: 'both' | 'right';
+    buttonPlacement?: 'left' | 'both' | 'right';
+    /** Stepper button background — any CSS background value. */
+    buttonBackground?: string;
+    /** Stepper button hover background (painted in the `both` placement only). */
+    buttonHoverBackground?: string;
     /** Show the clear (×) button when a value is present. */
     clearable?: boolean;
     /** Custom display formatter (e.g. append `%`). */
@@ -89,6 +103,10 @@ const emit = defineEmits<{
 defineSlots<{
   prefix?(): unknown;
   suffix?(): unknown;
+  /** Custom decrement glyph. Replaces the default − icon. */
+  'minus-icon'?(): unknown;
+  /** Custom increment glyph. Replaces the default + icon. */
+  'plus-icon'?(): unknown;
 }>();
 
 const slots = useSlots();
@@ -355,6 +373,25 @@ const iconSize = computed<number>(() => {
   }
 });
 
+/** Head stepper hosts the minus button (`both`) or the whole pair (`left`). */
+const showHeadStepper = computed(
+  () => props.showButton && (props.buttonPlacement === 'both' || props.buttonPlacement === 'left'),
+);
+
+/** Tail stepper hosts the plus button (`both`) or the whole pair (`right`). */
+const showTailStepper = computed(
+  () => props.showButton && (props.buttonPlacement === 'both' || props.buttonPlacement === 'right'),
+);
+
+/** Per-instance stepper colour overrides (prop → CSS var → token). */
+const stepperStyle = computed<Record<string, string>>(() => {
+  const style: Record<string, string> = {};
+  if (props.buttonBackground) style['--sn-web-input-number-btn-bg'] = props.buttonBackground;
+  if (props.buttonHoverBackground)
+    style['--sn-web-input-number-btn-hover-bg'] = props.buttonHoverBackground;
+  return style;
+});
+
 const classList = computed(() => [
   'sn-input-number',
   `sn-input-number--${props.size}`,
@@ -369,9 +406,14 @@ const classList = computed(() => [
 </script>
 
 <template>
-  <div :class="classList" :data-snui-component="'input-number'" :data-size="size">
+  <div
+    :class="classList"
+    :style="stepperStyle"
+    :data-snui-component="'input-number'"
+    :data-size="size"
+  >
     <span
-      v-if="showButton && buttonPlacement === 'both'"
+      v-if="showHeadStepper"
       class="sn-input-number__stepper sn-input-number__stepper--head"
       @mouseleave="stopRepeat"
       @mouseup="stopRepeat"
@@ -384,21 +426,18 @@ const classList = computed(() => [
         aria-label="Decrease"
         @mousedown.prevent="onMinusDown"
       >
-        <svg
-          viewBox="0 0 512 512"
-          :width="iconSize"
-          :height="iconSize"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M400 256H112"
-            stroke="currentColor"
-            stroke-width="32"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <slot name="minus-icon"><SnIcon :icon="MinusIcon" :size="iconSize" /></slot>
+      </button>
+      <button
+        v-if="buttonPlacement === 'left'"
+        type="button"
+        class="sn-input-number__btn sn-input-number__btn--plus"
+        :disabled="plusDisabled"
+        :tabindex="-1"
+        aria-label="Increase"
+        @mousedown.prevent="onPlusDown"
+      >
+        <slot name="plus-icon"><SnIcon :icon="PlusIcon" :size="iconSize" /></slot>
       </button>
     </span>
 
@@ -450,7 +489,7 @@ const classList = computed(() => [
     </span>
 
     <span
-      v-if="showButton"
+      v-if="showTailStepper"
       class="sn-input-number__stepper sn-input-number__stepper--tail"
       @mouseleave="stopRepeat"
       @mouseup="stopRepeat"
@@ -464,21 +503,7 @@ const classList = computed(() => [
         aria-label="Decrease"
         @mousedown.prevent="onMinusDown"
       >
-        <svg
-          viewBox="0 0 512 512"
-          :width="iconSize"
-          :height="iconSize"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M400 256H112"
-            stroke="currentColor"
-            stroke-width="32"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <slot name="minus-icon"><SnIcon :icon="MinusIcon" :size="iconSize" /></slot>
       </button>
       <button
         type="button"
@@ -488,21 +513,7 @@ const classList = computed(() => [
         aria-label="Increase"
         @mousedown.prevent="onPlusDown"
       >
-        <svg
-          viewBox="0 0 512 512"
-          :width="iconSize"
-          :height="iconSize"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M256 112V400M400 256H112"
-            stroke="currentColor"
-            stroke-width="32"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <slot name="plus-icon"><SnIcon :icon="PlusIcon" :size="iconSize" /></slot>
       </button>
     </span>
 
@@ -600,15 +611,24 @@ const classList = computed(() => [
   padding-right: var(--sn-web-input-padding-x, 10px);
 }
 
-/* Steppers — naive-ui-style icon text buttons: transparent, no divider
- * chrome; the icon itself tints to the action colour on hover and fades to
- * the disabled colour at bounds. The `right` placement keeps both buttons
- * side by side in the tail (horizontal pair); `both` splits minus into the
- * head stepper (prefix side) and plus into the tail. */
+/* Steppers — naive-ui-style icon text buttons: no divider chrome; the icon
+ * tints to the action colour on hover and fades to the disabled colour at
+ * bounds. Placement: `right` keeps the − / + pair side by side in the tail
+ * (horizontal pair), `left` mirrors that pair into the head, `both` splits
+ * minus into the head (prefix side) and plus into the tail.
+ *
+ * The painted plate (`buttonBackground` → --sn-web-input-number-btn-bg) is
+ * inset from the field edge, so a coloured button never touches the border;
+ * while the plate stays transparent the geometry is invisible. */
 .sn-input-number__stepper {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* `both`: the value sits between two loose steppers — centre it. */
+.sn-input-number--placement-both .sn-input-number__native {
+  text-align: center;
 }
 
 .sn-input-number__btn {
@@ -616,19 +636,36 @@ const classList = computed(() => [
   align-items: center;
   justify-content: center;
   width: 22px;
-  align-self: stretch;
+  align-self: center;
+  /* Field height minus 3px per side → the plate floats inside the border
+   * instead of filling the field edge to edge. */
+  height: calc(100% - 6px);
   border: none;
-  background: transparent;
+  border-radius: var(--sn-web-radius-sm, 4px);
+  background: var(--sn-web-input-number-btn-bg, transparent);
   color: var(--sn-web-color-text-secondary, rgba(0, 0, 0, 0.55));
   cursor: pointer;
   padding: 0;
-  transition: color 0.15s ease-out;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 
 .sn-input-number__btn:hover:not(:disabled) {
   color: var(
     --sn-web-color-action-primary-hover,
     var(--sn-web-color-action-primary, rgba(22, 119, 255, 0.9))
+  );
+}
+
+/* Hover plate — `both` only: with minus and plus split to opposite ends the
+ * steppers read as discrete buttons, so the hovered one gets a rounded
+ * background (`buttonHoverBackground` → --sn-web-input-number-btn-hover-bg →
+ * neutral token). */
+.sn-input-number--placement-both .sn-input-number__btn:hover:not(:disabled) {
+  background: var(
+    --sn-web-input-number-btn-hover-bg,
+    var(--sn-web-color-background-subtle, #f5f5f5)
   );
 }
 

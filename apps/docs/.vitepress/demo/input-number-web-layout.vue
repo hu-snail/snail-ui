@@ -18,7 +18,15 @@ const v = ref(1);
     </div>
     <div class="demo-row">
       <SnInputNumber v-model="v" button-placement="right" class="demo-field" />
+      <SnInputNumber v-model="v" button-placement="left" class="demo-field" />
       <SnInputNumber v-model="v" button-placement="both" class="demo-field" />
+      <SnInputNumber
+        v-model="v"
+        button-placement="both"
+        button-background="var(--sn-web-color-background-subtle)"
+        button-hover-background="var(--sn-web-color-action-primary-soft)"
+        class="demo-field"
+      />
     </div>
   </div>
 </template>

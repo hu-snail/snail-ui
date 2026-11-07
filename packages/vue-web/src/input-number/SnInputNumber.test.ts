@@ -2,13 +2,20 @@
  * SnInputNumber unit tests — web-end numeric input (naive-ui parity).
  *
  * Behavior-focused (AGENTS.md §46): steppers, keyboard, clamping,
- * precision, stepStrictly, format/parse, clearable, disabled, null.
+ * precision, stepStrictly, format/parse, clearable, disabled, null,
+ * `buttonPlacement` (left / both / right), the replaceable − / + glyph slots
+ * and the stepper background plate / centring CSS contract.
  */
+
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h, ref } from 'vue';
 import SnInputNumber from './SnInputNumber.vue';
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions';
 
 /** Mount helper — keeps tests focused on props. */
 function mountNumber(props: Record<string, unknown> = {}) {
@@ -377,5 +384,148 @@ describe('SnInputNumber', () => {
     await input.trigger('blur');
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([6]);
     expect(wrapper.emitted('change')?.at(-1)).toEqual([6]);
+  });
+
+  /* --- buttonPlacement: left / both / right --- */
+
+  it('mirrors the stepper pair into the head when buttonPlacement is left', () => {
+    const wrapper = mountNumber({ buttonPlacement: 'left' });
+    expect(wrapper.classes()).toContain('sn-input-number--placement-left');
+    const head = wrapper.find('.sn-input-number__stepper--head');
+    expect(head.exists()).toBe(true);
+    expect(head.find('.sn-input-number__btn--minus').exists()).toBe(true);
+    expect(head.find('.sn-input-number__btn--plus').exists()).toBe(true);
+    // The whole pair lives in the head — no loose tail stepper.
+    expect(wrapper.find('.sn-input-number__stepper--tail').exists()).toBe(false);
+  });
+
+  it('steps from the head pair when buttonPlacement is left', async () => {
+    const wrapper = mountNumber({ modelValue: 4, buttonPlacement: 'left' });
+    const head = '.sn-input-number__stepper--head ';
+    await clickStep(wrapper, `${head}.sn-input-number__btn--plus`);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([5]);
+    await clickStep(wrapper, `${head}.sn-input-number__btn--minus`);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([3]);
+  });
+
+  it('splits minus into the head and plus into the tail when buttonPlacement is both', () => {
+    const wrapper = mountNumber({ buttonPlacement: 'both' });
+    const head = wrapper.find('.sn-input-number__stepper--head');
+    const tail = wrapper.find('.sn-input-number__stepper--tail');
+    expect(head.find('.sn-input-number__btn--minus').exists()).toBe(true);
+    expect(head.find('.sn-input-number__btn--plus').exists()).toBe(false);
+    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
+    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(false);
+  });
+
+  it('keeps the pair in the tail for the default right placement', () => {
+    const wrapper = mountNumber();
+    expect(wrapper.find('.sn-input-number__stepper--head').exists()).toBe(false);
+    const tail = wrapper.find('.sn-input-number__stepper--tail');
+    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(true);
+    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
+  });
+
+  /* --- stepper glyphs --- */
+
+  it('renders the built-in − / + glyphs through SnIcon', () => {
+    const wrapper = mountNumber({ buttonPlacement: 'both' });
+    expectIconRendered(
+      wrapper,
+      '.sn-input-number__stepper--head .sn-input-number__btn--minus .sn-icon',
+    );
+    expectIconRendered(
+      wrapper,
+      '.sn-input-number__stepper--tail .sn-input-number__btn--plus .sn-icon',
+    );
+    expectNoMissingIcons(wrapper, 'SnInputNumber');
+  });
+
+  it('replaces the decrement / increment glyphs through the icon slots', () => {
+    const wrapper = mount(SnInputNumber, {
+      props: { modelValue: 1, buttonPlacement: 'both' },
+      slots: {
+        'minus-icon': '<i data-testid="minus-glyph">-</i>',
+        'plus-icon': '<i data-testid="plus-glyph">+</i>',
+      },
+    });
+    expect(
+      wrapper.find('.sn-input-number__stepper--head [data-testid="minus-glyph"]').exists(),
+    ).toBe(true);
+    expect(
+      wrapper.find('.sn-input-number__stepper--tail [data-testid="plus-glyph"]').exists(),
+    ).toBe(true);
+    // A replaced glyph leaves no default icon behind.
+    expect(wrapper.find('.sn-input-number__btn .sn-icon').exists()).toBe(false);
+  });
+
+  /* --- stepper background plate --- */
+
+  it('forwards the stepper background props as per-instance CSS vars', () => {
+    const wrapper = mountNumber({
+      buttonBackground: '#f2f3f5',
+      buttonHoverBackground: '#ffe9c7',
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('--sn-web-input-number-btn-bg: #f2f3f5');
+    expect(style).toContain('--sn-web-input-number-btn-hover-bg: #ffe9c7');
+  });
+
+  it('leaves the stepper plate vars unset without the props', () => {
+    const style = mountNumber().attributes('style') ?? '';
+    expect(style).not.toContain('--sn-web-input-number-btn-bg');
+    expect(style).not.toContain('--sn-web-input-number-btn-hover-bg');
+  });
+});
+
+/**
+ * happy-dom never parses a scoped `<style>` block, so the plate / centring
+ * contract is asserted against the component source — the same approach
+ * SnAlert.test.ts and SnSteps.test.ts use for their geometry guards.
+ */
+describe('SnInputNumber stepper plate CSS', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const source = readFileSync(resolve(here, './SnInputNumber.vue'), 'utf8');
+  const styleBlock = /<style scoped>([\s\S]*?)<\/style>/.exec(source);
+  if (!styleBlock) throw new Error('SnInputNumber.vue lost its <style scoped> block');
+
+  /** Flatten the style block into { selectors, body } rules. */
+  const rules = [
+    ...styleBlock[1].replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g),
+  ].map((m) => ({
+    selectors: m[1].split(',').map((s) => s.replace(/\s+/g, ' ').trim()),
+    body: m[2].replace(/\s+/g, ' ').trim(),
+  }));
+
+  function bodyOf(selector: string): string {
+    const rule = rules.find((r) => r.selectors.includes(selector));
+    if (!rule) throw new Error(`no CSS rule for "${selector}"`);
+    return rule.body;
+  }
+
+  it('centres the value in the both placement', () => {
+    expect(bodyOf('.sn-input-number--placement-both .sn-input-number__native')).toContain(
+      'text-align: center',
+    );
+  });
+
+  it('paints the button plate from --sn-web-input-number-btn-bg', () => {
+    const body = bodyOf('.sn-input-number__btn');
+    expect(body).toContain('background: var(--sn-web-input-number-btn-bg, transparent)');
+    expect(body).toContain('background-color 0.15s ease-out');
+  });
+
+  it('insets the plate so a coloured button clears the field edge', () => {
+    const body = bodyOf('.sn-input-number__btn');
+    expect(body).toContain('align-self: center');
+    expect(body).toContain('height: calc(100% - 6px)');
+    expect(body).toContain('border-radius: var(--sn-web-radius-sm, 4px)');
+  });
+
+  it('scopes the hover plate to the both placement', () => {
+    const hoverRules = rules.filter((r) => r.body.includes('--sn-web-input-number-btn-hover-bg'));
+    expect(hoverRules).toHaveLength(1);
+    expect(hoverRules[0].selectors.join(' ')).toContain('--placement-both');
+    expect(hoverRules[0].body).toMatch(/background: var\(\s*--sn-web-input-number-btn-hover-bg,/);
   });
 });
