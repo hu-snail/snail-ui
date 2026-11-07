@@ -280,30 +280,50 @@
   }
 }
 
-/* Sidebar scrollbar — thin translucent bar over the sidebar surface (the
- * UA default renders a heavy white strip, especially in dark mode).
- * `color-scheme` above already retints the UA bar; this styles it further. */
-.VPSidebar {
-  scrollbar-width: thin;
-  scrollbar-color: var(--vp-c-divider) transparent;
+
+/* ── 滚动条：全站统一成细窄玻璃胶囊 ────────────────────────────────────
+ * UA 默认给的是 15px 粗白块（深色模式尤其刺眼），和站点的磨砂质感冲突。
+ * 只改观感不改行为：8px 槽 + 2px 透明描边把胶囊收窄到 4px。
+ * 两种内核分开写是必须的：Chrome 121+ 只要出现标准属性
+ * `scrollbar-width / scrollbar-color`，就会整个忽略 `::-webkit-scrollbar`
+ * 伪元素（胶囊圆角与 hover 提亮全部失效），所以标准属性只发给 Firefox。 */
+:root {
+  --sn-scrollbar-size: 8px;
+  --sn-scrollbar-thumb: color-mix(in srgb, var(--vp-c-text-2) 26%, transparent);
+  --sn-scrollbar-thumb-hover: color-mix(in srgb, var(--vp-c-brand-1) 55%, transparent);
 }
 
-.VPSidebar::-webkit-scrollbar {
-  width: 6px;
+/* Firefox 与未来内核：只认标准属性（无法指定圆角，故取 thin + 主题色）。 */
+@supports (-moz-appearance: none) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sn-scrollbar-thumb) transparent;
+  }
 }
 
-.VPSidebar::-webkit-scrollbar-track {
+/* WebKit / Blink：伪元素全权控制 → 细胶囊 + 透明槽 + hover 换主题色。 */
+::-webkit-scrollbar {
+  width: var(--sn-scrollbar-size);
+  height: var(--sn-scrollbar-size);
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
   background: transparent;
 }
 
-.VPSidebar::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: rgba(9, 9, 11, 0.18);
+::-webkit-scrollbar-thumb {
+  /* 透明描边 + content-box 裁切：槽 8px、可见胶囊只 4px，且贴边不顶角 */
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-color: var(--sn-scrollbar-thumb);
+  background-clip: content-box;
 }
 
-.dark .VPSidebar::-webkit-scrollbar-thumb {
-  background-color: rgba(250, 250, 250, 0.2);
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--sn-scrollbar-thumb-hover);
 }
+
 #VPSidebarNav .VPSidebarItem.level-0 {
   padding-bottom: 6px;
 }

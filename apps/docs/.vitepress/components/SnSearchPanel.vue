@@ -537,6 +537,29 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
   margin: 0;
   padding: 6px;
 }
+
+/* 列表滚动条：比全站更窄（6px 槽 / 2px 胶囊），贴着面板右侧的圆角内壁，
+ * 不压住结果行标签。这里只写 WebKit 伪元素 —— 不给元素加标准属性
+ * `scrollbar-width / scrollbar-color`，否则 Chrome 121+ 会忽略伪元素；
+ * Firefox 靠 `html` 上继承来的 thin 设置即可。 */
+.sn-search-panel__list::-webkit-scrollbar {
+  width: 6px;
+}
+.sn-search-panel__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sn-search-panel__list::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--vp-c-text-2) 26%, transparent);
+  background-clip: content-box;
+}
+.sn-search-panel__list::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--vp-c-brand-1) 50%, transparent);
+}
+.sn-search-panel--dark .sn-search-panel__list::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--vp-c-text-2) 40%, transparent);
+}
 .sn-search-panel__item {
   padding: 8px 10px;
   border-radius: 10px;
