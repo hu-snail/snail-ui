@@ -254,6 +254,9 @@ importers:
 
   packages/admin-layout:
     dependencies:
+      '@snui/echarts':
+        specifier: 'workspace:'
+        version: link:../echarts
       '@snui/vue-web':
         specifier: 'workspace:'
         version: link:../vue-web
@@ -270,6 +273,9 @@ importers:
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.5.1(@vue/compiler-dom@3.5.43)(@vue/server-renderer@3.5.43)(vue@3.5.43(typescript@5.9.3))
+      echarts:
+        specifier: ^5.6.0
+        version: 5.6.0
       eslint:
         specifier: ^9.17.0
         version: 9.39.5

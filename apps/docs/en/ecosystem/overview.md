@@ -16,7 +16,7 @@ several sub-components.
 
 | Plugin                                            | Components                                       | Platform | What it solves                                                                        |
 | ------------------------------------------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------- |
-| [Admin layout](/en/ecosystem/plugins/admin-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` / `SnProTabbar` / `SnProSettings` | Web      | Admin shell: four switchable shapes, settings drawer, visited-route tab bar, static-route or backend menus |
+| [Admin layout](/en/ecosystem/plugins/admin-layout) | `SnProLayout` (standard) / `SnProLayoutClassic` (classic) / `SnProLayoutAurora` (aurora) + shared `SnProLogo` / `SnProSearch` / `SnProNotice` / `SnProUser` | Web      | Several admin layout styles: standard's four switchable shapes + settings drawer + tab bar; classic's categorized sider + content header; aurora's full-bleed background + top bar + floating rail |
 
 > Want your package listed here? See the `packages/` conventions and ADR-0006
 > (layout-package scope boundary).

@@ -1,6 +1,10 @@
 # SnProLayout — 中后台布局壳（`@snui/admin-layout` 主组件）
 
-> **机器可读契约** · 版本 0.1.0 · `@experimental`（Public API 未冻结） · ADR-0006
+> **机器可读契约（`standard` 风格）** · 版本 0.1.0 · `@experimental`（Public API 未冻结） · ADR-0006 / ADR-0008
+>
+> 独立入口：`import { SnProLayout } from '@snui/admin-layout/layouts/standard'` +
+> `import '@snui/admin-layout/layouts/standard/style.css'`（整包 barrel + `@snui/admin-layout/styles`
+> 亦可）。同包另一风格 `classic` 的契约见 `src/pro-classic/ai-description.md`。
 
 ## 定位与硬边界（必读）
 
@@ -77,7 +81,9 @@ dual（无页头）在条带右侧（齿轮在前、宿主 actions 在后，顺�
 - 组件级可覆写 hook：`--sn-pro-sider-bg / -border-color / -title-color`、
   `--sn-pro-logo-title`；
 - `invertedSider` 对齐 SnMenu inverted 深色面（`#001529`，与 n-menu 经典侧栏一致）；
-- 包样式入口 `@snui/admin-layout/styles`（不含 token 层，token 来自 `@snui/vue-web/styles`）。
+- 包样式入口 `@snui/admin-layout/styles`（不含 token 层，token 来自 `@snui/vue-web/styles`）；
+- 按风格入口 `@snui/admin-layout/layouts/standard/style.css`：只含本风格的壳 + 它用到的
+  共享件规则（自包含），不含 classic 专属规则——按需加载的依据（ADR-0008）。
 
 ## 测试
 

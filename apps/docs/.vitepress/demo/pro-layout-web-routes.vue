@@ -1,9 +1,21 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — 静态路由读取（routesToMenuOptions：meta.title/icon/hidden/order）。 */
+/**
+ * Demo: SnProLayout — 静态路由读取（routesToMenuOptions：meta.title/icon/hidden/order）。
+ *
+ * 内容区是通用工作台（`@snui/admin-layout/workbench`，接 ECharts）；推导出的菜单结构
+ * 折在壳下方的 `<details>` 里，不再占用内容区 —— 壳与内容各司其职。
+ */
 import { markRaw, ref } from 'vue';
 import { Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout, routesToMenuOptions } from '@snui/admin-layout';
 import type { RouteLike } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 // 宿主自己的静态路由表 —— 本地写法与 vue-router 的 RouteRecordRaw 同构
 const routes: RouteLike[] = [
@@ -57,21 +69,26 @@ function onSelect(key: string | number | null): void {
         <span class="avatar" aria-hidden="true">M</span>
       </template>
 
-      <div class="page">
-        <h3>路由表即菜单</h3>
-        <p>
-          无标题的 redirect 父级被折叠、<code>hidden</code> 子树被剔除、
-          <code>order</code> 决定同级顺序——菜单完全由路由元信息推导。
-        </p>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="菜单由路由表推导：redirect 父级折叠、hidden 剔除、order 排序。"
+        :chart-height="260"
+      />
+      <details class="derived-wrap">
+        <summary>查看推导出的菜单结构</summary>
         <pre class="derived">{{ derived }}</pre>
-      </div>
+      </details>
     </SnProLayout>
   </div>
 </template>
 
 <style scoped>
 .shell {
-  height: 460px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -90,21 +107,21 @@ function onSelect(key: string | number | null): void {
   font-weight: 600;
 }
 
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
+/* 推导结果折在壳外：内容区留给工作台，这块只是「怎么看出来的」注解。 */
+.derived-wrap {
+  margin-top: 10px;
+  font-size: 12px;
 }
 
-.page p {
-  margin: 0 0 12px;
+.derived-wrap summary {
+  cursor: pointer;
   color: var(--sn-web-color-text-tertiary);
-  font-size: 13px;
 }
 
 .derived {
-  margin: 0;
+  margin: 8px 0 0;
   padding: 10px 12px;
-  max-height: 180px;
+  max-height: 200px;
   overflow: auto;
   border-radius: 6px;
   background: var(--sn-web-color-background-subtle);

@@ -1,9 +1,20 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — top 形态（顶部菜单：品牌 + 横向一级菜单 + 操作区）。 */
+/**
+ * Demo: SnProLayout — top 形态（顶部菜单：品牌 + 横向一级菜单 + 操作区）。
+ *
+ * 内容区是通用工作台（`@snui/admin-layout/workbench`），和 side / mix / dual 同一份数据。
+ */
 import { markRaw, ref } from 'vue';
 import { Box, Home, MessageSquare, PieChart } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
 import type { SnMenuOption } from '@snui/vue-web';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 const activeKey = ref('home');
 const menus: SnMenuOption[] = [
@@ -32,17 +43,22 @@ function onSelect(key: string | number | null): void {
         <span class="avatar" aria-hidden="true">M</span>
       </template>
 
-      <div class="page">
-        <h3>首页</h3>
-        <p>顶部形态没有侧栏，一级菜单全部收进顶栏，内容区更宽。</p>
-      </div>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="顶部形态没有侧栏，一级菜单全部收进顶栏，内容区更宽。"
+        :chart-height="260"
+      />
     </SnProLayout>
   </div>
 </template>
 
 <style scoped>
 .shell {
-  height: 360px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -59,16 +75,5 @@ function onSelect(key: string | number | null): void {
   color: var(--sn-web-color-text-on-primary);
   font-size: 13px;
   font-weight: 600;
-}
-
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.page p {
-  margin: 0;
-  color: var(--sn-web-color-text-tertiary);
-  font-size: 13px;
 }
 </style>

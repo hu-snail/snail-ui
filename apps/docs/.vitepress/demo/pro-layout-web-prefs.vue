@@ -1,10 +1,22 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — 设置抽屉（形态/亮暗/主色/标签样式）+ 访问路由标签栏。 */
+/**
+ * Demo: SnProLayout — 设置抽屉（形态/亮暗/主色/标签样式）+ 访问路由标签栏。
+ *
+ * 内容区是通用工作台（`@snui/admin-layout/workbench`，接 ECharts）：切亮暗 / 主色时
+ * 工作台跟着换肤，说明内容与壳完全解耦。
+ */
 import { markRaw, ref } from 'vue';
 import { Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
 import type { SnProPrimaryColor, SnProSettingsLabels, SnProTabItem, SnProTabType } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
 import type { SnMenuOption } from '@snui/vue-web';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 const activeKey = ref('user');
 const mode = ref<'light' | 'dark'>('light');
@@ -96,21 +108,22 @@ const settingsLabels: Partial<SnProSettingsLabels> = {
       <template #actions>
         <span class="avatar" aria-hidden="true">M</span>
       </template>
-
-      <div class="page">
-        <h3>偏好抽屉 + 标签栏</h3>
-        <p>
-          点页头齿轮打开设置抽屉（形态 / 亮暗 / 主色 / 标签样式）；
-          访问过的路由成为标签，固定签不可关闭。
-        </p>
-      </div>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="点页头齿轮打开设置抽屉（形态 / 亮暗 / 主色 / 标签样式），访问过的路由成为标签。"
+        :chart-height="260"
+      />
     </SnProLayout>
   </div>
 </template>
 
 <style scoped>
 .shell {
-  height: 440px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -133,18 +146,4 @@ const settingsLabels: Partial<SnProSettingsLabels> = {
   font-weight: 600;
 }
 
-.page {
-  padding: 4px 0 120px;
-}
-
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 15px;
-}
-
-.page p {
-  margin: 0;
-  color: var(--sn-web-color-text-secondary);
-  font-size: 13px;
-}
 </style>

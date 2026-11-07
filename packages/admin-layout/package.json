@@ -13,6 +13,26 @@
       "import": "./dist/index.js"
     },
     "./styles": "./dist/styles/index.css",
+    "./layouts/standard": {
+      "types": "./dist/pro-layout/index.d.ts",
+      "import": "./dist/pro-layout/index.js"
+    },
+    "./layouts/standard/style.css": "./dist/styles/pro-layout.css",
+    "./layouts/classic": {
+      "types": "./dist/pro-classic/index.d.ts",
+      "import": "./dist/pro-classic/index.js"
+    },
+    "./layouts/classic/style.css": "./dist/styles/pro-classic.css",
+    "./layouts/aurora": {
+      "types": "./dist/pro-aurora/index.d.ts",
+      "import": "./dist/pro-aurora/index.js"
+    },
+    "./layouts/aurora/style.css": "./dist/styles/pro-aurora.css",
+    "./workbench": {
+      "types": "./dist/pro-workbench/index.d.ts",
+      "import": "./dist/pro-workbench/index.js"
+    },
+    "./workbench/style.css": "./dist/styles/pro-workbench.css",
     "./src/*.ts": "./src/*.ts",
     "./src/*.vue": "./src/*.vue"
   },
@@ -20,21 +40,26 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build && vue-tsc -p tsconfig.json --emitDeclarationOnly",
-    "dev": "vite build --watch",
+    "build": "node scripts/build-entries.mjs && vue-tsc -p tsconfig.json --emitDeclarationOnly",
+    "dev": "node scripts/build-entries.mjs --watch",
     "lint": "eslint src --ext .ts,.vue",
     "typecheck": "vue-tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
+    "@snui/echarts": "workspace:",
     "@snui/vue-web": "workspace:",
     "lucide-vue-next": "^0.460.0",
     "vue": "^3.5.43"
   },
+  "peerDependencies": {
+    "echarts": "^5.6.0 || ^6.0.0"
+  },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
+    "echarts": "^5.6.0",
     "eslint": "^9.17.0",
     "happy-dom": "^15.11.7",
     "typescript": "^5.7.3",

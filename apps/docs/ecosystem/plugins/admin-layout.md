@@ -1,22 +1,23 @@
 # 中后台布局 @snui/admin-layout
 
-把中后台的**布局壳**做成一个可安装的官方插件包：logo、侧栏、顶栏、内容区、页脚的位置与几何、四种布局形态、折叠状态——全部装进 `SnProLayout`。已在使用 `@snui/vue-web` 的项目安装后，用自己的 `layout.vue` 换掉即可。
+把中后台的**布局壳**做成一个可安装的官方插件包：logo、侧栏、顶栏、内容区、页脚的位置与几何、
+折叠状态，以及**多种布局风格**——已在使用 `@snui/vue-web` 的项目安装后，用自己的 `layout.vue` 换掉即可。
 
 > 平台：`Web` · 包：`@snui/admin-layout` · 状态：`@experimental`
 
 > **职责边界（先读这一段）**
 >
-> 这个模板**只处理布局问题，不处理功能业务**：不做登录鉴权、不发请求、
-> 不管 Token / Store、不注册路由。菜单数据从哪来（本地静态路由 or 后端接口）、
-> 点了菜单之后跳到哪（`router.push`），全部由宿主决定——模板只 emit
-> `select(key)`。
+> 这个包**只处理布局问题，不处理功能业务**：不做登录鉴权、不发请求、
+> 不管 Token / Store、不注册路由、不内置 i18n 与主题引擎。菜单数据从哪来（本地静态路由 or
+> 后端接口）、点了菜单之后跳到哪（`router.push`）、切了亮暗之后怎么换肤，全部由宿主决定——
+> 布局只 emit 事件。
 
 ## 何时使用
 
 - 新建中后台项目，不想每次重抄「侧栏 + 顶栏 + 面包屑」的壳
-- 已有项目想换布局形态（经典侧栏 ↔ 顶部菜单 ↔ 混合），或想让用户自己切
+- 已有项目想换布局形态或换整套布局风格，或想让用户自己切
 - 菜单来自本地静态路由表，或来自后端动态菜单接口
-- 需要保留业务接线（鉴权、请求、store）——它们继续留在宿主，模板不碰
+- 需要保留业务接线（鉴权、请求、store）——它们继续留在宿主，布局不碰
 
 ## 安装
 
@@ -25,90 +26,106 @@ pnpm add @snui/admin-layout
 ```
 
 前置依赖：`@snui/vue-web`（token 层与其组件来自它，本包不重复产出）。
-入口按需引入，样式一条：
 
 ```ts
-import { SnProLayout, routesToMenuOptions } from '@snui/admin-layout';
+// ① 全量：一个入口拿到所有风格 + 一份全量样式（最省心，产物最大）
+import { SnProLayout, SnProLayoutClassic, SnProLayoutAurora } from '@snui/admin-layout';
 import '@snui/admin-layout/styles'; // 仅布局壳类；token 已由 @snui/vue-web/styles 提供
 ```
 
-## 布局形态
+## 布局风格
 
-参考 vue-element-admin / vben-admin / ant-design-pro 的常见形态，内置四种，
-`v-model:layout` 受控可切换：
+同一个包里并存多种布局风格：每种风格是**独立入口 + 独立样式文件**（按需加载），只引你要的那一种。
 
-| `layout` | 结构                                                        | 参考原型                 |
-| -------- | ----------------------------------------------------------- | ------------------------ |
-| `side`   | 左侧栏（logo + 纵向菜单）+ 顶栏（折叠钮 / 面包屑 / 操作区）  | vue-element-admin 经典款 |
-| `top`    | 顶栏（logo + 横向一级菜单 + 操作区）+ 内容                   | ant-design-pro top       |
-| `mix`    | 顶栏放一级菜单，侧栏只放当前一级的二级菜单                   | vben-admin mixed-nav     |
-| `dual`   | 图标栏（一级）+ 二级菜单列 + 内容                            | vben mixed-sidebar 系    |
+<LayoutShowcase
+  :styles="[
+    { key: 'standard', name: 'pro-layout-web-side', label: 'standard', blurb: '四形态壳：side / top / mix / dual' },
+    { key: 'classic', name: 'pro-layout-web-classic', label: 'classic', blurb: '分类侧栏 + 内容区顶部通栏 + 模块标题带' },
+    { key: 'aurora', name: 'pro-layout-web-aurora', label: 'aurora', blurb: '通屏背景 + 顶部条 + 悬浮一级图标栏' },
+  ]"
+  initial="standard"
+/>
 
-<Demo name="pro-layout-web-side" description="side — 经典侧栏形态，面包屑按菜单路径自动推导。" />
+> 上面这个演示台一次只渲染一种风格：点胶囊切换。布局壳是横向铺开的，并排显示会被挤扁，
+> 所以每种风格在文档里都是**独占一行**的演示。
 
-<Demo name="pro-layout-web-top" description="top — 顶部菜单形态，一级菜单收进顶栏。" />
+| 风格       | 组件                 | 入口                                    | 样式文件                                        | 结构                                                           |
+| ---------- | -------------------- | --------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard`   | `@snui/admin-layout/layouts/standard/style.css` | 四形态壳（side / top / mix / dual）：侧栏 / 顶栏 / 条带 + 内容区 |
+| `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic`    | `@snui/admin-layout/layouts/classic/style.css`  | 经典企业后台：分类侧栏 + 内容区顶部通栏 + 模块标题带             |
+| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora`     | `@snui/admin-layout/layouts/aurora/style.css`   | 通屏背景 + 顶部条（logo / 二级模块 / 工具区）+ 悬浮一级图标栏   |
 
-<Demo name="pro-layout-web-mix" description="mix — 顶部一级 + 侧栏二级联动；一级无子级时侧栏自动收起。" />
+每种风格各有一页详细文档（结构、独立引入、完整 API 与演示）：
 
-<Demo name="pro-layout-web-dual" description="dual — 图标栏 + 二级菜单列，条带上的折叠钮收起第二列。" />
+| 风格                                | 说明                                                       |
+| ----------------------------------- | ---------------------------------------------------------- |
+| [standard 四形态壳](./standard)      | 一个组件四种形态：side / top / mix / dual，设置抽屉 + 标签栏 |
+| [classic 经典企业后台](./classic)    | 分类侧栏 + 底部用户卡片 + 内容区顶部通栏 + 模块标题带       |
+| [aurora 通屏背景](./aurora)          | 背景四预设（纯色 / 图 / 光晕 / 弥散）+ 悬浮一级图标栏       |
+| [workbench 工作台](./workbench)      | 通用统计页（ECharts）：账户卡 / 交易记录 / 资金流水 / 收入来源 |
 
-## 形态切换
+三种风格的 demo 内容区放的是**同一个工作台**（`@snui/admin-layout/workbench`）：换壳时内容一个数字都不动，
+这就是「布局只负责壳」的可视证明。工作台是独立入口（它牵 `@snui/echarts`），所以不在整包 barrel 里。
 
-宿主用一个受控状态绑定 `v-model:layout`，设置面板随时切：
+三种风格**复用同一批共享件**（`SnProLogo` / `SnProSearch` / `SnProNotice` /
+`SnProUser`）与同一份菜单工具（`routesToMenuOptions` / `menuPathTo` / `searchMenuOptions`）——
+差异只在「壳」，不在「件」。
 
-<Demo name="pro-layout-web-switch" description="四种形态共用同一份菜单数据，切换只动几何。" />
+### 样式怎么加载
 
-## 设置抽屉与标签栏
+```ts
+// ① 全量：barrel 入口牵引全部组件 + 一份全量样式
+import '@snui/admin-layout/styles';
 
-两条纯受控的 additive 能力，宿主不接就完全不渲染：
+// ② 单风格：只引 classic（推荐）
+import { SnProLayoutClassic } from '@snui/admin-layout/layouts/classic';
+import '@snui/admin-layout/layouts/classic/style.css';
 
-- **设置抽屉**（`show-settings`）——齿轮打开偏好面板：四形态卡片、
-  亮暗模式、主色色板、标签栏样式。齿轮在每个形态都可达（side/top/mix 在页头，
-  dual 无页头则放条带右侧）；`mode` / `primaryId` / `tabType` 任一省略
-  即隐藏对应分区；文案经 `settingsLabels` 本地化，结果只通过
-  `update:mode` / `update:primaryId` / `update:tabType` 事件交还宿主持久化；
-- **访问路由标签栏**（`show-tabs`）——`tabs: { key, label, closable? }[]`
-  由宿主按访问路由维护（固定签传 `closable: false`），点击 / 关闭分别抛
-  `tab-select` / `tab-close`，导航与关闭后的路由收敛都在宿主。
+// ③ 多种风格都用：每个子入口各引一次
+import { SnProLayout } from '@snui/admin-layout/layouts/standard';
+import '@snui/admin-layout/layouts/standard/style.css';
+import { SnProLayoutAurora } from '@snui/admin-layout/layouts/aurora';
+import '@snui/admin-layout/layouts/aurora/style.css';
+```
 
-<Demo name="pro-layout-web-prefs" description="设置抽屉（形态 / 亮暗 / 主色 / 标签样式）+ 访问路由标签栏，固定签不可关。" />
+每个子入口的样式表都**自包含**：`layouts/classic/style.css` 含 classic 壳 + 它用到的共享件
+（logo / 搜索 / 通知 / 用户卡片）规则，但不含 standard 独有的 header / sider / 条带 / tabbar /
+settings 规则；其它风格同理。
+
+> 取舍：子入口是**独立的 JS 产物**（不共享 chunk），所以同一应用同时引入多种风格时，
+> 共享件会在各自产物里各存一份。只用一个风格没有这个问题；多个都用、又在意这份重复时，用 ① 更划算。
 
 ## 菜单来源
 
 两种来源，最终都是同一份 `SnMenuOption[]`，布局对来源无感知：
 
-1. **静态路由读取** — `routesToMenuOptions(routes, { iconMap })` 纯函数读本地
-   路由表的 `meta.title / meta.icon / meta.hidden / meta.order`（结构化类型，
-   `RouteRecordRaw[]` 与 `router.options.routes` 均可直传，不依赖 vue-router）；
-2. **动态菜单（后端返回）** — 宿主把接口数据映射成 `{ key, label, children?, icon? }`
-   传入。映射逻辑（字段名、权限过滤、i18n 翻译）属于业务层，留在宿主。
+1. **静态路由读取** — `routesToMenuOptions(routes, { iconMap })` 纯函数读本地路由表的
+   `meta.title / meta.icon / meta.hidden / meta.order`（结构化类型，`RouteRecordRaw[]` 与
+   `router.options.routes` 均可直传，不依赖 vue-router）；
+2. **动态菜单（后端返回）** — 宿主把接口数据映射成 `{ key, label, children?, icon? }` 传入。
+   映射逻辑（字段名、权限过滤、i18n 翻译）属于业务层，留在宿主。
 
-<Demo name="pro-layout-web-routes" description="静态路由表推导菜单：redirect 父级折叠、hidden 剔除、order 排序。" />
+```ts
+import { routesToMenuOptions } from '@snui/admin-layout';
 
-菜单点击只抛 `select(key, item)`，导航在宿主：
-
-```vue
-<SnProLayout :menus="menus" :active-key="route.name" @select="(key) => router.push({ name: key })">
-  <RouterView />
-</SnProLayout>
+const menus = routesToMenuOptions(router.options.routes); // 或宿主自映射的后端数据
 ```
 
 ## 替换你的 layout.vue
-
-以一个典型中后台项目为例，替换前后的差异：
 
 ```vue
 <script setup lang="ts">
 // 替换前：手写 aside / header / menu / breadcrumb 的全部结构与样式，
 //         外加 auth store、i18n、登出等业务接线混在同一个文件里。
-// 替换后：结构交给 SnProLayout，业务接线原样保留在宿主。
+// 替换后：结构交给布局壳，业务接线原样保留在宿主。
 import { useRoute, useRouter } from 'vue-router';
-import { SnProLayout, routesToMenuOptions } from '@snui/admin-layout';
-import { menuToNavOptions } from '@/router/dynamic'; // 你的动态菜单映射（业务，保留在宿主）
+import { SnProLayout } from '@snui/admin-layout/layouts/standard';
+import '@snui/admin-layout/layouts/standard/style.css';
+import { routesToMenuOptions } from '@snui/admin-layout';
 
 const route = useRoute();
 const router = useRouter();
-const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOptions(后端数据)
+const menus = routesToMenuOptions(router.options.routes); // 或宿主自映射的后端数据
 </script>
 
 <template>
@@ -117,7 +134,6 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
     title="Admin"
     :menus="menus"
     :active-key="route.name"
-    :breadcrumb="['工作台', '首页']"
     @select="(key) => router.push({ name: key })"
   >
     <RouterView />
@@ -125,82 +141,96 @@ const menus = routesToMenuOptions(router.options.routes); // 或 menuToNavOption
 </template>
 ```
 
-品牌区、顶栏操作区、页脚都有插槽（`#logo` / `#actions` / `#footer`）；六个子
-组件（`SnProLogo` / `SnProSider` / `SnProHeader` / `SnProTabbar` /
-`SnProSettings`）也可单独引入自行编排。
+## 共享件
 
-## API
+三种风格复用同一批件，也可以脱离布局单独用：
 
-### SnProLayout Props
+| 组件          | 说明                                                             |
+| ------------- | ---------------------------------------------------------------- |
+| `SnProLogo`   | 品牌区：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换        |
+| `SnProSearch` | 通用菜单检索：跨层级命中 + 父级路径 + 键盘可达                    |
+| `SnProNotice` | 消息通知：铃铛 + 未读角标（`${max}+` 封顶）+ 面板，`#panel` 整替 |
+| `SnProUser`   | 用户卡片：头像 + 名称 / 描述 + 下拉，折叠时只剩头像               |
 
-| Prop                 | 类型                                    | 默认值    | 说明                                     |
-| -------------------- | --------------------------------------- | --------- | ---------------------------------------- |
-| layout               | `'side' \| 'top' \| 'mix' \| 'dual'`    | `'side'`  | 布局形态，`v-model:layout` 可切换        |
-| logo / title / mark  | `string`                                | —         | 品牌三件套（图片 / 标题 / 字母牌）       |
-| menus                | `SnMenuOption[]`                        | `[]`      | 菜单树（静态路由推导或后端映射）         |
-| activeKey            | `string \| number \| null`              | `null`    | 当前选中菜单 key（通常 `route.name`）    |
-| collapsed            | `boolean \| undefined`                  | —         | 折叠态，`v-model:collapsed`；省略非受控  |
-| siderWidth           | `number`                                | `224`     | 侧栏展开宽度（px）                       |
-| siderCollapsedWidth  | `number`                                | `56`      | 侧栏折叠宽度（px）                       |
-| fixed                | `boolean`                               | `true`    | 铺满视口（100vh）；`false` 时高度 100%   |
-| showCollapse         | `boolean`                               | `true`    | 折叠按钮开关                             |
-| invertedSider        | `boolean`                               | `false`   | 侧栏深色面（对齐 n-menu inverted）       |
-| breadcrumb           | `string[]`                              | 自动推导  | 显式面包屑；省略时按菜单路径推导         |
-| accordion            | `boolean`                               | `false`   | 手风琴展开                               |
-| expandedKeys         | `(string \| number)[]`                  | —         | 受控展开；省略时菜单自持                 |
-| showSettings         | `boolean`                               | `false`   | 页头显示设置齿轮                         |
-| settingsLabel        | `string`                                | 内置中文  | 齿轮的无障碍标签                         |
-| settingsLabels       | `Partial<SnProSettingsLabels>`          | 内置中文  | 设置面板文案（面板 i18n 由宿主传入）     |
-| mode                 | `'light' \| 'dark'`                     | —         | 亮暗模式，`v-model:mode`；省略隐藏该分区 |
-| primaryId            | `string`                                | —         | 主色预设 id，`v-model:primaryId`；省略隐藏该分区 |
-| primaryColors        | `SnProPrimaryColor[]`                   | `[]`      | 主色色板（`{ id, color }`）              |
-| showTabs             | `boolean`                               | `false`   | 显示访问路由标签栏                       |
-| tabs                 | `SnProTabItem[]`                        | `[]`      | 标签列表（宿主维护；`closable: false` 为固定签） |
-| tabType              | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'` | 标签样式，`v-model:tabType` 可从设置面板切换 |
+<Demo name="pro-layout-web-search" description="SnProSearch — 跨层级命中菜单、显示父级路径、键盘可达；右侧是同一份纯函数的结果。" />
 
-### Events
+### SnProSearch Props
 
-| 事件                 | 参数                              | 说明                                   |
-| -------------------- | --------------------------------- | -------------------------------------- |
-| `select`             | `(key, item)`                     | 菜单点击——**导航由宿主实现**           |
-| `update:layout`      | `(mode)`                          | `v-model:layout`                       |
-| `update:collapsed`   | `(collapsed)`                     | `v-model:collapsed`                    |
-| `update:expandedKeys`| `(keys)`                          | 受控展开同步                           |
-| `update:mode`        | `(mode)`                          | 设置面板亮暗切换                       |
-| `update:primaryId`   | `(id)`                            | 设置面板主色切换                       |
-| `update:tabType`     | `(type)`                          | 设置面板标签样式切换                   |
-| `tab-select`         | `(key)`                           | 标签点击——**导航由宿主实现**           |
-| `tab-close`          | `(key)`                           | 标签关闭——**关闭后的路由收敛由宿主实现** |
+| Prop          | 类型                             | 默认值     | 说明                                     |
+| ------------- | -------------------------------- | ---------- | ---------------------------------------- |
+| menus         | `SnMenuOption[]`                 | `[]`       | 被检索的菜单树（一般就是布局的 `menus`）  |
+| modelValue    | `string`                         | —          | 查询词，`v-model`；省略非受控            |
+| placeholder   | `string`                         | 内置中文   | 占位文案                                 |
+| minLength     | `number`                         | `1`        | 面板打开所需的最短（trim 后）长度        |
+| maxResults    | `number`                         | `10`       | 最多给出的命中条数                       |
+| size          | `'small' \| 'medium' \| 'large'` | `'medium'` | 输入框尺寸（透传 SnInput）               |
+| clearable     | `boolean`                        | `true`     | 清空按钮                                 |
+| disabled      | `boolean`                        | `false`    | 禁用                                     |
+| searchLabel   | `string`                         | 内置中文   | 输入框 / 结果列表的无障碍标签            |
+| emptyText     | `string`                         | 内置中文   | 无命中时的文案                           |
+| includeGroups | `boolean`                        | `false`    | 是否把带子级的分类节点也作为命中返回     |
+| filter        | `(query, hit) => boolean`        | —          | 额外过滤（比如按权限裁剪命中）           |
+| closeOnSelect | `boolean`                        | `true`     | 选中后是否关闭面板                       |
 
-### Slots
+### SnProSearch Events
 
-| 插槽      | 说明                                       |
-| --------- | ------------------------------------------ |
-| default   | 路由内容（`<RouterView />`）               |
-| `actions` | 操作区：side/top/mix 在页头右侧，dual（无页头）在条带右侧（语言切换、用户菜单…） |
-| `logo`    | 品牌区整体替换                             |
-| `footer`  | 内容区下方的页脚                           |
+| 事件                | 参数          | 说明                                    |
+| ------------------- | ------------- | --------------------------------------- |
+| `update:modelValue` | `(value)`     | `v-model`                               |
+| `search`            | `(query)`     | 每次输入（宿主可在此打点 / 拉远端候选） |
+| `select`            | `(key, item)` | 命中被激活——**导航由宿主实现**          |
+| `open` / `close`    | —             | 结果面板开合                            |
 
-### 子组件
+> 纯函数版本：`searchMenuOptions(menus, query, { maxResults, includeGroups, filter })` →
+> `{ key, label, path }[]`，与组件同一套规则（大小写不敏感、匹配自身或祖先标签、默认只返回叶子、
+> 跳过 disabled、结果顺序稳定），可用于宿主的命令面板或远端检索。
 
-| 组件          | 关键 Props                                              | 说明                             |
-| ------------- | ------------------------------------------------------- | -------------------------------- |
-| `SnProLogo`   | `logo / title / mark / collapsed`                       | 品牌区；`#icon` 换标、默认插槽整替 |
-| `SnProSider`  | `menus / activeKey / collapsed / inverted / showBrand`  | 左侧栏；透传 SnMenu 事件         |
-| `SnProHeader` | `showBrand / menus / activeKey / breadcrumb / showCollapse` | 顶栏；横向菜单优先于面包屑   |
-| `SnProTabbar` | `tabs / activeKey / type`                               | 标签栏；基于 SnTabs 五样式    |
-| `SnProSettings` | `show / layout / mode / primaryId / primaryColors / tabType / labels` | 偏好抽屉；受控 props 省略即隐藏分区 |
+### SnProNotice Props
+
+| Prop        | 类型                | 默认值   | 说明                          |
+| ----------- | ------------------- | -------- | ----------------------------- |
+| count       | `number`            | `0`      | 未读角标（`0` 不显示）        |
+| max         | `number`            | `99`     | 角标封顶，超出显示 `${max}+`  |
+| items       | `SnProNoticeItem[]` | `[]`     | 消息列表（宿主数据）          |
+| label       | `string`            | 内置中文 | 铃铛按钮的无障碍标签          |
+| panelTitle  | `string`            | 内置中文 | 面板标题                      |
+| readAllText | `string`            | 内置中文 | 「全部已读」文案              |
+| emptyText   | `string`            | 内置中文 | 无消息文案                    |
+
+Events：`select(key, item)`（打开 / 标记已读由宿主实现）、`read-all`。
+Slots：`#panel` 整体替换面板内容（头部与列表一起换成宿主自己的实现）。
+
+### SnProUser Props
+
+| Prop        | 类型                   | 默认值        | 说明                                   |
+| ----------- | ---------------------- | ------------- | -------------------------------------- |
+| name        | `string`               | —             | 显示名（无头像图时取首字做字母牌）      |
+| description | `string`               | —             | 第二行（角色 / 邮箱）                  |
+| avatar      | `string`               | —             | 头像图 URL                             |
+| collapsed   | `boolean`              | `false`       | 折叠：只留头像                         |
+| menus       | `SnMenuOption[]`       | `[]`          | 下拉项                                 |
+| trigger     | `'click' \| 'hover' …` | `'click'`     | 展开方式（透传 SnDropdown）            |
+| placement   | `SnDropdownPlacement`  | `'top-start'` | 面板位置（卡片在侧栏底部，默认向上弹） |
+| menuLabel   | `string`               | 内置中文      | 触发按钮的无障碍标签                   |
+
+Events：`select(key, item)`——**含义由宿主决定（登出 / 个人中心）**；默认插槽整体替换卡片内容。
 
 ## 主题与暗色
 
-全部颜色走 `--sn-web-*` token，跟随宿主暗色机制自动翻转；`invertedSider` 是
-经典深色侧栏（与 SnMenu inverted 同面）。组件级覆写 hook：
-`--sn-pro-sider-bg` / `--sn-pro-sider-border-color` / `--sn-pro-sider-title-color` /
-`--sn-pro-logo-title`。
+全部颜色走 `--sn-web-*` token，跟随宿主暗色机制自动翻转。各风格自己的覆写 hook 写在对应页面里。
 
 ## AI 契约
 
-机器可读契约见包内 `src/pro-layout/ai-description.md`（含 AI Patch Boundary：
-`layout / menus / activeKey / collapsed / breadcrumb / 品牌三件套 / showSettings 系 /
-showTabs 系` 可 patch，导航、标签关闭后的路由收敛、真实换肤、鉴权、请求永远
-readonly-不可 patch）。
+机器可读契约按风格拆分在包内：
+
+- `src/pro-layout/ai-description.md`（`standard`）
+- `src/pro-classic/ai-description.md`（`classic`）
+- `src/pro-aurora/ai-description.md`（`aurora`）
+- `src/pro-search/ai-description.md`（共享检索件与 `searchMenuOptions` 规则）
+
+共同边界：**可 patch** 布局数据与几何（`menus` / `activeKey` / `collapsed` / 品牌三件套 /
+面包屑 / 各区域的 `show*` 与文案 / 插槽）；**永远不可 patch** 导航、请求、鉴权、权限过滤、
+真实换肤、i18n 翻译与安装逻辑。
+
+架构决策：[ADR-0006](/decisions) 建立本包、ADR-0008 多风格与按需样式、
+ADR-0009 `aurora` 风格与背景预设（见仓库 `.ai/decisions/`）。

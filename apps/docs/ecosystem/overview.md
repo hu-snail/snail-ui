@@ -13,6 +13,6 @@
 
 | 插件                                             | 组件                                       | 平台 | 解决什么问题                                                                     |
 | ------------------------------------------------ | ------------------------------------------ | ---- | -------------------------------------------------------------------------------- |
-| [中后台布局](/ecosystem/plugins/admin-layout)     | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` / `SnProTabbar` / `SnProSettings` | Web  | 中后台布局壳：四形态可切换、设置抽屉、访问路由标签栏、静态路由 / 后端菜单两种来源 |
+| [中后台布局](/ecosystem/plugins/admin-layout)     | `SnProLayout`（standard）/ `SnProLayoutClassic`（classic）/ `SnProLayoutAurora`（aurora）+ 共享件 `SnProLogo` / `SnProSearch` / `SnProNotice` / `SnProUser` | Web  | 中后台布局壳的多种风格：standard 四形态可切换 + 设置抽屉 + 标签栏；classic 分类侧栏 + 内容区顶栏；aurora 通屏背景 + 顶部条 + 悬浮图标栏 |
 
 > 想把自己的包加入本页？见 `packages/` 目录约定与 ADR-0006（布局包职责边界）。

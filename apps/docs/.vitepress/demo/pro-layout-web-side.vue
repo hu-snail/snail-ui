@@ -1,9 +1,21 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — side 形态（经典侧栏：logo + 纵向菜单 + 顶栏）。 */
+/**
+ * Demo: SnProLayout — side 形态（经典侧栏：logo + 纵向菜单 + 顶栏）。
+ *
+ * 内容区是**通用工作台**（`@snui/admin-layout/workbench`，接 ECharts），与 classic /
+ * aurora 用的是同一份数据 —— 换壳不换内容，这就是「布局只负责壳」的可视证明。
+ */
 import { markRaw, ref } from 'vue';
 import { Bell, Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
 import type { SnMenuOption } from '@snui/vue-web';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 const activeKey = ref('home');
 const menus: SnMenuOption[] = [
@@ -39,21 +51,23 @@ function onSelect(key: string | number | null): void {
         <span class="avatar" aria-hidden="true">M</span>
       </template>
 
-      <div class="page">
-        <h3>工作台</h3>
-        <p>当前菜单：<code>{{ activeKey }}</code>。面包屑由菜单路径自动推导；点菜单后的跳转由宿主 router 完成。</p>
-      </div>
-
-      <template #footer>
-        <span class="footnote">© snail-aui · @snui/admin-layout</span>
-      </template>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="这里是今天的经营概览；面包屑由菜单路径自动推导。"
+        :chart-height="260"
+      />
     </SnProLayout>
   </div>
 </template>
 
 <style scoped>
+/* 真实比例：接近一屏的后台窗口，不是一块被压扁的示例板。 */
 .shell {
-  height: 420px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -77,21 +91,5 @@ function onSelect(key: string | number | null): void {
   color: var(--sn-web-color-text-on-primary);
   font-size: 13px;
   font-weight: 600;
-}
-
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.page p {
-  margin: 0;
-  color: var(--sn-web-color-text-tertiary);
-  font-size: 13px;
-}
-
-.footnote {
-  color: var(--sn-web-color-text-tertiary);
-  font-size: 12px;
 }
 </style>

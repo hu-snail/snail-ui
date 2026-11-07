@@ -1,9 +1,20 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — dual 形态（图标栏 + 二级菜单列，vben mixed-sidebar 系）。 */
+/**
+ * Demo: SnProLayout — dual 形态（图标栏 + 二级菜单列，vben mixed-sidebar 系）。
+ *
+ * 内容区是通用工作台（`@snui/admin-layout/workbench`），和其它三种形态同一份数据。
+ */
 import { markRaw, ref } from 'vue';
 import { Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
 import type { SnMenuOption } from '@snui/vue-web';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 const activeKey = ref('user');
 const menus: SnMenuOption[] = [
@@ -38,17 +49,22 @@ function onSelect(key: string | number | null): void {
         <span class="avatar" aria-hidden="true">M</span>
       </template>
 
-      <div class="page">
-        <h3>用户管理</h3>
-        <p>左栏只放一级图标（悬停出名称），第二列是它的子级；条带上的折叠钮收起第二列。</p>
-      </div>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="左栏只放一级图标（悬停出名称），第二列是它的子级；条带上的折叠钮收起第二列。"
+        :chart-height="260"
+      />
     </SnProLayout>
   </div>
 </template>
 
 <style scoped>
 .shell {
-  height: 380px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -65,16 +81,5 @@ function onSelect(key: string | number | null): void {
   color: var(--sn-web-color-text-on-primary);
   font-size: 13px;
   font-weight: 600;
-}
-
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.page p {
-  margin: 0;
-  color: var(--sn-web-color-text-tertiary);
-  font-size: 13px;
 }
 </style>

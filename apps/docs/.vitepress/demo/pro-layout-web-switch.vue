@@ -1,11 +1,23 @@
 <script setup lang="ts">
-/** Demo: SnProLayout — v-model:layout 形态切换（宿主设置面板的切换器）。 */
+/**
+ * Demo: SnProLayout — v-model:layout 形态切换（宿主设置面板的切换器）。
+ *
+ * 内容区是通用工作台（`@snui/admin-layout/workbench`）：切换上面四种形态时，
+ * 工作台里的数字与图表一个都不动 —— 几何与菜单位置由壳接管，业务零改动。
+ */
 import { markRaw, ref } from 'vue';
 import { Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
 import type { SnProLayoutMode } from '@snui/admin-layout';
+import { ProWorkbench } from '@snui/admin-layout/workbench';
 import { SnRadioGroup } from '@snui/vue-web';
 import type { SnMenuOption } from '@snui/vue-web';
+import {
+  demoIncomeSources,
+  demoKpis,
+  demoMoneyFlow,
+  demoTransactions,
+} from '../utils/workbench-demo';
 
 const layout = ref<SnProLayoutMode>('side');
 const activeKey = ref('user');
@@ -45,10 +57,15 @@ function onSelect(key: string | number | null): void {
         <span class="avatar" aria-hidden="true">M</span>
       </template>
 
-      <div class="page">
-        <h3>四种形态，同一份菜单</h3>
-        <p>切换上面的 <code>layout</code> 值——几何与菜单位置由布局壳接管，业务零改动。</p>
-      </div>
+      <ProWorkbench
+        :kpis="demoKpis"
+        :money-flow="demoMoneyFlow"
+        :income-sources="demoIncomeSources"
+        :transactions="demoTransactions"
+        title="工作台"
+        subtitle="四种形态，同一份菜单与同一屏内容：切换只动几何。"
+        :chart-height="260"
+      />
     </SnProLayout>
   </div>
 </template>
@@ -59,7 +76,7 @@ function onSelect(key: string | number | null): void {
 }
 
 .shell {
-  height: 400px;
+  height: clamp(560px, 78vh, 900px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: 8px;
   overflow: hidden;
@@ -76,16 +93,5 @@ function onSelect(key: string | number | null): void {
   color: var(--sn-web-color-text-on-primary);
   font-size: 13px;
   font-weight: 600;
-}
-
-.page h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.page p {
-  margin: 0;
-  color: var(--sn-web-color-text-tertiary);
-  font-size: 13px;
 }
 </style>
