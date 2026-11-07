@@ -4,8 +4,8 @@
  *
  * 按 `id`（home-cases.ts 注册表）渲染对应的迷你场景组合：所有内容都是
  * 真实 @snui/vue-web 组件（可交互），文案跟随站点语言。样式辅助类
- * `sn-case-demo__*` 使用 SnHomeCaseCard 提供的玻璃面板变量（--sn-case-*），
- * 深浅主题自动适配。
+ * `sn-case-demo__*` 使用 SnHomeCaseCard 提供的内嵌面板变量（--sn-case-*）：
+ * 这一层恒为亮色「窗口」语境（深色页面上窗口保持白色），取色不随主题翻转。
  *
  * 演示数据全部确定性（固定时间戳 / 固定数组），保证 SSR 与客户端水合
  * 一致 —— 不用 Math.random / Date.now() 直接参与渲染。
@@ -509,8 +509,8 @@ const slides = [
 </template>
 
 <style scoped>
-/* 排版助手 —— 颜色全部走 SnHomeCaseCard 的玻璃变量（--sn-case-*），
- * 深浅主题自动适配。 */
+ /* 排版助手 —— 颜色全部走 SnHomeCaseCard 的内嵌面板变量（--sn-case-*），
+  * 恒亮「窗口」语境，不随站点主题翻转。 */
 .sn-case-demo__row {
   display: inline-flex;
   align-items: center;

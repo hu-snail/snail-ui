@@ -23,7 +23,7 @@
  * `/components/**`, gated inside the FAB itself).
  */
 
-import { computed, watch } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import { useRoute } from 'vitepress';
  import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
@@ -38,6 +38,8 @@ import SnDocsHome from '../components/SnDocsHome.vue';
 import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue';
 import SnDocsDocActions from '../components/SnDocsDocActions.vue';
 import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue';
+import SnHomeThemeDock from '../components/SnHomeThemeDock.vue';
+import { applyStoredSiteTheme } from '../utils/theme-editor/state';
 import { usesSingleColumnLayout } from '../utils/demo-grid';
 import { enNav, nav } from '../config-nav';
 import { useData } from 'vitepress';
@@ -97,6 +99,20 @@ const siteLocale = computed<SnLocaleInput | undefined>(() =>
 const homeNavInverted = computed(() => isHome.value && isDark.value);
 
 /**
+ * 站点级主题色：只跟随「用户存过的自定义主题」。
+ *
+ * 放在 Layout（每页都会挂载）而不是色块自身，是为了让自定义主题色在换页、
+ * 硬刷新后依然生效；没自定义过的访客这里不会注入任何覆盖。
+ */
+const resolvedMode = computed<'light' | 'dark'>(() => (isDark.value ? 'dark' : 'light'));
+onMounted(() => {
+  applyStoredSiteTheme(resolvedMode.value);
+});
+watch(resolvedMode, (mode) => {
+  applyStoredSiteTheme(mode);
+});
+
+/**
  * The demo registry is per-page state, so a route change must clear it.
  *
  * Without this, navigating from `tag` to `badge` would leave the previous
@@ -143,6 +159,10 @@ watch(
         <div class="sn-docs-sidebar-handle">
           <SnDocsSidebarToggle placement="handle" />
         </div>
+        <!-- 首页专属：底部居中的悬浮主题色块（fixed，Teleport 到 body） -->
+        <ClientOnly>
+          <SnHomeThemeDock v-if="isHome" />
+        </ClientOnly>
       </template>
 
       <!-- Mount the custom home page (only rendered on /, inside the home

@@ -9,10 +9,10 @@
  * 结构：一面 SnWaterfall 瀑布流（`min-column-width` 响应式列数，铺满
  * 视口宽度），无跑马灯 —— 一次排布、自然滚动浏览。
  *
- * `caseHue` 为每张卡片派生一个确定性的色相（0–359）：卡片使用淡色渐变
- * 弥散玻璃质感（glassmorphism），色相随案例变化但 SSR / 客户端一致
- * （不能用 Math.random，否则水合时卡片颜色会闪变）。深浅主题下的玻璃
- * 配方见 SnHomeCaseCard。
+ * `caseHue` 为每张卡片派生一个确定性的色相（0–359）：一个纯函数色板工具，
+ * 派生规则由契约测试（home-cases.test.ts）锁定，SSR / 客户端一致（不能用
+ * Math.random，否则水合时数值会闪变）。注意：卡片当前改为中性配色（见
+ * SnHomeCaseCard），caseHue 不再驱动卡片外观，保留供其它场景复用。
  */
 
 /** 案例卡内容区高度档位。 */
