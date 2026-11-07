@@ -8,6 +8,8 @@ The filled form of a line: volume and composition over time. The fill is a trans
 
 <ChartCase id="area-multi" />
 
+<ChartCase id="area-stack" />
+
 </div>
 
 ## What the panel changes

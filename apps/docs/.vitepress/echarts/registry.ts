@@ -55,8 +55,10 @@ export interface ChartCaseDef {
   readonly blurb: { readonly zh: string; readonly en: string };
   /** Chart height in px. */
   readonly height: number;
-  /** Stack the series (bar only). */
+  /** Stack the series (bar and area). */
   readonly stack?: boolean | undefined;
+  /** Step-line mode (`step: 'middle'`, line category only). */
+  readonly step?: boolean | undefined;
   /** Full-circle progress gauge (gauge only). */
   readonly fullCircle?: boolean | undefined;
   /** Default palette — hex literals so the copied config is self-contained. */
@@ -143,6 +145,56 @@ export const CHART_CASES: readonly ChartCaseDef[] = [
     },
   },
   {
+    id: 'line-sharp',
+    category: 'line',
+    type: 'line',
+    title: { zh: '尖角折线', en: 'Sharp line' },
+    blurb: {
+      zh: '关掉平滑用直线段连接点——读数更精确，中间值不再被当作插值。',
+      en: 'Smoothing off connects points with straight segments — exact readings, no implied interpolation.',
+    },
+    height: 300,
+    palette: ['#18a058'],
+    paletteSlots: 1,
+    supports: { smooth: true, rounded: false, legend: true, trigger: true },
+    labels: {
+      zh: {
+        categories: ['一月', '二月', '三月', '四月', '五月', '六月'],
+        series: [{ name: '销售额', data: [1200, 2000, 1500, 2800, 2200, 3100] }],
+      },
+      en: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        series: [{ name: 'Sales', data: [1200, 2000, 1500, 2800, 2200, 3100] }],
+      },
+    },
+  },
+  {
+    id: 'line-step',
+    category: 'line',
+    type: 'line',
+    title: { zh: '阶梯折线', en: 'Step line' },
+    blurb: {
+      zh: 'step 中段跳变，适合电价 / 费率 / 档位这类“区间内不变”的量。',
+      en: 'step: middle jumps at the midpoint — for tariffs, rates and tiers that hold between points.',
+    },
+    height: 300,
+    step: true,
+    palette: ['#f0a020'],
+    paletteSlots: 1,
+    // Step lines have no smooth variant; the panel hides the switch.
+    supports: { smooth: false, rounded: false, legend: true, trigger: true },
+    labels: {
+      zh: {
+        categories: ['一月', '二月', '三月', '四月', '五月', '六月'],
+        series: [{ name: '费率', data: [1.2, 1.5, 1.5, 1.1, 0.9, 1.3] }],
+      },
+      en: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        series: [{ name: 'Rate', data: [1.2, 1.5, 1.5, 1.1, 0.9, 1.3] }],
+      },
+    },
+  },
+  {
     id: 'area-soft',
     category: 'area',
     type: 'area',
@@ -194,6 +246,39 @@ export const CHART_CASES: readonly ChartCaseDef[] = [
           { name: 'Type 1', data: [120, 132, 101, 134, 90] },
           { name: 'Type 2', data: [220, 182, 191, 234, 290] },
           { name: 'Type 3', data: [150, 232, 201, 154, 190] },
+        ],
+      },
+    },
+  },
+  {
+    id: 'area-stack',
+    category: 'area',
+    type: 'area',
+    title: { zh: '堆叠面积', en: 'Stacked area' },
+    blurb: {
+      zh: '系列逐层堆叠，读总量与构成趋势；半透明填充保持层间可辨。',
+      en: 'Series stacked layer by layer for totals and composition; translucent fills keep layers legible.',
+    },
+    height: 320,
+    stack: true,
+    palette: ['#36ad6a', '#2080f0', '#8a5cf6'],
+    paletteSlots: 3,
+    supports: { smooth: true, rounded: false, legend: true, trigger: true },
+    labels: {
+      zh: {
+        categories: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+        series: [
+          { name: '有机', data: [2100, 2300, 2500, 2350, 2700, 2900, 3000, 2950, 3100, 3200, 3150, 3400] },
+          { name: '推荐', data: [1100, 1150, 1200, 1300, 1450, 1550, 1600, 1580, 1700, 1800, 1850, 2000] },
+          { name: '付费', data: [800, 820, 900, 880, 1000, 1100, 1050, 1200, 1250, 1300, 1350, 1500] },
+        ],
+      },
+      en: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        series: [
+          { name: 'Organic', data: [2100, 2300, 2500, 2350, 2700, 2900, 3000, 2950, 3100, 3200, 3150, 3400] },
+          { name: 'Referral', data: [1100, 1150, 1200, 1300, 1450, 1550, 1600, 1580, 1700, 1800, 1850, 2000] },
+          { name: 'Paid', data: [800, 820, 900, 880, 1000, 1100, 1050, 1200, 1250, 1300, 1350, 1500] },
         ],
       },
     },
@@ -475,7 +560,10 @@ export function buildCaseOption(
         type: 'line',
         name: s.name,
         data: [...s.data],
-        smooth: cfg.smooth,
+        // Step lines jump at the midpoint; `smooth` is meaningless there, so
+        // step cases omit the key instead of shipping a dead switch.
+        ...(def.step ? { step: 'middle' } : { smooth: cfg.smooth }),
+        ...(def.stack ? { stack: 'total' } : {}),
         ...(def.type === 'area' ? { areaStyle: { opacity: 0.25 } } : {}),
       }));
       break;

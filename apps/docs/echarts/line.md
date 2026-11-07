@@ -8,6 +8,10 @@
 
 <ChartCase id="line-multi" />
 
+<ChartCase id="line-sharp" />
+
+<ChartCase id="line-step" />
+
 </div>
 
 ## 面板里能改什么

@@ -107,6 +107,38 @@ describe('chart case registry', () => {
       expect(JSON.stringify(series[0])).not.toContain('function');
     });
 
+    it('should stack area series instead of overlaying them', () => {
+      const def = getChartCase('area-stack');
+      const series = seriesOf(optionOf(def, cfgOf(def)));
+      expect(series).toHaveLength(3);
+      for (const entry of series) {
+        expect(entry?.['stack']).toBe('total');
+        expect((entry?.['areaStyle'] as Draft)['opacity']).toBe(0.25);
+      }
+      // The plain multi-series area must stay unstacked (overlap compare).
+      const plain = seriesOf(optionOf(getChartCase('area-multi'), cfgOf(getChartCase('area-multi'))));
+      expect(plain[0]?.['stack']).toBeUndefined();
+    });
+
+    it('should emit step: middle for step lines and drop the smooth key', () => {
+      const def = getChartCase('line-step');
+      const entry = seriesOf(optionOf(def, cfgOf(def)))[0];
+      expect(entry?.['step']).toBe('middle');
+      // A dead `smooth` key on a step line would mislead the copied config.
+      expect(entry?.['smooth']).toBeUndefined();
+      // The step case hides the smooth switch from the panel.
+      expect(def.supports.smooth).toBe(false);
+    });
+
+    it('should keep the copied snippet JSON-pure for the new cases', () => {
+      for (const id of ['line-sharp', 'line-step', 'area-stack']) {
+        const def = getChartCase(id);
+        const snippet = buildCaseSnippet(def, cfgOf(def), def.labels.zh);
+        expect(JSON.stringify(snippet)).not.toContain('function');
+        expect(snippet).toContain('const option = {');
+      }
+    });
+
     it('should round bar tops on grouped bars', () => {
       const def = getChartCase('bar-group');
       const series = seriesOf(optionOf(def, cfgOf(def)));

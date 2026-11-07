@@ -8,6 +8,8 @@
 
 <ChartCase id="area-multi" />
 
+<ChartCase id="area-stack" />
+
 </div>
 
 ## 面板里能改什么

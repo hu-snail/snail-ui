@@ -8,6 +8,10 @@ The first choice for trends and comparison. Every case ships a **config panel**:
 
 <ChartCase id="line-multi" />
 
+<ChartCase id="line-sharp" />
+
+<ChartCase id="line-step" />
+
 </div>
 
 ## What the panel changes
