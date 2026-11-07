@@ -1,6 +1,6 @@
 # Slider · Web（PC 端）
 
-滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、showSteps 步长刻度、showInput 输入框、vertical / reverse、tooltip，以及渐变 / 透明轨道与自定义气泡背景。
+滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、showSteps 步长刻度、showInput 输入框、vertical / reverse、tooltip，以及渐变 / 透明轨道与自定义气泡背景。单柄模式下轨道用主题色从 min 填充到手柄。
 
 ## 基础用法
 
@@ -61,5 +61,12 @@
 | tooltipTextColor    | `string`                              | —           | 气泡文字颜色                         |
 
 每柄 `role="slider"` + aria-valuenow/min/max；方向键 / Home / End / PageUp/PageDown（10×step）。
+
+### 插槽
+
+| 插槽    | 参数                                                        | 说明                             |
+| ------- | ----------------------------------------------------------- | -------------------------------- |
+| tooltip | `{ value }`                                                | 自定义气泡内容                   |
+
 
 完整契约见组件 `ai-description.md`。

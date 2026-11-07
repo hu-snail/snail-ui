@@ -417,6 +417,13 @@
           }
         },
         {
+          "path": "slider-bar",
+          "style": {
+            "navigationBarTitleText": "胶囊滑条",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "slider",
           "style": {
             "navigationBarTitleText": "滑块",

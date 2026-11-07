@@ -1856,6 +1856,19 @@
         }
       ]
     },
+    "slider-bar": {
+      "group": "form-2",
+      "title": "胶囊滑条",
+      "desc": "胶囊 / 渐变星光滑条",
+      "page": "pages/form-2/slider-bar",
+      "demos": [
+        {
+          "name": "slider-bar-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        }
+      ]
+    },
     "sort-button": {
       "group": "form-2",
       "title": "排序按钮",

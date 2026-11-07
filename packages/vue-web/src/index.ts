@@ -36,6 +36,7 @@ export { default as SnRadioGroup } from './radio/SnRadioGroup.vue';
 export type { SnRadioValue, SnRadioOption } from './radio/sn-radio-types';
 export { default as SnSwitch } from './switch/SnSwitch.vue';
 export { default as SnSlider } from './slider/SnSlider.vue';
+export { default as SnSliderBar } from './slider-bar/SnSliderBar.vue';
 export { default as SnRate } from './rate/SnRate.vue';
 export { default as SnInputNumber } from './input-number/SnInputNumber.vue';
 export { default as SnSelect } from './select/SnSelect.vue';

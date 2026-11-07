@@ -1,6 +1,6 @@
 # Slider · Web
 
-Custom-painted slider with range dual handles, marks, step ticks (showSteps), value inputs (showInput), vertical / reverse, tooltip, plus gradient / transparent track and custom tooltip colors.
+Custom-painted slider with range dual handles, marks, step ticks (showSteps), value inputs (showInput), vertical / reverse, tooltip, plus gradient / transparent track and custom tooltip colors. Single-handle mode paints the themed track from `min` to the handle.
 
 ## Basic
 
@@ -61,5 +61,12 @@ Custom-painted slider with range dual handles, marks, step ticks (showSteps), va
 | tooltipTextColor    | `string`                              | —           | Bubble text color       |
 
 Each handle: `role="slider"` + aria-valuenow/min/max; arrows / Home / End / PageUp/PageDown (10×step).
+
+### Slots
+
+| Slot    | Props                                        | Notes                              |
+| ------- | -------------------------------------------- | ---------------------------------- |
+| tooltip | `{ value }`                                 | Custom bubble content              |
+
 
 See the component `ai-description.md` for the full contract.

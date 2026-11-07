@@ -114,6 +114,7 @@ export { default as SnSidebarItem } from './components/sn-sidebar/sn-sidebar-ite
 export { default as SnSignature } from './components/sn-signature/sn-signature.vue';
 export { default as SnSkeleton } from './components/sn-skeleton/sn-skeleton.vue';
 export { default as SnSlider } from './components/sn-slider/sn-slider.vue';
+export { default as SnSliderBar } from './components/sn-slider-bar/sn-slider-bar.vue';
 export { default as SnSlideVerify } from './components/sn-slide-verify/sn-slide-verify.vue';
 export { default as SnSortButton } from './components/sn-sort-button/sn-sort-button.vue';
 export { default as SnStep } from './components/sn-steps/sn-step.vue';

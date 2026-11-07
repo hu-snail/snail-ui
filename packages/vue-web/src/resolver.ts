@@ -57,6 +57,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnRadioGroup',
   'SnSwitch',
   'SnSlider',
+  'SnSliderBar',
   'SnRate',
   'SnInputNumber',
   'SnSelect',

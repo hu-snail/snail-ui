@@ -440,6 +440,46 @@ describe('SnSlider', () => {
     });
   });
 
+  describe('fill track geometry', () => {
+    // Regression: single-handle mode collapsed the fill to a zero-width band
+    // (low === high === value), so no tinted track was painted at all.
+    it('paints the fill from min to the handle in single mode', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 36 } });
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      expect(style).toContain('left:0%');
+      expect(style).toContain('width:36%');
+    });
+
+    it('paints the fill from min in single mode on custom bounds', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 30, min: 20, max: 40 } });
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      expect(style).toContain('left:0%');
+      expect(style).toContain('width:50%');
+    });
+
+    it('keeps the band between both handles in range mode', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: [20, 80], range: true } });
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      expect(style).toContain('left:20%');
+      expect(style).toContain('width:60%');
+    });
+
+    it('anchors the single-mode fill to the opposite edge when reversed', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 25, reverse: true } });
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      // 25 reversed → 75; the band spans 75..100.
+      expect(style).toContain('left:75%');
+      expect(style).toContain('width:25%');
+    });
+
+    it('paints the single-mode fill upward in vertical mode', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 40, vertical: true } });
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      expect(style).toContain('bottom:0%');
+      expect(style).toContain('height:40%');
+    });
+  });
+
   describe('custom backgrounds & rail width', () => {
     it('applies trackBackground to the fill track', () => {
       const wrapper = mount(SnSlider, {

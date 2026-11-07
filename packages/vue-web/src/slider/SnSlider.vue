@@ -33,7 +33,6 @@ type Placement =
   | 'right'
   | 'right-start'
   | 'right-end';
-
 const props = withDefaults(
   defineProps<{
     /** Bound value. `[number, number]` when `range`. */
@@ -171,12 +170,20 @@ function percentOf(value: number): number {
   const p = span.value === 0 ? 0 : ((value - props.min) / span.value) * 100;
   return props.reverse ? 100 - p : p;
 }
+/** Endpoints of the painted fill band, as axis percents. */
+const fillRange = computed<[number, number]>(() => {
+  const low = percentOf(pair.value[0]);
+  const high = percentOf(pair.value[1]);
+  // Single handle: the fill runs from the axis origin (min) to the handle.
+  // Rendering only `[low, high]` would collapse it to zero width, leaving no
+  // tinted track at all — both handles carry the same value there.
+  return props.range ? [low, high] : [percentOf(props.min), high];
+});
 
 const trackStyle = computed<Record<string, string>>(() => {
-  const low = pair.value[0];
-  const high = pair.value[1];
-  const from = Math.min(percentOf(low), percentOf(high));
-  const size = Math.abs(percentOf(high) - percentOf(low));
+  const [lowPct, highPct] = fillRange.value;
+  const from = Math.min(lowPct, highPct);
+  const size = Math.abs(highPct - lowPct);
   const style: Record<string, string> =
     props.vertical
       ? { bottom: `${from}%`, height: `${size}%` }
@@ -402,6 +409,7 @@ function syncDrafts(): void {
 
 watch(() => [pair.value[0], pair.value[1]], syncDrafts, { immediate: true });
 
+
 function inputValueOf(e: Event): string {
   return e.target instanceof HTMLInputElement ? e.target.value : '';
 }
@@ -559,36 +567,36 @@ const ariaText = (index: number): string => {
           />
           <span class="sn-slider__mark-label">{{ mark.label }}</span>
         </div>
-        <template v-for="(pct, index) in handlePositions" :key="index">
+        <div
+          v-for="(pct, index) in handlePositions"
+          :key="`handle-${index}`"
+          :class="['sn-slider__handle', { 'sn-slider__handle--active': activeIndex() === index }]"
+          :style="axisStyle(pct)"
+          role="slider"
+          :tabindex="isInteractive ? 0 : -1"
+          :aria-label="range ? (index === 0 ? 'Start value' : 'End value') : ariaLabel"
+          :aria-valuemin="range && index === 1 ? pair[0] : min"
+          :aria-valuemax="range && index === 0 ? pair[1] : max"
+          :aria-valuenow="ariaNow(index)"
+          :aria-valuetext="ariaText(index)"
+          :aria-disabled="disabled ? 'true' : undefined"
+          :aria-orientation="vertical ? 'vertical' : 'horizontal'"
+          @mousedown="onHandleMousedown($event, index)"
+          @mouseenter="setHoverIndex(index)"
+          @mouseleave="setHoverIndex(null)"
+          @focus="setHoverIndex(index)"
+          @blur="setHoverIndex(null)"
+          @keydown="onHandleKeydown($event, index)"
+        >
           <div
-            :class="['sn-slider__handle', { 'sn-slider__handle--active': activeIndex() === index }]"
-            :style="axisStyle(pct)"
-            role="slider"
-            :tabindex="isInteractive ? 0 : -1"
-            :aria-label="range ? (index === 0 ? 'Start value' : 'End value') : ariaLabel"
-            :aria-valuemin="range && index === 1 ? pair[0] : min"
-            :aria-valuemax="range && index === 0 ? pair[1] : max"
-            :aria-valuenow="ariaNow(index)"
-            :aria-valuetext="ariaText(index)"
-            :aria-disabled="disabled ? 'true' : undefined"
-            :aria-orientation="vertical ? 'vertical' : 'horizontal'"
-            @mousedown="onHandleMousedown($event, index)"
-            @mouseenter="setHoverIndex(index)"
-            @mouseleave="setHoverIndex(null)"
-            @focus="setHoverIndex(index)"
-            @blur="setHoverIndex(null)"
-            @keydown="onHandleKeydown($event, index)"
+            v-if="tooltipVisible && activeIndex() === index"
+            :class="['sn-slider__tooltip', `sn-slider__tooltip--${placement}`]"
+            :style="tooltipStyle"
+            role="tooltip"
           >
-            <div
-              v-if="tooltipVisible && activeIndex() === index"
-              :class="['sn-slider__tooltip', `sn-slider__tooltip--${placement}`]"
-              :style="tooltipStyle"
-              role="tooltip"
-            >
-              <slot name="tooltip" :value="ariaNow(index)">{{ tooltipText }}</slot>
-            </div>
+            <slot name="tooltip" :value="ariaNow(index)">{{ tooltipText }}</slot>
           </div>
-        </template>
+        </div>
       </div>
       <template v-if="showInput">
         <input
@@ -961,4 +969,5 @@ const ariaText = (index: number): string => {
 .sn-slider--vertical .sn-slider__input-separator {
   display: none;
 }
+
 </style>
