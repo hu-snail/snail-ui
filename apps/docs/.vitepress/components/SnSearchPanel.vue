@@ -16,27 +16,37 @@
  * ## Data flow
  *
  * Build-time corpus arrives via `virtual:sn-docs-search-index` (see
- * docs-search-index-plugin.ts), lazily imported on the first keystroke and
- * fed to a module-level DocsSearchEngine singleton (inverted index, cheap
- * per-query). Results are paginated PAGE_SIZE per page (the engine returns
+ * docs-search-index-plugin.ts), prefetched once the browser goes idle (and
+ * still imported on demand if a keystroke lands first), then fed to a
+ * module-level DocsSearchEngine singleton (inverted index, cheap per-query).
+ * Queries are scoped to the current locale, so Chinese pages never surface
+ * `/en/` mirrors. Results are paginated PAGE_SIZE per page (the engine returns
  * at most 30), while `activeIndex` stays an index over the *whole* filtered
  * list: ↑/↓ walks across page boundaries and the pager follows.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useData, useRouter } from 'vitepress';
+import { useData, useRoute, useRouter } from 'vitepress';
 import { SnPagination, SnTag } from '@snui/vue-web';
 import {
   DocsSearchEngine,
   type DocsSearchDoc,
   type DocsSearchHit,
+  type SearchLang,
 } from '../utils/docs-search-engine';
 
 const { isDark } = useData();
+const route = useRoute();
 const router = useRouter();
+
+/** 当前站点的语言域：`/en/` 镜像 → 英文，其余 → 中文。 */
+const lang = computed<SearchLang>(() =>
+  route.path === '/en' || route.path.startsWith('/en/') ? 'en' : 'zh',
+);
 
 /**
  * Module-level singleton + lazy chunk: the corpus (~1.4MB raw JSON for 443
- * pages) ships as its own chunk, fetched on the first search keystroke.
+ * pages) ships as its own chunk, warmed by `prefetchEngine()` and otherwise
+ * fetched on the first search keystroke.
  */
 let enginePromise: Promise<DocsSearchEngine> | null = null;
 function getEngine(): Promise<DocsSearchEngine> {
@@ -62,19 +72,54 @@ const PAGE_SIZE = 8;
 
 /** Hits of the current query (all pages — the pager slices them). */
 const hits = ref<DocsSearchHit[]>([]);
+
+/** 索引 chunk 是否已就绪（首输时靠它区分「检索中」与「无结果」）。 */
+const engineReady = ref(false);
+/** 首次检索仍在加载索引 chunk。 */
+const loading = ref(false);
+
+/**
+ * 空闲预取索引：把 ~1.4MB chunk 的加载挪到用户打字之前，
+ * 这样第一次输入就能立刻出结果；未就绪时仍有「正在检索…」兜底。
+ */
+function prefetchEngine(): void {
+  if (typeof window === 'undefined') return;
+  const warm = (): void => {
+    void getEngine().then(() => {
+      engineReady.value = true;
+    });
+  };
+  type IdleWindow = Window & {
+    requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+  };
+  const ric = (window as IdleWindow).requestIdleCallback;
+  if (typeof ric === 'function') ric(warm, { timeout: 2000 });
+  else window.setTimeout(warm, 1200);
+}
+
 watch(
-  () => props.query,
-  (q) => {
+  [() => props.query, () => lang.value],
+  ([q]) => {
     const trimmed = q.trim();
     if (!trimmed) {
       hits.value = [];
+      loading.value = false;
       activeIndex.value = 0;
       return;
     }
+    // 首输时索引 chunk 可能仍在加载：先落「正在检索…」，否则会闪一下
+    // 「没有找到相关结果」。
+    if (!engineReady.value) {
+      loading.value = true;
+      hits.value = [];
+      activeIndex.value = 0;
+    }
     void getEngine().then((engine) => {
+      engineReady.value = true;
+      loading.value = false;
       // 引擎加载期间用户可能已继续输入——过期结果丢弃。
       if (props.query.trim() !== trimmed) return;
-      hits.value = engine.search(trimmed);
+      hits.value = engine.search(trimmed, { lang: lang.value });
       activeIndex.value = 0;
     });
   },
@@ -114,6 +159,7 @@ watch([endFilter, () => filteredHits.value.length, hasComponentHits], () => {
 });
 onMounted(() => {
   void nextTick(syncThumb);
+  prefetchEngine();
   if (typeof ResizeObserver !== 'undefined') {
     thumbObserver = new ResizeObserver(() => syncThumb());
     if (capTrack.value) thumbObserver.observe(capTrack.value);
@@ -338,6 +384,7 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
         </p>
       </li>
     </ul>
+    <p v-else-if="loading" class="sn-search-panel__empty">正在检索…</p>
     <p v-else-if="query.trim()" class="sn-search-panel__empty">没有找到相关结果</p>
 
     <!-- foot：左 = 按键说明，右 = 分页 -->

@@ -152,6 +152,26 @@ describe('DocsSearchEngine', () => {
       expect(hits[i - 1]!.score).toBeGreaterThanOrEqual(hits[i]!.score);
     }
   });
+
+  it('should scope a query to one locale when lang is given', () => {
+    // 回归：中文模式曾混入 `/en/` 镜像页的英文结果。
+    const mixed: DocsSearchDoc[] = [
+      doc({ url: '/components/web/button', title: 'Button 按钮', text: '按钮组件的用法说明。' }),
+      doc({ url: '/en/components/web/button', title: 'Button', text: 'button component docs.' }),
+    ];
+    const engine = new DocsSearchEngine(mixed);
+
+    const zh = engine.search('button', { lang: 'zh' });
+    expect(zh.length).toBeGreaterThan(0);
+    expect(zh.every((h) => !h.doc.url.startsWith('/en/'))).toBe(true);
+
+    const en = engine.search('button', { lang: 'en' });
+    expect(en.length).toBeGreaterThan(0);
+    expect(en.every((h) => h.doc.url.startsWith('/en/'))).toBe(true);
+
+    // 默认 'all'：两个语言域都返回（面板外的调用方保持原行为）。
+    expect(engine.search('button').length).toBe(zh.length + en.length);
+  });
 });
 
 describe('docs-search-source', () => {

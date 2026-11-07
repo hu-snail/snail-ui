@@ -54,6 +54,14 @@ export interface DocsSearchHit {
   highlight: Array<[number, number]>;
 }
 
+/** Locale domain for a query: zh root locale, the `/en/` mirror, or both. */
+export type SearchLang = 'zh' | 'en' | 'all';
+
+/** Query options. */
+export interface SearchOptions {
+  /** Restrict hits to one locale (default `'all'` — no filtering). */
+  lang?: SearchLang;
+}
 /** Field weights: a title hit is worth far more than a body mention. */
 const FIELD_WEIGHT: Record<'title' | 'headings' | 'text', number> = {
   title: 6,
@@ -280,17 +288,26 @@ export class DocsSearchEngine {
     }
   }
 
-  /** Query the index. Empty query → []. */
-  search(query: string): DocsSearchHit[] {
+  /**
+   * Query the index. Empty query → [].
+   *
+   * `lang` restricts the corpus to one locale: the docs site ships a zh root
+   * locale plus an `/en/` mirror, so a Chinese query must not surface English
+   * pages (and vice versa) — the docs pages carry the same titles, so an
+   * unfiltered search looked "mixed" even though every hit was correct.
+   * Default `'all'` keeps the engine usable for cross-locale callers.
+   */
+  search(query: string, options: SearchOptions = {}): DocsSearchHit[] {
     const raw = query.trim().toLowerCase();
     if (!raw) return [];
-    const queryTokens = tokenize(raw);
-    const terms = dedupeTerms(queryTokens);
+    const terms = dedupeTerms(tokenize(raw));
     if (terms.length === 0) return [];
 
+    const lang = options.lang ?? 'all';
     const nDocs = this.docs.length;
     const acc = new Map<number, Acc>();
     const matchedTerms = new Map<number, Set<string>>();
+    const allow = this.langFilter(lang);
 
     for (const term of terms) {
       for (const expansion of this.resolveTerm(term)) {
@@ -300,13 +317,15 @@ export class DocsSearchEngine {
       }
     }
 
-    // Per-doc matched-term count（用于 AND 完整度）。
+    // Per-doc matched-term count（用于 AND 完整度）——顺带按语言域剪枝：不在
+    // 当前 locale 的文档直接丢掉，省掉后续打分与排序。
     for (const term of terms) {
       for (const expansion of this.resolveTerm(term)) {
         for (const bucket of [this.title, this.headings, this.text]) {
           const post = bucket.postings.get(expansion);
           if (!post) continue;
           for (const docId of post.keys()) {
+            if (!allow(docId)) continue;
             let set = matchedTerms.get(docId);
             if (!set) {
               set = new Set();
@@ -320,6 +339,7 @@ export class DocsSearchEngine {
 
     const topK = new TopK();
     for (const [docId, cell] of acc) {
+      if (!allow(docId)) continue;
       const matched = matchedTerms.get(docId)?.size ?? 0;
       const completeness = Math.pow(matched / terms.length, 1.5);
       const score = cell.score * completeness;
@@ -331,6 +351,20 @@ export class DocsSearchEngine {
       const { snippet, highlight } = buildSnippet(doc, terms);
       return { doc, score, snippet, highlight };
     });
+  }
+
+  /**
+   * Locale predicate for a `lang` option, resolved once per query.
+   *
+   * 语言由路径判定（`/en/...` = 英文镜像），与 url 前缀一致，不依赖额外字段。
+   */
+  private langFilter(lang: SearchLang): (docId: number) => boolean {
+    if (lang === 'all') return () => true;
+    const wantEn = lang === 'en';
+    return (docId) => {
+      const url = this.docs[docId]?.url ?? '';
+      return (url === '/en' || url.startsWith('/en/')) === wantEn;
+    };
   }
 }
 
