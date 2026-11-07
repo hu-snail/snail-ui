@@ -66,7 +66,18 @@ onMounted(() =>
     if (props.active) emit('update:active', false);
   }),
 );
-onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
+onBeforeUnmount(() => {
+  unregisterOutsideClosable(instanceId);
+  // Drop the mouse gesture listeners with the component (AGENTS.md §41/§82):
+  // the root mousedown anchor plus any document-level followers that a
+  // drag in flight may still hold.
+  if (typeof document !== 'undefined') {
+    const el = (rootRef.value as { $el?: unknown } | null)?.$el ?? (rootRef.value as unknown);
+    if (el instanceof HTMLElement) el.removeEventListener('mousedown', onMouseDown);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+});
 
 /** Color theme. Mirrors `wd-fab` `type`. */
 type FabType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
@@ -95,6 +106,15 @@ type FabDirection = 'up' | 'down' | 'left' | 'right' | 'top' | 'bottom';
  * registered in AGENTS.md §112.3a).
  */
 type FabMode = 'line' | 'fan';
+
+/**
+ * Fan expansion motion (additive, AUI-OPT-19). `bloom` flies the items
+ * straight out of the trigger centre; `fan` unfolds them like a folding
+ * fan — every rib sweeps along the arc from the folded centre angle to
+ * its own angle (rotate + translateX interpolation), with the content
+ * counter-rotated to stay upright.
+ */
+type FabMotion = 'bloom' | 'fan';
 
 /**
  * Fan-mode action item (additive, AUI-OPT-19 — wd-fab has no structured
@@ -143,6 +163,8 @@ const props = withDefaults(
     actions?: SnFabAction[];
     /** Fan radius in px — distance from the trigger centre to an item centre. */
     fanRadius?: number;
+    /** Fan expansion motion: radial bloom or folding-fan arc sweep. */
+    fanMotion?: FabMotion;
     /** Disable the whole button. */
     disabled?: boolean;
     /** Icon while collapsed (registry name). */
@@ -177,6 +199,7 @@ const props = withDefaults(
     mode: 'line',
     actions: () => [],
     fanRadius: 96,
+    fanMotion: 'bloom',
     disabled: false,
     inactiveIcon: 'plus',
     activeIcon: 'close',
@@ -215,6 +238,77 @@ let startX = 0;
 let startY = 0;
 let startOffsetX = 0;
 let startOffsetY = 0;
+
+/* ── Desktop H5 mouse drag (additive, AGENTS.md §112.3a) ──────────────── */
+
+// Browsers do not synthesise touch events from a mouse, so a touch-only
+// drag was dead on desktop H5 — the same gap sn-picker-view and
+// sn-signature close. `mousedown` on the trigger anchors the gesture;
+// `mousemove` / `mouseup` are tracked on `document` (a drag may leave the
+// button) and detached on release and unmount. Synthetic mousedowns that
+// follow a real touch are ignored for a short window, and a real mouse
+// drag suppresses the trailing toggle (see `toggle`).
+
+/** Ignore synthetic mousedowns that follow a real touch within this window. */
+const TOUCH_SYNTHETIC_WINDOW_MS = 500;
+/** Pointer travel beyond this distance counts as a drag, not a click. */
+const MOUSE_DRAG_DISTANCE_PX = 3;
+
+let lastTouchAt = 0;
+let mouseDragging = false;
+let suppressToggle = false;
+
+/** Trigger element for the native mouse binding. uni H5 registers template
+ * refs on the component root (sn-picker-view pattern) — a child `<view>` ref
+ * is not reliably registered by this runtime, so we bind on the root and
+ * delegate to the trigger instead of trusting a child ref. */
+const rootRef = ref<unknown>(null);
+
+onMounted(() => {
+  if (typeof document === 'undefined') return;
+  const el = (rootRef.value as { $el?: unknown } | null)?.$el ?? (rootRef.value as unknown);
+  if (el instanceof HTMLElement) el.addEventListener('mousedown', onMouseDown);
+});
+
+function onMouseDown(event: MouseEvent): void {
+  if (!props.draggable || props.disabled) return;
+  if (event.button !== 0) return;
+  if (Date.now() - lastTouchAt < TOUCH_SYNTHETIC_WINDOW_MS) return;
+  // Root-level delegation: only a press anchored on the trigger starts a drag.
+  const target = event.target instanceof Element ? event.target : null;
+  const root = event.currentTarget instanceof Element ? event.currentTarget : null;
+  if (!target || !root) return;
+  if (!root.contains(target) || !target.closest('.sn-fab__trigger')) return;
+  mouseDragging = true;
+  startX = event.clientX;
+  startY = event.clientY;
+  startOffsetX = dragX.value;
+  startOffsetY = dragY.value;
+  event.preventDefault();
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+function onMouseMove(event: MouseEvent): void {
+  if (!mouseDragging) return;
+  dragX.value = startOffsetX + (event.clientX - startX);
+  dragY.value = startOffsetY + (event.clientY - startY);
+}
+
+function onMouseUp(event: MouseEvent): void {
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+  if (!mouseDragging) return;
+  mouseDragging = false;
+  clampDragOffset();
+  const travelled = Math.abs(event.clientX - startX) + Math.abs(event.clientY - startY);
+  if (travelled > MOUSE_DRAG_DISTANCE_PX) {
+    suppressToggle = true;
+    setTimeout(() => {
+      suppressToggle = false;
+    }, 0);
+  }
+}
 
 /** Resolve a trigger icon: the built-in pair, or a registry name. */
 function resolveTriggerIcon(name: string, expanded: boolean): IconData {
@@ -290,26 +384,54 @@ const fanAngles = computed<number[]>(() => {
   return Array.from({ length: count }, (_, i) => center - spread / 2 + (spread * i) / (count - 1));
 });
 
+/** Folded / centre angle of the preset's fan (screen coordinates). */
+const fanCenter = computed(() => FAN_GEOMETRY[props.position].center);
+
 /**
- * Inline style per fan item. Geometry is computed here (WXSS has no trig
- * functions) and applied as a transform; collapsed, every item rests on the
- * trigger centre so the fan visibly blooms out of the button. The
- * back-out easing in the class adds the overshoot that makes it silky.
+ * Inline style per fan item: geometry, stagger and open/closed state.
+ *
+ * - `bloom`: straight flight from the trigger centre to the arc point
+ *   (translate x/y interpolate linearly).
+ * - `fan`: folding-fan sweep — every rib starts folded at the preset's
+ *   centre angle on the trigger centre and swings along the arc to its
+ *   own angle. rotate + translateX interpolate together and the pivot is
+ *   the item's own top-left corner sitting on the 0×0 anchor point (see
+ *   the `--sweep` transform-origin); `fanBodyStyle` counter-rotates the
+ *   content so icons stay upright mid-sweep.
  */
 function fanItemStyle(action: SnFabAction, index: number): string {
-  const radians = (fanAngles.value[index] ?? 0) * (Math.PI / 180);
   const open = props.active;
-  const x = open ? Math.round(Math.cos(radians) * props.fanRadius * 100) / 100 : 0;
-  const y = open ? Math.round(Math.sin(radians) * props.fanRadius * 100) / 100 : 0;
   const scale = open ? 1 : 0.4;
   const opacity = open ? (action.disabled ? 0.5 : 1) : 0;
   const delay = open ? index * FAN_STAGGER_MS : 0;
   const color = action.color === undefined ? '' : ` color: ${action.color};`;
+
+  let transform: string;
+  if (props.fanMotion === 'fan') {
+    const angle = open ? (fanAngles.value[index] ?? fanCenter.value) : fanCenter.value;
+    const radius = open ? props.fanRadius : 0;
+    transform = `rotate(${angle}deg) translateX(${radius}px) translate(-50%, -50%) scale(${scale})`;
+  } else {
+    const radians = (fanAngles.value[index] ?? 0) * (Math.PI / 180);
+    const x = open ? Math.round(Math.cos(radians) * props.fanRadius * 100) / 100 : 0;
+    const y = open ? Math.round(Math.sin(radians) * props.fanRadius * 100) / 100 : 0;
+    transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
+  }
+
   return (
-    `transform: translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale}); ` +
+    `transform: ${transform}; ` +
     `opacity: ${opacity}; visibility: ${open ? 'visible' : 'hidden'}; ` +
     `transition-delay: ${delay}ms;${color}`
   );
+}
+
+/** Fan motion only: counter-rotate the content against the rib angle. */
+function fanBodyStyle(index: number): string {
+  if (props.fanMotion !== 'fan') return '';
+  const open = props.active;
+  const angle = open ? (fanAngles.value[index] ?? fanCenter.value) : fanCenter.value;
+  const delay = open ? index * FAN_STAGGER_MS : 0;
+  return `transform: rotate(${-angle}deg); transition-delay: ${delay}ms;`;
 }
 
 /** Icon-only items render as bubbles; labelled items as icon+text pills. */
@@ -317,6 +439,7 @@ function fanItemClass(action: SnFabAction): string[] {
   return [
     'sn-fab__fan-item',
     action.text === undefined ? 'sn-fab__fan-item--icon' : 'sn-fab__fan-item--pill',
+    ...(props.fanMotion === 'fan' ? ['sn-fab__fan-item--sweep'] : []),
   ];
 }
 
@@ -417,6 +540,12 @@ const menuClass = computed(() =>
 
 function toggle(): void {
   if (props.disabled) return;
+  // A mouse drag ends with a trailing click; swallow exactly that one so
+  // dragging the trigger never opens the menu.
+  if (suppressToggle) {
+    suppressToggle = false;
+    return;
+  }
   if (!props.expandable) {
     emit('click');
     return;
@@ -425,6 +554,7 @@ function toggle(): void {
 }
 
 function onTouchStart(event: TouchEvent): void {
+  lastTouchAt = Date.now();
   if (!props.draggable) return;
   const touch = event.touches[0];
   if (!touch) return;
@@ -444,9 +574,13 @@ function onTouchMove(event: TouchEvent): void {
 
 function onTouchEnd(): void {
   if (!props.draggable) return;
-  // Clamp into the viewport with the same `gap` the anchor uses, so the
-  // trigger can never be dragged fully off-screen. `uni.getSystemInfoSync()`
-  // is the only cross-end viewport query; it is optional and guarded.
+  clampDragOffset();
+}
+
+/** Clamp into the viewport with the same `gap` the anchor uses, so the
+ * trigger can never be dragged fully off-screen. `uni.getSystemInfoSync()`
+ * is the only cross-end viewport query; it is optional and guarded. */
+function clampDragOffset(): void {
   const host = globalThis as {
     uni?: { getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } };
   };
@@ -470,7 +604,7 @@ function onTouchEnd(): void {
 </script>
 
 <template>
-  <view data-snui-component="fab" :class="rootClass" :style="`${rootStyle}; ${anchorStyle}`">
+  <view data-snui-component="fab" ref="rootRef" :class="rootClass" :style="`${rootStyle}; ${anchorStyle}`">
     <view :class="menuClass" :aria-hidden="active ? 'false' : 'true'">
       <template v-if="isFan">
         <view
@@ -483,13 +617,15 @@ function onTouchEnd(): void {
           :aria-disabled="action.disabled ? 'true' : 'false'"
           @tap="onActionTap(action, index)"
         >
-          <SnIcon
-            :icon="resolveActionIcon(action)"
-            :size="action.text === undefined ? FAN_BUBBLE_ICON_SIZE : FAN_PILL_ICON_SIZE"
-          />
-          <text v-if="action.text !== undefined" class="sn-fab__fan-item-text">
-            {{ action.text }}
-          </text>
+          <view class="sn-fab__fan-item-body" :style="fanBodyStyle(index)">
+            <SnIcon
+              :icon="resolveActionIcon(action)"
+              :size="action.text === undefined ? FAN_BUBBLE_ICON_SIZE : FAN_PILL_ICON_SIZE"
+            />
+            <text v-if="action.text !== undefined" class="sn-fab__fan-item-text">
+              {{ action.text }}
+            </text>
+          </view>
         </view>
       </template>
       <template v-else>
@@ -654,7 +790,6 @@ function onTouchEnd(): void {
   top: 0;
   display: flex;
   align-items: center;
-  gap: var(--sn-mp-spacing-2);
   height: 72rpx;
   padding: 0 var(--sn-mp-spacing-5);
   border-radius: var(--sn-mp-radius-full);
@@ -669,6 +804,20 @@ function onTouchEnd(): void {
     opacity 0.2s ease,
     visibility 0s linear;
   will-change: transform;
+}
+
+/* Fan motion pivots each rib around the trigger centre — the item's own
+ * top-left corner, which sits on the 0×0 anchor point. */
+.sn-fab__fan-item--sweep {
+  transform-origin: 0 0;
+}
+
+/* Fan-rib content; fan motion counter-rotates it so icons stay upright. */
+.sn-fab__fan-item-body {
+  display: flex;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Icon-only bubble variant (labelled items keep the pill box above). */

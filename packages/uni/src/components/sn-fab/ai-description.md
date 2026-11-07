@@ -33,6 +33,11 @@ the wd-fab parity list.
   `'fan'` arranges action items along an arc that blooms out of the trigger
   centre (back-out easing + a 40 ms per-item stagger; collapsed, every item
   rests on the trigger centre with `scale(0.4)` / `opacity: 0`).
+- `fanMotion: 'bloom' | 'fan'` (default `'bloom'`) — `bloom` flies the items
+  straight out of the trigger centre; `fan` unfolds them like a folding fan:
+  every rib sweeps along the arc from the folded centre angle to its own
+  angle (rotate + translateX interpolation pivoting on the trigger centre)
+  while the content counter-rotates to stay upright.
 - `actions: SnFabAction[]` — structured item source for fan mode
   (`{ icon: string | IconData, text?, color?, disabled? }`). Items render as
   icon+text pills when `text` is present, icon-only bubbles otherwise. Tapping
@@ -55,6 +60,14 @@ the wd-fab parity list.
 measurement. The delta accumulates in component state and is applied as a
 `translate` offset, clamped with `uni.getSystemInfoSync()` when available. Drag
 does not snap to an edge after release (the reference does).
+
+**Desktop H5 mouse drag (additive):** browsers do not synthesise touch events
+from a mouse, so a touch-only drag was dead on the desktop. On browser hosts
+(`typeof document !== 'undefined'`) a `mousedown` on the trigger anchors the
+same drag core; `mousemove` / `mouseup` are tracked on `document` and detached
+on release and unmount. Synthetic mousedowns within 500 ms after a real touch
+are ignored, and a drag longer than 3 px suppresses the trailing toggle so
+dragging the button never opens the menu.
 
 ## Import
 
@@ -81,6 +94,7 @@ import { SnFab } from '@snui/uni';
 | `mode`         | 'line' \| 'fan'                                           | 'line'                                       | no       | Expansion shape: stack (wd-fab 1:1) or arc (AUI-OPT-19).    |
 | `actions`      | SnFabAction[]                                             | []                                           | no       | Fan-mode items; the slot is ignored in fan mode.            |
 | `fanRadius`    | number                                                    | 96                                           | no       | Fan radius in px (trigger centre → item centre).            |
+| `fanMotion`    | 'bloom' \| 'fan'                                          | 'bloom'                                      | no       | Fan motion: radial bloom or folding-fan arc sweep.          |
 | `disabled`     | boolean                                                   | false                                        | no       | Disable the whole button.                                   |
 | `inactiveIcon` | string                                                    | 'plus'                                       | no       | Icon while collapsed (registry name).                       |
 | `activeIcon`   | string                                                    | 'close'                                      | no       | Icon while expanded (registry name).                        |

@@ -12,6 +12,31 @@
  * Do NOT add `@dcloudio/types` on top of this file later — the two global
  * declarations would collide. Extend the shape below instead.
  */
+/** Minimal bounding-rect shape returned by `createSelectorQuery`. */
+interface UniBoundingClientRect {
+  left?: number;
+  top?: number;
+  right?: number;
+  bottom?: number;
+  width?: number;
+  height?: number;
+}
+
+/** Chain returned by `uni.createSelectorQuery()` — only what we call. */
+interface UniSelectorQuery {
+  in: (component: unknown) => UniSelectorQuery;
+  select: (selector: string) => {
+    boundingClientRect: (
+      callback: (rect: UniBoundingClientRect | null) => void,
+    ) => { exec: () => void };
+  };
+}
+
 declare const uni: {
   previewImage?: (options: { urls: string[]; current?: string }) => unknown;
+  /**
+   * Layout measurement for component geometry (used by sn-slider-bar to size
+   * its capsule track). Declared statically so the uni-app compiler bundles it.
+   */
+  createSelectorQuery: () => UniSelectorQuery;
 };

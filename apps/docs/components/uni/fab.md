@@ -27,13 +27,13 @@
 
 ## 扇形展开（`mode="fan"`）
 
-`mode="fan"` 让动作项沿圆弧从触发按钮中心绽放：45° 步进、back-out 弹性缓动、逐项 40ms 错峰，收起时缩回按钮中心。动作项来自结构化 `actions`（`{ icon, text?, color?, disabled? }`）——有 `text` 渲染为胶囊、否则为图标气泡；点选后发 `action` 事件并自动收起。`fanRadius`（默认 96px）调整展开半径。
+`mode="fan"` 让动作项沿圆弧从触发按钮中心展开：45° 步进、back-out 弹性缓动、逐项 40ms 错峰，收起时缩回按钮中心。动画方式 `fan-motion`：`bloom`（默认）从按钮中心放射飞出；`fan` 扇骨式——每个动作项从折叠角沿弧线扫到各自角度，图标始终保持直立。动作项来自结构化 `actions`（`{ icon, text?, color?, disabled? }`）——传 `text` 渲染为胶囊、否则为图标气泡（demo 全部为气泡）；点选后发 `action` 事件并自动收起。`fanRadius`（默认 96px）调整展开半径。
 
-<Demo name="fab-mp-fan" description="底部居中的正中间扇形（胶囊动作项）+ 右下 / 左上的斜扇形（图标气泡），点动作项自动收起并记录反馈。" />
+<Demo name="fab-mp-fan" description="底部居中的正中间扇形 + 右下 / 左上的斜扇形（均为图标气泡，扇骨式展开），点动作项自动收起并记录反馈。" />
 
 ## 拖动（`draggable`）
 
-`draggable` 打开后按住触发按钮即可拖动，松手后按 `gap` 收进屏幕安全区（`uni.getSystemInfoSync()` 可用时做视口钳制）；拖动与展开互不干扰。
+`draggable` 打开后按住触发按钮即可拖动，松手后按 `gap` 收进屏幕安全区（`uni.getSystemInfoSync()` 可用时做视口钳制）；拖动与展开互不干扰。桌面 H5 额外支持鼠标拖拽（`mousedown` 起手、`document` 跟踪移动与松开；拖拽后不会误触发展开）。
 
 <Demo name="fab-mp-drag" description="按住右下角按钮拖动，松手自动收进屏幕安全区，拖完仍可展开动作项。" />
 
@@ -67,6 +67,7 @@
 | mode         | 'line' \| 'fan'                                               | 'line'                                         | 展开形态：直线堆叠 / 扇形（additive）     |
 | actions      | SnFabAction[]                                                 | []                                             | 扇形模式动作项（fan 模式下忽略插槽）      |
 | fanRadius    | number                                                        | 96                                             | 扇形半径 px（按钮中心到动作项中心）       |
+| fanMotion    | 'bloom' \| 'fan'                                              | 'bloom'                                        | 扇形动画：放射飞出 / 扇骨式弧线扫出       |
 | disabled     | boolean                                                       | false                                          | 是否禁用                                  |
 | inactiveIcon | string                                                        | 'plus'                                         | 未展开时的图标（注册名）                  |
 | activeIcon   | string                                                        | 'close'                                        | 展开时的图标（注册名）                    |

@@ -14,7 +14,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import SnFab from './sn-fab.vue';
 import { closeOutside } from '../../utils/outside-close';
 // Raw SFC source for CSS-level regression guards (vitest 的 import.meta.url
@@ -449,6 +449,125 @@ describe('sn-fab', () => {
       await items[0]?.trigger('tap');
       expect(wrapper.emitted('action')).toBeUndefined();
       expect(wrapper.emitted('update:active')).toBeUndefined();
+    });
+  });
+
+  describe('fan motion (fanMotion)', () => {
+    const sweepActions = [
+      { icon: Star, text: '收藏' },
+      { icon: Heart, text: '喜欢' },
+      { icon: Coffee },
+    ];
+
+    it('sweeps the ribs along the arc from the folded centre angle', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.classes()).toContain('sn-fab__fan-item--sweep');
+      const styleOf = (i: number) => items[i]?.attributes('style') ?? '';
+      // bottom-center: centre angle 270°, 45° step → 225° / 270° / 315°.
+      expect(styleOf(0)).toContain('rotate(225deg)');
+      expect(styleOf(1)).toContain('rotate(270deg)');
+      expect(styleOf(2)).toContain('rotate(315deg)');
+      expect(styleOf(0)).toContain('translateX(96px)');
+      expect(styleOf(1)).toContain('translateX(96px)');
+      expect(styleOf(2)).toContain('translateX(96px)');
+
+      // Folded at rest: every rib sits at the centre angle with radius 0.
+      const closed = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          actions: sweepActions,
+        },
+      });
+      const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
+      expect(closedStyle).toContain('rotate(270deg)');
+      expect(closedStyle).toContain('translateX(0px)');
+      expect(closedStyle).toContain('scale(0.4)');
+    });
+
+    it('counter-rotates the rib content to keep icons upright', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const bodies = wrapper.findAll('.sn-fab__fan-item-body');
+      expect(bodies[0]?.attributes('style')).toContain('rotate(-225deg)');
+      expect(bodies[1]?.attributes('style')).toContain('rotate(-270deg)');
+      expect(bodies[2]?.attributes('style')).toContain('rotate(-315deg)');
+    });
+
+    it('keeps the radial bloom as the default motion', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.classes()).not.toContain('sn-fab__fan-item--sweep');
+      const style = items[1]?.attributes('style') ?? '';
+      expect(style).toContain('translate(0px, -96px)');
+      expect(style).not.toContain('rotate(');
+      // The body wrapper stays transform-free in bloom motion.
+      expect(wrapper.find('.sn-fab__fan-item-body').attributes('style')).toBe('');
+    });
+  });
+
+  describe('desktop mouse drag (additive)', () => {
+    /** Anchor a mouse drag on the trigger and release at `to`. */
+    async function mouseDrag(
+      wrapper: ReturnType<typeof mount>,
+      from: number[],
+      to: number[],
+    ): Promise<void> {
+      await wrapper
+        .find('.sn-fab__trigger')
+        .trigger('mousedown', { button: 0, clientX: from[0], clientY: from[1] });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: to[0], clientY: to[1] }));
+      document.dispatchEvent(new MouseEvent('mouseup', { clientX: to[0], clientY: to[1] }));
+      // The offset lands in reactive state on dispatch; the DOM style only
+      // carries it after Vue's update queue flushes.
+      await nextTick();
+    }
+
+    it('drags the trigger with the mouse on desktop H5', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [60, 40]);
+      expect(wrapper.attributes('style')).toContain('translate(50px, 30px)');
+    });
+
+    it('suppresses the toggle right after a mouse drag, then recovers', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [60, 40]);
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')).toBeUndefined();
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([true]);
+    });
+
+    it('still toggles when the pointer never leaves the button', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [11, 11]);
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([true]);
     });
   });
 

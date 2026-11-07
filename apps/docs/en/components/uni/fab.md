@@ -27,13 +27,13 @@
 
 ## Fan expansion (`mode="fan"`)
 
-`mode="fan"` blooms the action items along an arc out of the trigger centre: 45° stepping, a back-out easing, a 40 ms per-item stagger, and a collapse back into the button. Items come from structured `actions` (`{ icon, text?, color?, disabled? }`) — with `text` they render as pills, otherwise as icon bubbles; tapping one emits `action` and auto-closes. `fanRadius` (default 96px) tunes the arc radius.
+`mode="fan"` unfolds the action items along an arc out of the trigger centre: 45° stepping, a back-out easing, a 40 ms per-item stagger, and a collapse back into the button. The motion is configurable via `fan-motion`: `bloom` (default) flies the items straight out of the centre; `fan` sweeps every rib along the arc from the folded angle like a folding fan, icons staying upright. Items come from structured `actions` (`{ icon, text?, color?, disabled? }`) — with `text` they render as pills, otherwise as icon bubbles (the demos use bubbles only); tapping one emits `action` and auto-closes. `fanRadius` (default 96px) tunes the arc radius.
 
-<Demo name="fab-mp-fan" description="A symmetric centre fan at bottom-center (pill items) plus oblique fans at bottom-right / top-left (icon bubbles); items auto-close on tap." />
+<Demo name="fab-mp-fan" description="A symmetric centre fan at bottom-center plus oblique fans at bottom-right / top-left (icon bubbles, folding-fan sweep); items auto-close on tap." />
 
 ## Dragging (`draggable`)
 
-With `draggable`, hold the trigger to drag it; on release it clamps back inside the `gap` safe area (clamped to the viewport when `uni.getSystemInfoSync()` is available). Dragging and expanding do not interfere.
+With `draggable`, hold the trigger to drag it; on release it clamps back inside the `gap` safe area (clamped to the viewport when `uni.getSystemInfoSync()` is available). Dragging and expanding do not interfere. Desktop H5 additionally supports mouse dragging (`mousedown` anchors the gesture, movement and release are tracked on `document`; a drag never triggers the menu).
 
 <Demo name="fab-mp-drag" description="Hold the bottom-right button to drag it; it clamps into the safe area on release and still expands afterwards." />
 
@@ -67,6 +67,7 @@ The trigger icon has two tracks: `inactive-icon` / `active-icon` take registry n
 | mode         | 'line' \| 'fan'                                                         | 'line'                                         | Expansion shape: stack / arc fan (additive)        |
 | actions      | SnFabAction[]                                                           | []                                             | Fan-mode items (the slot is ignored in fan mode)   |
 | fanRadius    | number                                                                  | 96                                             | Fan radius in px (trigger centre → item centre)    |
+| fanMotion    | 'bloom' \| 'fan'                                                        | 'bloom'                                        | Fan motion: radial bloom or folding-fan sweep      |
 | disabled     | boolean                                                                 | false                                          | Disable the whole button                           |
 | inactiveIcon | string                                                                  | 'plus'                                         | Icon while collapsed (registry name)               |
 | activeIcon   | string                                                                  | 'close'                                        | Icon while expanded (registry name)                |

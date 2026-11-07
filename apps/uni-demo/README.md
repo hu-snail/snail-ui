@@ -10,10 +10,14 @@ uni 端（`@snui/uni`）组件 demo 的**唯一事实源**与真实运行时演�
 - **微信小程序**：`pnpm build:mp-weixin` 产出 `dist/build/mp-weixin`，
   用微信开发者工具导入运行。
 - **页面 UI**：总览/组件页共用 `DemoPageShell`——渐变弥散背景 + 呼吸动画、
-  玻璃卡（浅色透明渐变 + 圆角 + 描边，backdrop-filter 渐进增强）、**风格包
-  切换**（调色板按钮 → action sheet 选 Default / iOS / Doodle / Dark，token
-  变量对象绑 shell 根 `:style`，跨端通用）、中/英切换与深/浅主题切换按钮
-  （`src/state/demo-ui.ts`，uni storage 持久化）、总览页组件搜索。
+  卡片（浅色渐变 + 圆角 + 描边）、**风格包切换**（调色板按钮 → action sheet
+  选 Default / iOS / Doodle / Dark，token 变量对象绑 shell 根 `:style`，
+  跨端通用）、中/英切换与深/浅主题切换按钮（`src/state/demo-ui.ts`，uni
+  storage 持久化）。
+- **总览页**：搜索框 + 按分组标签合并的分类 chips（basic / basic-2 同属
+  「基础组件」只留一个入口）+ 双列图标卡（图标映射见
+  `src/pages/index/home-icons.ts`，走 sn-icon 内置目录的 string icon API）；
+  搜索时跨分组平铺结果。
 - **深色主题（组件级）**：根节点挂 `dark` 类翻转 `@snui/uni/styles` 内置的
   深色变量块（49 变量），demo 内组件本体随主题翻深。**关键修复**：tokens-mp
   的 `--sn-mp-color-*` 别名在部分环境（系统深色 + uni h5 page 样式注入）会被

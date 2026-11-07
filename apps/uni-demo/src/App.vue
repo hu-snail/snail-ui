@@ -108,6 +108,37 @@ page {
   --demo-text-3: #6d7488;
 }
 
+/* demo 场景布局原语：`sn-demo` / `--stack` / `--column` 被全部 demo 根节点
+ * 使用，但此前**没有任何定义**——根节点退化成普通块流，内联 `<text>` 说明文字
+ * 与 `display: inline-flex` 的按钮会被排到同一行，出现「按钮压住说明文字」。
+ * 这里补上最小定义：竖向 flex 栈（flex item 自动块级化，行内按钮不再回溯到
+ * 文字行），按钮按内容宽度左对齐。 */
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-sizing: border-box;
+}
+
+.sn-demo--stack {
+  gap: 20rpx;
+}
+
+.sn-demo--column {
+  gap: 16rpx;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.sn-demo__button {
+  align-self: flex-start;
+}
+
 /* 玻璃卡：透明渐变 + 圆角 + 描边。
  * 注意：这里刻意**不用** backdrop-filter——它会为 position: fixed 的后代
  * 创建 containing block，把弹窗类 demo（calendar / popup / dialog …）钉在
