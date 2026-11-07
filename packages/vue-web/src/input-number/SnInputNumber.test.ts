@@ -3,8 +3,9 @@
  *
  * Behavior-focused (AGENTS.md §46): steppers, keyboard, clamping,
  * precision, stepStrictly, format/parse, clearable, disabled, null,
- * `buttonPlacement` (left / both / right), the replaceable − / + glyph slots
- * and the stepper background plate / centring CSS contract.
+ * `buttonPlacement` (left / both / right), the tail ↑ / ↓ spinner, the
+ * replaceable − / + / ↑ / ↓ glyph slots and the stepper background plate /
+ * spacing / centring CSS contract.
  */
 
 import { readFileSync } from 'node:fs';
@@ -388,15 +389,16 @@ describe('SnInputNumber', () => {
 
   /* --- buttonPlacement: left / both / right --- */
 
-  it('mirrors the stepper pair into the head when buttonPlacement is left', () => {
+  it('mirrors the pair into the head and leaves only the spinner in the tail (left)', () => {
     const wrapper = mountNumber({ buttonPlacement: 'left' });
     expect(wrapper.classes()).toContain('sn-input-number--placement-left');
     const head = wrapper.find('.sn-input-number__stepper--head');
-    expect(head.exists()).toBe(true);
     expect(head.find('.sn-input-number__btn--minus').exists()).toBe(true);
     expect(head.find('.sn-input-number__btn--plus').exists()).toBe(true);
-    // The whole pair lives in the head — no loose tail stepper.
-    expect(wrapper.find('.sn-input-number__stepper--tail').exists()).toBe(false);
+    const tail = wrapper.find('.sn-input-number__stepper--tail');
+    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(false);
+    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(false);
+    expect(tail.find('.sn-input-number__spin').exists()).toBe(true);
   });
 
   it('steps from the head pair when buttonPlacement is left', async () => {
@@ -416,47 +418,92 @@ describe('SnInputNumber', () => {
     expect(head.find('.sn-input-number__btn--plus').exists()).toBe(false);
     expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
     expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(false);
+    // The tail ends with the ↑ / ↓ spinner.
+    expect(tail.find('.sn-input-number__spin').exists()).toBe(true);
   });
 
-  it('keeps the pair in the tail for the default right placement', () => {
+  it('keeps the pair plus the spinner in the tail for the default right placement', () => {
     const wrapper = mountNumber();
     expect(wrapper.find('.sn-input-number__stepper--head').exists()).toBe(false);
     const tail = wrapper.find('.sn-input-number__stepper--tail');
     expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(true);
     expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
+    expect(tail.find('.sn-input-number__spin .sn-input-number__btn--up').exists()).toBe(true);
+    expect(tail.find('.sn-input-number__spin .sn-input-number__btn--down').exists()).toBe(true);
   });
 
   /* --- stepper glyphs --- */
 
-  it('renders the built-in − / + glyphs through SnIcon', () => {
-    const wrapper = mountNumber({ buttonPlacement: 'both' });
-    expectIconRendered(
-      wrapper,
-      '.sn-input-number__stepper--head .sn-input-number__btn--minus .sn-icon',
-    );
-    expectIconRendered(
-      wrapper,
-      '.sn-input-number__stepper--tail .sn-input-number__btn--plus .sn-icon',
-    );
+  it('renders the built-in − / + / ↑ / ↓ glyphs through SnIcon', () => {
+    const wrapper = mountNumber({ buttonPlacement: 'right' });
+    expectIconRendered(wrapper, '.sn-input-number__btn--minus .sn-icon');
+    expectIconRendered(wrapper, '.sn-input-number__btn--plus .sn-icon');
+    expectIconRendered(wrapper, '.sn-input-number__btn--up .sn-icon');
+    expectIconRendered(wrapper, '.sn-input-number__btn--down .sn-icon');
     expectNoMissingIcons(wrapper, 'SnInputNumber');
   });
 
-  it('replaces the decrement / increment glyphs through the icon slots', () => {
+  it('replaces every stepper glyph through the icon slots', () => {
     const wrapper = mount(SnInputNumber, {
-      props: { modelValue: 1, buttonPlacement: 'both' },
+      props: { modelValue: 1, buttonPlacement: 'right' },
       slots: {
         'minus-icon': '<i data-testid="minus-glyph">-</i>',
         'plus-icon': '<i data-testid="plus-glyph">+</i>',
+        'up-icon': '<i data-testid="up-glyph">^</i>',
+        'down-icon': '<i data-testid="down-glyph">v</i>',
       },
     });
-    expect(
-      wrapper.find('.sn-input-number__stepper--head [data-testid="minus-glyph"]').exists(),
-    ).toBe(true);
-    expect(
-      wrapper.find('.sn-input-number__stepper--tail [data-testid="plus-glyph"]').exists(),
-    ).toBe(true);
-    // A replaced glyph leaves no default icon behind.
+    for (const id of ['minus-glyph', 'plus-glyph', 'up-glyph', 'down-glyph']) {
+      expect(wrapper.find(`[data-testid="${id}"]`).exists(), id).toBe(true);
+    }
+    // Replaced glyphs leave no default icon behind.
     expect(wrapper.find('.sn-input-number__btn .sn-icon').exists()).toBe(false);
+  });
+
+  /* --- tail ↑ / ↓ spinner --- */
+
+  it('steps up / down from the spinner halves', async () => {
+    const wrapper = mountNumber({ modelValue: 3, buttonPlacement: 'both' });
+    const up = wrapper.find('.sn-input-number__btn--up');
+    await up.trigger('mousedown');
+    await up.trigger('mouseup');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([4]);
+    const down = wrapper.find('.sn-input-number__btn--down');
+    await down.trigger('mousedown');
+    await down.trigger('mouseup');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2]);
+  });
+
+  it('long-presses the spinner halves like the − / + buttons', async () => {
+    vi.useFakeTimers();
+    try {
+      const { wrapper, value } = mountVModel(0, { buttonPlacement: 'both' });
+      await wrapper.find('.sn-input-number__btn--up').trigger('mousedown');
+      expect(value.value).toBe(1);
+      await vi.advanceTimersByTimeAsync(400);
+      await vi.advanceTimersByTimeAsync(100);
+      expect(value.value).toBe(2);
+      await wrapper.find('.sn-input-number__btn--up').trigger('mouseup');
+      const atRelease = value.value;
+      await vi.advanceTimersByTimeAsync(500);
+      expect(value.value).toBe(atRelease);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('disables each spinner half at its own bound', () => {
+    const atMax = mountNumber({ modelValue: 5, max: 5, buttonPlacement: 'both' });
+    expect((atMax.find('.sn-input-number__btn--up').element as HTMLButtonElement).disabled).toBe(
+      true,
+    );
+    expect((atMax.find('.sn-input-number__btn--down').element as HTMLButtonElement).disabled).toBe(
+      false,
+    );
+    const atMin = mountNumber({ modelValue: 0, min: 0, buttonPlacement: 'both' });
+    expect((atMin.find('.sn-input-number__btn--down').element as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   /* --- stepper background plate --- */
@@ -527,5 +574,20 @@ describe('SnInputNumber stepper plate CSS', () => {
     expect(hoverRules).toHaveLength(1);
     expect(hoverRules[0].selectors.join(' ')).toContain('--placement-both');
     expect(hoverRules[0].body).toMatch(/background: var\(\s*--sn-web-input-number-btn-hover-bg,/);
+  });
+
+  it('gives every plate horizontal breathing room from the border', () => {
+    expect(bodyOf('.sn-input-number__btn')).toContain('margin: 0 3px');
+    expect(bodyOf('.sn-input-number__spin')).toContain('margin: 0 3px');
+  });
+
+  it('stacks the ↑ / ↓ spinner halves inside one plate', () => {
+    const spin = bodyOf('.sn-input-number__spin');
+    expect(spin).toContain('flex-direction: column');
+    expect(spin).toContain('height: calc(100% - 6px)');
+    expect(spin).toContain('background: var(--sn-web-input-number-btn-bg, transparent)');
+    const half = bodyOf('.sn-input-number__spin .sn-input-number__btn');
+    expect(half).toContain('flex: 1 1 50%');
+    expect(half).toContain('background: transparent');
   });
 });

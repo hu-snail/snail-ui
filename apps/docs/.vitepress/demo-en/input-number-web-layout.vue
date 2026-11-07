@@ -45,6 +45,6 @@ const v = ref(1);
   align-items: center;
 }
 .demo-field {
-  width: 108px;
+  width: 140px;
 }
 </style>
