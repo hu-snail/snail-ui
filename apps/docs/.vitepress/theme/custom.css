@@ -943,20 +943,24 @@ table.props code {
 
 @media (min-width: 960px) {
   /* 贴左缘：与悬浮面板（left: 16px）同一条边，垂直居中；
-   * 折叠态不退场（不再 `:not(.sn-sidebar-collapsed)`），两态同坐标。 */
+   * 折叠态不退场（不再 `:not(.sn-sidebar-collapsed)`），两态同坐标。
+   *
+   * 运动机制：不做独立 left 过渡 —— 那会和面板「平行跑」，位移、起点
+   * 都不同，看起来就是「等面板滑完才附上去」。改为折叠时和面板用同一个
+   * translateX(-100% - 24px) 一起滑出，展开时一起滑回 —— handle 始终
+   * 贴在面板右缘，视觉上是被面板「推着走」。 */
   html:has(.VPSidebar) .sn-docs-sidebar-handle {
     position: fixed;
     top: 50%;
-    /* 展开态：贴在菜单右侧（面板右缘 = --vp-sidebar-width）；
-       折叠态：面板滑出后贴回左缘 16px。left 过渡与面板滑出同节拍。 */
     left: var(--vp-sidebar-width);
     z-index: 61;
     display: flex;
     transform: translateY(-50%);
-    transition: left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
   html.sn-sidebar-collapsed .sn-docs-sidebar-handle {
-    left: 16px;
+    transform: translateY(-50%)
+      translateX(calc(16px - var(--vp-sidebar-width)));
   }
 
   /* 折叠 = 面板滑出（display: none 会杀掉动画）。 */
@@ -1462,7 +1466,8 @@ html[data-sn-template-end='uni']
     /* 文档页（非 .home）：岛在内容区域内居中，不依赖 :has()——
        margin-left = 侧栏宽 + (内容区宽 − 岛宽)/2；内容区宽 =
        100% − 侧栏宽（margin/width 的百分比均以父容器视口宽为基准），
-       左右各留 16px，窄视口岛自动收窄。 */
+       左右各留 16px，窄视口岛自动收窄。品牌（logo + 标题）从侧栏
+       迁移到岛上 —— 左缘即品牌起点，与首页 navbar 一致。 */
     body.sn-nav-floating .VPNavBar:not(.home) {
       width: min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) !important;
       margin-left: calc(
@@ -1470,9 +1475,6 @@ html[data-sn-template-end='uni']
         min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) / 2
       ) !important;
       margin-right: 0 !important;
-    }
-    body.sn-nav-floating .VPNavBar:not(.home) .sn-docs-nav__brand {
-      display: none;
     }
     /* 首页：保持原行为——岛视口居中、含品牌 */
     body.sn-nav-floating .VPNavBar.home {
@@ -1583,17 +1585,13 @@ html[data-sn-template-end='uni']
       height: var(--sn-sidebar-brand-h);
       padding: 0 14px;
       color: var(--sn-web-color-text-primary, var(--vp-c-text-1));
-      text-decoration: none;
       background: var(--vp-c-bg);
     }
-    body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand__icon {
-      display: inline-flex;
-      color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-    }
+    /* 「文档目录 / Contents」——面板分区标签（品牌已迁至导航岛）。 */
     body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand__title {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 650;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.02em;
     }
     /* nav 是唯一滚动区：margin-top 让出吸顶头部（104px）——原生滚动条
      * 只画在 nav 盒内（从菜单起始位置开始），不再纵贯整个面板。

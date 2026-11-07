@@ -30,13 +30,24 @@ import {
   Sparkles,
   Table2,
 } from 'lucide-vue-next';
-import { SnButton, SnIcon, SnRadioGroup, SnSelect, SnSwitch, SnWaterfall } from '@snui/vue-web';
+import {
+  SnButton,
+  SnIcon,
+  SnRadioGroup,
+  SnSelect,
+  SnSlider,
+  SnSliderBar,
+  SnSwitch,
+  SnWaterfall,
+} from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
 import type { DocButtonDemo, DocSeg, DocQuickAction, SnDocPageData } from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
 
-const { isDark } = useData();
+const { isDark, lang } = useData();
+/** 英文站：demo 走 demo-en 影子文件（与 demos 瀑布流一致）。 */
+const isEn = computed(() => lang.value.startsWith('en'));
 const router = useRouter();
 function navTo(url: string | undefined): void {
   if (url) router.go(url);
@@ -195,7 +206,47 @@ function codeToHtml(code: string, lang: 'vue' | 'ts' | 'css' = 'vue'): string {
 }
 
 /** 由 Playground 当前状态生成的真实可运行片段。 */
+/** PascalCase component name derived from the page title (e.g. SliderBar). */
+const componentTag = computed(() => {
+  const raw = props.doc.title.split(/[\s·—]/).find((w) => /^[A-Za-z]/.test(w)) ?? 'Component';
+  return raw.startsWith('Sn') ? raw : 'Sn' + raw;
+});
+
+/**
+ * Playground 状态 ⇄ 可运行片段（非按钮组件的通用分支）。
+ * 属性按 kebab-case 输出，布尔只输出出现即为 true，数值走 v-bind。
+ */
+function attrOf(name: string, value: unknown): string {
+  if (name === 'modelValue') return '';
+  if (value === undefined || value === null || value === '') return '';
+  const kebab = name.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
+  if (typeof value === 'boolean') return value ? ' ' + kebab : '';
+  if (typeof value === 'number') return ' :' + kebab + '="' + value + '"';
+  return ' ' + kebab + '="' + String(value) + '"';
+}
+
 const generatedCode = computed(() => {
+  const component = props.doc.playground.component;
+  if (component) {
+    const tag = componentTag.value;
+    const attrs = [
+      ...Object.entries(pgProps.value).map(([k, v]) => attrOf(k, v)),
+      ...pgControls.value.map((c) => attrOf(c.prop, pgValues[c.prop])),
+    ].join('');
+    const initial = typeof pgValues.modelValue === 'number' ? pgValues.modelValue : 0;
+    return [
+      '<script setup lang="ts">',
+      "import { ref } from 'vue';",
+      "import { " + tag + " } from '@snui/vue-web';",
+      '',
+      'const value = ref(' + initial + ');',
+      '<\\/script>',
+      '',
+      '<template>',
+      '  <' + tag + attrs + ' v-model="value" />',
+      '</template>',
+    ].join('\n');
+  }
   const attrs: string[] = [];
   if (pg.type !== 'default') attrs.push(`type="${pg.type}"`);
   if (pg.size !== 'medium') attrs.push(`size="${pg.size}"`);
@@ -217,6 +268,64 @@ const generatedCode = computed(() => {
     '  </SnButton>',
     '</template>',
   ].join('\n');
+});
+
+/* ── 通用 Playground 预览（非按钮组件） ───────────────────────────────── */
+
+/**
+ * `doc.playground.preview` 指向一个 demo 文件时，Playground 舞台渲染该组件
+ * 的真实案例；按钮页不传该字段，继续使用内置的 SnButton 控件矩阵。
+ * 与 demos 瀑布流共用 demo-loader，仅在需要时动态加载。
+ */
+/**
+ * 舞台组件：`playground.component` 留空时直接用内联的 SnSliderBar 渲染
+ * （文档页本身就在消费被文档化的组件，与 Button 页同一个思路）。
+ */
+const STAGE_REGISTRY = {
+  SnSliderBar,
+} as const;
+
+const previewComponent = computed(() => {
+  const name = props.doc.playground.component;
+  if (!name) return null;
+  const local = STAGE_REGISTRY[name as keyof typeof STAGE_REGISTRY];
+  return local ? markRaw(local) : markRaw(loadDemoComponent(name, isEn.value));
+});
+
+/**
+ * 通用 Playground 状态：每个控件绑定组件的一个 prop，`bindings` 汇总成
+ * 真实 props 喂给舞台上的组件。没有 controls 时退回只读预览。
+ */
+const pgValues = reactive<Record<string, unknown>>({});
+const pgControls = computed(() => props.doc.playground.controls ?? []);
+const pgProps = computed(() => props.doc.playground.props ?? {});
+
+watch(
+  pgControls,
+  (list) => {
+    for (const c of list) pgValues[c.prop] = c.value;
+  },
+  { immediate: true },
+);
+
+function resetPlayground(): void {
+  for (const c of pgControls.value) pgValues[c.prop] = c.value;
+}
+
+/** modelValue 单独处理：舞台需要可写绑定，其余按 prop 名直传。 */
+const pgBindings = computed<Record<string, unknown>>(() => {
+  const out: Record<string, unknown> = { ...pgProps.value };
+  for (const c of pgControls.value) {
+    out[c.prop] = pgValues[c.prop];
+  }
+  return out;
+});
+
+const pgValue = computed<unknown>({
+  get: () => pgValues.modelValue,
+  set: (v) => {
+    pgValues.modelValue = v;
+  },
 });
 
 const generatedHtml = computed(() => codeToHtml(generatedCode.value));
@@ -531,7 +640,9 @@ onBeforeUnmount(() => {
               />
               <h2>交互式演练 Playground</h2>
             </div>
-            <span class="sn-docpage__sec-aside">实时驱动真实 SnButton</span>
+            <span class="sn-docpage__sec-aside">{{
+            previewComponent ? '实时渲染真实组件' : '实时驱动真实 SnButton'
+          }}</span>
           </div>
 
           <div class="sn-docpage__window">
@@ -564,7 +675,12 @@ onBeforeUnmount(() => {
 
             <!-- 预览舞台 -->
             <div v-if="activeTab === 'preview'" class="sn-docpage__stage">
-              <div class="sn-docpage__stage-center">
+              <!-- 通用预览：doc.playground.preview 指定 demo 时，舞台上渲染该
+                   组件的真实案例，而不是内置的 SnButton 控件。 -->
+              <div v-if="previewComponent" class="sn-docpage__stage-custom">
+                <component :is="previewComponent" v-bind="pgBindings" v-model="pgValue" />
+              </div>
+              <div v-else class="sn-docpage__stage-center">
                 <SnButton
                   :type="pg.type"
                   :size="pg.size"
@@ -588,7 +704,7 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
-              <div class="sn-docpage__presets" role="group" aria-label="语义类型预设">
+              <div v-if="!previewComponent" class="sn-docpage__presets" role="group" aria-label="语义类型预设">
                 <button
                   v-for="preset in typePresets"
                   :key="preset.key"
@@ -642,7 +758,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- 控制工具条 -->
-            <div class="sn-docpage__controls">
+            <div v-if="!previewComponent" class="sn-docpage__controls">
               <div class="sn-docpage__ctrl">
                 <span class="sn-docpage__ctrl-label">类型 Type</span>
                 <SnSelect
@@ -700,6 +816,64 @@ onBeforeUnmount(() => {
                 </label>
               </div>
             </div>
+
+            <!-- 通用控件面板：每个控件驱动舞台组件的一个 prop -->
+            <div v-if="pgControls.length" class="sn-docpage__controls">
+              <div v-for="c in pgControls" :key="c.prop" class="sn-docpage__ctrl">
+                <span class="sn-docpage__ctrl-label">
+                  {{ c.label }}
+                  <em v-if="c.hint" class="sn-docpage__ctrl-hint">{{ c.hint }}</em>
+                </span>
+
+                <label v-if="c.kind === 'switch'" class="sn-docpage__switch-line">
+                  <span>{{ c.prop }}</span>
+                  <SnSwitch
+                    :model-value="Boolean(pgValues[c.prop])"
+                    size="small"
+                    @update:model-value="(v: boolean) => (pgValues[c.prop] = v)"
+                  />
+                </label>
+
+                <SnSelect
+                  v-else-if="c.kind === 'select'"
+                  :model-value="pgValues[c.prop] as string | number"
+                  :options="c.options ?? []"
+                  size="small"
+                  :aria-label="c.label"
+                  @update:model-value="(v: string | number) => (pgValues[c.prop] = v)"
+                />
+
+                <!-- 数值控件用库自身的 SnSlider：文档站也在消费被文档化的组件。 -->
+                <div v-else-if="c.kind === 'range'" class="sn-docpage__ctrl-range">
+                  <SnSlider
+                    class="sn-docpage__range-slider"
+                    :model-value="Number(pgValues[c.prop])"
+                    :min="c.min ?? 0"
+                    :max="c.max ?? 100"
+                    :step="c.step ?? 1"
+                    show-input
+                    :aria-label="c.label"
+                    @update:model-value="(v: number | [number, number]) => (pgValues[c.prop] = Array.isArray(v) ? v[0] : v)"
+                  />
+                </div>
+
+                <input
+                  v-else
+                  class="sn-docpage__ctrl-input"
+                  type="text"
+                  :value="String(pgValues[c.prop] ?? '')"
+                  :aria-label="c.label"
+                  @input="(e: Event) => (pgValues[c.prop] = (e.target as HTMLInputElement).value)"
+                />
+              </div>
+
+              <div class="sn-docpage__ctrl sn-docpage__ctrl--actions">
+                <span class="sn-docpage__ctrl-label">状态 State</span>
+                <div class="sn-docpage__ctrl-iconrow">
+                  <SnButton size="small" @click="resetPlayground">重置</SnButton>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -730,8 +904,8 @@ onBeforeUnmount(() => {
           </div>
         </section>
 
-        <!-- 样式变体 -->
-        <section id="variants" class="sn-docpage__section">
+        <!-- 样式变体（可选：无 variants 数据的组件不渲染本区块） -->
+        <section v-if="doc.variants" id="variants" class="sn-docpage__section">
           <div class="sn-docpage__sec-head">
             <div class="sn-docpage__sec-title">
               <SnIcon
@@ -743,13 +917,13 @@ onBeforeUnmount(() => {
             </div>
           </div>
           <p class="sn-docpage__hint">
-            <template v-for="(seg, i) in segs(doc.variants.hint)" :key="i">
+            <template v-for="(seg, i) in segs(doc.variants?.hint)" :key="i">
               <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
               <template v-else>{{ seg.s }}</template>
             </template>
           </p>
           <div class="sn-docpage__variant-grid">
-            <div v-for="card in doc.variants.cards" :key="card.title" class="sn-docpage__vcard">
+            <div v-for="card in doc.variants?.cards ?? []" :key="card.title" class="sn-docpage__vcard">
               <div class="sn-docpage__vcard-head">
                 <h3>{{ card.title }}</h3>
                 <span
@@ -1198,7 +1372,7 @@ onBeforeUnmount(() => {
 .sn-docpage__title {
   margin: 0;
   font-size: 34px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.15;
   color: var(--sn-doc-text-1);
@@ -1353,7 +1527,7 @@ onBeforeUnmount(() => {
   border-top: 0;
   line-height: 1.3;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
   color: var(--sn-doc-text-1);
 }
@@ -1453,6 +1627,16 @@ onBeforeUnmount(() => {
     color-mix(in srgb, var(--sn-doc-card-soft) 55%, transparent);
   overflow: hidden;
 }
+.sn-docpage__stage-custom {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-height: 180px;
+  width: 100%;
+  max-width: 560px;
+  padding: 4px 0;
+}
 .sn-docpage__stage-center {
   position: relative;
   z-index: 1;
@@ -1548,6 +1732,52 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 7px;
+}
+
+.sn-docpage__ctrl-hint {
+  margin-left: 6px;
+  color: var(--sn-doc-muted, var(--vp-c-text-3));
+  font-size: 11px;
+  font-style: normal;
+}
+.sn-docpage__ctrl-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sn-docpage__range-slider {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sn-docpage__ctrl-value {
+  flex: none;
+  min-width: 42px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--sn-doc-card-soft, var(--vp-c-bg-soft));
+  color: var(--sn-doc-text, var(--vp-c-text-1));
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.sn-docpage__ctrl-input {
+  width: 100%;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--sn-doc-border, var(--vp-c-border));
+  border-radius: 6px;
+  background: var(--sn-doc-card, var(--vp-c-bg));
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+}
+.sn-docpage__ctrl-input:focus {
+  border-color: var(--sn-doc-accent, var(--vp-c-brand-1));
+}
+.sn-docpage__ctrl--actions {
+  justify-content: flex-end;
 }
 .sn-docpage__ctrl-label {
   font-family: var(--vp-font-family-mono, ui-monospace, monospace);
@@ -1731,7 +1961,7 @@ onBeforeUnmount(() => {
 .sn-docpage__demo-meta h3 {
   margin: 0;
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
   color: var(--sn-doc-text-1);
 }
  .sn-docpage__demo-meta p {
@@ -1905,7 +2135,7 @@ onBeforeUnmount(() => {
 .sn-docpage__vcard-head h3 {
   margin: 0;
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
   color: var(--sn-doc-text-1);
 }
 .sn-docpage__vcard-tag {
@@ -2081,7 +2311,7 @@ onBeforeUnmount(() => {
 .sn-docpage__ai-main h3 {
   margin: 0;
   font-size: 16.5px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.015em;
   color: var(--sn-doc-text-1);
 }

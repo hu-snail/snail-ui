@@ -142,6 +142,7 @@ const sidebar = withCollapsibleGroups({
         { text: 'Radio 单选框', link: '/components/web/radio' },
         { text: 'Switch 开关', link: '/components/web/switch' },
         { text: 'Slider 滑块', link: '/components/web/slider' },
+        { text: 'SliderBar 胶囊滑条', link: '/components/web/slider-bar' },
         { text: 'Rate 评分', link: '/components/web/rate' },
         { text: 'Form 表单', link: '/components/web/form' },
         { text: 'Transfer 穿梭框', link: '/components/web/transfer' },
@@ -526,6 +527,7 @@ const enSidebar = withCollapsibleGroups({
         { text: 'Radio', link: '/en/components/web/radio' },
         { text: 'Switch', link: '/en/components/web/switch' },
         { text: 'Slider', link: '/en/components/web/slider' },
+        { text: 'SliderBar', link: '/en/components/web/slider-bar' },
         { text: 'Rate', link: '/en/components/web/rate' },
         { text: 'Form', link: '/en/components/web/form' },
         { text: 'Transfer', link: '/en/components/web/transfer' },
@@ -1037,7 +1039,9 @@ export default defineConfig({
    document.body ? add() : document.addEventListener('DOMContentLoaded', add);
  }`,
      ],
-     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+     ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     [
       'link',

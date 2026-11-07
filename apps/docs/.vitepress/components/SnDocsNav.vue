@@ -31,7 +31,6 @@ import {
   Palette,
   Puzzle,
   Rocket,
-  Snail,
   Smartphone,
   Sun,
 } from 'lucide-vue-next';
@@ -241,7 +240,13 @@ function onLocaleClick(event: MouseEvent): void {
   <SnConfigProvider skin="">
     <div class="sn-docs-nav" :class="{ 'sn-docs-nav--inverted': inverted }">
       <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
-        <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
+        <img
+          class="sn-docs-nav__brand-icon"
+          src="/logo.png"
+          width="247"
+          height="120"
+          alt=""
+        />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
       <div class="sn-docs-nav__search-slot">
@@ -337,28 +342,36 @@ function onLocaleClick(event: MouseEvent): void {
   padding: 0 24px;
   background: transparent;
   color: var(--sn-web-color-text-primary);
-  /* `border-default` is the hairline tone that still reads as a line in both
-   * light and dark; `border-subtle` is a wash, not an edge. */
-  border-bottom: 1px solid var(--sn-web-color-border-default);
+  /* 首页要求：导航带无下边线（含悬浮态，由 custom.css 的 VPNavBar 规则负责）。 */
+  border-bottom: none;
 }
 
 /* ─────────── Brand ─────────── */
 .sn-docs-nav__brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 600;
+  /* arco 式品牌行：展示级标题 —— 站点标题字体 Outfit（config head 已加载），
+   * 24px/700；logo 高度略小于字高，字标为主导。Outfit 缺字时回退 MiSans。 */
+  font-family: 'Outfit', var(--vp-font-family-base);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   line-height: 1;
   color: var(--sn-web-color-text-primary);
   text-decoration: none;
   white-space: nowrap;
 }
-/* Only the mark carries the brand accent; the wordmark stays neutral so the
- * band reads as chrome rather than as a coloured banner. */
+/* Brand mark is a raster logo (public/logo.png, transparent bg) — it carries
+ * its own color on both light/dark bands, so no CSS color is applied here.
+ * 固有 width/height 属性锁宽高比 + flex-shrink: 0 —— 防止 flex 布局把
+ * 图片横向压扁（width: auto 在受挤压的 flex 项上会被牺牲）。 */
 .sn-docs-nav__brand-icon {
-  color: var(--sn-web-color-action-primary);
+  height: 25px;
+  width: auto;
+  flex-shrink: 0;
+  display: block;
 }
 
 /* ─────────── Menu ───────────
@@ -449,13 +462,12 @@ function onLocaleClick(event: MouseEvent): void {
   gap: 8px;
 }
 /* Icon boxes are driven by the shared icon size token; the inner svg follows
- * the box so a token override stays consistent. */
-.sn-docs-nav__brand-icon,
+ * the box so a token override stays consistent. NOTE: 品牌位已是 raster logo
+ * （.sn-docs-nav__brand-icon），有自己的尺寸规则，不参与方形图标盒。 */
 .sn-docs-nav__action-icon {
   width: var(--sn-web-icon-size-medium);
   height: var(--sn-web-icon-size-medium);
 }
-.sn-docs-nav__brand-icon :deep(svg),
 .sn-docs-nav__action-icon :deep(svg) {
   width: 100%;
   height: 100%;

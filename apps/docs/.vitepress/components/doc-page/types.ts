@@ -78,6 +78,24 @@ export interface DocTokenRow {
   kind?: 'color' | 'blur' | 'curve';
 }
 
+/** A live playground control, bound to one prop of the previewed component. */
+export interface DocPlaygroundControl {
+  /** Prop name on the component (`modelValue` is the bound value). */
+  prop: string;
+  label: string;
+  kind: 'range' | 'select' | 'switch' | 'text';
+  /** range */
+  min?: number;
+  max?: number;
+  step?: number;
+  /** Initial value (also the reset target). */
+  value: unknown;
+  /** select */
+  options?: Array<{ label: string; value: string | number }>;
+  /** Short hint rendered under the label. */
+  hint?: string;
+}
+
 export interface DocPropRow {
   name: string;
   type: string;
@@ -110,6 +128,16 @@ export interface SnDocPageData {
   playground: {
     fileLabel: string;
     stageLabel: string;
+    /**
+     * Component rendered live in the playground stage instead of the built-in
+     * SnButton controls. Non-button components use this so the stage shows
+     * their real API while the page keeps the same layout.
+     */
+    component?: string;
+    /** Props passed to `component` on top of the playground bindings. */
+    props?: Record<string, unknown>;
+    /** Live controls — each one drives one prop of `component`. */
+    controls?: DocPlaygroundControl[];
   };
   usage: {
     hint: DocSeg[];
@@ -117,7 +145,8 @@ export interface SnDocPageData {
     meta: string;
     code: string;
   };
-  variants: {
+  /** Style-variant cards — omit for components without a button-style matrix. */
+  variants?: {
     hint: DocSeg[];
     cards: DocVariantCard[];
   };
@@ -163,6 +192,16 @@ export interface SnDocPageData {
   playground: {
     fileLabel: string;
     stageLabel: string;
+    /**
+     * Component rendered live in the playground stage instead of the built-in
+     * SnButton controls. Non-button components use this so the stage shows
+     * their real API while the page keeps the same layout.
+     */
+    component?: string;
+    /** Props passed to `component` on top of the playground bindings. */
+    props?: Record<string, unknown>;
+    /** Live controls — each one drives one prop of `component`. */
+    controls?: DocPlaygroundControl[];
   };
   usage: {
     hint: DocSeg[];
@@ -170,7 +209,8 @@ export interface SnDocPageData {
     meta: string;
     code: string;
   };
-  variants: {
+  /** Style-variant cards — omit for components without a button-style matrix. */
+  variants?: {
     hint: DocSeg[];
     cards: DocVariantCard[];
   };
