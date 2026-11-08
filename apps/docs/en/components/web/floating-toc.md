@@ -132,11 +132,12 @@ None — it only wires pointer, focus and keyboard handling. Native `span` attri
 
 ### Exposed
 
-| Name         | Type                      | Description                              |
-| ------------ | ------------------------- | ---------------------------------------- |
-| `activeHref` | `string \| null`          | `href` of the section currently in view. |
-| `setOpen`    | `(open: boolean) => void` | Open / close the panel programmatically. |
-| `refresh`    | `() => void`              | Re-measure section offsets.              |
+| Name         | Type                      | Description                                                     |
+| ------------ | ------------------------- | --------------------------------------------------------------- |
+| `activeHref` | `string \| null`          | `href` of the section currently in view.                        |
+| `setOpen`    | `(open: boolean) => void` | Open / close the panel programmatically.                        |
+| `refresh`    | `() => void`              | Re-measure section offsets.                                     |
+| `preview`    | `object \| null`          | The bar card currently shown; `null` once the panel takes over. |
 
 ## How the active section is chosen
 

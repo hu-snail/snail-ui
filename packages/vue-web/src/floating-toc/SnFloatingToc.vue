@@ -211,7 +211,11 @@ const preview = ref<SnFloatingTocPreview | null>(null);
 const panelSide = computed<'left' | 'right'>(() => (props.placement === 'left' ? 'right' : 'left'));
 
 function showPreview(next: SnFloatingTocPreview): void {
-  if (props.hoverAction !== 'preview') return;
+  // Two guards, both required:
+  //   - `preview` mode is the only mode that shows a card at all;
+  //   - an open panel already lists every section, so a card on top of it is
+  //     exactly the stacked-overlay defect this component must never ship.
+  if (props.hoverAction !== 'preview' || isOpen.value) return;
   preview.value = next;
 }
 
@@ -350,6 +354,8 @@ provide(snFloatingTocInjectionKey, {
 defineExpose({
   /** `href` of the section currently in view. */
   activeHref: computed(() => activeHref.value),
+  /** The bar card currently shown, or `null` once the panel takes over. */
+  preview: computed(() => preview.value),
   /** Open / close the content panel programmatically. */
   setOpen,
   /** Re-measure section offsets (e.g. after host-driven layout changes). */

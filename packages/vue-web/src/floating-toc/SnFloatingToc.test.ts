@@ -626,14 +626,35 @@ describe('SnFloatingToc', () => {
       await trigger(wrapper).trigger('click');
       await flush();
       expect(panel(wrapper).exists()).toBe(true);
-      // Like the panel, the preview leaves through a <Transition>; happy-dom
-      // never fires `transitionend`, so assert the leave class instead of
-      // removal from the DOM (same convention as SnColorPicker's tests).
-      const card = previewCard(wrapper);
-      expect(
-        card.exists() &&
-          card.classes().some((name) => name.startsWith('sn-floating-toc-preview-leave')),
-      ).toBe(true);
+      // Assert the state, not the <Transition> node: whether the leaving card
+      // is still in the DOM depends on the environment's transition timing, so
+      // the class-based check was order-dependent. The observable contract is
+      // that the card is dropped once the panel takes over.
+      const vm = wrapper.findComponent(SnFloatingToc).vm as unknown as {
+        preview: unknown;
+      };
+      expect(vm.preview).toBeNull();
+    });
+
+    it('should not bring the card back while the panel is open', async () => {
+      // Regression: the card was hidden only on the open *transition*, so
+      // moving along the rail re-armed it and the panel and card stacked.
+      const wrapper = build({ hoverAction: 'preview' });
+      await flush();
+
+      await bars(wrapper)[0].trigger('pointerenter');
+      await flush();
+      await trigger(wrapper).trigger('click');
+      await flush();
+      expect(panel(wrapper).exists()).toBe(true);
+
+      await bars(wrapper)[1].trigger('pointerenter');
+      await flush();
+
+      const vm = wrapper.findComponent(SnFloatingToc).vm as unknown as {
+        preview: unknown;
+      };
+      expect(vm.preview).toBeNull();
     });
 
     it('should truncate a long auto summary', async () => {

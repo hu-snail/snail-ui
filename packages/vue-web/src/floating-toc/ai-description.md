@@ -102,11 +102,12 @@ attributes pass through.
 
 ## Exposed
 
-| Component | Name         | Type                      | Description                              |
-| --------- | ------------ | ------------------------- | ---------------------------------------- |
-| root      | `activeHref` | `string \| null`          | `href` of the section currently in view. |
-| root      | `setOpen`    | `(open: boolean) => void` | Open / close the panel programmatically. |
-| root      | `refresh`    | `() => void`              | Re-measure section offsets.              |
+| Component | Name         | Type                      | Description                                                     |
+| --------- | ------------ | ------------------------- | --------------------------------------------------------------- |
+| root      | `activeHref` | `string \| null`          | `href` of the section currently in view.                        |
+| root      | `preview`    | `object \| null`          | The bar card currently shown; `null` once the panel takes over. |
+| root      | `setOpen`    | `(open: boolean) => void` | Open / close the panel programmatically.                        |
+| root      | `refresh`    | `() => void`              | Re-measure section offsets.                                     |
 
 ## Behaviour
 
@@ -127,7 +128,8 @@ attributes pass through.
     and cut at 120 characters) and the panel stays shut until a click. Keyboard
     focus still opens the full panel in both modes, so nothing is
     pointer-only. The card is `pointer-events: none` and disappears as soon as
-    the panel expands.
+    the panel expands; while the panel is open the card is suppressed at the
+    source, so the two overlays can never stack.
 - Keyboard: `Enter` / `Space` toggle, `Escape` closes (from the trigger or the
   panel), `ArrowUp` / `ArrowDown` walk the sections and scroll to them.
 - Clicking a bar or an item scrolls the section into view and highlights it
