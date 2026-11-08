@@ -173,6 +173,7 @@ const sidebar = withCollapsibleGroups({
         { text: 'Affix 固钉', link: '/components/web/affix' },
         { text: 'Anchor 锚点', link: '/components/web/anchor' },
         { text: 'BackTop 回到顶部', link: '/components/web/back-top' },
+        { text: 'FloatingToc 悬浮目录', link: '/components/web/floating-toc' },
         { text: 'FloatButton 悬浮按钮', link: '/components/web/float-button' },
         { text: 'Pagination 分页', link: '/components/web/pagination' },
         { text: 'PageHeader 页头', link: '/components/web/page-header' },
@@ -553,6 +554,7 @@ const enSidebar = withCollapsibleGroups({
         { text: 'Pagination', link: '/en/components/web/pagination' },
         { text: 'PageHeader', link: '/en/components/web/page-header' },
         { text: 'FloatButton', link: '/en/components/web/float-button' },
+        { text: 'FloatingToc', link: '/en/components/web/floating-toc' },
       ],
     },
     {
