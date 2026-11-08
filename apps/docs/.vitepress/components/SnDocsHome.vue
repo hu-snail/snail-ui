@@ -19,7 +19,14 @@ import { ArrowRight } from 'lucide-vue-next';
 import { SnButton, SnConfigProvider, SnIcon, SnWaterfall } from '@snui/vue-web';
 import { snCssVars } from '@snui/tokens';
 import { allPacks, getPack } from '@snui/style-packs';
-import { caseText as caseTextOf, homeCases, type HomeCaseId } from '../utils/home-cases';
+import {
+  caseIndexLabels,
+  caseText as caseTextOf,
+  HOME_CASE_GROUPS,
+  homeCases,
+  type HomeCaseFilter,
+  type HomeCaseId,
+} from '../utils/home-cases';
 import { uniTemplates } from '../utils/home-uni-templates';
 import SnHomeCaseCard from './SnHomeCaseCard.vue';
 import SnHomeCaseDemo from './SnHomeCaseDemo.vue';
@@ -39,7 +46,9 @@ const t = computed(() =>
         ctaStart: 'Get Started',
         ctaComponents: 'Browse Components',
         showcaseTitle: 'Scenario Showcases',
-        showcaseHint: 'Composed with live components · interactive · neutral preview cards',
+        showcaseKicker: 'Composed with live components · interactive · frosted cards',
+        showcaseHint:
+          'AI reasoning, prompt orchestration, image generation, forms & data, media & interaction',
         layoutTitle: 'Admin layouts, real shells',
         layoutHint: 'Pick a shape — the shell below is the live admin-layout package.',
         chartsTitle: 'Charts for every question',
@@ -53,7 +62,8 @@ const t = computed(() =>
         ctaStart: '开始使用',
         ctaComponents: '查看组件',
         showcaseTitle: '场景案例',
-        showcaseHint: '真实组件组合 · 可交互 · 中性预览卡片',
+        showcaseKicker: '真实组件组合 · 可交互 · 磨砂悬浮卡',
+        showcaseHint: 'AI 对话推理 / Prompt 编排 / 图像生成、核心表单与数据、媒体与交互',
         layoutTitle: '中后台布局 · 真壳案例',
         layoutHint: '选一个形态 —— 下面就是 @snui/admin-layout 的活体壳。',
         chartsTitle: '回答每种问题的图表',
@@ -68,6 +78,45 @@ const router = useRouter();
 /** Hero 端切换：Web / Uni。决定双 CTA 的落点（uni 面向移动端文档）。 */
 type HomeEnd = 'web' | 'uni';
 const activeEnd = ref<HomeEnd>('web');
+/**
+ * 场景案例筛选 —— 4 个胶囊（全部 / AI 原生 / 核心表单与数据 / 媒体与交互）。
+ * 只过滤不重排：卡头编号由注册表派生（home-cases.ts `caseIndexLabels`），
+ * 因此切换筛选时每张卡的编号保持稳定。
+ */
+const activeCaseFilter = ref<HomeCaseFilter>('all');
+
+/** 各分组的卡数（胶囊角标）。 */
+const caseGroupCounts = computed(() => {
+  const counts = { all: homeCases.length } as Record<HomeCaseFilter, number>;
+  for (const g of HOME_CASE_GROUPS) {
+    counts[g] = homeCases.filter((c) => c.group === g).length;
+  }
+  return counts;
+});
+
+/** 当前筛选下渲染的卡。 */
+const visibleCases = computed(() =>
+  activeCaseFilter.value === 'all'
+    ? homeCases
+    : homeCases.filter((c) => c.group === activeCaseFilter.value),
+);
+
+/** 胶囊清单（文案双语；角标取分组卡数）。 */
+const caseFilters = computed((): { key: HomeCaseFilter; label: string }[] =>
+  isEn.value
+    ? [
+        { key: 'all', label: 'All scenarios' },
+        { key: 'ai', label: 'AI-native' },
+        { key: 'core', label: 'Forms & data' },
+        { key: 'media', label: 'Media & interaction' },
+      ]
+    : [
+        { key: 'all', label: '全部场景' },
+        { key: 'ai', label: 'AI 原生场景' },
+        { key: 'core', label: '核心表单与数据' },
+        { key: 'media', label: '媒体与交互' },
+      ],
+);
 
 /** 站点语言前缀：en locale 的文档在 /en/** 下。 */
 const localePrefix = computed(() => (isEn.value ? '/en' : ''));
@@ -240,26 +289,58 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
         <!-- ─────────── 场景案例：一面响应式瀑布流 ─────────── -->
         <section class="sn-home__section" aria-labelledby="sn-home-showcase-title">
           <header class="sn-home__section-head">
+            <span class="sn-home__kicker">
+              <span class="sn-home__kicker-dot" aria-hidden="true" />
+              {{ t.showcaseKicker }}
+            </span>
             <h2 id="sn-home-showcase-title" class="sn-home__section-title">
               {{ t.showcaseTitle }}
             </h2>
             <p class="sn-home__section-hint">{{ t.showcaseHint }}</p>
+
+            <!-- 筛选胶囊（仅 Web 端；uni 模板是另一套注册表，不做筛选） -->
+            <div
+              v-if="activeEnd === 'web'"
+              class="sn-home__filters"
+              role="tablist"
+              :aria-label="t.showcaseTitle"
+            >
+              <button
+                v-for="f in caseFilters"
+                :key="f.key"
+                type="button"
+                role="tab"
+                class="sn-home__filter"
+                :class="{ 'sn-home__filter--active': activeCaseFilter === f.key }"
+                :aria-selected="activeCaseFilter === f.key"
+                @click="activeCaseFilter = f.key"
+              >
+                <span>{{ f.label }}</span>
+                <span class="sn-home__filter-count">{{ caseGroupCounts[f.key] }}</span>
+              </button>
+            </div>
           </header>
 
-          <!-- Web 端：中性预览卡场景瀑布流 -->
+          <!-- Web 端：磨砂悬浮案例卡 —— 3 列平衡瀑布流 -->
           <SnWaterfall
             v-if="activeEnd === 'web'"
             :min-column-width="340"
-            :columns="4"
-            :column-gap="16"
-            :row-gap="16"
+            :columns="3"
+            :column-gap="22"
+            :row-gap="22"
           >
             <SnHomeCaseCard
-              v-for="c in homeCases"
+              v-for="c in visibleCases"
               :key="c.id"
               :size="c.size"
               :title="caseTextOf(c.id, homeLocale).title"
               :desc="caseTextOf(c.id, homeLocale).desc"
+              :badge="c.badge"
+              :index="caseIndexLabels[c.id]"
+              :accent="c.accent"
+              :api="c.api"
+              :status="c.status"
+              :featured="c.group === 'ai'"
             >
               <SnHomeCaseDemo :id="c.id as HomeCaseId" />
             </SnHomeCaseCard>
@@ -598,6 +679,126 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
 }
 .sn-home--dark .sn-home__section-hint {
   color: rgb(242 245 251 / 0.62);
+}
+/* ─── 场景案例：眉标（kicker）+ 筛选胶囊 ─── */
+.sn-home__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  margin-bottom: 6px;
+  border: 1px solid rgb(37 99 235 / 0.14);
+  border-radius: 999px;
+  background: rgb(37 99 235 / 0.07);
+  font-size: 12px;
+  font-weight: 600;
+  color: #1d4ed8;
+}
+.sn-home__kicker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
+  animation: sn-home-pulse 2.4s ease-in-out infinite;
+}
+@keyframes sn-home-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sn-home__kicker-dot {
+    animation: none;
+  }
+}
+.sn-home--dark .sn-home__kicker {
+  border-color: rgb(147 197 253 / 0.22);
+  background: rgb(147 197 253 / 0.1);
+  color: #bfdbfe;
+}
+.sn-home__filters {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px;
+  margin-top: 14px;
+  border: 1px solid rgb(255 255 255 / 0.9);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.6);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 2px 8px -1px rgb(15 23 42 / 0.04),
+    inset 0 1px 1px 0 rgb(255 255 255 / 0.9);
+}
+.sn-home__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgb(16 24 40 / 0.66);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+.sn-home__filter:hover {
+  color: #101828;
+  background: rgb(255 255 255 / 0.7);
+}
+.sn-home__filter--active {
+  font-weight: 700;
+  color: #101828;
+  background: #fff;
+  box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.18);
+}
+.sn-home__filter-count {
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgb(16 24 40 / 0.55);
+  background: rgb(16 24 40 / 0.06);
+}
+.sn-home__filter--active .sn-home__filter-count {
+  color: #1d4ed8;
+  background: rgb(37 99 235 / 0.12);
+}
+.sn-home--dark .sn-home__filters {
+  border-color: rgb(255 255 255 / 0.08);
+  background: rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 1px 1px 0 rgb(255 255 255 / 0.06);
+}
+.sn-home--dark .sn-home__filter {
+  color: rgb(242 245 251 / 0.66);
+}
+.sn-home--dark .sn-home__filter:hover {
+  color: #f2f5fb;
+  background: rgb(255 255 255 / 0.07);
+}
+.sn-home--dark .sn-home__filter--active {
+  color: #f2f5fb;
+  background: rgb(255 255 255 / 0.12);
+}
+.sn-home--dark .sn-home__filter-count {
+  color: rgb(242 245 251 / 0.6);
+  background: rgb(255 255 255 / 0.1);
+}
+.sn-home--dark .sn-home__filter--active .sn-home__filter-count {
+  color: #bfdbfe;
+  background: rgb(147 197 253 / 0.16);
 }
 
 
