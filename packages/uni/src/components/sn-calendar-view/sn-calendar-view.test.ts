@@ -363,7 +363,9 @@ describe('sn-calendar-view', () => {
       // June 1st 2024 is a Saturday; a Monday-first grid pads 5 fillers.
       const w = mountView({ firstDayOfWeek: 1 });
       const cells = w.findAll('.sn-calendar-view__day');
-      const firstReal = cells.findIndex((cell) => !cell.classes().includes('sn-calendar-view__day--filler'));
+      const firstReal = cells.findIndex(
+        (cell) => !cell.classes().includes('sn-calendar-view__day--filler'),
+      );
       expect(firstReal).toBe(5);
       expect(cells[firstReal]?.text()).toBe('1');
     });

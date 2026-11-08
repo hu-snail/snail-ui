@@ -143,16 +143,12 @@ describe('sn-empty', () => {
   it('sizes the registry icon through iconSize', () => {
     registerSnIcons({ home: Home });
     const wrapper = mount(SnEmpty, { props: { icon: 'home', iconSize: '120px' } });
-    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain(
-      'width: 120px',
-    );
+    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain('width: 120px');
   });
 
   it('defaults the glyph size to 96px', () => {
     registerSnIcons({ home: Home });
     const wrapper = mount(SnEmpty, { props: { icon: 'home' } });
-    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain(
-      'width: 96px',
-    );
+    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain('width: 96px');
   });
 });

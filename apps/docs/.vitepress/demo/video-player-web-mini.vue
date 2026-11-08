@@ -18,7 +18,10 @@ const mini = ref<boolean | undefined>(undefined);
 <template>
   <div class="demo-wrap">
     <p class="demo-hint">
-      ↓ 播放下方视频后向下滚动：播放器离开视口时自动缩为右下角小窗（可拖拽、可关闭），滚回来自动还原。也可以用控制条的小窗按钮手动切换（当前：<code>{{ mini === undefined ? '非受控' : mini ? '小窗' : '正常' }}</code>）。
+      ↓
+      播放下方视频后向下滚动：播放器离开视口时自动缩为右下角小窗（可拖拽、可关闭），滚回来自动还原。也可以用控制条的小窗按钮手动切换（当前：<code
+        >{{ mini === undefined ? '非受控' : mini ? '小窗' : '正常' }}</code
+      >）。
     </p>
 
     <div class="demo-spacer">

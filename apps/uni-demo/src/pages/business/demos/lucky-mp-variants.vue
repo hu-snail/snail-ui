@@ -97,7 +97,9 @@ onBeforeUnmount(() => {
         </view>
       </template>
     </SnLucky>
-    <text class="sn-demo__meta">点击各自中间按钮起转，1s 后随机落定；周长格子数 = 2(rows+cols) - 4</text>
+    <text class="sn-demo__meta"
+      >点击各自中间按钮起转，1s 后随机落定；周长格子数 = 2(rows+cols) - 4</text
+    >
   </view>
 </template>
 

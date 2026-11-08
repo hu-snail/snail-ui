@@ -53,7 +53,12 @@ function quickSend(text: string): void {
     />
 
     <div class="demo-controls">
-      <button type="button" class="demo-chip" :class="{ 'demo-chip--on': danmuVisible }" @click="danmuVisible = !danmuVisible">
+      <button
+        type="button"
+        class="demo-chip"
+        :class="{ 'demo-chip--on': danmuVisible }"
+        @click="danmuVisible = !danmuVisible"
+      >
         {{ danmuVisible ? '弹幕开' : '弹幕关' }}
       </button>
       <button type="button" class="demo-chip" @click="danmuSpeed = danmuSpeed === 1 ? 1.6 : 1">
@@ -62,7 +67,9 @@ function quickSend(text: string): void {
       <button type="button" class="demo-chip" @click="danmuOpacity = danmuOpacity === 1 ? 0.5 : 1">
         透明度 {{ danmuOpacity }}
       </button>
-      <button type="button" class="demo-chip" @click="quickSend('我从中控台发的')">代发一条蓝色弹幕</button>
+      <button type="button" class="demo-chip" @click="quickSend('我从中控台发的')">
+        代发一条蓝色弹幕
+      </button>
       <span class="demo-hint">已发送 {{ sentCount }} 条（含输入框）</span>
     </div>
   </div>

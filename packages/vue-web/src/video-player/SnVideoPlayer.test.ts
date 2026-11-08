@@ -141,13 +141,27 @@ describe('SnVideoPlayer', () => {
 
       // Pointer at 30% of the (stubbed) track → seek(30).
       track.element.getBoundingClientRect = () =>
-        ({ left: 0, width: 200, top: 0, height: 14, right: 200, bottom: 14, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect;
+        ({
+          left: 0,
+          width: 200,
+          top: 0,
+          height: 14,
+          right: 200,
+          bottom: 14,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        }) as DOMRect;
       await track.trigger('pointerdown', { clientX: 60, pointerId: 1 });
       expect(video.currentTime).toBe(30);
       window.dispatchEvent(new PointerEvent('pointerup'));
 
       // Keyboard: ArrowRight seeks +5s from current.
-      Object.defineProperty(video, 'currentTime', { configurable: true, value: 30, writable: true });
+      Object.defineProperty(video, 'currentTime', {
+        configurable: true,
+        value: 30,
+        writable: true,
+      });
       await video.dispatchEvent(new Event('timeupdate'));
       await track.trigger('keydown', { key: 'ArrowRight' });
       expect(video.currentTime).toBe(35);
@@ -231,7 +245,13 @@ describe('SnVideoPlayer', () => {
       });
       expect(w.find('.sn-video-player__danmaku').exists()).toBe(true);
 
-      const toggle = w.findAll('.sn-video-player__button').find((b) => b.attributes('aria-pressed') !== undefined && b.attributes('aria-label')?.includes('弹幕'));
+      const toggle = w
+        .findAll('.sn-video-player__button')
+        .find(
+          (b) =>
+            b.attributes('aria-pressed') !== undefined &&
+            b.attributes('aria-label')?.includes('弹幕'),
+        );
       expect(toggle).toBeDefined();
       expect(toggle!.attributes('aria-pressed')).toBe('true');
       await toggle!.trigger('click');
@@ -248,7 +268,11 @@ describe('SnVideoPlayer', () => {
     });
 
     it('hides the input for live media and honours danmu-send=false', async () => {
-      const wLive = await mountPlayer({ src: '/live.m3u8', live: true, danmus: [{ text: 'x', time: 0 }] });
+      const wLive = await mountPlayer({
+        src: '/live.m3u8',
+        live: true,
+        danmus: [{ text: 'x', time: 0 }],
+      });
       expect(wLive.find('.sn-video-player__danmu-input').exists()).toBe(false);
       wLive.unmount();
       const wNoSend = await mountPlayer({ src: '/clip.mp4', danmuSend: false });
@@ -533,7 +557,11 @@ describe('SnVideoPlayer', () => {
       // flow so seek offsets land where a real browser would put them.
       await videoEl(w).dispatchEvent(new Event('timeupdate'));
 
-      const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+      const spaceEvent = new KeyboardEvent('keydown', {
+        key: ' ',
+        bubbles: true,
+        cancelable: true,
+      });
       root(w).element.dispatchEvent(spaceEvent);
       expect(spaceEvent.defaultPrevented).toBe(true);
 

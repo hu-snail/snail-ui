@@ -887,7 +887,10 @@ describe('sn-form (extended: events, rules matrix, message gating)', () => {
   });
 
   it('lets the item override the label position', () => {
-    const { wrapper } = makeHost({ labelPosition: 'top' }, { prop: 'email', labelPosition: 'left' });
+    const { wrapper } = makeHost(
+      { labelPosition: 'top' },
+      { prop: 'email', labelPosition: 'left' },
+    );
     expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--left');
   });
 
@@ -944,9 +947,7 @@ describe('sn-form (extended: events, rules matrix, message gating)', () => {
             },
             {
               default: () => [
-                showEmail.value
-                  ? h(SnFormItem, { prop: 'email', label: 'Email' })
-                  : null,
+                showEmail.value ? h(SnFormItem, { prop: 'email', label: 'Email' }) : null,
                 h(SnFormItem, { prop: 'password', label: 'Password' }),
               ],
             },
@@ -1001,7 +1002,14 @@ describe('sn-form (extended: events, rules matrix, message gating)', () => {
     const Host = defineComponent({
       setup() {
         return () =>
-          h(SnForm, { model }, { default: () => h(SnFormItem, { prop: 'email', label: 'Prop' }, { label: () => 'Slotted' }) });
+          h(
+            SnForm,
+            { model },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email', label: 'Prop' }, { label: () => 'Slotted' }),
+            },
+          );
       },
     });
     const wrapper = mount(Host);
@@ -1035,7 +1043,11 @@ describe('sn-form (lifecycle and defensive paths)', () => {
     const Host = defineComponent({
       setup() {
         return () =>
-          h(SnForm, { model }, { default: () => h(SnFormItem, { prop: 'profile', label: 'Profile' }) });
+          h(
+            SnForm,
+            { model },
+            { default: () => h(SnFormItem, { prop: 'profile', label: 'Profile' }) },
+          );
       },
     });
     const wrapper = mount(Host);

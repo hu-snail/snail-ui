@@ -140,8 +140,8 @@ describe('sn-loadmore', () => {
   });
 
   it('tags the root for the docs / AI component map', () => {
-    expect(mount(SnLoadmore, { props: { state: 'finished' } }).attributes('data-snui-component')).toBe(
-      'loadmore',
-    );
+    expect(
+      mount(SnLoadmore, { props: { state: 'finished' } }).attributes('data-snui-component'),
+    ).toBe('loadmore');
   });
 });

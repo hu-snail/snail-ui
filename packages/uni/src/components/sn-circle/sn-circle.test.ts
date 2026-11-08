@@ -159,15 +159,21 @@ describe('sn-circle', () => {
   it('clamps a NaN value to 0', () => {
     const wrapper = mount(SnCircle, { props: { modelValue: Number.NaN } });
     expect(wrapper.attributes('aria-valuenow')).toBe('0');
-    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 0deg');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain(
+      '--sn-circle-sweep: 0deg',
+    );
   });
 
   it('updates the sweep reactively when modelValue changes', async () => {
     const wrapper = mount(SnCircle, { props: { modelValue: 0 } });
-    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 0deg');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain(
+      '--sn-circle-sweep: 0deg',
+    );
     await wrapper.setProps({ modelValue: 50 });
     expect(wrapper.attributes('aria-valuenow')).toBe('50');
-    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 180deg');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain(
+      '--sn-circle-sweep: 180deg',
+    );
     expect(wrapper.find('.sn-circle__text').text()).toBe('50%');
   });
 

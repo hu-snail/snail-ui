@@ -277,11 +277,8 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 
 /** Placeholder styling is a native attribute — App has no `::placeholder`
  * (§116.2). The default keeps the token color the CSS rule used to provide. */
-const DEFAULT_PLACEHOLDER_STYLE =
-  'color: var(--sn-mp-color-input-placeholder); opacity: 1';
-const placeholderStyleAttr = computed(
-  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
-);
+const DEFAULT_PLACEHOLDER_STYLE = 'color: var(--sn-mp-color-input-placeholder); opacity: 1';
+const placeholderStyleAttr = computed(() => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE);
 
 /**
  * uni-app MP-only native textarea attributes.（MP 端模板不支持 v-bind="obj"

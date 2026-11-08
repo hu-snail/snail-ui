@@ -18,7 +18,9 @@ function onRendered(encoded: SnBarcodeEncoded): void {
     <view class="barcode-card">
       <SnBarcode text="690123456789" :module-width="2" @rendered="onRendered" />
     </view>
-    <text class="sn-demo__meta">12-digit input, checksum appended automatically: {{ displayText }}</text>
+    <text class="sn-demo__meta"
+      >12-digit input, checksum appended automatically: {{ displayText }}</text
+    >
   </view>
 </template>
 

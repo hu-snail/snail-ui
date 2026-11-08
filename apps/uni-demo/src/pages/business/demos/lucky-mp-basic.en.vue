@@ -42,7 +42,9 @@ onBeforeUnmount(() => {
   <view class="sn-demo sn-demo--column">
     <SnLucky ref="luckyRef" :prizes="prizes" :speed="60" @start="onStart" @end="onEnd" />
     <text class="sn-demo__meta">{{ result }}</text>
-    <text class="sn-demo__meta">After start the host requests a result, then calls stop(index)</text>
+    <text class="sn-demo__meta"
+      >After start the host requests a result, then calls stop(index)</text
+    >
   </view>
 </template>
 

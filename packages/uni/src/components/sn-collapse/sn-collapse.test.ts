@@ -49,7 +49,9 @@ describe('sn-collapse', () => {
     });
 
     it('keeps disabled panel headers inert', () => {
-      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', disabled: true }]);
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', disabled: true },
+      ]);
       expect(wrapper.find('.sn-collapse-item__header').attributes('hover-class')).toBe('none');
     });
 
@@ -350,12 +352,16 @@ describe('sn-collapse', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnCollapse, { modelValue: [] }, {
-              default: () => [
-                h(SnCollapseItem, { name: 'a', title: 'A', disabled: disabled.value }),
-                h(SnCollapseItem, { name: 'b', title: 'B' }),
-              ],
-            });
+            h(
+              SnCollapse,
+              { modelValue: [] },
+              {
+                default: () => [
+                  h(SnCollapseItem, { name: 'a', title: 'A', disabled: disabled.value }),
+                  h(SnCollapseItem, { name: 'b', title: 'B' }),
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -364,7 +370,9 @@ describe('sn-collapse', () => {
       await wrapper.vm.$nextTick();
       collapseVm(wrapper).toggleAll({ expanded: true, skipDisabled: true });
       await wrapper.vm.$nextTick();
-      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([['b']]);
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['b'],
+      ]);
     });
 
     it('forgets unmounted panels', async () => {
@@ -372,12 +380,16 @@ describe('sn-collapse', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnCollapse, { modelValue: [] }, {
-              default: () => [
-                h(SnCollapseItem, { name: 'a', title: 'A' }),
-                show.value ? h(SnCollapseItem, { name: 'b', title: 'B' }) : null,
-              ],
-            });
+            h(
+              SnCollapse,
+              { modelValue: [] },
+              {
+                default: () => [
+                  h(SnCollapseItem, { name: 'a', title: 'A' }),
+                  show.value ? h(SnCollapseItem, { name: 'b', title: 'B' }) : null,
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -386,7 +398,9 @@ describe('sn-collapse', () => {
       await wrapper.vm.$nextTick();
       collapseVm(wrapper).toggleAll({ expanded: true });
       await wrapper.vm.$nextTick();
-      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([['a']]);
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['a'],
+      ]);
     });
 
     it('flips the view-more flag in view-more mode', async () => {
@@ -394,7 +408,9 @@ describe('sn-collapse', () => {
       await wrapper.vm.$nextTick();
       collapseVm(wrapper).toggleAll({ expanded: true });
       await wrapper.vm.$nextTick();
-      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([true]);
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        true,
+      ]);
       collapseVm(wrapper).toggleAll();
       await wrapper.vm.$nextTick();
       expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
@@ -443,13 +459,8 @@ describe('sn-collapse', () => {
                     SnCollapseItem,
                     { name: 'a', title: 'A', disabled: true },
                     {
-                      title: ({
-                        expanded,
-                        disabled,
-                      }: {
-                        expanded: boolean;
-                        disabled: boolean;
-                      }) => h('text', { class: 'custom-title' }, `${expanded}-${disabled}`),
+                      title: ({ expanded, disabled }: { expanded: boolean; disabled: boolean }) =>
+                        h('text', { class: 'custom-title' }, `${expanded}-${disabled}`),
                     },
                   ),
                 ],
@@ -487,9 +498,7 @@ describe('sn-collapse', () => {
       // happy-dom's getComputedStyle does not feed VTU's isVisible() for the
       // v-show contract here, so assert the inline style v-show writes.
       const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
-      expect(closed.find('.sn-collapse-item__body').attributes('style')).toContain(
-        'display: none',
-      );
+      expect(closed.find('.sn-collapse-item__body').attributes('style')).toContain('display: none');
 
       const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
       expect(open.find('.sn-collapse-item__body').attributes('style') ?? '').not.toContain(
@@ -517,9 +526,7 @@ describe('sn-collapse', () => {
 
     it('drops the item border when border is off', () => {
       const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', border: false }]);
-      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
-        'sn-collapse-item--border',
-      );
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain('sn-collapse-item--border');
     });
 
     it('forwards customBodyClass / customBodyStyle on the body', () => {
@@ -896,12 +903,16 @@ describe('sn-collapse model sync and disabled registry cleanup', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnCollapse, { modelValue: [], border: true }, {
-            default: () =>
-              items.value.map((item) =>
-                h(SnCollapseItem, item, { default: () => `body ${item.name}` }),
-              ),
-          });
+          h(
+            SnCollapse,
+            { modelValue: [], border: true },
+            {
+              default: () =>
+                items.value.map((item) =>
+                  h(SnCollapseItem, item, { default: () => `body ${item.name}` }),
+                ),
+            },
+          );
       },
     });
     const wrapper = mount(Harness);

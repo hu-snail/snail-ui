@@ -24,10 +24,7 @@ const themeRef = ref<InstanceType<typeof SnDialer> | null>(null);
 const overrideRef = ref<InstanceType<typeof SnDialer> | null>(null);
 const quickRef = ref<InstanceType<typeof SnDialer> | null>(null);
 
-function spinToRandom(
-  dialer: InstanceType<typeof SnDialer> | null,
-  count: number,
-): void {
+function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: number): void {
   dialer?.run(Math.floor(Math.random() * count));
 }
 </script>

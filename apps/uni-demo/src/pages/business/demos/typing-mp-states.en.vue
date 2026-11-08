@@ -13,11 +13,17 @@ interface ChatMessage {
   text: string;
 }
 
-const replies = ['Got it, on it now.', 'That plan works, go ahead.', 'Sure, will sync with you later.'];
+const replies = [
+  'Got it, on it now.',
+  'That plan works, go ahead.',
+  'Sure, will sync with you later.',
+];
 let replyIndex = 0;
 let nextId = 1;
 
-const messages = ref<ChatMessage[]>([{ id: nextId++, from: 'peer', text: 'Hi, take a look at the new plan?' }]);
+const messages = ref<ChatMessage[]>([
+  { id: nextId++, from: 'peer', text: 'Hi, take a look at the new plan?' },
+]);
 const peerTyping = ref(false);
 const replyTimer: ReturnType<typeof setTimeout>[] = [];
 
@@ -27,7 +33,11 @@ function send(): void {
   peerTyping.value = true;
   replyTimer.push(
     setTimeout(() => {
-      messages.value.push({ id: nextId++, from: 'peer', text: replies[replyIndex % replies.length] ?? '' });
+      messages.value.push({
+        id: nextId++,
+        from: 'peer',
+        text: replies[replyIndex % replies.length] ?? '',
+      });
       replyIndex += 1;
       peerTyping.value = false;
     }, 1800),
@@ -62,7 +72,9 @@ onBeforeUnmount(() => {
         <text class="chat-actions__btn-text">Send message</text>
       </view>
     </view>
-    <text class="sn-demo__meta">Reply arrives after 1.8s; the typing bubble holds the slot until then</text>
+    <text class="sn-demo__meta"
+      >Reply arrives after 1.8s; the typing bubble holds the slot until then</text
+    >
   </view>
 </template>
 

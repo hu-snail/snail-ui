@@ -69,7 +69,8 @@ function onEnd(index: number): void {
       </view>
     </view>
     <text class="sn-demo__meta">
-      State: {{ isPlaying ? 'spinning' : 'idle' }} — stop walks one extra lap to slow down; it is a no-op while idle
+      State: {{ isPlaying ? 'spinning' : 'idle' }} — stop walks one extra lap to slow down; it is a
+      no-op while idle
     </text>
 
     <view class="lucky-log">

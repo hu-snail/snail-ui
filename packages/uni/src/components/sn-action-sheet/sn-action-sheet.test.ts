@@ -213,14 +213,15 @@ describe('sn-action-sheet', () => {
   });
 
   it('reports the flat grid coordinates of a tapped panel cell', async () => {
-    const panels = [{ title: '微信', name: 'wechat' }, { title: '朋友圈', name: 'moments' }];
+    const panels = [
+      { title: '微信', name: 'wechat' },
+      { title: '朋友圈', name: 'moments' },
+    ];
     const wrapper = mount(SnActionSheet, {
       props: { modelValue: true, panels, closeOnClickAction: false },
     });
     await wrapper.findAll('.sn-action-sheet__panel')[1]!.trigger('tap');
-    expect(wrapper.emitted('select')?.[0]).toEqual([
-      { item: panels[1], rowIndex: 0, colIndex: 1 },
-    ]);
+    expect(wrapper.emitted('select')?.[0]).toEqual([{ item: panels[1], rowIndex: 0, colIndex: 1 }]);
     // closeOnClickAction: false — the sheet stays open.
     expect(wrapper.emitted('update:modelValue')).toBeUndefined();
   });
@@ -290,9 +291,7 @@ describe('sn-action-sheet', () => {
     const panels = [{ title: '微信', name: 'wechat' }];
     const wrapper = mount(SnActionSheet, { props: { modelValue: true, panels } });
     await wrapper.find('.sn-action-sheet__panel').trigger('tap');
-    expect(wrapper.emitted('select')?.[0]).toEqual([
-      { item: panels[0], rowIndex: 0, colIndex: 0 },
-    ]);
+    expect(wrapper.emitted('select')?.[0]).toEqual([{ item: panels[0], rowIndex: 0, colIndex: 0 }]);
     expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
   });
 

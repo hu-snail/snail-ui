@@ -47,7 +47,9 @@ import SnLiquid from '@snui/uni-src/components/sn-liquid/sn-liquid.vue';
         inner-color="var(--sn-mp-color-feedback-danger-soft)"
       />
     </view>
-    <text class="sn-demo__meta">Wave and inner colors come in pairs (soft tint above the water)</text>
+    <text class="sn-demo__meta"
+      >Wave and inner colors come in pairs (soft tint above the water)</text
+    >
   </view>
 </template>
 

@@ -20,5 +20,6 @@ for (const fb of fileBlocks) {
     else missing.push({ file, val });
   }
 }
-for (const m of missing) console.log('MISSING in', m.file, ':', JSON.stringify(m.val.slice(0, 110)));
+for (const m of missing)
+  console.log('MISSING in', m.file, ':', JSON.stringify(m.val.slice(0, 110)));
 console.log('anchors ok:', ok, '| missing:', missing.length);

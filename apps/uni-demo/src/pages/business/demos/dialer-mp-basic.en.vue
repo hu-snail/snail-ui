@@ -33,15 +33,12 @@ function onDone(index: number): void {
 <template>
   <view class="sn-demo sn-demo--column">
     <view class="dialer-stage">
-      <SnDialer
-        ref="dialerRef"
-        :prize-list="prizeList"
-        @click="onClick"
-        @done="onDone"
-      />
+      <SnDialer ref="dialerRef" :prize-list="prizeList" @click="onClick" @done="onDone" />
     </view>
     <text class="sn-demo__meta">{{ result }}</text>
-    <text class="sn-demo__meta">The host owns the outcome: request it on click, then call run(index)</text>
+    <text class="sn-demo__meta"
+      >The host owns the outcome: request it on click, then call run(index)</text
+    >
   </view>
 </template>
 

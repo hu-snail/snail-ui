@@ -49,12 +49,7 @@ function runToFirst(): void {
 <template>
   <view class="sn-demo sn-demo--column">
     <view class="dialer-stage">
-      <SnDialer
-        ref="dialerRef"
-        :prize-list="prizeList"
-        @click="onClick"
-        @done="onDone"
-      />
+      <SnDialer ref="dialerRef" :prize-list="prizeList" @click="onClick" @done="onDone" />
     </view>
     <text class="sn-demo__meta">Phase: {{ phase }} · {{ result }}</text>
     <view class="dialer-actions">

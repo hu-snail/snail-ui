@@ -233,7 +233,8 @@ const viewClass = computed(() => props.customViewClass);
           role="button"
           :aria-label="props.cancelButtonText"
           @tap="onCancel"
-          ><text>{{ props.cancelButtonText }}</text></view>
+          ><text>{{ props.cancelButtonText }}</text></view
+        >
         >
         <text v-if="props.title" class="sn-picker__title">{{ props.title }}</text>
         <view

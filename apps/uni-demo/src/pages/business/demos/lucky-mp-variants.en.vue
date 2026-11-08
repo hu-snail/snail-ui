@@ -98,7 +98,10 @@ onBeforeUnmount(() => {
         </view>
       </template>
     </SnLucky>
-    <text class="sn-demo__meta">Tap each center button to play; stops randomly after 1s. Perimeter cells = 2(rows+cols) - 4</text>
+    <text class="sn-demo__meta"
+      >Tap each center button to play; stops randomly after 1s. Perimeter cells = 2(rows+cols) -
+      4</text
+    >
   </view>
 </template>
 

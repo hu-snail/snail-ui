@@ -310,9 +310,7 @@ describe('sn-curtain', () => {
       'applies the %s close-position class',
       (position) => {
         const w = mount(SnCurtain, { props: { modelValue: true, closePosition: position } });
-        expect(w.find('.sn-curtain__close').classes()).toContain(
-          `sn-curtain__close--${position}`,
-        );
+        expect(w.find('.sn-curtain__close').classes()).toContain(`sn-curtain__close--${position}`);
       },
     );
 
@@ -377,7 +375,9 @@ describe('sn-curtain', () => {
   it('still navigates when closeOnClick is off', async () => {
     const navigateTo = vi.fn();
     installUni(navigateTo);
-    const w = mount(SnCurtain, { props: { modelValue: true, to: '/pages/campaign', closeOnClick: false } });
+    const w = mount(SnCurtain, {
+      props: { modelValue: true, to: '/pages/campaign', closeOnClick: false },
+    });
     await w.find('.sn-curtain__image').trigger('tap');
     expect(navigateTo).toHaveBeenCalledWith({ url: '/pages/campaign' });
     expect(w.emitted('update:modelValue')).toBeUndefined();
