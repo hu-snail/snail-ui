@@ -38,6 +38,31 @@
  *     build renders no prev / next peek slides, so nothing consumes them yet.
  *   - `easing-function` is forwarded to the native swiper, which only honours
  *     its own fixed ease set — pass `default` unless a target documents support.
+ *
+ * ## Additive: coverflow mode (`coverflow`)
+ *
+ * `coverflow` is an AUI-additive capability (no counterpart in wd-swiper;
+ * registered in AGENTS.md §112.3a): the active slide stays full-size while its
+ * neighbours peek out at both edges scaled down (App Store style). It rides on
+ * the native swiper's `previous-margin` / `next-margin` for the peek width —
+ * when `coverflow` is on and both margins are unset, they default to 80rpx
+ * each; pass `previous-margin` / `next-margin` to control the side width
+ * explicitly. Non-active slides get an inline `scale()` derived from their
+ * offset to the active index (`coverflow-scale`, default 0.85, clamped so far
+ * slides stop shrinking). Presentation only: paging, loop and autoplay remain
+ * the native swiper's; with `coverflow` off the DOM is exactly as before the
+ * prop existed.
+ *
+ * ## Additive: `scale` indicator + functional controls
+ *
+ * `indicator.type: 'scale'` is an AUI-additive dot style: dot size grades with
+ * distance from the active page (small → largest at active → small). The
+ * `show-controls` arrows are tappable and step `current` (wrapping under
+ * `loop`, clamping otherwise); they emit `update:current` and the native
+ * swiper mirrors the move back through its own `change` event — the controls
+ * themselves do not emit `change` directly.
+ *
+ *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -45,10 +70,12 @@
  *   - 轮播内容为复杂卡片 — 用 `<swiper>` 原生元素自建
  */
 
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import SnImg from '../sn-img/sn-img.vue';
 
 defineOptions({ name: 'SnSwiper' });
+
+/* ── Types ────────────────────────────────────────────────────────────────── */
 
 /** Scroll axis. Mirrors `wd-swiper` `direction`. */
 type SwiperDirection = 'horizontal' | 'vertical';
@@ -61,7 +88,7 @@ type SwiperIndicatorPosition =
 type SwiperImageMode = 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix';
 
 /** Indicator style. Mirrors `wd-swiper` `indicator.type`. */
-type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction';
+type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction' | 'scale';
 
 /** One slide object. Mirrors the `SwiperItem` row group of the wd table. */
 export interface SnSwiperItem {
@@ -85,6 +112,8 @@ export interface SnSwiperIndicator {
   showControls?: boolean;
 }
 
+/* ── Props ────────────────────────────────────────────────────────────────── */
+
 const props = withDefaults(
   defineProps<{
     /** Autoplay. */
@@ -107,6 +136,13 @@ const props = withDefaults(
     list?: Array<string | SnSwiperItem>;
     /** Loop the slides. */
     loop?: boolean;
+    /**
+     * Coverflow 模式（AUI-additive）：中间全尺寸、两侧露出缩小。
+     * 露出宽度由 previous-margin / next-margin 控制（两者均未设置时默认各 80rpx）。
+     */
+    coverflow?: boolean;
+    /** Coverflow 模式非激活卡片的缩放比例（默认 0.85）。 */
+    coverflowScale?: number;
     /** Loop video items (declared for parity; video degrades to its poster). */
     videoLoop?: boolean;
     /** Mute video items (declared for parity; video degrades to its poster). */
@@ -179,6 +215,8 @@ const props = withDefaults(
     interval: 5000,
     list: () => [],
     loop: true,
+    coverflow: false,
+    coverflowScale: 0.85,
     videoLoop: false,
     muted: false,
     autoplayVideo: false,
@@ -210,12 +248,16 @@ const props = withDefaults(
   },
 );
 
+/* ── Emits ────────────────────────────────────────────────────────────────── */
+
 const emit = defineEmits<{
   (e: 'click', payload: { index: number; item: string | SnSwiperItem }): void;
   (e: 'change', payload: { current: number; source: string }): void;
   (e: 'animationfinish', payload: { current: number; source: string }): void;
   (e: 'update:current', value: number): void;
 }>();
+
+/* ── Normalisation ────────────────────────────────────────────────────────── */
 
 /** Resolve a numeric-or-string length (bare number = rpx). */
 function toLength(value: string | number | undefined, fallback?: number): string | undefined {
@@ -247,36 +289,41 @@ const slides = computed<NormalisedSlide[]>(() =>
   }),
 );
 
-/**
- * Non-undefined views of the props the template forwards into sn-img props or
- * reads arithmetically. `withDefaults` narrows at runtime, but a bare prop
- * identifier in the template still types as `T | undefined`.
- */
-const imageModeValue = computed(() => props.imageMode);
-const showMenuValue = computed(() => props.showMenuByLongpress);
-const imageClassValue = computed(() => props.customImageClass);
-const currentIndex = computed(() => props.current);
+/* ── Derived state ────────────────────────────────────────────────────────── */
 
 /*
- * Video / adjust-height parity props. Declared so a wd-swiper config type-
- * checks unchanged; forwarded to the native `<swiper>` where the platform
- * understands them (Alipay for the adjust-height pair, no vendor for the
- * video pair — video items degrade to their poster, see the file header).
+ * Lengths. `radius` is only emitted when the caller set one, so the theme
+ * radius survives; `height` falls back to the wd-swiper default of 192.
+ */
+const heightStyle = computed(() => toLength(props.height, 192));
+const radiusStyle = computed(() => toLength(props.radius));
+/*
+ * Margins. With `coverflow` on and both margins unset, default to 80rpx each
+ * so the neighbours peek out of the box; an explicit margin (either side)
+ * keeps the caller's value — that is the documented knob for the peek width.
+ */
+const coverflowDefaultsMargins = computed(
+  () => props.coverflow && !props.previousMargin && !props.nextMargin,
+);
+const previousMarginStyle = computed(() =>
+  coverflowDefaultsMargins.value ? '80rpx' : toLength(props.previousMargin, 0),
+);
+const nextMarginStyle = computed(() =>
+  coverflowDefaultsMargins.value ? '80rpx' : toLength(props.nextMargin, 0),
+);
+
+/*
+ * Video / adjust-height parity props (see the file header). Declared so a
+ * wd-swiper config type-checks unchanged; forwarded to the native `<swiper>`
+ * where the platform understands them (Alipay for the adjust-height pair, no
+ * vendor for the video pair — video items degrade to their poster). They are
+ * read straight off `props` in the template; only `adjustHeight` needs a view,
+ * because its `''` "off" state must drop the attribute rather than forward an
+ * empty one.
  */
 const adjustHeightValue = computed(() =>
   props.adjustHeight === '' ? undefined : props.adjustHeight,
 );
-const adjustVerticalHeightValue = computed(() => props.adjustVerticalHeight);
-const videoLoopValue = computed(() => props.videoLoop);
-const mutedValue = computed(() => props.muted);
-const autoplayVideoValue = computed(() => props.autoplayVideo);
-const stopPreviousVideoValue = computed(() => props.stopPreviousVideo);
-const stopAutoplayWhenVideoPlayValue = computed(() => props.stopAutoplayWhenVideoPlay);
-
-const heightStyle = computed(() => toLength(props.height, 192));
-const radiusStyle = computed(() => toLength(props.radius));
-const previousMarginStyle = computed(() => toLength(props.previousMargin, 0));
-const nextMarginStyle = computed(() => toLength(props.nextMargin, 0));
 
 /** Resolved indicator config. */
 const indicatorConfig = computed<SnSwiperIndicator>(() => {
@@ -297,11 +344,62 @@ const showsControls = computed(
   () => indicatorConfig.value.showControls === true && slides.value.length > 1,
 );
 
-const rootClass = computed(() => ['sn-swiper', `sn-swiper--${props.direction}`, props.customClass]);
+/*
+ * The native swiper snaps whole *windows* of `displayMultipleItems` slides, so
+ * the indicator counts pages, not slides: N slides shown M at a time give
+ * N-M+1 windows. `current` is the leftmost slide of a window, which doubles as
+ * the page index except for the last window, where it overshoots — clamping it
+ * keeps the trailing page reachable instead of lighting a dot that a trailing
+ * slide owns but no page ever activates.
+ */
+const pageCount = computed(() => Math.max(1, slides.value.length - props.displayMultipleItems + 1));
+
+/*
+ * Mirrored native position. `props.current` is the seed, but the swiper can
+ * move without a bound parent (uncontrolled usage — the demos swipe without
+ * `v-model:current`), and every presentation derived from the centre —
+ * card transforms, coverflow scaling, the indicator, the arrows — must
+ * track the REAL position, not a stale prop. Parent re-seeding via
+ * `current` syncs back through the watch below.
+ */
+/** Clamp an index into the current slide range. */
+function clampIndex(value: number): number {
+  const max = Math.max(slides.value.length - 1, 0);
+  return Math.min(Math.max(Math.trunc(value), 0), max);
+}
+
+const activeIndex = ref(clampIndex(props.current));
+
+watch(
+  () => props.current,
+  (value) => {
+    activeIndex.value = clampIndex(value);
+  },
+);
+
+const activePage = computed(() => Math.min(activeIndex.value, pageCount.value - 1));
+
+/** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
+const easingFunction = computed(() =>
+  props.easingFunction === 'default' ? undefined : props.easingFunction,
+);
+
+const rootClass = computed(() => [
+  'sn-swiper',
+  `sn-swiper--${props.direction}`,
+  props.coverflow ? 'sn-swiper--coverflow' : '',
+  props.customClass,
+]);
 
 const rootStyle = computed(() => {
   const parts = [`height: ${heightStyle.value}`];
   if (radiusStyle.value) parts.push(`border-radius: ${radiusStyle.value}`);
+  // Coverflow rounds each card, not the track — hand the caller's radius down
+  // to the slides through a custom property (custom properties survive the
+  // platforms' style parsing; raw rpx values in some positions do not).
+  if (props.coverflow && radiusStyle.value) {
+    parts.push(`--sn-swiper-coverflow-radius: ${radiusStyle.value}`);
+  }
   if (props.customStyle) parts.push(props.customStyle);
   return parts.join('; ');
 });
@@ -317,11 +415,6 @@ const swiperStyle = computed(() => {
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
-/** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
-const easingFunction = computed(() =>
-  props.easingFunction === 'default' ? undefined : props.easingFunction,
-);
-
 const indicatorClass = computed(() => [
   'sn-swiper__indicator',
   `sn-swiper__indicator--${indicatorType.value}`,
@@ -331,7 +424,100 @@ const indicatorClass = computed(() => [
 
 const textStyle = computed(() => (props.customTextStyle ? props.customTextStyle : undefined));
 
+/* ── Coverflow offset geometry ─────────────────────────────────────────────── */
+
+/**
+ * Wrap an offset into `[-floor(n/2), ceil(n/2)]` where `n` = slide count, i.e.
+ * the shortest way round a looping track. Without it a slide that is really one
+ * step "behind" the first slide of a loop would be counted as `n - 1` steps and
+ * shrink by a whole track's worth.
+ */
+function wrapCardOffset(offset: number, count: number): number {
+  if (count <= 1) return offset;
+  const min = -Math.floor(count / 2);
+  const max = Math.ceil(count / 2);
+  let wrapped = offset;
+  while (wrapped < min) wrapped += count;
+  while (wrapped > max) wrapped -= count;
+  return wrapped;
+}
+
+/**
+ * The slide the stack is centred on: the middle of the active window, clamped
+ * to the track. With `displayMultipleItems` > 1 the window is centred rather
+ * than left-aligned, so the cards fan out around it symmetrically.
+ */
+const cardCentre = computed(() => {
+  const lastIndex = Math.max(slides.value.length - 1, 0);
+  const centre = activeIndex.value + Math.floor((props.displayMultipleItems - 1) / 2);
+  return Math.min(Math.max(centre, 0), lastIndex);
+});
+
+/** Signed card offset of one slide from the centre (wrapped when `loop` is on). */
+function cardOffset(index: number): number {
+  const offset = index - cardCentre.value;
+  return props.loop ? wrapCardOffset(offset, slides.value.length) : offset;
+}
+
+/* ── Coverflow mode (AUI-additive; see the file header) ───────────────────── */
+
+/**
+ * Inline presentation for one coverflow slide. `undefined` when `coverflow`
+ * is off, so the default render keeps no transform and no extra class. The
+ * active slide (offset 0) carries no `scale()` term — it is the full-size
+ * card; neighbours shrink toward `coverflowScale` by their offset, clamped so
+ * far slides stop shrinking. The transition on `.sn-swiper--coverflow
+ * .sn-swiper__slide` animates the swap when `current` moves.
+ */
+function coverflowStyle(index: number): string | undefined {
+  if (!props.coverflow) return undefined;
+  const offset = Math.min(Math.abs(cardOffset(index)), 1);
+  const scale = 1 - offset * (1 - props.coverflowScale);
+  return `transform: scale(${scale});`;
+}
+
+/* ── `scale` indicator (AUI-additive; see the file header) ────────────────── */
+
+/** Largest dot size (active), in rpx. */
+const SCALE_DOT_MAX = 20;
+/** Size lost per step away from the active page, in rpx. */
+const SCALE_DOT_STEP = 6;
+/** Dot size floor, in rpx. */
+const SCALE_DOT_MIN = 8;
+
+/**
+ * Inline dot size for one page of the `scale` indicator: size grades with the
+ * distance from the active page (small → largest at active → small).
+ */
+function scaleDotStyle(index: number): string | undefined {
+  if (indicatorType.value !== 'scale') return undefined;
+  const distance = Math.abs(index - activePage.value);
+  const size = Math.max(SCALE_DOT_MAX - distance * SCALE_DOT_STEP, SCALE_DOT_MIN);
+  return `--sn-swiper-scale-dot-size: ${size}rpx;`;
+}
+
+/** Step one page back from the controls (wrap under `loop`, clamp otherwise). */
+function onPrevControlTap(): void {
+  const last = pageCount.value - 1;
+  const target = activePage.value === 0 && props.loop ? last : Math.max(activePage.value - 1, 0);
+  // Uncontrolled usage: the parent may not bind `update:current` back, so the
+  // mirror moves immediately — the native swiper follows via :current.
+  activeIndex.value = target;
+  emit('update:current', target);
+}
+
+/** Step one page forward from the controls (wrap under `loop`, clamp otherwise). */
+function onNextControlTap(): void {
+  const last = pageCount.value - 1;
+  const target = activePage.value === last && props.loop ? 0 : Math.min(activePage.value + 1, last);
+  activeIndex.value = target;
+  emit('update:current', target);
+}
+
+/* ── Handlers ─────────────────────────────────────────────────────────────── */
+
 function onSwiperChange(event: { detail: { current: number; source: string } }): void {
+  activeIndex.value = clampIndex(event.detail.current);
   emit('update:current', event.detail.current);
   emit('change', { current: event.detail.current, source: event.detail.source });
 }
@@ -351,23 +537,23 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
       class="sn-swiper__native"
       :style="swiperStyle"
       :autoplay="props.autoplay"
-      :current="currentIndex"
-      :vertical="direction === 'vertical'"
-      :display-multiple-items="displayMultipleItems"
-      :duration="duration"
+      :current="activeIndex"
+      :vertical="props.direction === 'vertical'"
+      :display-multiple-items="props.displayMultipleItems"
+      :duration="props.duration"
       :easing-function="easingFunction"
-      :interval="interval"
-      :circular="loop"
+      :interval="props.interval"
+      :circular="props.loop"
       :previous-margin="previousMarginStyle"
       :next-margin="nextMarginStyle"
-      :snap-to-edge="snapToEdge"
+      :snap-to-edge="props.snapToEdge"
       :adjust-height="adjustHeightValue"
-      :adjust-vertical-height="adjustVerticalHeightValue"
-      :video-loop="videoLoopValue"
-      :muted="mutedValue"
-      :autoplay-video="autoplayVideoValue"
-      :stop-previous-video="stopPreviousVideoValue"
-      :stop-autoplay-when-video-play="stopAutoplayWhenVideoPlayValue"
+      :adjust-vertical-height="props.adjustVerticalHeight"
+      :video-loop="props.videoLoop"
+      :muted="props.muted"
+      :autoplay-video="props.autoplayVideo"
+      :stop-previous-video="props.stopPreviousVideo"
+      :stop-autoplay-when-video-play="props.stopAutoplayWhenVideoPlay"
       @change="onSwiperChange"
       @animationfinish="onAnimationFinish"
     >
@@ -375,19 +561,23 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
         v-for="(slide, index) in slides"
         :key="index"
         class="sn-swiper__item"
-        :class="customItemClass"
+        :class="props.customItemClass"
       >
-        <view class="sn-swiper__slide" @tap="onSlideTap(slide, index)">
+        <view
+          class="sn-swiper__slide"
+          :style="coverflowStyle(index)"
+          @tap="onSlideTap(slide, index)"
+        >
           <SnImg
             :src="slide.src"
-            :mode="imageModeValue"
-            :show-menu-by-longpress="showMenuValue"
-            :custom-class="imageClassValue"
+            :mode="props.imageMode"
+            :show-menu-by-longpress="props.showMenuByLongpress"
+            :custom-class="props.customImageClass"
             width="100%"
             height="100%"
           />
           <view v-if="slide.text" class="sn-swiper__caption" :style="textStyle">
-            <text class="sn-swiper__caption-text" :class="customTextClass">
+            <text class="sn-swiper__caption-text" :class="props.customTextClass">
               {{ slide.text }}
             </text>
           </view>
@@ -396,30 +586,39 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
     </swiper>
 
     <view v-if="showsIndicator" :class="indicatorClass" aria-hidden="true">
+      <view
+        v-if="showsControls"
+        class="sn-swiper__control sn-swiper__control--prev"
+        @tap="onPrevControlTap"
+      >
+        <text class="sn-swiper__control-text">‹</text>
+      </view>
+
       <view v-if="indicatorType === 'fraction'" class="sn-swiper__fraction">
-        <text class="sn-swiper__fraction-text">{{ currentIndex + 1 }}/{{ slides.length }}</text>
+        <text class="sn-swiper__fraction-text">{{ activePage + 1 }}/{{ pageCount }}</text>
       </view>
 
       <view v-else class="sn-swiper__dots">
         <view
-          v-for="(_, index) in slides"
+          v-for="(_, index) in pageCount"
           :key="index"
           class="sn-swiper__dot"
           :class="{
-            'sn-swiper__dot--active': index === currentIndex,
+            'sn-swiper__dot--active': index === activePage,
             'sn-swiper__dot--bar': indicatorType === 'dots-bar',
+            'sn-swiper__dot--scale': indicatorType === 'scale',
           }"
+          :style="scaleDotStyle(index)"
         />
       </view>
 
-      <template v-if="showsControls">
-        <view class="sn-swiper__control sn-swiper__control--prev">
-          <text class="sn-swiper__control-text">‹</text>
-        </view>
-        <view class="sn-swiper__control sn-swiper__control--next">
-          <text class="sn-swiper__control-text">›</text>
-        </view>
-      </template>
+      <view
+        v-if="showsControls"
+        class="sn-swiper__control sn-swiper__control--next"
+        @tap="onNextControlTap"
+      >
+        <text class="sn-swiper__control-text">›</text>
+      </view>
     </view>
   </view>
 </template>
@@ -455,19 +654,49 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   overflow: hidden;
 }
 
+/* ── Coverflow mode (AUI-additive; see the file header) ────────────────────── */
+
+.sn-swiper--coverflow {
+  /* Inter-card gap so the peeking neighbours read as separate rounded cards. */
+  --sn-swiper-coverflow-gap: var(--sn-mp-spacing-2);
+}
+
+/* The margins make the track narrower than the root, so neighbours peek; the
+ * gap insets each card from the peek edge. */
+.sn-swiper--coverflow .sn-swiper__item {
+  padding-right: var(--sn-swiper-coverflow-gap);
+  padding-left: var(--sn-swiper-coverflow-gap);
+}
+
+.sn-swiper--coverflow .sn-swiper__slide {
+  /* Radius comes from the `radius` prop via --sn-swiper-coverflow-radius so a
+   * caller-rounded design lands on each card, not on the whole track. */
+  border-radius: var(--sn-swiper-coverflow-radius, var(--sn-mp-radius-lg));
+  overflow: hidden;
+  /* The inline scale() on each slide animates as `current` moves. Transform
+   * only — width/height/layout properties would force per-frame reflow. The
+   * ease-out curve keeps the depth swap feeling natural rather than mechanical
+   * (matches a 400ms native swiper slide). */
+  transition: transform 400ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  backface-visibility: hidden;
+}
+
 .sn-swiper__caption {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
-  background-color: var(--sn-mp-color-background-overlay);
+  /* Diffused shadow scrim instead of a solid black bar: a soft gradient that
+   * melts into the image, so the caption floats on the photo. */
+  padding: 64rpx var(--sn-mp-spacing-4) var(--sn-mp-spacing-3);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
 }
 
 .sn-swiper__caption-text {
   color: var(--sn-mp-color-text-on-primary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
+  text-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.45);
 }
 
 /* ── Indicator ────────────────────────────────────────────────────────── */
@@ -501,6 +730,7 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
 .sn-swiper__indicator--bottom-right {
   right: var(--sn-mp-spacing-3);
 }
+
 .sn-swiper__indicator--top,
 .sn-swiper__indicator--bottom {
   left: 0;
@@ -533,6 +763,15 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   border-radius: var(--sn-mp-radius-xs);
 }
 
+/* `scale` indicator: the inline custom property carries the graded size (custom
+ * properties survive platforms' style parsing, raw rpx lengths do not). */
+.sn-swiper__dot--scale {
+  width: var(--sn-swiper-scale-dot-size, 12rpx);
+  height: var(--sn-swiper-scale-dot-size, 12rpx);
+  transition:
+    width 300ms ease,
+    height 300ms ease;
+}
 .sn-swiper__fraction {
   padding: 0 var(--sn-mp-spacing-2);
   border-radius: var(--sn-mp-radius-full);

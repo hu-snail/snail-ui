@@ -9,9 +9,14 @@
  *   (finished / process / error / wait)
  * - the `icon` / `title` / `description` slots replace their region entirely
  * - `custom-class` / `custom-style` land on the root node
+ *
+ * Every icon goes through SnIcon with the built-in icon set (AGENTS.md §113:
+ * UI icons must never be emoji).
  */
 import SnSteps from '@snui/uni-src/components/sn-steps/sn-steps.vue';
 import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 </script>
 
 <template>
@@ -34,7 +39,7 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
     <SnSteps :active="0" vertical space="24rpx">
       <SnStep>
         <template #icon>
-          <view class="sn-demo__dot" />
+          <SnIcon :icon="Star" :size="'var(--sn-mp-icon-size-small)'" class="sn-demo__slot-icon" />
         </template>
         <template #title>
           <text class="sn-demo__title">Custom title</text>
@@ -53,11 +58,8 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
   font-size: 24rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-.sn-demo__dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-action-primary);
+.sn-demo__slot-icon {
+  color: var(--sn-mp-color-action-primary);
 }
 .sn-demo__title {
   font-size: 26rpx;

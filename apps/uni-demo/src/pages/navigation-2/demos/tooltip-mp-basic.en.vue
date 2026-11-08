@@ -21,6 +21,8 @@ const open = ref(false);
       <SnButton type="primary" block>Tap for the hint</SnButton>
     </SnTooltip>
 
+    <view class="sn-tooltip-demo__space" />
+
     <text class="sn-tooltip-demo__meta"> State: {{ open ? 'shown' : 'closed' }} </text>
   </view>
 </template>
@@ -35,8 +37,13 @@ const open = ref(false);
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
+/* Docs-preview only — relative keeps the demo flow intact while the bubble
+ * stays anchored to the component root; the spacer below leaves room for the
+ * bottom-placed bubble. */
 .sn-tooltip.sn-demo-contained {
-  position: absolute;
+  position: relative;
+}
+.sn-tooltip-demo__space {
+  height: 180rpx;
 }
 </style>

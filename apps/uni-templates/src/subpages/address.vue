@@ -5,8 +5,20 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 
 const addresses = ref([
-  { id: 1, name: '蜗蜗', tel: '138****8888', text: '杭州市西湖区蜗蜗科技园 1 号楼 808', isDefault: true },
-  { id: 2, name: 'Aria', tel: '186****6666', text: '上海市徐汇区漕河泾开发区 2 期 301', isDefault: false },
+  {
+    id: 1,
+    name: '蜗蜗',
+    tel: '138****8888',
+    text: '杭州市西湖区蜗蜗科技园 1 号楼 808',
+    isDefault: true,
+  },
+  {
+    id: 2,
+    name: 'Aria',
+    tel: '186****6666',
+    text: '上海市徐汇区漕河泾开发区 2 期 301',
+    isDefault: false,
+  },
 ]);
 function add(): void {
   uni.showToast({ title: '打开新增表单', icon: 'none' });

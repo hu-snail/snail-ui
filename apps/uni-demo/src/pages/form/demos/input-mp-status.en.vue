@@ -3,22 +3,21 @@
 import { reactive } from 'vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
-const form = reactive({ default: 'Default', error: 'Invalid input', warning: 'Heads up' });
+const form = reactive({ def: 'Default', error: 'Invalid input', warning: 'Heads up' });
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="form.default" status="default" />
-    <SnInput v-model="form.error" status="error" />
-    <SnInput v-model="form.warning" status="warning" />
+  <view class="sn-input-demo">
+    <SnInput v-model="form.def" status="default" placeholder="default" />
+    <SnInput v-model="form.error" status="error" placeholder="error" />
+    <SnInput v-model="form.warning" status="warning" placeholder="warning" />
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
 </style>

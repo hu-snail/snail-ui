@@ -1,7 +1,15 @@
 <script setup lang="ts">
-/** Demo: sn-cascader — 弹层与指示条：closeOnClickModal / zIndex / safeAreaInsetBottom / lineWidth / lineHeight / lineTheme / custom*。 */
-import { ref } from 'vue';
+/**
+ * Demo: sn-cascader — 弹层与指示条：lineTheme / lineWidth / lineHeight /
+ * closeOnClickModal / zIndex / safeAreaInsetBottom / custom*。
+ *
+ * 上：underline 下划线指示条；下：dot 点状指示条 + 弹层配置（遮罩不关闭、
+ * 不补安全区、更高 zIndex、customClass / customStyle）。触发入口都用 sn-cell
+ * 卡片行。
+ */
+import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 
 const tree = [
   {
@@ -15,39 +23,64 @@ const tree = [
   { value: 'js', text: '江苏', children: [{ value: 'nj', text: '南京' }] },
 ];
 
-const underline = ref<string | number>('hz');
-const openUnderline = ref(false);
+/** 叶子值 → 展示文案，示例演示用。 */
+const TEXT: Record<string, string> = { zj: '浙江', hz: '杭州', nb: '宁波', js: '江苏', nj: '南京' };
 
-const dot = ref<string | number>('hz');
-const openDot = ref(false);
+const underlineValue = ref<string | number>('hz');
+const underlineOpen = ref(false);
+const underlineText = computed(() => TEXT[String(underlineValue.value)] ?? '');
+
+const dotValue = ref<string | number>('hz');
+const dotOpen = ref(false);
+const dotText = computed(() => TEXT[String(dotValue.value)] ?? '');
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title"
-      >lineTheme="underline" + lineWidth / lineHeight（数字按 rpx 设计值）</text
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >lineTheme="underline"：指示条铺满当前列底部，lineHeight 数字按 rpx 设计值。</text
     >
-    <view class="sn-demo__button" @tap="openUnderline = true">下划线指示条</view>
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="通知地区"
+        placeholder="请选择"
+        :value="underlineText"
+        is-link
+        @click="underlineOpen = true"
+      />
+    </view>
     <SnCascader
-      v-model="underline"
-      v-model:visible="openUnderline"
+      v-model="underlineValue"
+      v-model:visible="underlineOpen"
       :options="tree"
-      title="下划线指示条"
+      title="通知地区"
       line-theme="underline"
-      :line-width="8"
-      :line-height="44"
+      :line-height="4"
     />
 
-    <text class="sn-demo__title"
-      >lineTheme="dot" + closeOnClickModal / zIndex / safeAreaInsetBottom / custom*</text
+    <text class="sn-demo__label"
+      >lineTheme="dot" + 弹层配置：遮罩不关闭（closeOnClickModal=false）、不补安全区、zIndex
+      提升，customStyle 改圆角。</text
     >
-    <view class="sn-demo__button" @tap="openDot = true">点状指示条</view>
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="活动地区"
+        placeholder="请选择"
+        :value="dotText"
+        is-link
+        @click="dotOpen = true"
+      />
+    </view>
     <SnCascader
-      v-model="dot"
-      v-model:visible="openDot"
+      v-model="dotValue"
+      v-model:visible="dotOpen"
       :options="tree"
-      title="点状指示条"
+      title="活动地区"
       line-theme="dot"
+      :line-width="24"
+      :line-height="6"
       :close-on-click-modal="false"
       :safe-area-inset-bottom="false"
       :z-index="1250"
@@ -59,22 +92,23 @@ const openDot = ref(false);
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
 }
 
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 
 .sn-demo__sheet {

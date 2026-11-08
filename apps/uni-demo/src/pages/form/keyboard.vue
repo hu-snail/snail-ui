@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— keyboard 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/keyboard-mp-basic.vue';
-import Demo1 from './demos/keyboard-mp-car-custom.vue';
-import Demo2 from './demos/keyboard-mp-labels.vue';
-import Demo3 from './demos/keyboard-mp-scrim.vue';
+import Demo1 from './demos/keyboard-mp-decimal.vue';
+import Demo2 from './demos/keyboard-mp-idcard.vue';
+import Demo3 from './demos/keyboard-mp-car-custom.vue';
+import Demo4 from './demos/keyboard-mp-labels.vue';
+import Demo5 from './demos/keyboard-mp-scrim.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -12,38 +15,42 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'">
+  <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'" :desc="'自定义数字键盘'" :bg="''">
     <view class="page">
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('car-custom', 'Car Custom') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('小数点', 'Decimal')" badge="decimal" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('labels', 'Labels') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('身份证', 'ID number')" badge="idcard" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('scrim', 'Scrim') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>
@@ -52,25 +59,23 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
-}
-
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

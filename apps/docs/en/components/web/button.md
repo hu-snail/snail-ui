@@ -22,16 +22,6 @@
 
 While `loading`, the button is unclickable and shows a spinner. Override via the `loading` slot.
 
-## Interactive: loading → done
-
-`loading` swallows the click and renders the spinner inside the button; combined with `circle` + `icon` it produces the "login → round check" pattern, where the button narrows on completion. `type` carries the success / error colour semantics. The width morph lives on an outer container's `width` — no extra prop is needed.
-
-<Demo name="button-web-login" description="Simulated login: click → loading → round ✓ → resets after 2s, plus a three-state visual strip." />
-
-A set of ready-to-reuse async-action scenarios (submit / download / star toggle / copy / add to cart / delete with confirmation):
-
-<Demo name="button-web-interactive" description="Six button + async-action scenarios covering loading, icon switching and double confirmation." />
-
 ## Variant: text / ghost / dashed
 
 <Demo name="button-web-variant" description="text — text-only button; ghost — transparent bg + colored border; dashed — dashed border." />

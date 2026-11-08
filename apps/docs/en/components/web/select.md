@@ -26,27 +26,32 @@ Teleport dropdown with viewport flipping; single / multiple / filterable / group
 
 <Demo name="select-web-states" description="clearable, disabled, loading." />
 
+## Remote search (remote)
+
+<Demo name="select-web-remote" description="remote + search event against a mocked API (450ms latency, debounce, aborted requests); swap the mock for fetch in real apps." />
+
 ## API
 
 ### SnSelect Props
 
-| Prop                    | Type                                         | Default               | Notes                                            |
-| ----------------------- | -------------------------------------------- | --------------------- | ------------------------------------------------ |
-| modelValue              | `SnSelectValue \| SnSelectValue[] \| null`   | `null`                | v-model (array when multiple)                    |
-| multiple                | `boolean`                                    | `false`               | Multi-select                                     |
-| options                 | `Array<SnSelectOptionInput>`                 | `[]`                  | Options (bare values or objects; children group) |
-| labelField / valueField | `string`                                     | `'label'` / `'value'` | Field mapping                                    |
-| placeholder             | `string`                                     | —                     | Placeholder                                      |
-| clearable               | `boolean`                                    | `false`               | Clear button                                     |
-| filterable              | `boolean`                                    | `false`               | Type-to-filter                                   |
-| filter                  | `(pattern, option) => boolean`               | built-in contains     | Custom filter                                    |
-| disabled / readonly     | `boolean`                                    | `false`               | Disabled / read-only                             |
-| size                    | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`            | Size                                             |
-| status                  | `'default'\|'error'\|'warning'`              | `'default'`           | Status                                           |
-| maxTagCount             | `number`                                     | —                     | Multi-select tag cap                             |
-| tag                     | `boolean`                                    | `false`               | Pill-style tags                                  |
-| loading                 | `boolean`                                    | `false`               | Dropdown loading                                 |
-| remote                  | `boolean`                                    | `false`               | Remote search (with loading + search event)      |
+| Prop                    | Type                                         | Default                   | Notes                                            |
+| ----------------------- | -------------------------------------------- | ------------------------- | ------------------------------------------------ |
+| modelValue              | `SnSelectValue \| SnSelectValue[] \| null`   | `null`                    | v-model (array when multiple)                    |
+| multiple                | `boolean`                                    | `false`                   | Multi-select                                     |
+| options                 | `Array<SnSelectOptionInput>`                 | `[]`                      | Options (bare values or objects; children group) |
+| labelField / valueField | `string`                                     | `'label'` / `'value'`     | Field mapping                                    |
+| placeholder             | `string`                                     | —                         | Placeholder                                      |
+| clearable               | `boolean`                                    | `false`                   | Clear button                                     |
+| filterable              | `boolean`                                    | `false`                   | Type-to-filter                                   |
+| filter                  | `(pattern, option) => boolean`               | built-in contains         | Custom filter                                    |
+| disabled / readonly     | `boolean`                                    | `false`                   | Disabled / read-only                             |
+| size                    | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`                | Size                                             |
+| status                  | `'default'\|'error'\|'warning'`              | `'default'`               | Status                                           |
+| maxTagCount             | `number`                                     | —                         | Multi-select tag cap                             |
+| tag                     | `boolean`                                    | `false`                   | Pill-style tags                                  |
+| loading                 | `boolean`                                    | `false`                   | Dropdown loading                                 |
+| remote                  | `boolean`                                    | `false`                   | Remote search (with loading + search event)      |
+| emptyText               | `string`                                     | locale `Select.noOptions` | Dropdown empty copy (the `empty` slot wins)      |
 
 Events: `update:modelValue` / `change` / `search` / `clear` / `focus` / `blur`; Slots: `action` / `empty` / `header`. Keyboard: Enter / Space / ArrowUp / ArrowDown / Esc / Backspace (remove last in multiple). ARIA: listbox + aria-expanded + aria-activedescendant.
 

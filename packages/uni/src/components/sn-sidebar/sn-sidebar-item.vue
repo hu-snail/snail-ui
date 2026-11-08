@@ -12,14 +12,23 @@
  * (`sn-sidebar-types.ts`) stay beside both halves of the pair — the same
  * layout `sn-radio` / `sn-radio-group` uses.
  *
+ * ## Scroll linkage (additive — AUI-OPT-08, AGENTS.md §112.3a)
+ *
+ * `anchor` names the content section this entry follows (the section's `id`).
+ * The item reports itself to the container on mount, mirroring how
+ * `sn-index-anchor` registers with `sn-index-bar` — the container cannot read
+ * the slot's vnodes. Registration is unconditional and cheap: the container
+ * only consults the registry when `scroll-spy` is on.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
  *   - 选中状态本身 — 由 sn-sidebar 持有
- *   - 右侧内容面板 — 由使用方按 `change` 自行切换
+ *   - 内容区块的渲染与滚动 — 由宿主页面负责
  */
 
-import { computed, inject, markRaw } from 'vue';
+import { computed, inject, markRaw, onBeforeUnmount, onMounted } from 'vue';
+import { nextUid } from '../../utils/uid';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
@@ -53,6 +62,14 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-08, AGENTS.md §112.3a) ───────────────────────── */
+
+    /**
+     * 关联的内容区块 `id`：`scroll-spy` 打开时，该区块滚入视口即激活本项。
+     * 不设置则本项不参与滚动联动。
+     */
+    anchor?: string;
   }>(),
   {
     label: '',
@@ -66,6 +83,7 @@ const props = withDefaults(
     disabled: false,
     customClass: '',
     customStyle: '',
+    anchor: '',
   },
 );
 
@@ -76,8 +94,21 @@ defineSlots<{
 
 const sidebar = inject(SN_SIDEBAR_KEY, null);
 
+const uid = nextUid();
+
 /** Effective value: explicit `value` wins, otherwise the label is the key. */
 const itemValue = computed<SnSidebarValue>(() => props.value ?? props.label);
+
+onMounted(() => {
+  sidebar?.registerAnchor({
+    uid,
+    getValue: () => itemValue.value,
+    getAnchor: () => props.anchor,
+    getLabel: () => props.label,
+  });
+});
+
+onBeforeUnmount(() => sidebar?.unregisterAnchor(uid));
 
 const isActive = computed(() => sidebar?.isActive(itemValue.value) ?? false);
 

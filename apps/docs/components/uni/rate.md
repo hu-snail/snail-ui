@@ -72,4 +72,4 @@ allowHalf 允许半星；clearable 再次点击当前分数清空为 null；acti
 
 ## 暗色模式
 
-所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
+所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：

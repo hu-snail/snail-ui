@@ -25,9 +25,44 @@
  *     exactly one `<Demo>` block. Sections holding several demos (the
  *     "实时预览" playgrounds) keep their full-width stacked layout.
  *   - A run of two or more consecutive cells becomes a `sn-demo-grid`; a lone
- *     cell is still a card, merely full width.
+ *     cell is still a card, merely full width. The grid is a two-column
+ *     waterfall (custom.css §13) — except on the pages matched by
+ *     `SINGLE_COLUMN_ROUTES`, where every card owns its own row.
  *   - Anything before the first heading (title + intro) is never wrapped.
  */
+
+/**
+ * Pages whose demo cards must occupy one row each.
+ *
+ * The admin-layout pages show layout shells, which are wide by nature: two of
+ * them side by side get squeezed to ~420px and stop looking like an admin
+ * page. Every other docs page keeps the two-column waterfall.
+ *
+ * Matched on the rendered **route** (what `theme/Layout.vue` sees), not on the
+ * markdown token stream: a page-level markdown wrapper would be invalid HTML
+ * inside VitePress's compiled template, because the raw "copy document" block
+ * sits at the top level and would inherit the wrapper. The layout instead puts
+ * `SINGLE_COLUMN_CLASS` on the article element.
+ */
+const SINGLE_COLUMN_ROUTES: RegExp[] = [
+  /^\/ecosystem\/plugins\/admin-layout(?:\/|$)/,
+  /^\/en\/ecosystem\/plugins\/admin-layout(?:\/|$)/,
+];
+
+/** Class `theme/Layout.vue` puts on the article; custom.css §13 keys off it. */
+export const SINGLE_COLUMN_CLASS = 'sn-layout-single-column';
+
+/**
+ * Should this route render its demo cards one per row?
+ *
+ * @param path VitePress route path, e.g. `/ecosystem/plugins/admin-layout/aurora`.
+ *             A trailing `.html` (static build) is tolerated.
+ */
+export function usesSingleColumnLayout(path: string | undefined): boolean {
+  if (typeof path !== 'string' || path === '') return false;
+  const normalized = path.replace(/\.html$/, '').replace(/\/+$/, '');
+  return SINGLE_COLUMN_ROUTES.some((pattern) => pattern.test(normalized));
+}
 
 /** Markdown-it's `Token` exposes far more than this; the structural slice
  *  keeps the docs package free of a direct `markdown-it` dependency (same
@@ -137,7 +172,6 @@ export function demoGrid(md: MarkdownRenderer): void {
     // pass so the section indexes stay valid.
     const before = new Map<number, string[]>();
     const after = new Map<number, string[]>();
-
     let index = 0;
     while (index < sections.length) {
       if (!isCell(sections[index])) {

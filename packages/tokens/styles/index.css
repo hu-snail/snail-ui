@@ -65,7 +65,7 @@
   --aui-radius-none: 0;
   --aui-radius-xs: 2px;
   --aui-radius-sm: 4px;
-  --aui-radius-md: 6px;
+  --aui-radius-md: 4px;
   --aui-radius-lg: 8px;
   --aui-radius-xl: 12px;
   --aui-radius-full: 9999px;
@@ -126,7 +126,13 @@
 
   --aui-color-action-primary: var(--aui-color-blue-500);
   --aui-color-action-primary-hover: var(--aui-color-blue-400);
-  --aui-color-action-primary-soft: var(--aui-color-blue-50);
+  /* Tint derived from the active primary (not a frozen blue-50), so custom
+     themes keep every soft / hover surface in the same hue. */
+  --aui-color-action-primary-soft: color-mix(
+    in srgb,
+    var(--aui-color-action-primary) 10%,
+    var(--aui-color-background-surface)
+  );
 
   --aui-color-feedback-success: var(--aui-color-success);
   --aui-color-feedback-warning: var(--aui-color-warning);
@@ -167,6 +173,10 @@
   --aui-color-purple-soft: rgba(124, 58, 237, 0.12);
   --aui-color-background-elevated: #ffffff;
   --aui-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* Dark floating toast plate (sn-toast) — same value in both themes: the
+     platform toast surface is a dark translucent plate in light AND dark
+     mode. Kept in sync with src/semantic.ts `color.background.inverse`. */
+  --aui-color-background-inverse: rgba(0, 0, 0, 0.75);
   /* Opaque viewer curtain (image preview / video layers) — pure black in
      both themes: content must float on a void, not on a scrim. */
   --aui-color-background-solid: #000000;
@@ -180,8 +190,10 @@
   --aui-shadow-card: var(--aui-shadow-sm);
   --aui-shadow-overlay: var(--aui-shadow-xl);
 
-  /* Focus ring — consumed via the --sn-web-focus-ring alias */
-  --aui-focus-ring: rgba(22, 119, 255, 0.25);
+  /* Focus ring — consumed via the --sn-web-focus-ring alias.
+   * Derived from the active primary: a literal blue here stayed blue after a
+   * theme swap and produced a two-toned control (red border + blue halo). */
+  --aui-focus-ring: color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent);
 
   /* Sn-* alias layer (brand) */
   --sn-color-text-primary: var(--aui-color-text-primary);
@@ -193,6 +205,7 @@
   --sn-color-background-subtle: var(--aui-color-background-subtle);
   --sn-color-background-elevated: var(--aui-color-background-elevated);
   --sn-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-color-background-inverse: var(--aui-color-background-inverse);
   --sn-color-border-default: var(--aui-color-border-default);
   --sn-color-border-subtle: var(--aui-color-border-subtle);
   --sn-color-action-primary: var(--aui-color-action-primary);
@@ -220,10 +233,10 @@
   --aui-button-height-medium: 36px;
   --aui-button-height-large: 40px;
   --aui-button-padding-x: 16px;
-  --aui-button-radius: 6px;
+  --aui-button-radius: 4px;
   --aui-button-font-size: 14px;
   --aui-button-shadow: none;
-  --aui-button-focus-ring: rgba(22, 119, 255, 0.25);
+  --aui-button-focus-ring: color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent);
 
   /* Sn-* component aliases — button */
   --sn-button-height-tiny: var(--aui-button-height-tiny);
@@ -241,7 +254,7 @@
   --aui-input-height-medium: 36px;
   --aui-input-height-large: 40px;
   --aui-input-padding-x: 12px;
-  --aui-input-radius: 6px;
+  --aui-input-radius: 4px;
 
   /* Sn-* component aliases — input */
   --sn-input-height-small: var(--aui-input-height-small);
@@ -452,7 +465,11 @@
    * as elevation, which is the opposite of "sunken").
    */
   --aui-color-background-sunken: #18181b;
-  --aui-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --aui-color-action-primary-soft: color-mix(
+    in srgb,
+    var(--aui-color-action-primary) 22%,
+    var(--aui-color-background-surface)
+  );
   --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
   --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
   --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);

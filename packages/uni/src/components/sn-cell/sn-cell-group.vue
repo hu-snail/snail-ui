@@ -16,9 +16,19 @@
  * both halves of the pair.)
  *
  * The group owns the card surface and the section heading; the cells inherit
- * `border` / `titleWidth` / `center` / `layout` / `valueAlign` through
+ * `border` / `titleWidth` / `center` / `layout` / `valueAlign` / `card` through
  * `provide`/`inject` (`sn-cell-types.ts`) — wd-cell's documented
  * "继承自 CellGroup" contract.
+ *
+ * ## Additive: `card` (AUI-OPT-01, AGENTS.md §112.3a)
+ *
+ * `insert` paints the whole group as one rounded card; `card` (additive) is
+ * the elevated form of the same idea — the whole group renders as ONE card
+ * (token radius / border / shadow), rows separated by the cells' inner
+ * hairlines instead of per-row cards. A standalone `sn-cell card` still makes
+ * that single row a card; inside a card group rows stay plain unless a cell
+ * explicitly opts in. `border` draws the container outline in card mode, so
+ * the card never doubles up with per-row outlines.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -27,7 +37,7 @@
  *   - 表单校验 — 用 sn-form-item
  */
 
-import { computed, provide, toRef } from 'vue';
+import { computed, provide, ref, toRef } from 'vue';
 import { SN_CELL_GROUP_KEY } from './sn-cell-types';
 
 defineOptions({ name: 'SnCellGroup' });
@@ -54,6 +64,8 @@ const props = withDefaults(
     titleWidth?: string | number | undefined;
     /** 是否使内容垂直居中，子单元格继承。 */
     center?: boolean;
+    /** 卡片形态（additive）：整组渲染为一张圆角卡片，行间以内嵌分割线分开。 */
+    card?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -69,6 +81,7 @@ const props = withDefaults(
     valueAlign: 'right',
     titleWidth: undefined,
     center: false,
+    card: false,
     customClass: '',
     customStyle: '',
   },
@@ -83,6 +96,28 @@ defineSlots<{
   default?(): unknown;
 }>();
 
+/** Child-cell registry: cells register on mount so the group knows which row
+ * is last and that row can drop its hairline (App has no :last-child, §116.2).
+ * Mount order matches DOM order for static and keyed lists. */
+let cellSeq = 0;
+const cellIds = ref<number[]>([]);
+
+function registerCell(): { id: number; unregister: () => void } {
+  const id = ++cellSeq;
+  cellIds.value = [...cellIds.value, id];
+  return {
+    id,
+    unregister: () => {
+      cellIds.value = cellIds.value.filter((x) => x !== id);
+    },
+  };
+}
+
+const lastCellId = computed(() => {
+  const ids = cellIds.value;
+  return ids.length > 0 ? (ids[ids.length - 1] ?? 0) : 0;
+});
+
 provide(SN_CELL_GROUP_KEY, {
   border: toRef(props, 'border'),
   titleWidth: toRef(props, 'titleWidth'),
@@ -90,14 +125,18 @@ provide(SN_CELL_GROUP_KEY, {
   layout: toRef(props, 'layout'),
   valueAlign: toRef(props, 'valueAlign'),
   insert: toRef(props, 'insert'),
+  registerCell,
+  lastCellId,
 });
 
 const rootClass = computed(() => [
   'sn-cell-group',
   {
     'sn-cell-group--insert': props.insert,
+    // Card mode draws its container outline through the bordered combo too.
     'sn-cell-group--bordered': props.border,
     'sn-cell-group--large': props.size === 'large',
+    'sn-cell-group--card': props.card,
   },
   props.customClass,
 ]);
@@ -134,14 +173,26 @@ const rootClass = computed(() => [
 .sn-cell-group {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   width: 100%;
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.sn-cell-group--insert {
-  margin: var(--sn-mp-spacing-3);
+/* Rounded container shared by insert (wot-ui parity) and card (additive):
+ * the whole group becomes ONE card; rows inside stay contiguous and are
+ * separated by the cells' own hairlines. Horizontal margin stays 0 — the
+ * hosting page owns the gutter, so cards align with every other section. */
+.sn-cell-group--insert,
+.sn-cell-group--card {
+  margin: var(--sn-mp-spacing-3) 0;
   border-radius: var(--sn-mp-radius-lg);
   overflow: hidden;
+}
+
+/* Card mode (additive) — the elevated card look: token shadow on top of the
+   insert container treatment. */
+.sn-cell-group--card {
+  box-shadow: var(--sn-mp-shadow-sm);
 }
 
 .sn-cell-group--bordered {
@@ -149,7 +200,8 @@ const rootClass = computed(() => [
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
-.sn-cell-group--insert.sn-cell-group--bordered {
+.sn-cell-group--insert.sn-cell-group--bordered,
+.sn-cell-group--card.sn-cell-group--bordered {
   border: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 

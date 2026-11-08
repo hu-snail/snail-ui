@@ -536,4 +536,78 @@ describe('sn-datetime-picker-view', () => {
       expect(activeLabels(w)).toEqual(['2024', '06', '15', '10', '30']);
     });
   });
+
+  describe('lunar roller (additive)', () => {
+    it('renders 干支年 / 农历月 / 农历日 labels for the lunar date columns', () => {
+      const w = mountView({
+        type: 'date',
+        lunar: true,
+        modelValue: new Date(2024, 1, 10).getTime(),
+      });
+      expect(activeLabels(w)).toEqual(['甲辰年', '正月', '初一']);
+    });
+
+    it('lists 冬月 / 腊月 in the month column and 闰六月 in the 乙巳 year', () => {
+      const w = mountView({
+        type: 'date',
+        lunar: true,
+        modelValue: new Date(2025, 0, 29).getTime(),
+      });
+      const monthLabels = w
+        .findAll('.sn-datetime-picker-view__column')[1]
+        ?.findAll('.sn-datetime-picker-view__item')
+        .map((item) => item.text());
+      expect(monthLabels).toContain('冬月');
+      expect(monthLabels).toContain('腊月');
+
+      const leapYear = mountView({
+        type: 'date',
+        lunar: true,
+        modelValue: new Date(2025, 6, 25).getTime(),
+      });
+      expect(activeLabels(leapYear)).toEqual(['乙巳年', '闰六月', '初一']);
+    });
+
+    it('emits a solar timestamp when a lunar day row is tapped', async () => {
+      const w = mountView({
+        type: 'date',
+        lunar: true,
+        modelValue: new Date(2024, 1, 10).getTime(),
+      });
+      // 正月有 30 天，日列第 15 行（索引 14）= 十五。
+      await w
+        .findAll('.sn-datetime-picker-view__column')[2]
+        ?.findAll('.sn-datetime-picker-view__item')[14]
+        ?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).toDateString()).toBe(new Date(2024, 1, 24).toDateString());
+    });
+
+    it('falls back to the regular month when switching to a year without that leap month', async () => {
+      const w = mountView({
+        type: 'date',
+        lunar: true,
+        modelValue: new Date(2025, 6, 25).getTime(),
+      });
+      // 年列自 2019（己亥）起，2024（甲辰，无闰六月）在索引 5。
+      await w
+        .findAll('.sn-datetime-picker-view__column')[0]
+        ?.findAll('.sn-datetime-picker-view__item')[5]
+        ?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      // 闰六月初一 → 甲辰年六月初一 = 2024-07-06。
+      expect(new Date(value).toDateString()).toBe(new Date(2024, 6, 6).toDateString());
+    });
+
+    it('keeps the clock columns solar in lunar datetime mode', () => {
+      const w = mountView({ lunar: true });
+      expect(columnTypes(w)).toBe(5);
+      expect(activeLabels(w)).toEqual(['甲辰年', '五月', '初十', '10', '30']);
+    });
+
+    it('ignores lunar for the time type', () => {
+      const w = mountView({ type: 'time', modelValue: '10:30', lunar: true });
+      expect(activeLabels(w)).toEqual(['10', '30']);
+    });
+  });
 });

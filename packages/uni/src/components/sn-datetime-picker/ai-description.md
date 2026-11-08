@@ -1,12 +1,21 @@
-# sn-sn-datetime-picker — AI-Friendly Component Description
+# sn-datetime-picker — AI-Friendly Component Description
 
-> Human-readable + AI-parseable description of the uni-end Bottom-sheet date / time picker: `sn-popup` chrome around the `sn-datetime-picker-view` roller, owning the draft value and writing `v-model` on confirm..
+> Human-readable + AI-parseable description of the uni-end bottom-sheet date / time picker: `sn-popup` chrome around the `sn-datetime-picker-view` roller, owning the draft value and writing `v-model` on confirm.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
 > **`end: mp`** marker — consumed by `list_components({ end: 'mp' })`.
 
 ## Purpose
 
 Bottom-sheet date / time picker: `sn-popup` chrome around the `sn-datetime-picker-view` roller, owning the draft value and writing `v-model` on confirm.
+
+## Header contract
+
+The toolbar is always three fixed slots — leading 取消 / centred 标题 (optional) /
+trailing 确认. The title slot carries the free space (`flex: 1 1 auto`), so 确认 sits
+flush right whether or not a title is given. Both actions are plain text (`<text>`)
+with no icon glyphs (§113) and the template renders no stray text nodes in the
+toolbar (an anonymous text node would become a fourth flex item and shift the
+confirm inwards). Press feedback rides `hover-class` (§116.2 — App has no `:active`).
 
 ## Reference Library
 
@@ -44,6 +53,7 @@ import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-dat
 | `beforeConfirm`                                   | `(value) => boolean \| Promise<boolean>` | `undefined`             | Veto hook.                                                                               |
 | `zIndex`                                          | `number`                                 | `15`                    | Stacking level.                                                                          |
 | `immediateChange`                                 | `boolean`                                | `false`                 | Write `v-model` on every roll.                                                           |
+| `lunar`                                           | `boolean`                                | `false`                 | **AUI additive** (§112.3a) — lunar roller labels; `v-model` stays a solar timestamp.     |
 | `customClass` / `customStyle` / `customViewClass` | `string`                                 | `''`                    | Root / sheet / roller forwarding.                                                        |
 | `rootPortal`                                      | `boolean`                                | `false`                 | **Declared, not implemented** — forwarded to `sn-popup`; miniprogram has no portal host. |
 | `displayFormatTabLabel`                           | `((tab) => string) \| undefined`         | `undefined`             | **Declared, not implemented** — single-value mode only, no range tabs.                   |
@@ -66,19 +76,21 @@ single-value mode only).
 
 ## Tokens Consumed (end: mp)
 
-| Token                                       | Purpose              |
-| ------------------------------------------- | -------------------- |
-| `--sn-mp-color-background-elevated`         | Sheet surface        |
-| `--sn-mp-color-border-subtle`               | Toolbar rule         |
-| `--sn-mp-color-text-primary` / `-secondary` | Title / cancel label |
-| `--sn-mp-color-action-primary`              | Confirm label        |
-| `--sn-mp-font-size-md`                      | Toolbar text         |
-| `--sn-mp-spacing-2` / `-3` / `-4`           | Toolbar padding      |
+| Token                                                   | Purpose                               |
+| ------------------------------------------------------- | ------------------------------------- |
+| `--sn-mp-color-background-elevated`                     | Sheet surface                         |
+| `--sn-mp-color-border-subtle`                           | Toolbar rule                          |
+| `--sn-mp-color-text-primary` / `-secondary`             | Title / cancel label                  |
+| `--sn-mp-color-action-primary`                          | Confirm label                         |
+| `--sn-mp-font-size-md` / `--sn-mp-font-weight-semibold` | Toolbar text / title & confirm weight |
+| `--sn-mp-spacing-2` / `-4`                              | Action padding / toolbar padding      |
 
 ## Accessibility
 
 - Cancel / confirm are `role="button"` with `aria-label`.
 - The roller body carries the value in `aria-label` plus the hidden live region.
+- The header renders the confirm action as the last slot, so its reading order is
+  cancel → title → confirm in every case.
 
 ## Versioning
 

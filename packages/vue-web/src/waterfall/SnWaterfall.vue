@@ -92,7 +92,7 @@
  *   <SnWaterfall :min-column-width="200">…</SnWaterfall>
  */
 
-import type { VNodeChild } from 'vue';
+import type { VNode, VNodeChild } from 'vue';
 import {
   Comment,
   Fragment,
@@ -155,8 +155,8 @@ function formatLength(value: string | number): string {
   return typeof value === 'number' ? `${value}px` : value;
 }
 
-function flattenSlotChildren(children: unknown): VNodeChild[] {
-  const out: VNodeChild[] = [];
+function flattenSlotChildren(children: unknown): VNode[] {
+  const out: VNode[] = [];
   const walk = (input: unknown): void => {
     if (Array.isArray(input)) {
       input.forEach(walk);
@@ -176,7 +176,8 @@ function flattenSlotChildren(children: unknown): VNodeChild[] {
     if (isVNode(input) && input.type === Comment) {
       return;
     }
-    out.push(input as VNodeChild);
+    // 非注释、非空白的叶子一定是 VNode（文本节点也是 VNode）。
+    out.push(input as VNode);
   };
   walk(children);
   return out;
@@ -185,7 +186,7 @@ function flattenSlotChildren(children: unknown): VNodeChild[] {
 /** One placed item: its identity plus the slot vnode to render. */
 interface WaterfallEntry {
   key: string;
-  node: VNodeChild;
+  node: VNode;
 }
 
 function entryKeyOf(node: VNodeChild, index: number): string {
@@ -203,6 +204,21 @@ function collectEntries(): WaterfallEntry[] {
 }
 
 /* ── Measurement ────────────────────────────────────────────────────────── */
+
+/** Per-vnode identity: slot re-renders produce fresh vnode objects; this
+ *  WeakMap assigns each one a stable id so the placement signature can tell
+ *  "same content" from "content actually changed" (a plain key comparison
+ *  cannot). */
+const vnodeIds = new WeakMap<VNode, number>();
+let nextVnodeId = 1;
+function vnodeId(node: VNode): number {
+  let id = vnodeIds.get(node);
+  if (id === undefined) {
+    id = nextVnodeId++;
+    vnodeIds.set(node, id);
+  }
+  return id;
+}
 
 /** Measured item heights by key. Deliberately NOT reactive: a resolved image
  *  must not trigger a render, only inform the next placement. */
@@ -282,8 +298,11 @@ let allocation: WaterfallEntry[][] = [];
 function resolveColumns(entries: WaterfallEntry[]): WaterfallEntry[][] {
   const count = columnCount.value;
   const gap = rowGapPx.value;
+  // 签名必须包含 slot 内容身份（vnode 引用 id）：仅凭 key 的话，内容变化
+  // （预览/源码切换）而 key 不变的重渲染会命中缓存、返回带旧 vnode 的
+  // allocation —— Vue diff 视为相同节点，DOM 永不更新（切换失效的根因）。
   const signature = `${count}|${gap}|${layoutVersion.value}|${entries
-    .map((entry) => entry.key)
+    .map((entry) => `${entry.key}:${vnodeId(entry.node)}`)
     .join('\u0000')}`;
   if (signature === allocationSignature) return allocation;
 

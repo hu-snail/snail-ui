@@ -29,42 +29,42 @@ import SnTimelineItem from '@snui/vue-web/src/timeline/SnTimelineItem.vue';
 
 ## Props (SnTimeline)
 
-| Name             | Type                                                    | Default      | Required | Description                                                                     |
-| ---------------- | ------------------------------------------------------- | ------------ | -------- | ------------------------------------------------------------------------------- |
-| `direction`      | `'vertical' \| 'horizontal'`                            | `'vertical'` | no       | Layout axis; wins over the legacy `horizontal` flag.                            |
+| Name             | Type                                                    | Default      | Required | Description                                                                                                                                                                                                                                                            |
+| ---------------- | ------------------------------------------------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `direction`      | `'vertical' \| 'horizontal'`                            | `'vertical'` | no       | Layout axis; wins over the legacy `horizontal` flag.                                                                                                                                                                                                                   |
 | `mode`           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | no       | Side the rail (the axis) sits on — the content takes the opposite side; `alternate` flips by item index. Vertical reads left / right, horizontal reads top / bottom; off-axis values are normalized to the direction's default. Wins over the legacy `item-placement`. |
-| `label-position` | `'same' \| 'relative'`                                  | `'relative'` | no       | `relative`: labels across the axis from the content; `same`: content side, adjacent to the rail. |
-| `horizontal`     | `boolean`                                               | `false`      | no       | Legacy: horizontal layout (`direction="horizontal"` preferred).                 |
-| `item-placement` | `'left' \| 'right'`                                     | `'left'`     | no       | Legacy: rail side (vertical only; `mode` preferred).                            |
-| `size`           | `'medium' \| 'large'`                                   | `'medium'`   | no       | Title scale (14/16 px).                                                         |
-| `icon-size`      | `number`                                                | `undefined`  | no       | Node/icon edge length in px (default 14).                                       |
+| `label-position` | `'same' \| 'relative'`                                  | `'relative'` | no       | `relative`: labels across the axis from the content; `same`: content side, adjacent to the rail.                                                                                                                                                                       |
+| `horizontal`     | `boolean`                                               | `false`      | no       | Legacy: horizontal layout (`direction="horizontal"` preferred).                                                                                                                                                                                                        |
+| `item-placement` | `'left' \| 'right'`                                     | `'left'`     | no       | Legacy: rail side (vertical only; `mode` preferred).                                                                                                                                                                                                                   |
+| `size`           | `'medium' \| 'large'`                                   | `'medium'`   | no       | Title scale (14/16 px).                                                                                                                                                                                                                                                |
+| `icon-size`      | `number`                                                | `undefined`  | no       | Node/icon edge length in px (default 14).                                                                                                                                                                                                                              |
 
 ## Props (SnTimelineItem)
 
-| Name        | Type                                                       | Default     | Required | Description                                                     |
-| ----------- | ---------------------------------------------------------- | ----------- | -------- | --------------------------------------------------------------- |
-| `type`      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | no       | Semantic node color.                                            |
-| `title`     | `string`                                                   | `undefined` | no       | Entry title (`header` slot overrides).                          |
-| `content`   | `string`                                                   | `undefined` | no       | Entry body (`default` slot overrides).                          |
-| `time`      | `string \| number`                                         | `undefined` | no       | Meta line (`footer` slot overrides).                            |
-| `dot-color` | `string`                                                   | `undefined` | no       | Custom node color; wins over `color`.                           |
-| `color`     | `string`                                                   | `undefined` | no       | Legacy: custom node color (ring border / icon color).           |
-| `dot-type`  | `'solid' \| 'hollow'`                                      | `'solid'`   | no       | Node fill: filled dot (half the icon edge) or 2px ring.         |
-| `line-type` | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | no       | Rail segment style after this node.                             |
-| `label`     | `string`                                                   | `undefined` | no       | Label text (e.g. a date) placed per the container `label-position` (`label` slot overrides). |
+| Name        | Type                                                       | Default     | Required | Description                                                                                   |
+| ----------- | ---------------------------------------------------------- | ----------- | -------- | --------------------------------------------------------------------------------------------- |
+| `type`      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | no       | Semantic node color.                                                                          |
+| `title`     | `string`                                                   | `undefined` | no       | Entry title (`header` slot overrides).                                                        |
+| `content`   | `string`                                                   | `undefined` | no       | Entry body (`default` slot overrides).                                                        |
+| `time`      | `string \| number`                                         | `undefined` | no       | Meta line (`footer` slot overrides).                                                          |
+| `dot-color` | `string`                                                   | `undefined` | no       | Custom node color; wins over `color`.                                                         |
+| `color`     | `string`                                                   | `undefined` | no       | Legacy: custom node color (ring border / icon color).                                         |
+| `dot-type`  | `'solid' \| 'hollow'`                                      | `'solid'`   | no       | Node fill: filled dot (half the icon edge) or 2px ring.                                       |
+| `line-type` | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | no       | Rail segment style after this node.                                                           |
+| `label`     | `string`                                                   | `undefined` | no       | Label text (e.g. a date) placed per the container `label-position` (`label` slot overrides).  |
 | `position`  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | no       | Fix the content side under `mode="alternate"` (vertical: left/right, horizontal: top/bottom). |
 
 ## Slots
 
-| Component      | Name      | Description                                        |
-| -------------- | --------- | -------------------------------------------------- |
-| SnTimeline     | `default` | `<SnTimelineItem>` entries (direct children).      |
-| SnTimelineItem | `default` | Entry body (overrides `content`).                  |
-| SnTimelineItem | `dot`     | Full custom node DOM — highest node priority.      |
-| SnTimelineItem | `icon`    | Custom node icon (the `dot` slot wins).            |
-| SnTimelineItem | `label`   | Label text (overrides `label`).                    |
-| SnTimelineItem | `header`  | Entry title (overrides `title`).                   |
-| SnTimelineItem | `footer`  | Meta line (overrides `time`).                      |
+| Component      | Name      | Description                                   |
+| -------------- | --------- | --------------------------------------------- |
+| SnTimeline     | `default` | `<SnTimelineItem>` entries (direct children). |
+| SnTimelineItem | `default` | Entry body (overrides `content`).             |
+| SnTimelineItem | `dot`     | Full custom node DOM — highest node priority. |
+| SnTimelineItem | `icon`    | Custom node icon (the `dot` slot wins).       |
+| SnTimelineItem | `label`   | Label text (overrides `label`).               |
+| SnTimelineItem | `header`  | Entry title (overrides `title`).              |
+| SnTimelineItem | `footer`  | Meta line (overrides `time`).                 |
 
 ## Events
 
@@ -111,10 +111,10 @@ None — pure display component.
 
 ## Tokens Consumed (end: web)
 
-| Token                                      | CSS Variable                   | Purpose                  |
-| ------------------------------------------ | ------------------------------ | ------------------------ |
-| Text primary / secondary / tertiary        | `--sn-web-color-text-*`        | Title / body / meta text |
-| Feedback info / success / warning / danger | `--sn-web-color-feedback-*`    | Semantic node colors     |
+| Token                                      | CSS Variable                        | Purpose                          |
+| ------------------------------------------ | ----------------------------------- | -------------------------------- |
+| Text primary / secondary / tertiary        | `--sn-web-color-text-*`             | Title / body / meta text         |
+| Feedback info / success / warning / danger | `--sn-web-color-feedback-*`         | Semantic node colors             |
 | Background surface                         | `--sn-web-color-background-surface` | Rail line mix + hollow ring fill |
 
 ## Versioning

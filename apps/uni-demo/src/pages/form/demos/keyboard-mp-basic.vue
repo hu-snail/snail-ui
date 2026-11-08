@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-keyboard — sn-keyboard 数字键盘：maxlength 限长，delete 退格，close 收起；搭配只读输入框使用。 */
+/** Demo: sn-keyboard — 默认数字键盘：底行 [收起][0][⌫]，maxlength 限长；搭配只读输入框使用。 */
 import { ref } from 'vue';
 import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 

@@ -14,7 +14,14 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { defineComponent, nextTick, ref } from 'vue';
 import SnFab from './sn-fab.vue';
+import { closeOutside } from '../../utils/outside-close';
+// Raw SFC source for CSS-level regression guards (vitest 的 import.meta.url
+// 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
+// file"；?raw 走 Vite 资产管线，两端一致)。
+import fabSource from './sn-fab.vue?raw';
+import { Camera, Coffee, Heart, Star } from '../sn-icon/sn-icon-set';
 
 describe('sn-fab', () => {
   it('renders the trigger with the default plus icon', () => {
@@ -253,5 +260,362 @@ describe('sn-fab', () => {
   it('lays the menu out to the left when direction is left', () => {
     const wrapper = mount(SnFab, { props: { direction: 'left' } });
     expect(wrapper.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--left');
+  });
+
+  it('defaults to the up direction with the canonical top classes', () => {
+    const wrapper = mount(SnFab);
+    expect(wrapper.classes()).toContain('sn-fab--top');
+    expect(wrapper.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--top');
+  });
+
+  it('normalizes the additive up / down aliases to the top / bottom classes', () => {
+    const up = mount(SnFab, { props: { direction: 'up' } });
+    expect(up.classes()).toContain('sn-fab--top');
+    expect(up.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--top');
+
+    const down = mount(SnFab, { props: { direction: 'down' } });
+    expect(down.classes()).toContain('sn-fab--bottom');
+    expect(down.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--bottom');
+  });
+
+  it('keeps the legacy top / bottom direction values working', () => {
+    const top = mount(SnFab, { props: { direction: 'top' } });
+    expect(top.classes()).toContain('sn-fab--top');
+
+    const bottom = mount(SnFab, { props: { direction: 'bottom' } });
+    expect(bottom.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--bottom');
+  });
+
+  it('sizes the trigger glyph with the icon-size token, not a pixel box', () => {
+    const wrapper = mount(SnFab);
+    const iconStyle = wrapper.find('.sn-fab__trigger .sn-icon').attributes('style') ?? '';
+    expect(iconStyle).toContain('var(--sn-mp-icon-size-');
+  });
+
+  it('lets the open-state transform cancel the direction offset', () => {
+    // Regression guard: the direction offset rules and the open rule used to
+    // share specificity (0,1,0) with the direction rules declared later, so
+    // the resting menu kept its 24rpx offset INTO the trigger and the last
+    // action item was visibly covered by the button — in every direction.
+    // happy-dom cannot compute rpx token styles, so this is guarded at the
+    // source level: the open rule must be the compound selector
+    // `.sn-fab__menu.sn-fab__menu--open` (0,2,0), which beats any direction
+    // rule regardless of source order.
+    const style = fabSource.slice(fabSource.indexOf('<style'));
+    expect(style).toMatch(
+      /\.sn-fab__menu\.sn-fab__menu--open\s*\{[^}]*transform:\s*translate\(0,\s*0\)/,
+    );
+    // The bare `--open` selector must not carry the transform any more —
+    // reintroducing it would silently reopen the overlap in all directions.
+    expect(style).not.toMatch(/^\.sn-fab__menu--open\s*\{[^}]*transform:/m);
+  });
+
+  describe('fan mode (AUI-OPT-19)', () => {
+    const fanActions = [
+      { icon: Star, text: '收藏' },
+      { icon: Heart, text: '喜欢' },
+      { icon: Coffee },
+    ];
+
+    /** Extract the px translate pair from a fan item's inline style. */
+    function fanOffset(wrapper: ReturnType<typeof mount>, index: number): [number, number] {
+      const style = wrapper.findAll('.sn-fab__fan-item')[index]?.attributes('style') ?? '';
+      const match = /translate\((-?[\d.]+)px, (-?[\d.]+)px\)/.exec(style);
+      expect(match).not.toBeNull();
+      return [Number(match?.[1]), Number(match?.[2])];
+    }
+
+    it('renders structured items instead of the slot in fan mode', () => {
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', actions: fanActions },
+        slots: { default: '<view class="slot-item">x</view>' },
+      });
+      expect(wrapper.findAll('.sn-fab__fan-item')).toHaveLength(3);
+      expect(wrapper.find('.sn-fab__fan-item--pill').exists()).toBe(true);
+      expect(wrapper.find('.sn-fab__fan-item--icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-fab__fan-item svg').exists()).toBe(true);
+      expect(wrapper.find('.slot-item').exists()).toBe(false);
+    });
+
+    it('keeps the default slot contract in line mode', () => {
+      const wrapper = mount(SnFab, { slots: { default: '<view class="slot-item">x</view>' } });
+      expect(wrapper.findAll('.sn-fab__fan-item')).toHaveLength(0);
+      expect(wrapper.find('.slot-item').exists()).toBe(true);
+    });
+
+    it('fans symmetrically around straight up from bottom-center', () => {
+      // R = 96px, 45° step → angles 225° / 270° / 315° (screen coords,
+      // y down): (±67.88, -67.88) · (0, -96) — the classic centre fan.
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', position: 'bottom-center', active: true, actions: fanActions },
+      });
+      const [x1, y1] = fanOffset(wrapper, 0);
+      const [x2, y2] = fanOffset(wrapper, 1);
+      const [x3, y3] = fanOffset(wrapper, 2);
+      expect(x1).toBeCloseTo(-67.88, 1);
+      expect(y1).toBeCloseTo(-67.88, 1);
+      expect(x2).toBeCloseTo(0, 1);
+      expect(y2).toBeCloseTo(-96, 1);
+      expect(x1).toBeCloseTo(-x3, 1);
+      expect(y1).toBeCloseTo(y3, 1);
+    });
+
+    it('fans into the up-left quadrant as an oblique fan from right-bottom', () => {
+      // Corner anchors cap the span at 90°: angles 180° / 225° / 270° —
+      // first item straight left, last straight up.
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', position: 'right-bottom', active: true, actions: fanActions },
+      });
+      const [x1, y1] = fanOffset(wrapper, 0);
+      const [x3, y3] = fanOffset(wrapper, 2);
+      expect(x1).toBeCloseTo(-96, 1);
+      expect(y1).toBeCloseTo(0, 1);
+      expect(x3).toBeCloseTo(0, 1);
+      expect(y3).toBeCloseTo(-96, 1);
+    });
+
+    it('scales the arc with fanRadius', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          position: 'bottom-center',
+          fanRadius: 140,
+          active: true,
+          actions: fanActions,
+        },
+      });
+      const [, y2] = fanOffset(wrapper, 1);
+      expect(y2).toBeCloseTo(-140, 1);
+    });
+
+    it('blooms out of the trigger centre with a per-item stagger', () => {
+      const closed = mount(SnFab, {
+        props: { mode: 'fan', actions: fanActions },
+      });
+      const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
+      expect(closedStyle).toContain('translate(0px, 0px) scale(0.4)');
+      expect(closedStyle).toContain('opacity: 0');
+      expect(closedStyle).toContain('visibility: hidden');
+      expect(closedStyle).toContain('transition-delay: 0ms');
+
+      const open = mount(SnFab, {
+        props: { mode: 'fan', active: true, actions: fanActions },
+      });
+      const styles = open
+        .findAll('.sn-fab__fan-item')
+        .map((item) => item.attributes('style') ?? '');
+      expect(styles[1]).toContain('transition-delay: 40ms');
+      expect(styles[2]).toContain('transition-delay: 80ms');
+      expect(styles[2]).toContain('scale(1)');
+      expect(styles[2]).toContain('opacity: 1');
+      // visibility must flip inline — the class keeps the items hidden and
+      // nothing else overrides it (regression: open fans rendered nothing).
+      expect(styles[2]).toContain('visibility: visible');
+    });
+
+    it('tints an item through the action color', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          active: true,
+          actions: [{ icon: Camera, color: 'var(--sn-mp-color-feedback-danger)' }],
+        },
+      });
+      expect(wrapper.find('.sn-fab__fan-item').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-danger)',
+      );
+    });
+
+    it('emits action with the payload and auto-closes on item tap', async () => {
+      const wrapper = mount(SnFab, {
+        props: { mode: 'fan', active: true, actions: fanActions },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      await items[1]?.trigger('tap');
+      expect(wrapper.emitted('action')?.[0]).toEqual([fanActions[1], 1]);
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([false]);
+    });
+
+    it('ignores taps on disabled fan items', async () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          active: true,
+          actions: [{ icon: Star, disabled: true }, { icon: Heart }],
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.attributes('aria-disabled')).toBe('true');
+      await items[0]?.trigger('tap');
+      expect(wrapper.emitted('action')).toBeUndefined();
+      expect(wrapper.emitted('update:active')).toBeUndefined();
+    });
+  });
+
+  describe('fan motion (fanMotion)', () => {
+    const sweepActions = [
+      { icon: Star, text: '收藏' },
+      { icon: Heart, text: '喜欢' },
+      { icon: Coffee },
+    ];
+
+    it('sweeps the ribs along the arc from the folded centre angle', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.classes()).toContain('sn-fab__fan-item--sweep');
+      const styleOf = (i: number) => items[i]?.attributes('style') ?? '';
+      // bottom-center: centre angle 270°, 45° step → 225° / 270° / 315°.
+      expect(styleOf(0)).toContain('rotate(225deg)');
+      expect(styleOf(1)).toContain('rotate(270deg)');
+      expect(styleOf(2)).toContain('rotate(315deg)');
+      expect(styleOf(0)).toContain('translateX(96px)');
+      expect(styleOf(1)).toContain('translateX(96px)');
+      expect(styleOf(2)).toContain('translateX(96px)');
+
+      // Folded at rest: every rib sits at the centre angle with radius 0.
+      const closed = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          actions: sweepActions,
+        },
+      });
+      const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
+      expect(closedStyle).toContain('rotate(270deg)');
+      expect(closedStyle).toContain('translateX(0px)');
+      expect(closedStyle).toContain('scale(0.4)');
+    });
+
+    it('counter-rotates the rib content to keep icons upright', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          fanMotion: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const bodies = wrapper.findAll('.sn-fab__fan-item-body');
+      expect(bodies[0]?.attributes('style')).toContain('rotate(-225deg)');
+      expect(bodies[1]?.attributes('style')).toContain('rotate(-270deg)');
+      expect(bodies[2]?.attributes('style')).toContain('rotate(-315deg)');
+    });
+
+    it('keeps the radial bloom as the default motion', () => {
+      const wrapper = mount(SnFab, {
+        props: {
+          mode: 'fan',
+          position: 'bottom-center',
+          active: true,
+          actions: sweepActions,
+        },
+      });
+      const items = wrapper.findAll('.sn-fab__fan-item');
+      expect(items[0]?.classes()).not.toContain('sn-fab__fan-item--sweep');
+      const style = items[1]?.attributes('style') ?? '';
+      expect(style).toContain('translate(0px, -96px)');
+      expect(style).not.toContain('rotate(');
+      // The body wrapper stays transform-free in bloom motion.
+      expect(wrapper.find('.sn-fab__fan-item-body').attributes('style')).toBe('');
+    });
+  });
+
+  describe('desktop mouse drag (additive)', () => {
+    /** Anchor a mouse drag on the trigger and release at `to`. */
+    async function mouseDrag(
+      wrapper: ReturnType<typeof mount>,
+      from: number[],
+      to: number[],
+    ): Promise<void> {
+      await wrapper
+        .find('.sn-fab__trigger')
+        .trigger('mousedown', { button: 0, clientX: from[0], clientY: from[1] });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: to[0], clientY: to[1] }));
+      document.dispatchEvent(new MouseEvent('mouseup', { clientX: to[0], clientY: to[1] }));
+      // The offset lands in reactive state on dispatch; the DOM style only
+      // carries it after Vue's update queue flushes.
+      await nextTick();
+    }
+
+    it('drags the trigger with the mouse on desktop H5', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [60, 40]);
+      expect(wrapper.attributes('style')).toContain('translate(50px, 30px)');
+    });
+
+    it('suppresses the toggle right after a mouse drag, then recovers', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [60, 40]);
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')).toBeUndefined();
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([true]);
+    });
+
+    it('still toggles when the pointer never leaves the button', async () => {
+      const wrapper = mount(SnFab, { props: { draggable: true } });
+      await mouseDrag(wrapper, [10, 10], [11, 11]);
+      await wrapper.find('.sn-fab__trigger').trigger('tap');
+      expect(wrapper.emitted('update:active')?.[0]).toEqual([true]);
+    });
+  });
+
+  describe('page-root closeOutside integration', () => {
+    // Mirrors DemoPageShell: a page root whose @tap closes every registered
+    // overlay. Without `@tap.stop` on the trigger, the opening tap bubbles to
+    // this root, closeOutside fires in the same gesture, and the menu flips
+    // open and shut within one frame — "the button does nothing".
+    function mountInShell(fabProps: Record<string, unknown>) {
+      const Shell = defineComponent({
+        components: { SnFab },
+        props: { fabProps: { type: Object, required: true } },
+        template: `
+          <view class="page-root" @tap="closeOutside">
+            <SnFab v-bind="fabProps" :active="active" @update:active="active = $event" />
+          </view>
+        `,
+        setup() {
+          const active = ref(false);
+          return { active, closeOutside };
+        },
+      });
+      return mount(Shell, { props: { fabProps } });
+    }
+
+    it('stays open when the trigger tap bubbles to the page root (line mode)', async () => {
+      const host = mountInShell({});
+      await host.find('.sn-fab__trigger').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--open');
+    });
+
+    it('stays open when the trigger tap bubbles to the page root (fan mode)', async () => {
+      const host = mountInShell({
+        mode: 'fan',
+        actions: [{ icon: Star, text: '收藏' }, { icon: Heart }],
+      });
+      await host.find('.sn-fab__trigger').trigger('tap');
+      const style = host.find('.sn-fab__fan-item').attributes('style') ?? '';
+      expect(style).toContain('scale(1)');
+      expect(style).toContain('opacity: 1');
+    });
+
+    it('still closes when tapping the page root outside the fab', async () => {
+      const host = mountInShell({});
+      await host.find('.sn-fab__trigger').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--open');
+      await host.find('.page-root').trigger('tap');
+      expect(host.find('.sn-fab__menu').classes()).not.toContain('sn-fab__menu--open');
+    });
   });
 });

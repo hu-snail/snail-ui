@@ -6,11 +6,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  SN_ICON_CATALOG,
-  SN_ICON_CATEGORY_LABELS,
-  searchSnIconCatalog,
-} from './sn-icon-catalog';
+import { SN_ICON_CATALOG, SN_ICON_CATEGORY_LABELS, searchSnIconCatalog } from './sn-icon-catalog';
 
 describe('sn-icon catalog 数据完整性', () => {
   it('should contain a curated set of at least 100 icons', () => {
@@ -41,7 +37,9 @@ describe('sn-icon catalog 数据完整性', () => {
   });
 
   it('should cover the direction category with the arrows shown in the showcase', () => {
-    const directionNames = SN_ICON_CATALOG.filter((e) => e.category === 'direction').map((e) => e.name);
+    const directionNames = SN_ICON_CATALOG.filter((e) => e.category === 'direction').map(
+      (e) => e.name,
+    );
     for (const name of ['arrow-down', 'arrow-up', 'arrow-left', 'arrow-right', 'chevron-down']) {
       expect(directionNames, name).toContain(name);
     }

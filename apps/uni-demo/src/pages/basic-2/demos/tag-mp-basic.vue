@@ -1,28 +1,53 @@
 <script setup lang="ts">
-/** Demo: sn-tag (uni-end) — 十种语义色 × 三档常用尺寸。 */
+/** Demo: sn-tag (uni-end) — 基础用法：十种语义色覆盖任务状态与内容分类。 */
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
+
+/** 任务状态：default 也能承场景（草稿），其余走语义色。 */
+const stages = [
+  { type: 'default', label: '草稿' },
+  { type: 'primary', label: '进行中' },
+  { type: 'success', label: '已完成' },
+  { type: 'warning', label: '待处理' },
+  { type: 'danger', label: '已逾期' },
+] as const;
+
+/** 内容分类：运营标记常用五色。 */
+const topics = [
+  { type: 'volcano', label: '热门' },
+  { type: 'lightblue', label: '公告' },
+  { type: 'cyan', label: '新品' },
+  { type: 'pink', label: '推荐' },
+  { type: 'purple', label: '会员' },
+] as const;
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnTag>默认</SnTag>
-    <SnTag type="primary">主要</SnTag>
-    <SnTag type="success">成功</SnTag>
-    <SnTag type="warning">警告</SnTag>
-    <SnTag type="danger">危险</SnTag>
-    <SnTag type="volcano">橘火</SnTag>
-    <SnTag type="lightblue">亮蓝</SnTag>
-    <SnTag type="cyan">青色</SnTag>
-    <SnTag type="pink">粉色</SnTag>
-    <SnTag type="purple">紫色</SnTag>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnTag v-for="stage in stages" :key="stage.type" :type="stage.type">
+        {{ stage.label }}
+      </SnTag>
+    </view>
+    <view class="sn-demo__row">
+      <SnTag v-for="topic in topics" :key="topic.type" :type="topic.type">
+        {{ topic.label }}
+      </SnTag>
+    </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-5);
+  align-items: flex-start;
+}
+
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
   align-items: center;
 }
 </style>

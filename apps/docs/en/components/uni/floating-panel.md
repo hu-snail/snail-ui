@@ -86,7 +86,7 @@ The wot-ui default is `[100, viewportHeight * 0.6]`. There is no `window` on min
 
 ## Dark mode
 
-The panel background uses `--sn-mp-color-background-elevated`, the text `--sn-mp-color-text-primary`, and the handle and shadow are tokens too — all overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The panel background uses `--sn-mp-color-background-elevated`, the text `--sn-mp-color-text-primary`, and the handle and shadow are tokens too — all overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

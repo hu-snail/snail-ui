@@ -2,22 +2,17 @@
 /**
  * SnDocsSidebarToggle — collapse / expand the left docs sidebar.
  *
- * Two placements, both driven by the shared `useSidebarCollapse()` state so
- * they can never disagree:
+ * One control, one place: `placement="handle"` renders the tab that is glued
+ * to the sidebar's LEFT edge (viewport x = 16px, the floating panel's own
+ * left edge) and stays there in both states — collapsing turns the same tab
+ * into the expand affordance instead of moving the control somewhere else
+ * (a button at the navbar's left was easy to miss). Driven by the shared
+ * `useSidebarCollapse()` state, mirrored onto `<html class="sn-sidebar-collapsed">`
+ * for custom.css §12 to animate the panel slide.
  *
- *   - `placement="handle"`: the tab that rides the sidebar's right border
- *     line, vertically centred (theme/Layout.vue mounts it through the
- *     `layout-top` slot, i.e. *outside* VPSidebar — that element is
- *     `overflow: hidden` and carries a transform, so a child of it would be
- *     clipped at the border and positioned against the sidebar box rather
- *     than the viewport). custom.css §12 gates its visibility: desktop only,
- *     only while a sidebar is rendered, and only while it is expanded.
- *   - `placement="navbar"` (default): the matching expand control inside
- *     SnDocsNav, which renders only while collapsed.
- *
- * The icon/label follow the *action*, not the placement: on the expanded
- * sidebar it offers "收起", and once collapsed the surviving navbar control
- * offers "展开".
+ * `placement="navbar"` is the inline control for the navbar band; the icon
+ * and label always follow the *action* ("收起" while expanded, "展开" once
+ * collapsed), and the chevron points the way the panel will travel.
  */
 
 import { computed } from 'vue';
@@ -49,7 +44,10 @@ const icon = computed(() =>
 <template>
   <SnButton
     class="sn-docs-sidebar-toggle"
-    :class="`sn-docs-sidebar-toggle--${placement}`"
+    :class="[
+      `sn-docs-sidebar-toggle--${placement}`,
+      { 'sn-docs-sidebar-toggle--collapsed': collapsed },
+    ]"
     size="small"
     :aria-label="label"
     :aria-expanded="!collapsed"
@@ -84,9 +82,10 @@ const icon = computed(() =>
   height: 100%;
 }
 
-/* Border-line tab: a half-pill whose flat edge sits on the sidebar's own
- * `border-right`, rounded into the article gutter. The 1px left border is
- * dropped so it never doubles the sidebar's. */
+/* Right-edge riding tab: a half-pill whose flat edge sits on the panel's
+  * right border (expanded), rounded into the article gutter. Collapsed:
+  * the panel has slid away, so the left edge is restored and both corners
+  * round off — the tab reads as a free-standing grabber. */
 .sn-docs-sidebar-toggle--handle {
   width: 20px;
   min-width: 20px;
@@ -97,11 +96,27 @@ const icon = computed(() =>
   border-radius: 0 10px 10px 0;
   background: var(--vp-c-bg);
   color: var(--sn-web-color-text-secondary);
+  /* 图标方向切换 / 折叠态补边都不该有跳变。 */
+  transition:
+    border-radius 0.24s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
+
+/* 折叠态：面板已滑出，手柄贴回左缘后右侧有了面板边可贴 —— 补回左侧
+ * 1px 边并收圆两侧，读作一枚独立的抓手。 */
+.sn-docs-sidebar-toggle--handle.sn-docs-sidebar-toggle--collapsed {
+  border-left: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+}
+
+/* 提升可发现性：悬停时向面板方向微微一推 + 图标染主题色。 */
 .sn-docs-sidebar-toggle--handle:hover:not(.sn-button--disabled) {
-  background: var(--vp-c-bg-soft);
-  color: var(--sn-web-color-text-primary);
+  border-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
+  color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
+  background: var(--vp-c-bg);
 }
+
 .sn-docs-sidebar-toggle--handle .sn-docs-sidebar-toggle__icon {
   width: 14px;
   height: 14px;

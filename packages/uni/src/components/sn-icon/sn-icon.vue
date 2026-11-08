@@ -42,6 +42,7 @@ import {
   resolveSnIconStringAsync,
   SnIconSourceError,
 } from './sn-icon-providers';
+import { toRpxSize } from '../../utils/sn-size';
 
 defineOptions({ name: 'SnIcon' });
 
@@ -56,6 +57,15 @@ export interface IconData {
   viewBox?: string;
   /** 一至多条 SVG path data 字符串。 */
   paths: string[];
+  /**
+   * 渲染模式：`stroke`（默认，lucide 形态 —— 路径是轮廓线，用 `stroke`
+   * 描出来）或 `fill`（实心字形 —— 路径是面，用 `fill` 填充）。
+   *
+   * Material Symbols / Material Icons 的 path 是**实心轮廓面**，按 stroke
+   * 渲染会变成双线空壳，因此这类图标集必须标 `'fill'`。`fill` 模式下
+   * `strokeWidth` 不参与渲染。
+   */
+  render?: 'stroke' | 'fill';
 }
 
 const props = withDefaults(
@@ -81,7 +91,10 @@ const props = withDefaults(
      * wot-ui 的 `css-icon`，用于指向任意 class（自定义子集 / 背景图方案）。
      */
     cssIcon?: boolean | string | undefined;
-    /** 尺寸（数字 → px；字符串如 '32rpx' / '1.5em' 原样输出）。 */
+    /**
+     * 尺寸。数字按 px；无单位数字字符串（'48'，常见于未绑定的模板属性）
+     * 按 rpx（750 设计稿）归一；带单位字符串（'32rpx' / '1.5em'）原样输出。
+     */
     size?: number | string | undefined;
     /** 描边 / 字形颜色。默认 `currentColor`（继承父元素 color）。 */
     color?: string | undefined;
@@ -108,7 +121,9 @@ const props = withDefaults(
 );
 
 /** 最终 SVG viewBox：用图标自带值，缺省 lucide 的 24x24 网格。 */
-const viewBox = computed(() => props.icon && typeof props.icon !== 'string' ? props.icon.viewBox ?? '0 0 24 24' : '0 0 24 24');
+const viewBox = computed(() =>
+  props.icon && typeof props.icon !== 'string' ? (props.icon.viewBox ?? '0 0 24 24') : '0 0 24 24',
+);
 
 /**
  * 生效描边宽度 — 传给内层 `<svg>`。uni-app rpx 在运行时按视口宽度解释，
@@ -173,10 +188,10 @@ const numericSize = computed(() => {
 
 function warnUnresolved(code: string, value: string, cause?: unknown): void {
   console.warn(
-    `[sn-icon] ${code}: cannot resolve icon "${value}".`
-      + ' Check the name (registry / built-in catalog / provider prefix),'
-      + ' or disable the network fallback with configSnIcons({ iconify: false }).',
-    cause instanceof SnIconSourceError ? `(${cause.code}) ${cause.message}` : cause ?? '',
+    `[sn-icon] ${code}: cannot resolve icon "${value}".` +
+      ' Check the name (registry / built-in catalog / provider prefix),' +
+      ' or disable the network fallback with configSnIcons({ iconify: false }).',
+    cause instanceof SnIconSourceError ? `(${cause.code}) ${cause.message}` : (cause ?? ''),
   );
 }
 
@@ -216,11 +231,7 @@ async function loadRemote(value: string): Promise<void> {
     if (seq !== loadSeq || ctrl.signal.aborted) return;
     remoteSrc.value = null;
     asyncIcon.value = null;
-    warnUnresolved(
-      err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED',
-      value,
-      err,
-    );
+    warnUnresolved(err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED', value, err);
   }
 }
 
@@ -255,14 +266,19 @@ onBeforeUnmount(() => {
 /** 展示用 IconData：同步解析优先，其次异步 Provider 产出的数据对象。 */
 const displayIcon = computed<IconData | null>(() => syncIcon.value ?? asyncIcon.value);
 
+/** 渲染模式：图标数据声明 `render: 'fill'` 时按实心字形填充（Material 类图标）。 */
+const isFillIcon = computed<boolean>(() => displayIcon.value?.render === 'fill');
+
 /** 远程 SVG 路径的内联样式（尺寸盒由 .sn-icon__remote 类承担）。 */
 const remoteStyle = computed(() =>
   remoteSrc.value !== null ? { backgroundImage: `url("${remoteSrc.value}")` } : {},
 );
 
-/** 两条路径共享的尺寸盒。 */
+/** 两条路径共享的尺寸盒。数字保持 px 契约；无单位数字字符串（"48"）按 rpx
+ * 归一——直接写进 CSS width 是非法值，浏览器忽略后 SVG 会按默认内在尺寸
+ * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。 */
 const boxStyle = computed(() => {
-  const len = typeof props.size === 'number' ? `${props.size}px` : props.size;
+  const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
   const style: Record<string, string> = { width: len, height: len };
   if (props.color !== 'currentColor') style.color = props.color;
   if (typeof props.customStyle === 'string') {
@@ -309,9 +325,9 @@ const boxStyle = computed(() => {
       v-else-if="displayIcon"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
-      fill="none"
-      :stroke="color"
-      :stroke-width="effectiveStrokeWidth"
+      :fill="isFillIcon ? color : 'none'"
+      :stroke="isFillIcon ? 'none' : color"
+      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"

@@ -29,8 +29,18 @@ const modeOptions = [
       <SnRadioGroup v-model="mode" name="mode" :options="modeOptions" />
     </div>
     <SnTimeline :mode="mode" :label-position="labelPosition">
-      <SnTimelineItem dot-color="#00b42a" label="2017-03-10" title="The first milestone" time="2017-03-10" />
-      <SnTimelineItem dot-color="#f53f3f" label="2018-05-12" title="The second milestone" time="2018-05-12" />
+      <SnTimelineItem
+        dot-color="#00b42a"
+        label="2017-03-10"
+        title="The first milestone"
+        time="2017-03-10"
+      />
+      <SnTimelineItem
+        dot-color="#f53f3f"
+        label="2018-05-12"
+        title="The second milestone"
+        time="2018-05-12"
+      />
       <SnTimelineItem label="2020-09-30" title="The third milestone" time="2020-09-30" />
     </SnTimeline>
   </div>

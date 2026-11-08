@@ -11,21 +11,26 @@ onHide(() => {});
 <style>
 /* 全局主题变量与动画（demo-shell / demo-glass 体系，见 DemoPageShell）。 */
 page {
-  --demo-page-bg: #eef1f8;
-  /* 玻璃卡：浅色透明渐变 + 白描边 + 柔影 */
-  --demo-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.46));
-  --demo-card-border: rgba(255, 255, 255, 0.72);
-  --demo-card-shadow: 0 12rpx 40rpx rgba(31, 41, 82, 0.08);
+  --demo-page-bg: #f8fafc;
+  /* 画布渐变（组件规范视觉稿）：slate-50 → slate-200，分区卡片浮在其上。 */
+  --demo-page-canvas: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 55%, #e7eaf0 100%);
+  /* 卡片：白底 + slate 描边 + 柔影（首页双列卡与组件页场景卡共用）。 */
+  --demo-card-bg: rgba(255, 255, 255, 0.92);
+  --demo-card-border: rgba(226, 232, 240, 0.8);
+  --demo-card-shadow: 0 8rpx 32rpx -8rpx rgba(15, 23, 42, 0.06);
   --demo-btn-bg: rgba(255, 255, 255, 0.66);
   --demo-btn-border: rgba(255, 255, 255, 0.85);
+  --demo-search-bg: rgba(255, 255, 255, 0.88);
+  /* 通栏头部：半透明毛玻璃底，画布从其下透出（与内容区背景一致）。 */
+  --demo-header-bg: rgba(255, 255, 255, 0.72);
+  --demo-chip-bg: rgba(241, 245, 249, 0.9);
+  --demo-chip-border: rgba(226, 232, 240, 0.8);
+  --demo-icon-bg: linear-gradient(135deg, #eaf1ff, #dbe7ff);
+  --demo-icon-fg: #4c7cf0;
   --demo-title: #1c2030;
   --demo-text: #565d73;
   --demo-text-3: #8f97ad;
-  /* 渐变弥散背景色块（radial 自带柔边，避免 filter blur 的 MP 兼容差） */
-  --demo-blob-1: radial-gradient(closest-side, rgba(124, 77, 255, 0.2), transparent);
-  --demo-blob-2: radial-gradient(closest-side, rgba(0, 145, 255, 0.16), transparent);
-  --demo-blob-3: radial-gradient(closest-side, rgba(255, 122, 89, 0.16), transparent);
-  background-color: #eef1f8;
+  background-color: #f8fafc;
 }
 
 /* 组件 token 锚定（关键修复）：tokens-mp 的 --sn-mp-* 颜色别名在某些环境
@@ -85,18 +90,53 @@ page {
  * （tokens-mp 对该插槽的设计约定——rail 是品牌色实底）。 */
 .demo-shell--dark {
   --sn-mp-color-control-knob: #e4e4e7;
-  --demo-page-bg: #10131c;
-  --demo-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  --demo-page-bg: #121020;
+  --demo-page-canvas: linear-gradient(180deg, #171526 0%, #121020 100%);
+  --demo-card-bg: linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   --demo-card-border: rgba(255, 255, 255, 0.1);
   --demo-card-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.4);
   --demo-btn-bg: rgba(255, 255, 255, 0.1);
   --demo-btn-border: rgba(255, 255, 255, 0.16);
+  --demo-search-bg: rgba(255, 255, 255, 0.07);
+  --demo-chip-bg: rgba(255, 255, 255, 0.08);
+  --demo-chip-border: rgba(255, 255, 255, 0.12);
+  --demo-header-bg: rgba(23, 21, 38, 0.72);
+  --demo-icon-bg: rgba(124, 92, 252, 0.22);
+  --demo-icon-fg: #a9bcff;
   --demo-title: #eef1fa;
   --demo-text: #a7aec4;
   --demo-text-3: #6d7488;
-  --demo-blob-1: radial-gradient(closest-side, rgba(124, 77, 255, 0.32), transparent);
-  --demo-blob-2: radial-gradient(closest-side, rgba(0, 145, 255, 0.26), transparent);
-  --demo-blob-3: radial-gradient(closest-side, rgba(255, 122, 89, 0.22), transparent);
+}
+
+/* demo 场景布局原语：`sn-demo` / `--stack` / `--column` 被全部 demo 根节点
+ * 使用，但此前**没有任何定义**——根节点退化成普通块流，内联 `<text>` 说明文字
+ * 与 `display: inline-flex` 的按钮会被排到同一行，出现「按钮压住说明文字」。
+ * 这里补上最小定义：竖向 flex 栈（flex item 自动块级化，行内按钮不再回溯到
+ * 文字行），按钮按内容宽度左对齐。 */
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  box-sizing: border-box;
+}
+
+.sn-demo--stack {
+  gap: 20rpx;
+}
+
+.sn-demo--column {
+  gap: 16rpx;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.sn-demo__button {
+  align-self: flex-start;
 }
 
 /* 玻璃卡：透明渐变 + 圆角 + 描边。
@@ -121,22 +161,6 @@ page {
     /* none 而非 translateY(0)：动画结束后的 fill 保留值若带 transform，
      * 会把 .home 变成 fixed 弹窗的 containing block。 */
     transform: none;
-  }
-}
-
-/* 呼吸：缓慢的缩放 + 透明度往复（背景色块用）。 */
-@keyframes demo-breathe {
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.15);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.7;
   }
 }
 </style>

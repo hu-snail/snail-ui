@@ -1,15 +1,25 @@
 <script setup lang="ts">
-/** Demo: sn-calendar — Sheet calendar: rolling only updates the draft and `v-model` is written on confirm; cancel discards the draft. */
-import { ref, computed } from 'vue';
+/**
+ * Demo: sn-calendar — cell-card entry for the sheet calendar.
+ *
+ * The card-form sn-cell-group carries the entry row (title + hint + selected
+ * value); tapping it opens the sheet. Rolling inside only updates the draft —
+ * `v-model` is written on confirm and cancel discards the draft.
+ */
+import { computed, ref } from 'vue';
+import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 7, 31).getTime();
 const date = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
 const open = ref(false);
+
 const formatted = computed(() => {
   const value = date.value;
-  if (typeof value !== 'number') return '(not selected)';
+  if (typeof value !== 'number') return '';
   const d = new Date(value);
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 });
@@ -17,8 +27,20 @@ const formatted = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <view class="sn-demo__button" @tap="open = true">Pick a date</view>
-    <text class="sn-demo__meta">Selected: {{ formatted }}</text>
+    <SnCellGroup card title="Basic usage">
+      <SnCell
+        title="Pick a date"
+        label="Bounds: 2024-06-01 ~ 2024-08-31"
+        :value="formatted"
+        placeholder="Not selected"
+        :prefix-icon-data="Calendar"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
+    <text class="sn-demo__meta">Selected: {{ formatted || 'Not selected' }}</text>
+
     <SnCalendar
       v-model="date"
       v-model:visible="open"
@@ -30,20 +52,15 @@ const formatted = computed(() => {
 </template>
 
 <style scoped>
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
 
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

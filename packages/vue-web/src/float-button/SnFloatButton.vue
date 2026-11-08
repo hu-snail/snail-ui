@@ -463,19 +463,19 @@ function handleClick(event: MouseEvent): void {
 /* ---------- Type ---------- */
 
 .sn-float-button--primary {
-  border-color: var(--sn-web-color-action-primary, #1677ff);
-  background: var(--sn-web-color-action-primary, #1677ff);
+  border-color: var(--sn-web-color-action-primary);
+  background: var(--sn-web-color-action-primary);
   color: var(--sn-web-color-text-on-primary, #ffffff);
 }
 
 .sn-float-button--primary:hover:not(.sn-float-button--disabled) {
-  border-color: var(--sn-web-color-action-primary-hover, #4096ff);
-  background: var(--sn-web-color-action-primary-hover, #4096ff);
+  border-color: var(--sn-web-color-action-primary-hover);
+  background: var(--sn-web-color-action-primary-hover);
 }
 
 .sn-float-button--default:hover:not(.sn-float-button--disabled) {
-  border-color: var(--sn-web-color-action-primary, #1677ff);
-  color: var(--sn-web-color-action-primary, #1677ff);
+  border-color: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-action-primary);
 }
 
 /* ---------- States ---------- */

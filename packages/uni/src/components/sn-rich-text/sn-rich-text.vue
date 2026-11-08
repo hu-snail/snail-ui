@@ -610,7 +610,7 @@ defineExpose({
 /* uni side: --sn-mp-* aliases only (rpx units, AGENTS.md §112.5).
  *
  * The component-level variables below are the public style surface: they
- * default to token aliases, so dark mode follows `page.sn-theme-dark`
+ * default to token aliases, so dark mode follows the `.sn-theme-dark` class
  * automatically, and consumers override them through `custom-style`. */
 
 .sn-rich-text {

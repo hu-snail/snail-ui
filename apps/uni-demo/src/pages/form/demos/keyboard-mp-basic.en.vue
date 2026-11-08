@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-keyboard — Numeric keypad: `maxlength` caps the value, delete removes one character, close hides it; pair it with a read-only field. */
+/** Demo: sn-keyboard — Default numeric keypad: bottom row [collapse][0][⌫], `maxlength` caps the value; pair it with a read-only field. */
 import { ref } from 'vue';
 import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 

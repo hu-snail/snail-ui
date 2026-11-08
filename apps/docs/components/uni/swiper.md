@@ -45,6 +45,12 @@
 
 <Demo name="swiper-mp-indicator" description="圆点 / 条形 / 分式 / 带左右控制按钮。" />
 
+## 3D 卡片（card3d）
+
+`card3d` 开启后每张卡片按相对激活窗口中心的偏移做 `perspective + rotateY + scale` 的 3D 呈现：中间卡片最大最平，两侧卡片向后倾、缩小并降低不透明度，卡片之间留缝。一屏几张仍由 `display-multiple-items` 决定；指示器按「页」计数（N 张、每屏 M 张 = N−M+1 页）。关闭时 DOM 与普通模式完全一致（AUI 追加能力，wd-swiper 无此呈现）。
+
+<Demo name="swiper-mp-card3d" description="3D 卡片一屏 2 张 / 1 张，以及普通模式对照；指示器按页计数。" />
+
 ## 视频项
 
 `type: "video"` 的项在 uni 端退化成渲染 `poster` 图片（见上方「声明但无渲染效果」）。下面这个 demo 同时演示了五个视频类 props 的写法与降级后的实际画面。
@@ -65,42 +71,43 @@
 
 ## Props
 
-| 属性                      | 类型                                    | 默认值       | 说明                                                      |
-| ------------------------- | --------------------------------------- | ------------ | --------------------------------------------------------- |
-| autoplay                  | boolean                                 | true         | 是否自动播放                                              |
-| current                   | number                                  | 0            | 当前轮播项索引（`v-model:current`）                       |
-| direction                 | 'horizontal' \| 'vertical'              | 'horizontal' | 轮播方向                                                  |
-| displayMultipleItems      | number                                  | 1            | 同时显示的滑块数量                                        |
-| duration                  | number                                  | 300          | 滑动动画时长（ms）                                        |
-| easingFunction            | string                                  | 'default'    | 切换缓动动画类型（透传给原生 swiper）                     |
-| height                    | string \| number                        | 192          | 轮播高度（数字按 rpx）                                    |
-| interval                  | number                                  | 5000         | 自动轮播间隔（ms）                                        |
-| list                      | (string \| SnSwiperItem)[]              | []           | 轮播数据列表                                              |
-| loop                      | boolean                                 | true         | 是否循环播放                                              |
-| nextMargin                | string \| number                        | 0            | 后边距（数字按 rpx）                                      |
-| indicatorPosition         | SwiperIndicatorPosition                 | 'bottom'     | 指示器位置                                                |
-| previousMargin            | string \| number                        | 0            | 前边距（数字按 rpx）                                      |
-| radius                    | string \| number                        | ''           | 轮播圆角（数字按 rpx）                                    |
-| snapToEdge                | boolean                                 | false        | 是否将边距应用到首尾元素                                  |
-| indicator                 | boolean \| SnSwiperIndicator            | true         | 指示器配置；`false` 隐藏                                  |
-| imageMode                 | SwiperImageMode                         | 'aspectFill' | 图片裁剪模式（透传给 `sn-img`）                           |
-| showMenuByLongpress       | boolean                                 | false        | 长按显示识别小程序码菜单                                  |
-| adjustHeight              | 'first' \| 'current' \| 'highest' \| '' | ''           | 自动按内容高度撑开（仅支付宝小程序生效）                  |
-| adjustVerticalHeight      | boolean                                 | false        | 竖向模式下也应用 `adjustHeight`（仅支付宝小程序生效）     |
-| autoplayVideo             | boolean                                 | false        | 自动播放视频项（已声明，视频项降级为 poster，不改变画面） |
-| muted                     | boolean                                 | false        | 静音视频项（同上，不改变画面）                            |
-| videoLoop                 | boolean                                 | false        | 视频项循环（同上，不改变画面）                            |
-| stopPreviousVideo         | boolean                                 | false        | 切张时停止上一张的视频（同上，不改变画面）                |
-| stopAutoplayWhenVideoPlay | boolean                                 | false        | 视频播放时暂停自动轮播（同上，不改变画面）                |
-| valueKey                  | string                                  | 'value'      | 选项对象中图片地址字段名                                  |
-| textKey                   | string                                  | 'text'       | 选项对象中标题字段名                                      |
-| customIndicatorClass      | string                                  | ''           | 自定义指示器类名                                          |
-| customImageClass          | string                                  | ''           | 自定义图片类名                                            |
-| customItemClass           | string                                  | ''           | 自定义轮播项类名                                          |
-| customTextClass           | string                                  | ''           | 自定义标题类名                                            |
-| customTextStyle           | string                                  | ''           | 自定义标题样式                                            |
-| customClass               | string                                  | ''           | 根节点自定义类名                                          |
-| customStyle               | string                                  | ''           | 根节点自定义样式                                          |
+| 属性                      | 类型                                    | 默认值       | 说明                                                          |
+| ------------------------- | --------------------------------------- | ------------ | ------------------------------------------------------------- |
+| autoplay                  | boolean                                 | true         | 是否自动播放                                                  |
+| current                   | number                                  | 0            | 当前轮播项索引（`v-model:current`）                           |
+| direction                 | 'horizontal' \| 'vertical'              | 'horizontal' | 轮播方向                                                      |
+| displayMultipleItems      | number                                  | 1            | 同时显示的滑块数量                                            |
+| card3d                    | boolean                                 | false        | 3D 卡片模式（AUI 追加）；一屏多个由 displayMultipleItems 控制 |
+| duration                  | number                                  | 300          | 滑动动画时长（ms）                                            |
+| easingFunction            | string                                  | 'default'    | 切换缓动动画类型（透传给原生 swiper）                         |
+| height                    | string \| number                        | 192          | 轮播高度（数字按 rpx）                                        |
+| interval                  | number                                  | 5000         | 自动轮播间隔（ms）                                            |
+| list                      | (string \| SnSwiperItem)[]              | []           | 轮播数据列表                                                  |
+| loop                      | boolean                                 | true         | 是否循环播放                                                  |
+| nextMargin                | string \| number                        | 0            | 后边距（数字按 rpx）                                          |
+| indicatorPosition         | SwiperIndicatorPosition                 | 'bottom'     | 指示器位置                                                    |
+| previousMargin            | string \| number                        | 0            | 前边距（数字按 rpx）                                          |
+| radius                    | string \| number                        | ''           | 轮播圆角（数字按 rpx）                                        |
+| snapToEdge                | boolean                                 | false        | 是否将边距应用到首尾元素                                      |
+| indicator                 | boolean \| SnSwiperIndicator            | true         | 指示器配置；`false` 隐藏                                      |
+| imageMode                 | SwiperImageMode                         | 'aspectFill' | 图片裁剪模式（透传给 `sn-img`）                               |
+| showMenuByLongpress       | boolean                                 | false        | 长按显示识别小程序码菜单                                      |
+| adjustHeight              | 'first' \| 'current' \| 'highest' \| '' | ''           | 自动按内容高度撑开（仅支付宝小程序生效）                      |
+| adjustVerticalHeight      | boolean                                 | false        | 竖向模式下也应用 `adjustHeight`（仅支付宝小程序生效）         |
+| autoplayVideo             | boolean                                 | false        | 自动播放视频项（已声明，视频项降级为 poster，不改变画面）     |
+| muted                     | boolean                                 | false        | 静音视频项（同上，不改变画面）                                |
+| videoLoop                 | boolean                                 | false        | 视频项循环（同上，不改变画面）                                |
+| stopPreviousVideo         | boolean                                 | false        | 切张时停止上一张的视频（同上，不改变画面）                    |
+| stopAutoplayWhenVideoPlay | boolean                                 | false        | 视频播放时暂停自动轮播（同上，不改变画面）                    |
+| valueKey                  | string                                  | 'value'      | 选项对象中图片地址字段名                                      |
+| textKey                   | string                                  | 'text'       | 选项对象中标题字段名                                          |
+| customIndicatorClass      | string                                  | ''           | 自定义指示器类名                                              |
+| customImageClass          | string                                  | ''           | 自定义图片类名                                                |
+| customItemClass           | string                                  | ''           | 自定义轮播项类名                                              |
+| customTextClass           | string                                  | ''           | 自定义标题类名                                                |
+| customTextStyle           | string                                  | ''           | 自定义标题样式                                                |
+| customClass               | string                                  | ''           | 根节点自定义类名                                              |
+| customStyle               | string                                  | ''           | 根节点自定义样式                                              |
 
 `SnSwiperItem` = `{ value?, poster?, text?, type?: "image" | "video" }`；`SnSwiperIndicator` = `{ type?: "dots" | "dots-bar" | "fraction"; minShowNum?; showControls? }`。
 

@@ -256,7 +256,11 @@ function handleToggleFullscreen(): void {
 }
 
 .sn-video-controls__button:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 
@@ -295,7 +299,7 @@ function handleToggleFullscreen(): void {
   margin-top: calc(var(--sn-web-video-controls-thumb-size, 12px) / -2 + 2px);
   border: none;
   border-radius: var(--sn-web-radius-full, 999px);
-  background: var(--sn-web-video-controls-thumb-bg, var(--sn-web-color-action-primary, #1677ff));
+  background: var(--sn-web-video-controls-thumb-bg, var(--sn-web-color-action-primary));
 }
 
 .sn-video-controls__timeline::-moz-range-track {
@@ -309,11 +313,15 @@ function handleToggleFullscreen(): void {
   height: var(--sn-web-video-controls-thumb-size, 12px);
   border: none;
   border-radius: var(--sn-web-radius-full, 999px);
-  background: var(--sn-web-video-controls-thumb-bg, var(--sn-web-color-action-primary, #1677ff));
+  background: var(--sn-web-video-controls-thumb-bg, var(--sn-web-color-action-primary));
 }
 
 .sn-video-controls__timeline:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 </style>

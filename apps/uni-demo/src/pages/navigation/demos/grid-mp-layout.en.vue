@@ -7,14 +7,14 @@ import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 <template>
   <view class="sn-demo sn-demo--column">
     <SnGrid :column="4" :gutter="16" square clickable>
-      <SnGridItem text="Scan" icon="Search" />
-      <SnGridItem text="Pay" icon="Download" />
-      <SnGridItem text="Receive" icon="Upload" />
-      <SnGridItem text="More" icon="MoreHorizontal" />
+      <SnGridItem text="Scan" icon="camera" />
+      <SnGridItem text="Pay" icon="wallet" />
+      <SnGridItem text="Receive" icon="banknote" />
+      <SnGridItem text="More" icon="ellipsis" />
     </SnGrid>
     <SnGrid :column="2" :gutter="12" direction="horizontal" :reverse="true">
-      <SnGridItem text="Horizontal" icon="Star" />
-      <SnGridItem text="Icon last" icon="Heart" />
+      <SnGridItem text="Horizontal" icon="star" />
+      <SnGridItem text="Icon last" icon="heart" />
     </SnGrid>
     <text class="sn-demo__meta"
       >4 columns with gutter and square cells; horizontal flow with reversed icon order</text

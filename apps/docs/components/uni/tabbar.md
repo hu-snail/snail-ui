@@ -6,25 +6,7 @@
 
 `v-model` 绑定激活项的索引或名称，`sn-tabbar-item` 承载图标与文案：
 
-<Demo name="tabbar-mp-basic" description="v-model 绑定索引；icon 经图标注册表解析；bordered 顶部边框。" />
-
-## 徽标与形状
-
-`value` 显示数字徽标（超过 `max` 显示 `99+`），`is-dot` 显示点状徽标，`shape="round"` 切换圆形样式：
-
-<Demo name="tabbar-mp-badge" description="value 数字徽标；is-dot 点状徽标；max 上限；shape=round 圆形标签栏。" />
-
-## 固定底部与安全区
-
-`fixed` 把标签栏贴到页面底部，`placeholder` 生成等高占位，`safe-area-inset-bottom` 补底部安全区，`z-index` 决定层级：
-
-<Demo name="tabbar-mp-fixed" description="fixed + placeholder + safe-area-inset-bottom + z-index 的固定底部标签栏。" />
-
-## 颜色覆盖与 name 取值
-
-`active-color` / `inactive-color` 内联覆盖文案颜色；子项传 `name` 时以 `name` 为值，否则用注册索引：
-
-<Demo name="tabbar-mp-color" description="active-color / inactive-color 颜色覆盖；索引取值与 name 取值两种 v-model 写法。" />
+<Demo name="tabbar-mp-playground" description="标签栏固定在屏幕底部；形态胶囊（标准 / 毛玻璃 / 凸起）、边框 / 安全区 / 占位 / 徽标开关、激活色切换，全部设置项实时生效。" />
 
 ## 自动注册（easycom）
 
@@ -47,20 +29,22 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 
 ### sn-tabbar
 
-| 属性                  | 类型                                     | 默认值      | 说明                                |
-| --------------------- | ---------------------------------------- | ----------- | ----------------------------------- |
-| `modelValue`          | `number \| string`                       | `0`         | 选中标签的索引值或名称              |
-| `fixed`               | `boolean`                                | `false`     | 是否固定在底部                      |
-| `bordered`            | `boolean`                                | `false`     | 是否显示顶部边框                    |
-| `safeAreaInsetBottom` | `boolean`                                | `false`     | 是否设置底部安全区                  |
-| `shape`               | `'default' \| 'round'`                   | `'default'` | 标签栏形状                          |
-| `activeColor`         | `string`                                 | `''`        | 激活标签颜色（空 = 令牌默认）       |
-| `inactiveColor`       | `string`                                 | `''`        | 未激活标签颜色（空 = 令牌默认）     |
-| `placeholder`         | `boolean`                                | `false`     | 固定时是否生成等高占位元素          |
-| `zIndex`              | `number`                                 | `10`        | 组件层级（仅在 `fixed` 时写入）     |
-| `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | 切换前钩子，返回 `false` 可阻止切换 |
-| `customClass`         | `string`                                 | `''`        | 根节点自定义类名                    |
-| `customStyle`         | `string`                                 | `''`        | 根节点自定义 inline style           |
+| 属性                  | 类型                                      | 默认值      | 说明                                                        |
+| --------------------- | ----------------------------------------- | ----------- | ----------------------------------------------------------- |
+| `modelValue`          | `number \| string`                        | `0`         | 选中标签的索引值或名称                                      |
+| `fixed`               | `boolean`                                 | `false`     | 是否固定在底部                                              |
+| `bordered`            | `boolean`                                 | `false`     | 是否显示顶部边框                                            |
+| `safeAreaInsetBottom` | `boolean`                                 | `false`     | 是否设置底部安全区                                          |
+| `shape`               | `'default' \| 'round'`                    | `'default'` | 标签栏形状                                                  |
+| `activeColor`         | `string`                                  | `''`        | 激活标签颜色（图标 + 文字，空 = 令牌默认）                  |
+| `inactiveColor`       | `string`                                  | `''`        | 未激活标签颜色（图标 + 文字，空 = 令牌默认）                |
+| `placeholder`         | `boolean`                                 | `false`     | 固定时是否生成等高占位元素                                  |
+| `zIndex`              | `number`                                  | `10`        | 组件层级（仅在 `fixed` 时写入）                             |
+| `glass`               | `boolean`                                 | `false`     | 毛玻璃风格：半透明表面 + backdrop-filter 模糊（additive）   |
+| `elevate`             | `{ index: number; icon: string } \| null` | `null`      | 中心凸起项：第 index 个标签渲染为上凸圆形主按钮（additive） |
+| `beforeChange`        | `(value) => boolean \| Promise<boolean>`  | `undefined` | 切换前钩子，返回 `false` 可阻止切换                         |
+| `customClass`         | `string`                                  | `''`        | 根节点自定义类名                                            |
+| `customStyle`         | `string`                                  | `''`        | 根节点自定义 inline style                                   |
 
 ### sn-tabbar-item
 

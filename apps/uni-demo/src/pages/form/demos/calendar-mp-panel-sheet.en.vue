@@ -1,7 +1,17 @@
 <script setup lang="ts">
-/** Demo: sn-calendar — panel and sheet: panelHeight / showPanelTitle / switchMode / duration / immediateChange / showConfirm / scrim and stacking. */
-import { ref } from 'vue';
+/**
+ * Demo: sn-calendar — panel and sheet wiring, one cell card per config group.
+ *
+ * Three card rows cover: panel size and switcher (panelHeight / showPanelTitle /
+ * switchMode / duration), immediate write-back (immediateChange), and the
+ * no-confirm button sheet plus the confirm-left slot and scrim / safe area /
+ * stacking / custom class and style forwarding.
+ */
+import { computed, ref } from 'vue';
+import { Info, Settings, Zap } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -14,12 +24,57 @@ const openInstant = ref(false);
 
 const noConfirm = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
 const openNoConfirm = ref(false);
+
+function fmtStamp(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
+const instantText = computed(() => fmtStamp(instant.value));
+const noConfirmText = computed(() => fmtStamp(noConfirm.value));
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">panelHeight / showPanelTitle / switchMode / duration</text>
-    <view class="sn-demo__button" @tap="openMonthSwitch = true">Month / year switch</view>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="Panel & sheet">
+      <SnCell
+        title="Month / year switch"
+        label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
+        :value="monthSwitchText"
+        placeholder="Not selected"
+        :prefix-icon-data="Settings"
+        is-link
+        @click="openMonthSwitch = true"
+      />
+      <SnCell
+        title="Immediate write-back"
+        label="immediate-change: writes v-model as soon as a cell is tapped"
+        :value="instantText"
+        placeholder="Not selected"
+        :prefix-icon-data="Zap"
+        is-link
+        @click="openInstant = true"
+      />
+      <SnCell
+        title="No confirm button + footer slot"
+        label="show-confirm=false · confirm-left slot holds a clear action · close-on-click-modal=false"
+        :value="noConfirmText"
+        placeholder="Not selected"
+        :prefix-icon-data="Info"
+        is-link
+        @click="openNoConfirm = true"
+      />
+    </SnCellGroup>
+
+    <text class="sn-demo__meta">
+      Three configs: month / year switch ({{ monthSwitchText || 'Not selected' }}) · immediate
+      write-back ({{ instantText || 'Not selected' }}) · no confirm button ({{
+        noConfirmText || 'Not selected'
+      }})
+    </text>
+
     <SnCalendar
       v-model="monthSwitch"
       v-model:visible="openMonthSwitch"
@@ -34,9 +89,6 @@ const openNoConfirm = ref(false);
       custom-view-class="sn-demo__panel"
     />
 
-    <text class="sn-demo__title">immediateChange (writes v-model as soon as a cell is tapped)</text>
-    <view class="sn-demo__button" @tap="openInstant = true">Immediate write-back</view>
-    <text class="sn-demo__meta">Selected: {{ instant }}</text>
     <SnCalendar
       v-model="instant"
       v-model:visible="openInstant"
@@ -47,10 +99,6 @@ const openNoConfirm = ref(false);
       immediate-change
     />
 
-    <text class="sn-demo__title"
-      >showConfirm=false + closeOnClickModal + zIndex + safeAreaInsetBottom</text
-    >
-    <view class="sn-demo__button" @tap="openNoConfirm = true">No confirm button</view>
     <SnCalendar
       v-model="noConfirm"
       v-model:visible="openNoConfirm"
@@ -65,39 +113,42 @@ const openNoConfirm = ref(false);
       root-portal
       custom-class="sn-demo__sheet"
       custom-style="border-radius: var(--sn-mp-radius-xl);"
-    />
+    >
+      <template #confirm-left>
+        <view class="sn-demo__reset" role="button" aria-label="Clear" @tap="noConfirm = null">
+          <text>Clear</text>
+        </view>
+      </template>
+    </SnCalendar>
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
 
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 
 .sn-demo__panel {
-  border-top: 1rpx solid var(--sn-mp-color-border-subtle);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
 .sn-demo__sheet {
   background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-demo__reset {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
 }
 </style>

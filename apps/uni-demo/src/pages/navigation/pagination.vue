@@ -1,8 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— pagination 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/pagination-mp-basic.vue';
-import Demo1 from './demos/pagination-mp-slots.vue';
-import Demo2 from './demos/pagination-mp-variant.vue';
+import Demo1 from './demos/pagination-mp-disabled.vue';
+import Demo2 from './demos/pagination-mp-simple.vue';
+import Demo3 from './demos/pagination-mp-slots.vue';
+import Demo4 from './demos/pagination-mp-variant.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -11,30 +14,36 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'">
+  <DemoPageShell :title-zh="'分页'" :title-en="'Pagination'" :desc="'页码切换'" :bg="''">
     <view class="page">
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('变体', 'Variants') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('simple', 'Simple')" badge="simple" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>
@@ -43,25 +52,23 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
-}
-
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

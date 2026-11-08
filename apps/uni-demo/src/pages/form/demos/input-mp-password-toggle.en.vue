@@ -8,8 +8,8 @@ const secret = ref('initial-secret-123');
 
 <template>
   <view class="sn-input-demo">
-    <SnInput v-model="secret" type="password" show-password placeholder="Password with toggle" />
-    <text class="sn-input-demo__hint">Tap the eye icon to toggle password visibility</text>
+    <SnInput v-model="secret" type="password" show-password placeholder="Password" />
+    <text class="sn-input-demo__caption">Tap the eye icon to toggle visibility</text>
   </view>
 </template>
 
@@ -18,10 +18,10 @@ const secret = ref('initial-secret-123');
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 600rpx;
 }
-.sn-input-demo__hint {
+.sn-input-demo__caption {
+  margin-top: 8rpx;
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

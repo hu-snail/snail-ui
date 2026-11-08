@@ -103,7 +103,7 @@
 
 ## 暗色模式
 
-组件的遮罩与面板分别走 `--sn-mp-color-background-overlay` / `--sn-mp-color-background-elevated`，两者都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖过，因此暗色下自动适配，无需额外配置。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
+组件的遮罩与面板分别走 `--sn-mp-color-background-overlay` / `--sn-mp-color-background-elevated`，两者都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖过，因此暗色下自动适配，无需额外配置。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
 
 ## 相关
 

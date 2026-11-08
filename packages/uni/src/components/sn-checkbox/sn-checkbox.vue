@@ -227,6 +227,13 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
       <view
         v-if="effectivePlacement === 'left'"
         class="sn-checkbox__icon"
+        :class="{
+          /* Filled-plate marker — lets the doodle skin override the checked
+           * colors with a 2-level rule (§116.2: a 3-level
+           * `.skin .checkbox--checked .icon` selector is unrepresentable on
+           * App). Indeterminate shares the filled plate, as before. */
+          'sn-checkbox__icon--checked': isChecked || props.indeterminate,
+        }"
         :style="iconStyle"
         aria-hidden="true"
       >
@@ -244,6 +251,7 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
       <view
         v-if="effectivePlacement === 'right'"
         class="sn-checkbox__icon"
+        :class="{ 'sn-checkbox__icon--checked': isChecked || props.indeterminate }"
         :style="iconStyle"
         aria-hidden="true"
       >
@@ -327,9 +335,10 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
   border-radius: 50%;
 }
 
-/* Checked / indeterminate plate. */
-.sn-checkbox--checked .sn-checkbox__icon,
-.sn-checkbox--indeterminate .sn-checkbox__icon {
+/* Checked / indeterminate plate. The filled-plate styling lives on the
+ * icon's own modifier class so the doodle skin override below stays a
+ * 2-level rule (§116.2 — App cannot express a 3-level descendant selector). */
+.sn-checkbox__icon--checked {
   background-color: var(--sn-mp-color-action-primary);
   border-color: var(--sn-mp-color-action-primary);
 }
@@ -373,7 +382,7 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
   border-radius: var(--sn-mp-radius-xs);
   box-shadow: 2rpx 2rpx 0 var(--sn-mp-color-text-primary);
 }
-.snui-skin-doodle .sn-checkbox--checked .sn-checkbox__icon {
+.snui-skin-doodle .sn-checkbox__icon--checked {
   background-color: var(--sn-mp-color-text-primary);
   border-color: var(--sn-mp-color-text-primary);
 }

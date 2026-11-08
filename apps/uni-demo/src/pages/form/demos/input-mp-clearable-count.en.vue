@@ -4,23 +4,22 @@ import { reactive } from 'vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
 const form = reactive({
-  clearable: 'click × to clear me',
+  clearable: 'Click × to clear me',
   counter: 'hel',
 });
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="form.clearable" clearable placeholder="Type then click ×" />
-    <SnInput v-model="form.counter" :maxlength="10" show-count />
+  <view class="sn-input-demo">
+    <SnInput v-model="form.clearable" clearable placeholder="clearable" />
+    <SnInput v-model="form.counter" :maxlength="10" show-count placeholder="maxlength + count" />
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
 </style>

@@ -112,6 +112,10 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   // `rgba(0,0,0,0.04)` stays invisible on a dark surface.
   ['--sn-mp-color-background-soft', 'var(--aui-color-background-subtle)'],
   ['--sn-mp-color-background-sunken', 'var(--aui-color-background-sunken)'],
+  // Dark floating toast plate (sn-toast). Same value in both themes — the
+  // dark block re-declares it with the same indirection, per the "keeps its
+  // identity" pattern used by the brand hues.
+  ['--sn-mp-color-background-inverse', 'var(--aui-color-background-inverse)'],
   ['--sn-mp-color-border-default', 'var(--aui-color-border-default)'],
   ['--sn-mp-color-border-subtle', 'var(--aui-color-border-subtle)'],
   ['--sn-mp-color-action-primary', 'var(--aui-color-action-primary)'],

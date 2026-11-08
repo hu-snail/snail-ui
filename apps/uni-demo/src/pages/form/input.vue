@@ -1,21 +1,23 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— input 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/input-mp-align-compact.vue';
-import Demo1 from './demos/input-mp-basic.vue';
-import Demo2 from './demos/input-mp-bordered-bg-radius.vue';
-import Demo3 from './demos/input-mp-clear-focus.vue';
-import Demo4 from './demos/input-mp-clearable-count.vue';
-import Demo5 from './demos/input-mp-custom-class.vue';
-import Demo6 from './demos/input-mp-native-attrs.vue';
-import Demo7 from './demos/input-mp-password-toggle.vue';
-import Demo8 from './demos/input-mp-prefix-suffix.vue';
-import Demo9 from './demos/input-mp-runtime.vue';
-import Demo10 from './demos/input-mp-sizes.vue';
-import Demo11 from './demos/input-mp-slots.vue';
+import Demo0 from './demos/input-mp-basic.vue';
+import Demo1 from './demos/input-mp-types.vue';
+import Demo2 from './demos/input-mp-sizes.vue';
+import Demo3 from './demos/input-mp-radius.vue';
+import Demo4 from './demos/input-mp-bordered-bg-radius.vue';
+import Demo5 from './demos/input-mp-prefix-suffix.vue';
+import Demo6 from './demos/input-mp-slots.vue';
+import Demo7 from './demos/input-mp-clearable-count.vue';
+import Demo8 from './demos/input-mp-clear-focus.vue';
+import Demo9 from './demos/input-mp-password-toggle.vue';
+import Demo10 from './demos/input-mp-word-limit.vue';
+import Demo11 from './demos/input-mp-status.vue';
 import Demo12 from './demos/input-mp-states.vue';
-import Demo13 from './demos/input-mp-status.vue';
-import Demo14 from './demos/input-mp-types.vue';
-import Demo15 from './demos/input-mp-word-limit.vue';
+import Demo13 from './demos/input-mp-align-compact.vue';
+import Demo14 from './demos/input-mp-native-attrs.vue';
+import Demo15 from './demos/input-mp-runtime.vue';
+import Demo16 from './demos/input-mp-custom-class.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -24,134 +26,111 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'">
+  <DemoPageShell :title-zh="'输入框'" :title-en="'Input'" :desc="'单行文本输入'" :bg="'#ffffff'">
     <view class="page">
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('align-compact', 'Align Compact') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('类型', 'Type')" badge="types" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('bordered-bg-radius', 'Bordered Bg Radius') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('尺寸', 'Sizes')" badge="sizes" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('clear-focus', 'Clear Focus') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('圆角', 'Radius')" badge="radius" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('clearable-count', 'Clearable Count') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('边框与背景', 'Border & background')"
+          badge="bordered-bg-radius"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('自定义类名', 'Custom class') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('前后图标', 'Prefix & suffix icons')" badge="prefix-suffix" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('native-attrs', 'Native Attrs') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('password-toggle', 'Password Toggle') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('清空与字数', 'Clearable & count')" badge="clearable-count" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('prefix-suffix', 'Prefix Suffix') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('清空与聚焦', 'Clear & focus')" badge="clear-focus" />
         <view class="module__body">
           <Demo8 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('runtime', 'Runtime') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('密码显隐', 'Password toggle')" badge="password-toggle" />
         <view class="module__body">
           <Demo9 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('sizes', 'Sizes') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('字数统计', 'Word limit')" badge="word-limit" />
         <view class="module__body">
           <Demo10 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('校验状态', 'Validation status')" badge="status" />
         <view class="module__body">
           <Demo11 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('状态', 'State') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('禁用与只读', 'Disabled & readonly')" badge="states" />
         <view class="module__body">
           <Demo12 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('status', 'Status') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('对齐与紧凑', 'Alignment & compact')" badge="align-compact" />
         <view class="module__body">
           <Demo13 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('类型', 'Type') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('原生属性', 'Native attributes')" badge="native-attrs" />
         <view class="module__body">
           <Demo14 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('word-limit', 'Word Limit') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('运行时属性', 'Runtime attributes')" badge="runtime" />
         <view class="module__body">
           <Demo15 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
+        <view class="module__body">
+          <Demo16 />
         </view>
       </view>
     </view>
@@ -160,25 +139,23 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
-}
-
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

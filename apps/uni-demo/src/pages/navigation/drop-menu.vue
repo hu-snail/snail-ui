@@ -1,8 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— drop-menu 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/drop-menu-mp-basic.vue';
-import Demo1 from './demos/drop-menu-mp-guard.vue';
-import Demo2 from './demos/drop-menu-mp-panel.vue';
+import Demo1 from './demos/drop-menu-mp-direction.vue';
+import Demo2 from './demos/drop-menu-mp-guard.vue';
+import Demo3 from './demos/drop-menu-mp-icon.vue';
+import Demo4 from './demos/drop-menu-mp-panel.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -11,30 +14,36 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'">
+  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'" :desc="'顶部下拉筛选'" :bg="''">
     <view class="page">
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('拦截', 'Guard') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('panel', 'Panel') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('panel', 'Panel')" badge="panel" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>
@@ -43,25 +52,32 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
 
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+/* drop-menu：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

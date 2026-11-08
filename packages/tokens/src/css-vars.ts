@@ -87,8 +87,13 @@ export function snCssVars(options: SnCssVarsOptions = {}): string {
     density: options.density ?? COMFORTABLE_DENSITY,
   };
   const darkBindings = resolveEnvironment(darkEnv);
-  const darkAui = renderStyleBlock(darkBindings).replace(/:root/, '[data-theme="dark"]');
-  const darkAlias = renderAliasBlock(darkBindings, '[data-theme="dark"]');
+  // Dark block: match BOTH selectors the ecosystem uses — `[data-theme="dark"]`
+  // (library / template default) and `.dark` (VitePress and other class-based
+  // hosts). Emitting both keeps an injected runtime theme readable on a
+  // `.dark` site, which previously fell back to the light values.
+  const darkSelector = '[data-theme="dark"], .dark';
+  const darkAui = renderStyleBlock(darkBindings).replace(/:root/, darkSelector);
+  const darkAlias = renderAliasBlock(darkBindings, darkSelector);
 
   return [lightAui, lightAlias, darkAui, darkAlias].join('\n');
 }

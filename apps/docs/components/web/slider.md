@@ -1,6 +1,6 @@
 # Slider · Web（PC 端）
 
-滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、showSteps 步长刻度、showInput 输入框、vertical / reverse、tooltip，以及渐变 / 透明轨道与自定义气泡背景。
+滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、showSteps 步长刻度、showInput 输入框、vertical / reverse、tooltip，以及渐变 / 透明轨道与自定义气泡背景。单柄模式下轨道用主题色从 min 填充到手柄。
 
 ## 基础用法
 
@@ -38,28 +38,34 @@
 
 ### SnSlider Props
 
-| Prop                | 类型                                  | 默认值      | 说明                    |
-| ------------------- | ------------------------------------- | ----------- | ----------------------- |
-| modelValue          | `number \| [number, number]`          | `0`         | v-model（range 时双柄） |
-| min / max           | `number`                              | `0` / `100` | 边界                    |
-| step                | `number`                              | `1`         | 步长吸附                |
-| range               | `boolean`                             | `false`     | 双柄范围模式            |
-| disabled / readonly | `boolean`                             | `false`     | 禁用 / 只读             |
-| vertical            | `boolean`                             | `false`     | 垂直方向                |
-| reverse             | `boolean`                             | `false`     | 反向                    |
-| tooltip             | `boolean`                             | `true`      | 拖拽气泡                |
-| formatTooltip       | `(value: number) => string \| number` | —           | 气泡格式化              |
-| marks               | `Record<number, string>`              | —           | 刻度                    |
-| placement           | 12 方位                               | `'top'`     | 气泡方位                |
-| showSteps           | `boolean`                             | `false`     | 步长刻度（min / max 之间的内部刻度） |
-| showInput           | `boolean`                             | `false`     | 轨道旁数字输入框（range 双输入框）   |
-| trackBackground     | `string`                              | —           | 填充轨道背景（渐变 / 透明均可）      |
-| railBackground      | `string`                              | —           | 轨道背景（渐变 / 透明均可）          |
-| railWidth           | `number \| string`                    | —           | 轨道粗细（水平为高、垂直为宽；数字按 px） |
+| Prop                | 类型                                  | 默认值      | 说明                                       |
+| ------------------- | ------------------------------------- | ----------- | ------------------------------------------ |
+| modelValue          | `number \| [number, number]`          | `0`         | v-model（range 时双柄）                    |
+| min / max           | `number`                              | `0` / `100` | 边界                                       |
+| step                | `number`                              | `1`         | 步长吸附                                   |
+| range               | `boolean`                             | `false`     | 双柄范围模式                               |
+| disabled / readonly | `boolean`                             | `false`     | 禁用 / 只读                                |
+| vertical            | `boolean`                             | `false`     | 垂直方向                                   |
+| reverse             | `boolean`                             | `false`     | 反向                                       |
+| tooltip             | `boolean`                             | `true`      | 拖拽气泡                                   |
+| formatTooltip       | `(value: number) => string \| number` | —           | 气泡格式化                                 |
+| marks               | `Record<number, string>`              | —           | 刻度                                       |
+| placement           | 12 方位                               | `'top'`     | 气泡方位                                   |
+| showSteps           | `boolean`                             | `false`     | 步长刻度（min / max 之间的内部刻度）       |
+| showInput           | `boolean`                             | `false`     | 轨道旁数字输入框（range 双输入框）         |
+| trackBackground     | `string`                              | —           | 填充轨道背景（渐变 / 透明均可）            |
+| railBackground      | `string`                              | —           | 轨道背景（渐变 / 透明均可）                |
+| railWidth           | `number \| string`                    | —           | 轨道粗细（水平为高、垂直为宽；数字按 px）  |
 | railShadow          | `string`                              | —           | 滑轨弥散光晕（box-shadow，支持半透明模糊） |
-| tooltipBackground   | `string`                              | —           | 气泡背景                             |
-| tooltipTextColor    | `string`                              | —           | 气泡文字颜色                         |
+| tooltipBackground   | `string`                              | —           | 气泡背景                                   |
+| tooltipTextColor    | `string`                              | —           | 气泡文字颜色                               |
 
 每柄 `role="slider"` + aria-valuenow/min/max；方向键 / Home / End / PageUp/PageDown（10×step）。
+
+### 插槽
+
+| 插槽    | 参数        | 说明           |
+| ------- | ----------- | -------------- |
+| tooltip | `{ value }` | 自定义气泡内容 |
 
 完整契约见组件 `ai-description.md`。

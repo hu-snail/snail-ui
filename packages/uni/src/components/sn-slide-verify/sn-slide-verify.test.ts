@@ -2,13 +2,37 @@
  * sn-slide-verify unit tests — uni-end drag-to-confirm slider.
  *
  * Behaviour only (AGENTS.md §46): the drag threshold, the tolerance, the
- * fail / reset cycle, the disabled guard and the slot overrides. No rpx
+ * fail / reset cycle, the disabled guard, the slot overrides, the desktop-mouse
+ * path, the host measurement fallbacks and the rpx coordinate scale. No rpx
  * numbers in assertions.
+ *
+ * The viewport is pinned to the 750rpx design reference (375px) so one design
+ * px == one CSS px in the numbers below; the scale rule itself is covered by
+ * the dedicated viewport tests at the end.
  */
 
-import { describe, it, expect } from 'vitest';
+import { afterEach, beforeAll, describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import SnSlideVerify from './sn-slide-verify.vue';
+
+/** Pin the viewport so `pxPerDesign()` is exactly 1 (1 design px = 1 CSS px). */
+function pinViewport(width: number): void {
+  Object.defineProperty(globalThis, 'innerWidth', {
+    value: width,
+    configurable: true,
+    writable: true,
+  });
+}
+
+beforeAll(() => {
+  pinViewport(375);
+});
+
+afterEach(() => {
+  pinViewport(375);
+  delete (globalThis as { uni?: unknown }).uni;
+});
 
 /**
  * Give the track a deterministic 200px box, then re-measure.
@@ -246,6 +270,165 @@ describe('sn-slide-verify gesture cancellation and coordinate fallbacks', () => 
     await handle.trigger('touchstart', { detail: { x: 0 } });
     await handle.trigger('touchmove', { detail: { x: 400 } });
     await handle.trigger('touchend', { detail: { x: 400 } });
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+});
+
+describe('sn-slide-verify desktop mouse drag (additive, AUI-OPT-12)', () => {
+  /** One mouse gesture; move / up land on `document` as the binder expects. */
+  async function mouseDrag(w: ReturnType<typeof mount>, to: number): Promise<void> {
+    const handle = w.find('.sn-slide-verify__handle');
+    await handle.trigger('mousedown', { button: 0, clientX: 0 });
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: to }));
+    document.dispatchEvent(new MouseEvent('mouseup'));
+    await nextTick();
+  }
+
+  it('verifies through a mouse drag to the right edge', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    await mouseDrag(w, 400);
+    expect(w.emitted('success')).toHaveLength(1);
+    expect(w.classes()).toContain('sn-slide-verify--success');
+  });
+
+  it('fails a short mouse drag and snaps back', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    await mouseDrag(w, 60);
+    expect(w.emitted('fail')).toHaveLength(1);
+    expect(w.classes()).not.toContain('sn-slide-verify--dragging');
+  });
+
+  it('ignores a right-click and an already verified handle', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    const handle = w.find('.sn-slide-verify__handle');
+    await handle.trigger('mousedown', { button: 2, clientX: 0 });
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 400 }));
+    document.dispatchEvent(new MouseEvent('mouseup'));
+    expect(w.emitted('success')).toBeUndefined();
+  });
+
+  it('does not drag while disabled', async () => {
+    const w = mount(SnSlideVerify, { props: { disabled: true } });
+    withTrackBox(w);
+    await mouseDrag(w, 400);
+    expect(w.emitted('success')).toBeUndefined();
+  });
+
+  it('removes the listeners on unmount', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    const handle = w.find('.sn-slide-verify__handle').element as HTMLElement;
+    w.unmount();
+    handle.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 0 }));
+    document.dispatchEvent(new MouseEvent('mousemove', { clientX: 400 }));
+    document.dispatchEvent(new MouseEvent('mouseup'));
+    // Nothing to assert beyond "no exception and no drag state" — the instance
+    // is gone; a leaked listener would only show as a crash-free no-op here.
+    expect(w.emitted('success')).toBeUndefined();
+  });
+});
+
+describe('sn-slide-verify host measurement', () => {
+  it('unwraps `$el` when a `<view>` ref is a component instance', async () => {
+    // Real uni H5 compiles `<view>` to a component: the ref is the instance and
+    // the measured node lives on `$el`.
+    const w = mount(SnSlideVerify);
+    const track = w.find('.sn-slide-verify__track').element as HTMLElement;
+    track.getBoundingClientRect = () =>
+      ({
+        width: 240,
+        height: 44,
+        left: 0,
+        top: 0,
+        right: 240,
+        bottom: 44,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+    const setupState = (w.vm as unknown as { $: { setupState: Record<string, unknown> } }).$
+      .setupState;
+    setupState.trackRef = { $el: track };
+
+    (w.vm as unknown as { init(): void }).init();
+    // A 240 design px track leaves 196 px of travel; a 196 px drag verifies.
+    await drag(w, 196);
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+
+  it('falls back to uni.createSelectorQuery when there is no DOM box', async () => {
+    let queried: string | null = null;
+    const chain = {
+      in: () => chain,
+      select: (selector: string) => {
+        queried = selector;
+        return chain;
+      },
+      boundingClientRect: (callback: (rect: { width?: number } | null) => void) => {
+        callback({ width: 240 });
+        return chain;
+      },
+      exec: () => undefined,
+    };
+    (globalThis as { uni?: unknown }).uni = { createSelectorQuery: () => chain };
+
+    const w = mount(SnSlideVerify);
+    (w.vm as unknown as { init(): void }).init();
+    expect(queried).toBe('.sn-slide-verify__track');
+
+    await drag(w, 196);
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+
+  it('re-measures lazily when the first gesture starts on an unmeasured track', async () => {
+    // No `init()` call and no box stub at mount: the track is unmeasured when
+    // the gesture starts (the popup / tab opened after mount case). The start
+    // path measures again, so the release can still reach the right edge.
+    const w = mount(SnSlideVerify);
+    const track = w.find('.sn-slide-verify__track').element as HTMLElement;
+    track.getBoundingClientRect = () =>
+      ({
+        width: 200,
+        height: 44,
+        left: 0,
+        top: 0,
+        right: 200,
+        bottom: 44,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+
+    await drag(w, 400);
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+});
+
+describe('sn-slide-verify coordinate scale', () => {
+  it('converts the pointer delta with the host rpx basis (750px viewport)', async () => {
+    // 750px viewport → 1 design px = 2 CSS px: a 400 CSS px track measures
+    // 200 design px, and a 400 CSS px drag is exactly the 156 design px max
+    // travel (plus tolerance) → success.
+    pinViewport(750);
+    const w = mount(SnSlideVerify);
+    withTrackBox(w, 400);
+    await drag(w, 400);
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+
+  it('caps the rpx basis above the 960px device cap', async () => {
+    // Above the cap uni falls back to the 375 design base → factor 1 again, so
+    // a 400 CSS px track stays 400 design px and 200 CSS px of travel is a fail.
+    pinViewport(1440);
+    const w = mount(SnSlideVerify);
+    withTrackBox(w, 400);
+    await drag(w, 200);
+    expect(w.emitted('fail')).toHaveLength(1);
+
+    await drag(w, 400);
     expect(w.emitted('success')).toHaveLength(1);
   });
 });

@@ -90,7 +90,8 @@ describe('sn-keyboard', () => {
       const deleteKey = w
         .findAll('.sn-keyboard__key')
         .find((k) => k.classes().includes('sn-keyboard__key--delete'));
-      expect(deleteKey?.text()).toBe('');
+      // No stray placeholder: the key is not rendered at all.
+      expect(deleteKey).toBeUndefined();
     });
   });
 
@@ -199,16 +200,47 @@ describe('sn-keyboard', () => {
       expect(keyByText(w, '.')).toBeUndefined();
     });
 
-    it('renders an inert empty slot when no extraKey is given', async () => {
+    it('fills the empty extra slot with the collapse glyph key', () => {
       const w = mountKeyboard();
-      // Regression: the empty slot and the delete key shared one v-for key, so
-      // the empty placeholder was dropped from the bottom row.
+      // 1–9 + [collapse][0][delete] — three equal keys in the bottom row.
       expect(w.findAll('.sn-keyboard__key')).toHaveLength(12);
-      const empty = w.find('.sn-keyboard__key--empty');
-      expect(empty.exists()).toBe(true);
-      await empty.trigger('tap');
+      const bottom = w.findAll('.sn-keyboard__row')[3];
+      expect(bottom?.findAll('.sn-keyboard__key')).toHaveLength(3);
+      expect(bottom?.find('.sn-keyboard__key svg').exists()).toBe(true);
+      expect(keyByText(w, '0')?.attributes('style')).toBeUndefined();
+    });
+
+    it('closes the keyboard from the collapse key without typing', async () => {
+      const w = mountKeyboard({ modelValue: '1' });
+      await w.findAll('.sn-keyboard__row')[3]?.find('.sn-keyboard__key').trigger('tap');
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
       expect(w.emitted('input')).toBeUndefined();
       expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('replaces the collapse key when extraKey is supplied', () => {
+      const w = mountKeyboard({ extraKey: '.' });
+      const bottom = w.findAll('.sn-keyboard__row')[3];
+      // The lead slot is the extra key; only the delete key keeps a glyph.
+      expect(bottom?.find('[aria-label="collapse"]').exists()).toBe(false);
+      expect(keyByText(w, '.')).toBeTruthy();
+      expect(w.findAll('.sn-keyboard__key')).toHaveLength(12);
+    });
+
+    it('renders a collapse key in the custom grid for an unsupplied slot', () => {
+      const w = mountKeyboard({ mode: 'custom', extraKey: '.' });
+      const rows = w.findAll('.sn-keyboard__row');
+      expect(rows[3]?.findAll('.sn-keyboard__key')).toHaveLength(3);
+      // [extra][0][collapse] — the aside column stays the only other actions.
+      expect(rows[3]?.find('.sn-keyboard__key svg').exists()).toBe(true);
+    });
+
+    it('lets 0 span the row when the delete key is hidden', () => {
+      const w = mountKeyboard({ showDeleteKey: false });
+      expect(w.find('.sn-keyboard__key--delete').exists()).toBe(false);
+      expect(w.findAll('.sn-keyboard__row')[3]?.findAll('.sn-keyboard__key')).toHaveLength(2);
+      expect(keyByText(w, '0')?.attributes('style')).toContain('flex-grow: 2');
     });
   });
 
@@ -248,9 +280,9 @@ describe('sn-keyboard', () => {
       expect(w.find('.sn-keyboard__close svg').exists()).toBe(false);
     });
 
-    it('renders the X glyph when closeText is empty', () => {
+    it('renders the chevron chip when closeText is empty', () => {
       const w = mountKeyboard();
-      expect(w.find('.sn-keyboard__close svg').exists()).toBe(true);
+      expect(w.find('.sn-keyboard__close .sn-keyboard__close-chip svg').exists()).toBe(true);
     });
 
     it('marks the close button busy while closeButtonLoading is set', () => {
@@ -329,7 +361,98 @@ describe('sn-keyboard', () => {
     it('forwards customClass and customStyle', () => {
       const w = mountKeyboard({ customClass: 'my-kb', customStyle: 'margin: 4px' });
       expect(w.find('.sn-keyboard').classes()).toContain('my-kb');
-      expect(w.findComponent({ name: 'SnPopup' }).props('customStyle')).toBe('margin: 4px');
+      // The panel's generic sheet padding is neutralised so the key field
+      // paints edge to edge; the host style is appended after it.
+      const style = w.findComponent({ name: 'SnPopup' }).props('customStyle') as string;
+      expect(style).toContain('padding: 0');
+      expect(style).toContain('margin: 4px');
+    });
+  });
+
+  /* ── Visual system (redesign) ────────────────────────────────────────── */
+
+  describe('key plates (redesign)', () => {
+    it('renders the backspace glyph rather than a generic X', () => {
+      expect(mountKeyboard().find('.sn-keyboard__key--delete svg').exists()).toBe(true);
+    });
+
+    it('carries a hover-class for press feedback (§116.2)', () => {
+      expect(keyByText(mountKeyboard(), '5')?.attributes('hover-class')).toBe(
+        'sn-keyboard__key--pressed',
+      );
+    });
+
+    it('drops the hidden delete key and keeps the row hole-free', () => {
+      const w = mountKeyboard({ showDeleteKey: false });
+      expect(w.find('.sn-keyboard__key--delete').exists()).toBe(false);
+      // [collapse][0(span 2)] — the collapse glyph still anchors the row.
+      expect(w.findAll('.sn-keyboard__row')[3]?.findAll('.sn-keyboard__key')).toHaveLength(2);
+      expect(keyByText(w, '0')?.attributes('style')).toContain('flex-grow: 2');
+    });
+
+    it('flags the root with the safe-area class', () => {
+      expect(mountKeyboard().find('.sn-keyboard').classes()).toContain('sn-keyboard--safe');
+      expect(
+        mountKeyboard({ safeAreaInsetBottom: false }).find('.sn-keyboard').classes(),
+      ).not.toContain('sn-keyboard--safe');
+    });
+
+    it('anchors the custom close key on the action column', () => {
+      const w = mountKeyboard({ mode: 'custom', closeText: 'Done' });
+      expect(w.find('.sn-keyboard__aside-key--close').text()).toBe('Done');
+    });
+
+    it('keeps the custom bottom row on three columns', () => {
+      // Regression: a fourth slot used to squeeze the bottom row into quarters,
+      // knocking it out of alignment with the rows above.
+      const rows = mountKeyboard({ mode: 'custom', extraKey: ['00', '.'] }).findAll(
+        '.sn-keyboard__row',
+      );
+      expect(rows[3]?.findAll('.sn-keyboard__key')).toHaveLength(3);
+      // Delete belongs to the action column in custom mode.
+      expect(rows[3]?.find('.sn-keyboard__key--delete').exists()).toBe(false);
+    });
+  });
+
+  describe('delete hold-to-repeat (redesign)', () => {
+    it('deletes exactly once on a plain tap', async () => {
+      const w = mountKeyboard({ modelValue: '12' });
+      const key = w.find('.sn-keyboard__key--delete');
+      await key.trigger('touchstart');
+      await key.trigger('touchend');
+      await key.trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['1']);
+      expect(w.emitted('update:modelValue')).toHaveLength(1);
+    });
+
+    it('drops its timers on unmount', async () => {
+      const w = mountKeyboard({ modelValue: '12' });
+      w.find('.sn-keyboard__key--delete').trigger('touchstart');
+      w.unmount();
+      // Past REPEAT_DELAY: a leaked timer would emit a delete after unmount.
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+  });
+
+  describe('car plate grid (redesign)', () => {
+    it('lays the province plate out in rows of ten', () => {
+      const rows = mountKeyboard({ mode: 'car', carLang: 'zh' }).findAll('.sn-keyboard__car-row');
+      expect(rows).toHaveLength(4);
+      expect(rows[0]?.findAll('.sn-keyboard__key--car')).toHaveLength(10);
+      // Short tail row: the remaining 7 provinces plus the delete key.
+      expect(rows[3]?.findAll('.sn-keyboard__key--car')).toHaveLength(8);
+    });
+
+    it('puts the language key at the head of the last row', () => {
+      const rows = mountKeyboard({ mode: 'car', carLang: 'zh' }).findAll('.sn-keyboard__car-row');
+      expect(rows[3]?.find('.sn-keyboard__key--fn').text()).toBe('ABC');
+    });
+
+    it('switches language from the plate key', async () => {
+      const w = mountKeyboard({ mode: 'car', carLang: 'zh' });
+      await w.find('.sn-keyboard__key--fn').trigger('tap');
+      expect(w.emitted('update:carLang')?.[0]).toEqual(['en']);
     });
   });
 });

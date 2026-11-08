@@ -87,7 +87,7 @@
 
 ## 暗色模式
 
-行与内容区底色走 `--sn-mp-color-background-elevated`、文字走 `--sn-mp-color-text-primary`，两者都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。操作区颜色由使用方决定（demo 里用 `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`）。可用 `<sn-config-provider theme="dark">` 包裹验证。
+行与内容区底色走 `--sn-mp-color-background-elevated`、文字走 `--sn-mp-color-text-primary`，两者都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。操作区颜色由使用方决定（demo 里用 `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`）。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

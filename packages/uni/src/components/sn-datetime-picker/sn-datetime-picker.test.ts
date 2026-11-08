@@ -37,6 +37,53 @@ describe('sn-datetime-picker', () => {
       expect(w.find('.sn-datetime-picker__confirm').text()).toBe('确认');
     });
 
+    it('orders the header slots leading cancel → title → trailing confirm', () => {
+      const w = mountPicker({ title: 'Birthday' });
+      const slots = Array.from(w.find('.sn-datetime-picker__toolbar').element.children).map((el) =>
+        el.getAttribute('class'),
+      );
+      expect(slots).toHaveLength(3);
+      expect(slots[0]).toContain('sn-datetime-picker__cancel');
+      expect(slots[1]).toContain('sn-datetime-picker__title-slot');
+      // 确认 is the last slot, i.e. flush against the right edge.
+      expect(slots[2]).toContain('sn-datetime-picker__confirm');
+    });
+
+    /* Regression: the template used to carry a bare `>` text node in the
+       toolbar. It became a fourth anonymous flex item under `space-between`,
+       which both painted a stray glyph and pushed 确认 off the right edge. */
+    it('renders no stray glyph inside the toolbar', () => {
+      expect(mountPicker({ title: 'Birthday' }).find('.sn-datetime-picker__toolbar').text()).toBe(
+        '取消Birthday确认',
+      );
+      expect(mountPicker().find('.sn-datetime-picker__toolbar').text()).toBe('取消确认');
+    });
+
+    it('keeps the three header slots when no title is given', () => {
+      const toolbar = mountPicker().find('.sn-datetime-picker__toolbar');
+      const slots = Array.from(toolbar.element.children);
+      expect(slots.map((el) => el.getAttribute('class'))).toHaveLength(3);
+      expect(slots[1]?.getAttribute('class')).toContain('sn-datetime-picker__title-slot');
+      expect(slots[1]?.textContent?.trim()).toBe('');
+      expect(slots[2]?.getAttribute('class')).toContain('sn-datetime-picker__confirm');
+    });
+
+    it('keeps the header actions text-only', () => {
+      const w = mountPicker({ title: 'Birthday' });
+      const confirm = w.find('.sn-datetime-picker__confirm');
+      expect(confirm.find('svg').exists()).toBe(false);
+      expect(confirm.findAll('.sn-icon')).toHaveLength(0);
+      expect(confirm.find('.sn-datetime-picker__action-text').text()).toBe('确认');
+      expect(w.find('.sn-datetime-picker__cancel').find('svg').exists()).toBe(false);
+    });
+
+    it('carries press feedback through hover-class (§116.2)', () => {
+      const w = mountPicker();
+      const pressed = 'sn-datetime-picker__action--pressed';
+      expect(w.find('.sn-datetime-picker__cancel').attributes('hover-class')).toBe(pressed);
+      expect(w.find('.sn-datetime-picker__confirm').attributes('hover-class')).toBe(pressed);
+    });
+
     it('renders the title only when given', () => {
       expect(mountPicker({ title: 'Birthday' }).find('.sn-datetime-picker__title').text()).toBe(
         'Birthday',

@@ -5,7 +5,9 @@
   "description": "AUI uni-templates — 场景模板工程（登录 / 商城 / 订单 / 详情 …），与 uni-demo（组件演示）分离。主包仅保留模板目录，模板页全部在 subpages 分包；可发布 H5 站（docs 首页 iframe 预览 + 扫码引流）与微信小程序。见 ADR-0005。",
   "type": "module",
   "scripts": {
+    "predev:h5": "rm -rf node_modules/.vite",
     "dev:h5": "uni",
+    "predev:mp-weixin": "rm -rf node_modules/.vite",
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:h5": "node scripts/build-h5.mjs && node scripts/clean-dist-junk.mjs",
     "build:mp-weixin": "uni build -p mp-weixin && node scripts/clean-dist-junk.mjs",

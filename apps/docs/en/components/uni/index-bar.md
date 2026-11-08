@@ -20,6 +20,12 @@ Group content is fully custom, and `change` reports the active index:
 
 <Demo name="index-bar-mp-scrollto" description="scrollTo(index) jumps to a group from code; custom-class / custom-style on the root." />
 
+## Full-page contacts directory
+
+A complete contacts screen: the compact preview is directly interactive (keyword filter drops empty groups so the index bar follows along, `show-indicator` centre bubble, `sn-avatar` text avatars); tapping "Full page" opens a position: fixed whole-page scenario — SnNavbar + search filter + index-bar contacts + a bottom count bar; tapping a contact opens the profile page (phone / email / city / dept), and going back preserves the list scroll position. `anchor-id` gives each group a stable DOM id for deep links:
+
+<Demo name="index-bar-mp-contacts" description="Full-page contacts: the compact preview is interactive (search filter); tap Full page for the fullscreen screen (Navbar + search + index bar + count bar); tap a contact for the profile page." />
+
 > **Contract slot**: `sticky` currently only toggles the `sn-index-bar--sticky` class on the root and ships no matching CSS rule, so it has no visible effect. The prop stays for contract parity.
 
 ## Auto registration (easycom)
@@ -43,19 +49,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| Prop          | Type      | Default | Description                   |
-| ------------- | --------- | ------- | ----------------------------- |
-| `sticky`      | `boolean` | `false` | Pin the index bar             |
-| `customClass` | `string`  | `''`    | Extra class on the root node  |
-| `customStyle` | `string`  | `''`    | Inline style on the root node |
+| Prop            | Type      | Default | Description                              |
+| --------------- | --------- | ------- | ---------------------------------------- |
+| `sticky`        | `boolean` | `false` | Pin the index bar                        |
+| `showIndicator` | `boolean` | `false` | Echo the active index in a centre bubble |
+| `customClass`   | `string`  | `''`    | Extra class on the root node             |
+| `customStyle`   | `string`  | `''`    | Inline style on the root node            |
 
 ### sn-index-anchor
 
-| Prop          | Type               | Default | Description                     |
-| ------------- | ------------------ | ------- | ------------------------------- |
-| `index`       | `string \| number` | `''`    | Index character(s)              |
-| `customClass` | `string`           | `''`    | Extra class on the anchor root  |
-| `customStyle` | `string`           | `''`    | Inline style on the anchor root |
+| Prop          | Type               | Default | Description                                  |
+| ------------- | ------------------ | ------- | -------------------------------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s)                           |
+| `anchorId`    | `string`           | `''`    | Custom anchor DOM id (auto value when empty) |
+| `customClass` | `string`           | `''`    | Extra class on the anchor root               |
+| `customStyle` | `string`           | `''`    | Inline style on the anchor root              |
 
 ## Events
 
@@ -72,18 +80,26 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ## Theme variables
 
-| Variable                                        | Purpose                                   |
-| ----------------------------------------------- | ----------------------------------------- |
-| `--sn-mp-color-background-surface`              | List and entry surface                    |
-| `--sn-mp-color-background-soft`                 | Group heading surface                     |
-| `--sn-mp-color-action-primary-soft`             | Active group heading surface              |
-| `--sn-mp-color-text-secondary`                  | Sidebar entry and heading text            |
-| `--sn-mp-color-action-primary`                  | Active entry fill and active heading text |
-| `--sn-mp-color-text-on-primary`                 | Active entry label                        |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | Entry / heading size                      |
-| `--sn-mp-font-weight-medium`                    | Heading weight                            |
-| `--sn-mp-radius-full`                           | Entry pill radius                         |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Entry gap / heading padding               |
+| Variable                                                | Purpose                                   |
+| ------------------------------------------------------- | ----------------------------------------- |
+| `--sn-mp-color-background-surface`                      | List and entry surface                    |
+| `--sn-mp-color-background-soft`                         | Group heading surface                     |
+| `--sn-mp-color-action-primary-soft`                     | Active group heading surface              |
+| `--sn-mp-color-text-secondary`                          | Sidebar entry and heading text            |
+| `--sn-mp-color-action-primary`                          | Active entry fill and active heading text |
+| `--sn-mp-color-text-on-primary`                         | Active entry label                        |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm`         | Entry / heading size                      |
+| `--sn-mp-font-weight-medium`                            | Heading weight                            |
+| `--sn-mp-radius-full`                                   | Entry pill radius                         |
+| `--sn-mp-radius-lg`                                     | Index tip bubble radius                   |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | Index tip bubble size and weight          |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`               | Entry gap / heading padding               |
+
+## AI Patch Boundary
+
+- AI may patch display configs such as `sticky` / `showIndicator`, and each `sn-index-anchor`'s `index` / `anchorId`.
+- The `change` event and `scrollTo()` are runtime behaviour; patches must not fake index changes or hard-code scroll targets.
+- Group entry content (default slot) is business data; patches should only adjust container configs, never rewrite entry internals.
 
 ## Accessibility
 

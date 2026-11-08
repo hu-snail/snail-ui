@@ -36,9 +36,13 @@ const SCENARIO_LABELS = {
   basic: '基础用法',
   behavior: '行为',
   size: '尺寸',
+  sizes: '尺寸',
   shape: '形状',
   state: '状态',
   states: '状态',
+  status: '状态',
+  group: '头像组',
+  card3d: '3D 卡片',
   custom: '自定义',
   'custom-class': '自定义类名',
   'custom-style': '自定义样式',
@@ -51,8 +55,9 @@ const SCENARIO_LABELS = {
   color: '颜色',
   icon: '图标',
   icons: '图标',
-  iconfont: '字体图标',
+  iconfont: '图标按钮',
   'icon-font': '字体图标',
+  'icon-button': '图标按钮',
   gallery: '图标总览',
   string: '目录用法',
   iconify: 'Iconify 按需',
@@ -63,11 +68,14 @@ const SCENARIO_LABELS = {
   layout: '布局',
   guard: '拦截',
   position: '位置',
+  fan: '扇形展开',
+  drag: '拖拽',
   label: '标签',
   export: '导出',
   text: '文本',
   placement: '弹出位置',
   badge: '徽标',
+  header: '标题与描述',
   panels: '多列面板',
   sheet: '动作面板',
   fields: '字段',
@@ -77,12 +85,145 @@ const SCENARIO_LABELS = {
   visibility: '可见性',
   hover: '悬停',
   'image-tap': '点图片关闭',
+  lunar: '农历',
+  card: '卡片',
+  direction: '方向',
+  theme: '主题',
+  page: '整页演示',
+  contacts: '通讯录',
+  verify: '验证',
+  popup: '弹窗',
+  height: '高度',
+  interaction: '交互',
+  trigger: '触发',
+  expand: '展开',
+  connector: '连接线',
+  node: '节点',
+  swiper: '轮播联动',
+  paging: '分页联动',
+  prefix: '前缀',
+  options: '选项',
+  range: '日期范围',
+  formatter: '自定义文案',
+  nav: '导航按钮',
+  'no-border': '无边框',
+  radius: '圆角',
+  decimal: '小数点',
+  idcard: '身份证',
+  'align-compact': '对齐与紧凑',
+  'bordered-bg-radius': '边框与背景',
+  'clear-focus': '清空与聚焦',
+  'clearable-count': '清空与字数',
+  'native-attrs': '原生属性',
+  'password-toggle': '密码显隐',
+  'prefix-suffix': '前后图标',
+  shape: '形状',
+  background: '格子背景',
+  'error-gutter': '明文与错误态',
+  playground: '完整演示',
+  'new-energy': '新能源车牌',
+  runtime: '运行时属性',
+  'word-limit': '字数统计',
+  'lazy-load': '懒加载',
+  responsive: '响应式',
+  'masonry-off': '关闭瀑布流',
+  kingkong: '金刚区',
+};
+
+/**
+ * 组件级场景标题覆盖：key 为 `<comp>-<scenario>`。同一 scenario key 在不同
+ * 组件下语义不同（input 的 states 是禁用/只读、status 是校验状态），全局
+ * 映射表无法表达时在这里按组件消歧。
+ */
+const SCENARIO_LABEL_OVERRIDES = {
+  'input-states': '禁用与只读',
+  'input-status': '校验状态',
+};
+
+/**
+ * 组件页画布底色覆盖：输入框页用纯白画布对比深浅组件底色（仅浅色主题，
+ * 深色维持暗色画布）。空缺 = 默认中性灰。同步写入 pages.json 的
+ * backgroundColor（滚动过界后的窗口底色）。
+ */
+const PAGE_BG_OVERRIDES = {
+  input: '#ffffff',
+};
+
+/**
+ * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
+ * 下拉菜单的面板是组件自身坐标系内的 absolute 层、遮罩是 fixed 全屏层——
+ * 白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接浮在页面画布上。
+ */
+const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar']);
+
+/**
+ * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
+ * 整页就是 demo 本体。tabbar 的整页 playground（栏固定在屏幕底部、其余
+ * 全部是设置项）不需要「完整演示」标题占一行。
+ */
+const MODULE_HEADLESS_PAGES = new Set(['tabbar']);
+
+/**
+ * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
+ * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
+ */
+const DEMO_ORDER = {
+  'keyboard-mp-basic': 1,
+  'keyboard-mp-decimal': 2,
+  'keyboard-mp-idcard': 3,
+  'keyboard-mp-car-custom': 4,
+  'keyboard-mp-labels': 5,
+  'keyboard-mp-scrim': 6,
+  'button-mp-basic': 1,
+  'button-mp-size': 2,
+  'button-mp-shape': 3,
+  'button-mp-variant': 4,
+  'button-mp-state': 5,
+  'button-mp-icon-button': 6,
+  'button-mp-cell': 7,
+  'button-mp-hover': 8,
+  'button-mp-loading-props': 9,
+  'button-mp-custom': 10,
+  'button-mp-form-type': 11,
+  'button-mp-open-type': 12,
+  'button-mp-mp-open-type': 13,
+  'input-mp-basic': 1,
+  'input-mp-types': 2,
+  'input-mp-sizes': 3,
+  'input-mp-radius': 4,
+  'input-mp-bordered-bg-radius': 5,
+  'input-mp-prefix-suffix': 6,
+  'input-mp-slots': 7,
+  'input-mp-clearable-count': 8,
+  'input-mp-clear-focus': 9,
+  'input-mp-password-toggle': 10,
+  'input-mp-word-limit': 11,
+  'input-mp-status': 12,
+  'input-mp-states': 13,
+  'input-mp-align-compact': 14,
+  'input-mp-native-attrs': 15,
+  'input-mp-runtime': 16,
+  'input-mp-custom-class': 17,
+  'code-input-mp-basic': 1,
+  'code-input-mp-shape': 2,
+  'code-input-mp-background': 3,
+  'code-input-mp-no-border': 4,
+  'code-input-mp-error-gutter': 5,
+  'code-input-mp-custom-style': 6,
+  'plate-input-mp-basic': 1,
+  'plate-input-mp-new-energy': 2,
+  'waterfall-mp-basic': 1,
+  'waterfall-mp-lazy-load': 2,
+  'waterfall-mp-responsive': 3,
+  'waterfall-mp-masonry-off': 4,
+  'tabbar-mp-playground': 1,
 };
 
 const SCENARIO_LABELS_EN = {
   basic: 'Basic usage',
   behavior: 'Behavior',
   size: 'Size',
+  sizes: 'Sizes',
   shape: 'Shape',
   state: 'State',
   states: 'State',
@@ -98,8 +239,9 @@ const SCENARIO_LABELS_EN = {
   color: 'Color',
   icon: 'Icon',
   icons: 'Icons',
-  iconfont: 'Iconfont',
+  iconfont: 'Icon Button',
   'icon-font': 'Iconfont',
+  'icon-button': 'Icon Button',
   gallery: 'Gallery',
   string: 'Catalog names',
   iconify: 'Iconify on demand',
@@ -115,6 +257,7 @@ const SCENARIO_LABELS_EN = {
   text: 'Text',
   placement: 'Placement',
   badge: 'Badge',
+  header: 'Title & description',
   panels: 'Panels',
   sheet: 'Action sheet',
   fields: 'Fields',
@@ -123,17 +266,69 @@ const SCENARIO_LABELS_EN = {
   threshold: 'Threshold',
   visibility: 'Visibility',
   hover: 'Hover',
+  lunar: 'Lunar',
+  card: 'Card',
+  direction: 'Direction',
+  theme: 'Theme',
+  page: 'Full page',
+  contacts: 'Contacts',
+  verify: 'Verification',
+  popup: 'Popup',
+  height: 'Height',
+  interaction: 'Interaction',
+  trigger: 'Trigger',
+  expand: 'Expand',
+  connector: 'Connector',
+  node: 'Node',
+  swiper: 'Swiper sync',
+  paging: 'Paging sync',
+  prefix: 'Prefix',
+  options: 'Options',
+  range: 'Date range',
+  formatter: 'Custom text',
+  nav: 'Navigation',
+  'no-border': 'No border',
+  radius: 'Radius',
+  decimal: 'Decimal',
+  idcard: 'ID number',
+  'align-compact': 'Alignment & compact',
+  'bordered-bg-radius': 'Border & background',
+  'clear-focus': 'Clear & focus',
+  'clearable-count': 'Clearable & count',
+  'native-attrs': 'Native attributes',
+  'password-toggle': 'Password toggle',
+  'prefix-suffix': 'Prefix & suffix icons',
+  shape: 'Shape',
+  background: 'Cell background',
+  'error-gutter': 'Plain text & error',
+  playground: 'Full playground',
+  'new-energy': 'New-energy plate',
+  runtime: 'Runtime attributes',
+  'word-limit': 'Word limit',
+  'lazy-load': 'Lazy load',
+  responsive: 'Responsive',
+  'masonry-off': 'Masonry off',
+  kingkong: 'Quick entry',
 };
 
-function scenarioLabel(scenario) {
+const SCENARIO_LABEL_OVERRIDES_EN = {
+  'input-states': 'Disabled & readonly',
+  'input-status': 'Validation status',
+};
+
+function scenarioLabel(comp, scenario) {
   if (scenario === undefined || scenario === '') return SCENARIO_LABELS.basic;
-  return SCENARIO_LABELS[scenario] ?? scenario;
+  return SCENARIO_LABEL_OVERRIDES[`${comp}-${scenario}`] ?? SCENARIO_LABELS[scenario] ?? scenario;
 }
 
 /** 场景英文标题：映射表优先，未收录的 key 用 Title Case 兜底。 */
-function scenarioLabelEn(scenario) {
+function scenarioLabelEn(comp, scenario) {
   if (scenario === undefined || scenario === '') return SCENARIO_LABELS_EN.basic;
-  return SCENARIO_LABELS_EN[scenario] ?? titleEnOf(scenario);
+  return (
+    SCENARIO_LABEL_OVERRIDES_EN[`${comp}-${scenario}`] ??
+    SCENARIO_LABELS_EN[scenario] ??
+    titleEnOf(scenario)
+  );
 }
 
 // ── 扫描 demo 源（src/pages/<group>/demos/） ────────────────────────────────
@@ -173,7 +368,11 @@ for (const { file } of demoFiles) {
   byComp.get(comp).push({ name, scenario, hasEn: enNames.has(name) });
 }
 for (const list of byComp.values()) {
-  list.sort((a, b) => a.name.localeCompare(b.name));
+  /** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
+  const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
+  for (const list of byComp.values()) {
+    list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
+  }
 }
 
 // ── 组件分组与元数据（分组/切分单源见 scripts/subpackages.mjs） ─────────────
@@ -191,21 +390,33 @@ const pagesJson = {
   pages: [
     {
       path: 'pages/index/index',
-      style: { navigationBarTitleText: 'snui 组件演示' },
+      style: {
+        navigationBarTitleText: 'snui 组件演示',
+        // 通栏：画布渐变铺满视口，首页品牌区自行承担顶部（DemoPageShell blend）。
+        navigationStyle: 'custom',
+      },
     },
   ],
   subPackages: subpackages.map((sub) => ({
     root: `pages/${sub.root}`,
     pages: sub.comps.map((comp) => ({
       path: comp.key,
-      style: { navigationBarTitleText: comp.title },
+      style: {
+        navigationBarTitleText: comp.title,
+        // 通栏：原生导航栏退位，DemoPageShell 渲染毛玻璃悬浮头部（背景与
+        // 内容区渐变一致）；个别页面需要原生栏时在此覆盖为 default。
+        navigationStyle: 'custom',
+        ...(PAGE_BG_OVERRIDES[comp.key] ? { backgroundColor: PAGE_BG_OVERRIDES[comp.key] } : {}),
+      },
     })),
   })),
   globalStyle: {
     navigationBarTextStyle: 'black',
     navigationBarTitleText: 'snui',
-    navigationBarBackgroundColor: '#FFFFFF',
-    backgroundColor: '#F7F7F7',
+    // 与画布渐变顶色（--demo-page-canvas 起 #f8fafc）一致，导航栏不再以
+    // 白条割裂页面顶部。
+    navigationBarBackgroundColor: '#F8FAFC',
+    backgroundColor: '#F8FAFC',
   },
 };
 writeFileSync(`${pagesDir}../pages.json`, `${JSON.stringify(pagesJson, null, 2)}\n`);
@@ -257,33 +468,42 @@ for (const sub of subpackages) {
     }
   }
   for (const comp of sub.comps) {
+    const isHeadless = MODULE_HEADLESS_PAGES.has(comp.key);
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
+      ...(isHeadless ? [] : [`import DemoModuleHead from '../../components/DemoModuleHead.vue'`]),
       `import DemoPageShell from '../../components/DemoPageShell.vue'`,
-      `import { useDemoUi } from '../../state/demo-ui';`,
+      ...(isHeadless ? [] : [`import { useDemoUi } from '../../state/demo-ui';`]),
     ].join('\n');
     const modules = comp.demos
-      .map(
-        (demo, i) => `      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('${scenarioLabel(demo.scenario)}', '${scenarioLabelEn(demo.scenario)}') }}</text>
-        </view>
+      .map((demo, i) => {
+        if (isHeadless) {
+          // 无模块头页面：整页就是 demo 本体，不再包 .module 卡片与标题行。
+          return `      <Demo${i} />`;
+        }
+        const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
+        return `      <view class="module">
+        <DemoModuleHead :title="t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}')"${badge} />
         <view class="module__body">
           <Demo${i} />
         </view>
-      </view>`,
-      )
+      </view>`;
+      })
       .join('\n');
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
 ${imports}
-
+${
+  isHeadless
+    ? ''
+    : `
 // 场景标题双语（中/英切换见 DemoPageShell）。
-const { t } = useDemoUi();
+const { t } = useDemoUi();`
+}
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'">
+  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'" :desc="'${comp.desc.replace(/'/g, "\\'")}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
     <view class="page">
 ${modules}
     </view>
@@ -292,26 +512,37 @@ ${modules}
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
-
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+${
+  !isHeadless && MODULE_BARE_PAGES.has(comp.key)
+    ? `
+/* ${comp.key}：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}`
+    : ''
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>
 `;
@@ -331,7 +562,7 @@ const manifest = {
           page: `pages/${sub.root}/${comp.key}`,
           demos: comp.demos.map((demo) => ({
             name: demo.name,
-            title: scenarioLabel(demo.scenario),
+            title: scenarioLabel(comp.key, demo.scenario),
             hasEn: demo.hasEn,
           })),
         },

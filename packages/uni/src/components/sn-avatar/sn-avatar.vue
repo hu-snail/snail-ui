@@ -41,16 +41,34 @@
  *   <sn-avatar icon="User" shape="square" bg-color="var(--sn-mp-color-action-primary)" />
  *   <sn-avatar :size="88" src="/static/b.png" alt="B" />
  *
+ * ## Additive: presence status (AUI 追加，wd-avatar 没有此能力)
+ *
+ * `status` paints an online / offline presence dot on the bottom-right corner.
+ * wd-avatar has no presence concept, so this is an AUI addition registered in
+ * AGENTS.md §112.3a — the reference prop surface stays 1:1 (`status` is only
+ * additive; nothing existing changed meaning). The dot is decorative in the
+ * DOM but announced through the root `aria-label`, so a text avatar reads as
+ * "AU online" instead of dropping the state silently.
+ *
  * Not responsible for:
  *   - 头像叠层 / 折叠计数 — 用 sn-avatar-group
  *   - 角标 — 用 sn-badge
  *   - 上传 / 裁剪 — 用 sn-upload
+ *
+ * ## Inside sn-avatar-group
+ *
+ * The group owns the members' uniform `size` / `shape` (wd-avatar-group:
+ * 「统一设置组内头像尺寸 / 形状」), so a provided group context wins over this
+ * component's own props — see `avatar-group-context.ts`. The group also hands
+ * down the stacking numbers (`--sn-avatar-group-overlap-*`, `-ring`) that the
+ * stylesheet below applies to itself.
  */
 
-import { computed, markRaw, ref, watch } from 'vue';
+import { computed, inject, markRaw, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { SN_AVATAR_GROUP } from './avatar-group-context';
 
 defineOptions({ name: 'SnAvatar' });
 
@@ -99,6 +117,11 @@ const props = withDefaults(
     alt?: string;
     /** 图片填充模式，同 uni-app image 组件的 mode。 */
     mode?: string;
+    /**
+     * 在线状态（AUI 追加，wd-avatar 无此能力，见文件头注释）：
+     * `online` 绿点 / `offline` 灰点；不传则不渲染状态点。
+     */
+    status?: 'online' | 'offline' | '';
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义 inline style。 */
@@ -116,6 +139,7 @@ const props = withDefaults(
     color: '',
     alt: '',
     mode: 'aspectFill',
+    status: '',
     customClass: '',
     customStyle: '',
   },
@@ -167,22 +191,51 @@ const fallbackText = computed<string>(() => {
   return props.text;
 });
 
+/**
+ * Group context: inside `sn-avatar-group` the group's `size` / `shape` win —
+ * the reference contract is "统一设置组内头像尺寸 / 形状" (uniformly set the
+ * group's avatars). `inject` is template-independent, so this survives the MP
+ * compiler, unlike re-rendering the slot's vnodes with extra props.
+ */
+const group = inject(SN_AVATAR_GROUP, null);
+
+/** Effective diameter source: group → own prop → `normal` default. */
+const sizeSource = computed<string | number>(() => group?.value.size ?? props.size);
+
+/** Effective outline: group → own prop. */
+const shapeSource = computed<'round' | 'square'>(() => group?.value.shape ?? props.shape);
+
 /** True when `size` is one of the four named presets (drives the size class). */
 const isPresetSize = computed<boolean>(
-  () => typeof props.size === 'string' && props.size in SIZE_PRESETS,
+  () => typeof sizeSource.value === 'string' && sizeSource.value in SIZE_PRESETS,
 );
+
+/** Presence state drives both the dot class and the spoken label. */
+const hasStatus = computed<boolean>(() => props.status !== '');
+
+/**
+ * Accessible name: the visible label first, then the presence state, so an
+ * avatar announced as an image still carries "online" / "offline"
+ * (AGENTS.md §52 — the dot itself is `aria-hidden`).
+ */
+const ariaLabel = computed<string | undefined>(() => {
+  const label = fallbackText.value || props.alt;
+  if (!hasStatus.value) return label || undefined;
+  return [label, props.status].filter(Boolean).join(' ');
+});
 
 const rootClass = computed(() => [
   'sn-avatar',
-  `sn-avatar--${props.shape}`,
-  isPresetSize.value ? `sn-avatar--size-${props.size}` : '',
+  `sn-avatar--${shapeSource.value}`,
+  isPresetSize.value ? `sn-avatar--size-${sizeSource.value}` : '',
+  hasStatus.value ? `sn-avatar--status-${props.status}` : '',
   props.customClass,
 ]);
 
 const rootStyle = computed(() => {
   const parts: string[] = [
-    `width: ${resolveSize(props.size)}`,
-    `height: ${resolveSize(props.size)}`,
+    `width: ${resolveSize(sizeSource.value)}`,
+    `height: ${resolveSize(sizeSource.value)}`,
   ];
   if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
   if (props.color) parts.push(`color: ${props.color}`);
@@ -206,7 +259,7 @@ function onImageError(event: Event): void {
     :class="rootClass"
     :style="rootStyle"
     role="img"
-    :aria-label="fallbackText || alt || undefined"
+    :aria-label="ariaLabel"
     @tap="onTap"
   >
     <slot>
@@ -222,7 +275,7 @@ function onImageError(event: Event): void {
         v-else-if="iconData"
         class="sn-avatar__icon"
         :icon="iconData"
-        :size="props.size === 'small' ? 24 : 32"
+        :size="sizeSource === 'small' ? 24 : 32"
       />
       <text
         v-else-if="cssIconClass"
@@ -230,6 +283,9 @@ function onImageError(event: Event): void {
         aria-hidden="true"
       />
     </slot>
+
+    <!-- Presence dot (additive): decorative, the state rides on aria-label. -->
+    <view v-if="hasStatus" class="sn-avatar__status" aria-hidden="true" />
   </view>
 </template>
 
@@ -242,8 +298,12 @@ function onImageError(event: Event): void {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   flex: 0 0 auto;
-  overflow: hidden;
+  /* No `overflow: hidden` here on purpose: the root hosts the absolutely
+     positioned presence dot on the corner, and clipping the root would shave
+     the dot off. The round shape is instead carried by the image itself
+     (`border-radius: inherit` below), which clips the photo to the circle. */
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
@@ -251,6 +311,13 @@ function onImageError(event: Event): void {
   font-weight: var(--sn-mp-font-weight-semibold);
   line-height: 1;
   vertical-align: middle;
+  /* Group stacking contract (sn-avatar-group hands these down; see that file
+     for why the child styles itself instead of the group reaching in with a
+     `:deep()` rule — App cannot express one, AGENTS.md §116.2). A standalone
+     avatar inherits the neutral defaults below and keeps its own geometry. */
+  margin-left: var(--sn-avatar-group-overlap-left, 0);
+  margin-top: var(--sn-avatar-group-overlap-top, 0);
+  box-shadow: var(--sn-avatar-group-ring, 0 0 0 0 transparent);
 }
 
 .sn-avatar--square {
@@ -276,10 +343,55 @@ function onImageError(event: Event): void {
   font-size: var(--sn-mp-font-size-xl);
 }
 
+/* ── Presence dot (additive) ───────────────────────────────────────────── */
+
+/* Anchored on the bottom-right corner like the reference badge layout. The
+   root no longer clips (the image carries its own radius), so the dot is
+   never shaved by the avatar's border; the surface-coloured ring keeps it
+   legible on top of a photo. */
+.sn-avatar__status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 20rpx;
+  height: 20rpx;
+  border: 4rpx solid var(--sn-mp-color-background-surface);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-avatar--status-online .sn-avatar__status {
+  background-color: var(--sn-mp-color-feedback-success);
+}
+
+.sn-avatar--status-offline .sn-avatar__status {
+  background-color: var(--sn-mp-color-text-tertiary);
+}
+
+/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head. */
+.sn-avatar--size-small .sn-avatar__status {
+  width: 16rpx;
+  height: 16rpx;
+  border-width: 3rpx;
+}
+
+.sn-avatar--size-medium .sn-avatar__status {
+  width: 24rpx;
+  height: 24rpx;
+}
+
+.sn-avatar--size-large .sn-avatar__status {
+  width: 28rpx;
+  height: 28rpx;
+}
 .sn-avatar__image {
   display: block;
   width: 100%;
   height: 100%;
+  /* The photo clips itself to the shape (the root cannot clip — it hosts the
+     presence dot on the corner, see the root rule above). */
+  border-radius: inherit;
 }
 
 .sn-avatar__text {

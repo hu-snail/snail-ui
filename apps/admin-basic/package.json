@@ -1,0 +1,36 @@
+{
+  "name": "@snui/admin-basic",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI Admin Basic — 中后台管理启动模板. @snui/admin-layout layout shell (SnProLayout) + @snui/vue-web (auto-imported via SnUIResolver) + alova request layer + @alova/mock service + vue-router dynamic routes + pinia + vue-i18n (zh/en) + dark/light & primary-color theming.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src vite.config.ts vitest.config.ts",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo src/components.d.ts"
+  },
+  "dependencies": {
+    "@alova/mock": "^2.0.22",
+    "@snui/admin-layout": "workspace:",
+    "@snui/tokens": "workspace:",
+    "@snui/vue-web": "workspace:",
+    "alova": "^3.5.5",
+    "lucide-vue-next": "^0.460.0",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.43",
+    "vue-i18n": "^11.1.12",
+    "vue-router": "^4.4.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.7.3",
+    "unplugin-vue-components": "*",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.2.0"
+  }
+}

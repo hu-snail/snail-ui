@@ -36,9 +36,10 @@ export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolv
   return {
     type: 'component',
     resolve(name: string): ResolvedComponent | undefined {
+      // Named-export barrel — the export name is the tag name itself.
       if (!PUBLIC_COMPONENTS.includes(name)) return undefined;
       return {
-        name: 'default',
+        name,
         from: library,
         sideEffects: `${library}/styles`,
       };

@@ -11,30 +11,30 @@ long for radios — form filters, category pickers, tag-style multi-select.
 
 ## SnSelect Props
 
-| Prop                      | Type                                                        | Default           | Notes                                                           |
-| ------------------------- | ----------------------------------------------------------- | ----------------- | --------------------------------------------------------------- |
-| modelValue                | `string \| number \| boolean \| null \| Array`              | `null`            | `v-model`. Array when `multiple`.                               |
-| multiple                  | `boolean`                                                   | `false`           | Tag-style multi-select.                                         |
-| options                   | `Array<{ label, value, disabled, children? } \| raw value>` | `[]`              | Object options or bare `string/number/boolean` values.          |
-| labelField                | `string`                                                    | `'label'`         | Label key remapping (naive `label-field`).                      |
-| valueField                | `string`                                                    | `'value'`         | Value key remapping (naive `value-field`).                      |
-| childrenField             | `string`                                                    | `'children'`      | Group children key remapping (naive `children-field`).          |
-| placeholder               | `string`                                                    | `'Please select'` | Empty-state text.                                               |
-| clearable                 | `boolean`                                                   | `false`           | Shows × button when a value exists.                             |
-| filterable                | `boolean`                                                   | `false`           | Enables the internal filter input.                              |
-| filter                    | `(pattern, option) => boolean`                              | label substring   | Custom filter predicate (naive `filter`).                       |
-| disabled                  | `boolean`                                                   | `false`           | Blocks open / select / clear.                                   |
-| readonly                  | `boolean`                                                   | `false`           | Visible but inert.                                              |
-| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`        | `'medium'`        | Trigger height + font preset.                                   |
-| status                    | `'default' \| 'error' \| 'warning'`                         | `'default'`       | Border color + `aria-invalid`.                                  |
-| maxTagCount               | `number`                                                    | —                 | Collapse extra multiple tags into `+N`.                         |
-| tag                       | `boolean`                                                   | `false`           | Pill-style value display (naive `tag`).                         |
-| loading                   | `boolean`                                                   | `false`           | Spinner replaces the arrow.                                     |
-| remote                    | `boolean`                                                   | `false`           | Typing emits `search`; host swaps `options` + drives `loading`. |
-| ariaLabel                 | `string`                                                    | `''`              | Accessible name (fallback: `label`).                            |
-| label                     | `string`                                                    | `''`              | Accessible label for the menu listbox.                          |
-| emptyText                 | `string`                                                    | `'No options'`    | Empty state text (`empty` slot wins).                           |
-| customClass / customStyle | `string` / `string \| object`                               | —                 | Root wrapper passthrough.                                       |
+| Prop                      | Type                                                        | Default                   | Notes                                                           |
+| ------------------------- | ----------------------------------------------------------- | ------------------------- | --------------------------------------------------------------- |
+| modelValue                | `string \| number \| boolean \| null \| Array`              | `null`                    | `v-model`. Array when `multiple`.                               |
+| multiple                  | `boolean`                                                   | `false`                   | Tag-style multi-select.                                         |
+| options                   | `Array<{ label, value, disabled, children? } \| raw value>` | `[]`                      | Object options or bare `string/number/boolean` values.          |
+| labelField                | `string`                                                    | `'label'`                 | Label key remapping (naive `label-field`).                      |
+| valueField                | `string`                                                    | `'value'`                 | Value key remapping (naive `value-field`).                      |
+| childrenField             | `string`                                                    | `'children'`              | Group children key remapping (naive `children-field`).          |
+| placeholder               | `string`                                                    | `'Please select'`         | Empty-state text; with `filterable` it lives on the input.      |
+| clearable                 | `boolean`                                                   | `false`                   | Shows × button when a value exists.                             |
+| filterable                | `boolean`                                                   | `false`                   | Enables the internal filter input.                              |
+| filter                    | `(pattern, option) => boolean`                              | label substring           | Custom filter predicate (naive `filter`).                       |
+| disabled                  | `boolean`                                                   | `false`                   | Blocks open / select / clear.                                   |
+| readonly                  | `boolean`                                                   | `false`                   | Visible but inert.                                              |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`        | `'medium'`                | Trigger height + font preset.                                   |
+| status                    | `'default' \| 'error' \| 'warning'`                         | `'default'`               | Border color + `aria-invalid`.                                  |
+| maxTagCount               | `number`                                                    | —                         | Collapse extra multiple tags into `+N`.                         |
+| tag                       | `boolean`                                                   | `false`                   | Pill-style value display (naive `tag`).                         |
+| loading                   | `boolean`                                                   | `false`                   | Spinner replaces the arrow.                                     |
+| remote                    | `boolean`                                                   | `false`                   | Typing emits `search`; host swaps `options` + drives `loading`. |
+| ariaLabel                 | `string`                                                    | `''`                      | Accessible name (fallback: `label`).                            |
+| label                     | `string`                                                    | `''`                      | Accessible label for the menu listbox.                          |
+| emptyText                 | `string`                                                    | locale `Select.noOptions` | Empty state text (`empty` slot wins; zh-CN ⇒ 「暂无数据」).     |
+| customClass / customStyle | `string` / `string \| object`                               | —                         | Root wrapper passthrough.                                       |
 
 ## SnSelect Events
 

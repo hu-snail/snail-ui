@@ -67,16 +67,16 @@
         </span>
       </template>
 
-      <!-- Single: label text -->
+      <!-- Single: label text. In filterable mode the internal input below owns
+           the empty state — its native placeholder would otherwise render a
+           second copy of the same text next to this span. -->
       <span v-if="!multiple" class="sn-select__single-value">
         <template v-if="selectedLeafLabel !== null">{{ selectedLeafLabel }}</template>
-        <span v-if="selectedLeafLabel === null" class="sn-select__placeholder">{{
-          placeholder
-        }}</span>
+        <span v-else-if="!filterable" class="sn-select__placeholder">{{ placeholder }}</span>
       </span>
 
       <!-- Multiple + empty: placeholder -->
-      <span v-if="multiple && isSelectionEmpty" class="sn-select__placeholder">{{
+      <span v-if="multiple && isSelectionEmpty && !filterable" class="sn-select__placeholder">{{
         placeholder
       }}</span>
 
@@ -193,7 +193,7 @@
               </template>
             </template>
             <div v-else class="sn-select-menu__empty">
-              <slot name="empty">{{ emptyText }}</slot>
+              <slot name="empty">{{ resolvedEmptyText }}</slot>
             </div>
           </div>
           <div class="sn-select-menu__action">
@@ -247,6 +247,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, toRef, wa
 import SnIcon from '../icon/SnIcon.vue';
 import SnOption from './SnOption.vue';
 import { useOverlayFollow } from '../_internal/use-overlay-follow';
+import { useLocale } from '../locales/use-locale';
 import { ChevronDownIcon, CloseIcon, LoadingIcon } from './sn-select-icons';
 import {
   defaultSelectFilter,
@@ -307,8 +308,9 @@ const props = withDefaults(
     ariaLabel?: string;
     /** Accessible label forwarded to the menu listbox. */
     label?: string;
-    /** Empty-state text (overridden by the `empty` slot). */
-    emptyText?: string;
+    /** Empty-state text (overridden by the `empty` slot). Defaults to the
+     *  active locale's `Select.noOptions` (zh-CN「暂无数据」). */
+    emptyText?: string | undefined;
     /** Class on the root wrapper. */
     customClass?: string;
     /** Inline style on the root wrapper. */
@@ -335,7 +337,7 @@ const props = withDefaults(
     remote: false,
     ariaLabel: '',
     label: '',
-    emptyText: 'No options',
+    emptyText: undefined,
     customClass: '',
     customStyle: '',
   },
@@ -368,6 +370,13 @@ defineSlots<{
   /** Dropdown bottom area (naive `action`). */
   action?(): unknown;
 }>();
+
+/* ─────────── Locale ─────────── */
+
+const locale = useLocale();
+
+/** `emptyText` prop wins; otherwise the active locale's empty-state copy. */
+const resolvedEmptyText = computed(() => props.emptyText ?? locale.value.Select.noOptions);
 
 /* ─────────── Option normalization ─────────── */
 

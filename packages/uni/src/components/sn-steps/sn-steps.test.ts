@@ -2,9 +2,11 @@
  * sn-steps / sn-step unit tests — uni-end step indicator.
  *
  * Behaviour only (AGENTS.md §46): the status derivation from `active`, the
- * explicit-status override, the vertical / dot / space / alignCenter flags and
- * the last-step line suppression. No rpx numbers in assertions — happy-dom
- * discards lengths it cannot parse.
+ * explicit-status override, the vertical / dot / space / alignCenter flags, the
+ * last-step line suppression and the additive AUI-OPT-09 surface (connector
+ * line type, `node` / `content` slots, icon data / image / name / size /
+ * colour). No rpx numbers in assertions — happy-dom discards lengths it cannot
+ * parse.
  */
 
 import { describe, it, expect, afterEach } from 'vitest';
@@ -13,7 +15,7 @@ import { defineComponent, h } from 'vue';
 import SnSteps from './sn-steps.vue';
 import SnStep from './sn-step.vue';
 import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
-import { Plus } from '../sn-icon/sn-icon-set';
+import { Bell, Plus, Star } from '../sn-icon/sn-icon-set';
 
 afterEach(() => {
   clearSnIcons();
@@ -345,6 +347,232 @@ describe('sn-steps', () => {
     it('defaults a standalone step without a container to wait', () => {
       const wrapper = mount(SnStep, { props: { title: 'Lone' } });
       expect(wrapper.classes()).toContain('sn-step--wait');
+    });
+  });
+
+  describe('connector line type (additive)', () => {
+    it('leaves the line unstyled for the solid default', async () => {
+      const line = (await mountSteps()).find('.sn-step__line');
+      expect(line.exists()).toBe(true);
+      expect(line.attributes('style')).toBeUndefined();
+    });
+
+    it('draws every non-last connector as a dashed border', async () => {
+      const lines = (await mountSteps({ connector: 'dashed' })).findAll('.sn-step__line');
+      expect(lines).toHaveLength(2);
+      for (const line of lines) {
+        expect(line.attributes('style')).toContain('border-top-style: dashed');
+        expect(line.attributes('style')).toContain('border-left-style: dashed');
+      }
+    });
+
+    it('draws the dotted connector', async () => {
+      const line = (await mountSteps({ connector: 'dotted' })).find('.sn-step__line');
+      expect(line.attributes('style')).toContain('border-top-style: dotted');
+    });
+
+    it('keeps the dashed style on a vertical connector', async () => {
+      const line = (await mountSteps({ connector: 'dashed', vertical: true })).find(
+        '.sn-step__line',
+      );
+      expect(line.attributes('style')).toContain('border-left-style: dashed');
+    });
+
+    it('suppresses the line in dot mode whatever the connector is', async () => {
+      const wrapper = await mountSteps({ connector: 'dashed', dot: true });
+      expect(wrapper.find('.sn-step__line').exists()).toBe(false);
+    });
+
+    it('re-styles the connector when the container value changes', async () => {
+      const Harness = defineComponent({
+        props: { connector: { type: String, default: 'solid' } },
+        setup(props) {
+          return () =>
+            h(
+              SnSteps,
+              { connector: props.connector },
+              { default: () => [h(SnStep, { title: 'A' }), h(SnStep, { title: 'B' })] },
+            );
+        },
+      });
+      const wrapper = mount(Harness, { props: { connector: 'solid' } });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-step__line').attributes('style')).toBeUndefined();
+      await wrapper.setProps({ connector: 'dashed' });
+      expect(wrapper.find('.sn-step__line').attributes('style')).toContain(
+        'border-top-style: dashed',
+      );
+    });
+  });
+
+  describe('custom node slot (additive)', () => {
+    function mountNodeSlot(): ReturnType<typeof mount> {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(
+              SnSteps,
+              { active: 0 },
+              {
+                default: () => [
+                  h(SnStep, { title: 'A' }, { node: () => h('view', { class: 'custom-node' }) }),
+                  h(SnStep, { title: 'B' }),
+                ],
+              },
+            );
+        },
+      });
+      return mount(Harness);
+    }
+
+    it('replaces the whole default indicator node', () => {
+      const wrapper = mountNodeSlot();
+      const step = wrapper.findAll('.sn-step')[0]!;
+      expect(step.find('.custom-node').exists()).toBe(true);
+      expect(step.find('.sn-step__indicator').exists()).toBe(false);
+      expect(step.find('.sn-step__number').exists()).toBe(false);
+    });
+
+    it('keeps the connector line beside a custom node', () => {
+      expect(mountNodeSlot().findAll('.sn-step')[0]!.find('.sn-step__line').exists()).toBe(true);
+    });
+
+    it('keeps the default indicator on steps without the slot', () => {
+      expect(mountNodeSlot().findAll('.sn-step')[1]!.find('.sn-step__indicator').exists()).toBe(
+        true,
+      );
+    });
+  });
+
+  describe('content slot (additive)', () => {
+    it('replaces title and description in one piece', () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(
+              SnSteps,
+              { active: 0 },
+              {
+                default: () => [
+                  h(
+                    SnStep,
+                    { title: 'ignored', description: 'ignored' },
+                    { content: () => h('view', { class: 'custom-content' }) },
+                  ),
+                ],
+              },
+            );
+        },
+      });
+      const step = mount(Harness).find('.sn-step');
+      expect(step.find('.custom-content').exists()).toBe(true);
+      expect(step.find('.sn-step__title').exists()).toBe(false);
+      expect(step.find('.sn-step__description').exists()).toBe(false);
+      /* The content box itself stays, so the slot keeps the layout gap. */
+      expect(step.find('.sn-step__content').exists()).toBe(true);
+    });
+  });
+
+  describe('icon configuration (additive)', () => {
+    it('renders an IconData object instead of the step number', async () => {
+      const indicator = (await mountSteps({ active: 0 }, [{ title: 'A', iconData: Bell }])).find(
+        '.sn-step__indicator',
+      );
+      expect(indicator.find('svg').exists()).toBe(true);
+      expect(indicator.find('.sn-step__number').exists()).toBe(false);
+    });
+
+    it('renders an image for iconUrl', async () => {
+      const wrapper = await mountSteps({ active: 0 }, [
+        { title: 'A', iconUrl: 'https://example.com/step.png' },
+      ]);
+      const image = wrapper.find('.sn-step__image');
+      expect(image.exists()).toBe(true);
+      expect(image.attributes('src')).toBe('https://example.com/step.png');
+      expect(wrapper.find('.sn-step__number').exists()).toBe(false);
+    });
+
+    it('prefers iconData over iconUrl and the name', async () => {
+      registerSnIcons({ Star });
+      const wrapper = await mountSteps({ active: 0 }, [
+        { title: 'A', icon: 'Star', iconUrl: 'https://example.com/step.png', iconData: Bell },
+      ]);
+      expect(wrapper.find('.sn-step__image').exists()).toBe(false);
+      expect(wrapper.find('.sn-step__indicator svg').exists()).toBe(true);
+    });
+
+    it('prefers iconUrl over the name', async () => {
+      registerSnIcons({ Star });
+      const wrapper = await mountSteps({ active: 0 }, [
+        { title: 'A', icon: 'Star', iconUrl: 'https://example.com/step.png' },
+      ]);
+      expect(wrapper.find('.sn-step__image').exists()).toBe(true);
+      expect(wrapper.find('.sn-step__indicator svg').exists()).toBe(false);
+    });
+
+    it('resolves a built-in catalogue name without registration', async () => {
+      clearSnIcons();
+      const indicator = (await mountSteps({ active: 0 }, [{ title: 'A', icon: 'bell' }])).find(
+        '.sn-step__indicator',
+      );
+      expect(indicator.find('svg').exists()).toBe(true);
+      expect(indicator.find('.sn-step__number').exists()).toBe(false);
+    });
+
+    it('falls back to the step number when the name is unresolved', async () => {
+      clearSnIcons();
+      const indicator = (await mountSteps({ active: 0 }, [{ title: 'A', icon: 'Nope' }])).find(
+        '.sn-step__indicator',
+      );
+      expect(indicator.find('svg').exists()).toBe(false);
+      expect(indicator.find('.sn-step__number').text()).toBe('1');
+    });
+
+    it('sizes the glyph from the family tier token by default', async () => {
+      const icon = (await mountSteps({ active: 0 }, [{ title: 'A', iconData: Bell }])).find(
+        '.sn-icon',
+      );
+      expect(icon.attributes('style')).toContain('var(--sn-mp-icon-size-medium)');
+    });
+
+    it('maps an iconSize tier name to its token', async () => {
+      const icon = (
+        await mountSteps({ active: 0 }, [{ title: 'A', iconData: Bell, iconSize: 'large' }])
+      ).find('.sn-icon');
+      expect(icon.attributes('style')).toContain('var(--sn-mp-icon-size-large)');
+    });
+
+    it('passes a numeric iconSize through as px', async () => {
+      const icon = (
+        await mountSteps({ active: 0 }, [{ title: 'A', iconData: Bell, iconSize: 36 }])
+      ).find('.sn-icon');
+      expect(icon.attributes('style')).toContain('width: 36px');
+    });
+
+    it('sizes the builtin status glyph from the same tier', async () => {
+      const icon = (await mountSteps({ active: 1 }, [{ title: 'A' }, { title: 'B' }])).find(
+        '.sn-icon',
+      );
+      expect(icon.attributes('style')).toContain('var(--sn-mp-icon-size-medium)');
+    });
+
+    it('sizes the image source from the same tier', async () => {
+      const image = (
+        await mountSteps({ active: 0 }, [
+          { title: 'A', iconUrl: 'https://example.com/step.png', iconSize: 'medium' },
+        ])
+      ).find('.sn-step__image');
+      expect(image.attributes('style')).toContain('var(--sn-mp-icon-size-medium)');
+    });
+
+    it('forwards iconColor to the glyph', async () => {
+      const icon = (
+        await mountSteps({ active: 0 }, [
+          { title: 'A', iconData: Bell, iconColor: 'var(--sn-mp-color-feedback-danger)' },
+        ])
+      ).find('.sn-icon');
+      expect(icon.attributes('style')).toContain('color: var(--sn-mp-color-feedback-danger)');
+      expect(icon.find('svg').attributes('stroke')).toBe('var(--sn-mp-color-feedback-danger)');
     });
   });
 });

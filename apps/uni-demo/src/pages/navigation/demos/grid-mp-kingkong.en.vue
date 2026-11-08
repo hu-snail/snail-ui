@@ -1,0 +1,121 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-grid — quick-entry zone (the classic app-home "king kong" grid).
+ *
+ * - Colored rounded icon tiles: the `#icon` slot wraps a tinted view while
+ *   the glyph itself stays a built-in catalog kebab name (zero registration,
+ *   deterministic render); colour cascades via currentColor
+ * - `clickable` (grid-level) gives press feedback; the click lands on each
+ *   sn-grid-item and the host decides where to go (no routing in the component)
+ * - No border on a white surface — the classic quick-entry canvas
+ */
+import { ref } from 'vue';
+import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
+import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+
+/** Quick-entry item: icon (built-in catalog kebab name) + label + theme tokens. */
+const entries = [
+  {
+    icon: 'camera',
+    text: 'Scan',
+    bg: 'var(--sn-mp-color-action-primary-soft)',
+    fg: 'var(--sn-mp-color-action-primary)',
+  },
+  {
+    icon: 'wallet',
+    text: 'Wallet',
+    bg: 'var(--sn-mp-color-feedback-warning-soft)',
+    fg: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    icon: 'message-circle',
+    text: 'Messages',
+    bg: 'var(--sn-mp-color-feedback-success-soft)',
+    fg: 'var(--sn-mp-color-feedback-success)',
+  },
+  {
+    icon: 'camera',
+    text: 'Albums',
+    bg: 'var(--sn-mp-color-pink-soft)',
+    fg: 'var(--sn-mp-color-pink)',
+  },
+  {
+    icon: 'chart-pie',
+    text: 'Wealth',
+    bg: 'var(--sn-mp-color-cyan-soft)',
+    fg: 'var(--sn-mp-color-cyan)',
+  },
+  {
+    icon: 'calendar',
+    text: 'Agenda',
+    bg: 'var(--sn-mp-color-volcano-soft)',
+    fg: 'var(--sn-mp-color-volcano)',
+  },
+  {
+    icon: 'user-plus',
+    text: 'Invite',
+    bg: 'var(--sn-mp-color-lightblue-soft)',
+    fg: 'var(--sn-mp-color-lightblue)',
+  },
+  {
+    icon: 'settings',
+    text: 'Settings',
+    bg: 'var(--sn-mp-color-purple-soft)',
+    fg: 'var(--sn-mp-color-purple)',
+  },
+] as const;
+
+const tapped = ref('—');
+
+function onEntryTap(entry: { text: string }): void {
+  tapped.value = entry.text;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Color icon tiles + clickable (4 × 2)</text>
+    <SnGrid :column="4" clickable>
+      <SnGridItem
+        v-for="entry in entries"
+        :key="entry.text"
+        :text="entry.text"
+        @click="onEntryTap(entry)"
+      >
+        <template #icon>
+          <view
+            class="sn-demo__kingkong"
+            :style="`--sn-demo-kk-bg: ${entry.bg}; --sn-demo-kk-fg: ${entry.fg};`"
+          >
+            <SnIcon :icon="entry.icon" size="44rpx" />
+          </view>
+        </template>
+      </SnGridItem>
+    </SnGrid>
+    <text class="sn-demo__meta">Last tap: {{ tapped }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* King-kong icon tile: the tint is injected per item via CSS custom
+ * properties; the glyph colour rides currentColor. */
+.sn-demo__kingkong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: var(--sn-mp-radius-xl);
+  background-color: var(--sn-demo-kk-bg);
+  color: var(--sn-demo-kk-fg);
+}
+</style>

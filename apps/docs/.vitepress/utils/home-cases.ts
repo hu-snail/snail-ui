@@ -9,83 +9,211 @@
  * 结构：一面 SnWaterfall 瀑布流（`min-column-width` 响应式列数，铺满
  * 视口宽度），无跑马灯 —— 一次排布、自然滚动浏览。
  *
- * `caseHue` 为每张卡片派生一个确定性的色相（0–359）：卡片使用淡色渐变
- * 弥散玻璃质感（glassmorphism），色相随案例变化但 SSR / 客户端一致
- * （不能用 Math.random，否则水合时卡片颜色会闪变）。深浅主题下的玻璃
- * 配方见 SnHomeCaseCard。
+ * `caseHue` 为每张卡片派生一个确定性的色相（0–359）：一个纯函数色板工具，
+ * 派生规则由契约测试（home-cases.test.ts）锁定，SSR / 客户端一致（不能用
+ * Math.random，否则水合时数值会闪变）。注意：卡片当前改为中性配色（见
+ * SnHomeCaseCard），caseHue 不再驱动卡片外观，保留供其它场景复用。
  */
 
-/** 案例卡内容区高度档位。 */
-export type HomeCaseSize = 'sm' | 'md' | 'lg';
+/**
+ * 案例卡内容窗高度档位（内容窗最小高度，px）。
+ *
+ * 取值由「三列齐平」反推：瀑布流按最短列优先摆放，档位定死后同档卡等高，
+ * 12 张卡（4/4/4）才能三列几乎完全齐平（实测列高差 < 10px）。
+ * 内容更高时卡片自然增高，故每档都是 min-height 而非固定高度。
+ */
+export type HomeCaseSize =
+  | 'c188'
+  | 'c208'
+  | 'c228'
+  | 'c248'
+  | 'c288'
+  | 'c308'
+  | 'c338'
+  | 'c378'
+  | 'c388'
+  | 'c398'
+  | 'c418'
+  | 'c428';
 
-/** 案例标识 —— SnHomeCaseDemo 模板按它渲染对应的场景组合。 */
+/** 案例标识 —— 首页设计稿的 9 张卡，外加数据表格 / 视频播放器 / 轮播三个扩展场景。 */
 export type HomeCaseId =
-  | 'account'
-  | 'payments'
-  | 'payout'
-  | 'controls'
-  | 'savings'
-  | 'notify'
-  | 'milestone'
-  | 'timeline'
-  | 'chat'
-  | 'members'
-  | 'balance'
+  | 'aiChat'
+  | 'aiPrompt'
+  | 'aiImage'
+  | 'form'
+  | 'stats'
   | 'chart'
-  | 'qr'
-  | 'skeleton'
-  | 'dialog'
-  | 'carousel'
-  | 'table'
-  | 'heatmap'
-  | 'image'
-  | 'video'
   | 'datetime'
-  | 'calendar'
+  | 'table'
   | 'color'
-  | 'upload'
-  | 'drag'
-  | 'steps';
+  | 'kanban'
+  | 'video'
+  | 'carousel';
+
+/** 筛选分组 —— 卡头胶囊按它过滤（ai = AI 原生场景）。 */
+export type HomeCaseGroup = 'ai' | 'core' | 'media';
+
+/** 筛选键：'all' = 不过滤。 */
+export type HomeCaseFilter = 'all' | HomeCaseGroup;
+
+/** 卡头 badge 的强调色档（参照稿同款：不同场景不同色相）。 */
+export type HomeCaseAccent = 'blue' | 'indigo' | 'emerald' | 'fuchsia' | 'amber' | 'teal';
+
+/** 分组顺序（筛选胶囊的排列顺序，不含 'all'）。 */
+export const HOME_CASE_GROUPS: HomeCaseGroup[] = ['ai', 'core', 'media'];
 
 export interface HomeCaseCard {
   /** 案例标识（唯一）。 */
   id: HomeCaseId;
   /** 内容区高度档位。 */
   size: HomeCaseSize;
+  /** 筛选分组。 */
+  group: HomeCaseGroup;
+  /** 卡头 badge / 编号的强调色档。 */
+  accent: HomeCaseAccent;
+  /** 卡头能力标签（语言中立的技术 tag，参照稿同款英文短标签）。 */
+  badge: string;
+  /** 底部左：场景用到的组件 / 协议签名（mono，语言中立）。 */
+  api: string;
+  /** 底部右：状态文案（mono；缺省 `● Live`）。 */
+  status?: string;
 }
 
 /**
- * 案例清单 —— 一面瀑布流。size 档位（sm≈120 / md≈180 / lg≈260 的内容
- * 区基准高度）让瀑布流出现自然的错落。
+ * 案例清单 —— 一面瀑布流。
+ *
+ * 顺序即瀑布流摆放顺序：3 张 AI 原生场景排最前，正好落在 3 列的第一行。
  */
 export const homeCases: HomeCaseCard[] = [
-  { id: 'account', size: 'md' },
-  { id: 'payments', size: 'sm' },
-  { id: 'payout', size: 'md' },
-  { id: 'controls', size: 'sm' },
-  { id: 'savings', size: 'md' },
-  { id: 'notify', size: 'sm' },
-  { id: 'milestone', size: 'md' },
-  { id: 'timeline', size: 'sm' },
-  { id: 'chat', size: 'md' },
-  { id: 'members', size: 'sm' },
-  { id: 'balance', size: 'md' },
-  { id: 'chart', size: 'lg' },
-  { id: 'qr', size: 'sm' },
-  { id: 'skeleton', size: 'sm' },
-  { id: 'dialog', size: 'sm' },
-  { id: 'carousel', size: 'md' },
-  { id: 'table', size: 'lg' },
-  { id: 'heatmap', size: 'md' },
-  { id: 'image', size: 'sm' },
-  { id: 'video', size: 'lg' },
-  { id: 'datetime', size: 'sm' },
-  { id: 'calendar', size: 'lg' },
-  { id: 'color', size: 'sm' },
-  { id: 'upload', size: 'sm' },
-  { id: 'drag', size: 'md' },
-  { id: 'steps', size: 'sm' },
+  {
+    id: 'aiChat',
+    size: 'c388',
+    group: 'ai',
+    accent: 'blue',
+    badge: 'Agent Stream',
+    api: 'SnInput · SnButton · SSE',
+    status: '● Live',
+  },
+  {
+    id: 'aiPrompt',
+    size: 'c338',
+    group: 'ai',
+    accent: 'indigo',
+    badge: 'Orchestrator',
+    api: 'SnSlider · SnTag · SnInput',
+    status: 'API v1',
+  },
+  {
+    id: 'aiImage',
+    size: 'c418',
+    group: 'ai',
+    accent: 'fuchsia',
+    badge: 'Diffusion',
+    api: 'SnProgress · SnInput',
+    status: '● 80%',
+  },
+
+  {
+    id: 'form',
+    size: 'c288',
+    group: 'core',
+    accent: 'blue',
+    badge: 'Smart Form',
+    api: 'SnInput · SnRadioGroup · SnCheckbox',
+    status: '● Valid',
+  },
+  {
+    id: 'stats',
+    size: 'c308',
+    group: 'core',
+    accent: 'emerald',
+    badge: 'Stats Suite',
+    api: 'SnStatistic · SnSlider',
+    status: '● Live',
+  },
+  {
+    id: 'chart',
+    size: 'c228',
+    group: 'core',
+    accent: 'blue',
+    badge: 'Dual Spline',
+    api: 'SnStatistic · SnTag',
+    status: 'ECharts',
+  },
+  {
+    id: 'datetime',
+    size: 'c428',
+    group: 'core',
+    accent: 'indigo',
+    badge: 'Date & Time',
+    api: 'SnCalendar · SnTimePicker',
+    status: 'ISO-8601',
+  },
+  {
+    id: 'table',
+    size: 'c398',
+    group: 'core',
+    accent: 'indigo',
+    badge: 'Data Table',
+    api: 'SnDataTable · SnTag',
+    status: '● 1,284',
+  },
+  {
+    id: 'color',
+    size: 'c378',
+    group: 'media',
+    accent: 'fuchsia',
+    badge: 'Color System',
+    api: 'SnColorPicker · SnProgress',
+    status: 'D65',
+  },
+  {
+    id: 'kanban',
+    size: 'c188',
+    group: 'media',
+    accent: 'emerald',
+    badge: 'Kanban Flow',
+    api: 'SnDragSort · SnTag · SnIcon',
+    status: 'HTML5 DnD',
+  },
+  {
+    id: 'video',
+    size: 'c208',
+    group: 'media',
+    accent: 'teal',
+    badge: 'Video Player',
+    api: 'SnVideoPlayer · SnTag · SnProgress',
+    status: 'MP4 · HLS',
+  },
+  {
+    id: 'carousel',
+    size: 'c248',
+    group: 'media',
+    accent: 'amber',
+    badge: 'Carousel',
+    api: 'SnCarousel · SnCarouselItem',
+    status: '● Auto',
+  },
 ];
+/**
+ * 卡头编号 —— AI 原生场景 `AI #01…`，其余 `#01…`（按注册表顺序连续编号）。
+ * 纯派生 + 确定性：SSR 与客户端、以及任何筛选状态下都得到同一个编号
+ * （编号不随过滤结果重排）。
+ */
+export const caseIndexLabels: Record<HomeCaseId, string> = (() => {
+  const labels = {} as Record<HomeCaseId, string>;
+  let ai = 0;
+  let other = 0;
+  for (const c of homeCases) {
+    if (c.group === 'ai') {
+      labels[c.id] = `AI #${String((ai += 1)).padStart(2, '0')}`;
+    } else {
+      labels[c.id] = `#${String((other += 1)).padStart(2, '0')}`;
+    }
+  }
+  return labels;
+})();
 
 /**
  * 由案例 id 派生确定性色相（0–359）。
@@ -166,8 +294,8 @@ const zhDict: CaseDict = {
   processingFee: '处理手续费',
   totalReady: '合计可领',
   balanceNote: '银行账户连通后，余额超过 $10.00 的部分将自动进入每月 15 日的发放名单。',
-  chartTitle: '贡献趋势',
-  chartDesc: '近 6 个月的活跃度',
+  chartTitle: '可视化分析图表',
+  chartDesc: '平滑双曲线、拟态 Tooltip 气泡与分段器',
   upcoming: '进行中',
   scheduledMay: '5 月 2024',
   scheduledState: '已排期',
@@ -207,32 +335,39 @@ const zhDict: CaseDict = {
   dialogBody: '该操作无法撤销，草稿将被永久移除。',
   dialogPositive: '删除',
   dialogNegative: '保留',
-  carouselTitle: '精选轮播',
-  carouselDesc: '自动播放的图片轮播。',
+  carouselTitle: '轮播横幅',
+  carouselDesc: '自动播放、拖拽切换与卡片动效。',
   slideA: '设计系统',
   slideB: '风格包',
   slideC: 'AI Native',
-  tableTitle: '发布任务',
-  tableDesc: '带斑马纹的紧凑数据表格。',
+  tableTitle: '数据表格',
+  tableDesc: '紧凑数据表格、负责人指派与状态徽标。',
   colTask: '任务',
   colOwner: '负责人',
   colStatus: '状态',
   statusDone: '已完成',
   statusDoing: '进行中',
   statusTodo: '待开始',
+  /* ── 数据表格（扩展场景） ── */
+  tableLabel: '发布任务',
+  tableCount: '1,284 行',
+  tableRow1: 'Tokens 多端转换',
+  tableRow2: '错误监控接入',
+  tableRow3: '设计稿同步',
+  tableOwner: '蜗蜗',
   heatmapTitle: '活跃度',
   heatmapDesc: '近 8 周的贡献热力图。',
   imageTitle: '媒体',
   imageDesc: '懒加载图片，object-fit 裁切。',
-  videoTitle: '视频播放',
-  videoDesc: '自定义控制条与清晰度菜单。',
-  datetimeTitle: '日期时间',
-  datetimeDesc: '日期时间选择与相对时间。',
+  videoTitle: '视频播放器',
+  videoDesc: '倍速、画中画、清晰度切换与弹幕层。',
+  datetimeTitle: '日期时间选择器',
+  datetimeDesc: '高精度日历面板、时分秒滚动列与快捷预设',
   datetimePlaceholder: '选择日期时间',
   calendarTitle: '日历',
   calendarDesc: '可点选日期的月历面板。',
-  colorTitle: '颜色面板',
-  colorDesc: '内嵌面板与常用色板。',
+  colorTitle: '色彩调配引擎',
+  colorDesc: 'SV 取色面板、色相/透明滑杆与 Token 色票',
   uploadTitle: '上传',
   uploadDesc: '选择文件，最多 3 张图片。',
   uploadCta: '上传文件',
@@ -243,6 +378,101 @@ const zhDict: CaseDict = {
   stepAccount: '账号',
   stepProfile: '资料',
   stepDone: '完成',
+
+  /* ── AI 原生场景（三张参照稿同款的组合场景） ── */
+  aiChatTitle: 'AI 对话与推理流',
+  aiChatDesc: '模型选择器、思考链折叠与流式代码生成',
+  aiChatSwitch: '切换',
+  aiChatStats: 'Tokens/s 84.5 · 延迟 240ms',
+  aiChatQuery: '请帮我写一张磨砂玻璃指标卡，支持平滑微折线。',
+  aiChatThinking: '深度思考过程（耗时 8.2s）',
+  aiChatThinkingBody:
+    '拆解需求：外层 rounded-3xl + backdrop-blur 做磨砂面；折线用二次贝塞尔，末点补一枚光斑。',
+  aiChatSend: '发送',
+  aiChatCopy: '复制代码',
+  aiChatInput: '追问需求或微调设计…',
+  aiChatFoot: 'SSE 流式传输',
+  aiPromptTitle: 'Prompt 与上下文编排',
+  aiPromptDesc: 'System 设定、变量槽位注入与参数调优。',
+  aiPromptSystem: '系统预设指令',
+  aiPromptSystemValue:
+    '你是一名设计系统架构师。输出必须遵循 @snui 的视觉原则，并匹配 {{user_intent}} 与 {{retrieved_chunks}}。',
+  aiPromptActive: 'v2.3 活跃中',
+  aiPromptTokens: '预估 148 Tokens',
+  aiPromptSlots: '已注入动态变量槽位',
+  aiPromptRun: '调试运行',
+  aiPromptFoot: '预算 4,096 / 128K',
+  aiImageTitle: 'AI 图像生成与微调',
+  aiImageDesc: '多风格预设、宽高比适配与去噪迭代进度',
+  aiImagePrompt: 'Futuristic frosted glass UI, clean ambient glow, octane render.',
+  aiImageStep: 'Step 28 / 35',
+  aiImageOptimize: '优化 Prompt',
+  aiImageWeight: '权重 1.2',
+  aiImagePreset1: '极简磨砂 3D',
+  aiImagePreset2: '日系二次元',
+  aiImagePreset3: '矢量微扁平',
+  aiImageRender: '正在去噪渲染 80%',
+  aiImageFoot: '采样 DPM++ 2M',
+  /* ── #01 表单综合套件（设计稿：配置面板） ── */
+  domainLabel: '工作空间域名',
+  domainOk: '域名可用',
+  hostLabel: '算力托管模式',
+  hostCloud: '云端托管',
+  hostPrivate: '私有部署',
+  syncLabel: '同步能力',
+  selectAll: '全选',
+  syncFigma: 'Figma 变量',
+  syncMcp: 'MCP 同步',
+  quotaLabel: '并发 Token 配额',
+  quotaStep: '步长 ±512',
+  saveConfig: '保存配置',
+  reset: '重置',
+  /* ── #04 日期时间选择器 ── */
+  presetToday: '今天',
+  presetYesterday: '昨天',
+  preset7d: '近 7 天',
+  preset30d: '近 30 天',
+  timeLabel: '时间',
+  confirm: '确认选择',
+  /* ── #02 资产与指标统计 ── */
+  statLabel: 'Total Clicks / Value',
+  ratioLabel: '配置比例',
+  ratioValue: '权益 58% · 固收 28% · 现金 14%',
+  transfer: '转账',
+  withdraw: '提现',
+  deepAnalyze: '深度分析',
+  /* ── #12 列表拖拽与看板流 ── */
+  kanbanTodo: 'To Do · P0',
+  /* ── #03 可视化分析图表 ── */
+  kanbanTask1Title: '设计 Tokens 多端转换工具链',
+  kanbanTask1Meta: '负责人: 蜗蜗 · 进行中',
+  kanbanTask2Title: '接入错误监控',
+  kanbanTask2Meta: 'Sentry 自动化集成与告警',
+  kanbanProg: 'In prog',
+  kanbanReview: 'Review',
+  chartActual: '实际推演',
+  chartBase: '预期基线',
+  chartWeek: '周',
+  chartTipDate: '04-18 (周五)',
+  /* ── 视频播放器（扩展场景） ── */
+  videoCap: '海边航拍 · 1080P',
+  videoTip: '弹幕 / 画中画 / 迷你窗',
+  videoSpeed: '1.25× 倍速',
+  /* ── 轮播（扩展场景） ── */
+  carouselSlide1: '春季新品发布',
+  carouselSlide1Desc: '全品类限时 8 折，会员积分翻倍',
+  carouselSlide2: '出行季 · 旅行专区',
+  carouselSlide2Desc: '机票酒店套餐立减 300 元',
+  carouselSlide3: '会员日来袭',
+  carouselSlide3Desc: '每月 18 日专属券包，立即领取',
+  carouselFoot: '自动播放 · 1.8s',
+  /* ── 组件场景卡标题 / 副标题（与设计稿一致） ── */
+  formTitle: '表单综合套件',
+  formDesc: '前后缀复合输入、单选卡片、复选与步进器',
+  statsTitle: '资产与指标统计',
+  statsDesc: '白净悬浮卡片、柔和微折线与指标增长',
+  kanbanTitle: '列表拖拽与看板流',
+  kanbanDesc: '磨砂悬浮卡片、圆角浮卡与拖拽手柄',
 };
 
 const enDict: CaseDict = {
@@ -299,8 +529,8 @@ const enDict: CaseDict = {
   totalReady: 'Total Ready to Claim',
   balanceNote:
     'Once your bank is connected, balances over $10.00 are automatically eligible for monthly distribution on the 15th.',
-  chartTitle: 'Contribution History',
-  chartDesc: 'Last 6 months of activity',
+  chartTitle: 'Analytics Chart',
+  chartDesc: 'Smooth dual splines, mock tooltip and segmented control.',
   upcoming: 'Upcoming',
   scheduledMay: 'May 2024',
   scheduledState: 'Scheduled',
@@ -340,32 +570,39 @@ const enDict: CaseDict = {
   dialogBody: 'This action cannot be undone. The draft will be removed permanently.',
   dialogPositive: 'Delete',
   dialogNegative: 'Keep it',
-  carouselTitle: 'Highlights',
-  carouselDesc: 'Auto-playing carousel of feature slides.',
+  carouselTitle: 'Carousel Banner',
+  carouselDesc: 'Autoplay, drag-to-switch and card motion.',
   slideA: 'Design System',
   slideB: 'Style Packs',
   slideC: 'AI Native',
-  tableTitle: 'Release Tasks',
-  tableDesc: 'A compact data table with striped rows.',
+  tableTitle: 'Data Table',
+  tableDesc: 'Compact data table with owners and status badges.',
   colTask: 'Task',
   colOwner: 'Owner',
   colStatus: 'Status',
   statusDone: 'Done',
   statusDoing: 'In Progress',
   statusTodo: 'To Do',
+  /* ── Data table (extended) ── */
+  tableLabel: 'Release tasks',
+  tableCount: '1,284 rows',
+  tableRow1: 'Multi-target tokens',
+  tableRow2: 'Error monitoring',
+  tableRow3: 'Design spec sync',
+  tableOwner: 'Snail',
   heatmapTitle: 'Activity',
   heatmapDesc: 'Contributions over the last 8 weeks.',
   imageTitle: 'Media',
   imageDesc: 'Lazy-loaded image with object-fit cover.',
   videoTitle: 'Video Player',
-  videoDesc: 'Custom controls with quality menu.',
-  datetimeTitle: 'Date & Time',
-  datetimeDesc: 'Datetime picker and relative time.',
+  videoDesc: 'Playback rate, picture-in-picture, quality switch and danmaku.',
+  datetimeTitle: 'Date & Time Picker',
+  datetimeDesc: 'High-precision calendar, scroll columns and presets.',
   datetimePlaceholder: 'Pick a date & time',
   calendarTitle: 'Calendar',
   calendarDesc: 'Month panel with selectable dates.',
-  colorTitle: 'Color Picker',
-  colorDesc: 'Inline panel with swatches.',
+  colorTitle: 'Color System',
+  colorDesc: 'SV panel, hue/alpha sliders and token swatches.',
   uploadTitle: 'Upload',
   uploadDesc: 'Pick files, up to 3 images.',
   uploadCta: 'Upload Files',
@@ -376,6 +613,101 @@ const enDict: CaseDict = {
   stepAccount: 'Account',
   stepProfile: 'Profile',
   stepDone: 'Finish',
+
+  /* ── AI-native scenarios ── */
+  aiChatTitle: 'AI Chat & Reasoning Stream',
+  aiChatDesc: 'Model picker, collapsible reasoning and streaming code.',
+  aiChatSwitch: 'Switch',
+  aiChatStats: 'Tokens/s 84.5 · 240ms latency',
+  aiChatQuery: 'Build me a frosted-glass metric card with a smooth sparkline.',
+  aiChatThinking: 'Reasoning trace (8.2s)',
+  aiChatThinkingBody:
+    'Breakdown: rounded-3xl + backdrop-blur for the frosted surface; the sparkline uses quadratic beziers with an end dot.',
+  aiChatSend: 'Send',
+  aiChatCopy: 'Copy code',
+  aiChatInput: 'Ask a follow-up or tweak the design…',
+  aiChatFoot: 'SSE streaming',
+  aiPromptTitle: 'Prompt & Context Orchestration',
+  aiPromptDesc: 'System prompt, variable slots and parameter tuning.',
+  aiPromptSystem: 'System prompt',
+  aiPromptSystemValue:
+    'You are a design-system architect. Output must follow the @snui visual rules and match {{user_intent}} and {{retrieved_chunks}}.',
+  aiPromptActive: 'v2.3 active',
+  aiPromptTokens: '~148 Tokens',
+  aiPromptSlots: 'Injected variable slots',
+  aiPromptRun: 'Debug run',
+  aiPromptFoot: 'Budget 4,096 / 128K',
+  aiImageTitle: 'AI Image Generation & Tuning',
+  aiImageDesc: 'Style presets, aspect fitting and denoise progress.',
+  aiImagePrompt: 'Futuristic frosted glass UI, clean ambient glow, octane render.',
+  aiImageStep: 'Step 28 / 35',
+  aiImageOptimize: 'Optimize prompt',
+  aiImageWeight: 'Weight 1.2',
+  aiImagePreset1: 'Frosted 3D',
+  aiImagePreset2: 'Anime',
+  aiImagePreset3: 'Vector flat',
+  aiImageRender: 'Denoising 80%',
+  aiImageFoot: 'Sampler DPM++ 2M',
+  /* ── #01 Form suite (config panel) ── */
+  domainLabel: 'Workspace domain',
+  domainOk: 'Domain available',
+  hostLabel: 'Compute hosting',
+  hostCloud: 'Cloud managed',
+  hostPrivate: 'Self-hosted',
+  syncLabel: 'Sync capabilities',
+  selectAll: 'Select all',
+  syncFigma: 'Figma variables',
+  syncMcp: 'MCP sync',
+  quotaLabel: 'Concurrent token quota',
+  quotaStep: 'Step ±512',
+  saveConfig: 'Save config',
+  reset: 'Reset',
+  /* ── #04 Date & time picker ── */
+  presetToday: 'Today',
+  presetYesterday: 'Yesterday',
+  preset7d: 'Last 7 days',
+  preset30d: 'Last 30 days',
+  timeLabel: 'Time',
+  confirm: 'Confirm selection',
+  /* ── #02 Asset & metric stats ── */
+  statLabel: 'Total Clicks / Value',
+  ratioLabel: 'Allocation',
+  ratioValue: 'Equity 58% · Fixed income 28% · Cash 14%',
+  transfer: 'Transfer',
+  withdraw: 'Withdraw',
+  deepAnalyze: 'Deep analyze',
+  /* ── #12 Kanban & drag flow ── */
+  kanbanTodo: 'To Do · P0',
+  /* ── #03 Analytics chart ── */
+  kanbanTask1Title: 'Multi-target token pipeline',
+  kanbanTask1Meta: 'Owner: Snail · In progress',
+  kanbanTask2Title: 'Set up error monitoring',
+  kanbanTask2Meta: 'Sentry auto-integration and alerts',
+  kanbanProg: 'In prog',
+  kanbanReview: 'Review',
+  chartActual: 'Actual',
+  chartBase: 'Baseline',
+  chartWeek: 'Week',
+  chartTipDate: 'Apr 18 (Fri)',
+  /* ── Video player (extended) ── */
+  videoCap: 'Coastal drone · 1080P',
+  videoTip: 'Danmaku / PiP / mini window',
+  videoSpeed: '1.25× speed',
+  /* ── Carousel (extended) ── */
+  carouselSlide1: 'Spring launch',
+  carouselSlide1Desc: 'Up to 20% off everything, double points for members',
+  carouselSlide2: 'Travel season',
+  carouselSlide2Desc: 'Flight + hotel packages, ¥300 off',
+  carouselSlide3: 'Members day',
+  carouselSlide3Desc: 'Exclusive coupon pack on the 18th',
+  carouselFoot: 'Autoplay · 1.8s',
+  /* ── Component scene titles / subtitles ── */
+  formTitle: 'Smart Form Suite',
+  formDesc: 'Affix inputs, radio cards, checkboxes and a stepper.',
+  statsTitle: 'Asset & Metric Stats',
+  statsDesc: 'Floating cards, soft sparklines and growth badges.',
+  kanbanTitle: 'Kanban & Drag Flow',
+  kanbanDesc: 'Frosted floating card, rounded rows and drag handles.',
 };
 
 /** 按语言取整份案例字典（`${id}Title` / `${id}Desc` + 案例内文案）。 */
@@ -384,10 +716,7 @@ export function caseCopy(locale: HomeCaseLocale): CaseDict {
 }
 
 /** 案例卡的标题 / 副标题（`${id}Title` / `${id}Desc` 键）。 */
-export function caseText(
-  id: HomeCaseId,
-  locale: HomeCaseLocale,
-): { title: string; desc?: string } {
+export function caseText(id: HomeCaseId, locale: HomeCaseLocale): { title: string; desc?: string } {
   const dict = caseCopy(locale);
   return {
     title: dict[`${id}Title`] as string,

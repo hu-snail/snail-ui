@@ -15,10 +15,12 @@
 - `icon`: `success` / `info` / `warning` / `danger`, or a name from the sn-icon registry
 - `iconColor`: overrides the status icon color
 - `theme="text"`: buttons switch to a borderless text style
-- `actionLayout="vertical"`: stack the buttons
+- `actionLayout="vertical"`: stack the buttons, confirm on top and cancel below
 - `headerImage`: full-width image above the body
 
 <Demo name="dialog-mp-variant" description="success / warning icons, text-theme buttons, stacked buttons." />
+
+<Demo name="dialog-mp-vertical" description="actionLayout=vertical: confirm on top, cancel below." />
 
 ## Custom actions and guards
 

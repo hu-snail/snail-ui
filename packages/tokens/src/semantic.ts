@@ -28,6 +28,13 @@ export interface ColorSemanticBackground {
   readonly elevated: SemanticRef;
   readonly sunken: SemanticRef;
   readonly overlay: SemanticRef;
+  /**
+   * Dark floating plate for transient overlays (toast). Literal translucent
+   * black in both themes — the platform-standard toast surface (iOS / antd
+   * mobile / vant all keep a dark plate in dark mode, where the elevation
+   * shadow separates it from a near-black page).
+   */
+  readonly inverse: SemanticRef;
   readonly accent: SemanticRef;
   readonly subtle: SemanticRef;
 }
@@ -169,6 +176,10 @@ export const DEFAULT_SEMANTIC_TOKENS: SemanticTokens = {
       surface: '#ffffff',
       elevated: '#ffffff',
       sunken: 'var(--aui-color-gray-100)',
+      // Dark floating toast plate — same literal as the static stylesheet's
+      // `--aui-color-background-inverse`. Both themes keep it: the platform
+      // toast surface is a dark translucent plate in light AND dark mode.
+      inverse: 'rgba(0, 0, 0, 0.75)',
       overlay: 'rgba(0, 0, 0, 0.8)',
       accent: 'var(--aui-color-blue-50)',
       subtle: 'var(--aui-color-gray-100)',

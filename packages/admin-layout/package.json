@@ -1,0 +1,73 @@
+{
+  "name": "@snui/admin-layout",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI Admin Layout — 中后台布局模板插件. Drop-in admin shell composed from @snui/vue-web: side / top / mix / dual layout modes, logo + sider + header pieces, menu from static routes or backend data. Layout-only by design: no auth, no requests, no store, no route registration.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles": "./dist/styles/index.css",
+    "./layouts/standard": {
+      "types": "./dist/pro-layout/index.d.ts",
+      "import": "./dist/pro-layout/index.js"
+    },
+    "./layouts/standard/style.css": "./dist/styles/pro-layout.css",
+    "./layouts/classic": {
+      "types": "./dist/pro-classic/index.d.ts",
+      "import": "./dist/pro-classic/index.js"
+    },
+    "./layouts/classic/style.css": "./dist/styles/pro-classic.css",
+    "./layouts/aurora": {
+      "types": "./dist/pro-aurora/index.d.ts",
+      "import": "./dist/pro-aurora/index.js"
+    },
+    "./layouts/aurora/style.css": "./dist/styles/pro-aurora.css",
+    "./workbench": {
+      "types": "./dist/pro-workbench/index.d.ts",
+      "import": "./dist/pro-workbench/index.js"
+    },
+    "./workbench/style.css": "./dist/styles/pro-workbench.css",
+    "./src/*.ts": "./src/*.ts",
+    "./src/*.vue": "./src/*.vue"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build-entries.mjs && vue-tsc -p tsconfig.json --emitDeclarationOnly",
+    "dev": "node scripts/build-entries.mjs --watch",
+    "lint": "eslint src --ext .ts,.vue",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/echarts": "workspace:",
+    "@snui/vue-web": "workspace:",
+    "lucide-vue-next": "^0.460.0",
+    "vue": "^3.5.43"
+  },
+  "peerDependencies": {
+    "echarts": "^5.6.0 || ^6.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "echarts": "^5.6.0",
+    "eslint": "^9.17.0",
+    "happy-dom": "^15.11.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.4.3",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.2.0"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
+}

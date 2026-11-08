@@ -301,11 +301,11 @@ onBeforeUnmount(() => {
  * success glyph is tinted with the info colour; error uses danger. Each has
  * a component-token override hook. */
 .sn-notification--info .sn-notification__icon {
-  color: var(--sn-web-notification-icon-color-info, var(--sn-web-color-feedback-info, #4098fc));
+  color: var(--sn-web-notification-icon-color-info, var(--sn-web-color-feedback-info));
 }
 
 .sn-notification--success .sn-notification__icon {
-  color: var(--sn-web-notification-icon-color-success, var(--sn-web-color-feedback-info, #4098fc));
+  color: var(--sn-web-notification-icon-color-success, var(--sn-web-color-feedback-info));
 }
 
 .sn-notification--warning .sn-notification__icon {
@@ -377,7 +377,11 @@ onBeforeUnmount(() => {
 }
 
 .sn-notification__close:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #4098fc);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 35%, transparent)
+    );
   outline-offset: 2px;
 }
 </style>

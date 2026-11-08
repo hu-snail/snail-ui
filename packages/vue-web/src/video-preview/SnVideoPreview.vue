@@ -730,7 +730,11 @@ defineExpose({
 }
 
 .sn-video-preview__play:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 
@@ -771,7 +775,11 @@ defineExpose({
 }
 
 .sn-video-preview__toolbar-button:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 

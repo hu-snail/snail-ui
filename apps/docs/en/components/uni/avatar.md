@@ -36,6 +36,14 @@ The second-to-last layer of the fallback chain is a font icon: with `cssIcon` tr
 
 <Demo name="avatar-mp-icon-font" description="cssIcon + iconPrefix font icons, a string cssIcon prefix, mode cropping and customClass / customStyle." />
 
+## Presence status and badge avatars
+
+`status` paints a presence dot on the bottom-right corner — `online` (green) / `offline` (grey). AUI-additive (wd-avatar has no presence concept); the state is appended to the root `aria-label` ("AU online") while the dot itself is `aria-hidden`.
+
+<Demo name="avatar-mp-status" description="online / offline presence dots, plus badge avatars composed from sn-badge + sn-avatar (count badge / dot)." />
+
+Badge avatars wrap `sn-avatar` in [`sn-badge`](/components/uni/badge): `:value="99"` for a count, `is-dot` for a red dot.
+
 ## Auto registration (easycom)
 
 ```vue
@@ -50,21 +58,22 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 
 ## Props
 
-| Prop          | Type                  | Default        | Description                                            |
-| ------------- | --------------------- | -------------- | ------------------------------------------------------ |
-| `src`         | `string`              | `''`           | Image URL; failure falls back to `alt` → text → icon   |
-| `text`        | `string`              | `''`           | Initials / short label                                 |
-| `icon`        | `string`              | `''`           | Icon name (registered via `registerSnIcons()`)         |
-| `iconPrefix`  | `string`              | `''`           | Iconfont class prefix, used when `cssIcon` is on       |
-| `cssIcon`     | `boolean \| string`   | `false`        | Render a font icon; a string value is the class prefix |
-| `size`        | `string \| number`    | `'normal'`     | Preset or custom length; a number is px                |
-| `shape`       | `'round' \| 'square'` | `'round'`      | Avatar outline                                         |
-| `bgColor`     | `string`              | `''`           | Inline background override                             |
-| `color`       | `string`              | `''`           | Inline text / icon colour override                     |
-| `alt`         | `string`              | `''`           | Placeholder label used when the image fails            |
-| `mode`        | `string`              | `'aspectFill'` | uni-app `<image>` fill mode                            |
-| `customClass` | `string`              | `''`           | Extra class on the root node                           |
-| `customStyle` | `string`              | `''`           | Inline style on the root node                          |
+| Prop          | Type                          | Default        | Description                                                     |
+| ------------- | ----------------------------- | -------------- | --------------------------------------------------------------- |
+| `src`         | `string`                      | `''`           | Image URL; failure falls back to `alt` → text → icon            |
+| `text`        | `string`                      | `''`           | Initials / short label                                          |
+| `icon`        | `string`                      | `''`           | Icon name (registered via `registerSnIcons()`)                  |
+| `iconPrefix`  | `string`                      | `''`           | Iconfont class prefix, used when `cssIcon` is on                |
+| `cssIcon`     | `boolean \| string`           | `false`        | Render a font icon; a string value is the class prefix          |
+| `size`        | `string \| number`            | `'normal'`     | Preset or custom length; a number is px                         |
+| `shape`       | `'round' \| 'square'`         | `'round'`      | Avatar outline                                                  |
+| `bgColor`     | `string`                      | `''`           | Inline background override                                      |
+| `color`       | `string`                      | `''`           | Inline text / icon colour override                              |
+| `alt`         | `string`                      | `''`           | Placeholder label used when the image fails                     |
+| `mode`        | `string`                      | `'aspectFill'` | uni-app `<image>` fill mode                                     |
+| `status`      | `'online' \| 'offline' \| ''` | `''`           | AUI-additive presence dot (§112.3a), announced via `aria-label` |
+| `customClass` | `string`                      | `''`           | Extra class on the root node                                    |
+| `customStyle` | `string`                      | `''`           | Inline style on the root node                                   |
 
 ## Events
 
@@ -108,5 +117,5 @@ Verify with sn-config-provider 的 theme 设为 dark:
 ## Related
 
 - Web end: [`SnAvatar`](/en/components/web/avatar)
-- Avatar stack: `sn-avatar-group` (upcoming)
+- Avatar stack: [`sn-avatar-group`](/components/uni/avatar-group)
 - Count marker: [`sn-badge`](/en/components/uni/badge)

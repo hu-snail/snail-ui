@@ -1,7 +1,15 @@
 <script setup lang="ts">
-/** Demo: sn-cascader — lazy loading and confirm veto: lazyLoad / isLeafKey / beforeConfirm / checkStrictly. */
-import { ref } from 'vue';
+/**
+ * Demo: sn-cascader — Lazy loading and confirm veto: lazyLoad / isLeafKey /
+ * beforeConfirm.
+ *
+ * The lazy root only carries regions; expanding a non-leaf node asks the host
+ * for children. beforeConfirm only lets the Zhejiang branch through and the
+ * verdict is reported back through a sn-cell card row.
+ */
+import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 
 /** Lazy root nodes: isLeaf decides whether a node can drill down further. */
 const tree = [
@@ -10,9 +18,19 @@ const tree = [
   { value: 'sh', text: 'Shanghai', isLeaf: true },
 ];
 
+/** Value → display text (a lazy v-model is a path array). */
+const TEXT: Record<string, string> = {
+  zj: 'Zhejiang',
+  hz: 'Hangzhou',
+  nb: 'Ningbo',
+  js: 'Jiangsu',
+  nj: 'Nanjing',
+  sh: 'Shanghai',
+};
+
 const value = ref<string | number | Array<string | number>>([]);
 const open = ref(false);
-const lastGuard = ref('—');
+const lastGuard = ref('Pending');
 
 const children: Record<string, Array<Record<string, unknown>>> = {
   zj: [
@@ -39,15 +57,30 @@ const guard = (payload: { value: string | number | Array<string | number> }) => 
   return allowed;
 };
 
-const selectedText = () => (Array.isArray(value.value) ? value.value.join(' / ') : value.value);
+const selectedText = computed(() =>
+  Array.isArray(value.value)
+    ? value.value.map((each) => TEXT[String(each)] ?? String(each)).join(' / ')
+    : (TEXT[String(value.value)] ?? ''),
+);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">lazyLoad + isLeafKey + beforeConfirm + checkStrictly</text>
-    <view class="sn-demo__button" @tap="open = true">Lazy loading</view>
-    <text class="sn-demo__meta">Selected: {{ selectedText() || '(not selected)' }}</text>
-    <text class="sn-demo__meta">Guard: {{ lastGuard }}</text>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >lazyLoad fetches children on demand; isLeafKey marks leaves; beforeConfirm vetoes the
+      confirm, with its verdict reported by the guard card row.</text
+    >
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="Delivery region"
+        placeholder="Please select"
+        :value="selectedText"
+        is-link
+        @click="open = true"
+      />
+      <SnCell card title="Confirm guard" :value="lastGuard" />
+    </view>
     <SnCascader
       v-model="value"
       v-model:visible="open"
@@ -56,33 +89,29 @@ const selectedText = () => (Array.isArray(value.value) ? value.value.join(' / ')
       is-leaf-key="isLeaf"
       check-strictly
       :before-confirm="guard"
-      title="Lazy loading"
+      title="Delivery region"
       confirm-text="Use it"
     />
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
   color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

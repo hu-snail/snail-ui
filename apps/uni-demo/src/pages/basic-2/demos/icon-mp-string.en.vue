@@ -7,7 +7,8 @@
  */
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
-import { registerSnIcons, type IconData } from '@snui/uni';
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
+import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 
 // Override the built-in `star`: registry wins over the catalog.
 const BrandStar: IconData = {
@@ -55,9 +56,7 @@ registerSnIcons({ star: BrandStar });
       </SnButton>
     </view>
 
-    <text class="sn-demo__meta">
-      Registry override: custom BrandStar registered as `star`
-    </text>
+    <text class="sn-demo__meta"> Registry override: custom BrandStar registered as `star` </text>
     <view class="sn-demo__row">
       <SnIcon icon="star" :size="28" color="#f59e0b" />
       <SnIcon icon="heart" :size="28" color="#ef4444" />

@@ -5,9 +5,6 @@
  * symmetric across ends.
  *
  * Untestable in happy-dom:
- *  - focusWhenClear re-focus after clear: uni-end intentionally leaves the
- *    re-focus to the consumer (soft keyboard is dismissed on MP blur);
- *    there is no observable DOM behavior to assert.
  *  - the programmatic `focus` prop path: happy-dom's `.focus()` updates
  *    `document.activeElement` but dispatches no focus event, so the
  *    `--focused` class flip cannot be observed there (the event-driven path
@@ -18,6 +15,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnInput from './sn-input.vue';
 
@@ -39,6 +38,97 @@ describe('sn-input', () => {
     });
     await wrapper.find('input').setValue('42');
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([42]);
+  });
+
+  it('passes in-progress number literals through as strings while typing', async () => {
+    /* Coercing "12." to 12 would re-render :value with a different string
+     * than the field shows and the controlled patch would eat the dot. */
+    const wrapper = mount(SnInput, {
+      props: { type: 'number', modelValue: 0 },
+    });
+    await wrapper.find('input').setValue('12.');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['12.']);
+  });
+
+  it('mirrors native input events in real time (capture-phase, pre-throttle)', async () => {
+    /* uni-input throttles its component-level input events to 10Hz; the
+     * capture-phase mirror on the field element must deliver every
+     * keystroke's value immediately. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = '12';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['12']);
+    wrapper.unmount();
+  });
+
+  it('reads the value from uni synthetic input events (detail.value, POJO target)', async () => {
+    /* uni-h5 component-level input events are synthetic objects: the target
+     * is a plain { id, dataset, offsetTop, offsetLeft } with NO `.value`,
+     * and the text rides `detail.value`. Reading target.value yields
+     * undefined and cleared the field on every keystroke in compiled apps. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    const synthetic = new Event('input', { bubbles: true });
+    Object.defineProperty(synthetic, 'target', { value: { id: 'demo', dataset: {} } });
+    Object.defineProperty(synthetic, 'detail', { value: { value: 'abc', cursor: 3 } });
+    input.dispatchEvent(synthetic);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['abc']);
+    wrapper.unmount();
+  });
+
+  it('delivers one update per keystroke when uni replays it as a fresh synthetic event', async () => {
+    /* uni-input re-wraps each native keystroke into a NEW synthetic object
+     * (throttled), so event-identity dedupe never matched and H5 delivered
+     * every key twice — two model writes + two parent input events. The
+     * funnel dedupes by VALUE: the replay of an already-delivered value is
+     * dropped. */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const replay = new Event('input', { bubbles: true });
+    Object.defineProperty(replay, 'target', { value: { id: 'demo', dataset: {} } });
+    Object.defineProperty(replay, 'detail', { value: { value: 'ab', cursor: 2 } });
+    input.dispatchEvent(replay);
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
+    expect(wrapper.emitted('input')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('re-delivers after an external model write lands on a different value', async () => {
+    /* The dedupe memo must not swallow a user edit that brings the field
+     * back to the last TYPED value after the parent moved the model
+     * elsewhere: type "ab", parent sets "abc", user backspaces to "ab". */
+    const wrapper = mount(SnInput, { props: { modelValue: '' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    await wrapper.setProps({ modelValue: 'abc' });
+    input.value = 'ab';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    const values = wrapper.emitted('update:modelValue')?.map((args) => args[0]);
+    expect(values).toEqual(['ab', 'ab']);
+    wrapper.unmount();
+  });
+
+  it('does not dedupe consecutive distinct keystrokes', async () => {
+    const wrapper = mount(SnInput, { props: { modelValue: '' } });
+    await wrapper.find('input').setValue('a');
+    await wrapper.find('input').setValue('ab');
+    expect(wrapper.emitted('update:modelValue')?.map((args) => args[0])).toEqual(['a', 'ab']);
+  });
+
+  it('emits an empty confirm (not the stale model) when the detail carries an empty value', async () => {
+    /* Confirm events carry detail.value; an explicit empty confirm used to
+     * fall back to the stale model through the `||` in the old reader. */
+    const wrapper = mount(SnInput, { props: { modelValue: 'hello' }, attachTo: document.body });
+    const input = wrapper.find('input').element as HTMLInputElement;
+    const confirm = new Event('confirm');
+    Object.defineProperty(confirm, 'detail', { value: { value: '' } });
+    input.dispatchEvent(confirm);
+    expect(wrapper.emitted('confirm')?.at(-1)).toEqual(['']);
+    wrapper.unmount();
   });
 
   it('emits input event on every keystroke', async () => {
@@ -151,6 +241,30 @@ describe('sn-input', () => {
     await wrapper.find('.sn-input__clear-btn').trigger('tap');
     expect(wrapper.emitted('clear')).toHaveLength(1);
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['']);
+  });
+
+  it('refocuses the field after clear when focusWhenClear is on (default)', async () => {
+    /* Tapping × blurs the field; without the refocus the next keystrokes go
+     * nowhere and the clear icon "never comes back". */
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, modelValue: 'abc' },
+      attachTo: document.body,
+    });
+    await wrapper.find('input').trigger('focus');
+    await wrapper.find('.sn-input__clear-btn').trigger('tap');
+    expect(document.activeElement).toBe(wrapper.find('input').element);
+    wrapper.unmount();
+  });
+
+  it('skips the refocus after clear when focusWhenClear is off', async () => {
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, modelValue: 'abc', focusWhenClear: false },
+      attachTo: document.body,
+    });
+    await wrapper.find('input').trigger('focus');
+    await wrapper.find('.sn-input__clear-btn').trigger('tap');
+    expect(document.activeElement).not.toBe(wrapper.find('input').element);
+    wrapper.unmount();
   });
 
   it('renders textarea when type is textarea', () => {
@@ -626,6 +740,55 @@ describe('sn-input', () => {
       slots: { 'suffix-icon': '<view data-testid="si" />' },
     });
     expect(wrapper.find('[data-testid="si"]').exists()).toBe(true);
+  });
+
+  it('renders a named prefixIcon through SnIcon (string icon API)', () => {
+    const wrapper = mount(SnInput, { props: { prefixIcon: 'search' } });
+    const glyph = wrapper.find('.sn-input__icon-glyph');
+    expect(glyph.exists()).toBe(true);
+    expect(glyph.find('svg').exists()).toBe(true);
+  });
+
+  it('renders a named suffixIcon through SnIcon (string icon API)', () => {
+    const wrapper = mount(SnInput, { props: { suffixIcon: 'chevron-right' } });
+    expect(wrapper.find('.sn-input__suffix svg').exists()).toBe(true);
+  });
+
+  it('applies the sm / lg / xl radius tiers', () => {
+    for (const radius of ['sm', 'lg', 'xl'] as const) {
+      const wrapper = mount(SnInput, { props: { radius } });
+      expect(wrapper.classes()).toContain(`sn-input--radius-${radius}`);
+    }
+  });
+
+  it('declares border-bottom after every radius tier so square corners win', () => {
+    /* The classList always carries a radius class (default tier included);
+     * equal-specificity rules resolve by stylesheet order, so the
+     * bottom-edge variant must come later or the field gets rounded. */
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    const style = source.slice(source.indexOf('<style'));
+    const bottom = style.indexOf('.sn-input--border-bottom');
+    expect(bottom).toBeGreaterThan(-1);
+    for (const tier of ['default', 'sm', 'lg', 'xl', 'pill', 'square']) {
+      expect(bottom).toBeGreaterThan(style.indexOf(`.sn-input--radius-${tier}`));
+    }
+  });
+
+  it('keeps the field-level icon size and color contract on tokens', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    expect(source).toContain('--sn-input-icon-size: var(--sn-mp-icon-size-medium)');
+    expect(source).toContain('--sn-input-icon-color: var(--sn-mp-color-text-tertiary)');
+    /* Every in-field glyph spot consumes the tokens — no one-off sizes. */
+    expect(source).toMatch(/\.sn-input__icon-glyph\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    expect(source).toMatch(/\.sn-input__password-toggle-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
+    /* The clear button is a circular delete chip: token disc + surface ×. */
+    expect(source).toMatch(
+      /\.sn-input__clear-btn\s*\{[^}]*background:\s*var\(--sn-input-icon-color\)/,
+    );
+    expect(source).toMatch(
+      /\.sn-input__clear-btn\s*\{[^}]*color:\s*var\(--sn-mp-color-background-surface\)/,
+    );
   });
 
   it('hides the suffix area while the clear button is shown', () => {

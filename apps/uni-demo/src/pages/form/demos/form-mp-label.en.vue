@@ -1,59 +1,95 @@
 <script setup lang="ts">
-/** Demo: sn-form — labelPosition × labelWidth (uni-end). */
+/**
+ * Demo: sn-form — label position and column width: `labelPosition` takes
+ * left / right / top, `labelWidth` sets the label column for the side layouts
+ * (the top layout ignores it).
+ */
 import { reactive } from 'vue';
 import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue';
 import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
-const f1 = reactive({ a: '', b: '' });
-const f2 = reactive({ a: '', b: '' });
-const f3 = reactive({ a: '', b: '' });
+const rightForm = reactive({ email: '', password: '' });
+const leftForm = reactive({ email: '', password: '' });
+const topForm = reactive({ email: '', password: '' });
 </script>
 
 <template>
-  <view class="sn-form-demo">
-    <view class="sn-form-demo__title">labelPosition: right + labelWidth: 160rpx</view>
-    <SnForm :model="f1" label-position="right" label-width="160">
-      <SnFormItem prop="a" label="Email">
-        <SnInput v-model="f1.a" />
-      </SnFormItem>
-      <SnFormItem prop="b" label="Password">
-        <SnInput v-model="f1.b" type="password" />
-      </SnFormItem>
-    </SnForm>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__panel">
+      <text class="sn-demo__title">labelPosition="right" (default) + labelWidth=160</text>
+      <SnForm :model="rightForm" label-position="right" label-width="160">
+        <SnFormItem prop="email" label="Email">
+          <SnInput v-model="rightForm.email" type="email" placeholder="Enter an email" clearable />
+        </SnFormItem>
+        <SnFormItem prop="password" label="Password">
+          <SnInput
+            v-model="rightForm.password"
+            type="password"
+            placeholder="Enter a password"
+            show-password
+          />
+        </SnFormItem>
+      </SnForm>
+    </view>
 
-    <view class="sn-form-demo__title">labelPosition: left + labelWidth: 200rpx</view>
-    <SnForm :model="f2" label-position="left" label-width="200">
-      <SnFormItem prop="a" label="Email">
-        <SnInput v-model="f2.a" />
-      </SnFormItem>
-      <SnFormItem prop="b" label="Password">
-        <SnInput v-model="f2.b" type="password" />
-      </SnFormItem>
-    </SnForm>
+    <view class="sn-demo__panel">
+      <text class="sn-demo__title">labelPosition="left" + labelWidth=200</text>
+      <SnForm :model="leftForm" label-position="left" label-width="200">
+        <SnFormItem prop="email" label="Email">
+          <SnInput v-model="leftForm.email" type="email" placeholder="Enter an email" clearable />
+        </SnFormItem>
+        <SnFormItem prop="password" label="Password">
+          <SnInput
+            v-model="leftForm.password"
+            type="password"
+            placeholder="Enter a password"
+            show-password
+          />
+        </SnFormItem>
+      </SnForm>
+    </view>
 
-    <view class="sn-form-demo__title">labelPosition: top</view>
-    <SnForm :model="f3" label-position="top">
-      <SnFormItem prop="a" label="Email">
-        <SnInput v-model="f3.a" />
-      </SnFormItem>
-      <SnFormItem prop="b" label="Password">
-        <SnInput v-model="f3.b" type="password" />
-      </SnFormItem>
-    </SnForm>
+    <view class="sn-demo__panel">
+      <text class="sn-demo__title">labelPosition="top" (label stacked above the control)</text>
+      <SnForm :model="topForm" label-position="top">
+        <SnFormItem prop="email" label="Email">
+          <SnInput v-model="topForm.email" type="email" placeholder="Enter an email" clearable />
+        </SnFormItem>
+        <SnFormItem prop="password" label="Password">
+          <SnInput
+            v-model="topForm.password"
+            type="password"
+            placeholder="Enter a password"
+            show-password
+          />
+        </SnFormItem>
+      </SnForm>
+    </view>
   </view>
 </template>
 
 <style scoped>
-.sn-form-demo {
+.sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 48rpx;
-  max-width: 600rpx;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
 }
-.sn-form-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.sn-demo__title {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
 }
 </style>

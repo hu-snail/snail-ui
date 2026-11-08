@@ -1,83 +1,112 @@
 <script setup lang="ts">
-/** Demo: sn-form + sn-form-item — validateTrigger / resetOnChange / errorType. */
+/**
+ * Demo: sn-form — validation flow: item-level rules run before the merged
+ * form-level rules, async rules are observable while pending, and the final
+ * result is reported through the `@validate` error map.
+ */
+import { reactive, ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue';
 import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types';
-import { reactive } from 'vue';
 
-const onBlur = reactive({ a: '' });
-const onChange = reactive({ a: '' });
-const silent = reactive({ a: '' });
+type FormRef = InstanceType<typeof SnForm>;
 
-const onBlurRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Required on blur' }],
+const form = reactive({ handle: '', email: '' });
+const formRef = ref<FormRef | null>(null);
+const checking = ref(false);
+const log = ref('Not validated yet');
+const errors = ref('(none)');
+
+/** Form-level rules: constraints shared by every field. */
+const formRules: Record<string, FormRule[]> = {
+  handle: [
+    { pattern: /^[a-z0-9_]+$/, message: 'Lowercase, digits and underscore only (form level)' },
+  ],
+  email: [{ type: 'email', message: 'Invalid email address (form level)' }],
 };
-const onChangeRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Required on every change' }],
-};
-const silentRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Silent — errorType=none' }],
-};
+
+/** Item-level rules: these run before the form-level ones. */
+const handleRules: FormRule[] = [
+  { required: true, message: 'Handle is required (item level runs first)' },
+  {
+    asyncValidator: async (value) => {
+      checking.value = true;
+      await sleep(600);
+      checking.value = false;
+      return value !== 'taken' || 'That handle is taken (async rule)';
+    },
+    message: 'Handle unavailable',
+  },
+];
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function runValidate(): Promise<void> {
+  await formRef.value?.validate();
+  log.value = 'Validation finished (item level → form level → result reported)';
+}
+
+function onValidate(payload: { valid: boolean; errors: Record<string, string> }): void {
+  const keys = Object.keys(payload.errors);
+  errors.value = keys.length === 0 ? '(none)' : JSON.stringify(payload.errors);
+}
 </script>
 
 <template>
-  <view class="sn-form-demo-grid">
-    <view>
-      <text class="sn-form-demo__title">validateTrigger="blur" (default)</text>
-      <SnForm :model="onBlur" :rules="onBlurRules">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="onBlur.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint"
-        >Touch a field, leave it empty and blur → an error message appears</text
-      >
-    </view>
+  <view class="sn-demo sn-demo--stack">
+    <SnForm ref="formRef" :model="form" :rules="formRules" @validate="onValidate">
+      <SnFormItem prop="handle" label="Handle" :rules="handleRules" required>
+        <SnInput
+          v-model="form.handle"
+          placeholder="Type taken to see the async rule fire"
+          clearable
+        />
+      </SnFormItem>
+      <SnFormItem prop="email" label="Email">
+        <SnInput v-model="form.email" type="email" placeholder="Enter an email" clearable />
+      </SnFormItem>
+      <SnButton type="primary" block :disabled="checking" @click="runValidate">
+        {{ checking ? 'Async rule running…' : 'Validate' }}
+      </SnButton>
+    </SnForm>
 
-    <view>
-      <text class="sn-form-demo__title">validateTrigger="change"</text>
-      <SnForm :model="onChange" :rules="onChangeRules">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="onChange.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint"
-        >Type characters → the error message updates in real time</text
-      >
-    </view>
-
-    <view>
-      <text class="sn-form-demo__title">errorType="none" (silent)</text>
-      <SnForm :model="silent" :rules="silentRules" error-type="none">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="silent.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint"
-        >Validation runs, but errors are not shown (listen via @validate)</text
-      >
+    <view class="sn-demo__panel">
+      <text class="sn-demo__meta">{{ log }}</text>
+      <text class="sn-demo__meta">@validate errors: {{ errors }}</text>
+      <text class="sn-demo__meta">
+        Item-level rules run first (required → async), then the form-level rules (pattern / type)
+      </text>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-form-demo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(440rpx, 1fr));
-  gap: 48rpx;
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
 }
-.sn-form-demo__title {
-  display: block;
-  margin: 0 0 24rpx;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--vp-c-text-2);
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
 }
-.sn-form-demo__hint {
-  display: block;
-  margin-top: 24rpx;
-  font-size: 24rpx;
-  color: var(--vp-c-text-2);
+
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
 }
 </style>

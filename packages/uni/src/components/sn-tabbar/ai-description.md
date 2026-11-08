@@ -20,8 +20,8 @@ without a `name` fall back to their DOM-order index — wd-tabbar's documented
 
 ```vue
 <!-- easycom auto-register; no import needed -->
-<sn-tabbar v-model="active">
-  <sn-tabbar-item title="首页" icon="Home" />
+<sn-tabbar v-model="active" glass :elevate="{ index: 2, icon: 'plus' }">
+  <sn-tabbar-item title="首页" icon="house" />
 </sn-tabbar>
 ```
 
@@ -32,20 +32,22 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 
 ## Props — sn-tabbar
 
-| Name                  | Type                                     | Default     | Required | Description                                    |
-| --------------------- | ---------------------------------------- | ----------- | -------- | ---------------------------------------------- |
-| `modelValue`          | `number \| string`                       | `0`         | no       | Active index or item name.                     |
-| `fixed`               | `boolean`                                | `false`     | no       | Pin to the bottom of the viewport.             |
-| `bordered`            | `boolean`                                | `false`     | no       | Hairline top border.                           |
-| `safeAreaInsetBottom` | `boolean`                                | `false`     | no       | Bottom safe-area padding.                      |
-| `shape`               | `'default' \| 'round'`                   | `'default'` | no       | Bar shape.                                     |
-| `activeColor`         | `string`                                 | `''`        | no       | Active label colour override.                  |
-| `inactiveColor`       | `string`                                 | `''`        | no       | Inactive label colour override.                |
-| `placeholder`         | `boolean`                                | `false`     | no       | Reserve the bar height in flow when `fixed`.   |
-| `zIndex`              | `number`                                 | `10`        | no       | Stacking level (only written when `fixed`).    |
-| `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | no       | Veto hook; `false` / reject blocks the switch. |
-| `customClass`         | `string`                                 | `''`        | no       | Extra class on the root node.                  |
-| `customStyle`         | `string`                                 | `''`        | no       | Inline style on the root node.                 |
+| Name                  | Type                                      | Default     | Required | Description                                     |
+| --------------------- | ----------------------------------------- | ----------- | -------- | ----------------------------------------------- |
+| `modelValue`          | `number \| string`                        | `0`         | no       | Active index or item name.                      |
+| `fixed`               | `boolean`                                 | `false`     | no       | Pin to the bottom of the viewport.              |
+| `bordered`            | `boolean`                                 | `false`     | no       | Hairline top border.                            |
+| `safeAreaInsetBottom` | `boolean`                                 | `false`     | no       | Bottom safe-area padding.                       |
+| `shape`               | `'default' \| 'round'`                    | `'default'` | no       | Bar shape.                                      |
+| `activeColor`         | `string`                                  | `''`        | no       | Active label colour override.                   |
+| `inactiveColor`       | `string`                                  | `''`        | no       | Inactive label colour override.                 |
+| `placeholder`         | `boolean`                                 | `false`     | no       | Reserve the bar height in flow when `fixed`.    |
+| `zIndex`              | `number`                                  | `10`        | no       | Stacking level (only written when `fixed`).     |
+| `beforeChange`        | `(value) => boolean \| Promise<boolean>`  | `undefined` | no       | Veto hook; `false` / reject blocks the switch.  |
+| `glass`               | `boolean`                                 | `false`     | no       | Translucent surface + backdrop blur (additive). |
+| `elevate`             | `{ index: number; icon: string } \| null` | `null`      | no       | Raised round center action (additive).          |
+| `customClass`         | `string`                                  | `''`        | no       | Extra class on the root node.                   |
+| `customStyle`         | `string`                                  | `''`        | no       | Inline style on the root node.                  |
 
 ## Props — sn-tabbar-item
 

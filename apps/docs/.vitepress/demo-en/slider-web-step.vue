@@ -11,14 +11,7 @@ const showSteps = ref(true);
   <div class="demo-col">
     <div class="demo-controls">
       <span class="demo-label">Step</span>
-      <SnInputNumber
-        v-model="step"
-        :min="1"
-        :max="25"
-        :step="1"
-        size="small"
-        class="demo-step"
-      />
+      <SnInputNumber v-model="step" :min="1" :max="25" :step="1" size="small" class="demo-step" />
       <span class="demo-label">Show steps</span>
       <SnSwitch v-model="showSteps" size="small" />
     </div>

@@ -129,6 +129,26 @@ describe('sn-checkbox', () => {
       expect(wrapper.classes()).toContain('sn-checkbox--indeterminate');
     });
 
+    it('binds the filled-plate modifier on the icon while checked or indeterminate', async () => {
+      /* The checked plate (and the doodle-skin override of it) keys off this
+       * icon-level class instead of a 3-level `.skin .checked .icon`
+       * descendant selector (§116.2 — App cannot express those). */
+      const unchecked = mount(SnCheckbox);
+      expect(unchecked.find('.sn-checkbox__icon--checked').exists()).toBe(false);
+
+      const checked = mount(SnCheckbox, { props: { modelValue: true } });
+      expect(checked.find('.sn-checkbox__icon--checked').exists()).toBe(true);
+
+      const mixed = mount(SnCheckbox, { props: { indeterminate: true } });
+      expect(mixed.find('.sn-checkbox__icon--checked').exists()).toBe(true);
+
+      const toggled = mount(SnCheckbox);
+      await toggled.setProps({ modelValue: true });
+      expect(toggled.find('.sn-checkbox__icon--checked').exists()).toBe(true);
+      await toggled.setProps({ modelValue: false });
+      expect(toggled.find('.sn-checkbox__icon--checked').exists()).toBe(false);
+    });
+
     it('applies checkedColor inline when checked', () => {
       const wrapper = mount(SnCheckbox, {
         props: { modelValue: true, checkedColor: 'rgb(0, 128, 0)' },

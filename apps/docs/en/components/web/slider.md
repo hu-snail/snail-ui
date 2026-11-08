@@ -1,6 +1,6 @@
 # Slider · Web
 
-Custom-painted slider with range dual handles, marks, step ticks (showSteps), value inputs (showInput), vertical / reverse, tooltip, plus gradient / transparent track and custom tooltip colors.
+Custom-painted slider with range dual handles, marks, step ticks (showSteps), value inputs (showInput), vertical / reverse, tooltip, plus gradient / transparent track and custom tooltip colors. Single-handle mode paints the themed track from `min` to the handle.
 
 ## Basic
 
@@ -38,28 +38,34 @@ Custom-painted slider with range dual handles, marks, step ticks (showSteps), va
 
 ### SnSlider Props
 
-| Prop                | Type                                  | Default     | Notes                   |
-| ------------------- | ------------------------------------- | ----------- | ----------------------- |
-| modelValue          | `number \| [number, number]`          | `0`         | v-model (dual in range) |
-| min / max           | `number`                              | `0` / `100` | Bounds                  |
-| step                | `number`                              | `1`         | Step snapping           |
-| range               | `boolean`                             | `false`     | Dual-handle mode        |
-| disabled / readonly | `boolean`                             | `false`     | Disabled / read-only    |
-| vertical            | `boolean`                             | `false`     | Vertical orientation    |
-| reverse             | `boolean`                             | `false`     | Reversed                |
-| tooltip             | `boolean`                             | `true`      | Drag bubble             |
-| formatTooltip       | `(value: number) => string \| number` | —           | Bubble formatter        |
-| marks               | `Record<number, string>`              | —           | Marks                   |
-| placement           | 12 placements                         | `'top'`     | Bubble placement        |
-| showSteps           | `boolean`                             | `false`     | Step ticks between min / max |
-| showInput           | `boolean`                             | `false`     | Number input(s) beside the rail |
+| Prop                | Type                                  | Default     | Notes                                          |
+| ------------------- | ------------------------------------- | ----------- | ---------------------------------------------- |
+| modelValue          | `number \| [number, number]`          | `0`         | v-model (dual in range)                        |
+| min / max           | `number`                              | `0` / `100` | Bounds                                         |
+| step                | `number`                              | `1`         | Step snapping                                  |
+| range               | `boolean`                             | `false`     | Dual-handle mode                               |
+| disabled / readonly | `boolean`                             | `false`     | Disabled / read-only                           |
+| vertical            | `boolean`                             | `false`     | Vertical orientation                           |
+| reverse             | `boolean`                             | `false`     | Reversed                                       |
+| tooltip             | `boolean`                             | `true`      | Drag bubble                                    |
+| formatTooltip       | `(value: number) => string \| number` | —           | Bubble formatter                               |
+| marks               | `Record<number, string>`              | —           | Marks                                          |
+| placement           | 12 placements                         | `'top'`     | Bubble placement                               |
+| showSteps           | `boolean`                             | `false`     | Step ticks between min / max                   |
+| showInput           | `boolean`                             | `false`     | Number input(s) beside the rail                |
 | trackBackground     | `string`                              | —           | Fill-track background (gradient / transparent) |
-| railBackground      | `string`                              | —           | Rail background (gradient / transparent) |
-| railWidth           | `number \| string`                    | —           | Rail thickness (number → px) |
-| railShadow          | `string`                              | —           | Rail diffuse glow (box-shadow) |
-| tooltipBackground   | `string`                              | —           | Bubble background       |
-| tooltipTextColor    | `string`                              | —           | Bubble text color       |
+| railBackground      | `string`                              | —           | Rail background (gradient / transparent)       |
+| railWidth           | `number \| string`                    | —           | Rail thickness (number → px)                   |
+| railShadow          | `string`                              | —           | Rail diffuse glow (box-shadow)                 |
+| tooltipBackground   | `string`                              | —           | Bubble background                              |
+| tooltipTextColor    | `string`                              | —           | Bubble text color                              |
 
 Each handle: `role="slider"` + aria-valuenow/min/max; arrows / Home / End / PageUp/PageDown (10×step).
+
+### Slots
+
+| Slot    | Props       | Notes                 |
+| ------- | ----------- | --------------------- |
+| tooltip | `{ value }` | Custom bubble content |
 
 See the component `ai-description.md` for the full contract.

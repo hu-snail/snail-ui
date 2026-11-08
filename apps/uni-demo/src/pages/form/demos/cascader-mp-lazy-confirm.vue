@@ -1,7 +1,13 @@
 <script setup lang="ts">
-/** Demo: sn-cascader — 异步加载与确认拦截：lazyLoad / isLeafKey / beforeConfirm / checkStrictly。 */
-import { ref } from 'vue';
+/**
+ * Demo: sn-cascader — 异步加载与确认拦截：lazyLoad / isLeafKey / beforeConfirm。
+ *
+ * 懒加载根节点只有地区；展开非叶子节点时向宿主请求子级。beforeConfirm 只放行
+ * 浙江分支，结果用一个 sn-cell 卡片行回报（守卫：待确认 / 已允许 / 只支持浙江）。
+ */
+import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 
 /** 懒加载根节点：isLeaf 决定是否还能下钻。 */
 const tree = [
@@ -10,9 +16,19 @@ const tree = [
   { value: 'sh', text: '上海', isLeaf: true },
 ];
 
+/** 值 → 展示文案（懒加载模式 v-model 是路径数组）。 */
+const TEXT: Record<string, string> = {
+  zj: '浙江',
+  hz: '杭州',
+  nb: '宁波',
+  js: '江苏',
+  nj: '南京',
+  sh: '上海',
+};
+
 const value = ref<string | number | Array<string | number>>([]);
 const open = ref(false);
-const lastGuard = ref('—');
+const lastGuard = ref('待确认');
 
 const children: Record<string, Array<Record<string, unknown>>> = {
   zj: [
@@ -39,15 +55,30 @@ const guard = (payload: { value: string | number | Array<string | number> }) => 
   return allowed;
 };
 
-const selectedText = () => (Array.isArray(value.value) ? value.value.join(' / ') : value.value);
+const selectedText = computed(() =>
+  Array.isArray(value.value)
+    ? value.value.map((each) => TEXT[String(each)] ?? String(each)).join(' / ')
+    : (TEXT[String(value.value)] ?? ''),
+);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">lazyLoad + isLeafKey + beforeConfirm + checkStrictly</text>
-    <view class="sn-demo__button" @tap="open = true">懒加载</view>
-    <text class="sn-demo__meta">已选：{{ selectedText() || '（未选择）' }}</text>
-    <text class="sn-demo__meta">守卫：{{ lastGuard }}</text>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >lazyLoad 按需请求子级；isLeafKey 标记叶子；beforeConfirm
+      拦截确认，进度由守卫卡片行回报。</text
+    >
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="收货地区"
+        placeholder="请选择"
+        :value="selectedText"
+        is-link
+        @click="open = true"
+      />
+      <SnCell card title="确认守卫" :value="lastGuard" />
+    </view>
     <SnCascader
       v-model="value"
       v-model:visible="open"
@@ -56,33 +87,29 @@ const selectedText = () => (Array.isArray(value.value) ? value.value.join(' / ')
       is-leaf-key="isLeaf"
       check-strictly
       :before-confirm="guard"
-      title="懒加载"
+      title="收货地区"
       confirm-text="就它"
     />
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
   color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

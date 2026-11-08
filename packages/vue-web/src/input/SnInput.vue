@@ -134,11 +134,16 @@ const props = withDefaults(
      */
     bg?: 'surface' | 'transparent' | 'soft';
     /**
-     * Border-radius preset. `default` matches the design system radius;
-     * `pill` gives a fully rounded field (search-bar style); `square`
-     * is right-angled.
+     * Border-radius preset (AUI additive). Tiers map to the web radius
+     * tokens; `default` keeps `--sn-web-input-radius`:
+     *  - `sm`      — `--sn-web-radius-sm`
+     *  - `default` — `--sn-web-input-radius`
+     *  - `lg`      — `--sn-web-radius-lg`
+     *  - `xl`      — `--sn-web-radius-xl`
+     *  - `pill`    — fully rounded field (search-bar style)
+     *  - `square`  — right-angled
      */
-    radius?: 'default' | 'pill' | 'square';
+    radius?: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square';
     /** Right-align the value (numeric / amount fields). */
     alignRight?: boolean;
     /**
@@ -452,7 +457,7 @@ const wrapperStyle = computed(() => {
       @keydown="onKeydown"
     />
 
-    <span v-if="showPassword && isPassword" class="sn-input__password-toggle" aria-hidden="true">
+    <span v-if="showPassword && isPassword" class="sn-input__password-toggle">
       <button
         type="button"
         class="sn-input__password-toggle-btn"
@@ -460,7 +465,7 @@ const wrapperStyle = computed(() => {
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         @click.stop="passwordVisible = !passwordVisible"
       >
-        <SnIcon :icon="passwordToggleIcon" :size="11" />
+        <SnIcon :icon="passwordToggleIcon" :size="14" />
       </button>
     </span>
 
@@ -535,7 +540,11 @@ const wrapperStyle = computed(() => {
 }
 .sn-input--border-none:focus-within {
   border-color: transparent;
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 /* Background tones */
@@ -549,9 +558,19 @@ const wrapperStyle = computed(() => {
   background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
 }
 
-/* Radius presets */
+/* Radius presets — tiers ride the shared `--sn-web-radius-*` scale
+ * (symmetric with the uni-end sn-input tiers). */
 .sn-input--radius-default {
   border-radius: var(--sn-web-input-radius, 6px);
+}
+.sn-input--radius-sm {
+  border-radius: var(--sn-web-radius-sm);
+}
+.sn-input--radius-lg {
+  border-radius: var(--sn-web-radius-lg);
+}
+.sn-input--radius-xl {
+  border-radius: var(--sn-web-radius-xl);
 }
 .sn-input--radius-pill {
   border-radius: 999px;
@@ -564,7 +583,11 @@ const wrapperStyle = computed(() => {
  * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
   border-color: var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 /* Sizes — `mini` is the wot-ui-parity extra size added below `tiny`. */
@@ -674,23 +697,36 @@ textarea.sn-input__native {
   align-items: center;
   flex: 0 0 auto;
 }
+/*
+ * The toggle sits inside the field, so it must not paint an opaque chip of
+ * its own: `--sn-web-color-background-elevated` resolves to #ffffff in the
+ * light theme, which read as a white disc stamped on the input. Keep the
+ * button transparent and reveal a tint only on hover / focus.
+ */
 .sn-input__password-toggle-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: var(--sn-web-color-background-elevated, rgba(0, 0, 0, 0.06));
-  color: var(--sn-web-color-text-secondary);
-  border-radius: 50%;
-  font-size: 11px;
+  background: transparent;
+  color: var(--sn-web-color-text-tertiary);
+  border-radius: var(--sn-web-radius-sm, 4px);
   line-height: 1;
   cursor: pointer;
   padding: 0;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 .sn-input__password-toggle-btn:hover {
-  background: var(--sn-web-color-background-overlay, rgba(0, 0, 0, 0.12));
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-input__password-toggle-btn:focus-visible {
+  outline: 2px solid var(--sn-web-color-action-primary);
+  outline-offset: 1px;
 }
 
 /* Clear button */
@@ -703,19 +739,26 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: var(--sn-web-color-background-elevated, rgba(0, 0, 0, 0.06));
-  color: var(--sn-web-color-text-secondary);
-  border-radius: 50%;
-  font-size: 12px;
+  background: transparent;
+  color: var(--sn-web-color-text-tertiary);
+  border-radius: var(--sn-web-radius-sm, 4px);
   line-height: 1;
   cursor: pointer;
   padding: 0;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 .sn-input__clear-btn:hover {
-  background: var(--sn-web-color-background-overlay, rgba(0, 0, 0, 0.12));
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-input__clear-btn:focus-visible {
+  outline: 2px solid var(--sn-web-color-action-primary);
+  outline-offset: 1px;
 }
 
 /* Count */

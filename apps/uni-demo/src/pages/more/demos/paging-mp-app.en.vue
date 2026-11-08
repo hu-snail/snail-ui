@@ -1,30 +1,45 @@
 <script setup lang="ts">
 /**
- * Demo: sn-paging (uni-end) — App case: tabbed channel feed + detail page.
+ * Demo: sn-paging (uni-end) — App case: full-page feed app (compact preview +
+ * fullscreen scenario).
  *
- * Level 1: #top search bar + sn-tabs with three channels (switching a tab
- *          reloads the data source) + tappable feed rows that open the detail
- *          page, with a fixed action bar in #bottom
- * Level 2: an independent comment-list paging instance + back button; both
- *          pages are complete sn-paging cases
- * safe-area-inset-bottom: the bottom action bar container opts into safe-area
- * padding
+ * Compact preview: pill channel switcher + mini feed (a complete SnPaging with
+ * pull-to-refresh / load-more); tap "Full page" or any row to go fullscreen.
+ * Fullscreen scenario: a position: fixed overlay = a full-page app demo —
+ *          Level 1: SnNavbar + SnTabs with three channels + feed + #bottom bar;
+ *          Level 2: article detail (body + like/favorite ops) with its own
+ *          independent sn-paging reply list; v-show layering keeps the level-1
+ *          scroll position when going back.
+ * safe-area-inset-bottom: the bottom bar container opts into safe-area padding.
  */
 import { ref } from 'vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
 import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
-import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import {
+  ArrowRight,
+  Bookmark,
+  MessageCircle,
+  Share2,
+  ThumbsUp,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 interface FeedRow {
   id: string;
   title: string;
+  excerpt: string;
 }
 
 interface ReplyRow {
   id: string;
-  label: string;
+  author: string;
+  text: string;
 }
+
+/** The overlay must cover the demo shell (incl. the frosted header at z-40). */
+const FULLSCREEN_Z = '1200';
 
 const channels = [
   { name: 'For You', tag: 'hot' },
@@ -32,14 +47,22 @@ const channels = [
   { name: 'Trending', tag: 'rank' },
 ];
 const PAGE_SIZE = 8;
+/** Total replies (paging stop rule). */
+const REPLY_TOTAL = 23;
 
-const page = ref<'home' | 'detail'>('home');
+/** compact → fullscreen feed → article detail. */
+const screen = ref<'compact' | 'app' | 'detail'>('compact');
 const activeChannel = ref(0);
 const currentPost = ref('');
+const isLiked = ref(false);
+const isFavorited = ref(false);
 
+/** The compact preview and the fullscreen feed are independent SnPaging. */
+const miniFeed = ref<FeedRow[]>([]);
 const feed = ref<FeedRow[]>([]);
 const replies = ref<ReplyRow[]>([]);
-const homePaging = ref<InstanceType<typeof SnPaging> | null>(null);
+const miniPaging = ref<InstanceType<typeof SnPaging> | null>(null);
+const appPaging = ref<InstanceType<typeof SnPaging> | null>(null);
 const detailPaging = ref<InstanceType<typeof SnPaging> | null>(null);
 
 function channelTotal(tag: string): number {
@@ -48,174 +71,466 @@ function channelTotal(tag: string): number {
   return 30;
 }
 
-function queryFeed(pageNo: number, pageSize: number): void {
-  const tag = channels[activeChannel.value].tag;
+function buildFeedRows(
+  tag: string,
+  channelName: string,
+  pageNo: number,
+  pageSize: number,
+): FeedRow[] {
+  const total = channelTotal(tag);
+  const start = (pageNo - 1) * pageSize;
+  return Array.from({ length: Math.max(0, Math.min(pageSize, total - start)) }, (_, i) => {
+    const n = start + i + 1;
+    return {
+      id: `${tag}-${n}`,
+      title: `${channelName} · feed item ${n}`,
+      excerpt: `Summary of item ${n}: sn-paging owns refresh + paging; rows render in the host.`,
+    };
+  });
+}
+
+function queryMiniFeed(pageNo: number, pageSize: number): void {
   setTimeout(() => {
-    const total = channelTotal(tag);
-    const start = (pageNo - 1) * pageSize;
-    const rows = Array.from({ length: Math.max(0, Math.min(pageSize, total - start)) }, (_, i) => ({
-      id: `${tag}-${start + i + 1}`,
-      title: `${channels[activeChannel.value].name} · feed item ${start + i + 1}`,
-    }));
-    homePaging.value?.completeByTotal(rows, total);
+    // Read the channel at response time: late responses cannot cross channels.
+    const channel = channels[activeChannel.value] ?? channels[0];
+    miniPaging.value?.completeByTotal(
+      buildFeedRows(channel.tag, channel.name, pageNo, pageSize),
+      channelTotal(channel.tag),
+    );
+  }, 450);
+}
+
+function queryFeed(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    const channel = channels[activeChannel.value] ?? channels[0];
+    appPaging.value?.completeByTotal(
+      buildFeedRows(channel.tag, channel.name, pageNo, pageSize),
+      channelTotal(channel.tag),
+    );
   }, 500);
 }
+
+const REPLY_AUTHORS = ['Lin Xi', 'Kevin', 'A-Gan', 'Momo', 'Xiaolu', 'Chen Mo'];
+const REPLY_TEXTS = [
+  'Exactly the paging container I was looking for — saved.',
+  'The pull feel is much smoother than our old implementation.',
+  'The second-floor entrance animation is polished.',
+  'Q: can the load-more threshold be customized?',
+  'Tried it in our mini program — rock solid.',
+  'The reply list is sn-paging too. Nice nesting.',
+];
 
 function queryReplies(pageNo: number, pageSize: number): void {
   setTimeout(() => {
-    const total = 23;
     const start = (pageNo - 1) * pageSize;
-    const rows = Array.from({ length: Math.max(0, Math.min(pageSize, total - start)) }, (_, i) => ({
-      id: `r-${start + i + 1}`,
-      label: `Comment ${start + i + 1} on "${currentPost.value}"`,
-    }));
-    detailPaging.value?.completeByTotal(rows, total);
-  }, 500);
+    const rows = Array.from(
+      { length: Math.max(0, Math.min(pageSize, REPLY_TOTAL - start)) },
+      (_, i) => {
+        const n = start + i + 1;
+        return {
+          id: `r-${n}`,
+          author: REPLY_AUTHORS[n % REPLY_AUTHORS.length] ?? 'Guest',
+          text: `${REPLY_TEXTS[n % REPLY_TEXTS.length] ?? 'Great post.'} (${n}/${REPLY_TOTAL})`,
+        };
+      },
+    );
+    detailPaging.value?.completeByTotal(rows, REPLY_TOTAL);
+  }, 450);
 }
 
-function onChannelChange(payload: { index: number }): void {
-  activeChannel.value = payload.index;
-  homePaging.value?.reload();
+function switchChannel(index: number): void {
+  activeChannel.value = index;
+  appPaging.value?.reload();
+}
+
+function enterFull(): void {
+  screen.value = 'app';
 }
 
 function openDetail(row: FeedRow): void {
   currentPost.value = row.title;
-  page.value = 'detail';
+  isLiked.value = false;
+  isFavorited.value = false;
+  screen.value = 'detail';
+  // The reply list is an independent paging instance: page 1 on every entry
+  // (auto=false, load on demand).
   detailPaging.value?.reload();
+}
+
+function backToFeed(): void {
+  screen.value = 'app';
+}
+
+function exitFull(): void {
+  screen.value = 'compact';
 }
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <!-- Detail page: comment list (an independent paging instance) -->
-    <view v-if="page === 'detail'" class="paging-frame">
-      <SnPaging
-        ref="detailPaging"
-        v-model="replies"
-        :default-page-size="PAGE_SIZE"
-        @query="queryReplies"
-      >
-        <template #top>
-          <view class="paging-detailbar">
-            <SnButton size="small" @click="page = 'home'">Back</SnButton>
-            <text class="paging-detailbar__title">Comments (23)</text>
+    <!-- ── Compact preview: mini feed + fullscreen entry ─────────────────── -->
+    <view class="pgc">
+      <view class="pgc__head">
+        <view class="pgc__chips">
+          <view
+            v-for="(channel, index) in channels"
+            :key="channel.tag"
+            class="pgc__chip"
+            :class="{ 'pgc__chip--active': index === activeChannel }"
+            @tap="switchChannel(index)"
+          >
+            <text class="pgc__chip-text">{{ channel.name }}</text>
           </view>
-        </template>
-        <view v-for="row in replies" :key="row.id" class="paging-row">
-          <text class="paging-row__label">{{ row.label }}</text>
         </view>
-      </SnPaging>
+        <view class="pgc__expand" role="button" aria-label="Open full-page demo" @tap="enterFull">
+          <text class="pgc__expand-text">Full page</text>
+          <SnIcon :icon="ArrowRight" :size="12" />
+        </view>
+      </view>
+
+      <view class="pgc__viewport">
+        <SnPaging
+          ref="miniPaging"
+          v-model="miniFeed"
+          :default-page-size="PAGE_SIZE"
+          @query="queryMiniFeed"
+        >
+          <view v-for="row in miniFeed" :key="row.id" class="pgc__row" @tap="enterFull">
+            <text class="pgc__row-title">{{ row.title }}</text>
+            <text class="pgc__row-excerpt">{{ row.excerpt }}</text>
+          </view>
+        </SnPaging>
+      </view>
+
+      <text class="pgx-meta">
+        The mini preview is a complete sn-paging too: pull-to-refresh / load-more work here; tap
+        "Full page" for the fullscreen app scenario.
+      </text>
     </view>
 
-    <!-- Home page: channel feed -->
-    <view v-else class="paging-frame">
-      <SnPaging
-        ref="homePaging"
-        v-model="feed"
-        :default-page-size="PAGE_SIZE"
-        safe-area-inset-bottom
-        @query="queryFeed"
-      >
-        <template #top>
-          <view class="paging-search">
-            <text class="paging-search__text">Search what you like</text>
-          </view>
-          <SnTabs v-model="activeChannel" @change="onChannelChange">
-            <SnTab v-for="channel in channels" :key="channel.tag" :title="channel.name" />
-          </SnTabs>
-        </template>
+    <!-- ── Fullscreen overlay: the whole-page app scenario ────────────────── -->
+    <view v-if="screen !== 'compact'" class="pgx" :style="{ zIndex: FULLSCREEN_Z }">
+      <!-- Level 1: channel feed. v-show keeps the instance (scroll preserved). -->
+      <view v-show="screen === 'app'" class="pgx__page">
+        <SnPaging
+          ref="appPaging"
+          v-model="feed"
+          :default-page-size="PAGE_SIZE"
+          safe-area-inset-bottom
+          @query="queryFeed"
+        >
+          <template #top>
+            <SnNavbar
+              title="Articles"
+              left-arrow
+              left-text="Demo"
+              safe-area-inset-top
+              bordered
+              @back="exitFull"
+            />
+            <SnTabs :model-value="activeChannel" @change="switchChannel($event.index)">
+              <SnTab v-for="channel in channels" :key="channel.tag" :title="channel.name" />
+            </SnTabs>
+          </template>
 
-        <view v-for="row in feed" :key="row.id" class="paging-row" @click="openDetail(row)">
-          <text class="paging-row__label">{{ row.title }}</text>
-          <text class="paging-row__hint">Comments</text>
-        </view>
-
-        <template #bottom>
-          <view class="paging-actions">
-            <text class="paging-actions__text">#bottom action bar · safe-area aware</text>
+          <view v-for="row in feed" :key="row.id" class="pgx__card" @tap="openDetail(row)">
+            <text class="pgx__card-title">{{ row.title }}</text>
+            <text class="pgx__card-excerpt">{{ row.excerpt }}</text>
+            <view class="pgx__card-foot">
+              <text class="pgx__card-hint">Read</text>
+              <SnIcon :icon="ArrowRight" :size="12" class="pgx__card-arrow" />
+            </view>
           </view>
-        </template>
-      </SnPaging>
+
+          <template #bottom>
+            <view class="pgx__bottombar">
+              <text class="pgx__bottombar-text">#bottom action bar · safe-area aware</text>
+            </view>
+          </template>
+        </SnPaging>
+      </view>
+
+      <!-- Level 2: article detail + an independent paged reply list -->
+      <view v-show="screen === 'detail'" class="pgx__page">
+        <SnPaging
+          ref="detailPaging"
+          v-model="replies"
+          :auto="false"
+          :default-page-size="PAGE_SIZE"
+          safe-area-inset-bottom
+          @query="queryReplies"
+        >
+          <template #top>
+            <SnNavbar
+              :title="currentPost"
+              left-arrow
+              left-text="Back"
+              safe-area-inset-top
+              bordered
+              @back="backToFeed"
+            />
+          </template>
+
+          <!-- Article card: static body, scrolls with the list -->
+          <view class="pgd">
+            <text class="pgd__title">{{ currentPost }}</text>
+            <view class="pgd__byline">
+              <text class="pgd__author">snui team</text>
+              <text class="pgd__dot">·</text>
+              <text class="pgd__date">Today 09:30</text>
+            </view>
+            <view class="pgd__hero" />
+            <text class="pgd__para">
+              sn-paging folds pull-to-refresh, load-more, empty and retry states into one container:
+              the host only fetches in @query and reports via complete*; the aggregated list arrives
+              through v-model.
+            </text>
+            <text class="pgd__para">
+              The reply list here is an independent sn-paging instance — level 1 and level 2 keep
+              their own paging state; going back preserves the level-1 scroll position.
+            </text>
+            <view class="pgd__ops">
+              <view
+                class="pgd__op"
+                :class="{ 'pgd__op--active': isLiked }"
+                role="button"
+                @tap="isLiked = !isLiked"
+              >
+                <SnIcon :icon="ThumbsUp" :size="14" />
+                <text class="pgd__op-text">{{ isLiked ? 'Liked 128' : 'Like 127' }}</text>
+              </view>
+              <view class="pgd__op">
+                <SnIcon :icon="MessageCircle" :size="14" />
+                <text class="pgd__op-text">Replies {{ REPLY_TOTAL }}</text>
+              </view>
+              <view
+                class="pgd__op"
+                :class="{ 'pgd__op--active': isFavorited }"
+                role="button"
+                @tap="isFavorited = !isFavorited"
+              >
+                <SnIcon :icon="Bookmark" :size="14" />
+                <text class="pgd__op-text">{{ isFavorited ? 'Saved' : 'Save' }}</text>
+              </view>
+              <view class="pgd__op">
+                <SnIcon :icon="Share2" :size="14" />
+                <text class="pgd__op-text">Share</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- Replies head -->
+          <view class="pgd__replies-head">
+            <text class="pgd__replies-title">Replies ({{ REPLY_TOTAL }})</text>
+          </view>
+          <view v-for="row in replies" :key="row.id" class="pgd__reply">
+            <text class="pgd__reply-author">{{ row.author }}</text>
+            <text class="pgd__reply-text">{{ row.text }}</text>
+          </view>
+
+          <template #bottom>
+            <view class="pgd__commentbar">
+              <text class="pgd__commentbar-text">Say something…</text>
+              <SnIcon :icon="Send" :size="14" class="pgd__commentbar-icon" />
+            </view>
+          </template>
+        </SnPaging>
+      </view>
     </view>
-
-    <text class="sn-demo__meta">
-      {{
-        page === 'home'
-          ? 'Switching a channel = reload(); tap a row to open the detail page'
-          : 'The detail page is a separate sn-paging instance; the home list keeps its state after going back'
-      }}
-    </text>
   </view>
 </template>
 
 <style scoped>
-.paging-frame {
+/* ── Compact preview ───────────────────────────────────────────────────── */
+.pgc {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.pgc__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.pgc__chips {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.pgc__chip {
+  display: flex;
+  align-items: center;
+  height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgc__chip--active {
+  background-color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+}
+
+.pgc__chip-text {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgc__chip--active .pgc__chip-text {
+  color: var(--sn-mp-color-text-on-primary);
+  font-weight: var(--sn-mp-font-weight-medium);
+}
+
+.pgc__expand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-default);
+}
+
+.pgc__expand-text {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+  font-weight: var(--sn-mp-font-weight-medium);
+}
+
+.pgc__expand:active {
+  opacity: 0.7;
+}
+
+.pgc__viewport {
   box-sizing: border-box;
-  height: 640rpx;
+  height: 520rpx;
   border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-md);
   overflow: hidden;
 }
 
-.paging-search {
-  box-sizing: border-box;
-  width: calc(100% - 48rpx);
-  margin: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3) 0;
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
-  background-color: var(--sn-mp-color-background-subtle);
-  border-radius: var(--sn-mp-radius-md);
-}
-
-.paging-search__text {
-  color: var(--sn-mp-color-text-tertiary);
-  font-size: var(--sn-mp-font-size-sm);
-  line-height: var(--sn-mp-font-line-height-normal);
-}
-
-.paging-detailbar {
+.pgc__row {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-3);
-  box-sizing: border-box;
-  width: 100%;
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  flex-direction: column;
+  gap: 8rpx;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.paging-detailbar__title {
+.pgc__row-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgc__row-excerpt {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: 1.6;
+}
+
+/* Demo-owned footer note (no global dependency). */
+.pgx-meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* ── Fullscreen overlay: the whole-page app scenario ───────────────────── */
+/* position: fixed anchors to the viewport — inside the docs preview iframe
+ * that is the phone screen. The demo shell deliberately avoids transform /
+ * backdrop-filter ancestors (see App.vue), so fixed layers never get trapped. */
+.pgx {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--sn-mp-color-background-subtle);
+  animation: pgx-in 0.24s ease both;
+}
+
+@keyframes pgx-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* v-show layered pages: absolute over the overlay; SnPaging is 100% inside. */
+.pgx__page {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Feed cards: full-bleed App look (cards over the subtle canvas). */
+.pgx__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3) 0;
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgx__card-title {
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
   font-weight: var(--sn-mp-font-weight-medium);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
-.paging-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  width: 100%;
-  padding: var(--sn-mp-spacing-4);
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
-  background-color: var(--sn-mp-color-background-surface);
-}
-
-.paging-row__label {
-  color: var(--sn-mp-color-text-primary);
-  font-size: var(--sn-mp-font-size-md);
+.pgx__card-excerpt {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
-.paging-row__hint {
+.pgx__card-foot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.pgx__card-hint {
   color: var(--sn-mp-color-action-primary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
-.paging-actions {
+.pgx__card-arrow {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.pgx__bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   width: 100%;
   padding: var(--sn-mp-spacing-3);
@@ -223,9 +538,157 @@ function openDetail(row: FeedRow): void {
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.paging-actions__text {
+.pgx__bottombar-text {
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* ── Article detail ────────────────────────────────────────────────────── */
+.pgd {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-xl);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  line-height: 1.4;
+}
+
+.pgd__byline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.pgd__author {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__dot {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.pgd__date {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* Hero placeholder: token gradient block, no external image assets. */
+.pgd__hero {
+  height: 240rpx;
+  border-radius: var(--sn-mp-radius-md);
+  background: linear-gradient(135deg, var(--sn-mp-color-action-primary), var(--sn-mp-color-purple));
+  opacity: 0.85;
+}
+
+.pgd__para {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: 1.7;
+}
+
+.pgd__ops {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32rpx;
+  padding-top: var(--sn-mp-spacing-2);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__op {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.pgd__op:active {
+  opacity: 0.7;
+}
+
+.pgd__op-text {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__op--active .pgd__op-text {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.pgd__op--active {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.pgd__replies-head {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+}
+
+.pgd__replies-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__reply {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin: 0 var(--sn-mp-spacing-3) var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__reply-author {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__reply-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: 1.6;
+}
+
+.pgd__commentbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.pgd__commentbar-text {
+  color: var(--sn-mp-color-input-placeholder);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__commentbar-icon {
+  color: var(--sn-mp-color-action-primary);
 }
 </style>

@@ -3,7 +3,9 @@
  *
  * Covers every non-trivial prop from the reference surface: size / type /
  * variant / round / mark / closable / dynamic / icon / color / bgColor /
- * customClass / customStyle, plus the three events and the slot set.
+ * customClass / customStyle, plus the three events and the slot set, and the
+ * AUI-additive surface (§112.3a): shape (skew / ribbon / fold / ticket),
+ * inline IconData icons, built-in catalog names and the iconUrl bitmap path.
  *
  * Assertions stay on classes / attributes / emitted events — happy-dom drops
  * CSS lengths it cannot parse, so `rpx` values are never asserted.
@@ -12,6 +14,7 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnTag from './sn-tag.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
 import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
 import { Check } from '../sn-icon/sn-icon-set';
 
@@ -67,6 +70,13 @@ describe('sn-tag', () => {
       const w = mount(SnTag, { props: { round: true, mark: true } });
       expect(w.classes()).toContain('sn-tag--round');
       expect(w.classes()).toContain('sn-tag--mark');
+    });
+
+    it('wraps the default slot label in a text element', () => {
+      const w = mount(SnTag, { slots: { default: '标签' } });
+      const label = w.find('.sn-tag__label');
+      expect(label.exists()).toBe(true);
+      expect(label.text()).toBe('标签');
     });
 
     it('forwards customClass and customStyle to the root node', () => {
@@ -132,6 +142,22 @@ describe('sn-tag', () => {
       clearSnIcons();
     });
 
+    it('resolves a built-in catalog name without registration', () => {
+      clearSnIcons();
+      const w = mount(SnTag, { props: { icon: 'check' } });
+      expect(w.find('.sn-tag__icon').exists()).toBe(true);
+      expect(w.find('svg').exists()).toBe(true);
+      clearSnIcons();
+    });
+
+    it('routes a cssIcon name to the glyph path even when the catalog has it', () => {
+      clearSnIcons();
+      const w = mount(SnTag, { props: { icon: 'check', cssIcon: true } });
+      expect(w.find('.check').exists()).toBe(true);
+      expect(w.find('svg').exists()).toBe(false);
+      clearSnIcons();
+    });
+
     it('renders an iconfont class when cssIcon is enabled', () => {
       const w = mount(SnTag, { props: { icon: 'star', iconPrefix: 'wd-icon', cssIcon: true } });
       expect(w.find('.wd-icon-star').exists()).toBe(true);
@@ -140,6 +166,95 @@ describe('sn-tag', () => {
     it('uses a string cssIcon value as the prefix', () => {
       const w = mount(SnTag, { props: { icon: 'star', cssIcon: 'my-icon' } });
       expect(w.find('.my-icon-star').exists()).toBe(true);
+    });
+  });
+
+  describe('shape (AUI additive, §112.3a)', () => {
+    it('renders no shape modifier class for the square default', () => {
+      const w = mount(SnTag);
+      expect(w.classes()).not.toContain('sn-tag--square');
+    });
+
+    it('renders one modifier class per special shape', () => {
+      for (const shape of ['round', 'skew', 'ribbon', 'fold', 'ticket'] as const) {
+        const w = mount(SnTag, { props: { shape } });
+        expect(w.classes()).toContain(`sn-tag--${shape}`);
+      }
+    });
+
+    it('keeps the legacy round prop as the round-shape sugar', () => {
+      const w = mount(SnTag, { props: { round: true } });
+      expect(w.classes()).toContain('sn-tag--round');
+    });
+
+    it('lets shape win over the round sugar', () => {
+      const w = mount(SnTag, { props: { round: true, shape: 'skew' } });
+      const classes = w.classes();
+      expect(classes).toContain('sn-tag--skew');
+      expect(classes).not.toContain('sn-tag--round');
+    });
+
+    it('renders the fold flap element only in fold shape', () => {
+      const square = mount(SnTag);
+      expect(square.find('.sn-tag__fold-flap').exists()).toBe(false);
+      const fold = mount(SnTag, { props: { shape: 'fold' } });
+      expect(fold.find('.sn-tag__fold-flap').exists()).toBe(true);
+    });
+
+    it('counter-skews inner parts so glyphs stay upright in skew shape', () => {
+      const w = mount(SnTag, { props: { shape: 'skew' }, slots: { default: '平行' } });
+      expect(w.find('.sn-tag__label.sn-tag__upright').exists()).toBe(true);
+      expect(w.find('.sn-tag__close.sn-tag__upright').exists()).toBe(false);
+    });
+
+    it('counter-skews the close button in closable skew tags', () => {
+      const w = mount(SnTag, { props: { shape: 'skew', closable: true } });
+      expect(w.find('.sn-tag__close.sn-tag__upright').exists()).toBe(true);
+    });
+
+    it('keeps inner parts un-counter-skewed outside skew shape', () => {
+      const w = mount(SnTag, { slots: { default: '正' } });
+      expect(w.find('.sn-tag__label.sn-tag__upright').exists()).toBe(false);
+    });
+  });
+
+  describe('icon object + iconUrl (additive)', () => {
+    const Glyph: IconData = { viewBox: '0 0 24 24', paths: ['M4 4h16v16H4z'] };
+
+    it('renders an inline IconData object without touching the registry', () => {
+      clearSnIcons();
+      const w = mount(SnTag, { props: { icon: Glyph } });
+      expect(w.find('.sn-tag__icon').exists()).toBe(true);
+      expect(w.find('svg').exists()).toBe(true);
+    });
+
+    it('renders iconUrl as an image pointing at the given source', () => {
+      const w = mount(SnTag, { props: { iconUrl: 'https://example.com/logo.png' } });
+      const img = w.find('.sn-tag__image');
+      expect(img.exists()).toBe(true);
+      expect(img.attributes('src')).toBe('https://example.com/logo.png');
+    });
+
+    it('prefers iconUrl over the vector icon', () => {
+      registerSnIcons({ Check });
+      const w = mount(SnTag, { props: { icon: 'Check', iconUrl: 'https://example.com/logo.png' } });
+      expect(w.find('.sn-tag__image').exists()).toBe(true);
+      expect(w.find('svg').exists()).toBe(false);
+      clearSnIcons();
+    });
+
+    it('keeps the icon slot above iconUrl', () => {
+      const w = mount(SnTag, {
+        props: { iconUrl: 'https://example.com/logo.png' },
+        slots: { icon: '<text class="slot-icon">S</text>' },
+      });
+      expect(w.find('.slot-icon').exists()).toBe(true);
+      expect(w.find('.sn-tag__image').exists()).toBe(false);
+    });
+
+    it('renders no image element without iconUrl', () => {
+      const w = mount(SnTag);
+      expect(w.find('.sn-tag__image').exists()).toBe(false);
     });
   });
 

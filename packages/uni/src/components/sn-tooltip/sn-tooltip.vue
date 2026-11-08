@@ -35,14 +35,21 @@
  * `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y` and folded into the
  * placement margins with `calc()`.
  *
- * ## Click-outside close (transparent mask)
+ * ## Click-outside close (useQueue / closeOutside, wot-ui parity)
  *
- * wot-ui closes the tooltip on a tap outside the bubble. Miniprogram has no
- * `document` to hang a global listener on, so the mechanism here is a
- * transparent fixed mask (z-index 499 — below the bubble's 500, above the
- * page) mounted exactly while the bubble is; tapping it calls `close()`.
- * Consequence: while a bubble is shown, the first tap anywhere else —
- * including on another tooltip's trigger — closes this one first.
+ * uni-app components cannot listen to taps outside their own subtree, so the
+ * transparent-mask approach was dropped: it swallowed the whole tap and made
+ * switching to another bubble a two-tap affair. Instead the component
+ * registers an idempotent close in `utils/outside-close.ts` while mounted,
+ * and the page root binds the tap-bubbling dispatcher:
+ *
+ *   import { useQueue } from '@snui/uni';
+ *   const { closeOutside } = useQueue();
+ *   <view @tap="closeOutside"> … page … </view>
+ *
+ * The trigger and the bubble bind `@tap.stop` so taps on them never reach
+ * the root handler — tapping another trigger therefore switches bubbles in
+ * one gesture. Pages that never bind the handler simply never outside-close.
  *
  * ## Bubble palette (wot-ui parity: --wot-tooltip-bg / --wot-tooltip-color)
  *
@@ -68,11 +75,36 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
+import {
+  closeOutside,
+  registerOutsideClosable,
+  unregisterOutsideClosable,
+} from '../../utils/outside-close';
 
 defineOptions({ name: 'SnTooltip' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
+
+// Register while mounted so a page-root `@tap="closeOutside"` closes this
+// overlay too (the callback no-ops while the bubble is already closed).
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    // Idempotent: an already-closed bubble must not emit another close.
+    if (isShown.value || isMounted.value) close();
+  }),
+);
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Bubble anchor. Mirrors `wd-tooltip` `placement` (12 directions). */
 type TooltipPlacement =
@@ -251,8 +283,15 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
-  if (props.modelValue) close();
-  else open();
+  if (props.modelValue) {
+    close();
+    return;
+  }
+  // One-gesture switching (popover parity): the trigger stops propagation, so
+  // it dispatches the outside-close itself before opening — other open
+  // overlays fold in the same tap.
+  closeOutside();
+  open();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -309,14 +348,12 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
       role="button"
       :aria-expanded="isShown ? 'true' : 'false'"
       :aria-disabled="props.disabled ? 'true' : undefined"
-      @tap="onTriggerTap"
+      @tap.stop="onTriggerTap"
     >
       <slot />
     </view>
 
-    <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
-    <view v-if="isMounted" class="sn-tooltip__mask" aria-hidden="true" @tap="close" />
-    <view v-if="isMounted" :class="popClass" role="tooltip">
+    <view v-if="isMounted" :class="popClass" role="tooltip" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
       <view class="sn-tooltip__body">
         <slot name="content">
@@ -363,7 +400,13 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   display: flex;
   align-items: flex-start;
   gap: var(--sn-mp-spacing-2);
-  max-width: 480rpx;
+  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
+   * the trigger-sized root and `left: 50%` leaves only half of it available.
+   * `max-content` grows past that cap; `max-width` still bounds long text. */
+  width: max-content;
+  /* Never wider than the viewport: the bubble is centered on the trigger,
+   * so an unclamped width overflows the screen near either edge. */
+  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
@@ -379,23 +422,6 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--shown .sn-tooltip__pop {
   opacity: 1;
-  pointer-events: auto;
-}
-
-/* Outside tap catcher — invisible, full viewport, one level under the
- * bubble. Inert during the fade legs so taps fall through to the page. */
-.sn-tooltip__mask {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 499;
-  background-color: transparent;
-  pointer-events: none;
-}
-
-.sn-tooltip--shown .sn-tooltip__mask {
   pointer-events: auto;
 }
 
@@ -433,9 +459,12 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--top .sn-tooltip__pop {
   bottom: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(calc(-50% + var(--sn-tooltip-offset-x)));
+  transform: translateX(var(--sn-tooltip-offset-x));
 }
 .sn-tooltip--top-start .sn-tooltip__pop {
   bottom: 100%;
@@ -454,9 +483,12 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--bottom .sn-tooltip__pop {
   top: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(calc(-50% + var(--sn-tooltip-offset-x)));
+  transform: translateX(var(--sn-tooltip-offset-x));
 }
 .sn-tooltip--bottom-start .sn-tooltip__pop {
   top: 100%;

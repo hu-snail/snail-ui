@@ -412,18 +412,15 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
 }
 
 .sn-timeline--horizontal.sn-timeline--mode-top .sn-timeline-item {
-  grid-template-rows:
-    auto var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
+  grid-template-rows: auto var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
 }
 
 .sn-timeline--horizontal.sn-timeline--mode-bottom .sn-timeline-item {
-  grid-template-rows:
-    1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) auto;
+  grid-template-rows: 1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) auto;
 }
 
 .sn-timeline--horizontal.sn-timeline--mode-alternate .sn-timeline-item {
-  grid-template-rows:
-    1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
+  grid-template-rows: 1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
 }
 
 .sn-timeline--horizontal .sn-timeline-item--side-bottom {

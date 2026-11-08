@@ -129,6 +129,34 @@ describe('sn-table', () => {
     expect(wrapper.findAll('.sn-table__row--stripe')).toHaveLength(0);
   });
 
+  it('should mark only the trailing cell of each row with the last-cell modifier', async () => {
+    /* The right-edge-drop border rule keys off this index-bound class instead
+     * of `:last-child` (§116.2 — App has no structural pseudo-classes). */
+    const wrapper = await mountTable({}, [
+      { prop: 'name', label: '名称' },
+      { prop: 'amount', label: '金额' },
+      { prop: 'status', label: '状态' },
+    ]);
+    const rows = wrapper.findAll('.sn-table__row');
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      const cells = row.findAll('.sn-table__cell');
+      expect(cells).toHaveLength(3);
+      expect(cells[0]!.classes()).not.toContain('sn-table__cell--last');
+      expect(cells[1]!.classes()).not.toContain('sn-table__cell--last');
+      expect(cells[2]!.classes()).toContain('sn-table__cell--last');
+    }
+  });
+
+  it('should mark the index cell last only when no columns are registered', async () => {
+    const wrapper = await mountTable({ index: true }, []);
+    for (const row of wrapper.findAll('.sn-table__row')) {
+      const cells = row.findAll('.sn-table__cell');
+      expect(cells).toHaveLength(1);
+      expect(cells[0]!.classes()).toContain('sn-table__cell--last');
+    }
+  });
+
   it('should hide the header when showHeader is false', async () => {
     const wrapper = await mountTable({ showHeader: false });
     expect(wrapper.find('.sn-table__row--header').exists()).toBe(false);

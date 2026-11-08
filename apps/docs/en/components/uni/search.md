@@ -96,4 +96,4 @@ Cross-end search field for uni-app (H5 / WeChat MP / App). easycom auto-registra
 
 ## Dark mode
 
-Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the field background, border, placeholder and cancel text. Verify with:
+Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` flips the field background, border, placeholder and cancel text. Verify with:

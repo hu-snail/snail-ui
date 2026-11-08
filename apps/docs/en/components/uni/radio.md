@@ -100,4 +100,4 @@ The parent holds a single-value `v-model`; each child identifies itself with `va
 
 ## Dark mode
 
-Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the unchecked ring, checked fill, button-chip fill and label text. Verify with:
+Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` flips the unchecked ring, checked fill, button-chip fill and label text. Verify with:

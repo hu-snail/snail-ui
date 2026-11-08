@@ -13,6 +13,15 @@ export default defineConfig({
   // 小程序端不感知 base；H5 路由 base 由 scripts/build-h5.mjs 写入 manifest。
   base: process.env.UNI_H5_BASE || '/',
   plugins: [uni()],
+  // @snui/uni-src 必须排除出依赖预构建：esbuild 会把包内纯 JS 模块
+  // （sn-icon-registry / sn-icon-set 等）收进 .vite/deps 生成第二份模块实例，
+  // 而 .vue 组件（sn-tabbar-item → sn-icon）走源码相对导入 —— 模板页的
+  // registerSnIcons 写进预构建副本、组件从源码副本解析，注册表必然 miss，
+  // string 图标（home / circle-play / shopping-cart）渲染成空盒。
+  // 排除后两端走同一条源码 URL，实例唯一。（与 uni-demo 相同）
+  optimizeDeps: {
+    exclude: ['@snui/uni-src'],
+  },
   resolve: {
     // MP 构建的 chunk 命名按 inputDir 相对路径计算，模块 id 落在工程外会生成
     // `../` 非法 pattern —— 指向工程内的 workspace symlink 路径并保留 symlink

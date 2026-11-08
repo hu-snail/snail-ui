@@ -28,6 +28,21 @@
  * `root-portal` is not implemented (uni-app miniprograms have no portal host
  * — same divergence as `sn-popup`).
  *
+ * ## Additive sheet chrome (AUI-OPT-13, AGENTS.md §112.3a — wd-cascader has none)
+ *
+ *   - `__back` — a leading return control in the toolbar (ChevronLeft) that
+ *     steps the active tab up one level; it renders only once a level has been
+ *     drilled into, so the shallow root level keeps the plain toolbar.
+ *   - `__tail` — a per-row affordance glyph: a `ChevronRight` on rows that lead
+ *     to another level (drill hint) and a `Check` on the selected row. Both are
+ *     decorative (`aria-hidden`) — the row itself carries `aria-pressed`.
+ *   - `__empty` — a status hint when a level resolves to no options at all, so
+ *     an empty tree no longer reads as a rendering bug.
+ *   - `card` — a sheet-level layout switch: every option renders as its own
+ *     card (radius / border / shadow / row gap from the same tokens sn-cell's
+ *     `card` uses) instead of an edge-to-edge row with a hairline.
+ *   - Press feedback rides `hover-class` (§116.2 — App has no `:active`).
+ *
  * ## In-flight guards (AGENTS.md §39 / §41)
  *
  * A lazy-load request is tracked by a generation token, so a sheet closed
@@ -44,7 +59,12 @@
 import { computed, ref, watch } from 'vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
-import { Check as CheckIcon } from '../sn-icon/sn-icon-set';
+import SnLoading from '../sn-loading/sn-loading.vue';
+import {
+  Check as CheckIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+} from '../sn-icon/sn-icon-set';
 import type {
   CascaderConfirmPayload,
   CascaderLazyLoad,
@@ -105,6 +125,11 @@ const props = withDefaults(
      * host, so the layer cannot leave the page's document flow.
      */
     rootPortal?: boolean;
+
+    /* ── additive (AUI-OPT-13, AGENTS.md §112.3a — wd-cascader has none) ── */
+
+    /** 卡片形态：弹层内每个选项自成一张卡片（圆角 / 描边 / 阴影，行间走 token 间距）。 */
+    card?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -129,6 +154,7 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
     rootPortal: false,
+    card: false,
   },
 );
 
@@ -318,12 +344,22 @@ function requestLazy(tabIndex: number, option: CascaderOption): void {
     loadingTab.value = null;
     if (!Array.isArray(children) || children.length === 0) return;
     tabs.value = [...tabs.value.slice(0, tabIndex + 1), children];
-    activeTab.value = tabIndex + 1;
+    // Only auto-advance when the user is still standing on the requesting
+    // level — a resolve that lands after a step back must not yank the sheet.
+    if (activeTab.value === tabIndex) activeTab.value = tabIndex + 1;
   });
 }
 
 function onTabTap(tabIndex: number): void {
   activeTab.value = tabIndex;
+}
+
+/** Step the active level up one — the toolbar's return control (additive). */
+const canGoBack = computed(() => activeTab.value > 0);
+
+function onBack(): void {
+  if (!canGoBack.value) return;
+  activeTab.value -= 1;
 }
 
 function onCancel(): void {
@@ -360,12 +396,33 @@ function isSelected(tabIndex: number, option: CascaderOption): boolean {
   return nodeValue(selected) === nodeValue(option);
 }
 
+/**
+ * Whether tapping the row opens another level (drill hint, additive). In lazy
+ * mode that is anything the host has not marked as a leaf; otherwise a node
+ * with children.
+ */
+function isDrillable(option: CascaderOption): boolean {
+  if (props.lazyLoad) return option[props.isLeafKey] !== true;
+  return nodeChildren(option).length > 0;
+}
+
+/** A level that resolved to nothing and is not currently loading (additive). */
+function isEmptyLevel(tabIndex: number): boolean {
+  return (tabs.value[tabIndex]?.length ?? 0) === 0 && loadingTab.value !== tabIndex;
+}
+
 /** Tabs actually rendered: the visible tab list plus one pending tab. */
 const tabCount = computed(() => tabs.value.length);
 
-function tabTitle(index: number): string {
+/** Chip label for one level: the selected node's text, or a hint while empty. */
+function tabLabel(index: number): string {
   const selected = selectedPath.value[index];
-  return selected ? nodeText(selected) : '';
+  return selected ? nodeText(selected) : '请选择';
+}
+
+/** A level without a selection yet drives the muted chip style. */
+function isTabPending(index: number): boolean {
+  return selectedPath.value[index] === undefined;
 }
 </script>
 
@@ -383,13 +440,26 @@ function tabTitle(index: number): string {
   >
     <view class="sn-cascader" :data-snui-component="'cascader'">
       <view class="sn-cascader__toolbar">
-        <view
-          class="sn-cascader__action sn-cascader__cancel"
-          role="button"
-          aria-label="cancel"
-          @tap="onCancel"
-          ><text>取消</text></view
-        >
+        <view class="sn-cascader__lead">
+          <view
+            v-if="canGoBack"
+            class="sn-cascader__back"
+            role="button"
+            aria-label="back"
+            hover-class="sn-cascader__action--pressed"
+            @tap="onBack"
+          >
+            <SnIcon :icon="ChevronLeftIcon" :size="36" />
+          </view>
+          <view
+            class="sn-cascader__action sn-cascader__cancel"
+            role="button"
+            aria-label="cancel"
+            hover-class="sn-cascader__action--pressed"
+            @tap="onCancel"
+            ><text>取消</text></view
+          >
+        </view>
         <text v-if="props.title" class="sn-cascader__title">{{ props.title }}</text>
         <view
           v-if="props.checkStrictly || props.lazyLoad"
@@ -401,6 +471,7 @@ function tabTitle(index: number): string {
           role="button"
           :aria-label="props.confirmText"
           :aria-disabled="canConfirm ? undefined : 'true'"
+          hover-class="sn-cascader__action--pressed"
           @tap="onConfirm"
           ><text>{{ props.confirmText }}</text></view
         >
@@ -414,9 +485,14 @@ function tabTitle(index: number): string {
           :class="['sn-cascader__tab', { 'sn-cascader__tab--active': activeTab === index - 1 }]"
           role="tab"
           :aria-selected="activeTab === index - 1 ? 'true' : 'false'"
+          hover-class="sn-cascader__tab--pressed"
           @tap="onTabTap(index - 1)"
         >
-          <text class="sn-cascader__tab-text">{{ tabTitle(index - 1) }}</text>
+          <text
+            class="sn-cascader__tab-text"
+            :class="{ 'sn-cascader__tab-text--placeholder': isTabPending(index - 1) }"
+            >{{ tabLabel(index - 1) }}</text
+          >
           <view
             v-if="activeTab === index - 1"
             :class="['sn-cascader__line', `sn-cascader__line--${props.lineTheme}`]"
@@ -431,7 +507,7 @@ function tabTitle(index: number): string {
           v-for="(tab, tabIndex) in tabs"
           v-show="activeTab === tabIndex"
           :key="tabIndex"
-          class="sn-cascader__panel"
+          :class="['sn-cascader__panel', { 'sn-cascader__panel--card': props.card }]"
           scroll-y
         >
           <view
@@ -440,7 +516,12 @@ function tabTitle(index: number): string {
             role="status"
             aria-live="polite"
           >
-            <text class="sn-cascader__loading-text">loading</text>
+            <SnLoading type="circular" :size="40" />
+            <text class="sn-cascader__loading-text">加载中</text>
+          </view>
+
+          <view v-else-if="isEmptyLevel(tabIndex)" class="sn-cascader__empty" role="status">
+            <text class="sn-cascader__empty-text">暂无选项</text>
           </view>
 
           <view
@@ -451,11 +532,13 @@ function tabTitle(index: number): string {
               {
                 'sn-cascader__option--selected': isSelected(tabIndex, option),
                 'sn-cascader__option--disabled': option.disabled === true,
+                'sn-cascader__option--card': props.card,
               },
             ]"
             role="button"
             :aria-pressed="isSelected(tabIndex, option) ? 'true' : 'false'"
             :aria-disabled="option.disabled === true ? 'true' : undefined"
+            :hover-class="option.disabled === true ? 'none' : 'sn-cascader__option--pressed'"
             @tap="onOptionTap(tabIndex, option)"
           >
             <view class="sn-cascader__option-main">
@@ -464,8 +547,13 @@ function tabTitle(index: number): string {
                 nodeTip(option)
               }}</text>
             </view>
-            <view v-if="isSelected(tabIndex, option)" class="sn-cascader__check" aria-hidden="true">
-              <SnIcon :icon="CheckIcon" :size="28" />
+            <view class="sn-cascader__tail" aria-hidden="true">
+              <view v-if="isSelected(tabIndex, option)" class="sn-cascader__check">
+                <SnIcon :icon="CheckIcon" :size="28" />
+              </view>
+              <view v-else-if="isDrillable(option)" class="sn-cascader__chevron">
+                <SnIcon :icon="ChevronRightIcon" :size="28" />
+              </view>
             </view>
           </view>
         </scroll-view>
@@ -488,9 +576,29 @@ function tabTitle(index: number): string {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 88rpx;
+  min-height: 96rpx;
   padding: 0 var(--sn-mp-spacing-4);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+/* Leading cluster (additive): return control + cancel, kept off the centre
+   title by a fixed min width. */
+.sn-cascader__lead {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--sn-mp-spacing-1);
+  min-width: 96rpx;
+}
+
+.sn-cascader__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: var(--sn-mp-radius-full);
+  color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-cascader__title {
@@ -501,10 +609,20 @@ function tabTitle(index: number): string {
 }
 
 .sn-cascader__action {
+  display: flex;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 56rpx;
   padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-md);
   font-size: var(--sn-mp-font-size-md);
   color: var(--sn-mp-color-text-secondary);
+}
+
+/* Press feedback rides hover-class (§116.2 — App has no `:active`). */
+.sn-cascader__action--pressed {
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 .sn-cascader__confirm {
@@ -524,13 +642,17 @@ function tabTitle(index: number): string {
   display: flex;
   align-items: center;
   gap: var(--sn-mp-spacing-2);
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4) 0;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4) 0;
   overflow-x: auto;
 }
 
 .sn-cascader__tab {
   position: relative;
+  display: flex;
   flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 56rpx;
   padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
   border-radius: var(--sn-mp-radius-md) var(--sn-mp-radius-md) 0 0;
   background-color: var(--sn-mp-color-background-soft);
@@ -538,9 +660,27 @@ function tabTitle(index: number): string {
   font-size: var(--sn-mp-font-size-sm);
 }
 
+.sn-cascader__tab--pressed {
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
 .sn-cascader__tab--active {
+  background-color: var(--sn-mp-color-action-primary-soft);
   color: var(--sn-mp-color-action-primary);
   font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+/* A level that has no selection yet shows a hint instead of an empty chip. */
+.sn-cascader__tab-text {
+  max-width: 200rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sn-cascader__tab-text--placeholder {
+  color: var(--sn-mp-color-text-tertiary);
+  font-weight: var(--sn-mp-font-weight-normal);
 }
 
 .sn-cascader__line {
@@ -571,11 +711,15 @@ function tabTitle(index: number): string {
 }
 
 .sn-cascader__panels {
+  /* Stable sheet height: a drilled-into level with few options must not make
+     the sheet jump while the user browses levels. */
+  min-height: 480rpx;
   max-height: 640rpx;
   overflow: hidden;
 }
 
 .sn-cascader__panel {
+  min-height: 480rpx;
   max-height: 640rpx;
 }
 
@@ -584,8 +728,13 @@ function tabTitle(index: number): string {
   align-items: center;
   justify-content: space-between;
   gap: var(--sn-mp-spacing-3);
-  padding: var(--sn-mp-spacing-4);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+/* Press feedback rides hover-class (§116.2 — App has no `:active`). */
+.sn-cascader__option--pressed {
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 .sn-cascader__option-main {
@@ -603,6 +752,10 @@ function tabTitle(index: number): string {
   text-overflow: ellipsis;
 }
 
+.sn-cascader__option--selected {
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
 .sn-cascader__option--selected .sn-cascader__option-text {
   color: var(--sn-mp-color-action-primary);
   font-weight: var(--sn-mp-font-weight-semibold);
@@ -618,23 +771,87 @@ function tabTitle(index: number): string {
   opacity: 0.5;
 }
 
+/* Row affordance (additive): drill chevron or selected check glyph. */
+.sn-cascader__tail {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 32rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
 .sn-cascader__check {
   display: flex;
   align-items: center;
   color: var(--sn-mp-color-action-primary);
 }
 
+.sn-cascader__chevron {
+  display: flex;
+  align-items: center;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
 .sn-cascader__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sn-mp-spacing-2);
+  min-height: 320rpx;
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-cascader__loading-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+/* Empty level (additive) — an empty tree reads as a hint, not a bug. */
+.sn-cascader__empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--sn-mp-spacing-8);
-  color: var(--sn-mp-color-action-primary);
+  min-height: 320rpx;
+}
+
+.sn-cascader__empty-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
 }
 
 /* Doodle skin — heavier row rules. */
 .snui-skin-doodle .sn-cascader__option {
   border-bottom-width: 4rpx;
   border-bottom-color: var(--sn-mp-color-text-primary);
+}
+
+/* Card list (additive, AUI-OPT-13): one card per option, mirroring sn-cell's
+   `card` look — radius / border / shadow / gap from the same tokens.
+   The classes sit on the row and the panel themselves (no descendant
+   combinator) so the App side keeps the geometry (§116.2). */
+.sn-cascader__panel--card {
+  /* Top + side padding only: each card carries its own bottom margin, so the
+     last card's gap closes the list (§116.2 — no `:last-child` selector). */
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4) 0;
+}
+
+.sn-cascader__option--card {
+  margin-bottom: var(--sn-mp-spacing-3);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  box-shadow: var(--sn-mp-shadow-sm);
+  background-color: var(--sn-mp-color-background-elevated);
+}
+
+/* Card rows carry an explicit face, so the selected / pressed states keep a
+   token background instead of falling back to the list look. */
+.sn-cascader__option--card.sn-cascader__option--selected {
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
+.sn-cascader__option--card.sn-cascader__option--pressed {
+  background-color: var(--sn-mp-color-background-soft);
 }
 </style>

@@ -97,4 +97,4 @@
 
 ## 暗色模式
 
-所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下轨道、旋钮底板、轨道文案颜色自动翻转（品牌色 `--sn-mp-color-action-primary` 在两种主题下保持同一品牌色相）。验证方式：
+所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` 下轨道、旋钮底板、轨道文案颜色自动翻转（品牌色 `--sn-mp-color-action-primary` 在两种主题下保持同一品牌色相）。验证方式：

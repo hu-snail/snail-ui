@@ -26,7 +26,9 @@ const tapped = ref(0);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="show = true">点图片关闭（close-on-click 默认 true）</SnButton>
+    <SnButton type="primary" block @tap="show = true"
+      >点图片关闭（close-on-click 默认 true）</SnButton
+    >
     <text class="sn-demo__meta">已点图片 {{ tapped }} 次（close 事件回调计数）</text>
 
     <SnCurtain

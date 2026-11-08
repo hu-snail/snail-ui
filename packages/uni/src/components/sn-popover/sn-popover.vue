@@ -27,14 +27,47 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
- * ## Click-outside close (transparent mask)
+ * ## Click-outside close (AUI-OPT-07 — mask-free, tooltip parity)
  *
- * wot-ui closes the popover on a tap outside the bubble. Miniprogram has no
- * `document` to hang a global listener on, so the mechanism here is a
- * transparent fixed mask (z-index 499 — below the bubble's 500, above the
- * page) mounted exactly while the bubble is; tapping it calls `close()`.
- * Consequence: while a bubble is shown, the first tap anywhere else —
- * including on another popover's trigger — closes this one first.
+ * uni-app components cannot listen to taps outside their own subtree, so the
+ * close rides the shared outside-close queue: while mounted (and
+ * `closeOnClickOutside` is on, the default) the bubble registers an
+ * idempotent close in `utils/outside-close.ts`, and the page root dispatches
+ * it —
+ *
+ *     const { closeOutside } = useQueue();
+ *     <view @tap="closeOutside"> … page … </view>
+ *
+ * A tap outside the bubble then closes it AND still reaches whatever button
+ * sits under it — no full-viewport mask swallowed the gesture, so switching
+ * to a sibling trigger (or any other control) is one tap, not two. The
+ * trigger and the bubble bind `@tap.stop` so taps on them never reach the
+ * dispatcher. Pages that never bind the handler simply never outside-close;
+ * `closeOnClickOutside: false` unregisters the close while mounted.
+ *
+ * ## Auto height (AUI-OPT-07)
+ *
+ * The bubble sizes to its content and never clips it: the pop is `height: auto`
+ * with no cap, menu labels wrap instead of forcing one line, and no glyph lives
+ * in a fixed square whose geometry disagrees with the icon's own scale — the
+ * row glyph and the close glyph are sized by `--sn-mp-icon-size-*` tokens, so a
+ * larger icon or a long label grows the bubble instead of overflowing it.
+ *
+ * ## Menu row icons (additive, AUI-OPT-07, AGENTS.md §112.3a)
+ *
+ * A `menu` row resolves its glyph from four sources, highest precedence first:
+ *
+ *   - `iconData`  — an inline `IconData` object; no registration step needed
+ *   - `iconUrl`   — an image address, rendered as `<image>`
+ *   - `icon`      — a name resolved by SnIcon (registry → built-in catalogue →
+ *                   `prefix:rest` provider)
+ *   - `iconClass` — wd-parity legacy field: a name, or an image address when
+ *                   the value looks like one (`http` / `data` / `//` / `/`)
+ *
+ * The glyph scale is `--sn-popover-menu-icon-size` (wd
+ * `--wot-popover-menu-icon-size` parity), defaulting to the `medium` icon tier;
+ * the close glyph follows `--sn-popover-close-icon-size`, defaulting to
+ * `small`. Both are published on the bubble, overridable via `custom-style`.
  *
  * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
  *
@@ -60,13 +93,27 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, markRaw, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import {
+  closeOutside,
+  registerOutsideClosable,
+  unregisterOutsideClosable,
+} from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
 
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
@@ -96,7 +143,27 @@ type PopoverOffset = number | number[] | { x?: number; y?: number };
 export interface SnPopoverMenuItem {
   /** Row label. */
   content?: string;
-  /** `sn-icon` registry name, or an image URL. */
+  /**
+   * Row glyph as inline SVG data (additive, AUI-OPT-07). Highest precedence —
+   * pass a built-in set object and no registration step is needed.
+   */
+  iconData?: IconData;
+  /**
+   * Row glyph as an image address (additive, AUI-OPT-07), rendered as
+   * `<image>`. Beats `icon` / `iconClass`, loses to `iconData`.
+   */
+  iconUrl?: string;
+  /**
+   * Row glyph as a name (additive, AUI-OPT-07), resolved through SnIcon:
+   * registry (`registerSnIcons`) → built-in catalogue → `prefix:rest`
+   * provider. Beats `iconClass`, loses to the two sources above.
+   */
+  icon?: string;
+  /**
+   * wd-parity legacy glyph field: an SnIcon registry name, or an image address
+   * when the value looks like one (`http` / `data` / `//` / `/` / `./`).
+   * Lowest precedence of the four glyph sources.
+   */
   iconClass?: string;
   /** Disable the row — taps are ignored. */
   disabled?: boolean;
@@ -104,6 +171,14 @@ export interface SnPopoverMenuItem {
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
+
+/**
+ * Menu / close glyph scale. Published as component variables on the bubble so
+ * a consumer can resize every glyph through `custom-style` (wd
+ * `--wot-popover-menu-icon-size` / `--wot-popover-close-icon-size` parity).
+ */
+const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
+const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
 
 const props = withDefaults(
   defineProps<{
@@ -123,6 +198,13 @@ const props = withDefaults(
     disabled?: boolean;
     /** Render a close button inside the bubble. */
     showClose?: boolean;
+    /**
+     * Close the bubble when the user taps outside it (additive, AUI-OPT-07).
+     * The close rides the page-root `closeOutside` channel and never swallows
+     * the tap — the same gesture still lands on whatever button sits under
+     * it. Pass `false` to unregister the outside-close while mounted.
+     */
+    closeOnClickOutside?: boolean;
     /** Extra class on the root node. */
     customClass?: string;
     /** Custom inline style for the root node. */
@@ -146,6 +228,7 @@ const props = withDefaults(
     visibleArrow: true,
     disabled: false,
     showClose: false,
+    closeOnClickOutside: true,
     customClass: '',
     customStyle: '',
     customArrow: '',
@@ -242,10 +325,14 @@ function open(): void {
   if (!props.modelValue) void enter();
 }
 
-/** Hide the bubble and notify the consumer. */
+/** Hide the bubble and notify the consumer. Idempotent (outside-close contract). */
 function close(): void {
+  // Idempotent: a second close gesture (the mask plus the page-root queue, a
+  // close button while the fade-out leg runs) must not replay the event pair.
+  // A bubble that is neither shown nor mounted is already fully closed.
+  const wasUp = props.modelValue || isShown.value || isMounted.value;
   emit('update:modelValue', false);
-  if (props.modelValue) leave();
+  if (wasUp) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -255,10 +342,48 @@ function updatePosition(): void {
 
 defineExpose({ open, close, updatePosition });
 
+// Outside-close registration (tooltip parity — the transparent mask is gone):
+// while `closeOnClickOutside` is on, the mounted bubble registers an
+// idempotent close in the queue; a page-root `@tap="closeOutside"` closes it
+// WITHOUT swallowing the tap, so the very same gesture still reaches whatever
+// button sits under it. `false` unregisters, keeping the bubble open until
+// its own trigger or close button handles it.
+let outsideRegistered = false;
+
+function syncOutsideRegistration(): void {
+  if (props.closeOnClickOutside && !outsideRegistered) {
+    outsideRegistered = true;
+    registerOutsideClosable(instanceId, () => {
+      // Idempotent: an already-closed bubble must not emit another close.
+      if (isShown.value || isMounted.value) close();
+    });
+  } else if (!props.closeOnClickOutside && outsideRegistered) {
+    outsideRegistered = false;
+    unregisterOutsideClosable(instanceId);
+  }
+}
+
+onMounted(syncOutsideRegistration);
+watch(() => props.closeOnClickOutside, syncOutsideRegistration);
+onBeforeUnmount(() => {
+  if (outsideRegistered) unregisterOutsideClosable(instanceId);
+});
+
 function onTriggerTap(): void {
   if (props.disabled) return;
-  if (props.modelValue) close();
-  else open();
+  // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
+  // bubble (consumer ignoring the v-model event) must still close on the
+  // second trigger tap.
+  if (isShown.value) {
+    close();
+    return;
+  }
+  // One-gesture switching: the trigger stops propagation (it must not close
+  // its own bubble through the page root), so it dispatches the outside-close
+  // itself before opening — every other overlay on the page folds in the same
+  // tap that opens this one.
+  closeOutside();
+  open();
 }
 
 function onMenuTap(item: SnPopoverMenuItem, index: number): void {
@@ -288,16 +413,30 @@ const menuItems = computed<SnPopoverMenuItem[]>(() =>
 /** Plain text body for `normal` mode. */
 const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
-/** Looks like an image source rather than a registry icon name. */
+/** Looks like an image source rather than an icon name. */
 function isImageSource(value: string): boolean {
   return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
-/** Registry icon data for a menu row, or `null` when it is an image URL. */
-function resolveRowIcon(icon: string | undefined): IconData | null {
-  if (!icon || isImageSource(icon)) return null;
-  const data = resolveIconByName(icon);
-  return data ? markRaw(data) : null;
+/** Which glyph source a `menu` row uses (precedence: see the header). */
+function rowIconSource(item: SnPopoverMenuItem): 'data' | 'url' | 'name' | 'none' {
+  if (item.iconData !== undefined) return 'data';
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
+  if (item.icon !== undefined && item.icon !== '') return 'name';
+  const legacy = item.iconClass;
+  if (legacy === undefined || legacy === '') return 'none';
+  return isImageSource(legacy) ? 'url' : 'name';
+}
+
+/** Image address of a `url` row — `iconUrl`, or the URL-shaped legacy field. */
+function rowIconUrl(item: SnPopoverMenuItem): string {
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
+  return item.iconClass ?? '';
+}
+
+/** Glyph name of a `name` row — `icon`, or the legacy field's name form. */
+function rowIconName(item: SnPopoverMenuItem): string {
+  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
 }
 
 const rootClass = computed(() => [
@@ -329,14 +468,12 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       role="button"
       :aria-expanded="isShown ? 'true' : 'false'"
       :aria-disabled="props.disabled ? 'true' : undefined"
-      @tap="onTriggerTap"
+      @tap.stop="onTriggerTap"
     >
       <slot />
     </view>
 
-    <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
-    <view v-if="isMounted" class="sn-popover__mask" aria-hidden="true" @tap="close" />
-    <view v-if="isMounted" :class="popClass" role="dialog">
+    <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
       <view v-if="mode === 'menu'" class="sn-popover__menu">
@@ -350,15 +487,26 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
             :aria-disabled="item.disabled ? 'true' : 'false'"
             @tap="onMenuTap(item, index)"
           >
-            <image
-              v-if="item.iconClass && isImageSource(item.iconClass)"
+            <!-- Row glyph precedence: inline data > image address > name. -->
+            <SnIcon
+              v-if="rowIconSource(item) === 'data'"
               class="sn-popover__menu-icon"
-              :src="item.iconClass"
-              mode="aspectFit"
+              :icon="item.iconData"
+              :size="MENU_ICON_SIZE"
             />
-            <view v-else-if="resolveRowIcon(item.iconClass)" class="sn-popover__menu-icon">
-              <SnIcon :icon="resolveRowIcon(item.iconClass)!" :size="32" />
-            </view>
+            <image
+              v-else-if="rowIconSource(item) === 'url'"
+              class="sn-popover__menu-icon"
+              :src="rowIconUrl(item)"
+              mode="aspectFit"
+              aria-hidden="true"
+            />
+            <SnIcon
+              v-else-if="rowIconSource(item) === 'name'"
+              class="sn-popover__menu-icon"
+              :icon="rowIconName(item)"
+              :size="MENU_ICON_SIZE"
+            />
             <text class="sn-popover__menu-text">{{ item.content }}</text>
           </view>
         </slot>
@@ -377,7 +525,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
         aria-label="close"
         @tap="close"
       >
-        <SnIcon :icon="XIcon" :size="24" />
+        <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" />
       </view>
     </view>
   </view>
@@ -393,7 +541,11 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   box-sizing: border-box;
   /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
+  --sn-popover-border: var(--sn-mp-color-border-subtle);
   --sn-popover-color: var(--sn-mp-color-text-primary);
+  /* Glyph scale (see header): tier tokens, overridable via `custom-style`. */
+  --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
+  --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
 }
 
 .sn-popover__trigger {
@@ -408,10 +560,20 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   display: flex;
   align-items: flex-start;
   gap: var(--sn-mp-spacing-2);
+  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
+   * the trigger-sized root and `left: 50%` leaves only half of it available.
+   * `max-content` grows past that cap; `max-width` still bounds long text. */
+  width: max-content;
+  /* Auto height (AUI-OPT-07): the bubble grows with its content and never
+   * clips it — labels wrap and glyph boxes follow their tokens (no fixed
+   * square disagrees with the icon scale). */
+  height: auto;
   min-width: 160rpx;
-  max-width: 480rpx;
+  /* Never wider than the viewport: the bubble is centered on the trigger,
+   * so an unclamped width overflows the screen near either edge. */
+  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-popover-bg);
   color: var(--sn-popover-color);
@@ -428,23 +590,6 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   pointer-events: auto;
 }
 
-/* Outside tap catcher — invisible, full viewport, one level under the
- * bubble. Inert during the fade legs so taps fall through to the page. */
-.sn-popover__mask {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 499;
-  background-color: transparent;
-  pointer-events: none;
-}
-
-.sn-popover--shown .sn-popover__mask {
-  pointer-events: auto;
-}
-
 .sn-popover__body {
   display: block;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
@@ -458,8 +603,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  flex: 0 0 auto;
+  width: var(--sn-popover-close-icon-size);
+  height: var(--sn-popover-close-icon-size);
   margin: var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-secondary);
 }
@@ -490,18 +636,26 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   color: var(--sn-mp-color-text-disabled);
 }
 
+/* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
+ * so a bigger glyph or a longer label grows the bubble instead of overflowing
+ * it (auto height, AUI-OPT-07). */
 .sn-popover__menu-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  flex: 0 0 auto;
+  width: var(--sn-popover-menu-icon-size);
+  height: var(--sn-popover-menu-icon-size);
   color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-popover__menu-text {
   display: block;
-  white-space: nowrap;
+  /* Long labels wrap inside the bubble's max-width instead of forcing one
+   * line and spilling out of the pop: flex + min-width let the text shrink
+   * below its max-content width. */
+  flex: 1;
+  min-width: 0;
 }
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
@@ -510,10 +664,16 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   position: absolute;
   width: 16rpx;
   height: 16rpx;
-  box-sizing: border-box;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
   background-color: var(--sn-popover-bg);
+  /* Outline the diamond so the outside half reads against the page — a bare
+   * white diamond vanishes on an elevated (white) host surface, and the half
+   * inside the pop merges with the bubble fill either way. The border shares
+   * the pop's border token, so the arrow line continues the bubble edge. */
+  border: 2rpx solid var(--sn-popover-border);
+  border-bottom-color: transparent;
+  border-right-color: transparent;
   transform: rotate(45deg);
+  pointer-events: none;
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
@@ -522,7 +682,12 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   bottom: 100%;
   left: 50%;
   margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(calc(-50% + var(--sn-popover-offset-x)));
+  /* True center: the pop center is pinned to the root center at any width
+   * (stretch + auto margins collapse to 0 once max-content outgrows the
+   * trigger, walking the pop — and the arrow's 50% — off the trigger).
+   * max-content is bounded by the viewport clamp, so a centered pop never
+   * crosses the screen edge by itself; offset-x rides the same transform. */
+  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
@@ -543,7 +708,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: 100%;
   left: 50%;
   margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(calc(-50% + var(--sn-popover-offset-x)));
+  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
@@ -606,6 +771,11 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
   bottom: -6rpx;
+  /* Points up: the outside half is the bottom-right of the rotated square. */
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-bottom-color: var(--sn-popover-border);
+  border-right-color: var(--sn-popover-border);
 }
 .sn-popover--top .sn-popover__arrow {
   left: calc(50% - 8rpx);
@@ -621,6 +791,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
   top: -6rpx;
+  /* Points down: the outside half is the top-left of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-left-color: var(--sn-popover-border);
 }
 .sn-popover--bottom .sn-popover__arrow {
   left: calc(50% - 8rpx);
@@ -636,6 +809,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
   right: -6rpx;
+  /* Points left: the outside half is the right edge of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-left-color: transparent;
+  border-right-color: var(--sn-popover-border);
 }
 .sn-popover--left .sn-popover__arrow {
   top: calc(50% - 8rpx);
@@ -651,6 +828,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
   left: -6rpx;
+  /* Points right: the outside half is the left edge of the rotated square. */
+  border-top-color: var(--sn-popover-border);
+  border-right-color: transparent;
+  border-left-color: var(--sn-popover-border);
 }
 .sn-popover--right .sn-popover__arrow {
   top: calc(50% - 8rpx);

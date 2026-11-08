@@ -2,8 +2,10 @@ import { defineConfig } from 'vitepress';
 import { fileURLToPath, URL } from 'node:url';
 import type { Options as MiniSearchOptions } from 'minisearch';
 import { rawDocSource } from './utils/raw-doc-source';
+import { docsSearchIndexPlugin } from './utils/docs-search-index-plugin';
 import { demoGrid } from './utils/demo-grid';
 import { EDIT_BASE } from './utils/edit-link';
+import { rpxTransform } from './utils/rpx-transform';
 
 /**
  * uni-demo 部署站（docs 预览 iframe 的目标，见 utils/uni-demo-base.ts）。
@@ -18,8 +20,7 @@ const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.git
  * 本地联调：UNI_TEMPLATES_PREVIEW_BASE=http://localhost:5174 pnpm dev
  */
 const UNI_TEMPLATES_BASE =
-  process.env.UNI_TEMPLATES_PREVIEW_BASE ??
-  'https://hu-snail.github.io/snail-ui/uni-templates/';
+  process.env.UNI_TEMPLATES_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/uni-templates/';
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -40,12 +41,40 @@ const nav = [
   { text: '组件 · Web', link: '/components/web/button' },
   { text: '组件 · uni-app', link: '/components/uni/button' },
   { text: '风格包', link: '/style-packs/overview' },
-  { text: '主题', link: '/theme/overview' },
+  // 主题入口直达编辑器（可视化调参 + Web / uni 双端实时预览），
+  // 与 .vitepress/config-nav.ts 的 nav 保持一致（那才是自定义导航的数据源）。
+  { text: '主题', link: '/theme/editor' },
   { text: 'AI 生态', link: '/ai/overview' },
+  { text: '生态插件', link: '/ecosystem/overview' },
+  { text: 'Echarts图表', link: '/echarts/overview' },
   { text: '模板', link: '/templates/overview' },
 ];
 
-const sidebar = {
+/**
+ * 侧栏组可折叠（展开/收起）。
+ *
+ * VitePress 只在分组项带有 `collapsed` 字段时才渲染收展 caret；给每个带
+ * 子项的分组补 `collapsed: false`（默认展开，点击 caret 收起）。递归处理，
+ * 深层子分组同样获得收展能力。
+ */
+function withCollapsibleGroups<T>(map: Record<string, T>): Record<string, T> {
+  const walk = (items: Array<Record<string, unknown>>): void => {
+    for (const item of items) {
+      const children = item['items'];
+      if (Array.isArray(children) && children.length > 0) {
+        item['collapsed'] = false;
+        walk(children as Array<Record<string, unknown>>);
+      }
+    }
+  };
+  for (const key of Object.keys(map)) {
+    const groups = map[key];
+    if (Array.isArray(groups)) walk(groups as Array<Record<string, unknown>>);
+  }
+  return map;
+}
+
+const sidebar = withCollapsibleGroups({
   '/guide/': [
     {
       text: '快速开始',
@@ -113,6 +142,7 @@ const sidebar = {
         { text: 'Radio 单选框', link: '/components/web/radio' },
         { text: 'Switch 开关', link: '/components/web/switch' },
         { text: 'Slider 滑块', link: '/components/web/slider' },
+        { text: 'SliderBar 胶囊滑条', link: '/components/web/slider-bar' },
         { text: 'Rate 评分', link: '/components/web/rate' },
         { text: 'Form 表单', link: '/components/web/form' },
         { text: 'Transfer 穿梭框', link: '/components/web/transfer' },
@@ -143,6 +173,7 @@ const sidebar = {
         { text: 'Affix 固钉', link: '/components/web/affix' },
         { text: 'Anchor 锚点', link: '/components/web/anchor' },
         { text: 'BackTop 回到顶部', link: '/components/web/back-top' },
+        { text: 'FloatingToc 悬浮目录', link: '/components/web/floating-toc' },
         { text: 'FloatButton 悬浮按钮', link: '/components/web/float-button' },
         { text: 'Pagination 分页', link: '/components/web/pagination' },
         { text: 'PageHeader 页头', link: '/components/web/page-header' },
@@ -222,6 +253,7 @@ const sidebar = {
         { text: 'sn-tag 标签'.trim(), link: '/components/uni/tag' },
         { text: 'sn-badge 徽标'.trim(), link: '/components/uni/badge' },
         { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
+        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
       ],
     },
     {
@@ -251,8 +283,10 @@ const sidebar = {
         { text: 'sn-form 表单'.trim(), link: '/components/uni/form' },
         { text: 'sn-input 输入框'.trim(), link: '/components/uni/input' },
         { text: 'sn-textarea 文本域'.trim(), link: '/components/uni/textarea' },
-        { text: 'sn-password-input 密码输入框'.trim(), link: '/components/uni/password-input' },
+        { text: 'sn-code-input 验证码输入框'.trim(), link: '/components/uni/code-input' },
         { text: 'sn-keyboard 虚拟键盘'.trim(), link: '/components/uni/keyboard' },
+        { text: 'sn-keyboard-panel 键盘面板'.trim(), link: '/components/uni/keyboard-panel' },
+        { text: 'sn-plate-input 车牌输入框'.trim(), link: '/components/uni/plate-input' },
         { text: 'sn-input-number 计数器'.trim(), link: '/components/uni/input-number' },
         { text: 'sn-search 搜索框'.trim(), link: '/components/uni/search' },
         { text: 'sn-checkbox 复选框'.trim(), link: '/components/uni/checkbox' },
@@ -266,6 +300,7 @@ const sidebar = {
         { text: 'sn-cascader 级联选择器'.trim(), link: '/components/uni/cascader' },
         { text: 'sn-calendar 日历选择器'.trim(), link: '/components/uni/calendar' },
         { text: 'sn-calendar-view 日历面板'.trim(), link: '/components/uni/calendar-view' },
+        { text: 'sn-date-strip 日期条'.trim(), link: '/components/uni/date-strip' },
         { text: 'sn-datetime-picker 时间选择器'.trim(), link: '/components/uni/datetime-picker' },
         {
           text: 'sn-datetime-picker-view 时间选择器视图'.trim(),
@@ -304,6 +339,7 @@ const sidebar = {
       text: 'Display 展示组件',
       items: [
         { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
+        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
         { text: 'sn-card 卡片'.trim(), link: '/components/uni/card' },
         { text: 'sn-img 图片'.trim(), link: '/components/uni/img' },
         { text: 'sn-swiper 轮播'.trim(), link: '/components/uni/swiper' },
@@ -317,6 +353,7 @@ const sidebar = {
         { text: 'sn-qr-code 二维码'.trim(), link: '/components/uni/qr-code' },
         { text: 'sn-table 表格'.trim(), link: '/components/uni/table' },
         { text: 'sn-rich-text 富文本'.trim(), link: '/components/uni/rich-text' },
+        { text: 'sn-waterfall 瀑布流'.trim(), link: '/components/uni/waterfall' },
       ],
     },
     {
@@ -335,6 +372,7 @@ const sidebar = {
     {
       text: '主题与 Token',
       items: [
+        { text: '主题编辑器', link: '/theme/editor' },
         { text: 'Token 总览', link: '/theme/overview' },
         { text: 'Theme（颜色）', link: '/theme/theme' },
         { text: 'Style（形状）', link: '/theme/style' },
@@ -383,7 +421,39 @@ const sidebar = {
       ],
     },
   ],
-};
+  // 生态插件 — 独立于核心组件库的官方插件包，每个插件一页（文档 + 演示）。
+  '/ecosystem/': [
+    {
+      text: '概览',
+      items: [{ text: '生态插件总览', link: '/ecosystem/overview' }],
+    },
+    {
+      // 每种布局风格 = 独立一页（菜单里各占一项）。
+      text: '布局',
+      items: [
+        { text: '中后台布局 @snui/admin-layout', link: '/ecosystem/plugins/admin-layout' },
+        { text: 'standard 四形态壳', link: '/ecosystem/plugins/admin-layout/standard' },
+        { text: 'classic 经典企业后台', link: '/ecosystem/plugins/admin-layout/classic' },
+        { text: 'aurora 通屏背景', link: '/ecosystem/plugins/admin-layout/aurora' },
+        { text: 'workbench 工作台', link: '/ecosystem/plugins/admin-layout/workbench' },
+      ],
+    },
+  ],
+  '/echarts/': [
+    {
+      text: 'Echarts 图表',
+      items: [
+        { text: '图表总览', link: '/echarts/overview' },
+        { text: '使用文档', link: '/echarts/usage' },
+      ],
+    },
+    { text: '折线图', link: '/echarts/line' },
+    { text: '面积图', link: '/echarts/area' },
+    { text: '柱状图', link: '/echarts/bar' },
+    { text: '饼图', link: '/echarts/pie' },
+    { text: '仪表盘', link: '/echarts/gauge' },
+  ],
+});
 
 const enNav = [
   { text: 'Guide', link: '/en/guide/web/intro' },
@@ -392,10 +462,12 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
+  { text: 'Ecosystem', link: '/en/ecosystem/overview' },
+  { text: 'ECharts', link: '/en/echarts/overview' },
   { text: 'Templates', link: '/en/templates/overview' },
 ];
 
-const enSidebar = {
+const enSidebar = withCollapsibleGroups({
   '/en/guide/': [
     {
       text: 'Getting started',
@@ -456,6 +528,7 @@ const enSidebar = {
         { text: 'Radio', link: '/en/components/web/radio' },
         { text: 'Switch', link: '/en/components/web/switch' },
         { text: 'Slider', link: '/en/components/web/slider' },
+        { text: 'SliderBar', link: '/en/components/web/slider-bar' },
         { text: 'Rate', link: '/en/components/web/rate' },
         { text: 'Form', link: '/en/components/web/form' },
         { text: 'Transfer', link: '/en/components/web/transfer' },
@@ -481,6 +554,7 @@ const enSidebar = {
         { text: 'Pagination', link: '/en/components/web/pagination' },
         { text: 'PageHeader', link: '/en/components/web/page-header' },
         { text: 'FloatButton', link: '/en/components/web/float-button' },
+        { text: 'FloatingToc', link: '/en/components/web/floating-toc' },
       ],
     },
     {
@@ -551,6 +625,7 @@ const enSidebar = {
         { text: 'sn-tag', link: '/en/components/uni/tag' },
         { text: 'sn-badge', link: '/en/components/uni/badge' },
         { text: 'sn-avatar', link: '/en/components/uni/avatar' },
+        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
       ],
     },
     {
@@ -580,8 +655,10 @@ const enSidebar = {
         { text: 'sn-form', link: '/en/components/uni/form' },
         { text: 'sn-input', link: '/en/components/uni/input' },
         { text: 'sn-textarea', link: '/en/components/uni/textarea' },
-        { text: 'sn-password-input', link: '/en/components/uni/password-input' },
+        { text: 'sn-code-input', link: '/en/components/uni/code-input' },
         { text: 'sn-keyboard', link: '/en/components/uni/keyboard' },
+        { text: 'sn-keyboard-panel', link: '/en/components/uni/keyboard-panel' },
+        { text: 'sn-plate-input', link: '/en/components/uni/plate-input' },
         { text: 'sn-input-number', link: '/en/components/uni/input-number' },
         { text: 'sn-search', link: '/en/components/uni/search' },
         { text: 'sn-checkbox', link: '/en/components/uni/checkbox' },
@@ -595,6 +672,7 @@ const enSidebar = {
         { text: 'sn-cascader', link: '/en/components/uni/cascader' },
         { text: 'sn-calendar', link: '/en/components/uni/calendar' },
         { text: 'sn-calendar-view', link: '/en/components/uni/calendar-view' },
+        { text: 'sn-date-strip', link: '/en/components/uni/date-strip' },
         { text: 'sn-datetime-picker', link: '/en/components/uni/datetime-picker' },
         { text: 'sn-datetime-picker-view', link: '/en/components/uni/datetime-picker-view' },
         { text: 'sn-upload', link: '/en/components/uni/upload' },
@@ -630,6 +708,7 @@ const enSidebar = {
       text: 'Display',
       items: [
         { text: 'sn-avatar', link: '/en/components/uni/avatar' },
+        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
         { text: 'sn-card', link: '/en/components/uni/card' },
         { text: 'sn-img', link: '/en/components/uni/img' },
         { text: 'sn-swiper', link: '/en/components/uni/swiper' },
@@ -643,6 +722,7 @@ const enSidebar = {
         { text: 'sn-qr-code', link: '/en/components/uni/qr-code' },
         { text: 'sn-table', link: '/en/components/uni/table' },
         { text: 'sn-rich-text', link: '/en/components/uni/rich-text' },
+        { text: 'sn-waterfall', link: '/en/components/uni/waterfall' },
       ],
     },
     {
@@ -661,6 +741,7 @@ const enSidebar = {
     {
       text: 'Theme & Tokens',
       items: [
+        { text: 'Theme editor', link: '/en/theme/editor' },
         { text: 'Tokens overview', link: '/en/theme/overview' },
         { text: 'Theme (color)', link: '/en/theme/theme' },
         { text: 'Style (shape)', link: '/en/theme/style' },
@@ -706,7 +787,49 @@ const enSidebar = {
       ],
     },
   ],
-};
+  // Ecosystem plugins — official plugin packages outside the core component
+  // library, one page per plugin (docs + live demos).
+  '/en/ecosystem/': [
+    {
+      text: 'Overview',
+      items: [{ text: 'Ecosystem overview', link: '/en/ecosystem/overview' }],
+    },
+    {
+      text: 'Layout',
+      items: [
+        // One page (and one sidebar entry) per layout style.
+        { text: 'Admin layout @snui/admin-layout', link: '/en/ecosystem/plugins/admin-layout' },
+        {
+          text: 'standard — four-shape shell',
+          link: '/en/ecosystem/plugins/admin-layout/standard',
+        },
+        { text: 'classic — enterprise admin', link: '/en/ecosystem/plugins/admin-layout/classic' },
+        {
+          text: 'aurora — full-bleed background',
+          link: '/en/ecosystem/plugins/admin-layout/aurora',
+        },
+        {
+          text: 'workbench — shared dashboard',
+          link: '/en/ecosystem/plugins/admin-layout/workbench',
+        },
+      ],
+    },
+  ],
+  '/en/echarts/': [
+    {
+      text: 'ECharts',
+      items: [
+        { text: 'Overview', link: '/en/echarts/overview' },
+        { text: 'Usage', link: '/en/echarts/usage' },
+      ],
+    },
+    { text: 'Line', link: '/en/echarts/line' },
+    { text: 'Area', link: '/en/echarts/area' },
+    { text: 'Bar', link: '/en/echarts/bar' },
+    { text: 'Pie', link: '/en/echarts/pie' },
+    { text: 'Gauge', link: '/en/echarts/gauge' },
+  ],
+});
 
 export default defineConfig({
   title: 'snail-aui — AI-Native UI 框架生态',
@@ -847,6 +970,16 @@ export default defineConfig({
 
   vite: {
     build: { target: 'es2022' },
+    // uni 端组件的 CSS 用 rpx 写尺寸，浏览器不认这个单位（整条声明会被丢弃，
+    // 于是按钮塌成纯文字、卡片没有内边距）。换算只发生在文档站编译期，
+    // 命中范围见 utils/rpx-transform.ts（@snui/uni dist + packages/uni/src）。
+    plugins: [
+      rpxTransform(),
+      // 文档检索：构建期扫描 md → 虚拟模块交给客户端检索引擎（SnSearchPanel）。
+      // 这里的路径只是兜底：dev 下 VitePress 会先打包 config，`import.meta.url`
+      // 指向打包产物；插件以 vite 的 `root`（= srcDir）为准。
+      docsSearchIndexPlugin(fileURLToPath(new URL('.', import.meta.url))),
+    ],
     define: {
       // 构建期注入 uni-demo / uni-templates 部署站地址（hash 路由），客户端代码不读 process.env。
       __UNI_DEMO_BASE__: JSON.stringify(UNI_DEMO_BASE),
@@ -855,12 +988,19 @@ export default defineConfig({
     resolve: {
       // Web demo 源直接引用包源码，vite + @vitejs/plugin-vue 按请求重编译 SFC
       // 并注入 scopeId，保证 scoped CSS 命中（dist 产物仍是发布事实源）。
-      // uni demo 不再由 docs 编译 —— 其源码单源于 apps/uni-demo，预览走部署站
-      // iframe（ADR-0005），故 @snui/uni-src 别名与 rpx 转换插件已退役。
+      //
+      // `@snui/uni-src`：主题编辑器（/theme/editor）的 uni 手机预览要渲染真实
+      // uni 组件。包根 @snui/uni 指向已编译 dist，其 SFC 的 scoped hash 与本站
+      // 重新编译出的不一致，样式会整体丢失；源码路径由本站同一套 vite +
+      // @vue/compiler-sfc 编译（与 uni-demo 的构建方式一致），组件内部的相对
+      // 导入（sn-icon 等）也解析到同一份源码，模块实例唯一。
+      // 组件 CSS 使用 rpx，由预览组件在运行时按 375 逻辑宽换算成 px。
+      // （uni 组件页的部署站 iframe 预览仍走 ADR-0005，不受影响。）
       alias: {
         '@snui/vue-web-src': fileURLToPath(
           new URL('../../../packages/vue-web/src', import.meta.url),
         ),
+        '@snui/uni-src': fileURLToPath(new URL('../../../packages/uni/src', import.meta.url)),
         '@snui/templates-src': fileURLToPath(
           new URL('../../../packages/templates/src', import.meta.url),
         ),
@@ -891,6 +1031,18 @@ export default defineConfig({
   },
 
   head: [
+    // 文档页（非首页）默认悬浮：首帧渲染前挂 body.sn-nav-floating，
+    // 消除 hydration 前闪现默认通栏；首页保持滚动判断（SnDocsNav 接管）。
+    [
+      'script',
+      {},
+      `if (!/^\\/(en\\/?)?$/.test(location.pathname)) {
+   var add = function () { document.body.classList.add('sn-nav-floating'); };
+   document.body ? add() : document.addEventListener('DOMContentLoaded', add);
+ }`,
+    ],
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     [

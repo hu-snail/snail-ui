@@ -51,10 +51,17 @@ export const enUS: SnLocale = {
     placeholder: 'Select date',
     rangeStartPlaceholder: 'Start date',
     rangeEndPlaceholder: 'End date',
+    monthRangeStartPlaceholder: 'Start month',
+    monthRangeEndPlaceholder: 'End month',
     to: 'to',
     startTime: 'Start time',
     endTime: 'End time',
     confirm: 'Confirm',
+    clear: 'Clear',
+    now: 'Now',
+    monthRangeLabel: 'Month range',
+    yearColumnLabel: 'Year',
+    monthColumnLabel: 'Month',
     selectTime: 'Select time',
     today: 'Today',
     weekTitle: 'Week {w}, {y}',
@@ -100,6 +107,9 @@ export const enUS: SnLocale = {
   Tree: {
     collapse: 'Collapse',
     expand: 'Expand',
+  },
+  Select: {
+    noOptions: 'No options',
   },
   Empty: {
     description: 'No data',

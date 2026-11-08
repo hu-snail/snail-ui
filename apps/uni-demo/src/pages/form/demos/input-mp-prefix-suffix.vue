@@ -1,11 +1,11 @@
 <script setup lang="ts">
-/** Demo: sn-input — prefixIcon / suffixIcon / iconPrefix / iconSuffix + cssIcon mode. */
-import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+/** Demo: sn-input — prefixIcon / suffixIcon 名称模式 + cssIcon class 模式。 */
 import { ref } from 'vue';
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Search, User, ChevronRight } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import { ChevronRight, Search, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
-registerSnIcons({ Search, User, ChevronRight });
+registerSnIcons({ ChevronRight, Search, User });
 
 const q = ref('');
 const handle = ref('');
@@ -15,12 +15,12 @@ const cssClick = ref('');
 
 <template>
   <view class="sn-input-demo">
-    <SnInput v-model="q" placeholder="Search…" prefix-icon="Search" clearable />
-    <SnInput v-model="handle" placeholder="@username" prefix-icon="User" />
+    <SnInput v-model="q" placeholder="搜索" prefix-icon="Search" clearable />
+    <SnInput v-model="handle" placeholder="用户名" prefix-icon="User" />
     <SnInput v-model="url" placeholder="https://" suffix-icon="ChevronRight" />
     <SnInput
       v-model="cssClick"
-      placeholder="CSS-class icon (no registry)"
+      placeholder="cssIcon：class 即图标（尺寸随 --sn-input-icon-size）"
       :prefix-icon="'my-icon-glossary'"
       css-icon
     />
@@ -32,12 +32,12 @@ const cssClick = ref('');
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 600rpx;
 }
+/* css-icon 模式：class 直接挂在图标位上，尺寸对齐输入框图标 token。 */
 :deep(.my-icon-glossary) {
   display: inline-flex;
-  width: 32rpx;
-  height: 32rpx;
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
   background: var(--sn-mp-color-action-primary);
   border-radius: 50%;
 }

@@ -66,12 +66,16 @@ describe('@snui/tokens — Resolver (Cascade)', () => {
         expect(value('--aui-color-border-default')).toBe('#27272a');
         // The accent stays blue in both themes, so text on it stays light.
         expect(value('--aui-color-text-on-primary')).toBe('#ffffff');
+        // Dark keeps the same dark toast plate (platform standard).
+        expect(value('--aui-color-background-inverse')).toBe('rgba(0, 0, 0, 0.75)');
       } else {
         expect(value('--aui-color-text-primary')).toBe('var(--aui-color-gray-950)');
         expect(value('--aui-color-text-secondary')).toBe('var(--aui-color-gray-500)');
         expect(value('--aui-color-background-surface')).toBe('#ffffff');
         expect(value('--aui-color-border-default')).toBe('var(--aui-color-gray-200)');
         expect(value('--aui-color-text-on-primary')).toBe('#ffffff');
+        // The toast plate is a dark translucent surface in BOTH themes.
+        expect(value('--aui-color-background-inverse')).toBe('rgba(0, 0, 0, 0.75)');
       }
     }
   });

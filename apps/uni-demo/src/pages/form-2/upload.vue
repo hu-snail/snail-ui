@@ -7,6 +7,7 @@ import Demo3 from './demos/upload-mp-events-counter.vue';
 import Demo4 from './demos/upload-mp-multiple-source.vue';
 import Demo5 from './demos/upload-mp-preview-custom.vue';
 import Demo6 from './demos/upload-mp-request-method.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -15,60 +16,46 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'上传'" :title-en="'Upload'">
+  <DemoPageShell :title-zh="'上传'" :title-en="'Upload'" :desc="'文件 / 图片上传'" :bg="''">
     <view class="page">
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('before-hooks', 'Before Hooks') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('before-hooks', 'Before Hooks')" badge="before-hooks" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('disabled-status', 'Disabled Status') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('disabled-status', 'Disabled Status')" badge="disabled-status" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('events-counter', 'Events Counter') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('events-counter', 'Events Counter')" badge="events-counter" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('multiple-source', 'Multiple Source') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('multiple-source', 'Multiple Source')" badge="multiple-source" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('preview-custom', 'Preview Custom') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('preview-custom', 'Preview Custom')" badge="preview-custom" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
-      <view class="module demo-glass">
-        <view class="module__head">
-          <text class="module__title">{{ t('request-method', 'Request Method') }}</text>
-        </view>
+      <view class="module">
+        <DemoModuleHead :title="t('request-method', 'Request Method')" badge="request-method" />
         <view class="module__body">
           <Demo6 />
         </view>
@@ -79,25 +66,23 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx;
+  padding: 24rpx 24rpx 48rpx;
 }
 
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
 .module {
   margin-bottom: 24rpx;
-  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
-}
-
-.module__head {
-  padding: 24rpx 24rpx 0;
-}
-
-.module__title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: var(--demo-title);
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
 }
 
 .module__body {
-  padding: 24rpx;
+  padding: 0;
 }
 </style>

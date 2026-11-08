@@ -12,6 +12,11 @@ import SnAffix from './affix/SnAffix.vue';
 import SnAnchor from './anchor/SnAnchor.vue';
 import SnAnchorLink from './anchor/SnAnchorLink.vue';
 import SnBackTop from './back-top/SnBackTop.vue';
+import SnFloatingToc from './floating-toc/SnFloatingToc.vue';
+import SnFloatingTocBar from './floating-toc/SnFloatingTocBar.vue';
+import SnFloatingTocContent from './floating-toc/SnFloatingTocContent.vue';
+import SnFloatingTocItem from './floating-toc/SnFloatingTocItem.vue';
+import SnFloatingTocTrigger from './floating-toc/SnFloatingTocTrigger.vue';
 import SnBreadcrumb from './breadcrumb/SnBreadcrumb.vue';
 import SnBreadcrumbItem from './breadcrumb/SnBreadcrumbItem.vue';
 import SnCard from './card/SnCard.vue';
@@ -31,6 +36,7 @@ import SnRadioButton from './radio/SnRadioButton.vue';
 import SnRadioGroup from './radio/SnRadioGroup.vue';
 import SnSwitch from './switch/SnSwitch.vue';
 import SnSlider from './slider/SnSlider.vue';
+import SnSliderBar from './slider-bar/SnSliderBar.vue';
 import SnRate from './rate/SnRate.vue';
 import SnInputNumber from './input-number/SnInputNumber.vue';
 import SnSelect from './select/SnSelect.vue';
@@ -139,6 +145,11 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnAnchor', component: SnAnchor },
   { name: 'SnAnchorLink', component: SnAnchorLink },
   { name: 'SnBackTop', component: SnBackTop },
+  { name: 'SnFloatingToc', component: SnFloatingToc },
+  { name: 'SnFloatingTocTrigger', component: SnFloatingTocTrigger },
+  { name: 'SnFloatingTocBar', component: SnFloatingTocBar },
+  { name: 'SnFloatingTocContent', component: SnFloatingTocContent },
+  { name: 'SnFloatingTocItem', component: SnFloatingTocItem },
   { name: 'SnBreadcrumb', component: SnBreadcrumb },
   { name: 'SnBreadcrumbItem', component: SnBreadcrumbItem },
   { name: 'SnButton', component: SnButton },
@@ -163,6 +174,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnRadioGroup', component: SnRadioGroup },
   { name: 'SnSwitch', component: SnSwitch },
   { name: 'SnSlider', component: SnSlider },
+  { name: 'SnSliderBar', component: SnSliderBar },
   { name: 'SnRate', component: SnRate },
   { name: 'SnInputNumber', component: SnInputNumber },
   { name: 'SnSelect', component: SnSelect },

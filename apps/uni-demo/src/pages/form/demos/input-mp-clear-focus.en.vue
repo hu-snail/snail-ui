@@ -1,39 +1,34 @@
 <script setup lang="ts">
-/** Demo: sn-input — clear and focus details: clearTrigger / focusWhenClear / focus / placeholderClass / placeholderStyle. */
+/** Demo: sn-input — clear & focus: clearTrigger / focusWhenClear / focus / placeholder customization. */
 import { ref } from 'vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
-const always = ref('The × is always visible here');
-const onFocus = ref('The × only shows while focused');
-const refocus = ref('Re-focuses after clearing');
+const always = ref('Always show ×');
+const onFocus = ref('');
+const refocus = ref('Refocus on clear (or not)');
 const focused = ref('');
 const styled = ref('');
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">clearTrigger="always" (default)</text>
+  <view class="sn-input-demo">
+    <text class="sn-input-demo__caption">clearTrigger="always" (default)</text>
     <SnInput v-model="always" clearable clear-trigger="always" />
 
-    <text class="sn-demo__title">clearTrigger="focus" (only while focused)</text>
-    <SnInput
-      v-model="onFocus"
-      clearable
-      clear-trigger="focus"
-      placeholder="Tap in and the × appears"
-    />
+    <text class="sn-input-demo__caption">clearTrigger="focus" (only while focused)</text>
+    <SnInput v-model="onFocus" clearable clear-trigger="focus" placeholder="Focus me to see ×" />
 
-    <text class="sn-demo__title">focusWhenClear</text>
-    <SnInput v-model="refocus" clearable focus-when-clear placeholder="Re-focus after clearing" />
-    <SnInput v-model="refocus" clearable :focus-when-clear="false" placeholder="Do not re-focus" />
+    <text class="sn-input-demo__caption">focusWhenClear</text>
+    <SnInput v-model="refocus" clearable focus-when-clear placeholder="Refocus after clear" />
+    <SnInput v-model="refocus" clearable :focus-when-clear="false" placeholder="No refocus" />
 
-    <text class="sn-demo__title">focus (focused on mount)</text>
+    <text class="sn-input-demo__caption">focus (autofocus on mount)</text>
     <SnInput v-model="focused" focus placeholder="Focused on mount" />
 
-    <text class="sn-demo__title">placeholderClass + placeholderStyle</text>
+    <text class="sn-input-demo__caption">placeholderClass + placeholderStyle</text>
     <SnInput
       v-model="styled"
-      placeholder-class="sn-demo__placeholder"
+      placeholder-class="sn-input-demo__placeholder"
       placeholder-style="font-style: italic; color: var(--sn-mp-color-feedback-danger);"
       placeholder="Custom placeholder"
     />
@@ -41,13 +36,17 @@ const styled = ref('');
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
-
-.sn-demo__placeholder {
+.sn-input-demo__caption {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-input-demo__placeholder {
   font-size: 26rpx;
   color: var(--sn-mp-color-feedback-warning);
 }

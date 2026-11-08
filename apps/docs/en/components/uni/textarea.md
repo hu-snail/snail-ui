@@ -130,4 +130,4 @@ Cross-end multi-line text input for uni-app (H5 / WeChat MP / App). easycom auto
 
 ## Dark mode
 
-Every color resolves through a `--sn-mp-color-*` token with **no** light-only fallback, so `.sn-theme-dark` (or `page.sn-theme-dark`) flips the background, text, border and placeholder automatically. Verify with sn-config-provider 的 theme 设为 dark:
+Every color resolves through a `--sn-mp-color-*` token with **no** light-only fallback, so `.sn-theme-dark` flips the background, text, border and placeholder automatically. Verify with sn-config-provider 的 theme 设为 dark:

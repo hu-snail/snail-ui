@@ -36,6 +36,14 @@ src（图片）→ alt（失败时）→ text → icon（SVG）→ 字体图标�
 
 <Demo name="avatar-mp-icon-font" description="cssIcon + iconPrefix 字体图标、cssIcon 字符串前缀、mode 裁剪与 customClass / customStyle。" />
 
+## 在线状态与微标头像
+
+`status` 在头像右下角绘制在线（绿）/ 离线（灰）状态点（AUI 追加能力，wd-avatar 没有此概念）；状态会追加到 `aria-label`（读作「AU online」），点本身 `aria-hidden`。
+
+<Demo name="avatar-mp-status" description="online / offline 状态点，以及 sn-badge + sn-avatar 组合出的微标头像（数字角标 / 红点）。" />
+
+微标头像用 [`sn-badge`](/components/uni/badge) 包裹 `sn-avatar`：`:value="99"` 数字角标、`is-dot` 红点。
+
 ## 自动注册（easycom）
 
 ```vue
@@ -50,21 +58,22 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 
 ## Props
 
-| 属性          | 类型                  | 默认值         | 说明                                        |
-| ------------- | --------------------- | -------------- | ------------------------------------------- |
-| `src`         | `string`              | `''`           | 图片地址；失败时按 `alt` → 文字 → 图标 回退 |
-| `text`        | `string`              | `''`           | 文本内容（首字母 / 短标签）                 |
-| `icon`        | `string`              | `''`           | 图标名（经 `registerSnIcons()` 注册）       |
-| `iconPrefix`  | `string`              | `''`           | 字体图标类名前缀，`cssIcon` 开启时使用      |
-| `cssIcon`     | `boolean \| string`   | `false`        | 渲染字体图标；字符串值直接作为 class 前缀   |
-| `size`        | `string \| number`    | `'normal'`     | 预设尺寸或自定义长度；数字按 px             |
-| `shape`       | `'round' \| 'square'` | `'round'`      | 头像形状                                    |
-| `bgColor`     | `string`              | `''`           | 背景色（内联覆盖）                          |
-| `color`       | `string`              | `''`           | 文字 / 图标颜色（内联覆盖）                 |
-| `alt`         | `string`              | `''`           | 图片加载失败时的占位文本                    |
-| `mode`        | `string`              | `'aspectFill'` | 图片填充模式，同 uni-app `<image>` 的 mode  |
-| `customClass` | `string`              | `''`           | 根节点自定义类名                            |
-| `customStyle` | `string`              | `''`           | 根节点自定义 inline style                   |
+| 属性          | 类型                          | 默认值         | 说明                                        |
+| ------------- | ----------------------------- | -------------- | ------------------------------------------- |
+| `src`         | `string`                      | `''`           | 图片地址；失败时按 `alt` → 文字 → 图标 回退 |
+| `text`        | `string`                      | `''`           | 文本内容（首字母 / 短标签）                 |
+| `icon`        | `string`                      | `''`           | 图标名（经 `registerSnIcons()` 注册）       |
+| `iconPrefix`  | `string`                      | `''`           | 字体图标类名前缀，`cssIcon` 开启时使用      |
+| `cssIcon`     | `boolean \| string`           | `false`        | 渲染字体图标；字符串值直接作为 class 前缀   |
+| `size`        | `string \| number`            | `'normal'`     | 预设尺寸或自定义长度；数字按 px             |
+| `shape`       | `'round' \| 'square'`         | `'round'`      | 头像形状                                    |
+| `bgColor`     | `string`                      | `''`           | 背景色（内联覆盖）                          |
+| `color`       | `string`                      | `''`           | 文字 / 图标颜色（内联覆盖）                 |
+| `alt`         | `string`                      | `''`           | 图片加载失败时的占位文本                    |
+| `mode`        | `string`                      | `'aspectFill'` | 图片填充模式，同 uni-app `<image>` 的 mode  |
+| `status`      | `'online' \| 'offline' \| ''` | `''`           | 在线状态点（AUI 追加），追加到 `aria-label` |
+| `customClass` | `string`                      | `''`           | 根节点自定义类名                            |
+| `customStyle` | `string`                      | `''`           | 根节点自定义 inline style                   |
 
 ## Events
 
@@ -108,5 +117,5 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 ## 相关
 
 - Web 端：[`SnAvatar`](/components/web/avatar)
-- 头像叠层：`sn-avatar-group`（待发布）
+- 头像叠层：[`sn-avatar-group`](/components/uni/avatar-group)
 - 角标：[`sn-badge`](/components/uni/badge)

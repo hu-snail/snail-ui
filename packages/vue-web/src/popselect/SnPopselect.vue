@@ -592,12 +592,6 @@ async function recompute(): Promise<void> {
 
 /* Reposition on show and on scroll/resize while open. */
 let resizeObserver: ResizeObserver | null = null;
- /* Scroll (capture — any container) and resize both land here. Recomputes are
-  * coalesced to one per animation frame so a scroll burst does not run the
-  * measure-and-write positioning pass per event. Declared above the watcher:
-  * its immediate pass runs synchronously during setup and touches this
-  * binding (a later `let` would be a TDZ ReferenceError on every mount). */
- let recomputeFrame: number | null = null;
 watch(
   visible,
   async (v) => {
@@ -866,13 +860,13 @@ defineExpose({
 
 /* Selected row — primary text + trailing check glyph. */
 .sn-popselect-option--selected {
-  color: var(--sn-web-color-action-primary, #2080f0);
+  color: var(--sn-web-color-action-primary);
   font-weight: 500;
 }
 
 .sn-popselect-option__check {
   flex-shrink: 0;
-  color: var(--sn-web-color-action-primary, #2080f0);
+  color: var(--sn-web-color-action-primary);
 }
 
 .sn-popselect-option--disabled {
@@ -886,7 +880,11 @@ defineExpose({
 }
 
 .sn-popselect-option:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, rgba(32, 128, 240, 0.35));
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 35%, transparent)
+    );
   outline-offset: -2px;
 }
 

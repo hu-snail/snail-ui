@@ -51,10 +51,10 @@ None.
 
 This component does not consume colour tokens — it **sets** them:
 
-| Mechanism      | Variables affected                                                                                                   |
-| -------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `theme="dark"` | every `--sn-mp-color-*` alias declared in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles` |
-| `themeVars`    | whatever keys the caller passes                                                                                      |
+| Mechanism      | Variables affected                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------ |
+| `theme="dark"` | every `--sn-mp-color-*` alias declared in the `.sn-theme-dark` block of `@snui/tokens-mp/styles` |
+| `themeVars`    | whatever keys the caller passes                                                                  |
 
 ## Accessibility
 

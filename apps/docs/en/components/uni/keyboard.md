@@ -1,12 +1,28 @@
 # Keyboard · uni-app
 
-`sn-keyboard` is the on-screen keypad of `@snui/uni`: numeric, car-plate and custom layouts. easycom auto-registration (`components/sn-keyboard/sn-keyboard.vue` → `<sn-keyboard>`); geometry in `rpx`. `maxlength` caps the value, the delete key removes one character and fires `delete`; `hideOnClickOutside` also controls whether the scrim is rendered. No timers, no observers — nothing to dispose.
+`sn-keyboard` is the on-screen keypad of `@snui/uni`: numeric, car-plate and custom layouts. easycom auto-registration (`components/sn-keyboard/sn-keyboard.vue` → `<sn-keyboard>`); geometry in `rpx`. `maxlength` caps the value, the delete key removes one character and fires `delete` (**hold it to repeat**; the timers are cleared on release, on close and on unmount); `hideOnClickOutside` also controls whether the scrim is rendered.
+
+The bottom row always fills all three cells: a slot without an `extraKey` renders the **collapse-to-system glyph key** (tapping it acts like the close button and fires `close`), so there is never a hole or an over-wide `0`; the header close button shows a circular chevron chip when no label is set.
+
+Visually it follows the established mobile keypad idiom: a grey sheet (`background-subtle`) under white key plates (`background-elevated`), an elevated toolbar with the "done" action as a primary-coloured text button, and press feedback through `hover-class`. Key height, gap and radius are exposed as component-local custom properties (`--sn-keyboard-key-height`, `--sn-keyboard-gap`, `--sn-keyboard-key-radius`) that a host can retune from `custom-class` without a new prop.
 
 ## Basic usage
 
-Numeric keypad: `maxlength` caps the value, delete removes one character, close hides it; pair it with a read-only field.
+Default numeric keypad: bottom row [collapse] [0] [⌫], `maxlength` caps the value; pair it with a read-only field.
 
-<Demo name="keyboard-mp-basic" description="Numeric keypad: `maxlength` caps the value, delete removes one character, close hides it; pair it with a read-only field." />
+<Demo name="keyboard-mp-basic" description="Default numeric keypad: bottom row [collapse][0][⌫], `maxlength` caps the value; pair it with a read-only field." />
+
+## Decimal (`extraKey="."`)
+
+`extraKey="."` takes the bottom-left slot for amount input.
+
+<Demo name="keyboard-mp-decimal" description="`extraKey=.` takes the bottom-left slot for amount input." />
+
+## ID number (`extraKey="X"`)
+
+`extraKey="X"` provides the checksum-digit key; pair with `maxlength=18` for ID numbers.
+
+<Demo name="keyboard-mp-idcard" description="`extraKey=X` provides the checksum-digit key; `maxlength=18` for ID numbers." />
 
 ## Car & custom modes (`mode` / `extraKey` / `autoSwitchLang`)
 
@@ -41,7 +57,7 @@ Numeric keypad: `maxlength` caps the value, delete removes one character, close 
 | `closeButtonLoading`                          | `boolean`                        | `false`                   | Spinner in the close button                                                                                  |
 | `modal` / `hideOnClickOutside` / `lockScroll` | `boolean`                        | `false` / `true` / `true` | Scrim behaviour                                                                                              |
 | `safeAreaInsetBottom`                         | `boolean`                        | `true`                    | Safe-area padding                                                                                            |
-| `extraKey`                                    | `string \| string[]`             | `undefined`               | Extra digit-grid key(s)                                                                                      |
+| `extraKey`                                    | `string \| string[]`             | `undefined`               | Extra digit-grid key(s); an unsupplied slot renders the collapse key (fires `close`)                         |
 | `carLang`                                     | `'zh' \| 'en'`                   | `'zh'`                    | Car-plate language                                                                                           |
 | `autoSwitchLang`                              | `boolean`                        | `false`                   | Switch to letters after the province char                                                                    |
 | `customClass` / `customStyle`                 | `string`                         | `''`                      | Root class / inline style                                                                                    |
@@ -51,14 +67,14 @@ Numeric keypad: `maxlength` caps the value, delete removes one character, close 
 
 ## Events
 
-| Event               | Description                 | Payload                |
-| ------------------- | --------------------------- | ---------------------- |
-| `update:modelValue` | Value changed               | `(value: string)`      |
-| `update:visible`    | Visibility changed          | `(value: boolean)`     |
-| `update:carLang`    | Car language changed        | `(lang: 'zh' \| 'en')` |
-| `input`             | A character key was pressed | `(key: string)`        |
-| `delete`            | Delete key pressed          | —                      |
-| `close`             | Keyboard closed             | —                      |
+| Event               | Description                                           | Payload                |
+| ------------------- | ----------------------------------------------------- | ---------------------- |
+| `update:modelValue` | Value changed                                         | `(value: string)`      |
+| `update:visible`    | Visibility changed                                    | `(value: boolean)`     |
+| `update:carLang`    | Car language changed                                  | `(lang: 'zh' \| 'en')` |
+| `input`             | A character key was pressed                           | `(key: string)`        |
+| `delete`            | Delete key pressed                                    | —                      |
+| `close`             | Keyboard closed (close button / scrim / collapse key) | —                      |
 
 ## Slots
 
@@ -77,10 +93,10 @@ This component exposes no slots.
 
 ## Accessibility
 
-- Every key is `role="button"` with an `aria-label` (the glyph, or "delete" / the close label).
+- Every key is `role="button"` with an `aria-label` (the glyph, or "delete" / the close label); the collapse key carries `aria-label="collapse"`.
 - The close button carries `aria-busy` while `closeButtonLoading` is set.
 - The scrim is `aria-hidden`; the panel is the `sn-popup` `role="dialog"`.
 
 ## Dark mode
 
-Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
+Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:

@@ -1,0 +1,39 @@
+# 面积图
+
+折线的填充形态：强调「量」与构成趋势。面积用半透明填充而不是渐变对象，这样复制出去的配置是纯 JSON、可直接进项目。
+
+<div class="sn-chart-cases">
+
+<ChartCase id="area-soft" />
+
+<ChartCase id="area-multi" />
+
+<ChartCase id="area-stack" />
+
+</div>
+
+## 面板里能改什么
+
+| 控制项   | 落到哪里                                              | 默认      |
+| -------- | ----------------------------------------------------- | --------- |
+| 平滑     | `series[].smooth`                                     | 开        |
+| 图例     | `legend`                                              | 开        |
+| 触发方式 | `tooltip.trigger`                                     | `item`    |
+| 小数位   | `tooltip.precision`                                   | `0`       |
+| 布局预设 | `layout`                                              | `default` |
+| 主题模式 | `theme-mode`                                          | `auto`    |
+| 主题色   | 默认跟随 UI 库主题（主色 + 逐级渐淡）；拾色后显式覆盖 | 跟随主题  |
+
+面积填充本身走 `areaStyle.opacity`，由系列色自动派生明暗，不需要手配渐变。
+
+## 面积图卡
+
+设计稿里的「构成趋势」卡片：指标头部 + 年份下拉，三条堆叠渐变面积，底部三个统计块与图例同源。渐变与合计推导都是运行时逻辑，用完整 Demo 呈现：
+
+<Demo name="echarts-web-area-card" description="1:1 还原设计稿：指标头部 + 年份下拉 + 三条堆叠渐变面积 + 底部系列统计块。" />
+
+## 相关页面
+
+- [折线图](/echarts/line) — 无填充形态
+- [柱状图](/echarts/bar) — 离散量对比
+- [使用文档](/echarts/usage) — Props / 事件 / 插槽全表

@@ -20,17 +20,11 @@
 import type { IconData } from './sn-icon.vue';
 import { resolveIconByName } from './sn-icon-registry';
 import { SN_ICON_CATALOG } from './sn-icon-catalog';
-import {
-  resolveIconifyIcon,
-  configSnIconify,
-  type SnIconifyOptions,
-} from './sn-icon-iconify';
+import { resolveIconifyIcon, configSnIconify, type SnIconifyOptions } from './sn-icon-iconify';
 
 /** 结构化错误码（AGENTS.md §28/§29：稳定、可搜索、可统计）。 */
 export type SnIconSourceErrorCode =
-  | 'ICON_SOURCE_UNRESOLVED'
-  | 'ICON_FETCH_FAILED'
-  | 'ICON_FETCH_TIMEOUT';
+  'ICON_SOURCE_UNRESOLVED' | 'ICON_FETCH_FAILED' | 'ICON_FETCH_TIMEOUT';
 
 /** 图标源解析错误 — 组件捕获后 console.warn（不上抛打断渲染）。 */
 export class SnIconSourceError extends Error {
@@ -63,7 +57,10 @@ export type SnIconResolveResult = IconData | string | null;
 
 /** 图标源 Provider：把 `prefix:rest` 中的 rest 解析为可渲染结果。 */
 export interface SnIconProvider {
-  resolve(name: string, ctx: SnIconResolveContext): SnIconResolveResult | Promise<SnIconResolveResult>;
+  resolve(
+    name: string,
+    ctx: SnIconResolveContext,
+  ): SnIconResolveResult | Promise<SnIconResolveResult>;
 }
 
 /** Provider 注册表（模块级，write-once at bootstrap；clear 仅供测试）。 */

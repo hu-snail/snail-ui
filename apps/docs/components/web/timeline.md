@@ -55,15 +55,15 @@
 
 ### SnTimeline Props
 
-| 名称           | 类型                                          | 默认值       | 说明                                        |
-| -------------- | --------------------------------------------- | ------------ | ------------------------------------------- |
-| direction      | `'vertical' \| 'horizontal'`                  | `'vertical'` | 排布方向，设置后覆盖兼容的 `horizontal`     |
-| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'` | 轨道（轴）所在的一侧，内容在轴的另一侧；alternate 按奇偶交替，横向读 top / bottom（离轴值自动归一） |
-| label-position | `'same' \| 'relative'`                        | `'relative'` | 标签位置：relative 轴对侧，same 内容同侧紧贴轴 |
-| horizontal     | `boolean`                                     | `false`      | 兼容保留：水平排布（推荐 `direction`）      |
-| item-placement | `'left' \| 'right'`                           | `'left'`     | 兼容保留：轨道位置（推荐 `mode`）           |
-| size           | `'medium' \| 'large'`                         | `'medium'`   | 标题字号（14 / 16px）                       |
-| icon-size      | `number`                                      | `undefined`  | 节点边长（px，默认 14）                     |
+| 名称           | 类型                                                    | 默认值       | 说明                                                                                                |
+| -------------- | ------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------------------- |
+| direction      | `'vertical' \| 'horizontal'`                            | `'vertical'` | 排布方向，设置后覆盖兼容的 `horizontal`                                                             |
+| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | 轨道（轴）所在的一侧，内容在轴的另一侧；alternate 按奇偶交替，横向读 top / bottom（离轴值自动归一） |
+| label-position | `'same' \| 'relative'`                                  | `'relative'` | 标签位置：relative 轴对侧，same 内容同侧紧贴轴                                                      |
+| horizontal     | `boolean`                                               | `false`      | 兼容保留：水平排布（推荐 `direction`）                                                              |
+| item-placement | `'left' \| 'right'`                                     | `'left'`     | 兼容保留：轨道位置（推荐 `mode`）                                                                   |
+| size           | `'medium' \| 'large'`                                   | `'medium'`   | 标题字号（14 / 16px）                                                                               |
+| icon-size      | `number`                                                | `undefined`  | 节点边长（px，默认 14）                                                                             |
 
 ### SnTimeline Slots
 
@@ -73,29 +73,29 @@
 
 ### SnTimelineItem Props
 
-| 名称      | 类型                                                       | 默认值      | 说明                                     |
-| --------- | ---------------------------------------------------------- | ----------- | ---------------------------------------- |
-| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | 节点语义色                               |
-| title     | `string`                                                   | `undefined` | 标题，`header` 插槽可覆盖                |
-| content   | `string`                                                   | `undefined` | 正文，`default` 插槽可覆盖               |
-| time      | `string \| number`                                         | `undefined` | 时间元信息，`footer` 插槽可覆盖          |
-| dot-color | `string`                                                   | `undefined` | 自定义节点颜色（优先于 `color`）         |
-| color     | `string`                                                   | `undefined` | 兼容保留：自定义节点颜色                 |
-| dot-type  | `'solid' \| 'hollow'`                                      | `'solid'`   | 节点填充：实心圆点 / 空心圆环            |
-| line-type | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | 该节点之后的线型                         |
-| label     | `string`                                                   | `undefined` | 标签文本（如日期），`label` 插槽可覆盖   |
-| position  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | `mode=alternate` 时固定该项内容侧        |
+| 名称      | 类型                                                       | 默认值      | 说明                                   |
+| --------- | ---------------------------------------------------------- | ----------- | -------------------------------------- |
+| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | 节点语义色                             |
+| title     | `string`                                                   | `undefined` | 标题，`header` 插槽可覆盖              |
+| content   | `string`                                                   | `undefined` | 正文，`default` 插槽可覆盖             |
+| time      | `string \| number`                                         | `undefined` | 时间元信息，`footer` 插槽可覆盖        |
+| dot-color | `string`                                                   | `undefined` | 自定义节点颜色（优先于 `color`）       |
+| color     | `string`                                                   | `undefined` | 兼容保留：自定义节点颜色               |
+| dot-type  | `'solid' \| 'hollow'`                                      | `'solid'`   | 节点填充：实心圆点 / 空心圆环          |
+| line-type | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | 该节点之后的线型                       |
+| label     | `string`                                                   | `undefined` | 标签文本（如日期），`label` 插槽可覆盖 |
+| position  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | `mode=alternate` 时固定该项内容侧      |
 
 ### SnTimelineItem Slots
 
-| 名称    | 参数 | 说明                             |
-| ------- | ---- | -------------------------------- |
-| default | `()` | 条目正文，覆盖 `content`         |
-| dot     | `()` | 完全自定义节点 DOM，优先级最高   |
-| icon    | `()` | 自定义节点图标（`dot` 优先）     |
-| label   | `()` | 标签文本，覆盖 `label`           |
-| header  | `()` | 条目标题，覆盖 `title`           |
-| footer  | `()` | 时间元信息，覆盖 `time`          |
+| 名称    | 参数 | 说明                           |
+| ------- | ---- | ------------------------------ |
+| default | `()` | 条目正文，覆盖 `content`       |
+| dot     | `()` | 完全自定义节点 DOM，优先级最高 |
+| icon    | `()` | 自定义节点图标（`dot` 优先）   |
+| label   | `()` | 标签文本，覆盖 `label`         |
+| header  | `()` | 条目标题，覆盖 `title`         |
+| footer  | `()` | 时间元信息，覆盖 `time`        |
 
 节点优先级：`dot` 插槽 > `icon` 插槽 > 圆点。最后一个条目不画轨道线。
 

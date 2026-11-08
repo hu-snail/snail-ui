@@ -8,16 +8,31 @@
  * Anything new added here MUST also be added to the reference list in
  * AGENTS.md §112.
  *
+ * ## Lazy-load cascade (additive, AGENTS.md §112.3a)
+ *
+ * `lazyLoad` mirrors wd-img's `lazy-load` 1:1 when the prop is passed.
+ * When it is NOT passed, the component inherits the container-level config
+ * from an ancestor `sn-waterfall` (its `lazyLoad` prop) through
+ * provide/inject — a single switch on the container lazy-loads the whole
+ * image wall. Native `<image lazy-load>` only takes effect inside a
+ * scrollable area, which is exactly where a waterfall lives. An image
+ * outside any waterfall keeps the wd-img default (off).
+ *
  * File path follows uni-app easycom convention:
  *   components/sn-img/sn-img.vue
  * → auto-registered as `<sn-img>` in any .vue that uses it.
  *
  * ## Preview
  *
- * `enablePreview` calls `uni.previewImage` — the cross-end preview API every
- * uni target ships. It is looked up through a guarded `globalThis` access so
- * the component still renders (and tests still pass) where `uni` is absent;
- * when it is missing the tap falls back to emitting `click` only.
+ * `enablePreview` opens `uni.previewImage` — the cross-end preview API every
+ * uni target ships. The call site is a **static** `uni.previewImage(...)`
+ * invocation: the uni-app production build tree-shakes the API surface down to
+ * what it can see statically, and the previous dynamic
+ * `globalThis.uni?.previewImage` lookup was invisible to that analysis — built
+ * H5 output lost the API, so taps silently did nothing (AGENTS.md §85: a silent
+ * behaviour change is worse than an explicit fallback). The `globalThis.uni`
+ * probe stays as the test-host fallback, where the global identifier cannot
+ * exist. When no preview API is reachable the tap still emits `click`.
  *
  * ## Dispose (AGENTS.md §41)
  *
@@ -31,7 +46,8 @@
  *   - 头像（圆形 + 回退文案）— 用 sn-avatar
  */
 
-import { computed, ref, watch } from 'vue';
+import { computed, getCurrentInstance, inject, ref, watch } from 'vue';
+import { SN_WATERFALL_KEY, type SnWaterfallContext } from '../sn-waterfall/sn-waterfall-types';
 
 defineOptions({ name: 'SnImg' });
 
@@ -71,7 +87,11 @@ const props = withDefaults(
     round?: boolean;
     /** Corner radius — a bare number is treated as rpx. */
     radius?: string | number;
-    /** Lazy-load the image (uni `<image lazy-load>`). */
+    /**
+     * Lazy-load the image (uni `<image lazy-load>`). When the prop is not
+     * passed, an ancestor `sn-waterfall`'s container-level `lazyLoad`
+     * config is inherited (see the header note).
+     */
     lazyLoad?: boolean;
     /** Tap opens `uni.previewImage`. */
     enablePreview?: boolean;
@@ -96,6 +116,9 @@ const props = withDefaults(
     mode: 'scaleToFill',
     round: false,
     radius: '',
+    // wd-img default is `false`; the cascade below may override it when the
+    // prop is not passed. withDefaults cannot express "undefined = inherit",
+    // so the default stays false and the resolved computed does the merging.
     lazyLoad: false,
     enablePreview: false,
     showMenuByLongpress: false,
@@ -122,6 +145,31 @@ const emit = defineEmits<{
 
 /** Image load state. */
 const status = ref<'idle' | 'loading' | 'loaded' | 'error'>('loading');
+
+/**
+ * Waterfall lazy-load cascade (see the header note): an image inside a
+ * `sn-waterfall lazy-load` inherits the container's config unless it passes
+ * its own `lazyLoad`. Prop detection: `withDefaults` fills a missing prop
+ * with `false`, so the raw value cannot tell "off" from "not passed" — the
+ * component therefore reads the prop's presence from the vnode instead of
+ * its defaulted value.
+ *
+ * The template may spell the prop either camelCase (`:lazyLoad`) or
+ * kebab-case (`:lazy-load`) and <image lazy-load> is a native MP attribute, so
+ * both key shapes must be probed: checking only `lazyLoad` let an explicit
+ * kebab-case `:lazy-load="false"` be overridden by the container cascade.
+ * Outside any waterfall the inject is undefined and the prop (default false)
+ * decides alone — the documented wd-img default.
+ */
+const waterfall = inject(SN_WATERFALL_KEY, undefined as SnWaterfallContext | undefined);
+const rawProps = getCurrentInstance()?.vnode.props;
+const hasLazyLoadProp =
+  rawProps !== null &&
+  rawProps !== undefined &&
+  (rawProps.lazyLoad !== undefined || rawProps['lazy-load'] !== undefined);
+const lazyLoadResolved = computed(() =>
+  hasLazyLoadProp ? props.lazyLoad : (waterfall?.lazyLoad.value ?? props.lazyLoad),
+);
 
 watch(
   () => props.src,
@@ -164,16 +212,34 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
-/** Preview API, resolved lazily through the global uni namespace. */
+/**
+ * Open the fullscreen preview for `previewSrc || src`.
+ *
+ * The `uni.previewImage` call is written **statically** on purpose: the
+ * uni-app production build only bundles the APIs its static analysis can see
+ * (see the file header). Reaching the API through a variable — as this used to
+ * — made the built H5 bundle drop `previewImage` entirely, so the tap had
+ * nothing to call.
+ *
+ * Resolution order:
+ *   1. the injected `uni` global (real uni target); `typeof` keeps hosts that
+ *      strip the global from throwing a ReferenceError,
+ *   2. `globalThis.uni` (test hosts, where the bare identifier cannot exist).
+ * A host that exposes neither simply emits `click` — the tap is never silent
+ * about being unsupported, but it also never throws.
+ */
 function openPreview(): void {
   const preview = props.previewSrc !== '' ? props.previewSrc : props.src;
   if (!preview) return;
+  if (typeof uni !== 'undefined' && typeof uni.previewImage === 'function') {
+    uni.previewImage({ urls: [preview], current: preview });
+    return;
+  }
   const host = globalThis as {
-    uni?: { previewImage?: (options: { urls: string[]; current: string }) => void };
+    uni?: { previewImage?: (options: { urls: string[]; current?: string }) => unknown };
   };
   const previewImage = host.uni?.previewImage;
-  if (typeof previewImage !== 'function') return;
-  previewImage({ urls: [preview], current: preview });
+  if (typeof previewImage === 'function') previewImage({ urls: [preview], current: preview });
 }
 
 function onTap(event: Event): void {
@@ -199,7 +265,7 @@ function onError(event: Event): void {
       :class="imageClass"
       :src="src"
       :mode="mode"
-      :lazy-load="lazyLoad"
+      :lazy-load="lazyLoadResolved"
       :show-menu-by-longpress="showMenuByLongpress"
       @load="onLoad"
       @error="onError"

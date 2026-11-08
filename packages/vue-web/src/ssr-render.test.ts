@@ -106,6 +106,30 @@ const WRAPPERS: Record<string, () => ReturnType<typeof h>> = {
   SnStep: () => h(SnUI.SnSteps as never, null, { default: () => h(SnUI.SnStep as never) }),
   SnCarouselItem: () =>
     h(SnUI.SnCarousel as never, null, { default: () => h(SnUI.SnCarouselItem as never) }),
+  // SnFloatingToc is a compound component: every part reads the root's
+  // provide/inject context, and Bar throws a helpful error when standalone.
+  SnFloatingTocTrigger: () =>
+    h(SnUI.SnFloatingToc, null, {
+      default: () => h(SnUI.SnFloatingTocTrigger as never, null, { default: () => 'bars' }),
+    }),
+  SnFloatingTocBar: () =>
+    h(SnUI.SnFloatingToc, null, {
+      default: () =>
+        h(SnUI.SnFloatingTocTrigger as never, null, {
+          default: () => h(SnUI.SnFloatingTocBar as never, { href: '#intro', title: 'Intro' }),
+        }),
+    }),
+  SnFloatingTocContent: () =>
+    h(SnUI.SnFloatingToc, null, {
+      default: () => h(SnUI.SnFloatingTocContent as never, null, { default: () => 'panel' }),
+    }),
+  SnFloatingTocItem: () =>
+    h(SnUI.SnFloatingToc, null, {
+      default: () =>
+        h(SnUI.SnFloatingTocContent as never, null, {
+          default: () => h(SnUI.SnFloatingTocItem as never, { href: '#intro', title: 'Intro' }),
+        }),
+    }),
 };
 
 const componentEntries = Object.entries(SnUI as Record<string, unknown>).filter(

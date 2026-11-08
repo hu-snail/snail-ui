@@ -22,3 +22,10 @@ pnpm-lock.yaml
 
 # Generated build info
 *.tsbuildinfo
+
+# unplugin-vue-components declarations: the plugin rewrites this file on every
+# build with its own formatting (`export {}` — no semicolon), so formatting it
+# here would make every build dirty the working tree. The file is committed on
+# purpose (see apps/admin-basic/vite.config.ts): a fresh clone needs it for
+# `pnpm typecheck`. Keep it byte-identical to the generator output instead.
+**/components.d.ts

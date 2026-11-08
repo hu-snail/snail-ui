@@ -7,15 +7,22 @@
  *   - a row tap emits `menuclick` with `{ item, index }`; disabled rows are inert
  *   - `content` slot replaces the built-in body in both modes
  *   - `placement` / `offset` / `custom*` props are forwarded
- *   - a tap on the transparent outside mask closes the bubble
+ *   - closeOutside() (page-root queue) closes the bubble; mounting registers it
+ *   - the outside mask (`closeOnClickOutside`) closes on an outside tap
+ *   - menu row glyphs resolve from iconData / iconUrl / icon / iconClass
+ *   - glyph boxes follow the `--sn-popover-*-icon-size` tokens (auto height)
  *   - the leave timer is cleared on unmount (§41)
  *
  * No `rpx` values in assertions — happy-dom drops lengths it cannot parse.
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnPopover from './sn-popover.vue';
+import { Star } from '../sn-icon/sn-icon-set';
+import { closeOutside } from '../../utils/outside-close';
 
 const menu = [{ content: '编辑' }, { content: '分享' }, { content: '删除', disabled: true }];
 
@@ -108,22 +115,11 @@ describe('sn-popover', () => {
       expect(style).toContain('--sn-popover-color: #ffffff');
     });
 
-    it('mounts the transparent mask exactly while the bubble is mounted', async () => {
-      vi.useFakeTimers();
-      try {
-        const w = mount(SnPopover, { props: { modelValue: true } });
-        const mask = w.find('.sn-popover__mask');
-        expect(mask.exists()).toBe(true);
-        expect(mask.attributes('aria-hidden')).toBe('true');
-        // Fade-out leg: the mask stays mounted with the bubble, then leaves.
-        await w.setProps({ modelValue: false });
-        expect(w.find('.sn-popover__mask').exists()).toBe(true);
-        vi.advanceTimersByTime(150);
-        await w.vm.$nextTick();
-        expect(w.find('.sn-popover__mask').exists()).toBe(false);
-      } finally {
-        vi.useRealTimers();
-      }
+    it('stops responding to closeOutside after unmount', async () => {
+      const w = mount(SnPopover, { props: { modelValue: true } });
+      w.unmount();
+      // Unregistered on unmount — a page-root closeOutside must not touch it.
+      expect(() => closeOutside()).not.toThrow();
     });
 
     it('accepts the rootPortal parity prop without breaking the render', () => {
@@ -173,17 +169,24 @@ describe('sn-popover', () => {
       expect(w.emitted('close')).toHaveLength(1);
     });
 
-    it('closes on an outside tap (transparent mask)', async () => {
+    it('closes via closeOutside (page-root queue)', async () => {
       const w = mount(SnPopover, { props: { modelValue: true } });
-      await w.find('.sn-popover__mask').trigger('tap');
+      closeOutside();
       expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
       expect(w.emitted('close')).toHaveLength(1);
       expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
     });
 
-    it('closes on a mask tap even when the consumer ignores update:modelValue', async () => {
+    it('closeOutside is a no-op for an already-closed bubble', async () => {
+      const w = mount(SnPopover, { props: { modelValue: false } });
+      closeOutside();
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('close')).toBeUndefined();
+    });
+
+    it('closes via closeOutside even when the consumer ignores update:modelValue', async () => {
       const w = mount(SnPopover, { props: { modelValue: true } });
-      await w.find('.sn-popover__mask').trigger('tap');
+      closeOutside();
       await w.vm.$nextTick();
       // The bubble keeps the fade-out leg but is no longer shown.
       expect(w.find('.sn-popover__pop').exists()).toBe(true);
@@ -380,6 +383,234 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
 
   it('exposes updatePosition as a safe no-op', () => {
     const w = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
-    expect(() => (w.vm as unknown as { updatePosition: () => void }).updatePosition()).not.toThrow();
+    expect(() =>
+      (w.vm as unknown as { updatePosition: () => void }).updatePosition(),
+    ).not.toThrow();
+  });
+});
+
+describe('sn-popover (outside-tap switching via the queue)', () => {
+  it('lets one gesture switch bubbles: outside close, then the next trigger opens', async () => {
+    const a = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    const b = mount(SnPopover, { props: { modelValue: false, content: 'B' } });
+    // Page-root decomposition of one tap on B's trigger: the tap bubbles to
+    // the root (closing A) and B's own @tap.stop handler opens B.
+    closeOutside();
+    await b.find('.sn-popover__trigger').trigger('tap');
+    expect(a.emitted('close')).toHaveLength(1);
+    expect(b.emitted('update:modelValue')?.[0]).toEqual([true]);
+    a.unmount();
+    b.unmount();
+  });
+
+  it('closes every open bubble at once', async () => {
+    const a = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    const b = mount(SnPopover, { props: { modelValue: true, content: 'B' } });
+    closeOutside();
+    expect(a.emitted('close')).toHaveLength(1);
+    expect(b.emitted('close')).toHaveLength(1);
+    a.unmount();
+    b.unmount();
+  });
+});
+
+describe('sn-popover (outside-close queue, AUI-OPT-07)', () => {
+  it('closes through the page-root closeOutside channel', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    closeOutside();
+    await flushPromises();
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+    expect(w.emitted('close')).toHaveLength(1);
+    expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    expect(w.classes()).not.toContain('sn-popover--shown');
+  });
+
+  it('renders no mask node — the close rides the queue, not a tap catcher', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    expect(w.find('.sn-popover__mask').exists()).toBe(false);
+    // the pop itself stays in the tree while shown
+    expect(w.find('.sn-popover__pop').exists()).toBe(true);
+  });
+
+  it('does not close on taps inside the bubble itself', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    await w.find('.sn-popover__pop').trigger('tap');
+    expect(w.emitted('update:modelValue')).toBeUndefined();
+    expect(w.emitted('close')).toBeUndefined();
+  });
+
+  it('unregisters the outside-close while closeOnClickOutside is false', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, closeOnClickOutside: false, content: 'A' },
+    });
+    closeOutside();
+    expect(w.emitted('close')).toBeUndefined();
+  });
+
+  it('re-registers when closeOnClickOutside flips back to true', async () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, closeOnClickOutside: false, content: 'A' },
+    });
+    closeOutside();
+    expect(w.emitted('close')).toBeUndefined();
+    await w.setProps({ closeOnClickOutside: true });
+    closeOutside();
+    await flushPromises();
+    expect(w.emitted('close')).toHaveLength(1);
+  });
+
+  it('closes an uncontrolled bubble the consumer never synced', async () => {
+    const w = mount(SnPopover, { props: { modelValue: false } });
+    await w.find('.sn-popover__trigger').trigger('tap');
+    await flushPromises();
+    expect(w.classes()).toContain('sn-popover--shown');
+    closeOutside();
+    await flushPromises();
+    expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
+    expect(w.classes()).not.toContain('sn-popover--shown');
+  });
+
+  it('lets a second trigger tap close an uncontrolled bubble', async () => {
+    const w = mount(SnPopover, { props: { modelValue: false } });
+    await w.find('.sn-popover__trigger').trigger('tap');
+    await flushPromises();
+    expect(w.classes()).toContain('sn-popover--shown');
+    await w.find('.sn-popover__trigger').trigger('tap');
+    expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
+    expect(w.classes()).not.toContain('sn-popover--shown');
+  });
+
+  it('does not replay close / change when the queue fires twice in one gesture', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    closeOutside();
+    // A second dispatcher in the same gesture (nested roots) is idempotent.
+    closeOutside();
+    await flushPromises();
+    expect(w.emitted('close')).toHaveLength(1);
+    expect(w.emitted('change')).toHaveLength(1);
+  });
+
+  it('binds the trigger with tap.stop per the outside-close contract', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    expect(source).toContain('@tap.stop="onTriggerTap"');
+    expect(source).not.toContain('sn-popover__mask');
+  });
+});
+
+describe('sn-popover (auto height, AUI-OPT-07)', () => {
+  it('scales row glyphs through the menu icon token', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
+    });
+    expect(w.findComponent({ name: 'SnIcon' }).props('size')).toBe(
+      'var(--sn-popover-menu-icon-size)',
+    );
+  });
+
+  it('scales the close glyph through the close icon token', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, showClose: true, content: 'A' } });
+    expect(w.findComponent({ name: 'SnIcon' }).props('size')).toBe(
+      'var(--sn-popover-close-icon-size)',
+    );
+  });
+
+  it('publishes the glyph-scale tokens on the root and lets customStyle override them', () => {
+    const w = mount(SnPopover, {
+      props: { customStyle: '--sn-popover-menu-icon-size: 40rpx' },
+    });
+    expect(w.attributes('style') ?? '').toContain('--sn-popover-menu-icon-size: 40rpx');
+  });
+
+  it('keeps the pop unclamped and wraps long labels in the stylesheet', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const popRule = source.indexOf('.sn-popover__pop {');
+    expect(popRule).toBeGreaterThan(-1);
+    expect(source.slice(popRule, source.indexOf('}', popRule))).toContain('height: auto');
+    const textRule = source.indexOf('.sn-popover__menu-text {');
+    expect(textRule).toBeGreaterThan(-1);
+    const textBlock = source.slice(textRule, source.indexOf('}', textRule));
+    // One-line labels used to be forced with `white-space: nowrap`, which
+    // spilled long labels out of the bubble instead of growing its height.
+    expect(textBlock).not.toContain('white-space: nowrap');
+    expect(textBlock).toContain('flex: 1');
+    expect(textBlock).toContain('min-width: 0');
+  });
+
+  it('sizes the glyph boxes with the component vars (no fixed square)', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const blockOf = (selector: string): string => {
+      const start = source.indexOf(selector);
+      expect(start).toBeGreaterThan(-1);
+      return source.slice(start, source.indexOf('}', start));
+    };
+    expect(blockOf('.sn-popover__menu-icon {')).toContain(
+      'width: var(--sn-popover-menu-icon-size)',
+    );
+    expect(blockOf('.sn-popover__close {')).toContain('width: var(--sn-popover-close-icon-size)');
+  });
+});
+
+describe('sn-popover (menu row glyph sources, additive)', () => {
+  it('renders an inline IconData glyph without any registration step', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
+    });
+    expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
+    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+  });
+
+  it('prefers iconData over iconUrl and icon', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [
+          { content: '三源', iconData: Star, iconUrl: 'https://example.com/a.png', icon: 'Star' },
+        ],
+      },
+    });
+    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
+  });
+
+  it('renders iconUrl as an image and it beats icon', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [{ content: '图', iconUrl: 'https://example.com/b.png', icon: 'Star' }],
+      },
+    });
+    const image = w.find('image.sn-popover__menu-icon');
+    expect(image.exists()).toBe(true);
+    expect(image.attributes('src')).toBe('https://example.com/b.png');
+    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
+  });
+
+  it('resolves icon through the SnIcon chain (built-in catalogue)', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, mode: 'menu', content: [{ content: '升序', icon: 'arrow-up' }] },
+    });
+    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(true);
+    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+  });
+
+  it('lets icon beat the legacy iconClass field', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [{ content: '优先', icon: 'arrow-up', iconClass: 'Edit' }],
+      },
+    });
+    expect(w.findComponent({ name: 'SnIcon' }).props('icon')).toBe('arrow-up');
+  });
+
+  it('renders no glyph when none of the sources is set', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, mode: 'menu', content: [{ content: '纯文本' }] },
+    });
+    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
   });
 });

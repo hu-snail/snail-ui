@@ -46,7 +46,11 @@ const customSlides = [
 
 <template>
   <div class="carousel-demo">
-    <SnCarousel draggable :options="slides" style="height: 300px; border-radius: 8px; overflow: hidden" />
+    <SnCarousel
+      draggable
+      :options="slides"
+      style="height: 300px; border-radius: 8px; overflow: hidden"
+    />
 
     <p class="demo-note">↓ #item 插槽覆盖内置媒体渲染</p>
 

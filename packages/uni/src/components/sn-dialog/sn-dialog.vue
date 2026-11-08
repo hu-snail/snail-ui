@@ -575,8 +575,17 @@ const actionsClass = computed(() => [
   flex-direction: column;
 }
 
-.sn-dialog__cancel,
-.sn-dialog__confirm {
+/* Vertical layout shows the primary action first (confirm on top), matching
+ * the reference spec screenshot; DOM order stays cancel → confirm. */
+.sn-dialog__actions--vertical .sn-dialog__confirm {
+  order: -1;
+}
+
+/* Horizontal layout: the two buttons split the row evenly. Scoped to the row —
+ * the same flex: 1 1 0 in the vertical column would also flex the HEIGHT and
+ * squash the 72rpx buttons down to their label line. */
+.sn-dialog__actions--horizontal .sn-dialog__cancel,
+.sn-dialog__actions--horizontal .sn-dialog__confirm {
   flex: 1 1 0;
 }
 

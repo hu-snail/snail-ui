@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-grid — 基础宫格。 */
+/** Demo: sn-grid — 基础宫格（图标走内置目录 kebab 名，零注册确定性渲染）。 */
 import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
 import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 </script>
@@ -7,12 +7,12 @@ import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
 <template>
   <view class="sn-demo sn-demo--column">
     <SnGrid :column="3" border>
-      <SnGridItem text="首页" icon="Home" />
-      <SnGridItem text="搜索" icon="Search" />
-      <SnGridItem text="消息" icon="Bell" :value="12" />
-      <SnGridItem text="收藏" icon="Star" />
-      <SnGridItem text="设置" icon="Settings" />
-      <SnGridItem text="更多" icon="MoreHorizontal" />
+      <SnGridItem text="首页" icon="house" />
+      <SnGridItem text="搜索" icon="search" />
+      <SnGridItem text="消息" icon="bell" :value="12" />
+      <SnGridItem text="收藏" icon="star" />
+      <SnGridItem text="设置" icon="settings" />
+      <SnGridItem text="更多" icon="ellipsis" />
     </SnGrid>
   </view>
 </template>

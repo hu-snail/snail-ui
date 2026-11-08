@@ -86,6 +86,8 @@
   /* Tinted surfaces — soft / subtle variants and cell fill states. */
   --sn-mp-color-background-soft: var(--aui-color-background-subtle);
   --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
+  /* Dark floating toast plate (sn-toast) — same value in both themes. */
+  --sn-mp-color-background-inverse: var(--aui-color-background-inverse);
   --sn-mp-color-border-default: var(--aui-color-border-default);
   --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
   --sn-mp-color-action-primary: var(--aui-color-action-primary);
@@ -136,16 +138,18 @@
  * have no `:root` and no `document` — so the web approach of flipping a class
  * on `<html>` cannot drive them. Two hooks cover every target:
  *
- *   1. `page` — the uni-app page root. A consumer sets `page { … }`
- *      or the runtime class below.
- *   2. `.sn-theme-dark` — a class the app puts on the page root (or on any
+ *   `.sn-theme-dark` — a class the app puts on the page root (or on any
  *      wrapping `<view>`), which also works inside a `SnConfigProvider`.
  *
- * Both blocks are duplicated on purpose: the alias layer must resolve to the
- * same dark values whether the app toggles the page-level or the scoped class.
  * Only color / shadow slots flip — geometry (rpx) is theme-independent.
+ *
+ * Do NOT add a `page`-prefixed compound selector for the dark theme back:
+ * MP cannot put a class on the `page` element anyway, and uni-h5's postcss
+ * hoists custom properties from any rule whose selector contains the `page`
+ * tag onto `body` (unconditionally, no media query) — the dark values would
+ * poison light mode for every token-consuming component. Regression-guarded
+ * in `src/variables.test.ts`.
  */
-page.sn-theme-dark,
 .sn-theme-dark {
   --sn-mp-color-text-primary: #fafafa;
   --sn-mp-color-text-secondary: #a1a1aa;
@@ -167,7 +171,7 @@ page.sn-theme-dark,
   --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
   --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
-  --sn-mp-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --sn-mp-color-action-primary-soft: var(--aui-color-action-primary-soft);
   --sn-mp-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
   --sn-mp-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
   --sn-mp-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
@@ -199,6 +203,10 @@ page.sn-theme-dark,
   /* The overlay scrim is near-black in both themes — the page under it is
      dark already, so the alpha does not need to change. */
   --sn-mp-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* The toast plate keeps its identity in dark mode: the platform toast is a
+     dark translucent plate on light AND dark pages, and the elevation shadow
+     separates it from a near-black page. */
+  --sn-mp-color-background-inverse: var(--aui-color-background-inverse);
   /* The solid viewer curtain stays pure black in dark too. */
   --sn-mp-color-background-solid: #000000;
   /* Text on a filled surface stays white in both themes: the fill colour

@@ -338,7 +338,9 @@ describe('SnTimeline (AUI-WEB-DD-020)', () => {
       // the items collapsed into a stack.
       expect(itemCss).not.toMatch(/\.sn-timeline-item\s*\{\s*\n\s*\.[a-z]/i);
       expect(itemCss).toMatch(/\.sn-timeline-item \{\s*\n\s*position: relative;/);
-      expect(itemCss).toMatch(/\.sn-timeline-item \{\s*\n\s*position: relative;\s*\n\s*display: grid;/);
+      expect(itemCss).toMatch(
+        /\.sn-timeline-item \{\s*\n\s*position: relative;\s*\n\s*display: grid;/,
+      );
     });
 
     it('lays the item out as a grid', () => {

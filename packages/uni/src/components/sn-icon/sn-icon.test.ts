@@ -18,11 +18,7 @@ import { mount, flushPromises } from '@vue/test-utils';
 import SnIcon, { type IconData } from './sn-icon.vue';
 import { registerSnIcons, clearSnIcons } from './sn-icon-registry';
 import { registerSnIconProvider } from './sn-icon-providers';
-import {
-  configSnIconify,
-  resetSnIconifyConfig,
-  clearSnIconifyCache,
-} from './sn-icon-iconify';
+import { configSnIconify, resetSnIconifyConfig, clearSnIconifyCache } from './sn-icon-iconify';
 
 const fakeIcon: IconData = {
   paths: ['M3 12h18', 'M12 3v18'],
@@ -242,7 +238,8 @@ describe('sn-icon string icon API（内置目录 / registry）', () => {
 });
 
 describe('sn-icon remote provider path (iconify / custom)', () => {
-  const svgDoc = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3"/></svg>';
+  const svgDoc =
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3"/></svg>';
 
   function injectRequest(doc: string, calls: Array<{ url: string; signal: AbortSignal }> = []) {
     configSnIconify({
@@ -294,7 +291,11 @@ describe('sn-icon remote provider path (iconify / custom)', () => {
 
   it('renders nothing and warns with the error code when the fetch fails', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    configSnIconify({ request: async () => { throw new Error('down'); } });
+    configSnIconify({
+      request: async () => {
+        throw new Error('down');
+      },
+    });
     const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
     await flushPromises();
     expect(wrapper.find('.sn-icon__remote').exists()).toBe(false);

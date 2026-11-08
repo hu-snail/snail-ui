@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-plate-input — tap the boxes to raise the shared car keyboard (province → letters auto-switch, hold-to-repeat delete). */
+import { ref } from 'vue';
+import SnPlateInput from '@snui/uni-src/components/sn-plate-input/sn-plate-input.vue';
+
+const plate = ref('');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPlateInput v-model="plate" title="Enter the plate number" />
+    <text class="sn-demo__meta">Value: {{ plate || '(empty)' }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

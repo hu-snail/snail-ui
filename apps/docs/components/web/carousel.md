@@ -104,32 +104,32 @@
 
 ### SnCarousel Props
 
-| Prop             | 类型                                                 | 默认值                            | 说明                                                        |
-| ---------------- | ---------------------------------------------------- | --------------------------------- | ----------------------------------------------------------- |
-| autoplay         | `boolean`                                            | `false`                           | 自动播放；悬停暂停，移出恢复                                |
-| centered-slides  | `boolean`                                            | `false`                           | 居中当前 slide（配合 slides-per-view / auto）               |
-| current-index    | `number \| undefined`                                | `undefined`                       | 受控当前索引（`v-model:current-index`）；undefined 为非受控 |
-| default-index    | `number`                                             | `0`                               | 初始索引（非受控）                                          |
-| direction        | `'horizontal' \| 'vertical'`                         | `'horizontal'`                    | 滚动方向                                                    |
-| dot-placement    | `'top' \| 'bottom' \| 'left' \| 'right'`             | `'bottom'`                        | 指示点位置                                                  |
-| dot-type         | `'dot' \| 'line'`                                    | `'dot'`                           | 指示点形态                                                  |
-| draggable        | `boolean`                                            | `false`                           | 鼠标拖拽切换                                                |
-| effect           | `'slide' \| 'fade' \| 'card' \| 'custom'`            | `'slide'`                         | 切换效果                                                    |
-| interval         | `number`                                             | `5000`                            | 自动播放间隔（ms）                                          |
-| loop             | `boolean`                                            | `true`                            | 两端循环（slide + 单屏时用首尾克隆实现无缝循环）            |
-| mousewheel       | `boolean`                                            | `false`                           | 滚轮切换                                                    |
+| Prop             | 类型                                                 | 默认值                            | 说明                                                          |
+| ---------------- | ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------------- |
+| autoplay         | `boolean`                                            | `false`                           | 自动播放；悬停暂停，移出恢复                                  |
+| centered-slides  | `boolean`                                            | `false`                           | 居中当前 slide（配合 slides-per-view / auto）                 |
+| current-index    | `number \| undefined`                                | `undefined`                       | 受控当前索引（`v-model:current-index`）；undefined 为非受控   |
+| default-index    | `number`                                             | `0`                               | 初始索引（非受控）                                            |
+| direction        | `'horizontal' \| 'vertical'`                         | `'horizontal'`                    | 滚动方向                                                      |
+| dot-placement    | `'top' \| 'bottom' \| 'left' \| 'right'`             | `'bottom'`                        | 指示点位置                                                    |
+| dot-type         | `'dot' \| 'line'`                                    | `'dot'`                           | 指示点形态                                                    |
+| draggable        | `boolean`                                            | `false`                           | 鼠标拖拽切换                                                  |
+| effect           | `'slide' \| 'fade' \| 'card' \| 'custom'`            | `'slide'`                         | 切换效果                                                      |
+| interval         | `number`                                             | `5000`                            | 自动播放间隔（ms）                                            |
+| loop             | `boolean`                                            | `true`                            | 两端循环（slide + 单屏时用首尾克隆实现无缝循环）              |
+| mousewheel       | `boolean`                                            | `false`                           | 滚轮切换                                                      |
 | options          | `SnCarouselMediaItem[]`                              | `undefined`                       | 数据驱动幻灯片（媒体标记内置渲染）；设置后 default 插槽被忽略 |
-| next-slide-style | `CSSProperties \| string`                            | `undefined`                       | 下一张样式覆盖（card 模式）                                 |
-| prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | 上一张样式覆盖（card 模式）                                 |
-| slides-per-view  | `number \| 'auto'`                                   | `1`                               | 每屏 slide 数；`'auto'` 按 DOM 实测宽度                     |
-| space-between    | `number`                                             | `0`                               | slide 间距（px）                                            |
-| show-arrow       | `boolean`                                            | `false`                           | 内置左右箭头（内联 SVG，零依赖）                            |
-| show-dots        | `boolean`                                            | `true`                            | 指示点                                                      |
-| touchable        | `boolean`                                            | `true`                            | 触摸拖拽切换                                                |
-| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | slide/fade/card 过渡时长与缓动                              |
-| transition-props | `TransitionProps`                                    | `undefined`                       | `effect="custom"` 时传给 `<Transition>`                     |
-| trigger          | `'click' \| 'hover'`                                 | `'click'`                         | 指示点触发方式                                              |
-| keyboard         | `boolean`                                            | `false`                           | 焦点在指示点上时方向键切换                                  |
+| next-slide-style | `CSSProperties \| string`                            | `undefined`                       | 下一张样式覆盖（card 模式）                                   |
+| prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | 上一张样式覆盖（card 模式）                                   |
+| slides-per-view  | `number \| 'auto'`                                   | `1`                               | 每屏 slide 数；`'auto'` 按 DOM 实测宽度                       |
+| space-between    | `number`                                             | `0`                               | slide 间距（px）                                              |
+| show-arrow       | `boolean`                                            | `false`                           | 内置左右箭头（内联 SVG，零依赖）                              |
+| show-dots        | `boolean`                                            | `true`                            | 指示点                                                        |
+| touchable        | `boolean`                                            | `true`                            | 触摸拖拽切换                                                  |
+| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | slide/fade/card 过渡时长与缓动                                |
+| transition-props | `TransitionProps`                                    | `undefined`                       | `effect="custom"` 时传给 `<Transition>`                       |
+| trigger          | `'click' \| 'hover'`                                 | `'click'`                         | 指示点触发方式                                                |
+| keyboard         | `boolean`                                            | `false`                           | 焦点在指示点上时方向键切换                                    |
 
 事件：`update:current-index (currentIndex: number, lastIndex: number)`。
 

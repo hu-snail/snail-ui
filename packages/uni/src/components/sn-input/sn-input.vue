@@ -25,10 +25,11 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, markRaw, nextTick, onMounted, ref, useSlots } from 'vue';
+import { computed, getCurrentInstance, markRaw, onMounted, ref, useSlots, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
+import SnInputField from './sn-input-field.vue';
 
 defineOptions({ name: 'SnInput' });
 
@@ -142,10 +143,16 @@ const props = withDefaults(
     /** Custom hex / rbg / named color overrides the bg tone. */
     customBg?: string;
     /**
-     * Border-radius preset. `default` matches the design system radius;
-     * `pill` gives a fully rounded field; `square` is right-angled.
+     * Border-radius preset (AUI additive). Tiers map to the mp radius
+     * tokens; `default` keeps `--sn-mp-input-radius`:
+     *  - `sm`      — `--sn-mp-radius-sm` (8rpx)
+     *  - `default` — `--sn-mp-input-radius` (12rpx)
+     *  - `lg`      — `--sn-mp-radius-lg` (16rpx)
+     *  - `xl`      — `--sn-mp-radius-xl` (24rpx)
+     *  - `pill`    — fully rounded field
+     *  - `square`  — right-angled
      */
-    radius?: 'default' | 'pill' | 'square';
+    radius?: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square';
     /** Right-align the value (numeric / amount fields). */
     alignRight?: boolean;
     /**
@@ -279,22 +286,69 @@ defineSlots<{
 
 // uni 的 vue 运行时（uni-h5-vue / mp 编译目标）不导出 Vue 3.5 的 useId，
 // 改用模块级计数器生成稳定的 DOM id（label 关联用，无需跨端唯一语义）。
-let snInputUid = 0;
-const inputId = `sn-input-${++snInputUid}`;
 const slots = useSlots();
 
-/** Native `<input>` / `<textarea>` — only one exists at a time (v-if / v-else). */
-const nativeEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null);
+const instance = getCurrentInstance();
+
+/** SnInputField child ref — instant clear-sync, bypasses uni's debounce. */
+const fieldRef = ref<{ syncValue: (text: string) => void } | null>(null);
+
+/**
+ * sn-input's own root element — the stable ancestor of the inner field for
+ * the capture-phase mirror and imperative focus. The uni-input element lives
+ * inside the SnInputField child (see sn-input-field.vue for why), so DOM
+ * access goes through the component instance's root element.
+ */
+function rootElement(): Element | null {
+  return (instance?.proxy as { $el?: Element } | null)?.$el ?? null;
+}
+
+/** The inner native field, reached through the root element. */
+function fieldInputElement(): HTMLInputElement | HTMLTextAreaElement | null {
+  const root = rootElement();
+  if (!root) return null;
+  if (root instanceof HTMLInputElement || root instanceof HTMLTextAreaElement) return root;
+  return root.querySelector('input, textarea');
+}
 
 // uni 的 input 组件 `focus` prop 语义：挂载后自动聚焦。H5 / 测试环境通过真实
 // .focus() 实现；MP 编译目标由 uni 运行时按同名 prop 处理。
 onMounted(() => {
-  if (props.focus) nativeEl.value?.focus();
+  if (props.focus) refocusField();
 });
 
-/** DOM-bound value (always string). */
-const nativeValue = computed<string>(() =>
-  props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue),
+/**
+ * Last value this instance delivered upstream through the typing pipeline —
+ * the dedupe memo AND the reactive source for the field UI (counter, clear
+ * button), which must track what the user typed, not just external writes.
+ */
+const lastTypedValue = ref<string | number | null>(null);
+
+/**
+ * External model writes only — bound to the field child's `value` prop. Our
+ * own v-model echo must NOT reach uni-input: its render reads the internal
+ * `state2.value`, not the prop, so a mid-keystroke update re-asserts the
+ * STALE internal text over the field and eats the character Blink just
+ * inserted. uni-input owns the in-flight typing state; this prop is a
+ * one-way external sync channel. See sn-input-field.vue.
+ */
+const externalValue = ref(props.modelValue);
+
+/** Field UI value (always string) — typed deliveries + external writes. Drives
+ *  the counter and the clear button, which live OUTSIDE uni-input, so tracking
+ *  our own deliveries here is safe and keeps them real-time. */
+const nativeValue = computed<string>(() => {
+  if (lastTypedValue.value !== null) return String(lastTypedValue.value);
+  return externalValue.value === null || externalValue.value === undefined
+    ? ''
+    : String(externalValue.value);
+});
+
+/** External-writes-only value for the field child — see externalValue. */
+const boundNativeValue = computed<string>(() =>
+  externalValue.value === null || externalValue.value === undefined
+    ? ''
+    : String(externalValue.value),
 );
 
 const isTextarea = computed(() => props.type === 'textarea');
@@ -340,18 +394,89 @@ const passwordToggleIcon = computed<IconData>(() => markRaw(passwordVisible.valu
  *  proxy the IconData record. */
 const defaultClearIcon = markRaw(XIcon);
 
-function onInput(event: Event): void {
-  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  const raw = target.value;
-  const next: number | string =
-    (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
+/**
+ * Glyph size for every icon inside the field (prefix / suffix / clear /
+ * password toggle). A CSS-var string passes through sn-icon's size
+ * normalization untouched, so the token stays overridable at runtime —
+ * same pattern as sn-cell's `effectiveIconSize`.
+ */
+const ICON_SIZE_VAR = 'var(--sn-input-icon-size)';
+
+/**
+ * Coerce a typed value to number only when the coercion is lossless in
+ * string form ("42", "12.5"). Intermediate literals ("12.", "012") stay
+ * strings: coercing them would re-render `:value` with a different string
+ * than the field shows, and the controlled patch would eat the character
+ * the user just typed. Full coercion happens on change / confirm (commit
+ * points).
+ */
+function coerceTyping(raw: string): number | string {
+  if (props.type !== 'number' && props.type !== 'digit') return raw;
+  const n = Number(raw);
+  return String(n) === raw ? n : raw;
+}
+
+/** The `detail.value` string of a uni component-level event, if it carries one. */
+function eventDetailValue(event: Event): string | null {
+  const detail = (event as unknown as { detail?: { value?: unknown } }).detail;
+  return detail && typeof detail.value === 'string' ? detail.value : null;
+}
+
+/**
+ * Read the typed value off either event shape. uni-h5's component-level
+ * `input` events are SYNTHETIC objects: `target` is a plain
+ * `{ id, dataset, offsetTop, offsetLeft }` with no `.value`, and the typed
+ * text rides `detail.value`. Native (mirror-captured) events carry the real
+ * field on `target` and have no `detail`. Reading `target.value` off the
+ * synthetic shape yields `undefined` — which cleared the field on every
+ * keystroke in compiled apps.
+ */
+function readEventValue(event: Event): string {
+  const detailValue = eventDetailValue(event);
+  if (detailValue !== null) return detailValue;
+  const target = event.target as HTMLInputElement | null;
+  if (target && typeof target.value === 'string') return target.value;
+  return '';
+}
+
+/**
+ * Single upstream funnel for every typed value, whatever carrier brought it
+ * (H5 capture mirror, uni component-level replay, MP component event).
+ *
+ * Dedupe is BY VALUE, not by event identity: uni-input re-wraps each native
+ * keystroke into a FRESH synthetic object (throttled to ~10Hz), so an
+ * identity check never matches and H5 delivered every keystroke twice —
+ * two model writes and two parent `input` events per key. A value guard
+ * drops only that redundant replay.
+ */
+function deliverTypingValue(raw: string, event: Event): void {
+  const next = coerceTyping(raw);
+  if (next === lastTypedValue.value) return;
+  lastTypedValue.value = next;
   emit('update:modelValue', next);
   emit('input', next, event);
 }
 
+watch(
+  () => props.modelValue,
+  (value) => {
+    const normalized = coerceTyping(value === null || value === undefined ? '' : String(value));
+    if (normalized === lastTypedValue.value) return; // own v-model echo — uni-input owns the field
+    lastTypedValue.value = null;
+    externalValue.value = value;
+  },
+);
+
+function onInput(event: Event): void {
+  /* The field child's capture-phase mirror delivers every native keystroke
+   * in real time; uni's component-level replay (throttled) carries the same
+   * value in synthetic shape and is deduped in the funnel. MP has no mirror
+   * and takes this path alone for every keystroke. */
+  deliverTypingValue(readEventValue(event), event);
+}
+
 function onChange(event: Event): void {
-  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
-  const raw = target.value;
+  const raw = readEventValue(event);
   const next: number | string =
     (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
   emit('change', next, event);
@@ -368,24 +493,38 @@ function onBlur(event: Event): void {
 }
 
 function onConfirm(event: Event): void {
+  /* uni-h5 / MP confirm events carry `detail.value`; raw dispatches (tests)
+   * carry nothing. An explicit empty confirm must stay empty — the model
+   * fallback applies only when the event has no detail payload at all. */
+  const raw = eventDetailValue(event) ?? nativeValue.value;
   const next: number | string =
-    (props.type === 'number' || props.type === 'digit') && nativeValue.value !== ''
-      ? Number(nativeValue.value)
-      : nativeValue.value;
+    (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw;
   emit('confirm', next);
-  void event;
+}
+
+/**
+ * Refocus the field after a clear tap (`focusWhenClear`) and for the mount
+ * `focus` prop. Tapping × blurs the field, so without this the next
+ * keystrokes go nowhere and the clear icon "never comes back". Imperative
+ * DOM focus reached through the component root — the uni-input wrapper's
+ * exposed object carries no `focus` and a template `:focus` binding would
+ * clobber the element method on the raw-test path. MP keyboards are raised
+ * by user taps and stay out of scope here.
+ */
+function refocusField(): void {
+  if (typeof document === 'undefined') return;
+  fieldInputElement()?.focus();
 }
 
 function onClear(): void {
   emit('update:modelValue', '');
   emit('clear');
+  /* uni-input applies external value changes through a 100ms debounce; a
+   * keystroke inside that window cancels the pending sync and resurrects
+   * the pre-clear text. The field child's exposed sync applies it now. */
+  fieldRef.value?.syncValue('');
   if (!props.focusWhenClear) return;
-  nextTick(() => {
-    /* Re-focus is intentionally a no-op on uni-end because the soft
-     * keyboard is dismissed on blur in MP environments; consumers that
-     * want to programmatically re-focus should listen for the `clear`
-     * event and call .focus() on the input ref themselves. */
-  });
+  refocusField();
 }
 
 function onClickRoot(event: Event): void {
@@ -440,20 +579,10 @@ const wrapperStyle = computed(() => {
 });
 
 /**
- * Uni-app MP-only native input attributes grouped into a single computed
- * so vue-tsc doesn't choke on `<input>` not declaring them on its
- * intrinsic HTMLInputElement interface. They're all standard MP runtime
- * hints — uni-app compiles them through to the underlying MP renderer.
- * （MP 端模板不支持 v-bind="obj" 展开，这些属性已在模板中显式逐条绑定。）
+ * Uni-app MP-only native input attributes are bound on the SnInputField child
+ * (see sn-input-field.vue) — the same attribute set, grouped there so
+ * vue-tsc sees one prop boundary instead of raw `<input>` intrinsics.
  */
-
-/** Placeholder styling is a native input attribute, not a `::placeholder`
- * rule: App has no pseudo-elements (§116.2). The default keeps the token
- * color that the CSS rule used to supply. */
-const DEFAULT_PLACEHOLDER_STYLE =
-  'color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary)); opacity: 1';
-const placeholderStyleAttr = computed(() => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE);
-const placeholderClassAttr = computed(() => props.placeholderClass || undefined);
 </script>
 
 <template>
@@ -477,57 +606,28 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         v-if="!slots.prefix && (prefixIcon || iconPrefix)"
         :class="cssIcon ? prefixIcon || iconPrefix : 'sn-input__icon-glyph'"
       >
-        <slot name="prefix-icon" />
+        <slot name="prefix-icon">
+          <!-- Name mode resolves through the sn-icon chain
+            (registry → built-in catalogue → provider), mirroring the web
+            SnInput — the glyph used to render as an empty box here. -->
+          <SnIcon v-if="!cssIcon" :icon="prefixIcon || iconPrefix" :size="ICON_SIZE_VAR" />
+        </slot>
       </view>
     </view>
 
-    <textarea
-      v-if="isTextarea"
-      ref="nativeEl"
-      :id="inputId"
-      :class="['sn-input__native', placeholderClass, customInputClass]"
-      :value="nativeValue"
-      :placeholder="placeholder"
-      :placeholder-style="placeholderStyleAttr"
-      :placeholder-class="placeholderClassAttr"
-      :disabled="disabled"
-      :readonly="readonly"
-      :maxlength="maxlength"
-      :rows="textareaRows"
-      :aria-label="ariaLabel"
-      :aria-invalid="ariaInvalid"
-      :aria-required="required ? 'true' : undefined"
-      :confirm-type="confirmType"
-      :hold-keyboard="holdKeyboard"
-      :adjust-position="adjustPosition"
-      :always-embed="alwaysEmbed"
-      :cursor-spacing="cursorSpacing"
-      :confirm-hold="confirmHold"
-      :ignore-composition-event="ignoreCompositionEvent"
-      :enable-native="enableNative"
-      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-      :selection-start="
-        selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
-      "
-      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
-      @input="onInput"
-      @change="onChange"
-      @focus="onFocus"
-      @blur="onBlur"
-      @confirm="onConfirm"
-    />
-
-    <input
-      v-else
-      ref="nativeEl"
-      :id="inputId"
-      :class="['sn-input__native', placeholderClass, customInputClass]"
+    <!-- The uni-input element lives in SnInputField: its props are
+         identity/value-stable during typing (external-only value, cached
+         class), so this component's per-keystroke UI re-render can never
+         cascade into uni-input and clobber the field. See sn-input-field.vue. -->
+    <SnInputField
+      ref="fieldRef"
+      :value="boundNativeValue"
+      :is-textarea="isTextarea"
       :type="effectivePasswordType"
       :inputmode="inputmode"
-      :value="nativeValue"
       :placeholder="placeholder"
-      :placeholder-style="placeholderStyleAttr"
-      :placeholder-class="placeholderClassAttr"
+      :placeholder-style="placeholderStyle"
+      :placeholder-class="placeholderClass"
       :disabled="disabled"
       :readonly="readonly"
       :maxlength="maxlength"
@@ -538,6 +638,8 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
+      :rows="textareaRows"
+      :custom-input-class="customInputClass"
       :confirm-type="confirmType"
       :hold-keyboard="holdKeyboard"
       :adjust-position="adjustPosition"
@@ -546,11 +648,9 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :confirm-hold="confirmHold"
       :ignore-composition-event="ignoreCompositionEvent"
       :enable-native="enableNative"
-      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-      :selection-start="
-        selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
-      "
-      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
+      :cursor="cursor"
+      :selection-start="selectionStart"
+      :selection-end="selectionEnd"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
@@ -564,7 +664,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="passwordVisible = !passwordVisible"
-        ><SnIcon :icon="passwordToggleIcon" :size="20"
+        ><SnIcon :icon="passwordToggleIcon" :size="ICON_SIZE_VAR"
       /></view>
     </view>
 
@@ -575,7 +675,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="onClear"
       >
-        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="20" /></slot>
+        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="'62%'" /></slot>
       </view>
     </view>
 
@@ -590,7 +690,9 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         v-if="!slots.suffix && (suffixIcon || iconSuffix)"
         :class="cssIcon ? suffixIcon || iconSuffix : 'sn-input__icon-glyph'"
       >
-        <slot name="suffix-icon" />
+        <slot name="suffix-icon">
+          <SnIcon v-if="!cssIcon" :icon="suffixIcon || iconSuffix" :size="ICON_SIZE_VAR" />
+        </slot>
       </view>
     </view>
 
@@ -609,6 +711,12 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
  * `--sn-mp-*` alias layer that ships from `@snui/tokens-mp`.
  */
 .sn-input {
+  /* Input-family icon contract — every glyph inside the field (prefix /
+   * suffix / clear / password toggle) shares one size and one color. The
+   * defaults anchor on `--sn-mp-*` tokens so dark mode and style packs
+   * follow automatically (§116.2 — no literal colors). */
+  --sn-input-icon-size: var(--sn-mp-icon-size-medium);
+  --sn-input-icon-color: var(--sn-mp-color-text-tertiary);
   display: inline-flex;
   align-items: center;
   gap: 12rpx;
@@ -626,9 +734,34 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
     background-color 0.18s ease-out;
 }
 
+/* Radius presets — tiers ride the shared `--sn-mp-radius-*` scale so fields
+ * can sit on cards (sm) or hero search bars (xl) without one-off values.
+ * Declared BEFORE the border variants: `border='bottom'` must always win the
+ * radius (a bottom-edge row is square regardless of the `radius` tier — the
+ * classList carries `radius-default` even then, and equal specificity means
+ * later-in-stylesheet wins). */
+.sn-input--radius-default {
+  border-radius: var(--sn-mp-input-radius, 12rpx);
+}
+.sn-input--radius-sm {
+  border-radius: var(--sn-mp-radius-sm);
+}
+.sn-input--radius-lg {
+  border-radius: var(--sn-mp-radius-lg);
+}
+.sn-input--radius-xl {
+  border-radius: var(--sn-mp-radius-xl);
+}
+.sn-input--radius-pill {
+  border-radius: 999rpx;
+}
+.sn-input--radius-square {
+  border-radius: 0;
+}
+
 /* Border variants — `border='all'` is the default; `border='bottom'` only
- * shows a bottom edge (typical for inline form rows that sit on a card);
- * `border='none'` drops the border entirely. */
+ * shows a bottom edge (typical for inline form rows that sit on a card) and
+ * forces square corners; `border='none'` drops the border entirely. */
 .sn-input--border-all {
   border: 2rpx solid var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
 }
@@ -655,17 +788,6 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 }
 .sn-input--bg-soft {
   background-color: var(--sn-mp-color-background-soft);
-}
-
-/* Radius presets */
-.sn-input--radius-default {
-  border-radius: var(--sn-mp-input-radius, 12rpx);
-}
-.sn-input--radius-pill {
-  border-radius: 999rpx;
-}
-.sn-input--radius-square {
-  border-radius: 0;
 }
 
 /* Focus state — border color soft outer ring so users can see
@@ -764,13 +886,15 @@ textarea.sn-input__native {
   cursor: pointer;
 }
 
-/* Icon glyph slot — host project can `<view slot="prefix-icon">` here. */
+/* Icon glyph slot — host project can `<view slot="prefix-icon">` here;
+ * name-mode SnIcons land in the same box. */
 .sn-input__icon-glyph {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  color: var(--sn-input-icon-color);
 }
 
 /* Password show/hide toggle */
@@ -783,12 +907,10 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  background: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  color: var(--sn-input-icon-color);
   border-radius: 50%;
-  font-size: 24rpx;
   line-height: 1;
   cursor: pointer;
 }
@@ -803,12 +925,13 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  background: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  width: var(--sn-input-icon-size);
+  height: var(--sn-input-icon-size);
+  /* Circular delete chip: token-colored disc with a surface-toned × so the
+   * glyph stays legible in dark mode / style packs (both vars flip). */
+  background: var(--sn-input-icon-color);
+  color: var(--sn-mp-color-background-surface);
   border-radius: 50%;
-  font-size: 24rpx;
   line-height: 1;
   cursor: pointer;
 }
@@ -851,6 +974,11 @@ textarea.sn-input__native {
 }
 .snui-skin-doodle .sn-input__password-toggle-btn,
 .snui-skin-doodle .sn-input__clear-btn {
+  /* Ink border eats into the token-sized box — grow the box so the glyph
+   * still fits (border-box keeps the outer size predictable). */
+  box-sizing: border-box;
+  width: 48rpx;
+  height: 48rpx;
   border: 4rpx solid #1a1a1a;
   box-shadow: 2rpx 2rpx 0 #1a1a1a;
 }

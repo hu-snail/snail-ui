@@ -22,6 +22,14 @@
  *     yet. `shortcuts` itself IS implemented (a row of chips that writes a
  *     preset value) and `on-shortcuts-click` is invoked after a chip tap.
  *
+ * ## Additive (AUI-OPT-11, AGENTS.md §112.3a — wd-calendar has no such slot)
+ *
+ *   - `header` slot — replaces the plain title row at the top of the sheet so
+ *     a host can drop a richer section (a `sn-cell` summary row, a segmented
+ *     control…) inside the sheet without losing the popup chrome. Without the
+ *     slot the default `title` text renders exactly as before, so the change
+ *     is purely additive.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -129,6 +137,11 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the sheet. */
     customStyle?: string;
+    /**
+     * 农历角标（additive，AGENTS.md §112.3a）：转发给 `sn-calendar-view`，
+     * 格子下方显示农历日名，初一显示月名。`formatter` 可覆盖。
+     */
+    showLunar?: boolean;
   }>(),
   {
     modelValue: null,
@@ -165,6 +178,7 @@ const props = withDefaults(
     showTypeSwitch: true,
     onShortcutsClick: undefined,
     rootPortal: false,
+    showLunar: false,
   },
 );
 
@@ -175,6 +189,15 @@ const emit = defineEmits<{
   (e: 'change', payload: { value: CalendarValue }): void;
   (e: 'cancel'): void;
   (e: 'open'): void;
+}>();
+
+defineSlots<{
+  /** 弹层顶部区（additive）：替换默认标题行，可放 cell 摘要行等分节内容。 */
+  header?(): unknown;
+  /** 确认区域左侧插槽。 */
+  'confirm-left'?(): unknown;
+  /** 确认区域右侧插槽。 */
+  'confirm-right'?(): unknown;
 }>();
 
 /** Draft value while the sheet is open. */
@@ -288,7 +311,9 @@ const viewClass = computed(() => props.customViewClass);
   >
     <view class="sn-calendar" :data-snui-component="'calendar'">
       <view class="sn-calendar__header">
-        <text class="sn-calendar__title">{{ props.title }}</text>
+        <slot name="header">
+          <text class="sn-calendar__title">{{ props.title }}</text>
+        </slot>
       </view>
 
       <view v-if="props.shortcuts.length > 0" class="sn-calendar__shortcuts">
@@ -318,6 +343,7 @@ const viewClass = computed(() => props.customViewClass);
         :panel-height="props.panelHeight"
         :show-panel-title="props.showPanelTitle"
         :switch-mode="props.switchMode"
+        :show-lunar="props.showLunar"
         :immediate-change="props.immediateChange"
         @change="onViewChange"
       />

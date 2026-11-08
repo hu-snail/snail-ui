@@ -31,10 +31,10 @@ function onCellClick(payload: { url: string; linkType: string }): void {
       icon-size="48px"
       @click="onCellClick"
     >
-      <SnGridItem text="Scan" icon="Search" />
-      <SnGridItem text="Pay" icon="Download" />
-      <SnGridItem text="Receive" icon="Upload" />
-      <SnGridItem text="More" icon="MoreHorizontal" />
+      <SnGridItem text="Scan" icon="camera" />
+      <SnGridItem text="Pay" icon="wallet" />
+      <SnGridItem text="Receive" icon="banknote" />
+      <SnGridItem text="More" icon="ellipsis" />
     </SnGrid>
 
     <text class="sn-demo__label">custom hover-class + center=false + custom-style</text>
@@ -48,9 +48,9 @@ function onCellClick(payload: { url: string; linkType: string }): void {
       custom-style="padding: var(--sn-mp-spacing-2);"
       @click="onCellClick"
     >
-      <SnGridItem text="Top aligned" icon="Star" />
-      <SnGridItem text="Second cell" icon="Heart" />
-      <SnGridItem text="Third cell" icon="Bell" />
+      <SnGridItem text="Top aligned" icon="star" />
+      <SnGridItem text="Second cell" icon="heart" />
+      <SnGridItem text="Third cell" icon="bell" />
     </SnGrid>
 
     <text class="sn-demo__meta">Last tap: {{ tapped }}</text>

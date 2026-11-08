@@ -107,16 +107,26 @@ describe('sn-button', () => {
         props: { iconName: 'TestIcon' },
         slots: { default: 'Named' },
       });
-      expect(wrapper.find('.sn-icon').exists()).toBe(true);
+      /* String names go through SnIcon's chain (registry → catalog); the
+       * registry-registered icon resolves to a rendered SVG. */
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(true);
     });
 
-    it('falls through to loading spinner when `iconName` is unregistered', () => {
+    it('resolves a built-in catalog name through the sn-icon chain', () => {
+      /* 'check' ships in the sn-icon built-in catalog — no registry needed. */
       const wrapper = mount(SnButton, {
-        props: { iconName: 'Missing', loading: true },
+        props: { iconName: 'check' },
+        slots: { default: 'Catalog' },
+      });
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(true);
+    });
+
+    it('renders no svg when `iconName` matches nothing', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'Missing' },
         slots: { default: 'X' },
       });
-      expect(wrapper.find('.sn-icon').exists()).toBe(false);
-      expect(wrapper.find('.sn-button__spinner').exists()).toBe(true);
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(false);
     });
 
     it('icon slot overrides iconData / iconName props', () => {
@@ -259,14 +269,37 @@ describe('sn-button', () => {
     expect(wrapper.attributes('style')).toContain('color: #123456');
   });
 
-  it('applies loadingColor to spinner style', () => {
+  it('renders the loading spinner through the embedded sn-icon', () => {
     const wrapper = mount(SnButton, {
       props: { loading: true, loadingColor: '#abcdef' },
       slots: { default: 'L' },
     });
-    expect(wrapper.find('.sn-button__spinner').attributes('style')).toContain('#abcdef');
+    const icon = wrapper.find('.sn-button__spinner .sn-icon svg');
+    expect(icon.exists()).toBe(true);
+    /* loadingColor rides SnIcon's color → svg stroke (currentColor pipeline). */
+    expect(icon.attributes('stroke')).toBe('#abcdef');
   });
 
+  it('scales the spinner with loading-size (rpx)', () => {
+    const wrapper = mount(SnButton, { props: { loading: true, loadingSize: 48 } });
+    /* happy-dom discards rpx lengths, so assert the forwarded size prop. */
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+  });
+
+  it('normalizes an unbound string loading-size ("48") to rpx', () => {
+    /* Template attributes deliver numbers as unitless strings; forwarded raw
+     * they write `width: 48` — invalid CSS that blew the spinner up to the
+     * SVG default intrinsic size. */
+    const wrapper = mount(SnButton, { props: { loading: true, loadingSize: '48' } });
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+  });
+
+  it('lets loading-props size fall through when the flat prop is untouched', () => {
+    const wrapper = mount(SnButton, {
+      props: { loading: true, loadingProps: { size: 64 } },
+    });
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('64rpx');
+  });
   it('forwards customClass to the root', () => {
     const wrapper = mount(SnButton, {
       props: { customClass: 'my-cta' },
@@ -307,5 +340,31 @@ describe('sn-button (style-object and iconfont API)', () => {
     expect(icon.props('name')).toBe('star');
     expect(icon.props('classPrefix')).toBe('wd-icon');
     expect(icon.props('cssIcon')).toBe(false);
+  });
+
+  it('auto-fits the icon size to the size preset when iconSize is unset', () => {
+    const medium = mount(SnButton, { props: { iconName: 'check' } });
+    const small = mount(SnButton, { props: { iconName: 'check', size: 'small' } });
+    const large = mount(SnButton, { props: { iconName: 'check', size: 'large' } });
+    /* Preset numbers are rpx design values — normalized before hitting sn-icon,
+     * whose bare-number box would otherwise render them as px (2× oversized). */
+    expect(medium.findComponent({ name: 'SnIcon' }).props('size')).toBe('32rpx');
+    expect(small.findComponent({ name: 'SnIcon' }).props('size')).toBe('28rpx');
+    expect(large.findComponent({ name: 'SnIcon' }).props('size')).toBe('40rpx');
+  });
+
+  it('normalizes a numeric iconSize to rpx and passes unit strings through', () => {
+    const numeric = mount(SnButton, { props: { iconName: 'check', iconSize: 20 } });
+    const unitless = mount(SnButton, { props: { iconName: 'check', iconSize: '48' } });
+    const unit = mount(SnButton, { props: { iconName: 'check', iconSize: '1.5em' } });
+    expect(numeric.findComponent({ name: 'SnIcon' }).props('size')).toBe('20rpx');
+    expect(unitless.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+    expect(unit.findComponent({ name: 'SnIcon' }).props('size')).toBe('1.5em');
+  });
+
+  it('applies the circle (icon-only) shape classes', () => {
+    const wrapper = mount(SnButton, { props: { circle: true, iconName: 'check' } });
+    expect(wrapper.classes()).toContain('sn-button--circle');
+    expect(wrapper.classes()).toContain('sn-button--round');
   });
 });

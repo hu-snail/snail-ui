@@ -20,6 +20,34 @@
  * always wins, and a cell outside a group keeps a sane default. See
  * `sn-cell-types.ts`.
  *
+ * ## Additive props (AUI-OPT-01, AGENTS.md §112.3a — wd-cell has none of these)
+ *
+ *   - `prefixIconData` / `suffixIconData` — inline `IconData` objects
+ *     (sn-button dual-track: explicit data wins over the name).
+ *     Built-in set icons (sn-icon-set) are imported by the consumer and
+ *     passed as objects, so the row's leading icon goes through the built-in
+ *     icon set without a global registration step.
+ *   - `prefixIconUrl` / `suffixIconUrl` — image URL rendered as `<image>`
+ *     (sn-avatar pattern). Precedence: data object > image URL > font glyph >
+ *     name.
+ *   - `iconColor` — inline colour for the SVG icons; pass
+ *     `var(--sn-mp-color-*)` tokens (§112.5).
+ *   - `card` — independent card look for this row: radius / border / shadow
+ *     from tokens, the inner hairline suppressed. The group-level card form
+ *     (one card around the whole group) lives on sn-cell-group itself.
+ *   - `iconSize` also accepts the named tiers `tiny|small|medium|large|xlarge`
+ *     which map to the `--sn-mp-icon-size-*` tokens; bare numbers are rpx
+ *     design values and unknown strings pass through (backward compatible).
+ *
+ * ## Name-track resolution chain
+ *
+ * `prefixIcon` / `suffixIcon` are forwarded to SnIcon as strings, so a name
+ * walks the same chain as sn-button's `iconName`: registry
+ * (`registerSnIcons`) → built-in catalogue (kebab-case lucide names, resolves
+ * with zero registration) → async providers (`prefix:rest`). When `cssIcon`
+ * is on, the font-glyph branch wins over the name track — the glyph is the
+ * explicit iconfont opt-in.
+ *
  * ## Why `to` does not navigate by itself
  *
  * A component must not own routing (§60 AppBridge is the host capability
@@ -34,11 +62,11 @@
  *   - 分组容器 — 用 sn-cell-group
  */
 
-import { computed, inject, markRaw } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { ChevronRight } from '../sn-icon/sn-icon-set';
+import { toRpxSize } from '../../utils/sn-size';
 import { SN_CELL_GROUP_KEY, type SnCellValueAlign } from './sn-cell-types';
 
 defineOptions({ name: 'SnCell' });
@@ -55,11 +83,11 @@ const props = withDefaults(
     placeholder?: string;
     /** 标题下方描述信息。 */
     label?: string;
-    /** 前置图标名（经 `registerSnIcons()` 注册）。 */
+    /** 前置图标名：registry（`registerSnIcons`）→ 内置目录（kebab-case）→ Provider 依次解析。 */
     prefixIcon?: string;
-    /** 后置图标名（经 `registerSnIcons()` 注册）。 */
+    /** 后置图标名：解析链同 `prefixIcon`。 */
     suffixIcon?: string;
-    /** 图标大小。 */
+    /** 图标大小：裸数字按 rpx（750 设计稿）；档位名 tiny/small/medium/large/xlarge 映射 `--sn-mp-icon-size-*`；其它字符串透传。 */
     iconSize?: string | number | undefined;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
     iconPrefix?: string;
@@ -113,6 +141,21 @@ const props = withDefaults(
     customValueClass?: string;
     /** title 区域自定义样式类。 */
     customTitleClass?: string;
+
+    /* ── additive (AUI-OPT-01, AGENTS.md §112.3a) ────────────────────────── */
+
+    /** 前置图标数据对象（内置图标集 / 自定义 IconData），优先于 `prefixIcon` 名。 */
+    prefixIconData?: IconData;
+    /** 后置图标数据对象（内置图标集 / 自定义 IconData），优先于 `suffixIcon` 名。 */
+    suffixIconData?: IconData;
+    /** 前置图片地址：渲染为 `<image>`，优先级低于 `prefixIconData`、高于 `prefixIcon`。 */
+    prefixIconUrl?: string;
+    /** 后置图片地址：渲染为 `<image>`，优先级低于 `suffixIconData`、高于 `suffixIcon`。 */
+    suffixIconUrl?: string;
+    /** 图标颜色（仅 SVG 图标；请传 `var(--sn-mp-color-*)` token）。 */
+    iconColor?: string;
+    /** 卡片形态：该行渲染为独立圆角卡片（脱离分组或组内显式开启时生效）；组的整卡形态由 sn-cell-group 的 card 承担。 */
+    card?: boolean | undefined;
   }>(),
   {
     title: '',
@@ -121,7 +164,6 @@ const props = withDefaults(
     label: '',
     prefixIcon: '',
     suffixIcon: '',
-    iconSize: undefined,
     iconPrefix: '',
     cssIcon: false,
     to: '',
@@ -130,11 +172,13 @@ const props = withDefaults(
     isLink: false,
     arrowDirection: 'right',
     size: 'default',
+    /* `undefined` sentinels for the inherit-from-group booleans: with no
+     * `default` key Vue casts absent booleans to `false`, which would beat the
+     * group fallback in `props.border ?? group?.border.value` (cell-group
+     * inheritance would silently stop working). */
     border: undefined,
-    titleWidth: undefined,
     center: undefined,
-    layout: undefined,
-    valueAlign: undefined,
+    card: undefined,
     required: false,
     asteriskPosition: 'start',
     hideAsterisk: false,
@@ -148,6 +192,9 @@ const props = withDefaults(
     customLabelClass: '',
     customValueClass: '',
     customTitleClass: '',
+    prefixIconUrl: '',
+    suffixIconUrl: '',
+    iconColor: '',
   },
 );
 
@@ -174,6 +221,31 @@ defineSlots<{
 
 const group = inject(SN_CELL_GROUP_KEY, null);
 
+/**
+ * Last-row divider suppression: the group tracks mounted cells (App has no
+ * `:last-child`, §116.2) and the last one drops its hairline — the container
+ * edge or the next section already draws that line.
+ */
+const myCellId = ref(0);
+let unregisterCell: (() => void) | null = null;
+
+onMounted(() => {
+  if (group !== null) {
+    const handle = group.registerCell();
+    myCellId.value = handle.id;
+    unregisterCell = handle.unregister;
+  }
+});
+
+onBeforeUnmount(() => {
+  unregisterCell?.();
+  unregisterCell = null;
+});
+
+const isLastInGroup = computed(
+  () => group !== null && myCellId.value !== 0 && group.lastCellId.value === myCellId.value,
+);
+
 /** Effective flags: explicit prop wins, group value fills the gaps. */
 const effectiveBorder = computed(() => props.border ?? group?.border.value ?? false);
 const effectiveCenter = computed(() => props.center ?? group?.center.value ?? false);
@@ -193,17 +265,44 @@ const displayValue = computed<string>(() => {
   return String(value);
 });
 
-function resolveIcon(name: string): IconData | null {
-  if (!name) return null;
-  const resolved = resolveIconByName(name);
-  return resolved ? markRaw(resolved) : null;
-}
+/**
+ * Named size tiers map to the mp icon-size tokens (§112.5 — no fallback
+ * values). Bare numbers are rpx design-canvas values (uni 750 canvas) and are
+ * normalized to `rpx` strings — sn-icon renders bare numbers as px, which made
+ * the default glyph (and the link arrow) read 2× oversized next to the label.
+ * Unknown strings pass through.
+ */
+const ICON_SIZE_TIERS: Readonly<Record<string, string>> = {
+  tiny: 'var(--sn-mp-icon-size-tiny)',
+  small: 'var(--sn-mp-icon-size-small)',
+  medium: 'var(--sn-mp-icon-size-medium)',
+  large: 'var(--sn-mp-icon-size-large)',
+  xlarge: 'var(--sn-mp-icon-size-xlarge)',
+};
 
-const prefixIconData = computed(() => resolveIcon(props.prefixIcon));
-const suffixIconData = computed(() => resolveIcon(props.suffixIcon));
+const effectiveIconSize = computed<string>(() => {
+  const size = props.iconSize;
+  /* Literal (not ICON_SIZE_TIERS.medium): the index signature reads
+   * `string | undefined` under noUncheckedIndexedAccess. */
+  if (size === undefined) return 'var(--sn-mp-icon-size-medium)';
+  return ICON_SIZE_TIERS[size] ?? toRpxSize(size);
+});
+
+/** Size box for the image icon path, mirroring `effectiveIconSize`. */
+const iconBoxStyle = computed(
+  () => `width: ${effectiveIconSize.value}; height: ${effectiveIconSize.value};`,
+);
+
+/** Inline colour for the SVG icons (additive); unset keeps the token default. */
+const iconColorStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));
+
+/** Card look for THIS row (additive): a standalone cell or an explicit opt-in
+ * renders as its own card. A group's `card` styles the group container itself
+ * (one card for the whole group) and is deliberately not inherited per row. */
+const effectiveCard = computed(() => props.card ?? false);
 
 /** Font-icon class list for either side. */
-function cssIconClass(name: string): string {
+function cssIconClass(name: string | undefined): string {
   if (!name || !props.cssIcon) return '';
   const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix;
   return prefix ? `${prefix}-${name}` : name;
@@ -219,8 +318,6 @@ const arrowIconStyle = computed(() => {
   };
   return `transform: ${rotation[props.arrowDirection] ?? 'none'}`;
 });
-
-const iconSizeValue = computed(() => props.iconSize ?? 32);
 
 /** Title column width — numbers are read as px (upstream contract). */
 const titleStyle = computed(() => {
@@ -240,11 +337,13 @@ const rootClass = computed(() => [
   `sn-cell--layout-${effectiveLayout.value}`,
   `sn-cell--align-${effectiveValueAlign.value}`,
   {
-    'sn-cell--border': effectiveBorder.value,
+    // Card rows own their outline; the inner hairline would double up.
+    'sn-cell--border': effectiveBorder.value && !effectiveCard.value,
     'sn-cell--center': effectiveCenter.value,
     'sn-cell--clickable': isInteractive.value,
     'sn-cell--ellipsis': props.ellipsis,
     'sn-cell--insert': group?.insert.value ?? false,
+    'sn-cell--card': effectiveCard.value,
   },
   props.customClass,
 ]);
@@ -260,19 +359,41 @@ const rootClass = computed(() => [
     :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
     @tap="onTap"
   >
-    <view v-if="effectiveBorder" class="sn-cell__hairline" aria-hidden="true" />
+    <view
+      v-if="effectiveBorder && !effectiveCard && !isLastInGroup"
+      class="sn-cell__hairline"
+      aria-hidden="true"
+    />
     <view class="sn-cell__title" :style="titleStyle">
       <slot name="prefix">
+        <!-- Icon precedence (additive): data object > image URL > font glyph > name chain. -->
         <SnIcon
           v-if="prefixIconData"
           :class="['sn-cell__icon', customPrefixClass]"
+          :style="iconColorStyle"
           :icon="prefixIconData"
-          :size="iconSizeValue"
+          :size="effectiveIconSize"
+        />
+        <image
+          v-else-if="prefixIconUrl"
+          class="sn-cell__image"
+          :class="customPrefixClass"
+          :src="prefixIconUrl"
+          mode="aspectFill"
+          :style="iconBoxStyle"
+          aria-hidden="true"
         />
         <text
-          v-else-if="prefixIcon && cssIconClass(prefixIcon)"
+          v-else-if="cssIconClass(prefixIcon)"
           :class="['sn-cell__icon', cssIconClass(prefixIcon), customPrefixClass]"
           aria-hidden="true"
+        />
+        <SnIcon
+          v-else-if="prefixIcon"
+          :class="['sn-cell__icon', customPrefixClass]"
+          :style="iconColorStyle"
+          :icon="prefixIcon"
+          :size="effectiveIconSize"
         />
       </slot>
 
@@ -317,19 +438,36 @@ const rootClass = computed(() => [
     </view>
 
     <view v-if="isLink" class="sn-cell__arrow" aria-hidden="true">
-      <SnIcon :icon="ChevronRight" :size="32" :style="arrowIconStyle" />
+      <SnIcon :icon="ChevronRight" size="32rpx" :style="arrowIconStyle" />
     </view>
     <slot v-else name="suffix">
       <SnIcon
         v-if="suffixIconData"
         :class="['sn-cell__icon', customSuffixClass]"
+        :style="iconColorStyle"
         :icon="suffixIconData"
-        :size="iconSizeValue"
+        :size="effectiveIconSize"
+      />
+      <image
+        v-else-if="suffixIconUrl"
+        class="sn-cell__image"
+        :class="customSuffixClass"
+        :src="suffixIconUrl"
+        mode="aspectFill"
+        :style="iconBoxStyle"
+        aria-hidden="true"
       />
       <text
-        v-else-if="suffixIcon && cssIconClass(suffixIcon)"
+        v-else-if="cssIconClass(suffixIcon)"
         :class="['sn-cell__icon', cssIconClass(suffixIcon), customSuffixClass]"
         aria-hidden="true"
+      />
+      <SnIcon
+        v-else-if="suffixIcon"
+        :class="['sn-cell__icon', customSuffixClass]"
+        :style="iconColorStyle"
+        :icon="suffixIcon"
+        :size="effectiveIconSize"
       />
     </slot>
   </view>
@@ -343,7 +481,9 @@ const rootClass = computed(() => [
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  /* Vertical rhythm tuned +4rpx per design review (16rpx read cramped under
+     large titles); horizontal keeps the spacing token. */
+  padding: 20rpx var(--sn-mp-spacing-4);
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
@@ -356,6 +496,16 @@ const rootClass = computed(() => [
 /* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
 .sn-cell--pressed {
   background-color: var(--sn-mp-color-background-soft);
+}
+
+/* Card rows (additive): token-driven chrome, the lightest elevation — a
+   one-row surface with `sm` reads too heavy next to the group card. The
+   inner hairline is already suppressed in the template, so a card never
+   doubles up with a divider. */
+.sn-cell--card {
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  box-shadow: var(--sn-mp-shadow-xs);
 }
 
 /* Hairline is a real element, not `::after`: App has no pseudo-elements
@@ -392,7 +542,9 @@ const rootClass = computed(() => [
 
 .sn-cell__title {
   display: flex;
-  flex: 0 0 auto;
+  /* Shrinkable so a long title wraps onto more lines instead of pushing the
+     value out; `ellipsis` opts back into the one-line truncated look. */
+  flex: 0 1 auto;
   align-items: center;
   gap: var(--sn-mp-spacing-2);
   min-width: 0;
@@ -417,9 +569,12 @@ const rootClass = computed(() => [
 }
 
 .sn-cell__title-text {
-  overflow: hidden;
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
+}
+
+.sn-cell--ellipsis .sn-cell__title-text {
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -447,6 +602,13 @@ const rootClass = computed(() => [
   color: var(--sn-mp-color-text-secondary);
 }
 
+/* Image icon path (additive) — the size box rides the inline style. */
+.sn-cell__image {
+  display: block;
+  flex: 0 0 auto;
+  border-radius: var(--sn-mp-radius-sm);
+}
+
 .sn-cell__value {
   display: flex;
   flex: 1 1 auto;
@@ -466,11 +628,6 @@ const rootClass = computed(() => [
 
 .sn-cell--large .sn-cell__value-text {
   font-size: var(--sn-mp-font-size-lg);
-}
-
-.sn-cell--ellipsis .sn-cell__title-text,
-.sn-cell--ellipsis .sn-cell__value-text {
-  text-overflow: ellipsis;
 }
 
 .sn-cell__value-text--placeholder {

@@ -112,4 +112,4 @@ Outside a group `v-model` works directly and `true-value` / `false-value` set cu
 
 ## Dark mode
 
-Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the unchecked ring, checked plate, button-chip fill and label text. Verify with:
+Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` flips the unchecked ring, checked plate, button-chip fill and label text. Verify with:

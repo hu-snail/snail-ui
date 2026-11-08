@@ -14,6 +14,18 @@
 
 <Demo name="pagination-mp-variant" description="total=95 with page-size=10 gives 10 pages; button-variant=base adds a border and the step icons; dashed draws a dashed border." />
 
+## Disabled state
+
+`disabled` freezes the whole control; the stepper buttons also go boundary-disabled at the first / last page (label and icon take `--sn-mp-color-text-disabled`, fill takes `--sn-mp-color-background-subtle`), and out-of-range taps are blocked without emitting `change`:
+
+<Demo name="pagination-mp-disabled" description="disabled freezes the whole control; the stepper buttons boundary-disable at the first / last page and the arrow dims with the label." />
+
+## Simple mode
+
+`simple` keeps only prev / current counter / next with no numeric strip; the stepper buttons share the same icons and disable rules as the regular mode:
+
+<Demo name="pagination-mp-simple" description="simple mode: prev / counter / next, shown with and without the counter text." />
+
 ## Single-page hiding and custom slots
 
 `hide-if-one-page` skips rendering entirely when the page count is 1; the `prev` / `size` / `next` / `message` slots share the `{ modelValue, totalPageNum, total, pageSize }` scope:
@@ -48,6 +60,8 @@ import { SnPagination } from '@snui/uni/components/sn-pagination/sn-pagination.v
 | `showMessage`   | `boolean`                                 | `false`  | Show the text counter                             |
 | `buttonVariant` | `'base' \| 'plain' \| 'dashed' \| 'text'` | `'text'` | Button look                                       |
 | `hideIfOnePage` | `boolean`                                 | `false`  | Hide when there is a single page                  |
+| `disabled`      | `boolean`                                 | `false`  | Freeze the whole control                          |
+| `simple`        | `boolean`                                 | `false`  | Simple mode (no numeric strip)                    |
 | `customClass`   | `string`                                  | `''`     | Extra class on the root node                      |
 | `customStyle`   | `string`                                  | `''`     | Inline style on the root node                     |
 
@@ -79,9 +93,18 @@ import { SnPagination } from '@snui/uni/components/sn-pagination/sn-pagination.v
 | `--sn-mp-color-text-disabled`                   | Disabled prev / next               |
 | `--sn-mp-color-action-primary`                  | Active page fill and button labels |
 | `--sn-mp-color-text-on-primary`                 | Active page label                  |
+| `--sn-mp-color-background-subtle`               | Disabled button fill               |
+| `--sn-mp-color-border-subtle`                   | Disabled button border             |
+| `--sn-mp-icon-size-medium`                      | Step arrow icon size tier          |
 | `--sn-mp-font-size-sm` / `--sn-mp-font-size-xs` | Button / counter sizes             |
 | `--sn-mp-font-weight-medium`                    | Active page weight                 |
 | `--sn-mp-radius-sm`                             | Button radius                      |
+
+## AI Patch Boundary
+
+- AI may patch `total` / `totalPage` / `pageSize` (page-count derivation) and display configs such as `buttonVariant` / `showIcon` / `showMessage` / `disabled` / `simple` / `hideIfOnePage`.
+- `update:modelValue` / `change` and the page state are runtime bindings; patches must not fake page events or hard-code `modelValue`.
+- Slot content (`prev` / `size` / `next` / `message`) is business data; patches should only adjust container configs, never rewrite slot internals.
 
 ## Accessibility
 

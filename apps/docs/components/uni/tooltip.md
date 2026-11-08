@@ -5,13 +5,13 @@
 > **与 wot-ui 的差异**
 >
 > - 小程序 / 触摸设备没有 `hover`，触发器改为**点击**切换显隐。
-> - 点击气泡外部关闭通过透明遮罩实现（小程序没有 `document`，挂不了全局监听）。
+> - 点击气泡外部关闭遵循 wot-ui 的 `useQueue` 方案：页面根节点绑定 `@tap="closeOutside"`，点任意空白处关闭所有弹窗（tooltip / popover / drop-menu / toast / swipe-action / fab）；触发器与气泡已 `@tap.stop`，点另一个触发器可一步切换。组件自身不再渲染遮罩。
 > - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主，无法把气泡挂到页面根节点）。
 > - `updatePosition()` 是兼容占位：气泡位置由 CSS 决定，没有需要重新测量的内容。
 
 ## 基础用法
 
-`v-model` 控制显隐；`content` 是提示文案。点击气泡外部（透明遮罩）或再点一次触发器收起。
+`v-model` 控制显隐；`content` 是提示文案。点击气泡外部（页面根节点 `closeOutside`）或再点一次触发器收起。
 
 <Demo name="tooltip-mp-basic" description="点击按钮切换提示气泡，点击气泡外部自动关闭。" />
 
@@ -84,23 +84,22 @@
 | `--sn-tooltip-bg`                                               | 气泡底色（默认 `--sn-mp-color-background-elevated`，亮色主题即白色；箭头同色；可用 `custom-style` 覆盖） |
 | `--sn-tooltip-color`                                            | 气泡文字色（默认 `--sn-mp-color-text-primary`）                                                          |
 | `--sn-mp-color-text-secondary`                                  | 关闭图标色                                                                                               |
-| `--sn-mp-shadow-md`                                             | 气泡阴影                             |
-| `--sn-mp-radius-md`                                             | 气泡圆角                             |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                     |
-| `--sn-mp-font-size-sm`                                          | 气泡字号                             |
-| `--sn-mp-font-line-height-normal`                               | 气泡行高                             |
+| `--sn-mp-shadow-md`                                             | 气泡阴影                                                                                                 |
+| `--sn-mp-radius-md`                                             | 气泡圆角                                                                                                 |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                                                                                         |
+| `--sn-mp-font-size-sm`                                          | 气泡字号                                                                                                 |
+| `--sn-mp-font-line-height-normal`                               | 气泡行高                                                                                                 |
 
 ## 无障碍
 
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="tooltip"`，箭头 `aria-hidden="true"`
 - 关闭按钮带 `role="button"` + `aria-label="close"`
-- 透明遮罩带 `aria-hidden="true"`（纯手势层，对辅助技术隐藏）
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式
 
-气泡默认是「普通表面」配色：底色取 `--sn-mp-color-background-elevated`（亮色主题即白色）、文字取 `--sn-mp-color-text-primary`。这两个 token 都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` 覆盖（对齐 wot-ui 的 `--wot-tooltip-bg` / `--wot-tooltip-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡默认是「普通表面」配色：底色取 `--sn-mp-color-background-elevated`（亮色主题即白色）、文字取 `--sn-mp-color-text-primary`。这两个 token 都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` 覆盖（对齐 wot-ui 的 `--wot-tooltip-bg` / `--wot-tooltip-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

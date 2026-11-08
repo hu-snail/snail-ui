@@ -132,4 +132,4 @@
 
 ## 暗色模式
 
-所有颜色均通过 `--sn-mp-color-*` token 解析，**没有**浅色兜底，因此 `.sn-theme-dark` 或 `page.sn-theme-dark` 下背景 / 文字 / 边框 / 占位符会自动翻转。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
+所有颜色均通过 `--sn-mp-color-*` token 解析，**没有**浅色兜底，因此 `.sn-theme-dark` 下背景 / 文字 / 边框 / 占位符会自动翻转。可用 sn-config-provider 的 theme 设为 dark 包裹验证：

@@ -1,0 +1,29 @@
+/**
+ * App-global styles. Component styling lives in @snui/vue-web; this file
+ * only resets the shell and wires the page background/text to the token
+ * cascade so `.dark` on <html> flips the whole app.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--sn-web-font-family-body);
+  font-size: var(--sn-web-font-size-md);
+  color: var(--sn-web-color-text-primary);
+  background-color: var(--sn-web-color-background-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--sn-web-color-action-primary);
+  text-decoration: none;
+}

@@ -1,6 +1,28 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'node:url';
+import { buildStyleBarrel } from './scripts/build-style-barrel.mjs';
+
+/**
+ * Re-assemble dist/styles/index.css after every bundle write.
+ *
+ * `vite build` emits component scoped CSS only; the `--aui-*` / `--sn-web-*`
+ * token layers are prepended by buildStyleBarrel(). Wiring it into
+ * `writeBundle` (instead of only running `scripts/copy-styles.mjs` after a
+ * one-shot build) is what keeps `vite build --watch` / `pnpm dev:vue-web` from
+ * overwriting the barrel with a token-less file: without the tokens, every
+ * `var(--sn-web-*)` in the component CSS is invalid at computed-value time, so
+ * consumers (apps/docs, apps/preview, apps/admin-basic) render unstyled
+ * components.
+ */
+function snuiStyleBarrel() {
+  return {
+    name: 'snui-style-barrel',
+    writeBundle() {
+      buildStyleBarrel();
+    },
+  };
+}
 
 /**
  * vite build config for @snui/vue-web (active build, replaces vue-tsc).
@@ -20,12 +42,13 @@ import { fileURLToPath, URL } from 'node:url';
  *
  * Pipeline (per package.json `build`):
  *   1. `vite build` — emits dist/index.js (lib ESM, all components inlined)
- *                     + sourcemap
+ *                     + sourcemap, then the `snui-style-barrel` plugin
+ *                     prepends the token layers onto dist/styles/index.css
  *   2. `vue-tsc --emitDeclarationOnly` — emits dist/index.d.ts + per-file
  *                                        .vue.d.ts (type-only)
- *   3. `node ./scripts/copy-styles.mjs` — copies src/styles/index.css →
- *                                          dist/styles/index.css (the
- *                                          `@snui/vue-web/styles` export)
+ *   3. `node ./scripts/copy-styles.mjs` — idempotent re-run of the same
+ *                                          assembly (kept so the barrel can be
+ *                                          regenerated without a full build)
  *
  * Output layout (consumed via package.json `exports` field):
  *   .                   → dist/index.js           (entry — SnButton, etc.)
@@ -34,7 +57,7 @@ import { fileURLToPath, URL } from 'node:url';
  */
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), snuiStyleBarrel()],
   build: {
     target: 'es2022',
     outDir: 'dist',

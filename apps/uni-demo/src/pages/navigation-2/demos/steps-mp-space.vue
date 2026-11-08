@@ -7,9 +7,13 @@
  * - `status` 显式覆盖由 `active` 推导出的状态（finished / process / error / wait）
  * - `icon` / `title` / `description` 插槽可完全替换对应区域
  * - `custom-class` / `custom-style` 落在根节点
+ *
+ * 图标一律走 SnIcon + 内置图标集（AGENTS.md §113：UI 图标禁止 emoji）。
  */
 import SnSteps from '@snui/uni-src/components/sn-steps/sn-steps.vue';
 import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 </script>
 
 <template>
@@ -32,7 +36,7 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
     <SnSteps :active="0" vertical space="24rpx">
       <SnStep>
         <template #icon>
-          <view class="sn-demo__dot" />
+          <SnIcon :icon="Star" :size="'var(--sn-mp-icon-size-small)'" class="sn-demo__slot-icon" />
         </template>
         <template #title>
           <text class="sn-demo__title">自定义标题</text>
@@ -51,11 +55,8 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
   font-size: 24rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-.sn-demo__dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-action-primary);
+.sn-demo__slot-icon {
+  color: var(--sn-mp-color-action-primary);
 }
 .sn-demo__title {
   font-size: 26rpx;

@@ -43,9 +43,9 @@ function reload(): void {
     </view>
 
     <text class="sn-demo__meta">
-      First paint goes through the Iconify API (on demand, cached); explicit
-      color is baked into the request, while currentColor renders black inside
-      a remote SVG document. Use the catalog or iconfont for offline apps.
+      First paint goes through the Iconify API (on demand, cached); explicit color is baked into the
+      request, while currentColor renders black inside a remote SVG document. Use the catalog or
+      iconfont for offline apps.
     </text>
   </view>
 </template>

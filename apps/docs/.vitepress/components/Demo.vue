@@ -27,7 +27,7 @@
  *   <Demo name="divider-mp" description="基本分割线" />
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { ChevronRight, ChevronDown, Check, Copy } from 'lucide-vue-next';
 import { SnIcon } from '@snui/vue-web';
 import PhoneFrame from './PhoneFrame.vue';
@@ -229,7 +229,11 @@ const t = computed(() =>
 // Raw source of the demo file, for the code panel. Delegated to the shared
 // loader so the panel always shows the same file that was rendered (English
 // shadow when the site is English, Chinese demo otherwise).
-const source = computed<string>(() => loadDemoSource(props.name, isEn.value));
+// 懒加载（async）：raw 模块在代码面板首次需要时才拉取，不占首屏。
+const source = ref('');
+watchEffect(async () => {
+  source.value = await loadDemoSource(props.name, isEn.value);
+});
 
 /**
  * Code panel visibility.
@@ -294,9 +298,16 @@ function extractSections(src: string): CodeSection[] {
 /**
  * 代码分区：uni demo → 用法源码（模板去壳 + 脚本去 import，见 demo-loader，
  * css 不展示）；web demo → 完整 SFC 分区（vue/ts/css）。两者共用代码面板。
+ * uni 的用法源码走懒加载：先同步给空数组，加载完成后替换。
  */
+const mobileSections = ref<CodeSection[]>([]);
+watchEffect(async () => {
+  if (isMobileDemo.value) {
+    mobileSections.value = await loadDemoUsage(props.name, isEn.value);
+  }
+});
 const sections = computed<CodeSection[]>(() =>
-  isMobileDemo.value ? loadDemoUsage(props.name, isEn.value) : extractSections(source.value),
+  isMobileDemo.value ? mobileSections.value : extractSections(source.value),
 );
 
 /** Active tab. Falls back to the first section when the demo has no `vue`. */

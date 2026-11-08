@@ -1,7 +1,10 @@
 <script setup lang="ts">
-/** Demo: sn-datetime-picker — sheet chrome and behaviour: cancelButtonText / closeOnClickModal / safeAreaInsetBottom / zIndex / immediateChange / rootPortal / custom*. */
-import { ref } from 'vue';
+/** Demo: sn-datetime-picker — sheet chrome and behaviour: cancelButtonText / closeOnClickModal / safeAreaInsetBottom / zIndex / immediateChange / rootPortal / custom*, opened from sn-cell rows. */
+import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Clock, Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const immediate = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
 const openImmediate = ref(false);
@@ -11,13 +14,35 @@ const openChrome = ref(false);
 
 /** Declared but unimplemented: single-value mode has no range tabs, so the hook never runs. */
 const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const immediateText = computed(() => {
+  if (immediate.value === undefined) return '';
+  const d = new Date(Number(immediate.value));
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+});
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">immediateChange (write v-model on every roll, no confirm)</text>
-    <view class="sn-demo__button" @tap="openImmediate = true">Immediate write-back</view>
-    <text class="sn-demo__meta">Selected: {{ immediate }}</text>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="Immediate write-back"
+        label="immediateChange: every roll writes v-model, no confirm needed"
+        :prefix-icon-data="Clock"
+        :value="immediateText"
+        is-link
+        @click="openImmediate = true"
+      />
+      <SnCell
+        title="Sheet chrome"
+        label="button labels, mask close disabled, zIndex, custom*"
+        :prefix-icon-data="Settings"
+        is-link
+        @click="openChrome = true"
+      />
+    </SnCellGroup>
+
     <SnDatetimePicker
       v-model="immediate"
       v-model:visible="openImmediate"
@@ -26,10 +51,6 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
       immediate-change
     />
 
-    <text class="sn-demo__title"
-      >cancelButtonText / closeOnClickModal / safeAreaInsetBottom / zIndex</text
-    >
-    <view class="sn-demo__button" @tap="openChrome = true">Sheet chrome</view>
     <SnDatetimePicker
       v-model="chrome"
       v-model:visible="openChrome"
@@ -50,29 +71,6 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
-}
-
 .sn-demo__sheet {
   background-color: var(--sn-mp-color-background-elevated);
 }

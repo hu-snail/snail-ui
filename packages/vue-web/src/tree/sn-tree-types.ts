@@ -12,10 +12,37 @@
  * resolver.ts) is touched.
  */
 
-import type { VNodeChild } from 'vue';
+import type { Component, VNodeChild } from 'vue';
 
 /** Node identifier — mirrors naive-ui Tree `Key`. */
 export type SnTreeKey = string | number;
+
+/** Connector-line stroke style (AUI additive — `showLine` is the reference prop). */
+export type SnTreeLineStyle = 'solid' | 'dashed';
+
+/**
+ * Connector-line geometry (AUI additive):
+ * `'branch'` = L-shaped parent→child connectors (default);
+ * `'guide'` = indent-guide style — a full-height vertical at every ancestor
+ * level and no horizontal segment. `lineStyle` / `lineColor` still apply;
+ * `lineCorner` only affects `'branch'`.
+ */
+export type SnTreeLineMode = 'branch' | 'guide';
+
+/**
+ * Connector-line elbow shape (AUI additive):
+ * `'square'` = right-angle L (default), `'rounded'` = compact quarter-arc elbow.
+ * The corner radius (both axes) is tunable with `--sn-web-tree-line-radius`
+ * (3px by default).
+ */
+export type SnTreeLineCorner = 'square' | 'rounded';
+
+/**
+ * Per-node icon (AUI additive, data-level):
+ * a registered SnIcon name / plain text, a VNode (or array), an icon
+ * component, or a zero-arg render fn.
+ */
+export type SnTreeIcon = VNodeChild | Component | (() => VNodeChild);
 
 /**
  * Field override names (`key-field` / `label-field` / `children-field`
@@ -43,6 +70,8 @@ export interface SnTreeOptionBase {
   disabled?: boolean;
   /** Force leaf rendering (no switcher) even with `children`. */
   isLeaf?: boolean;
+  /** Per-node leading icon — name / text / VNode / component / render fn. */
+  icon?: SnTreeIcon;
   /** Per-node prefix — text or render fn. */
   prefix?: string | (() => VNodeChild);
   /** Per-node suffix — text or render fn. */
@@ -76,6 +105,33 @@ export type SnTreeCheckAction = 'check' | 'uncheck';
 export interface SnTreeEventMeta<Action extends string> {
   node: SnTreeOption | null;
   action: Action;
+}
+
+/** Where a dragged node lands relative to the hovered row — mirrors naive-ui. */
+export type SnTreeDropPosition = 'before' | 'inside' | 'after';
+
+/** Info bag passed to the `allowDrop` callback — mirrors naive-ui. */
+export interface SnTreeAllowDropInfo {
+  node: SnTreeOption;
+  dropPosition: SnTreeDropPosition;
+  phase: 'drag' | 'drop';
+}
+
+/** Gate for drag & drop: return `false` to reject a hovered position. */
+export type SnTreeAllowDrop = (info: SnTreeAllowDropInfo) => boolean;
+
+/** Payload for `dragStart` / `dragEnter` / `dragLeave` / `dragEnd`. */
+export interface SnTreeDragInfo {
+  node: SnTreeOption;
+  event: DragEvent;
+}
+
+/** Payload for the `drop` event — mirrors naive-ui's `on-drop`. */
+export interface SnTreeDropInfo {
+  node: SnTreeOption;
+  dragNode: SnTreeOption;
+  dropPosition: SnTreeDropPosition;
+  event: DragEvent;
 }
 
 /**

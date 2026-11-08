@@ -54,6 +54,18 @@ const props = withDefaults(
     zIndex?: number;
     /** 切换前的回调，返回 false 可阻止切换，支持 Promise<boolean>。 */
     beforeChange?: ((value: SnTabbarValue) => boolean | Promise<boolean>) | undefined;
+    /**
+     * 毛玻璃风格（additive，Human 指令 2026-11-01）：背景换成半透明表面 +
+     * backdrop-filter 高斯模糊；固定在底部时页面内容从栏后透出。`bordered`
+     * 照常叠加。
+     */
+    glass?: boolean;
+    /**
+     * 中心凸起项（additive，Human 指令 2026-11-01）：把第 `index` 个标签
+     * 渲染成上凸的圆形主按钮（`icon` 为凸起按钮字形，title 不渲染）。值为
+     * `null` 关闭。凸起项的行为与普通标签一致（点击即切换）。
+     */
+    elevate?: { index: number; icon: string } | null;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -69,6 +81,8 @@ const props = withDefaults(
     inactiveColor: '',
     placeholder: false,
     zIndex: 10,
+    glass: false,
+    elevate: null,
     beforeChange: undefined,
     customClass: '',
     customStyle: '',
@@ -140,10 +154,14 @@ provide(SN_TABBAR_KEY, {
   activeColor: toRef(props, 'activeColor'),
   inactiveColor: toRef(props, 'inactiveColor'),
   shape: toRef(props, 'shape'),
+  elevate: toRef(props, 'elevate'),
 });
 
 /** Public imperative API — host pages can drive the bar from code (§14). */
 defineExpose({ select });
+
+/** Whether the elevated center action is configured (drives placeholder height). */
+const hasElevate = computed(() => props.elevate !== null && props.elevate !== undefined);
 
 const rootClass = computed(() => [
   'sn-tabbar',
@@ -152,6 +170,8 @@ const rootClass = computed(() => [
     'sn-tabbar--fixed': props.fixed,
     'sn-tabbar--bordered': props.bordered,
     'sn-tabbar--safe-area': props.safeAreaInsetBottom,
+    'sn-tabbar--glass': props.glass,
+    'sn-tabbar--elevated': hasElevate.value,
   },
   props.customClass,
 ]);
@@ -165,7 +185,12 @@ const rootStyle = computed(() => {
 </script>
 
 <template>
-  <view v-if="fixed && placeholder" class="sn-tabbar__placeholder" aria-hidden="true" />
+  <view
+    v-if="fixed && placeholder"
+    class="sn-tabbar__placeholder"
+    :class="{ 'sn-tabbar__placeholder--elevated': hasElevate }"
+    aria-hidden="true"
+  />
   <view data-snui-component="tabbar" :class="rootClass" :style="rootStyle" role="tablist">
     <slot />
   </view>
@@ -174,12 +199,15 @@ const rootStyle = computed(() => {
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-tabbar {
+  /* Items (slotted, own scope) read this to match the bar surface — the
+   * elevated fab + its ring follow glass mode with zero prop plumbing. */
+  --sn-tabbar-bar-bg: var(--sn-mp-color-background-surface);
   display: flex;
   align-items: stretch;
   box-sizing: border-box;
   width: 100%;
   height: 100rpx;
-  background-color: var(--sn-mp-color-background-surface);
+  background-color: var(--sn-tabbar-bar-bg);
 }
 
 .sn-tabbar--fixed {
@@ -210,6 +238,31 @@ const rootStyle = computed(() => {
 .sn-tabbar__placeholder {
   width: 100%;
   height: 100rpx;
+}
+
+/* fixed + placeholder + elevated: reserve the taller bar (128rpx). */
+.sn-tabbar__placeholder--elevated {
+  height: 128rpx;
+}
+
+/* ── Glass（additive）：半透明表面 + backdrop 高斯模糊。固定在底部时页面
+ * 内容从栏后透出；暗色由 .sn-theme-dark 的玻璃色插槽翻转。 ────────────── */
+.sn-tabbar--glass {
+  --sn-tabbar-bar-bg: var(--sn-mp-color-glass-bar, rgba(255, 255, 255, 0.72));
+  backdrop-filter: blur(20rpx) saturate(1.6);
+  -webkit-backdrop-filter: blur(20rpx) saturate(1.6);
+}
+
+.sn-theme-dark .sn-tabbar--glass,
+.sn-tabbar--glass.sn-theme-dark {
+  --sn-tabbar-bar-bg: var(--sn-mp-color-glass-bar-dark, rgba(24, 24, 27, 0.72));
+}
+
+/* 凸起中心项要向上溢出栏体：加高栏身给圆钮留呼吸空间（fixed + placeholder
+ * 时占位元素用同一变量等高，见 .sn-tabbar__placeholder）。 ─────────────── */
+.sn-tabbar--elevated {
+  height: auto;
+  min-height: 128rpx;
 }
 
 /* Doodle skin — heavier rule above the bar. */

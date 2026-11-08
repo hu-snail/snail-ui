@@ -12,7 +12,7 @@ const cities = ['北京', '上海', '广州', '深圳', '杭州', '成都', '武
       v-model="value"
       filterable
       :options="cities"
-      placeholder="输入过滤"
+      placeholder="请选择城市"
       style="width: 240px"
     />
     <span class="demo-log">{{ value }}</span>

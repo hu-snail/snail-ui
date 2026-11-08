@@ -13,6 +13,36 @@ export default defineConfig({
   // 小程序端不感知 base；H5 路由 base 由 scripts/build-h5.mjs 写入 manifest。
   base: process.env.UNI_H5_BASE || '/',
   plugins: [uni()],
+  // @snui/uni-src 必须排除出依赖预构建：esbuild 会把包内纯 JS 模块
+  // （sn-icon-registry / sn-icon-set 等）收进 .vite/deps 生成第二份模块实例，
+  // 而 .vue 组件（sn-input → sn-icon）走源码相对导入——demo 的
+  // registerSnIcons 写进预构建副本、组件从源码副本解析，注册表必然 miss，
+  // string 图标全部渲染成空盒。排除后两端走同一条源码 URL，实例唯一。
+  optimizeDeps: {
+    exclude: ['@snui/uni-src', '@snui/templates-src'],
+  },
+  server: {
+    watch: {
+      // 本仓库位于 ExFAT 外置卷：FSEvents 在 ExFAT 上不可用，chokidar 收不到
+      // 任何文件事件 → vite 永不失效模块，dev server 一直跑陈旧编译产物
+      // （组件修复"改了没生效"的总根源）。轮询是外置卷上唯一可靠的监听方式。
+      usePolling: true,
+      interval: 300,
+      // vite 默认忽略整个 node_modules，而组件包经 @snui/uni-src 符号链接
+      // （node_modules/@snui/uni → packages/uni）进入编译 —— 不重新包含的话
+      // packages/uni/src 的改动不会触发 HMR。符号链接路径与 preserveSymlinks
+      // 解析出的真实路径（/Volumes/…/packages/uni/src）都要重新包含。
+      ignored: [
+        '**/node_modules/**',
+        '!**/node_modules/@snui/uni/src/**',
+        '!**/node_modules/@snui/templates/src/**',
+        '!**/node_modules/@snui/style-packs/src/**',
+        '!**/packages/uni/src/**',
+        '!**/packages/templates/src/**',
+        '!**/packages/style-packs/src/**',
+      ],
+    },
+  },
   resolve: {
     // MP 构建的 chunk 命名按 inputDir 相对路径计算（uni-mp-vite
     // createChunkFileNames），模块 id 落在工程外会生成 `../` 非法 pattern。

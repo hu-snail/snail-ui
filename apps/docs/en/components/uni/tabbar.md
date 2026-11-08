@@ -4,27 +4,9 @@
 
 ## Basic usage
 
-`v-model` binds the active index or item name; each `sn-tabbar-item` carries an icon and a label:
+`v-model` binds the active index or item name; each `sn-tabbar-item` carries an icon and a label. The playground pins the bar to the viewport bottom with `fixed` + `placeholder` and exposes every knob as a live setting: mode (standard / glass / elevated center action), top border, bottom safe area, placeholder, badges and active colour:
 
-<Demo name="tabbar-mp-basic" description="v-model binds the index; icon resolves through the icon registry; bordered draws the top hairline." />
-
-## Badges and shape
-
-`value` renders a numeric badge (above `max` it shows `99+`), `is-dot` renders a dot, and `shape="round"` switches to the pill bar:
-
-<Demo name="tabbar-mp-badge" description="value renders a numeric badge; is-dot renders a dot; max caps the value; shape=round gives the pill bar." />
-
-## Fixed bottom and safe area
-
-`fixed` pins the bar to the bottom of the page, `placeholder` reserves an equal-height spacer, `safe-area-inset-bottom` adds the bottom safe area, and `z-index` decides the stacking level:
-
-<Demo name="tabbar-mp-fixed" description="fixed + placeholder + safe-area-inset-bottom + z-index on a bottom tab bar." />
-
-## Colour overrides and name values
-
-`active-color` / `inactive-color` override the label colour inline; an item with `name` uses that name as its value, otherwise the registration index:
-
-<Demo name="tabbar-mp-color" description="active-color / inactive-color overrides; index-based and name-based v-model shapes." />
+<Demo name="tabbar-mp-playground" description="Full playground: the bar is fixed to the screen bottom; mode (standard / glass / elevate), top border, safe area, placeholder, badges and active colour all switch live." />
 
 ## Auto registration (easycom)
 
@@ -47,20 +29,22 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 
 ### sn-tabbar
 
-| Prop                  | Type                                     | Default     | Description                                   |
-| --------------------- | ---------------------------------------- | ----------- | --------------------------------------------- |
-| `modelValue`          | `number \| string`                       | `0`         | Active index or item name                     |
-| `fixed`               | `boolean`                                | `false`     | Pin the bar to the bottom                     |
-| `bordered`            | `boolean`                                | `false`     | Hairline top border                           |
-| `safeAreaInsetBottom` | `boolean`                                | `false`     | Bottom safe-area padding                      |
-| `shape`               | `'default' \| 'round'`                   | `'default'` | Bar shape                                     |
-| `activeColor`         | `string`                                 | `''`        | Active label colour (empty = token default)   |
-| `inactiveColor`       | `string`                                 | `''`        | Inactive label colour (empty = token default) |
-| `placeholder`         | `boolean`                                | `false`     | Reserve the bar height in flow when fixed     |
-| `zIndex`              | `number`                                 | `10`        | Stacking level (written only when fixed)      |
-| `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch          |
-| `customClass`         | `string`                                 | `''`        | Extra class on the root node                  |
-| `customStyle`         | `string`                                 | `''`        | Inline style on the root node                 |
+| Prop                  | Type                                      | Default     | Description                                                 |
+| --------------------- | ----------------------------------------- | ----------- | ----------------------------------------------------------- |
+| `modelValue`          | `number \| string`                        | `0`         | Active index or item name                                   |
+| `fixed`               | `boolean`                                 | `false`     | Pin the bar to the bottom                                   |
+| `bordered`            | `boolean`                                 | `false`     | Hairline top border                                         |
+| `safeAreaInsetBottom` | `boolean`                                 | `false`     | Bottom safe-area padding                                    |
+| `shape`               | `'default' \| 'round'`                    | `'default'` | Bar shape                                                   |
+| `activeColor`         | `string`                                  | `''`        | Active item colour (icon + label, empty = token default)    |
+| `inactiveColor`       | `string`                                  | `''`        | Inactive item colour (icon + label, empty = token default)  |
+| `placeholder`         | `boolean`                                 | `false`     | Reserve the bar height in flow when fixed                   |
+| `zIndex`              | `number`                                  | `10`        | Stacking level (written only when fixed)                    |
+| `glass`               | `boolean`                                 | `false`     | Glass style: translucent surface + backdrop blur (additive) |
+| `elevate`             | `{ index: number; icon: string } \| null` | `null`      | Raised round center action (additive)                       |
+| `beforeChange`        | `(value) => boolean \| Promise<boolean>`  | `undefined` | Veto hook; `false` blocks the switch                        |
+| `customClass`         | `string`                                  | `''`        | Extra class on the root node                                |
+| `customStyle`         | `string`                                  | `''`        | Inline style on the root node                               |
 
 ### sn-tabbar-item
 
@@ -118,7 +102,7 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 
 Every colour in `sn-tabbar` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: background and top hairline flip to the dark tokens, the active / inactive labels keep the brand and secondary text colours, and the badge red stays recognisable.
 
-Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
+Verify it by wrapping the bar in `sn-config-provider` with `theme="dark"`:
 
 ## Related
 

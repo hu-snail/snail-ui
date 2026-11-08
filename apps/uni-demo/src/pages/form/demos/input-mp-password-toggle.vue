@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-input — showPassword toggles type=password. */
+/** Demo: sn-input — showPassword 密码显隐切换。 */
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 import { ref } from 'vue';
 
@@ -8,8 +8,8 @@ const secret = ref('initial-secret-123');
 
 <template>
   <view class="sn-input-demo">
-    <SnInput v-model="secret" type="password" show-password placeholder="Password with toggle" />
-    <text class="sn-input-demo__hint">点击眼睛图标切换密码显示</text>
+    <SnInput v-model="secret" type="password" show-password placeholder="密码" />
+    <text class="sn-input-demo__caption">点击右侧眼睛图标切换密码显示 / 隐藏</text>
   </view>
 </template>
 
@@ -18,10 +18,10 @@ const secret = ref('initial-secret-123');
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 600rpx;
 }
-.sn-input-demo__hint {
+.sn-input-demo__caption {
+  margin-top: 8rpx;
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

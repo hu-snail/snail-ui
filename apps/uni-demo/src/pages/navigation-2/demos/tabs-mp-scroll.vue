@@ -1,30 +1,38 @@
 <script setup lang="ts">
 /**
- * Demo: sn-tabs — 滚动导航（slidableNum / slidable / showScrollbar）与颜色覆盖。
+ * Demo: sn-tabs — 滚动导航与自动滑出可视区（slidableNum / slidable / scroll-into-view）。
  *
  * - `slidable-num` 是自动开启滚动的页签数量阈值：页签数超过它时页签条横向滚动，
  *   未超过时页签均分整宽
  * - `slidable="always"` 强制开启滚动，不看阈值
  * - `show-scrollbar` 把 `scroll-view` 的滚动条显示出来
- * - `map-num` / `map-title` 是 wot-ui 导航地图浮层的契约位（uni 端未实现，见文档）
+ * - 选中项（点击或外部改 `v-model`）会通过 `scroll-into-view` 自动滚进可视区，
+ *   `animated` 打开时该滚动带过渡
  * - `color` / `inactive-color` 内联覆盖激活 / 非激活文案颜色
  * - `custom-class` / `custom-style` 落在根节点
  */
 import { ref } from 'vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
 import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
 const many = ['推荐', '关注', '热榜', '视频', '直播', '同城', '问答', '专栏'];
 const activeScroll = ref(0);
 const activeFixed = ref(0);
+
+/** 外部改值也应把目标页签滑进可视区（点按钮跳到最后一个频道）。 */
+function jumpToLast(): void {
+  activeScroll.value = many.length - 1;
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__label">slidable-num=4，8 个页签超过阈值 → 横向滚动</text>
+    <text class="sn-demo__label">slidable-num=4，8 个页签超过阈值 → 横向滚动并自动滑出</text>
     <SnTabs
       v-model="activeScroll"
       :slidable-num="4"
+      animated
       show-scrollbar
       color="var(--sn-mp-color-action-primary)"
       inactive-color="var(--sn-mp-color-text-tertiary)"
@@ -34,13 +42,12 @@ const activeFixed = ref(0);
         {{ title }} 的内容
       </SnTab>
     </SnTabs>
+    <SnButton size="small" @click="jumpToLast">跳到最后一个频道</SnButton>
 
     <text class="sn-demo__label">slidable="always"，3 个页签也强制滚动</text>
     <SnTabs
       v-model="activeFixed"
       slidable="always"
-      :map-num="10"
-      map-title="全部频道"
       custom-style="background-color: var(--sn-mp-color-background-subtle);"
     >
       <SnTab title="全部" :name="0">全部内容</SnTab>
@@ -53,6 +60,12 @@ const activeFixed = ref(0);
 </template>
 
 <style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+}
 .sn-demo__label {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-secondary);

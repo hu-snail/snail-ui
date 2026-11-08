@@ -28,6 +28,12 @@
 
 <Demo name="avatar-group-web-shrink" description="tightening 与 shrink 对照 + 汇总头像尺寸。" />
 
+### 图片头像
+
+插槽里每个 `SnAvatar` 都可以直接传 `src` 渲染图片头像。圆形叠放时描边画在头像自身（跟随其圆角），所以圆形之间不会出现竖向直线分割；图片加载失败会自动回退到 `fallbackText`。
+
+<Demo name="avatar-group-web-image" description="图片头像 · 圆形叠放 / shrink / 溢出折叠。" />
+
 ## API
 
 ### Props

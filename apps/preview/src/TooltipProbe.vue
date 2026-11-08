@@ -33,7 +33,13 @@ async function probe(placement: string): Promise<void> {
   await new Promise((r) => setTimeout(r, 350)); // settle delay + animation
   const bubble = document.body.querySelector<HTMLElement>('.sn-tooltip');
   if (!bubble) {
-    readings.value.push({ placement, bubble: 'NO BUBBLE', trigger: '-', gapMain: -1, arrowSeen: false });
+    readings.value.push({
+      placement,
+      bubble: 'NO BUBBLE',
+      trigger: '-',
+      gapMain: -1,
+      arrowSeen: false,
+    });
     trigger.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
     await nextTick();
     await new Promise((r) => setTimeout(r, 250));
@@ -45,7 +51,8 @@ async function probe(placement: string): Promise<void> {
   let gapMain: number;
   if (placement === 'left') gapMain = t.left - b.right;
   else if (placement === 'right') gapMain = b.left - t.right;
-  else if (placement === 'top' || placement === 'tl' || placement === 'tr') gapMain = t.top - b.bottom;
+  else if (placement === 'top' || placement === 'tl' || placement === 'tr')
+    gapMain = t.top - b.bottom;
   else gapMain = b.top - t.bottom;
   const fmt = (r: DOMRect): string =>
     `${Math.round(r.top)} / ${Math.round(r.left)} / ${Math.round(r.width)} / ${Math.round(r.height)}`;

@@ -28,16 +28,25 @@ function toggle(id: number): void {
         class="xhs__seg-item"
         :class="{ 'is-active': tab === i }"
         @tap="tab = i"
-      >{{ tb }}</text>
+        >{{ tb }}</text
+      >
     </view>
     <view class="xhs__flow">
       <view v-for="note in notes" :key="note.id" class="xhs__note">
-        <view class="xhs__cover" :style="{ height: `${note.h}rpx`, background: `linear-gradient(135deg, ${note.from}, ${note.to})` }" />
+        <view
+          class="xhs__cover"
+          :style="{
+            height: `${note.h}rpx`,
+            background: `linear-gradient(135deg, ${note.from}, ${note.to})`,
+          }"
+        />
         <text class="xhs__title">{{ note.title }}</text>
         <view class="xhs__foot">
           <SnAvatar text="蜗" :size="36" round />
           <text class="xhs__author">蜗蜗</text>
-          <text class="xhs__like" :class="{ 'is-on': liked[note.id] }" @tap.stop="toggle(note.id)">♥ {{ liked[note.id] ? 129 : 128 }}</text>
+          <text class="xhs__like" :class="{ 'is-on': liked[note.id] }" @tap.stop="toggle(note.id)"
+            >♥ {{ liked[note.id] ? 129 : 128 }}</text
+          >
         </view>
       </view>
     </view>

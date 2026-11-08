@@ -15,10 +15,12 @@
 - `icon`：`success` / `info` / `warning` / `danger`，或 sn-icon 注册表里的图标名
 - `iconColor`：覆盖状态图标颜色
 - `theme="text"`：按钮改为无边框文本样式
-- `actionLayout="vertical"`：按钮竖排
+- `actionLayout="vertical"`：按钮竖排，确认在上、取消在下
 - `headerImage`：正文上方的通栏图
 
 <Demo name="dialog-mp-variant" description="成功 / 警告图标、text 主题按钮、竖排按钮。" />
+
+<Demo name="dialog-mp-vertical" description="actionLayout=vertical：确认在上、取消在下。" />
 
 ## 自定义操作与拦截
 

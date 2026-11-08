@@ -1,143 +1,375 @@
 <script setup lang="ts">
 /**
- * SnHomeCaseCard — 首页「场景案例」的单张案例卡。
+ * SnHomeCaseCard — 首页「场景案例」的单张案例卡（磨砂悬浮卡体系）。
  *
- * 视觉：淡色渐变弥散玻璃（glassmorphism）—— 卡片背景是按案例色相派生的
- * 半透明渐变 + backdrop blur，画布的极光从卡面透出形成弥散感；深浅主题
- * 各有一套玻璃配方（浅色 = 亮玻璃 + 白描边，深色 = 深玻璃 + 微光描边）。
- * 卡内的子面板（列表行 / 表单组等）用半透明白磨砂承载亮色 token 的真实
- * 组件，保证两种主题下都可读。
+ * 骨架对齐首页设计稿：卡头（标题 + 能力标签 + 编号）→ 内容 → 底部状态行。
  *
- * 色相由父级通过 `hue` 注入（home-cases.ts 的 caseHue，确定性派生），
- * 经 CSS 变量 `--sn-case-h` 驱动 hsl 渐变。
+ * **取色全部走 token**：卡面 / 描边 / 文字 / 状态条都用 `--sn-web-*` 语义层
+ * （`--aui-*` 的别名），因此：
+ *   - 切换 Style Pack（Default / iOS / Doodle / Dark）整卡即时换肤；
+ *   - 站点暗色模式（`html.dark`）自动翻转，卡内不用「恒亮窗」黑科技 ——
+ *     卡里的 @snui/vue-web 组件读同一套 token，天然一致。
+ *
+ * 卡面是半透磨砂玻璃：内容面用 `--sn-web-color-background-surface` 的
+ * 半透明混合 + backdrop blur，深色下同一表达式落在暗色 token 上。
  *
  * 卡片根节点是 SnWaterfall 的直接子节点（会被包进瀑布流 item box），
  * 因此根上不写任何 margin —— 列间距 / 行距由瀑布流的 gap 负责。
  */
-import { computed } from 'vue';
+import type { HomeCaseAccent } from '../utils/home-cases';
 
-const props = defineProps<{
-  /** 案例标题。 */
-  title: string;
-  /** 案例副标题（一句话场景描述）。 */
-  desc?: string;
-  /** 内容区高度档位（sm / md / lg）。 */
-  size?: 'sm' | 'md' | 'lg';
-  /** 玻璃色相（0–359，来自 caseHue）。 */
-  hue: number;
-}>();
-
-const toneStyle = computed(() => ({ '--sn-case-h': String(props.hue) }));
+withDefaults(
+  defineProps<{
+    /** 案例标题。 */
+    title: string;
+    /** 案例副标题（一句话场景描述，显示在标题下方）。 */
+    desc?: string;
+    /** 内容区高度档位（sm / md / lg）。 */
+    size?: 'sm' | 'md' | 'lg';
+    /** 卡头能力标签（语言中立的技术 tag）。 */
+    badge?: string;
+    /** 卡头编号（`AI #01` / `#01`）。 */
+    index?: string;
+    /** 强调色档（badge / 编号 / 状态条取色）。 */
+    accent?: HomeCaseAccent;
+    /** 底部左：组件 / 协议签名。 */
+    api?: string;
+    /** 底部右：状态文案；缺省 `● Live`。 */
+    status?: string;
+    /** AI 原生场景卡：编号做成胶囊，卡面加一层强调色描边。 */
+    featured?: boolean;
+  }>(),
+  {
+    desc: undefined,
+    size: undefined,
+    badge: undefined,
+    index: undefined,
+    accent: 'blue',
+    api: undefined,
+    status: undefined,
+    featured: false,
+  },
+);
 </script>
 
 <template>
-  <article class="sn-case" :class="size ? `sn-case--${size}` : undefined" :style="toneStyle">
+  <article
+    class="sn-case"
+    :class="[
+      size ? `sn-case--${size}` : '',
+      `sn-case--${accent}`,
+      { 'sn-case--featured': featured },
+    ]"
+  >
     <header class="sn-case__head">
-      <h3 class="sn-case__title">{{ title }}</h3>
-      <p v-if="desc" class="sn-case__desc">{{ desc }}</p>
+      <div class="sn-case__head-text">
+        <h3 class="sn-case__title">
+          <span class="sn-case__name">{{ title }}</span>
+          <span v-if="badge" class="sn-case__tag">{{ badge }}</span>
+        </h3>
+        <p v-if="desc" class="sn-case__subtitle">{{ desc }}</p>
+      </div>
+      <span v-if="index" class="sn-case__index">{{ index }}</span>
     </header>
 
     <div class="sn-case__body">
       <slot />
     </div>
+
+    <footer v-if="api || status" class="sn-case__foot">
+      <span class="sn-case__api">{{ api }}</span>
+      <span class="sn-case__status">{{ status ?? '● Live' }}</span>
+    </footer>
   </article>
 </template>
 
 <style scoped>
-/* ── 玻璃卡 ──
- * 淡色渐变 + backdrop blur：弥散玻璃质感。hsl 色相来自 --sn-case-h
- * （父级按案例注入），浅色 / 深色主题各一套配方。 */
-.sn-case {
-  --sn-case-ink: #101828;
-  --sn-case-ink-2: #475467;
-  --sn-case-ink-3: #98a2b3;
-  --sn-case-panel: rgb(255 255 255 / 0.55);
-  --sn-case-panel-strong: rgb(255 255 255 / 0.72);
-  --sn-case-panel-ink: #1d2939;
-  --sn-case-panel-ink-2: #98a2b3;
-  --sn-case-glass-border: rgb(255 255 255 / 0.65);
+/* ── 强调色档（badge / 编号 / 状态条共用） ──
+ * 只有「强调」这一维是文案色板（设计稿里 AI 卡/组件卡的颜色区分），
+ * 其余全部走 token，因此换肤不会破坏卡片的可读性。 */
+.sn-case,
+.sn-case--blue {
+  --sn-case-accent: #2563eb;
+  --sn-case-accent-soft: rgb(37 99 235 / 0.1);
+  --sn-case-accent-ring: rgb(37 99 235 / 0.26);
+  --sn-case-accent-ink: #1d4ed8;
+}
+.sn-case--indigo {
+  --sn-case-accent: #6366f1;
+  --sn-case-accent-soft: rgb(99 102 241 / 0.12);
+  --sn-case-accent-ring: rgb(99 102 241 / 0.3);
+  --sn-case-accent-ink: #4338ca;
+}
+.sn-case--emerald {
+  --sn-case-accent: #10b981;
+  --sn-case-accent-soft: rgb(16 185 129 / 0.12);
+  --sn-case-accent-ring: rgb(16 185 129 / 0.3);
+  --sn-case-accent-ink: #047857;
+}
+.sn-case--fuchsia {
+  --sn-case-accent: #d946ef;
+  --sn-case-accent-soft: rgb(217 70 239 / 0.12);
+  --sn-case-accent-ring: rgb(217 70 239 / 0.3);
+  --sn-case-accent-ink: #a21caf;
+}
+.sn-case--amber {
+  --sn-case-accent: #f59e0b;
+  --sn-case-accent-soft: rgb(245 158 11 / 0.14);
+  --sn-case-accent-ring: rgb(245 158 11 / 0.32);
+  --sn-case-accent-ink: #b45309;
+}
+.sn-case--teal {
+  --sn-case-accent: #14b8a6;
+  --sn-case-accent-soft: rgb(20 184 166 / 0.12);
+  --sn-case-accent-ring: rgb(20 184 166 / 0.3);
+  --sn-case-accent-ink: #0f766e;
+}
+html.dark .sn-case--blue {
+  --sn-case-accent-soft: rgb(96 165 250 / 0.16);
+  --sn-case-accent-ring: rgb(96 165 250 / 0.38);
+  --sn-case-accent-ink: #93c5fd;
+}
+html.dark .sn-case--indigo {
+  --sn-case-accent-soft: rgb(129 140 248 / 0.16);
+  --sn-case-accent-ring: rgb(129 140 248 / 0.38);
+  --sn-case-accent-ink: #a5b4fc;
+}
+html.dark .sn-case--emerald {
+  --sn-case-accent-soft: rgb(52 211 153 / 0.16);
+  --sn-case-accent-ring: rgb(52 211 153 / 0.38);
+  --sn-case-accent-ink: #6ee7b7;
+}
+html.dark .sn-case--fuchsia {
+  --sn-case-accent-soft: rgb(232 121 249 / 0.16);
+  --sn-case-accent-ring: rgb(232 121 249 / 0.38);
+  --sn-case-accent-ink: #f0abfc;
+}
+html.dark .sn-case--amber {
+  --sn-case-accent-soft: rgb(251 191 36 / 0.18);
+  --sn-case-accent-ring: rgb(251 191 36 / 0.4);
+  --sn-case-accent-ink: #fcd34d;
+}
+html.dark .sn-case--teal {
+  --sn-case-accent-soft: rgb(45 212 191 / 0.16);
+  --sn-case-accent-ring: rgb(45 212 191 / 0.38);
+  --sn-case-accent-ink: #5eead4;
+}
 
+/* ── 灰白渐变 + 雾感磨砂卡面（沿用既有外观） ──
+ * 渐变三档取自 token（background-subtle → surface）：默认皮肤就是「上灰下白」
+ * 的柔和渐变，切 Style Pack / 暗色时同一段渐变跟着翻转，无需另写一套。 */
+.sn-case {
   position: relative;
-  overflow: hidden;
   box-sizing: border-box;
-  padding: 14px 16px 16px;
-  border: 1px solid var(--sn-case-glass-border);
-  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-border-default, #e4e4e7) 60%, transparent);
+  border-radius: 18px;
   background: linear-gradient(
-    140deg,
-    hsl(var(--sn-case-h) 92% 96% / 0.8) 0%,
-    hsl(calc(var(--sn-case-h) + 45) 88% 90% / 0.55) 100%
+    180deg,
+    var(--sn-web-color-background-subtle, #eef1f5) 0%,
+    color-mix(
+        in srgb,
+        var(--sn-web-color-background-subtle, #f7f9fb) 52%,
+        var(--sn-web-color-background-surface, #ffffff)
+      )
+      46%,
+    var(--sn-web-color-background-surface, #ffffff) 100%
   );
-  -webkit-backdrop-filter: blur(22px) saturate(1.5);
-  backdrop-filter: blur(22px) saturate(1.5);
-  box-shadow: var(--sn-home-card-shadow, 0 10px 30px rgb(2 6 16 / 0.2));
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 16px 36px -14px rgb(15 23 42 / 0.1),
+    0 2px 6px -1px rgb(15 23 42 / 0.04),
+    inset 0 1px 1px 0 color-mix(in srgb, #fff 70%, transparent);
+  color: var(--sn-web-color-text-primary, #09090b);
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.3s;
 }
 .sn-case:hover {
   transform: translateY(-2px);
-  box-shadow: var(--sn-home-card-shadow-hover, 0 18px 44px rgb(2 6 16 / 0.3));
+  border-color: color-mix(in srgb, var(--sn-web-color-border-default, #e4e4e7) 100%, transparent);
+  box-shadow:
+    0 24px 48px -14px rgb(15 23 42 / 0.14),
+    0 4px 12px -2px rgb(15 23 42 / 0.05),
+    inset 0 1px 1px 0 color-mix(in srgb, #fff 85%, transparent);
 }
-
-/* 深色主题：深玻璃 + 微光描边；子面板转为更实的白磨砂（内嵌组件仍是
- * 亮色 token 渲染，深底上需要白色衬底才可读） */
 html.dark .sn-case {
-  --sn-case-ink: #f2f5fb;
-  --sn-case-ink-2: rgb(226 232 244 / 0.66);
-  --sn-case-ink-3: rgb(226 232 244 / 0.45);
-  --sn-case-panel: rgb(255 255 255 / 0.82);
-  --sn-case-panel-strong: rgb(255 255 255 / 0.92);
-  --sn-case-panel-ink: #1d2939;
-  --sn-case-panel-ink-2: #667085;
-  --sn-case-glass-border: rgb(255 255 255 / 0.14);
-  background: linear-gradient(
-    140deg,
-    hsl(var(--sn-case-h) 62% 24% / 0.6) 0%,
-    hsl(calc(var(--sn-case-h) + 45) 58% 16% / 0.55) 100%
-  );
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow:
+    0 16px 36px -14px rgb(0 0 0 / 0.5),
+    0 2px 6px -1px rgb(0 0 0 / 0.35),
+    inset 0 1px 1px 0 rgb(255 255 255 / 0.06);
+}
+html.dark .sn-case:hover {
+  box-shadow:
+    0 24px 48px -14px rgb(0 0 0 / 0.6),
+    0 4px 12px -2px rgb(0 0 0 / 0.4),
+    inset 0 1px 1px 0 rgb(255 255 255 / 0.1);
+}
+/* AI 原生场景卡：一圈强调色描边 */
+.sn-case--featured {
+  border-color: var(--sn-case-accent-ring);
 }
 
-/* ── 头部 ── */
+/* ── 卡头：标题 + badge 居左，编号居右 ── */
 .sn-case__head {
-  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--sn-web-color-border-subtle, #e4e4e7) 78%, transparent);
+}
+.sn-case__head-text {
+  min-width: 0;
 }
 .sn-case__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
-  color: var(--sn-case-ink);
+  color: var(--sn-web-color-text-primary, #09090b);
 }
-.sn-case__desc {
-  margin: 2px 0 0;
-  font-size: 12.5px;
+.sn-case__tag {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--sn-case-accent-ink);
+  background: var(--sn-case-accent-soft);
+}
+.sn-case__subtitle {
+  margin: 3px 0 0;
+  font-size: 11.5px;
   line-height: 1.5;
-  color: var(--sn-case-ink-3);
+  color: var(--sn-web-color-text-tertiary, #a1a1aa);
+}
+.sn-case__index {
+  flex-shrink: 0;
+  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--sn-web-color-text-tertiary, #a1a1aa);
+}
+.sn-case--featured .sn-case__index {
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: var(--sn-case-accent-ink);
+  background: var(--sn-case-accent-soft);
 }
 
-/* ── 内容区：高度档位让瀑布流出现错落 ── */
+/* ── 内容窗：白净底 + 底缘薄雾 ──
+ * 窗底取 token surface；「雾」是「surface 0% → surface 100%」的渐隐 + 轻微
+ * backdrop-blur，过渡带长、无平台段，所以是自然衔接而不是一条硬边；遮罩让
+ * 模糊一起渐入，pointer-events: none 保证雾下的组件照旧可点。
+ *
+ * 高度由档位类 `--sn-case-body-min` 提供（min-height，不是固定高度）：
+ * 同档卡等高 → 瀑布流三列齐平；内容更高的卡自然增高，不会被裁掉。 */
 .sn-case__body {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: 10px;
   box-sizing: border-box;
-  min-height: 132px;
+  min-height: var(--sn-case-body-min, 148px);
+  padding: 12px 12px 22px;
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-border-subtle, #e4e4e7) 70%, transparent);
+  border-radius: 13px;
+  background: var(--sn-web-color-background-surface, #ffffff);
+  color: var(--sn-web-color-text-primary, #09090b);
 }
-.sn-case--sm .sn-case__body {
-  min-height: 108px;
+/* 档位 → 内容窗最小高度（取值见 home-cases.ts `HomeCaseSize`）。 */
+.sn-case--c188 {
+  --sn-case-body-min: 188px;
 }
-.sn-case--md .sn-case__body {
-  min-height: 172px;
+.sn-case--c208 {
+  --sn-case-body-min: 208px;
 }
-.sn-case--lg .sn-case__body {
-  min-height: 244px;
+.sn-case--c228 {
+  --sn-case-body-min: 228px;
+}
+.sn-case--c248 {
+  --sn-case-body-min: 248px;
+}
+.sn-case--c288 {
+  --sn-case-body-min: 288px;
+}
+.sn-case--c308 {
+  --sn-case-body-min: 308px;
+}
+.sn-case--c338 {
+  --sn-case-body-min: 338px;
+}
+.sn-case--c378 {
+  --sn-case-body-min: 378px;
+}
+.sn-case--c388 {
+  --sn-case-body-min: 388px;
+}
+.sn-case--c398 {
+  --sn-case-body-min: 398px;
+}
+.sn-case--c418 {
+  --sn-case-body-min: 418px;
+}
+.sn-case--c428 {
+  --sn-case-body-min: 428px;
+}
+.sn-case__body::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: min(48%, 46px);
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--sn-web-color-background-surface, #ffffff) 0%, transparent) 0%,
+    var(--sn-web-color-background-surface, #ffffff) 100%
+  );
+  backdrop-filter: blur(1.5px) saturate(1.02);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.02);
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 64%, #000 100%);
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0) 0%, #000 64%, #000 100%);
+  pointer-events: none;
 }
 
-/* Demo 里拉伸到整宽的控件 */
+/* ── 底部：组件 / 协议签名居左，状态居右 ── */
+.sn-case__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  margin-top: 14px;
+  border-top: 1px solid
+    color-mix(in srgb, var(--sn-web-color-border-subtle, #e4e4e7) 78%, transparent);
+  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--sn-web-color-text-tertiary, #a1a1aa);
+}
+.sn-case__api {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sn-case__status {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--sn-case-accent-ink);
+}
+
+/* 卡内组件拉伸到整宽（表单 / 表格 / 媒体类场景） */
 .sn-case__body :deep(.sn-input),
 .sn-case__body :deep(.sn-input-number),
 .sn-case__body :deep(.sn-select),
@@ -149,12 +381,8 @@ html.dark .sn-case {
 .sn-case__body :deep(.sn-data-table),
 .sn-case__body :deep(.sn-video-player),
 .sn-case__body :deep(.sn-image),
-.sn-case__body :deep(.sn-calendar) {
-  width: 100%;
-}
-
-/* 卡片内按钮的通栏变体（场景里常见的主操作） */
-.sn-case__body :deep(.sn-case-block) {
+.sn-case__body :deep(.sn-calendar),
+.sn-case__body :deep(.sn-color-picker) {
   width: 100%;
 }
 </style>

@@ -9,7 +9,8 @@
 Tap-triggered text hint bubble for mobile / miniprogram. A trigger element with a
 short hint attached to one of twelve placements. Used for icon-only buttons,
 truncated labels and inline explanations.
-Tapping outside the bubble (a transparent fixed mask) closes it. The bubble
+Outside taps close the bubble through the wot-ui-style `useQueue` /
+`closeOutside` page-root hook (see docs). The bubble
 defaults to the elevated surface — white in the light theme — with the page
 text color; recolor via `--sn-tooltip-bg` / `--sn-tooltip-color`.
 
@@ -76,29 +77,29 @@ import { SnTooltip } from '@snui/uni';
 
 ## Tokens Consumed (end: mp)
 
-| Token            | CSS Variable                                              | Purpose                                |
-| ---------------- | --------------------------------------------------------- | -------------------------------------- |
-| Component vars   | `--sn-tooltip-bg` (default: `--sn-mp-color-background-elevated`), `--sn-tooltip-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
-| Secondary text   | `--sn-mp-color-text-secondary`                            | Close glyph color                      |
-| Elevation        | `--sn-mp-shadow-md`                                       | Bubble shadow                          |
-| Radius           | `--sn-mp-radius-md`                                       | Bubble corners                         |
-| Spacing          | `--sn-mp-spacing-2/3/4`                                   | Bubble padding / gaps                  |
-| Typography       | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text                            |
+| Token          | CSS Variable                                                                                                                   | Purpose                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Component vars | `--sn-tooltip-bg` (default: `--sn-mp-color-background-elevated`), `--sn-tooltip-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
+| Secondary text | `--sn-mp-color-text-secondary`                                                                                                 | Close glyph color                                                         |
+| Elevation      | `--sn-mp-shadow-md`                                                                                                            | Bubble shadow                                                             |
+| Radius         | `--sn-mp-radius-md`                                                                                                            | Bubble corners                                                            |
+| Spacing        | `--sn-mp-spacing-2/3/4`                                                                                                        | Bubble padding / gaps                                                     |
+| Typography     | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`                                                                      | Bubble text                                                               |
 
 ## Accessibility
 
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="tooltip"`; the arrow is `aria-hidden="true"`
 - Close button carries `role="button"` + `aria-label="close"`
-- Transparent mask carries `aria-hidden="true"` (gesture layer only)
 - Interaction uses `@tap` (miniprogram has no `click` / `hover`); no focus trap
 
 ## Documented Divergences
 
 - No hover trigger: miniprogram / touch devices have no `hover`, so the trigger
   is tapped to toggle.
-- Click-outside close: wot-ui closes on an outside tap; miniprogram has no
-  `document`, so the mechanism here is a transparent fixed mask below the bubble.
+- Click-outside close: wot-ui `useQueue` / `closeOutside` parity — the page
+  root binds the tap dispatcher; the component registers an idempotent close.
+  No mask is rendered (a mask swallowed taps and broke one-gesture switching).
 - `root-portal` is declared but not implemented (no portal host on miniprogram).
 - `updatePosition()` is a no-op: the bubble is placed by CSS, nothing is measured.
 

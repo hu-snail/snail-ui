@@ -24,7 +24,11 @@ export type SnDatePickerType =
   | 'daterange'
   | 'datetimerange'
   | 'weekrange'
-  | 'quarterrange';
+  | 'quarterrange'
+  | 'monthrange';
+
+/** Where the datetime-range four-field input bar renders inside the panel. */
+export type SnDatePickerInputPosition = 'top' | 'bottom';
 
 /** Visual size preset (AUI convention adds `mini` below the reference `tiny`). */
 export type SnDatePickerSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
@@ -88,6 +92,7 @@ export const DEFAULT_FORMATS: Readonly<Record<SnDatePickerType, string>> = {
   datetimerange: 'yyyy-MM-dd HH:mm:ss',
   weekrange: 'yyyy-ww周',
   quarterrange: 'yyyy-Qq',
+  monthrange: 'yyyy-MM',
 };
 
 /** Weekday header labels — Monday-first grid (project convention). */
@@ -382,8 +387,14 @@ export function isRangeType(type: SnDatePickerType): boolean {
     type === 'daterange' ||
     type === 'datetimerange' ||
     type === 'weekrange' ||
-    type === 'quarterrange'
+    type === 'quarterrange' ||
+    type === 'monthrange'
   );
+}
+
+/** Whether a type is the dual year|month panel range mode. */
+export function isMonthRangeType(type: SnDatePickerType): boolean {
+  return type === 'monthrange';
 }
 
 /** Whether a type carries a time-of-day column. */

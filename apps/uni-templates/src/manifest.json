@@ -14,6 +14,7 @@
   },
   "mp-weixin": {
     "appid": "touristappid",
+    "darkmode": true,
     "setting": {
       "urlCheck": false,
       "es6": true,

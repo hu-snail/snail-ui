@@ -1,21 +1,28 @@
 <script setup lang="ts">
 /**
- * DemoPageShell —— 演示工程页面壳：渐变弥散背景 + 渐显呼吸动画 +
+ * DemoPageShell —— 演示工程页面壳：中性浅灰画布 +
  * 语言/主题图标按钮（ADR-0005 演示工程全局 UI）。
  *
- * - 弥散背景：三个 radial-gradient 色块（radial 自带柔边，不依赖 filter
- *   blur 的小程序兼容性），缓慢呼吸 + 入场渐显。
+ * - 背景：纵向浅灰渐变画布（`--demo-page-canvas`，组件规范视觉稿；
+ *   深色为暗色渐变），场景卡片浮在其上；`--demo-page-bg` 作回退色。
  * - 主题：根节点挂 `demo-shell--dark` 切换 CSS 变量（见 App.vue 全局段）；
  *   同步导航栏颜色（尽力而为）。
  * - 语言：中/英切换，文案与导航栏标题联动；组件中文名/描述暂无英文数据，
  *   英文模式下组件名用 key 的 Title Case（gen-pages 生成 titleEn）。
+ * - 切换按钮（风格包 / 语言 / 深浅色）只保留在总览页（`brand`）：
+ *   组件演示页是纯净预览，顶栏按钮会挤占 demo 视口并干扰截图对比；
+ *   语言与主题状态本身仍是模块级单例，切完回演示页依旧生效。
  *
  * 图标数据内联自 lucide（ISC，与 packages/uni sn-icon-set 同源约定）。
  */
 import { computed, onMounted, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { ChevronLeft as ChevronLeftIcon } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { useDemoUi } from '../state/demo-ui';
+// wot-ui useQueue 对齐:页面根节点监听冒泡,点任意空白处关闭所有弹窗
+// (tooltip / popover / drop-menu / toast / swipe-action / fab)。
+import { useQueue } from '@snui/uni-src/utils/outside-close';
 
 const props = withDefaults(
   defineProps<{
@@ -25,8 +32,23 @@ const props = withDefaults(
     titleZh?: string;
     /** 导航栏标题（英文）。 */
     titleEn?: string;
+    /** 组件一句话描述（通栏头部副标题，仅中文模式显示；desc 是中文单源）。 */
+    desc?: string;
+    /**
+     * 顶部导航形态（可配置）：
+     * - `blend`（默认）：通栏 —— pages.json 声明 `navigationStyle: custom`，
+     *   画布渐变直接铺到状态栏，顶部渲染半透明毛玻璃悬浮头部（页内返回键 +
+     *   居中标题），与内容区背景完全一致。
+     * - `native`：uni 原生导航栏（底色经 applyNavBar 对齐画布顶色）。
+     */
+    navStyle?: 'native' | 'blend';
+    /**
+     * 画布底色覆盖（如输入框页用纯白对比深浅组件底色）。空串 = 默认中性灰；
+     * 深色主题下仍按字面值生效（由调用方决定是否覆盖）。
+     */
+    bg?: string;
   }>(),
-  { brand: false, titleZh: '', titleEn: '' },
+  { brand: false, titleZh: '', titleEn: '', desc: '', navStyle: 'blend', bg: '' },
 );
 
 const {
@@ -42,6 +64,8 @@ const {
   applyNavBar,
   setNavTitle,
 } = useDemoUi();
+
+const { closeOutside } = useQueue();
 
 // lucide.dev — ISC license（ Redistribution 说明见 sn-icon-set.ts 头注）
 const GlobeIcon: IconData = {
@@ -70,6 +94,27 @@ const MoonIcon: IconData = {
   viewBox: '0 0 24 24',
   paths: ['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'],
 };
+// 风格包按钮（调色板）——此前模板引用但未定义，按钮渲染为空胶囊。
+// 色点是 `h.01` + round linecap：sn-icon 只渲染 path，不做 circle 元素。
+const PaletteIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: [
+    'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z',
+    'M13.5 6.5h.01',
+    'M17.5 10.5h.01',
+    'M8.5 7.5h.01',
+    'M6.5 12.5h.01',
+  ],
+};
+
+/**
+ * 画布样式：bg 覆盖只在浅色主题生效（深色维持暗色画布，白色画布在深色下
+ * 不可读）；风格包变量始终透传，二者叠加。
+ */
+const shellStyle = computed(() => {
+  if (!props.bg || isDark.value) return stylePackVars;
+  return [stylePackVars, { background: props.bg }];
+});
 
 const langLabel = computed(() => t('切换语言', 'Switch language'));
 const themeLabel = computed(() =>
@@ -82,6 +127,36 @@ function syncNavBar(): void {
     setNavTitle(lang.value === 'en' && props.titleEn !== '' ? props.titleEn : props.titleZh);
   }
 }
+
+/**
+ * 通栏头部的返回键：有历史栈时回上一页，直接打开内页（无历史）时回首页。
+ * 该 uni H5 运行时不挂全局 `uni` 路由 API（`window.uni` 为空壳，工程内
+ * `uni.*` 调用均静默降级），H5 走 hash 路由的历史栈兜底。
+ */
+function goBack(): void {
+  const api = globalThis.uni as
+    | {
+        navigateBack?: (options?: { fail?: () => void }) => void;
+        reLaunch?: (options: { url: string }) => void;
+      }
+    | undefined;
+  if (typeof api?.navigateBack === 'function') {
+    api.navigateBack({
+      fail: () => api.reLaunch?.({ url: '/pages/index/index' }),
+    });
+    return;
+  }
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  window.location.hash = '#/pages/index/index';
+}
+
+const isBlend = computed(() => props.navStyle === 'blend');
+const headerTitle = computed(() =>
+  lang.value === 'en' && props.titleEn !== '' ? props.titleEn : props.titleZh,
+);
 
 onMounted(() => {
   syncNavBar();
@@ -96,15 +171,29 @@ watch(
 <template>
   <view
     class="demo-shell"
+    @tap="closeOutside"
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
-    :style="stylePackVars"
+    :style="shellStyle"
   >
-    <!-- 渐变弥散背景：radial 色块自带柔边，随呼吸动画缓慢起伏 -->
-    <view class="demo-shell__blobs" aria-hidden="true">
-      <view class="demo-shell__blob demo-shell__blob--1" />
-      <view class="demo-shell__blob demo-shell__blob--2" />
-      <view class="demo-shell__blob demo-shell__blob--3" />
+    <view v-if="isBlend && !brand" class="demo-shell__topbar">
+      <view class="demo-shell__topbar-slot">
+        <view
+          class="demo-shell__back"
+          role="button"
+          :aria-label="t('返回', 'Back')"
+          hover-class="demo-shell__back--pressed"
+          @tap="goBack"
+        >
+          <SnIcon :icon="ChevronLeftIcon" :size="20" />
+        </view>
+      </view>
+      <view class="demo-shell__topbar-center">
+        <text class="demo-shell__topbar-title">{{ headerTitle }}</text>
+        <text v-if="desc !== '' && lang === 'zh'" class="demo-shell__topbar-sub">{{ desc }}</text>
+      </view>
+      <view class="demo-shell__topbar-slot demo-shell__topbar-slot--end" />
     </view>
+    <view v-else-if="isBlend" class="demo-shell__statuspad" />
 
     <view class="demo-shell__bar">
       <view v-if="brand" class="demo-shell__brand">
@@ -113,7 +202,7 @@ watch(
           {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
         </text>
       </view>
-      <view class="demo-shell__actions">
+      <view v-if="brand" class="demo-shell__actions">
         <view
           class="demo-shell__btn"
           role="button"
@@ -145,54 +234,89 @@ watch(
 .demo-shell {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
-  background-color: var(--demo-page-bg);
+  /* 组件规范视觉稿画布：纵向浅灰渐变（slate-50 → slate-200），分区卡片
+   * 浮在其上；--demo-page-bg 作无渐变环境的回退色。不设 overflow 裁切：
+   * 会在通栏头部上方形成滚动容器，position: sticky 随之失效。 */
+  background: var(--demo-page-canvas, var(--demo-page-bg));
   color: var(--demo-title);
 }
 
-/* ── 弥散色块 ─────────────────────────────────────────────────────────── */
-.demo-shell__blobs {
-  position: absolute;
+/* ── 通栏头部：毛玻璃悬浮条（navigationStyle: custom 时替代原生导航栏） ── */
+
+.demo-shell__topbar {
+  position: sticky;
   top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: none;
+  z-index: 40;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: var(--status-bar-height, 0px) 24rpx 0;
+  background: var(--demo-header-bg);
+  border-bottom: 1px solid var(--demo-card-border);
+  /* 毛玻璃只作用于头部自身及其后代（返回键），不构成 .demo-shell__body 里
+   * fixed 弹层 demo 的 containing block。 */
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
 }
 
-.demo-shell__blob {
-  position: absolute;
-  border-radius: 50%;
-  /* 入场渐显 + 呼吸往复（相位错开，避免整齐划一） */
-  animation:
-    demo-fade-in 0.9s ease both,
-    demo-breathe 7s ease-in-out 0.9s infinite;
+.demo-shell__statuspad {
+  height: var(--status-bar-height, 0px);
 }
 
-.demo-shell__blob--1 {
-  width: 560rpx;
-  height: 560rpx;
-  top: -160rpx;
-  left: -160rpx;
-  background: var(--demo-blob-1);
+.demo-shell__topbar-slot {
+  display: flex;
+  align-items: center;
+  flex: 0 0 132rpx;
+  min-width: 0;
 }
 
-.demo-shell__blob--2 {
-  width: 480rpx;
-  height: 480rpx;
-  top: 180rpx;
-  right: -180rpx;
-  background: var(--demo-blob-2);
-  animation-delay: 0.9s, 2.4s;
+.demo-shell__topbar-slot--end {
+  justify-content: flex-end;
 }
 
-.demo-shell__blob--3 {
-  width: 420rpx;
-  height: 420rpx;
-  top: 620rpx;
-  left: 80rpx;
-  background: var(--demo-blob-3);
-  animation-delay: 0.9s, 4.6s;
+.demo-shell__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  margin-left: -12rpx;
+  border-radius: var(--sn-mp-radius-full);
+  color: var(--demo-title);
+  transition: background-color 120ms ease;
+}
+
+.demo-shell__back--pressed {
+  background-color: var(--demo-chip-bg);
+}
+
+.demo-shell__topbar-center {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: 12rpx 0;
+}
+
+.demo-shell__topbar-title {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 32rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--demo-title);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.demo-shell__topbar-sub {
+  margin-top: 2rpx;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 20rpx;
+  color: var(--demo-text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* ── 顶栏：品牌区 + 切换按钮 ──────────────────────────────────────────── */
@@ -254,7 +378,7 @@ watch(
   font-weight: 600;
 }
 
-/* 内容位于色块之上 */
+/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。 */
 .demo-shell__body {
   position: relative;
 }

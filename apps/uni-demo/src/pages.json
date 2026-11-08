@@ -3,7 +3,8 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "snui 组件演示"
+        "navigationBarTitleText": "snui 组件演示",
+        "navigationStyle": "custom"
       }
     }
   ],
@@ -14,49 +15,57 @@
         {
           "path": "avatar",
           "style": {
-            "navigationBarTitleText": "头像"
+            "navigationBarTitleText": "头像",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "badge",
           "style": {
-            "navigationBarTitleText": "徽标"
+            "navigationBarTitleText": "徽标",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "button",
           "style": {
-            "navigationBarTitleText": "按钮"
+            "navigationBarTitleText": "按钮",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "cell",
           "style": {
-            "navigationBarTitleText": "单元格"
+            "navigationBarTitleText": "单元格",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "config-provider",
           "style": {
-            "navigationBarTitleText": "全局配置"
+            "navigationBarTitleText": "全局配置",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "divider",
           "style": {
-            "navigationBarTitleText": "分割线"
+            "navigationBarTitleText": "分割线",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "fab",
           "style": {
-            "navigationBarTitleText": "悬浮按钮"
+            "navigationBarTitleText": "悬浮按钮",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "gap",
           "style": {
-            "navigationBarTitleText": "间隔槽"
+            "navigationBarTitleText": "间隔槽",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -67,43 +76,50 @@
         {
           "path": "icon",
           "style": {
-            "navigationBarTitleText": "图标"
+            "navigationBarTitleText": "图标",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "layout",
           "style": {
-            "navigationBarTitleText": "布局"
+            "navigationBarTitleText": "布局",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "resize",
           "style": {
-            "navigationBarTitleText": "监听元素尺寸"
+            "navigationBarTitleText": "监听元素尺寸",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "root-portal",
           "style": {
-            "navigationBarTitleText": "根节点传送"
+            "navigationBarTitleText": "根节点传送",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "tag",
           "style": {
-            "navigationBarTitleText": "标签"
+            "navigationBarTitleText": "标签",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "text",
           "style": {
-            "navigationBarTitleText": "文本"
+            "navigationBarTitleText": "文本",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "transition",
           "style": {
-            "navigationBarTitleText": "动画"
+            "navigationBarTitleText": "动画",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -114,49 +130,57 @@
         {
           "path": "backtop",
           "style": {
-            "navigationBarTitleText": "回到顶部"
+            "navigationBarTitleText": "回到顶部",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "collapse",
           "style": {
-            "navigationBarTitleText": "折叠面板"
+            "navigationBarTitleText": "折叠面板",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "drop-menu",
           "style": {
-            "navigationBarTitleText": "下拉菜单"
+            "navigationBarTitleText": "下拉菜单",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "grid",
           "style": {
-            "navigationBarTitleText": "宫格"
+            "navigationBarTitleText": "宫格",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "index-bar",
           "style": {
-            "navigationBarTitleText": "索引栏"
+            "navigationBarTitleText": "索引栏",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "navbar",
           "style": {
-            "navigationBarTitleText": "导航栏"
+            "navigationBarTitleText": "导航栏",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "pagination",
           "style": {
-            "navigationBarTitleText": "分页"
+            "navigationBarTitleText": "分页",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "popover",
           "style": {
-            "navigationBarTitleText": "气泡"
+            "navigationBarTitleText": "气泡",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -167,49 +191,57 @@
         {
           "path": "segmented",
           "style": {
-            "navigationBarTitleText": "分段器"
+            "navigationBarTitleText": "分段器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "sidebar",
           "style": {
-            "navigationBarTitleText": "侧边导航"
+            "navigationBarTitleText": "侧边导航",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "steps",
           "style": {
-            "navigationBarTitleText": "步骤条"
+            "navigationBarTitleText": "步骤条",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "sticky",
           "style": {
-            "navigationBarTitleText": "粘性布局"
+            "navigationBarTitleText": "粘性布局",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "tabbar",
           "style": {
-            "navigationBarTitleText": "标签栏"
+            "navigationBarTitleText": "标签栏",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "tabs",
           "style": {
-            "navigationBarTitleText": "标签页"
+            "navigationBarTitleText": "标签页",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "tooltip",
           "style": {
-            "navigationBarTitleText": "文字提示"
+            "navigationBarTitleText": "文字提示",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "tour",
           "style": {
-            "navigationBarTitleText": "漫游"
+            "navigationBarTitleText": "漫游",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -220,79 +252,100 @@
         {
           "path": "calendar",
           "style": {
-            "navigationBarTitleText": "日历选择器"
+            "navigationBarTitleText": "日历选择器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "calendar-view",
           "style": {
-            "navigationBarTitleText": "日历面板"
+            "navigationBarTitleText": "日历面板",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "captcha",
           "style": {
-            "navigationBarTitleText": "拼图验证"
+            "navigationBarTitleText": "拼图验证",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "cascader",
           "style": {
-            "navigationBarTitleText": "级联选择器"
+            "navigationBarTitleText": "级联选择器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "checkbox",
           "style": {
-            "navigationBarTitleText": "复选框"
+            "navigationBarTitleText": "复选框",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "code-input",
+          "style": {
+            "navigationBarTitleText": "验证码输入框",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "date-strip",
+          "style": {
+            "navigationBarTitleText": "日期条",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "datetime-picker",
           "style": {
-            "navigationBarTitleText": "时间选择器"
+            "navigationBarTitleText": "时间选择器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "datetime-picker-view",
           "style": {
-            "navigationBarTitleText": "时间选择器视图"
+            "navigationBarTitleText": "时间选择器视图",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "form",
           "style": {
-            "navigationBarTitleText": "表单"
+            "navigationBarTitleText": "表单",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "input",
           "style": {
-            "navigationBarTitleText": "输入框"
+            "navigationBarTitleText": "输入框",
+            "navigationStyle": "custom",
+            "backgroundColor": "#ffffff"
           }
         },
         {
           "path": "input-number",
           "style": {
-            "navigationBarTitleText": "计数器"
+            "navigationBarTitleText": "计数器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "keyboard",
           "style": {
-            "navigationBarTitleText": "虚拟键盘"
+            "navigationBarTitleText": "虚拟键盘",
+            "navigationStyle": "custom"
           }
         },
         {
-          "path": "password-input",
+          "path": "keyboard-panel",
           "style": {
-            "navigationBarTitleText": "密码输入框"
-          }
-        },
-        {
-          "path": "picker",
-          "style": {
-            "navigationBarTitleText": "选择器"
+            "navigationBarTitleText": "键盘面板",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -301,75 +354,108 @@
       "root": "pages/form-2",
       "pages": [
         {
+          "path": "picker",
+          "style": {
+            "navigationBarTitleText": "选择器",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "picker-view",
           "style": {
-            "navigationBarTitleText": "选择器视图"
+            "navigationBarTitleText": "选择器视图",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "plate-input",
+          "style": {
+            "navigationBarTitleText": "车牌输入框",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "radio",
           "style": {
-            "navigationBarTitleText": "单选框"
+            "navigationBarTitleText": "单选框",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "rate",
           "style": {
-            "navigationBarTitleText": "评分"
+            "navigationBarTitleText": "评分",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "search",
           "style": {
-            "navigationBarTitleText": "搜索框"
+            "navigationBarTitleText": "搜索框",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "select-picker",
           "style": {
-            "navigationBarTitleText": "单复选选择器"
+            "navigationBarTitleText": "单复选选择器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "signature",
           "style": {
-            "navigationBarTitleText": "签名"
+            "navigationBarTitleText": "签名",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "slide-verify",
           "style": {
-            "navigationBarTitleText": "滑动验证"
+            "navigationBarTitleText": "滑动验证",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "slider-bar",
+          "style": {
+            "navigationBarTitleText": "胶囊滑条",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "slider",
           "style": {
-            "navigationBarTitleText": "滑块"
+            "navigationBarTitleText": "滑块",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "sort-button",
           "style": {
-            "navigationBarTitleText": "排序按钮"
+            "navigationBarTitleText": "排序按钮",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "switch",
           "style": {
-            "navigationBarTitleText": "开关"
+            "navigationBarTitleText": "开关",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "textarea",
           "style": {
-            "navigationBarTitleText": "文本域"
+            "navigationBarTitleText": "文本域",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "upload",
           "style": {
-            "navigationBarTitleText": "上传"
+            "navigationBarTitleText": "上传",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -380,49 +466,57 @@
         {
           "path": "action-sheet",
           "style": {
-            "navigationBarTitleText": "动作面板"
+            "navigationBarTitleText": "动作面板",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "circle",
           "style": {
-            "navigationBarTitleText": "环形进度条"
+            "navigationBarTitleText": "环形进度条",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "curtain",
           "style": {
-            "navigationBarTitleText": "幕帘"
+            "navigationBarTitleText": "幕帘",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "dialog",
           "style": {
-            "navigationBarTitleText": "弹框"
+            "navigationBarTitleText": "弹框",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "empty",
           "style": {
-            "navigationBarTitleText": "缺省提示"
+            "navigationBarTitleText": "缺省提示",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "floating-panel",
           "style": {
-            "navigationBarTitleText": "浮动面板"
+            "navigationBarTitleText": "浮动面板",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "loading",
           "style": {
-            "navigationBarTitleText": "加载指示器"
+            "navigationBarTitleText": "加载指示器",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "loadmore",
           "style": {
-            "navigationBarTitleText": "加载更多"
+            "navigationBarTitleText": "加载更多",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -433,49 +527,57 @@
         {
           "path": "notice-bar",
           "style": {
-            "navigationBarTitleText": "通知栏"
+            "navigationBarTitleText": "通知栏",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "notify",
           "style": {
-            "navigationBarTitleText": "消息通知"
+            "navigationBarTitleText": "消息通知",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "overlay",
           "style": {
-            "navigationBarTitleText": "遮罩层"
+            "navigationBarTitleText": "遮罩层",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "popup",
           "style": {
-            "navigationBarTitleText": "弹出层"
+            "navigationBarTitleText": "弹出层",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "progress",
           "style": {
-            "navigationBarTitleText": "进度条"
+            "navigationBarTitleText": "进度条",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "skeleton",
           "style": {
-            "navigationBarTitleText": "骨架屏"
+            "navigationBarTitleText": "骨架屏",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "swipe-action",
           "style": {
-            "navigationBarTitleText": "滑动操作"
+            "navigationBarTitleText": "滑动操作",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "toast",
           "style": {
-            "navigationBarTitleText": "轻提示"
+            "navigationBarTitleText": "轻提示",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -486,79 +588,99 @@
         {
           "path": "card",
           "style": {
-            "navigationBarTitleText": "卡片"
+            "navigationBarTitleText": "卡片",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "count-down",
           "style": {
-            "navigationBarTitleText": "倒计时"
+            "navigationBarTitleText": "倒计时",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "count-to",
           "style": {
-            "navigationBarTitleText": "数字滚动"
+            "navigationBarTitleText": "数字滚动",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "fit-swiper",
           "style": {
-            "navigationBarTitleText": "自适应轮播"
+            "navigationBarTitleText": "自适应轮播",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "image-preview",
           "style": {
-            "navigationBarTitleText": "图片预览"
+            "navigationBarTitleText": "图片预览",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "img",
           "style": {
-            "navigationBarTitleText": "图片"
+            "navigationBarTitleText": "图片",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "img-cropper",
           "style": {
-            "navigationBarTitleText": "图片裁剪"
+            "navigationBarTitleText": "图片裁剪",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "qr-code",
           "style": {
-            "navigationBarTitleText": "二维码"
+            "navigationBarTitleText": "二维码",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "rich-text",
           "style": {
-            "navigationBarTitleText": "富文本"
+            "navigationBarTitleText": "富文本",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "swiper",
           "style": {
-            "navigationBarTitleText": "轮播"
+            "navigationBarTitleText": "轮播",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "table",
           "style": {
-            "navigationBarTitleText": "表格"
+            "navigationBarTitleText": "表格",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "video-preview",
           "style": {
-            "navigationBarTitleText": "视频预览"
+            "navigationBarTitleText": "视频预览",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "waterfall",
+          "style": {
+            "navigationBarTitleText": "瀑布流",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "watermark",
           "style": {
-            "navigationBarTitleText": "水印"
+            "navigationBarTitleText": "水印",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -569,37 +691,43 @@
         {
           "path": "barcode",
           "style": {
-            "navigationBarTitleText": "条形码"
+            "navigationBarTitleText": "条形码",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "dialer",
           "style": {
-            "navigationBarTitleText": "大转盘"
+            "navigationBarTitleText": "大转盘",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "liquid",
           "style": {
-            "navigationBarTitleText": "水波进度球"
+            "navigationBarTitleText": "水波进度球",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "lucky",
           "style": {
-            "navigationBarTitleText": "抽奖九宫格"
+            "navigationBarTitleText": "抽奖九宫格",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "scratchcard",
           "style": {
-            "navigationBarTitleText": "刮刮乐"
+            "navigationBarTitleText": "刮刮乐",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "typing",
           "style": {
-            "navigationBarTitleText": "输入中"
+            "navigationBarTitleText": "输入中",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -610,19 +738,22 @@
         {
           "path": "ai-chat",
           "style": {
-            "navigationBarTitleText": "ai-chat"
+            "navigationBarTitleText": "ai-chat",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "ai-message-list",
           "style": {
-            "navigationBarTitleText": "ai-message-list"
+            "navigationBarTitleText": "ai-message-list",
+            "navigationStyle": "custom"
           }
         },
         {
           "path": "paging",
           "style": {
-            "navigationBarTitleText": "paging"
+            "navigationBarTitleText": "paging",
+            "navigationStyle": "custom"
           }
         }
       ]
@@ -631,7 +762,7 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "snui",
-    "navigationBarBackgroundColor": "#FFFFFF",
-    "backgroundColor": "#F7F7F7"
+    "navigationBarBackgroundColor": "#F8FAFC",
+    "backgroundColor": "#F8FAFC"
   }
 }

@@ -23,7 +23,13 @@ const open = ref(false);
       <SnButton type="primary" block>Show the bubble</SnButton>
     </SnPopover>
 
-    <text class="sn-popover-demo__meta"> State: {{ open ? 'open' : 'closed' }} </text>
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">State: {{ open ? 'open' : 'closed' }}</text>
+    <text class="sn-demo__hint"
+      >Tap anywhere outside the bubble to close it via the page-root closeOutside channel — the same
+      gesture still reaches other controls; the trigger toggles it too.</text
+    >
   </view>
 </template>
 
@@ -33,12 +39,21 @@ const open = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
-.sn-popover-demo__meta {
+.sn-demo__meta {
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+/* Docs-preview only — relative keeps the demo flow intact while the bubble
+ * stays anchored to the component root; the spacer below leaves room for the
+ * bottom-placed bubble instead of letting it cover the copy. */
 .sn-popover.sn-demo-contained {
-  position: absolute;
+  position: relative;
+}
+.sn-popover-demo__space {
+  height: 180rpx;
 }
 </style>

@@ -735,4 +735,198 @@ describe('SnTreeSelect', () => {
     expect(reads).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
   });
+
+  /* ───── connector lines ───── */
+
+  it('renders no line elements by default', async () => {
+    const w = mountTree({ defaultExpandAll: true });
+    await openMenu(w);
+    expect(document.querySelectorAll('.sn-tree-select-node__lines')).toHaveLength(0);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(false);
+  });
+
+  it('draws L connectors on child rows only', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true });
+    await openMenu(w);
+    const rows = nodeRows();
+    expect(rows).toHaveLength(6);
+    expect(rows.every((row) => row.querySelector('.sn-tree-select-node__lines') !== null)).toBe(
+      true,
+    );
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(3);
+    expect(
+      rowByValue('fruits')?.querySelector('.sn-tree-select-node__line--horizontal'),
+    ).toBeNull();
+    expect(
+      rowByValue('apple')?.querySelector('.sn-tree-select-node__line--horizontal'),
+    ).not.toBeNull();
+    expect(
+      rowByValue('apple')
+        ?.querySelector('.sn-tree-select-node__lines')
+        ?.getAttribute('aria-hidden'),
+    ).toBe('true');
+  });
+
+  it('terminates the last child of a branch at the row center', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true });
+    await openMenu(w);
+    expect(rowByValue('apple')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      0,
+    );
+    expect(rowByValue('banana')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      1,
+    );
+    expect(rowByValue('kale')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      1,
+    );
+  });
+
+  it('uses solid strokes by default', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true, lineStyle: 'solid' });
+    await openMenu(w);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(false);
+  });
+
+  it('switches the panel to dashed strokes when requested', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true, lineStyle: 'dashed' });
+    await openMenu(w);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(true);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(3);
+  });
+
+  it('recomputes connectors when a branch expands', async () => {
+    const w = mountTree({ showLine: true });
+    await openMenu(w);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(0);
+
+    switcherOf('fruits')?.click();
+    await nextTick();
+    expect(visibleValues()).toEqual(['fruits', 'apple', 'banana', 'veggies', 'milk']);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(2);
+  });
+
+  it('keeps node selection intact with lines enabled', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true, lineStyle: 'dashed' });
+    await openMenu(w);
+    rowByValue('apple')?.click();
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual(['apple']);
+  });
+
+  it('defaults to square elbows', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true });
+    await openMenu(w);
+    const menu = document.querySelector('.sn-tree-select-menu');
+    expect(menu?.classList.contains('sn-tree-select-menu--line-rounded')).toBe(false);
+    expect(menu?.classList.contains('sn-tree-select-menu--line-guide')).toBe(false);
+    expect(
+      (
+        document.querySelector('.sn-tree-select-menu') as HTMLElement | null
+      )?.style.getPropertyValue('--sn-web-tree-select-line-color'),
+    ).toBe('');
+  });
+
+  it('opts into rounded elbows, including with dashed strokes', async () => {
+    const w = mountTree({
+      defaultExpandAll: true,
+      showLine: true,
+      lineCorner: 'rounded',
+      lineStyle: 'dashed',
+    });
+    await openMenu(w);
+    const menu = document.querySelector('.sn-tree-select-menu');
+    expect(menu?.classList.contains('sn-tree-select-menu--line-rounded')).toBe(true);
+    expect(menu?.classList.contains('sn-tree-select-menu--line-dashed')).toBe(true);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(3);
+    // Each branch row marks its own elbow-level vertical; for a last child CSS
+    // stops the guide at the arc's top edge so the arc closes the branch.
+    expect(document.querySelectorAll('.sn-tree-select-node__line--elbow')).toHaveLength(3);
+    expect(
+      rowByValue('banana')
+        ?.querySelector('.sn-tree-select-node__line--elbow')
+        ?.classList.contains('sn-tree-select-node__line--half'),
+    ).toBe(true);
+    expect(
+      rowByValue('apple')
+        ?.querySelector('.sn-tree-select-node__line--elbow')
+        ?.classList.contains('sn-tree-select-node__line--half'),
+    ).toBe(false);
+  });
+
+  it('exposes lineColor on the Teleported menu without breaking positioning', async () => {
+    const w = mountTree({ defaultExpandAll: true, showLine: true, lineColor: '#ff4d4f' });
+    await openMenu(w);
+    const menu = document.querySelector('.sn-tree-select-menu') as HTMLElement | null;
+    expect(menu?.style.getPropertyValue('--sn-web-tree-select-line-color')).toBe('#ff4d4f');
+    expect(menu?.style.position).toBe('fixed');
+  });
+
+  it('draws full-height indent guides with line-mode="guide"', async () => {
+    const w = mountTree({
+      defaultExpandAll: true,
+      showLine: true,
+      lineMode: 'guide',
+      lineStyle: 'dashed',
+    });
+    await openMenu(w);
+    const menu = document.querySelector('.sn-tree-select-menu');
+    expect(menu?.classList.contains('sn-tree-select-menu--line-guide')).toBe(true);
+    expect(menu?.classList.contains('sn-tree-select-menu--line-dashed')).toBe(true);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(0);
+    expect(document.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(0);
+    // fruits / veggies / milk are roots; apple / banana / kale each keep one
+    // full-height guide for their parent level.
+    expect(document.querySelectorAll('.sn-tree-select-node__line--vertical')).toHaveLength(3);
+    expect(
+      rowByValue('apple')?.querySelectorAll('.sn-tree-select-node__line--vertical'),
+    ).toHaveLength(1);
+  });
+
+  it('does not apply line modifiers while showLine is off', async () => {
+    const w = mountTree({ defaultExpandAll: true, lineCorner: 'rounded', lineStyle: 'dashed' });
+    await openMenu(w);
+    const menu = document.querySelector('.sn-tree-select-menu');
+    expect(menu?.classList.contains('sn-tree-select-menu--line-rounded')).toBe(false);
+    expect(menu?.classList.contains('sn-tree-select-menu--line-dashed')).toBe(false);
+  });
+
+  /* ───── data-level icons ───── */
+
+  it('renders icons declared on option data, and none where omitted', async () => {
+    const w = mountTree({
+      options: [
+        {
+          label: 'Src',
+          key: 'src',
+          icon: () => h('span', { class: 'probe-icon' }, 'S'),
+          children: [
+            { label: 'A', key: 'a', icon: h('i', { class: 'probe-vnode' }) },
+            { label: 'Plain', key: 'plain', icon: 'TS' },
+          ],
+        },
+        { label: 'No icon', key: 'none' },
+      ],
+      defaultExpandAll: true,
+    });
+    await openMenu(w);
+
+    expect(document.querySelectorAll('.sn-tree-select-node__icon')).toHaveLength(3);
+    expect(rowByValue('src')?.querySelector('.probe-icon')?.textContent).toBe('S');
+    expect(rowByValue('a')?.querySelector('.probe-vnode')).not.toBeNull();
+    expect(rowByValue('plain')?.querySelector('.sn-tree-select-node__icon')?.textContent).toContain(
+      'TS',
+    );
+    expect(rowByValue('none')?.querySelector('.sn-tree-select-node__icon')).toBeNull();
+  });
 });

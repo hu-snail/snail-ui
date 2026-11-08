@@ -1,37 +1,55 @@
 <script setup lang="ts">
 /**
- * Demo: sn-barcode (uni-end) — Variant matrix: text position / module width /
- * height / font size / hidden text / line color.
+ * Demo: sn-barcode (uni-end) — Variant matrix: formats / layout direction /
+ * style props.
  */
 import SnBarcode from '@snui/uni-src/components/sn-barcode/sn-barcode.vue';
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__title">text-position="top"</text>
+    <text class="sn-demo__title">Formats</text>
     <view class="barcode-card">
-      <SnBarcode text="690123456789" text-position="top" :module-width="2" />
+      <SnBarcode text="HELLO123$%+" format="CODE128" :module-width="2" />
+      <SnBarcode text="HELLO123-" format="CODE39" :module-width="2" />
+      <SnBarcode text="690123456789" format="EAN13" :module-width="2" />
+      <SnBarcode text="A123456789B" format="CODEBAR" :module-width="2" />
+      <SnBarcode text="12345678" format="ITF" :module-width="2" />
+      <SnBarcode text="69012345" format="EAN8" :module-width="2" />
+      <SnBarcode text="012345678905" format="UPC" :module-width="2" />
+    </view>
+    <text class="sn-demo__meta">EAN family auto-appends / validates check digits</text>
+
+    <text class="sn-demo__title">Layout direction</text>
+    <view class="barcode-row">
+      <view class="barcode-card">
+        <SnBarcode text="690123456789" :module-width="2" />
+        <text class="sn-demo__meta">Horizontal (default)</text>
+      </view>
+      <view class="barcode-card">
+        <SnBarcode text="690123456789" layout="vertical" :module-width="2" height="80rpx" />
+        <text class="sn-demo__meta">Vertical</text>
+      </view>
     </view>
 
-    <text class="sn-demo__title">show-text=false</text>
-    <view class="barcode-card">
-      <SnBarcode text="690123456789" :show-text="false" :module-width="2" />
+    <text class="sn-demo__title">Style props</text>
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" line-length="80rpx" />
     </view>
-
-    <text class="sn-demo__title">module-width=4 + height / fontSize</text>
-    <view class="barcode-card">
-      <SnBarcode text="690123456789" :module-width="4" height="160rpx" font-size="28rpx" />
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" line-color="#e02020" />
     </view>
-
-    <text class="sn-demo__title">Custom line-color</text>
-    <view class="barcode-card">
+    <view class="barcode-card barcode-card--tinted">
       <SnBarcode
         text="690123456789"
         :module-width="2"
-        line-color="var(--sn-mp-color-feedback-success)"
+        background="var(--sn-mp-color-background-muted)"
       />
     </view>
-    <text class="sn-demo__meta">line-color drives both bar and text color</text>
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" text-align="left" margin="16rpx" />
+    </view>
+    <text class="sn-demo__meta">line-length / line-color / background / text-align / margin</text>
   </view>
 </template>
 
@@ -40,9 +58,20 @@ import SnBarcode from '@snui/uni-src/components/sn-barcode/sn-barcode.vue';
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-mp-color-background-surface);
+}
+
+.barcode-card--tinted {
+  align-items: stretch;
+}
+
+.barcode-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sn-mp-spacing-3);
 }
 
 .sn-demo__title {

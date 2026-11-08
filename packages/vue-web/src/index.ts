@@ -17,6 +17,11 @@ export type { SnAffixScrollTarget } from './affix/SnAffix.vue';
 export { default as SnAnchor } from './anchor/SnAnchor.vue';
 export { default as SnAnchorLink } from './anchor/SnAnchorLink.vue';
 export { default as SnBackTop } from './back-top/SnBackTop.vue';
+export { default as SnFloatingToc } from './floating-toc/SnFloatingToc.vue';
+export { default as SnFloatingTocTrigger } from './floating-toc/SnFloatingTocTrigger.vue';
+export { default as SnFloatingTocBar } from './floating-toc/SnFloatingTocBar.vue';
+export { default as SnFloatingTocContent } from './floating-toc/SnFloatingTocContent.vue';
+export { default as SnFloatingTocItem } from './floating-toc/SnFloatingTocItem.vue';
 export { default as SnCard } from './card/SnCard.vue';
 export { default as SnCollapse } from './collapse/SnCollapse.vue';
 export { default as SnCollapseItem } from './collapse/SnCollapseItem.vue';
@@ -36,6 +41,7 @@ export { default as SnRadioGroup } from './radio/SnRadioGroup.vue';
 export type { SnRadioValue, SnRadioOption } from './radio/sn-radio-types';
 export { default as SnSwitch } from './switch/SnSwitch.vue';
 export { default as SnSlider } from './slider/SnSlider.vue';
+export { default as SnSliderBar } from './slider-bar/SnSliderBar.vue';
 export { default as SnRate } from './rate/SnRate.vue';
 export { default as SnInputNumber } from './input-number/SnInputNumber.vue';
 export { default as SnSelect } from './select/SnSelect.vue';
@@ -67,6 +73,10 @@ export type {
 export { default as SnTreeSelect } from './tree-select/SnTreeSelect.vue';
 export type {
   SnTreeSelectValue,
+  SnTreeSelectIcon,
+  SnTreeSelectLineCorner,
+  SnTreeSelectLineMode,
+  SnTreeSelectLineStyle,
   SnTreeSelectOptionInput,
   SnTreeSelectNode,
 } from './tree-select/sn-tree-select-types';
@@ -83,6 +93,7 @@ export type {
 export { default as SnDatePicker } from './date-picker/SnDatePicker.vue';
 export type {
   SnDatePickerType,
+  SnDatePickerInputPosition,
   SnDatePickerShortcut,
   SnDatePickerShortcutsPosition,
   SnDateValue,
@@ -195,6 +206,15 @@ export { default as SnTree } from './tree/SnTree.vue';
 export type {
   SnTreeKey,
   SnTreeFieldNames,
+  SnTreeIcon,
+  SnTreeAllowDrop,
+  SnTreeAllowDropInfo,
+  SnTreeDragInfo,
+  SnTreeDropInfo,
+  SnTreeDropPosition,
+  SnTreeLineCorner,
+  SnTreeLineMode,
+  SnTreeLineStyle,
   SnTreeOption,
   SnTreeRenderProps,
   SnTreeNode,

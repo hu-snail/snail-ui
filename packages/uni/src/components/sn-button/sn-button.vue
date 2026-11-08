@@ -14,7 +14,7 @@
 import { computed, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { toRpxSize } from '../../utils/sn-size';
 
 defineOptions({ name: 'SnButton' });
 
@@ -95,8 +95,14 @@ const props = withDefaults(
      * `registerSnIcons()` at app bootstrap).
      */
     iconName?: string;
-    /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
+    /**
+     * Icon size forwarded to the embedded sn-icon. Bare numbers and unitless
+     * numeric strings are rpx design-canvas values (small 28 / medium 32 /
+     * large 40 auto-fit); strings with a unit (`'32rpx'` / `'1.5em'`) pass
+     * through verbatim. */
     iconSize?: number | string;
+    /** 圆形按钮（icon-only）：宽高相等、全圆角，配合内置图标使用。 */
+    circle?: boolean;
     /**
      * Iconfont glyph name — wot-ui's `icon` prop (`wd-button icon="check"`).
      *
@@ -155,7 +161,6 @@ const props = withDefaults(
     feedback: true,
     plain: false,
     variant: 'base',
-    cell: undefined,
     loadingColor: '',
     loadingSize: 32,
     hoverClass: 'sn-button--feedback',
@@ -166,7 +171,7 @@ const props = withDefaults(
     customStyle: '',
     bgColor: '',
     color: '',
-    iconSize: 32,
+    circle: false,
     icon: '',
     classPrefix: 'sn-icon',
     cssIcon: false,
@@ -185,14 +190,25 @@ const props = withDefaults(
 );
 
 /**
- * Resolved icon data: prefer explicit `iconData`, fall back to registry
- * lookup by `iconName`. Returns `null` when neither resolves (template
- * renders the default spinner / nothing instead).
+ * Resolved icon data: explicit `iconData` object only. String names are NOT
+ * resolved here — they are forwarded to the embedded SnIcon, whose sync
+ * resolution chain (registry → built-in catalog → provider prefix) covers
+ * the whole sn-icon library without bundling the catalog into sn-button.
  */
-const resolvedIconData = computed<IconData | null>(() => {
-  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
-  return icon ? markRaw(icon) : null;
-});
+const resolvedIconData = computed<IconData | null>(() =>
+  props.iconData ? markRaw(props.iconData) : null,
+);
+
+/**
+ * Inline loader glyph — lucide `loader-circle` (ISC).
+ * Inline loader glyph — lucide `loader-circle` (ISC). Rendered through the
+ * embedded SnIcon so the spinner reuses the same cross-end SVG pipeline as
+ * every other icon, and its stroke scales with `loading-size` instead of
+ * keeping a fixed border width (the old hand-rolled dot washed out at 48rpx+).
+ */
+const LOADER_CIRCLE: IconData = {
+  paths: ['M21 12a9 9 0 1 1-6.219-8.56'],
+};
 
 /**
  * Loading spinner appearance.
@@ -208,11 +224,28 @@ const spinnerColor = computed<string>(() => {
   return typeof fromProps === 'string' ? fromProps : '';
 });
 
-const spinnerSize = computed<number | string>(() => {
-  if (props.loadingSize !== 32) return props.loadingSize;
+/**
+ * Icon size auto-fit — when `iconSize` is unset the glyph scales with the
+ * button size preset instead of a fixed value (which read oversized on
+ * small/medium buttons).
+ *
+ * Units: the auto-fit numbers follow the `--sn-mp-icon-size-*` rpx tokens
+ * (750 design canvas). Sizes are normalized through `toRpxSize` before
+ * forwarding — sn-icon renders bare numbers as px and an unbound attribute
+ * like `loading-size="48"` arrives as a unitless string, which is invalid
+ * CSS and used to blow the spinner up to the SVG default size.
+ */
+const ICON_SIZE_BY_SIZE_PRESET = { small: 28, medium: 32, large: 40 } as const;
+
+const effectiveIconSize = computed<string>(() =>
+  toRpxSize(props.iconSize ?? ICON_SIZE_BY_SIZE_PRESET[props.size] ?? 32),
+);
+const spinnerSize = computed<string>(() => {
+  if (props.loadingSize !== 32) return toRpxSize(props.loadingSize);
   const fromProps = props.loadingProps?.size;
-  if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps;
-  return props.loadingSize;
+  if (fromProps !== undefined) return toRpxSize(fromProps);
+  /* Untouched flat prop and no loading-props size → follow the icon auto-fit. */
+  return effectiveIconSize.value;
 });
 const emit = defineEmits<{
   (e: 'click', event: Event): void;
@@ -230,8 +263,9 @@ const classList = computed(() => [
   `sn-button--${props.size}`,
   `sn-button--variant-${props.variant}`,
   {
+    'sn-button--round': props.round || props.circle,
     'sn-button--block': props.block,
-    'sn-button--round': props.round,
+    'sn-button--circle': props.circle,
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
     'sn-button--hairline': props.hairline && props.type === 'default',
@@ -304,28 +338,22 @@ function onTap(event: Event): void {
   >
     <slot name="icon">
       <!--
-        Icon precedence: SVG data (`iconData` / registry `iconName`) first,
-        then the wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
+        Icon precedence: SVG data (`iconData`) first, then string `iconName`
+        resolved by SnIcon (registry → built-in catalog → provider), then the
+        wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
       -->
-      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
+      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="effectiveIconSize" />
+      <SnIcon v-else-if="iconName" :icon="iconName" :size="effectiveIconSize" />
       <SnIcon
         v-else-if="icon"
         :name="icon"
         :class-prefix="classPrefix"
         :css-icon="cssIcon"
-        :size="iconSize ?? 32"
+        :size="effectiveIconSize"
       />
-      <view
-        v-else-if="loading"
-        class="sn-button__spinner"
-        :style="spinnerColor ? `color: ${spinnerColor}` : undefined"
-        aria-hidden="true"
-      >
+      <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
-          <view
-            class="sn-button__spinner-dot"
-            :style="`width: ${spinnerSize}rpx; height: ${spinnerSize}rpx`"
-          />
+          <SnIcon :icon="LOADER_CIRCLE" :size="spinnerSize" :color="spinnerColor || undefined" />
         </slot>
       </view>
     </slot>
@@ -341,7 +369,7 @@ function onTap(event: Event): void {
   gap: 8rpx;
   padding: 0 28rpx;
   border: 2rpx solid transparent;
-  border-radius: 12rpx;
+  border-radius: 8rpx;
   font-size: 28rpx;
   font-weight: 500;
   line-height: 1;
@@ -392,6 +420,25 @@ function onTap(event: Event): void {
   height: 88rpx;
   padding: 0 36rpx;
   font-size: 32rpx;
+}
+
+/* Circle (icon-only) — width equals the preset height so the glyph lands in a
+ * true circle at every size. */
+.sn-button--circle {
+  padding: 0;
+  border-radius: var(--sn-mp-radius-full);
+}
+.sn-button--circle.sn-button--small {
+  width: 56rpx;
+  height: 56rpx;
+}
+.sn-button--circle.sn-button--medium {
+  width: 72rpx;
+  height: 72rpx;
+}
+.sn-button--circle.sn-button--large {
+  width: 88rpx;
+  height: 88rpx;
 }
 
 /* Variants — color tokens only; geometry stays as rpx values above. */
@@ -482,19 +529,12 @@ function onTap(event: Event): void {
   background-color: transparent;
   border-radius: 0;
 }
-
-/* Spinner */
+/* Spinner — the glyph itself comes from the embedded SnIcon (loader-circle);
+ * the wrapper only owns the rotation so custom `loading` slots inherit it. */
 .sn-button__spinner {
   display: inline-flex;
   align-items: center;
   animation: sn-button-spin 0.8s linear infinite;
-}
-.sn-button__spinner-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border: 4rpx solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
 }
 @keyframes sn-button-spin {
   to {

@@ -4,15 +4,16 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-drop-menu from its SFC source.
  */
 import { ref } from 'vue';
+import { ArrowDown, ArrowUp, Star, ThumbsUp } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnDropMenu from '@snui/uni-src/components/sn-drop-menu/sn-drop-menu.vue';
 
 const sort = ref('default');
 
 const options = [
-  { label: '综合排序', value: 'default', tip: '推荐' },
-  { label: '价格从低到高', value: 'price-asc' },
-  { label: '价格从高到低', value: 'price-desc' },
-  { label: '销量优先', value: 'sales', disabled: true },
+  { label: '综合排序', value: 'default', tip: '推荐', iconData: Star },
+  { label: '价格从低到高', value: 'price-asc', iconData: ArrowUp },
+  { label: '价格从高到低', value: 'price-desc', iconData: ArrowDown },
+  { label: '销量优先', value: 'sales', disabled: true, iconData: ThumbsUp },
 ];
 
 const picked = ref('综合排序');

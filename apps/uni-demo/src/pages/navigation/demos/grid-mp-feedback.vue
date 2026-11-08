@@ -30,10 +30,10 @@ function onCellClick(payload: { url: string; linkType: string }): void {
       icon-size="48px"
       @click="onCellClick"
     >
-      <SnGridItem text="扫一扫" icon="Search" />
-      <SnGridItem text="付款" icon="Download" />
-      <SnGridItem text="收款" icon="Upload" />
-      <SnGridItem text="更多" icon="MoreHorizontal" />
+      <SnGridItem text="扫一扫" icon="camera" />
+      <SnGridItem text="付款" icon="wallet" />
+      <SnGridItem text="收款" icon="banknote" />
+      <SnGridItem text="更多" icon="ellipsis" />
     </SnGrid>
 
     <text class="sn-demo__label">hover-class 自定义 + center=false + custom-style</text>
@@ -47,9 +47,9 @@ function onCellClick(payload: { url: string; linkType: string }): void {
       custom-style="padding: var(--sn-mp-spacing-2);"
       @click="onCellClick"
     >
-      <SnGridItem text="顶对齐的格子" icon="Star" />
-      <SnGridItem text="第二格" icon="Heart" />
-      <SnGridItem text="第三格" icon="Bell" />
+      <SnGridItem text="顶对齐的格子" icon="star" />
+      <SnGridItem text="第二格" icon="heart" />
+      <SnGridItem text="第三格" icon="bell" />
     </SnGrid>
 
     <text class="sn-demo__meta">最近点击：{{ tapped }}</text>

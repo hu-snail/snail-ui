@@ -203,9 +203,12 @@ const restIsClickable = computed(() => onExpand.value !== undefined);
   position: relative;
 }
 
-.sn-avatar-group--tightening .sn-avatar-group__item {
+/* Tightening: draw the ring on the avatar itself so it follows that
+ * avatar's own radius — a circle gets a circular ring. Ringing the wrapper
+ * (border-radius: 3px) left straight vertical seams between stacked
+ * circles. */
+.sn-avatar-group--tightening .sn-avatar-group__item :deep(.sn-avatar) {
   box-shadow: 0 0 0 2px var(--sn-web-color-background-surface, #fff);
-  border-radius: 3px;
 }
 
 .sn-avatar-group__rest {

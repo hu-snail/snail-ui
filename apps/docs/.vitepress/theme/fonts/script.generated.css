@@ -1,0 +1,19 @@
+/* GENERATED FILE — do not edit.
+ *
+ * Aidian SignatureTi — a hand-written display face, Latin only
+ * (printable ASCII, no CJK). Built by apps/docs/scripts/build-fonts.py
+ * from the upstream TTF.
+ *
+ * Display use only: the landing hero headline and nothing else. It has
+ * no CJK and no bold, so any Chinese in a heading that uses this family
+ * must be handed to MiSans explicitly (see SnDocsHome.vue).
+ */
+
+@font-face {
+  font-family: 'Aidian Script';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./aidian-script-latin.woff2') format('woff2');
+  unicode-range: U+0020-007E;
+}

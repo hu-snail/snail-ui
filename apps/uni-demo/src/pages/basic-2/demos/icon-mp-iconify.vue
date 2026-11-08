@@ -42,8 +42,8 @@ function reload(): void {
     </view>
 
     <text class="sn-demo__meta">
-      首次渲染走 Iconify API（按需、带缓存）；显式 color 会烘焙进请求，
-      currentColor 在远程 SVG 文档中渲染为黑色。离线场景请改用内置目录或 iconfont。
+      首次渲染走 Iconify API（按需、带缓存）；显式 color 会烘焙进请求， currentColor 在远程 SVG
+      文档中渲染为黑色。离线场景请改用内置目录或 iconfont。
     </text>
   </view>
 </template>

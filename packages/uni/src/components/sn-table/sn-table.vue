@@ -233,6 +233,16 @@ function rowClass(rowIndex: number): (string | Record<string, boolean>)[] {
   return ['sn-table__row', { 'sn-table__row--stripe': props.stripe && rowIndex % 2 === 1 }];
 }
 
+/**
+ * Structural last-cell marker for the border rule (§116.2 — App has no
+ * `:last-child`). Cells per row are fixed by the column count, so the
+ * trailing column index is enough; the index cell is last only when no
+ * columns are registered at all.
+ */
+function isLastCell(columnIndex: number): boolean {
+  return columnIndex === resolvedColumns.value.length - 1;
+}
+
 function onRowTap(rowIndex: number, row: SnTableRow): void {
   emit('row-click', { rowIndex, row });
 }
@@ -318,7 +328,10 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
             <view
               v-if="showsIndex"
               class="sn-table__cell sn-table__cell--header"
-              :class="alignClass(indexConfig.align)"
+              :class="[
+                alignClass(indexConfig.align),
+                { 'sn-table__cell--last': resolvedColumns.length === 0 },
+              ]"
               :style="cellStyle(toLength(indexConfig.width), '0px')"
               role="columnheader"
             >
@@ -326,10 +339,16 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
             </view>
 
             <view
-              v-for="column in resolvedColumns"
+              v-for="(column, columnIndex) in resolvedColumns"
               :key="column.prop"
               class="sn-table__cell sn-table__cell--header"
-              :class="[alignClass(column.align), { 'sn-table__cell--sortable': column.sortable }]"
+              :class="[
+                alignClass(column.align),
+                {
+                  'sn-table__cell--sortable': column.sortable,
+                  'sn-table__cell--last': isLastCell(columnIndex),
+                },
+              ]"
               :style="cellStyle(column.cssWidth, column.stickyLeft)"
               role="columnheader"
               :aria-sort="ariaSort(column)"
@@ -365,7 +384,10 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
             <view
               v-if="showsIndex"
               class="sn-table__cell"
-              :class="alignClass(indexConfig.align)"
+              :class="[
+                alignClass(indexConfig.align),
+                { 'sn-table__cell--last': resolvedColumns.length === 0 },
+              ]"
               :style="cellStyle(toLength(indexConfig.width), '0px')"
               role="cell"
             >
@@ -373,10 +395,16 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
             </view>
 
             <view
-              v-for="column in resolvedColumns"
+              v-for="(column, columnIndex) in resolvedColumns"
               :key="column.prop"
               class="sn-table__cell"
-              :class="[alignClass(column.align), { 'sn-table__cell--fixed': column.fixed }]"
+              :class="[
+                alignClass(column.align),
+                {
+                  'sn-table__cell--fixed': column.fixed,
+                  'sn-table__cell--last': isLastCell(columnIndex),
+                },
+              ]"
               :style="cellStyle(column.cssWidth, column.stickyLeft)"
               role="cell"
             >
@@ -529,7 +557,9 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
-.sn-table--border .sn-table__row .sn-table__cell:last-child {
+/* Last cell of every row drops the right edge; the marker class is bound by
+ * column index (§116.2 — App has no `:last-child`). */
+.sn-table--border .sn-table__cell--last {
   border-right: none;
 }
 

@@ -26,27 +26,32 @@
 
 <Demo name="select-web-states" description="clearable、disabled、loading。" />
 
+## 远程搜索（remote）
+
+<Demo name="select-web-remote" description="remote + search 事件 + 模拟接口（450ms 延迟、防抖、请求中断）；真实项目把 mock 换成 fetch 即可。" />
+
 ## API
 
 ### SnSelect Props
 
-| Prop                    | 类型                                         | 默认值                | 说明                                   |
-| ----------------------- | -------------------------------------------- | --------------------- | -------------------------------------- |
-| modelValue              | `SnSelectValue \| SnSelectValue[] \| null`   | `null`                | v-model（multiple 为数组）             |
-| multiple                | `boolean`                                    | `false`               | 多选                                   |
-| options                 | `Array<SnSelectOptionInput>`                 | `[]`                  | 选项（裸值或对象，children 分组）      |
-| labelField / valueField | `string`                                     | `'label'` / `'value'` | 字段映射                               |
-| placeholder             | `string`                                     | —                     | 占位文案                               |
-| clearable               | `boolean`                                    | `false`               | 清空按钮                               |
-| filterable              | `boolean`                                    | `false`               | 输入过滤                               |
-| filter                  | `(pattern, option) => boolean`               | 内置包含匹配          | 自定义过滤                             |
-| disabled / readonly     | `boolean`                                    | `false`               | 禁用 / 只读                            |
-| size                    | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`            | 尺寸                                   |
-| status                  | `'default'\|'error'\|'warning'`              | `'default'`           | 校验状态                               |
-| maxTagCount             | `number`                                     | —                     | 多选 tag 上限                          |
-| tag                     | `boolean`                                    | `false`               | 多选 tag 胶囊形态                      |
-| loading                 | `boolean`                                    | `false`               | 下拉加载态                             |
-| remote                  | `boolean`                                    | `false`               | 远程搜索（配合 loading + search 事件） |
+| Prop                    | 类型                                         | 默认值                         | 说明                                   |
+| ----------------------- | -------------------------------------------- | ------------------------------ | -------------------------------------- |
+| modelValue              | `SnSelectValue \| SnSelectValue[] \| null`   | `null`                         | v-model（multiple 为数组）             |
+| multiple                | `boolean`                                    | `false`                        | 多选                                   |
+| options                 | `Array<SnSelectOptionInput>`                 | `[]`                           | 选项（裸值或对象，children 分组）      |
+| labelField / valueField | `string`                                     | `'label'` / `'value'`          | 字段映射                               |
+| placeholder             | `string`                                     | —                              | 占位文案                               |
+| clearable               | `boolean`                                    | `false`                        | 清空按钮                               |
+| filterable              | `boolean`                                    | `false`                        | 输入过滤                               |
+| filter                  | `(pattern, option) => boolean`               | 内置包含匹配                   | 自定义过滤                             |
+| disabled / readonly     | `boolean`                                    | `false`                        | 禁用 / 只读                            |
+| size                    | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`                     | 尺寸                                   |
+| status                  | `'default'\|'error'\|'warning'`              | `'default'`                    | 校验状态                               |
+| maxTagCount             | `number`                                     | —                              | 多选 tag 上限                          |
+| tag                     | `boolean`                                    | `false`                        | 多选 tag 胶囊形态                      |
+| loading                 | `boolean`                                    | `false`                        | 下拉加载态                             |
+| remote                  | `boolean`                                    | `false`                        | 远程搜索（配合 loading + search 事件） |
+| emptyText               | `string`                                     | 跟随 locale `Select.noOptions` | 下拉空态文案（`empty` 插槽优先）       |
 
 事件：`update:modelValue` / `change` / `search` / `clear` / `focus` / `blur`；Slots：`action` / `empty` / `header`。键盘：Enter / Space / ArrowUp / ArrowDown / Esc / Backspace（多选删尾）。aria：listbox + aria-expanded + aria-activedescendant。
 

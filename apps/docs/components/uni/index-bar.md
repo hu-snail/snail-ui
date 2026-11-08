@@ -20,6 +20,12 @@
 
 <Demo name="index-bar-mp-scrollto" description="scrollTo(index) 从代码跳转分组；custom-class / custom-style 自定义根节点。" />
 
+## 整页通讯录
+
+完整通讯录场景：紧凑预览里搜索过滤 + 索引栏通讯录可直接交互（空分组自动丢弃、`show-indicator` 中央气泡、`sn-avatar` 文字头像）；点「整页演示」进入 position: fixed 全屏整页——SnNavbar + 搜索过滤 + 索引栏通讯录 + 底部联系人统计条；点联系人再进资料页（电话 / 邮箱 / 城市 / 部门），返回后列表滚动位置保留。`anchor-id` 给分组稳定的 DOM id 以便深链定位：
+
+<Demo name="index-bar-mp-contacts" description="整页通讯录：紧凑预览搜索过滤可直接交互；点「整页演示」进全屏（Navbar + 搜索 + 索引栏 + 统计条）；点联系人进资料页。" />
+
 > **契约位**：`sticky` 当前只在根节点切换 `sn-index-bar--sticky` 类，没有配套的样式规则，因此页面上看不出差异。该 prop 保留以维持契约一致。
 
 ## 自动注册（easycom）
@@ -43,19 +49,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| 属性          | 类型      | 默认值  | 说明                      |
-| ------------- | --------- | ------- | ------------------------- |
-| `sticky`      | `boolean` | `false` | 索引是否吸顶              |
-| `customClass` | `string`  | `''`    | 根节点自定义类名          |
-| `customStyle` | `string`  | `''`    | 根节点自定义 inline style |
+| 属性            | 类型      | 默认值  | 说明                                   |
+| --------------- | --------- | ------- | -------------------------------------- |
+| `sticky`        | `boolean` | `false` | 索引是否吸顶                           |
+| `showIndicator` | `boolean` | `false` | 是否在列表视口中央显示当前索引提示气泡 |
+| `customClass`   | `string`  | `''`    | 根节点自定义类名                       |
+| `customStyle`   | `string`  | `''`    | 根节点自定义 inline style              |
 
 ### sn-index-anchor
 
-| 属性          | 类型               | 默认值 | 说明                      |
-| ------------- | ------------------ | ------ | ------------------------- |
-| `index`       | `string \| number` | `''`   | 索引字符                  |
-| `customClass` | `string`           | `''`   | 根节点自定义类名          |
-| `customStyle` | `string`           | `''`   | 根节点自定义 inline style |
+| 属性          | 类型               | 默认值 | 说明                                    |
+| ------------- | ------------------ | ------ | --------------------------------------- |
+| `index`       | `string \| number` | `''`   | 索引字符                                |
+| `anchorId`    | `string`           | `''`   | 自定义锚点 DOM id（为空时用内部生成值） |
+| `customClass` | `string`           | `''`   | 根节点自定义类名                        |
+| `customStyle` | `string`           | `''`   | 根节点自定义 inline style               |
 
 ## Events
 
@@ -72,18 +80,26 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ## 主题变量
 
-| 变量                                            | 用途                           |
-| ----------------------------------------------- | ------------------------------ |
-| `--sn-mp-color-background-surface`              | 列表与条目底色                 |
-| `--sn-mp-color-background-soft`                 | 分组标题底色                   |
-| `--sn-mp-color-action-primary-soft`             | 激活分组标题底色               |
-| `--sn-mp-color-text-secondary`                  | 索引项与分组标题文字色         |
-| `--sn-mp-color-action-primary`                  | 激活索引项底色与激活标题文字色 |
-| `--sn-mp-color-text-on-primary`                 | 激活索引项文字色               |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | 索引项 / 分组标题字号          |
-| `--sn-mp-font-weight-medium`                    | 分组标题字重                   |
-| `--sn-mp-radius-full`                           | 索引项胶囊圆角                 |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | 索引项间距 / 分组标题内边距    |
+| 变量                                                    | 用途                           |
+| ------------------------------------------------------- | ------------------------------ |
+| `--sn-mp-color-background-surface`                      | 列表与条目底色                 |
+| `--sn-mp-color-background-soft`                         | 分组标题底色                   |
+| `--sn-mp-color-action-primary-soft`                     | 激活分组标题底色               |
+| `--sn-mp-color-text-secondary`                          | 索引项与分组标题文字色         |
+| `--sn-mp-color-action-primary`                          | 激活索引项底色与激活标题文字色 |
+| `--sn-mp-color-text-on-primary`                         | 激活索引项文字色               |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm`         | 索引项 / 分组标题字号          |
+| `--sn-mp-font-weight-medium`                            | 分组标题字重                   |
+| `--sn-mp-radius-full`                                   | 索引项胶囊圆角                 |
+| `--sn-mp-radius-lg`                                     | 索引提示气泡圆角               |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | 索引提示气泡字号与字重         |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`               | 索引项间距 / 分组标题内边距    |
+
+## AI Patch Boundary
+
+- AI 可通过 Patch 修改 `sticky` / `showIndicator` 等展示配置，以及各 `sn-index-anchor` 的 `index` / `anchorId`。
+- `change` 事件与 `scrollTo()` 属于运行时行为，Patch 不应伪造索引变化事件或写死滚动目标。
+- 分组条目内容（默认插槽）属于业务数据，Patch 只应调整容器配置，不应改写条目内部结构。
 
 ## 无障碍
 

@@ -1,12 +1,28 @@
 # Keyboard 虚拟键盘（uni 端 / 移动端）
 
-`sn-keyboard` 是 `@snui/uni` 的虚拟键盘：数字键盘 / 车牌键盘 / 自定义模式。easycom 自动注册（`components/sn-keyboard/sn-keyboard.vue` → `<sn-keyboard>`），几何值使用 `rpx`。`maxlength` 限长，删除键逐字退格并触发 `delete`；`hideOnClickOutside` 同时控制是否渲染遮罩。没有定时器、没有观察器——无需清理。
+`sn-keyboard` 是 `@snui/uni` 的虚拟键盘：数字键盘 / 车牌键盘 / 自定义模式。easycom 自动注册（`components/sn-keyboard/sn-keyboard.vue` → `<sn-keyboard>`），几何值使用 `rpx`。`maxlength` 限长，删除键逐字退格并触发 `delete`（**长按可连续退格**，松开 / 关闭 / 卸载时定时器全部清理）；`hideOnClickOutside` 同时控制是否渲染遮罩。
+
+底行始终占满三格：`extraKey` 未提供的槽位渲染**收起键盘图标键**（点击等同关闭按钮，发 `close`），因此不会出现空位或超宽的 `0`；头部关闭按钮在无文案时以圆形 chevron chip 呈现。
+
+视觉上遵循移动端键盘的成熟范式：灰底面板（`background-subtle`）+ 白色键帽（`background-elevated`），顶部工具栏保留白色高程面，「完成」为主色文字按钮；按压反馈走 `hover-class`。键高 / 间距 / 圆角暴露为组件局部变量 `--sn-keyboard-key-height`、`--sn-keyboard-gap`、`--sn-keyboard-key-radius`，可在 `custom-class` 上覆写而不必新增 prop。
 
 ## 基础用法
 
-sn-keyboard 数字键盘：maxlength 限长，delete 退格，close 收起；搭配只读输入框使用。
+默认数字键盘：底行 [收起] [0] [⌫]，maxlength 限长；搭配只读输入框使用。
 
-<Demo name="keyboard-mp-basic" description="sn-keyboard 数字键盘：maxlength 限长，delete 退格，close 收起；搭配只读输入框使用。" />
+<Demo name="keyboard-mp-basic" description="默认数字键盘：底行 [收起][0][⌫]，maxlength 限长；搭配只读输入框使用。" />
+
+## 小数点（`extraKey="."`）
+
+`extraKey="."` 占据底行左槽，用于金额等小数输入。
+
+<Demo name="keyboard-mp-decimal" description="extraKey=. 占据底行左槽，用于金额等小数输入。" />
+
+## 身份证（`extraKey="X"`）
+
+`extraKey="X"` 提供末位校验码键位，配合 `maxlength=18` 输入证件号。
+
+<Demo name="keyboard-mp-idcard" description="extraKey=X 提供末位校验码键位，maxlength=18 输入证件号。" />
 
 ## 车牌与自定义模式（`mode` / `extraKey` / `autoSwitchLang`）
 
@@ -41,7 +57,7 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 | `closeButtonLoading`                          | `boolean`                        | `false`                   | 关闭按钮加载态                                                            |
 | `modal` / `hideOnClickOutside` / `lockScroll` | `boolean`                        | `false` / `true` / `true` | 遮罩行为                                                                  |
 | `safeAreaInsetBottom`                         | `boolean`                        | `true`                    | 底部安全区留白                                                            |
-| `extraKey`                                    | `string \| string[]`             | `undefined`               | 额外按键                                                                  |
+| `extraKey`                                    | `string \| string[]`             | `undefined`               | 额外按键；未提供的槽位渲染收起键盘图标键（点击发 `close`）                |
 | `carLang`                                     | `'zh' \| 'en'`                   | `'zh'`                    | 车牌语言（`v-model:car-lang`）                                            |
 | `autoSwitchLang`                              | `boolean`                        | `false`                   | 选省份后自动切字母                                                        |
 | `customClass` / `customStyle`                 | `string`                         | `''`                      | 根节点自定义类名 / 样式                                                   |
@@ -51,14 +67,14 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 
 ## Events
 
-| 事件名              | 说明           | 参数                   |
-| ------------------- | -------------- | ---------------------- |
-| `update:modelValue` | 值变化时       | `(value: string)`      |
-| `update:visible`    | 显隐变化时     | `(value: boolean)`     |
-| `update:carLang`    | 车牌语言变化时 | `(lang: 'zh' \| 'en')` |
-| `input`             | 点击字符键时   | `(key: string)`        |
-| `delete`            | 点击删除键时   | —                      |
-| `close`             | 键盘关闭时     | —                      |
+| 事件名              | 说明                                   | 参数                   |
+| ------------------- | -------------------------------------- | ---------------------- |
+| `update:modelValue` | 值变化时                               | `(value: string)`      |
+| `update:visible`    | 显隐变化时                             | `(value: boolean)`     |
+| `update:carLang`    | 车牌语言变化时                         | `(lang: 'zh' \| 'en')` |
+| `input`             | 点击字符键时                           | `(key: string)`        |
+| `delete`            | 点击删除键时                           | —                      |
+| `close`             | 键盘关闭时（关闭按钮 / 遮罩 / 收起键） | —                      |
 
 ## Slots
 
@@ -77,10 +93,10 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 
 ## 无障碍
 
-- 每个按键为 `role="button"`，带 `aria-label`（字形，或 delete / 关闭文案）。
+- 每个按键为 `role="button"`，带 `aria-label`（字形，或 delete / 关闭文案）；收起键 `aria-label="collapse"`。
 - 关闭按钮在 `closeButtonLoading` 时带 `aria-busy`。
 - 遮罩 `aria-hidden`；面板由 `sn-popup` 提供 `role="dialog"`。
 
 ## 暗色模式
 
-所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
+所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：

@@ -95,8 +95,7 @@ function onHover(): void {
   );
 }
 
-/* Selected row — primary-tinted fill + text accent. The leading accent bar
- * doubles as the naive-style check mark affordance without an icon glyph. */
+/* Selected row — primary-soft fill + text accent (token-driven). */
 .sn-select-option--selected {
   background-color: var(
     --sn-web-select-option-bg-selected,
@@ -104,20 +103,6 @@ function onHover(): void {
   );
   color: var(--sn-web-select-option-text-color-selected, var(--sn-web-color-action-primary));
   font-weight: 500;
-}
-
-.sn-select-option--selected::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: var(--sn-web-select-option-selected-bar-width, 3px);
-  border-radius: var(--sn-web-select-radius, 6px);
-  background-color: var(
-    --sn-web-select-option-selected-bar-color,
-    var(--sn-web-color-action-primary)
-  );
 }
 
 .sn-select-option__label {

@@ -1,26 +1,25 @@
 <script setup lang="ts">
-/** Demo: sn-input — clearable + showCount (uni-end). */
+/** Demo: sn-input — clearable 清空 + showCount 计数 (uni-end)。 */
 import { reactive } from 'vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 
 const form = reactive({
-  clearable: 'click × to clear me',
+  clearable: '点右侧 × 清空我',
   counter: 'hel',
 });
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnInput v-model="form.clearable" clearable placeholder="Type then click ×" />
-    <SnInput v-model="form.counter" :maxlength="10" show-count />
+  <view class="sn-input-demo">
+    <SnInput v-model="form.clearable" clearable placeholder="clearable" />
+    <SnInput v-model="form.counter" :maxlength="10" show-count placeholder="maxlength + 计数" />
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-input-demo {
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-  max-width: 480rpx;
 }
 </style>

@@ -177,17 +177,20 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     heightMedium: '36px',
     heightLarge: '40px',
     paddingX: '16px',
-    radius: '6px',
+    radius: '4px',
     fontSize: '14px',
     shadow: 'none',
-    focusRing: 'rgba(22, 119, 255, 0.25)',
+    // Derived from the active primary so custom themes cannot leave a blue
+    // halo around buttons / form controls (the old literal survived every
+    // theme swap).
+    focusRing: 'color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent)',
   },
   input: {
     heightSmall: '32px',
     heightMedium: '36px',
     heightLarge: '40px',
     paddingX: '12px',
-    radius: '6px',
+    radius: '4px',
   },
   card: {
     padding: '24px',
@@ -276,6 +279,6 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     closeIconColorHover: 'var(--aui-color-text-primary)',
     closeColor: 'transparent',
     closeColorHover: 'var(--aui-color-background-subtle)',
-    maskColor: 'var(--aui-color-background-overlay)',
+    maskColor: 'color-mix(in srgb, var(--aui-color-background-overlay) 55%, transparent)',
   },
 };

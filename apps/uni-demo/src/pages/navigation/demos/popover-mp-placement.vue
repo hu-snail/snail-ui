@@ -64,7 +64,8 @@ function setOpen(placement: Placement, value: boolean): void {
     </view>
 
     <text class="sn-popover-demo__meta">
-      小程序没有 hover,12 个方位都用点击触发;点击气泡外部(透明遮罩)也会收起。
+      小程序没有 hover，12 个方位都用点击触发；点击气泡外部任意位置即可关闭（页面根 closeOutside
+      通道，不挡页面点击）。
     </text>
   </view>
 </template>
@@ -87,6 +88,6 @@ function setOpen(placement: Placement, value: boolean): void {
 }
 .sn-popover-demo__meta {
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

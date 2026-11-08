@@ -55,3 +55,16 @@ apps/docs/.vitepress/.temp/
 !.changeset/config.json
 !.changeset/README.md
 !.changeset/*.md.bak
+
+# Python bytecode (apps/docs/scripts font generator)
+__pycache__/
+*.pyc
+
+# Agent / tooling scratch state (plans, review dumps, memory) — never shipped
+.pi/
+.workbuddy/
+
+# Throwaway crops and full-page design screenshots used as local reference
+.tmp-img/
+docs-home-fullpage*.png
+bump.svg

@@ -107,4 +107,22 @@ describe('@snui/tokens — static stylesheet emission', () => {
     const dangling = [...referenced].filter((name) => !declared.has(name));
     expect(dangling, 'referenced but never declared in styles/index.css').toEqual([]);
   });
+
+  it('derives focus rings and action-soft tints from the active primary', () => {
+    // Regression: these slots used to be frozen blue literals. Swapping the
+    // primary then left a blue halo around form controls (red border + blue
+    // ring) and blue hover plates in select / menu popups.
+    for (const name of [
+      '--aui-focus-ring',
+      '--aui-button-focus-ring',
+      '--aui-color-action-primary-soft',
+    ]) {
+      const value = declared.get(name) ?? '';
+      expect(value, `${name} should exist`).not.toBe('');
+      expect(value, `${name} must reference the theme primary`).toContain(
+        'var(--aui-color-action-primary)',
+      );
+    }
+    expect(bare).not.toContain('rgba(22, 119, 255');
+  });
 });

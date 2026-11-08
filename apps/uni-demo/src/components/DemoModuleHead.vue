@@ -1,0 +1,51 @@
+<script setup lang="ts">
+/**
+ * DemoModuleHead —— 组件页场景模块标题行：场景标题 + 场景徽标。
+ *
+ * 徽标（badge）展示场景 key（mono 小字，如 `form-type`），空串不渲染；
+ * 标题由调用方经 useDemoUi 的 t() 传入双语。
+ */
+withDefaults(
+  defineProps<{
+    /** 场景标题（双语）。 */
+    title: string;
+    /** 场景徽标文案（场景 key）；空串不渲染。 */
+    badge?: string;
+  }>(),
+  { badge: '' },
+);
+</script>
+
+<template>
+  <view class="demo-module-head">
+    <text class="demo-module-head__title">{{ title }}</text>
+    <text v-if="badge !== ''" class="demo-module-head__badge">{{ badge }}</text>
+  </view>
+</template>
+
+<style scoped>
+.demo-module-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-bottom: 24rpx;
+}
+
+.demo-module-head__title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--demo-title);
+}
+
+.demo-module-head__badge {
+  margin-left: auto;
+  padding: 4rpx 12rpx;
+  font-size: 20rpx;
+  font-family: Menlo, Consolas, monospace;
+  color: var(--demo-text-3);
+  background: var(--demo-chip-bg);
+  border: 1px solid var(--demo-chip-border);
+  border-radius: 4rpx;
+}
+</style>

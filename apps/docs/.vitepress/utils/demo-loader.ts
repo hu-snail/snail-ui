@@ -24,6 +24,18 @@
  * The English site prefers the English shadow and falls back to the Chinese
  * demo. For uni demos the shadow lives next to the source as `<name>.en.vue`
  * in uni-demo; for web demos it stays in `demo-en/`.
+ *
+ * ## Performance: lazy raw modules + suffix index
+ *
+ * The source globs are **not** eager. Three eager raw globs used to pull
+ * every demo source (~1900 files, a ~477 KB import block) into the module
+ * graph of *every* page that imports this loader — the whole corpus sat on
+ * the first-paint critical path even though a page only shows its own few
+ * demos. Lazy loading defers each raw file until a code panel asks for it.
+ *
+ * Glob keys are build-dependent (`?raw` suffix may or may not be present),
+ * so lookup goes through a suffix index built once on first query, then hit
+ * with an exact relative-path key (fallback: suffix scan).
  */
 
 import { defineAsyncComponent, h, type Component } from 'vue';
@@ -83,44 +95,74 @@ const sourceModules = {
   ...import.meta.glob<RawModule>('../demo/*.vue', {
     query: '?raw',
     import: 'default',
-    eager: true,
   }),
   ...import.meta.glob<RawModule>('../demo-en/*.vue', {
     query: '?raw',
     import: 'default',
-    eager: true,
   }),
   // uni demo 单一事实源（apps/uni-demo/src/pages/<group>/demos，含
   // `<name>.en.vue` 英文影子）。只取源码文本：跨 app 只读，不参与 docs 编译。
   ...import.meta.glob<RawModule>('../../../uni-demo/src/pages/*/demos/*.vue', {
     query: '?raw',
     import: 'default',
-    eager: true,
   }),
 };
 
+/** A lazy raw-module loader as produced by `import.meta.glob`. */
+type RawLoader = () => Promise<unknown>;
+const sourceLoaders = sourceModules as unknown as Record<string, RawLoader>;
+
 /**
- * Match a source-module key by file path suffix. `import.meta.glob`'s key
- * shape is build-dependent (it may or may not carry the `?raw` suffix), so
- * match by suffix rather than a literal key.
+ * Glob key → loader index, built once on first query.
+ *
+ * Both the literal key and its `?raw`-stripped form are indexed, so the
+ * exact-hit lookup below works regardless of the build's key shape.
  */
-function pickSource(base: string): string | undefined {
-  const keys = Object.keys(sourceModules);
-  const key = keys.find((k) => k.endsWith(base) || k.endsWith(`${base}?raw`));
-  const mod = key === undefined ? undefined : sourceModules[key];
+let sourceIndex: Map<string, RawLoader> | null = null;
+function buildSourceIndex(): Map<string, RawLoader> {
+  const index = new Map<string, RawLoader>();
+  for (const key of Object.keys(sourceLoaders)) {
+    index.set(key, sourceLoaders[key]);
+    const noQuery = key.replace(/\?raw$/, '');
+    if (noQuery !== key) index.set(noQuery, sourceLoaders[key]);
+  }
+  return index;
+}
+
+/**
+ * Resolve the loader for `base` (a leading-slash path such as
+ * `/demo/foo.vue`). Glob keys are loader-relative (`../demo/foo.vue?raw`),
+ * so the exact key is `'..' + base`; a suffix scan stays as the fallback
+ * for unexpected key shapes.
+ */
+function getSourceLoader(base: string): RawLoader | undefined {
+  if (sourceIndex === null) sourceIndex = buildSourceIndex();
+  const exact = sourceIndex.get(`..${base}`);
+  if (exact !== undefined) return exact;
+  for (const [key, loader] of sourceIndex) {
+    if (key.endsWith(base)) return loader;
+  }
+  return undefined;
+}
+
+/** Load a demo source by path suffix, lazily fetching the raw module. */
+async function pickSource(base: string): Promise<string | undefined> {
+  const loader = getSourceLoader(base);
+  if (loader === undefined) return undefined;
+  const mod = await loader();
   return typeof mod === 'string' ? mod : undefined;
 }
 
 /** Raw source of a demo, preferring the English shadow when `isEn`. */
-export function loadDemoSource(name: string, isEn: boolean): string {
+export async function loadDemoSource(name: string, isEn: boolean): Promise<string> {
   if (isMpDemoName(name)) {
     // uni demo 位于 uni-demo 的分包 demos 目录（pages/<sub>/demos/）。
     // 后缀匹配不带分包段：glob key 里 <sub> 是具体目录名，字面 `*` 匹配不上。
-    const en = isEn ? pickSource(`/demos/${name}.en.vue`) : undefined;
-    return en ?? pickSource(`/demos/${name}.vue`) ?? `// Demo source not found: ${name}`;
+    const en = isEn ? await pickSource(`/demos/${name}.en.vue`) : undefined;
+    return en ?? (await pickSource(`/demos/${name}.vue`)) ?? `// Demo source not found: ${name}`;
   }
-  const en = isEn ? pickSource(`/demo-en/${name}.vue`) : undefined;
-  return en ?? pickSource(`/demo/${name}.vue`) ?? `// Demo source not found: ${name}`;
+  const en = isEn ? await pickSource(`/demo-en/${name}.vue`) : undefined;
+  return en ?? (await pickSource(`/demo/${name}.vue`)) ?? `// Demo source not found: ${name}`;
 }
 
 /** One copyable usage block: template usage (`vue`) or demo script (`ts`). */
@@ -139,8 +181,8 @@ export interface DemoUsageSection {
  * 输入是 uni-demo 的单一事实源，因此用法代码与线上预览（部署站 iframe）永远
  * 同源，不存在第二份需要维护的示例。
  */
-export function loadDemoUsage(name: string, isEn: boolean): DemoUsageSection[] {
-  const source = loadDemoSource(name, isEn);
+export async function loadDemoUsage(name: string, isEn: boolean): Promise<DemoUsageSection[]> {
+  const source = await loadDemoSource(name, isEn);
   const sections: DemoUsageSection[] = [];
 
   // `<template>` 贪婪匹配到最后一个闭合标签：demo 模板内会嵌套 `<template #slot>`。

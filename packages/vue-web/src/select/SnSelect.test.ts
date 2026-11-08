@@ -10,6 +10,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h, nextTick, ref } from 'vue';
 import SnSelect from './SnSelect.vue';
+import SnConfigProvider from '../config-provider/SnConfigProvider.vue';
+import { enUS } from '../locales/en-us';
 
 const FRUITS = [
   { label: 'Apple', value: 'apple' },
@@ -330,6 +332,22 @@ describe('SnSelect', () => {
 
   /* ───── filterable ───── */
 
+  // Regression: the label span and the internal input both rendered the
+  // placeholder, so filterable selects showed it twice side by side.
+  it('renders the placeholder once in filterable mode (input owns it)', () => {
+    const w = mountSelect({ filterable: true, placeholder: 'Pick one' });
+    expect(w.findAll('.sn-select__placeholder')).toHaveLength(0);
+    expect(w.find('.sn-select__filter-input').attributes('placeholder')).toBe('Pick one');
+    expect(w.html().split('Pick one')).toHaveLength(2);
+  });
+
+  it('renders the placeholder once in filterable multiple mode', () => {
+    const w = mountSelect({ filterable: true, multiple: true, placeholder: 'Pick many' });
+    expect(w.findAll('.sn-select__placeholder')).toHaveLength(0);
+    expect(w.find('.sn-select__filter-input').attributes('placeholder')).toBe('Pick many');
+    expect(w.html().split('Pick many')).toHaveLength(2);
+  });
+
   it('filters options by label as the user types', async () => {
     const w = mountSelect({ filterable: true });
     await openMenu(w);
@@ -358,7 +376,31 @@ describe('SnSelect', () => {
     await w.find('.sn-select__filter-input').setValue('zzz');
     await nextTick();
     expect(menuRows()).toHaveLength(0);
+    expect(document.body.querySelector('.sn-select-menu__empty')?.textContent).toBe('暂无数据');
+  });
+
+  // Regression: the empty state was hard-coded to the English "No options",
+  // so a zh-CN page showed English copy. It now follows the active locale.
+  it('localizes the empty state through <SnConfigProvider locale>', async () => {
+    const w = mount(SnConfigProvider, {
+      props: { locale: enUS },
+      slots: { default: () => h(SnSelect, { options: FRUITS, filterable: true }) },
+      attachTo: document.body,
+    });
+    mounted.push(w);
+    await w.find('[role="combobox"]').trigger('click');
+    await nextTick();
+    await w.find('.sn-select__filter-input').setValue('zzz');
+    await nextTick();
     expect(document.body.querySelector('.sn-select-menu__empty')?.textContent).toBe('No options');
+  });
+
+  it('keeps the explicit emptyText prop above the locale', async () => {
+    const w = mountSelect({ filterable: true, emptyText: '没有可用项' });
+    await openMenu(w);
+    await w.find('.sn-select__filter-input').setValue('zzz');
+    await nextTick();
+    expect(document.body.querySelector('.sn-select-menu__empty')?.textContent).toBe('没有可用项');
   });
 
   it('emits search on every keystroke', async () => {

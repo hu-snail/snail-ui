@@ -1455,7 +1455,11 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 
@@ -1641,7 +1645,11 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__button:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
 }
 
 .sn-video-player__spacer {
@@ -1675,7 +1683,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 .sn-video-player__volume-range {
   width: 0;
   opacity: 0;
-  accent-color: var(--sn-web-color-action-primary, #1677ff);
+  accent-color: var(--sn-web-color-action-primary);
   transition:
     width 0.2s ease,
     opacity 0.2s ease;
@@ -1728,7 +1736,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__progress-played {
-  background: var(--sn-web-color-action-primary, #1677ff);
+  background: var(--sn-web-color-action-primary);
 }
 
 .sn-video-player__progress-hover {
@@ -1741,7 +1749,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
   width: var(--sn-web-video-player-thumb-size, 12px);
   height: var(--sn-web-video-player-thumb-size, 12px);
   border-radius: var(--sn-web-radius-full, 999px);
-  background: var(--sn-web-color-action-primary, #1677ff);
+  background: var(--sn-web-color-action-primary);
   transform: translate(-50%, -50%) scale(0);
   transition: transform 0.15s ease;
   pointer-events: none;
@@ -1790,7 +1798,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__danmu-input:focus {
-  border-color: var(--sn-web-color-action-primary, #1677ff);
+  border-color: var(--sn-web-color-action-primary);
 }
 
 /* ── settings menu ── */
@@ -1851,7 +1859,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__settings-item--active {
-  color: var(--sn-web-color-action-primary, #1677ff);
+  color: var(--sn-web-color-action-primary);
   font-weight: 600;
 }
 
@@ -1867,7 +1875,7 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__switch--on {
-  background: var(--sn-web-color-action-primary, #1677ff);
+  background: var(--sn-web-color-action-primary);
 }
 
 .sn-video-player__switch-knob {

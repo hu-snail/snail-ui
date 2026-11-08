@@ -17,6 +17,7 @@
 // registration is unaffected — it resolves the SFC path directly.
 export { default as SnActionSheet } from './components/sn-action-sheet/sn-action-sheet.vue';
 export { default as SnAvatar } from './components/sn-avatar/sn-avatar.vue';
+export { default as SnAvatarGroup } from './components/sn-avatar-group/sn-avatar-group.vue';
 export { default as SnBacktop } from './components/sn-backtop/sn-backtop.vue';
 export { default as SnBadge } from './components/sn-badge/sn-badge.vue';
 export { default as SnBarcode } from './components/sn-barcode/sn-barcode.vue';
@@ -37,6 +38,7 @@ export { default as SnConfigProvider } from './components/sn-config-provider/sn-
 export { default as SnCountDown } from './components/sn-count-down/sn-count-down.vue';
 export { default as SnCountTo } from './components/sn-count-to/sn-count-to.vue';
 export { default as SnCurtain } from './components/sn-curtain/sn-curtain.vue';
+export { default as SnDateStrip } from './components/sn-date-strip/sn-date-strip.vue';
 export { default as SnDatetimePicker } from './components/sn-datetime-picker/sn-datetime-picker.vue';
 export { default as SnDatetimePickerView } from './components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
 export { default as SnDialer } from './components/sn-dialer/sn-dialer.vue';
@@ -45,6 +47,11 @@ export { default as SnDivider } from './components/sn-divider/sn-divider.vue';
 export { default as SnDropMenu } from './components/sn-drop-menu/sn-drop-menu.vue';
 export { default as SnEmpty } from './components/sn-empty/sn-empty.vue';
 export { default as SnFab } from './components/sn-fab/sn-fab.vue';
+export { default as SnFitSwiper } from './components/sn-fit-swiper/sn-fit-swiper.vue';
+export type {
+  SnFitSwiperIndicator,
+  SnFitSwiperPage,
+} from './components/sn-fit-swiper/sn-fit-swiper.vue';
 export { default as SnFloatingPanel } from './components/sn-floating-panel/sn-floating-panel.vue';
 export { default as SnForm } from './components/sn-form/sn-form.vue';
 export { default as SnFormItem } from './components/sn-form/sn-form-item.vue';
@@ -60,6 +67,7 @@ export { default as SnIndexBar } from './components/sn-index-bar/sn-index-bar.vu
 export { default as SnInput } from './components/sn-input/sn-input.vue';
 export { default as SnInputNumber } from './components/sn-input-number/sn-input-number.vue';
 export { default as SnKeyboard } from './components/sn-keyboard/sn-keyboard.vue';
+export { default as SnKeyboardPanel } from './components/sn-keyboard-panel/sn-keyboard-panel.vue';
 export { default as SnLayout } from './components/sn-layout/sn-layout.vue';
 export { default as SnLiquid } from './components/sn-liquid/sn-liquid.vue';
 export { default as SnLoading } from './components/sn-loading/sn-loading.vue';
@@ -71,7 +79,8 @@ export { default as SnNotify } from './components/sn-notify/sn-notify.vue';
 export { default as SnOverlay } from './components/sn-overlay/sn-overlay.vue';
 export { default as SnPagination } from './components/sn-pagination/sn-pagination.vue';
 export { default as SnPaging } from './components/sn-paging/sn-paging.vue';
-export { default as SnPasswordInput } from './components/sn-password-input/sn-password-input.vue';
+export { default as SnPlateInput } from './components/sn-plate-input/sn-plate-input.vue';
+export { default as SnCodeInput } from './components/sn-code-input/sn-code-input.vue';
 export { default as SnPicker } from './components/sn-picker/sn-picker.vue';
 export { default as SnPickerView } from './components/sn-picker-view/sn-picker-view.vue';
 export { default as SnPopover } from './components/sn-popover/sn-popover.vue';
@@ -105,6 +114,7 @@ export { default as SnSidebarItem } from './components/sn-sidebar/sn-sidebar-ite
 export { default as SnSignature } from './components/sn-signature/sn-signature.vue';
 export { default as SnSkeleton } from './components/sn-skeleton/sn-skeleton.vue';
 export { default as SnSlider } from './components/sn-slider/sn-slider.vue';
+export { default as SnSliderBar } from './components/sn-slider-bar/sn-slider-bar.vue';
 export { default as SnSlideVerify } from './components/sn-slide-verify/sn-slide-verify.vue';
 export { default as SnSortButton } from './components/sn-sort-button/sn-sort-button.vue';
 export { default as SnStep } from './components/sn-steps/sn-step.vue';
@@ -128,6 +138,7 @@ export { default as SnTour } from './components/sn-tour/sn-tour.vue';
 export { default as SnTransition } from './components/sn-transition/sn-transition.vue';
 export { default as SnTyping } from './components/sn-typing/sn-typing.vue';
 export { default as SnUpload } from './components/sn-upload/sn-upload.vue';
+export { default as SnWaterfall } from './components/sn-waterfall/sn-waterfall.vue';
 export { default as SnVideoPreview } from './components/sn-video-preview/sn-video-preview.vue';
 export { default as SnWatermark } from './components/sn-watermark/sn-watermark.vue';
 export type {
@@ -152,10 +163,7 @@ export {
   SN_ICON_CATEGORY_LABELS,
   searchSnIconCatalog,
 } from './components/sn-icon/sn-icon-catalog';
-export type {
-  SnIconCatalogEntry,
-  SnIconCategory,
-} from './components/sn-icon/sn-icon-catalog';
+export type { SnIconCatalogEntry, SnIconCategory } from './components/sn-icon/sn-icon-catalog';
 
 // Icon source resolution — string `icon` routing, custom providers, and
 // the Iconify on-demand loader (configSnIcons({ iconify: false }) disables).
@@ -215,3 +223,9 @@ export {
 // Re-export token utilities for app-level theme overrides.
 export { snCssVars, snVarName, auiVarName } from '@snui/tokens';
 export type { SnCssVarsOptions } from '@snui/tokens';
+
+// Outside-close queue (wot-ui useQueue parity): bind `closeOutside` on the
+// page root to close every open tooltip / popover / drop-menu / toast /
+// swipe-action / fab when the user taps anywhere else. See
+// `utils/outside-close.ts` for the contract.
+export { useQueue, closeOutside } from './utils/outside-close';

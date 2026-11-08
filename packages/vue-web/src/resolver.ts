@@ -57,6 +57,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnRadioGroup',
   'SnSwitch',
   'SnSlider',
+  'SnSliderBar',
   'SnRate',
   'SnInputNumber',
   'SnSelect',
@@ -96,6 +97,11 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnAnchor',
   'SnAnchorLink',
   'SnBackTop',
+  'SnFloatingToc',
+  'SnFloatingTocTrigger',
+  'SnFloatingTocBar',
+  'SnFloatingTocContent',
+  'SnFloatingTocItem',
   'SnBreadcrumb',
   'SnBreadcrumbItem',
   'SnMenu',
@@ -177,9 +183,12 @@ export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolv
   return {
     type: 'component',
     resolve(name: string): ResolvedComponent | undefined {
+      // The barrel ships named exports only — the resolved export name is the
+      // tag name itself (`import { SnButton } from '@snui/vue-web'`), never a
+      // default export.
       if (!PUBLIC_COMPONENTS.includes(name)) return undefined;
       return {
-        name: 'default',
+        name,
         from: library,
         sideEffects: `${library}/styles`,
       };
