@@ -389,16 +389,47 @@ describe('SnInputNumber', () => {
 
   /* --- buttonPlacement: left / both / right --- */
 
-  it('mirrors the pair into the head and leaves only the spinner in the tail (left)', () => {
+  /* --- buttonMode: symbol (− / +) vs spinner (↑ / ↓) — mutually exclusive --- */
+
+  it('renders the − / + pair as the only stepper in symbol mode (default)', () => {
+    const wrapper = mountNumber();
+    expect(wrapper.classes()).toContain('sn-input-number--mode-symbol');
+    const tail = wrapper.find('.sn-input-number__stepper--tail');
+    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(true);
+    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
+    // Never side by side with the ↑ / ↓ plate.
+    expect(wrapper.find('.sn-input-number__spin').exists()).toBe(false);
+    expect(wrapper.find('.sn-input-number__stepper--head').exists()).toBe(false);
+  });
+
+  it('renders only the ↑ / ↓ plate in spinner mode — no − / + at all', () => {
+    const wrapper = mountNumber({ buttonMode: 'spinner' });
+    expect(wrapper.classes()).toContain('sn-input-number--mode-spinner');
+    expect(wrapper.find('.sn-input-number__spin').exists()).toBe(true);
+    expect(wrapper.find('.sn-input-number__stepper--head').exists()).toBe(false);
+    expect(wrapper.find('.sn-input-number__btn--minus').exists()).toBe(false);
+    expect(wrapper.find('.sn-input-number__btn--plus').exists()).toBe(false);
+  });
+
+  it('keeps spinner mode exclusive of the symbol pair in every placement', () => {
+    for (const placement of ['left', 'both', 'right'] as const) {
+      const wrapper = mountNumber({ buttonMode: 'spinner', buttonPlacement: placement });
+      expect(wrapper.find('.sn-input-number__spin').exists(), placement).toBe(true);
+      expect(wrapper.find('.sn-input-number__btn--minus').exists(), placement).toBe(false);
+      expect(wrapper.find('.sn-input-number__btn--plus').exists(), placement).toBe(false);
+    }
+  });
+
+  /* --- buttonPlacement (symbol mode) --- */
+
+  it('mirrors the symbol pair into the head for the left placement', () => {
     const wrapper = mountNumber({ buttonPlacement: 'left' });
     expect(wrapper.classes()).toContain('sn-input-number--placement-left');
     const head = wrapper.find('.sn-input-number__stepper--head');
     expect(head.find('.sn-input-number__btn--minus').exists()).toBe(true);
     expect(head.find('.sn-input-number__btn--plus').exists()).toBe(true);
-    const tail = wrapper.find('.sn-input-number__stepper--tail');
-    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(false);
-    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(false);
-    expect(tail.find('.sn-input-number__spin').exists()).toBe(true);
+    // Nothing is left over in the tail.
+    expect(wrapper.find('.sn-input-number__stepper--tail').exists()).toBe(false);
   });
 
   it('steps from the head pair when buttonPlacement is left', async () => {
@@ -418,52 +449,56 @@ describe('SnInputNumber', () => {
     expect(head.find('.sn-input-number__btn--plus').exists()).toBe(false);
     expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
     expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(false);
-    // The tail ends with the ↑ / ↓ spinner.
-    expect(tail.find('.sn-input-number__spin').exists()).toBe(true);
-  });
-
-  it('keeps the pair plus the spinner in the tail for the default right placement', () => {
-    const wrapper = mountNumber();
-    expect(wrapper.find('.sn-input-number__stepper--head').exists()).toBe(false);
-    const tail = wrapper.find('.sn-input-number__stepper--tail');
-    expect(tail.find('.sn-input-number__btn--minus').exists()).toBe(true);
-    expect(tail.find('.sn-input-number__btn--plus').exists()).toBe(true);
-    expect(tail.find('.sn-input-number__spin .sn-input-number__btn--up').exists()).toBe(true);
-    expect(tail.find('.sn-input-number__spin .sn-input-number__btn--down').exists()).toBe(true);
   });
 
   /* --- stepper glyphs --- */
 
-  it('renders the built-in − / + / ↑ / ↓ glyphs through SnIcon', () => {
-    const wrapper = mountNumber({ buttonPlacement: 'right' });
+  it('renders the built-in − / + glyphs through SnIcon', () => {
+    const wrapper = mountNumber();
     expectIconRendered(wrapper, '.sn-input-number__btn--minus .sn-icon');
     expectIconRendered(wrapper, '.sn-input-number__btn--plus .sn-icon');
+    expectNoMissingIcons(wrapper, 'SnInputNumber');
+  });
+
+  it('renders the built-in ↑ / ↓ glyphs through SnIcon', () => {
+    const wrapper = mountNumber({ buttonMode: 'spinner' });
     expectIconRendered(wrapper, '.sn-input-number__btn--up .sn-icon');
     expectIconRendered(wrapper, '.sn-input-number__btn--down .sn-icon');
     expectNoMissingIcons(wrapper, 'SnInputNumber');
   });
 
-  it('replaces every stepper glyph through the icon slots', () => {
+  it('replaces the − / + glyphs through the icon slots', () => {
     const wrapper = mount(SnInputNumber, {
-      props: { modelValue: 1, buttonPlacement: 'right' },
+      props: { modelValue: 1 },
       slots: {
         'minus-icon': '<i data-testid="minus-glyph">-</i>',
         'plus-icon': '<i data-testid="plus-glyph">+</i>',
+      },
+    });
+    for (const id of ['minus-glyph', 'plus-glyph']) {
+      expect(wrapper.find(`[data-testid="${id}"]`).exists(), id).toBe(true);
+    }
+    expect(wrapper.find('.sn-input-number__btn .sn-icon').exists()).toBe(false);
+  });
+
+  it('replaces the ↑ / ↓ glyphs through the icon slots', () => {
+    const wrapper = mount(SnInputNumber, {
+      props: { modelValue: 1, buttonMode: 'spinner' },
+      slots: {
         'up-icon': '<i data-testid="up-glyph">^</i>',
         'down-icon': '<i data-testid="down-glyph">v</i>',
       },
     });
-    for (const id of ['minus-glyph', 'plus-glyph', 'up-glyph', 'down-glyph']) {
+    for (const id of ['up-glyph', 'down-glyph']) {
       expect(wrapper.find(`[data-testid="${id}"]`).exists(), id).toBe(true);
     }
-    // Replaced glyphs leave no default icon behind.
-    expect(wrapper.find('.sn-input-number__btn .sn-icon').exists()).toBe(false);
+    expect(wrapper.find('.sn-input-number__spin .sn-icon').exists()).toBe(false);
   });
 
   /* --- tail ↑ / ↓ spinner --- */
 
   it('steps up / down from the spinner halves', async () => {
-    const wrapper = mountNumber({ modelValue: 3, buttonPlacement: 'both' });
+    const wrapper = mountNumber({ modelValue: 3, buttonMode: 'spinner' });
     const up = wrapper.find('.sn-input-number__btn--up');
     await up.trigger('mousedown');
     await up.trigger('mouseup');
@@ -477,7 +512,7 @@ describe('SnInputNumber', () => {
   it('long-presses the spinner halves like the − / + buttons', async () => {
     vi.useFakeTimers();
     try {
-      const { wrapper, value } = mountVModel(0, { buttonPlacement: 'both' });
+      const { wrapper, value } = mountVModel(0, { buttonMode: 'spinner' });
       await wrapper.find('.sn-input-number__btn--up').trigger('mousedown');
       expect(value.value).toBe(1);
       await vi.advanceTimersByTimeAsync(400);
@@ -493,14 +528,14 @@ describe('SnInputNumber', () => {
   });
 
   it('disables each spinner half at its own bound', () => {
-    const atMax = mountNumber({ modelValue: 5, max: 5, buttonPlacement: 'both' });
+    const atMax = mountNumber({ modelValue: 5, max: 5, buttonMode: 'spinner' });
     expect((atMax.find('.sn-input-number__btn--up').element as HTMLButtonElement).disabled).toBe(
       true,
     );
     expect((atMax.find('.sn-input-number__btn--down').element as HTMLButtonElement).disabled).toBe(
       false,
     );
-    const atMin = mountNumber({ modelValue: 0, min: 0, buttonPlacement: 'both' });
+    const atMin = mountNumber({ modelValue: 0, min: 0, buttonMode: 'spinner' });
     expect((atMin.find('.sn-input-number__btn--down').element as HTMLButtonElement).disabled).toBe(
       true,
     );

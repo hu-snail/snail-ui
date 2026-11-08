@@ -28,6 +28,10 @@ const v = ref(1);
         class="demo-field"
       />
     </div>
+    <div class="demo-row">
+      <SnInputNumber v-model="v" button-mode="spinner" class="demo-field" />
+      <SnInputNumber v-model="v" button-mode="spinner" size="small" class="demo-field" />
+    </div>
   </div>
 </template>
 

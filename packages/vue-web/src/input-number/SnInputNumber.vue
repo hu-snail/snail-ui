@@ -5,14 +5,15 @@
  * Independent implementation (not built on SnInput internals) with visual
  * tokens aligned to SnInput (`--sn-web-input-*`, `sn-input-number--{size}`).
  *
- * Steppers are transparent icon text-buttons — `buttonPlacement="right"`
- * (default) renders the − / + pair side by side in the tail, `"left"` mirrors
- * that pair into the head, and `"both"` splits minus into the head (prefix
- * side) and plus into the tail with the value centred between them. The tail
- * additionally always carries an ↑ / ↓ spinner (upper half increments, lower
- * half decrements — native-spinner muscle memory). No divider chrome; the icon
- * tints with the action colour on hover and fades to the disabled colour at
- * bounds.
+ * Steppers are transparent icon text-buttons and come in two mutually exclusive
+ * families (`buttonMode`): `"symbol"` (default) renders − / + buttons,
+ * `"spinner"` renders a single ↑ / ↓ plate (upper half increments, lower half
+ * decrements — native-spinner muscle memory). `buttonPlacement` applies to the
+ * symbol family: `"right"` (default) keeps the − / + pair side by side in the
+ * tail, `"left"` mirrors that pair into the head, and `"both"` splits minus into
+ * the head (prefix side) and plus into the tail with the value centred between
+ * them. No divider chrome; the icon tints with the action colour on hover and
+ * fades to the disabled colour at bounds.
  *
  * Each button can carry a background plate (`buttonBackground` →
  * `--sn-web-input-number-btn-bg`). Because `both` pulls the pair apart, only
@@ -59,6 +60,11 @@ const props = withDefaults(
     showButton?: boolean;
     /** Where the stepper buttons are placed. */
     buttonPlacement?: 'left' | 'both' | 'right';
+    /**
+     * Stepper glyph family — the two are mutually exclusive by design:
+     * `'symbol'` renders − / + buttons, `'spinner'` renders one ↑ / ↓ plate.
+     */
+    buttonMode?: 'symbol' | 'spinner';
     /** Stepper button background — any CSS background value. */
     buttonBackground?: string;
     /** Stepper button hover background (painted in the `both` placement only). */
@@ -88,6 +94,7 @@ const props = withDefaults(
     stepStrictly: false,
     showButton: true,
     buttonPlacement: 'right',
+    buttonMode: 'symbol',
     clearable: false,
     border: 'all',
     bordered: true,
@@ -395,17 +402,31 @@ const spinIconSize = computed<number>(() => {
   }
 });
 
-/** Head stepper hosts the minus button (`both`) or the whole pair (`left`). */
-const showHeadStepper = computed(() => props.showButton && props.buttonPlacement !== 'right');
+/** Head stepper hosts the minus (`both`) or the − / + pair (`left`). Symbol mode only. */
+const showHeadStepper = computed(
+  () => props.showButton && props.buttonMode === 'symbol' && props.buttonPlacement !== 'right',
+);
 
-/** Tail stepper hosts the ↑ / ↓ spinner, the pair (`right`) or the plus (`both`). */
-const showTailStepper = computed(() => props.showButton);
+/** Tail stepper hosts the ↑ / ↓ spinner, or the symbol pair / plus. */
+const showTailStepper = computed(
+  () => props.showButton && (props.buttonMode === 'spinner' || props.buttonPlacement !== 'left'),
+);
 
-/** Tail minus button — only `right` keeps the whole pair in the tail. */
-const showTailMinus = computed(() => props.buttonPlacement === 'right');
+/**
+ * Tail ↑ / ↓ spinner — `buttonMode="spinner"` only. The spinner replaces the
+ * − / + buttons outright, so the two families never render side by side.
+ */
+const showTailSpin = computed(() => props.showButton && props.buttonMode === 'spinner');
 
-/** Tail plus button — every placement except `left`, which pairs it in the head. */
-const showTailPlus = computed(() => props.buttonPlacement !== 'left');
+/** Tail minus button — symbol mode; only `right` keeps the whole pair in the tail. */
+const showTailMinus = computed(
+  () => props.buttonMode === 'symbol' && props.buttonPlacement === 'right',
+);
+
+/** Tail plus button — symbol mode; the `left` pair lives in the head instead. */
+const showTailPlus = computed(
+  () => props.buttonMode === 'symbol' && props.buttonPlacement !== 'left',
+);
 
 /** Per-instance stepper colour overrides (prop → CSS var → token). */
 const stepperStyle = computed<Record<string, string>>(() => {
@@ -424,6 +445,7 @@ const classList = computed(() => [
     'sn-input-number--disabled': props.disabled,
     'sn-input-number--readonly': props.readonly,
     [`sn-input-number--placement-${props.buttonPlacement}`]: props.showButton,
+    [`sn-input-number--mode-${props.buttonMode}`]: props.showButton,
     'sn-input-number--with-clear': clearVisible.value,
   },
 ]);
@@ -540,7 +562,7 @@ const classList = computed(() => [
       >
         <slot name="plus-icon"><SnIcon :icon="PlusIcon" :size="iconSize" /></slot>
       </button>
-      <span class="sn-input-number__spin">
+      <span v-if="showTailSpin" class="sn-input-number__spin">
         <button
           type="button"
           class="sn-input-number__btn sn-input-number__btn--up"

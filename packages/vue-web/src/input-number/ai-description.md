@@ -23,6 +23,7 @@ Web 端数字输入组件，对标 naive-ui `n-input-number` 1:1。位于 `packa
 | `showButton`            | `boolean`                                            | `true`     | 是否渲染 +/− 步进按钮                                                                        |
 | `buttonPlacement`       | `'left' \| 'both' \| 'right'`                        | `'right'`  | 按钮位置：`right` 尾部横排（− +）/ `left` 头部横排（− +）/ `both` 分置左右两端（数字居中）   |
 | `buttonBackground`      | `string`                                             | —          | 步进按钮底色（任意 CSS background 值 → `--sn-web-input-number-btn-bg`）                      |
+| `buttonMode`            | `'symbol' \| 'spinner'`                              | `'symbol'` | 步进按钮形态，两者互斥：`symbol` = − / + 按钮；`spinner` = 单个 ↑↓ 底板（上半 +、下半 −）    |
 | `buttonHoverBackground` | `string`                                             | —          | 步进按钮悬停底色，仅 `buttonPlacement="both"` 生效（→ `--sn-web-input-number-btn-hover-bg`） |
 | `clearable`             | `boolean`                                            | `false`    | 有值时显示清空按钮，点击提交 `null`                                                          |
 | `format`                | `(value: number) => string \| number`                | —          | 展示格式化（如百分比）                                                                       |
@@ -53,7 +54,7 @@ Web 端数字输入组件，对标 naive-ui `n-input-number` 1:1。位于 `packa
 
 - **提交管线**：parse → validator → clamp(min/max) → stepStrictly snap → precision 四舍五入。validator 拒绝时保留旧 modelValue，不提交。
 - **步进**：以 `min`（缺省 0）为基准对齐 step 网格，空值时从 `min` 起步。到达边界后按钮置 `disabled` 且不再发出事件。
-- **按钮位置**：`right`（默认）尾部横排 − +；`left` 头部横排镜像；`both` 减号在头部、加号在尾部，且数字居中（`.sn-input-number--placement-both`）。尾部固定末尾追加 ↑↓ 微调（上半 = +、下半 = −，各自受 `plusDisabled` / `minusDisabled` 约束，支持长按连发），因此 `right` 尾部为 − + ↑↓、`both` 为 − … + ↑↓、`left` 头部 − + 且尾部仅 ↑↓。
+- **按钮形态（互斥）**：`buttonMode="symbol"`（默认）渲染 − / + 按钮，`buttonPlacement` 决定位置（`right` 尾部横排 / `left` 头部横排 / `both` 减号在头部、加号在尾部且数字居中，`.sn-input-number--placement-both`）；`buttonMode="spinner"` 只渲染一个 ↑↓ 底板（上半 = +、下半 = −，各自受 `plusDisabled` / `minusDisabled` 约束，支持长按连发），**不会再出现 − / + 按钮**，两种形态永不并存。
 - **间距**：底板与字段边框、相邻按钮之间各留 3px（`margin: 0 3px`；纵向 `height: calc(100% - 6px)`），所以彩色底板永不贴边。
 - **按钮底色**：`buttonBackground` → `--sn-web-input-number-btn-bg`（含 `buttonHoverBackground` → `--sn-web-input-number-btn-hover-bg`）以内嵌圆角底板（field 高度 -3px/侧）绘制；悬停底板仅在 `both` 生效（两个游离按钮需要读作独立按钮）。两个 prop 缺省时底色为透明，视觉与旧版一致。
 - **长按连发**：步进按钮 `mousedown` 立即步进一次，400ms 后进入 100ms 间隔连发；`mouseup` / `mouseleave` / 卸载时停止。

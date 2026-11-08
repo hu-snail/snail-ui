@@ -20,7 +20,7 @@ Numeric input with steppers (press-and-hold) plus a tail ↑ / ↓ spinner (up i
 
 ## Button placement / sizes
 
-<Demo name="input-number-web-layout" description="buttonPlacement: left / both / right (tail always carries the ↑ / ↓ spinner); five sizes." />
+<Demo name="input-number-web-layout" description="buttonPlacement: left / both / right; buttonMode: symbol (− +) / spinner (↑ ↓); five sizes." />
 
 ## Disabled / readonly / clearable
 
@@ -30,22 +30,23 @@ Numeric input with steppers (press-and-hold) plus a tail ↑ / ↓ spinner (up i
 
 ### SnInputNumber Props
 
-| Prop                  | Type                                         | Default    | Notes                                                                                                                          |
-| --------------------- | -------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| modelValue            | `number \| null`                             | `null`     | v-model (empty is null)                                                                                                        |
-| min / max             | `number`                                     | —          | Bounds clamp                                                                                                                   |
-| step                  | `number`                                     | `1`        | Step                                                                                                                           |
-| precision             | `number`                                     | —          | Decimals                                                                                                                       |
-| stepStrictly          | `boolean`                                    | `false`    | Snap to step grid                                                                                                              |
-| size                  | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size                                                                                                                           |
-| showButton            | `boolean`                                    | `true`     | Show steppers                                                                                                                  |
-| buttonPlacement       | `'left'\|'both'\|'right'`                    | `'right'`  | Stepper placement (right/left: pair at the tail/head, both: split, value centred; the tail always ends with the ↑ / ↓ spinner) |
-| buttonBackground      | `string`                                     | —          | Stepper button background (any CSS background value)                                                                           |
-| buttonHoverBackground | `string`                                     | —          | Stepper hover background (`both` placement only)                                                                               |
-| clearable             | `boolean`                                    | `false`    | Clear button                                                                                                                   |
-| format                | `(value: number) => string`                  | —          | Display format                                                                                                                 |
-| parse                 | `(text: string) => number \| null`           | —          | Parse                                                                                                                          |
-| validator             | `(value: number) => boolean`                 | —          | Pre-commit validator (reject keeps old value)                                                                                  |
+| Prop                  | Type                                         | Default    | Notes                                                                                        |
+| --------------------- | -------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| modelValue            | `number \| null`                             | `null`     | v-model (empty is null)                                                                      |
+| min / max             | `number`                                     | —          | Bounds clamp                                                                                 |
+| step                  | `number`                                     | `1`        | Step                                                                                         |
+| precision             | `number`                                     | —          | Decimals                                                                                     |
+| stepStrictly          | `boolean`                                    | `false`    | Snap to step grid                                                                            |
+| size                  | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size                                                                                         |
+| showButton            | `boolean`                                    | `true`     | Show steppers                                                                                |
+| buttonPlacement       | `'left'\|'both'\|'right'`                    | `'right'`  | Stepper placement (symbol mode: right/left pair at the tail/head, both split, value centred) |
+| buttonMode            | `'symbol'\|'spinner'`                        | `'symbol'` | Glyph family, mutually exclusive: symbol = − / +, spinner = one ↑ / ↓ plate                  |
+| buttonBackground      | `string`                                     | —          | Stepper button background (any CSS background value)                                         |
+| buttonHoverBackground | `string`                                     | —          | Stepper hover background (`both` placement only)                                             |
+| clearable             | `boolean`                                    | `false`    | Clear button                                                                                 |
+| format                | `(value: number) => string`                  | —          | Display format                                                                               |
+| parse                 | `(text: string) => number \| null`           | —          | Parse                                                                                        |
+| validator             | `(value: number) => boolean`                 | —          | Pre-commit validator (reject keeps old value)                                                |
 
 ### SnInputNumber Slots
 
