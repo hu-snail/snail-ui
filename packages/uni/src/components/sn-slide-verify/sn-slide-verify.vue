@@ -74,7 +74,11 @@ import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref 
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Check as CheckIcon, ChevronRight as ChevronRightIcon } from '../sn-icon/sn-icon-set';
-import { bindHorizontalDragMouse, pxPerDesign, resolveNodeEl } from '../sn-captcha/sn-captcha-mouse';
+import {
+  bindHorizontalDragMouse,
+  pxPerDesign,
+  resolveNodeEl,
+} from '../sn-captcha/sn-captcha-mouse';
 
 defineOptions({ name: 'SnSlideVerify' });
 
@@ -204,7 +208,9 @@ function queryTrackWidth(): void {
  * DOM answer through the selector query instead.
  */
 function init(): void {
-  const el = resolveNodeEl(trackRef.value) as { getBoundingClientRect?: () => { width: number } } | null;
+  const el = resolveNodeEl(trackRef.value) as {
+    getBoundingClientRect?: () => { width: number };
+  } | null;
   if (el !== null && typeof el.getBoundingClientRect === 'function') {
     const rect = el.getBoundingClientRect();
     if (rect.width > 0) {

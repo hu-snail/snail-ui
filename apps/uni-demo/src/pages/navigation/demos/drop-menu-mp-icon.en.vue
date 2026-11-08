@@ -101,7 +101,9 @@ const precedenceOptions = [
       custom-class="sn-demo-contained"
     />
 
-    <text class="sn-demo__meta">Object: {{ byData }} / Name: {{ byName }} / Image: {{ byUrl }}</text>
+    <text class="sn-demo__meta"
+      >Object: {{ byData }} / Name: {{ byName }} / Image: {{ byUrl }}</text
+    >
   </view>
 </template>
 

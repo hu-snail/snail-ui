@@ -19,7 +19,8 @@ import { dirname, join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildStyleBarrel } from '../scripts/build-style-barrel.mjs';
 
-const COMPONENT_CSS = '.sn-button--primary[data-v-abc] {\n  background-color: var(--sn-web-color-action-primary);\n}\n';
+const COMPONENT_CSS =
+  '.sn-button--primary[data-v-abc] {\n  background-color: var(--sn-web-color-action-primary);\n}\n';
 
 const fixtures: string[] = [];
 

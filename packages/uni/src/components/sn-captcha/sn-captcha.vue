@@ -63,7 +63,15 @@
  * （host 业务）、服务端校验（host 必须）。
  */
 
-import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { RefreshCw as RefreshIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 import { bindHorizontalDragMouse, pxPerDesign, resolveNodeEl } from './sn-captcha-mouse';
@@ -219,7 +227,9 @@ function queryStageWidth(): void {
  * a failure just leaves the `width` prop in place.
  */
 function init(): void {
-  const el = resolveNodeEl(stageRef.value) as { getBoundingClientRect?: () => { width: number } } | null;
+  const el = resolveNodeEl(stageRef.value) as {
+    getBoundingClientRect?: () => { width: number };
+  } | null;
   if (el !== null && typeof el.getBoundingClientRect === 'function') {
     const rect = el.getBoundingClientRect();
     if (rect.width > 0) {
@@ -556,13 +566,21 @@ defineExpose({
           @touchcancel="onPieceTouchCancel"
         >
           <view class="sn-captcha__piece-clip">
-            <image class="sn-captcha__piece-img" :src="src" mode="aspectFill" :style="pieceImgStyle" />
+            <image
+              class="sn-captcha__piece-img"
+              :src="src"
+              mode="aspectFill"
+              :style="pieceImgStyle"
+            />
           </view>
           <view class="sn-captcha__piece-ring" aria-hidden="true" />
         </view>
 
         <!-- 提示 / 成功文案 -->
-        <view class="sn-captcha__hint" :class="{ 'sn-captcha__hint--success': state === 'success' }">
+        <view
+          class="sn-captcha__hint"
+          :class="{ 'sn-captcha__hint--success': state === 'success' }"
+        >
           <text>{{ hintText }}</text>
         </view>
 

@@ -60,9 +60,11 @@ defineOptions({ name: 'SnToast' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
-onMounted(() => registerOutsideClosable(instanceId, () => {
-  if (isShown.value) requestClose();
-}));
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    if (isShown.value) requestClose();
+  }),
+);
 onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Layout direction of icon + text. Mirrors `wd-toast` `direction`. */
@@ -215,9 +217,7 @@ const spinnerType = computed(() => props.loadingType);
 
 const isVerticalLayout = computed(() => props.direction === 'vertical');
 
-const glyphSize = computed(() =>
-  resolveSize(props.iconSize, isVerticalLayout.value ? 56 : 40),
-);
+const glyphSize = computed(() => resolveSize(props.iconSize, isVerticalLayout.value ? 56 : 40));
 const spinnerSize = computed(() =>
   resolveSize(props.loadingSize, isVerticalLayout.value ? 64 : 48),
 );

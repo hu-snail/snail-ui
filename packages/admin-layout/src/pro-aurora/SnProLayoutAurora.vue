@@ -309,9 +309,12 @@ const hasTitleBand = computed(
 const hasTitleActions = computed(
   () => slots.actions !== undefined || props.showSearch || props.showFilter,
 );
-const hasUser = computed(() => props.showUser && (props.user !== undefined || slots.user !== undefined));
+const hasUser = computed(
+  () => props.showUser && (props.user !== undefined || slots.user !== undefined),
+);
 const hasRailFoot = computed(
-  () => slots.logout !== undefined || slots.help !== undefined || props.showLogout || props.showHelp,
+  () =>
+    slots.logout !== undefined || slots.help !== undefined || props.showLogout || props.showHelp,
 );
 
 // ── SnMenu needs concrete (non-optional) values ──────────────────────────
@@ -355,7 +358,11 @@ function onUserSelect(key: SnDropdownKey, item: SnDropdownOption): void {
           </slot>
         </div>
 
-        <nav v-if="slots.modules !== undefined || hasNav" class="sn-pro-aurora__nav" aria-label="主导航">
+        <nav
+          v-if="slots.modules !== undefined || hasNav"
+          class="sn-pro-aurora__nav"
+          aria-label="主导航"
+        >
           <slot name="modules">
             <SnMenu
               v-if="hasNav"
@@ -647,7 +654,6 @@ function onUserSelect(key: SnDropdownKey, item: SnDropdownOption): void {
   overflow: hidden;
   background: transparent;
 }
-
 
 /* ── Top bar ───────────────────────────────────────────────────────────── */
 .sn-pro-aurora__header {

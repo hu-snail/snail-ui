@@ -76,16 +76,16 @@ import { SnToast } from '@snui/uni';
 
 ## Tokens Consumed (end: mp)
 
-| Token              | CSS Variable                        | Purpose                   |
-| ------------------ | ----------------------------------- | ------------------------- |
-| Text on primary    | `--sn-mp-color-text-on-primary`     | Toast text (white)        |
-| Background inverse | `--sn-mp-color-background-inverse`  | Toast plate (dark, both themes) |
-| Background overlay | `--sn-mp-color-background-overlay`  | `cover` scrim             |
-| Shadow LG          | `--sn-mp-shadow-lg`                 | Plate elevation           |
-| Font size MD       | `--sn-mp-font-size-md`              | Message size              |
-| Line height normal | `--sn-mp-font-line-height-normal`   | Message line height       |
-| Spacing 3 / 4 / 6 / 8 | `--sn-mp-spacing-3 / -4 / -6 / -8` | Padding + icon gap      |
-| Radius XL          | `--sn-mp-radius-xl`                 | Toast box corners         |
+| Token                 | CSS Variable                       | Purpose                         |
+| --------------------- | ---------------------------------- | ------------------------------- |
+| Text on primary       | `--sn-mp-color-text-on-primary`    | Toast text (white)              |
+| Background inverse    | `--sn-mp-color-background-inverse` | Toast plate (dark, both themes) |
+| Background overlay    | `--sn-mp-color-background-overlay` | `cover` scrim                   |
+| Shadow LG             | `--sn-mp-shadow-lg`                | Plate elevation                 |
+| Font size MD          | `--sn-mp-font-size-md`             | Message size                    |
+| Line height normal    | `--sn-mp-font-line-height-normal`  | Message line height             |
+| Spacing 3 / 4 / 6 / 8 | `--sn-mp-spacing-3 / -4 / -6 / -8` | Padding + icon gap              |
+| Radius XL             | `--sn-mp-radius-xl`                | Toast box corners               |
 
 ## Icon Defaults
 

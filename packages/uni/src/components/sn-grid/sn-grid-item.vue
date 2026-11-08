@@ -15,9 +15,9 @@
  *
  * A component must not own routing (§60 — AppBridge is the host capability
  * boundary). The pair is forwarded to the `click` payload so the host decides
-  * between `navigateTo` / `switchTab` / `reLaunch` / `redirectTo`.
+ * between `navigateTo` / `switchTab` / `reLaunch` / `redirectTo`.
  *
-  * Per AGENTS.md §32 this component handles rendering + interaction only.
+ * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
  *   - 路由跳转 — 由宿主按 `click` 的 `url` / `linkType` 决定
@@ -95,15 +95,15 @@ defineSlots<{
   text?(): unknown;
 }>();
 
- const grid = inject(SN_GRID_KEY, null);
- 
- /** Share of the row this cell occupies. */
- const cellWidth = computed(() => {
-   const column = grid?.column.value ?? 3;
-   return `${100 / Math.max(1, column)}%`;
- });
- 
- /** Gutter as symmetric padding (the grid supplies the outer half). */
+const grid = inject(SN_GRID_KEY, null);
+
+/** Share of the row this cell occupies. */
+const cellWidth = computed(() => {
+  const column = grid?.column.value ?? 3;
+  return `${100 / Math.max(1, column)}%`;
+});
+
+/** Gutter as symmetric padding (the grid supplies the outer half). */
 const gutterStyle = computed(() => {
   const gutter = grid?.gutter.value ?? 0;
   if (gutter <= 0) return undefined;
@@ -218,24 +218,24 @@ const rootStyle = computed(() => {
               class="sn-grid-item__badge"
               :class="{ 'sn-grid-item__badge--dot': isDot }"
             >
-               <text v-if="badgeText" class="sn-grid-item__badge-text">{{ badgeText }}</text>
-             </view>
-           </view>
-         </view>
- 
-         <view class="sn-grid-item__text-wrap">
-           <slot name="text">
-             <text
-               class="sn-grid-item__text"
-               :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
-               >{{ text }}</text
-             >
-           </slot>
-         </view>
-       </slot>
-     </view>
-   </view>
- </template>
+              <text v-if="badgeText" class="sn-grid-item__badge-text">{{ badgeText }}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="sn-grid-item__text-wrap">
+          <slot name="text">
+            <text
+              class="sn-grid-item__text"
+              :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
+              >{{ text }}</text
+            >
+          </slot>
+        </view>
+      </slot>
+    </view>
+  </view>
+</template>
 
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
@@ -273,37 +273,37 @@ const rootStyle = computed(() => {
   justify-content: center;
 }
 
- /* The stack mirrors the content's flex layout so icon and label keep the
+/* The stack mirrors the content's flex layout so icon and label keep the
   * gap-driven spacing in every mode; content lays out the stack as a single
   * child (column / row / centring / top-align all keep working). */
- .sn-grid-item__stack {
-   display: flex;
-   flex: 0 0 auto;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   gap: var(--sn-mp-spacing-2);
-   min-width: 0;
- }
- 
- .sn-grid-item__content--horizontal .sn-grid-item__stack {
-   flex-direction: row;
- }
- 
- /* Square cells — padding-box trick, so no JS measurement is needed. */
- .sn-grid-item__content--square {
-   height: 0;
-   padding-bottom: 100%;
-   padding-top: 0;
- }
- 
- /* Square mode: the stack (icon + label as one block) is absolutely centred
+.sn-grid-item__stack {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sn-mp-spacing-2);
+  min-width: 0;
+}
+
+.sn-grid-item__content--horizontal .sn-grid-item__stack {
+  flex-direction: row;
+}
+
+/* Square cells — padding-box trick, so no JS measurement is needed. */
+.sn-grid-item__content--square {
+  height: 0;
+  padding-bottom: 100%;
+  padding-top: 0;
+}
+
+/* Square mode: the stack (icon + label as one block) is absolutely centred
   * inside the padding-box square, so mutual spacing never depends on the cell
   * width — the old fixed `top: 28% / 52%` pins overlapped in narrow cells. */
- .sn-grid-item__content--square .sn-grid-item__stack {
-   position: absolute;
-   inset: 0;
- }
+.sn-grid-item__content--square .sn-grid-item__stack {
+  position: absolute;
+  inset: 0;
+}
 
 .sn-grid-item__content--reverse .sn-grid-item__icon-wrap {
   order: 2;

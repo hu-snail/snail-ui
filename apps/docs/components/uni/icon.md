@@ -41,9 +41,9 @@ Showcase 页内置完整目录浏览：搜索框（匹配英文名 / 中文标�
 
 ```ts
 import {
-  SN_ICON_CATALOG,          // 全部条目 { name, category, zh, keywords, data }
-  SN_ICON_CATEGORY_LABELS,  // 分类元数据（key → { zh, en }）
-  searchSnIconCatalog,      // (query, category?) => SnIconCatalogEntry[]
+  SN_ICON_CATALOG, // 全部条目 { name, category, zh, keywords, data }
+  SN_ICON_CATEGORY_LABELS, // 分类元数据（key → { zh, en }）
+  searchSnIconCatalog, // (query, category?) => SnIconCatalogEntry[]
 } from '@snui/uni';
 ```
 
@@ -133,18 +133,18 @@ const MyFlag: IconData = {
 
 ### Props
 
-| 名称                | 类型                              | 默认值           | 说明                                                                                       |
-| ------------------- | --------------------------------- | ---------------- | ------------------------------------------------------------------------------------------ |
-| icon                | `IconData \| string`              | —                | SVG 数据对象；或字符串：registry → 内置目录 → Provider（`prefix:rest`）依次解析             |
-| size                | `number \| string`                | `32`             | 图标尺寸（推荐 rpx）                                                                       |
-| color               | `string`                          | `'currentColor'` | 描边颜色（继承父元素 color；Iconify 路径会烘焙进请求）                                     |
-| strokeWidth         | `number \| string`                | `2`              | 描边宽度                                                                                   |
-| strokeWidthAbsolute | `boolean`                         | `false`          | 描边按绝对像素                                                                             |
-| name                | `string`                          | `''`             | iconfont 字形名，渲染 `{classPrefix}-{name}`（与 `icon` 同时给出时优先）                    |
-| classPrefix         | `string`                          | `'sn-icon'`      | iconfont 类名前缀                                                                          |
-| cssIcon             | `boolean \| string`               | `false`          | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂                    |
-| customClass         | `string`                          | `''`             | 根节点追加类名                                                                             |
-| customStyle         | `string \| Record<string,string>` | `''`             | 根节点内联样式                                                                             |
+| 名称                | 类型                              | 默认值           | 说明                                                                            |
+| ------------------- | --------------------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| icon                | `IconData \| string`              | —                | SVG 数据对象；或字符串：registry → 内置目录 → Provider（`prefix:rest`）依次解析 |
+| size                | `number \| string`                | `32`             | 图标尺寸（推荐 rpx）                                                            |
+| color               | `string`                          | `'currentColor'` | 描边颜色（继承父元素 color；Iconify 路径会烘焙进请求）                          |
+| strokeWidth         | `number \| string`                | `2`              | 描边宽度                                                                        |
+| strokeWidthAbsolute | `boolean`                         | `false`          | 描边按绝对像素                                                                  |
+| name                | `string`                          | `''`             | iconfont 字形名，渲染 `{classPrefix}-{name}`（与 `icon` 同时给出时优先）        |
+| classPrefix         | `string`                          | `'sn-icon'`      | iconfont 类名前缀                                                               |
+| cssIcon             | `boolean \| string`               | `false`          | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂         |
+| customClass         | `string`                          | `''`             | 根节点追加类名                                                                  |
+| customStyle         | `string \| Record<string,string>` | `''`             | 根节点内联样式                                                                  |
 
 `IconData` 接口：
 
@@ -157,23 +157,23 @@ interface IconData {
 
 ### 模块级 API
 
-| 函数 / 常量                                                  | 说明                                                          |
-| ------------------------------------------------------------ | ------------------------------------------------------------- |
-| `SN_ICON_CATALOG`                                            | 内置目录全部条目（name / category / zh / keywords / data）    |
-| `SN_ICON_CATEGORY_LABELS`                                    | 分类元数据（key → `{ zh, en }`）                              |
-| `searchSnIconCatalog(query, category?)`                      | 目录搜索（英文名 / 中文 / 关键词，大小写不敏感子串匹配）      |
-| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData 注册表（优先级高于目录）                    |
-| `registerSnIconProvider(prefix, provider)`                   | 注册 `prefix:rest` 图标源                                     |
-| `configSnIcons({ iconify })`                                 | `false` 关闭 Iconify 回退；对象形式透传 Iconify 配置          |
-| `configSnIconify({ apiBase, timeout, request })`             | Iconify 服务配置（默认官方 API / 15s / fetch→uni.request）    |
+| 函数 / 常量                                                           | 说明                                                       |
+| --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `SN_ICON_CATALOG`                                                     | 内置目录全部条目（name / category / zh / keywords / data） |
+| `SN_ICON_CATEGORY_LABELS`                                             | 分类元数据（key → `{ zh, en }`）                           |
+| `searchSnIconCatalog(query, category?)`                               | 目录搜索（英文名 / 中文 / 关键词，大小写不敏感子串匹配）   |
+| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData 注册表（优先级高于目录）                          |
+| `registerSnIconProvider(prefix, provider)`                            | 注册 `prefix:rest` 图标源                                  |
+| `configSnIcons({ iconify })`                                          | `false` 关闭 Iconify 回退；对象形式透传 Iconify 配置       |
+| `configSnIconify({ apiBase, timeout, request })`                      | Iconify 服务配置（默认官方 API / 15s / fetch→uni.request） |
 
 ## 跨端渲染
 
-| 端              | 行为                                                                        |
-| --------------- | ---------------------------------------------------------------------------- |
-| H5              | inline SVG，浏览器原生渲染，`currentColor` 生效                             |
-| 微信小程序      | SVG 数据经 image 语义渲染；Iconify / 远程路径走 background-image data URL    |
-| App (uni-app x) | 转换管线把两条 SVG 路径统一替换为 `<image>` + SVG data URL（补丁见 uni-x）   |
+| 端              | 行为                                                                       |
+| --------------- | -------------------------------------------------------------------------- |
+| H5              | inline SVG，浏览器原生渲染，`currentColor` 生效                            |
+| 微信小程序      | SVG 数据经 image 语义渲染；Iconify / 远程路径走 background-image data URL  |
+| App (uni-app x) | 转换管线把两条 SVG 路径统一替换为 `<image>` + SVG data URL（补丁见 uni-x） |
 
 ## 无障碍
 
@@ -185,4 +185,3 @@ interface IconData {
 - [web 端 SnIcon](/components/web/icon)
 - [lucide 官方图标库](https://lucide.dev/icons)
 - [Iconify](https://iconify.design) / [iconfont.cn](https://www.iconfont.cn)
-

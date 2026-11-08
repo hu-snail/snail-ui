@@ -68,7 +68,10 @@ function keyOf(route: RouteLike): string {
   return '';
 }
 
-function iconOf(meta: RouteMetaLike | undefined, iconMap: Record<string, Component> | undefined): unknown {
+function iconOf(
+  meta: RouteMetaLike | undefined,
+  iconMap: Record<string, Component> | undefined,
+): unknown {
   const raw = meta?.icon;
   if (raw === undefined || raw === null) return undefined;
   if (typeof raw === 'string') {
@@ -91,7 +94,8 @@ function collect(
     if (skipHidden && meta?.hidden) return;
 
     const label = titleOf(meta);
-    const children = route.children !== undefined ? collect(route.children, options, skipHidden) : [];
+    const children =
+      route.children !== undefined ? collect(route.children, options, skipHidden) : [];
     // A titleless route is only worth keeping as a group when it still has
     // visible children (redirect-only parents collapse away).
     if (label === '' && children.length === 0) return;
@@ -127,7 +131,10 @@ export function findTopAncestorKey(
   key: string | number | null,
 ): string | number | null {
   if (key === null) return null;
-  const walk = (nodes: readonly SnMenuOption[], topKey: string | number): string | number | undefined => {
+  const walk = (
+    nodes: readonly SnMenuOption[],
+    topKey: string | number,
+  ): string | number | undefined => {
     for (const node of nodes) {
       if (node.key === key) return topKey;
       if (node.children !== undefined) {
@@ -148,7 +155,10 @@ export function findTopAncestorKey(
 }
 
 /** Direct children of `key` at any depth; empty array for leaves / misses. */
-export function menuChildrenOf(options: readonly SnMenuOption[], key: string | number | null): SnMenuOption[] {
+export function menuChildrenOf(
+  options: readonly SnMenuOption[],
+  key: string | number | null,
+): SnMenuOption[] {
   if (key === null) return [];
   const walk = (nodes: readonly SnMenuOption[]): SnMenuOption[] | undefined => {
     for (const node of nodes) {
@@ -165,7 +175,10 @@ export function menuChildrenOf(options: readonly SnMenuOption[], key: string | n
 
 /** Ancestor chain (inclusive) from a top-level node down to `key`; empty when
  * absent. Labels of this path are the layout's auto-breadcrumb fallback. */
-export function menuPathTo(options: readonly SnMenuOption[], key: string | number | null): SnMenuOption[] {
+export function menuPathTo(
+  options: readonly SnMenuOption[],
+  key: string | number | null,
+): SnMenuOption[] {
   if (key === null) return [];
   const walk = (nodes: readonly SnMenuOption[]): SnMenuOption[] | undefined => {
     for (const node of nodes) {

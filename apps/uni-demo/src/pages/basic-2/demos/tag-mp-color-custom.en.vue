@@ -38,22 +38,14 @@ const tints = [
 ] as const;
 
 /** Iconfont glyphs: iconPrefix + cssIcon build sn-demo-tag-icon-{name}. */
-const glyphs = [
-  { icon: 'star' },
-  { icon: 'heart' },
-  { icon: 'check' },
-] as const;
+const glyphs = [{ icon: 'star' }, { icon: 'heart' }, { icon: 'check' }] as const;
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta">bgColor takes over fill and border (brand colour)</text>
     <view class="sn-demo__row">
-      <SnTag
-        v-for="fill in brandFills"
-        :key="fill.label"
-        :bg-color="fill.bgColor"
-      >
+      <SnTag v-for="fill in brandFills" :key="fill.label" :bg-color="fill.bgColor">
         {{ fill.label }}
       </SnTag>
     </view>

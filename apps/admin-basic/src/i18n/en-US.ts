@@ -62,7 +62,7 @@ export default {
     toRegister: "Don't have an account? Sign up",
   },
   home: {
-    greeting: "Hi {name}, welcome back",
+    greeting: 'Hi {name}, welcome back',
     stats: {
       totalUsers: 'Total users',
       todayOrders: "Today's orders",

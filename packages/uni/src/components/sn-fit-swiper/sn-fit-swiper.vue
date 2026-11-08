@@ -252,7 +252,9 @@ const indicatorClass = computed(() => [
   props.customIndicatorClass,
 ]);
 
-const indicatorStyle = computed(() => (props.customIndicatorStyle ? props.customIndicatorStyle : undefined));
+const indicatorStyle = computed(() =>
+  props.customIndicatorStyle ? props.customIndicatorStyle : undefined,
+);
 
 /** Measure every page's content box (px). Resolves empty when unavailable. */
 function queryPageHeights(): Promise<number[]> {
@@ -368,23 +370,16 @@ defineExpose({
       </swiper-item>
     </swiper>
 
-    <view
-      v-if="showsIndicator"
-      :class="indicatorClass"
-      :style="indicatorStyle"
-      aria-hidden="true"
-    >
+    <view v-if="showsIndicator" :class="indicatorClass" :style="indicatorStyle" aria-hidden="true">
       <slot name="indicator" :current="activeIndex" :total="props.list.length">
         <view v-if="indicatorType === 'fraction'" class="sn-fit-swiper__fraction">
-          <text class="sn-fit-swiper__fraction-text">{{ activeIndex + 1 }}/{{ props.list.length }}</text>
+          <text class="sn-fit-swiper__fraction-text"
+            >{{ activeIndex + 1 }}/{{ props.list.length }}</text
+          >
         </view>
 
         <view v-else-if="indicatorType === 'slider'" class="sn-fit-swiper__slider">
-          <view
-            v-for="(_, index) in props.list"
-            :key="index"
-            class="sn-fit-swiper__slider-slot"
-          />
+          <view v-for="(_, index) in props.list" :key="index" class="sn-fit-swiper__slider-slot" />
           <view
             class="sn-fit-swiper__slider-thumb"
             :style="{ transform: `translateX(${activeIndex * 24}rpx)` }"
@@ -486,10 +481,7 @@ defineExpose({
 }
 
 .sn-fit-swiper__dot--active {
-  background-color: var(
-    --sn-fit-swiper-dot-active-color,
-    var(--sn-mp-color-action-primary)
-  );
+  background-color: var(--sn-fit-swiper-dot-active-color, var(--sn-mp-color-action-primary));
 }
 
 .sn-fit-swiper__dot--bar {

@@ -17,12 +17,12 @@ import '@snui/admin-layout/layouts/standard/style.css'; // 只含四形态壳的
 
 参考 vue-element-admin / vben-admin / ant-design-pro 的常见形态，内置四种，`v-model:layout` 受控可切换：
 
-| `layout` | 结构                                                         | 参考原型                 |
-| -------- | ------------------------------------------------------------ | ------------------------ |
-| `side`   | 左侧栏（logo + 纵向菜单）+ 顶栏（折叠钮 / 面包屑 / 操作区）   | vue-element-admin 经典款 |
-| `top`    | 顶栏（logo + 横向一级菜单 + 操作区）+ 内容                    | ant-design-pro top       |
-| `mix`    | 顶栏放一级菜单，侧栏只放当前一级的二级菜单                    | vben-admin mixed-nav     |
-| `dual`   | 图标栏（一级）+ 二级菜单列 + 内容                             | vben mixed-sidebar 系    |
+| `layout` | 结构                                                        | 参考原型                 |
+| -------- | ----------------------------------------------------------- | ------------------------ |
+| `side`   | 左侧栏（logo + 纵向菜单）+ 顶栏（折叠钮 / 面包屑 / 操作区） | vue-element-admin 经典款 |
+| `top`    | 顶栏（logo + 横向一级菜单 + 操作区）+ 内容                  | ant-design-pro top       |
+| `mix`    | 顶栏放一级菜单，侧栏只放当前一级的二级菜单                  | vben-admin mixed-nav     |
+| `dual`   | 图标栏（一级）+ 二级菜单列 + 内容                           | vben mixed-sidebar 系    |
 
 <LayoutShowcase
   :styles="[
@@ -79,62 +79,62 @@ import '@snui/admin-layout/layouts/standard/style.css'; // 只含四形态壳的
 
 ### SnProLayout Props
 
-| Prop                 | 类型                                    | 默认值    | 说明                                     |
-| -------------------- | --------------------------------------- | --------- | ---------------------------------------- |
-| layout               | `'side' \| 'top' \| 'mix' \| 'dual'`    | `'side'`  | 布局形态，`v-model:layout` 可切换        |
-| logo / title / mark  | `string`                                | —         | 品牌三件套（图片 / 标题 / 字母牌）       |
-| menus                | `SnMenuOption[]`                        | `[]`      | 菜单树（静态路由推导或后端映射）         |
-| activeKey            | `string \| number \| null`              | `null`    | 当前选中菜单 key（通常 `route.name`）    |
-| collapsed            | `boolean \| undefined`                  | —         | 折叠态，`v-model:collapsed`；省略非受控  |
-| siderWidth           | `number`                                | `224`     | 侧栏展开宽度（px）                       |
-| siderCollapsedWidth  | `number`                                | `56`      | 侧栏折叠宽度（px）                       |
-| fixed                | `boolean`                               | `true`    | 铺满视口（100vh）；`false` 时高度 100%   |
-| showCollapse         | `boolean`                               | `true`    | 折叠按钮开关                             |
-| invertedSider        | `boolean`                               | `false`   | 侧栏深色面（对齐 n-menu inverted）       |
-| breadcrumb           | `string[]`                              | 自动推导  | 显式面包屑；省略时按菜单路径推导         |
-| accordion            | `boolean`                               | `false`   | 手风琴展开                               |
-| expandedKeys         | `(string \| number)[]`                  | —         | 受控展开；省略时菜单自持                 |
-| showSettings         | `boolean`                               | `false`   | 页头显示设置齿轮                         |
-| settingsLabel        | `string`                                | 内置中文  | 齿轮的无障碍标签                         |
-| settingsLabels       | `Partial<SnProSettingsLabels>`          | 内置中文  | 设置面板文案（面板 i18n 由宿主传入）     |
-| mode                 | `'light' \| 'dark'`                     | —         | 亮暗模式，`v-model:mode`；省略隐藏该分区 |
-| primaryId            | `string`                                | —         | 主色预设 id，`v-model:primaryId`；省略隐藏该分区 |
-| primaryColors        | `SnProPrimaryColor[]`                   | `[]`      | 主色色板（`{ id, color }`）              |
-| showTabs             | `boolean`                               | `false`   | 显示访问路由标签栏                       |
-| tabs                 | `SnProTabItem[]`                        | `[]`      | 标签列表（宿主维护；`closable: false` 为固定签） |
-| tabType              | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'` | 标签样式，`v-model:tabType` 可从设置面板切换 |
+| Prop                | 类型                                                 | 默认值     | 说明                                             |
+| ------------------- | ---------------------------------------------------- | ---------- | ------------------------------------------------ |
+| layout              | `'side' \| 'top' \| 'mix' \| 'dual'`                 | `'side'`   | 布局形态，`v-model:layout` 可切换                |
+| logo / title / mark | `string`                                             | —          | 品牌三件套（图片 / 标题 / 字母牌）               |
+| menus               | `SnMenuOption[]`                                     | `[]`       | 菜单树（静态路由推导或后端映射）                 |
+| activeKey           | `string \| number \| null`                           | `null`     | 当前选中菜单 key（通常 `route.name`）            |
+| collapsed           | `boolean \| undefined`                               | —          | 折叠态，`v-model:collapsed`；省略非受控          |
+| siderWidth          | `number`                                             | `224`      | 侧栏展开宽度（px）                               |
+| siderCollapsedWidth | `number`                                             | `56`       | 侧栏折叠宽度（px）                               |
+| fixed               | `boolean`                                            | `true`     | 铺满视口（100vh）；`false` 时高度 100%           |
+| showCollapse        | `boolean`                                            | `true`     | 折叠按钮开关                                     |
+| invertedSider       | `boolean`                                            | `false`    | 侧栏深色面（对齐 n-menu inverted）               |
+| breadcrumb          | `string[]`                                           | 自动推导   | 显式面包屑；省略时按菜单路径推导                 |
+| accordion           | `boolean`                                            | `false`    | 手风琴展开                                       |
+| expandedKeys        | `(string \| number)[]`                               | —          | 受控展开；省略时菜单自持                         |
+| showSettings        | `boolean`                                            | `false`    | 页头显示设置齿轮                                 |
+| settingsLabel       | `string`                                             | 内置中文   | 齿轮的无障碍标签                                 |
+| settingsLabels      | `Partial<SnProSettingsLabels>`                       | 内置中文   | 设置面板文案（面板 i18n 由宿主传入）             |
+| mode                | `'light' \| 'dark'`                                  | —          | 亮暗模式，`v-model:mode`；省略隐藏该分区         |
+| primaryId           | `string`                                             | —          | 主色预设 id，`v-model:primaryId`；省略隐藏该分区 |
+| primaryColors       | `SnProPrimaryColor[]`                                | `[]`       | 主色色板（`{ id, color }`）                      |
+| showTabs            | `boolean`                                            | `false`    | 显示访问路由标签栏                               |
+| tabs                | `SnProTabItem[]`                                     | `[]`       | 标签列表（宿主维护；`closable: false` 为固定签） |
+| tabType             | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'` | 标签样式，`v-model:tabType` 可从设置面板切换     |
 
 ### Events
 
-| 事件                 | 参数                              | 说明                                   |
-| -------------------- | --------------------------------- | -------------------------------------- |
-| `select`             | `(key, item)`                     | 菜单点击——**导航由宿主实现**           |
-| `update:layout`      | `(mode)`                          | `v-model:layout`                       |
-| `update:collapsed`   | `(collapsed)`                     | `v-model:collapsed`                    |
-| `update:expandedKeys`| `(keys)`                          | 受控展开同步                           |
-| `update:mode`        | `(mode)`                          | 设置面板亮暗切换                       |
-| `update:primaryId`   | `(id)`                            | 设置面板主色切换                       |
-| `update:tabType`     | `(type)`                          | 设置面板标签样式切换                   |
-| `tab-select`         | `(key)`                           | 标签点击——**导航由宿主实现**           |
-| `tab-close`          | `(key)`                           | 标签关闭——**关闭后的路由收敛由宿主实现** |
+| 事件                  | 参数          | 说明                                     |
+| --------------------- | ------------- | ---------------------------------------- |
+| `select`              | `(key, item)` | 菜单点击——**导航由宿主实现**             |
+| `update:layout`       | `(mode)`      | `v-model:layout`                         |
+| `update:collapsed`    | `(collapsed)` | `v-model:collapsed`                      |
+| `update:expandedKeys` | `(keys)`      | 受控展开同步                             |
+| `update:mode`         | `(mode)`      | 设置面板亮暗切换                         |
+| `update:primaryId`    | `(id)`        | 设置面板主色切换                         |
+| `update:tabType`      | `(type)`      | 设置面板标签样式切换                     |
+| `tab-select`          | `(key)`       | 标签点击——**导航由宿主实现**             |
+| `tab-close`           | `(key)`       | 标签关闭——**关闭后的路由收敛由宿主实现** |
 
 ### Slots
 
-| 插槽      | 说明                                       |
-| --------- | ------------------------------------------ |
-| default   | 路由内容（`<RouterView />`）               |
+| 插槽      | 说明                                                                             |
+| --------- | -------------------------------------------------------------------------------- |
+| default   | 路由内容（`<RouterView />`）                                                     |
 | `actions` | 操作区：side/top/mix 在页头右侧，dual（无页头）在条带右侧（语言切换、用户菜单…） |
-| `logo`    | 品牌区整体替换                             |
-| `footer`  | 内容区下方的页脚                           |
+| `logo`    | 品牌区整体替换                                                                   |
+| `footer`  | 内容区下方的页脚                                                                 |
 
 ### 子组件
 
-| 组件          | 关键 Props                                              | 说明                             |
-| ------------- | ------------------------------------------------------- | -------------------------------- |
-| `SnProLogo`   | `logo / title / mark / collapsed`                       | 品牌区；`#icon` 换标、默认插槽整替 |
-| `SnProSider`  | `menus / activeKey / collapsed / inverted / showBrand`  | 左侧栏；透传 SnMenu 事件         |
-| `SnProHeader` | `showBrand / menus / activeKey / breadcrumb / showCollapse` | 顶栏；横向菜单优先于面包屑   |
-| `SnProTabbar` | `tabs / activeKey / type`                               | 标签栏；基于 SnTabs 五样式       |
+| 组件            | 关键 Props                                                            | 说明                                |
+| --------------- | --------------------------------------------------------------------- | ----------------------------------- |
+| `SnProLogo`     | `logo / title / mark / collapsed`                                     | 品牌区；`#icon` 换标、默认插槽整替  |
+| `SnProSider`    | `menus / activeKey / collapsed / inverted / showBrand`                | 左侧栏；透传 SnMenu 事件            |
+| `SnProHeader`   | `showBrand / menus / activeKey / breadcrumb / showCollapse`           | 顶栏；横向菜单优先于面包屑          |
+| `SnProTabbar`   | `tabs / activeKey / type`                                             | 标签栏；基于 SnTabs 五样式          |
 | `SnProSettings` | `show / layout / mode / primaryId / primaryColors / tabType / labels` | 偏好抽屉；受控 props 省略即隐藏分区 |
 
 五个子组件都可单独引入自行编排。

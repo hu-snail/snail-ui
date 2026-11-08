@@ -62,7 +62,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Trigger icon tracks and themes</text>
       <text class="sn-fab-demo__hint-text">
-        Bottom-left: icon-name track (Edit ↔ X); bottom-right: trigger slot IconData (Sparkles ↔ X) + swatches for the theme. Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
+        Bottom-left: icon-name track (Edit ↔ X); bottom-right: trigger slot IconData (Sparkles ↔ X)
+        + swatches for the theme. Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
       <view class="sn-fab-demo__swatches" aria-label="Theme swatches">
         <view
@@ -113,14 +114,16 @@ function pick(label: string): void {
       <view class="sn-fab-demo__bubble" role="button" aria-label="Coffee" @tap="pick('Coffee')">
         <SnIcon :icon="Coffee" size="var(--sn-mp-icon-size-large)" />
       </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Quick launch" @tap="pick('Quick launch')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Quick launch"
+        @tap="pick('Quick launch')"
+      >
         <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
       </view>
       <template #trigger>
-        <SnIcon
-          :icon="dataTrackActive ? X : Sparkles"
-          size="var(--sn-mp-icon-size-large)"
-        />
+        <SnIcon :icon="dataTrackActive ? X : Sparkles" size="var(--sn-mp-icon-size-large)" />
       </template>
     </SnFab>
   </view>

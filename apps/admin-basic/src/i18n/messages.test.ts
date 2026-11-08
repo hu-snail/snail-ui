@@ -26,7 +26,15 @@ describe('i18n messages', () => {
 
   it('should register an i18n key for every menu label the mock ships', () => {
     const menus = (zhCN as { menus: Record<string, unknown> }).menus;
-    for (const key of ['home', 'docs', 'docsGettingStarted', 'docsRequest', 'docsRouter', 'docsTheme', 'docsI18n']) {
+    for (const key of [
+      'home',
+      'docs',
+      'docsGettingStarted',
+      'docsRequest',
+      'docsRouter',
+      'docsTheme',
+      'docsI18n',
+    ]) {
       expect(menus[key]).toBeDefined();
     }
   });

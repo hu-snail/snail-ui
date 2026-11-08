@@ -24,14 +24,14 @@ uni-demo 输入框页：`prefix-icon="Search"` 的输入框只显示空白（图
 ## 修复
 
 1. 名称分支渲染 `<SnIcon :icon="prefixIcon || iconPrefix"
-   :size="ICON_SIZE_VAR" />`（string icon API：registry → 内置目录 →
+:size="ICON_SIZE_VAR" />`（string icon API：registry → 内置目录 →
    Provider），css-icon 模式与 `prefix-icon` / `suffix-icon` 插槽语义不变。
 2. 引入域内图标契约 token（定义在 `.sn-input` 根，引用 mp token，暗色 /
    风格包自动跟随）：
    - `--sn-input-icon-size: var(--sn-mp-icon-size-medium)`
    - `--sn-input-icon-color: var(--sn-mp-color-text-tertiary)`
-   前/后字形盒、清空按钮、密码按钮全部改为 token 尺寸/颜色，去掉圆形底色
-   （对齐 wd-input 的平图标形态）；doodle 皮肤按钮盒放大到 48rpx 吸收描边。
+     前/后字形盒、清空按钮、密码按钮全部改为 token 尺寸/颜色，去掉圆形底色
+     （对齐 wd-input 的平图标形态）；doodle 皮肤按钮盒放大到 48rpx 吸收描边。
 3. Regression：`renders a named prefixIcon/suffixIcon through SnIcon`、
    token 不变量测试（读源码断言三处选择器都消费 token）。
 

@@ -18,28 +18,28 @@
 
 ## 匹配规则（`searchMenuOptions(options, query, config)`）
 
-| 规则             | 说明                                                              |
-| ---------------- | ----------------------------------------------------------------- |
-| 大小写不敏感     | 统一 `trim` + `toLocaleLowerCase` 后做子串匹配                     |
-| 匹配范围         | 节点自身 label **或** 任一祖先 label（因此搜分类名能搜到其子级）   |
-| 默认只返回叶子   | 带 `children` 的分类节点默认不作为命中（`includeGroups: true` 可选） |
-| 跳过 disabled    | disabled 节点不返回，但其子树仍继续遍历（vben/antd 行为一致）      |
-| 结果上限         | `maxResults`（默认 10），超出截断                                  |
-| 顺序稳定         | 深度优先、兄弟按原序；等价输入两次调用结果深度相等（幂等/确定）     |
-| 空 query         | 返回 `[]`（不返回「全部」，避免面板一开就糊满）                     |
+| 规则           | 说明                                                                 |
+| -------------- | -------------------------------------------------------------------- |
+| 大小写不敏感   | 统一 `trim` + `toLocaleLowerCase` 后做子串匹配                       |
+| 匹配范围       | 节点自身 label **或** 任一祖先 label（因此搜分类名能搜到其子级）     |
+| 默认只返回叶子 | 带 `children` 的分类节点默认不作为命中（`includeGroups: true` 可选） |
+| 跳过 disabled  | disabled 节点不返回，但其子树仍继续遍历（vben/antd 行为一致）        |
+| 结果上限       | `maxResults`（默认 10），超出截断                                    |
+| 顺序稳定       | 深度优先、兄弟按原序；等价输入两次调用结果深度相等（幂等/确定）      |
+| 空 query       | 返回 `[]`（不返回「全部」，避免面板一开就糊满）                      |
 
 返回 `SnProMenuHit { key, label, path: SnMenuOption[] }`，`path` 即祖先链。
 
 ## AI Patch Boundary
 
-| 项                          | patchable | 说明                                              |
-| --------------------------- | --------- | ------------------------------------------------- |
-| `menus` / `placeholder` / `minLength` / `maxResults` / `size` / `clearable` / `disabled` | ✅ | 数据与外观 |
-| `includeGroups` / `filter` / `closeOnSelect` | ✅ | 结果集与交互                                  |
-| `searchLabel` / `emptyText` | ✅        | 文案（包内不内置 i18n，props 省略时用内置中文兜底） |
-| 命中后的导航                | ❌        | 永远 emit `select`，宿主 `router.push`             |
-| 远端检索 / 打点             | ❌        | `search` 事件只透传输入，请求逻辑在宿主             |
-| 权限过滤                    | ❌        | 宿主用 `filter` 传谓词，包不读权限态                |
+| 项                                                                                       | patchable | 说明                                                |
+| ---------------------------------------------------------------------------------------- | --------- | --------------------------------------------------- |
+| `menus` / `placeholder` / `minLength` / `maxResults` / `size` / `clearable` / `disabled` | ✅        | 数据与外观                                          |
+| `includeGroups` / `filter` / `closeOnSelect`                                             | ✅        | 结果集与交互                                        |
+| `searchLabel` / `emptyText`                                                              | ✅        | 文案（包内不内置 i18n，props 省略时用内置中文兜底） |
+| 命中后的导航                                                                             | ❌        | 永远 emit `select`，宿主 `router.push`              |
+| 远端检索 / 打点                                                                          | ❌        | `search` 事件只透传输入，请求逻辑在宿主             |
+| 权限过滤                                                                                 | ❌        | 宿主用 `filter` 传谓词，包不读权限态                |
 
 ## 样式契约
 

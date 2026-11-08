@@ -40,55 +40,55 @@ The `formatter` hook rewrites `text` / `topInfo` / `bottomInfo` / `disabled` —
 
 ## Props
 
-| Prop          | Type                                           | Default     | Description                                                              |
-| ------------- | ---------------------------------------------- | ----------- | ------------------------------------------------------------------------ |
-| `modelValue`  | `number \| number[] \| null`                   | `null`      | Timestamp; `range` mode is `[start, end]` (pending: `[start]`)           |
-| `type`        | `'single' \| 'range'`                          | `'single'`  | Selection mode                                                           |
-| `count`       | `number`                                       | `7`         | Days per page (one swiper page)                                          |
-| `startDate`   | `number`                                       | today       | First page anchor (local midnight)                                       |
-| `minDate`     | `number`                                       | `undefined` | Disable days before; clamps the left paging bound                        |
-| `maxDate`     | `number`                                       | `undefined` | Disable days after; clamps the right paging bound                        |
-| `showWeek`    | `boolean`                                      | `true`      | Weekday caption on top of each column                                    |
-| `showLunar`   | `boolean`                                      | `false`     | Lunar captions — **AUI-added** (month name on 初一; formatter can override) |
-| `showNav`     | `boolean`                                      | `false`     | Side paging buttons (content replaceable via `#prev` / `#next` slots)    |
-| `formatter`   | `(item: DateStripDayItem) => DateStripDayItem` | `undefined` | Cell hook: rewrite `text` / `topInfo` / `bottomInfo` / `disabled`        |
-| `disabled`    | `boolean`                                      | `false`     | Disable the whole strip                                                  |
-| `customClass` / `customStyle` | `string`                       | `''`        | Root class / inline style                                                |
+| Prop                          | Type                                           | Default     | Description                                                                 |
+| ----------------------------- | ---------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
+| `modelValue`                  | `number \| number[] \| null`                   | `null`      | Timestamp; `range` mode is `[start, end]` (pending: `[start]`)              |
+| `type`                        | `'single' \| 'range'`                          | `'single'`  | Selection mode                                                              |
+| `count`                       | `number`                                       | `7`         | Days per page (one swiper page)                                             |
+| `startDate`                   | `number`                                       | today       | First page anchor (local midnight)                                          |
+| `minDate`                     | `number`                                       | `undefined` | Disable days before; clamps the left paging bound                           |
+| `maxDate`                     | `number`                                       | `undefined` | Disable days after; clamps the right paging bound                           |
+| `showWeek`                    | `boolean`                                      | `true`      | Weekday caption on top of each column                                       |
+| `showLunar`                   | `boolean`                                      | `false`     | Lunar captions — **AUI-added** (month name on 初一; formatter can override) |
+| `showNav`                     | `boolean`                                      | `false`     | Side paging buttons (content replaceable via `#prev` / `#next` slots)       |
+| `formatter`                   | `(item: DateStripDayItem) => DateStripDayItem` | `undefined` | Cell hook: rewrite `text` / `topInfo` / `bottomInfo` / `disabled`           |
+| `disabled`                    | `boolean`                                      | `false`     | Disable the whole strip                                                     |
+| `customClass` / `customStyle` | `string`                                       | `''`        | Root class / inline style                                                   |
 
 `DateStripDayItem`: `date` (local midnight) / `day` / `week` (0 = Sunday) / `text` / `topInfo` / `bottomInfo` / `disabled`.
 
 ## Slots
 
-| Slot   | Description                                                |
-| ------ | ---------------------------------------------------------- |
-| `prev` | Left paging-button content (default `‹`), fully replaceable |
+| Slot   | Description                                                  |
+| ------ | ------------------------------------------------------------ |
+| `prev` | Left paging-button content (default `‹`), fully replaceable  |
 | `next` | Right paging-button content (default `›`), fully replaceable |
 
 ## Events
 
-| Event               | Description                    | Payload                                            |
-| ------------------- | ------------------------------ | -------------------------------------------------- |
-| `update:modelValue` | Written on a legal tap         | `(value: number \| number[])`                      |
-| `change`            | Same                           | `{ value }`                                        |
+| Event               | Description                    | Payload                                             |
+| ------------------- | ------------------------------ | --------------------------------------------------- |
+| `update:modelValue` | Written on a legal tap         | `(value: number \| number[])`                       |
+| `change`            | Same                           | `{ value }`                                         |
 | `pagechange`        | Page settled (swipe or button) | `{ start, end, index }` (page range and page index) |
 
 ## Methods (ref)
 
-| Method              | Description                                  |
-| ------------------- | -------------------------------------------- |
-| `prev()` / `next()` | Page backward / forward (animated)           |
-| `jumpTo(date)`      | Jump to the page containing `date`           |
+| Method              | Description                        |
+| ------------------- | ---------------------------------- |
+| `prev()` / `next()` | Page backward / forward (animated) |
+| `jumpTo(date)`      | Jump to the page containing `date` |
 
 ## Theming
 
-| Variable                            | Usage                    |
-| ----------------------------------- | ------------------------ |
-| `--sn-mp-color-background-elevated` | Strip background         |
-| `--sn-mp-color-action-primary`      | Selected column          |
-| `--sn-mp-color-action-primary-soft` | Range middle             |
-| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-on-primary` | Text |
-| `--sn-mp-font-size-xs` / `-md` / `-lg` | Font sizes            |
-| `--sn-mp-radius-md`                 | Selected column radius   |
+| Variable                                                                  | Usage                  |
+| ------------------------------------------------------------------------- | ---------------------- |
+| `--sn-mp-color-background-elevated`                                       | Strip background       |
+| `--sn-mp-color-action-primary`                                            | Selected column        |
+| `--sn-mp-color-action-primary-soft`                                       | Range middle           |
+| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-on-primary` | Text                   |
+| `--sn-mp-font-size-xs` / `-md` / `-lg`                                    | Font sizes             |
+| `--sn-mp-radius-md`                                                       | Selected column radius |
 
 ## Accessibility
 

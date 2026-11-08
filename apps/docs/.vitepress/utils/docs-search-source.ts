@@ -58,7 +58,10 @@ const DOC_PAGES_DIR = '.vitepress/utils/doc-pages';
 /** Frontmatter title / first-H1 / doc-pages title fallback chain. */
 function resolveTitle(relPath: string, body: string, root: string): string {
   const fm = body.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  const fmTitle = fm?.[1]?.match(/^title:\s*(.+)$/m)?.[1]?.trim().replace(/^['"]|['"]$/g, '');
+  const fmTitle = fm?.[1]
+    ?.match(/^title:\s*(.+)$/m)?.[1]
+    ?.trim()
+    .replace(/^['"]|['"]$/g, '');
   if (fmTitle) return fmTitle;
 
   const h1 = body.match(/^#\s+(.+)$/m)?.[1]?.trim();
@@ -109,7 +112,9 @@ export function extractDocText(body: string): string {
 
 /** h2/h3 headings of a (frontmatter-stripped) markdown body. Pure. */
 export function extractHeadings(body: string): string[] {
-  const stripped = body.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/```[^\n]*\n[\s\S]*?\n```/g, '');
+  const stripped = body
+    .replace(/<script\b[\s\S]*?<\/script>/g, '')
+    .replace(/```[^\n]*\n[\s\S]*?\n```/g, '');
   const headings: string[] = [];
   for (const match of stripped.matchAll(/^#{2,3}\s+(.+)$/gm)) {
     const raw = match[1] ?? '';

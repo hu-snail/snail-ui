@@ -160,9 +160,13 @@ function onSearchSelect(key: string | number, item: SnMenuOption): void {
           :show-heading="false"
           :chart-height="260"
           @action="(kind: 'primary' | 'secondary') => (note = `action(${kind}) → 宿主打开流程`)"
-          @kpi-action="(_kpi, action) => (note = `kpi-action(${action.key}) → 宿主处理「${action.label}」`)"
+          @kpi-action="
+            (_kpi, action) => (note = `kpi-action(${action.key}) → 宿主处理「${action.label}」`)
+          "
           @range-change="(range: string) => (note = `range-change(${range}) → 宿主拉对应周期数据`)"
-          @transaction-select="(_key, row) => (note = `transaction-select(${row.key}) → 宿主打开详情`)"
+          @transaction-select="
+            (_key, row) => (note = `transaction-select(${row.key}) → 宿主打开详情`)
+          "
         />
       </SnProLayoutAurora>
     </div>

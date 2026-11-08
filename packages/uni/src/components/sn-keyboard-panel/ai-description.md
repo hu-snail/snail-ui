@@ -15,30 +15,30 @@ input row, inside a host-owned sheet, or in any custom container.
 
 ## Props
 
-| Prop              | Type                             | Default     | When                                                                |
-| ----------------- | -------------------------------- | ----------- | ------------------------------------------------------------------- |
-| `modelValue`      | `string`                         | `''`        | Current value (`v-model`).                                          |
-| `mode`            | `'default' \| 'custom' \| 'car'` | `'default'` | Layout preset.                                                      |
-| `maxlength`       | `number`                         | `Infinity`  | Maximum value length.                                               |
-| `showDeleteKey`   | `boolean`                        | `true`      | Render the delete key (default / car layouts).                      |
-| `randomKeyOrder`  | `boolean`                        | `false`     | Shuffle the digit keys (deterministic per mount).                   |
-| `extraKey`        | `string \| string[]`             | `undefined` | Extra digit-grid key(s); an unsupplied slot renders the glyph key.  |
-| `carLang`         | `'zh' \| 'en'`                   | `'zh'`      | Car-plate language (`v-model:car-lang`).                            |
-| `autoSwitchLang`  | `boolean`                        | `false`     | Switch to letters after the province char.                          |
-| `title`           | `string`                         | `''`        | Optional header title; the header renders only with content.        |
-| `deleteText`      | `string`                         | `''`        | Delete key aria label.                                              |
-| `customClass`     | `string`                         | `''`        | Root class forwarding.                                              |
-| `customStyle`     | `string`                         | `''`        | Root inline style.                                                  |
+| Prop             | Type                             | Default     | When                                                               |
+| ---------------- | -------------------------------- | ----------- | ------------------------------------------------------------------ |
+| `modelValue`     | `string`                         | `''`        | Current value (`v-model`).                                         |
+| `mode`           | `'default' \| 'custom' \| 'car'` | `'default'` | Layout preset.                                                     |
+| `maxlength`      | `number`                         | `Infinity`  | Maximum value length.                                              |
+| `showDeleteKey`  | `boolean`                        | `true`      | Render the delete key (default / car layouts).                     |
+| `randomKeyOrder` | `boolean`                        | `false`     | Shuffle the digit keys (deterministic per mount).                  |
+| `extraKey`       | `string \| string[]`             | `undefined` | Extra digit-grid key(s); an unsupplied slot renders the glyph key. |
+| `carLang`        | `'zh' \| 'en'`                   | `'zh'`      | Car-plate language (`v-model:car-lang`).                           |
+| `autoSwitchLang` | `boolean`                        | `false`     | Switch to letters after the province char.                         |
+| `title`          | `string`                         | `''`        | Optional header title; the header renders only with content.       |
+| `deleteText`     | `string`                         | `''`        | Delete key aria label.                                             |
+| `customClass`    | `string`                         | `''`        | Root class forwarding.                                             |
+| `customStyle`    | `string`                         | `''`        | Root inline style.                                                 |
 
 ## Events
 
-| Name                | Payload            | When                                                        |
-| ------------------- | ------------------ | ----------------------------------------------------------- |
-| `update:modelValue` | `(value: string)`  | Value changed.                                              |
-| `update:carLang`    | `(lang: 'zh' 'en')` | Car language changed.                                      |
-| `input`             | `(key: string)`    | A character key was pressed.                                |
-| `delete`            | —                  | Delete key pressed (hold repeats: 420 ms delay, 70 ms tick). |
-| `collapse`          | —                  | The collapse glyph / aside close key was tapped — the host hides its own container or yields to the system input. |
+| Name                | Payload             | When                                                                                                              |
+| ------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `update:modelValue` | `(value: string)`   | Value changed.                                                                                                    |
+| `update:carLang`    | `(lang: 'zh' 'en')` | Car language changed.                                                                                             |
+| `input`             | `(key: string)`     | A character key was pressed.                                                                                      |
+| `delete`            | —                   | Delete key pressed (hold repeats: 420 ms delay, 70 ms tick).                                                      |
+| `collapse`          | —                   | The collapse glyph / aside close key was tapped — the host hides its own container or yields to the system input. |
 
 ## Layout
 

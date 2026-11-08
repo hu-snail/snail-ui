@@ -614,9 +614,7 @@ describe('sn-calendar-view', () => {
       const w = mountView({
         showLunar: true,
         formatter: (item: { date: number; bottomInfo: string }) =>
-          item.date === new Date(2024, 5, 15).getTime()
-            ? { ...item, bottomInfo: '自定义' }
-            : item,
+          item.date === new Date(2024, 5, 15).getTime() ? { ...item, bottomInfo: '自定义' } : item,
       });
       const cells = dayCells(w);
       expect(cells[14]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('自定义');

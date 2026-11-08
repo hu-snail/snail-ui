@@ -15,7 +15,13 @@ import type {
  * no 2D context, so a real chart would throw on first paint — the chart
  * component ships its own suite (packages/echarts).
  */
-const stubs = { SnChart: { name: 'SnChart', props: ['option', 'height', 'layout'], template: '<div class="chart-stub" />' } };
+const stubs = {
+  SnChart: {
+    name: 'SnChart',
+    props: ['option', 'height', 'layout'],
+    template: '<div class="chart-stub" />',
+  },
+};
 
 const kpis: ProWorkbenchKpi[] = [
   {
@@ -73,7 +79,9 @@ describe('ProWorkbench · structure', () => {
   });
 
   it('should hide the subtitle when it is empty', () => {
-    expect(mountWorkbench({ subtitle: '' }).find('.sn-pro-workbench__subtitle').exists()).toBe(false);
+    expect(mountWorkbench({ subtitle: '' }).find('.sn-pro-workbench__subtitle').exists()).toBe(
+      false,
+    );
   });
 
   it('should render the first KPI as the accent card and the rest as neutral cards', () => {

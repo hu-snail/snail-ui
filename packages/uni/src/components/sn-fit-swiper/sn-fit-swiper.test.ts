@@ -262,9 +262,7 @@ describe('sn-fit-swiper', () => {
       await wrapper.find('.sn-fit-swiper__native').trigger('animationfinish', {
         detail: { current: 2, source: 'autoplay' },
       });
-      expect(wrapper.emitted('animationfinish')?.[0]).toEqual([
-        { current: 2, source: 'autoplay' },
-      ]);
+      expect(wrapper.emitted('animationfinish')?.[0]).toEqual([{ current: 2, source: 'autoplay' }]);
     });
 
     it('emits click with the page index and raw row', async () => {

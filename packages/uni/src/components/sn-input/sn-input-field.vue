@@ -34,7 +34,8 @@ const props = withDefaults(
     value?: string;
     isTextarea?: boolean | undefined;
     type?: string | undefined;
-    inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url' | undefined;
+    inputmode?:
+      'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url' | undefined;
     placeholder?: string | undefined;
     placeholderStyle?: string | undefined;
     placeholderClass?: string | undefined;
@@ -104,7 +105,11 @@ const inputId = `sn-input-${++snInputFieldUid}`;
  * Cached computed — see the component docblock. A fresh array literal here
  * would re-trigger uni-input on every parent render.
  */
-const nativeClass = computed(() => ['sn-input__native', props.placeholderClass, props.customInputClass]);
+const nativeClass = computed(() => [
+  'sn-input__native',
+  props.placeholderClass,
+  props.customInputClass,
+]);
 
 /** Placeholder styling rides the native attribute — App has no pseudo-elements. */
 const DEFAULT_PLACEHOLDER_STYLE =
@@ -117,9 +122,11 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
  * wrapper's EXPOSED object (carries `$triggerInput`); in raw/test
  * environments it is the native element.
  */
-type NativeFieldRef = (HTMLInputElement | HTMLTextAreaElement) | {
-  $triggerInput?: (detail: { value: string }) => void;
-};
+type NativeFieldRef =
+  | (HTMLInputElement | HTMLTextAreaElement)
+  | {
+      $triggerInput?: (detail: { value: string }) => void;
+    };
 const nativeEl = ref<NativeFieldRef | null>(null);
 
 /**
@@ -209,7 +216,9 @@ defineExpose({ syncValue });
     :ignore-composition-event="ignoreCompositionEvent"
     :enable-native="enableNative"
     :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-    :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+    :selection-start="
+      selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
+    "
     :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
     @input="emit('input', $event)"
     @change="emit('change', $event)"
@@ -247,7 +256,9 @@ defineExpose({ syncValue });
     :ignore-composition-event="ignoreCompositionEvent"
     :enable-native="enableNative"
     :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-    :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+    :selection-start="
+      selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
+    "
     :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
     @input="emit('input', $event)"
     @change="emit('change', $event)"

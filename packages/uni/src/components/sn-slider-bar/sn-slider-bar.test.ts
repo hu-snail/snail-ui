@@ -12,7 +12,10 @@ import { mount } from '@vue/test-utils';
 import SnSliderBar from './sn-slider-bar.vue';
 
 /** Style strings come back space-separated; compare without spaces. */
-function styleOf(w: { find: (sel: string) => { attributes: (n: string) => string | undefined } }, sel: string): string {
+function styleOf(
+  w: { find: (sel: string) => { attributes: (n: string) => string | undefined } },
+  sel: string,
+): string {
   return (w.find(sel).attributes('style') ?? '').replace(/\s+/g, '');
 }
 
@@ -142,15 +145,21 @@ describe('sn-slider-bar (uni)', () => {
   it('maps size tiers onto the thickness variable', () => {
     stubUni();
     const small = mount(SnSliderBar, { props: { modelValue: 10, size: 'small' } });
-    expect((small.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-thickness:56rpx');
+    expect((small.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+      '--sn-bar-thickness:56rpx',
+    );
     const large = mount(SnSliderBar, { props: { modelValue: 10, size: 'large' } });
-    expect((large.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-thickness:104rpx');
+    expect((large.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+      '--sn-bar-thickness:104rpx',
+    );
   });
 
   it('accepts an explicit height', () => {
     stubUni();
     const wrapper = mount(SnSliderBar, { props: { modelValue: 10, barHeight: 240 } });
-    expect((wrapper.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-height:240rpx');
+    expect((wrapper.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+      '--sn-bar-height:240rpx',
+    );
   });
 
   it('renders the column variant with the read-out', () => {

@@ -12,29 +12,29 @@ Default + decimal + plate panels; the glyph key emits `collapse`.
 
 ## Props
 
-| Prop             | Type                             | Default     | Description                                                                    |
-| ---------------- | -------------------------------- | ----------- | ------------------------------------------------------------------------------ |
-| `modelValue`     | `string`                         | `''`        | Current value (`v-model`)                                                      |
-| `mode`           | `'default' \| 'custom' \| 'car'` | `'default'` | Layout preset                                                                  |
-| `maxlength`      | `number`                         | `Infinity`  | Maximum value length                                                           |
-| `showDeleteKey`  | `boolean`                        | `true`      | Render the delete key                                                          |
-| `randomKeyOrder` | `boolean`                        | `false`     | Shuffle the digit keys                                                         |
-| `extraKey`       | `string \| string[]`             | `undefined` | Extra digit-grid key(s); an unsupplied slot renders the collapse key (fires `collapse`) |
-| `carLang`        | `'zh' \| 'en'`                   | `'zh'`      | Car-plate language (`v-model:car-lang`)                                        |
-| `autoSwitchLang` | `boolean`                        | `false`     | Switch to letters after the province char                                      |
-| `title`          | `string`                         | `''`        | Optional header title; the header renders only with content                    |
-| `deleteText`     | `string`                         | `''`        | Delete key aria label                                                          |
-| `customClass` / `customStyle` | `string`            | `''`        | Root class / inline style                                                      |
+| Prop                          | Type                             | Default     | Description                                                                             |
+| ----------------------------- | -------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
+| `modelValue`                  | `string`                         | `''`        | Current value (`v-model`)                                                               |
+| `mode`                        | `'default' \| 'custom' \| 'car'` | `'default'` | Layout preset                                                                           |
+| `maxlength`                   | `number`                         | `Infinity`  | Maximum value length                                                                    |
+| `showDeleteKey`               | `boolean`                        | `true`      | Render the delete key                                                                   |
+| `randomKeyOrder`              | `boolean`                        | `false`     | Shuffle the digit keys                                                                  |
+| `extraKey`                    | `string \| string[]`             | `undefined` | Extra digit-grid key(s); an unsupplied slot renders the collapse key (fires `collapse`) |
+| `carLang`                     | `'zh' \| 'en'`                   | `'zh'`      | Car-plate language (`v-model:car-lang`)                                                 |
+| `autoSwitchLang`              | `boolean`                        | `false`     | Switch to letters after the province char                                               |
+| `title`                       | `string`                         | `''`        | Optional header title; the header renders only with content                             |
+| `deleteText`                  | `string`                         | `''`        | Delete key aria label                                                                   |
+| `customClass` / `customStyle` | `string`                         | `''`        | Root class / inline style                                                               |
 
 ## Events
 
-| Event               | Description                                       | Payload                |
-| ------------------- | ------------------------------------------------- | ---------------------- |
-| `update:modelValue` | Value changed                                     | `(value: string)`      |
-| `update:carLang`    | Car language changed                              | `(lang: 'zh' \| 'en')` |
-| `input`             | A character key was pressed                       | `(key: string)`        |
-| `delete`            | Delete key pressed (**hold to repeat**)           | —                      |
-| `collapse`          | The collapse key was tapped (the host owns dismissal) | —                  |
+| Event               | Description                                           | Payload                |
+| ------------------- | ----------------------------------------------------- | ---------------------- |
+| `update:modelValue` | Value changed                                         | `(value: string)`      |
+| `update:carLang`    | Car language changed                                  | `(lang: 'zh' \| 'en')` |
+| `input`             | A character key was pressed                           | `(key: string)`        |
+| `delete`            | Delete key pressed (**hold to repeat**)               | —                      |
+| `collapse`          | The collapse key was tapped (the host owns dismissal) | —                      |
 
 ## Differences from sn-keyboard
 
@@ -45,14 +45,14 @@ Default + decimal + plate panels; the glyph key emits `collapse`.
 
 ## Theme tokens
 
-| Token                                                       | Purpose                    |
-| ----------------------------------------------------------- | -------------------------- |
-| `--sn-mp-color-background-subtle`                           | Panel surface              |
-| `--sn-mp-color-background-elevated`                         | Key plates                 |
-| `--sn-mp-color-background-sunken`                           | Plate function key         |
-| `--sn-mp-color-action-primary`                              | Custom-mode collapse key   |
-| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary`   | Key + header text          |
-| `--sn-keyboard-key-height` / `-gap` / `-key-radius`         | Key geometry hooks (shared with sn-keyboard) |
+| Token                                                     | Purpose                                      |
+| --------------------------------------------------------- | -------------------------------------------- |
+| `--sn-mp-color-background-subtle`                         | Panel surface                                |
+| `--sn-mp-color-background-elevated`                       | Key plates                                   |
+| `--sn-mp-color-background-sunken`                         | Plate function key                           |
+| `--sn-mp-color-action-primary`                            | Custom-mode collapse key                     |
+| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` | Key + header text                            |
+| `--sn-keyboard-key-height` / `-gap` / `-key-radius`       | Key geometry hooks (shared with sn-keyboard) |
 
 ## Accessibility
 

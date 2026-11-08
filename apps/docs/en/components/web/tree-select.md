@@ -89,7 +89,7 @@ from `@snui/vue-web`. `icon` is not affected by `labelField` / `keyField` /
 | showLine                              | `boolean`                                  | `false`                  | Draw parent/child connector lines in panel     |
 | lineMode                              | `'branch' \| 'guide'`                      | `'branch'`               | L-shaped branches / indent guides              |
 | lineStyle                             | `'solid' \| 'dashed'`                      | `'solid'`                | Stroke style: solid / dashed                   |
-| lineCorner                            | `'square' \| 'rounded'`                    | `'square'`               | Elbow shape: right angle / rounded arc        |
+| lineCorner                            | `'square' \| 'rounded'`                    | `'square'`               | Elbow shape: right angle / rounded arc         |
 | lineColor                             | `string`                                   | `undefined`              | Line color; overrides the panel's color var    |
 
 Option data fields: `label` / `key` or `value` / `children` / `disabled` /

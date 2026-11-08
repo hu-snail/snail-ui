@@ -63,7 +63,9 @@ function onSelect(key: string | number, item: SnMenuOption): void {
         @select="onSelect"
       />
       <p class="hint">↑ / ↓ 移动、Enter 选中、Esc 关闭；命中行显示「父级 / 子级」路径。</p>
-      <p class="hint">最近动作：<code>{{ picked }}</code></p>
+      <p class="hint">
+        最近动作：<code>{{ picked }}</code>
+      </p>
       <ul class="log">
         <li v-for="line in log" :key="line">{{ line }}</li>
       </ul>

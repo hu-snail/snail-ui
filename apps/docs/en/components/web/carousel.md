@@ -125,32 +125,32 @@ News / announcements (`direction="vertical"` + `autoplay`):
 
 ### SnCarousel Props
 
-| Prop             | Type                                                 | Default                           | Description                                                             |
-| ---------------- | ---------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------- |
-| autoplay         | `boolean`                                            | `false`                           | Auto-advance; pauses on hover.                                          |
-| centered-slides  | `boolean`                                            | `false`                           | Centre the active slide.                                                |
-| current-index    | `number \| undefined`                                | `undefined`                       | Controlled index (`v-model:current-index`); `undefined` = uncontrolled. |
-| default-index    | `number`                                             | `0`                               | Initial index (uncontrolled).                                           |
-| direction        | `'horizontal' \| 'vertical'`                         | `'horizontal'`                    | Scroll axis.                                                            |
-| dot-placement    | `'top' \| 'bottom' \| 'left' \| 'right'`             | `'bottom'`                        | Dots position.                                                          |
-| dot-type         | `'dot' \| 'line'`                                    | `'dot'`                           | Dots shape.                                                             |
-| draggable        | `boolean`                                            | `false`                           | Mouse drag switches slides.                                             |
-| effect           | `'slide' \| 'fade' \| 'card' \| 'custom'`            | `'slide'`                         | Transition effect.                                                      |
-| interval         | `number`                                             | `5000`                            | Autoplay interval (ms).                                                 |
-| loop             | `boolean`                                            | `true`                            | Wrap at both ends (edge clones in slide + single-view mode).            |
-| mousewheel       | `boolean`                                            | `false`                           | Wheel switches slides.                                                  |
+| Prop             | Type                                                 | Default                           | Description                                                                        |
+| ---------------- | ---------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------- |
+| autoplay         | `boolean`                                            | `false`                           | Auto-advance; pauses on hover.                                                     |
+| centered-slides  | `boolean`                                            | `false`                           | Centre the active slide.                                                           |
+| current-index    | `number \| undefined`                                | `undefined`                       | Controlled index (`v-model:current-index`); `undefined` = uncontrolled.            |
+| default-index    | `number`                                             | `0`                               | Initial index (uncontrolled).                                                      |
+| direction        | `'horizontal' \| 'vertical'`                         | `'horizontal'`                    | Scroll axis.                                                                       |
+| dot-placement    | `'top' \| 'bottom' \| 'left' \| 'right'`             | `'bottom'`                        | Dots position.                                                                     |
+| dot-type         | `'dot' \| 'line'`                                    | `'dot'`                           | Dots shape.                                                                        |
+| draggable        | `boolean`                                            | `false`                           | Mouse drag switches slides.                                                        |
+| effect           | `'slide' \| 'fade' \| 'card' \| 'custom'`            | `'slide'`                         | Transition effect.                                                                 |
+| interval         | `number`                                             | `5000`                            | Autoplay interval (ms).                                                            |
+| loop             | `boolean`                                            | `true`                            | Wrap at both ends (edge clones in slide + single-view mode).                       |
+| mousewheel       | `boolean`                                            | `false`                           | Wheel switches slides.                                                             |
 | options          | `SnCarouselMediaItem[]`                              | `undefined`                       | Data-driven slides (media markup built in); the default slot is ignored while set. |
-| next-slide-style | `CSSProperties \| string`                            | `undefined`                       | Next-slide style override (card mode).                                  |
-| prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | Prev-slide style override (card mode).                                  |
-| slides-per-view  | `number \| 'auto'`                                   | `1`                               | Slides per view; `'auto'` measures the DOM.                             |
-| space-between    | `number`                                             | `0`                               | Gap (px) between slides.                                                |
-| show-arrow       | `boolean`                                            | `false`                           | Built-in arrows (inline SVG, zero deps).                                |
-| show-dots        | `boolean`                                            | `true`                            | Indicator dots.                                                         |
-| touchable        | `boolean`                                            | `true`                            | Touch drag switches slides.                                             |
-| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | Slide/fade/card transition timing.                                      |
-| transition-props | `TransitionProps`                                    | `undefined`                       | Passed to `<Transition>` for `effect="custom"`.                         |
-| trigger          | `'click' \| 'hover'`                                 | `'click'`                         | How dots activate.                                                      |
-| keyboard         | `boolean`                                            | `false`                           | Arrow keys switch while a dot is focused.                               |
+| next-slide-style | `CSSProperties \| string`                            | `undefined`                       | Next-slide style override (card mode).                                             |
+| prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | Prev-slide style override (card mode).                                             |
+| slides-per-view  | `number \| 'auto'`                                   | `1`                               | Slides per view; `'auto'` measures the DOM.                                        |
+| space-between    | `number`                                             | `0`                               | Gap (px) between slides.                                                           |
+| show-arrow       | `boolean`                                            | `false`                           | Built-in arrows (inline SVG, zero deps).                                           |
+| show-dots        | `boolean`                                            | `true`                            | Indicator dots.                                                                    |
+| touchable        | `boolean`                                            | `true`                            | Touch drag switches slides.                                                        |
+| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | Slide/fade/card transition timing.                                                 |
+| transition-props | `TransitionProps`                                    | `undefined`                       | Passed to `<Transition>` for `effect="custom"`.                                    |
+| trigger          | `'click' \| 'hover'`                                 | `'click'`                         | How dots activate.                                                                 |
+| keyboard         | `boolean`                                            | `false`                           | Arrow keys switch while a dot is focused.                                          |
 
 Event: `update:current-index (currentIndex: number, lastIndex: number)`.
 
@@ -168,14 +168,14 @@ title/description text.
 
 ### Slots
 
-| Component      | Slot      | Scope                                                                     | Description                                                       |
-| -------------- | --------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| SnCarousel     | `default` | —                                                                         | `<SnCarouselItem>` sequence (bare children are auto-wrapped).     |
+| Component      | Slot      | Scope                                                                     | Description                                                                     |
+| -------------- | --------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| SnCarousel     | `default` | —                                                                         | `<SnCarouselItem>` sequence (bare children are auto-wrapped).                   |
 | SnCarousel     | `item`    | `{ item, index, isActive, isPrev, isNext }`                               | Overrides the built-in media renderer in options mode (falls back to built-in). |
-| SnCarousel     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Custom arrows.                                                    |
-| SnCarousel     | `dots`    | `{ total, currentIndex, to }`                                             | Custom dots.                                                      |
-| SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }`                                     | Slide content.                                                    |
-| SnCarouselItem | `caption` | —                                                                         | Custom caption overlay content (replaces title/description text). |
+| SnCarousel     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Custom arrows.                                                                  |
+| SnCarousel     | `dots`    | `{ total, currentIndex, to }`                                             | Custom dots.                                                                    |
+| SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }`                                     | Slide content.                                                                  |
+| SnCarouselItem | `caption` | —                                                                         | Custom caption overlay content (replaces title/description text).               |
 
 ### Inst Methods
 

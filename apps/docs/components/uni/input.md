@@ -94,7 +94,7 @@
 | `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | 原生 input type。                                                                    |
 | `size`                    | `'small' \| 'medium' \| 'large'`                                                                                                                  | `'medium'`  | rpx 高度 / 字号。                                                                    |
 | `placeholder`             | `string`                                                                                                                                          | `''`        | 占位符。                                                                             |
-| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | 占位符内联样式（原生 `placeholder-style` 透传，App 端无伪元素）。                     |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | 占位符内联样式（原生 `placeholder-style` 透传，App 端无伪元素）。                    |
 | `placeholderClass`        | `string`                                                                                                                                          | `''`        | 占位符上的额外 class。                                                               |
 | `disabled`                | `boolean`                                                                                                                                         | `false`     | 禁用。                                                                               |
 | `readonly`                | `boolean`                                                                                                                                         | `false`     | 只读。                                                                               |
@@ -105,7 +105,7 @@
 | `showWordLimit`           | `boolean`                                                                                                                                         | `false`     | `showCount` 的别名。                                                                 |
 | `clearable`               | `boolean`                                                                                                                                         | `false`     | 圆形清除按钮（token 色圆底 + surface 色 ×）。                                        |
 | `clearTrigger`            | `'always' \| 'focus'`                                                                                                                             | `'always'`  | × 按钮显示时机。                                                                     |
-| `focusWhenClear`          | `boolean`                                                                                                                                         | `true`      | × 点击后自动回焦字段（H5 直接聚焦；MP 键盘由用户点击唤起）。                        |
+| `focusWhenClear`          | `boolean`                                                                                                                                         | `true`      | × 点击后自动回焦字段（H5 直接聚焦；MP 键盘由用户点击唤起）。                         |
 | `showPassword`            | `boolean`                                                                                                                                         | `false`     | `type='password'` 时显示眼睛切换。                                                   |
 | `prefixIcon`              | `string`                                                                                                                                          | `''`        | 前置图标名（SnIcon 解析）。                                                          |
 | `suffixIcon`              | `string`                                                                                                                                          | `''`        | 后置图标名。                                                                         |
@@ -119,7 +119,7 @@
 | `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | 别名：true/false ↔ 'all'/'none'。                                                    |
 | `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | 背景色调。                                                                           |
 | `customBg`                | `string`                                                                                                                                          | `''`        | 内联背景色覆盖。                                                                     |
-| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                                         | `'default'` | 圆角档位（映射 `--sn-mp-radius-*`，`default` = `--sn-mp-input-radius`）。             |
+| `radius`                  | `'default' \| 'sm' \| 'lg' \| 'xl' \| 'pill' \| 'square'`                                                                                         | `'default'` | 圆角档位（映射 `--sn-mp-radius-*`，`default` = `--sn-mp-input-radius`）。            |
 | `alignRight`              | `boolean`                                                                                                                                         | `false`     | 字段值右对齐。                                                                       |
 | `compact`                 | `boolean`                                                                                                                                         | `false`     | 紧凑布局。                                                                           |
 | `focus`                   | `boolean`                                                                                                                                         | `false`     | 挂载即 focus。                                                                       |
@@ -175,13 +175,13 @@
 
 域内图标（前置 / 后置 / 清空 × / 密码眼睛）共用一档尺寸与颜色，宿主可在任意祖先节点覆盖：
 
-| Token                    | Default                            | Description                            |
-| ------------------------ | ---------------------------------- | -------------------------------------- |
-| `--sn-input-icon-size`   | `var(--sn-mp-icon-size-medium)`    | 域内图标边长（32rpx）。                |
-| `--sn-input-icon-color`  | `var(--sn-mp-color-text-tertiary)` | 域内图标颜色。                         |
-| `--sn-mp-input-radius`   | `12rpx`                            | 默认圆角（`radius="default"`）。       |
-| `--sn-mp-input-padding-x`| `20rpx`                            | 水平内边距。                           |
-| `--sn-mp-input-bg`       | `--sn-mp-color-background-surface` | 背景色（`bg="surface"`）。             |
+| Token                     | Default                            | Description                      |
+| ------------------------- | ---------------------------------- | -------------------------------- |
+| `--sn-input-icon-size`    | `var(--sn-mp-icon-size-medium)`    | 域内图标边长（32rpx）。          |
+| `--sn-input-icon-color`   | `var(--sn-mp-color-text-tertiary)` | 域内图标颜色。                   |
+| `--sn-mp-input-radius`    | `12rpx`                            | 默认圆角（`radius="default"`）。 |
+| `--sn-mp-input-padding-x` | `20rpx`                            | 水平内边距。                     |
+| `--sn-mp-input-bg`        | `--sn-mp-color-background-surface` | 背景色（`bg="surface"`）。       |
 
 ## Source
 

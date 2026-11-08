@@ -92,7 +92,10 @@ describe('iconify fallback routing', () => {
 
   it('should route iconify:collection:name explicitly', () => {
     registerSnIconProvider('iconify', { resolve: () => 'data:image/svg+xml,ok' });
-    const result = resolveSnIconStringAsync('iconify:mdi:home', { color: 'currentColor', size: 24 });
+    const result = resolveSnIconStringAsync('iconify:mdi:home', {
+      color: 'currentColor',
+      size: 24,
+    });
     expect(result).toBe('data:image/svg+xml,ok');
   });
 
@@ -105,9 +108,7 @@ describe('iconify fallback routing', () => {
   it('should disable the iconify fallback via configSnIcons({ iconify: false })', () => {
     configSnIcons({ iconify: false });
     expect(getSnIconProvider('iconify')).toBeUndefined();
-    expect(
-      resolveSnIconStringAsync('mdi:home', { color: 'currentColor', size: 24 }),
-    ).toBeNull();
+    expect(resolveSnIconStringAsync('mdi:home', { color: 'currentColor', size: 24 })).toBeNull();
   });
 
   it('should re-enable the iconify provider via configSnIcons({ iconify: true })', () => {

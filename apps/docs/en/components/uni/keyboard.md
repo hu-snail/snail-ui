@@ -67,13 +67,13 @@ Default numeric keypad: bottom row [collapse] [0] [⌫], `maxlength` caps the va
 
 ## Events
 
-| Event               | Description                 | Payload                |
-| ------------------- | --------------------------- | ---------------------- |
-| `update:modelValue` | Value changed               | `(value: string)`      |
-| `update:visible`    | Visibility changed          | `(value: boolean)`     |
-| `update:carLang`    | Car language changed        | `(lang: 'zh' \| 'en')` |
-| `input`             | A character key was pressed | `(key: string)`        |
-| `delete`            | Delete key pressed          | —                      |
+| Event               | Description                                           | Payload                |
+| ------------------- | ----------------------------------------------------- | ---------------------- |
+| `update:modelValue` | Value changed                                         | `(value: string)`      |
+| `update:visible`    | Visibility changed                                    | `(value: boolean)`     |
+| `update:carLang`    | Car language changed                                  | `(lang: 'zh' \| 'en')` |
+| `input`             | A character key was pressed                           | `(key: string)`        |
+| `delete`            | Delete key pressed                                    | —                      |
 | `close`             | Keyboard closed (close button / scrim / collapse key) | —                      |
 
 ## Slots

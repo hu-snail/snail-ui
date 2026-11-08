@@ -40,7 +40,9 @@ function pick(direction: string, label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">四个弹出方向</text>
       <text class="sn-fab-demo__hint-text">
-        up（右下）· down（左上）· left（右中）· right（左中）。最近动作：{{ lastAction === '' ? '尚未选择' : lastAction }}
+        up（右下）· down（左上）· left（右中）· right（左中）。最近动作：{{
+          lastAction === '' ? '尚未选择' : lastAction
+        }}
       </text>
     </view>
 
@@ -52,7 +54,12 @@ function pick(direction: string, label: string): void {
       :gap="{ bottom: 16, right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="写文章" @tap="pick('up', '写文章')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="写文章"
+        @tap="pick('up', '写文章')"
+      >
         <SnIcon :icon="Edit" size="var(--sn-mp-icon-size-large)" />
       </view>
       <view class="sn-fab-demo__bubble" role="button" aria-label="拍照" @tap="pick('up', '拍照')">
@@ -100,10 +107,20 @@ function pick(direction: string, label: string): void {
       :gap="{ left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="分享" @tap="pick('right', '分享')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="分享"
+        @tap="pick('right', '分享')"
+      >
         <SnIcon :icon="Share2" size="var(--sn-mp-icon-size-large)" />
       </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="快捷启动" @tap="pick('right', '快捷启动')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="快捷启动"
+        @tap="pick('right', '快捷启动')"
+      >
         <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
       </view>
     </SnFab>

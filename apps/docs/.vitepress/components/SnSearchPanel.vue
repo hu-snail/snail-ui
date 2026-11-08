@@ -97,33 +97,30 @@ function prefetchEngine(): void {
   else window.setTimeout(warm, 1200);
 }
 
-watch(
-  [() => props.query, () => lang.value],
-  ([q]) => {
-    const trimmed = q.trim();
-    if (!trimmed) {
-      hits.value = [];
-      loading.value = false;
-      activeIndex.value = 0;
-      return;
-    }
-    // 首输时索引 chunk 可能仍在加载：先落「正在检索…」，否则会闪一下
-    // 「没有找到相关结果」。
-    if (!engineReady.value) {
-      loading.value = true;
-      hits.value = [];
-      activeIndex.value = 0;
-    }
-    void getEngine().then((engine) => {
-      engineReady.value = true;
-      loading.value = false;
-      // 引擎加载期间用户可能已继续输入——过期结果丢弃。
-      if (props.query.trim() !== trimmed) return;
-      hits.value = engine.search(trimmed, { lang: lang.value });
-      activeIndex.value = 0;
-    });
-  },
-);
+watch([() => props.query, () => lang.value], ([q]) => {
+  const trimmed = q.trim();
+  if (!trimmed) {
+    hits.value = [];
+    loading.value = false;
+    activeIndex.value = 0;
+    return;
+  }
+  // 首输时索引 chunk 可能仍在加载：先落「正在检索…」，否则会闪一下
+  // 「没有找到相关结果」。
+  if (!engineReady.value) {
+    loading.value = true;
+    hits.value = [];
+    activeIndex.value = 0;
+  }
+  void getEngine().then((engine) => {
+    engineReady.value = true;
+    loading.value = false;
+    // 引擎加载期间用户可能已继续输入——过期结果丢弃。
+    if (props.query.trim() !== trimmed) return;
+    hits.value = engine.search(trimmed, { lang: lang.value });
+    activeIndex.value = 0;
+  });
+});
 
 /* ── 端胶囊（Web / uni-app / 全部） ──────────────────────────────────── */
 type EndFilter = 'all' | 'web' | 'uni';
@@ -206,8 +203,7 @@ function globalIndex(localIndex: number): number {
 function scrollActiveIntoView(): void {
   void nextTick(() => {
     const el = listEl.value?.children[activeIndex.value - (page.value - 1) * PAGE_SIZE] as
-      | HTMLElement
-      | undefined;
+      HTMLElement | undefined;
     el?.scrollIntoView({ block: 'nearest' });
   });
 }
@@ -390,9 +386,8 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
     <!-- foot：左 = 按键说明，右 = 分页 -->
     <div v-if="filteredHits.length" class="sn-search-panel__foot">
       <p class="sn-search-panel__keys">
-        <kbd>↑</kbd><kbd>↓</kbd><span>选择</span>
-        <kbd>↵</kbd><span>打开</span>
-        <kbd>esc</kbd><span>关闭</span>
+        <kbd>↑</kbd><kbd>↓</kbd><span>选择</span> <kbd>↵</kbd><span>打开</span> <kbd>esc</kbd
+        ><span>关闭</span>
       </p>
       <SnPagination
         class="sn-search-panel__pager"

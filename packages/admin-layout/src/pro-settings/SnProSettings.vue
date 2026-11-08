@@ -115,7 +115,12 @@ function close(): void {
 </script>
 
 <template>
-  <SnDrawer :show="props.show === true" placement="right" :width="320" @update:show="(v) => emit('update:show', v)">
+  <SnDrawer
+    :show="props.show === true"
+    placement="right"
+    :width="320"
+    @update:show="(v) => emit('update:show', v)"
+  >
     <SnDrawerContent :title="t.title" closable @close="close">
       <div class="sn-pro-settings">
         <section class="sn-pro-settings__section">

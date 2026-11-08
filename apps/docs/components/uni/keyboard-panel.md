@@ -12,29 +12,29 @@
 
 ## Props
 
-| 属性             | 类型                             | 默认值     | 说明                                                       |
-| ---------------- | -------------------------------- | ---------- | ---------------------------------------------------------- |
-| `modelValue`     | `string`                         | `''`       | 当前输入值（`v-model`）                                    |
-| `mode`           | `'default' \| 'custom' \| 'car'` | `'default'` | 布局预设                                                  |
-| `maxlength`      | `number`                         | `Infinity` | 最大输入长度                                               |
-| `showDeleteKey`  | `boolean`                        | `true`     | 是否显示删除键                                             |
-| `randomKeyOrder` | `boolean`                        | `false`    | 随机排序数字键                                             |
-| `extraKey`       | `string \| string[]`             | `undefined` | 额外按键；未提供的槽位渲染收起图标键（点击发 `collapse`） |
-| `carLang`        | `'zh' \| 'en'`                   | `'zh'`     | 车牌语言（`v-model:car-lang`）                             |
-| `autoSwitchLang` | `boolean`                        | `false`    | 选省份后自动切字母                                         |
-| `title`          | `string`                         | `''`       | 可选标题；头部仅在有内容时渲染                             |
-| `deleteText`     | `string`                         | `''`       | 删除键 aria 文案                                           |
-| `customClass` / `customStyle` | `string`            | `''`       | 根节点自定义类名 / 样式                                    |
+| 属性                          | 类型                             | 默认值      | 说明                                                      |
+| ----------------------------- | -------------------------------- | ----------- | --------------------------------------------------------- |
+| `modelValue`                  | `string`                         | `''`        | 当前输入值（`v-model`）                                   |
+| `mode`                        | `'default' \| 'custom' \| 'car'` | `'default'` | 布局预设                                                  |
+| `maxlength`                   | `number`                         | `Infinity`  | 最大输入长度                                              |
+| `showDeleteKey`               | `boolean`                        | `true`      | 是否显示删除键                                            |
+| `randomKeyOrder`              | `boolean`                        | `false`     | 随机排序数字键                                            |
+| `extraKey`                    | `string \| string[]`             | `undefined` | 额外按键；未提供的槽位渲染收起图标键（点击发 `collapse`） |
+| `carLang`                     | `'zh' \| 'en'`                   | `'zh'`      | 车牌语言（`v-model:car-lang`）                            |
+| `autoSwitchLang`              | `boolean`                        | `false`     | 选省份后自动切字母                                        |
+| `title`                       | `string`                         | `''`        | 可选标题；头部仅在有内容时渲染                            |
+| `deleteText`                  | `string`                         | `''`        | 删除键 aria 文案                                          |
+| `customClass` / `customStyle` | `string`                         | `''`        | 根节点自定义类名 / 样式                                   |
 
 ## Events
 
-| 事件名              | 说明                              | 参数                   |
-| ------------------- | --------------------------------- | ---------------------- |
-| `update:modelValue` | 值变化时                          | `(value: string)`      |
-| `update:carLang`    | 车牌语言变化时                    | `(lang: 'zh' \| 'en')` |
-| `input`             | 点击字符键时                      | `(key: string)`        |
-| `delete`            | 点击删除键时（**长按连续退格**）  | —                      |
-| `collapse`          | 点击收起键（面板无关闭语义，由宿主处理） | —                |
+| 事件名              | 说明                                     | 参数                   |
+| ------------------- | ---------------------------------------- | ---------------------- |
+| `update:modelValue` | 值变化时                                 | `(value: string)`      |
+| `update:carLang`    | 车牌语言变化时                           | `(lang: 'zh' \| 'en')` |
+| `input`             | 点击字符键时                             | `(key: string)`        |
+| `delete`            | 点击删除键时（**长按连续退格**）         | —                      |
+| `collapse`          | 点击收起键（面板无关闭语义，由宿主处理） | —                      |
 
 ## 与 sn-keyboard 的差异
 
@@ -45,14 +45,14 @@
 
 ## 主题变量
 
-| 变量                                                        | 用途              |
-| ----------------------------------------------------------- | ----------------- |
-| `--sn-mp-color-background-subtle`                           | 面板底色          |
-| `--sn-mp-color-background-elevated`                         | 键帽              |
-| `--sn-mp-color-background-sunken`                           | 车牌功能键        |
-| `--sn-mp-color-action-primary`                              | custom 模式收起键 |
-| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary`   | 按键与头部文字    |
-| `--sn-keyboard-key-height` / `-gap` / `-key-radius`         | 键位几何 hook（与 sn-keyboard 共享） |
+| 变量                                                      | 用途                                 |
+| --------------------------------------------------------- | ------------------------------------ |
+| `--sn-mp-color-background-subtle`                         | 面板底色                             |
+| `--sn-mp-color-background-elevated`                       | 键帽                                 |
+| `--sn-mp-color-background-sunken`                         | 车牌功能键                           |
+| `--sn-mp-color-action-primary`                            | custom 模式收起键                    |
+| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` | 按键与头部文字                       |
+| `--sn-keyboard-key-height` / `-gap` / `-key-radius`       | 键位几何 hook（与 sn-keyboard 共享） |
 
 ## 无障碍
 

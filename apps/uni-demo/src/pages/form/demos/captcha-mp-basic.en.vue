@@ -43,8 +43,7 @@ function onFail(): void {
         </text>
       </view>
       <text class="sn-demo__panel-desc">
-        v-model drives the popup; align the puzzle piece with the gap to emit
-        success.
+        v-model drives the popup; align the puzzle piece with the gap to emit success.
       </text>
       <SnButton type="primary" block @tap="show = true">Jigsaw captcha</SnButton>
     </view>

@@ -59,14 +59,19 @@ describe('SnProLayout · side (default)', () => {
 
   it('should forward select from the sider menu', async () => {
     const wrapper = mountLayout();
-    const siderMenu = wrapper.findComponent({ name: 'SnProSider' }).findComponent({ name: 'SnMenu' });
+    const siderMenu = wrapper
+      .findComponent({ name: 'SnProSider' })
+      .findComponent({ name: 'SnMenu' });
     siderMenu.vm.$emit('select', 'home', menus[0]!);
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted('select')?.[0]?.[0]).toBe('home');
   });
 
   it('should render the actions and footer slots', () => {
-    const wrapper = mountLayout({}, { actions: '<button class="act">u</button>', footer: '<div class="ft">©</div>' });
+    const wrapper = mountLayout(
+      {},
+      { actions: '<button class="act">u</button>', footer: '<div class="ft">©</div>' },
+    );
     expect(wrapper.find('.sn-pro-header__actions .act').exists()).toBe(true);
     expect(wrapper.find('.sn-pro-layout__footer .ft').exists()).toBe(true);
   });
@@ -105,7 +110,9 @@ describe('SnProLayout · mix', () => {
 
   it('should keep the full tree in the horizontal header menu', () => {
     const wrapper = mountLayout({ layout: 'mix', activeKey: 'user' });
-    const headerMenu = wrapper.findComponent({ name: 'SnProHeader' }).findComponent({ name: 'SnMenu' });
+    const headerMenu = wrapper
+      .findComponent({ name: 'SnProHeader' })
+      .findComponent({ name: 'SnMenu' });
     expect(headerMenu.props('options')).toHaveLength(2);
   });
 });
@@ -182,7 +189,12 @@ describe('SnProLayout · settings + tabs', () => {
 
   it('should open the settings drawer from the strip gear in dual (no header)', async () => {
     // activeKey under a top group → the secondary column exists → strip shows
-    const wrapper = mountLayout({ layout: 'dual', activeKey: 'user', showSettings: true, settingsLabel: '偏好' });
+    const wrapper = mountLayout({
+      layout: 'dual',
+      activeKey: 'user',
+      showSettings: true,
+      settingsLabel: '偏好',
+    });
     expect(wrapper.find('.sn-pro-header__gear').exists()).toBe(false);
     await wrapper.find('.sn-pro-layout__strip-gear').trigger('click');
     expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(true);
@@ -190,7 +202,12 @@ describe('SnProLayout · settings + tabs', () => {
 
   it('should keep the strip gear reachable in dual even without toggle or breadcrumb', async () => {
     // no collapsible column + no breadcrumb → the strip would hide; showSettings keeps it
-    const wrapper = mountLayout({ layout: 'dual', showCollapse: false, breadcrumb: [], showSettings: true });
+    const wrapper = mountLayout({
+      layout: 'dual',
+      showCollapse: false,
+      breadcrumb: [],
+      showSettings: true,
+    });
     await wrapper.find('.sn-pro-layout__strip-gear').trigger('click');
     expect(wrapper.findComponent({ name: 'SnProSettings' }).props('show')).toBe(true);
   });

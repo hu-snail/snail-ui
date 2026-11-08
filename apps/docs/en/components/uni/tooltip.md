@@ -79,16 +79,16 @@ An array `content` renders one line per entry (objects contribute whichever of `
 
 ## Tokens
 
-| Variable                                                        | Purpose                                                  |
-| --------------------------------------------------------------- | -------------------------------------------------------- |
+| Variable                                                        | Purpose                                                                                                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--sn-tooltip-bg`                                               | Bubble fill (defaults to `--sn-mp-color-background-elevated` — white in the light theme; the arrow follows it; override via `custom-style`) |
-| `--sn-tooltip-color`                                            | Bubble text color (defaults to `--sn-mp-color-text-primary`)                                                                             |
-| `--sn-mp-color-text-secondary`                                  | Close glyph color                                                                                                                        |
-| `--sn-mp-shadow-md`                                             | Bubble shadow                                            |
-| `--sn-mp-radius-md`                                             | Bubble corners                                           |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Bubble padding and gaps                                  |
-| `--sn-mp-font-size-sm`                                          | Bubble font size                                         |
-| `--sn-mp-font-line-height-normal`                               | Bubble line height                                       |
+| `--sn-tooltip-color`                                            | Bubble text color (defaults to `--sn-mp-color-text-primary`)                                                                                |
+| `--sn-mp-color-text-secondary`                                  | Close glyph color                                                                                                                           |
+| `--sn-mp-shadow-md`                                             | Bubble shadow                                                                                                                               |
+| `--sn-mp-radius-md`                                             | Bubble corners                                                                                                                              |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Bubble padding and gaps                                                                                                                     |
+| `--sn-mp-font-size-sm`                                          | Bubble font size                                                                                                                            |
+| `--sn-mp-font-line-height-normal`                               | Bubble line height                                                                                                                          |
 
 ## Accessibility
 

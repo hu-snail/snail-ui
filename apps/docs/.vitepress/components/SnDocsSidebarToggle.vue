@@ -82,26 +82,26 @@ const icon = computed(() =>
   height: 100%;
 }
 
- /* Right-edge riding tab: a half-pill whose flat edge sits on the panel's
+/* Right-edge riding tab: a half-pill whose flat edge sits on the panel's
   * right border (expanded), rounded into the article gutter. Collapsed:
   * the panel has slid away, so the left edge is restored and both corners
   * round off — the tab reads as a free-standing grabber. */
- .sn-docs-sidebar-toggle--handle {
-   width: 20px;
-   min-width: 20px;
-   height: 44px;
-   padding: 0;
-   border: 1px solid var(--vp-c-divider);
-   border-left: none;
-   border-radius: 0 10px 10px 0;
-   background: var(--vp-c-bg);
-   color: var(--sn-web-color-text-secondary);
+.sn-docs-sidebar-toggle--handle {
+  width: 20px;
+  min-width: 20px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--vp-c-bg);
+  color: var(--sn-web-color-text-secondary);
   /* 图标方向切换 / 折叠态补边都不该有跳变。 */
   transition:
     border-radius 0.24s ease,
     border-color 0.16s ease,
     color 0.16s ease;
- }
+}
 
 /* 折叠态：面板已滑出，手柄贴回左缘后右侧有了面板边可贴 —— 补回左侧
  * 1px 边并收圆两侧，读作一枚独立的抓手。 */

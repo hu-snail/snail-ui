@@ -26,7 +26,9 @@ const tapped = ref(0);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="show = true">Tap image to close (close-on-click defaults to true)</SnButton>
+    <SnButton type="primary" block @tap="show = true"
+      >Tap image to close (close-on-click defaults to true)</SnButton
+    >
     <text class="sn-demo__meta">close event fired {{ tapped }} time(s)</text>
 
     <SnCurtain

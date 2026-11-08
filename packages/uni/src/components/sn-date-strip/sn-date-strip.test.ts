@@ -115,7 +115,9 @@ describe('sn-date-strip', () => {
           bottomInfo: item.date === JUNE_26 ? '¥60' : item.bottomInfo,
         }),
       });
-      const infos = cells(w)[3]?.findAll('.sn-date-strip__info').map((t) => t.text());
+      const infos = cells(w)[3]
+        ?.findAll('.sn-date-strip__info')
+        .map((t) => t.text());
       expect(infos).toContain('¥60');
     });
 

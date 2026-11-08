@@ -18,7 +18,9 @@ const inline = ref('');
     <SnInput v-model="phone" inputmode="tel" placeholder="手机号（tel 键盘）" />
     <SnInput v-model="search" inputmode="search" placeholder="搜索（search 键盘）" />
 
-    <text class="sn-input-demo__caption">compact + border="bottom"（嵌进 Cell / FormItem 的行内形态）</text>
+    <text class="sn-input-demo__caption"
+      >compact + border="bottom"（嵌进 Cell / FormItem 的行内形态）</text
+    >
     <SnInput v-model="inline" compact border="bottom" placeholder="行内搜索" />
   </view>
 </template>

@@ -57,7 +57,13 @@ const activeTitle = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnFitSwiper v-model:current="current" :list="pages" :height="440" radius="16rpx" :indicator="{ type: 'slider' }">
+    <SnFitSwiper
+      v-model:current="current"
+      :list="pages"
+      :height="440"
+      radius="16rpx"
+      :indicator="{ type: 'slider' }"
+    >
       <template #default="{ page }">
         <view class="kong">
           <view v-for="item in itemsOf(page)" :key="item.label" class="kong__cell">
@@ -69,7 +75,10 @@ const activeTitle = computed(() => {
         </view>
       </template>
     </SnFitSwiper>
-    <text class="sn-demo__caption">Page {{ current + 1 }} ({{ activeTitle }}) — height adapts on swipe, slider-rail indicator</text>
+    <text class="sn-demo__caption"
+      >Page {{ current + 1 }} ({{ activeTitle }}) — height adapts on swipe, slider-rail
+      indicator</text
+    >
   </view>
 </template>
 
@@ -113,14 +122,30 @@ const activeTitle = computed(() => {
   border-radius: 28rpx;
 }
 
-.kong__tile--1 { background: radial-gradient(120% 120% at 25% 20%, #6ea8ff 0%, #2b6bf3 60%, #1d4fd7 100%); }
-.kong__tile--2 { background: radial-gradient(120% 120% at 25% 20%, #ffb26b 0%, #f5722e 60%, #e05a12 100%); }
-.kong__tile--3 { background: radial-gradient(120% 120% at 25% 20%, #c084fc 0%, #8b5cf6 60%, #7c3aed 100%); }
-.kong__tile--4 { background: radial-gradient(120% 120% at 25% 20%, #5eead4 0%, #14b8a6 60%, #0d9488 100%); }
-.kong__tile--5 { background: radial-gradient(120% 120% at 25% 20%, #f9a8d4 0%, #ec4899 60%, #db2777 100%); }
-.kong__tile--6 { background: radial-gradient(120% 120% at 25% 20%, #fcd34d 0%, #f59e0b 60%, #d97706 100%); }
-.kong__tile--7 { background: radial-gradient(120% 120% at 25% 20%, #93c5fd 0%, #3b82f6 60%, #2563eb 100%); }
-.kong__tile--8 { background: radial-gradient(120% 120% at 25% 20%, #86efac 0%, #22c55e 60%, #16a34a 100%); }
+.kong__tile--1 {
+  background: radial-gradient(120% 120% at 25% 20%, #6ea8ff 0%, #2b6bf3 60%, #1d4fd7 100%);
+}
+.kong__tile--2 {
+  background: radial-gradient(120% 120% at 25% 20%, #ffb26b 0%, #f5722e 60%, #e05a12 100%);
+}
+.kong__tile--3 {
+  background: radial-gradient(120% 120% at 25% 20%, #c084fc 0%, #8b5cf6 60%, #7c3aed 100%);
+}
+.kong__tile--4 {
+  background: radial-gradient(120% 120% at 25% 20%, #5eead4 0%, #14b8a6 60%, #0d9488 100%);
+}
+.kong__tile--5 {
+  background: radial-gradient(120% 120% at 25% 20%, #f9a8d4 0%, #ec4899 60%, #db2777 100%);
+}
+.kong__tile--6 {
+  background: radial-gradient(120% 120% at 25% 20%, #fcd34d 0%, #f59e0b 60%, #d97706 100%);
+}
+.kong__tile--7 {
+  background: radial-gradient(120% 120% at 25% 20%, #93c5fd 0%, #3b82f6 60%, #2563eb 100%);
+}
+.kong__tile--8 {
+  background: radial-gradient(120% 120% at 25% 20%, #86efac 0%, #22c55e 60%, #16a34a 100%);
+}
 
 .kong__label {
   color: var(--sn-mp-color-text-secondary);

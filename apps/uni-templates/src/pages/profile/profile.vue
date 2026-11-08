@@ -11,8 +11,18 @@ import TplTabbar from '../../common/tpl-tabbar.vue';
 const { isDark } = useTplTheme();
 
 const ENTRIES = [
-  { title: '地址管理', desc: '地址卡 / 默认标签 / 新增', icon: 'map-pin', route: '/subpages/address' },
-  { title: '数据统计', desc: '指标卡 / 柱状图 / 来源分布', icon: 'chart-column', route: '/subpages/stats' },
+  {
+    title: '地址管理',
+    desc: '地址卡 / 默认标签 / 新增',
+    icon: 'map-pin',
+    route: '/subpages/address',
+  },
+  {
+    title: '数据统计',
+    desc: '指标卡 / 柱状图 / 来源分布',
+    icon: 'chart-column',
+    route: '/subpages/stats',
+  },
   { title: '通讯录', desc: '搜索 / 字母索引分组', icon: 'user', route: '/subpages/contacts' },
 ] as const;
 
@@ -26,7 +36,12 @@ function about(): void {
 
 <template>
   <view class="tpl-page tabpage" :class="{ 'sn-theme-dark': isDark }">
-    <SnNavbar title="我的" fixed safe-area-inset-top :custom-style="'background-color: var(--tplh-nav);'" />
+    <SnNavbar
+      title="我的"
+      fixed
+      safe-area-inset-top
+      :custom-style="'background-color: var(--tplh-nav);'"
+    />
     <view class="tabpage__space" aria-hidden="true" />
     <view class="tabpage__body">
       <view class="me__card">
@@ -48,7 +63,14 @@ function about(): void {
           clickable
           @click="open(e.route)"
         />
-        <SnCell title="关于模板库" label="组件与模板的适配说明" prefix-icon="sparkles" is-link clickable @click="about" />
+        <SnCell
+          title="关于模板库"
+          label="组件与模板的适配说明"
+          prefix-icon="sparkles"
+          is-link
+          clickable
+          @click="about"
+        />
       </view>
     </view>
     <TplTabbar :active="3" />

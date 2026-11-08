@@ -27,13 +27,25 @@ function goHome(): void {
 
 <template>
   <view class="tpl-page tabpage" :class="{ 'sn-theme-dark': isDark }">
-    <SnNavbar title="收藏" fixed safe-area-inset-top :custom-style="'background-color: var(--tplh-nav);'" />
+    <SnNavbar
+      title="收藏"
+      fixed
+      safe-area-inset-top
+      :custom-style="'background-color: var(--tplh-nav);'"
+    />
     <view class="tabpage__space" aria-hidden="true" />
     <view class="tabpage__body">
-      <SnEmpty v-if="likedList.length === 0" icon="heart" tip="还没有收藏模板，去首页点亮喜欢的设计" />
+      <SnEmpty
+        v-if="likedList.length === 0"
+        icon="heart"
+        tip="还没有收藏模板，去首页点亮喜欢的设计"
+      />
       <view v-else class="fav">
         <view v-for="t in likedList" :key="t.id" class="fav__row" @tap="open(t.id)">
-          <view class="fav__cover" :style="{ background: `linear-gradient(150deg, ${t.from}, ${t.to})` }">
+          <view
+            class="fav__cover"
+            :style="{ background: `linear-gradient(150deg, ${t.from}, ${t.to})` }"
+          >
             <SnIcon :icon="t.icon" :size="30" color="rgba(255,255,255,0.95)" />
           </view>
           <view class="fav__meta">

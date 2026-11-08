@@ -189,7 +189,12 @@ function onUserSelect(key: SnDropdownKey, item: SnDropdownOption): void {
       }"
     >
       <div class="sn-pro-classic__brand">
-        <SnProLogo :logo="props.logo" :title="props.title" :mark="props.mark" :collapsed="isCollapsed">
+        <SnProLogo
+          :logo="props.logo"
+          :title="props.title"
+          :mark="props.mark"
+          :collapsed="isCollapsed"
+        >
           <slot name="logo" />
         </SnProLogo>
       </div>

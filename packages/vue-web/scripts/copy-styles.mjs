@@ -12,4 +12,6 @@ const parts = [];
 if (hasTokens) parts.push('tokens');
 if (hadComponents) parts.push('components');
 if (hasKatex) parts.push('katex');
-console.log(`✓ copy-styles: ${path} (${parts.length > 0 ? parts.join(' + ') : 'empty placeholder'})`);
+console.log(
+  `✓ copy-styles: ${path} (${parts.length > 0 ? parts.join(' + ') : 'empty placeholder'})`,
+);

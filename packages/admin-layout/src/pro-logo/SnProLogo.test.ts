@@ -10,8 +10,12 @@ describe('SnProLogo', () => {
   });
 
   it('should render the image mark when logo url is given', () => {
-    const wrapper = mount(SnProLogo, { props: { logo: 'https://example.com/x.png', title: 'Admin' } });
-    expect(wrapper.find('img.sn-pro-logo__img').attributes('src')).toBe('https://example.com/x.png');
+    const wrapper = mount(SnProLogo, {
+      props: { logo: 'https://example.com/x.png', title: 'Admin' },
+    });
+    expect(wrapper.find('img.sn-pro-logo__img').attributes('src')).toBe(
+      'https://example.com/x.png',
+    );
     expect(wrapper.find('.sn-pro-logo__mark').exists()).toBe(false);
   });
 

@@ -29,7 +29,9 @@ function record(action: string): void {
       />
       <SnCell title="Shipping addresses" value="3" is-link @click="record('Open addresses')" />
       <SnCell title="Feedback">
-        <SnButton size="small" type="primary" @click="record('Feedback submitted')">Give feedback</SnButton>
+        <SnButton size="small" type="primary" @click="record('Feedback submitted')"
+          >Give feedback</SnButton
+        >
       </SnCell>
       <SnCell
         title="Account & security"

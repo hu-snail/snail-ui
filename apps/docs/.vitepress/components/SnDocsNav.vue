@@ -59,7 +59,6 @@ const route = useRoute();
 const router = useRouter();
 const { isDark } = useData();
 
-
 /**
  * 每个导航入口一个 lucide 图标（对照参考站点的导航）。
  *
@@ -155,33 +154,33 @@ function onKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') ecoOpen.value = false;
 }
 
- /** 导航悬浮：body.sn-nav-floating 驱动 §18 的胶囊岛 + 悬浮侧栏面板。
-  *  文档页默认即悬浮（不再做滚动判断）；首页保持原行为——滚动超过
-  *  8px 后才切到悬浮岛。 */
- const isHome = computed(
-   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
- );
- const navFloating = ref(false);
- function syncFloating(): void {
-   navFloating.value = isHome.value ? window.scrollY > 8 : true;
- }
- onMounted(() => {
-   syncFloating();
-   window.addEventListener('scroll', syncFloating, { passive: true });
-   document.addEventListener('click', onDocClick);
-   document.addEventListener('keydown', onKeydown);
- });
- onBeforeUnmount(() => {
-   window.removeEventListener('scroll', syncFloating);
-   document.removeEventListener('click', onDocClick);
-   document.removeEventListener('keydown', onKeydown);
-   document.body.classList.remove('sn-nav-floating');
- });
- watch(navFloating, (floating) => {
-   document.body.classList.toggle('sn-nav-floating', floating);
- });
- /** 路由在首页 ↔ 文档页之间切换时重算——scroll 监听不会因路由变化触发。 */
- watch(isHome, () => syncFloating());
+/** 导航悬浮：body.sn-nav-floating 驱动 §18 的胶囊岛 + 悬浮侧栏面板。
+ *  文档页默认即悬浮（不再做滚动判断）；首页保持原行为——滚动超过
+ *  8px 后才切到悬浮岛。 */
+const isHome = computed(
+  () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
+);
+const navFloating = ref(false);
+function syncFloating(): void {
+  navFloating.value = isHome.value ? window.scrollY > 8 : true;
+}
+onMounted(() => {
+  syncFloating();
+  window.addEventListener('scroll', syncFloating, { passive: true });
+  document.addEventListener('click', onDocClick);
+  document.addEventListener('keydown', onKeydown);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', syncFloating);
+  document.removeEventListener('click', onDocClick);
+  document.removeEventListener('keydown', onKeydown);
+  document.body.classList.remove('sn-nav-floating');
+});
+watch(navFloating, (floating) => {
+  document.body.classList.toggle('sn-nav-floating', floating);
+});
+/** 路由在首页 ↔ 文档页之间切换时重算——scroll 监听不会因路由变化触发。 */
+watch(isHome, () => syncFloating());
 /** Toggle dark mode by inverting the reactive `isDark` ref from vitepress.
  * Vitepress handles persistence (localStorage) + `<html class="dark">` for us,
  * so we just flip the boolean. */
@@ -240,13 +239,7 @@ function onLocaleClick(event: MouseEvent): void {
   <SnConfigProvider skin="">
     <div class="sn-docs-nav" :class="{ 'sn-docs-nav--inverted': inverted }">
       <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
-        <img
-          class="sn-docs-nav__brand-icon"
-          src="/logo.png"
-          width="247"
-          height="120"
-          alt=""
-        />
+        <img class="sn-docs-nav__brand-icon" src="/logo.png" width="247" height="120" alt="" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
       <div class="sn-docs-nav__search-slot">

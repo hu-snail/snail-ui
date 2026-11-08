@@ -213,7 +213,7 @@ const sparkleDots = computed(() =>
   Array.from({ length: sparkleCount.value }, (_, i) => {
     const seed = (i + 1) * 2654435761;
     const x = ((seed >>> 8) % 1000) / 10;
-    const y = 18 + (((seed >>> 3) % 700) / 10);
+    const y = 18 + ((seed >>> 3) % 700) / 10;
     const size = 1 + (((seed >>> 5) % 3) as number);
     const delay = ((seed >>> 7) % 40) / 10;
     return { x, y, size: size * 1.5, delay };
@@ -222,9 +222,7 @@ const sparkleDots = computed(() =>
 
 /** Aurora gradient default — violet → periwinkle, left to right. */
 const auroraGradient = computed(
-  () =>
-    props.gradient ??
-    'linear-gradient(90deg, #5b7cfa 0%, #7b6cf6 45%, #8b5cf6 100%)',
+  () => props.gradient ?? 'linear-gradient(90deg, #5b7cfa 0%, #7b6cf6 45%, #8b5cf6 100%)',
 );
 const captionVisible = computed(() => props.showValue || props.tooltipOnly);
 /** Inline label / suffix text painted inside the bar track. */
@@ -449,9 +447,7 @@ const barGeometry = computed(() => {
 const fillStyle = computed<Record<string, string>>(() => {
   const [lowPct, highPct] = fillRange.value;
   const startRatio = props.range ? Math.min(lowPct, highPct) / 100 : 0;
-  const sizeRatio = props.range
-    ? Math.abs(highPct - lowPct) / 100
-    : Math.abs(highPct) / 100;
+  const sizeRatio = props.range ? Math.abs(highPct - lowPct) / 100 : Math.abs(highPct) / 100;
   const style: Record<string, string> = {
     '--sn-bar-band-start': String(startRatio),
     '--sn-bar-band-size': sizeRatio <= 0 ? '0' : String(sizeRatio),
@@ -634,7 +630,9 @@ function onHandleKeydown(e: KeyboardEvent, index: number): void {
 
 // ---- tooltip / caption ---------------------------------------------------
 
-const tooltipVisible = computed(() => props.tooltip && isInteractive.value && activeIndex() !== null);
+const tooltipVisible = computed(
+  () => props.tooltip && isInteractive.value && activeIndex() !== null,
+);
 
 const tooltipText = computed<string>(() => {
   const raw = pair.value[props.range ? (activeIndex() ?? 1) : 1] ?? props.min;
@@ -706,7 +704,8 @@ const wrapperStyle = computed<string>(() => {
   if (typeof props.customStyle === 'string') {
     if (props.customStyle) parts.push(props.customStyle);
   } else {
-    for (const [key, value] of Object.entries(props.customStyle ?? {})) parts.push(`${key}:${value}`);
+    for (const [key, value] of Object.entries(props.customStyle ?? {}))
+      parts.push(`${key}:${value}`);
   }
   return parts.join(';');
 });
@@ -752,13 +751,20 @@ const ariaText = (index: number): string => {
           <SnIcon v-if="leadingIcon" :name="leadingIcon" :size="16" />
         </slot>
       </div>
-      <div ref="trackRef" class="sn-slider-bar__track" :style="barStyle" @mousedown="onTrackMousedown">
+      <div
+        ref="trackRef"
+        class="sn-slider-bar__track"
+        :style="barStyle"
+        @mousedown="onTrackMousedown"
+      >
         <!-- Level ticks (showLevels): one per configured level. -->
         <i
           v-for="mark in levelMarks"
           :key="'lvl-' + mark.value"
           class="sn-slider-bar__level-mark"
-          :class="{ 'sn-slider-bar__level-mark--on': activeLevel && activeLevel.value === mark.value }"
+          :class="{
+            'sn-slider-bar__level-mark--on': activeLevel && activeLevel.value === mark.value,
+          }"
           :style="{ left: mark.pct + '%' }"
           aria-hidden="true"
         />
@@ -781,7 +787,11 @@ const ariaText = (index: number): string => {
             }"
           />
         </div>
-        <span v-if="!isColumn && innerTrailingIcon" class="sn-slider-bar__glyph sn-slider-bar__glyph--tail" aria-hidden="true">
+        <span
+          v-if="!isColumn && innerTrailingIcon"
+          class="sn-slider-bar__glyph sn-slider-bar__glyph--tail"
+          aria-hidden="true"
+        >
           <SnIcon :name="innerTrailingIcon" :size="15" />
         </span>
         <!-- Caption text painted INSIDE the bar: leading label + trailing
@@ -842,7 +852,11 @@ const ariaText = (index: number): string => {
           <slot name="value" v-bind="valueSlotProps">{{ captionText }}</slot>
         </span>
       </div>
-      <div v-if="!isColumn && $slots.end" class="sn-slider-bar__edge sn-slider-bar__edge--end" aria-hidden="true">
+      <div
+        v-if="!isColumn && $slots.end"
+        class="sn-slider-bar__edge sn-slider-bar__edge--end"
+        aria-hidden="true"
+      >
         <slot name="end" />
       </div>
       <span v-if="captionVisible && !isColumn" class="sn-slider-bar__value" aria-hidden="true">
@@ -1025,8 +1039,8 @@ const ariaText = (index: number): string => {
   position: absolute;
   top: 50%;
   left: calc(
-    var(--sn-bar-thumb-pad, 1.5px) +
-      (100% - var(--sn-bar-thumb-pad, 1.5px) * 2) * var(--sn-bar-position, 0)
+    var(--sn-bar-thumb-pad, 1.5px) + (100% - var(--sn-bar-thumb-pad, 1.5px) * 2) *
+      var(--sn-bar-position, 0)
   );
   width: var(--sn-slider-bar-handle-width, 3px);
   /* Clamped so a thin bar still shows a grabbable thumb. */
@@ -1054,7 +1068,11 @@ const ariaText = (index: number): string => {
 .sn-slider-bar__handle:focus-visible {
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.3),
-    0 0 0 3px var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent));
+    0 0 0 3px
+      var(
+        --sn-web-focus-ring,
+        color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent)
+      );
 }
 
 .sn-slider-bar--disabled .sn-slider-bar__handle,
@@ -1165,7 +1183,7 @@ const ariaText = (index: number): string => {
   height: calc(
     var(--sn-bar-thumb-pad, 0px) * min(1, var(--sn-bar-band-size, 0)) +
       (100% - var(--sn-slider-bar-column-caption-row, 34px) - var(--sn-bar-thumb-pad, 0px) * 2) *
-        var(--sn-bar-band-size, 0)
+      var(--sn-bar-band-size, 0)
   );
   bottom: calc(
     (100% - var(--sn-slider-bar-column-caption-row, 34px) - var(--sn-bar-thumb-pad, 0px) * 2) *
@@ -1181,7 +1199,7 @@ const ariaText = (index: number): string => {
   bottom: calc(
     var(--sn-bar-thumb-pad, 1.5px) +
       (100% - var(--sn-slider-bar-column-caption-row, 34px) - var(--sn-bar-thumb-pad, 1.5px) * 2) *
-        var(--sn-bar-position, 0)
+      var(--sn-bar-position, 0)
   );
   left: 50%;
   width: calc(100% - 10px);

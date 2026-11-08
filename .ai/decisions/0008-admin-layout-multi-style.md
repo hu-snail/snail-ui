@@ -12,14 +12,15 @@ Accepted（Human 直接指令：新增 `classic` 经典企业后台布局风格�
 ## Context
 
 ADR-0006 建立了 `@snui/admin-layout`：**单入口** barrel（`src/index.ts` → `dist/index.js`）
-+ **单一样式表**（`assetFileNames` 把 SFC 样式固定输出成 `dist/styles/index.css`），
-`SnProLayout` 提供 side / top / mix / dual 四形态壳。
+
+- **单一样式表**（`assetFileNames` 把 SFC 样式固定输出成 `dist/styles/index.css`），
+  `SnProLayout` 提供 side / top / mix / dual 四形态壳。
 
 新需求：
 
 1. 新增第二种布局风格 `classic`（经典企业后台）：左侧栏 = 顶部品牌 + 「菜单分类 + 子菜单」
-   + 底部用户卡片；右侧 = 浅色通屏内容区，顶部通栏放面包屑 + 模块大标题，右上角
-   搜索 / 消息通知 / 宿主动作插槽；侧栏可折叠；
+   - 底部用户卡片；右侧 = 浅色通屏内容区，顶部通栏放面包屑 + 模块大标题，右上角
+     搜索 / 消息通知 / 宿主动作插槽；侧栏可折叠；
 2. 布局风格**不止一种**，且要求**每种风格是独立入口 + 独立样式文件，按需加载**——
    只引一种风格时，产物里不应带上另一种风格的壳与样式；
 3. 多种风格**复用共享件**（logo / 菜单检索 / 消息通知 / 用户卡片），差异只在「壳」。
@@ -44,7 +45,7 @@ ADR-0006 建立了 `@snui/admin-layout`：**单入口** barrel（`src/index.ts` 
 采用方案 3：
 
 - 新增 `classic` 风格：`src/pro-classic/SnProLayoutClassic.vue` + `sn-pro-classic-types.ts`
-  + `index.ts`（子入口）+ `ai-description.md`；
+  - `index.ts`（子入口）+ `ai-description.md`；
 - 新增共享件：`src/pro-search/SnProSearch.vue`、`src/pro-notice/SnProNotice.vue`、
   `src/pro-user/SnProUser.vue`，以及纯函数 `src/menu/sn-menu-search.ts`
   （`searchMenuOptions`）；

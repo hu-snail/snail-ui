@@ -38,7 +38,9 @@ const photos: Photo[] = [
         <text class="lazy-card__title">{{ photo.title }}</text>
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">容器 lazy-load 一处开启 → 内部 sn-img 继承；图片显式传 lazy-load 时以图片为准</text>
+    <text class="sn-demo__caption"
+      >容器 lazy-load 一处开启 → 内部 sn-img 继承；图片显式传 lazy-load 时以图片为准</text
+    >
   </view>
 </template>
 

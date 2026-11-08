@@ -107,7 +107,9 @@ describe('sn-lunar', () => {
     });
 
     it('should keep the leap flag harmless when the year has no leap month', () => {
-      expect(lunarToSolar({ year: 2024, month: 8, day: 15, isLeap: true })).toBe(local(2024, 9, 17));
+      expect(lunarToSolar({ year: 2024, month: 8, day: 15, isLeap: true })).toBe(
+        local(2024, 9, 17),
+      );
     });
 
     it('should clamp a day beyond the month length to the month end', () => {

@@ -52,7 +52,9 @@ menus: { systemProfile: '个人中心' }  // en: 'Profile'`,
     : [
         {
           heading: 'Dynamic route flow',
-          paragraphs: ['Routing has two layers: a static skeleton plus routes registered from the backend menu after login.'],
+          paragraphs: [
+            'Routing has two layers: a static skeleton plus routes registered from the backend menu after login.',
+          ],
           list: [
             'Static: /login, /register, the layout route / (children start empty), and a 404 catch-all',
             'On the first navigation to a protected page the guard fetches /api/menu',

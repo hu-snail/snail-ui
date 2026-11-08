@@ -32,7 +32,8 @@ const thick = ref(70);
       tooltip-text-color="#fff"
     />
     <span class="demo-log">
-      gradient = {{ gradient }} · ghost = {{ ghost }} · diffuse = {{ diffuse }} · thick = {{ thick }}
+      gradient = {{ gradient }} · ghost = {{ ghost }} · diffuse = {{ diffuse }} · thick =
+      {{ thick }}
     </span>
   </div>
 </template>

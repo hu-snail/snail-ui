@@ -39,7 +39,9 @@ const photos: Photo[] = [
         />
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">min-column-width=160 → 列数跟随实测容器宽度，横竖屏 / 平板自动增删列</text>
+    <text class="sn-demo__caption"
+      >min-column-width=160 → 列数跟随实测容器宽度，横竖屏 / 平板自动增删列</text
+    >
   </view>
 </template>
 

@@ -55,23 +55,23 @@ const options = [
 
 ### SnTreeSelect Props
 
-| Prop                                  | 类型                                       | 默认值                   | 说明                            |
-| ------------------------------------- | ------------------------------------------ | ------------------------ | ------------------------------- |
-| modelValue                            | `SnTreeSelectValue \| SnTreeSelectValue[]` | —                        | 单值或 multiple 数组            |
-| multiple                              | `boolean`                                  | `false`                  | 多选（勾选独立不级联）          |
-| options                               | `SnTreeSelectOptionInput[]`                | `[]`                     | 树形选项                        |
-| defaultExpandAll                      | `boolean`                                  | `false`                  | 初始全展开                      |
-| placeholder                           | `string`                                   | —                        | 占位                            |
-| clearable                             | `boolean`                                  | `false`                  | 清空按钮                        |
-| filterable                            | `boolean`                                  | `false`                  | label 匹配 + 展开祖先           |
-| disabled / readonly                   | `boolean`                                  | `false`                  | 禁用 / 只读                     |
-| size / status                         | 同其它表单组件                             | `'medium'` / `'default'` | 尺寸 / 校验状态                 |
-| labelField / keyField / childrenField | `string`                                   | —                        | 字段映射（原始 `key` 字段优先） |
-| showLine                              | `boolean`                                  | `false`                  | 面板内显示父子节点连接线        |
+| Prop                                  | 类型                                       | 默认值                   | 说明                              |
+| ------------------------------------- | ------------------------------------------ | ------------------------ | --------------------------------- |
+| modelValue                            | `SnTreeSelectValue \| SnTreeSelectValue[]` | —                        | 单值或 multiple 数组              |
+| multiple                              | `boolean`                                  | `false`                  | 多选（勾选独立不级联）            |
+| options                               | `SnTreeSelectOptionInput[]`                | `[]`                     | 树形选项                          |
+| defaultExpandAll                      | `boolean`                                  | `false`                  | 初始全展开                        |
+| placeholder                           | `string`                                   | —                        | 占位                              |
+| clearable                             | `boolean`                                  | `false`                  | 清空按钮                          |
+| filterable                            | `boolean`                                  | `false`                  | label 匹配 + 展开祖先             |
+| disabled / readonly                   | `boolean`                                  | `false`                  | 禁用 / 只读                       |
+| size / status                         | 同其它表单组件                             | `'medium'` / `'default'` | 尺寸 / 校验状态                   |
+| labelField / keyField / childrenField | `string`                                   | —                        | 字段映射（原始 `key` 字段优先）   |
+| showLine                              | `boolean`                                  | `false`                  | 面板内显示父子节点连接线          |
 | lineMode                              | `'branch' \| 'guide'`                      | `'branch'`               | 连接线形态：L 形分叉 / 缩进引导线 |
-| lineStyle                             | `'solid' \| 'dashed'`                      | `'solid'`                | 连接线样式：实线 / 虚线         |
-| lineCorner                            | `'square' \| 'rounded'`                    | `'square'`               | 连接线拐角：直角 / 圆角         |
-| lineColor                             | `string`                                   | `undefined`              | 连接线颜色，覆盖面板的线色变量  |
+| lineStyle                             | `'solid' \| 'dashed'`                      | `'solid'`                | 连接线样式：实线 / 虚线           |
+| lineCorner                            | `'square' \| 'rounded'`                    | `'square'`               | 连接线拐角：直角 / 圆角           |
+| lineColor                             | `string`                                   | `undefined`              | 连接线颜色，覆盖面板的线色变量    |
 
 选项数据字段：`label` / `key` 或 `value` / `children` / `disabled` / `icon`（`SnTreeSelectIcon`）。图标仅作用于下拉面板中的节点，不影响已选标签回显。
 

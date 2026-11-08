@@ -128,9 +128,7 @@ watch(resolvedMode, (mode) => {
   --sn-theme-dock-ring: rgb(255 255 255 / 0.95);
   --sn-theme-dock-control: rgb(16 24 40 / 0.06);
   --sn-theme-dock-control-hover: rgb(16 24 40 / 0.12);
-  --sn-theme-dock-shadow:
-    0 14px 34px rgb(2 6 16 / 0.12),
-    0 2px 8px rgb(2 6 16 / 0.08);
+  --sn-theme-dock-shadow: 0 14px 34px rgb(2 6 16 / 0.12), 0 2px 8px rgb(2 6 16 / 0.08);
 
   position: fixed;
   left: 50%;
@@ -168,9 +166,7 @@ html.dark .sn-theme-dock {
   --sn-theme-dock-ring: rgb(20 24 31 / 0.9);
   --sn-theme-dock-control: rgb(255 255 255 / 0.08);
   --sn-theme-dock-control-hover: rgb(255 255 255 / 0.16);
-  --sn-theme-dock-shadow:
-    0 14px 34px rgb(0 0 0 / 0.42),
-    0 2px 8px rgb(0 0 0 / 0.3);
+  --sn-theme-dock-shadow: 0 14px 34px rgb(0 0 0 / 0.42), 0 2px 8px rgb(0 0 0 / 0.3);
 }
 
 .sn-theme-dock__label {

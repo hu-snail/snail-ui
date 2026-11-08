@@ -106,7 +106,11 @@
  */
 
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
-import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import {
+  closeOutside,
+  registerOutsideClosable,
+  unregisterOutsideClosable,
+} from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';

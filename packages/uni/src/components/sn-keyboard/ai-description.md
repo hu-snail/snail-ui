@@ -49,13 +49,13 @@ import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 
 ## Events
 
-| Name                | Payload            | When                         |
-| ------------------- | ------------------ | ---------------------------- |
-| `update:modelValue` | `(value: string)`  | Value changed.               |
-| `update:visible`    | `(value: boolean)` | Visibility changed.          |
-| `update:carLang`    | `(lang: 'zh' '     | ' 'en')`                     | Car language changed. |
-| `input`             | `(key: string)`    | A character key was pressed. |
-| `delete`            | —                  | Delete key pressed.          |
+| Name                | Payload            | When                                                   |
+| ------------------- | ------------------ | ------------------------------------------------------ |
+| `update:modelValue` | `(value: string)`  | Value changed.                                         |
+| `update:visible`    | `(value: boolean)` | Visibility changed.                                    |
+| `update:carLang`    | `(lang: 'zh' '     | ' 'en')`                                               | Car language changed. |
+| `input`             | `(key: string)`    | A character key was pressed.                           |
+| `delete`            | —                  | Delete key pressed.                                    |
 | `close`             | —                  | Keyboard closed (close button / scrim / collapse key). |
 
 ## Not Implemented

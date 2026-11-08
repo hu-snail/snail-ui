@@ -6,7 +6,13 @@
  * 阴影），行间以内嵌分割线分开；下：sn-cell card 脱离分组单独成卡，间距由
  * 外层用同一 token 保持一致。
  */
-import { Camera, CreditCard, Gift, Truck, Wallet } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Camera,
+  CreditCard,
+  Gift,
+  Truck,
+  Wallet,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </script>

@@ -5,10 +5,38 @@ import { ref } from 'vue';
 const tab = ref(0);
 const tabs = ['推荐', '科技', '财经', '体育'];
 const items = [
-  { id: 1, title: 'AI-Native 组件库的下一步：从组件到场景', from: '蜗牛科技', meta: '328 评论 · 2 小时前', from1: '#6366f1', to1: '#a855f7' },
-  { id: 2, title: '跨端渲染的取舍：H5 与小程序的边界', from: '前端早读', meta: '96 评论 · 4 小时前', from1: '#0ea5e9', to1: '#22d3ee' },
-  { id: 3, title: 'Token 驱动的主题系统实践', from: '设计_spacing', meta: '52 评论 · 6 小时前', from1: '#f97316', to1: '#facc15' },
-  { id: 4, title: '分包加载如何撑起复杂小程序', from: '小程序观察', meta: '41 评论 · 8 小时前', from1: '#34d399', to1: '#a7f3d0' },
+  {
+    id: 1,
+    title: 'AI-Native 组件库的下一步：从组件到场景',
+    from: '蜗牛科技',
+    meta: '328 评论 · 2 小时前',
+    from1: '#6366f1',
+    to1: '#a855f7',
+  },
+  {
+    id: 2,
+    title: '跨端渲染的取舍：H5 与小程序的边界',
+    from: '前端早读',
+    meta: '96 评论 · 4 小时前',
+    from1: '#0ea5e9',
+    to1: '#22d3ee',
+  },
+  {
+    id: 3,
+    title: 'Token 驱动的主题系统实践',
+    from: '设计_spacing',
+    meta: '52 评论 · 6 小时前',
+    from1: '#f97316',
+    to1: '#facc15',
+  },
+  {
+    id: 4,
+    title: '分包加载如何撑起复杂小程序',
+    from: '小程序观察',
+    meta: '41 评论 · 8 小时前',
+    from1: '#34d399',
+    to1: '#a7f3d0',
+  },
 ];
 </script>
 
@@ -21,7 +49,8 @@ const items = [
         class="news__seg-item"
         :class="{ 'is-active': tab === i }"
         @tap="tab = i"
-      >{{ tb }}</text>
+        >{{ tb }}</text
+      >
     </view>
     <view class="news__list">
       <view v-for="n in items" :key="n.id" class="news__row">
@@ -29,7 +58,10 @@ const items = [
           <text class="news__title">{{ n.title }}</text>
           <text class="news__meta">{{ n.from }} · {{ n.meta }}</text>
         </view>
-        <view class="news__thumb" :style="{ background: `linear-gradient(135deg, ${n.from1}, ${n.to1})` }" />
+        <view
+          class="news__thumb"
+          :style="{ background: `linear-gradient(135deg, ${n.from1}, ${n.to1})` }"
+        />
       </view>
     </view>
   </view>

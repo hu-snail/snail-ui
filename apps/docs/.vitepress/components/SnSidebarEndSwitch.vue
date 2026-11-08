@@ -59,8 +59,8 @@ function go(end: End): void {
   </div>
 </template>
 
- <style scoped>
- /* 外层：sticky 吸顶条 —— 零滑动钉扎。
+<style scoped>
+/* 外层：sticky 吸顶条 —— 零滑动钉扎。
     sticky 的实际落点是 max(自然位置, 内容起点 + top)：令 top == margin-top，
     约束线与自然位置重合，胶囊从第一像素起钉死在吸顶线上、随滚动零位移；
     负 margin 同时把不透明底条向上延伸，盖住吸顶线之上的让位空间，菜单项
@@ -70,15 +70,15 @@ function go(end: End): void {
     - 桌面端（≥960px）：custom.css §18 把吸顶线换算到导航条下缘
       （top = margin-top = 导航条高 56 − 让位高度 76 = −20），
       悬浮态再归零钉在悬浮面板顶。 */
- .sn-end-switch {
-   position: sticky;
-   top: -32px;
-   z-index: 3;
-   margin: -32px 0 6px;
-   padding: 38px 6px 8px;
-   /* 非悬浮：与侧栏同色 —— 隐形接缝，菜单项不会穿过胶囊区域 */
-   background: #f8f8f8;
- }
+.sn-end-switch {
+  position: sticky;
+  top: -32px;
+  z-index: 3;
+  margin: -32px 0 6px;
+  padding: 38px 6px 8px;
+  /* 非悬浮：与侧栏同色 —— 隐形接缝，菜单项不会穿过胶囊区域 */
+  background: #f8f8f8;
+}
 /* 悬浮：与玻璃面板同材质 —— 面板上不可见，滚过的菜单项被磨砂盖住 */
 .dark .sn-end-switch {
   background: var(--vp-c-bg);
@@ -90,17 +90,17 @@ function go(end: End): void {
   grid-template-columns: 1fr 1fr;
   padding: 4px;
   border-radius: 999px;
-   /* 非悬浮 = 实心底：菜单项滚过胶囊时不透出（悬浮态的玻璃磨砂由
+  /* 非悬浮 = 实心底：菜单项滚过胶囊时不透出（悬浮态的玻璃磨砂由
       custom.css 的 sn-nav-floating 规则覆盖） */
-   border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
-   background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
- }
- 
- /* 滑块：back-out 曲线自带 ~10% 过冲后落位（回弹） */
- .dark .sn-end-switch__pill {
-   border-color: rgb(255 255 255 / 0.1);
-   background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
- }
+  border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
+  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
+}
+
+/* 滑块：back-out 曲线自带 ~10% 过冲后落位（回弹） */
+.dark .sn-end-switch__pill {
+  border-color: rgb(255 255 255 / 0.1);
+  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
+}
 
 .sn-end-switch__thumb {
   position: absolute;

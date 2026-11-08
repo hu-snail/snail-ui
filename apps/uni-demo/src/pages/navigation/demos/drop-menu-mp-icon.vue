@@ -87,7 +87,11 @@ const precedenceOptions = [
     />
 
     <text class="sn-demo__label">优先级：三源同传时 iconData 胜出</text>
-    <SnDropMenu v-model="precedence" :options="precedenceOptions" custom-class="sn-demo-contained" />
+    <SnDropMenu
+      v-model="precedence"
+      :options="precedenceOptions"
+      custom-class="sn-demo-contained"
+    />
 
     <text class="sn-demo__meta">
       对象：{{ byData }} ／ 名称：{{ byName }} ／ 图片：{{ byUrl }}

@@ -90,10 +90,7 @@ describe('allocateWaterfallColumns — first placement', () => {
     // under whichever column happens to be shortest first.
     const heights = heightsOf({ a: 100, b: 40, c: 40 });
     const columns = allocateWaterfallColumns(['a', 'b', 'c', 'd'], null, 2, heights, 0);
-    expect(columns).toEqual([
-      ['a'],
-      ['b', 'c', 'd'],
-    ]);
+    expect(columns).toEqual([['a'], ['b', 'c', 'd']]);
   });
 });
 

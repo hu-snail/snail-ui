@@ -44,7 +44,7 @@ Override the hint and success copy; resize the stage; widen the tolerance; lock 
 
 ## Implementation notes
 
-- **No canvas**: the gap is a translucent socket and the piece shows the *source slice* at the target position (CSS translate clipping) — seamless when aligned, identical on H5 and miniprogram.
+- **No canvas**: the gap is a translucent socket and the piece shows the _source slice_ at the target position (CSS translate clipping) — seamless when aligned, identical on H5 and miniprogram.
 - The refresh button is built into the panel's top-right corner.
 - Only geometric alignment is verified; real bot protection still needs a server-side check.
 - Desktop H5 also supports mouse dragging through the same offset math as touch.
@@ -57,20 +57,20 @@ Override the hint and success copy; resize the stage; widen the tolerance; lock 
 
 ## Props
 
-| Prop                          | Type      | Default | Description                                                     |
-| ----------------------------- | --------- | ------- | --------------------------------------------------------------- |
-| `v-model`                     | `boolean` | `false` | Popup visibility (ignored when `inline`)                        |
-| `src`                         | `string`  | `''`    | Background image (network / package path, no base64)            |
+| Prop                          | Type      | Default | Description                                                         |
+| ----------------------------- | --------- | ------- | ------------------------------------------------------------------- |
+| `v-model`                     | `boolean` | `false` | Popup visibility (ignored when `inline`)                            |
+| `src`                         | `string`  | `''`    | Background image (network / package path, no base64)                |
 | `width`                       | `number`  | `300`   | Max stage width (design px); also the travel base when unmeasurable |
-| `height`                      | `number`  | `200`   | Stage height (design px)                                        |
-| `tips`                        | `string`  | `''`    | Hint text (empty = built-in)                                    |
-| `successText`                 | `string`  | `''`    | Success text (empty = built-in)                                 |
-| `tolerance`                   | `number`  | `10`    | Snap tolerance (design px)                                      |
-| `zIndex`                      | `number`  | `100`   | Popup stacking level (no effect when `inline`)                  |
-| `closeOnClickModal`           | `boolean` | `true`  | Close on scrim tap                                              |
-| `refreshable`                 | `boolean` | `true`  | Show the refresh button                                         |
-| `inline`                      | `boolean` | `false` | Render in the page flow: no scrim, no close, no auto close      |
-| `customClass` / `customStyle` | `string`  | `''`    | Root class / inline style                                       |
+| `height`                      | `number`  | `200`   | Stage height (design px)                                            |
+| `tips`                        | `string`  | `''`    | Hint text (empty = built-in)                                        |
+| `successText`                 | `string`  | `''`    | Success text (empty = built-in)                                     |
+| `tolerance`                   | `number`  | `10`    | Snap tolerance (design px)                                          |
+| `zIndex`                      | `number`  | `100`   | Popup stacking level (no effect when `inline`)                      |
+| `closeOnClickModal`           | `boolean` | `true`  | Close on scrim tap                                                  |
+| `refreshable`                 | `boolean` | `true`  | Show the refresh button                                             |
+| `inline`                      | `boolean` | `false` | Render in the page flow: no scrim, no close, no auto close          |
+| `customClass` / `customStyle` | `string`  | `''`    | Root class / inline style                                           |
 
 ## Events
 
@@ -96,16 +96,16 @@ This component provides no slots.
 
 ## Theme variables
 
-| Variable                                              | Purpose                                    |
-| ----------------------------------------------------- | ------------------------------------------ |
-| `--sn-mp-color-background-overlay`                     | Popup scrim                                |
-| `--sn-mp-color-background-elevated`                    | Panel surface                              |
-| `--sn-mp-color-background-surface`                     | Inline-mode surface                        |
-| `--sn-mp-color-background-soft`                        | Stage backdrop before the image loads      |
-| `--sn-mp-color-feedback-success`                       | Passed-state border and copy               |
-| `--sn-mp-color-text-primary`                           | Doodle-skin outline                        |
-| `--sn-mp-radius-lg` / `-md` / `-sm` / `-full`          | Panel / stage / piece / round buttons      |
-| `--sn-mp-shadow-lg` / `--sn-mp-shadow-md`              | Panel and piece elevation                  |
+| Variable                                      | Purpose                               |
+| --------------------------------------------- | ------------------------------------- |
+| `--sn-mp-color-background-overlay`            | Popup scrim                           |
+| `--sn-mp-color-background-elevated`           | Panel surface                         |
+| `--sn-mp-color-background-surface`            | Inline-mode surface                   |
+| `--sn-mp-color-background-soft`               | Stage backdrop before the image loads |
+| `--sn-mp-color-feedback-success`              | Passed-state border and copy          |
+| `--sn-mp-color-text-primary`                  | Doodle-skin outline                   |
+| `--sn-mp-radius-lg` / `-md` / `-sm` / `-full` | Panel / stage / piece / round buttons |
+| `--sn-mp-shadow-lg` / `--sn-mp-shadow-md`     | Panel and piece elevation             |
 
 ## AI Patch Boundary
 

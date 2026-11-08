@@ -243,10 +243,7 @@ onBeforeUnmount(() => {
 });
 
 const isLastInGroup = computed(
-  () =>
-    group !== null &&
-    myCellId.value !== 0 &&
-    group.lastCellId.value === myCellId.value,
+  () => group !== null && myCellId.value !== 0 && group.lastCellId.value === myCellId.value,
 );
 
 /** Effective flags: explicit prop wins, group value fills the gaps. */
@@ -292,7 +289,9 @@ const effectiveIconSize = computed<string>(() => {
 });
 
 /** Size box for the image icon path, mirroring `effectiveIconSize`. */
-const iconBoxStyle = computed(() => `width: ${effectiveIconSize.value}; height: ${effectiveIconSize.value};`);
+const iconBoxStyle = computed(
+  () => `width: ${effectiveIconSize.value}; height: ${effectiveIconSize.value};`,
+);
 
 /** Inline colour for the SVG icons (additive); unset keeps the token default. */
 const iconColorStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));

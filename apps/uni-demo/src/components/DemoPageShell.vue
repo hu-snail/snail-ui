@@ -175,10 +175,7 @@ watch(
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
     :style="shellStyle"
   >
-    <view
-      v-if="isBlend && !brand"
-      class="demo-shell__topbar"
-    >
+    <view v-if="isBlend && !brand" class="demo-shell__topbar">
       <view class="demo-shell__topbar-slot">
         <view
           class="demo-shell__back"

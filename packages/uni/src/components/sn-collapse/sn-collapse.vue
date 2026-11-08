@@ -314,7 +314,9 @@ const moreIconStyle = computed(() =>
     >
       <slot name="more" :expanded="viewmoreExpanded">
         <text class="sn-collapse__more-text">{{ viewmoreExpanded ? '收起' : '展开' }}</text>
-        <view :class="['sn-collapse__more-arrow', { 'sn-collapse__more-arrow--up': viewmoreExpanded }]">
+        <view
+          :class="['sn-collapse__more-arrow', { 'sn-collapse__more-arrow--up': viewmoreExpanded }]"
+        >
           <SnIcon
             class="sn-collapse__more-chevron"
             :icon="ChevronDown"

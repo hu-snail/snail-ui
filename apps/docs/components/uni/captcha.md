@@ -57,29 +57,29 @@
 
 ## Props
 
-| 属性                          | 类型      | 默认值  | 说明                                                |
-| ----------------------------- | --------- | ------- | --------------------------------------------------- |
-| `v-model`                     | `boolean` | `false` | 弹层显隐（`inline` 下忽略）                         |
-| `src`                         | `string`  | `''`    | 背景图（网络 / 包内路径，不支持 base64）            |
-| `width`                       | `number`  | `300`   | 舞台最大宽度（设计 px），也是无法测量时的行程基准   |
-| `height`                      | `number`  | `200`   | 舞台高度（设计 px）                                 |
-| `tips`                        | `string`  | `''`    | 提示文案（空 = 内置「拖动拼图，对齐缺口」）         |
-| `successText`                 | `string`  | `''`    | 成功文案（空 = 内置「验证通过」）                   |
-| `tolerance`                   | `number`  | `10`    | 对齐容差（设计 px）                                 |
-| `zIndex`                      | `number`  | `100`   | 弹层层级（`inline` 下不生效）                       |
-| `closeOnClickModal`           | `boolean` | `true`  | 点遮罩关闭                                          |
-| `refreshable`                 | `boolean` | `true`  | 显示「换一张」按钮                                  |
-| `inline`                      | `boolean` | `false` | 内嵌展示：不渲染遮罩与关闭按钮，通过后不自动关闭    |
-| `customClass` / `customStyle` | `string`  | `''`    | 根节点自定义类名 / 样式                             |
+| 属性                          | 类型      | 默认值  | 说明                                              |
+| ----------------------------- | --------- | ------- | ------------------------------------------------- |
+| `v-model`                     | `boolean` | `false` | 弹层显隐（`inline` 下忽略）                       |
+| `src`                         | `string`  | `''`    | 背景图（网络 / 包内路径，不支持 base64）          |
+| `width`                       | `number`  | `300`   | 舞台最大宽度（设计 px），也是无法测量时的行程基准 |
+| `height`                      | `number`  | `200`   | 舞台高度（设计 px）                               |
+| `tips`                        | `string`  | `''`    | 提示文案（空 = 内置「拖动拼图，对齐缺口」）       |
+| `successText`                 | `string`  | `''`    | 成功文案（空 = 内置「验证通过」）                 |
+| `tolerance`                   | `number`  | `10`    | 对齐容差（设计 px）                               |
+| `zIndex`                      | `number`  | `100`   | 弹层层级（`inline` 下不生效）                     |
+| `closeOnClickModal`           | `boolean` | `true`  | 点遮罩关闭                                        |
+| `refreshable`                 | `boolean` | `true`  | 显示「换一张」按钮                                |
+| `inline`                      | `boolean` | `false` | 内嵌展示：不渲染遮罩与关闭按钮，通过后不自动关闭  |
+| `customClass` / `customStyle` | `string`  | `''`    | 根节点自定义类名 / 样式                           |
 
 ## Events
 
-| 事件名    | 说明                          | 参数 |
-| --------- | ----------------------------- | ---- |
-| `success` | 松手时与目标 X 距离 ≤ 容差    | —    |
-| `fail`    | 未对齐即松手（抖动 + 归位）   | —    |
-| `refresh` | 换图按钮被点击（缺口重新掷位）| —    |
-| `close`   | 弹层关闭（手动 / 成功后自动） | —    |
+| 事件名    | 说明                           | 参数 |
+| --------- | ------------------------------ | ---- |
+| `success` | 松手时与目标 X 距离 ≤ 容差     | —    |
+| `fail`    | 未对齐即松手（抖动 + 归位）    | —    |
+| `refresh` | 换图按钮被点击（缺口重新掷位） | —    |
+| `close`   | 弹层关闭（手动 / 成功后自动）  | —    |
 
 ## Exposed API
 
@@ -96,16 +96,16 @@
 
 ## 主题变量
 
-| 变量                                                                     | 用途                             |
-| ------------------------------------------------------------------------ | -------------------------------- |
-| `--sn-mp-color-background-overlay`                                       | 弹层遮罩                         |
-| `--sn-mp-color-background-elevated`                                      | 面板底板                         |
-| `--sn-mp-color-background-surface`                                       | 内嵌模式底板                     |
-| `--sn-mp-color-background-soft`                                          | 舞台底色（底图加载前）           |
-| `--sn-mp-color-feedback-success`                                         | 通过态描边与文案                 |
-| `--sn-mp-color-text-primary`                                             | Doodle 皮肤描边                  |
-| `--sn-mp-radius-lg` / `-md` / `-sm` / `-full`                            | 面板 / 舞台 / 拼图块 / 圆钮圆角  |
-| `--sn-mp-shadow-lg` / `--sn-mp-shadow-md`                                | 面板与拼图块投影                 |
+| 变量                                          | 用途                            |
+| --------------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-overlay`            | 弹层遮罩                        |
+| `--sn-mp-color-background-elevated`           | 面板底板                        |
+| `--sn-mp-color-background-surface`            | 内嵌模式底板                    |
+| `--sn-mp-color-background-soft`               | 舞台底色（底图加载前）          |
+| `--sn-mp-color-feedback-success`              | 通过态描边与文案                |
+| `--sn-mp-color-text-primary`                  | Doodle 皮肤描边                 |
+| `--sn-mp-radius-lg` / `-md` / `-sm` / `-full` | 面板 / 舞台 / 拼图块 / 圆钮圆角 |
+| `--sn-mp-shadow-lg` / `--sn-mp-shadow-md`     | 面板与拼图块投影                |
 
 ## AI Patch Boundary
 

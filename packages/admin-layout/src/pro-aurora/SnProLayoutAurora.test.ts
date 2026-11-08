@@ -60,7 +60,9 @@ describe('SnProLayoutAurora · structure', () => {
   });
 
   it('should apply the configured geometry as CSS variables', () => {
-    const style = mountLayout({ railWidth: 72, headerHeight: 56 }).find('.sn-pro-aurora').attributes('style') ?? '';
+    const style =
+      mountLayout({ railWidth: 72, headerHeight: 56 }).find('.sn-pro-aurora').attributes('style') ??
+      '';
     expect(style).toContain('--sn-pro-aurora-rail-width: 72px');
     expect(style).toContain('--sn-pro-aurora-header-height: 56px');
   });
@@ -94,7 +96,9 @@ describe('SnProLayoutAurora · rail (一级菜单图标)', () => {
     const wrapper = mountLayout({}, { 'rail-menu': '<div class="custom-rail">rail</div>' });
     expect(wrapper.find('.custom-rail').exists()).toBe(true);
     // Only the rail's own menu is replaced; the header nav keeps its SnMenu.
-    expect(wrapper.find('.sn-pro-aurora__rail-menu').findComponent({ name: 'SnMenu' }).exists()).toBe(false);
+    expect(
+      wrapper.find('.sn-pro-aurora__rail-menu').findComponent({ name: 'SnMenu' }).exists(),
+    ).toBe(false);
   });
 });
 
@@ -123,7 +127,10 @@ describe('SnProLayoutAurora · header nav (顶部胶囊导航)', () => {
   });
 
   it('should replace the nav via the modules slot', () => {
-    const wrapper = mountLayout({ activeKey: 'user' }, { modules: '<nav class="custom-tabs">tabs</nav>' });
+    const wrapper = mountLayout(
+      { activeKey: 'user' },
+      { modules: '<nav class="custom-tabs">tabs</nav>' },
+    );
     expect(wrapper.find('.custom-tabs').exists()).toBe(true);
     expect(wrapper.find('.sn-pro-aurora__menu').exists()).toBe(false);
   });
@@ -226,8 +233,12 @@ describe('SnProLayoutAurora · light/dark toggle (深色浅色切换)', () => {
   });
 
   it('should hide the toggle and label it for assistive tech', () => {
-    expect(mountLayout({ showThemeToggle: false }).find('[aria-label="切换亮暗模式"]').exists()).toBe(false);
-    expect(mountLayout({ themeToggleLabel: 'Dark mode' }).find('[aria-label="Dark mode"]').exists()).toBe(true);
+    expect(
+      mountLayout({ showThemeToggle: false }).find('[aria-label="切换亮暗模式"]').exists(),
+    ).toBe(false);
+    expect(
+      mountLayout({ themeToggleLabel: 'Dark mode' }).find('[aria-label="Dark mode"]').exists(),
+    ).toBe(true);
   });
 
   it('should replace the toggle via the theme-toggle slot', () => {
@@ -256,7 +267,11 @@ describe('SnProLayoutAurora · zh/en switch (中英文切换)', () => {
   });
 
   it('should accept host glyphs and hide on demand', () => {
-    expect(mountLayout({ localeLabels: { en: 'EN-US' } }).find('.sn-pro-aurora__locale').text()).toBe('EN-US');
+    expect(
+      mountLayout({ localeLabels: { en: 'EN-US' } })
+        .find('.sn-pro-aurora__locale')
+        .text(),
+    ).toBe('EN-US');
     expect(mountLayout({ showLocale: false }).find('.sn-pro-aurora__locale').exists()).toBe(false);
   });
 
@@ -276,17 +291,25 @@ describe('SnProLayoutAurora · title-band search area', () => {
 
     search.vm.$emit('select', 'role', { key: 'role', label: '角色权限' });
     await wrapper.vm.$nextTick();
-    expect(wrapper.emitted('search-select')?.[0]).toEqual(['role', { key: 'role', label: '角色权限' }]);
+    expect(wrapper.emitted('search-select')?.[0]).toEqual([
+      'role',
+      { key: 'role', label: '角色权限' },
+    ]);
   });
 
   it('should hide the search box when showSearch is false', () => {
     expect(
-      mountLayout({ pageTitle: '工作台', showSearch: false }).findComponent({ name: 'SnProSearch' }).exists(),
+      mountLayout({ pageTitle: '工作台', showSearch: false })
+        .findComponent({ name: 'SnProSearch' })
+        .exists(),
     ).toBe(false);
   });
 
   it('should replace the search area via the search slot', () => {
-    const wrapper = mountLayout({ pageTitle: '工作台' }, { search: '<div class="custom-search">s</div>' });
+    const wrapper = mountLayout(
+      { pageTitle: '工作台' },
+      { search: '<div class="custom-search">s</div>' },
+    );
     expect(wrapper.find('.custom-search').exists()).toBe(true);
     expect(wrapper.findComponent({ name: 'SnProSearch' }).exists()).toBe(false);
   });
@@ -309,7 +332,9 @@ describe('SnProLayoutAurora · notice area', () => {
 
   it('should forward the badge cap and hide on demand', () => {
     expect(noticeOf(mountLayout({ noticeCount: 500, noticeMax: 9 })).props('max')).toBe(9);
-    expect(mountLayout({ showNotice: false }).findComponent({ name: 'SnProNotice' }).exists()).toBe(false);
+    expect(mountLayout({ showNotice: false }).findComponent({ name: 'SnProNotice' }).exists()).toBe(
+      false,
+    );
   });
 
   it('should replace the notice area via the notice slot', () => {
@@ -334,7 +359,9 @@ describe('SnProLayoutAurora · profile area', () => {
 
   it('should omit the profile without a payload and honour showUser', () => {
     expect(mountLayout().findComponent({ name: 'SnProUser' }).exists()).toBe(false);
-    expect(mountLayout({ user, showUser: false }).findComponent({ name: 'SnProUser' }).exists()).toBe(false);
+    expect(
+      mountLayout({ user, showUser: false }).findComponent({ name: 'SnProUser' }).exists(),
+    ).toBe(false);
   });
 
   it('should replace the profile via the user slot', () => {
@@ -355,7 +382,9 @@ describe('SnProLayoutAurora · rail footer (退出登录 / 帮助说明)', () =>
 
   it('should drop the rail footer when both built-ins are off', () => {
     expect(
-      mountLayout({ showLogout: false, showHelp: false }).find('.sn-pro-aurora__rail-foot').exists(),
+      mountLayout({ showLogout: false, showHelp: false })
+        .find('.sn-pro-aurora__rail-foot')
+        .exists(),
     ).toBe(false);
   });
 
@@ -379,7 +408,10 @@ describe('SnProLayoutAurora · title-band actions + content slots', () => {
   });
 
   it('should render the header-actions slot at the end of the top bar', () => {
-    const wrapper = mountLayout({}, { 'header-actions': '<span class="custom-header-action">h</span>' });
+    const wrapper = mountLayout(
+      {},
+      { 'header-actions': '<span class="custom-header-action">h</span>' },
+    );
     const tools = wrapper.find('.sn-pro-aurora__tools');
     expect(tools.find('.custom-header-action').exists()).toBe(true);
     expect(tools.element.lastElementChild?.className).toBe('custom-header-action');
@@ -406,7 +438,9 @@ describe('SnProLayoutAurora · title-band actions + content slots', () => {
   });
 
   it('should render and replace the module heading', () => {
-    expect(mountLayout({ pageTitle: '用户管理' }).find('.sn-pro-aurora__heading').text()).toBe('用户管理');
+    expect(mountLayout({ pageTitle: '用户管理' }).find('.sn-pro-aurora__heading').text()).toBe(
+      '用户管理',
+    );
     expect(mountLayout().find('.sn-pro-aurora__title-band').exists()).toBe(false);
     expect(
       mountLayout({ pageTitle: '用户管理' }, { title: '<h2 class="custom-title">T</h2>' })
@@ -418,7 +452,9 @@ describe('SnProLayoutAurora · title-band actions + content slots', () => {
   it('should render the footer slot only when provided', () => {
     expect(mountLayout().find('.sn-pro-aurora__footer').exists()).toBe(false);
     expect(
-      mountLayout({}, { footer: '<span class="footnote">©</span>' }).find('.sn-pro-aurora__footer .footnote').exists(),
+      mountLayout({}, { footer: '<span class="footnote">©</span>' })
+        .find('.sn-pro-aurora__footer .footnote')
+        .exists(),
     ).toBe(true);
   });
 });

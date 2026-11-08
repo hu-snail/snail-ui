@@ -160,52 +160,54 @@ describe('sn-grid', () => {
       ).toContain('sn-grid-item__text--ellipsis');
     });
 
-     it('renders a registry-resolved icon', async () => {
-       const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
-       const { Star } = await import('../sn-icon/sn-icon-set');
-       registerSnIcons({ Star });
-       const wrapper = mountGrid({}, [{ text: 'A', icon: 'Star' }]);
-       expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(true);
-       clearSnIcons();
-     });
- 
-     it('falls back to the built-in catalog for kebab names', async () => {
-       // Regression: the cell used to consult only registerSnIcons, so every
-       // catalog-only name (e.g. `search`) rendered blank. With an empty
-       // registry the built-in catalog must still resolve the icon.
-       const { clearSnIcons } = await import('../sn-icon/sn-icon-registry');
-       clearSnIcons();
-       const wrapper = mountGrid({}, [{ text: 'A', icon: 'search' }]);
-       expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(true);
-       expect(wrapper.find('.sn-grid-item__icon').html()).toContain('<path');
-       clearSnIcons();
-     });
- 
-     it('gives a registered icon priority over the built-in catalog', async () => {
-       const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
-       registerSnIcons({
-         search: { viewBox: '0 0 24 24', paths: ['M0 0h24v24H0z-registry-override'] },
-       });
-       const wrapper = mountGrid({}, [{ text: 'A', icon: 'search' }]);
-       expect(wrapper.find('.sn-grid-item__icon').html()).toContain('registry-override');
-       clearSnIcons();
-     });
- 
-     it('renders nothing for an unknown icon name', () => {
-       const wrapper = mountGrid({}, [{ text: 'A', icon: 'no-such-icon' }]);
-       expect(wrapper.find('.sn-grid-item__icon').exists()).toBe(false);
-     });
- 
-     it('keeps cssIcon font glyphs off the data-resolution track', async () => {
-       const { clearSnIcons } = await import('../sn-icon/sn-icon-registry');
-       clearSnIcons();
-       // `search` exists in the catalog, but cssIcon=true means `icon` names a
-       // font glyph — the SVG track must not render it.
-       const wrapper = mountGrid({}, [{ text: 'A', icon: 'search', cssIcon: true, iconPrefix: 'sn' }]);
-       expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(false);
-       expect(wrapper.find('.sn-grid-item__icon.sn-search').exists()).toBe(true);
-       clearSnIcons();
-     });
+    it('renders a registry-resolved icon', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mountGrid({}, [{ text: 'A', icon: 'Star' }]);
+      expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(true);
+      clearSnIcons();
+    });
+
+    it('falls back to the built-in catalog for kebab names', async () => {
+      // Regression: the cell used to consult only registerSnIcons, so every
+      // catalog-only name (e.g. `search`) rendered blank. With an empty
+      // registry the built-in catalog must still resolve the icon.
+      const { clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      clearSnIcons();
+      const wrapper = mountGrid({}, [{ text: 'A', icon: 'search' }]);
+      expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-grid-item__icon').html()).toContain('<path');
+      clearSnIcons();
+    });
+
+    it('gives a registered icon priority over the built-in catalog', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      registerSnIcons({
+        search: { viewBox: '0 0 24 24', paths: ['M0 0h24v24H0z-registry-override'] },
+      });
+      const wrapper = mountGrid({}, [{ text: 'A', icon: 'search' }]);
+      expect(wrapper.find('.sn-grid-item__icon').html()).toContain('registry-override');
+      clearSnIcons();
+    });
+
+    it('renders nothing for an unknown icon name', () => {
+      const wrapper = mountGrid({}, [{ text: 'A', icon: 'no-such-icon' }]);
+      expect(wrapper.find('.sn-grid-item__icon').exists()).toBe(false);
+    });
+
+    it('keeps cssIcon font glyphs off the data-resolution track', async () => {
+      const { clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      clearSnIcons();
+      // `search` exists in the catalog, but cssIcon=true means `icon` names a
+      // font glyph — the SVG track must not render it.
+      const wrapper = mountGrid({}, [
+        { text: 'A', icon: 'search', cssIcon: true, iconPrefix: 'sn' },
+      ]);
+      expect(wrapper.find('.sn-grid-item__icon.sn-icon').exists()).toBe(false);
+      expect(wrapper.find('.sn-grid-item__icon.sn-search').exists()).toBe(true);
+      clearSnIcons();
+    });
 
     it('applies iconColor inline on the resolved icon', async () => {
       const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');

@@ -25,17 +25,35 @@ const pageDashed = ref(3);
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__group">
       <text class="sn-demo__group-title">text · 纯文字（默认）</text>
-      <SnPagination v-model="pageText" :total="total" :page-size="size" button-variant="text" show-icon />
+      <SnPagination
+        v-model="pageText"
+        :total="total"
+        :page-size="size"
+        button-variant="text"
+        show-icon
+      />
     </view>
 
     <view class="sn-demo__group">
       <text class="sn-demo__group-title">base · 描边 + 底色</text>
-      <SnPagination v-model="pageBase" :total="total" :page-size="size" button-variant="base" show-icon />
+      <SnPagination
+        v-model="pageBase"
+        :total="total"
+        :page-size="size"
+        button-variant="base"
+        show-icon
+      />
     </view>
 
     <view class="sn-demo__group">
       <text class="sn-demo__group-title">plain · 主色描边</text>
-      <SnPagination v-model="pagePlain" :total="total" :page-size="size" button-variant="plain" show-icon />
+      <SnPagination
+        v-model="pagePlain"
+        :total="total"
+        :page-size="size"
+        button-variant="plain"
+        show-icon
+      />
     </view>
 
     <view class="sn-demo__group">
@@ -50,8 +68,7 @@ const pageDashed = ref(3);
     </view>
 
     <text class="sn-demo__meta">
-      total=95 / page-size=10 → 10 页；风格只改描边与底色，翻页图标统一走
-      --sn-mp-icon-size-medium。
+      total=95 / page-size=10 → 10 页；风格只改描边与底色，翻页图标统一走 --sn-mp-icon-size-medium。
     </text>
   </view>
 </template>

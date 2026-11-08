@@ -353,11 +353,7 @@ function onTap(event: Event): void {
       />
       <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
-          <SnIcon
-            :icon="LOADER_CIRCLE"
-            :size="spinnerSize"
-            :color="spinnerColor || undefined"
-          />
+          <SnIcon :icon="LOADER_CIRCLE" :size="spinnerSize" :color="spinnerColor || undefined" />
         </slot>
       </view>
     </slot>

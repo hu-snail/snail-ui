@@ -2,7 +2,14 @@
 /** Demo: sn-cell — the three leading-icon sources plus size tiers and colour tokens. */
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Bell, Check, CircleAlert, Heart, Star, X } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Bell,
+  Check,
+  CircleAlert,
+  Heart,
+  Star,
+  X,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
@@ -19,13 +26,17 @@ registerSnIcons({ 'cell-moon': MoonIcon });
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__label">Name chain (built-in catalogue names need no registration; registry names are custom)</text>
+    <text class="sn-demo__label"
+      >Name chain (built-in catalogue names need no registration; registry names are custom)</text
+    >
     <SnCellGroup insert>
       <SnCell title="Catalogue name" value="bell" prefix-icon="bell" />
       <SnCell title="Registry name" value="cell-moon" prefix-icon="cell-moon" />
     </SnCellGroup>
 
-    <text class="sn-demo__label">IconData objects (named imports from the icon set, win over names)</text>
+    <text class="sn-demo__label"
+      >IconData objects (named imports from the icon set, win over names)</text
+    >
     <SnCellGroup insert>
       <SnCell title="Starred" value="Star" :prefix-icon-data="Star" />
       <SnCell title="Liked" value="Heart" :prefix-icon-data="Heart" />
@@ -61,8 +72,16 @@ registerSnIcons({ 'cell-moon': MoonIcon });
 
     <text class="sn-demo__label">Image icons (prefixIconUrl / suffixIconUrl)</text>
     <SnCellGroup insert>
-      <SnCell title="Leading image" value="Avatar" prefix-icon-url="https://picsum.photos/seed/snui-cell/96" />
-      <SnCell title="Trailing image" value="Attachment" suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96" />
+      <SnCell
+        title="Leading image"
+        value="Avatar"
+        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+      />
+      <SnCell
+        title="Trailing image"
+        value="Attachment"
+        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+      />
     </SnCellGroup>
   </view>
 </template>

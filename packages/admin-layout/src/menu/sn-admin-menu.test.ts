@@ -73,7 +73,12 @@ describe('routesToMenuOptions', () => {
   it('should be deterministic for equal input (idempotent mapping)', () => {
     const routes: RouteLike[] = [
       { name: 'a', path: '/a', meta: { title: 'A', icon: 'i', order: 2 } },
-      { name: 'b', path: '/b', meta: { title: 'B' }, children: [{ name: 'b1', path: '/b/1', meta: { title: 'B1' } }] },
+      {
+        name: 'b',
+        path: '/b',
+        meta: { title: 'B' },
+        children: [{ name: 'b1', path: '/b/1', meta: { title: 'B1' } }],
+      },
     ];
     expect(routesToMenuOptions(routes)).toEqual(routesToMenuOptions(routes));
   });

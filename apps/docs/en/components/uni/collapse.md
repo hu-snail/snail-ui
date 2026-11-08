@@ -59,40 +59,40 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 
 ### sn-collapse
 
-| Prop                  | Type                            | Default | Description                                                                                     |
-| --------------------- | ------------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
-| `modelValue`          | `string \| string[] \| boolean` | `[]`    | Bound value: `string[]` in normal mode, `string` in accordion mode, `boolean` in view-more mode |
-| `accordion`           | `boolean`                       | `false` | Accordion mode                                                                                  |
-| `viewmore`            | `boolean`                       | `false` | View-more mode                                                                                  |
-| `useMoreSlot`         | `boolean`                       | `false` | Enable the `more` slot in view-more mode                                                        |
-| `lineNum`             | `number`                        | `2`     | Collapsed line count in view-more mode                                                          |
-| `customMoreSlotClass` | `string`                        | `''`    | Extra class around the `more` slot                                                              |
-| `customClass`         | `string`                        | `''`    | Extra class on the root node                                                                    |
-| `customStyle`         | `string`                        | `''`    | Inline style on the root node                                                                   |
-| `card`                | `boolean`                       | `false` | Card form: every panel becomes its own rounded card; the container goes transparent and stacks the panels with a token gap |
+| Prop                  | Type                            | Default     | Description                                                                                                                                                                     |
+| --------------------- | ------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`          | `string \| string[] \| boolean` | `[]`        | Bound value: `string[]` in normal mode, `string` in accordion mode, `boolean` in view-more mode                                                                                 |
+| `accordion`           | `boolean`                       | `false`     | Accordion mode                                                                                                                                                                  |
+| `viewmore`            | `boolean`                       | `false`     | View-more mode                                                                                                                                                                  |
+| `useMoreSlot`         | `boolean`                       | `false`     | Enable the `more` slot in view-more mode                                                                                                                                        |
+| `lineNum`             | `number`                        | `2`         | Collapsed line count in view-more mode                                                                                                                                          |
+| `customMoreSlotClass` | `string`                        | `''`        | Extra class around the `more` slot                                                                                                                                              |
+| `customClass`         | `string`                        | `''`        | Extra class on the root node                                                                                                                                                    |
+| `customStyle`         | `string`                        | `''`        | Inline style on the root node                                                                                                                                                   |
+| `card`                | `boolean`                       | `false`     | Card form: every panel becomes its own rounded card; the container goes transparent and stacks the panels with a token gap                                                      |
 | `iconSize`            | `string \| number`              | `undefined` | Icon size (chevron + title icons): tiers tiny / small / medium / large / xlarge map to `--sn-mp-icon-size-*`, numbers are px and other strings pass through; a panel value wins |
-| `iconColor`           | `string`                        | `''`    | Icon colour (chevron + title icons): pass a `var(--sn-mp-color-*)` token; a panel value wins |
+| `iconColor`           | `string`                        | `''`        | Icon colour (chevron + title icons): pass a `var(--sn-mp-color-*)` token; a panel value wins                                                                                    |
 
 ### sn-collapse-item
 
-| Prop              | Type                                    | Default     | Description                        |
-| ----------------- | --------------------------------------- | ----------- | ---------------------------------- |
-| `name`            | `string`                                | `''`        | Unique panel name                  |
-| `title`           | `string`                                | `''`        | Panel title                        |
-| `disabled`        | `boolean`                               | `false`     | Disable this panel                 |
-| `beforeExpend`    | `(name) => boolean \| Promise<boolean>` | `undefined` | Veto hook run before opening       |
-| `border`          | `boolean`                               | `true`      | Draw the panel divider             |
-| `customBodyClass` | `string`                                | `''`        | Extra class on the body container  |
-| `customBodyStyle` | `string`                                | `''`        | Inline style on the body container |
-| `customClass`     | `string`                                | `''`        | Extra class on the panel root      |
-| `customStyle`     | `string`                                | `''`        | Inline style on the panel root     |
-| `titleIconData`   | `IconData`                              | `undefined` | Title-icon data object (built-in set object / custom); highest priority |
-| `titleIconUrl`    | `string`                                | `''`        | Title image URL rendered as `<image>`; below `titleIconData`, above `titleIcon` |
-| `titleIcon`       | `string`                                | `''`        | Title icon name: registry (`registerSnIcons`) → built-in catalogue (kebab-case) → provider |
+| Prop              | Type                                    | Default     | Description                                                                                          |
+| ----------------- | --------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| `name`            | `string`                                | `''`        | Unique panel name                                                                                    |
+| `title`           | `string`                                | `''`        | Panel title                                                                                          |
+| `disabled`        | `boolean`                               | `false`     | Disable this panel                                                                                   |
+| `beforeExpend`    | `(name) => boolean \| Promise<boolean>` | `undefined` | Veto hook run before opening                                                                         |
+| `border`          | `boolean`                               | `true`      | Draw the panel divider                                                                               |
+| `customBodyClass` | `string`                                | `''`        | Extra class on the body container                                                                    |
+| `customBodyStyle` | `string`                                | `''`        | Inline style on the body container                                                                   |
+| `customClass`     | `string`                                | `''`        | Extra class on the panel root                                                                        |
+| `customStyle`     | `string`                                | `''`        | Inline style on the panel root                                                                       |
+| `titleIconData`   | `IconData`                              | `undefined` | Title-icon data object (built-in set object / custom); highest priority                              |
+| `titleIconUrl`    | `string`                                | `''`        | Title image URL rendered as `<image>`; below `titleIconData`, above `titleIcon`                      |
+| `titleIcon`       | `string`                                | `''`        | Title icon name: registry (`registerSnIcons`) → built-in catalogue (kebab-case) → provider           |
 | `iconSize`        | `string \| number`                      | `undefined` | Icon size (chevron + title icon); inherits the container `iconSize`, then `--sn-mp-icon-size-medium` |
-| `iconColor`       | `string`                                | `''`        | Icon colour (chevron + title icon); inherits the container `iconColor` |
-| `iconStrokeWidth` | `number`                                | `2`         | Icon stroke weight (chevron + title icon), mirrors `--sn-mp-icon-stroke-width` |
-| `card`            | `boolean`                               | `undefined` | Card form for this panel; inherits the container `card` when unset |
+| `iconColor`       | `string`                                | `''`        | Icon colour (chevron + title icon); inherits the container `iconColor`                               |
+| `iconStrokeWidth` | `number`                                | `2`         | Icon stroke weight (chevron + title icon), mirrors `--sn-mp-icon-stroke-width`                       |
+| `card`            | `boolean`                               | `undefined` | Card form for this panel; inherits the container `card` when unset                                   |
 
 > `beforeExpend` keeps its historical spelling (`Expend`, not `Expand`) for backward compatibility. It runs only when **opening**; collapsing never asks. A rejected promise is treated as "stay closed" and is not rethrown.
 
@@ -121,30 +121,30 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 
 ## Theme variables
 
-| Variable                                        | Purpose                                         |
-| ----------------------------------------------- | ----------------------------------------------- |
-| `--sn-mp-color-background-surface`              | Panel surface                                   |
-| `--sn-mp-color-background-soft`                 | Title tap feedback                              |
-| `--sn-mp-color-border-subtle`                   | Panel divider / card outline                    |
-| `--sn-mp-color-text-primary`                    | Title colour                                    |
-| `--sn-mp-color-text-secondary`                  | Body and title-icon colour                      |
-| `--sn-mp-color-text-tertiary`                   | Chevron colour                                  |
-| `--sn-mp-color-action-primary`                  | Expand / collapse label and open-state icon colour |
-| `--sn-mp-color-action-primary-soft`             | Open-state chevron backing                      |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | Title / body size                               |
-| `--sn-mp-font-line-height-normal`               | Body line height (`line-num` clamps against it) |
+| Variable                                                                              | Purpose                                                      |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `--sn-mp-color-background-surface`                                                    | Panel surface                                                |
+| `--sn-mp-color-background-soft`                                                       | Title tap feedback                                           |
+| `--sn-mp-color-border-subtle`                                                         | Panel divider / card outline                                 |
+| `--sn-mp-color-text-primary`                                                          | Title colour                                                 |
+| `--sn-mp-color-text-secondary`                                                        | Body and title-icon colour                                   |
+| `--sn-mp-color-text-tertiary`                                                         | Chevron colour                                               |
+| `--sn-mp-color-action-primary`                                                        | Expand / collapse label and open-state icon colour           |
+| `--sn-mp-color-action-primary-soft`                                                   | Open-state chevron backing                                   |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm`                                       | Title / body size                                            |
+| `--sn-mp-font-line-height-normal`                                                     | Body line height (`line-num` clamps against it)              |
 | `--sn-mp-spacing-1` / `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Chevron padding / title-icon gap / card gap / header padding |
-| `--sn-mp-radius-lg` / `--sn-mp-radius-full`     | Card radius / chevron pill radius               |
-| `--sn-mp-shadow-sm`                             | Card shadow                                     |
-| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge` | Icon lengths behind the `iconSize` tiers  |
-| `--sn-mp-icon-stroke-width`                     | SVG icon stroke width (2 by default)            |
+| `--sn-mp-radius-lg` / `--sn-mp-radius-full`                                           | Card radius / chevron pill radius                            |
+| `--sn-mp-shadow-sm`                                                                   | Card shadow                                                  |
+| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge`                                 | Icon lengths behind the `iconSize` tiers                     |
+| `--sn-mp-icon-stroke-width`                                                           | SVG icon stroke width (2 by default)                         |
 
 Icon standard (one per family):
 
-| Slot       | Rest                           | Open                            |
-| ---------- | ------------------------------ | ------------------------------- |
-| Chevron    | `--sn-mp-color-text-tertiary`  | `--sn-mp-color-action-primary`  |
-| Title icon | `--sn-mp-color-text-secondary` | `--sn-mp-color-action-primary`  |
+| Slot       | Rest                           | Open                           |
+| ---------- | ------------------------------ | ------------------------------ |
+| Chevron    | `--sn-mp-color-text-tertiary`  | `--sn-mp-color-action-primary` |
+| Title icon | `--sn-mp-color-text-secondary` | `--sn-mp-color-action-primary` |
 
 The chevron defaults to `--sn-mp-icon-size-medium` and shares that tier with the title icon; the view-more chevron uses `--sn-mp-icon-size-small` (overridden when the container sets `iconSize`).
 

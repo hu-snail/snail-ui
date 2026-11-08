@@ -47,7 +47,8 @@ const data: SnTreeOption[] = [
 <template>
   <div class="sn-demo">
     <p class="sn-demo__hint">
-      每个节点的 icon 字段可传图标组件、VNode、渲染函数或已注册的图标名；连接线支持线型、拐角形状与颜色配置。
+      每个节点的 icon
+      字段可传图标组件、VNode、渲染函数或已注册的图标名；连接线支持线型、拐角形状与颜色配置。
     </p>
     <section class="sn-demo__col">
       <p class="sn-demo__label">直角 + 实线（默认）</p>

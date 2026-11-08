@@ -70,9 +70,11 @@ defineOptions({ name: 'SnSwipeAction' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
-onMounted(() => registerOutsideClosable(instanceId, () => {
-  void close();
-}));
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    void close();
+  }),
+);
 onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Swipe state. Mirrors `wd-swipe-action` `v-model`. */

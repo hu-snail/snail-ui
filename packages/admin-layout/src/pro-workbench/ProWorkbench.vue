@@ -341,10 +341,16 @@ function onTransaction(row: ProWorkbenchTransaction): void {
               >
                 {{ accentKpi.delta }}
                 <ArrowUpRight v-if="accentKpi.trend === 'up'" :size="12" aria-hidden="true" />
-                <ArrowDownRight v-else-if="accentKpi.trend === 'down'" :size="12" aria-hidden="true" />
+                <ArrowDownRight
+                  v-else-if="accentKpi.trend === 'down'"
+                  :size="12"
+                  aria-hidden="true"
+                />
                 <Minus v-else :size="12" aria-hidden="true" />
               </span>
-              <span v-if="accentKpi.hint" class="sn-pro-workbench__kpi-hint">{{ accentKpi.hint }}</span>
+              <span v-if="accentKpi.hint" class="sn-pro-workbench__kpi-hint">{{
+                accentKpi.hint
+              }}</span>
             </p>
 
             <div v-if="(accentKpi.actions?.length ?? 0) > 0" class="sn-pro-workbench__kpi-actions">
@@ -360,13 +366,19 @@ function onTransaction(row: ProWorkbenchTransaction): void {
             </div>
 
             <div v-if="(accentKpi.stats?.length ?? 0) > 0" class="sn-pro-workbench__kpi-stats">
-              <div v-for="stat in accentKpi.stats" :key="stat.key" class="sn-pro-workbench__kpi-stat">
+              <div
+                v-for="stat in accentKpi.stats"
+                :key="stat.key"
+                class="sn-pro-workbench__kpi-stat"
+              >
                 <p class="sn-pro-workbench__kpi-stat-label">{{ stat.label }}</p>
                 <p class="sn-pro-workbench__kpi-stat-value">{{ stat.value }}</p>
               </div>
             </div>
 
-            <p v-if="accentKpi.footNote" class="sn-pro-workbench__kpi-foot">{{ accentKpi.footNote }}</p>
+            <p v-if="accentKpi.footNote" class="sn-pro-workbench__kpi-foot">
+              {{ accentKpi.footNote }}
+            </p>
           </article>
 
           <div class="sn-pro-workbench__kpi-col">
@@ -410,7 +422,9 @@ function onTransaction(row: ProWorkbenchTransaction): void {
           <table v-if="props.transactions.length > 0" class="sn-pro-workbench__table">
             <thead>
               <tr>
-                <th v-for="column in props.transactionsColumns" :key="column" scope="col">{{ column }}</th>
+                <th v-for="column in props.transactionsColumns" :key="column" scope="col">
+                  {{ column }}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -425,7 +439,10 @@ function onTransaction(row: ProWorkbenchTransaction): void {
                 <td class="sn-pro-workbench__cell-amount">{{ row.amount }}</td>
                 <td>{{ row.category }}</td>
                 <td>
-                  <span class="sn-pro-workbench__status" :class="`sn-pro-workbench__status--${row.status}`">
+                  <span
+                    class="sn-pro-workbench__status"
+                    :class="`sn-pro-workbench__status--${row.status}`"
+                  >
                     <span class="sn-pro-workbench__status-dot" aria-hidden="true" />
                     {{ statusText(row) }}
                   </span>
@@ -445,7 +462,11 @@ function onTransaction(row: ProWorkbenchTransaction): void {
           <h3 class="sn-pro-workbench__card-title">{{ props.flowTitle }}</h3>
           <div class="sn-pro-workbench__card-tools">
             <ul class="sn-pro-workbench__legend-inline">
-              <li v-for="item in flowLegend" :key="item.key" class="sn-pro-workbench__legend-inline-item">
+              <li
+                v-for="item in flowLegend"
+                :key="item.key"
+                class="sn-pro-workbench__legend-inline-item"
+              >
                 <span
                   class="sn-pro-workbench__legend-dot"
                   :class="`sn-pro-workbench__legend-dot--${item.key}`"
@@ -508,7 +529,11 @@ function onTransaction(row: ProWorkbenchTransaction): void {
         </div>
 
         <ul class="sn-pro-workbench__legend">
-          <li v-for="item in props.incomeSources" :key="item.key" class="sn-pro-workbench__legend-item">
+          <li
+            v-for="item in props.incomeSources"
+            :key="item.key"
+            class="sn-pro-workbench__legend-item"
+          >
             <span class="sn-pro-workbench__legend-label">{{ item.label }}</span>
             <span class="sn-pro-workbench__legend-value">{{ item.display ?? item.value }}</span>
           </li>

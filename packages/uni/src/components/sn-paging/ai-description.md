@@ -40,40 +40,40 @@ import { SnPaging } from '@snui/uni';
 
 ## Props
 
-| Name                        | Type     | Default                | Description                                                  |
-| --------------------------- | -------- | ---------------------- | ------------------------------------------------------------ |
-| `modelValue`                | `unknown[]` | `[]`                | v-model — aggregated list; render it in the default slot.    |
-| `auto`                      | `boolean` | `true`                | Fire the first query automatically after mount.              |
-| `defaultPageNo`             | `number`  | `1`                   | First page number emitted by `query`.                        |
-| `defaultPageSize`           | `number`  | `10`                  | Page size; a shorter page ends the sequence.                 |
-| `refresherEnabled`          | `boolean` | `true`                | Enable the native pull-to-refresh gesture.                   |
-| `refresherThreshold`        | `number`  | `45`                  | Arming pull distance (px, scroll-view contract).             |
-| `refresherDefaultText`      | `string`  | `'继续下拉刷新'`      | Text while pulling below the threshold.                      |
-| `refresherPullingText`      | `string`  | `'松开立即刷新'`      | Text once past the threshold.                                |
-| `refresherRefreshingText`   | `string`  | `'正在刷新...'`       | Text while the refresh query is in flight.                   |
-| `refresherCompleteText`     | `string`  | `'刷新成功'`          | Text held after a successful refresh.                        |
-| `refresherCompleteDuration` | `number`  | `500`                 | Success-text hold in ms; `0` skips the hold.                 |
-| `refresherBackground`       | `string`  | `''`                  | Pull-area background; forwards the native `refresher-background` on MP and paints the browser reveal box. |
-| `refresherTextColor`        | `string`  | `''`                  | Refresher text color (CSS color).                            |
-| `refresherIconColor`        | `string`  | `''`                  | Refresher arrow / spinner color (CSS color).                 |
-| `refresherLoadingType`      | `LoadingType` | `'circular'`      | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`). |
-| `secondFloorEnabled`        | `boolean` | `false`               | Enable pull-down-to-enter second floor (z-paging refresherF2). |
-| `secondFloorThreshold`      | `number`  | `100`                 | Release distance entering the second floor (px).             |
-| `secondFloorDuration`       | `number`  | `200`                 | Slide-in/out duration of the overlay (ms).                   |
-| `secondFloorFullscreen`     | `boolean` | `true`                | Spread the overlay over the viewport (fixed); `false` keeps it in the component box. |
-| `refresherSecondFloorText`  | `string`  | `'松开进入二楼'`      | Refresher text while the pull is inside the second-floor zone. |
-| `secondFloorBackground`     | `string`  | `''`                  | Background of the second-floor overlay.                      |
-| `loadMoreEnabled`           | `boolean` | `true`                | Enable next-page loading on scroll-to-bottom.                |
-| `lowerThreshold`            | `number`  | `50`                  | Distance from bottom firing load-more (px).                  |
-| `loadMoreDefaultText`       | `string`  | `'点击加载更多'`      | Idle footer text; tap loads the next page.                   |
-| `loadMoreLoadingText`       | `string`  | `'正在加载中...'`     | Footer text while a page is loading.                         |
-| `loadMoreNoMoreText`        | `string`  | `'没有更多了'`        | Footer text once every page is loaded.                       |
-| `loadMoreFailText`          | `string`  | `'加载失败，点击重试'` | Footer text after a failure; tap retries.                    |
-| `loadMoreTextColor`         | `string`  | `''`                  | Load-more text color; the footer spinner follows it when set. |
-| `emptyText`                 | `string`  | `'暂无数据'`          | Built-in empty view text.                                    |
-| `safeAreaInsetBottom`       | `boolean` | `false`               | Pad the container bottom for the device safe area.           |
-| `customClass`               | `string`  | `''`                  | Root node class forwarding.                                  |
-| `customStyle`               | `string`  | `''`                  | Root scroll-view style forwarding.                           |
+| Name                        | Type          | Default                | Description                                                                                               |
+| --------------------------- | ------------- | ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| `modelValue`                | `unknown[]`   | `[]`                   | v-model — aggregated list; render it in the default slot.                                                 |
+| `auto`                      | `boolean`     | `true`                 | Fire the first query automatically after mount.                                                           |
+| `defaultPageNo`             | `number`      | `1`                    | First page number emitted by `query`.                                                                     |
+| `defaultPageSize`           | `number`      | `10`                   | Page size; a shorter page ends the sequence.                                                              |
+| `refresherEnabled`          | `boolean`     | `true`                 | Enable the native pull-to-refresh gesture.                                                                |
+| `refresherThreshold`        | `number`      | `45`                   | Arming pull distance (px, scroll-view contract).                                                          |
+| `refresherDefaultText`      | `string`      | `'继续下拉刷新'`       | Text while pulling below the threshold.                                                                   |
+| `refresherPullingText`      | `string`      | `'松开立即刷新'`       | Text once past the threshold.                                                                             |
+| `refresherRefreshingText`   | `string`      | `'正在刷新...'`        | Text while the refresh query is in flight.                                                                |
+| `refresherCompleteText`     | `string`      | `'刷新成功'`           | Text held after a successful refresh.                                                                     |
+| `refresherCompleteDuration` | `number`      | `500`                  | Success-text hold in ms; `0` skips the hold.                                                              |
+| `refresherBackground`       | `string`      | `''`                   | Pull-area background; forwards the native `refresher-background` on MP and paints the browser reveal box. |
+| `refresherTextColor`        | `string`      | `''`                   | Refresher text color (CSS color).                                                                         |
+| `refresherIconColor`        | `string`      | `''`                   | Refresher arrow / spinner color (CSS color).                                                              |
+| `refresherLoadingType`      | `LoadingType` | `'circular'`           | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`).                                       |
+| `secondFloorEnabled`        | `boolean`     | `false`                | Enable pull-down-to-enter second floor (z-paging refresherF2).                                            |
+| `secondFloorThreshold`      | `number`      | `100`                  | Release distance entering the second floor (px).                                                          |
+| `secondFloorDuration`       | `number`      | `200`                  | Slide-in/out duration of the overlay (ms).                                                                |
+| `secondFloorFullscreen`     | `boolean`     | `true`                 | Spread the overlay over the viewport (fixed); `false` keeps it in the component box.                      |
+| `refresherSecondFloorText`  | `string`      | `'松开进入二楼'`       | Refresher text while the pull is inside the second-floor zone.                                            |
+| `secondFloorBackground`     | `string`      | `''`                   | Background of the second-floor overlay.                                                                   |
+| `loadMoreEnabled`           | `boolean`     | `true`                 | Enable next-page loading on scroll-to-bottom.                                                             |
+| `lowerThreshold`            | `number`      | `50`                   | Distance from bottom firing load-more (px).                                                               |
+| `loadMoreDefaultText`       | `string`      | `'点击加载更多'`       | Idle footer text; tap loads the next page.                                                                |
+| `loadMoreLoadingText`       | `string`      | `'正在加载中...'`      | Footer text while a page is loading.                                                                      |
+| `loadMoreNoMoreText`        | `string`      | `'没有更多了'`         | Footer text once every page is loaded.                                                                    |
+| `loadMoreFailText`          | `string`      | `'加载失败，点击重试'` | Footer text after a failure; tap retries.                                                                 |
+| `loadMoreTextColor`         | `string`      | `''`                   | Load-more text color; the footer spinner follows it when set.                                             |
+| `emptyText`                 | `string`      | `'暂无数据'`           | Built-in empty view text.                                                                                 |
+| `safeAreaInsetBottom`       | `boolean`     | `false`                | Pad the container bottom for the device safe area.                                                        |
+| `customClass`               | `string`      | `''`                   | Root node class forwarding.                                                                               |
+| `customStyle`               | `string`      | `''`                   | Root scroll-view style forwarding.                                                                        |
 
 ## Events
 
@@ -86,27 +86,27 @@ import { SnPaging } from '@snui/uni';
 
 ## Slots
 
-| Name          | Description                                                                |
-| ------------- | -------------------------------------------------------------------------- |
-| `default`     | List rows; render the bound v-model array here.                            |
-| `top`         | Fixed above the scroll area; does not scroll with the list.                |
-| `bottom`      | Fixed below the scroll area; does not scroll with the list.                |
-| `empty`       | Replaces the built-in empty view.                                          |
-| `refresher`   | Replaces the built-in refresher content (spinner / arrow + text).          |
+| Name          | Description                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------- |
+| `default`     | List rows; render the bound v-model array here.                                                      |
+| `top`         | Fixed above the scroll area; does not scroll with the list.                                          |
+| `bottom`      | Fixed below the scroll area; does not scroll with the list.                                          |
+| `empty`       | Replaces the built-in empty view.                                                                    |
+| `refresher`   | Replaces the built-in refresher content (spinner / arrow + text).                                    |
 | `footer`      | Replaces the built-in load-more footer; scoped `{ phase }` (`default \| loading \| noMore \| fail`). |
-| `secondFloor` | Second-floor overlay content; rendered over its own full-size scroll area. |
+| `secondFloor` | Second-floor overlay content; rendered over its own full-size scroll area.                           |
 
 ## Methods (via ref)
 
-| Name                | Signature                                                       | Description                                                            |
-| ------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `refresh`           | `() => void`                                                    | Refresh with the refresher animation; resets to `defaultPageNo`.       |
-| `reload`            | `() => void`                                                    | Refresh without the animation.                                         |
-| `complete`          | `(data: unknown[] \| false \| null, success?: boolean) => void` | Report a finished query; non-array data (or `success=false`) fails it. |
-| `completeByTotal`   | `(data: unknown[], total: number) => void`                      | Sequence ends once the aggregated list reaches `total`.                |
-| `completeByNoMore`  | `(data: unknown[], noMore: boolean) => void`                    | Sequence ends per the explicit flag.                                   |
-| `openSecondFloor`   | `() => void`                                                    | Slide the second-floor overlay in (z-paging `goF2`).                   |
-| `closeSecondFloor`  | `() => void`                                                    | Slide the second-floor overlay out (z-paging `closeF2`).               |
+| Name               | Signature                                                       | Description                                                            |
+| ------------------ | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `refresh`          | `() => void`                                                    | Refresh with the refresher animation; resets to `defaultPageNo`.       |
+| `reload`           | `() => void`                                                    | Refresh without the animation.                                         |
+| `complete`         | `(data: unknown[] \| false \| null, success?: boolean) => void` | Report a finished query; non-array data (or `success=false`) fails it. |
+| `completeByTotal`  | `(data: unknown[], total: number) => void`                      | Sequence ends once the aggregated list reaches `total`.                |
+| `completeByNoMore` | `(data: unknown[], noMore: boolean) => void`                    | Sequence ends per the explicit flag.                                   |
+| `openSecondFloor`  | `() => void`                                                    | Slide the second-floor overlay in (z-paging `goF2`).                   |
+| `closeSecondFloor` | `() => void`                                                    | Slide the second-floor overlay out (z-paging `closeF2`).               |
 
 ## Refresher states
 

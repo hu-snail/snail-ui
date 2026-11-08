@@ -9,7 +9,11 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const sliderBarDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '数据录入 Data' }, { text: 'SliderBar 胶囊滑条' }],
+  crumbs: [
+    { text: '文档首页', link: '/' },
+    { text: '数据录入 Data' },
+    { text: 'SliderBar 胶囊滑条' },
+  ],
   title: 'SliderBar 胶囊滑条',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
@@ -21,7 +25,10 @@ export const sliderBarDocPage: SnDocPageData = {
     { t: 'code', s: 'SnSlider' },
     { t: 'text', s: ' 共享同一套滑块语义（拖拽 / 键盘 / 步长 / range 双柄 / ' },
     { t: 'code', s: 'aria-*' },
-    { t: 'text', s: '），外观是「中性条 + 主题色实色填充 + 内联读数」。适合音量、播放进度、价格区间与竖排调光。' },
+    {
+      t: 'text',
+      s: '），外观是「中性条 + 主题色实色填充 + 内联读数」。适合音量、播放进度、价格区间与竖排调光。',
+    },
     { t: 'code', s: 'variant="column"' },
     { t: 'text', s: ' 切换为竖排条，读数并入轨道顶部。' },
   ],
@@ -197,7 +204,8 @@ export const sliderBarDocPage: SnDocPageData = {
     {
       name: 'slider-bar-web-levels',
       title: '等级 Levels',
-      blurb: 'levels 把数值映射成档位（风扇 / 甜度），轨道刻度随区间分布，读数显示档名；含头尾图标。',
+      blurb:
+        'levels 把数值映射成档位（风扇 / 甜度），轨道刻度随区间分布，读数显示档名；含头尾图标。',
     },
     {
       name: 'slider-bar-web-readout',
@@ -310,7 +318,7 @@ export const sliderBarDocPage: SnDocPageData = {
       {
         name: 'gradient / sparkles / animated',
         type: 'string / number / boolean',
-        default: "内置渐变 / 14 / true",
+        default: '内置渐变 / 14 / true',
         desc: 'aurora 的渐变、星点密度（0–40）与动效开关。',
       },
       {

@@ -301,9 +301,7 @@ interface SelectorQueryLike {
   in(context?: unknown): SelectorQueryLike;
   select(selector: string): SelectorQueryLike;
   selectAll(selector: string): SelectorQueryLike;
-  boundingClientRect(
-    callback: (rects: Array<WaterfallRect | null>) => void,
-  ): SelectorQueryLike;
+  boundingClientRect(callback: (rects: Array<WaterfallRect | null>) => void): SelectorQueryLike;
   exec(): void;
 }
 

@@ -34,7 +34,10 @@ const photos: Photo[] = [
         <text class="stack-card__title">{{ photo.title }}</text>
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">masonry=false — the same content degrades to a single stacked column (items keep margin-bottom)</text>
+    <text class="sn-demo__caption"
+      >masonry=false — the same content degrades to a single stacked column (items keep
+      margin-bottom)</text
+    >
   </view>
 </template>
 

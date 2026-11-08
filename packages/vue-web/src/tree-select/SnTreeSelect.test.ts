@@ -742,9 +742,11 @@ describe('SnTreeSelect', () => {
     const w = mountTree({ defaultExpandAll: true });
     await openMenu(w);
     expect(document.querySelectorAll('.sn-tree-select-node__lines')).toHaveLength(0);
-    expect(document.querySelector('.sn-tree-select-menu')?.classList.contains(
-      'sn-tree-select-menu--line-dashed',
-    )).toBe(false);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(false);
   });
 
   it('draws L connectors on child rows only', async () => {
@@ -756,35 +758,51 @@ describe('SnTreeSelect', () => {
       true,
     );
     expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(3);
-    expect(rowByValue('fruits')?.querySelector('.sn-tree-select-node__line--horizontal')).toBeNull();
-    expect(rowByValue('apple')?.querySelector('.sn-tree-select-node__line--horizontal')).not.toBeNull();
     expect(
-      rowByValue('apple')?.querySelector('.sn-tree-select-node__lines')?.getAttribute('aria-hidden'),
+      rowByValue('fruits')?.querySelector('.sn-tree-select-node__line--horizontal'),
+    ).toBeNull();
+    expect(
+      rowByValue('apple')?.querySelector('.sn-tree-select-node__line--horizontal'),
+    ).not.toBeNull();
+    expect(
+      rowByValue('apple')
+        ?.querySelector('.sn-tree-select-node__lines')
+        ?.getAttribute('aria-hidden'),
     ).toBe('true');
   });
 
   it('terminates the last child of a branch at the row center', async () => {
     const w = mountTree({ defaultExpandAll: true, showLine: true });
     await openMenu(w);
-    expect(rowByValue('apple')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(0);
-    expect(rowByValue('banana')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(1);
-    expect(rowByValue('kale')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(1);
+    expect(rowByValue('apple')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      0,
+    );
+    expect(rowByValue('banana')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      1,
+    );
+    expect(rowByValue('kale')?.querySelectorAll('.sn-tree-select-node__line--half')).toHaveLength(
+      1,
+    );
   });
 
   it('uses solid strokes by default', async () => {
     const w = mountTree({ defaultExpandAll: true, showLine: true, lineStyle: 'solid' });
     await openMenu(w);
-    expect(document.querySelector('.sn-tree-select-menu')?.classList.contains(
-      'sn-tree-select-menu--line-dashed',
-    )).toBe(false);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(false);
   });
 
   it('switches the panel to dashed strokes when requested', async () => {
     const w = mountTree({ defaultExpandAll: true, showLine: true, lineStyle: 'dashed' });
     await openMenu(w);
-    expect(document.querySelector('.sn-tree-select-menu')?.classList.contains(
-      'sn-tree-select-menu--line-dashed',
-    )).toBe(true);
+    expect(
+      document
+        .querySelector('.sn-tree-select-menu')
+        ?.classList.contains('sn-tree-select-menu--line-dashed'),
+    ).toBe(true);
     expect(document.querySelectorAll('.sn-tree-select-node__line--horizontal')).toHaveLength(3);
   });
 
@@ -813,9 +831,9 @@ describe('SnTreeSelect', () => {
     expect(menu?.classList.contains('sn-tree-select-menu--line-rounded')).toBe(false);
     expect(menu?.classList.contains('sn-tree-select-menu--line-guide')).toBe(false);
     expect(
-      (document.querySelector('.sn-tree-select-menu') as HTMLElement | null)?.style.getPropertyValue(
-        '--sn-web-tree-select-line-color',
-      ),
+      (
+        document.querySelector('.sn-tree-select-menu') as HTMLElement | null
+      )?.style.getPropertyValue('--sn-web-tree-select-line-color'),
     ).toBe('');
   });
 
@@ -835,14 +853,14 @@ describe('SnTreeSelect', () => {
     // stops the guide at the arc's top edge so the arc closes the branch.
     expect(document.querySelectorAll('.sn-tree-select-node__line--elbow')).toHaveLength(3);
     expect(
-      rowByValue('banana')?.querySelector('.sn-tree-select-node__line--elbow')?.classList.contains(
-        'sn-tree-select-node__line--half',
-      ),
+      rowByValue('banana')
+        ?.querySelector('.sn-tree-select-node__line--elbow')
+        ?.classList.contains('sn-tree-select-node__line--half'),
     ).toBe(true);
     expect(
-      rowByValue('apple')?.querySelector('.sn-tree-select-node__line--elbow')?.classList.contains(
-        'sn-tree-select-node__line--half',
-      ),
+      rowByValue('apple')
+        ?.querySelector('.sn-tree-select-node__line--elbow')
+        ?.classList.contains('sn-tree-select-node__line--half'),
     ).toBe(false);
   });
 

@@ -20,9 +20,7 @@ const clicks = ref(0);
 const dragActive = ref(false);
 const lastAction = ref('');
 
-const actionNote = computed(() =>
-  lastAction.value === '' ? '' : `最近动作：${lastAction.value}`,
-);
+const actionNote = computed(() => (lastAction.value === '' ? '' : `最近动作：${lastAction.value}`));
 
 function onClick(): void {
   clicks.value += 1;
@@ -39,7 +37,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">状态与手势</text>
       <text class="sn-fab-demo__hint-text">
-        右下：expandable=false 只抛 click（已点 {{ clicks }} 次）；左下：disabled 拦截交互；右上：draggable 可拖动。{{ actionNote }}
+        右下：expandable=false 只抛 click（已点 {{ clicks }} 次）；左下：disabled
+        拦截交互；右上：draggable 可拖动。{{ actionNote }}
       </text>
     </view>
 

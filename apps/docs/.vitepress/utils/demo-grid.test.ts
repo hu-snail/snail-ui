@@ -97,7 +97,11 @@ describe('demoGrid · shared waterfall', () => {
   });
 
   it('should leave a page without demos untouched', () => {
-    const plain = [makeToken('paragraph_open', 'p', 1), makeToken('inline', '', 0, 'text'), makeToken('paragraph_close', 'p', -1)];
+    const plain = [
+      makeToken('paragraph_open', 'p', 1),
+      makeToken('inline', '', 0, 'text'),
+      makeToken('paragraph_close', 'p', -1),
+    ];
     const out = run(plain);
     expect(out).toHaveLength(3);
     expect(wrapperCount(out, 'sn-demo')).toBe(0);

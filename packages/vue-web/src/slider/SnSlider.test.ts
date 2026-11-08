@@ -436,7 +436,9 @@ describe('SnSlider', () => {
     it('reflects external value changes in the input', async () => {
       const { slider } = mountSlider({ modelValue: 10, showInput: true });
       await slider().find('[role="slider"]').trigger('keydown', { key: 'ArrowRight' });
-      expect((slider().find('input.sn-slider__input').element as HTMLInputElement).value).toBe('11');
+      expect((slider().find('input.sn-slider__input').element as HTMLInputElement).value).toBe(
+        '11',
+      );
     });
   });
 
@@ -445,28 +447,40 @@ describe('SnSlider', () => {
     // (low === high === value), so no tinted track was painted at all.
     it('paints the fill from min to the handle in single mode', () => {
       const wrapper = mount(SnSlider, { props: { modelValue: 36 } });
-      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('left:0%');
       expect(style).toContain('width:36%');
     });
 
     it('paints the fill from min in single mode on custom bounds', () => {
       const wrapper = mount(SnSlider, { props: { modelValue: 30, min: 20, max: 40 } });
-      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('left:0%');
       expect(style).toContain('width:50%');
     });
 
     it('keeps the band between both handles in range mode', () => {
       const wrapper = mount(SnSlider, { props: { modelValue: [20, 80], range: true } });
-      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('left:20%');
       expect(style).toContain('width:60%');
     });
 
     it('anchors the single-mode fill to the opposite edge when reversed', () => {
       const wrapper = mount(SnSlider, { props: { modelValue: 25, reverse: true } });
-      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       // 25 reversed → 75; the band spans 75..100.
       expect(style).toContain('left:75%');
       expect(style).toContain('width:25%');
@@ -474,7 +488,10 @@ describe('SnSlider', () => {
 
     it('paints the single-mode fill upward in vertical mode', () => {
       const wrapper = mount(SnSlider, { props: { modelValue: 40, vertical: true } });
-      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__track').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('bottom:0%');
       expect(style).toContain('height:40%');
     });
@@ -507,7 +524,10 @@ describe('SnSlider', () => {
           railShadow: '0 0 12px 2px rgba(32, 128, 240, 0.35)',
         },
       });
-      const style = (wrapper.find('.sn-slider__rail').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider__rail').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('linear-gradient(90deg,#2080f0,transparent)');
       expect(style).toContain('box-shadow:0012px2pxrgba(32,128,240,0.35)');
     });
@@ -614,9 +634,7 @@ describe('SnSlider', () => {
       );
       // Rail / fill must resolve through `background` (not `background-color`)
       // so gradients and translucent "diffuse" fills survive the token path.
-      expect(styleBlock).toContain(
-        'background: var(\n    --sn-web-slider-rail-bg,',
-      );
+      expect(styleBlock).toContain('background: var(\n    --sn-web-slider-rail-bg,');
       expect(styleBlock).toContain(
         'background: var(--sn-web-slider-track-bg, var(--sn-web-color-action-primary));',
       );

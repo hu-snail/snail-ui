@@ -46,8 +46,8 @@ ADR-0008 已把包拆成「每种布局风格 = 独立入口 + 独立样式文�
     `cssUrl()`、`auroraGlowColors()`；变量名 `AURORA_BG_IMAGE_VAR` / `AURORA_GLOW_VARS` 公开；
   - `index.ts` —— 子入口；`ai-description.md` —— 机器可读契约；
 - 入口接线：`vite.config.js` 增加第 4 次独立构建（`pro-aurora/index` → `dist/pro-aurora/index.js`
-  + `dist/styles/pro-aurora.css`）；`package.json` 增加 `./layouts/aurora` +
-  `./layouts/aurora/style.css`；barrel 追加导出；
+  - `dist/styles/pro-aurora.css`）；`package.json` 增加 `./layouts/aurora` +
+    `./layouts/aurora/style.css`；barrel 追加导出；
 - 背景几何：**形状与模糊在样式里，调色板在 props 里**——`background: 'gradient' | 'mesh'`
   时由 `auroraBackgroundVars()` 产出 `--sn-pro-aurora-glow-1..4`（默认取
   `--sn-web-color-action-primary` 与 `--sn-web-color-feedback-info`），样式表用
@@ -62,7 +62,7 @@ ADR-0008 已把包拆成「每种布局风格 = 独立入口 + 独立样式文�
   `--sn-pro-aurora-glow-opacity` / `--sn-pro-aurora-mesh-opacity` / `--sn-pro-aurora-glow-blur`，
   两边互不牵连；预设矩阵因此可在 node 环境用纯函数单测（不依赖浏览器）。
 - 一级栏用 `stripMenuChildren` + `SnMenu collapsed`、二级模块用 `menuChildrenOf` + `SnMenu
-  horizontal`、高亮用 `findTopAncestorKey`——全部复用既有纯函数，新代码不重复菜单逻辑。
+horizontal`、高亮用 `findTopAncestorKey`——全部复用既有纯函数，新代码不重复菜单逻辑。
 
 ## Trade-offs
 
@@ -83,7 +83,7 @@ ADR-0008 已把包拆成「每种布局风格 = 独立入口 + 独立样式文�
   包内由 12 文件 167 测试 → 14 文件 221 测试；
 - 产物体积（实测）：`pro-aurora/index.js` 37.98 kB（gzip 8.09 kB）+
   `styles/pro-aurora.css` 14.67 kB（gzip 2.91 kB），且不含 `sider / header / tabbar /
-  settings / classic` 任何规则（按需）；
+settings / classic` 任何规则（按需）；
 - 文档站「布局风格」章节新增 `aurora` 小节 + live demo（`pro-layout-web-aurora`）。
 
 ## 修订 2026-11：背景属于布局自身，浮层半透明
@@ -104,11 +104,11 @@ ADR-0008 已把包拆成「每种布局风格 = 独立入口 + 独立样式文�
 
 由此得到的三层语义（文档 / README / ai-description 同步更新）：
 
-| 层 | 元素 | 上色 |
-| -- | ---- | ---- |
+| 层     | 元素                                                | 上色                                     |
+| ------ | --------------------------------------------------- | ---------------------------------------- |
 | 背景层 | `.sn-pro-aurora__bg`（`z-index: 0`，`aria-hidden`） | 页面底 + 预设（纯色 / 图 / 光晕 / 弥散） |
-| 内容层 | `.sn-pro-aurora__app`（`z-index: 1`） | transparent |
-| 浮层 | rail + main | 半透明白 + 模糊 |
+| 内容层 | `.sn-pro-aurora__app`（`z-index: 1`）               | transparent                              |
+| 浮层   | rail + main                                         | 半透明白 + 模糊                          |
 
 新增回归测试：`sn-pro-aurora__bg` 必须是布局根的第一个子元素、`.sn-pro-aurora__app` 必须挂在根下
 （`SnProLayoutAurora.test.ts` · "should paint the background inside the layout"）。

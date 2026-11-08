@@ -1030,18 +1030,18 @@ export default defineConfig({
     },
   },
 
-   head: [
-     // 文档页（非首页）默认悬浮：首帧渲染前挂 body.sn-nav-floating，
-     // 消除 hydration 前闪现默认通栏；首页保持滚动判断（SnDocsNav 接管）。
-     [
-       'script',
-       {},
-       `if (!/^\\/(en\\/?)?$/.test(location.pathname)) {
+  head: [
+    // 文档页（非首页）默认悬浮：首帧渲染前挂 body.sn-nav-floating，
+    // 消除 hydration 前闪现默认通栏；首页保持滚动判断（SnDocsNav 接管）。
+    [
+      'script',
+      {},
+      `if (!/^\\/(en\\/?)?$/.test(location.pathname)) {
    var add = function () { document.body.classList.add('sn-nav-floating'); };
    document.body ? add() : document.addEventListener('DOMContentLoaded', add);
  }`,
-     ],
-     ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ],
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
@@ -1096,4 +1096,3 @@ export default defineConfig({
    * so both root and en locales inherit a working search.
    */
 });
-

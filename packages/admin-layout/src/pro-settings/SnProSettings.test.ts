@@ -62,7 +62,10 @@ describe('SnProSettings', () => {
   });
 
   it('should let labels override the built-in copy', () => {
-    const wrapper = mountSettings({ show: true, labels: { title: '偏好设置', layout: '布局风格' } });
+    const wrapper = mountSettings({
+      show: true,
+      labels: { title: '偏好设置', layout: '布局风格' },
+    });
     expect(wrapper.find('.sn-drawer-header').text()).toContain('偏好设置');
     expect(wrapper.find('.sn-pro-settings__heading').text()).toBe('布局风格');
   });

@@ -60,24 +60,24 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 
 ## Props
 
-| 属性          | 类型                                                                                                                       | 默认值      | 说明                                                                        |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
-| `size`        | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'`                                                             | `'default'` | 标签尺寸，驱动内边距与字号                                                  |
-| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | 语义色                                                                      |
+| 属性          | 类型                                                                                                                       | 默认值      | 说明                                                                             |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------- |
+| `size`        | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'`                                                             | `'default'` | 标签尺寸，驱动内边距与字号                                                       |
+| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | 语义色                                                                           |
 | `icon`        | `string \| IconData`                                                                                                       | `''`        | 左侧图标：字符串经内置解析链（注册表 → 内置目录）解析；对象为直接渲染的 SVG 数据 |
-| `iconUrl`     | `string`                                                                                                                   | `''`        | 位图图标 URL，渲染为 `<image>`；优先级高于 `icon`，低于 `icon` 插槽          |
-| `iconPrefix`  | `string`                                                                                                                   | `''`        | 字体图标类名前缀，`cssIcon` 开启时使用                                      |
-| `cssIcon`     | `boolean \| string`                                                                                                        | `false`     | 字符串图标显式走字体路径；字符串值直接作为 class 前缀                       |
-| `shape`       | `'square' \| 'round' \| 'skew' \| 'ribbon' \| 'fold' \| 'ticket'`                                                          | `'square'`  | 异形形态，优先于 `round` sugar                                              |
-| `closable`    | `boolean`                                                                                                                  | `false`     | 是否可关闭                                                                  |
-| `dynamic`     | `boolean`                                                                                                                  | `false`     | 是否为新增标签（渲染行内输入）                                              |
-| `color`       | `string`                                                                                                                   | `''`        | 文字颜色（内联覆盖）                                                        |
-| `bgColor`     | `string`                                                                                                                   | `''`        | 背景色与边框色（内联覆盖）                                                  |
-| `round`       | `boolean`                                                                                                                  | `false`     | 胶囊形，等价于 `shape="round"`；`shape` 同传时优先                          |
-| `mark`        | `boolean`                                                                                                                  | `false`     | 是否标记样式（非对称圆角）                                                  |
-| `variant`     | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'`                                                                       | `'dark'`    | 标签变体                                                                    |
-| `customClass` | `string`                                                                                                                   | `''`        | 根节点自定义类名                                                            |
-| `customStyle` | `string`                                                                                                                   | `''`        | 根节点自定义 inline style                                                   |
+| `iconUrl`     | `string`                                                                                                                   | `''`        | 位图图标 URL，渲染为 `<image>`；优先级高于 `icon`，低于 `icon` 插槽              |
+| `iconPrefix`  | `string`                                                                                                                   | `''`        | 字体图标类名前缀，`cssIcon` 开启时使用                                           |
+| `cssIcon`     | `boolean \| string`                                                                                                        | `false`     | 字符串图标显式走字体路径；字符串值直接作为 class 前缀                            |
+| `shape`       | `'square' \| 'round' \| 'skew' \| 'ribbon' \| 'fold' \| 'ticket'`                                                          | `'square'`  | 异形形态，优先于 `round` sugar                                                   |
+| `closable`    | `boolean`                                                                                                                  | `false`     | 是否可关闭                                                                       |
+| `dynamic`     | `boolean`                                                                                                                  | `false`     | 是否为新增标签（渲染行内输入）                                                   |
+| `color`       | `string`                                                                                                                   | `''`        | 文字颜色（内联覆盖）                                                             |
+| `bgColor`     | `string`                                                                                                                   | `''`        | 背景色与边框色（内联覆盖）                                                       |
+| `round`       | `boolean`                                                                                                                  | `false`     | 胶囊形，等价于 `shape="round"`；`shape` 同传时优先                               |
+| `mark`        | `boolean`                                                                                                                  | `false`     | 是否标记样式（非对称圆角）                                                       |
+| `variant`     | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'`                                                                       | `'dark'`    | 标签变体                                                                         |
+| `customClass` | `string`                                                                                                                   | `''`        | 根节点自定义类名                                                                 |
+| `customStyle` | `string`                                                                                                                   | `''`        | 根节点自定义 inline style                                                        |
 
 ## Events
 
@@ -97,27 +97,27 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 
 ## 主题变量
 
-| 变量                                                                 | 用途                         |
-| -------------------------------------------------------------------- | ---------------------------- |
-| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` 类型的填充与浅色底 |
-| `--sn-mp-color-feedback-success` / `-soft`                           | `success` 类型               |
-| `--sn-mp-color-feedback-warning` / `-soft`                           | `warning` 类型               |
-| `--sn-mp-color-feedback-danger` / `-soft`                            | `danger` 类型                |
-| `--sn-mp-color-feedback-info`                                        | `default` 类型的填充         |
-| `--sn-mp-color-volcano` / `-soft`                                    | `volcano` 类型               |
-| `--sn-mp-color-lightblue` / `-soft`                                  | `lightblue` 类型             |
-| `--sn-mp-color-cyan` / `-soft`                                       | `cyan` 类型                  |
-| `--sn-mp-color-pink` / `-soft`                                       | `pink` 类型                  |
-| `--sn-mp-color-purple` / `-soft`                                     | `purple` 类型                |
-| `--sn-mp-color-background-subtle`                                    | `default` 类型的浅色底       |
-| `--sn-mp-color-text-on-primary`                                      | 实心变体的文字色             |
-| `--sn-mp-color-text-secondary`                                       | `default` 类型的文字色       |
-| `--sn-tag-icon-size`（默认 `1.15em`）                              | 矢量 / 位图图标盒尺寸，随标签字号缩放 |
-| `--sn-tag-close-icon-size`（默认 `0.9em`）                          | 关闭按钮图标尺寸             |
-| `--sn-mp-font-size-{xs,sm,md,lg}`                                    | 各档尺寸的字号               |
-| `--sn-mp-font-weight-bold`                                           | Doodle 皮肤字重              |
-| `--sn-mp-radius-{sm,md,lg,full}`                                     | 圆角 / 胶囊 / 标记形态       |
-| `--sn-mp-spacing-1`                                                  | 图标与文字间距               |
+| 变量                                                                 | 用途                                  |
+| -------------------------------------------------------------------- | ------------------------------------- |
+| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` 类型的填充与浅色底          |
+| `--sn-mp-color-feedback-success` / `-soft`                           | `success` 类型                        |
+| `--sn-mp-color-feedback-warning` / `-soft`                           | `warning` 类型                        |
+| `--sn-mp-color-feedback-danger` / `-soft`                            | `danger` 类型                         |
+| `--sn-mp-color-feedback-info`                                        | `default` 类型的填充                  |
+| `--sn-mp-color-volcano` / `-soft`                                    | `volcano` 类型                        |
+| `--sn-mp-color-lightblue` / `-soft`                                  | `lightblue` 类型                      |
+| `--sn-mp-color-cyan` / `-soft`                                       | `cyan` 类型                           |
+| `--sn-mp-color-pink` / `-soft`                                       | `pink` 类型                           |
+| `--sn-mp-color-purple` / `-soft`                                     | `purple` 类型                         |
+| `--sn-mp-color-background-subtle`                                    | `default` 类型的浅色底                |
+| `--sn-mp-color-text-on-primary`                                      | 实心变体的文字色                      |
+| `--sn-mp-color-text-secondary`                                       | `default` 类型的文字色                |
+| `--sn-tag-icon-size`（默认 `1.15em`）                                | 矢量 / 位图图标盒尺寸，随标签字号缩放 |
+| `--sn-tag-close-icon-size`（默认 `0.9em`）                           | 关闭按钮图标尺寸                      |
+| `--sn-mp-font-size-{xs,sm,md,lg}`                                    | 各档尺寸的字号                        |
+| `--sn-mp-font-weight-bold`                                           | Doodle 皮肤字重                       |
+| `--sn-mp-radius-{sm,md,lg,full}`                                     | 圆角 / 胶囊 / 标记形态                |
+| `--sn-mp-spacing-1`                                                  | 图标与文字间距                        |
 
 ## 无障碍
 

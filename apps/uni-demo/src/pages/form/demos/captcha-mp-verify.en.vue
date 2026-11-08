@@ -55,8 +55,8 @@ function onFail(): void {
         </text>
       </view>
       <text class="sn-demo__panel-desc">
-        The puzzle renders in the page flow so a form can verify in place without
-        covering the screen.
+        The puzzle renders in the page flow so a form can verify in place without covering the
+        screen.
       </text>
 
       <SnCaptcha
@@ -127,7 +127,6 @@ function onFail(): void {
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-
 
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

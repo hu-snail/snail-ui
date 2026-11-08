@@ -70,8 +70,8 @@ const pageDashed = ref(3);
     </view>
 
     <text class="sn-demo__meta">
-      total=95 with page-size=10 gives 10 pages; the variant only changes border
-      and fill, and the step icons always take --sn-mp-icon-size-medium.
+      total=95 with page-size=10 gives 10 pages; the variant only changes border and fill, and the
+      step icons always take --sn-mp-icon-size-medium.
     </text>
   </view>
 </template>

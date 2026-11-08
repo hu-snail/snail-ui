@@ -33,8 +33,8 @@ const SOURCE = 'https://picsum.photos/seed/snui-captcha-custom/640/320';
         </text>
       </view>
       <text class="sn-demo__panel-desc">
-        A wider frame with a looser tolerance; hint and success copy are
-        customised, and a scrim tap does not close.
+        A wider frame with a looser tolerance; hint and success copy are customised, and a scrim tap
+        does not close.
       </text>
       <SnButton type="primary" block @tap="show = true">Open custom captcha</SnButton>
     </view>

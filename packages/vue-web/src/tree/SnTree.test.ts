@@ -490,9 +490,7 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       );
       // aa is not the last child: the full-height trunk stays so the branch
       // curves away from a continuous guide.
-      expect(rows[1]?.find('.sn-tree__line--elbow').classes()).not.toContain(
-        'sn-tree__line--half',
-      );
+      expect(rows[1]?.find('.sn-tree__line--elbow').classes()).not.toContain('sn-tree__line--half');
     });
 
     it('combines rounded corners with a dashed stroke', () => {
@@ -606,11 +604,15 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       await nextTick();
 
       expect(rows[1]?.classes()).toContain('sn-tree__node--dragging');
-      expect(w.findComponent(SnTree).emitted('dragStart')?.[0]?.[0]).toMatchObject({ node: { key: 'aa' } });
+      expect(w.findComponent(SnTree).emitted('dragStart')?.[0]?.[0]).toMatchObject({
+        node: { key: 'aa' },
+      });
 
       rows[1]?.element.dispatchEvent(dragEvent('dragend'));
       await nextTick();
-      expect(w.findComponent(SnTree).emitted('dragEnd')?.[0]?.[0]).toMatchObject({ node: { key: 'aa' } });
+      expect(w.findComponent(SnTree).emitted('dragEnd')?.[0]?.[0]).toMatchObject({
+        node: { key: 'aa' },
+      });
       expect(w.find('.sn-tree__node--dragging').exists()).toBe(false);
     });
 

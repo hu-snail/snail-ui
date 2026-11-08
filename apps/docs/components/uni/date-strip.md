@@ -40,55 +40,55 @@
 
 ## Props
 
-| 属性          | 类型                                           | 默认值      | 说明                                                                        |
-| ------------- | ---------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
-| `modelValue`  | `number \| number[] \| null`                   | `null`      | 时间戳；`range` 模式为 `[start, end]`（进行中允许 `[start]`）               |
-| `type`        | `'single' \| 'range'`                          | `'single'`  | 选择模式                                                                    |
-| `count`       | `number`                                       | `7`         | 每页天数（swiper 每页一屏）                                                 |
-| `startDate`   | `number`                                       | 今天        | 首页起点（本地零点时间戳）                                                  |
-| `minDate`     | `number`                                       | `undefined` | 早于该日的格子禁用，并夹住可翻页左边界                                      |
-| `maxDate`     | `number`                                       | `undefined` | 晚于该日的格子禁用，并夹住可翻页右边界                                      |
-| `showWeek`    | `boolean`                                      | `true`      | 每列顶部的星期字                                                           |
-| `showLunar`   | `boolean`                                      | `false`     | 农历角标——**AUI 追加**（初一显示月名；`formatter` 可覆盖）                  |
-| `showNav`     | `boolean`                                      | `false`     | 显示两侧翻页按钮（内容可用 `#prev` / `#next` 插槽自定义）                   |
-| `formatter`   | `(item: DateStripDayItem) => DateStripDayItem` | `undefined` | 格子钩子：改写 `text` / `topInfo` / `bottomInfo` / `disabled`               |
-| `disabled`    | `boolean`                                      | `false`     | 整条禁用                                                                    |
-| `customClass` / `customStyle` | `string`                       | `''`        | 根节点类名 / 内联样式                                                       |
+| 属性                          | 类型                                           | 默认值      | 说明                                                          |
+| ----------------------------- | ---------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `modelValue`                  | `number \| number[] \| null`                   | `null`      | 时间戳；`range` 模式为 `[start, end]`（进行中允许 `[start]`） |
+| `type`                        | `'single' \| 'range'`                          | `'single'`  | 选择模式                                                      |
+| `count`                       | `number`                                       | `7`         | 每页天数（swiper 每页一屏）                                   |
+| `startDate`                   | `number`                                       | 今天        | 首页起点（本地零点时间戳）                                    |
+| `minDate`                     | `number`                                       | `undefined` | 早于该日的格子禁用，并夹住可翻页左边界                        |
+| `maxDate`                     | `number`                                       | `undefined` | 晚于该日的格子禁用，并夹住可翻页右边界                        |
+| `showWeek`                    | `boolean`                                      | `true`      | 每列顶部的星期字                                              |
+| `showLunar`                   | `boolean`                                      | `false`     | 农历角标——**AUI 追加**（初一显示月名；`formatter` 可覆盖）    |
+| `showNav`                     | `boolean`                                      | `false`     | 显示两侧翻页按钮（内容可用 `#prev` / `#next` 插槽自定义）     |
+| `formatter`                   | `(item: DateStripDayItem) => DateStripDayItem` | `undefined` | 格子钩子：改写 `text` / `topInfo` / `bottomInfo` / `disabled` |
+| `disabled`                    | `boolean`                                      | `false`     | 整条禁用                                                      |
+| `customClass` / `customStyle` | `string`                                       | `''`        | 根节点类名 / 内联样式                                         |
 
 `DateStripDayItem`：`date`（本地零点时间戳）/ `day` / `week`（0 = 周日）/ `text` / `topInfo` / `bottomInfo` / `disabled`。
 
 ## Slots
 
-| 插槽   | 说明                                             |
-| ------ | ------------------------------------------------ |
-| `prev` | 左侧翻页按钮内容（默认 `‹`），整块替换           |
-| `next` | 右侧翻页按钮内容（默认 `›`），整块替换           |
+| 插槽   | 说明                                   |
+| ------ | -------------------------------------- |
+| `prev` | 左侧翻页按钮内容（默认 `‹`），整块替换 |
+| `next` | 右侧翻页按钮内容（默认 `›`），整块替换 |
 
 ## Events
 
-| 事件名              | 说明                       | 参数                                        |
-| ------------------- | -------------------------- | ------------------------------------------- |
-| `update:modelValue` | 点选合法格子时写回         | `(value: number \| number[])`               |
-| `change`            | 同上                       | `{ value }`                                 |
-| `pagechange`        | 翻页结束（手势或按钮）     | `{ start, end, index }`（该页首尾时间戳与页序号） |
+| 事件名              | 说明                   | 参数                                              |
+| ------------------- | ---------------------- | ------------------------------------------------- |
+| `update:modelValue` | 点选合法格子时写回     | `(value: number \| number[])`                     |
+| `change`            | 同上                   | `{ value }`                                       |
+| `pagechange`        | 翻页结束（手势或按钮） | `{ start, end, index }`（该页首尾时间戳与页序号） |
 
 ## Methods（ref）
 
-| 方法               | 说明                            |
-| ------------------ | ------------------------------- |
-| `prev()` / `next()`| 翻上一页 / 下一页（带动画）     |
-| `jumpTo(date)`     | 跳到包含 `date` 的页            |
+| 方法                | 说明                        |
+| ------------------- | --------------------------- |
+| `prev()` / `next()` | 翻上一页 / 下一页（带动画） |
+| `jumpTo(date)`      | 跳到包含 `date` 的页        |
 
 ## 主题变量
 
-| 变量                                | 用途       |
-| ----------------------------------- | ---------- |
-| `--sn-mp-color-background-elevated` | 条底色     |
-| `--sn-mp-color-action-primary`      | 整列选中底色 |
-| `--sn-mp-color-action-primary-soft` | 区间中段   |
-| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-on-primary` | 文案 |
-| `--sn-mp-font-size-xs` / `-md` / `-lg` | 字号    |
-| `--sn-mp-radius-md`                 | 选中列圆角 |
+| 变量                                                                      | 用途         |
+| ------------------------------------------------------------------------- | ------------ |
+| `--sn-mp-color-background-elevated`                                       | 条底色       |
+| `--sn-mp-color-action-primary`                                            | 整列选中底色 |
+| `--sn-mp-color-action-primary-soft`                                       | 区间中段     |
+| `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-on-primary` | 文案         |
+| `--sn-mp-font-size-xs` / `-md` / `-lg`                                    | 字号         |
+| `--sn-mp-radius-md`                                                       | 选中列圆角   |
 
 ## 无障碍
 

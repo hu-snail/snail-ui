@@ -24,6 +24,7 @@ dev server 仍在用旧快照，纯 TS 转译（esbuild）不回查命名导出�
 不存在的导入：`CirclePlay` / `ThumbsDown` / `Share2` 归属误判）。
 
 **教训（跨 monorepo + Vite / 同类型工程通用）**：
+
 - 别名指向 `node_modules` 内的 workspace 源 → Vite 必然预打包，源码变更不会自动失效；
 - **dev 报“找不到导出”而 build 通过 = 先怀疑预打包缓存**，不是先改代码；
 - 判断方法：比对 bundle 里的 `?v=` 哈希是否变化；`rm -rf node_modules/.vite` 后重启即恢复。
@@ -31,6 +32,7 @@ dev server 仍在用旧快照，纯 TS 转译（esbuild）不回查命名导出�
 **反模式**：在 dev 报错后逐个把 named import 换成默认导入 / 内联图标数据来“绕开”。
 
 **对应代码**：
+
 - `apps/uni-templates/package.json`（`predev:h5` / `predev:mp-weixin` 前置清理缓存）
 - `apps/uni-templates/vite.config.ts`（`@snui/uni-src` 别名 + `preserveSymlinks`）
 
@@ -51,6 +53,7 @@ optimizeDeps 排除该别名（Vite `optimizeDeps.exclude` 对子路径 specifie
 MP data-URL 形态收敛过的窄接口（§32/§113.3），不支持任意 SVG 子元素。
 
 **教训**：从 lucide 取图标必须把图元折算成等效 path：
+
 - `circle(cx,cy,r)` → `M{cx-r},{cy}a{r},{r} 0 1,0 {2r},0a{r},{r} 0 1,0 {-2r},0`
 - `rect(x,y,w,h,rx)` → 圆角矩形 path（rx=0 时直角 path）
 - `polygon(points)` → `M{p0}L{p1}…Z`（注意 lucide 的 points 是空格分隔的坐标对，
@@ -123,6 +126,7 @@ lucide 近似字形 + `SnIcon` 默认描边渲染，tabbar/金刚区与设计稿
 （`--sn-mp-color-action-primary`）；且图标视觉上比设计稿大一倍。
 
 **根因**：
+
 1. 解析出的激活/未激活色只内联在 `<text>` 上，图标（`currentColor` 描边）
    继承的是根节点的令牌色 → 已改为把颜色内联到 item 根节点，图标随
    `currentColor` 一并解析。

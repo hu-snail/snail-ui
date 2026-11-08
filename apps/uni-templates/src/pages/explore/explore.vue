@@ -19,7 +19,12 @@ function goHome(): void {
 
 <template>
   <view class="tpl-page tabpage" :class="{ 'sn-theme-dark': isDark }">
-    <SnNavbar title="探索" fixed safe-area-inset-top :custom-style="'background-color: var(--tplh-nav);'" />
+    <SnNavbar
+      title="探索"
+      fixed
+      safe-area-inset-top
+      :custom-style="'background-color: var(--tplh-nav);'"
+    />
     <view class="tabpage__space" aria-hidden="true" />
     <view class="tabpage__body">
       <SnEmpty icon="sparkles" tip="探索发现能力建设中，先去逛逛模板库" />
@@ -28,7 +33,8 @@ function goHome(): void {
         bg-color="#35a257"
         :custom-style="{ borderRadius: '999rpx', borderColor: '#35a257' }"
         @click="goHome"
-      >去逛模板</SnButton>
+        >去逛模板</SnButton
+      >
     </view>
     <TplTabbar :active="1" />
   </view>

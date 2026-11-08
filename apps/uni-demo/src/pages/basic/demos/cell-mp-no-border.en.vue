@@ -14,14 +14,18 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__label">Card group without outline (sn-cell-group card :border="false")</text>
+    <text class="sn-demo__label"
+      >Card group without outline (sn-cell-group card :border="false")</text
+    >
     <SnCellGroup title="Quick actions" card :border="false">
       <SnCell title="Scan" :prefix-icon-data="Camera" is-link />
       <SnCell title="Pay &amp; collect" :prefix-icon-data="CreditCard" is-link />
       <SnCell title="Card wallet" :prefix-icon-data="Wallet" is-link />
     </SnCellGroup>
 
-    <text class="sn-demo__label">Insert group without outline (sn-cell-group insert :border="false")</text>
+    <text class="sn-demo__label"
+      >Insert group without outline (sn-cell-group insert :border="false")</text
+    >
     <SnCellGroup title="Recent" insert :border="false">
       <SnCell title="Scan" :prefix-icon-data="Camera" is-link />
       <SnCell title="Card wallet" :prefix-icon-data="Wallet" is-link />

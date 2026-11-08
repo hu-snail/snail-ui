@@ -37,7 +37,10 @@ const photos: Photo[] = [
         <text class="wall-card__title">{{ photo.title }}</text>
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">Two-column waterfall — a tall item no longer pushes its neighbour down; column order equals slot order</text>
+    <text class="sn-demo__caption"
+      >Two-column waterfall — a tall item no longer pushes its neighbour down; column order equals
+      slot order</text
+    >
   </view>
 </template>
 

@@ -68,11 +68,7 @@ function mountSplit({ split = {}, panelA = {}, panelB = {} }: HostOptions = {}) 
               },
               { default: () => h('div', { class: 'pane-a' }, 'A') },
             ),
-            h(
-              SnSplitPanel,
-              { ...panelB },
-              { default: () => h('div', { class: 'pane-b' }, 'B') },
-            ),
+            h(SnSplitPanel, { ...panelB }, { default: () => h('div', { class: 'pane-b' }, 'B') }),
           ],
         });
     },

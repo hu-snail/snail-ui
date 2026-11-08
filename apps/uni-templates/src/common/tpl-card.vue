@@ -27,13 +27,18 @@ function onLike(): void {
 
 <template>
   <view class="card" @tap="emit('open')">
-    <view class="card__cover" :style="{ background: `linear-gradient(155deg, ${props.item.from}, ${props.item.to})` }">
+    <view
+      class="card__cover"
+      :style="{ background: `linear-gradient(155deg, ${props.item.from}, ${props.item.to})` }"
+    >
       <view class="card__glow" aria-hidden="true" />
       <view class="card__screen" aria-hidden="true">
         <SnIcon :icon="props.item.icon" :size="46" color="rgba(255,255,255,0.96)" />
         <text class="card__screen-title">{{ props.item.title }}</text>
       </view>
-      <view class="card__tool"><text class="card__tool-text">{{ props.item.tool }}</text></view>
+      <view class="card__tool"
+        ><text class="card__tool-text">{{ props.item.tool }}</text></view
+      >
       <view
         class="card__like"
         :class="{ 'is-on': props.liked }"
@@ -43,7 +48,9 @@ function onLike(): void {
       >
         <SnIcon :icon="Heart" :size="28" :color="props.liked ? '#ff5d76' : '#ffffff'" />
       </view>
-      <view class="card__tag"><text class="card__tag-text">{{ props.item.tag }}</text></view>
+      <view class="card__tag"
+        ><text class="card__tag-text">{{ props.item.tag }}</text></view
+      >
     </view>
     <view class="card__body">
       <text class="card__title">{{ props.item.title }}</text>

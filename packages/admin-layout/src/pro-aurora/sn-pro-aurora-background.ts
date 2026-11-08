@@ -81,10 +81,7 @@ function percentEncode(char: string): string {
  * default pair fills whatever is missing (so `mesh` always gets 4 entries
  * even when the host passes one color).
  */
-export function auroraGlowColors(
-  colors: readonly string[] | undefined,
-  count: number,
-): string[] {
+export function auroraGlowColors(colors: readonly string[] | undefined, count: number): string[] {
   const provided = (colors ?? []).map((color) => color.trim()).filter((color) => color !== '');
   const resolved: string[] = [];
   for (let index = 0; index < count; index += 1) {

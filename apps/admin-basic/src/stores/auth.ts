@@ -2,12 +2,7 @@ import { defineStore } from 'pinia';
 import { authApi } from '../api/auth';
 import { menuApi } from '../api/menu';
 import { TOKEN_KEY, clearToken } from '../request/http';
-import type {
-  LoginPayload,
-  MenuItem,
-  RegisterPayload,
-  UserInfo,
-} from '../api/types';
+import type { LoginPayload, MenuItem, RegisterPayload, UserInfo } from '../api/types';
 
 const USER_KEY = 'admin_basic_user';
 

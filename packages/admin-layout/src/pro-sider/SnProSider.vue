@@ -72,9 +72,9 @@ defineSlots<{
 /** Typed conditional bind for SnMenu's controlled expandedKeys: passing the
  * prop at all switches SnMenu to controlled mode, so it must be omitted (not
  * `undefined`) when the host didn't provide it. */
-const expandedKeysProps = computed<Record<string, never> | { expandedKeys: Array<string | number> }>(() =>
-  props.expandedKeys !== undefined ? { expandedKeys: props.expandedKeys } : {},
-);
+const expandedKeysProps = computed<
+  Record<string, never> | { expandedKeys: Array<string | number> }
+>(() => (props.expandedKeys !== undefined ? { expandedKeys: props.expandedKeys } : {}));
 </script>
 
 <template>

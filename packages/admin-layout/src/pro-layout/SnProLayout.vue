@@ -186,9 +186,9 @@ const railMenus = computed(() => stripMenuChildren(props.menus));
 const hasSiderMenu = computed(() => siderMenus.value.length > 0);
 /** Typed conditional bind for the siders' controlled expandedKeys: the prop
  * must be omitted (not `undefined`) to keep SnMenu uncontrolled. */
-const expandedKeysProps = computed<Record<string, never> | { expandedKeys: Array<string | number> }>(() =>
-  props.expandedKeys !== undefined ? { expandedKeys: props.expandedKeys } : {},
-);
+const expandedKeysProps = computed<
+  Record<string, never> | { expandedKeys: Array<string | number> }
+>(() => (props.expandedKeys !== undefined ? { expandedKeys: props.expandedKeys } : {}));
 
 // ── Breadcrumb: explicit prop wins, else derive from the menu path ───────
 const breadcrumbItems = computed<string[]>(() => {
@@ -198,7 +198,8 @@ const breadcrumbItems = computed<string[]>(() => {
 
 // ── Content strip (top/mix/dual): toggle + breadcrumb above the content ──
 const stripToggleVisible = computed(
-  () => props.showCollapse && (props.layout === 'mix' || props.layout === 'dual') && hasSiderMenu.value,
+  () =>
+    props.showCollapse && (props.layout === 'mix' || props.layout === 'dual') && hasSiderMenu.value,
 );
 const showStrip = computed(
   () => props.layout !== 'side' && (stripToggleVisible.value || breadcrumbItems.value.length > 0),

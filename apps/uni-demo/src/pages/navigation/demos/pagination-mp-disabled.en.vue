@@ -37,9 +37,8 @@ const lastPage = ref(8);
     </view>
 
     <text class="sn-demo__meta">
-      Disabled buttons use --sn-mp-color-text-disabled with a
-      --sn-mp-color-background-subtle fill; out-of-range taps are blocked and
-      never emit change.
+      Disabled buttons use --sn-mp-color-text-disabled with a --sn-mp-color-background-subtle fill;
+      out-of-range taps are blocked and never emit change.
     </text>
   </view>
 </template>

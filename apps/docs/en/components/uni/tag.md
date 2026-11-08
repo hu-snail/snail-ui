@@ -60,24 +60,24 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 
 ## Props
 
-| Prop          | Type                                                                                                                       | Default     | Description                                                                                  |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------- |
-| `size`        | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'`                                                             | `'default'` | Tag scale; drives padding and font size                                                      |
-| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | Semantic colour                                                                              |
+| Prop          | Type                                                                                                                       | Default     | Description                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| `size`        | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'`                                                             | `'default'` | Tag scale; drives padding and font size                                                                              |
+| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | Semantic colour                                                                                                      |
 | `icon`        | `string \| IconData`                                                                                                       | `''`        | Left icon: a string resolves through the built-in chain (registry → catalog); an object renders as SVG data directly |
-| `iconUrl`     | `string`                                                                                                                   | `''`        | Bitmap icon URL rendered as an `<image>`; wins over `icon`, loses to the `icon` slot          |
-| `iconPrefix`  | `string`                                                                                                                   | `''`        | Iconfont class prefix, used when `cssIcon` is on                                             |
-| `cssIcon`     | `boolean \| string`                                                                                                        | `false`     | Routes a string icon to the font-glyph path; a string value is the class prefix              |
-| `shape`       | `'square' \| 'round' \| 'skew' \| 'ribbon' \| 'fold' \| 'ticket'`                                                          | `'square'`  | Special shape; wins over the `round` sugar                                                   |
-| `closable`    | `boolean`                                                                                                                  | `false`     | Render the close button                                                                      |
-| `dynamic`     | `boolean`                                                                                                                  | `false`     | Render the inline "new tag" input                                                            |
-| `color`       | `string`                                                                                                                   | `''`        | Inline text-colour override                                                                  |
-| `bgColor`     | `string`                                                                                                                   | `''`        | Inline background + border-colour override                                                   |
-| `round`       | `boolean`                                                                                                                  | `false`     | Pill shape, sugar for `shape="round"`; `shape` wins when both are given                      |
-| `mark`        | `boolean`                                                                                                                  | `false`     | Marker shape (asymmetric corners)                                                            |
-| `variant`     | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'`                                                                       | `'dark'`    | Fill / border treatment                                                                      |
-| `customClass` | `string`                                                                                                                   | `''`        | Extra class on the root node                                                                 |
-| `customStyle` | `string`                                                                                                                   | `''`        | Inline style on the root node                                                                |
+| `iconUrl`     | `string`                                                                                                                   | `''`        | Bitmap icon URL rendered as an `<image>`; wins over `icon`, loses to the `icon` slot                                 |
+| `iconPrefix`  | `string`                                                                                                                   | `''`        | Iconfont class prefix, used when `cssIcon` is on                                                                     |
+| `cssIcon`     | `boolean \| string`                                                                                                        | `false`     | Routes a string icon to the font-glyph path; a string value is the class prefix                                      |
+| `shape`       | `'square' \| 'round' \| 'skew' \| 'ribbon' \| 'fold' \| 'ticket'`                                                          | `'square'`  | Special shape; wins over the `round` sugar                                                                           |
+| `closable`    | `boolean`                                                                                                                  | `false`     | Render the close button                                                                                              |
+| `dynamic`     | `boolean`                                                                                                                  | `false`     | Render the inline "new tag" input                                                                                    |
+| `color`       | `string`                                                                                                                   | `''`        | Inline text-colour override                                                                                          |
+| `bgColor`     | `string`                                                                                                                   | `''`        | Inline background + border-colour override                                                                           |
+| `round`       | `boolean`                                                                                                                  | `false`     | Pill shape, sugar for `shape="round"`; `shape` wins when both are given                                              |
+| `mark`        | `boolean`                                                                                                                  | `false`     | Marker shape (asymmetric corners)                                                                                    |
+| `variant`     | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'`                                                                       | `'dark'`    | Fill / border treatment                                                                                              |
+| `customClass` | `string`                                                                                                                   | `''`        | Extra class on the root node                                                                                         |
+| `customStyle` | `string`                                                                                                                   | `''`        | Inline style on the root node                                                                                        |
 
 ## Events
 
@@ -97,27 +97,27 @@ import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 
 ## Theme variables
 
-| Variable                                                             | Purpose                      |
-| -------------------------------------------------------------------- | ---------------------------- |
-| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` fill and tint      |
-| `--sn-mp-color-feedback-success` / `-soft`                           | `success` type               |
-| `--sn-mp-color-feedback-warning` / `-soft`                           | `warning` type               |
-| `--sn-mp-color-feedback-danger` / `-soft`                            | `danger` type                |
-| `--sn-mp-color-feedback-info`                                        | `default` type fill          |
-| `--sn-mp-color-volcano` / `-soft`                                    | `volcano` type               |
-| `--sn-mp-color-lightblue` / `-soft`                                  | `lightblue` type             |
-| `--sn-mp-color-cyan` / `-soft`                                       | `cyan` type                  |
-| `--sn-mp-color-pink` / `-soft`                                       | `pink` type                  |
-| `--sn-mp-color-purple` / `-soft`                                     | `purple` type                |
-| `--sn-mp-color-background-subtle`                                    | `default` type tint          |
-| `--sn-mp-color-text-on-primary`                                      | Label colour on a solid fill |
-| `--sn-mp-color-text-secondary`                                       | `default` type label colour  |
-| `--sn-tag-icon-size` (default `1.15em`)                             | Vector / bitmap icon box, scales with the tag font |
-| `--sn-tag-close-icon-size` (default `0.9em`)                         | Close-button icon size       |
-| `--sn-mp-font-size-{xs,sm,md,lg}`                                    | Font size per size step      |
-| `--sn-mp-font-weight-bold`                                           | Doodle skin weight           |
-| `--sn-mp-radius-{sm,md,lg,full}`                                     | Corner / pill / marker shape |
-| `--sn-mp-spacing-1`                                                  | Icon-to-label gap            |
+| Variable                                                             | Purpose                                            |
+| -------------------------------------------------------------------- | -------------------------------------------------- |
+| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` fill and tint                            |
+| `--sn-mp-color-feedback-success` / `-soft`                           | `success` type                                     |
+| `--sn-mp-color-feedback-warning` / `-soft`                           | `warning` type                                     |
+| `--sn-mp-color-feedback-danger` / `-soft`                            | `danger` type                                      |
+| `--sn-mp-color-feedback-info`                                        | `default` type fill                                |
+| `--sn-mp-color-volcano` / `-soft`                                    | `volcano` type                                     |
+| `--sn-mp-color-lightblue` / `-soft`                                  | `lightblue` type                                   |
+| `--sn-mp-color-cyan` / `-soft`                                       | `cyan` type                                        |
+| `--sn-mp-color-pink` / `-soft`                                       | `pink` type                                        |
+| `--sn-mp-color-purple` / `-soft`                                     | `purple` type                                      |
+| `--sn-mp-color-background-subtle`                                    | `default` type tint                                |
+| `--sn-mp-color-text-on-primary`                                      | Label colour on a solid fill                       |
+| `--sn-mp-color-text-secondary`                                       | `default` type label colour                        |
+| `--sn-tag-icon-size` (default `1.15em`)                              | Vector / bitmap icon box, scales with the tag font |
+| `--sn-tag-close-icon-size` (default `0.9em`)                         | Close-button icon size                             |
+| `--sn-mp-font-size-{xs,sm,md,lg}`                                    | Font size per size step                            |
+| `--sn-mp-font-weight-bold`                                           | Doodle skin weight                                 |
+| `--sn-mp-radius-{sm,md,lg,full}`                                     | Corner / pill / marker shape                       |
+| `--sn-mp-spacing-1`                                                  | Icon-to-label gap                                  |
 
 ## Accessibility
 

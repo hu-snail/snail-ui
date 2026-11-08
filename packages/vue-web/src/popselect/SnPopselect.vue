@@ -880,7 +880,11 @@ defineExpose({
 }
 
 .sn-popselect-option:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 35%, transparent));
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 35%, transparent)
+    );
   outline-offset: -2px;
 }
 

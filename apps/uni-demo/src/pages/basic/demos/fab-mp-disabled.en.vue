@@ -42,7 +42,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">States and gestures</text>
       <text class="sn-fab-demo__hint-text">
-        Bottom-right: expandable=false emits click only ({{ clicks }} taps); bottom-left: disabled blocks interaction; top-right: draggable. {{ actionNote }}
+        Bottom-right: expandable=false emits click only ({{ clicks }} taps); bottom-left: disabled
+        blocks interaction; top-right: draggable. {{ actionNote }}
       </text>
     </view>
 
@@ -74,7 +75,12 @@ function pick(label: string): void {
       :gap="{ top: 16, right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Quick launch" @tap="pick('Quick launch')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Quick launch"
+        @tap="pick('Quick launch')"
+      >
         <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
       </view>
       <view class="sn-fab-demo__bubble" role="button" aria-label="Remind" @tap="pick('Remind')">

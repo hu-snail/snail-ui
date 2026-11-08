@@ -75,10 +75,22 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { closeOutside, registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import {
+  closeOutside,
+  registerOutsideClosable,
+  unregisterOutsideClosable,
+} from '../../utils/outside-close';
 
 defineOptions({ name: 'SnTooltip' });
 

@@ -15,14 +15,7 @@
  *     normalizes all of those into a single VNodeChild.
  */
 
-import {
-  defineComponent,
-  h,
-  isVNode,
-  type Component,
-  type PropType,
-  type VNodeChild,
-} from 'vue';
+import { defineComponent, h, isVNode, type Component, type PropType, type VNodeChild } from 'vue';
 import SnIcon from '../icon/SnIcon.vue';
 import { resolveIconByName } from '../icon/sn-icon-registry';
 
@@ -53,9 +46,7 @@ export const SnTreePart = defineComponent({
 export function resolveTreeIcon(icon: unknown): VNodeChild {
   if (icon === undefined || icon === null || typeof icon === 'boolean') return null;
   if (typeof icon === 'string') {
-    return resolveIconByName(icon) !== undefined
-      ? h(SnIcon, { name: icon, size: 14 })
-      : icon;
+    return resolveIconByName(icon) !== undefined ? h(SnIcon, { name: icon, size: 14 }) : icon;
   }
   if (typeof icon === 'number') return icon;
   if (typeof icon === 'function') return h(icon as Component);

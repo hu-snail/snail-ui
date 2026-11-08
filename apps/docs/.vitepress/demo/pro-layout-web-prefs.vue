@@ -8,7 +8,12 @@
 import { markRaw, ref } from 'vue';
 import { Home, Settings, ShieldCheck, Users } from 'lucide-vue-next';
 import { SnProLayout } from '@snui/admin-layout';
-import type { SnProPrimaryColor, SnProSettingsLabels, SnProTabItem, SnProTabType } from '@snui/admin-layout';
+import type {
+  SnProPrimaryColor,
+  SnProSettingsLabels,
+  SnProTabItem,
+  SnProTabType,
+} from '@snui/admin-layout';
 import { ProWorkbench } from '@snui/admin-layout/workbench';
 import type { SnMenuOption } from '@snui/vue-web';
 import {
@@ -51,7 +56,11 @@ function onSelect(key: string | number | null): void {
   activeKey.value = key;
   if (!visited.value.includes(key)) {
     visited.value.push(key);
-    tabs.value = visited.value.map((k) => ({ key: k, label: labelByKey[k]!, closable: k !== 'home' }));
+    tabs.value = visited.value.map((k) => ({
+      key: k,
+      label: labelByKey[k]!,
+      closable: k !== 'home',
+    }));
   }
 }
 
@@ -145,5 +154,4 @@ const settingsLabels: Partial<SnProSettingsLabels> = {
   font-size: 13px;
   font-weight: 600;
 }
-
 </style>

@@ -219,7 +219,11 @@ function onChange(event: Event): void {
       :readonly="readonly"
       @change="onChange"
     />
-    <span v-if="$slots.indicator" class="sn-checkbox__box sn-checkbox__box--custom" aria-hidden="true">
+    <span
+      v-if="$slots.indicator"
+      class="sn-checkbox__box sn-checkbox__box--custom"
+      aria-hidden="true"
+    >
       <slot
         name="indicator"
         :checked="isChecked"

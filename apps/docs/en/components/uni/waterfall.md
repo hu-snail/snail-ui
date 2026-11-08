@@ -42,16 +42,16 @@ The three contracts of `lazyLoad`:
 
 ## Props
 
-| Prop            | Type             | Default | Description                                                                                                                                                           |
-| --------------- | ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| columns         | number           | 3       | Logical column count (integer ≥ 1; a fractional value is floored, `0` / `NaN` / `Infinity` fall back to `1`). Pre-measurement guess in `minColumnWidth` mode; ignored when `masonry=false`. |
-| minColumnWidth  | string \| number | ''      | Minimum column width (bare number = rpx, strings pass through). When set, the column count follows the measured container width (responsive mode).                     |
-| columnGap       | string \| number | 16      | Gap between columns (bare number = rpx), applied through `--sn-waterfall-column-gap` as the root's `column-gap`.                                                       |
-| rowGap          | string \| number | 16      | Gap between items (bare number = rpx), applied through `--sn-waterfall-row-gap` as each column's `row-gap`.                                                           |
-| masonry         | boolean          | true    | Convenience off switch: `false` renders a plain vertical stack.                                                                                                       |
-| lazyLoad        | boolean          | false   | Container-level image lazy-load config: cascades to nested `sn-img` (inherited unless the image passes its own), handed to native `<image lazy-load>`.                |
-| customClass     | string           | ''      | Custom class for the root node.                                                                                                                                       |
-| customStyle     | string           | ''      | Custom inline style for the root node.                                                                                                                                |
+| Prop           | Type             | Default | Description                                                                                                                                                                                 |
+| -------------- | ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| columns        | number           | 3       | Logical column count (integer ≥ 1; a fractional value is floored, `0` / `NaN` / `Infinity` fall back to `1`). Pre-measurement guess in `minColumnWidth` mode; ignored when `masonry=false`. |
+| minColumnWidth | string \| number | ''      | Minimum column width (bare number = rpx, strings pass through). When set, the column count follows the measured container width (responsive mode).                                          |
+| columnGap      | string \| number | 16      | Gap between columns (bare number = rpx), applied through `--sn-waterfall-column-gap` as the root's `column-gap`.                                                                            |
+| rowGap         | string \| number | 16      | Gap between items (bare number = rpx), applied through `--sn-waterfall-row-gap` as each column's `row-gap`.                                                                                 |
+| masonry        | boolean          | true    | Convenience off switch: `false` renders a plain vertical stack.                                                                                                                             |
+| lazyLoad       | boolean          | false   | Container-level image lazy-load config: cascades to nested `sn-img` (inherited unless the image passes its own), handed to native `<image lazy-load>`.                                      |
+| customClass    | string           | ''      | Custom class for the root node.                                                                                                                                                             |
+| customStyle    | string           | ''      | Custom inline style for the root node.                                                                                                                                                      |
 
 ## Events
 
@@ -59,9 +59,9 @@ None. A pure layout container — its geometry comes from measurement plus the p
 
 ## Slots
 
-| Slot    | Description                                                            |
-| ------- | ---------------------------------------------------------------------- |
-| default | The items: each direct child becomes one `.sn-waterfall__item` box.    |
+| Slot    | Description                                                         |
+| ------- | ------------------------------------------------------------------- |
+| default | The items: each direct child becomes one `.sn-waterfall__item` box. |
 
 ## Layout model
 
@@ -80,28 +80,28 @@ root (.sn-waterfall, flex row, column-gap)
 
 ## Methods
 
-| Name      | Signature | Description                                                                                                                                                                                                 |
-| --------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name      | Signature  | Description                                                                                                                                                                                                |
+| --------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `refresh` | `(): void` | Re-measure every item (the new heights inform the next placement). Use it when images resolve later than the built-in policy (at most two attempts per item) — e.g. after a placeholder → real image swap. |
 
 ## Performance
 
 The two hot paths are per-render JS and the per-batch native measurement; both written O(n) degrade as the feed grows (native round-trips accumulate O(n²)). What changed:
 
-| Path                     | Before                                            | Now                                                        | Measured                                                        |
-| ------------------------ | ------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------- |
-| Per-render placement check | `join('\0')` signature (array + long string)    | Key-by-key early-exit compare (append O(1), content O(n), zero allocation) | n=1000: 0.143ms → 0.0135ms; ~4000 → ~1 allocation per render |
-| Measurement volume       | Full wall every round                             | Pending items only                                          | 10 pages × 20 items: 1100 → 200 boxes (5.5×); 500-row wall + 20: 500 → 20 |
-| Unrelated re-render      | Full-wall query per update                        | O(1) counter gate — skipped when nothing is pending          | rowGap / parent state change → 0 queries                        |
-| Fixed-columns mount      | Always measured container + probed viewport       | Both only in `minColumnWidth` mode                           | fixed mode: 0 container queries, 0 viewport probes              |
-| Long-lived feed          | Heights of removed items never released           | Heights + pooled entries pruned on placement rebuild         | —                                                               |
+| Path                       | Before                                       | Now                                                                        | Measured                                                                  |
+| -------------------------- | -------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Per-render placement check | `join('\0')` signature (array + long string) | Key-by-key early-exit compare (append O(1), content O(n), zero allocation) | n=1000: 0.143ms → 0.0135ms; ~4000 → ~1 allocation per render              |
+| Measurement volume         | Full wall every round                        | Pending items only                                                         | 10 pages × 20 items: 1100 → 200 boxes (5.5×); 500-row wall + 20: 500 → 20 |
+| Unrelated re-render        | Full-wall query per update                   | O(1) counter gate — skipped when nothing is pending                        | rowGap / parent state change → 0 queries                                  |
+| Fixed-columns mount        | Always measured container + probed viewport  | Both only in `minColumnWidth` mode                                         | fixed mode: 0 container queries, 0 viewport probes                        |
+| Long-lived feed            | Heights of removed items never released      | Heights + pooled entries pruned on placement rebuild                       | —                                                                         |
 
 ## Theme variables
 
-| Variable                    | Default | Use                     |
-| --------------------------- | ------- | ----------------------- |
-| --sn-waterfall-column-gap   | 16rpx   | `column-gap` between columns. |
-| --sn-waterfall-row-gap      | 16rpx   | `row-gap` inside each column. |
+| Variable                  | Default | Use                           |
+| ------------------------- | ------- | ----------------------------- |
+| --sn-waterfall-column-gap | 16rpx   | `column-gap` between columns. |
+| --sn-waterfall-row-gap    | 16rpx   | `row-gap` inside each column. |
 
 Consumers may retune either on the root (or any ancestor) without touching the props. All lengths are rpx (750 design canvas).
 

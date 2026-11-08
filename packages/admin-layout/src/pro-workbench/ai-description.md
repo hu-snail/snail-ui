@@ -32,12 +32,12 @@ import '@snui/admin-layout/workbench/style.css';
 
 ## 数据契约（数据即 props）
 
-| prop | 说明 |
-| ---- | ---- |
-| `kpis: ProWorkbenchKpi[]` | 第一张高亮卡：`delta` / `trend` / `hint` / `actions`（药丸）/ `stats`（副指标）/ `footNote` |
-| `moneyFlow: ProWorkbenchMoneyFlow` | `labels` + `income` + `expense`（同轴同长） |
-| `incomeSources: ProWorkbenchIncomeSource[]` | 环形分段，只比值有意义；`display` 是环形下方的格式化金额 |
-| `transactions: ProWorkbenchTransaction[]` | `time` / `amount` / `category` / `status`；`status` ∈ success / failed / pending |
+| prop                                        | 说明                                                                                        |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `kpis: ProWorkbenchKpi[]`                   | 第一张高亮卡：`delta` / `trend` / `hint` / `actions`（药丸）/ `stats`（副指标）/ `footNote` |
+| `moneyFlow: ProWorkbenchMoneyFlow`          | `labels` + `income` + `expense`（同轴同长）                                                 |
+| `incomeSources: ProWorkbenchIncomeSource[]` | 环形分段，只比值有意义；`display` 是环形下方的格式化金额                                    |
+| `transactions: ProWorkbenchTransaction[]`   | `time` / `amount` / `category` / `status`；`status` ∈ success / failed / pending            |
 
 ## 事件
 

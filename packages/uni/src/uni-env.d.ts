@@ -26,9 +26,9 @@ interface UniBoundingClientRect {
 interface UniSelectorQuery {
   in: (component: unknown) => UniSelectorQuery;
   select: (selector: string) => {
-    boundingClientRect: (
-      callback: (rect: UniBoundingClientRect | null) => void,
-    ) => { exec: () => void };
+    boundingClientRect: (callback: (rect: UniBoundingClientRect | null) => void) => {
+      exec: () => void;
+    };
   };
 }
 

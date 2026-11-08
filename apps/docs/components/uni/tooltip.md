@@ -84,11 +84,11 @@
 | `--sn-tooltip-bg`                                               | 气泡底色（默认 `--sn-mp-color-background-elevated`，亮色主题即白色；箭头同色；可用 `custom-style` 覆盖） |
 | `--sn-tooltip-color`                                            | 气泡文字色（默认 `--sn-mp-color-text-primary`）                                                          |
 | `--sn-mp-color-text-secondary`                                  | 关闭图标色                                                                                               |
-| `--sn-mp-shadow-md`                                             | 气泡阴影                             |
-| `--sn-mp-radius-md`                                             | 气泡圆角                             |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                     |
-| `--sn-mp-font-size-sm`                                          | 气泡字号                             |
-| `--sn-mp-font-line-height-normal`                               | 气泡行高                             |
+| `--sn-mp-shadow-md`                                             | 气泡阴影                                                                                                 |
+| `--sn-mp-radius-md`                                             | 气泡圆角                                                                                                 |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                                                                                         |
+| `--sn-mp-font-size-sm`                                          | 气泡字号                                                                                                 |
+| `--sn-mp-font-line-height-normal`                               | 气泡行高                                                                                                 |
 
 ## 无障碍
 

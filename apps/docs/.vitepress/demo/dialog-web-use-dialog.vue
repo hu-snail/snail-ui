@@ -15,21 +15,17 @@ const DialogButtons = defineComponent({
       h(SnButton, { size: 'small', onClick }, { default: () => label });
 
     return () => [
-      btn('success', () =>
-        dialog.success({ title: '成功', content: '厉害', positiveText: '哇' }),
-      ),
-      btn(
-        'warning',
-        () =>
-          dialog.warning({
-            title: '警告',
-            content: '你确定?',
-            positiveText: '确定',
-            negativeText: '不确定',
-            onPositiveClick() {
-              dialog.success({ title: '成功', content: '已确认', positiveText: '哇' });
-            },
-          }),
+      btn('success', () => dialog.success({ title: '成功', content: '厉害', positiveText: '哇' })),
+      btn('warning', () =>
+        dialog.warning({
+          title: '警告',
+          content: '你确定?',
+          positiveText: '确定',
+          negativeText: '不确定',
+          onPositiveClick() {
+            dialog.success({ title: '成功', content: '已确认', positiveText: '哇' });
+          },
+        }),
       ),
       btn('error', () => dialog.error({ title: '错误', content: '错了', positiveText: '嗯' })),
       btn('info', () =>

@@ -39,8 +39,8 @@ function onUpdateWidth(next: number): void {
           Move the pointer to the panel's left edge (the grab strip about 12px wide) and press-drag.
         </p>
         <p>
-          Keyboard users can first <kbd>Tab</kbd> focus the resize handle, then fine-tune with the arrow
-          keys.
+          Keyboard users can first <kbd>Tab</kbd> focus the resize handle, then fine-tune with the
+          arrow keys.
         </p>
         <p>Width is constrained between 280px and 640px.</p>
       </SnDrawerContent>

@@ -376,14 +376,16 @@ describe('SnInput password toggle visuals', () => {
   });
 
   it('does not paint the toggle with the elevated surface token', () => {
-    const rule = /\.sn-input__password-toggle-btn\s*\{[^}]*background:\s*var\(--sn-web-color-background-elevated/m;
+    const rule =
+      /\.sn-input__password-toggle-btn\s*\{[^}]*background:\s*var\(--sn-web-color-background-elevated/m;
     expect(rule.test(inputSource)).toBe(false);
   });
 
   it('renders the eye glyph at a legible size', () => {
-    const match = /class="sn-input__password-toggle-btn"[\s\S]{0,400}?<SnIcon[^>]*:size="(\d+)"/.exec(
-      inputSource,
-    );
+    const match =
+      /class="sn-input__password-toggle-btn"[\s\S]{0,400}?<SnIcon[^>]*:size="(\d+)"/.exec(
+        inputSource,
+      );
     expect(match).not.toBeNull();
     expect(Number(match![1])).toBeGreaterThanOrEqual(14);
   });
@@ -391,7 +393,8 @@ describe('SnInput password toggle visuals', () => {
   it('exposes the toggle to assistive tech via a label instead of hiding it', () => {
     // The wrapper used to carry aria-hidden, which hid the interactive
     // button from screen readers.
-    const wrapperTag = /<span v-if="showPassword && isPassword" class="sn-input__password-toggle"[^>]*>/;
+    const wrapperTag =
+      /<span v-if="showPassword && isPassword" class="sn-input__password-toggle"[^>]*>/;
     const tag = wrapperTag.exec(inputSource)?.[0] ?? '';
     expect(tag).not.toBe('');
     expect(tag).not.toContain('aria-hidden');

@@ -77,14 +77,14 @@ import { SnTooltip } from '@snui/uni';
 
 ## Tokens Consumed (end: mp)
 
-| Token            | CSS Variable                                              | Purpose                                |
-| ---------------- | --------------------------------------------------------- | -------------------------------------- |
-| Component vars   | `--sn-tooltip-bg` (default: `--sn-mp-color-background-elevated`), `--sn-tooltip-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
-| Secondary text   | `--sn-mp-color-text-secondary`                            | Close glyph color                      |
-| Elevation        | `--sn-mp-shadow-md`                                       | Bubble shadow                          |
-| Radius           | `--sn-mp-radius-md`                                       | Bubble corners                         |
-| Spacing          | `--sn-mp-spacing-2/3/4`                                   | Bubble padding / gaps                  |
-| Typography       | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text                            |
+| Token          | CSS Variable                                                                                                                   | Purpose                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Component vars | `--sn-tooltip-bg` (default: `--sn-mp-color-background-elevated`), `--sn-tooltip-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
+| Secondary text | `--sn-mp-color-text-secondary`                                                                                                 | Close glyph color                                                         |
+| Elevation      | `--sn-mp-shadow-md`                                                                                                            | Bubble shadow                                                             |
+| Radius         | `--sn-mp-radius-md`                                                                                                            | Bubble corners                                                            |
+| Spacing        | `--sn-mp-spacing-2/3/4`                                                                                                        | Bubble padding / gaps                                                     |
+| Typography     | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`                                                                      | Bubble text                                                               |
 
 ## Accessibility
 

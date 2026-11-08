@@ -67,7 +67,14 @@ const priceLabel = computed(() => `¥${price.value[0]} – ¥${price.value[1]}`)
 
     <span class="demo-label">column 竖排：亮度 / 色温</span>
     <div class="demo-row">
-      <SnSliderBar v-model="dimmer" variant="column" show-value :min="15" :max="30" aria-label="Dimmer" />
+      <SnSliderBar
+        v-model="dimmer"
+        variant="column"
+        show-value
+        :min="15"
+        :max="30"
+        aria-label="Dimmer"
+      />
       <SnSliderBar
         v-model="warm"
         variant="column"

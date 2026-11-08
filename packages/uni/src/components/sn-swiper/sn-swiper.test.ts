@@ -27,7 +27,6 @@ import SnSwiper from './sn-swiper.vue';
 
 const list = ['https://x/1.png', 'https://x/2.png', 'https://x/3.png'];
 
-
 describe('sn-swiper', () => {
   it('renders one native slide per list entry', () => {
     const wrapper = mount(SnSwiper, { props: { list } });
@@ -382,7 +381,10 @@ describe('sn-swiper', () => {
       // Regression: presentation read the stale `current` prop, so without
       // v-model the centre card, dots and arrows never moved.
       const wrapper = mount(SnSwiper, {
-        props: { list: [...list, 'https://x/4.png', 'https://x/5.png'], indicator: { type: 'scale' } },
+        props: {
+          list: [...list, 'https://x/4.png', 'https://x/5.png'],
+          indicator: { type: 'scale' },
+        },
       });
       await wrapper.find('.sn-swiper__native').trigger('change', {
         detail: { current: 2, source: 'touch' },
@@ -428,7 +430,9 @@ describe('sn-swiper', () => {
       const wrapper = mount(SnSwiper, {
         props: { list, current: 1, indicator: { type: 'scale' } },
       });
-      expect(wrapper.find('.sn-swiper__indicator').classes()).toContain('sn-swiper__indicator--scale');
+      expect(wrapper.find('.sn-swiper__indicator').classes()).toContain(
+        'sn-swiper__indicator--scale',
+      );
       const dots = wrapper.findAll('.sn-swiper__dot');
       expect(dots[1]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 20rpx');
       expect(dots[0]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 14rpx');

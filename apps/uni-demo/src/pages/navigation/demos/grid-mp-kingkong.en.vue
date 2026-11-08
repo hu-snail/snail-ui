@@ -16,14 +16,54 @@ import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 
 /** Quick-entry item: icon (built-in catalog kebab name) + label + theme tokens. */
 const entries = [
-   { icon: 'camera', text: 'Scan', bg: 'var(--sn-mp-color-action-primary-soft)', fg: 'var(--sn-mp-color-action-primary)' },
-  { icon: 'wallet', text: 'Wallet', bg: 'var(--sn-mp-color-feedback-warning-soft)', fg: 'var(--sn-mp-color-feedback-warning)' },
-  { icon: 'message-circle', text: 'Messages', bg: 'var(--sn-mp-color-feedback-success-soft)', fg: 'var(--sn-mp-color-feedback-success)' },
-  { icon: 'camera', text: 'Albums', bg: 'var(--sn-mp-color-pink-soft)', fg: 'var(--sn-mp-color-pink)' },
-  { icon: 'chart-pie', text: 'Wealth', bg: 'var(--sn-mp-color-cyan-soft)', fg: 'var(--sn-mp-color-cyan)' },
-  { icon: 'calendar', text: 'Agenda', bg: 'var(--sn-mp-color-volcano-soft)', fg: 'var(--sn-mp-color-volcano)' },
-  { icon: 'user-plus', text: 'Invite', bg: 'var(--sn-mp-color-lightblue-soft)', fg: 'var(--sn-mp-color-lightblue)' },
-  { icon: 'settings', text: 'Settings', bg: 'var(--sn-mp-color-purple-soft)', fg: 'var(--sn-mp-color-purple)' },
+  {
+    icon: 'camera',
+    text: 'Scan',
+    bg: 'var(--sn-mp-color-action-primary-soft)',
+    fg: 'var(--sn-mp-color-action-primary)',
+  },
+  {
+    icon: 'wallet',
+    text: 'Wallet',
+    bg: 'var(--sn-mp-color-feedback-warning-soft)',
+    fg: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    icon: 'message-circle',
+    text: 'Messages',
+    bg: 'var(--sn-mp-color-feedback-success-soft)',
+    fg: 'var(--sn-mp-color-feedback-success)',
+  },
+  {
+    icon: 'camera',
+    text: 'Albums',
+    bg: 'var(--sn-mp-color-pink-soft)',
+    fg: 'var(--sn-mp-color-pink)',
+  },
+  {
+    icon: 'chart-pie',
+    text: 'Wealth',
+    bg: 'var(--sn-mp-color-cyan-soft)',
+    fg: 'var(--sn-mp-color-cyan)',
+  },
+  {
+    icon: 'calendar',
+    text: 'Agenda',
+    bg: 'var(--sn-mp-color-volcano-soft)',
+    fg: 'var(--sn-mp-color-volcano)',
+  },
+  {
+    icon: 'user-plus',
+    text: 'Invite',
+    bg: 'var(--sn-mp-color-lightblue-soft)',
+    fg: 'var(--sn-mp-color-lightblue)',
+  },
+  {
+    icon: 'settings',
+    text: 'Settings',
+    bg: 'var(--sn-mp-color-purple-soft)',
+    fg: 'var(--sn-mp-color-purple)',
+  },
 ] as const;
 
 const tapped = ref('—');

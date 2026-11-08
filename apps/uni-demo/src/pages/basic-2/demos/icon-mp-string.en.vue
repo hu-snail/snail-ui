@@ -56,9 +56,7 @@ registerSnIcons({ star: BrandStar });
       </SnButton>
     </view>
 
-    <text class="sn-demo__meta">
-      Registry override: custom BrandStar registered as `star`
-    </text>
+    <text class="sn-demo__meta"> Registry override: custom BrandStar registered as `star` </text>
     <view class="sn-demo__row">
       <SnIcon icon="star" :size="28" color="#f59e0b" />
       <SnIcon icon="heart" :size="28" color="#ef4444" />

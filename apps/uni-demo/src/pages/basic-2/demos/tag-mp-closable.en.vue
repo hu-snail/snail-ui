@@ -47,13 +47,7 @@ function removeAdded(tag: string): void {
 
     <view class="sn-demo__row">
       <SnTag dynamic type="primary" variant="plain" @confirm="addTag" />
-      <SnTag
-        v-for="tag in added"
-        :key="tag"
-        type="primary"
-        closable
-        @close="removeAdded(tag)"
-      >
+      <SnTag v-for="tag in added" :key="tag" type="primary" closable @close="removeAdded(tag)">
         {{ tag }}
       </SnTag>
     </view>

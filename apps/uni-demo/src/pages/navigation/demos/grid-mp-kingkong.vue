@@ -15,14 +15,54 @@ import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 
 /** 金刚区入口：图标（内置目录 kebab 名）+ 文案 + 主题色 token。 */
 const entries = [
-   { icon: 'camera', text: '扫一扫', bg: 'var(--sn-mp-color-action-primary-soft)', fg: 'var(--sn-mp-color-action-primary)' },
-  { icon: 'wallet', text: '钱包', bg: 'var(--sn-mp-color-feedback-warning-soft)', fg: 'var(--sn-mp-color-feedback-warning)' },
-  { icon: 'message-circle', text: '消息', bg: 'var(--sn-mp-color-feedback-success-soft)', fg: 'var(--sn-mp-color-feedback-success)' },
-  { icon: 'camera', text: '相册', bg: 'var(--sn-mp-color-pink-soft)', fg: 'var(--sn-mp-color-pink)' },
-  { icon: 'chart-pie', text: '理财', bg: 'var(--sn-mp-color-cyan-soft)', fg: 'var(--sn-mp-color-cyan)' },
-  { icon: 'calendar', text: '日程', bg: 'var(--sn-mp-color-volcano-soft)', fg: 'var(--sn-mp-color-volcano)' },
-  { icon: 'user-plus', text: '邀请', bg: 'var(--sn-mp-color-lightblue-soft)', fg: 'var(--sn-mp-color-lightblue)' },
-  { icon: 'settings', text: '设置', bg: 'var(--sn-mp-color-purple-soft)', fg: 'var(--sn-mp-color-purple)' },
+  {
+    icon: 'camera',
+    text: '扫一扫',
+    bg: 'var(--sn-mp-color-action-primary-soft)',
+    fg: 'var(--sn-mp-color-action-primary)',
+  },
+  {
+    icon: 'wallet',
+    text: '钱包',
+    bg: 'var(--sn-mp-color-feedback-warning-soft)',
+    fg: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    icon: 'message-circle',
+    text: '消息',
+    bg: 'var(--sn-mp-color-feedback-success-soft)',
+    fg: 'var(--sn-mp-color-feedback-success)',
+  },
+  {
+    icon: 'camera',
+    text: '相册',
+    bg: 'var(--sn-mp-color-pink-soft)',
+    fg: 'var(--sn-mp-color-pink)',
+  },
+  {
+    icon: 'chart-pie',
+    text: '理财',
+    bg: 'var(--sn-mp-color-cyan-soft)',
+    fg: 'var(--sn-mp-color-cyan)',
+  },
+  {
+    icon: 'calendar',
+    text: '日程',
+    bg: 'var(--sn-mp-color-volcano-soft)',
+    fg: 'var(--sn-mp-color-volcano)',
+  },
+  {
+    icon: 'user-plus',
+    text: '邀请',
+    bg: 'var(--sn-mp-color-lightblue-soft)',
+    fg: 'var(--sn-mp-color-lightblue)',
+  },
+  {
+    icon: 'settings',
+    text: '设置',
+    bg: 'var(--sn-mp-color-purple-soft)',
+    fg: 'var(--sn-mp-color-purple)',
+  },
 ] as const;
 
 const tapped = ref('—');

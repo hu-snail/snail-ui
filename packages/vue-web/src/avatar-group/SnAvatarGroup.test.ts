@@ -156,17 +156,21 @@ describe('SnAvatarGroup (AUI-WEB-DD-026)', () => {
     });
 
     it('does not ring the square item wrapper', () => {
-      const wrapperRule = /\.sn-avatar-group--tightening \.sn-avatar-group__item\s*\{[^}]*box-shadow/m;
+      const wrapperRule =
+        /\.sn-avatar-group--tightening \.sn-avatar-group__item\s*\{[^}]*box-shadow/m;
       expect(wrapperRule.test(source)).toBe(false);
     });
 
     it('renders circular image avatars without extra markup between them', () => {
-      const w = mountGroup({}, {
-        default: () => [
-          h(SnAvatar, { key: 'a', circle: true, src: '/a.png', fallbackText: 'A' }),
-          h(SnAvatar, { key: 'b', circle: true, src: '/b.png', fallbackText: 'B' }),
-        ],
-      });
+      const w = mountGroup(
+        {},
+        {
+          default: () => [
+            h(SnAvatar, { key: 'a', circle: true, src: '/a.png', fallbackText: 'A' }),
+            h(SnAvatar, { key: 'b', circle: true, src: '/b.png', fallbackText: 'B' }),
+          ],
+        },
+      );
       const items = w.findAll('.sn-avatar-group__item');
       expect(items).toHaveLength(2);
       // Each item wraps exactly one circular avatar — no separator element.

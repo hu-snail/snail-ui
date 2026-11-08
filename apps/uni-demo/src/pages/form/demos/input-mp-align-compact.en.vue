@@ -18,7 +18,9 @@ const inline = ref('');
     <SnInput v-model="phone" inputmode="tel" placeholder="Phone (tel keyboard)" />
     <SnInput v-model="search" inputmode="search" placeholder="Search (search keyboard)" />
 
-    <text class="sn-input-demo__caption">compact + border="bottom" (inline row inside Cell / FormItem)</text>
+    <text class="sn-input-demo__caption"
+      >compact + border="bottom" (inline row inside Cell / FormItem)</text
+    >
     <SnInput v-model="inline" compact border="bottom" placeholder="Inline search" />
   </view>
 </template>

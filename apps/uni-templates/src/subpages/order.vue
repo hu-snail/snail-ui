@@ -7,8 +7,20 @@ import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
 
 const active = ref(0);
 const orders = [
-  { id: 'SN20251208001', shop: '蜗蜗严选', name: '旗舰降噪耳机 Pro', price: '¥299.00', state: '待付款' },
-  { id: 'SN20251207004', shop: '蜗蜗严选', name: '全场景充电底座', price: '¥129.00', state: '待发货' },
+  {
+    id: 'SN20251208001',
+    shop: '蜗蜗严选',
+    name: '旗舰降噪耳机 Pro',
+    price: '¥299.00',
+    state: '待付款',
+  },
+  {
+    id: 'SN20251207004',
+    shop: '蜗蜗严选',
+    name: '全场景充电底座',
+    price: '¥129.00',
+    state: '待发货',
+  },
   { id: 'SN20251205012', shop: '蜗蜗自营', name: '便携收纳包', price: '¥59.00', state: '已完成' },
 ];
 function pay(): void {
@@ -19,35 +31,59 @@ function pay(): void {
 <template>
   <view class="tpl-page order">
     <SnTabs v-model="active">
-      <SnTab title="全部" :name="0"><view class="order__list"><view v-for="o in orders" :key="o.id" class="order__card">
-        <view class="order__head">
-          <text class="order__shop">{{ o.shop }}</text>
-          <text class="order__state">{{ o.state }}</text>
-        </view>
-        <view class="order__goods">
-          <view class="order__thumb" />
-          <view class="order__meta">
-            <text class="order__name">{{ o.name }}</text>
-            <text class="order__id">{{ o.id }}</text>
-          </view>
-          <text class="tpl-price order__price">{{ o.price }}</text>
-        </view>
-        <view class="order__foot">
-          <SnButton size="small" type="default">查看物流</SnButton>
-          <SnButton size="small" type="primary" @click="pay">去支付</SnButton>
-        </view>
-      </view></view></SnTab>
-      <SnTab title="待付款" :name="1"><view class="order__list"><view v-for="o in orders.filter((x) => x.state === '待付款')" :key="o.id" class="order__card">
-        <view class="order__head"><text class="order__shop">{{ o.shop }}</text><text class="order__state">{{ o.state }}</text></view>
-        <view class="order__goods">
-          <view class="order__thumb" />
-          <view class="order__meta"><text class="order__name">{{ o.name }}</text><text class="order__id">{{ o.id }}</text></view>
-          <text class="tpl-price order__price">{{ o.price }}</text>
-        </view>
-        <view class="order__foot"><SnButton size="small" type="primary" @click="pay">去支付</SnButton></view>
-      </view></view></SnTab>
-      <SnTab title="待发货" :name="2"><view class="order__empty"><text>暂无待发货订单</text></view></SnTab>
-      <SnTab title="已完成" :name="3"><view class="order__empty"><text>暂无已完成订单</text></view></SnTab>
+      <SnTab title="全部" :name="0"
+        ><view class="order__list"
+          ><view v-for="o in orders" :key="o.id" class="order__card">
+            <view class="order__head">
+              <text class="order__shop">{{ o.shop }}</text>
+              <text class="order__state">{{ o.state }}</text>
+            </view>
+            <view class="order__goods">
+              <view class="order__thumb" />
+              <view class="order__meta">
+                <text class="order__name">{{ o.name }}</text>
+                <text class="order__id">{{ o.id }}</text>
+              </view>
+              <text class="tpl-price order__price">{{ o.price }}</text>
+            </view>
+            <view class="order__foot">
+              <SnButton size="small" type="default">查看物流</SnButton>
+              <SnButton size="small" type="primary" @click="pay">去支付</SnButton>
+            </view>
+          </view></view
+        ></SnTab
+      >
+      <SnTab title="待付款" :name="1"
+        ><view class="order__list"
+          ><view
+            v-for="o in orders.filter((x) => x.state === '待付款')"
+            :key="o.id"
+            class="order__card"
+          >
+            <view class="order__head"
+              ><text class="order__shop">{{ o.shop }}</text
+              ><text class="order__state">{{ o.state }}</text></view
+            >
+            <view class="order__goods">
+              <view class="order__thumb" />
+              <view class="order__meta"
+                ><text class="order__name">{{ o.name }}</text
+                ><text class="order__id">{{ o.id }}</text></view
+              >
+              <text class="tpl-price order__price">{{ o.price }}</text>
+            </view>
+            <view class="order__foot"
+              ><SnButton size="small" type="primary" @click="pay">去支付</SnButton></view
+            >
+          </view></view
+        ></SnTab
+      >
+      <SnTab title="待发货" :name="2"
+        ><view class="order__empty"><text>暂无待发货订单</text></view></SnTab
+      >
+      <SnTab title="已完成" :name="3"
+        ><view class="order__empty"><text>暂无已完成订单</text></view></SnTab
+      >
     </SnTabs>
   </view>
 </template>

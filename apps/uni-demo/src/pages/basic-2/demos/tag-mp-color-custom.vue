@@ -36,22 +36,14 @@ const tints = [
 ] as const;
 
 /** 字体图标：iconPrefix + cssIcon 拼出 sn-demo-tag-icon-{name}。 */
-const glyphs = [
-  { icon: 'star' },
-  { icon: 'heart' },
-  { icon: 'check' },
-] as const;
+const glyphs = [{ icon: 'star' }, { icon: 'heart' }, { icon: 'check' }] as const;
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta">bgColor 接管底色与边框（品牌色）</text>
     <view class="sn-demo__row">
-      <SnTag
-        v-for="fill in brandFills"
-        :key="fill.label"
-        :bg-color="fill.bgColor"
-      >
+      <SnTag v-for="fill in brandFills" :key="fill.label" :bg-color="fill.bgColor">
         {{ fill.label }}
       </SnTag>
     </view>

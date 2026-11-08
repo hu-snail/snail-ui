@@ -472,7 +472,11 @@ describe('sn-cell', () => {
 
     it('applies iconColor as an inline colour', () => {
       const wrapper = mount(SnCell, {
-        props: { title: 'A', prefixIconData: Bell, iconColor: 'var(--sn-mp-color-feedback-warning)' },
+        props: {
+          title: 'A',
+          prefixIconData: Bell,
+          iconColor: 'var(--sn-mp-color-feedback-warning)',
+        },
       });
       expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain(
         'color: var(--sn-mp-color-feedback-warning)',
@@ -599,12 +603,13 @@ describe('sn-cell-group', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnCellGroup, { border: true }, {
-            default: () => [
-              h(SnCell, { title: 'First' }),
-              h(SnCell, { title: 'Last' }),
-            ],
-          });
+          h(
+            SnCellGroup,
+            { border: true },
+            {
+              default: () => [h(SnCell, { title: 'First' }), h(SnCell, { title: 'Last' })],
+            },
+          );
       },
     });
     const wrapper = mount(Harness);
@@ -616,7 +621,11 @@ describe('sn-cell-group', () => {
   });
 
   it('keeps the hairline on a standalone cell (no group, no :last-child)', () => {
-    expect(mount(SnCell, { props: { title: 'A', border: true } }).find('.sn-cell__hairline').exists()).toBe(true);
+    expect(
+      mount(SnCell, { props: { title: 'A', border: true } })
+        .find('.sn-cell__hairline')
+        .exists(),
+    ).toBe(true);
   });
 
   it('applies the large size class on the group', () => {

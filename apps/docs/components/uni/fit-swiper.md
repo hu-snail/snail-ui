@@ -43,35 +43,35 @@
 
 ### Props
 
-| 名称                   | 类型                                                                                                | 默认值    | 说明                                                                     |
-| ---------------------- | --------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
-| `list`                 | `SnFitSwiperPage[]`                                                                                  | `[]`      | 页面数据行，逐行交给默认插槽。                                           |
-| `current`              | `number`                                                                                             | `0`       | 当前页索引（`v-model:current`），越界值自动收敛。                        |
-| `autoplay`             | `boolean`                                                                                            | `true`    | 自动播放。                                                               |
-| `interval`             | `number`                                                                                             | `5000`    | 自动播放间隔（ms）。                                                     |
-| `duration`             | `number`                                                                                             | `300`     | 滑动动画时长（ms）。                                                     |
-| `loop`                 | `boolean`                                                                                            | `true`    | 循环播放。                                                               |
-| `height`               | `string \| number`                                                                                   | `320`     | 首次测量前的占位高度（裸数字按 rpx）。                                   |
-| `radius`               | `string \| number`                                                                                   | `''`      | 容器圆角（裸数字按 rpx）。                                               |
-| `animateHeight`        | `boolean`                                                                                            | `true`    | 切页时是否动画过渡容器高度。                                             |
-| `heightDuration`       | `number`                                                                                             | `300`     | 高度过渡时长（ms）。                                                     |
-| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`          | `true`    | 指示器配置；`false` 隐藏。                                               |
-| `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | 指示器锚点方位。                                                    |
-| `customClass`          | `string`                                                                                             | `''`      | 根节点类名。                                                             |
-| `customStyle`          | `string`                                                                                             | `''`      | 根节点内联样式。                                                         |
-| `customPageClass`      | `string`                                                                                             | `''`      | 每个页面项的类名。                                                       |
-| `customIndicatorClass` | `string`                                                                                             | `''`      | 指示器节点类名。                                                         |
-| `customIndicatorStyle` | `string`                                                                                             | `''`      | 指示器节点内联样式。                                                     |
+| 名称                   | 类型                                                                                                     | 默认值     | 说明                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------- |
+| `list`                 | `SnFitSwiperPage[]`                                                                                      | `[]`       | 页面数据行，逐行交给默认插槽。                    |
+| `current`              | `number`                                                                                                 | `0`        | 当前页索引（`v-model:current`），越界值自动收敛。 |
+| `autoplay`             | `boolean`                                                                                                | `true`     | 自动播放。                                        |
+| `interval`             | `number`                                                                                                 | `5000`     | 自动播放间隔（ms）。                              |
+| `duration`             | `number`                                                                                                 | `300`      | 滑动动画时长（ms）。                              |
+| `loop`                 | `boolean`                                                                                                | `true`     | 循环播放。                                        |
+| `height`               | `string \| number`                                                                                       | `320`      | 首次测量前的占位高度（裸数字按 rpx）。            |
+| `radius`               | `string \| number`                                                                                       | `''`       | 容器圆角（裸数字按 rpx）。                        |
+| `animateHeight`        | `boolean`                                                                                                | `true`     | 切页时是否动画过渡容器高度。                      |
+| `heightDuration`       | `number`                                                                                                 | `300`      | 高度过渡时长（ms）。                              |
+| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`              | `true`     | 指示器配置；`false` 隐藏。                        |
+| `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | 指示器锚点方位。                                  |
+| `customClass`          | `string`                                                                                                 | `''`       | 根节点类名。                                      |
+| `customStyle`          | `string`                                                                                                 | `''`       | 根节点内联样式。                                  |
+| `customPageClass`      | `string`                                                                                                 | `''`       | 每个页面项的类名。                                |
+| `customIndicatorClass` | `string`                                                                                                 | `''`       | 指示器节点类名。                                  |
+| `customIndicatorStyle` | `string`                                                                                                 | `''`       | 指示器节点内联样式。                              |
 
 ### Events
 
-| 名称              | 参数                                        | 说明                                     |
-| ----------------- | ------------------------------------------- | ---------------------------------------- |
-| `update:current`  | `number`                                    | 当前页索引变化（`v-model:current`）。    |
-| `change`          | `{ current: number; source: string }`       | 原生滑动切换。                           |
-| `animationfinish` | `{ current: number; source: string }`       | 滑动动画结束，随后自动重测一次高度。     |
-| `click`           | `{ index: number; page: SnFitSwiperPage }`  | 点击页面内容。                           |
-| `heightchange`    | `{ height: number }`                        | 容器高度实际变化（px）。                 |
+| 名称              | 参数                                       | 说明                                  |
+| ----------------- | ------------------------------------------ | ------------------------------------- |
+| `update:current`  | `number`                                   | 当前页索引变化（`v-model:current`）。 |
+| `change`          | `{ current: number; source: string }`      | 原生滑动切换。                        |
+| `animationfinish` | `{ current: number; source: string }`      | 滑动动画结束，随后自动重测一次高度。  |
+| `click`           | `{ index: number; page: SnFitSwiperPage }` | 点击页面内容。                        |
+| `heightchange`    | `{ height: number }`                       | 容器高度实际变化（px）。              |
 
 ### Slots
 
@@ -82,6 +82,6 @@
 
 ### Methods
 
-| 名称    | 类型                  | 说明                                                       |
-| ------- | --------------------- | ---------------------------------------------------------- |
-| `refit` | `() => Promise<void>` | 重新测量全部页面并应用当前页高度（异步内容变化后调用）。   |
+| 名称    | 类型                  | 说明                                                     |
+| ------- | --------------------- | -------------------------------------------------------- |
+| `refit` | `() => Promise<void>` | 重新测量全部页面并应用当前页高度（异步内容变化后调用）。 |

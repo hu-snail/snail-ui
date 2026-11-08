@@ -58,8 +58,8 @@ function onFail(): void {
         </text>
       </view>
       <text class="sn-demo__panel-desc">
-        A trigger opens the scrim overlay; align the puzzle piece with the gap to
-        pass, and the popup closes itself.
+        A trigger opens the scrim overlay; align the puzzle piece with the gap to pass, and the
+        popup closes itself.
       </text>
       <SnButton type="primary" block @tap="open()">Start verification</SnButton>
     </view>
@@ -67,8 +67,8 @@ function onFail(): void {
     <view class="sn-demo__panel">
       <text class="sn-demo__panel-title">Scrim tap does not close</text>
       <text class="sn-demo__panel-desc">
-        close-on-click-modal = false requires solving the puzzle or using the
-        close button, so a stray tap cannot cancel it.
+        close-on-click-modal = false requires solving the puzzle or using the close button, so a
+        stray tap cannot cancel it.
       </text>
       <SnButton block @tap="open({ locked: true })">Verify (locked scrim)</SnButton>
     </view>

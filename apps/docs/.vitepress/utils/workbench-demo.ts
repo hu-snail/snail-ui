@@ -73,8 +73,36 @@ export const demoIncomeSources: ProWorkbenchIncomeSource[] = [
 
 /** 交易记录表的四行（参考稿的时间 / 金额 / 分类 / 状态）。 */
 export const demoTransactions: ProWorkbenchTransaction[] = [
-  { key: 't1', time: '06:12', amount: '-¥22.00', category: '外卖', status: 'success', statusText: '成功' },
-  { key: 't2', time: '10:20', amount: '-¥110.00', category: '电费', status: 'success', statusText: '成功' },
-  { key: 't3', time: '12:01', amount: '¥20.00', category: '转账给好友', status: 'failed', statusText: '失败' },
-  { key: 't4', time: '14:28', amount: '-¥121.00', category: '购物', status: 'success', statusText: '成功' },
+  {
+    key: 't1',
+    time: '06:12',
+    amount: '-¥22.00',
+    category: '外卖',
+    status: 'success',
+    statusText: '成功',
+  },
+  {
+    key: 't2',
+    time: '10:20',
+    amount: '-¥110.00',
+    category: '电费',
+    status: 'success',
+    statusText: '成功',
+  },
+  {
+    key: 't3',
+    time: '12:01',
+    amount: '¥20.00',
+    category: '转账给好友',
+    status: 'failed',
+    statusText: '失败',
+  },
+  {
+    key: 't4',
+    time: '14:28',
+    amount: '-¥121.00',
+    category: '购物',
+    status: 'success',
+    statusText: '成功',
+  },
 ];

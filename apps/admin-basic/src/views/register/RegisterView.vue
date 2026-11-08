@@ -73,7 +73,12 @@ async function handleSubmit(): Promise<void> {
       <h1 class="auth-card__title">{{ t('register.title') }}</h1>
       <p class="auth-card__subtitle">{{ t('register.subtitle') }}</p>
 
-      <SnAlert v-if="errorMessage !== ''" type="error" :title="errorMessage" class="auth-card__alert" />
+      <SnAlert
+        v-if="errorMessage !== ''"
+        type="error"
+        :title="errorMessage"
+        class="auth-card__alert"
+      />
 
       <SnForm
         ref="formRef"
@@ -133,7 +138,11 @@ async function handleSubmit(): Promise<void> {
   justify-content: center;
   height: 100%;
   background:
-    radial-gradient(1200px 600px at 20% -10%, var(--sn-web-color-action-primary-soft), transparent 60%),
+    radial-gradient(
+      1200px 600px at 20% -10%,
+      var(--sn-web-color-action-primary-soft),
+      transparent 60%
+    ),
     var(--sn-web-color-background-surface);
 }
 

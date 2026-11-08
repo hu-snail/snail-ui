@@ -547,7 +547,9 @@ describe('sn-qr-code', () => {
       const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
       expect(wrapper.emitted('error')).toHaveLength(1);
       // The H5 fallback took over and painted the code.
-      expect(domContext.calls.filter((call) => call.method === 'fillRect').length).toBeGreaterThan(1);
+      expect(domContext.calls.filter((call) => call.method === 'fillRect').length).toBeGreaterThan(
+        1,
+      );
       expect(spy).toHaveBeenCalledWith('2d');
     } finally {
       uni.restore();
@@ -598,7 +600,9 @@ describe('sn-qr-code', () => {
   it('should paint dark modules with a linear gradient when enableGradient is on', () => {
     const uni = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', size: 100, enableGradient: true, gradientColor: 'teal' } });
+      mount(SnQrCode, {
+        props: { text: 'AUI', size: 100, enableGradient: true, gradientColor: 'teal' },
+      });
       const [gradient] = uni.gradients;
       expect(gradient).toBeDefined();
       // Default diagonal direction spans the whole canvas corner to corner.

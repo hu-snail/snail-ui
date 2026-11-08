@@ -10,7 +10,16 @@
  * Playground 控件直接使用 @snui/vue-web 的 SnSelect / SnRadioGroup /
  * SnSwitch —— 文档页本身就在消费被文档化的组件。
  */
- import { computed, markRaw, onBeforeUnmount, onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import {
+  computed,
+  markRaw,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue';
 import { useData, useRouter } from 'vitepress';
 import {
   ArrowLeft,
@@ -237,7 +246,7 @@ const generatedCode = computed(() => {
     return [
       '<script setup lang="ts">',
       "import { ref } from 'vue';",
-      "import { " + tag + " } from '@snui/vue-web';",
+      'import { ' + tag + " } from '@snui/vue-web';",
       '',
       'const value = ref(' + initial + ');',
       '<\\/script>',
@@ -414,16 +423,16 @@ const demoComponents = computed(() =>
  * 模块只在代码面板请求时按需拉取，结果缓存进 demoSources。
  */
 const demoSources = ref<Record<string, string>>({});
- watchEffect(async () => {
-   const out: Record<string, string> = {};
-   // 并发拉取本页全部 demo 源码（per-file chunk，Promise.all 一次收敛）
-   await Promise.all(
-     props.doc.demos.map(async (d) => {
-       out[d.name] = await loadDemoSource(d.name, false);
-     }),
-   );
-   demoSources.value = out;
- });
+watchEffect(async () => {
+  const out: Record<string, string> = {};
+  // 并发拉取本页全部 demo 源码（per-file chunk，Promise.all 一次收敛）
+  await Promise.all(
+    props.doc.demos.map(async (d) => {
+      out[d.name] = await loadDemoSource(d.name, false);
+    }),
+  );
+  demoSources.value = out;
+});
 
 /** demo-loader 返回 defineAsyncComponent —— 缓存一份避免每次渲染重建。 */
 const demoComponentCache = new Map<string, unknown>();
@@ -467,53 +476,53 @@ function parseSfcSections(src: string): SfcSection[] {
   return sections;
 }
 
- const demoSections = computed<Record<string, SfcSection[]>>(() => {
-   const out: Record<string, SfcSection[]> = {};
-   for (const d of props.doc.demos) {
-     out[d.name] = parseSfcSections(demoSources.value[d.name] ?? '');
-   }
-   return out;
- });
- 
- /**
-  * 高亮结果缓存：key = `lang\u0000code`。demoSectionHtml 在模板里调用 ——
-  * 之前每次组件重渲染都会对可见的每个代码面板重跑正则高亮（46 个 demo
-  * 全量 ~43ms）；按 (源码, 语言) 记忆化后同一代码段只高亮一次。
-  */
- const highlightCache = new Map<string, string>();
- function highlightCached(code: string, lang: 'vue' | 'ts' | 'css'): string {
-   const key = `${lang}\u0000${code}`;
-   let html = highlightCache.get(key);
-   if (html === undefined) {
-     html = codeToHtml(code, lang);
-     highlightCache.set(key, html);
-   }
-   return html;
- }
- 
- /** 每个 demo 记住自己的代码段页签。 */
- const demoSectionState = ref<Record<string, number>>({});
- 
- function demoSectionIndex(name: string): number {
-   const list = demoSections.value[name] ?? [];
-   const idx = demoSectionState.value[name] ?? 0;
-   return Math.min(idx, Math.max(0, list.length - 1));
- }
- 
- function setDemoSection(name: string, index: number): void {
-   demoSectionState.value = { ...demoSectionState.value, [name]: index };
- }
- 
- function demoSectionCode(name: string): string {
-   const list = demoSections.value[name] ?? [];
-   return list[demoSectionIndex(name)]?.code ?? '';
- }
- 
- function demoSectionHtml(name: string): string {
-   const list = demoSections.value[name] ?? [];
-   const sec = list[demoSectionIndex(name)];
-   return sec ? highlightCached(sec.code, sec.lang) : '';
- }
+const demoSections = computed<Record<string, SfcSection[]>>(() => {
+  const out: Record<string, SfcSection[]> = {};
+  for (const d of props.doc.demos) {
+    out[d.name] = parseSfcSections(demoSources.value[d.name] ?? '');
+  }
+  return out;
+});
+
+/**
+ * 高亮结果缓存：key = `lang\u0000code`。demoSectionHtml 在模板里调用 ——
+ * 之前每次组件重渲染都会对可见的每个代码面板重跑正则高亮（46 个 demo
+ * 全量 ~43ms）；按 (源码, 语言) 记忆化后同一代码段只高亮一次。
+ */
+const highlightCache = new Map<string, string>();
+function highlightCached(code: string, lang: 'vue' | 'ts' | 'css'): string {
+  const key = `${lang}\u0000${code}`;
+  let html = highlightCache.get(key);
+  if (html === undefined) {
+    html = codeToHtml(code, lang);
+    highlightCache.set(key, html);
+  }
+  return html;
+}
+
+/** 每个 demo 记住自己的代码段页签。 */
+const demoSectionState = ref<Record<string, number>>({});
+
+function demoSectionIndex(name: string): number {
+  const list = demoSections.value[name] ?? [];
+  const idx = demoSectionState.value[name] ?? 0;
+  return Math.min(idx, Math.max(0, list.length - 1));
+}
+
+function setDemoSection(name: string, index: number): void {
+  demoSectionState.value = { ...demoSectionState.value, [name]: index };
+}
+
+function demoSectionCode(name: string): string {
+  const list = demoSections.value[name] ?? [];
+  return list[demoSectionIndex(name)]?.code ?? '';
+}
+
+function demoSectionHtml(name: string): string {
+  const list = demoSections.value[name] ?? [];
+  const sec = list[demoSectionIndex(name)];
+  return sec ? highlightCached(sec.code, sec.lang) : '';
+}
 
 /* ── 反馈挂件 ────────────────────────────────────────────────────────── */
 
@@ -641,8 +650,8 @@ onBeforeUnmount(() => {
               <h2>交互式演练 Playground</h2>
             </div>
             <span class="sn-docpage__sec-aside">{{
-            previewComponent ? '实时渲染真实组件' : '实时驱动真实 SnButton'
-          }}</span>
+              previewComponent ? '实时渲染真实组件' : '实时驱动真实 SnButton'
+            }}</span>
           </div>
 
           <div class="sn-docpage__window">
@@ -704,7 +713,12 @@ onBeforeUnmount(() => {
                 </div>
               </div>
 
-              <div v-if="!previewComponent" class="sn-docpage__presets" role="group" aria-label="语义类型预设">
+              <div
+                v-if="!previewComponent"
+                class="sn-docpage__presets"
+                role="group"
+                aria-label="语义类型预设"
+              >
                 <button
                   v-for="preset in typePresets"
                   :key="preset.key"
@@ -853,7 +867,10 @@ onBeforeUnmount(() => {
                     :step="c.step ?? 1"
                     show-input
                     :aria-label="c.label"
-                    @update:model-value="(v: number | [number, number]) => (pgValues[c.prop] = Array.isArray(v) ? v[0] : v)"
+                    @update:model-value="
+                      (v: number | [number, number]) =>
+                        (pgValues[c.prop] = Array.isArray(v) ? v[0] : v)
+                    "
                   />
                 </div>
 
@@ -923,7 +940,11 @@ onBeforeUnmount(() => {
             </template>
           </p>
           <div class="sn-docpage__variant-grid">
-            <div v-for="card in doc.variants?.cards ?? []" :key="card.title" class="sn-docpage__vcard">
+            <div
+              v-for="card in doc.variants?.cards ?? []"
+              :key="card.title"
+              class="sn-docpage__vcard"
+            >
               <div class="sn-docpage__vcard-head">
                 <h3>{{ card.title }}</h3>
                 <span
@@ -960,15 +981,11 @@ onBeforeUnmount(() => {
             </div>
             <span class="sn-docpage__sec-aside">实时渲染 · 来自组件文档案例</span>
           </div>
-           <!-- demo 两列瀑布：自管双列（每列独立 flex），卡片展开自然推挤
+          <!-- demo 两列瀑布：自管双列（每列独立 flex），卡片展开自然推挤
                 本列后续项，无空高度。不用 slot 传递（编译插槽稳定化会跳过
                 子组件更新导致预览/源码切换失效，见 SnWaterfall 签名修复）。 -->
-           <div class="sn-docpage__demo-fall">
-            <div
-              v-for="(column, ci) in demoColumns"
-              :key="'col' + ci"
-              class="sn-docpage__demo-col"
-            >
+          <div class="sn-docpage__demo-fall">
+            <div v-for="(column, ci) in demoColumns" :key="'col' + ci" class="sn-docpage__demo-col">
               <div v-for="d in column" :key="d.name" class="sn-docpage__demo">
                 <div class="sn-docpage__demo-head">
                   <div class="sn-docpage__demo-meta">
@@ -1964,61 +1981,61 @@ onBeforeUnmount(() => {
   font-weight: 500;
   color: var(--sn-doc-text-1);
 }
- .sn-docpage__demo-meta p {
-   margin: 3px 0 0;
-   font-size: 12.5px;
-   line-height: 1.6;
-   color: var(--sn-doc-text-3);
- }
- 
- /* 预览 / 源码切换胶囊（图标，参照 heroui 的 eye/code 双态）。
+.sn-docpage__demo-meta p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--sn-doc-text-3);
+}
+
+/* 预览 / 源码切换胶囊（图标，参照 heroui 的 eye/code 双态）。
   * 滑块是唯一的运动物：cubic-bezier(0.34, 1.56, 0.64, 1) 的 back-out
   * 曲线让它带一次可见回弹（过冲约 10% 后落位）——与侧栏端切换胶囊
   * 同一套「确认感」语言。 */
- .sn-docpage__demo-switch {
-   position: relative;
-   display: inline-flex;
-   flex: none;
-   padding: 3px;
-   border-radius: 999px;
-   background: var(--sn-doc-card-soft);
- }
- .sn-docpage__demo-thumb {
-   position: absolute;
-   top: 3px;
-   bottom: 3px;
-   left: 3px;
-   width: 28px;
-   border-radius: 999px;
-   background: var(--sn-doc-card);
-   box-shadow: 0 1px 3px rgb(2 6 16 / 0.1);
-   transform: translateX(0);
-   transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
- }
- .sn-docpage__demo-thumb--code {
-   transform: translateX(28px);
- }
- .sn-docpage__demo-tab {
-   position: relative;
-   z-index: 1;
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   width: 28px;
-   height: 28px;
-   border: 0;
-   border-radius: 999px;
-   background: transparent;
-   color: var(--sn-doc-text-3);
-   cursor: pointer;
-   transition: color 0.15s;
- }
- .sn-docpage__demo-tab:hover {
-   color: var(--sn-doc-text-1);
- }
- .sn-docpage__demo-tab--on {
-   color: var(--sn-doc-accent);
- }
+.sn-docpage__demo-switch {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--sn-doc-card-soft);
+}
+.sn-docpage__demo-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: 28px;
+  border-radius: 999px;
+  background: var(--sn-doc-card);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.1);
+  transform: translateX(0);
+  transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sn-docpage__demo-thumb--code {
+  transform: translateX(28px);
+}
+.sn-docpage__demo-tab {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sn-doc-text-3);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.sn-docpage__demo-tab:hover {
+  color: var(--sn-doc-text-1);
+}
+.sn-docpage__demo-tab--on {
+  color: var(--sn-doc-accent);
+}
 .sn-docpage__demo-stage {
   margin: 12px 16px 16px;
   padding: 20px 16px;

@@ -48,21 +48,21 @@ import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue';
 
 ## Props
 
-| 属性          | 类型                                                                             | 默认值     | 说明                                     |
-| ------------- | -------------------------------------------------------------------------------- | ---------- | ---------------------------------------- |
-| `scrollTop`   | `number`                                                                         | `0`        | 页面滚动距离（由宿主提供）               |
-| `text`        | `string`                                                                         | `''`       | 按钮文字                                 |
-| `top`         | `number`                                                                         | `300`      | 显示阈值（px）                           |
-| `duration`    | `number`                                                                         | `100`      | 返回顶部滚动时长（ms）                   |
-| `zIndex`      | `number`                                                                         | `10`       | 组件层级                                 |
-| `iconStyle`   | `string`                                                                         | `''`       | 自定义图标样式（叠加在默认向上旋转之上） |
-| `shape`       | `'circle' \| 'square'`                                                           | `'circle'` | 按钮形状                                 |
-| `bottom`      | `number`                                                                         | `100`      | 距屏幕底部距离（px）                     |
-| `right`       | `number`                                                                         | `20`       | 距屏幕右侧距离（px）                     |
-| `customStyle` | `string`                                                                         | `''`       | 根节点自定义 inline style                |
-| `customClass` | `string`                                                                         | `''`       | 根节点自定义类名                         |
-| `size`        | `'small' \| 'medium' \| 'large'`                                                 | `'medium'` | 按钮尺寸档位，图标随档位取图标尺寸令牌   |
-| `theme`       | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'`         | `'default'`| 按钮主题填充，内容色自动反转             |
+| 属性          | 类型                                                                     | 默认值      | 说明                                     |
+| ------------- | ------------------------------------------------------------------------ | ----------- | ---------------------------------------- |
+| `scrollTop`   | `number`                                                                 | `0`         | 页面滚动距离（由宿主提供）               |
+| `text`        | `string`                                                                 | `''`        | 按钮文字                                 |
+| `top`         | `number`                                                                 | `300`       | 显示阈值（px）                           |
+| `duration`    | `number`                                                                 | `100`       | 返回顶部滚动时长（ms）                   |
+| `zIndex`      | `number`                                                                 | `10`        | 组件层级                                 |
+| `iconStyle`   | `string`                                                                 | `''`        | 自定义图标样式（叠加在默认向上旋转之上） |
+| `shape`       | `'circle' \| 'square'`                                                   | `'circle'`  | 按钮形状                                 |
+| `bottom`      | `number`                                                                 | `100`       | 距屏幕底部距离（px）                     |
+| `right`       | `number`                                                                 | `20`        | 距屏幕右侧距离（px）                     |
+| `customStyle` | `string`                                                                 | `''`        | 根节点自定义 inline style                |
+| `customClass` | `string`                                                                 | `''`        | 根节点自定义类名                         |
+| `size`        | `'small' \| 'medium' \| 'large'`                                         | `'medium'`  | 按钮尺寸档位，图标随档位取图标尺寸令牌   |
+| `theme`       | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | 按钮主题填充，内容色自动反转             |
 
 ## Events
 
@@ -78,18 +78,18 @@ import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue';
 
 ## 主题变量
 
-| 变量                                                             | 用途                       |
-| ---------------------------------------------------------------- | -------------------------- |
-| `--sn-mp-color-background-surface`                               | 默认按钮底色               |
-| `--sn-mp-color-border-default`                                   | 默认按钮描边               |
-| `--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*`      | 各 `theme` 档位填充色      |
-| `--sn-mp-color-text-on-primary`                                  | 主题档位图标与文字反色     |
-| `--sn-mp-color-text-primary` / `--sn-mp-color-text-secondary`    | 默认档位图标 / 文字色      |
-| `--sn-mp-icon-size-small` / `medium` / `large`                   | `size` 档位对应的图标尺寸  |
-| `--sn-mp-shadow-sm`                                              | 按钮投影                   |
-| `--sn-mp-radius-full` / `--sn-mp-radius-md`                      | 圆形 / 方形圆角            |
-| `--sn-mp-font-size-xs`                                           | 文字字号                   |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`                        | 图标与文字间距 / 水平内边距 |
+| 变量                                                          | 用途                        |
+| ------------------------------------------------------------- | --------------------------- |
+| `--sn-mp-color-background-surface`                            | 默认按钮底色                |
+| `--sn-mp-color-border-default`                                | 默认按钮描边                |
+| `--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*`   | 各 `theme` 档位填充色       |
+| `--sn-mp-color-text-on-primary`                               | 主题档位图标与文字反色      |
+| `--sn-mp-color-text-primary` / `--sn-mp-color-text-secondary` | 默认档位图标 / 文字色       |
+| `--sn-mp-icon-size-small` / `medium` / `large`                | `size` 档位对应的图标尺寸   |
+| `--sn-mp-shadow-sm`                                           | 按钮投影                    |
+| `--sn-mp-radius-full` / `--sn-mp-radius-md`                   | 圆形 / 方形圆角             |
+| `--sn-mp-font-size-xs`                                        | 文字字号                    |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`                     | 图标与文字间距 / 水平内边距 |
 
 组件内部通过 `--sn-backtop-bg` / `--sn-backtop-border` / `--sn-backtop-fg` / `--sn-backtop-label` 四个局部槽位变量承接主题，样式包（Style Pack）可整体覆盖。
 
@@ -109,12 +109,12 @@ import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue';
 
 ## AI Patch Boundary
 
-| 可安全由 AI 生成                                       | 需要人工确认                                       |
-| ------------------------------------------------------- | --------------------------------------------------- |
-| `scroll-top` / `top` / `duration` / `z-index` 等数值面  | 滚动容器与 `pageScrollTo` 的职责划分（页面 or 容器） |
-| `text` / `icon-style` 等静态展示面                      | `default` 插槽内容与点击后的宿主路由 / 数据行为     |
-| `shape` / `size` / `theme` 静态档位取值                 | `bottom` / `right` 与页面导航栏 / 安全区的叠加      |
-| 文档、demo 中的静态组合用法                             | 把按钮放进另一个 `position: fixed` 容器的层级策略   |
+| 可安全由 AI 生成                                       | 需要人工确认                                         |
+| ------------------------------------------------------ | ---------------------------------------------------- |
+| `scroll-top` / `top` / `duration` / `z-index` 等数值面 | 滚动容器与 `pageScrollTo` 的职责划分（页面 or 容器） |
+| `text` / `icon-style` 等静态展示面                     | `default` 插槽内容与点击后的宿主路由 / 数据行为      |
+| `shape` / `size` / `theme` 静态档位取值                | `bottom` / `right` 与页面导航栏 / 安全区的叠加       |
+| 文档、demo 中的静态组合用法                            | 把按钮放进另一个 `position: fixed` 容器的层级策略    |
 
 - AI 生成的 JSON Patch 只允许修改以上静态与数值面，不得注入事件处理器、插槽内容或组件内部状态。
 

@@ -34,7 +34,9 @@ const photos: Photo[] = [
         <text class="stack-card__title">{{ photo.title }}</text>
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text>
+    <text class="sn-demo__caption"
+      >masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text
+    >
   </view>
 </template>
 

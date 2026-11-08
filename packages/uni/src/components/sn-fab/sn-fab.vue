@@ -604,7 +604,12 @@ function clampDragOffset(): void {
 </script>
 
 <template>
-  <view data-snui-component="fab" ref="rootRef" :class="rootClass" :style="`${rootStyle}; ${anchorStyle}`">
+  <view
+    data-snui-component="fab"
+    ref="rootRef"
+    :class="rootClass"
+    :style="`${rootStyle}; ${anchorStyle}`"
+  >
     <view :class="menuClass" :aria-hidden="active ? 'false' : 'true'">
       <template v-if="isFan">
         <view

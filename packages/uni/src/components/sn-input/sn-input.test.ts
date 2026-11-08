@@ -783,8 +783,12 @@ describe('sn-input', () => {
     expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
     expect(source).toMatch(/\.sn-input__password-toggle-btn\s*\{[^}]*var\(--sn-input-icon-size\)/);
     /* The clear button is a circular delete chip: token disc + surface ×. */
-    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*background:\s*var\(--sn-input-icon-color\)/);
-    expect(source).toMatch(/\.sn-input__clear-btn\s*\{[^}]*color:\s*var\(--sn-mp-color-background-surface\)/);
+    expect(source).toMatch(
+      /\.sn-input__clear-btn\s*\{[^}]*background:\s*var\(--sn-input-icon-color\)/,
+    );
+    expect(source).toMatch(
+      /\.sn-input__clear-btn\s*\{[^}]*color:\s*var\(--sn-mp-color-background-surface\)/,
+    );
   });
 
   it('hides the suffix area while the clear button is shown', () => {

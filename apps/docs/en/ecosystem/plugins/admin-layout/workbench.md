@@ -21,13 +21,13 @@ and a host that only wants a layout shell should not be forced to ship a chart e
 
 ## Structure
 
-| Area        | Content                                                                                                     |
-| ----------- | ----------------------------------------------------------------------------------------------------------- |
-| Heading     | `title` / `subtitle` · primary / secondary actions on the right (`#actions` replaces both; they only emit)    |
-| KPIs        | `kpis[0]` = highlighted account card (trend pill / pill actions / sub-stats / footnote); `kpis[1..]` stack (`#kpi`) |
-| Transactions| `transactions` table (time / amount / category / status; status = colored dot + label, `#transactions`)      |
-| Money flow  | `moneyFlow` area + line (legend + period switch) · ECharts (`#chart`)                                       |
-| Income      | `incomeSources` ring + centre share + three figures · ECharts (`#income`)                                   |
+| Area         | Content                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Heading      | `title` / `subtitle` · primary / secondary actions on the right (`#actions` replaces both; they only emit)          |
+| KPIs         | `kpis[0]` = highlighted account card (trend pill / pill actions / sub-stats / footnote); `kpis[1..]` stack (`#kpi`) |
+| Transactions | `transactions` table (time / amount / category / status; status = colored dot + label, `#transactions`)             |
+| Money flow   | `moneyFlow` area + line (legend + period switch) · ECharts (`#chart`)                                               |
+| Income       | `incomeSources` ring + centre share + three figures · ECharts (`#income`)                                           |
 
 ## Usage
 
@@ -75,22 +75,22 @@ const kpis: ProWorkbenchKpi[] = [
 
 ## Props
 
-| Name                  | Type                         | Default                                    | Notes                                                        |
-| --------------------- | ---------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
-| `title`               | `string`                     | `'工作台'`                                  | Heading                                                      |
-| `subtitle`            | `string`                     | zh default                                 | Rendered unless `''`                                         |
-| `showHeading`         | `boolean`                    | `true`                                     | Set `false` when the shell already prints a title band       |
-| `kpis`                | `ProWorkbenchKpi[]`          | `[]`                                       | First entry is the highlighted card                          |
-| `moneyFlow`           | `ProWorkbenchMoneyFlow`      | —                                          | Two series; `undefined` draws no chart                       |
-| `incomeSources`       | `ProWorkbenchIncomeSource[]` | `[]`                                       | Ring slices (ratios only)                                    |
-| `transactions`        | `ProWorkbenchTransaction[]`  | `[]`                                       | Table rows                                                   |
-| `transactionsColumns` | `string[]`                   | zh headers                                 | Table headers                                                |
-| `transactionsEmptyText` | `string`                   | zh copy                                    | Empty state                                                  |
-| `flowRange`           | `string`                     | —                                          | Passing it makes the period controlled                       |
-| `rangeOptions`        | `string[]`                   | `['年度','季度','月度']`                     | Period options                                               |
-| `flowTitle` / `incomeTitle` / `transactionsTitle` | `string` | zh defaults                        | Card headings                                                |
-| `primaryActionText` / `secondaryActionText` | `string` | zh defaults                        | Heading buttons                                              |
-| `chartHeight`         | `number`                     | `260`                                      | Chart height in px                                           |
+| Name                                              | Type                         | Default                  | Notes                                                  |
+| ------------------------------------------------- | ---------------------------- | ------------------------ | ------------------------------------------------------ |
+| `title`                                           | `string`                     | `'工作台'`               | Heading                                                |
+| `subtitle`                                        | `string`                     | zh default               | Rendered unless `''`                                   |
+| `showHeading`                                     | `boolean`                    | `true`                   | Set `false` when the shell already prints a title band |
+| `kpis`                                            | `ProWorkbenchKpi[]`          | `[]`                     | First entry is the highlighted card                    |
+| `moneyFlow`                                       | `ProWorkbenchMoneyFlow`      | —                        | Two series; `undefined` draws no chart                 |
+| `incomeSources`                                   | `ProWorkbenchIncomeSource[]` | `[]`                     | Ring slices (ratios only)                              |
+| `transactions`                                    | `ProWorkbenchTransaction[]`  | `[]`                     | Table rows                                             |
+| `transactionsColumns`                             | `string[]`                   | zh headers               | Table headers                                          |
+| `transactionsEmptyText`                           | `string`                     | zh copy                  | Empty state                                            |
+| `flowRange`                                       | `string`                     | —                        | Passing it makes the period controlled                 |
+| `rangeOptions`                                    | `string[]`                   | `['年度','季度','月度']` | Period options                                         |
+| `flowTitle` / `incomeTitle` / `transactionsTitle` | `string`                     | zh defaults              | Card headings                                          |
+| `primaryActionText` / `secondaryActionText`       | `string`                     | zh defaults              | Heading buttons                                        |
+| `chartHeight`                                     | `number`                     | `260`                    | Chart height in px                                     |
 
 Copy defaults are Chinese: the package is i18n-free (AGENTS.md §18) — pass your own strings for other locales.
 
@@ -106,13 +106,13 @@ Copy defaults are Chinese: the package is i18n-free (AGENTS.md §18) — pass yo
 
 ## Slots
 
-| Slot           | Replaces                  |
-| -------------- | ------------------------- |
-| `actions`      | Heading tools             |
-| `kpi`          | The whole KPI band        |
-| `chart`        | Money-flow chart          |
-| `income`       | Income ring               |
-| `transactions` | Transaction table         |
+| Slot           | Replaces           |
+| -------------- | ------------------ |
+| `actions`      | Heading tools      |
+| `kpi`          | The whole KPI band |
+| `chart`        | Money-flow chart   |
+| `income`       | Income ring        |
+| `transactions` | Transaction table  |
 
 ## Theming
 

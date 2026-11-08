@@ -765,10 +765,14 @@ describe('sn-tabs nav scroll-into-view', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnTabs, { modelValue: 0 }, {
-            default: () =>
-              Array.from({ length: 3 }, (_, i) => h(SnTab, { title: `Tab ${i}`, name: i })),
-          });
+          h(
+            SnTabs,
+            { modelValue: 0 },
+            {
+              default: () =>
+                Array.from({ length: 3 }, (_, i) => h(SnTab, { title: `Tab ${i}`, name: i })),
+            },
+          );
       },
     });
     // 回归：空面板壳带 24rpx padding，会把 nav 顶出垂直居中位置。

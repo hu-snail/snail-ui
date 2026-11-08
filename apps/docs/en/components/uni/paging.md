@@ -88,14 +88,14 @@ Refresher state machine:
 The arrow rotates with the damped pull, flips 180° past the threshold, swaps
 to a spinner while refreshing and to a check glyph on the success hold.
 
-| Technique | Description |
-| --------- | ----------- |
-| Native gesture first | On uni hosts the pull physics belong to the platform scroll-view; the component updates state only at `refresherpulling` transitions — no per-move setData, which is what keeps low-end MP devices smooth |
-| Progressive rubber band | Each gesture delta scales by 0.75 below the threshold; past it the damping rate stiffens linearly with the pull (from `refresherOutRate` to a full stop at the clamp) — the pull tracks the finger, resists, then locks up |
-| Pull clamp | Max pull = `refresherMaxDistance` (`0` = `refresherThreshold × 3`); a hard yank can never run away, and release springs back |
-| uni-h5 takeover | The uni-h5 native refresher tracks the raw finger distance (no damping, no clamp); the component rewrites the strip geometry to the damped value on `refresherpulling`, matching the browser-host feel. MP / App keep the platform-native gesture |
-| Transform-only rendering | Pull offsets go through `transform: translateY` (compositor path) — no height changes, no layout; the spring-back rides a CSS transition |
-| rAF coalescing | Gesture deltas coalesce through `requestAnimationFrame` and report whole pixels — at most one style write per frame |
+| Technique                | Description                                                                                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native gesture first     | On uni hosts the pull physics belong to the platform scroll-view; the component updates state only at `refresherpulling` transitions — no per-move setData, which is what keeps low-end MP devices smooth                                         |
+| Progressive rubber band  | Each gesture delta scales by 0.75 below the threshold; past it the damping rate stiffens linearly with the pull (from `refresherOutRate` to a full stop at the clamp) — the pull tracks the finger, resists, then locks up                        |
+| Pull clamp               | Max pull = `refresherMaxDistance` (`0` = `refresherThreshold × 3`); a hard yank can never run away, and release springs back                                                                                                                      |
+| uni-h5 takeover          | The uni-h5 native refresher tracks the raw finger distance (no damping, no clamp); the component rewrites the strip geometry to the damped value on `refresherpulling`, matching the browser-host feel. MP / App keep the platform-native gesture |
+| Transform-only rendering | Pull offsets go through `transform: translateY` (compositor path) — no height changes, no layout; the spring-back rides a CSS transition                                                                                                          |
+| rAF coalescing           | Gesture deltas coalesce through `requestAnimationFrame` and report whole pixels — at most one style write per frame                                                                                                                               |
 
 ## Second floor
 
@@ -161,42 +161,42 @@ content lives in the `#secondFloor` slot, over a dedicated scroll area.
 
 ### Props
 
-| Name                        | Type        | Default              | Description                                           |
-| --------------------------- | ----------- | -------------------- | ----------------------------------------------------- |
-| `v-model`                   | `unknown[]` | `[]`                 | Aggregated list, rendered through the default slot    |
-| `auto`                      | `boolean`   | `true`               | Fire the first `query` after mount                    |
-| `defaultPageNo`             | `number`    | `1`                  | First page number                                     |
-| `defaultPageSize`           | `number`    | `10`                 | Page size; a shorter returned page stops the sequence |
-| `refresherEnabled`          | `boolean`   | `true`               | Enable the pull-to-refresh gesture                    |
-| `refresherThreshold`        | `number`    | `45`                 | Arming pull distance (px, scroll-view contract)       |
-| `refresherDefaultText`      | `string`    | `继续下拉刷新`       | Refresher text below the threshold                    |
-| `refresherPullingText`      | `string`    | `松开立即刷新`       | Refresher text past the threshold                     |
-| `refresherRefreshingText`   | `string`    | `正在刷新...`        | Text while the refresh query is in flight             |
-| `refresherCompleteText`     | `string`    | `刷新成功`           | Text held after a successful refresh                  |
-| `refresherCompleteDuration` | `number`    | `500`                | Success-text hold in ms; `0` skips the hold           |
-| `refresherBackground`       | `string`    | `''`                 | Pull-area background (forwards native `refresher-background`) |
-| `refresherTextColor`        | `string`    | `''`                 | Refresher text color                                  |
-| `refresherIconColor`        | `string`    | `''`                 | Refresher arrow / spinner color                       |
-| `refresherLoadingType`      | `string`    | `circular`           | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`) |
-| `refresherMaxDistance`      | `number`    | `0`                  | Hard pull clamp (px, z-paging `movingDistance`); `0` = `refresherThreshold × 3` |
+| Name                        | Type        | Default              | Description                                                                                                                       |
+| --------------------------- | ----------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `v-model`                   | `unknown[]` | `[]`                 | Aggregated list, rendered through the default slot                                                                                |
+| `auto`                      | `boolean`   | `true`               | Fire the first `query` after mount                                                                                                |
+| `defaultPageNo`             | `number`    | `1`                  | First page number                                                                                                                 |
+| `defaultPageSize`           | `number`    | `10`                 | Page size; a shorter returned page stops the sequence                                                                             |
+| `refresherEnabled`          | `boolean`   | `true`               | Enable the pull-to-refresh gesture                                                                                                |
+| `refresherThreshold`        | `number`    | `45`                 | Arming pull distance (px, scroll-view contract)                                                                                   |
+| `refresherDefaultText`      | `string`    | `继续下拉刷新`       | Refresher text below the threshold                                                                                                |
+| `refresherPullingText`      | `string`    | `松开立即刷新`       | Refresher text past the threshold                                                                                                 |
+| `refresherRefreshingText`   | `string`    | `正在刷新...`        | Text while the refresh query is in flight                                                                                         |
+| `refresherCompleteText`     | `string`    | `刷新成功`           | Text held after a successful refresh                                                                                              |
+| `refresherCompleteDuration` | `number`    | `500`                | Success-text hold in ms; `0` skips the hold                                                                                       |
+| `refresherBackground`       | `string`    | `''`                 | Pull-area background (forwards native `refresher-background`)                                                                     |
+| `refresherTextColor`        | `string`    | `''`                 | Refresher text color                                                                                                              |
+| `refresherIconColor`        | `string`    | `''`                 | Refresher arrow / spinner color                                                                                                   |
+| `refresherLoadingType`      | `string`    | `circular`           | Refresher spinner shape (`circular` / `spinner` / `dots` / `wave`)                                                                |
+| `refresherMaxDistance`      | `number`    | `0`                  | Hard pull clamp (px, z-paging `movingDistance`); `0` = `refresherThreshold × 3`                                                   |
 | `refresherOutRate`          | `number`    | `0.65`               | Share removed from each delta past the threshold (0–1); higher feels firmer, stiffening progressively to a full stop at the clamp |
-| `secondFloorEnabled`        | `boolean`   | `false`              | Enable pull-down-to-enter second floor                |
-| `secondFloorThreshold`      | `number`    | `100`                | Release distance entering the second floor (px)       |
-| `secondFloorDuration`       | `number`    | `200`                | Overlay slide-in/out duration (ms)                    |
-| `secondFloorFullscreen`     | `boolean`   | `true`               | Spread the overlay over the viewport (`false` keeps it in the component box) |
-| `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | Refresher text inside the second-floor zone           |
-| `secondFloorBackground`     | `string`    | `''`                 | Second-floor overlay background                       |
-| `loadMoreEnabled`           | `boolean`   | `true`               | Enable auto load-more on scroll-to-bottom             |
-| `lowerThreshold`            | `number`    | `50`                 | Distance from the bottom that fires load-more (px)    |
-| `loadMoreDefaultText`       | `string`    | `点击加载更多`       | Idle footer text; tap loads the next page             |
-| `loadMoreLoadingText`       | `string`    | `正在加载中...`      | Footer text while loading                             |
-| `loadMoreNoMoreText`        | `string`    | `没有更多了`         | Footer text once everything is loaded                 |
-| `loadMoreFailText`          | `string`    | `加载失败，点击重试` | Footer text after a failure                           |
-| `loadMoreTextColor`         | `string`    | `''`                 | Footer text color (the spinner follows)               |
-| `emptyText`                 | `string`    | `暂无数据`           | Built-in empty view text                              |
-| `safeAreaInsetBottom`       | `boolean`   | `false`              | Pad the container bottom for the device safe area     |
-| `customClass`               | `string`    | `''`                 | Root class forwarding                                 |
-| `customStyle`               | `string`    | `''`                 | Root style forwarding                                 |
+| `secondFloorEnabled`        | `boolean`   | `false`              | Enable pull-down-to-enter second floor                                                                                            |
+| `secondFloorThreshold`      | `number`    | `100`                | Release distance entering the second floor (px)                                                                                   |
+| `secondFloorDuration`       | `number`    | `200`                | Overlay slide-in/out duration (ms)                                                                                                |
+| `secondFloorFullscreen`     | `boolean`   | `true`               | Spread the overlay over the viewport (`false` keeps it in the component box)                                                      |
+| `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | Refresher text inside the second-floor zone                                                                                       |
+| `secondFloorBackground`     | `string`    | `''`                 | Second-floor overlay background                                                                                                   |
+| `loadMoreEnabled`           | `boolean`   | `true`               | Enable auto load-more on scroll-to-bottom                                                                                         |
+| `lowerThreshold`            | `number`    | `50`                 | Distance from the bottom that fires load-more (px)                                                                                |
+| `loadMoreDefaultText`       | `string`    | `点击加载更多`       | Idle footer text; tap loads the next page                                                                                         |
+| `loadMoreLoadingText`       | `string`    | `正在加载中...`      | Footer text while loading                                                                                                         |
+| `loadMoreNoMoreText`        | `string`    | `没有更多了`         | Footer text once everything is loaded                                                                                             |
+| `loadMoreFailText`          | `string`    | `加载失败，点击重试` | Footer text after a failure                                                                                                       |
+| `loadMoreTextColor`         | `string`    | `''`                 | Footer text color (the spinner follows)                                                                                           |
+| `emptyText`                 | `string`    | `暂无数据`           | Built-in empty view text                                                                                                          |
+| `safeAreaInsetBottom`       | `boolean`   | `false`              | Pad the container bottom for the device safe area                                                                                 |
+| `customClass`               | `string`    | `''`                 | Root class forwarding                                                                                                             |
+| `customStyle`               | `string`    | `''`                 | Root style forwarding                                                                                                             |
 
 ### Events
 
@@ -209,15 +209,15 @@ content lives in the `#secondFloor` slot, over a dedicated scroll area.
 
 ### Slots
 
-| Name          | Description                                                |
-| ------------- | ---------------------------------------------------------- |
-| —             | List rows; render the bound v-model array here             |
-| `top`         | Fixed above the scroll area; does not scroll with the list |
-| `bottom`      | Fixed below the scroll area; does not scroll with the list |
-| `empty`       | Custom empty view                                          |
+| Name          | Description                                                  |
+| ------------- | ------------------------------------------------------------ |
+| —             | List rows; render the bound v-model array here               |
+| `top`         | Fixed above the scroll area; does not scroll with the list   |
+| `bottom`      | Fixed below the scroll area; does not scroll with the list   |
+| `empty`       | Custom empty view                                            |
 | `refresher`   | Custom refresher content (arrow / spinner + text by default) |
-| `footer`      | Custom load-more footer, scoped `{ phase }`                |
-| `secondFloor` | Second-floor overlay content (own scroll area)             |
+| `footer`      | Custom load-more footer, scoped `{ phase }`                  |
+| `secondFloor` | Second-floor overlay content (own scroll area)               |
 
 ### Methods
 

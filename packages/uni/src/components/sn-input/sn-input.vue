@@ -300,7 +300,7 @@ const fieldRef = ref<{ syncValue: (text: string) => void } | null>(null);
  * access goes through the component instance's root element.
  */
 function rootElement(): Element | null {
-  return ((instance?.proxy as { $el?: Element } | null)?.$el ?? null);
+  return (instance?.proxy as { $el?: Element } | null)?.$el ?? null;
 }
 
 /** The inner native field, reached through the root element. */

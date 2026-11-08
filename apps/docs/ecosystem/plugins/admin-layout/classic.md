@@ -15,12 +15,12 @@ import '@snui/admin-layout/layouts/classic/style.css'; // 只含 classic 的壳�
 
 ## 结构
 
-| 区域       | 内容                                                                                                            |
-| ---------- | --------------------------------------------------------------------------------------------------------------- |
-| 左侧栏     | 顶部品牌（`SnProLogo`）→ 菜单分类 + 子菜单（`SnMenu` vertical）→ 底部用户卡片（`SnProUser`，折叠时只剩头像）      |
+| 区域       | 内容                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| 左侧栏     | 顶部品牌（`SnProLogo`）→ 菜单分类 + 子菜单（`SnMenu` vertical）→ 底部用户卡片（`SnProUser`，折叠时只剩头像）       |
 | 内容区顶栏 | 折叠钮 · 面包屑（省略时按菜单路径自动推导）· 菜单搜索（`SnProSearch`）· 消息通知（`SnProNotice`）· `#actions` 插槽 |
-| 模块标题带 | 大标题 `pageTitle`（或 `#title` 插槽整体替换）                                                                    |
-| 内容区     | 浅色通屏 + 默认插槽（`<RouterView />`），可选 `#footer`                                                           |
+| 模块标题带 | 大标题 `pageTitle`（或 `#title` 插槽整体替换）                                                                     |
+| 内容区     | 浅色通屏 + 默认插槽（`<RouterView />`），可选 `#footer`                                                            |
 
 <Demo name="pro-layout-web-classic" description="classic — 分类侧栏 + 用户卡片 + 顶部面包屑 / 搜索 / 通知；模块标题随菜单切换。" />
 
@@ -64,37 +64,37 @@ const menus = routesToMenuOptions(router.options.routes);
 
 ### SnProLayoutClassic Props
 
-| Prop                | 类型                       | 默认值   | 说明                                        |
-| ------------------- | -------------------------- | -------- | ------------------------------------------- |
-| menus               | `SnMenuOption[]`           | `[]`     | 菜单树（分类 + 子菜单）                     |
-| activeKey           | `string \| number \| null` | `null`   | 当前选中菜单 key（通常 `route.name`）       |
-| collapsed           | `boolean \| undefined`     | —        | 折叠态，`v-model:collapsed`；省略非受控     |
-| siderWidth          | `number`                   | `224`    | 侧栏展开宽度（px）                          |
-| siderCollapsedWidth | `number`                   | `56`     | 侧栏折叠宽度（px）                          |
-| fixed               | `boolean`                  | `true`   | 铺满视口（100vh）；`false` 时高度 100%      |
-| showCollapse        | `boolean`                  | `true`   | 顶栏折叠钮开关                              |
-| collapseLabel       | `string`                   | 内置中文 | 折叠钮的无障碍标签                          |
-| logo / title / mark | `string`                   | —        | 品牌三件套（图片 / 标题 / 字母牌）          |
-| breadcrumb          | `string[]`                 | 自动推导 | 显式面包屑；省略时按菜单路径推导            |
-| pageTitle           | `string`                   | —        | 模块大标题（`#title` 插槽可整体替换）       |
-| showSearch          | `boolean`                  | `true`   | 顶栏内置菜单搜索（`SnProSearch`）           |
-| searchPlaceholder   | `string`                   | 内置中文 | 搜索框占位文案                              |
-| showNotice          | `boolean`                  | `true`   | 顶栏内置消息通知（`SnProNotice`）           |
-| noticeCount         | `number`                   | `0`      | 未读角标数（`0` 不显示）                    |
-| noticeItems         | `SnProNoticeItem[]`        | `[]`     | 消息列表（宿主数据）                        |
-| user                | `SnProUserProfile`         | —        | 侧栏底部用户卡片；省略则不渲染              |
-| userMenus           | `SnMenuOption[]`           | `[]`     | 用户卡片下拉项                              |
+| Prop                | 类型                       | 默认值   | 说明                                    |
+| ------------------- | -------------------------- | -------- | --------------------------------------- |
+| menus               | `SnMenuOption[]`           | `[]`     | 菜单树（分类 + 子菜单）                 |
+| activeKey           | `string \| number \| null` | `null`   | 当前选中菜单 key（通常 `route.name`）   |
+| collapsed           | `boolean \| undefined`     | —        | 折叠态，`v-model:collapsed`；省略非受控 |
+| siderWidth          | `number`                   | `224`    | 侧栏展开宽度（px）                      |
+| siderCollapsedWidth | `number`                   | `56`     | 侧栏折叠宽度（px）                      |
+| fixed               | `boolean`                  | `true`   | 铺满视口（100vh）；`false` 时高度 100%  |
+| showCollapse        | `boolean`                  | `true`   | 顶栏折叠钮开关                          |
+| collapseLabel       | `string`                   | 内置中文 | 折叠钮的无障碍标签                      |
+| logo / title / mark | `string`                   | —        | 品牌三件套（图片 / 标题 / 字母牌）      |
+| breadcrumb          | `string[]`                 | 自动推导 | 显式面包屑；省略时按菜单路径推导        |
+| pageTitle           | `string`                   | —        | 模块大标题（`#title` 插槽可整体替换）   |
+| showSearch          | `boolean`                  | `true`   | 顶栏内置菜单搜索（`SnProSearch`）       |
+| searchPlaceholder   | `string`                   | 内置中文 | 搜索框占位文案                          |
+| showNotice          | `boolean`                  | `true`   | 顶栏内置消息通知（`SnProNotice`）       |
+| noticeCount         | `number`                   | `0`      | 未读角标数（`0` 不显示）                |
+| noticeItems         | `SnProNoticeItem[]`        | `[]`     | 消息列表（宿主数据）                    |
+| user                | `SnProUserProfile`         | —        | 侧栏底部用户卡片；省略则不渲染          |
+| userMenus           | `SnMenuOption[]`           | `[]`     | 用户卡片下拉项                          |
 
 ### SnProLayoutClassic Events
 
-| 事件                | 参数          | 说明                                    |
-| ------------------- | ------------- | --------------------------------------- |
-| `select`            | `(key, item)` | 菜单点击——**导航由宿主实现**            |
-| `update:collapsed`  | `(collapsed)` | `v-model:collapsed`                     |
-| `search-select`     | `(key, item)` | 搜索结果点击——**导航由宿主实现**        |
-| `notice-select`     | `(key, item)` | 消息点击——**打开 / 标记已读由宿主实现** |
-| `notice-read-all`   | —             | 「全部已读」——**由宿主执行**            |
-| `user-select`       | `(key, item)` | 用户卡片菜单点击——**含义由宿主决定**    |
+| 事件               | 参数          | 说明                                    |
+| ------------------ | ------------- | --------------------------------------- |
+| `select`           | `(key, item)` | 菜单点击——**导航由宿主实现**            |
+| `update:collapsed` | `(collapsed)` | `v-model:collapsed`                     |
+| `search-select`    | `(key, item)` | 搜索结果点击——**导航由宿主实现**        |
+| `notice-select`    | `(key, item)` | 消息点击——**打开 / 标记已读由宿主实现** |
+| `notice-read-all`  | —             | 「全部已读」——**由宿主执行**            |
+| `user-select`      | `(key, item)` | 用户卡片菜单点击——**含义由宿主决定**    |
 
 ### SnProLayoutClassic Slots
 

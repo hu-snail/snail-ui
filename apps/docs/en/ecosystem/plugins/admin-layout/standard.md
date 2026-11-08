@@ -20,8 +20,8 @@ The barrel entry (`@snui/admin-layout` + `@snui/admin-layout/styles`) works too 
 Four built-in shapes mirroring vue-element-admin / vben-admin / ant-design-pro, switchable via
 `v-model:layout`:
 
-| `layout` | Structure                                                            | Reference            |
-| -------- | -------------------------------------------------------------------- | -------------------- |
+| `layout` | Structure                                                             | Reference            |
+| -------- | --------------------------------------------------------------------- | -------------------- |
 | `side`   | Sider (logo + vertical menu) + header (toggle / breadcrumb / actions) | vue-element-admin    |
 | `top`    | Header (logo + horizontal menu + actions) + content                   | ant-design-pro top   |
 | `mix`    | Header hosts top-level menu; sider shows its children                 | vben-admin mixed-nav |
@@ -85,62 +85,62 @@ A click only emits `select(key, item)`; navigation lives in the host:
 
 ### SnProLayout Props
 
-| Prop                | Type                                    | Default      | Description                                        |
-| ------------------- | --------------------------------------- | ------------ | -------------------------------------------------- |
-| layout              | `'side' \| 'top' \| 'mix' \| 'dual'`    | `'side'`     | Layout shape, `v-model:layout`                     |
-| logo / title / mark | `string`                                | —            | Brand trio (image / title / letter tile)           |
-| menus               | `SnMenuOption[]`                        | `[]`         | Menu tree (route-derived or backend-mapped)        |
-| activeKey           | `string \| number \| null`              | `null`       | Selected menu key (usually `route.name`)           |
-| collapsed           | `boolean \| undefined`                  | —            | Collapse state, `v-model:collapsed`; omit = uncontrolled |
-| siderWidth          | `number`                                | `224`        | Expanded sider width (px)                          |
-| siderCollapsedWidth | `number`                                | `56`         | Collapsed sider width (px)                         |
-| fixed               | `boolean`                               | `true`       | Pin to viewport (100vh); `false` → height 100%     |
-| showCollapse        | `boolean`                               | `true`       | Toggle the collapse button                         |
-| invertedSider       | `boolean`                               | `false`      | Dark sider surface (matches n-menu inverted)       |
-| breadcrumb          | `string[]`                              | auto-derived | Explicit breadcrumb; omit → derive from menu path  |
-| accordion           | `boolean`                               | `false`      | Single-open submenus                               |
-| expandedKeys        | `(string \| number)[]`                  | —            | Controlled expansion; omit → menu self-manages     |
-| showSettings        | `boolean`                               | `false`      | Show the header settings gear                      |
-| settingsLabel       | `string`                                | built-in zh  | Gear accessible label                              |
-| settingsLabels      | `Partial<SnProSettingsLabels>`          | built-in zh  | Settings panel copy (panel i18n comes from the host) |
-| mode                | `'light' \| 'dark'`                     | —            | Theme mode, `v-model:mode`; omit → section hidden  |
-| primaryId           | `string`                                | —            | Primary preset id, `v-model:primaryId`; omit → section hidden |
-| primaryColors       | `SnProPrimaryColor[]`                   | `[]`         | Primary swatches (`{ id, color }`)                 |
-| showTabs            | `boolean`                               | `false`      | Show the visited-route tab bar                     |
-| tabs                | `SnProTabItem[]`                        | `[]`         | Tab list (host-tracked; `closable: false` = affix)  |
-| tabType             | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'` | Tab style, `v-model:tabType` switchable from the panel |
+| Prop                | Type                                                 | Default      | Description                                                   |
+| ------------------- | ---------------------------------------------------- | ------------ | ------------------------------------------------------------- |
+| layout              | `'side' \| 'top' \| 'mix' \| 'dual'`                 | `'side'`     | Layout shape, `v-model:layout`                                |
+| logo / title / mark | `string`                                             | —            | Brand trio (image / title / letter tile)                      |
+| menus               | `SnMenuOption[]`                                     | `[]`         | Menu tree (route-derived or backend-mapped)                   |
+| activeKey           | `string \| number \| null`                           | `null`       | Selected menu key (usually `route.name`)                      |
+| collapsed           | `boolean \| undefined`                               | —            | Collapse state, `v-model:collapsed`; omit = uncontrolled      |
+| siderWidth          | `number`                                             | `224`        | Expanded sider width (px)                                     |
+| siderCollapsedWidth | `number`                                             | `56`         | Collapsed sider width (px)                                    |
+| fixed               | `boolean`                                            | `true`       | Pin to viewport (100vh); `false` → height 100%                |
+| showCollapse        | `boolean`                                            | `true`       | Toggle the collapse button                                    |
+| invertedSider       | `boolean`                                            | `false`      | Dark sider surface (matches n-menu inverted)                  |
+| breadcrumb          | `string[]`                                           | auto-derived | Explicit breadcrumb; omit → derive from menu path             |
+| accordion           | `boolean`                                            | `false`      | Single-open submenus                                          |
+| expandedKeys        | `(string \| number)[]`                               | —            | Controlled expansion; omit → menu self-manages                |
+| showSettings        | `boolean`                                            | `false`      | Show the header settings gear                                 |
+| settingsLabel       | `string`                                             | built-in zh  | Gear accessible label                                         |
+| settingsLabels      | `Partial<SnProSettingsLabels>`                       | built-in zh  | Settings panel copy (panel i18n comes from the host)          |
+| mode                | `'light' \| 'dark'`                                  | —            | Theme mode, `v-model:mode`; omit → section hidden             |
+| primaryId           | `string`                                             | —            | Primary preset id, `v-model:primaryId`; omit → section hidden |
+| primaryColors       | `SnProPrimaryColor[]`                                | `[]`         | Primary swatches (`{ id, color }`)                            |
+| showTabs            | `boolean`                                            | `false`      | Show the visited-route tab bar                                |
+| tabs                | `SnProTabItem[]`                                     | `[]`         | Tab list (host-tracked; `closable: false` = affix)            |
+| tabType             | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'chrome'`   | Tab style, `v-model:tabType` switchable from the panel        |
 
 ### Events
 
-| Event                 | Payload       | Description                                        |
-| --------------------- | ------------- | -------------------------------------------------- |
-| `select`              | `(key, item)` | Menu click — **navigation is the host's job**      |
-| `update:layout`       | `(mode)`      | `v-model:layout`                                   |
-| `update:collapsed`    | `(collapsed)` | `v-model:collapsed`                                |
-| `update:expandedKeys` | `(keys)`      | Controlled expansion sync                          |
-| `update:mode`         | `(mode)`      | Light/dark switch from the settings panel          |
-| `update:primaryId`    | `(id)`        | Primary-color switch from the settings panel       |
-| `update:tabType`      | `(type)`      | Tab-style switch from the settings panel           |
-| `tab-select`          | `(key)`       | Tab click — **navigation is the host's job**       |
+| Event                 | Payload       | Description                                                    |
+| --------------------- | ------------- | -------------------------------------------------------------- |
+| `select`              | `(key, item)` | Menu click — **navigation is the host's job**                  |
+| `update:layout`       | `(mode)`      | `v-model:layout`                                               |
+| `update:collapsed`    | `(collapsed)` | `v-model:collapsed`                                            |
+| `update:expandedKeys` | `(keys)`      | Controlled expansion sync                                      |
+| `update:mode`         | `(mode)`      | Light/dark switch from the settings panel                      |
+| `update:primaryId`    | `(id)`        | Primary-color switch from the settings panel                   |
+| `update:tabType`      | `(type)`      | Tab-style switch from the settings panel                       |
+| `tab-select`          | `(key)`       | Tab click — **navigation is the host's job**                   |
 | `tab-close`           | `(key)`       | Tab close — **post-close route convergence is the host's job** |
 
 ### Slots
 
-| Slot      | Description                                            |
-| --------- | ------------------------------------------------------ |
-| default   | Routed content (`<RouterView />`)                      |
+| Slot      | Description                                                                                |
+| --------- | ------------------------------------------------------------------------------------------ |
+| default   | Routed content (`<RouterView />`)                                                          |
 | `actions` | Actions area: header right side in side/top/mix, the strip's right side in headerless dual |
-| `logo`    | Full brand replacement                                 |
-| `footer`  | Footer under the content area                          |
+| `logo`    | Full brand replacement                                                                     |
+| `footer`  | Footer under the content area                                                              |
 
 ### Pieces
 
-| Component       | Key props                                                 | Notes                                     |
-| --------------- | --------------------------------------------------------- | ----------------------------------------- |
-| `SnProLogo`     | `logo / title / mark / collapsed`                         | Brand; `#icon` swaps the mark, default slot replaces all |
-| `SnProSider`    | `menus / activeKey / collapsed / inverted / showBrand`    | Left sider; forwards SnMenu events        |
-| `SnProHeader`   | `showBrand / menus / activeKey / breadcrumb / showCollapse` | Top bar; horizontal menu wins over breadcrumb |
-| `SnProTabbar`   | `tabs / activeKey / type`                                 | Tab bar; five SnTabs styles               |
+| Component       | Key props                                                             | Notes                                                            |
+| --------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `SnProLogo`     | `logo / title / mark / collapsed`                                     | Brand; `#icon` swaps the mark, default slot replaces all         |
+| `SnProSider`    | `menus / activeKey / collapsed / inverted / showBrand`                | Left sider; forwards SnMenu events                               |
+| `SnProHeader`   | `showBrand / menus / activeKey / breadcrumb / showCollapse`           | Top bar; horizontal menu wins over breadcrumb                    |
+| `SnProTabbar`   | `tabs / activeKey / type`                                             | Tab bar; five SnTabs styles                                      |
 | `SnProSettings` | `show / layout / mode / primaryId / primaryColors / tabType / labels` | Preferences drawer; omitting a controlled prop hides its section |
 
 All five are importable standalone for custom compositions.

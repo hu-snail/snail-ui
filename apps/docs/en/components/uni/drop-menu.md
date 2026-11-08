@@ -54,42 +54,42 @@ While open, the panel and scrim are raised to `--sn-drop-menu-overlay-z-index` (
 <Demo name="drop-menu-mp-panel" description="modal=false; close-on-click-modal=false; popup-height cap; custom-popup-class / custom-popup-style; disabled; default slot." />
 ## Props
 
-| Prop                | Type                                          | Default        | Description                                         |
-| ------------------- | --------------------------------------------- | -------------- | --------------------------------------------------- |
-| `modelValue`        | `string \| number`                            | `''`           | Current selected value (`v-model`)                  |
-| `options`           | `SnDropMenuOption[]`                          | `[]`           | Option rows                                         |
-| `direction`         | `'up' \| 'down'`                              | `'down'`       | Expansion direction                                 |
-| `zIndex`            | `number`                                      | `12`           | Scrim and panel stacking level                      |
-| `modal`             | `boolean`                                     | `true`         | Render the scrim                                    |
-| `closeOnClickModal` | `boolean`                                     | `true`         | Close on a scrim tap                                |
-| `duration`          | `number`                                      | `200`          | Open / close animation duration (ms)                |
-| `disabled`          | `boolean`                                     | `false`        | Disable the whole menu                              |
-| `iconName`          | `string`                                      | `'check'`      | `sn-icon` name of the selected-row glyph            |
-| `title`             | `string`                                      | `''`           | Menu title; overrides the selected label            |
-| `icon`              | `string`                                      | `'caret-down'` | `sn-icon` name of the bar arrow                     |
+| Prop                | Type                                          | Default        | Description                                                                              |
+| ------------------- | --------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------- |
+| `modelValue`        | `string \| number`                            | `''`           | Current selected value (`v-model`)                                                       |
+| `options`           | `SnDropMenuOption[]`                          | `[]`           | Option rows                                                                              |
+| `direction`         | `'up' \| 'down'`                              | `'down'`       | Expansion direction                                                                      |
+| `zIndex`            | `number`                                      | `12`           | Scrim and panel stacking level                                                           |
+| `modal`             | `boolean`                                     | `true`         | Render the scrim                                                                         |
+| `closeOnClickModal` | `boolean`                                     | `true`         | Close on a scrim tap                                                                     |
+| `duration`          | `number`                                      | `200`          | Open / close animation duration (ms)                                                     |
+| `disabled`          | `boolean`                                     | `false`        | Disable the whole menu                                                                   |
+| `iconName`          | `string`                                      | `'check'`      | `sn-icon` name of the selected-row glyph                                                 |
+| `title`             | `string`                                      | `''`           | Menu title; overrides the selected label                                                 |
+| `icon`              | `string`                                      | `'caret-down'` | `sn-icon` name of the bar arrow                                                          |
 | `iconSize`          | `string \| number`                            | `''`           | Icon size (tier names map to `--sn-mp-icon-size-*`, numbers are px; empty = medium tier) |
-| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | Toggle guard                                        |
-| `valueKey`          | `string`                                      | `'value'`      | Option value field name                             |
-| `labelKey`          | `string`                                      | `'label'`      | Option label field name                             |
-| `tipKey`            | `string`                                      | `'tip'`        | Option tip field name                               |
-| `customPopupClass`  | `string`                                      | `''`           | Custom class on the option panel                    |
-| `customPopupStyle`  | `string`                                      | `''`           | Custom inline style on the option panel             |
-| `popupHeight`       | `string`                                      | `''`           | Panel height; empty = at most 80% of the viewport   |
-| `customClass`       | `string`                                      | `''`           | Root class                                          |
-| `customStyle`       | `string`                                      | `''`           | Root inline style                                   |
-| `rootPortal`        | `boolean`                                     | `false`        | **Not implemented** (no portal host on miniprogram) |
+| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | Toggle guard                                                                             |
+| `valueKey`          | `string`                                      | `'value'`      | Option value field name                                                                  |
+| `labelKey`          | `string`                                      | `'label'`      | Option label field name                                                                  |
+| `tipKey`            | `string`                                      | `'tip'`        | Option tip field name                                                                    |
+| `customPopupClass`  | `string`                                      | `''`           | Custom class on the option panel                                                         |
+| `customPopupStyle`  | `string`                                      | `''`           | Custom inline style on the option panel                                                  |
+| `popupHeight`       | `string`                                      | `''`           | Panel height; empty = at most 80% of the viewport                                        |
+| `customClass`       | `string`                                      | `''`           | Root class                                                                               |
+| `customStyle`       | `string`                                      | `''`           | Root inline style                                                                        |
+| `rootPortal`        | `boolean`                                     | `false`        | **Not implemented** (no portal host on miniprogram)                                      |
 
 ### SnDropMenuOption
 
-| Field      | Type               | Description                                         |
-| ---------- | ------------------ | --------------------------------------------------- |
-| `label`    | `string`           | Row label (key configurable)                        |
-| `value`    | `string \| number` | Value reported through `v-model` (key configurable) |
-| `tip`      | `string`           | Secondary tip line (key configurable)               |
-| `disabled` | `boolean`          | Disable the row                                     |
-| `iconData` | `IconData`         | Row icon: built-in set object (highest precedence)  |
+| Field      | Type               | Description                                                  |
+| ---------- | ------------------ | ------------------------------------------------------------ |
+| `label`    | `string`           | Row label (key configurable)                                 |
+| `value`    | `string \| number` | Value reported through `v-model` (key configurable)          |
+| `tip`      | `string`           | Secondary tip line (key configurable)                        |
+| `disabled` | `boolean`          | Disable the row                                              |
+| `iconData` | `IconData`         | Row icon: built-in set object (highest precedence)           |
 | `iconUrl`  | `string`           | Row icon: image URL rendered as `<image>` (below `iconData`) |
-| `icon`     | `string`           | Row icon: name resolution chain (lowest precedence) |
+| `icon`     | `string`           | Row icon: name resolution chain (lowest precedence)          |
 
 ## Events
 

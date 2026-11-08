@@ -17,12 +17,12 @@ The barrel entry (`@snui/admin-layout` + `@snui/admin-layout/styles`) works too 
 
 ## Structure
 
-| Region         | Contents                                                                                                              |
-| -------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Sider          | Brand on top (`SnProLogo`) → categorized menu with children (`SnMenu` vertical) → user card at the bottom (`SnProUser`, avatar only when folded) |
+| Region         | Contents                                                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Sider          | Brand on top (`SnProLogo`) → categorized menu with children (`SnMenu` vertical) → user card at the bottom (`SnProUser`, avatar only when folded)       |
 | Content header | Collapse toggle · breadcrumb (derived from the menu path when omitted) · menu search (`SnProSearch`) · notifications (`SnProNotice`) · `#actions` slot |
-| Title band     | Large `pageTitle` heading (replaced wholesale by the `#title` slot)                                                    |
-| Content        | Light full-bleed surface + default slot (`<RouterView />`), optional `#footer`                                         |
+| Title band     | Large `pageTitle` heading (replaced wholesale by the `#title` slot)                                                                                    |
+| Content        | Light full-bleed surface + default slot (`<RouterView />`), optional `#footer`                                                                         |
 
 <Demo name="pro-layout-web-classic" description="classic — categorized sider + user card + header breadcrumb / search / notifications; the title band follows the menu." />
 
@@ -66,50 +66,50 @@ const menus = routesToMenuOptions(router.options.routes);
 
 ### SnProLayoutClassic Props
 
-| Prop                | Type                       | Default      | Description                                    |
-| ------------------- | -------------------------- | ------------ | ---------------------------------------------- |
-| menus               | `SnMenuOption[]`           | `[]`         | Menu tree (categories + children)              |
-| activeKey           | `string \| number \| null` | `null`       | Selected menu key (usually `route.name`)       |
+| Prop                | Type                       | Default      | Description                                          |
+| ------------------- | -------------------------- | ------------ | ---------------------------------------------------- |
+| menus               | `SnMenuOption[]`           | `[]`         | Menu tree (categories + children)                    |
+| activeKey           | `string \| number \| null` | `null`       | Selected menu key (usually `route.name`)             |
 | collapsed           | `boolean \| undefined`     | —            | Fold state, `v-model:collapsed`; omit = uncontrolled |
-| siderWidth          | `number`                   | `224`        | Expanded sider width (px)                      |
-| siderCollapsedWidth | `number`                   | `56`         | Folded sider width (px)                        |
-| fixed               | `boolean`                  | `true`       | Pin to viewport (100vh); `false` → height 100% |
-| showCollapse        | `boolean`                  | `true`       | Header collapse toggle                         |
-| collapseLabel       | `string`                   | built-in zh  | Accessible label of the toggle                 |
-| logo / title / mark | `string`                   | —            | Brand trio (image / title / letter tile)       |
-| breadcrumb          | `string[]`                 | auto-derived | Explicit breadcrumb; omit → derive from menu path |
-| pageTitle           | `string`                   | —            | Module heading (`#title` slot replaces it)     |
-| showSearch          | `boolean`                  | `true`       | Built-in header menu search (`SnProSearch`)    |
-| searchPlaceholder   | `string`                   | built-in zh  | Search placeholder                             |
-| showNotice          | `boolean`                  | `true`       | Built-in header notifications (`SnProNotice`)  |
-| noticeCount         | `number`                   | `0`          | Unread badge count (`0` hides it)              |
-| noticeItems         | `SnProNoticeItem[]`        | `[]`         | Notification rows (host-owned data)            |
-| user                | `SnProUserProfile`         | —            | Sider-footer user card; omitted → not rendered |
-| userMenus           | `SnMenuOption[]`           | `[]`         | Rows of the user card's dropdown               |
+| siderWidth          | `number`                   | `224`        | Expanded sider width (px)                            |
+| siderCollapsedWidth | `number`                   | `56`         | Folded sider width (px)                              |
+| fixed               | `boolean`                  | `true`       | Pin to viewport (100vh); `false` → height 100%       |
+| showCollapse        | `boolean`                  | `true`       | Header collapse toggle                               |
+| collapseLabel       | `string`                   | built-in zh  | Accessible label of the toggle                       |
+| logo / title / mark | `string`                   | —            | Brand trio (image / title / letter tile)             |
+| breadcrumb          | `string[]`                 | auto-derived | Explicit breadcrumb; omit → derive from menu path    |
+| pageTitle           | `string`                   | —            | Module heading (`#title` slot replaces it)           |
+| showSearch          | `boolean`                  | `true`       | Built-in header menu search (`SnProSearch`)          |
+| searchPlaceholder   | `string`                   | built-in zh  | Search placeholder                                   |
+| showNotice          | `boolean`                  | `true`       | Built-in header notifications (`SnProNotice`)        |
+| noticeCount         | `number`                   | `0`          | Unread badge count (`0` hides it)                    |
+| noticeItems         | `SnProNoticeItem[]`        | `[]`         | Notification rows (host-owned data)                  |
+| user                | `SnProUserProfile`         | —            | Sider-footer user card; omitted → not rendered       |
+| userMenus           | `SnMenuOption[]`           | `[]`         | Rows of the user card's dropdown                     |
 
 ### SnProLayoutClassic Events
 
-| Event               | Payload       | Description                                        |
-| ------------------- | ------------- | -------------------------------------------------- |
-| `select`            | `(key, item)` | Menu click — **navigation is the host's job**      |
-| `update:collapsed`  | `(collapsed)` | `v-model:collapsed`                                |
-| `search-select`     | `(key, item)` | Search-result click — **navigation is the host's job** |
-| `notice-select`     | `(key, item)` | Notification click — **opening / marking read is the host's job** |
-| `notice-read-all`   | —             | "Mark all read" — **the host performs it**         |
-| `user-select`       | `(key, item)` | User-card menu click — **the meaning is the host's call** |
+| Event              | Payload       | Description                                                       |
+| ------------------ | ------------- | ----------------------------------------------------------------- |
+| `select`           | `(key, item)` | Menu click — **navigation is the host's job**                     |
+| `update:collapsed` | `(collapsed)` | `v-model:collapsed`                                               |
+| `search-select`    | `(key, item)` | Search-result click — **navigation is the host's job**            |
+| `notice-select`    | `(key, item)` | Notification click — **opening / marking read is the host's job** |
+| `notice-read-all`  | —             | "Mark all read" — **the host performs it**                        |
+| `user-select`      | `(key, item)` | User-card menu click — **the meaning is the host's call**         |
 
 ### SnProLayoutClassic Slots
 
-| Slot      | Description                                            |
-| --------- | ------------------------------------------------------ |
-| default   | Routed content (`<RouterView />`)                      |
-| `logo`    | Full brand replacement                                 |
-| `title`   | Full module-heading replacement                        |
-| `search`  | Full header search replacement (default SnProSearch)   |
+| Slot      | Description                                                |
+| --------- | ---------------------------------------------------------- |
+| default   | Routed content (`<RouterView />`)                          |
+| `logo`    | Full brand replacement                                     |
+| `title`   | Full module-heading replacement                            |
+| `search`  | Full header search replacement (default SnProSearch)       |
 | `notice`  | Full header notification replacement (default SnProNotice) |
-| `actions` | Extra right-hand header actions (after search + notice) |
-| `user`    | Full sider-footer replacement (default SnProUser)      |
-| `footer`  | Footer under the content area                          |
+| `actions` | Extra right-hand header actions (after search + notice)    |
+| `user`    | Full sider-footer replacement (default SnProUser)          |
+| `footer`  | Footer under the content area                              |
 
 ## Theming & dark mode
 

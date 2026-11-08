@@ -49,21 +49,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| Prop            | Type      | Default | Description                             |
-| --------------- | --------- | ------- | --------------------------------------- |
-| `sticky`        | `boolean` | `false` | Pin the index bar                       |
+| Prop            | Type      | Default | Description                              |
+| --------------- | --------- | ------- | ---------------------------------------- |
+| `sticky`        | `boolean` | `false` | Pin the index bar                        |
 | `showIndicator` | `boolean` | `false` | Echo the active index in a centre bubble |
-| `customClass`   | `string`  | `''`    | Extra class on the root node            |
-| `customStyle`   | `string`  | `''`    | Inline style on the root node           |
+| `customClass`   | `string`  | `''`    | Extra class on the root node             |
+| `customStyle`   | `string`  | `''`    | Inline style on the root node            |
 
 ### sn-index-anchor
 
-| Prop          | Type               | Default | Description                              |
-| ------------- | ------------------ | ------- | ---------------------------------------- |
-| `index`       | `string \| number` | `''`    | Index character(s)                       |
+| Prop          | Type               | Default | Description                                  |
+| ------------- | ------------------ | ------- | -------------------------------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s)                           |
 | `anchorId`    | `string`           | `''`    | Custom anchor DOM id (auto value when empty) |
-| `customClass` | `string`           | `''`    | Extra class on the anchor root           |
-| `customStyle` | `string`           | `''`    | Inline style on the anchor root          |
+| `customClass` | `string`           | `''`    | Extra class on the anchor root               |
+| `customStyle` | `string`           | `''`    | Inline style on the anchor root              |
 
 ## Events
 
@@ -80,20 +80,20 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ## Theme variables
 
-| Variable                                        | Purpose                                   |
-| ----------------------------------------------- | ----------------------------------------- |
-| `--sn-mp-color-background-surface`              | List and entry surface                    |
-| `--sn-mp-color-background-soft`                 | Group heading surface                     |
-| `--sn-mp-color-action-primary-soft`             | Active group heading surface              |
-| `--sn-mp-color-text-secondary`                  | Sidebar entry and heading text            |
-| `--sn-mp-color-action-primary`                  | Active entry fill and active heading text |
-| `--sn-mp-color-text-on-primary`                 | Active entry label                        |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | Entry / heading size                      |
-| `--sn-mp-font-weight-medium`                    | Heading weight                            |
-| `--sn-mp-radius-full`                           | Entry pill radius                         |
-| `--sn-mp-radius-lg`                             | Index tip bubble radius                   |
-| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | Index tip bubble size and weight  |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Entry gap / heading padding               |
+| Variable                                                | Purpose                                   |
+| ------------------------------------------------------- | ----------------------------------------- |
+| `--sn-mp-color-background-surface`                      | List and entry surface                    |
+| `--sn-mp-color-background-soft`                         | Group heading surface                     |
+| `--sn-mp-color-action-primary-soft`                     | Active group heading surface              |
+| `--sn-mp-color-text-secondary`                          | Sidebar entry and heading text            |
+| `--sn-mp-color-action-primary`                          | Active entry fill and active heading text |
+| `--sn-mp-color-text-on-primary`                         | Active entry label                        |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm`         | Entry / heading size                      |
+| `--sn-mp-font-weight-medium`                            | Heading weight                            |
+| `--sn-mp-radius-full`                                   | Entry pill radius                         |
+| `--sn-mp-radius-lg`                                     | Index tip bubble radius                   |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | Index tip bubble size and weight          |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`               | Entry gap / heading padding               |
 
 ## AI Patch Boundary
 

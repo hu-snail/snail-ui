@@ -357,18 +357,21 @@ describe('SnRadioButton in-group segment merging', () => {
    * stay rounded, and the active segment must paint above its neighbours.
    */
   it('squares the right edge of every segment except the last', () => {
-    const rule = /\.sn-radio-button--in-group:not\(:last-child\)\s*\{[^}]*border-top-right-radius:\s*0;[^}]*border-bottom-right-radius:\s*0;/m;
+    const rule =
+      /\.sn-radio-button--in-group:not\(:last-child\)\s*\{[^}]*border-top-right-radius:\s*0;[^}]*border-bottom-right-radius:\s*0;/m;
     expect(rule.test(radioButtonSource)).toBe(true);
   });
 
   it('squares the left edge of every non-first segment', () => {
-    const rule = /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*border-top-left-radius:\s*0;[^}]*border-bottom-left-radius:\s*0;/m;
+    const rule =
+      /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*border-top-left-radius:\s*0;[^}]*border-bottom-left-radius:\s*0;/m;
     expect(rule.test(radioButtonSource)).toBe(true);
   });
 
   it('no longer keys the right-edge rule off the previous sibling', () => {
     // The old selector left interior segments rounded.
-    const oldRule = /\.sn-radio-button--in-group:not\(\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\)\s*\{/m;
+    const oldRule =
+      /\.sn-radio-button--in-group:not\(\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\)\s*\{/m;
     expect(oldRule.test(radioButtonSource)).toBe(false);
   });
 
@@ -378,7 +381,8 @@ describe('SnRadioButton in-group segment merging', () => {
   });
 
   it('collapses adjacent borders with a negative margin', () => {
-    const rule = /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*margin-left:\s*-1px;/m;
+    const rule =
+      /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*margin-left:\s*-1px;/m;
     expect(rule.test(radioButtonSource)).toBe(true);
   });
 

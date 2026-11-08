@@ -18,7 +18,11 @@ import { SnTimeline, SnTimelineItem } from '@snui/vue-web';
         content="solid dot (default)"
         time="2020-05-17"
       />
-      <SnTimelineItem title="The third milestone" content="dot slot: wins over dot-color / dot-type" time="2020-06-22">
+      <SnTimelineItem
+        title="The third milestone"
+        content="dot slot: wins over dot-color / dot-type"
+        time="2020-06-22"
+      >
         <template #dot>
           <span class="ring-dot" />
         </template>

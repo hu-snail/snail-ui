@@ -54,7 +54,7 @@ import type {
 | `lineMode`            | `SnTreeLineMode`           | `'branch'`   | no       | `'branch'` (L connectors) \| `'guide'` (vertical indent guides).                |
 | `lineStyle`           | `SnTreeLineStyle`          | `'solid'`    | no       | Connector stroke: `'solid'` \| `'dashed'` (AUI additive).                       |
 | `lineCorner`          | `SnTreeLineCorner`         | `'square'`   | no       | Elbow shape: `'square'` \| `'rounded'` (AUI additive).                          |
-| `lineColor`           | `string`                   | `undefined`  | no       | Any CSS color / token; overrides `--sn-web-tree-line-color` (AUI additive).    |
+| `lineColor`           | `string`                   | `undefined`  | no       | Any CSS color / token; overrides `--sn-web-tree-line-color` (AUI additive).     |
 | `draggable`           | `boolean`                  | `false`      | no       | Enable native HTML5 row drag & drop (mirrors n-tree `draggable`).               |
 | `allowDrop`           | `SnTreeAllowDrop`          | `undefined`  | no       | Drag/drop gate `(info) => boolean`; `inside` on a leaf is rejected by default.  |
 | `renderPrefix`        | `SnTreeRenderSidePart`     | `undefined`  | no       | Node prefix render fn, receives `{ option, checked, selected }`.                |
@@ -71,13 +71,13 @@ get a deterministic `__sn_auto__…` key.
 `SnTreeIcon = VNodeChild | Component | (() => VNodeChild)` (AUI additive,
 data-level). Resolution via `resolveTreeIcon()`:
 
-| Value                            | Rendering                                              |
-| -------------------------------- | ------------------------------------------------------ |
-| registered `SnIcon` name (string) | `h(SnIcon, { name, size: 14 })`                       |
-| unregistered string              | plain text (no blank row on a typo)                     |
-| VNode / VNode[] / number / string | rendered as-is                                        |
-| component object / function      | mounted with `h()`                                     |
-| `null` / `undefined` / boolean   | no icon element                                        |
+| Value                             | Rendering                           |
+| --------------------------------- | ----------------------------------- |
+| registered `SnIcon` name (string) | `h(SnIcon, { name, size: 14 })`     |
+| unregistered string               | plain text (no blank row on a typo) |
+| VNode / VNode[] / number / string | rendered as-is                      |
+| component object / function       | mounted with `h()`                  |
+| `null` / `undefined` / boolean    | no icon element                     |
 
 No render prop is needed; the icon renders before the label in a 14px slot
 (`.sn-tree__node-icon`), colored by `--sn-web-color-text-tertiary`.
@@ -88,15 +88,15 @@ Drag & drop types `SnTreeDropPosition`, `SnTreeAllowDropInfo`, `SnTreeAllowDrop`
 
 ## Events
 
-| Name                  | Parameters                                                                    | Description                                           |
-| --------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `update:expandedKeys` | `(keys, options, meta: { node, action: 'expand' \| 'collapse' \| 'filter' })` | Expansion changed — supports `v-model:expanded-keys`. |
-| `update:selectedKeys` | `(keys, options, meta: { node, action: 'select' \| 'unselect' })`             | Selection changed — supports `v-model:selected-keys`. |
-| `update:checkedKeys`  | `(keys, options, meta: { node, action: 'check' \| 'uncheck' })`               | Checking changed — supports `v-model:checked-keys`.   |
-| `dragStart`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A row started being dragged.                          |
-| `dragEnter`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A dragged row entered another row.                    |
-| `dragLeave`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A dragged row left another row.                       |
-| `dragEnd`             | `{ node: SnTreeOption, event: DragEvent }`                                    | The drag ended (dropped or cancelled).                |
+| Name                  | Parameters                                                                    | Description                                                           |
+| --------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `update:expandedKeys` | `(keys, options, meta: { node, action: 'expand' \| 'collapse' \| 'filter' })` | Expansion changed — supports `v-model:expanded-keys`.                 |
+| `update:selectedKeys` | `(keys, options, meta: { node, action: 'select' \| 'unselect' })`             | Selection changed — supports `v-model:selected-keys`.                 |
+| `update:checkedKeys`  | `(keys, options, meta: { node, action: 'check' \| 'uncheck' })`               | Checking changed — supports `v-model:checked-keys`.                   |
+| `dragStart`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A row started being dragged.                                          |
+| `dragEnter`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A dragged row entered another row.                                    |
+| `dragLeave`           | `{ node: SnTreeOption, event: DragEvent }`                                    | A dragged row left another row.                                       |
+| `dragEnd`             | `{ node: SnTreeOption, event: DragEvent }`                                    | The drag ended (dropped or cancelled).                                |
 | `drop`                | `{ node, dragNode, dropPosition, event }`                                     | Dropped on `node`; `dropPosition`: `'before' \| 'inside' \| 'after'`. |
 
 `options` maps each emitted key to its `SnTreeOption` (or `null`).
@@ -172,9 +172,9 @@ Drag & drop types `SnTreeDropPosition`, `SnTreeAllowDropInfo`, `SnTreeAllowDrop`
     notch);
   - last child (`--half`) → the guide stops at the arc's top edge, so the arc
     alone closes the branch.
-  Ancestor guides at other levels stay straight full-height lines.
-  `--sn-web-tree-line-radius` (3px fallback) is the corner radius on both
-  axes. Dashed + rounded dashes the bottom edge of the arc.
+    Ancestor guides at other levels stay straight full-height lines.
+    `--sn-web-tree-line-radius` (3px fallback) is the corner radius on both
+    axes. Dashed + rounded dashes the bottom edge of the arc.
 - Line color (AUI additive): `lineColor` is bound as an inline
   `--sn-web-tree-line-color` on the root, which the existing
   `color: var(--sn-web-tree-line-color, var(--sn-web-color-border-default))`
@@ -202,14 +202,14 @@ Drag & drop types `SnTreeDropPosition`, `SnTreeAllowDropInfo`, `SnTreeAllowDrop`
 
 ## Tokens Consumed (end: web)
 
-| Token                                           | CSS Variable                       | Purpose                                                      |
-| ----------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
-| Text primary / tertiary / disabled / on-primary | `--sn-web-color-text-*`            | Node text, switcher + empty color, disabled text, check mark |
-| Background subtle                               | `--sn-web-color-background-subtle` | Row hover background                                         |
-| Action primary                                  | `--sn-web-color-action-primary`    | Checked checkbox, selected background tint (10% `color-mix`) |
-| Border default                                  | `--sn-web-color-border-default`    | Checkbox frame + connector line fallback                      |
+| Token                                           | CSS Variable                       | Purpose                                                             |
+| ----------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
+| Text primary / tertiary / disabled / on-primary | `--sn-web-color-text-*`            | Node text, switcher + empty color, disabled text, check mark        |
+| Background subtle                               | `--sn-web-color-background-subtle` | Row hover background                                                |
+| Action primary                                  | `--sn-web-color-action-primary`    | Checked checkbox, selected background tint (10% `color-mix`)        |
+| Border default                                  | `--sn-web-color-border-default`    | Checkbox frame + connector line fallback                            |
 | Tree line color                                 | `--sn-web-tree-line-color`         | Connector stroke (falls back to border default); set by `lineColor` |
-| Tree line radius                                | `--sn-web-tree-line-radius`        | Rounded elbow corner radius on both axes (`3px` fallback) |
+| Tree line radius                                | `--sn-web-tree-line-radius`        | Rounded elbow corner radius on both axes (`3px` fallback)           |
 
 ## Versioning
 

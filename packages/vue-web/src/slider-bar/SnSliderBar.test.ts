@@ -233,7 +233,10 @@ describe('SnSliderBar', () => {
   describe('range fill band', () => {
     it('paints the themed band BETWEEN the handles', () => {
       const wrapper = mount(SnSliderBar, { props: { modelValue: [20, 60], range: true } });
-      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       // the band starts at the low handle (20%) and spans 40% of the axis
       expect(style).toContain('--sn-bar-band-start:0.2');
       expect(style).toContain('--sn-bar-band-size:0.4');
@@ -245,7 +248,9 @@ describe('SnSliderBar', () => {
         props: { modelValue: [20, 60], range: true, reverse: true },
       });
       // reversed 20..60 → 80..40, so the band starts at the 40 mark (0.4)
-      expect((wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-band-start:0.4');
+      expect(
+        (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, ''),
+      ).toContain('--sn-bar-band-start:0.4');
       expect(wrapper.classes()).toContain('sn-slider-bar--reverse');
     });
 
@@ -253,7 +258,10 @@ describe('SnSliderBar', () => {
       const wrapper = mount(SnSliderBar, {
         props: { modelValue: [20, 60], range: true, variant: 'column' },
       });
-      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('--sn-bar-band-start:0.2');
       expect(style).toContain('--sn-bar-band-size:0.4');
       expect(wrapper.classes()).toContain('sn-slider-bar--column');
@@ -261,7 +269,10 @@ describe('SnSliderBar', () => {
 
     it('single mode starts at the origin', () => {
       const wrapper = mount(SnSliderBar, { props: { modelValue: 40 } });
-      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, '');
+      const style = (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(
+        /\s+/g,
+        '',
+      );
       expect(style).toContain('--sn-bar-band-start:0');
       expect(style).toContain('--sn-bar-band-size:0.4');
     });
@@ -271,7 +282,9 @@ describe('SnSliderBar', () => {
     it('is marked empty at value 0 and hides the fill', () => {
       const wrapper = mount(SnSliderBar, { props: { modelValue: 0 } });
       expect(wrapper.classes()).toContain('sn-slider-bar--empty');
-      expect((wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, '')).toContain('opacity:0');
+      expect(
+        (wrapper.find('.sn-slider-bar__fill').attributes('style') ?? '').replace(/\s+/g, ''),
+      ).toContain('opacity:0');
     });
 
     it('is not empty when it has a value', () => {
@@ -298,16 +311,22 @@ describe('SnSliderBar', () => {
   describe('size tiers & height', () => {
     it('maps size onto the thickness variable', () => {
       const small = mount(SnSliderBar, { props: { modelValue: 10, size: 'small' } });
-      expect((small.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-thickness:28px');
+      expect((small.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+        '--sn-bar-thickness:28px',
+      );
       const large = mount(SnSliderBar, { props: { modelValue: 10, size: 'large' } });
-      expect((large.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-thickness:52px');
+      expect((large.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+        '--sn-bar-thickness:52px',
+      );
     });
 
     it('lets an explicit thickness win over the tier', () => {
       const wrapper = mount(SnSliderBar, {
         props: { modelValue: 10, size: 'large', thickness: 36 },
       });
-      expect((wrapper.attributes('style') ?? '').replace(/\s+/g, '')).toContain('--sn-bar-thickness:36px');
+      expect((wrapper.attributes('style') ?? '').replace(/\s+/g, '')).toContain(
+        '--sn-bar-thickness:36px',
+      );
     });
 
     it('accepts an explicit height', () => {
@@ -347,7 +366,9 @@ describe('SnSliderBar', () => {
     it('honours the sparkles density and clamps it', () => {
       const three = mount(SnSliderBar, { props: { modelValue: 40, theme: 'aurora', sparkles: 3 } });
       expect(three.findAll('.sn-slider-bar__star')).toHaveLength(3);
-      const many = mount(SnSliderBar, { props: { modelValue: 40, theme: 'aurora', sparkles: 999 } });
+      const many = mount(SnSliderBar, {
+        props: { modelValue: 40, theme: 'aurora', sparkles: 999 },
+      });
       expect(many.findAll('.sn-slider-bar__star')).toHaveLength(40);
       const none = mount(SnSliderBar, { props: { modelValue: 40, theme: 'aurora', sparkles: 0 } });
       expect(none.findAll('.sn-slider-bar__star')).toHaveLength(0);
@@ -487,7 +508,9 @@ describe('SnSliderBar', () => {
     it('updates the value when the bar is clicked', () => {
       const { bar, value } = mountBar({ modelValue: 20 });
       withRect(H_RECT as DOMRect, () => {
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', xAt(50)));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', xAt(50)));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
       expect(value()).toBe(50);
@@ -496,7 +519,9 @@ describe('SnSliderBar', () => {
     it('follows the pointer while dragging', () => {
       const { bar, value } = mountBar({ modelValue: 20 });
       withRect(H_RECT as DOMRect, () => {
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', xAt(20)));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', xAt(20)));
         document.dispatchEvent(mouse('mousemove', xAt(80)));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
@@ -568,7 +593,9 @@ describe('SnSliderBar', () => {
     it('emits an array value in range mode', () => {
       const { bar, value } = mountBar({ modelValue: [0, 100], range: true });
       withRect(H_RECT as DOMRect, () => {
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', xAt(20)));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', xAt(20)));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
       expect(value()).toEqual([20, 100]);
@@ -625,7 +652,14 @@ describe('SnSliderBar', () => {
 
     it('shows the raw value with format="value" and a custom suffix', () => {
       const wrapper = mount(SnSliderBar, {
-        props: { modelValue: 40, min: 0, max: 200, showValue: true, format: 'value', valueSuffix: ' ms' },
+        props: {
+          modelValue: 40,
+          min: 0,
+          max: 200,
+          showValue: true,
+          format: 'value',
+          valueSuffix: ' ms',
+        },
       });
       expect(wrapper.find('.sn-slider-bar__value').text()).toBe('40 ms');
     });
@@ -704,7 +738,9 @@ describe('SnSliderBar', () => {
         const row = 34;
         const travel = V_RECT.height - row;
         const y = V_RECT.bottom - (travel * 60) / 100;
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', 28, y));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', 28, y));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
       expect(value()).toBe(60);
@@ -713,12 +749,16 @@ describe('SnSliderBar', () => {
     it('reaches both ends exactly (no dead zone at the extremes)', () => {
       const { bar, value } = mountBar({ modelValue: 50, variant: 'column' });
       withRect(V_RECT as DOMRect, () => {
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', 28, 0));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', 28, 0));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
       expect(value()).toBe(100);
       withRect(V_RECT as DOMRect, () => {
-        bar().find('.sn-slider-bar__track').element.dispatchEvent(mouse('mousedown', 28, 200));
+        bar()
+          .find('.sn-slider-bar__track')
+          .element.dispatchEvent(mouse('mousedown', 28, 200));
         document.dispatchEvent(new MouseEvent('mouseup'));
       });
       expect(value()).toBe(0);
@@ -738,14 +778,18 @@ describe('SnSliderBar', () => {
     it('anchors the fill flush to the leading edge in single mode', () => {
       const wrapper = mount(SnSliderBar, { props: { modelValue: 40 } });
       // The band start ratio is 0; the stylesheet anchors it to the capsule edge.
-      expect(wrapper.find('.sn-slider-bar__fill').attributes('style')).toContain('--sn-bar-band-start: 0');
+      expect(wrapper.find('.sn-slider-bar__fill').attributes('style')).toContain(
+        '--sn-bar-band-start: 0',
+      );
     });
 
     it('anchors from the opposite edge when reversed', () => {
       const wrapper = mount(SnSliderBar, { props: { modelValue: 25, reverse: true } });
       expect(wrapper.classes()).toContain('sn-slider-bar--reverse');
       // reversed 25 → the band still starts at the origin ratio 0
-      expect(wrapper.find('.sn-slider-bar__fill').attributes('style')).toContain('--sn-bar-band-start: 0');
+      expect(wrapper.find('.sn-slider-bar__fill').attributes('style')).toContain(
+        '--sn-bar-band-start: 0',
+      );
     });
 
     it('drives the column fill from the bottom edge', () => {

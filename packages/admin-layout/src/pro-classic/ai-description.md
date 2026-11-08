@@ -10,13 +10,13 @@
 
 **本组件只处理布局问题，不处理功能业务**（与 ADR-0006 一致）。
 
-| 属于本组件（布局域）                       | 不属于本组件（宿主业务域）                     |
-| ------------------------------------------ | ---------------------------------------------- |
-| 分类侧栏 + 用户卡片 + 内容区顶部通栏的编排 | 登录、鉴权、Token、权限过滤                    |
-| 折叠状态（受控 + 非受控）                  | 任何 HTTP 请求、Mock、SDK 调用                  |
-| 菜单树的渲染、展开、选中高亮               | Pinia / Vuex 等任何 Store                       |
-| 面包屑展示（显式传入或按菜单路径推导）     | 路由注册、路由守卫、动态路由 addRoute           |
-| 模块标题带（`pageTitle` / `#title`）       | 未读消息的获取、已读状态的持久化                |
+| 属于本组件（布局域）                                                                                               | 不属于本组件（宿主业务域）                                |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| 分类侧栏 + 用户卡片 + 内容区顶部通栏的编排                                                                         | 登录、鉴权、Token、权限过滤                               |
+| 折叠状态（受控 + 非受控）                                                                                          | 任何 HTTP 请求、Mock、SDK 调用                            |
+| 菜单树的渲染、展开、选中高亮                                                                                       | Pinia / Vuex 等任何 Store                                 |
+| 面包屑展示（显式传入或按菜单路径推导）                                                                             | 路由注册、路由守卫、动态路由 addRoute                     |
+| 模块标题带（`pageTitle` / `#title`）                                                                               | 未读消息的获取、已读状态的持久化                          |
 | 四个 emit：`select` / `search-select` / `notice-select` / `user-select`（+ `notice-read-all`、`update:collapsed`） | 点击后的导航（`router.push`）、登出、标记已读（都在宿主） |
 
 ## 结构几何
@@ -37,37 +37,37 @@
 
 ## 复用关系（不要在本组件里再写一遍）
 
-| 共享件        | 用途                                       |
-| ------------- | ------------------------------------------ |
-| `SnProLogo`   | 品牌区（折叠收起标题）                     |
-| `SnProSearch` | 顶栏菜单检索（规则来自 `searchMenuOptions`） |
-| `SnProNotice` | 顶栏消息通知（角标 `${max}+` 封顶）         |
-| `SnProUser`   | 侧栏底部用户卡片（折叠仅头像）             |
-| `SnMenu` / `SnBreadcrumb`（`@snui/vue-web`） | 菜单与面包屑 |
+| 共享件                                       | 用途                                         |
+| -------------------------------------------- | -------------------------------------------- |
+| `SnProLogo`                                  | 品牌区（折叠收起标题）                       |
+| `SnProSearch`                                | 顶栏菜单检索（规则来自 `searchMenuOptions`） |
+| `SnProNotice`                                | 顶栏消息通知（角标 `${max}+` 封顶）          |
+| `SnProUser`                                  | 侧栏底部用户卡片（折叠仅头像）               |
+| `SnMenu` / `SnBreadcrumb`（`@snui/vue-web`） | 菜单与面包屑                                 |
 
 新增风格时同样复用这批件，**只在壳的几何上做差异**。
 
 ## AI Patch Boundary
 
-| 字段 / 插槽               | patchable | 说明                                                       |
-| ------------------------- | --------- | ---------------------------------------------------------- |
-| `menus`                   | ✅        | 数据来源宿主决定；本组件只渲染                             |
-| `activeKey`               | ✅        | 受控；通常是 `route.name`                                  |
-| `collapsed`               | ✅        | `v-model:collapsed` 受控，或省略走内部非受控               |
-| `breadcrumb`              | ✅        | 显式传入优先；省略时按菜单路径自动推导                     |
-| `pageTitle` / `#title`    | ✅        | 模块大标题                                                 |
-| `logo/title/mark` / `#logo` | ✅      | 品牌三件套（`#logo` 整体替换）                             |
-| `user` / `userMenus` / `#user` | ✅   | 侧栏底部用户卡片的数据与整体替换                           |
-| `siderWidth` / `siderCollapsedWidth` / `fixed` / `showCollapse` | ✅ | 几何与开关 |
-| `showSearch` / `searchPlaceholder` / `#search` | ✅ | 检索件开关、文案与整体替换             |
-| `showNotice` / `noticeCount` / `noticeItems` / `#notice` | ✅ | 通知开关、角标、宿主数据与整体替换 |
-| `#actions` / `#footer`    | ✅        | 宿主动作区与页脚                                           |
-| 菜单点击后的导航          | ❌        | 永远 emit `select`，宿主实现                               |
-| 搜索命中后的导航          | ❌        | 永远 emit `search-select`，宿主实现                        |
-| 通知打开 / 标记已读       | ❌        | emit `notice-select` / `notice-read-all`，宿主持久化       |
-| 用户菜单语义（登出等）    | ❌        | emit `user-select`，宿主决定含义                           |
-| 登录态 / 权限过滤         | ❌        | 宿主在传入 `menus` 前自行过滤                              |
-| 真实换肤                  | ❌        | 只暴露 CSS 变量 hook，变量覆写在宿主                       |
+| 字段 / 插槽                                                     | patchable | 说明                                                 |
+| --------------------------------------------------------------- | --------- | ---------------------------------------------------- |
+| `menus`                                                         | ✅        | 数据来源宿主决定；本组件只渲染                       |
+| `activeKey`                                                     | ✅        | 受控；通常是 `route.name`                            |
+| `collapsed`                                                     | ✅        | `v-model:collapsed` 受控，或省略走内部非受控         |
+| `breadcrumb`                                                    | ✅        | 显式传入优先；省略时按菜单路径自动推导               |
+| `pageTitle` / `#title`                                          | ✅        | 模块大标题                                           |
+| `logo/title/mark` / `#logo`                                     | ✅        | 品牌三件套（`#logo` 整体替换）                       |
+| `user` / `userMenus` / `#user`                                  | ✅        | 侧栏底部用户卡片的数据与整体替换                     |
+| `siderWidth` / `siderCollapsedWidth` / `fixed` / `showCollapse` | ✅        | 几何与开关                                           |
+| `showSearch` / `searchPlaceholder` / `#search`                  | ✅        | 检索件开关、文案与整体替换                           |
+| `showNotice` / `noticeCount` / `noticeItems` / `#notice`        | ✅        | 通知开关、角标、宿主数据与整体替换                   |
+| `#actions` / `#footer`                                          | ✅        | 宿主动作区与页脚                                     |
+| 菜单点击后的导航                                                | ❌        | 永远 emit `select`，宿主实现                         |
+| 搜索命中后的导航                                                | ❌        | 永远 emit `search-select`，宿主实现                  |
+| 通知打开 / 标记已读                                             | ❌        | emit `notice-select` / `notice-read-all`，宿主持久化 |
+| 用户菜单语义（登出等）                                          | ❌        | emit `user-select`，宿主决定含义                     |
+| 登录态 / 权限过滤                                               | ❌        | 宿主在传入 `menus` 前自行过滤                        |
+| 真实换肤                                                        | ❌        | 只暴露 CSS 变量 hook，变量覆写在宿主                 |
 
 ## 样式契约
 

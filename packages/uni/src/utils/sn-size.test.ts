@@ -19,8 +19,6 @@ describe('toRpxSize', () => {
   });
 
   it('should pass non-numeric strings through verbatim', () => {
-    expect(toRpxSize('var(--sn-mp-icon-size-medium)')).toBe(
-      'var(--sn-mp-icon-size-medium)',
-    );
+    expect(toRpxSize('var(--sn-mp-icon-size-medium)')).toBe('var(--sn-mp-icon-size-medium)');
   });
 });

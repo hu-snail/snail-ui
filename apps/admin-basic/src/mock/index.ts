@@ -145,11 +145,46 @@ const STATS: DashboardStats = {
 };
 
 const ACTIVITIES: ActivityItem[] = [
-  { id: 1, user: 'admin', action: 'Deployed', target: 'admin-web v2.3.0', time: '09:12', status: 'success' },
-  { id: 2, user: 'alice', action: 'Updated', target: 'payment gateway config', time: '09:47', status: 'success' },
-  { id: 3, user: 'bob', action: 'Scaled', target: 'order-service ×4', time: '10:05', status: 'warning' },
-  { id: 4, user: 'carol', action: 'Deleted', target: 'legacy cron jobs', time: '10:31', status: 'danger' },
-  { id: 5, user: 'dave', action: 'Invited', target: '3 new members', time: '11:02', status: 'success' },
+  {
+    id: 1,
+    user: 'admin',
+    action: 'Deployed',
+    target: 'admin-web v2.3.0',
+    time: '09:12',
+    status: 'success',
+  },
+  {
+    id: 2,
+    user: 'alice',
+    action: 'Updated',
+    target: 'payment gateway config',
+    time: '09:47',
+    status: 'success',
+  },
+  {
+    id: 3,
+    user: 'bob',
+    action: 'Scaled',
+    target: 'order-service ×4',
+    time: '10:05',
+    status: 'warning',
+  },
+  {
+    id: 4,
+    user: 'carol',
+    action: 'Deleted',
+    target: 'legacy cron jobs',
+    time: '10:31',
+    status: 'danger',
+  },
+  {
+    id: 5,
+    user: 'dave',
+    action: 'Invited',
+    target: '3 new members',
+    time: '11:02',
+    status: 'success',
+  },
 ];
 
 /** Mock transport toggle — set VITE_USE_MOCK=false to talk to a real backend. */

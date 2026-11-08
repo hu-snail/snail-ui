@@ -41,9 +41,9 @@ Catalog API (custom panels reuse the same source):
 
 ```ts
 import {
-  SN_ICON_CATALOG,          // every entry { name, category, zh, keywords, data }
-  SN_ICON_CATEGORY_LABELS,  // category metadata (key → { zh, en })
-  searchSnIconCatalog,      // (query, category?) => SnIconCatalogEntry[]
+  SN_ICON_CATALOG, // every entry { name, category, zh, keywords, data }
+  SN_ICON_CATEGORY_LABELS, // category metadata (key → { zh, en })
+  searchSnIconCatalog, // (query, category?) => SnIconCatalogEntry[]
 } from '@snui/uni';
 ```
 
@@ -133,18 +133,18 @@ The `@snui/uni` shortcut set (`ChevronRight`, `Search`, `Settings`, ~22 icons) s
 
 ### Props
 
-| Name                | Type                              | Default          | Description                                                                                              |
-| ------------------- | --------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| icon                | `IconData \| string`              | —                | SVG data object; or a string resolved as registry → built-in catalog → provider (`prefix:rest`)          |
-| size                | `number \| string`                | `32`             | Icon size (rpx recommended)                                                                              |
-| color               | `string`                          | `'currentColor'` | Stroke color (inherits parent `color`; baked into Iconify requests)                                      |
-| strokeWidth         | `number \| string`                | `2`              | Stroke width in design units                                                                             |
-| strokeWidthAbsolute | `boolean`                         | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size`                  |
-| name                | `string`                          | `''`             | Iconfont glyph name; renders `{classPrefix}-{name}` (wins over `icon` when both are given)               |
-| classPrefix         | `string`                          | `'sn-icon'`      | Iconfont class-name prefix                                                                               |
-| cssIcon             | `boolean \| string`               | `false`          | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both are applied    |
-| customClass         | `string`                          | `''`             | Extra class on the root node                                                                             |
-| customStyle         | `string \| Record<string,string>` | `''`             | Inline style on the root node                                                                            |
+| Name                | Type                              | Default          | Description                                                                                           |
+| ------------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------- |
+| icon                | `IconData \| string`              | —                | SVG data object; or a string resolved as registry → built-in catalog → provider (`prefix:rest`)       |
+| size                | `number \| string`                | `32`             | Icon size (rpx recommended)                                                                           |
+| color               | `string`                          | `'currentColor'` | Stroke color (inherits parent `color`; baked into Iconify requests)                                   |
+| strokeWidth         | `number \| string`                | `2`              | Stroke width in design units                                                                          |
+| strokeWidthAbsolute | `boolean`                         | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size`               |
+| name                | `string`                          | `''`             | Iconfont glyph name; renders `{classPrefix}-{name}` (wins over `icon` when both are given)            |
+| classPrefix         | `string`                          | `'sn-icon'`      | Iconfont class-name prefix                                                                            |
+| cssIcon             | `boolean \| string`               | `false`          | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both are applied |
+| customClass         | `string`                          | `''`             | Extra class on the root node                                                                          |
+| customStyle         | `string \| Record<string,string>` | `''`             | Inline style on the root node                                                                         |
 
 `IconData` interface:
 
@@ -157,23 +157,23 @@ interface IconData {
 
 ### Module-level API
 
-| Function / constant                                                   | Description                                                                      |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `SN_ICON_CATALOG`                                                     | Every built-in catalog entry (name / category / zh / keywords / data)            |
-| `SN_ICON_CATEGORY_LABELS`                                             | Category metadata (key → `{ zh, en }`)                                           |
-| `searchSnIconCatalog(query, category?)`                               | Catalog search (English name / Chinese / keywords, case-insensitive substring)   |
-| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData registry (overrides the catalog on name clashes)                        |
-| `registerSnIconProvider(prefix, provider)`                            | Register a `prefix:rest` icon source                                             |
-| `configSnIcons({ iconify })`                                          | `false` disables the Iconify fallback; an object passes Iconify options through  |
-| `configSnIconify({ apiBase, timeout, request })`                      | Iconify service config (official API / 15s / fetch→uni.request by default)       |
+| Function / constant                                                   | Description                                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `SN_ICON_CATALOG`                                                     | Every built-in catalog entry (name / category / zh / keywords / data)           |
+| `SN_ICON_CATEGORY_LABELS`                                             | Category metadata (key → `{ zh, en }`)                                          |
+| `searchSnIconCatalog(query, category?)`                               | Catalog search (English name / Chinese / keywords, case-insensitive substring)  |
+| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData registry (overrides the catalog on name clashes)                       |
+| `registerSnIconProvider(prefix, provider)`                            | Register a `prefix:rest` icon source                                            |
+| `configSnIcons({ iconify })`                                          | `false` disables the Iconify fallback; an object passes Iconify options through |
+| `configSnIconify({ apiBase, timeout, request })`                      | Iconify service config (official API / 15s / fetch→uni.request by default)      |
 
 ## Cross-platform rendering
 
-| Platform           | Behavior                                                                                        |
-| ------------------ | ----------------------------------------------------------------------------------------------- |
-| H5                 | Inline SVG, browser-native rendering, `currentColor` works                                      |
+| Platform           | Behavior                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| H5                 | Inline SVG, browser-native rendering, `currentColor` works                                          |
 | WeChat miniprogram | SVG data renders through the image semantics; Iconify / remote paths use background-image data URLs |
-| App (uni-app x)    | The transform pipeline rewrites both SVG paths to `<image>` + SVG data URL (patched in uni-x)   |
+| App (uni-app x)    | The transform pipeline rewrites both SVG paths to `<image>` + SVG data URL (patched in uni-x)       |
 
 ## Accessibility
 

@@ -204,13 +204,8 @@ describe('sn-pagination', () => {
       const wrapper = mount(SnPagination, {
         props: { totalPage: 8, modelValue: 3, showIcon: true },
       });
-      const sizes = wrapper
-        .findAllComponents({ name: 'SnIcon' })
-        .map((icon) => icon.props('size'));
-      expect(sizes).toEqual([
-        'var(--sn-mp-icon-size-medium)',
-        'var(--sn-mp-icon-size-medium)',
-      ]);
+      const sizes = wrapper.findAllComponents({ name: 'SnIcon' }).map((icon) => icon.props('size'));
+      expect(sizes).toEqual(['var(--sn-mp-icon-size-medium)', 'var(--sn-mp-icon-size-medium)']);
     });
 
     it('renders the chevrons in the basic numeric-strip mode', () => {
@@ -432,7 +427,9 @@ describe('sn-pagination', () => {
 
   describe('disabled state', () => {
     it('blocks all page taps while disabled', async () => {
-      const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 2, disabled: true } });
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 5, modelValue: 2, disabled: true },
+      });
       await wrapper.findAll('.sn-pagination__page')[3]!.trigger('tap');
       await wrapper.find('.sn-pagination__prev').trigger('tap');
       await wrapper.find('.sn-pagination__next').trigger('tap');
@@ -440,7 +437,9 @@ describe('sn-pagination', () => {
     });
 
     it('marks the root and steppers aria-disabled', () => {
-      const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 2, disabled: true } });
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 5, modelValue: 2, disabled: true },
+      });
       expect(wrapper.attributes('aria-disabled')).toBe('true');
       expect(wrapper.find('.sn-pagination__prev').attributes('aria-disabled')).toBe('true');
       expect(wrapper.find('.sn-pagination__next').attributes('aria-disabled')).toBe('true');

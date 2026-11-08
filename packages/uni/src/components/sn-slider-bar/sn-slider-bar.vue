@@ -139,7 +139,9 @@ const SIZE_THICKNESS: Record<string, number> = { small: 56, medium: 80, large: 1
 
 const thicknessRpx = computed(() => {
   if (props.thickness !== undefined) {
-    return typeof props.thickness === 'number' ? props.thickness : parseFloat(String(props.thickness));
+    return typeof props.thickness === 'number'
+      ? props.thickness
+      : parseFloat(String(props.thickness));
   }
   return SIZE_THICKNESS[props.size ?? 'medium'] ?? 80;
 });
@@ -233,9 +235,7 @@ const knobStyle = computed(() => {
   const low = percentOf(pair.value[0]);
   const high = percentOf(pair.value[1]);
   const positions = props.range ? [low, high] : [high];
-  return positions.map((p) =>
-    isColumn.value ? `bottom:${p}%;left:50%;` : `left:${p}%;top:50%;`,
-  );
+  return positions.map((p) => (isColumn.value ? `bottom:${p}%;left:50%;` : `left:${p}%;top:50%;`));
 });
 
 /** Ticks for `showLevels`. */
@@ -320,7 +320,8 @@ function onTrackTap(e: UniTouchEvent): void {
   const detail = typeof e.detail === 'object' ? e.detail : undefined;
   const x = touch?.clientX ?? detail?.x ?? 0;
   const y = touch?.clientY ?? detail?.y ?? 0;
-  const ratio = trackPx.value > 0 ? (isColumn.value ? 1 - y / trackPx.value : x / trackPx.value) : 0;
+  const ratio =
+    trackPx.value > 0 ? (isColumn.value ? 1 - y / trackPx.value : x / trackPx.value) : 0;
   const next = snap(props.min + Math.min(1, Math.max(0, ratio)) * span.value);
   if (props.range) {
     const [low, high] = pair.value;
@@ -338,7 +339,8 @@ function onKnobTouch(index: number, e: UniTouchEvent): void {
   const detail = typeof e.detail === 'object' ? e.detail : undefined;
   const x = touch?.clientX ?? detail?.x ?? 0;
   const y = touch?.clientY ?? detail?.y ?? 0;
-  const ratio = trackPx.value > 0 ? (isColumn.value ? 1 - y / trackPx.value : x / trackPx.value) : 0;
+  const ratio =
+    trackPx.value > 0 ? (isColumn.value ? 1 - y / trackPx.value : x / trackPx.value) : 0;
   const next = snap(props.min + Math.min(1, Math.max(0, ratio)) * span.value);
   const [low, high] = pair.value;
   if (index === 0) emitValue(Math.min(next, high), high, false);
@@ -371,9 +373,7 @@ const rootStyle = computed(() => {
   // barHeight wins; the `height` alias falls back only when it carries a value
   // (an empty-string default must not shadow barHeight).
   const explicitHeight =
-    props.barHeight !== undefined && props.barHeight !== ''
-      ? props.barHeight
-      : props.height;
+    props.barHeight !== undefined && props.barHeight !== '' ? props.barHeight : props.height;
   if (explicitHeight !== undefined && explicitHeight !== null && explicitHeight !== '') {
     const h = typeof explicitHeight === 'number' ? `${explicitHeight}rpx` : String(explicitHeight);
     parts.push(`--sn-bar-height:${h}`);
@@ -455,7 +455,12 @@ const knobLabels = computed(() =>
         class="sn-slider-bar__value"
         aria-hidden="true"
       >
-        <slot name="value" :value="pair[1]" :percent="Math.round(fillPercent)" :level="activeLevel?.label ?? ''">
+        <slot
+          name="value"
+          :value="pair[1]"
+          :percent="Math.round(fillPercent)"
+          :level="activeLevel?.label ?? ''"
+        >
           {{ captionText }}
         </slot>
       </text>

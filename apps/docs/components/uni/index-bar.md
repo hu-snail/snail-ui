@@ -49,12 +49,12 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| 属性            | 类型      | 默认值  | 说明                                    |
-| --------------- | --------- | ------- | --------------------------------------- |
-| `sticky`        | `boolean` | `false` | 索引是否吸顶                            |
-| `showIndicator` | `boolean` | `false` | 是否在列表视口中央显示当前索引提示气泡  |
-| `customClass`   | `string`  | `''`    | 根节点自定义类名                        |
-| `customStyle`   | `string`  | `''`    | 根节点自定义 inline style               |
+| 属性            | 类型      | 默认值  | 说明                                   |
+| --------------- | --------- | ------- | -------------------------------------- |
+| `sticky`        | `boolean` | `false` | 索引是否吸顶                           |
+| `showIndicator` | `boolean` | `false` | 是否在列表视口中央显示当前索引提示气泡 |
+| `customClass`   | `string`  | `''`    | 根节点自定义类名                       |
+| `customStyle`   | `string`  | `''`    | 根节点自定义 inline style              |
 
 ### sn-index-anchor
 
@@ -80,20 +80,20 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ## 主题变量
 
-| 变量                                            | 用途                           |
-| ----------------------------------------------- | ------------------------------ |
-| `--sn-mp-color-background-surface`              | 列表与条目底色                 |
-| `--sn-mp-color-background-soft`                 | 分组标题底色                   |
-| `--sn-mp-color-action-primary-soft`             | 激活分组标题底色               |
-| `--sn-mp-color-text-secondary`                  | 索引项与分组标题文字色         |
-| `--sn-mp-color-action-primary`                  | 激活索引项底色与激活标题文字色 |
-| `--sn-mp-color-text-on-primary`                 | 激活索引项文字色               |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | 索引项 / 分组标题字号          |
-| `--sn-mp-font-weight-medium`                    | 分组标题字重                   |
-| `--sn-mp-radius-full`                           | 索引项胶囊圆角                 |
-| `--sn-mp-radius-lg`                             | 索引提示气泡圆角               |
-| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | 索引提示气泡字号与字重 |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | 索引项间距 / 分组标题内边距    |
+| 变量                                                    | 用途                           |
+| ------------------------------------------------------- | ------------------------------ |
+| `--sn-mp-color-background-surface`                      | 列表与条目底色                 |
+| `--sn-mp-color-background-soft`                         | 分组标题底色                   |
+| `--sn-mp-color-action-primary-soft`                     | 激活分组标题底色               |
+| `--sn-mp-color-text-secondary`                          | 索引项与分组标题文字色         |
+| `--sn-mp-color-action-primary`                          | 激活索引项底色与激活标题文字色 |
+| `--sn-mp-color-text-on-primary`                         | 激活索引项文字色               |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm`         | 索引项 / 分组标题字号          |
+| `--sn-mp-font-weight-medium`                            | 分组标题字重                   |
+| `--sn-mp-radius-full`                                   | 索引项胶囊圆角                 |
+| `--sn-mp-radius-lg`                                     | 索引提示气泡圆角               |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | 索引提示气泡字号与字重         |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`               | 索引项间距 / 分组标题内边距    |
 
 ## AI Patch Boundary
 

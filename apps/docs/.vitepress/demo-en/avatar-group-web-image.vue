@@ -70,7 +70,11 @@ function handleExpand(): void {
         />
       </SnAvatarGroup>
       <p class="avatar-image-demo__hint">
-        {{ expanded ? 'The summary was clicked — all members are shown.' : 'Click the "+N" summary to reveal every member.' }}
+        {{
+          expanded
+            ? 'The summary was clicked — all members are shown.'
+            : 'Click the "+N" summary to reveal every member.'
+        }}
       </p>
     </section>
   </div>

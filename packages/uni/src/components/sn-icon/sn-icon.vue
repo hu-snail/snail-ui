@@ -121,7 +121,9 @@ const props = withDefaults(
 );
 
 /** 最终 SVG viewBox：用图标自带值，缺省 lucide 的 24x24 网格。 */
-const viewBox = computed(() => props.icon && typeof props.icon !== 'string' ? props.icon.viewBox ?? '0 0 24 24' : '0 0 24 24');
+const viewBox = computed(() =>
+  props.icon && typeof props.icon !== 'string' ? (props.icon.viewBox ?? '0 0 24 24') : '0 0 24 24',
+);
 
 /**
  * 生效描边宽度 — 传给内层 `<svg>`。uni-app rpx 在运行时按视口宽度解释，
@@ -186,10 +188,10 @@ const numericSize = computed(() => {
 
 function warnUnresolved(code: string, value: string, cause?: unknown): void {
   console.warn(
-    `[sn-icon] ${code}: cannot resolve icon "${value}".`
-      + ' Check the name (registry / built-in catalog / provider prefix),'
-      + ' or disable the network fallback with configSnIcons({ iconify: false }).',
-    cause instanceof SnIconSourceError ? `(${cause.code}) ${cause.message}` : cause ?? '',
+    `[sn-icon] ${code}: cannot resolve icon "${value}".` +
+      ' Check the name (registry / built-in catalog / provider prefix),' +
+      ' or disable the network fallback with configSnIcons({ iconify: false }).',
+    cause instanceof SnIconSourceError ? `(${cause.code}) ${cause.message}` : (cause ?? ''),
   );
 }
 
@@ -229,11 +231,7 @@ async function loadRemote(value: string): Promise<void> {
     if (seq !== loadSeq || ctrl.signal.aborted) return;
     remoteSrc.value = null;
     asyncIcon.value = null;
-    warnUnresolved(
-      err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED',
-      value,
-      err,
-    );
+    warnUnresolved(err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED', value, err);
   }
 }
 
@@ -280,8 +278,7 @@ const remoteStyle = computed(() =>
  * 归一——直接写进 CSS width 是非法值，浏览器忽略后 SVG 会按默认内在尺寸
  * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。 */
 const boxStyle = computed(() => {
-  const len =
-    typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
+  const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
   const style: Record<string, string> = { width: len, height: len };
   if (props.color !== 'currentColor') style.color = props.color;
   if (typeof props.customStyle === 'string') {

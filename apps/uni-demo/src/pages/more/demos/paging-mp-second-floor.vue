@@ -39,7 +39,8 @@ const paging = ref<InstanceType<typeof SnPaging> | null>(null);
 const floorVisits = ref(0);
 
 /** 二楼九宫格内容：循环 8 个图标与底色，凑 16 个「小程序」入口。 */
-const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];const FLOOR_COLORS = [
+const FLOOR_ICONS = [Home, Star, Heart, Bell, Camera, Mail, MessageCircle, Calendar];
+const FLOOR_COLORS = [
   '#3b82f6',
   '#8b5cf6',
   '#ec4899',
@@ -75,7 +76,8 @@ function onSecondFloorChange(phase: 'go' | 'close'): void {
   <view class="sn-demo sn-demo--stack">
     <view class="floor-hint">
       <text class="floor-hint__text">
-        下拉越过阈值松手进入全屏二楼；二楼内上滑（内容到底后）可拉回列表（已进入 {{ floorVisits }} 次）
+        下拉越过阈值松手进入全屏二楼；二楼内上滑（内容到底后）可拉回列表（已进入
+        {{ floorVisits }} 次）
       </text>
     </view>
     <view class="paging-frame">

@@ -23,7 +23,10 @@ let started = false;
 function apply(dark: boolean): void {
   isDark.value = dark;
   uni.setBackgroundColor?.({ backgroundColor: dark ? PAGE_BG.dark : PAGE_BG.light });
-  uni.setNavigationBarColor?.({ frontColor: dark ? NAV_FRONT.dark : NAV_FRONT.light, backgroundColor: dark ? PAGE_BG.dark : PAGE_BG.light });
+  uni.setNavigationBarColor?.({
+    frontColor: dark ? NAV_FRONT.dark : NAV_FRONT.light,
+    backgroundColor: dark ? PAGE_BG.dark : PAGE_BG.light,
+  });
 }
 
 export function useTplTheme(): { isDark: typeof isDark } {

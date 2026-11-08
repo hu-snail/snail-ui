@@ -128,12 +128,7 @@ function onKeydown(event: KeyboardEvent): void {
       <span v-if="badgeText !== ''" class="sn-pro-notice__badge">{{ badgeText }}</span>
     </button>
 
-    <div
-      v-if="open"
-      class="sn-pro-notice__panel"
-      role="dialog"
-      :aria-label="props.panelTitle"
-    >
+    <div v-if="open" class="sn-pro-notice__panel" role="dialog" :aria-label="props.panelTitle">
       <div class="sn-pro-notice__head">
         <span class="sn-pro-notice__title">{{ props.panelTitle }}</span>
         <button

@@ -11,7 +11,8 @@ const items: SnProNoticeItem[] = [
 const mountNotice = (props: Record<string, unknown> = {}, slots: Record<string, string> = {}) =>
   mount(SnProNotice, { props: { items, ...props }, slots, attachTo: document.body });
 
-const trigger = (wrapper: ReturnType<typeof mountNotice>) => wrapper.find('.sn-pro-notice__trigger');
+const trigger = (wrapper: ReturnType<typeof mountNotice>) =>
+  wrapper.find('.sn-pro-notice__trigger');
 
 describe('SnProNotice · badge', () => {
   it('should hide the badge when there is nothing unread', () => {
@@ -140,6 +141,8 @@ describe('SnProNotice · dismissal', () => {
     await trigger(wrapper).trigger('click');
     wrapper.unmount();
     // Would throw / re-trigger state if the listener outlived the component.
-    expect(() => document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))).not.toThrow();
+    expect(() =>
+      document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })),
+    ).not.toThrow();
   });
 });

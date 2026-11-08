@@ -536,7 +536,9 @@ describe('sn-upload (picker variants and runtime failure)', () => {
   it('picks files through uni.chooseMessageFile for accept="file"', async () => {
     const runtime = installRuntime({
       chooseMessageFile: vi.fn(
-        (options: { success?: (r: { tempFiles: Array<{ path: string; size: number }> }) => void }) => {
+        (options: {
+          success?: (r: { tempFiles: Array<{ path: string; size: number }> }) => void;
+        }) => {
           options.success?.({ tempFiles: [{ path: 'doc.pdf', size: 128 }] });
         },
       ),

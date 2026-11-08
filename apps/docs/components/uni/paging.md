@@ -60,14 +60,14 @@ function query(pageNo: number, pageSize: number): void {
 
 刷新区状态机：`idle → pulling → ready →（secondFloor）→ refreshing → complete → idle`。拉动时箭头随手势阻尼旋转，越过阈值翻转 180°，刷新中切换为加载圈，成功停留态显示对勾。
 
-| 手段 | 说明 |
-| ---- | ---- |
-| 原生手势优先 | uni 端拉动物理交给平台 scroll-view，组件只在 `refresherpulling` 的状态切换点更新一次数据，无逐帧 setData（低端小程序设备不掉帧的关键） |
-| 渐进阻尼橡皮筋 | 阈值内每帧位移按 0.75 缩放；越过阈值后衰减率随拉距线性加重（`refresherOutRate` 起、钳制处全停），跟手但越拉越沉 |
-| 拉距钳制 | 最大拉距 = `refresherMaxDistance`（`0` = `refresherThreshold × 3`），猛拽不会一拉到底，松手弹性回弹 |
-| uni-h5 接管 | uni-h5 原生 refresher 跟随裸手指距离（无阻尼无上限），组件在 `refresherpulling` 上重写条带几何为阻尼值，手感与浏览器宿主一致；MP / App 保持平台原生手感 |
-| 纯 transform 渲染 | 下拉位移全部走 `transform: translateY`（合成器路径），不修改高度、不触发布局；回弹由 CSS transition 完成 |
-| rAF 合帧 | 手势位移经 `requestAnimationFrame` 合并、按整数像素上报，每帧至多一次样式写入 |
+| 手段              | 说明                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 原生手势优先      | uni 端拉动物理交给平台 scroll-view，组件只在 `refresherpulling` 的状态切换点更新一次数据，无逐帧 setData（低端小程序设备不掉帧的关键）                  |
+| 渐进阻尼橡皮筋    | 阈值内每帧位移按 0.75 缩放；越过阈值后衰减率随拉距线性加重（`refresherOutRate` 起、钳制处全停），跟手但越拉越沉                                         |
+| 拉距钳制          | 最大拉距 = `refresherMaxDistance`（`0` = `refresherThreshold × 3`），猛拽不会一拉到底，松手弹性回弹                                                     |
+| uni-h5 接管       | uni-h5 原生 refresher 跟随裸手指距离（无阻尼无上限），组件在 `refresherpulling` 上重写条带几何为阻尼值，手感与浏览器宿主一致；MP / App 保持平台原生手感 |
+| 纯 transform 渲染 | 下拉位移全部走 `transform: translateY`（合成器路径），不修改高度、不触发布局；回弹由 CSS transition 完成                                                |
+| rAF 合帧          | 手势位移经 `requestAnimationFrame` 合并、按整数像素上报，每帧至多一次样式写入                                                                           |
 
 ## 二楼（下拉进入第二层）
 
@@ -111,42 +111,42 @@ function query(pageNo: number, pageSize: number): void {
 
 ### Props
 
-| 名称                        | 类型        | 默认值               | 说明                                       |
-| --------------------------- | ----------- | -------------------- | ------------------------------------------ |
-| `v-model`                   | `unknown[]` | `[]`                 | 聚合后的列表数据，由默认插槽渲染           |
-| `auto`                      | `boolean`   | `true`               | 挂载后自动触发首次 `query`                 |
-| `defaultPageNo`             | `number`    | `1`                  | 首页页码                                   |
-| `defaultPageSize`           | `number`    | `10`                 | 每页条数；返回页短于它即判停               |
-| `refresherEnabled`          | `boolean`   | `true`               | 是否开启下拉刷新手势                       |
-| `refresherThreshold`        | `number`    | `45`                 | 下拉触发阈值（px，scroll-view 契约）       |
-| `refresherDefaultText`      | `string`    | `继续下拉刷新`       | 未达阈值时的刷新区文案                     |
-| `refresherPullingText`      | `string`    | `松开立即刷新`       | 达到阈值后的刷新区文案                     |
-| `refresherRefreshingText`   | `string`    | `正在刷新...`        | 刷新请求进行中文案                         |
-| `refresherCompleteText`     | `string`    | `刷新成功`           | 刷新成功后的停留文案                       |
-| `refresherCompleteDuration` | `number`    | `500`                | 成功文案停留时长（ms），`0` 表示不停留     |
-| `refresherBackground`       | `string`    | `''`                 | 下拉区域背景色（uni 端透传原生 `refresher-background`） |
-| `refresherTextColor`        | `string`    | `''`                 | 刷新区文案颜色                             |
-| `refresherIconColor`        | `string`    | `''`                 | 刷新区箭头 / 加载圈颜色                    |
-| `refresherLoadingType`      | `string`    | `circular`           | 刷新区加载圈形态（`circular` / `spinner` / `dots` / `wave`） |
+| 名称                        | 类型        | 默认值               | 说明                                                                      |
+| --------------------------- | ----------- | -------------------- | ------------------------------------------------------------------------- |
+| `v-model`                   | `unknown[]` | `[]`                 | 聚合后的列表数据，由默认插槽渲染                                          |
+| `auto`                      | `boolean`   | `true`               | 挂载后自动触发首次 `query`                                                |
+| `defaultPageNo`             | `number`    | `1`                  | 首页页码                                                                  |
+| `defaultPageSize`           | `number`    | `10`                 | 每页条数；返回页短于它即判停                                              |
+| `refresherEnabled`          | `boolean`   | `true`               | 是否开启下拉刷新手势                                                      |
+| `refresherThreshold`        | `number`    | `45`                 | 下拉触发阈值（px，scroll-view 契约）                                      |
+| `refresherDefaultText`      | `string`    | `继续下拉刷新`       | 未达阈值时的刷新区文案                                                    |
+| `refresherPullingText`      | `string`    | `松开立即刷新`       | 达到阈值后的刷新区文案                                                    |
+| `refresherRefreshingText`   | `string`    | `正在刷新...`        | 刷新请求进行中文案                                                        |
+| `refresherCompleteText`     | `string`    | `刷新成功`           | 刷新成功后的停留文案                                                      |
+| `refresherCompleteDuration` | `number`    | `500`                | 成功文案停留时长（ms），`0` 表示不停留                                    |
+| `refresherBackground`       | `string`    | `''`                 | 下拉区域背景色（uni 端透传原生 `refresher-background`）                   |
+| `refresherTextColor`        | `string`    | `''`                 | 刷新区文案颜色                                                            |
+| `refresherIconColor`        | `string`    | `''`                 | 刷新区箭头 / 加载圈颜色                                                   |
+| `refresherLoadingType`      | `string`    | `circular`           | 刷新区加载圈形态（`circular` / `spinner` / `dots` / `wave`）              |
 | `refresherMaxDistance`      | `number`    | `0`                  | 最大拉距（px，z-paging `movingDistance`）；`0` = `refresherThreshold × 3` |
-| `refresherOutRate`          | `number`    | `0.65`               | 越过阈值后每帧位移的衰减率（0–1），越大越硬；随拉距渐进加重至钳制处全停 |
-| `secondFloorEnabled`        | `boolean`   | `false`              | 是否开启下拉进入二楼                       |
-| `secondFloorThreshold`      | `number`    | `100`                | 进入二楼的松手距离（px）                   |
-| `secondFloorDuration`       | `number`    | `200`                | 二楼滑入 / 滑出时长（ms）                  |
-| `secondFloorFullscreen`     | `boolean`   | `true`               | 二楼是否铺满视口（`false` 限制在组件盒内） |
-| `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | 二楼区间内刷新区文案                       |
-| `secondFloorBackground`     | `string`    | `''`                 | 二楼浮层背景色                             |
-| `loadMoreEnabled`           | `boolean`   | `true`               | 是否开启触底自动加载                       |
-| `lowerThreshold`            | `number`    | `50`                 | 距底部多远触发加载（px）                   |
-| `loadMoreDefaultText`       | `string`    | `点击加载更多`       | 空闲页脚文案，点击可手动加载下一页         |
-| `loadMoreLoadingText`       | `string`    | `正在加载中...`      | 加载中页脚文案                             |
-| `loadMoreNoMoreText`        | `string`    | `没有更多了`         | 全部加载完的页脚文案                       |
-| `loadMoreFailText`          | `string`    | `加载失败，点击重试` | 失败页脚文案                               |
-| `loadMoreTextColor`         | `string`    | `''`                 | 页脚文字颜色（加载圈跟随）                 |
-| `emptyText`                 | `string`    | `暂无数据`           | 内置空态文案                               |
-| `safeAreaInsetBottom`       | `boolean`   | `false`              | 容器底部适配设备安全区（iPhone X+ 刘海屏） |
-| `customClass`               | `string`    | `''`                 | 根节点自定义类名                           |
-| `customStyle`               | `string`    | `''`                 | 根节点自定义样式                           |
+| `refresherOutRate`          | `number`    | `0.65`               | 越过阈值后每帧位移的衰减率（0–1），越大越硬；随拉距渐进加重至钳制处全停   |
+| `secondFloorEnabled`        | `boolean`   | `false`              | 是否开启下拉进入二楼                                                      |
+| `secondFloorThreshold`      | `number`    | `100`                | 进入二楼的松手距离（px）                                                  |
+| `secondFloorDuration`       | `number`    | `200`                | 二楼滑入 / 滑出时长（ms）                                                 |
+| `secondFloorFullscreen`     | `boolean`   | `true`               | 二楼是否铺满视口（`false` 限制在组件盒内）                                |
+| `refresherSecondFloorText`  | `string`    | `松开进入二楼`       | 二楼区间内刷新区文案                                                      |
+| `secondFloorBackground`     | `string`    | `''`                 | 二楼浮层背景色                                                            |
+| `loadMoreEnabled`           | `boolean`   | `true`               | 是否开启触底自动加载                                                      |
+| `lowerThreshold`            | `number`    | `50`                 | 距底部多远触发加载（px）                                                  |
+| `loadMoreDefaultText`       | `string`    | `点击加载更多`       | 空闲页脚文案，点击可手动加载下一页                                        |
+| `loadMoreLoadingText`       | `string`    | `正在加载中...`      | 加载中页脚文案                                                            |
+| `loadMoreNoMoreText`        | `string`    | `没有更多了`         | 全部加载完的页脚文案                                                      |
+| `loadMoreFailText`          | `string`    | `加载失败，点击重试` | 失败页脚文案                                                              |
+| `loadMoreTextColor`         | `string`    | `''`                 | 页脚文字颜色（加载圈跟随）                                                |
+| `emptyText`                 | `string`    | `暂无数据`           | 内置空态文案                                                              |
+| `safeAreaInsetBottom`       | `boolean`   | `false`              | 容器底部适配设备安全区（iPhone X+ 刘海屏）                                |
+| `customClass`               | `string`    | `''`                 | 根节点自定义类名                                                          |
+| `customStyle`               | `string`    | `''`                 | 根节点自定义样式                                                          |
 
 ### Events
 
@@ -159,15 +159,15 @@ function query(pageNo: number, pageSize: number): void {
 
 ### Slots
 
-| 名称          | 说明                                                   |
-| ------------- | ------------------------------------------------------ |
-| —             | 列表内容；渲染 v-model 绑定的数组                      |
-| `top`         | 固定在滚动区上方，不随列表滚动（如搜索栏 / tabs）      |
-| `bottom`      | 固定在滚动区下方，不随列表滚动（如操作栏）             |
-| `empty`       | 自定义空态内容                                         |
-| `refresher`   | 自定义下拉刷新区内容（默认箭头 / 加载圈 + 文案）       |
-| `footer`      | 自定义加载更多页脚，作用域 `{ phase }`                 |
-| `secondFloor` | 二楼浮层内容（内部独立滚动）                           |
+| 名称          | 说明                                              |
+| ------------- | ------------------------------------------------- |
+| —             | 列表内容；渲染 v-model 绑定的数组                 |
+| `top`         | 固定在滚动区上方，不随列表滚动（如搜索栏 / tabs） |
+| `bottom`      | 固定在滚动区下方，不随列表滚动（如操作栏）        |
+| `empty`       | 自定义空态内容                                    |
+| `refresher`   | 自定义下拉刷新区内容（默认箭头 / 加载圈 + 文案）  |
+| `footer`      | 自定义加载更多页脚，作用域 `{ phase }`            |
+| `secondFloor` | 二楼浮层内容（内部独立滚动）                      |
 
 ### Methods
 

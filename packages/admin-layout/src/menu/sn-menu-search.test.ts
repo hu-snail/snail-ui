@@ -27,7 +27,8 @@ const menus: SnMenuOption[] = [
   },
 ];
 
-const keysOf = (hits: Array<{ key: string | number }>): Array<string | number> => hits.map((h) => h.key);
+const keysOf = (hits: Array<{ key: string | number }>): Array<string | number> =>
+  hits.map((h) => h.key);
 
 describe('searchMenuOptions · matching', () => {
   it('should match a leaf by its own label', () => {

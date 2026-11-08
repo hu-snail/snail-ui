@@ -51,7 +51,7 @@ const effectiveCard = computed(() => props.card ?? group?.card.value ?? false);
 ```ts
 // ❌ 缺 undefined 哨兵 → group 继承静默失效
 withDefaults(defineProps<{ card?: boolean | undefined }>(), {
-  card: false,           // 或干脆不写这个键
+  card: false, // 或干脆不写这个键
 });
 
 // ✅ 让「未传」保持 undefined，?? 才能落到 group
@@ -71,4 +71,4 @@ withDefaults(defineProps<{ card?: boolean | undefined }>(), {
 - `packages/uni/src/components/sn-cell/sn-cell.vue` — defaults 段 `border` /
   `center` / `card` 三个 `undefined` 哨兵
 - `packages/uni/src/components/sn-cell/sn-cell.test.ts` — `sn-cell-group >
-  inherits card / border / center` 三条测试
+inherits card / border / center` 三条测试

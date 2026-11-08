@@ -8,7 +8,14 @@
  */
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Bell, Check, CircleAlert, Heart, Star, X } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Bell,
+  Check,
+  CircleAlert,
+  Heart,
+  Star,
+  X,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
@@ -66,8 +73,16 @@ registerSnIcons({ 'cell-moon': MoonIcon });
 
     <text class="sn-demo__label">图片图标（prefixIconUrl / suffixIconUrl）</text>
     <SnCellGroup insert>
-      <SnCell title="前置图片" value="头像" prefix-icon-url="https://picsum.photos/seed/snui-cell/96" />
-      <SnCell title="后置图片" value="附件" suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96" />
+      <SnCell
+        title="前置图片"
+        value="头像"
+        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+      />
+      <SnCell
+        title="后置图片"
+        value="附件"
+        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+      />
     </SnCellGroup>
   </view>
 </template>

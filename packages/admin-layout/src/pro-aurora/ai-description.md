@@ -10,14 +10,14 @@
 
 只处理布局问题，不处理功能业务（ADR-0006）。
 
-| 属于本组件（布局域）                                   | 不属于本组件（宿主业务域）                       |
-| ------------------------------------------------------ | ------------------------------------------------ |
-| 通屏背景预设的排布（纯色 / 背景图 / 光晕 / 弥散）      | 真实换肤（`.dark` 类、token 覆盖、CSS 变量写入） |
-| 顶部条：品牌 / 二级模块 / 工具区的位置与几何           | i18n 词典与文案翻译                              |
-| 悬浮一级图标栏 + 底部退出 / 帮助按钮                   | 登出、跳帮助中心、权限校验                       |
-| 亮暗 / 中英开关的受控或非受控状态                      | 偏好持久化（localStorage / 接口）                |
-| 菜单渲染、二级模块随一级联动、选中高亮                 | 路由注册、导航（`router.push`）                  |
-| 9 个 emit + 14 个插槽                                  | 消息数据获取、已读状态持久化、用户信息请求       |
+| 属于本组件（布局域）                              | 不属于本组件（宿主业务域）                       |
+| ------------------------------------------------- | ------------------------------------------------ |
+| 通屏背景预设的排布（纯色 / 背景图 / 光晕 / 弥散） | 真实换肤（`.dark` 类、token 覆盖、CSS 变量写入） |
+| 顶部条：品牌 / 二级模块 / 工具区的位置与几何      | i18n 词典与文案翻译                              |
+| 悬浮一级图标栏 + 底部退出 / 帮助按钮              | 登出、跳帮助中心、权限校验                       |
+| 亮暗 / 中英开关的受控或非受控状态                 | 偏好持久化（localStorage / 接口）                |
+| 菜单渲染、二级模块随一级联动、选中高亮            | 路由注册、导航（`router.push`）                  |
+| 9 个 emit + 14 个插槽                             | 消息数据获取、已读状态持久化、用户信息请求       |
 
 ## 结构几何
 
@@ -46,12 +46,12 @@
 
 ## 背景预设（`background`）
 
-| 值         | 需要的配置            | 产出的 CSS 变量                                   |
-| ---------- | --------------------- | ------------------------------------------------- |
-| `solid`    | —                     | （无，直接用页面底色 token）                      |
-| `image`    | `backgroundImage`     | `--sn-pro-aurora-bg-image`                        |
-| `gradient` | `backgroundColors?`   | `--sn-pro-aurora-glow-1`…`-2`（默认 token 主色对） |
-| `mesh`     | `backgroundColors?`   | `--sn-pro-aurora-glow-1`…`-4`（默认 token 主色对循环） |
+| 值         | 需要的配置          | 产出的 CSS 变量                                        |
+| ---------- | ------------------- | ------------------------------------------------------ |
+| `solid`    | —                   | （无，直接用页面底色 token）                           |
+| `image`    | `backgroundImage`   | `--sn-pro-aurora-bg-image`                             |
+| `gradient` | `backgroundColors?` | `--sn-pro-aurora-glow-1`…`-2`（默认 token 主色对）     |
+| `mesh`     | `backgroundColors?` | `--sn-pro-aurora-glow-1`…`-4`（默认 token 主色对循环） |
 
 规则：
 
@@ -64,30 +64,30 @@
 
 ## AI Patch Boundary
 
-| 字段 / 插槽                                                   | patchable | 说明                                    |
-| ------------------------------------------------------------- | --------- | --------------------------------------- |
-| `menus` / `activeKey`                                         | ✅        | 数据来源与选中项由宿主决定              |
-| `background` / `backgroundImage` / `backgroundColors`         | ✅        | 背景预设与调色板                        |
-| `railWidth` / `headerHeight` / `fixed`                        | ✅        | 几何                                    |
-| `logo` / `title` / `mark` / `#logo`                           | ✅        | 品牌三件套                              |
-| `pageTitle` / `pageSubtitle` / `#title` / `#subtitle`         | ✅        | 标题带（大标题 + 副标题）                |
-| `showThemeToggle` / `mode` / `themeToggleLabel`               | ✅        | 亮暗开关（`v-model:mode`）              |
-| `showSearch` / `searchPlaceholder` / `searchLabel` / `#search` | ✅       | 标题带搜索区（默认 SnProSearch）        |
-| `showFilter` / `filterLabel` / `#filter`                      | ✅        | 标题带筛选按钮（emit `filter`）          |
-| `showLocale` / `locale` / `localeLabel` / `localeLabels`      | ✅        | 中英开关（`v-model:locale`）            |
-| `showNotice` / `noticeCount` / `noticeMax` / `noticeItems`    | ✅        | 通知区                                  |
-| `showUser` / `user` / `userMenus`                             | ✅        | 个人信息区                              |
-| `showLogout` / `logoutLabel` / `showHelp` / `helpLabel`       | ✅        | 一级栏底部按钮                          |
-| `#modules` / `#actions` / `#header-actions` / `#rail-menu` / `#logout` / `#help` / `#footer` | ✅ | 区域整替（自定义按钮） |
-| 菜单点击后的导航                                              | ❌        | emit `select`，宿主 `router.push`       |
-| 搜索命中后的导航                                              | ❌        | emit `search-select`                    |
-| 通知打开 / 标记已读                                           | ❌        | emit `notice-select` / `notice-read-all` |
-| 个人信息菜单语义（登出 / 个人中心）                           | ❌        | emit `user-select`                      |
-| 登出 / 帮助的真实行为                                         | ❌        | emit `logout` / `help`                  |
-| 筛选面板的真实行为                                            | ❌        | emit `filter`，弹窗/抽屉由宿主实现      |
-| 真实换肤（写 `.dark`、改 token）                              | ❌        | 只 emit `update:mode`，CSS 写入在宿主   |
-| 语言切换后的文案翻译                                          | ❌        | 只 emit `update:locale`                 |
-| 登录态 / 权限过滤                                             | ❌        | 宿主在传入 `menus` 前过滤               |
+| 字段 / 插槽                                                                                  | patchable | 说明                                     |
+| -------------------------------------------------------------------------------------------- | --------- | ---------------------------------------- |
+| `menus` / `activeKey`                                                                        | ✅        | 数据来源与选中项由宿主决定               |
+| `background` / `backgroundImage` / `backgroundColors`                                        | ✅        | 背景预设与调色板                         |
+| `railWidth` / `headerHeight` / `fixed`                                                       | ✅        | 几何                                     |
+| `logo` / `title` / `mark` / `#logo`                                                          | ✅        | 品牌三件套                               |
+| `pageTitle` / `pageSubtitle` / `#title` / `#subtitle`                                        | ✅        | 标题带（大标题 + 副标题）                |
+| `showThemeToggle` / `mode` / `themeToggleLabel`                                              | ✅        | 亮暗开关（`v-model:mode`）               |
+| `showSearch` / `searchPlaceholder` / `searchLabel` / `#search`                               | ✅        | 标题带搜索区（默认 SnProSearch）         |
+| `showFilter` / `filterLabel` / `#filter`                                                     | ✅        | 标题带筛选按钮（emit `filter`）          |
+| `showLocale` / `locale` / `localeLabel` / `localeLabels`                                     | ✅        | 中英开关（`v-model:locale`）             |
+| `showNotice` / `noticeCount` / `noticeMax` / `noticeItems`                                   | ✅        | 通知区                                   |
+| `showUser` / `user` / `userMenus`                                                            | ✅        | 个人信息区                               |
+| `showLogout` / `logoutLabel` / `showHelp` / `helpLabel`                                      | ✅        | 一级栏底部按钮                           |
+| `#modules` / `#actions` / `#header-actions` / `#rail-menu` / `#logout` / `#help` / `#footer` | ✅        | 区域整替（自定义按钮）                   |
+| 菜单点击后的导航                                                                             | ❌        | emit `select`，宿主 `router.push`        |
+| 搜索命中后的导航                                                                             | ❌        | emit `search-select`                     |
+| 通知打开 / 标记已读                                                                          | ❌        | emit `notice-select` / `notice-read-all` |
+| 个人信息菜单语义（登出 / 个人中心）                                                          | ❌        | emit `user-select`                       |
+| 登出 / 帮助的真实行为                                                                        | ❌        | emit `logout` / `help`                   |
+| 筛选面板的真实行为                                                                           | ❌        | emit `filter`，弹窗/抽屉由宿主实现       |
+| 真实换肤（写 `.dark`、改 token）                                                             | ❌        | 只 emit `update:mode`，CSS 写入在宿主    |
+| 语言切换后的文案翻译                                                                         | ❌        | 只 emit `update:locale`                  |
+| 登录态 / 权限过滤                                                                            | ❌        | 宿主在传入 `menus` 前过滤                |
 
 ## 样式契约
 

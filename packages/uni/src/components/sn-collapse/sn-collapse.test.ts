@@ -679,17 +679,21 @@ describe('sn-collapse', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnCollapse, { modelValue: ['a'] }, {
-              default: () => [
-                h(
-                  SnCollapseItem,
-                  { name: 'a', title: 'ignored', titleIconData: Bell },
-                  {
-                    title: () => h('text', { class: 'custom-title' }, 'slot'),
-                  },
-                ),
-              ],
-            });
+            h(
+              SnCollapse,
+              { modelValue: ['a'] },
+              {
+                default: () => [
+                  h(
+                    SnCollapseItem,
+                    { name: 'a', title: 'ignored', titleIconData: Bell },
+                    {
+                      title: () => h('text', { class: 'custom-title' }, 'slot'),
+                    },
+                  ),
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -746,7 +750,9 @@ describe('sn-collapse', () => {
       const wrapper = mountCollapse({ modelValue: [] }, [
         { name: 'a', title: 'A', iconSize: '2em' },
       ]);
-      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain('width: 2em');
+      expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
+        'width: 2em',
+      );
     });
 
     it('sizes the image icon with the same resolved length', () => {
@@ -789,7 +795,12 @@ describe('sn-collapse', () => {
   describe('icon colour (additive)', () => {
     it('applies iconColor to the chevron and the title icon', () => {
       const wrapper = mountCollapse({ modelValue: [] }, [
-        { name: 'a', title: 'A', titleIconData: Bell, iconColor: 'var(--sn-mp-color-feedback-warning)' },
+        {
+          name: 'a',
+          title: 'A',
+          titleIconData: Bell,
+          iconColor: 'var(--sn-mp-color-feedback-warning)',
+        },
       ]);
       expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
         'color: var(--sn-mp-color-feedback-warning)',
@@ -800,9 +811,10 @@ describe('sn-collapse', () => {
     });
 
     it('lets the container iconColor reach a panel that sets none', () => {
-      const wrapper = mountCollapse({ modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' }, [
-        { name: 'a', title: 'A', titleIconData: Bell },
-      ]);
+      const wrapper = mountCollapse(
+        { modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' },
+        [{ name: 'a', title: 'A', titleIconData: Bell }],
+      );
       expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
         'color: var(--sn-mp-color-feedback-info)',
       );
@@ -812,16 +824,19 @@ describe('sn-collapse', () => {
     });
 
     it('lets an explicit item iconColor win over the container', () => {
-      const wrapper = mountCollapse({ modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' }, [
-        { name: 'a', title: 'A', iconColor: 'var(--sn-mp-color-feedback-danger)' },
-      ]);
+      const wrapper = mountCollapse(
+        { modelValue: [], iconColor: 'var(--sn-mp-color-feedback-info)' },
+        [{ name: 'a', title: 'A', iconColor: 'var(--sn-mp-color-feedback-danger)' }],
+      );
       expect(wrapper.find('.sn-collapse-item__chevron').attributes('style')).toContain(
         'color: var(--sn-mp-color-feedback-danger)',
       );
     });
 
     it('leaves the icon colours to the token classes when unset', () => {
-      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', titleIconData: Bell }]);
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', titleIconData: Bell },
+      ]);
       expect(wrapper.find('.sn-collapse-item__chevron').attributes('style') ?? '').not.toContain(
         'color:',
       );
@@ -852,9 +867,7 @@ describe('sn-collapse', () => {
       const wrapper = mountCollapse({ modelValue: [], card: true }, [
         { name: 'a', title: 'A', border: true },
       ]);
-      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
-        'sn-collapse-item--border',
-      );
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain('sn-collapse-item--border');
     });
 
     it('keeps the divider when card mode is off', () => {
@@ -866,9 +879,7 @@ describe('sn-collapse', () => {
       const wrapper = mountCollapse({ modelValue: [], card: true }, [
         { name: 'a', title: 'A', card: false },
       ]);
-      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
-        'sn-collapse-item--card',
-      );
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain('sn-collapse-item--card');
     });
 
     it('lets an item turn card mode on without the container', () => {

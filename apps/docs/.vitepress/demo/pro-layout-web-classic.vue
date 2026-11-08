@@ -12,7 +12,16 @@
  * 和 standard 四形态 / aurora 用的是同一份数据 —— 换壳不换内容。
  */
 import { computed, markRaw, ref } from 'vue';
-import { FileText, FolderTree, Home, LogOut, Settings, ShieldCheck, User, Users } from 'lucide-vue-next';
+import {
+  FileText,
+  FolderTree,
+  Home,
+  LogOut,
+  Settings,
+  ShieldCheck,
+  User,
+  Users,
+} from 'lucide-vue-next';
 import { SnProLayoutClassic } from '@snui/admin-layout/layouts/classic';
 import type { SnProNoticeItem, SnProUserProfile } from '@snui/admin-layout/layouts/classic';
 import { ProWorkbench } from '@snui/admin-layout/workbench';
@@ -26,7 +35,9 @@ import {
 
 const activeKey = ref('user');
 const collapsed = ref(false);
-const note = ref('点左侧菜单 / 搜菜单 / 点消息 / 点用户卡片，都只 emit 事件，导航与业务由宿主实现。');
+const note = ref(
+  '点左侧菜单 / 搜菜单 / 点消息 / 点用户卡片，都只 emit 事件，导航与业务由宿主实现。',
+);
 
 const menus: SnMenuOption[] = [
   { key: 'home', label: '首页', icon: markRaw(Home) },
@@ -158,7 +169,6 @@ function onUserSelect(key: SnDropdownKey, item: SnDropdownOption): void {
 .icon-btn:hover {
   background-color: var(--sn-web-color-background-subtle);
 }
-
 
 .note {
   margin: 10px 0 0;

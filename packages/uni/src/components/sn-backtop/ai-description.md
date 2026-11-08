@@ -28,21 +28,21 @@ import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue';
 
 ## Props
 
-| Name          | Type                                                                             | Default     | Description                                        |
-| ------------- | -------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
-| `scrollTop`   | `number`                                                                         | `0`         | Scroll distance from the host.                     |
-| `text`        | `string`                                                                         | `''`        | Button label.                                      |
-| `top`         | `number`                                                                         | `300`       | Visibility threshold (px).                         |
-| `duration`    | `number`                                                                         | `100`       | Scroll duration (ms).                              |
-| `zIndex`      | `number`                                                                         | `10`        | Stacking level.                                    |
-| `iconStyle`   | `string`                                                                         | `''`        | Extra icon style over the upward rotation.         |
-| `shape`       | `'circle' \| 'square'`                                                           | `'circle'`  | Button shape.                                      |
-| `bottom`      | `number`                                                                         | `100`       | Distance from the bottom edge (px).                |
-| `right`       | `number`                                                                         | `20`        | Distance from the right edge (px).                 |
-| `customStyle` | `string`                                                                         | `''`        | Root forwarding.                                   |
-| `customClass` | `string`                                                                         | `''`        | Root forwarding.                                   |
-| `size`        | `'small' \| 'medium' \| 'large'`                                                 | `'medium'`  | Button tier; icon follows `--sn-mp-icon-size-*`.   |
-| `theme`       | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'`         | `'default'` | Semantic fill; content inverts to on-primary.      |
+| Name          | Type                                                                     | Default     | Description                                      |
+| ------------- | ------------------------------------------------------------------------ | ----------- | ------------------------------------------------ |
+| `scrollTop`   | `number`                                                                 | `0`         | Scroll distance from the host.                   |
+| `text`        | `string`                                                                 | `''`        | Button label.                                    |
+| `top`         | `number`                                                                 | `300`       | Visibility threshold (px).                       |
+| `duration`    | `number`                                                                 | `100`       | Scroll duration (ms).                            |
+| `zIndex`      | `number`                                                                 | `10`        | Stacking level.                                  |
+| `iconStyle`   | `string`                                                                 | `''`        | Extra icon style over the upward rotation.       |
+| `shape`       | `'circle' \| 'square'`                                                   | `'circle'`  | Button shape.                                    |
+| `bottom`      | `number`                                                                 | `100`       | Distance from the bottom edge (px).              |
+| `right`       | `number`                                                                 | `20`        | Distance from the right edge (px).               |
+| `customStyle` | `string`                                                                 | `''`        | Root forwarding.                                 |
+| `customClass` | `string`                                                                 | `''`        | Root forwarding.                                 |
+| `size`        | `'small' \| 'medium' \| 'large'`                                         | `'medium'`  | Button tier; icon follows `--sn-mp-icon-size-*`. |
+| `theme`       | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | Semantic fill; content inverts to on-primary.    |
 
 ## Overflow contract
 
@@ -66,15 +66,15 @@ button. All forms — circle / square × icon / icon+text — stay inside the bo
 
 ## Tokens Consumed (end: mp)
 
-| Token                          | CSS Variable                                                                                                       | Purpose                          |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
-| Surface / border               | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default`                                                 | Default theme chrome             |
-| Theme fills                    | `--sn-mp-color-action-primary`, `--sn-mp-color-feedback-success/warning/danger/info`                               | `theme` fills (border follows)   |
-| Inverted content               | `--sn-mp-color-text-on-primary`                                                                                    | Icon + label on themed fills     |
-| Default content                | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`                                                       | Icon / label on the default      |
-| Icon sizing                    | `--sn-mp-icon-size-small`, `--sn-mp-icon-size-medium`, `--sn-mp-icon-size-large`                                   | Icon length per `size` tier      |
-| Elevation                      | `--sn-mp-shadow-sm`                                                                                                | Button shadow                    |
-| Radius / font / spacing        | `--sn-mp-radius-full`, `--sn-mp-radius-md`, `--sn-mp-font-size-xs`, `--sn-mp-spacing-1`, `--sn-mp-spacing-3`       | Shape, label and padding rhythm  |
+| Token                   | CSS Variable                                                                                                 | Purpose                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| Surface / border        | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default`                                           | Default theme chrome            |
+| Theme fills             | `--sn-mp-color-action-primary`, `--sn-mp-color-feedback-success/warning/danger/info`                         | `theme` fills (border follows)  |
+| Inverted content        | `--sn-mp-color-text-on-primary`                                                                              | Icon + label on themed fills    |
+| Default content         | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`                                                 | Icon / label on the default     |
+| Icon sizing             | `--sn-mp-icon-size-small`, `--sn-mp-icon-size-medium`, `--sn-mp-icon-size-large`                             | Icon length per `size` tier     |
+| Elevation               | `--sn-mp-shadow-sm`                                                                                          | Button shadow                   |
+| Radius / font / spacing | `--sn-mp-radius-full`, `--sn-mp-radius-md`, `--sn-mp-font-size-xs`, `--sn-mp-spacing-1`, `--sn-mp-spacing-3` | Shape, label and padding rhythm |
 
 Theme routing uses four local slot variables on the root — `--sn-backtop-bg`,
 `--sn-backtop-border`, `--sn-backtop-fg`, `--sn-backtop-label` — so Style

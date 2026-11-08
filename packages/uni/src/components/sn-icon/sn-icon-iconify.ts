@@ -27,10 +27,7 @@
  * 注入替换（单测注入假 fetcher，业务可接自有网关）。
  */
 
-import {
-  SnIconSourceError,
-  type SnIconResolveContext,
-} from './sn-icon-providers';
+import { SnIconSourceError, type SnIconResolveContext } from './sn-icon-providers';
 
 /** Iconify 服务配置。 */
 export interface SnIconifyOptions {
@@ -122,7 +119,8 @@ function defaultRequest(url: string, ms: number, external: AbortSignal): Promise
       });
   }
 
-  const uni = g.uni as { request?: (o: Record<string, unknown>) => { abort?: () => void } } | undefined;
+  const uni = g.uni as
+    { request?: (o: Record<string, unknown>) => { abort?: () => void } } | undefined;
   const uniRequest = typeof uni?.request === 'function' ? uni.request : undefined;
   if (uniRequest !== undefined) {
     return new Promise<string>((resolve, reject) => {
@@ -134,7 +132,11 @@ function defaultRequest(url: string, ms: number, external: AbortSignal): Promise
         responseType: 'text',
         success: (res: { statusCode?: number; data?: unknown }) => {
           settled = true;
-          if ((res.statusCode ?? 0) >= 200 && (res.statusCode ?? 0) < 300 && typeof res.data === 'string') {
+          if (
+            (res.statusCode ?? 0) >= 200 &&
+            (res.statusCode ?? 0) < 300 &&
+            typeof res.data === 'string'
+          ) {
             resolve(res.data);
           } else {
             reject(
@@ -191,10 +193,7 @@ function svgToDataUrl(svg: string): string {
  * 成功返回就绪的 SVG data URL；失败抛 `SnIconSourceError`（组件捕获
  * 后降级为空渲染 + 结构化警告）。
  */
-export function resolveIconifyIcon(
-  target: string,
-  ctx: SnIconResolveContext,
-): Promise<string> {
+export function resolveIconifyIcon(target: string, ctx: SnIconResolveContext): Promise<string> {
   const colon = target.indexOf(':');
   const collection = colon > 0 ? target.slice(0, colon) : '';
   const name = colon > 0 ? target.slice(colon + 1) : '';

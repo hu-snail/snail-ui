@@ -67,13 +67,13 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 
 ## Events
 
-| 事件名              | 说明           | 参数                   |
-| ------------------- | -------------- | ---------------------- |
-| `update:modelValue` | 值变化时       | `(value: string)`      |
-| `update:visible`    | 显隐变化时     | `(value: boolean)`     |
-| `update:carLang`    | 车牌语言变化时 | `(lang: 'zh' \| 'en')` |
-| `input`             | 点击字符键时   | `(key: string)`        |
-| `delete`            | 点击删除键时   | —                      |
+| 事件名              | 说明                                   | 参数                   |
+| ------------------- | -------------------------------------- | ---------------------- |
+| `update:modelValue` | 值变化时                               | `(value: string)`      |
+| `update:visible`    | 显隐变化时                             | `(value: boolean)`     |
+| `update:carLang`    | 车牌语言变化时                         | `(lang: 'zh' \| 'en')` |
+| `input`             | 点击字符键时                           | `(key: string)`        |
+| `delete`            | 点击删除键时                           | —                      |
 | `close`             | 键盘关闭时（关闭按钮 / 遮罩 / 收起键） | —                      |
 
 ## Slots

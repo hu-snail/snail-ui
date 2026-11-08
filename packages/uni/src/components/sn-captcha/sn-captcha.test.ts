@@ -282,7 +282,8 @@ describe('sn-captcha', () => {
           toJSON: () => ({}),
         }) as DOMRect;
 
-      const setupState = (w.vm as unknown as { $: { setupState: Record<string, unknown> } }).$.setupState;
+      const setupState = (w.vm as unknown as { $: { setupState: Record<string, unknown> } }).$
+        .setupState;
       setupState.stageRef = { $el: stage };
 
       const vm = w.vm as unknown as { init(): void; target: { x: number }; refresh(): void };

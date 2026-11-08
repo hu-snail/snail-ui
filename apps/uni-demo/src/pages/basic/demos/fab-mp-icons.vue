@@ -59,7 +59,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">触发图标双轨与主题色</text>
       <text class="sn-fab-demo__hint-text">
-        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）+ 色板切主题。最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）+
+        色板切主题。最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
       </text>
       <view class="sn-fab-demo__swatches" aria-label="主题色板">
         <view
@@ -114,10 +115,7 @@ function pick(label: string): void {
         <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
       </view>
       <template #trigger>
-        <SnIcon
-          :icon="dataTrackActive ? X : Sparkles"
-          size="var(--sn-mp-icon-size-large)"
-        />
+        <SnIcon :icon="dataTrackActive ? X : Sparkles" size="var(--sn-mp-icon-size-large)" />
       </template>
     </SnFab>
   </view>

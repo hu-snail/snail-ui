@@ -352,10 +352,7 @@ const showsControls = computed(
  * keeps the trailing page reachable instead of lighting a dot that a trailing
  * slide owns but no page ever activates.
  */
-const pageCount = computed(() =>
-  Math.max(1, slides.value.length - props.displayMultipleItems + 1),
-);
-
+const pageCount = computed(() => Math.max(1, slides.value.length - props.displayMultipleItems + 1));
 
 /*
  * Mirrored native position. `props.current` is the seed, but the swiper can
@@ -525,7 +522,6 @@ function onSwiperChange(event: { detail: { current: number; source: string } }):
   emit('change', { current: event.detail.current, source: event.detail.source });
 }
 
-
 function onAnimationFinish(event: { detail: { current: number; source: string } }): void {
   emit('animationfinish', { current: event.detail.current, source: event.detail.source });
 }
@@ -590,7 +586,11 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
     </swiper>
 
     <view v-if="showsIndicator" :class="indicatorClass" aria-hidden="true">
-      <view v-if="showsControls" class="sn-swiper__control sn-swiper__control--prev" @tap="onPrevControlTap">
+      <view
+        v-if="showsControls"
+        class="sn-swiper__control sn-swiper__control--prev"
+        @tap="onPrevControlTap"
+      >
         <text class="sn-swiper__control-text">‹</text>
       </view>
 
@@ -612,7 +612,11 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
         />
       </view>
 
-      <view v-if="showsControls" class="sn-swiper__control sn-swiper__control--next" @tap="onNextControlTap">
+      <view
+        v-if="showsControls"
+        class="sn-swiper__control sn-swiper__control--next"
+        @tap="onNextControlTap"
+      >
         <text class="sn-swiper__control-text">›</text>
       </view>
     </view>
@@ -695,7 +699,6 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   text-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.45);
 }
 
-
 /* ── Indicator ────────────────────────────────────────────────────────── */
 
 .sn-swiper__indicator {
@@ -765,7 +768,9 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
 .sn-swiper__dot--scale {
   width: var(--sn-swiper-scale-dot-size, 12rpx);
   height: var(--sn-swiper-scale-dot-size, 12rpx);
-  transition: width 300ms ease, height 300ms ease;
+  transition:
+    width 300ms ease,
+    height 300ms ease;
 }
 .sn-swiper__fraction {
   padding: 0 var(--sn-mp-spacing-2);

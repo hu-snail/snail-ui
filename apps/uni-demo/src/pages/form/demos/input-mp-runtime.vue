@@ -19,7 +19,9 @@ const styled = ref('');
     <text class="sn-input-demo__caption">holdKeyboard / adjustPosition / alwaysEmbed</text>
     <SnInput v-model="held" hold-keyboard adjust-position placeholder="失焦保留键盘 + 自动滚动" />
 
-    <text class="sn-input-demo__caption">cursor + selection-start / selection-end（初始光标与选区）</text>
+    <text class="sn-input-demo__caption"
+      >cursor + selection-start / selection-end（初始光标与选区）</text
+    >
     <SnInput v-model="preselect" :cursor="5" :selection-start="2" :selection-end="8" />
 
     <text class="sn-input-demo__caption">placeholderStyle（占位符内联样式注入）</text>

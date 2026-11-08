@@ -52,19 +52,19 @@ stylesheet** (on-demand loading): import only the style you need.
 > The showcase renders **one style at a time** — click a pill to switch. Layout shells are wide,
 > so side-by-side cards get squeezed; in these docs every style owns its own row.
 
-| Style      | Component            | Entry                                 | Stylesheet                                      | Structure                                                    |
-| ---------- | -------------------- | ------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard` | `@snui/admin-layout/layouts/standard/style.css` | Four-shape shell (side / top / mix / dual): sider / header / strip + content |
+| Style      | Component            | Entry                                 | Stylesheet                                      | Structure                                                                                   |
+| ---------- | -------------------- | ------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard` | `@snui/admin-layout/layouts/standard/style.css` | Four-shape shell (side / top / mix / dual): sider / header / strip + content                |
 | `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic`  | `@snui/admin-layout/layouts/classic/style.css`  | Classic enterprise admin: categorized sider + full-bleed content header + module title band |
-| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora`   | `@snui/admin-layout/layouts/aurora/style.css`   | Full-bleed background + top bar (logo / modules / tools) + floating primary rail |
+| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora`   | `@snui/admin-layout/layouts/aurora/style.css`   | Full-bleed background + top bar (logo / modules / tools) + floating primary rail            |
 
 Each style has its own page (structure, standalone import, full API and live demos):
 
-| Style                                    | What it is                                                     |
-| ---------------------------------------- | -------------------------------------------------------------- |
-| [standard four-shape shell](./standard)  | One component, four shapes: side / top / mix / dual + settings drawer and tab bar |
-| [classic enterprise admin](./classic)    | Categorized sider + sidebar-footer profile + content header + module title band |
-| [aurora full-bleed background](./aurora) | Four background presets (solid / image / glow / mesh) + floating primary rail |
+| Style                                     | What it is                                                                              |
+| ----------------------------------------- | --------------------------------------------------------------------------------------- |
+| [standard four-shape shell](./standard)   | One component, four shapes: side / top / mix / dual + settings drawer and tab bar       |
+| [classic enterprise admin](./classic)     | Categorized sider + sidebar-footer profile + content header + module title band         |
+| [aurora full-bleed background](./aurora)  | Four background presets (solid / image / glow / mesh) + floating primary rail           |
 | [workbench shared dashboard](./workbench) | Layout-agnostic stats page (ECharts): account card / transactions / money flow / income |
 
 All styles **reuse the same shared pieces** (`SnProLogo` / `SnProSearch` / `SnProNotice` /
@@ -146,41 +146,41 @@ const menus = routesToMenuOptions(router.options.routes); // or host-mapped back
 
 Every style composes the same pieces; they also work standalone:
 
-| Component     | Notes                                                                    |
-| ------------- | ------------------------------------------------------------------------ |
+| Component     | Notes                                                                              |
+| ------------- | ---------------------------------------------------------------------------------- |
 | `SnProLogo`   | Brand: image / letter tile + title, title hidden when collapsed, slot replaces all |
-| `SnProSearch` | Menu search: hits across levels with the ancestor trail, keyboard reachable |
-| `SnProNotice` | Notification bell: badge capped at `${max}+`, `#panel` replaces the panel |
-| `SnProUser`   | Profile card: avatar + name / description + dropdown, folds to the avatar |
+| `SnProSearch` | Menu search: hits across levels with the ancestor trail, keyboard reachable        |
+| `SnProNotice` | Notification bell: badge capped at `${max}+`, `#panel` replaces the panel          |
+| `SnProUser`   | Profile card: avatar + name / description + dropdown, folds to the avatar          |
 
 <Demo name="pro-layout-web-search" description="SnProSearch — hits across levels with the ancestor trail, keyboard reachable; the right panel shows the same pure-function result." />
 
 ### SnProSearch Props
 
-| Prop          | Type                             | Default    | Description                                        |
-| ------------- | -------------------------------- | ---------- | -------------------------------------------------- |
-| menus         | `SnMenuOption[]`                 | `[]`       | Menu tree to search (usually the layout's `menus`) |
-| modelValue    | `string`                         | —          | Query text, `v-model`; omitted → uncontrolled      |
-| placeholder   | `string`                         | built-in zh | Placeholder                                       |
-| minLength     | `number`                         | `1`        | Minimum (trimmed) length before the panel opens    |
-| maxResults    | `number`                         | `10`       | Maximum hits offered                               |
-| size          | `'small' \| 'medium' \| 'large'` | `'medium'` | Field size (forwarded to SnInput)                  |
-| clearable     | `boolean`                        | `true`     | Clear (×) button                                   |
-| disabled      | `boolean`                        | `false`    | Disable the field                                  |
-| searchLabel   | `string`                         | built-in zh | Accessible label of field / result list           |
-| emptyText     | `string`                         | built-in zh | Copy when nothing matches                         |
-| includeGroups | `boolean`                        | `false`    | Offer group rows (nodes with children) too         |
-| filter        | `(query, hit) => boolean`        | —          | Extra predicate (e.g. permission trimming)         |
-| closeOnSelect | `boolean`                        | `true`     | Close the panel after a hit is chosen              |
+| Prop          | Type                             | Default     | Description                                        |
+| ------------- | -------------------------------- | ----------- | -------------------------------------------------- |
+| menus         | `SnMenuOption[]`                 | `[]`        | Menu tree to search (usually the layout's `menus`) |
+| modelValue    | `string`                         | —           | Query text, `v-model`; omitted → uncontrolled      |
+| placeholder   | `string`                         | built-in zh | Placeholder                                        |
+| minLength     | `number`                         | `1`         | Minimum (trimmed) length before the panel opens    |
+| maxResults    | `number`                         | `10`        | Maximum hits offered                               |
+| size          | `'small' \| 'medium' \| 'large'` | `'medium'`  | Field size (forwarded to SnInput)                  |
+| clearable     | `boolean`                        | `true`      | Clear (×) button                                   |
+| disabled      | `boolean`                        | `false`     | Disable the field                                  |
+| searchLabel   | `string`                         | built-in zh | Accessible label of field / result list            |
+| emptyText     | `string`                         | built-in zh | Copy when nothing matches                          |
+| includeGroups | `boolean`                        | `false`     | Offer group rows (nodes with children) too         |
+| filter        | `(query, hit) => boolean`        | —           | Extra predicate (e.g. permission trimming)         |
+| closeOnSelect | `boolean`                        | `true`      | Close the panel after a hit is chosen              |
 
 ### SnProSearch Events
 
-| Event               | Payload       | Description                                        |
-| ------------------- | ------------- | -------------------------------------------------- |
-| `update:modelValue` | `(value)`     | `v-model`                                          |
-| `search`            | `(query)`     | Every keystroke (analytics / remote candidates)    |
-| `select`            | `(key, item)` | Hit activated — **navigation is the host's job**   |
-| `open` / `close`    | —             | Result-panel visibility                            |
+| Event               | Payload       | Description                                      |
+| ------------------- | ------------- | ------------------------------------------------ |
+| `update:modelValue` | `(value)`     | `v-model`                                        |
+| `search`            | `(query)`     | Every keystroke (analytics / remote candidates)  |
+| `select`            | `(key, item)` | Hit activated — **navigation is the host's job** |
+| `open` / `close`    | —             | Result-panel visibility                          |
 
 > Pure-function twin: `searchMenuOptions(menus, query, { maxResults, includeGroups, filter })` →
 > `{ key, label, path }[]`, sharing the component's exact rules (case-insensitive, matches its own
@@ -189,31 +189,31 @@ Every style composes the same pieces; they also work standalone:
 
 ### SnProNotice Props
 
-| Prop        | Type                | Default     | Description                          |
-| ----------- | ------------------- | ----------- | ------------------------------------ |
-| count       | `number`            | `0`         | Unread badge (`0` hides it)          |
+| Prop        | Type                | Default     | Description                             |
+| ----------- | ------------------- | ----------- | --------------------------------------- |
+| count       | `number`            | `0`         | Unread badge (`0` hides it)             |
 | max         | `number`            | `99`        | Badge cap; higher counts show `${max}+` |
-| items       | `SnProNoticeItem[]` | `[]`        | Notification rows (host-owned data)  |
-| label       | `string`            | built-in zh | Accessible label of the bell button  |
-| panelTitle  | `string`            | built-in zh | Panel heading                        |
-| readAllText | `string`            | built-in zh | "Mark all read" copy                 |
-| emptyText   | `string`            | built-in zh | Copy when there are no rows          |
+| items       | `SnProNoticeItem[]` | `[]`        | Notification rows (host-owned data)     |
+| label       | `string`            | built-in zh | Accessible label of the bell button     |
+| panelTitle  | `string`            | built-in zh | Panel heading                           |
+| readAllText | `string`            | built-in zh | "Mark all read" copy                    |
+| emptyText   | `string`            | built-in zh | Copy when there are no rows             |
 
 Events: `select(key, item)` (opening / marking read is the host's job), `read-all`.
 Slots: `#panel` replaces the entire panel body (head and list alike).
 
 ### SnProUser Props
 
-| Prop        | Type                   | Default       | Description                                   |
-| ----------- | ---------------------- | ------------- | --------------------------------------------- |
-| name        | `string`               | —             | Display name (letter tile when no avatar URL)  |
-| description | `string`               | —             | Second line (role / e-mail)                    |
-| avatar      | `string`               | —             | Avatar image URL                               |
-| collapsed   | `boolean`              | `false`       | Folded: avatar only                            |
-| menus       | `SnMenuOption[]`       | `[]`          | Dropdown rows                                  |
-| trigger     | `'click' \| 'hover' …` | `'click'`     | What opens the menu (forwarded to SnDropdown)  |
+| Prop        | Type                   | Default       | Description                                          |
+| ----------- | ---------------------- | ------------- | ---------------------------------------------------- |
+| name        | `string`               | —             | Display name (letter tile when no avatar URL)        |
+| description | `string`               | —             | Second line (role / e-mail)                          |
+| avatar      | `string`               | —             | Avatar image URL                                     |
+| collapsed   | `boolean`              | `false`       | Folded: avatar only                                  |
+| menus       | `SnMenuOption[]`       | `[]`          | Dropdown rows                                        |
+| trigger     | `'click' \| 'hover' …` | `'click'`     | What opens the menu (forwarded to SnDropdown)        |
 | placement   | `SnDropdownPlacement`  | `'top-start'` | Panel placement (bottom-anchored card opens upwards) |
-| menuLabel   | `string`               | built-in zh   | Accessible label of the trigger button         |
+| menuLabel   | `string`               | built-in zh   | Accessible label of the trigger button               |
 
 Events: `select(key, item)` — **the meaning is the host's call (logout / profile)**; the default
 slot replaces the card content.

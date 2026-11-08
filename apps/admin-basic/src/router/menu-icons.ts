@@ -4,22 +4,14 @@
  * mapping, so no component references ever cross the API boundary.
  */
 import type { Component } from 'vue';
-import {
-  BookOpen,
-  Globe,
-  House,
-  Languages,
-  Palette,
-  Rocket,
-  Route,
-} from 'lucide-vue-next';
+import { BookOpen, Globe, House, Languages, Palette, Rocket, Route } from 'lucide-vue-next';
 
 export const MenuIcon: Record<string, Component> = {
-  'house': House,
+  house: House,
   'book-open': BookOpen,
-  'rocket': Rocket,
-  'globe': Globe,
-  'route': Route,
-  'palette': Palette,
-  'languages': Languages,
+  rocket: Rocket,
+  globe: Globe,
+  route: Route,
+  palette: Palette,
+  languages: Languages,
 };

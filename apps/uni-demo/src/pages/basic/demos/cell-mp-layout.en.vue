@@ -6,13 +6,17 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__label">Multi-line titles (long titles wrap, value stays on one line)</text>
+    <text class="sn-demo__label"
+      >Multi-line titles (long titles wrap, value stays on one line)</text
+    >
     <SnCellGroup border>
       <SnCell title="Auto-play videos and GIFs over mobile data" value="Wi-Fi only" />
       <SnCell title="Follow system dark mode" value="On" />
     </SnCellGroup>
 
-    <text class="sn-demo__label">Column alignment (title-width pins the title column, value left)</text>
+    <text class="sn-demo__label"
+      >Column alignment (title-width pins the title column, value left)</text
+    >
     <SnCellGroup border :title-width="140" value-align="left">
       <SnCell title="Nickname" value="Ada" />
       <SnCell title="Birthday" value="1990-08-15" />
@@ -21,7 +25,10 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
     <text class="sn-demo__label">Vertical layout (content drops below the title and may wrap)</text>
     <SnCellGroup border layout="vertical">
-      <SnCell title="Address" value="Room 2001, Tower A, 100 Wensan Road, Xihu, Hangzhou, Zhejiang" />
+      <SnCell
+        title="Address"
+        value="Room 2001, Tower A, 100 Wensan Road, Xihu, Hangzhou, Zhejiang"
+      />
       <SnCell title="Note" placeholder="Optional, call before delivery" value-align="left" />
     </SnCellGroup>
 

@@ -18,7 +18,9 @@ const page = ref(3);
       <text class="sn-demo__group-title">基础翻页 · 8 页</text>
       <SnPagination v-model="page" :total-page="8" show-icon show-message />
     </view>
-    <text class="sn-demo__meta">当前第 {{ page }} 页 / 共 8 页；箭头图标随文字一起继承按钮颜色。</text>
+    <text class="sn-demo__meta"
+      >当前第 {{ page }} 页 / 共 8 页；箭头图标随文字一起继承按钮颜色。</text
+    >
   </view>
 </template>
 

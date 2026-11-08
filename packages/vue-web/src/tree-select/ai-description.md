@@ -38,7 +38,7 @@ Web 端树形选择组件，对标 naive-ui `n-tree-select` 1:1。位于 `packag
 | `lineMode`                    | `'branch' \| 'guide'`                                 | `'branch'`        | 连接线形态：L 形分叉 / 竖向缩进引导线               |
 | `lineStyle`                   | `'solid' \| 'dashed'`                                 | `'solid'`         | 连接线样式（AUI additive）；`showLine` 开启时生效   |
 | `lineCorner`                  | `'square' \| 'rounded'`                               | `'square'`        | 连接线拐角（AUI additive）：直角 / 圆角弯头         |
-| `lineColor`                   | `string`                                              | `undefined`       | 连接线颜色（AUI additive）；覆盖面板线色变量         |
+| `lineColor`                   | `string`                                              | `undefined`       | 连接线颜色（AUI additive）；覆盖面板线色变量        |
 
 ### Option 数据字段
 
@@ -50,13 +50,13 @@ Web 端树形选择组件，对标 naive-ui `n-tree-select` 1:1。位于 `packag
 `SnTreeSelectIcon = VNodeChild | Component | (() => VNodeChild)`，
 归一化由共享的 `resolveTreeIcon()` 完成：
 
-| 取值                          | 渲染结果                                |
-| ----------------------------- | --------------------------------------- |
-| 已注册的 `SnIcon` 名称（字符串） | `h(SnIcon, { name, size: 14 })`       |
-| 未注册的字符串                | 纯文本（拼错图标名不会让节点行空白）    |
-| VNode / VNode[] / number      | 原样渲染                                |
-| 图标组件 / 零参渲染函数       | `h()` 挂载                              |
-| `null` / `undefined` / 布尔值 | 不渲染图标元素                          |
+| 取值                             | 渲染结果                             |
+| -------------------------------- | ------------------------------------ |
+| 已注册的 `SnIcon` 名称（字符串） | `h(SnIcon, { name, size: 14 })`      |
+| 未注册的字符串                   | 纯文本（拼错图标名不会让节点行空白） |
+| VNode / VNode[] / number         | 原样渲染                             |
+| 图标组件 / 零参渲染函数          | `h()` 挂载                           |
+| `null` / `undefined` / 布尔值    | 不渲染图标元素                       |
 
 图标只在下拉面板节点文案前显示，不影响已选 tag 回显；颜色走
 `--sn-web-tree-select-node-icon-color`。动态节点内容统一通过 `SnTreePart`
@@ -117,32 +117,32 @@ const options = [
 
 ## Tokens
 
-| Token                                                                                    | 默认值                                   | 用途                      |
-| ---------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------- |
-| `--sn-web-tree-select-height`                                                            | `22–40px`（按 size）                     | 触发器高度                |
-| `--sn-web-tree-select-radius`                                                            | `6px`                                    | 圆角                      |
-| `--sn-web-tree-select-border-color` / `-focus`                                           | border-default / action-primary          | 边框色                    |
-| `--sn-web-tree-select-bg` / `-text-color` / `-placeholder-color`                         | surface / text-primary / text-tertiary   | 触发器底色/文字/占位      |
-| `--sn-web-tree-select-focus-ring`                                                        | `--sn-web-focus-ring`                    | 焦点环                    |
-| `--sn-web-tree-select-tag-bg` / `-text-color`                                            | background-subtle / text-primary         | tag 胶囊                  |
-| `--sn-web-tree-select-tag-close-color` / `-hover` / `-bg-hover`                          | text-tertiary / text-primary / rgba      | tag 删除按钮              |
-| `--sn-web-tree-select-clear-color` / `-hover` / `-bg-hover`                              | 同上                                     | 清空按钮                  |
-| `--sn-web-tree-select-arrow-color`                                                       | text-tertiary                            | 下拉箭头                  |
-| `--sn-web-tree-select-bg-disabled` / `-text-color-disabled` / `-border-color-disabled`   | subtle / text-disabled / border-subtle   | 禁用态                    |
-| `--sn-web-tree-select-menu-bg` / `-border-color` / `-radius` / `-z-index`                | elevated / border-default / 6px / `1000` | 面板外观                  |
-| `--sn-web-tree-select-menu-max-height`                                                   | `260px`                                  | 面板最大高度（内部滚动）  |
-| `--sn-web-tree-select-menu-shadow`                                                       | 双层 rgba 阴影                           | 面板阴影                  |
-| `--sn-web-tree-select-node-min-height` / `-font-size` / `-text-color`                    | `30px` / `14px` / text-primary           | 节点行                    |
-| `--sn-web-tree-select-node-padding-x` / `-indent`                                        | `10px` / `16px`                          | 节点水平内边距 / 每级缩进 |
-| `--sn-web-tree-select-node-bg-hover`                                                     | `rgba(0,0,0,0.045)`                      | 高亮行底色                |
-| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected`                          | action-primary-soft / action-primary     | 选中行                    |
-| `--sn-web-tree-select-node-text-color-disabled`                                          | text-disabled                            | 禁用节点文字              |
-| `--sn-web-tree-select-switcher-color` / `-hover` / `-radius`                             | text-tertiary / text-primary / `4px`     | 展开箭头                  |
-| `--sn-web-tree-select-switcher-size`                                                     | `16px`                                   | 箭头盒宽高 + 连接线基准点 |
-| `--sn-web-tree-select-line-color`                                                        | border-default                           | 连接线颜色                |
-| `--sn-web-tree-select-node-icon-color`                                                   | text-tertiary                            | 节点数据图标颜色          |
-| `--sn-web-tree-select-line-radius`                                                       | `3px`                                    | 圆角弯头横纵半径（拐角圆弧） |
-| `--sn-web-tree-select-empty-color` / `-padding-y`                                        | text-tertiary / `12px`                   | 空状态                    |
+| Token                                                                                  | 默认值                                   | 用途                         |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- | ---------------------------- |
+| `--sn-web-tree-select-height`                                                          | `22–40px`（按 size）                     | 触发器高度                   |
+| `--sn-web-tree-select-radius`                                                          | `6px`                                    | 圆角                         |
+| `--sn-web-tree-select-border-color` / `-focus`                                         | border-default / action-primary          | 边框色                       |
+| `--sn-web-tree-select-bg` / `-text-color` / `-placeholder-color`                       | surface / text-primary / text-tertiary   | 触发器底色/文字/占位         |
+| `--sn-web-tree-select-focus-ring`                                                      | `--sn-web-focus-ring`                    | 焦点环                       |
+| `--sn-web-tree-select-tag-bg` / `-text-color`                                          | background-subtle / text-primary         | tag 胶囊                     |
+| `--sn-web-tree-select-tag-close-color` / `-hover` / `-bg-hover`                        | text-tertiary / text-primary / rgba      | tag 删除按钮                 |
+| `--sn-web-tree-select-clear-color` / `-hover` / `-bg-hover`                            | 同上                                     | 清空按钮                     |
+| `--sn-web-tree-select-arrow-color`                                                     | text-tertiary                            | 下拉箭头                     |
+| `--sn-web-tree-select-bg-disabled` / `-text-color-disabled` / `-border-color-disabled` | subtle / text-disabled / border-subtle   | 禁用态                       |
+| `--sn-web-tree-select-menu-bg` / `-border-color` / `-radius` / `-z-index`              | elevated / border-default / 6px / `1000` | 面板外观                     |
+| `--sn-web-tree-select-menu-max-height`                                                 | `260px`                                  | 面板最大高度（内部滚动）     |
+| `--sn-web-tree-select-menu-shadow`                                                     | 双层 rgba 阴影                           | 面板阴影                     |
+| `--sn-web-tree-select-node-min-height` / `-font-size` / `-text-color`                  | `30px` / `14px` / text-primary           | 节点行                       |
+| `--sn-web-tree-select-node-padding-x` / `-indent`                                      | `10px` / `16px`                          | 节点水平内边距 / 每级缩进    |
+| `--sn-web-tree-select-node-bg-hover`                                                   | `rgba(0,0,0,0.045)`                      | 高亮行底色                   |
+| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected`                       | action-primary-soft / action-primary     | 选中行                       |
+| `--sn-web-tree-select-node-text-color-disabled`                                        | text-disabled                            | 禁用节点文字                 |
+| `--sn-web-tree-select-switcher-color` / `-hover` / `-radius`                           | text-tertiary / text-primary / `4px`     | 展开箭头                     |
+| `--sn-web-tree-select-switcher-size`                                                   | `16px`                                   | 箭头盒宽高 + 连接线基准点    |
+| `--sn-web-tree-select-line-color`                                                      | border-default                           | 连接线颜色                   |
+| `--sn-web-tree-select-node-icon-color`                                                 | text-tertiary                            | 节点数据图标颜色             |
+| `--sn-web-tree-select-line-radius`                                                     | `3px`                                    | 圆角弯头横纵半径（拐角圆弧） |
+| `--sn-web-tree-select-empty-color` / `-padding-y`                                      | text-tertiary / `12px`                   | 空状态                       |
 
 ## Accessibility
 

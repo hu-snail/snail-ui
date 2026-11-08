@@ -15,8 +15,42 @@ interface KongPage {
   items: KongItem[];
 }
 
-const ICONS = ['star', 'heart', 'image', 'camera', 'bell', 'calendar', 'wallet', 'phone', 'search', 'user', 'clock', 'message-circle', 'file', 'download', 'edit', 'settings'];
-const LABELS = ['Movies', 'Shows', 'Albums', 'Camera', 'Alerts', 'Events', 'Wallet', 'Top-up', 'Search', 'Member', 'History', 'Chats', 'Docs', 'Download', 'Notes', 'Settings'];
+const ICONS = [
+  'star',
+  'heart',
+  'image',
+  'camera',
+  'bell',
+  'calendar',
+  'wallet',
+  'phone',
+  'search',
+  'user',
+  'clock',
+  'message-circle',
+  'file',
+  'download',
+  'edit',
+  'settings',
+];
+const LABELS = [
+  'Movies',
+  'Shows',
+  'Albums',
+  'Camera',
+  'Alerts',
+  'Events',
+  'Wallet',
+  'Top-up',
+  'Search',
+  'Member',
+  'History',
+  'Chats',
+  'Docs',
+  'Download',
+  'Notes',
+  'Settings',
+];
 
 const pages: KongPage[] = [8, 4, 6].map((count) => ({
   items: Array.from({ length: count }, (_, i) => ({
@@ -119,14 +153,30 @@ function itemsOf(page: unknown): KongItem[] {
   border-radius: 28rpx;
 }
 
-.kong__tile--1 { background: radial-gradient(120% 120% at 25% 20%, #6ea8ff 0%, #2b6bf3 60%, #1d4fd7 100%); }
-.kong__tile--2 { background: radial-gradient(120% 120% at 25% 20%, #ffb26b 0%, #f5722e 60%, #e05a12 100%); }
-.kong__tile--3 { background: radial-gradient(120% 120% at 25% 20%, #c084fc 0%, #8b5cf6 60%, #7c3aed 100%); }
-.kong__tile--4 { background: radial-gradient(120% 120% at 25% 20%, #5eead4 0%, #14b8a6 60%, #0d9488 100%); }
-.kong__tile--5 { background: radial-gradient(120% 120% at 25% 20%, #f9a8d4 0%, #ec4899 60%, #db2777 100%); }
-.kong__tile--6 { background: radial-gradient(120% 120% at 25% 20%, #fcd34d 0%, #f59e0b 60%, #d97706 100%); }
-.kong__tile--7 { background: radial-gradient(120% 120% at 25% 20%, #93c5fd 0%, #3b82f6 60%, #2563eb 100%); }
-.kong__tile--8 { background: radial-gradient(120% 120% at 25% 20%, #86efac 0%, #22c55e 60%, #16a34a 100%); }
+.kong__tile--1 {
+  background: radial-gradient(120% 120% at 25% 20%, #6ea8ff 0%, #2b6bf3 60%, #1d4fd7 100%);
+}
+.kong__tile--2 {
+  background: radial-gradient(120% 120% at 25% 20%, #ffb26b 0%, #f5722e 60%, #e05a12 100%);
+}
+.kong__tile--3 {
+  background: radial-gradient(120% 120% at 25% 20%, #c084fc 0%, #8b5cf6 60%, #7c3aed 100%);
+}
+.kong__tile--4 {
+  background: radial-gradient(120% 120% at 25% 20%, #5eead4 0%, #14b8a6 60%, #0d9488 100%);
+}
+.kong__tile--5 {
+  background: radial-gradient(120% 120% at 25% 20%, #f9a8d4 0%, #ec4899 60%, #db2777 100%);
+}
+.kong__tile--6 {
+  background: radial-gradient(120% 120% at 25% 20%, #fcd34d 0%, #f59e0b 60%, #d97706 100%);
+}
+.kong__tile--7 {
+  background: radial-gradient(120% 120% at 25% 20%, #93c5fd 0%, #3b82f6 60%, #2563eb 100%);
+}
+.kong__tile--8 {
+  background: radial-gradient(120% 120% at 25% 20%, #86efac 0%, #22c55e 60%, #16a34a 100%);
+}
 
 .kong__label {
   color: var(--sn-mp-color-text-secondary);

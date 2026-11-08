@@ -27,8 +27,8 @@ const scrollTop = ref(500);
       </view>
     </view>
     <text class="sn-demo__meta">
-      theme only swaps the fill and border tokens — the icon and label invert
-      automatically, and everything follows the theme tokens in dark mode.
+      theme only swaps the fill and border tokens — the icon and label invert automatically, and
+      everything follows the theme tokens in dark mode.
     </text>
   </view>
 </template>

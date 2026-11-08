@@ -52,11 +52,21 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ top: 16, left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="收藏" @tap="pick('topLeft', '收藏（左上）')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="收藏"
+        @tap="pick('topLeft', '收藏（左上）')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Star" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">收藏</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="喜欢" @tap="pick('topLeft', '喜欢（左上）')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="喜欢"
+        @tap="pick('topLeft', '喜欢（左上）')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Heart" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">喜欢</text>
       </view>
@@ -70,11 +80,25 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ top: 16, right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="拍照" @tap="pick('topRight', '拍照（右上）')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="拍照"
+        @tap="pick('topRight', '拍照（右上）')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Camera"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">拍照</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="相册" @tap="pick('topRight', '相册（右上）')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="相册"
+        @tap="pick('topRight', '相册（右上）')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">相册</text>
       </view>
@@ -88,12 +112,26 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ bottom: 16, left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="音乐" @tap="pick('bottomLeft', '音乐（左下）')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="音乐"
+        @tap="pick('bottomLeft', '音乐（左下）')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Music" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">音乐</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="咖啡" @tap="pick('bottomLeft', '咖啡（左下）')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Coffee" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="咖啡"
+        @tap="pick('bottomLeft', '咖啡（左下）')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Coffee"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">咖啡</text>
       </view>
     </SnFab>
@@ -106,11 +144,25 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ bottom: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="分享" @tap="pick('bottomCenter', '分享（底部居中）')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Share2" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="分享"
+        @tap="pick('bottomCenter', '分享（底部居中）')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Share2"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">分享</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="写文章" @tap="pick('bottomCenter', '写文章（底部居中）')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="写文章"
+        @tap="pick('bottomCenter', '写文章（底部居中）')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">写文章</text>
       </view>

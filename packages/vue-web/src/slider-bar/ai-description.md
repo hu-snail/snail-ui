@@ -20,45 +20,45 @@ Use `SnSlider` instead when you need marks, step ticks or number inputs.
 
 ## Props
 
-| Prop            | Type                                 | Default     | Notes                                                        |
-| --------------- | ------------------------------------ | ----------- | ------------------------------------------------------------ |
-| modelValue      | `number \| [number, number]`         | `undefined` | Bound via `v-model`. `[low, high]` when `range`.              |
-| defaultValue    | `number \| [number, number]`         | `undefined` | Uncontrolled initial value.                                   |
-| min             | `number`                             | `0`         | Lower bound.                                                  |
-| max             | `number`                             | `100`       | Upper bound.                                                  |
-| step            | `number`                             | `1`         | Snap grid; applies to pointer and keyboard.                   |
-| range           | `boolean`                            | `false`     | Dual handles; they never cross.                               |
-| disabled        | `boolean`                            | `false`     | No interaction; handles leave the tab order.                  |
-| readonly        | `boolean`                            | `false`     | Visible but not editable.                                     |
-| reverse         | `boolean`                            | `false`     | Inverts the axis (RTL / bottom-up).                           |
-| variant         | `'bar' \| 'column'`                  | `'bar'`     | Horizontal capsule vs vertical strip.                         |
-| showValue       | `boolean`                            | `false`     | Render the inline read-out inside the bar.                    |
-| iconPlacement   | `'leading' \| 'inside' \| 'trailing'` | `'leading'` | Where the `#icon` slot renders; `inside` paints it on the fill. |
-| label           | `string`                             | `undefined` | Caption text painted inside the bar at the leading edge.      |
-| suffix          | `string`                             | `undefined` | Caption text painted inside the bar at the trailing edge.     |
-| format          | `'percent' \| 'value'`               | `'percent'` | Read-out source: filled share vs raw value.                   |
-| valueSuffix     | `string`                             | `'%'`       | Suffix appended to the default read-out.                      |
-| formatValue     | `(value, percent) => string`         | `undefined` | Fully custom read-out; wins over `format`.                    |
-| tooltip         | `boolean`                            | `true`      | Drag / hover bubble.                                          |
-| formatTooltip   | `(value: number) => string \| number`| `undefined` | Bubble formatter.                                             |
-| placement       | `string`                             | `'top'`     | Bubble placement class (`__tooltip--{placement}`).            |
-| fillBackground  | `string`                             | `undefined` | Fill background — solid / gradient / `transparent`.           |
-| barBackground   | `string`                             | `undefined` | Track background — solid / gradient / `transparent`.           |
-| thickness       | `number \| string`                   | `40`        | Bar thickness (horizontal height, column width). Number → px. |
-| radius          | `string`                             | radius token| Bar corner radius (any CSS length).                           |
-| fade            | `boolean`                            | `true`      | Column: fade the un-filled part upwards.                      |
-| tooltipOnly     | `boolean`                            | `false`     | Column: read the value from the bubble.                       |
-| ariaLabel       | `string`                             | `undefined` | Accessible name.                                              |
-| customClass     | `string`                             | `''`        | Class on the root wrapper.                                    |
-| customStyle     | `string \| Record<string, string>`   | `''`        | Inline style on the root wrapper.                             |
+| Prop           | Type                                  | Default      | Notes                                                           |
+| -------------- | ------------------------------------- | ------------ | --------------------------------------------------------------- |
+| modelValue     | `number \| [number, number]`          | `undefined`  | Bound via `v-model`. `[low, high]` when `range`.                |
+| defaultValue   | `number \| [number, number]`          | `undefined`  | Uncontrolled initial value.                                     |
+| min            | `number`                              | `0`          | Lower bound.                                                    |
+| max            | `number`                              | `100`        | Upper bound.                                                    |
+| step           | `number`                              | `1`          | Snap grid; applies to pointer and keyboard.                     |
+| range          | `boolean`                             | `false`      | Dual handles; they never cross.                                 |
+| disabled       | `boolean`                             | `false`      | No interaction; handles leave the tab order.                    |
+| readonly       | `boolean`                             | `false`      | Visible but not editable.                                       |
+| reverse        | `boolean`                             | `false`      | Inverts the axis (RTL / bottom-up).                             |
+| variant        | `'bar' \| 'column'`                   | `'bar'`      | Horizontal capsule vs vertical strip.                           |
+| showValue      | `boolean`                             | `false`      | Render the inline read-out inside the bar.                      |
+| iconPlacement  | `'leading' \| 'inside' \| 'trailing'` | `'leading'`  | Where the `#icon` slot renders; `inside` paints it on the fill. |
+| label          | `string`                              | `undefined`  | Caption text painted inside the bar at the leading edge.        |
+| suffix         | `string`                              | `undefined`  | Caption text painted inside the bar at the trailing edge.       |
+| format         | `'percent' \| 'value'`                | `'percent'`  | Read-out source: filled share vs raw value.                     |
+| valueSuffix    | `string`                              | `'%'`        | Suffix appended to the default read-out.                        |
+| formatValue    | `(value, percent) => string`          | `undefined`  | Fully custom read-out; wins over `format`.                      |
+| tooltip        | `boolean`                             | `true`       | Drag / hover bubble.                                            |
+| formatTooltip  | `(value: number) => string \| number` | `undefined`  | Bubble formatter.                                               |
+| placement      | `string`                              | `'top'`      | Bubble placement class (`__tooltip--{placement}`).              |
+| fillBackground | `string`                              | `undefined`  | Fill background — solid / gradient / `transparent`.             |
+| barBackground  | `string`                              | `undefined`  | Track background — solid / gradient / `transparent`.            |
+| thickness      | `number \| string`                    | `40`         | Bar thickness (horizontal height, column width). Number → px.   |
+| radius         | `string`                              | radius token | Bar corner radius (any CSS length).                             |
+| fade           | `boolean`                             | `true`       | Column: fade the un-filled part upwards.                        |
+| tooltipOnly    | `boolean`                             | `false`      | Column: read the value from the bubble.                         |
+| ariaLabel      | `string`                              | `undefined`  | Accessible name.                                                |
+| customClass    | `string`                              | `''`         | Class on the root wrapper.                                      |
+| customStyle    | `string \| Record<string, string>`    | `''`         | Inline style on the root wrapper.                               |
 
 ## Slots
 
-| Slot    | Props                                        | Notes                                    |
-| ------- | -------------------------------------------- | ---------------------------------------- |
+| Slot    | Props                                        | Notes                                                                                                           |
+| ------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | icon    | —                                            | Leading glyph. **Opt-in**: nothing renders by default (a built-in glyph read as a stray close / power control). |
-| value   | `{ value, percent, min, max, index, range }` | Custom read-out content.                 |
-| tooltip | `{ value }`                                  | Custom bubble content.                   |
+| value   | `{ value, percent, min, max, index, range }` | Custom read-out content.                                                                                        |
+| tooltip | `{ value }`                                  | Custom bubble content.                                                                                          |
 
 ## Events
 

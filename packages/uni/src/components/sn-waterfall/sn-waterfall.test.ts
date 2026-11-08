@@ -85,8 +85,7 @@ function installUniQuery(heights: number[], containerWidth = 375): void {
           callback: (value: Array<{ height?: number; width?: number }>) => void,
         ) => ({
           exec: () => {
-            const nodes =
-              stubRoot === null ? [] : Array.from(stubRoot.querySelectorAll(selector));
+            const nodes = stubRoot === null ? [] : Array.from(stubRoot.querySelectorAll(selector));
             queryCalls.push({ selector, mode, matches: nodes.length });
             if (mode === 'select') {
               callback([{ width: containerWidth, height: 600 }]);
@@ -169,14 +168,18 @@ describe('sn-waterfall', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnWaterfall, { columns: 2 }, {
-              default: () => [
-                h('view', { key: 'a', class: 'entry' }, 'a'),
-                h('view', { key: 'b', class: 'entry' }, 'b'),
-                h('view', { key: 'c', class: 'entry' }, 'c'),
-                h('view', { key: 'd', class: 'entry' }, 'd'),
-              ],
-            });
+            h(
+              SnWaterfall,
+              { columns: 2 },
+              {
+                default: () => [
+                  h('view', { key: 'a', class: 'entry' }, 'a'),
+                  h('view', { key: 'b', class: 'entry' }, 'b'),
+                  h('view', { key: 'c', class: 'entry' }, 'c'),
+                  h('view', { key: 'd', class: 'entry' }, 'd'),
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -281,10 +284,14 @@ describe('sn-waterfall', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnWaterfall, { columns: 2 }, {
-              default: () =>
-                list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
-            });
+            h(
+              SnWaterfall,
+              { columns: 2 },
+              {
+                default: () =>
+                  list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -360,10 +367,14 @@ describe('sn-waterfall', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnWaterfall, { columns: 2 }, {
-              default: () =>
-                list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
-            });
+            h(
+              SnWaterfall,
+              { columns: 2 },
+              {
+                default: () =>
+                  list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
+              },
+            );
         },
       });
       installUniQuery([100, 100, 100, 100]);
@@ -421,10 +432,14 @@ describe('sn-waterfall', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnWaterfall, { columns: 1 }, {
-              default: () =>
-                list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
-            });
+            h(
+              SnWaterfall,
+              { columns: 1 },
+              {
+                default: () =>
+                  list.value.map((entry) => h('view', { key: entry, class: 'entry' }, entry)),
+              },
+            );
         },
       });
       installUniQuery([100]);
@@ -466,12 +481,16 @@ describe('sn-waterfall', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnWaterfall, { columns: 2 }, {
-              default: () =>
-                ['a', 'b'].map((key) =>
-                  h('view', { key, class: 'entry' }, `${key}:${title.value}`),
-                ),
-            });
+            h(
+              SnWaterfall,
+              { columns: 2 },
+              {
+                default: () =>
+                  ['a', 'b'].map((key) =>
+                    h('view', { key, class: 'entry' }, `${key}:${title.value}`),
+                  ),
+              },
+            );
         },
       });
       const wrapper = mount(Harness);

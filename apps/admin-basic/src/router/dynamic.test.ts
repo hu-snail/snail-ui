@@ -19,7 +19,10 @@ describe('menuToRoutes', () => {
   it('should flatten menu leaves into layout-child routes', () => {
     const routes = menuToRoutes(TREE);
     expect(routes.map((route) => route.name)).toEqual(['home', 'docs-theme', 'docs-i18n']);
-    expect(routes[0]).toMatchObject({ path: '/home', meta: { i18nKey: 'menus.home', icon: 'house' } });
+    expect(routes[0]).toMatchObject({
+      path: '/home',
+      meta: { i18nKey: 'menus.home', icon: 'house' },
+    });
   });
 
   it('should mark affix tabs from AFFIX_ROUTE_KEYS and leave the rest unmarked', () => {
@@ -42,7 +45,14 @@ describe('menuToRoutes', () => {
   });
 
   it('should register a lazy view for every key the mock menu ships', () => {
-    const mockKeys = ['home', 'docs-getting-started', 'docs-request', 'docs-router', 'docs-theme', 'docs-i18n'];
+    const mockKeys = [
+      'home',
+      'docs-getting-started',
+      'docs-request',
+      'docs-router',
+      'docs-theme',
+      'docs-i18n',
+    ];
     for (const key of mockKeys) {
       expect(typeof VIEW_COMPONENTS[key]).toBe('function');
     }

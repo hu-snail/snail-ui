@@ -130,8 +130,7 @@ export function buildStyleBarrel({ root = PACKAGE_ROOT, katex = true } = {}) {
   // asset), the signature matches and we leave it alone.
   const signature = tokensBundle.trim().slice(0, 80);
   const hasTokens = tokensBundle.length > 0;
-  const assembled =
-    hasTokens && !body.startsWith(signature) ? `${tokensBundle}\n${body}` : body;
+  const assembled = hasTokens && !body.startsWith(signature) ? `${tokensBundle}\n${body}` : body;
 
   const rendered = assembled.trim().length > 0 ? assembled : '/* No styles yet */\n';
   const output = katex ? appendKatex(rendered, barrelPath, root) : rendered;

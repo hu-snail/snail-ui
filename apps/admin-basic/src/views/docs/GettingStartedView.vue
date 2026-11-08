@@ -11,7 +11,9 @@ const sections = computed<DocSection[]>(() =>
     ? [
         {
           heading: '技术栈',
-          paragraphs: ['本模板基于以下技术栈搭建，全部依赖均来自 snail-aui workspace 或社区标准方案：'],
+          paragraphs: [
+            '本模板基于以下技术栈搭建，全部依赖均来自 snail-aui workspace 或社区标准方案：',
+          ],
           list: [
             'Vue 3（<script setup> + TypeScript strict）',
             'Vite 6 构建，@vitejs/plugin-vue 编译 SFC',
@@ -52,7 +54,9 @@ pnpm --filter @snui/admin-basic dev`,
     : [
         {
           heading: 'Tech stack',
-          paragraphs: ['The template is built on the following stack — all dependencies come from the snail-aui workspace or standard community packages:'],
+          paragraphs: [
+            'The template is built on the following stack — all dependencies come from the snail-aui workspace or standard community packages:',
+          ],
           list: [
             'Vue 3 (<script setup> + TypeScript strict)',
             'Vite 6 build, @vitejs/plugin-vue for SFCs',

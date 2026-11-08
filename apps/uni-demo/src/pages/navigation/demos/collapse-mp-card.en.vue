@@ -27,7 +27,9 @@ const single = ref([]);
         <text class="sn-demo__body">SF Express, arriving in about 2 days with live tracking.</text>
       </SnCollapseItem>
       <SnCollapseItem name="b" title="Payment" :title-icon-data="CreditCard">
-        <text class="sn-demo__body">WeChat Pay and Alipay are supported; invoice details later.</text>
+        <text class="sn-demo__body"
+          >WeChat Pay and Alipay are supported; invoice details later.</text
+        >
       </SnCollapseItem>
       <SnCollapseItem name="c" title="Invoice" :title-icon-data="FileText" icon-size="small">
         <text class="sn-demo__body">The e-invoice reaches your inbox within 24 hours.</text>

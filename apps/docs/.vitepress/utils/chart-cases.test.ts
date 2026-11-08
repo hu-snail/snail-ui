@@ -116,7 +116,9 @@ describe('chart case registry', () => {
         expect((entry?.['areaStyle'] as Draft)['opacity']).toBe(0.25);
       }
       // The plain multi-series area must stay unstacked (overlap compare).
-      const plain = seriesOf(optionOf(getChartCase('area-multi'), cfgOf(getChartCase('area-multi'))));
+      const plain = seriesOf(
+        optionOf(getChartCase('area-multi'), cfgOf(getChartCase('area-multi'))),
+      );
       expect(plain[0]?.['stack']).toBeUndefined();
     });
 

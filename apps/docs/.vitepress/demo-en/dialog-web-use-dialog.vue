@@ -18,20 +18,20 @@ const DialogButtons = defineComponent({
       btn('success', () =>
         dialog.success({ title: 'Success', content: 'Nice', positiveText: 'Wow' }),
       ),
-      btn(
-        'warning',
-        () =>
-          dialog.warning({
-            title: 'Warning',
-            content: 'Are you sure?',
-            positiveText: 'OK',
-            negativeText: 'Cancel',
-            onPositiveClick() {
-              dialog.success({ title: 'Success', content: 'Confirmed', positiveText: 'Wow' });
-            },
-          }),
+      btn('warning', () =>
+        dialog.warning({
+          title: 'Warning',
+          content: 'Are you sure?',
+          positiveText: 'OK',
+          negativeText: 'Cancel',
+          onPositiveClick() {
+            dialog.success({ title: 'Success', content: 'Confirmed', positiveText: 'Wow' });
+          },
+        }),
       ),
-      btn('error', () => dialog.error({ title: 'Error', content: 'It failed', positiveText: 'Got it' })),
+      btn('error', () =>
+        dialog.error({ title: 'Error', content: 'It failed', positiveText: 'Got it' }),
+      ),
       btn('info', () =>
         dialog.info({ title: 'Info', content: 'A piece of information', positiveText: 'Got it' }),
       ),

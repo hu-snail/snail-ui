@@ -184,10 +184,9 @@ const trackStyle = computed<Record<string, string>>(() => {
   const [lowPct, highPct] = fillRange.value;
   const from = Math.min(lowPct, highPct);
   const size = Math.abs(highPct - lowPct);
-  const style: Record<string, string> =
-    props.vertical
-      ? { bottom: `${from}%`, height: `${size}%` }
-      : { left: `${from}%`, width: `${size}%` };
+  const style: Record<string, string> = props.vertical
+    ? { bottom: `${from}%`, height: `${size}%` }
+    : { left: `${from}%`, width: `${size}%` };
   // Custom background wins over the disabled stylesheet color on purpose:
   // authors opting into a gradient get exactly what they declared.
   if (props.trackBackground) style.background = props.trackBackground;
@@ -409,7 +408,6 @@ function syncDrafts(): void {
 
 watch(() => [pair.value[0], pair.value[1]], syncDrafts, { immediate: true });
 
-
 function inputValueOf(e: Event): string {
   return e.target instanceof HTMLInputElement ? e.target.value : '';
 }
@@ -542,7 +540,12 @@ const ariaText = (index: number): string => {
     :aria-disabled="disabled ? 'true' : undefined"
   >
     <div class="sn-slider__body">
-      <div ref="trackRef" class="sn-slider__rail" :style="railElStyle" @mousedown="onTrackMousedown">
+      <div
+        ref="trackRef"
+        class="sn-slider__rail"
+        :style="railElStyle"
+        @mousedown="onTrackMousedown"
+      >
         <div class="sn-slider__track" :style="trackStyle" />
         <i
           v-for="(pct, tickIndex) in stepTicks"
@@ -789,7 +792,11 @@ const ariaText = (index: number): string => {
 }
 
 .sn-slider__handle:focus-visible {
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 .sn-slider--disabled .sn-slider__handle,
@@ -969,5 +976,4 @@ const ariaText = (index: number): string => {
 .sn-slider--vertical .sn-slider__input-separator {
   display: none;
 }
-
 </style>

@@ -26,9 +26,9 @@
 import { computed, onMounted, watch } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import { useRoute } from 'vitepress';
- import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
- import SnSidebarBrand from '../components/SnSidebarBrand.vue';
- import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
+import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
+import SnSidebarBrand from '../components/SnSidebarBrand.vue';
+import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DemoDock from '../components/DemoDock.vue';
 import { resetDock } from '../utils/demo-dock';
@@ -51,13 +51,13 @@ const route = useRoute();
 const isHome = computed(
   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
 );
- const showFab = computed(() => route.path.startsWith('/components/'));
- const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
- /**
-  * 端切换胶囊只在组件页显示：/components/web ↔ /components/uni 互跳是它
-  * 唯一的语义，指南 / 主题 / 模板 / 生态等页没有「端」概念，不需要它。
-  */
- const showEndSwitch = computed(() => route.path.startsWith('/components/'));
+const showFab = computed(() => route.path.startsWith('/components/'));
+const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
+/**
+ * 端切换胶囊只在组件页显示：/components/web ↔ /components/uni 互跳是它
+ * 唯一的语义，指南 / 主题 / 模板 / 生态等页没有「端」概念，不需要它。
+ */
+const showEndSwitch = computed(() => route.path.startsWith('/components/'));
 
 /**
  * Demo cards: one per row on the admin-layout pages, the shared two-column
@@ -138,11 +138,11 @@ watch(
         <SnDocsNav :items="navItems" :inverted="homeNavInverted" />
       </template>
 
-        <template #sidebar-nav-before>
-          <SnSidebarBrand />
-          <SnSidebarEndSwitch v-if="showEndSwitch" />
-          <SnDocsTemplateEnd v-if="showTemplateEnd" />
-        </template>
+      <template #sidebar-nav-before>
+        <SnSidebarBrand />
+        <SnSidebarEndSwitch v-if="showEndSwitch" />
+        <SnDocsTemplateEnd v-if="showTemplateEnd" />
+      </template>
 
       <!-- Sidebar collapse handle: one tab glued to the sidebar's LEFT edge,
          which stays in place in both states (collapsed it becomes the expand

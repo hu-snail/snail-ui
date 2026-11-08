@@ -35,24 +35,24 @@ import { SnActionSheet } from '@snui/uni';
 
 ## Props
 
-| Name                  | Type                      | Default | Required | Description                                  |
-| --------------------- | ------------------------- | ------- | -------- | -------------------------------------------- |
-| `modelValue`          | `boolean`                 | `false` | no       | Visibility (v-model).                        |
-| `actions`             | `SnActionSheetAction[]`   | `[]`    | no       | List rows.                                   |
-| `panels`              | `Array<Panel \| Panel[]>` | `[]`    | no       | Grid cells; a nested array is multiple rows. |
-| `title`               | `string`                  | `''`    | no       | Title above the list.                        |
-| `description`         | `string`                  | `''`    | no       | Intro text under the title (AUI-additive).   |
-| `cancelText`          | `string`                  | `''`    | no       | Cancel label; empty hides the button.        |
+| Name                  | Type                      | Default | Required | Description                                   |
+| --------------------- | ------------------------- | ------- | -------- | --------------------------------------------- |
+| `modelValue`          | `boolean`                 | `false` | no       | Visibility (v-model).                         |
+| `actions`             | `SnActionSheetAction[]`   | `[]`    | no       | List rows.                                    |
+| `panels`              | `Array<Panel \| Panel[]>` | `[]`    | no       | Grid cells; a nested array is multiple rows.  |
+| `title`               | `string`                  | `''`    | no       | Title above the list.                         |
+| `description`         | `string`                  | `''`    | no       | Intro text under the title (AUI-additive).    |
+| `cancelText`          | `string`                  | `''`    | no       | Cancel label; empty hides the button.         |
 | `showClose`           | `boolean`                 | `false` | no       | Close button in the title row (AUI-additive). |
-| `closeOnClickAction`  | `boolean`                 | `true`  | no       | Close after a row / cell is selected.        |
-| `closeOnClickModal`   | `boolean`                 | `true`  | no       | Close on scrim tap.                          |
-| `duration`            | `number`                  | `200`   | no       | Animation duration in ms.                    |
-| `zIndex`              | `number`                  | `10`    | no       | Stacking level.                              |
-| `lazyRender`          | `boolean`                 | `true`  | no       | Defer content rendering until first open.    |
-| `safeAreaInsetBottom` | `boolean`                 | `true`  | no       | Pad the sheet for the device safe area.      |
-| `customTitleClass`    | `string`                  | `''`    | no       | Custom class for the title area.             |
-| `customClass`         | `string`                  | `''`    | no       | Custom class for the root node.              |
-| `customStyle`         | `string`                  | `''`    | no       | Custom inline style for the panel.           |
+| `closeOnClickAction`  | `boolean`                 | `true`  | no       | Close after a row / cell is selected.         |
+| `closeOnClickModal`   | `boolean`                 | `true`  | no       | Close on scrim tap.                           |
+| `duration`            | `number`                  | `200`   | no       | Animation duration in ms.                     |
+| `zIndex`              | `number`                  | `10`    | no       | Stacking level.                               |
+| `lazyRender`          | `boolean`                 | `true`  | no       | Defer content rendering until first open.     |
+| `safeAreaInsetBottom` | `boolean`                 | `true`  | no       | Pad the sheet for the device safe area.       |
+| `customTitleClass`    | `string`                  | `''`    | no       | Custom class for the title area.              |
+| `customClass`         | `string`                  | `''`    | no       | Custom class for the root node.               |
+| `customStyle`         | `string`                  | `''`    | no       | Custom inline style for the panel.            |
 
 `SnActionSheetAction` = `{ name?, description?, color?, icon?, disabled? }`.
 `SnActionSheetPanel` = `{ title?, name?, icon? }`.

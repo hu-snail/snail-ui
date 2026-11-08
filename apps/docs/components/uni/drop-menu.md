@@ -54,37 +54,37 @@
 <Demo name="drop-menu-mp-panel" description="modal=false 无蒙层；close-on-click-modal=false；popup-height 限制高度；custom-popup-class / custom-popup-style；disabled；default 插槽。" />
 ## Props
 
-| 属性                | 类型                                          | 默认值         | 说明                               |
-| ------------------- | --------------------------------------------- | -------------- | ---------------------------------- |
-| `modelValue`        | `string \| number`                            | `''`           | 当前选中值（`v-model`）            |
-| `options`           | `SnDropMenuOption[]`                          | `[]`           | 选项列表                           |
-| `direction`         | `'up' \| 'down'`                              | `'down'`       | 展开方向                           |
-| `zIndex`            | `number`                                      | `12`           | 蒙层与面板层级                     |
-| `modal`             | `boolean`                                     | `true`         | 是否展示蒙层                       |
-| `closeOnClickModal` | `boolean`                                     | `true`         | 点击蒙层是否关闭                   |
-| `duration`          | `number`                                      | `200`          | 展开 / 收起动画时长（ms）          |
-| `disabled`          | `boolean`                                     | `false`        | 是否禁用整个菜单                   |
-| `iconName`          | `string`                                      | `'check'`      | 选中项图标（`sn-icon` 名）         |
-| `title`             | `string`                                      | `''`           | 菜单标题，设置后优先展示           |
-| `icon`              | `string`                                      | `'caret-down'` | 菜单栏箭头图标（`sn-icon` 名）     |
+| 属性                | 类型                                          | 默认值         | 说明                                                                    |
+| ------------------- | --------------------------------------------- | -------------- | ----------------------------------------------------------------------- |
+| `modelValue`        | `string \| number`                            | `''`           | 当前选中值（`v-model`）                                                 |
+| `options`           | `SnDropMenuOption[]`                          | `[]`           | 选项列表                                                                |
+| `direction`         | `'up' \| 'down'`                              | `'down'`       | 展开方向                                                                |
+| `zIndex`            | `number`                                      | `12`           | 蒙层与面板层级                                                          |
+| `modal`             | `boolean`                                     | `true`         | 是否展示蒙层                                                            |
+| `closeOnClickModal` | `boolean`                                     | `true`         | 点击蒙层是否关闭                                                        |
+| `duration`          | `number`                                      | `200`          | 展开 / 收起动画时长（ms）                                               |
+| `disabled`          | `boolean`                                     | `false`        | 是否禁用整个菜单                                                        |
+| `iconName`          | `string`                                      | `'check'`      | 选中项图标（`sn-icon` 名）                                              |
+| `title`             | `string`                                      | `''`           | 菜单标题，设置后优先展示                                                |
+| `icon`              | `string`                                      | `'caret-down'` | 菜单栏箭头图标（`sn-icon` 名）                                          |
 | `iconSize`          | `string \| number`                            | `''`           | 图标尺寸（档位名映射 `--sn-mp-icon-size-*`，数字按 px；空 = medium 档） |
-| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | 开关前拦截函数                     |
-| `valueKey`          | `string`                                      | `'value'`      | 选项值字段名                       |
-| `labelKey`          | `string`                                      | `'label'`      | 选项文本字段名                     |
-| `tipKey`            | `string`                                      | `'tip'`        | 选项说明字段名                     |
-| `customPopupClass`  | `string`                                      | `''`           | 选项面板自定义类名                 |
-| `customPopupStyle`  | `string`                                      | `''`           | 选项面板自定义样式                 |
-| `popupHeight`       | `string`                                      | `''`           | 面板高度；不设置时最高为视口 80%   |
-| `customClass`       | `string`                                      | `''`           | 根节点自定义类名                   |
-| `customStyle`       | `string`                                      | `''`           | 根节点自定义样式                   |
-| `rootPortal`        | `boolean`                                     | `false`        | **未实现**（小程序无 portal 宿主） |
+| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | 开关前拦截函数                                                          |
+| `valueKey`          | `string`                                      | `'value'`      | 选项值字段名                                                            |
+| `labelKey`          | `string`                                      | `'label'`      | 选项文本字段名                                                          |
+| `tipKey`            | `string`                                      | `'tip'`        | 选项说明字段名                                                          |
+| `customPopupClass`  | `string`                                      | `''`           | 选项面板自定义类名                                                      |
+| `customPopupStyle`  | `string`                                      | `''`           | 选项面板自定义样式                                                      |
+| `popupHeight`       | `string`                                      | `''`           | 面板高度；不设置时最高为视口 80%                                        |
+| `customClass`       | `string`                                      | `''`           | 根节点自定义类名                                                        |
+| `customStyle`       | `string`                                      | `''`           | 根节点自定义样式                                                        |
+| `rootPortal`        | `boolean`                                     | `false`        | **未实现**（小程序无 portal 宿主）                                      |
 
 ### SnDropMenuOption
 
 | 字段       | 类型               | 说明                                                    |
 | ---------- | ------------------ | ------------------------------------------------------- |
 | `label`    | `string`           | 选项文本（字段名可配置）                                |
-| `value`    | `string \| number` | 选项值，通过 `v-model` 回报（字段名可配置）              |
+| `value`    | `string \| number` | 选项值，通过 `v-model` 回报（字段名可配置）             |
 | `tip`      | `string`           | 选项说明行（字段名可配置）                              |
 | `disabled` | `boolean`          | 禁用该项                                                |
 | `iconData` | `IconData`         | 选项图标：内置图标集对象（优先级最高）                  |

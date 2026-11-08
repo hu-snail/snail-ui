@@ -26,12 +26,7 @@ const sources = [
     </view>
 
     <view class="tpl-card stats__chart">
-      <view
-        v-for="(h, i) in bars"
-        :key="i"
-        class="stats__bar"
-        :style="{ height: `${h}%` }"
-      />
+      <view v-for="(h, i) in bars" :key="i" class="stats__bar" :style="{ height: `${h}%` }" />
     </view>
 
     <text class="stats__section">来源分布</text>

@@ -21,12 +21,12 @@ pnpm add @snui/admin-layout
 
 本包支持**多种布局风格并存**，每种风格是独立入口 + 独立样式文件，按需加载：
 
-| 风格       | 组件                 | 入口 / 样式                                                                  | 结构                                                       |
-| ---------- | -------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard` + `.../layouts/standard/style.css`      | 四形态壳（side / top / mix / dual）                        |
-| `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic` + `.../layouts/classic/style.css`        | 经典企业后台：分类侧栏 + 内容区顶部通栏 + 模块标题带        |
-| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora` + `.../layouts/aurora/style.css`          | 通屏背景 + 顶部条（logo / 二级模块 / 工具区）+ 悬浮一级图标栏 |
-| —          | `ProWorkbench`       | `@snui/admin-layout/workbench` + `.../workbench/style.css`                   | 通用工作台统计页（ECharts）：布局无关，三种风格共用              |
+| 风格       | 组件                 | 入口 / 样式                                                              | 结构                                                          |
+| ---------- | -------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard` + `.../layouts/standard/style.css` | 四形态壳（side / top / mix / dual）                           |
+| `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic` + `.../layouts/classic/style.css`   | 经典企业后台：分类侧栏 + 内容区顶部通栏 + 模块标题带          |
+| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora` + `.../layouts/aurora/style.css`     | 通屏背景 + 顶部条（logo / 二级模块 / 工具区）+ 悬浮一级图标栏 |
+| —          | `ProWorkbench`       | `@snui/admin-layout/workbench` + `.../workbench/style.css`               | 通用工作台统计页（ECharts）：布局无关，三种风格共用           |
 
 ```ts
 // 只引一种风格（推荐）：产物里只带这一种壳的代码与样式
@@ -73,12 +73,12 @@ import '@snui/admin-layout/styles';
 
 **通屏背景可配置**（`background`）：
 
-| `background` | 效果             | 配置                                   |
-| ------------ | ---------------- | -------------------------------------- |
-| `solid`      | 纯色（token 面） | —                                      |
-| `image`      | 背景图（cover）  | `backgroundImage`                      |
+| `background` | 效果             | 配置                                     |
+| ------------ | ---------------- | ---------------------------------------- |
+| `solid`      | 纯色（token 面） | —                                        |
+| `image`      | 背景图（cover）  | `backgroundImage`                        |
 | `gradient`   | 渐变光晕（默认） | `backgroundColors?`（默认取 token 主色） |
-| `mesh`       | 弥散（四向色斑） | `backgroundColors?`                    |
+| `mesh`       | 弥散（四向色斑） | `backgroundColors?`                      |
 
 `backgroundColors` 只给调色板，形状与模糊在样式里；纯函数 `auroraBackgroundVars()`
 负责把预设翻译成 CSS 变量（`--sn-pro-aurora-glow-*` / `--sn-pro-aurora-bg-image`），
@@ -114,12 +114,12 @@ aurora 这类自带标题带的壳传 `:show-heading="false"`，避免同一个�
 
 参考 vue-element-admin / vben-admin / ant-design-pro 的常见形态，内置四种：
 
-| `layout`  | 结构                                                       | 参考原型                  |
-| --------- | ---------------------------------------------------------- | ------------------------- |
-| `side`    | 左侧栏（logo + 纵向菜单）+ 顶栏（折叠钮 / 面包屑 / 操作区） | vue-element-admin 经典款  |
-| `top`     | 顶栏（logo + 横向一级菜单 + 操作区）+ 内容                  | ant-design-pro top        |
-| `mix`     | 顶栏放一级菜单，侧栏只放当前一级的二级菜单                  | vben-admin mixed-nav      |
-| `dual`    | 图标栏（一级）+ 二级菜单列 + 内容                           | vben-admin mixed-sidebar 系 |
+| `layout` | 结构                                                        | 参考原型                    |
+| -------- | ----------------------------------------------------------- | --------------------------- |
+| `side`   | 左侧栏（logo + 纵向菜单）+ 顶栏（折叠钮 / 面包屑 / 操作区） | vue-element-admin 经典款    |
+| `top`    | 顶栏（logo + 横向一级菜单 + 操作区）+ 内容                  | ant-design-pro top          |
+| `mix`    | 顶栏放一级菜单，侧栏只放当前一级的二级菜单                  | vben-admin mixed-nav        |
+| `dual`   | 图标栏（一级）+ 二级菜单列 + 内容                           | vben-admin mixed-sidebar 系 |
 
 `v-model:layout` 受控，宿主可以在设置面板里做形态切换器（见文档站 demo）。
 
@@ -156,19 +156,19 @@ const layout = ref<'side' | 'top' | 'mix' | 'dual'>('side');
 
 ## 组件
 
-| 组件            | 职责                                                                       |
-| --------------- | -------------------------------------------------------------------------- |
-| `SnProLayout`   | `standard` 风格主编排：四种形态的几何与菜单位置、折叠状态、面包屑、页脚插槽、设置抽屉与标签栏接线 |
-| `SnProLayoutClassic` | `classic` 风格编排：分类侧栏 + 用户卡片 + 内容区顶部通栏（面包屑 / 搜索 / 通知 / 动作）+ 模块标题带 |
-| `SnProLayoutAurora` | `aurora` 风格编排：通屏背景（纯色 / 背景图 / 光晕 / 弥散）+ 顶部条（logo / 二级模块 / 亮暗 · 搜索 · 中英 · 通知 · 个人信息）+ 悬浮一级图标栏（底部退出 / 帮助） |
-| `SnProSearch`   | 通用菜单检索：跨层级命中 + 父级路径 + 键盘可达；匹配规则在纯函数 `searchMenuOptions` |
-| `SnProNotice`   | 消息通知：铃铛 + 未读角标（`${max}+` 封顶）+ 面板，`#panel` 可整体替换 |
-| `SnProUser`     | 侧栏底部用户卡片：头像 + 名称 / 描述 + 下拉，折叠时只剩头像 |
-| `SnProLogo`     | logo 组件：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换              |
-| `SnProSider`    | 左侧栏组件：logo + 纵向 SnMenu，折叠 / 深色（inverted）                    |
-| `SnProHeader`   | 顶部导航组件：折叠钮 + 横向菜单 + 面包屑 + 操作区插槽 + 设置齿轮            |
-| `SnProTabbar`   | 访问路由标签栏：基于 SnTabs 的五种样式，逐签关闭（affix 签由宿主传 `closable: false`） |
-| `SnProSettings` | 布局偏好抽屉：四形态卡片 / 亮暗模式 / 主色色板 / 标签栏样式，受控 props 省略即隐藏对应分区 |
+| 组件                 | 职责                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SnProLayout`        | `standard` 风格主编排：四种形态的几何与菜单位置、折叠状态、面包屑、页脚插槽、设置抽屉与标签栏接线                                                               |
+| `SnProLayoutClassic` | `classic` 风格编排：分类侧栏 + 用户卡片 + 内容区顶部通栏（面包屑 / 搜索 / 通知 / 动作）+ 模块标题带                                                             |
+| `SnProLayoutAurora`  | `aurora` 风格编排：通屏背景（纯色 / 背景图 / 光晕 / 弥散）+ 顶部条（logo / 二级模块 / 亮暗 · 搜索 · 中英 · 通知 · 个人信息）+ 悬浮一级图标栏（底部退出 / 帮助） |
+| `SnProSearch`        | 通用菜单检索：跨层级命中 + 父级路径 + 键盘可达；匹配规则在纯函数 `searchMenuOptions`                                                                            |
+| `SnProNotice`        | 消息通知：铃铛 + 未读角标（`${max}+` 封顶）+ 面板，`#panel` 可整体替换                                                                                          |
+| `SnProUser`          | 侧栏底部用户卡片：头像 + 名称 / 描述 + 下拉，折叠时只剩头像                                                                                                     |
+| `SnProLogo`          | logo 组件：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换                                                                                                   |
+| `SnProSider`         | 左侧栏组件：logo + 纵向 SnMenu，折叠 / 深色（inverted）                                                                                                         |
+| `SnProHeader`        | 顶部导航组件：折叠钮 + 横向菜单 + 面包屑 + 操作区插槽 + 设置齿轮                                                                                                |
+| `SnProTabbar`        | 访问路由标签栏：基于 SnTabs 的五种样式，逐签关闭（affix 签由宿主传 `closable: false`）                                                                          |
+| `SnProSettings`      | 布局偏好抽屉：四形态卡片 / 亮暗模式 / 主色色板 / 标签栏样式，受控 props 省略即隐藏对应分区                                                                      |
 
 以上组件都可单独引入自行编排（三个风格壳内部就是用它们拼的）。
 

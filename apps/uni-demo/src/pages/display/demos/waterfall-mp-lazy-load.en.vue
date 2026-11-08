@@ -38,7 +38,10 @@ const photos: Photo[] = [
         <text class="lazy-card__title">{{ photo.title }}</text>
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">Container lazy-load on once — nested sn-img inherits it; an image passing its own lazy-load wins</text>
+    <text class="sn-demo__caption"
+      >Container lazy-load on once — nested sn-img inherits it; an image passing its own lazy-load
+      wins</text
+    >
   </view>
 </template>
 

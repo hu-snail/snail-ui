@@ -176,7 +176,6 @@ function applyPack(name: string): void {
   if (name !== 'default') document.body.classList.add(`snui-skin-${name}`);
 }
 
-
 /** 中后台布局胶囊（admin-layout 四形态，标准壳）。 */
 const layoutStyles = [
   {
@@ -386,7 +385,6 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
             {{ t.chartsMore }} →
           </a>
         </section>
-
       </div>
     </div>
   </SnConfigProvider>
@@ -405,8 +403,7 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
   background:
     radial-gradient(1200px 480px at 16% -8%, rgb(76 110 245 / 0.16), transparent 62%),
     radial-gradient(1000px 440px at 86% -6%, rgb(168 85 247 / 0.14), transparent 64%),
-    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.1), transparent 66%),
-    #f7f8fb;
+    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.1), transparent 66%), #f7f8fb;
   color: #101828;
 }
 .sn-home--dark {
@@ -415,8 +412,7 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
   background:
     radial-gradient(1200px 480px at 16% -8%, rgb(64 90 255 / 0.34), transparent 62%),
     radial-gradient(1000px 440px at 86% -6%, rgb(168 85 247 / 0.3), transparent 64%),
-    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.18), transparent 66%),
-    #0a0f1e;
+    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.18), transparent 66%), #0a0f1e;
   color: #f2f5fb;
 }
 /* 全屏宽度：不设最大宽度，仅留两侧呼吸边距 */
@@ -800,7 +796,6 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
   color: #bfdbfe;
   background: rgb(147 197 253 / 0.16);
 }
-
 
 /* 面板（布局 / 图表共用外壳） */
 .sn-home__panel {

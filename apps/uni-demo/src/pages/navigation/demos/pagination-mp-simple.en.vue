@@ -26,8 +26,8 @@ const page = ref(3);
     </view>
 
     <text class="sn-demo__meta">
-      Page {{ page }}; simple mode shares the same icons and disable rules as the
-      numeric-strip mode.
+      Page {{ page }}; simple mode shares the same icons and disable rules as the numeric-strip
+      mode.
     </text>
   </view>
 </template>

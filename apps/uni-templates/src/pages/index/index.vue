@@ -14,7 +14,16 @@ import { ArrowRight, ChevronDown } from '@snui/uni-src/components/sn-icon/sn-ico
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
 import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
 import { FlameIcon, SlidersIcon, SparklesIcon } from '../../common/icons';
-import { likedIds, TEMPLATES, TPL_CATEGORIES, TPL_SORTS, HOT_WORDS, type TplCat, type TplItem, type TplSortKey } from '../../common/templates';
+import {
+  likedIds,
+  TEMPLATES,
+  TPL_CATEGORIES,
+  TPL_SORTS,
+  HOT_WORDS,
+  type TplCat,
+  type TplItem,
+  type TplSortKey,
+} from '../../common/templates';
 import { useTplTheme } from '../../common/theme';
 import TplCard from '../../common/tpl-card.vue';
 import TplTabbar from '../../common/tpl-tabbar.vue';
@@ -45,7 +54,10 @@ function query(pageNo: number, pageSize: number): void {
   });
   totalCount.value = rows.length;
   setTimeout(() => {
-    paging.value?.completeByTotal(rows.slice((pageNo - 1) * pageSize, pageNo * pageSize), rows.length);
+    paging.value?.completeByTotal(
+      rows.slice((pageNo - 1) * pageSize, pageNo * pageSize),
+      rows.length,
+    );
   }, 200);
 }
 watch([keyword, activeCat, activeSort], () => paging.value?.reload());
@@ -151,17 +163,23 @@ const FEATURE = {
             <view class="home-feature__cover">
               <view class="home-feature__deco home-feature__deco--a" aria-hidden="true" />
               <view class="home-feature__deco home-feature__deco--b" aria-hidden="true" />
-              <view class="home-feature__chip"><text class="home-feature__chip-text">{{ FEATURE.chip }}</text></view>
+              <view class="home-feature__chip"
+                ><text class="home-feature__chip-text">{{ FEATURE.chip }}</text></view
+              >
             </view>
             <view class="home-feature__body">
               <view class="home-feature__head">
                 <text class="home-feature__title">{{ FEATURE.title }}</text>
-                <view class="home-feature__pro"><text class="home-feature__pro-text">v3.4 PRO</text></view>
+                <view class="home-feature__pro"
+                  ><text class="home-feature__pro-text">v3.4 PRO</text></view
+                >
               </view>
               <text class="home-feature__desc">{{ FEATURE.desc }}</text>
               <view class="home-feature__foot">
                 <view class="home-feature__author">
-                  <view class="home-feature__avatar"><text class="home-feature__avatar-text">蜗</text></view>
+                  <view class="home-feature__avatar"
+                    ><text class="home-feature__avatar-text">蜗</text></view
+                  >
                   <text class="home-feature__author-name">{{ FEATURE.author }}</text>
                 </view>
                 <SnButton
@@ -172,7 +190,8 @@ const FEATURE = {
                   :icon-size="26"
                   :custom-style="{ borderRadius: '999rpx', borderColor: '#35a257' }"
                   @click="openTpl('login')"
-                >立即预览</SnButton>
+                  >立即预览</SnButton
+                >
               </view>
             </view>
           </view>

@@ -49,20 +49,20 @@ import '@snui/admin-layout/styles'; // 仅布局壳类；token 已由 @snui/vue-
 > 上面这个演示台一次只渲染一种风格：点胶囊切换。布局壳是横向铺开的，并排显示会被挤扁，
 > 所以每种风格在文档里都是**独占一行**的演示。
 
-| 风格       | 组件                 | 入口                                    | 样式文件                                        | 结构                                                           |
-| ---------- | -------------------- | --------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------- |
-| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard`   | `@snui/admin-layout/layouts/standard/style.css` | 四形态壳（side / top / mix / dual）：侧栏 / 顶栏 / 条带 + 内容区 |
-| `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic`    | `@snui/admin-layout/layouts/classic/style.css`  | 经典企业后台：分类侧栏 + 内容区顶部通栏 + 模块标题带             |
-| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora`     | `@snui/admin-layout/layouts/aurora/style.css`   | 通屏背景 + 顶部条（logo / 二级模块 / 工具区）+ 悬浮一级图标栏   |
+| 风格       | 组件                 | 入口                                  | 样式文件                                        | 结构                                                             |
+| ---------- | -------------------- | ------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------- |
+| `standard` | `SnProLayout`        | `@snui/admin-layout/layouts/standard` | `@snui/admin-layout/layouts/standard/style.css` | 四形态壳（side / top / mix / dual）：侧栏 / 顶栏 / 条带 + 内容区 |
+| `classic`  | `SnProLayoutClassic` | `@snui/admin-layout/layouts/classic`  | `@snui/admin-layout/layouts/classic/style.css`  | 经典企业后台：分类侧栏 + 内容区顶部通栏 + 模块标题带             |
+| `aurora`   | `SnProLayoutAurora`  | `@snui/admin-layout/layouts/aurora`   | `@snui/admin-layout/layouts/aurora/style.css`   | 通屏背景 + 顶部条（logo / 二级模块 / 工具区）+ 悬浮一级图标栏    |
 
 每种风格各有一页详细文档（结构、独立引入、完整 API 与演示）：
 
-| 风格                                | 说明                                                       |
-| ----------------------------------- | ---------------------------------------------------------- |
-| [standard 四形态壳](./standard)      | 一个组件四种形态：side / top / mix / dual，设置抽屉 + 标签栏 |
-| [classic 经典企业后台](./classic)    | 分类侧栏 + 底部用户卡片 + 内容区顶部通栏 + 模块标题带       |
-| [aurora 通屏背景](./aurora)          | 背景四预设（纯色 / 图 / 光晕 / 弥散）+ 悬浮一级图标栏       |
-| [workbench 工作台](./workbench)      | 通用统计页（ECharts）：账户卡 / 交易记录 / 资金流水 / 收入来源 |
+| 风格                              | 说明                                                           |
+| --------------------------------- | -------------------------------------------------------------- |
+| [standard 四形态壳](./standard)   | 一个组件四种形态：side / top / mix / dual，设置抽屉 + 标签栏   |
+| [classic 经典企业后台](./classic) | 分类侧栏 + 底部用户卡片 + 内容区顶部通栏 + 模块标题带          |
+| [aurora 通屏背景](./aurora)       | 背景四预设（纯色 / 图 / 光晕 / 弥散）+ 悬浮一级图标栏          |
+| [workbench 工作台](./workbench)   | 通用统计页（ECharts）：账户卡 / 交易记录 / 资金流水 / 收入来源 |
 
 三种风格的 demo 内容区放的是**同一个工作台**（`@snui/admin-layout/workbench`）：换壳时内容一个数字都不动，
 这就是「布局只负责壳」的可视证明。工作台是独立入口（它牵 `@snui/echarts`），所以不在整包 barrel 里。
@@ -147,10 +147,10 @@ const menus = routesToMenuOptions(router.options.routes); // 或宿主自映射�
 
 | 组件          | 说明                                                             |
 | ------------- | ---------------------------------------------------------------- |
-| `SnProLogo`   | 品牌区：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换        |
-| `SnProSearch` | 通用菜单检索：跨层级命中 + 父级路径 + 键盘可达                    |
+| `SnProLogo`   | 品牌区：图标 / 图片 + 标题，折叠时收起标题，插槽可整体替换       |
+| `SnProSearch` | 通用菜单检索：跨层级命中 + 父级路径 + 键盘可达                   |
 | `SnProNotice` | 消息通知：铃铛 + 未读角标（`${max}+` 封顶）+ 面板，`#panel` 整替 |
-| `SnProUser`   | 用户卡片：头像 + 名称 / 描述 + 下拉，折叠时只剩头像               |
+| `SnProUser`   | 用户卡片：头像 + 名称 / 描述 + 下拉，折叠时只剩头像              |
 
 <Demo name="pro-layout-web-search" description="SnProSearch — 跨层级命中菜单、显示父级路径、键盘可达；右侧是同一份纯函数的结果。" />
 
@@ -158,7 +158,7 @@ const menus = routesToMenuOptions(router.options.routes); // 或宿主自映射�
 
 | Prop          | 类型                             | 默认值     | 说明                                     |
 | ------------- | -------------------------------- | ---------- | ---------------------------------------- |
-| menus         | `SnMenuOption[]`                 | `[]`       | 被检索的菜单树（一般就是布局的 `menus`）  |
+| menus         | `SnMenuOption[]`                 | `[]`       | 被检索的菜单树（一般就是布局的 `menus`） |
 | modelValue    | `string`                         | —          | 查询词，`v-model`；省略非受控            |
 | placeholder   | `string`                         | 内置中文   | 占位文案                                 |
 | minLength     | `number`                         | `1`        | 面板打开所需的最短（trim 后）长度        |
@@ -187,15 +187,15 @@ const menus = routesToMenuOptions(router.options.routes); // 或宿主自映射�
 
 ### SnProNotice Props
 
-| Prop        | 类型                | 默认值   | 说明                          |
-| ----------- | ------------------- | -------- | ----------------------------- |
-| count       | `number`            | `0`      | 未读角标（`0` 不显示）        |
-| max         | `number`            | `99`     | 角标封顶，超出显示 `${max}+`  |
-| items       | `SnProNoticeItem[]` | `[]`     | 消息列表（宿主数据）          |
-| label       | `string`            | 内置中文 | 铃铛按钮的无障碍标签          |
-| panelTitle  | `string`            | 内置中文 | 面板标题                      |
-| readAllText | `string`            | 内置中文 | 「全部已读」文案              |
-| emptyText   | `string`            | 内置中文 | 无消息文案                    |
+| Prop        | 类型                | 默认值   | 说明                         |
+| ----------- | ------------------- | -------- | ---------------------------- |
+| count       | `number`            | `0`      | 未读角标（`0` 不显示）       |
+| max         | `number`            | `99`     | 角标封顶，超出显示 `${max}+` |
+| items       | `SnProNoticeItem[]` | `[]`     | 消息列表（宿主数据）         |
+| label       | `string`            | 内置中文 | 铃铛按钮的无障碍标签         |
+| panelTitle  | `string`            | 内置中文 | 面板标题                     |
+| readAllText | `string`            | 内置中文 | 「全部已读」文案             |
+| emptyText   | `string`            | 内置中文 | 无消息文案                   |
 
 Events：`select(key, item)`（打开 / 标记已读由宿主实现）、`read-all`。
 Slots：`#panel` 整体替换面板内容（头部与列表一起换成宿主自己的实现）。
@@ -204,7 +204,7 @@ Slots：`#panel` 整体替换面板内容（头部与列表一起换成宿主自
 
 | Prop        | 类型                   | 默认值        | 说明                                   |
 | ----------- | ---------------------- | ------------- | -------------------------------------- |
-| name        | `string`               | —             | 显示名（无头像图时取首字做字母牌）      |
+| name        | `string`               | —             | 显示名（无头像图时取首字做字母牌）     |
 | description | `string`               | —             | 第二行（角色 / 邮箱）                  |
 | avatar      | `string`               | —             | 头像图 URL                             |
 | collapsed   | `boolean`              | `false`       | 折叠：只留头像                         |

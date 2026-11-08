@@ -22,9 +22,7 @@ const localeOptions = [
   { key: 'en-US', label: 'English' },
 ];
 
-const userOptions = computed(() => [
-  { key: 'logout', label: t('common.logout'), icon: LogOut },
-]);
+const userOptions = computed(() => [{ key: 'logout', label: t('common.logout'), icon: LogOut }]);
 
 function onSelectLocale(key: string | number): void {
   appStore.setLocale(key === 'en-US' ? 'en-US' : 'zh-CN');

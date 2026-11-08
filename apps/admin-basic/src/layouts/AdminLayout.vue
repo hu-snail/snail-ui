@@ -54,7 +54,9 @@ const expandedKeys = ref<string[]>([]);
 watch(
   () => authStore.menu,
   (menu) => {
-    expandedKeys.value = menu.filter((node) => (node.children?.length ?? 0) > 0).map((node) => node.key);
+    expandedKeys.value = menu
+      .filter((node) => (node.children?.length ?? 0) > 0)
+      .map((node) => node.key);
   },
   { immediate: true },
 );

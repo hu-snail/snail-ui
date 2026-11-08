@@ -60,7 +60,9 @@ const gain = ref(-6);
       />
     </div>
 
-    <span class="demo-log">percent = {{ percent }}% · time = {{ time }}s · gain = {{ gain }} dB</span>
+    <span class="demo-log"
+      >percent = {{ percent }}% · time = {{ time }}s · gain = {{ gain }} dB</span
+    >
   </div>
 </template>
 

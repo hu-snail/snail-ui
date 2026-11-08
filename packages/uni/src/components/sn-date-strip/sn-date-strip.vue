@@ -112,7 +112,9 @@ function pageStartOf(index: number): number {
 const minPageIndex = computed(() =>
   props.minDate === undefined
     ? Number.NEGATIVE_INFINITY
-    : Math.ceil((startOfDay(props.minDate) - stripStart.value - pageMs.value + DAY_MS) / pageMs.value),
+    : Math.ceil(
+        (startOfDay(props.minDate) - stripStart.value - pageMs.value + DAY_MS) / pageMs.value,
+      ),
 );
 const maxPageIndex = computed(() =>
   props.maxDate === undefined

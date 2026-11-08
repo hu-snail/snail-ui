@@ -118,7 +118,9 @@ describe('SnProLayoutClassic · collapse', () => {
   });
 
   it('should hide the collapse toggle when showCollapse is false', () => {
-    expect(mountLayout({ showCollapse: false }).find('.sn-pro-classic__toggle').exists()).toBe(false);
+    expect(mountLayout({ showCollapse: false }).find('.sn-pro-classic__toggle').exists()).toBe(
+      false,
+    );
   });
 
   it('should label the collapse toggle', () => {

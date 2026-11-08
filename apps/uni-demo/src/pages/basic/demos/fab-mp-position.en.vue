@@ -44,7 +44,8 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Position presets</text>
       <text class="sn-fab-demo__hint-text">
-        Top-left · Top-right · Bottom-left · Bottom-center. Last action: {{ lastAction === '' ? 'none yet' : lastAction }}
+        Top-left · Top-right · Bottom-left · Bottom-center. Last action:
+        {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
     </view>
 
@@ -56,11 +57,21 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ top: 16, left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="Star" @tap="pick('topLeft', 'Star (top-left)')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Star"
+        @tap="pick('topLeft', 'Star (top-left)')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Star" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">Star</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="Like" @tap="pick('topLeft', 'Like (top-left)')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Like"
+        @tap="pick('topLeft', 'Like (top-left)')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Heart" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">Like</text>
       </view>
@@ -74,11 +85,25 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ top: 16, right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="Camera" @tap="pick('topRight', 'Camera (top-right)')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Camera"
+        @tap="pick('topRight', 'Camera (top-right)')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Camera"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">Camera</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="Gallery" @tap="pick('topRight', 'Gallery (top-right)')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Gallery"
+        @tap="pick('topRight', 'Gallery (top-right)')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">Gallery</text>
       </view>
@@ -92,12 +117,26 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ bottom: 16, left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="Music" @tap="pick('bottomLeft', 'Music (bottom-left)')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Music"
+        @tap="pick('bottomLeft', 'Music (bottom-left)')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Music" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">Music</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="Coffee" @tap="pick('bottomLeft', 'Coffee (bottom-left)')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Coffee" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Coffee"
+        @tap="pick('bottomLeft', 'Coffee (bottom-left)')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Coffee"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">Coffee</text>
       </view>
     </SnFab>
@@ -110,11 +149,25 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       :gap="{ bottom: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__pill" role="button" aria-label="Share" @tap="pick('bottomCenter', 'Share (bottom-center)')">
-        <SnIcon class="sn-fab-demo__pill-icon" :icon="Share2" size="var(--sn-mp-icon-size-medium)" />
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Share"
+        @tap="pick('bottomCenter', 'Share (bottom-center)')"
+      >
+        <SnIcon
+          class="sn-fab-demo__pill-icon"
+          :icon="Share2"
+          size="var(--sn-mp-icon-size-medium)"
+        />
         <text class="sn-fab-demo__pill-text">Share</text>
       </view>
-      <view class="sn-fab-demo__pill" role="button" aria-label="Compose" @tap="pick('bottomCenter', 'Compose (bottom-center)')">
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Compose"
+        @tap="pick('bottomCenter', 'Compose (bottom-center)')"
+      >
         <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
         <text class="sn-fab-demo__pill-text">Compose</text>
       </view>

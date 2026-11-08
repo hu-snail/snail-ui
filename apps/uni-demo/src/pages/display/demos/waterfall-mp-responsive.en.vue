@@ -39,7 +39,10 @@ const photos: Photo[] = [
         />
       </view>
     </SnWaterfall>
-    <text class="sn-demo__caption">min-column-width=160 → the column count follows the measured width across rotation / tablet tiers</text>
+    <text class="sn-demo__caption"
+      >min-column-width=160 → the column count follows the measured width across rotation / tablet
+      tiers</text
+    >
   </view>
 </template>
 

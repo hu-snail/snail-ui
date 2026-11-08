@@ -30,41 +30,41 @@ import { SnDropMenu } from '@snui/uni';
 
 ## Props
 
-| Name                | Type                                          | Default        | Required | Description                                                                   |
-| ------------------- | --------------------------------------------- | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `modelValue`        | `string \| number`                            | `''`           | no       | Current selected value (`v-model`).                                           |
-| `options`           | `SnDropMenuOption[]`                          | `[]`           | no       | Option rows; field names configurable via `valueKey` / `labelKey` / `tipKey`. |
-| `direction`         | `'up' \| 'down'`                              | `'down'`       | no       | Menu expansion direction.                                                     |
-| `zIndex`            | `number`                                      | `12`           | no       | Authored stacking level (idle). While the panel is mounted the root is raised to at least the overlay band (90) — see Stacking.                                                      |
-| `modal`             | `boolean`                                     | `true`         | no       | Render the scrim behind the panel.                                            |
-| `closeOnClickModal` | `boolean`                                     | `true`         | no       | Close the menu when the scrim is tapped.                                      |
-| `duration`          | `number`                                      | `200`          | no       | Open / close animation duration in ms.                                        |
-| `disabled`          | `boolean`                                     | `false`        | no       | Disable the whole menu — taps are ignored.                                    |
-| `iconName`          | `string`                                      | `'check'`      | no       | Icon name of the selected-row check glyph (registry / built-in catalogue).    |
-| `title`             | `string`                                      | `''`           | no       | Menu title; when set it replaces the selected label in the bar.               |
-| `icon`              | `string`                                      | `'caret-down'` | no       | Icon name of the bar arrow. `caret-down` is direction-relative: it rests on the up chevron for `direction: 'up'`. Any other name / glyph is honoured verbatim. |
+| Name                | Type                                          | Default        | Required | Description                                                                                                                                                                                                |
+| ------------------- | --------------------------------------------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`        | `string \| number`                            | `''`           | no       | Current selected value (`v-model`).                                                                                                                                                                        |
+| `options`           | `SnDropMenuOption[]`                          | `[]`           | no       | Option rows; field names configurable via `valueKey` / `labelKey` / `tipKey`.                                                                                                                              |
+| `direction`         | `'up' \| 'down'`                              | `'down'`       | no       | Menu expansion direction.                                                                                                                                                                                  |
+| `zIndex`            | `number`                                      | `12`           | no       | Authored stacking level (idle). While the panel is mounted the root is raised to at least the overlay band (90) — see Stacking.                                                                            |
+| `modal`             | `boolean`                                     | `true`         | no       | Render the scrim behind the panel.                                                                                                                                                                         |
+| `closeOnClickModal` | `boolean`                                     | `true`         | no       | Close the menu when the scrim is tapped.                                                                                                                                                                   |
+| `duration`          | `number`                                      | `200`          | no       | Open / close animation duration in ms.                                                                                                                                                                     |
+| `disabled`          | `boolean`                                     | `false`        | no       | Disable the whole menu — taps are ignored.                                                                                                                                                                 |
+| `iconName`          | `string`                                      | `'check'`      | no       | Icon name of the selected-row check glyph (registry / built-in catalogue).                                                                                                                                 |
+| `title`             | `string`                                      | `''`           | no       | Menu title; when set it replaces the selected label in the bar.                                                                                                                                            |
+| `icon`              | `string`                                      | `'caret-down'` | no       | Icon name of the bar arrow. `caret-down` is direction-relative: it rests on the up chevron for `direction: 'up'`. Any other name / glyph is honoured verbatim.                                             |
 | `iconSize`          | `string \| number`                            | `''`           | no       | Glyph scale for the arrow, the selected-row check and every option icon: a tier (`tiny\|small\|medium\|large\|xlarge` → `--sn-mp-icon-size-*`), a px number, or any CSS length. Empty = the `medium` tier. |
-| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | no       | Guard before the menu toggles; `false` blocks it.                             |
-| `valueKey`          | `string`                                      | `'value'`      | no       | Field name of the option value.                                               |
-| `labelKey`          | `string`                                      | `'label'`      | no       | Field name of the option label.                                               |
-| `tipKey`            | `string`                                      | `'tip'`        | no       | Field name of the option tip.                                                 |
-| `customPopupClass`  | `string`                                      | `''`           | no       | Custom class for the option list panel.                                       |
-| `customPopupStyle`  | `string`                                      | `''`           | no       | Custom inline style for the option list panel.                                |
-| `popupHeight`       | `string`                                      | `''`           | no       | Panel height; empty = at most 80% of the viewport.                            |
-| `customClass`       | `string`                                      | `''`           | no       | Custom class for the root node.                                               |
-| `customStyle`       | `string`                                      | `''`           | no       | Custom inline style for the root node.                                        |
-| `rootPortal`        | `boolean`                                     | `false`        | no       | **Not implemented** — declared for parity; miniprogram has no portal host.    |
+| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | no       | Guard before the menu toggles; `false` blocks it.                                                                                                                                                          |
+| `valueKey`          | `string`                                      | `'value'`      | no       | Field name of the option value.                                                                                                                                                                            |
+| `labelKey`          | `string`                                      | `'label'`      | no       | Field name of the option label.                                                                                                                                                                            |
+| `tipKey`            | `string`                                      | `'tip'`        | no       | Field name of the option tip.                                                                                                                                                                              |
+| `customPopupClass`  | `string`                                      | `''`           | no       | Custom class for the option list panel.                                                                                                                                                                    |
+| `customPopupStyle`  | `string`                                      | `''`           | no       | Custom inline style for the option list panel.                                                                                                                                                             |
+| `popupHeight`       | `string`                                      | `''`           | no       | Panel height; empty = at most 80% of the viewport.                                                                                                                                                         |
+| `customClass`       | `string`                                      | `''`           | no       | Custom class for the root node.                                                                                                                                                                            |
+| `customStyle`       | `string`                                      | `''`           | no       | Custom inline style for the root node.                                                                                                                                                                     |
+| `rootPortal`        | `boolean`                                     | `false`        | no       | **Not implemented** — declared for parity; miniprogram has no portal host.                                                                                                                                 |
 
 ### `SnDropMenuOption`
 
-| Field      | Type               | Description                                             |
-| ---------- | ------------------ | ------------------------------------------------------- |
-| `label`    | `string`           | Row label (key configurable).                           |
-| `value`    | `string \| number` | Value echoed back through `v-model` (key configurable). |
-| `tip`      | `string`           | Secondary tip line (key configurable).                  |
-| `disabled` | `boolean`          | Disable the row — taps are ignored.                     |
-| `iconData` | `IconData`         | Row icon as inline SVG data. **Additive (AUI-OPT-16)** — highest precedence. |
-| `iconUrl`  | `string`           | Row icon as an image URL, rendered as `<image>`. **Additive** — wins over `icon`, loses to `iconData`. |
+| Field      | Type               | Description                                                                                                    |
+| ---------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`           | Row label (key configurable).                                                                                  |
+| `value`    | `string \| number` | Value echoed back through `v-model` (key configurable).                                                        |
+| `tip`      | `string`           | Secondary tip line (key configurable).                                                                         |
+| `disabled` | `boolean`          | Disable the row — taps are ignored.                                                                            |
+| `iconData` | `IconData`         | Row icon as inline SVG data. **Additive (AUI-OPT-16)** — highest precedence.                                   |
+| `iconUrl`  | `string`           | Row icon as an image URL, rendered as `<image>`. **Additive** — wins over `icon`, loses to `iconData`.         |
 | `icon`     | `string`           | Row icon as a name (registry → built-in catalogue → `prefix:rest` provider). **Additive** — lowest precedence. |
 
 Row-icon precedence: `iconData` > `iconUrl` > `icon`.
@@ -113,19 +113,19 @@ through untouched.
 
 ## Tokens Consumed (end: mp)
 
-| Token         | CSS Variable                                            | Purpose                      |
-| ------------- | ------------------------------------------------------- | ---------------------------- |
-| Surface       | `--sn-mp-color-background-elevated`                     | Bar + panel background       |
-| Scrim         | `--sn-mp-color-background-overlay`                      | Scrim                        |
-| Text          | `--sn-mp-color-text-primary`                            | Bar label, option label      |
-| Muted text    | `--sn-mp-color-text-secondary/tertiary`                 | Placeholder, tip line, arrow, option icons |
-| Accent        | `--sn-mp-color-action-primary`                          | Active option + arrow + active icon |
-| Disabled text | `--sn-mp-color-text-disabled`                           | Disabled bar / row / option icon |
-| Border        | `--sn-mp-color-border-subtle`                           | Panel + row separators       |
-| Elevation     | `--sn-mp-shadow-md`                                     | Panel shadow                 |
-| Radius        | `--sn-mp-radius-xs` (doodle outline, option image)      | Skin outline / image icon    |
-| Spacing       | `--sn-mp-spacing-2/3/4`                                 | Bar / row padding            |
-| Typography    | `--sn-mp-font-size-md/xs`, `--sn-mp-font-weight-medium` | Row text                     |
+| Token         | CSS Variable                                            | Purpose                                               |
+| ------------- | ------------------------------------------------------- | ----------------------------------------------------- |
+| Surface       | `--sn-mp-color-background-elevated`                     | Bar + panel background                                |
+| Scrim         | `--sn-mp-color-background-overlay`                      | Scrim                                                 |
+| Text          | `--sn-mp-color-text-primary`                            | Bar label, option label                               |
+| Muted text    | `--sn-mp-color-text-secondary/tertiary`                 | Placeholder, tip line, arrow, option icons            |
+| Accent        | `--sn-mp-color-action-primary`                          | Active option + arrow + active icon                   |
+| Disabled text | `--sn-mp-color-text-disabled`                           | Disabled bar / row / option icon                      |
+| Border        | `--sn-mp-color-border-subtle`                           | Panel + row separators                                |
+| Elevation     | `--sn-mp-shadow-md`                                     | Panel shadow                                          |
+| Radius        | `--sn-mp-radius-xs` (doodle outline, option image)      | Skin outline / image icon                             |
+| Spacing       | `--sn-mp-spacing-2/3/4`                                 | Bar / row padding                                     |
+| Typography    | `--sn-mp-font-size-md/xs`, `--sn-mp-font-weight-medium` | Row text                                              |
 | Icon size     | `--sn-mp-icon-size-tiny/small/medium/large/xlarge`      | Arrow / check / option glyph scale (`iconSize` tiers) |
 
 ## Accessibility

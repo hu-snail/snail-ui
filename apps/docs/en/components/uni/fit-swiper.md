@@ -43,45 +43,45 @@ The `#indicator` scoped slot (`{ current, total }`) fully replaces the built-in 
 
 ### Props
 
-| Name                   | Type                                                                                                | Default  | Description                                                                  |
-| ---------------------- | --------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------- |
-| `list`                 | `SnFitSwiperPage[]`                                                                                  | `[]`     | Page data rows, handed to the default slot verbatim.                          |
-| `current`              | `number`                                                                                             | `0`      | Active page index (`v-model:current`), clamped into range.                    |
-| `autoplay`             | `boolean`                                                                                            | `true`   | Autoplay.                                                                     |
-| `interval`             | `number`                                                                                             | `5000`   | Autoplay interval (ms).                                                       |
-| `duration`             | `number`                                                                                             | `300`    | Slide transition duration (ms).                                               |
-| `loop`                 | `boolean`                                                                                            | `true`   | Loop the pages.                                                               |
-| `height`               | `string \| number`                                                                                   | `320`    | Placeholder height before the first measurement (bare number = rpx).          |
-| `radius`               | `string \| number`                                                                                   | `''`     | Container radius (bare number = rpx).                                         |
-| `animateHeight`        | `boolean`                                                                                            | `true`   | Animate the container height on page change.                                  |
-| `heightDuration`       | `number`                                                                                             | `300`    | Height transition duration (ms).                                              |
-| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`          | `true`   | Indicator config; `false` hides it.                                           |
-| `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | Indicator anchor.                                                        |
-| `customClass`          | `string`                                                                                             | `''`     | Root class.                                                                   |
-| `customStyle`          | `string`                                                                                             | `''`     | Root inline style.                                                            |
-| `customPageClass`      | `string`                                                                                             | `''`     | Class for every page item.                                                    |
-| `customIndicatorClass` | `string`                                                                                             | `''`     | Indicator class.                                                              |
-| `customIndicatorStyle` | `string`                                                                                             | `''`     | Indicator inline style.                                                       |
+| Name                   | Type                                                                                                     | Default    | Description                                                          |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------- |
+| `list`                 | `SnFitSwiperPage[]`                                                                                      | `[]`       | Page data rows, handed to the default slot verbatim.                 |
+| `current`              | `number`                                                                                                 | `0`        | Active page index (`v-model:current`), clamped into range.           |
+| `autoplay`             | `boolean`                                                                                                | `true`     | Autoplay.                                                            |
+| `interval`             | `number`                                                                                                 | `5000`     | Autoplay interval (ms).                                              |
+| `duration`             | `number`                                                                                                 | `300`      | Slide transition duration (ms).                                      |
+| `loop`                 | `boolean`                                                                                                | `true`     | Loop the pages.                                                      |
+| `height`               | `string \| number`                                                                                       | `320`      | Placeholder height before the first measurement (bare number = rpx). |
+| `radius`               | `string \| number`                                                                                       | `''`       | Container radius (bare number = rpx).                                |
+| `animateHeight`        | `boolean`                                                                                                | `true`     | Animate the container height on page change.                         |
+| `heightDuration`       | `number`                                                                                                 | `300`      | Height transition duration (ms).                                     |
+| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`              | `true`     | Indicator config; `false` hides it.                                  |
+| `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | Indicator anchor.                                                    |
+| `customClass`          | `string`                                                                                                 | `''`       | Root class.                                                          |
+| `customStyle`          | `string`                                                                                                 | `''`       | Root inline style.                                                   |
+| `customPageClass`      | `string`                                                                                                 | `''`       | Class for every page item.                                           |
+| `customIndicatorClass` | `string`                                                                                                 | `''`       | Indicator class.                                                     |
+| `customIndicatorStyle` | `string`                                                                                                 | `''`       | Indicator inline style.                                              |
 
 ### Events
 
-| Name              | Payload                                     | Description                                       |
-| ----------------- | ------------------------------------------- | ------------------------------------------------- |
-| `update:current`  | `number`                                    | Active index changed (`v-model:current`).         |
-| `change`          | `{ current: number; source: string }`       | Native swipe change.                              |
-| `animationfinish` | `{ current: number; source: string }`       | Swipe animation finished; a re-measure follows.   |
-| `click`           | `{ index: number; page: SnFitSwiperPage }`  | Page content tapped.                              |
-| `heightchange`    | `{ height: number }`                        | Applied container height changed (px).            |
+| Name              | Payload                                    | Description                                     |
+| ----------------- | ------------------------------------------ | ----------------------------------------------- |
+| `update:current`  | `number`                                   | Active index changed (`v-model:current`).       |
+| `change`          | `{ current: number; source: string }`      | Native swipe change.                            |
+| `animationfinish` | `{ current: number; source: string }`      | Swipe animation finished; a re-measure follows. |
+| `click`           | `{ index: number; page: SnFitSwiperPage }` | Page content tapped.                            |
+| `heightchange`    | `{ height: number }`                       | Applied container height changed (px).          |
 
 ### Slots
 
-| Name        | Scope                                                       | Description                                     |
-| ----------- | ----------------------------------------------------------- | ----------------------------------------------- |
+| Name        | Scope                                                       | Description                                        |
+| ----------- | ----------------------------------------------------------- | -------------------------------------------------- |
 | `default`   | `{ page: SnFitSwiperPage; index: number; active: boolean }` | Page content with row data, index and active flag. |
-| `indicator` | `{ current: number; total: number }`                        | Custom indicator, replaces the built-in one.    |
+| `indicator` | `{ current: number; total: number }`                        | Custom indicator, replaces the built-in one.       |
 
 ### Methods
 
-| Name    | Type                  | Description                                                      |
-| ------- | --------------------- | ---------------------------------------------------------------- |
-| `refit` | `() => Promise<void>` | Re-measure all pages and re-apply the active height.             |
+| Name    | Type                  | Description                                          |
+| ------- | --------------------- | ---------------------------------------------------- |
+| `refit` | `() => Promise<void>` | Re-measure all pages and re-apply the active height. |

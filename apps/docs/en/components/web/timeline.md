@@ -56,47 +56,47 @@ semantic colors. Vertical / horizontal layouts, `mode` display types
 
 ### SnTimeline Props
 
-| Name           | Type                                                    | Default      | Notes                                                             |
-| -------------- | ------------------------------------------------------- | ------------ | ----------------------------------------------------------------- |
-| direction      | `'vertical' \| 'horizontal'`                            | `'vertical'` | Layout axis; wins over the legacy `horizontal` flag               |
+| Name           | Type                                                    | Default      | Notes                                                                                                                                                    |
+| -------------- | ------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| direction      | `'vertical' \| 'horizontal'`                            | `'vertical'` | Layout axis; wins over the legacy `horizontal` flag                                                                                                      |
 | mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | Side the rail (axis) sits on — content takes the opposite side; alternate flips by index. Horizontal reads top / bottom (off-axis values are normalized) |
-| label-position | `'same' \| 'relative'`                                  | `'relative'` | relative: across the axis; same: content side next to the rail    |
-| horizontal     | `boolean`                                               | `false`      | Legacy: horizontal layout (prefer `direction`)                    |
-| item-placement | `'left' \| 'right'`                                     | `'left'`     | Legacy: rail side (prefer `mode`)                                 |
-| size           | `'medium' \| 'large'`                                   | `'medium'`   | Title size (14 / 16px)                                            |
-| icon-size      | `number`                                                | `undefined`  | Node edge length (px, default 14)                                 |
+| label-position | `'same' \| 'relative'`                                  | `'relative'` | relative: across the axis; same: content side next to the rail                                                                                           |
+| horizontal     | `boolean`                                               | `false`      | Legacy: horizontal layout (prefer `direction`)                                                                                                           |
+| item-placement | `'left' \| 'right'`                                     | `'left'`     | Legacy: rail side (prefer `mode`)                                                                                                                        |
+| size           | `'medium' \| 'large'`                                   | `'medium'`   | Title size (14 / 16px)                                                                                                                                   |
+| icon-size      | `number`                                                | `undefined`  | Node edge length (px, default 14)                                                                                                                        |
 
 ### SnTimeline Slots
 
-| Name    | Params | Notes              |
-| ------- | ------ | ------------------ |
-| default | `()`   | `SnTimelineItem`s  |
+| Name    | Params | Notes             |
+| ------- | ------ | ----------------- |
+| default | `()`   | `SnTimelineItem`s |
 
 ### SnTimelineItem Props
 
-| Name      | Type                                                       | Default     | Notes                                        |
-| --------- | ---------------------------------------------------------- | ----------- | -------------------------------------------- |
-| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | Semantic node color                          |
-| title     | `string`                                                   | `undefined` | Title; `header` slot overrides               |
-| content   | `string`                                                   | `undefined` | Body; `default` slot overrides               |
-| time      | `string \| number`                                         | `undefined` | Meta line; `footer` slot overrides           |
-| dot-color | `string`                                                   | `undefined` | Custom node color (wins over `color`)        |
-| color     | `string`                                                   | `undefined` | Legacy: custom node color                    |
-| dot-type  | `'solid' \| 'hollow'`                                      | `'solid'`   | Node fill: filled dot / ring                 |
-| line-type | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | Rail style after this node                   |
+| Name      | Type                                                       | Default     | Notes                                            |
+| --------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------ |
+| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | Semantic node color                              |
+| title     | `string`                                                   | `undefined` | Title; `header` slot overrides                   |
+| content   | `string`                                                   | `undefined` | Body; `default` slot overrides                   |
+| time      | `string \| number`                                         | `undefined` | Meta line; `footer` slot overrides               |
+| dot-color | `string`                                                   | `undefined` | Custom node color (wins over `color`)            |
+| color     | `string`                                                   | `undefined` | Legacy: custom node color                        |
+| dot-type  | `'solid' \| 'hollow'`                                      | `'solid'`   | Node fill: filled dot / ring                     |
+| line-type | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | Rail style after this node                       |
 | label     | `string`                                                   | `undefined` | Label text (e.g. a date); `label` slot overrides |
-| position  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | Fix the content side under `mode=alternate`  |
+| position  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | Fix the content side under `mode=alternate`      |
 
 ### SnTimelineItem Slots
 
-| Name    | Params | Notes                              |
-| ------- | ------ | ---------------------------------- |
-| default | `()`   | Body, overrides `content`          |
+| Name    | Params | Notes                                  |
+| ------- | ------ | -------------------------------------- |
+| default | `()`   | Body, overrides `content`              |
 | dot     | `()`   | Full custom node DOM, highest priority |
-| icon    | `()`   | Custom node icon (`dot` wins)      |
-| label   | `()`   | Label text, overrides `label`      |
-| header  | `()`   | Title, overrides `title`           |
-| footer  | `()`   | Meta line, overrides `time`        |
+| icon    | `()`   | Custom node icon (`dot` wins)          |
+| label   | `()`   | Label text, overrides `label`          |
+| header  | `()`   | Title, overrides `title`               |
+| footer  | `()`   | Meta line, overrides `time`            |
 
 Node priority: `dot` slot > `icon` slot > circle. The last item draws no rail line.
 

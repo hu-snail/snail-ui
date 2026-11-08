@@ -294,12 +294,16 @@ describe('sn-index-bar — current-index indicator (additive)', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnIndexBar, { showIndicator: true }, {
-            default: () =>
-              letters.value.map((letter) =>
-                h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
-              ),
-          });
+          h(
+            SnIndexBar,
+            { showIndicator: true },
+            {
+              default: () =>
+                letters.value.map((letter) =>
+                  h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
+                ),
+            },
+          );
       },
     });
     const wrapper = mount(Harness);
@@ -316,9 +320,13 @@ describe('sn-index-anchor — caller-supplied anchor id (additive)', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnIndexBar, {}, {
-            default: () => [h(SnIndexAnchor, { index: 'A', anchorId: 'contact-group-a' })],
-          });
+          h(
+            SnIndexBar,
+            {},
+            {
+              default: () => [h(SnIndexAnchor, { index: 'A', anchorId: 'contact-group-a' })],
+            },
+          );
       },
     });
     const wrapper = mount(Harness);
@@ -330,12 +338,20 @@ describe('sn-index-anchor — caller-supplied anchor id (additive)', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnIndexBar, {}, {
-            default: () => [
-              h(SnIndexAnchor, { index: 'A' }, { default: () => 'A' }),
-              h(SnIndexAnchor, { index: 'B', anchorId: 'contact-group-b' }, { default: () => 'B' }),
-            ],
-          });
+          h(
+            SnIndexBar,
+            {},
+            {
+              default: () => [
+                h(SnIndexAnchor, { index: 'A' }, { default: () => 'A' }),
+                h(
+                  SnIndexAnchor,
+                  { index: 'B', anchorId: 'contact-group-b' },
+                  { default: () => 'B' },
+                ),
+              ],
+            },
+          );
       },
     });
     const wrapper = mount(Harness);

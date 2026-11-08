@@ -115,9 +115,9 @@ describe('sn-keyboard-panel', () => {
       const w = mountPanel({ showDeleteKey: false });
       expect(w.find('.sn-keyboard-panel__key--delete').exists()).toBe(false);
       // The collapse glyph still anchors the bottom row; 0 spans the freed column.
-      expect(w.findAll('.sn-keyboard-panel__row')[3]?.findAll('.sn-keyboard-panel__key')).toHaveLength(
-        2,
-      );
+      expect(
+        w.findAll('.sn-keyboard-panel__row')[3]?.findAll('.sn-keyboard-panel__key'),
+      ).toHaveLength(2);
     });
   });
 

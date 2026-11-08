@@ -28,27 +28,27 @@ type="daterange" 选区间；maxRange 限制跨度并显示提示；switchMode="
 
 ## Props
 
-| 属性                          | 类型                                                                                           | 默认值       | 说明                                                 |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------- |
-| `modelValue`                  | `number \| number[] \| null`                                                                   | `null`       | 选中的时间戳                                         |
-| `type`                        | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'`     | 选择模式                                             |
-| `minDate` / `maxDate`         | `number`                                                                                       | `undefined`  | 最小 / 最大日期（默认前后 6 个月）                   |
-| `firstDayOfWeek`              | `number`                                                                                       | `0`          | 周起始日（0 为周日）                                 |
-| `formatter`                   | `CalendarFormatter`                                                                            | `undefined`  | 单元格格式化钩子                                     |
-| `maxRange`                    | `number`                                                                                       | `0`          | 区间最大跨度（天，0 不限制）                         |
-| `rangePrompt`                 | `string`                                                                                       | `''`         | 超出跨度的提示文案                                   |
-| `allowSameDay`                | `boolean`                                                                                      | `false`      | 允许区间起止同一天                                   |
-| `showPanelTitle`              | `boolean`                                                                                      | `true`       | 是否显示月份标题                                     |
-| `defaultTime`                 | `string \| string[]`                                                                           | `'00:00:00'` | 日期默认时分秒                                       |
-| `panelHeight`                 | `number`                                                                                       | `316`        | 可滚动面板高度（px 设计值）                          |
-| `immediateChange`             | `boolean`                                                                                      | `false`      | 点击即触发 change                                    |
-| `switchMode`                  | `'none' \| 'month' \| 'year-month'`                                                            | `'none'`     | 切换模式                                             |
+| 属性                          | 类型                                                                                           | 默认值       | 说明                                                                   |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------- |
+| `modelValue`                  | `number \| number[] \| null`                                                                   | `null`       | 选中的时间戳                                                           |
+| `type`                        | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'`     | 选择模式                                                               |
+| `minDate` / `maxDate`         | `number`                                                                                       | `undefined`  | 最小 / 最大日期（默认前后 6 个月）                                     |
+| `firstDayOfWeek`              | `number`                                                                                       | `0`          | 周起始日（0 为周日）                                                   |
+| `formatter`                   | `CalendarFormatter`                                                                            | `undefined`  | 单元格格式化钩子                                                       |
+| `maxRange`                    | `number`                                                                                       | `0`          | 区间最大跨度（天，0 不限制）                                           |
+| `rangePrompt`                 | `string`                                                                                       | `''`         | 超出跨度的提示文案                                                     |
+| `allowSameDay`                | `boolean`                                                                                      | `false`      | 允许区间起止同一天                                                     |
+| `showPanelTitle`              | `boolean`                                                                                      | `true`       | 是否显示月份标题                                                       |
+| `defaultTime`                 | `string \| string[]`                                                                           | `'00:00:00'` | 日期默认时分秒                                                         |
+| `panelHeight`                 | `number`                                                                                       | `316`        | 可滚动面板高度（px 设计值）                                            |
+| `immediateChange`             | `boolean`                                                                                      | `false`      | 点击即触发 change                                                      |
+| `switchMode`                  | `'none' \| 'month' \| 'year-month'`                                                            | `'none'`     | 切换模式                                                               |
 | `showLunar`                   | `boolean`                                                                                      | `false`      | 农历角标——**AUI 追加**：格下农历日名，初一显示月名；`formatter` 可覆盖 |
-| `customClass` / `customStyle` | `string`                                                                                       | `''`         | 根节点自定义类名 / 样式                              |
-| `timeFilter`                  | `CalendarTimeFilter`                                                                           | `undefined`  | 时间列过滤钩子——**声明但未实现**（面板内无时间滚筒） |
-| `timeItemHeight`              | `number`                                                                                       | `44`         | 时间行高——**声明但未实现**（同上）                   |
-| `timeVisibleItemCount`        | `number`                                                                                       | `6`          | 时间可见行数——**声明但未实现**（同上）               |
-| `hideSecond`                  | `boolean`                                                                                      | `false`      | 隐藏秒列——**声明但未实现**（同上）                   |
+| `customClass` / `customStyle` | `string`                                                                                       | `''`         | 根节点自定义类名 / 样式                                                |
+| `timeFilter`                  | `CalendarTimeFilter`                                                                           | `undefined`  | 时间列过滤钩子——**声明但未实现**（面板内无时间滚筒）                   |
+| `timeItemHeight`              | `number`                                                                                       | `44`         | 时间行高——**声明但未实现**（同上）                                     |
+| `timeVisibleItemCount`        | `number`                                                                                       | `6`          | 时间可见行数——**声明但未实现**（同上）                                 |
+| `hideSecond`                  | `boolean`                                                                                      | `false`      | 隐藏秒列——**声明但未实现**（同上）                                     |
 
 > **未实现**：`week` / `weekrange` 类型（各端没有可靠的 ISO 周辅助函数），以及 `timeFilter` / `timeItemHeight` / `timeVisibleItemCount` / `hideSecond`——本轮不实现面板内的时间滚筒；`datetime` / `datetimerange` 类型存在，并按 `defaultTime` 取时分秒。
 

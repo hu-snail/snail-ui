@@ -39,7 +39,9 @@ menus: { systemProfile: 'Profile' }`,
         },
         {
           heading: '错误信息国际化',
-          paragraphs: ['接口错误码通过 `api.error.<code>` 文案空间翻译；未登记的 code 原样展示后端 message。'],
+          paragraphs: [
+            '接口错误码通过 `api.error.<code>` 文案空间翻译；未登记的 code 原样展示后端 message。',
+          ],
         },
       ]
     : [
@@ -73,7 +75,9 @@ menus: { systemProfile: 'Profile' }`,
         },
         {
           heading: 'Localizing API errors',
-          paragraphs: ['Envelope error codes are translated via the `api.error.<code>` namespace; unregistered codes fall back to the raw backend message.'],
+          paragraphs: [
+            'Envelope error codes are translated via the `api.error.<code>` namespace; unregistered codes fall back to the raw backend message.',
+          ],
         },
       ],
 );

@@ -28,7 +28,10 @@ const ShieldCheckIcon: IconData = {
   ],
 };
 const LockIcon: IconData = {
-  paths: ['M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z', 'M7 11V7a5 5 0 0 1 10 0v4'],
+  paths: [
+    'M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z',
+    'M7 11V7a5 5 0 0 1 10 0v4',
+  ],
 };
 
 type LoginMode = 'sms' | 'pwd';
@@ -77,7 +80,12 @@ function onClose(): void {
 
 /** SnInput 实例几何覆盖（参考稿：96rpx 高 + 28rpx 圆角大灰块）。 */
 const fieldStyle = { height: '96rpx', borderRadius: '28rpx', padding: '0 28rpx' };
-const submitStyle = { height: '104rpx', borderRadius: '28rpx', fontSize: '34rpx', fontWeight: '600' };
+const submitStyle = {
+  height: '104rpx',
+  borderRadius: '28rpx',
+  fontSize: '34rpx',
+  fontWeight: '600',
+};
 </script>
 
 <template>
@@ -148,7 +156,8 @@ const submitStyle = { height: '104rpx', borderRadius: '28rpx', fontSize: '34rpx'
               :custom-style="{ color: countdown > 0 ? '#98a2b3' : GREEN }"
               :disabled="countdown > 0"
               @click="sendCode"
-            >{{ countdown > 0 ? `${countdown}s后重发` : '获取验证码' }}</SnButton>
+              >{{ countdown > 0 ? `${countdown}s后重发` : '获取验证码' }}</SnButton
+            >
           </template>
         </SnInput>
       </view>
@@ -184,7 +193,9 @@ const submitStyle = { height: '104rpx', borderRadius: '28rpx', fontSize: '34rpx'
         </SnInput>
       </view>
 
-      <SnButton block :bg-color="GREEN" :custom-style="submitStyle" @click="doLogin">立即登录</SnButton>
+      <SnButton block :bg-color="GREEN" :custom-style="submitStyle" @click="doLogin"
+        >立即登录</SnButton
+      >
 
       <view class="login__register">
         <text class="login__register-tip">没有账号？</text>

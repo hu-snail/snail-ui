@@ -192,7 +192,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="sn-seek" :class="{ 'sn-seek--dark': isDark }" :style="{ width: `${width}px` }">
+  <div
+    ref="root"
+    class="sn-seek"
+    :class="{ 'sn-seek--dark': isDark }"
+    :style="{ width: `${width}px` }"
+  >
     <div class="sn-seek__skin" :data-open="open" :data-press="press">
       <!-- 透镜：固定在左 inset，圆态居中 / 展开态即字段 padding -->
       <svg class="sn-seek__lens" viewBox="0 0 18 18" aria-hidden="true">
@@ -255,7 +260,8 @@ onBeforeUnmount(() => {
   /* 透明底：搜索框坐在悬浮导航岛的磨砂玻璃上，自己再铺一层实色就成了「贴片」。
    * 只留一圈极淡的描边；悬停 / 展开时才升一点浅底，焦点状态依然可辨。 */
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-border-default, var(--vp-c-divider)) 65%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-border-default, var(--vp-c-divider)) 65%, transparent);
   overflow: hidden;
   transform: scale(var(--sk, 1)) translateY(var(--ly, 0));
   transition:
@@ -267,7 +273,11 @@ onBeforeUnmount(() => {
 .sn-seek__skin:hover,
 .sn-seek__skin[data-open='true'] {
   background: color-mix(in srgb, var(--vp-c-bg) 45%, transparent);
-  border-color: color-mix(in srgb, var(--sn-web-color-action-primary, var(--vp-c-brand-1)) 45%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--sn-web-color-action-primary, var(--vp-c-brand-1)) 45%,
+    transparent
+  );
 }
 .sn-seek__skin[data-open='true'] {
   cursor: text;

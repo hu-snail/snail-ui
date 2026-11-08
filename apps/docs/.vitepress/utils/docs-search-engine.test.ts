@@ -14,7 +14,9 @@ import { describe, expect, it } from 'vitest';
 import { DocsSearchEngine, tokenize, type DocsSearchDoc } from './docs-search-engine';
 import { extractDocText, extractHeadings, parseDoc } from './docs-search-source';
 
-function doc(partial: Partial<DocsSearchDoc> & Pick<DocsSearchDoc, 'url' | 'title'>): DocsSearchDoc {
+function doc(
+  partial: Partial<DocsSearchDoc> & Pick<DocsSearchDoc, 'url' | 'title'>,
+): DocsSearchDoc {
   return {
     end: 'other',
     category: '文档',
@@ -85,7 +87,10 @@ describe('DocsSearchEngine', () => {
     const urls = hits.map((h) => h.doc.url);
     expect(urls).toContain('/components/web/button');
     expect(urls.indexOf('/components/web/button')).toBeLessThan(
-      Math.max(0, urls.indexOf('/guide/web/intro') === -1 ? Infinity : urls.indexOf('/guide/web/intro')),
+      Math.max(
+        0,
+        urls.indexOf('/guide/web/intro') === -1 ? Infinity : urls.indexOf('/guide/web/intro'),
+      ),
     );
   });
 
@@ -202,11 +207,11 @@ describe('docs-search-source', () => {
 
     const text = extractDocText(md);
     // <script> 块与 <Demo …> 标签整体剔除。
-    expect(text).not.toContain("import Demo");
+    expect(text).not.toContain('import Demo');
     expect(text).not.toContain('description=');
     expect(text).not.toContain('```');
     // 围栏内的代码文字保留（搜 import { SnButton } 这类内容有价值）。
-    expect(text).toContain("@snui/vue-web");
+    expect(text).toContain('@snui/vue-web');
     expect(text).toContain('Alert 提示（Web 端）');
     expect(text).toContain('行内反馈条');
 

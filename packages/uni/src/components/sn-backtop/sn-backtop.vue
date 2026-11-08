@@ -208,7 +208,12 @@ const iconStyleComputed = computed(() => {
     @tap="onTap"
   >
     <slot>
-      <SnIcon class="sn-backtop__icon" :icon="ArrowRight" :size="iconSize" :style="iconStyleComputed" />
+      <SnIcon
+        class="sn-backtop__icon"
+        :icon="ArrowRight"
+        :size="iconSize"
+        :style="iconStyleComputed"
+      />
       <text v-if="text" class="sn-backtop__text">{{ text }}</text>
     </slot>
   </view>

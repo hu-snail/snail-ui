@@ -1,6 +1,12 @@
 <script setup lang="ts">
 /** Demo: sn-cell — card form (card: the whole group renders as ONE rounded card). */
-import { Camera, CreditCard, Gift, Truck, Wallet } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Camera,
+  CreditCard,
+  Gift,
+  Truck,
+  Wallet,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </script>

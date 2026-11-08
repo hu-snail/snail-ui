@@ -44,7 +44,8 @@ function pick(direction: string, label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Four expansion directions</text>
       <text class="sn-fab-demo__hint-text">
-        up (bottom-right) · down (top-left) · left (right-center) · right (left-center). Last action: {{ lastAction === '' ? 'none yet' : lastAction }}
+        up (bottom-right) · down (top-left) · left (right-center) · right (left-center). Last
+        action: {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
     </view>
 
@@ -56,10 +57,20 @@ function pick(direction: string, label: string): void {
       :gap="{ bottom: 16, right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Compose" @tap="pick('up', 'Compose')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Compose"
+        @tap="pick('up', 'Compose')"
+      >
         <SnIcon :icon="Edit" size="var(--sn-mp-icon-size-large)" />
       </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Camera" @tap="pick('up', 'Camera')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Camera"
+        @tap="pick('up', 'Camera')"
+      >
         <SnIcon :icon="Camera" size="var(--sn-mp-icon-size-large)" />
       </view>
     </SnFab>
@@ -88,10 +99,20 @@ function pick(direction: string, label: string): void {
       :gap="{ right: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Music" @tap="pick('left', 'Music')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Music"
+        @tap="pick('left', 'Music')"
+      >
         <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
       </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Coffee" @tap="pick('left', 'Coffee')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Coffee"
+        @tap="pick('left', 'Coffee')"
+      >
         <SnIcon :icon="Coffee" size="var(--sn-mp-icon-size-large)" />
       </view>
     </SnFab>
@@ -104,10 +125,20 @@ function pick(direction: string, label: string): void {
       :gap="{ left: 16 }"
       custom-class="sn-demo-contained"
     >
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Share" @tap="pick('right', 'Share')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Share"
+        @tap="pick('right', 'Share')"
+      >
         <SnIcon :icon="Share2" size="var(--sn-mp-icon-size-large)" />
       </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Quick launch" @tap="pick('right', 'Quick launch')">
+      <view
+        class="sn-fab-demo__bubble"
+        role="button"
+        aria-label="Quick launch"
+        @tap="pick('right', 'Quick launch')"
+      >
         <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
       </view>
     </SnFab>

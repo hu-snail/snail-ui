@@ -15,9 +15,16 @@ const alipay = ref('');
     <SnInput v-model="spaced" :cursor-spacing="24" placeholder="24px cursor spacing" />
 
     <text class="sn-input-demo__caption">confirmHold + confirmType="send"</text>
-    <SnInput v-model="held" confirm-hold confirm-type="send" placeholder="Keyboard stays up on confirm" />
+    <SnInput
+      v-model="held"
+      confirm-hold
+      confirm-type="send"
+      placeholder="Keyboard stays up on confirm"
+    />
 
-    <text class="sn-input-demo__caption">ignoreCompositionEvent=false (input fires mid-composition)</text>
+    <text class="sn-input-demo__caption"
+      >ignoreCompositionEvent=false (input fires mid-composition)</text
+    >
     <SnInput
       v-model="composing"
       :ignore-composition-event="false"
@@ -25,7 +32,11 @@ const alipay = ref('');
     />
 
     <text class="sn-input-demo__caption">enableNative=false (Alipay MP simulated widget)</text>
-    <SnInput v-model="alipay" :enable-native="false" placeholder="Page stays put when keyboard opens" />
+    <SnInput
+      v-model="alipay"
+      :enable-native="false"
+      placeholder="Page stays put when keyboard opens"
+    />
   </view>
 </template>
 

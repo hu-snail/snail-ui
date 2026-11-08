@@ -42,12 +42,7 @@ export const MapPinIcon = d([
   'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z',
   'M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
 ]);
-export const ChartColumnIcon = d([
-  'M3 3v16a2 2 0 0 0 2 2h16',
-  'M18 17V9',
-  'M13 17V5',
-  'M8 17v-3',
-]);
+export const ChartColumnIcon = d(['M3 3v16a2 2 0 0 0 2 2h16', 'M18 17V9', 'M13 17V5', 'M8 17v-3']);
 
 /* ── 商城 / 商品详情 / 图文详情三套模板页所需图标（lucide 路径，圆与多边形
  * 已折算为等效 path —— IconData 仅渲染 `<path d>`）。────────────────────── */
@@ -140,10 +135,7 @@ export const ShieldCheckIcon = d([
   'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z',
   'm9 12 2 2 4-4',
 ]);
-export const RotateCcwIcon = d([
-  'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8',
-  'M3 3v5h5',
-]);
+export const RotateCcwIcon = d(['M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8', 'M3 3v5h5']);
 export const CoinsIcon = d([
   'M2,8a6,6 0 1,0 12,0a6,6 0 1,0 -12,0',
   'M18.09 10.37A6 6 0 1 1 10.34 18',
@@ -179,7 +171,4 @@ export const QuoteIcon = d([
   'M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z',
   'M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z',
 ]);
-export const CirclePlayIcon = d([
-  'M2,12a10,10 0 1,0 20,0a10,10 0 1,0 -20,0',
-  'M10,8L16,12L10,16Z',
-]);
+export const CirclePlayIcon = d(['M2,12a10,10 0 1,0 20,0a10,10 0 1,0 -20,0', 'M10,8L16,12L10,16Z']);

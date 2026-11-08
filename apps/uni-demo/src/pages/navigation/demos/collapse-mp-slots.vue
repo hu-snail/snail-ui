@@ -39,7 +39,11 @@ function beforeExpend(): boolean {
       <template #more="{ expanded }">
         <view class="sn-demo__more-inner">
           <text class="sn-demo__more-text">{{ expanded ? '收起全部' : '展开全部' }}</text>
-          <SnIcon class="sn-demo__more-icon" :icon="ChevronDown" size="var(--sn-mp-icon-size-small)" />
+          <SnIcon
+            class="sn-demo__more-icon"
+            :icon="ChevronDown"
+            size="var(--sn-mp-icon-size-small)"
+          />
         </view>
       </template>
     </SnCollapse>

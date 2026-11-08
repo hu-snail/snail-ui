@@ -13,34 +13,34 @@ keyboard and screen readers per the WAI-ARIA slider pattern.
 
 ## Props
 
-| Prop          | Type                                                      | Default     | Notes                                                       |
-| ------------- | --------------------------------------------------------- | ----------- | ----------------------------------------------------------- |
-| modelValue    | `number \| [number, number]`                              | `undefined` | Bound via `v-model`. `[low, high]` when `range`.            |
-| defaultValue  | `number \| [number, number]`                              | `undefined` | Uncontrolled initial value.                                 |
-| min           | `number`                                                  | `0`         | Lower bound.                                                |
-| max           | `number`                                                  | `100`       | Upper bound.                                                |
-| step          | `number`                                                  | `1`         | Snap grid; applies to pointer and keyboard.                 |
-| range         | `boolean`                                                 | `false`     | Dual-handle mode. Handles never cross.                      |
-| disabled      | `boolean`                                                 | `false`     | No interaction; handle removed from tab order.              |
-| readonly      | `boolean`                                                 | `false`     | Visible but not editable.                                   |
-| vertical      | `boolean`                                                 | `false`     | Vertical orientation (`aria-orientation` follows).          |
-| reverse       | `boolean`                                                 | `false`     | Inverts the axis (RTL / bottom-up).                         |
-| tooltip       | `boolean`                                                 | `true`      | Show the value bubble on hover / drag / focus.              |
-| formatTooltip | `(value: number) => string \| number`                     | `undefined` | Formats the tooltip content.                                |
-| marks         | `Record<number, string>`                                  | `undefined` | Tick marks keyed by value; dots are clickable.              |
-| placement     | `'top' \| 'bottom' \| …-start/-end' \| 'left' \| 'right'` | `'top'`     | Tooltip position class (`sn-slider__tooltip--{placement}`). |
+| Prop              | Type                                                      | Default     | Notes                                                                 |
+| ----------------- | --------------------------------------------------------- | ----------- | --------------------------------------------------------------------- |
+| modelValue        | `number \| [number, number]`                              | `undefined` | Bound via `v-model`. `[low, high]` when `range`.                      |
+| defaultValue      | `number \| [number, number]`                              | `undefined` | Uncontrolled initial value.                                           |
+| min               | `number`                                                  | `0`         | Lower bound.                                                          |
+| max               | `number`                                                  | `100`       | Upper bound.                                                          |
+| step              | `number`                                                  | `1`         | Snap grid; applies to pointer and keyboard.                           |
+| range             | `boolean`                                                 | `false`     | Dual-handle mode. Handles never cross.                                |
+| disabled          | `boolean`                                                 | `false`     | No interaction; handle removed from tab order.                        |
+| readonly          | `boolean`                                                 | `false`     | Visible but not editable.                                             |
+| vertical          | `boolean`                                                 | `false`     | Vertical orientation (`aria-orientation` follows).                    |
+| reverse           | `boolean`                                                 | `false`     | Inverts the axis (RTL / bottom-up).                                   |
+| tooltip           | `boolean`                                                 | `true`      | Show the value bubble on hover / drag / focus.                        |
+| formatTooltip     | `(value: number) => string \| number`                     | `undefined` | Formats the tooltip content.                                          |
+| marks             | `Record<number, string>`                                  | `undefined` | Tick marks keyed by value; dots are clickable.                        |
+| placement         | `'top' \| 'bottom' \| …-start/-end' \| 'left' \| 'right'` | `'top'`     | Tooltip position class (`sn-slider__tooltip--{placement}`).           |
 | showSteps         | `boolean`                                                 | `false`     | Tick at every step between min / max (interior ticks, capped at 100). |
-| showInput         | `boolean`                                                 | `false`     | Number input(s) beside the rail; two inputs + separator in range. |
-| trackBackground   | `string`                                                  | `undefined` | Fill-track background — solid / gradient / `transparent`. |
-| railBackground    | `string`                                                  | `undefined` | Rail background — solid / gradient / `transparent`. |
-| railWidth         | `number \| string`                                        | `undefined` | Rail thickness (horizontal: height, vertical: width). Number → px. |
-| railShadow        | `string`                                                  | `undefined` | Rail diffuse glow — any `box-shadow` (blurred translucent halo). |
-| tooltipBackground | `string`                                                  | `undefined` | Tooltip bubble background (default: shared dark tooltip token). |
-| tooltipTextColor  | `string`                                                  | `undefined` | Tooltip text color. |
-| ariaLabel     | `string`                                                  | —           | Accessible name (single-handle mode).                       |
-| customClass   | `string`                                                  | `''`        | Class on the root wrapper.                                  |
-| customStyle   | `string \| Record<string, string>`                        | `''`        | Inline style on the root wrapper.                           |
-Notes:
+| showInput         | `boolean`                                                 | `false`     | Number input(s) beside the rail; two inputs + separator in range.     |
+| trackBackground   | `string`                                                  | `undefined` | Fill-track background — solid / gradient / `transparent`.             |
+| railBackground    | `string`                                                  | `undefined` | Rail background — solid / gradient / `transparent`.                   |
+| railWidth         | `number \| string`                                        | `undefined` | Rail thickness (horizontal: height, vertical: width). Number → px.    |
+| railShadow        | `string`                                                  | `undefined` | Rail diffuse glow — any `box-shadow` (blurred translucent halo).      |
+| tooltipBackground | `string`                                                  | `undefined` | Tooltip bubble background (default: shared dark tooltip token).       |
+| tooltipTextColor  | `string`                                                  | `undefined` | Tooltip text color.                                                   |
+| ariaLabel         | `string`                                                  | —           | Accessible name (single-handle mode).                                 |
+| customClass       | `string`                                                  | `''`        | Class on the root wrapper.                                            |
+| customStyle       | `string \| Record<string, string>`                        | `''`        | Inline style on the root wrapper.                                     |
+| Notes:            |
 
 - `showInput` commits only on blur / Enter: the typed value is clamped to
   `min` / `max` (and to the sibling handle in range mode) but **not** snapped
@@ -60,9 +60,9 @@ Notes:
 
 ## Events
 
-| Event               | Payload                               | When                                      |
-| ------------------- | ------------------------------------- | ----------------------------------------- |
-| `update:modelValue` | `(value: number \| [number, number])` | Every value change (v-model sync).        |
+| Event               | Payload                               | When                                                     |
+| ------------------- | ------------------------------------- | -------------------------------------------------------- |
+| `update:modelValue` | `(value: number \| [number, number])` | Every value change (v-model sync).                       |
 | `change`            | `(value: number \| [number, number])` | Commit: drag end / keyboard / mark click / input commit. |
 
 ## Slots

@@ -1455,7 +1455,11 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent));
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 
@@ -1641,7 +1645,11 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
 }
 
 .sn-video-player__button:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent));
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
 }
 
 .sn-video-player__spacer {

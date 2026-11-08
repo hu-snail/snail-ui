@@ -57,7 +57,9 @@ export const mockGroups = defineMock({
     : [
         {
           heading: 'Request layer',
-          paragraphs: ['Every request goes through the single alova instance in `src/request/http.ts`, which handles:'],
+          paragraphs: [
+            'Every request goes through the single alova instance in `src/request/http.ts`, which handles:',
+          ],
           list: [
             'Bearer-token injection (written by the auth store after login)',
             '`{ code, message, data }` envelope: code === 0 resolves, anything else throws ApiError',
@@ -67,7 +69,9 @@ export const mockGroups = defineMock({
         },
         {
           heading: 'Define an API',
-          paragraphs: ['Add a module under `src/api/`; httpGet / httpPost return the data payload directly:'],
+          paragraphs: [
+            'Add a module under `src/api/`; httpGet / httpPost return the data payload directly:',
+          ],
           code: `import { httpGet, httpPost } from '../request/http';
 import type { UserInfo } from './types';
 

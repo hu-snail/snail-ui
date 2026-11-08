@@ -43,8 +43,8 @@ const scrollTop = ref(500);
       />
     </view>
     <text class="sn-demo__meta">
-      Circles on the top row, squares on the bottom; icon-only on the small tier,
-      icon + label on the right (the box grows with the content and long labels ellipsize).
+      Circles on the top row, squares on the bottom; icon-only on the small tier, icon + label on
+      the right (the box grows with the content and long labels ellipsize).
     </text>
   </view>
 </template>

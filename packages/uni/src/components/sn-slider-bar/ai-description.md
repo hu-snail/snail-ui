@@ -13,45 +13,45 @@ need marks, the wot-ui surface or extreme-value captions.
 
 ## Props
 
-| Prop            | Type                                   | Default     | Notes                                          |
-| --------------- | -------------------------------------- | ----------- | ---------------------------------------------- |
-| modelValue      | `number \| number[]`                   | `0`         | v-model; `[start, end]` in `range` mode.        |
-| min / max       | `number`                               | `0` / `100` | Bounds.                                         |
-| step            | `number`                               | `1`         | Snap granularity.                               |
-| range           | `boolean`                              | `false`     | Two knobs, non-crossing.                        |
-| disabled / readonly | `boolean`                          | `false`     | Disable / read-only.                            |
-| reverse         | `boolean`                              | `false`     | Invert the axis.                                |
-| variant         | `'bar' \| 'column'`                    | `'bar'`     | Horizontal capsule / vertical strip.            |
-| theme           | `'default' \| 'aurora'`                | `'default'` | Aurora = gradient + stars + glow.               |
-| showValue       | `boolean`                              | `false`     | Show the read-out (beside / above).             |
-| format          | `'percent' \| 'value'`                 | `'percent'` | Read-out source.                                |
-| valueSuffix     | `string`                               | `'%'`       | Suffix for the default read-out.                |
-| formatValue     | `(value, percent) => string`           | —           | Fully custom read-out.                          |
-| levels          | `{ value, label, icon? }[]`            | —           | Discrete tiers; the read-out shows the label.   |
-| showLevels      | `boolean`                              | `true`      | Draw a tick per level.                          |
-| size            | `'small' \| 'medium' \| 'large'`       | `'medium'`  | Track thickness 56 / 80 / 104 rpx.              |
-| barHeight       | `string \| number`                     | —           | Explicit control height (number → rpx).         |
-| thickness       | `string \| number`                     | —           | Track thickness (overrides `size`).             |
-| radius          | `string`                               | —           | Corner radius (CSS length).                     |
-| label / suffix  | `string`                               | `''`        | Text painted inside the track (head / tail).    |
-| fillBackground  | `string`                               | `''`        | Custom fill background (ignored by aurora).     |
-| gradient        | `string`                               | `''`        | Aurora gradient.                                |
-| sparkles        | `number`                               | `14`        | Aurora star density (0 = off).                  |
-| animated        | `boolean`                              | `true`      | Aurora drift / twinkle.                         |
-| innerColor      | `string`                               | `''`        | In-track text / glyph colour when filled.       |
-| innerColorEmpty | `string`                               | `''`        | In-track colour at value 0.                     |
-| fade            | `boolean`                              | `true`      | Column: fade the empty part.                    |
-| tooltipOnly     | `boolean`                              | `false`     | Column: read from the caption only.             |
-| ariaLabel       | `string`                               | `''`        | Accessible name.                                |
-| customClass / customStyle | `string`                     | `''`        | Root class / inline style.                      |
+| Prop                      | Type                             | Default     | Notes                                         |
+| ------------------------- | -------------------------------- | ----------- | --------------------------------------------- |
+| modelValue                | `number \| number[]`             | `0`         | v-model; `[start, end]` in `range` mode.      |
+| min / max                 | `number`                         | `0` / `100` | Bounds.                                       |
+| step                      | `number`                         | `1`         | Snap granularity.                             |
+| range                     | `boolean`                        | `false`     | Two knobs, non-crossing.                      |
+| disabled / readonly       | `boolean`                        | `false`     | Disable / read-only.                          |
+| reverse                   | `boolean`                        | `false`     | Invert the axis.                              |
+| variant                   | `'bar' \| 'column'`              | `'bar'`     | Horizontal capsule / vertical strip.          |
+| theme                     | `'default' \| 'aurora'`          | `'default'` | Aurora = gradient + stars + glow.             |
+| showValue                 | `boolean`                        | `false`     | Show the read-out (beside / above).           |
+| format                    | `'percent' \| 'value'`           | `'percent'` | Read-out source.                              |
+| valueSuffix               | `string`                         | `'%'`       | Suffix for the default read-out.              |
+| formatValue               | `(value, percent) => string`     | —           | Fully custom read-out.                        |
+| levels                    | `{ value, label, icon? }[]`      | —           | Discrete tiers; the read-out shows the label. |
+| showLevels                | `boolean`                        | `true`      | Draw a tick per level.                        |
+| size                      | `'small' \| 'medium' \| 'large'` | `'medium'`  | Track thickness 56 / 80 / 104 rpx.            |
+| barHeight                 | `string \| number`               | —           | Explicit control height (number → rpx).       |
+| thickness                 | `string \| number`               | —           | Track thickness (overrides `size`).           |
+| radius                    | `string`                         | —           | Corner radius (CSS length).                   |
+| label / suffix            | `string`                         | `''`        | Text painted inside the track (head / tail).  |
+| fillBackground            | `string`                         | `''`        | Custom fill background (ignored by aurora).   |
+| gradient                  | `string`                         | `''`        | Aurora gradient.                              |
+| sparkles                  | `number`                         | `14`        | Aurora star density (0 = off).                |
+| animated                  | `boolean`                        | `true`      | Aurora drift / twinkle.                       |
+| innerColor                | `string`                         | `''`        | In-track text / glyph colour when filled.     |
+| innerColorEmpty           | `string`                         | `''`        | In-track colour at value 0.                   |
+| fade                      | `boolean`                        | `true`      | Column: fade the empty part.                  |
+| tooltipOnly               | `boolean`                        | `false`     | Column: read from the caption only.           |
+| ariaLabel                 | `string`                         | `''`        | Accessible name.                              |
+| customClass / customStyle | `string`                         | `''`        | Root class / inline style.                    |
 
 ## Slots
 
-| Slot  | Notes                                  |
-| ----- | -------------------------------------- |
-| start | Head glyph before the track.           |
-| end   | Tail glyph after the track.            |
-| icon  | Glyph painted inside the track.        |
+| Slot  | Notes                                             |
+| ----- | ------------------------------------------------- |
+| start | Head glyph before the track.                      |
+| end   | Tail glyph after the track.                       |
+| icon  | Glyph painted inside the track.                   |
 | value | Read-out content (`value` / `percent` / `level`). |
 
 ## Two colour states

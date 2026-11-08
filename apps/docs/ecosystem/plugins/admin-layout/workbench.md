@@ -19,11 +19,11 @@ import '@snui/admin-layout/workbench/style.css';
 
 ## 结构
 
-| 区域     | 内容                                                                                                       |
-| -------- | ---------------------------------------------------------------------------------------------------------- |
-| 标题带   | `title` / `subtitle` · 右侧主/次行动（`#actions` 整替；默认「创建报告 / 添加钱包」都只 emit）             |
-| 指标区   | `kpis[0]` 高亮账户卡（趋势药丸 / 药丸按钮 / 副指标 / 脚注）· `kpis[1..]` 纵向堆叠的中性卡（`#kpi` 整替）    |
-| 交易记录 | `transactions` 表（时间 / 金额 / 分类 / 状态；状态是彩点 + 文案，`#transactions` 整替）                   |
+| 区域     | 内容                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| 标题带   | `title` / `subtitle` · 右侧主/次行动（`#actions` 整替；默认「创建报告 / 添加钱包」都只 emit）            |
+| 指标区   | `kpis[0]` 高亮账户卡（趋势药丸 / 药丸按钮 / 副指标 / 脚注）· `kpis[1..]` 纵向堆叠的中性卡（`#kpi` 整替） |
+| 交易记录 | `transactions` 表（时间 / 金额 / 分类 / 状态；状态是彩点 + 文案，`#transactions` 整替）                  |
 | 资金流水 | `moneyFlow` 面积 + 折线（图例 / 周期切换）· ECharts（`#chart` 整替）                                     |
 | 收入来源 | `incomeSources` 环形 + 中心占比 + 三项金额 · ECharts（`#income` 整替）                                   |
 
@@ -79,42 +79,42 @@ const moneyFlow = {
 
 ## Props
 
-| 名称                  | 类型                         | 默认                                    | 说明                                                       |
-| --------------------- | ---------------------------- | --------------------------------------- | ---------------------------------------------------------- |
-| `title`               | `string`                     | `'工作台'`                              | 标题                                                       |
-| `subtitle`            | `string`                     | `'这里是今天的关键指标概览。'`           | 副标题（`''` 不渲染）                                      |
-| `showHeading`         | `boolean`                    | `true`                                  | 壳自己已有标题带时置 `false`，避免同一个标题出现两次       |
-| `kpis`                | `ProWorkbenchKpi[]`          | `[]`                                    | 第一张是高亮账户卡，其余是中性卡                            |
-| `moneyFlow`           | `ProWorkbenchMoneyFlow`      | —                                       | 资金流水两条序列（`undefined` 不画图）                     |
-| `incomeSources`       | `ProWorkbenchIncomeSource[]` | `[]`                                    | 环形图分段（只比值有意义）                                  |
-| `transactions`        | `ProWorkbenchTransaction[]`  | `[]`                                    | 交易行                                                     |
-| `transactionsColumns` | `string[]`                   | `['时间','金额','分类','状态']`          | 表头                                                       |
-| `transactionsEmptyText` | `string`                   | `'暂无交易记录'`                        | 空态文案                                                   |
-| `flowRange`           | `string`                     | —                                       | 传入即受控（不传时组件自己记住选择）                        |
-| `rangeOptions`        | `string[]`                   | `['年度','季度','月度']`                 | 周期选项                                                   |
-| `flowTitle` / `incomeTitle` / `transactionsTitle` | `string` | `'资金流水'` / `'收入来源'` / `'交易记录'` | 三张卡的标题                              |
-| `primaryActionText` / `secondaryActionText` | `string` | `'添加钱包'` / `'创建报告'`     | 标题带按钮文案                                              |
-| `chartHeight`         | `number`                     | `260`                                   | 图表高度（px）                                              |
+| 名称                                              | 类型                         | 默认                                       | 说明                                                 |
+| ------------------------------------------------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| `title`                                           | `string`                     | `'工作台'`                                 | 标题                                                 |
+| `subtitle`                                        | `string`                     | `'这里是今天的关键指标概览。'`             | 副标题（`''` 不渲染）                                |
+| `showHeading`                                     | `boolean`                    | `true`                                     | 壳自己已有标题带时置 `false`，避免同一个标题出现两次 |
+| `kpis`                                            | `ProWorkbenchKpi[]`          | `[]`                                       | 第一张是高亮账户卡，其余是中性卡                     |
+| `moneyFlow`                                       | `ProWorkbenchMoneyFlow`      | —                                          | 资金流水两条序列（`undefined` 不画图）               |
+| `incomeSources`                                   | `ProWorkbenchIncomeSource[]` | `[]`                                       | 环形图分段（只比值有意义）                           |
+| `transactions`                                    | `ProWorkbenchTransaction[]`  | `[]`                                       | 交易行                                               |
+| `transactionsColumns`                             | `string[]`                   | `['时间','金额','分类','状态']`            | 表头                                                 |
+| `transactionsEmptyText`                           | `string`                     | `'暂无交易记录'`                           | 空态文案                                             |
+| `flowRange`                                       | `string`                     | —                                          | 传入即受控（不传时组件自己记住选择）                 |
+| `rangeOptions`                                    | `string[]`                   | `['年度','季度','月度']`                   | 周期选项                                             |
+| `flowTitle` / `incomeTitle` / `transactionsTitle` | `string`                     | `'资金流水'` / `'收入来源'` / `'交易记录'` | 三张卡的标题                                         |
+| `primaryActionText` / `secondaryActionText`       | `string`                     | `'添加钱包'` / `'创建报告'`                | 标题带按钮文案                                       |
+| `chartHeight`                                     | `number`                     | `260`                                      | 图表高度（px）                                       |
 
 ## 事件
 
-| 事件                 | 参数                             | 何时触发                       |
-| -------------------- | -------------------------------- | ------------------------------ |
-| `action`             | `(kind: 'primary' \| 'secondary')` | 标题带主/次行动被点             |
-| `kpi-action`         | `(kpi, action)`                  | 高亮卡里的药丸按钮被点          |
-| `kpi-select`         | `(key, kpi)`                     | 点某张指标卡（下钻是宿主的事）  |
-| `range-change`       | `(range: string)`                | 切周期                         |
-| `transaction-select` | `(key, row)`                     | 点某行交易                      |
+| 事件                 | 参数                               | 何时触发                       |
+| -------------------- | ---------------------------------- | ------------------------------ |
+| `action`             | `(kind: 'primary' \| 'secondary')` | 标题带主/次行动被点            |
+| `kpi-action`         | `(kpi, action)`                    | 高亮卡里的药丸按钮被点         |
+| `kpi-select`         | `(key, kpi)`                       | 点某张指标卡（下钻是宿主的事） |
+| `range-change`       | `(range: string)`                  | 切周期                         |
+| `transaction-select` | `(key, row)`                       | 点某行交易                     |
 
 ## 插槽
 
-| 插槽           | 替换                            |
-| -------------- | ------------------------------- |
-| `actions`      | 标题带右侧工具                  |
-| `kpi`          | 整个指标区                      |
-| `chart`        | 资金流水图                      |
-| `income`       | 收入来源环形区                  |
-| `transactions` | 交易记录表                      |
+| 插槽           | 替换           |
+| -------------- | -------------- |
+| `actions`      | 标题带右侧工具 |
+| `kpi`          | 整个指标区     |
+| `chart`        | 资金流水图     |
+| `income`       | 收入来源环形区 |
+| `transactions` | 交易记录表     |
 
 ## 换肤
 

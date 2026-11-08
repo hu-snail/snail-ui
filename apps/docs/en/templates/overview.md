@@ -34,9 +34,9 @@ logo, sider, top bar, four layout shapes (`side` / `top` / `mix` / `dual`) and
 collapse state all live inside one `SnProLayout`. Projects already using
 `@snui/vue-web` install it and replace their own `layout.vue`.
 
-| Template                                   | Components                                                 | Platform | What it solves                                                                                   |
-| ------------------------------------------ | ---------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
-| [Admin layout](/en/ecosystem/plugins/admin-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` | Web      | Admin shell: four switchable shapes, static-route or backend menus, breadcrumb and collapse       |
+| Template                                           | Components                                                 | Platform | What it solves                                                                              |
+| -------------------------------------------------- | ---------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| [Admin layout](/en/ecosystem/plugins/admin-layout) | `SnProLayout` + `SnProLogo` / `SnProSider` / `SnProHeader` | Web      | Admin shell: four switchable shapes, static-route or backend menus, breadcrumb and collapse |
 
 It **handles layout only — no business features**: auth, requests, stores and
 route registration stay in the host.

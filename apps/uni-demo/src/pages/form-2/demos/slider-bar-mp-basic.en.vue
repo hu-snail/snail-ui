@@ -30,7 +30,14 @@ const dimmer = ref(21);
     <text class="sn-demo__title">竖排 column</text>
     <view class="sn-demo__row">
       <SnSliderBar v-model="dimmer" variant="column" :min="15" :max="30" show-value />
-      <SnSliderBar v-model="dimmer" variant="column" theme="aurora" :min="15" :max="30" show-value />
+      <SnSliderBar
+        v-model="dimmer"
+        variant="column"
+        theme="aurora"
+        :min="15"
+        :max="30"
+        show-value
+      />
     </view>
 
     <text class="sn-demo__meta">volume = {{ volume }} · progress = {{ progress }}s</text>

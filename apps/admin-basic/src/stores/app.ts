@@ -1,9 +1,5 @@
 import { defineStore } from 'pinia';
-import {
-  DEFAULT_PRESET_ID,
-  findPreset,
-  type ThemeMode,
-} from '../theme/presets';
+import { DEFAULT_PRESET_ID, findPreset, type ThemeMode } from '../theme/presets';
 import { isAppLocale, readLocale, type AppLocale } from '../i18n';
 import type { SnProLayoutMode, SnProTabType } from '@snui/admin-layout';
 

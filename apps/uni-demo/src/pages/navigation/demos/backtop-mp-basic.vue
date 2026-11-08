@@ -32,12 +32,7 @@ function toBottom(): void {
 <template>
   <view class="sn-demo sn-demo--column">
     <view class="sn-demo__stage">
-      <scroll-view
-        class="sn-demo__viewport"
-        scroll-y
-        :scroll-top="viewTop"
-        @scroll="onScroll"
-      >
+      <scroll-view class="sn-demo__viewport" scroll-y :scroll-top="viewTop" @scroll="onScroll">
         <view v-for="index in 24" :key="index" class="sn-demo__row">
           <text>内容块 {{ index }}</text>
         </view>

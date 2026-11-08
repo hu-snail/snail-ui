@@ -478,13 +478,24 @@ describe('slot content updates (same keys)', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnWaterfall, { columns: 2 }, {
-            default: () => [
-              h('div', { key: 'a', class: 'entry' }, mode.value === 'preview' ? 'A-preview' : 'A-code'),
-              h('div', { key: 'b', class: 'entry' }, mode.value === 'preview' ? 'B-preview' : 'B-code'),
-            ],
-          },
-        );
+          h(
+            SnWaterfall,
+            { columns: 2 },
+            {
+              default: () => [
+                h(
+                  'div',
+                  { key: 'a', class: 'entry' },
+                  mode.value === 'preview' ? 'A-preview' : 'A-code',
+                ),
+                h(
+                  'div',
+                  { key: 'b', class: 'entry' },
+                  mode.value === 'preview' ? 'B-preview' : 'B-code',
+                ),
+              ],
+            },
+          );
       },
     });
     const wrapper = mount(Harness);
@@ -493,10 +504,16 @@ describe('slot content updates (same keys)', () => {
     mode.value = 'code';
     await nextTick();
     expect(wrapper.find('.sn-waterfall__item .entry').text()).toBe('A-code');
-    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual(['A-code', 'B-code']);
+    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual([
+      'A-code',
+      'B-code',
+    ]);
 
     mode.value = 'preview';
     await nextTick();
-    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual(['A-preview', 'B-preview']);
+    expect(wrapper.findAll('.sn-waterfall__item .entry').map((e) => e.text())).toEqual([
+      'A-preview',
+      'B-preview',
+    ]);
   });
 });

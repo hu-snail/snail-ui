@@ -54,9 +54,9 @@ Accepted（Human 直接指令：在 `packages/` 下新增 echarts 包，基于 e
     option 即重绘；
   - `colorSource: 'resolved'` —— 用 `resolveTokenColors()` 从 DOM 级联读出
     字面量，用于导出图片 / SSR / 非 DOM 宿主。
-  暴露 `theme` prop（`palette` / `colorPrimary` / `colorSuccess` /
-  `colorWarning` / `colorDanger` / `colorInfo` / 文本色 / 字体 / 字号 /
-  `themeOverrides` 逃生口）；
+    暴露 `theme` prop（`palette` / `colorPrimary` / `colorSuccess` /
+    `colorWarning` / `colorDanger` / `colorInfo` / 文本色 / 字体 / 字号 /
+    `themeOverrides` 逃生口）；
 - **布局**（`layout.ts`）：5 个预设 `default` / `compact` / `spacious` /
   `fullscreen` / `minimal`，`layout` prop 接预设名**或**局部配置对象
   （对象从 `default` 起步，只覆盖给出的字段）；
