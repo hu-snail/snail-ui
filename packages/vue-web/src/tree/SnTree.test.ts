@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, h, ref } from 'vue';
+import { defineComponent, h, nextTick, ref } from 'vue';
 import SnTree from './SnTree.vue';
 import type { SnTreeOption } from './sn-tree-types';
 
@@ -400,6 +400,325 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       });
       expect(w.find('.sn-tree__node-prefix').text()).toBe('opt 前缀');
       expect(w.find('.sn-tree__node-suffix').text()).toBe('opt 后缀');
+    });
+  });
+
+  describe('connector lines', () => {
+    const expanded = { defaultExpandedKeys: ['a', 'b', 'ba'] };
+
+    it('renders no line elements by default', () => {
+      const w = mountTree(expanded);
+      expect(w.find('.sn-tree__line-layer').exists()).toBe(false);
+      expect(w.find('.sn-tree').classes()).not.toContain('sn-tree--show-line');
+    });
+
+    it('draws an L connector on child rows but not on root rows', () => {
+      const w = mountTree({ ...expanded, showLine: true });
+      const rows = w.findAll('.sn-tree__node-wrapper');
+      expect(rows).toHaveLength(7);
+      expect(rows.every((row) => row.find('.sn-tree__line-layer').exists())).toBe(true);
+      // a / aa / ab / b / ba / baa / c — only the four nested rows connect.
+      expect(w.findAll('.sn-tree__line--horizontal')).toHaveLength(4);
+      expect(rows[0]?.find('.sn-tree__line--horizontal').exists()).toBe(false);
+      expect(rows[3]?.find('.sn-tree__line--horizontal').exists()).toBe(false);
+      expect(rows[6]?.find('.sn-tree__line--horizontal').exists()).toBe(false);
+      expect(rows[1]?.find('.sn-tree__line--horizontal').exists()).toBe(true);
+      expect(rows[0]?.find('.sn-tree__line-layer').attributes('aria-hidden')).toBe('true');
+    });
+
+    it('terminates the last child at the row center and positions lines by indent', () => {
+      const w = mountTree({ ...expanded, showLine: true, indent: 40 });
+      const rows = w.findAll('.sn-tree__node-wrapper');
+      // ab is the last visible child of a — half-height vertical at level 0.
+      const abLines = rows[2]?.findAll('.sn-tree__line--vertical');
+      expect(abLines).toHaveLength(1);
+      expect(abLines?.[0]?.classes()).toContain('sn-tree__line--half');
+      expect(abLines?.[0]?.attributes('style')).toContain('left: 20px');
+      expect(rows[2]?.find('.sn-tree__line--horizontal').attributes('style')).toContain(
+        'width: 32px',
+      );
+      // baa keeps a level-1 connector; its parent branch has no sibling.
+      const baaLines = rows[5]?.findAll('.sn-tree__line--vertical');
+      expect(baaLines).toHaveLength(1);
+      expect(baaLines?.[0]?.attributes('style')).toContain('left: 60px');
+    });
+
+    it('switches the stroke style to dashed only when requested', () => {
+      const solid = mountTree({ ...expanded, showLine: true });
+      expect(solid.find('.sn-tree').classes()).toContain('sn-tree--show-line');
+      expect(solid.find('.sn-tree').classes()).not.toContain('sn-tree--line-dashed');
+
+      const dashed = mountTree({ ...expanded, showLine: true, lineStyle: 'dashed' });
+      expect(dashed.find('.sn-tree').classes()).toContain('sn-tree--line-dashed');
+      expect(dashed.findAll('.sn-tree__line--horizontal')).toHaveLength(4);
+    });
+
+    it('recomputes connectors after a branch collapses', async () => {
+      const w = mountTree({ showLine: true, defaultExpandedKeys: ['a'] });
+      expect(w.findAll('.sn-tree__line--horizontal')).toHaveLength(2);
+
+      await w.findAll('.sn-tree__switcher')[0]?.trigger('click');
+      expect(w.findAll('.sn-tree__line--horizontal')).toHaveLength(0);
+    });
+
+    it('keeps node interaction intact with lines enabled', async () => {
+      const w = mountTree({ showLine: true, lineStyle: 'dashed' });
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+      const emitted = w.findComponent(SnTree).emitted('update:selectedKeys');
+      expect(emitted?.[0]?.[0]).toEqual(['a']);
+    });
+
+    it('defaults to square elbows and opts into rounded corners', () => {
+      const square = mountTree({ ...expanded, showLine: true });
+      expect(square.find('.sn-tree').classes()).not.toContain('sn-tree--line-rounded');
+
+      const rounded = mountTree({ ...expanded, showLine: true, lineCorner: 'rounded' });
+      expect(rounded.find('.sn-tree').classes()).toContain('sn-tree--line-rounded');
+      expect(rounded.findAll('.sn-tree__line--horizontal')).toHaveLength(4);
+    });
+
+    it('marks the elbow-level vertical so the rounded arc trims the branch', () => {
+      const w = mountTree({ ...expanded, showLine: true, lineCorner: 'rounded' });
+      const rows = w.findAll('.sn-tree__node-wrapper');
+      // a / aa / ab / b / ba / baa / c — four nested rows each own one elbow.
+      expect(w.findAll('.sn-tree__line--elbow')).toHaveLength(4);
+      expect(rows[0]?.findAll('.sn-tree__line--elbow')).toHaveLength(0);
+      // ab is the last child of a: the arc closes the branch, so CSS stops the
+      // straight guide at the arc's top edge instead of the row center.
+      expect(rows[2]?.find('.sn-tree__line--elbow').classes()).toEqual(
+        expect.arrayContaining(['sn-tree__line--vertical', 'sn-tree__line--half']),
+      );
+      // aa is not the last child: the full-height trunk stays so the branch
+      // curves away from a continuous guide.
+      expect(rows[1]?.find('.sn-tree__line--elbow').classes()).not.toContain(
+        'sn-tree__line--half',
+      );
+    });
+
+    it('combines rounded corners with a dashed stroke', () => {
+      const w = mountTree({
+        ...expanded,
+        showLine: true,
+        lineCorner: 'rounded',
+        lineStyle: 'dashed',
+      });
+      expect(w.find('.sn-tree').classes()).toEqual(
+        expect.arrayContaining([
+          'sn-tree--show-line',
+          'sn-tree--line-rounded',
+          'sn-tree--line-dashed',
+        ]),
+      );
+    });
+
+    it('draws full-height indent guides with line-mode="guide"', () => {
+      const w = mountTree({ ...expanded, showLine: true, lineMode: 'guide' });
+      expect(w.find('.sn-tree').classes()).toEqual(
+        expect.arrayContaining(['sn-tree--show-line', 'sn-tree--line-guide']),
+      );
+      // Guide mode never emits an elbow: no horizontal segment, no half line.
+      expect(w.findAll('.sn-tree__line--horizontal')).toHaveLength(0);
+      expect(w.findAll('.sn-tree__line--half')).toHaveLength(0);
+
+      const rows = w.findAll('.sn-tree__node-wrapper');
+      // baa (level 2) keeps both the b (level 0) and ba (level 1) guides.
+      const baaLines = rows[5]?.findAll('.sn-tree__line--vertical');
+      expect(baaLines).toHaveLength(2);
+      expect(baaLines?.map((line) => line.attributes('style'))).toEqual([
+        'left: 12px;',
+        'left: 36px;',
+      ]);
+      // A root row still owns an empty line layer, not an elbow.
+      expect(rows[0]?.findAll('.sn-tree__line--vertical')).toHaveLength(0);
+    });
+
+    it('combines indent guides with a dashed stroke and ignores line-corner', () => {
+      const w = mountTree({
+        ...expanded,
+        showLine: true,
+        lineMode: 'guide',
+        lineStyle: 'dashed',
+        lineCorner: 'rounded',
+      });
+      expect(w.find('.sn-tree').classes()).toEqual(
+        expect.arrayContaining(['sn-tree--line-guide', 'sn-tree--line-dashed']),
+      );
+      expect(w.find('.sn-tree').classes()).not.toContain('sn-tree--line-rounded');
+      expect(w.findAll('.sn-tree__line--horizontal')).toHaveLength(0);
+    });
+
+    it('exposes lineColor as a CSS variable and leaves it unset by default', () => {
+      const plain = mountTree({ ...expanded, showLine: true });
+      expect(
+        (plain.find('.sn-tree').element as HTMLElement).style.getPropertyValue(
+          '--sn-web-tree-line-color',
+        ),
+      ).toBe('');
+
+      const colored = mountTree({ ...expanded, showLine: true, lineColor: '#ff4d4f' });
+      expect(
+        (colored.find('.sn-tree').element as HTMLElement).style.getPropertyValue(
+          '--sn-web-tree-line-color',
+        ),
+      ).toBe('#ff4d4f');
+    });
+
+    it('does not apply line modifiers while showLine is off', () => {
+      const w = mountTree({ ...expanded, lineCorner: 'rounded', lineStyle: 'dashed' });
+      expect(w.find('.sn-tree').classes()).not.toContain('sn-tree--line-rounded');
+      expect(w.find('.sn-tree').classes()).not.toContain('sn-tree--line-dashed');
+    });
+  });
+
+  describe('drag and drop', () => {
+    const expanded = { defaultExpandedKeys: ['a', 'b', 'ba'] };
+
+    function stubRowRect(el: HTMLElement): void {
+      vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({
+        top: 0,
+        bottom: 30,
+        height: 30,
+        left: 0,
+        right: 0,
+        width: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      } as DOMRect);
+    }
+
+    function dragEvent(type: string, clientY = 0): MouseEvent {
+      return new MouseEvent(type, { bubbles: true, cancelable: true, clientY });
+    }
+
+    it('only makes rows draggable when the prop is on', () => {
+      const plain = mountTree({ ...expanded });
+      expect(plain.findAll('.sn-tree__node')[0]?.attributes('draggable')).toBe('false');
+
+      const w = mountTree({ ...expanded, draggable: true });
+      expect(w.findAll('.sn-tree__node')[0]?.attributes('draggable')).toBe('true');
+    });
+
+    it('marks the dragged row and emits dragStart / dragEnd', async () => {
+      const w = mountTree({ ...expanded, draggable: true });
+      const rows = w.findAll('.sn-tree__node');
+      rows[1]?.element.dispatchEvent(dragEvent('dragstart'));
+      await nextTick();
+
+      expect(rows[1]?.classes()).toContain('sn-tree__node--dragging');
+      expect(w.findComponent(SnTree).emitted('dragStart')?.[0]?.[0]).toMatchObject({ node: { key: 'aa' } });
+
+      rows[1]?.element.dispatchEvent(dragEvent('dragend'));
+      await nextTick();
+      expect(w.findComponent(SnTree).emitted('dragEnd')?.[0]?.[0]).toMatchObject({ node: { key: 'aa' } });
+      expect(w.find('.sn-tree__node--dragging').exists()).toBe(false);
+    });
+
+    it('resolves before / inside / after and emits the drop payload', async () => {
+      const w = mountTree({ ...expanded, draggable: true });
+      const rows = w.findAll('.sn-tree__node');
+      const target = rows[0]!.element as HTMLElement;
+      stubRowRect(target);
+      rows[1]?.element.dispatchEvent(dragEvent('dragstart'));
+
+      target.dispatchEvent(dragEvent('dragover', 2));
+      await nextTick();
+      expect(rows[0]?.classes()).toContain('sn-tree__node--drop-before');
+
+      target.dispatchEvent(dragEvent('dragover', 15));
+      await nextTick();
+      expect(rows[0]?.classes()).toContain('sn-tree__node--drop-inside');
+
+      target.dispatchEvent(dragEvent('drop', 15));
+      await nextTick();
+      expect(w.findComponent(SnTree).emitted('drop')?.[0]?.[0]).toMatchObject({
+        node: { key: 'a' },
+        dragNode: { key: 'aa' },
+        dropPosition: 'inside',
+      });
+      expect(rows[0]?.classes()).not.toContain('sn-tree__node--drop-inside');
+
+      // The browser follows a drop with dragend on the source row.
+      rows[1]?.element.dispatchEvent(dragEvent('dragend'));
+      await nextTick();
+      expect(rows[1]?.classes()).not.toContain('sn-tree__node--dragging');
+      expect(w.findComponent(SnTree).emitted('dragEnd')).toHaveLength(1);
+    });
+
+    it('respects allowDrop and refuses drops into the dragged subtree', async () => {
+      const blocked = mountTree({ ...expanded, draggable: true, allowDrop: () => false });
+      const blockedRows = blocked.findAll('.sn-tree__node');
+      const blockedTarget = blockedRows[0]!.element as HTMLElement;
+      stubRowRect(blockedTarget);
+      blockedRows[1]?.element.dispatchEvent(dragEvent('dragstart'));
+      blockedTarget.dispatchEvent(dragEvent('dragover', 15));
+      await nextTick();
+      expect(blocked.find('.sn-tree__node--drop-inside').exists()).toBe(false);
+      blockedTarget.dispatchEvent(dragEvent('drop', 15));
+      await nextTick();
+      expect(blocked.findComponent(SnTree).emitted('drop')).toBeUndefined();
+
+      const w = mountTree({ ...expanded, draggable: true });
+      const rows = w.findAll('.sn-tree__node');
+      const descendant = rows[1]!.element as HTMLElement;
+      stubRowRect(descendant);
+      rows[0]?.element.dispatchEvent(dragEvent('dragstart'));
+      descendant.dispatchEvent(dragEvent('dragover', 15));
+      await nextTick();
+      expect(w.find('.sn-tree__node--drop-before').exists()).toBe(false);
+      expect(w.find('.sn-tree__node--drop-inside').exists()).toBe(false);
+      descendant.dispatchEvent(dragEvent('drop', 15));
+      await nextTick();
+      expect(w.findComponent(SnTree).emitted('drop')).toBeUndefined();
+    });
+
+    it('keeps checkbox clicks working while draggable', async () => {
+      const w = mountTree({ ...expanded, checkable: true, draggable: true });
+      await w.find('.sn-tree__checkbox').trigger('click');
+      expect(w.find('.sn-tree__checkbox--checked').exists()).toBe(true);
+    });
+
+    it('places the checkbox in the leading slot, before the switcher', () => {
+      const w = mountTree({ ...expanded, checkable: true });
+      const row = w.findAll('.sn-tree__node')[0]!;
+      const slots = Array.from(row.element.children).map((el) => el.className);
+      expect(slots.findIndex((className) => className.includes('sn-tree__checkbox'))).toBe(1);
+      expect(slots.findIndex((className) => className.includes('sn-tree__switcher'))).toBe(2);
+    });
+  });
+
+  describe('data-level icons and VNode parts', () => {
+    it('renders a render-fn icon from node data', () => {
+      const w = mountTree({
+        data: [
+          { key: 'a', label: '节点 A', icon: () => h('span', { class: 'probe-icon' }, 'A') },
+          { key: 'b', label: '节点 B' },
+        ],
+      });
+      expect(w.findAll('.sn-tree__node-icon')).toHaveLength(1);
+      expect(w.find('.sn-tree__node-icon .probe-icon').text()).toBe('A');
+      expect(visibleLabels(w)).toEqual(['节点 A', '节点 B']);
+    });
+
+    it('renders a VNode icon and a plain-text icon', () => {
+      const w = mountTree({
+        data: [
+          { key: 'v', label: 'VNode', icon: h('i', { class: 'probe-vnode' }) },
+          { key: 't', label: 'Text', icon: 'TS' },
+        ],
+      });
+      expect(w.find('.probe-vnode').exists()).toBe(true);
+      expect(w.findAll('.sn-tree__node-icon')[1]?.text()).toBe('TS');
+    });
+
+    it('renders VNode prefix/suffix parts instead of stringifying them', () => {
+      const w = mountTree({
+        renderPrefix: () => h('span', { class: 'probe-prefix' }, '前'),
+        renderSuffix: () => h('span', { class: 'probe-suffix' }, '后'),
+      });
+      expect(w.find('.probe-prefix').text()).toBe('前');
+      expect(w.find('.probe-suffix').text()).toBe('后');
+      expect(w.text()).not.toContain('[object Object]');
     });
   });
 });
