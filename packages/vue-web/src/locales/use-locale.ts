@@ -62,6 +62,7 @@ export function useLocale(): ComputedRef<SnLocale> {
       Transfer: { ...zhCN.Transfer, ...source.Transfer },
       DataTable: { ...zhCN.DataTable, ...source.DataTable },
       Tree: { ...zhCN.Tree, ...source.Tree },
+      Select: { ...zhCN.Select, ...source.Select },
       Empty: { ...zhCN.Empty, ...source.Empty },
       QrCode: { ...zhCN.QrCode, ...source.QrCode },
       Ellipsis: { ...zhCN.Ellipsis, ...source.Ellipsis },

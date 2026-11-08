@@ -99,6 +99,10 @@ export interface SnDatePickerLocale {
   rangeStartPlaceholder: string;
   /** Range end placeholder. */
   rangeEndPlaceholder: string;
+  /** Month-range start placeholder. */
+  monthRangeStartPlaceholder: string;
+  /** Month-range end placeholder. */
+  monthRangeEndPlaceholder: string;
   /** Range separator rendered between the two inputs. */
   to: string;
   /** Datetime range: start time column label. */
@@ -107,6 +111,16 @@ export interface SnDatePickerLocale {
   endTime: string;
   /** Datetime range confirm button. */
   confirm: string;
+  /** Panel footer clear button (datetime / month ranges). */
+  clear: string;
+  /** Time popover jump-to-now button. */
+  now: string;
+  /** Month range panel accessible name. */
+  monthRangeLabel: string;
+  /** Month range year column accessible name. */
+  yearColumnLabel: string;
+  /** Month range month column accessible name. */
+  monthColumnLabel: string;
   /** Aside time-panel header (calendar | 选择时间 layout). */
   selectTime: string;
   /** Footer jump-to-today button. */
@@ -197,6 +211,12 @@ export interface SnTreeLocale {
   collapse: string;
   /** Collapsed row toggle `aria-label`. */
   expand: string;
+}
+
+/** Localized strings for SnSelect. */
+export interface SnSelectLocale {
+  /** Dropdown empty-state text when no option matches / none exist. */
+  noOptions: string;
 }
 
 /** Shared empty-state description (SnTree / SnDataTable default slots). */
@@ -325,6 +345,8 @@ export interface SnLocale {
   DataTable: SnDataTableLocale;
   /** SnTree strings. */
   Tree: SnTreeLocale;
+  /** SnSelect strings. */
+  Select: SnSelectLocale;
   /** Shared empty-state strings. */
   Empty: SnEmptyLocale;
   /** SnQrCode strings. */
@@ -390,10 +412,17 @@ export const zhCN: SnLocale = {
     placeholder: '请选择日期',
     rangeStartPlaceholder: '开始日期',
     rangeEndPlaceholder: '结束日期',
+    monthRangeStartPlaceholder: '开始月份',
+    monthRangeEndPlaceholder: '结束月份',
     to: '至',
     startTime: '开始时间',
     endTime: '结束时间',
     confirm: '确认',
+    clear: '清除',
+    now: '此刻',
+    monthRangeLabel: '月份范围',
+    yearColumnLabel: '年份',
+    monthColumnLabel: '月份',
     selectTime: '选择时间',
     today: '今天',
     weekTitle: '{y}-{w}周',
@@ -439,6 +468,9 @@ export const zhCN: SnLocale = {
   Tree: {
     collapse: '收起',
     expand: '展开',
+  },
+  Select: {
+    noOptions: '暂无数据',
   },
   Empty: {
     description: '无数据',
