@@ -5,9 +5,11 @@
  *
  * Reference library: HeroUI Pro `FloatingToc.Trigger`. It owns no props; only
  * pointer, focus and keyboard handling:
- *   - hover mode: pointer entry schedules an open after `openDelay`, exit
- *     schedules a close after `closeDelay`;
- *   - focus / blur mirror hover so the panel is reachable by keyboard;
+ *   - hover mode: pointer entry schedules an open after `openDelay` (or, with
+ *     the root's `hoverAction="preview"`, arms the per-bar card instead),
+ *     exit schedules a close after `closeDelay`;
+ *   - focus / blur open and close the full panel in every mode, so the
+ *     section list is always reachable by keyboard;
  *   - `Enter` / `Space` toggle, `Escape` closes, Arrow keys walk the active
  *     section and scroll to it.
  *
@@ -32,11 +34,13 @@ const isOpen = computed(() => context?.isOpen.value === true);
 const side = computed(() => context?.placement.value ?? 'right');
 
 function handlePointerEnter(): void {
-  context?.requestOpen();
+  // Pointer and focus differ: in `hoverAction: 'preview'` the pointer only
+  // arms the per-bar card, while focus still needs the full panel.
+  context?.triggerPointerEnter();
 }
 
 function handlePointerLeave(): void {
-  context?.requestClose();
+  context?.triggerPointerLeave();
 }
 
 function handleFocus(): void {

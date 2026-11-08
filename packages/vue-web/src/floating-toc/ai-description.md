@@ -39,17 +39,18 @@ import {
 
 ## SnFloatingToc Props
 
-| Name              | Type                      | Default     | Description                                                                                                                   |
-| ----------------- | ------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `placement`       | `'left' \| 'right'`       | `'right'`   | Side of the page the TOC sits on; bars grow outward from it.                                                                  |
-| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` opens on pointer / focus entry with delays; `press` toggles on click.                                                 |
-| `open`            | `boolean`                 | `undefined` | Controlled open state. Omit it to keep the TOC uncontrolled.                                                                  |
-| `defaultOpen`     | `boolean`                 | `false`     | Initial open state when uncontrolled.                                                                                         |
-| `openDelay`       | `number`                  | `200`       | Milliseconds before opening after hover / focus (hover mode).                                                                 |
-| `closeDelay`      | `number`                  | `300`       | Milliseconds before closing after pointer / focus leaves (hover mode).                                                        |
-| `scrollContainer` | `string \| HTMLElement`   | `undefined` | Scroll container. Auto-detected from the sections' nearest scrollable ancestor, else the document.                            |
-| `bound`           | `number`                  | `0`         | Distance in px below the container top at which a section counts as active. Positive delays the switch, negative advances it. |
-| `onOpenChange`    | `(open: boolean) => void` | `undefined` | Fired whenever the open state changes.                                                                                        |
+| Name              | Type                      | Default     | Description                                                                                                                                                                               |
+| ----------------- | ------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `placement`       | `'left' \| 'right'`       | `'right'`   | Side of the page the TOC sits on; bars grow outward from it.                                                                                                                              |
+| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` opens on pointer / focus entry with delays; `press` toggles on click.                                                                                                             |
+| `hoverAction`     | `'open' \| 'preview'`     | `'open'`    | What resting the pointer on the rail does. `open` expands the full panel (HeroUI behaviour); `preview` shows a single section's title + summary and leaves the panel to click / keyboard. |
+| `open`            | `boolean`                 | `undefined` | Controlled open state. Omit it to keep the TOC uncontrolled.                                                                                                                              |
+| `defaultOpen`     | `boolean`                 | `false`     | Initial open state when uncontrolled.                                                                                                                                                     |
+| `openDelay`       | `number`                  | `200`       | Milliseconds before opening after hover / focus (hover mode).                                                                                                                             |
+| `closeDelay`      | `number`                  | `300`       | Milliseconds before closing after pointer / focus leaves (hover mode).                                                                                                                    |
+| `scrollContainer` | `string \| HTMLElement`   | `undefined` | Scroll container. Auto-detected from the sections' nearest scrollable ancestor, else the document.                                                                                        |
+| `bound`           | `number`                  | `0`         | Distance in px below the container top at which a section counts as active. Positive delays the switch, negative advances it.                                                             |
+| `onOpenChange`    | `(open: boolean) => void` | `undefined` | Fired whenever the open state changes.                                                                                                                                                    |
 
 ## SnFloatingTocBar Props
 
@@ -118,10 +119,15 @@ attributes pass through.
   normally already opened the panel on entry, so a click confirms rather than
   dismisses. `Enter` / `Space` keep toggling in both modes.
 - Press mode ignores hover entirely and toggles on click, `Enter` or `Space`.
-- Resting the pointer on a single collapsed bar shows a preview card with that
-  section's title and summary (`summary` prop, else the section's own text,
-  collapsed to one line and cut at 120 characters). The card is
-  `pointer-events: none` and disappears as soon as the panel expands.
+- `hoverAction` picks between two mutually exclusive hover behaviours, so the
+  panel and the single-bar card never stack on screen:
+  - `open` (default): hovering the rail expands the full panel; no card.
+  - `preview`: hovering a single bar shows a card with that section's title and
+    summary (`summary` prop, else the section's own text, collapsed to one line
+    and cut at 120 characters) and the panel stays shut until a click. Keyboard
+    focus still opens the full panel in both modes, so nothing is
+    pointer-only. The card is `pointer-events: none` and disappears as soon as
+    the panel expands.
 - Keyboard: `Enter` / `Space` toggle, `Escape` closes (from the trigger or the
   panel), `ArrowUp` / `ArrowDown` walk the sections and scroll to them.
 - Clicking a bar or an item scrolls the section into view and highlights it
@@ -140,8 +146,9 @@ attributes pass through.
   name and sign convention so a page can use both.
 - The panel is not teleported; it stays inside the fixed root subtree, so no
   portal container is needed.
-- The hover preview (`summary` + derived text) and `--floating-toc-preview-width`
-  are AUI additions — HeroUI's Bar has no tooltip.
+- `hoverAction: 'preview'`, the per-bar summary card (`summary` + derived text)
+  and `--floating-toc-preview-width` are AUI additions — HeroUI's Bar has no
+  tooltip, and its hover always expands the panel.
 
 ## §112 future markers
 

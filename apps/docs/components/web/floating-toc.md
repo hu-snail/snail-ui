@@ -29,6 +29,12 @@
 
 <Demo name="floating-toc-web-hierarchical" description="level 1/2/3 的层级表达" />
 
+### 单条预览模式
+
+`hover-action="preview"` 让悬停只浮出单条的标题与摘要，完整列表留给点击或键盘聚焦 —— 两种浮层互斥，不会叠在一起。
+
+<Demo name="floating-toc-web-preview" description="悬停单条出摘要，点击展开完整列表" />
+
 ### 受控展开
 
 传 `open` 完全接管展开状态，`open-change` 回显每次变化。
@@ -64,17 +70,18 @@
 
 ### SnFloatingToc Props
 
-| 名称              | 类型                      | 默认值      | 说明                                                         |
-| ----------------- | ------------------------- | ----------- | ------------------------------------------------------------ |
-| `placement`       | `'left' \| 'right'`       | `'right'`   | 浮标所在的一侧。                                             |
-| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` 悬停 / 聚焦按延迟展开；`press` 点击切换。            |
-| `open`            | `boolean`                 | `undefined` | 受控展开状态。不传则由组件自己管理。                         |
-| `defaultOpen`     | `boolean`                 | `false`     | 非受控时的初始展开状态。                                     |
-| `openDelay`       | `number`                  | `200`       | 悬停 / 聚焦后展开的延迟（毫秒，仅 hover 模式）。             |
-| `closeDelay`      | `number`                  | `300`       | 指针 / 聚焦离开后收起的延迟（毫秒，仅 hover 模式）。         |
-| `scrollContainer` | `string \| HTMLElement`   | `undefined` | 滚动容器。省略时取章节最近的可滚动祖先，兜底为 document。    |
-| `bound`           | `number`                  | `0`         | 判定激活的基准线距容器顶部的距离。正值让切换更晚，负值更早。 |
-| `onOpenChange`    | `(open: boolean) => void` | `undefined` | 展开状态变化时调用。                                         |
+| 名称              | 类型                      | 默认值      | 说明                                                                                                              |
+| ----------------- | ------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `placement`       | `'left' \| 'right'`       | `'right'`   | 浮标所在的一侧。                                                                                                  |
+| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` 悬停 / 聚焦按延迟展开；`press` 点击切换。                                                                 |
+| `hoverAction`     | `'open' \| 'preview'`     | `'open'`    | 指针停在浮标上时做什么：`open` 展开完整面板（HeroUI 行为）；`preview` 只显示单条标题与摘要，面板留给点击 / 键盘。 |
+| `open`            | `boolean`                 | `undefined` | 受控展开状态。不传则由组件自己管理。                                                                              |
+| `defaultOpen`     | `boolean`                 | `false`     | 非受控时的初始展开状态。                                                                                          |
+| `openDelay`       | `number`                  | `200`       | 悬停 / 聚焦后展开的延迟（毫秒，仅 hover 模式）。                                                                  |
+| `closeDelay`      | `number`                  | `300`       | 指针 / 聚焦离开后收起的延迟（毫秒，仅 hover 模式）。                                                              |
+| `scrollContainer` | `string \| HTMLElement`   | `undefined` | 滚动容器。省略时取章节最近的可滚动祖先，兜底为 document。                                                         |
+| `bound`           | `number`                  | `0`         | 判定激活的基准线距容器顶部的距离。正值让切换更晚，负值更早。                                                      |
+| `onOpenChange`    | `(open: boolean) => void` | `undefined` | 展开状态变化时调用。                                                                                              |
 
 ### SnFloatingTocBar Props
 
@@ -137,13 +144,20 @@
 
 `bound` 与 `SnAnchor` 同名同符号：`0` 即视口顶部，正值把基准线下移（切换更晚），负值上移（切换更早）。
 
-## 悬停预览
+## 两种悬停模式
 
-指针停在单条指示线上时，会在正文一侧浮出一张小卡片，显示该章节的标题和一行摘要。
+`hoverAction` 决定指针停在浮标上时出现什么，两种模式互斥，不会同时叠出两个浮层：
+
+| 值             | 悬停时                      | 展开完整列表            |
+| -------------- | --------------------------- | ----------------------- |
+| `open`（默认） | 展开完整面板（HeroUI 行为） | 悬停即展开              |
+| `preview`      | 浮出单条标题 + 摘要卡片     | 点击 Trigger 或键盘聚焦 |
+
+`open` 模式下指针进入即展开，卡片会与面板重复，所以此时不渲染预览。`preview` 模式下指针只出卡片，面板不会自动展开；但**键盘聚焦始终能打开完整面板**，保证只用键盘的用户也能拿到全部章节。
 
 摘要有两个来源：显式传入的 `summary` 优先；否则取章节元素自身的文本，压缩空白并截断到 120 字。所以页面上只要写了标题和段落，就不必额外维护一份摘要。
 
-卡片是 `pointer-events: none`（不会抢走产生它的悬停），并在面板展开时自动消失——面板已经列出全部章节，再显示单条预览只会重复信息。
+卡片是 `pointer-events: none`（不会抢走产生它的悬停），并在面板展开时自动消失。
 
 ## 受控与非受控
 

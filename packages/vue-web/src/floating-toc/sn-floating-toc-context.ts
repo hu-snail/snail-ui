@@ -55,9 +55,13 @@ export interface SnFloatingTocContext {
   moveActive: (delta: 1 | -1) => void;
   /** Scroll a section into view and mark it active. */
   activateSection: (href: string) => void;
-  /** Trigger hover / focus entry — schedules an open after `openDelay`. */
+  /** Focus entry — schedules an open after `openDelay`, in every mode. */
   requestOpen: () => void;
-  /** Exit — schedules a close after `closeDelay`. */
+  /** Pointer entry on the rail: opens the panel or arms the bar preview. */
+  triggerPointerEnter: () => void;
+  /** Pointer exit from the rail — schedules a close after `closeDelay`. */
+  triggerPointerLeave: () => void;
+  /** Exit — schedules a close after `closeDelay` (item activation, blur). */
   requestClose: () => void;
   /** Immediate open / close (press mode, Escape, item activation). */
   setOpen: (open: boolean) => void;

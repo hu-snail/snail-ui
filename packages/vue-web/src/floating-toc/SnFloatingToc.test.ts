@@ -107,6 +107,7 @@ const mountOptions = { attachTo: document.body, global: { stubs: { transition: f
 interface BuildOptions {
   placement?: 'left' | 'right';
   triggerMode?: 'hover' | 'press';
+  hoverAction?: 'open' | 'preview';
   open?: boolean;
   defaultOpen?: boolean;
   openDelay?: number;
@@ -130,6 +131,7 @@ function build(options: BuildOptions = {}): VueWrapper {
             {
               placement: options.placement,
               triggerMode: options.triggerMode,
+              hoverAction: options.hoverAction,
               open: options.open,
               defaultOpen: options.defaultOpen,
               openDelay: options.openDelay ?? 0,
@@ -508,8 +510,23 @@ describe('SnFloatingToc', () => {
       return wrapper.find('[data-snui-component="floating-toc-preview"]');
     }
 
-    it('should show the section title and summary when a bar is hovered', async () => {
+    it('should not render a preview in the default open mode', async () => {
+      // `hoverAction: 'open'` is HeroUI's behaviour: hovering expands the
+      // panel, so a per-bar card would stack a second overlay on top of it.
       const wrapper = build();
+      await flush();
+
+      // Entering the rail is a pointer enter on the trigger; a synthetic
+      // `pointerenter` on a child does not bubble, so drive the trigger.
+      await trigger(wrapper).trigger('pointerenter');
+      await flush();
+
+      expect(previewCard(wrapper).exists()).toBe(false);
+      expect(panel(wrapper).exists()).toBe(true);
+    });
+
+    it('should show the section title and summary in preview mode', async () => {
+      const wrapper = build({ hoverAction: 'preview' });
       await flush();
 
       await bars(wrapper)[1].trigger('pointerenter');
@@ -523,12 +540,45 @@ describe('SnFloatingToc', () => {
       expect(card.attributes('aria-hidden')).toBe('true');
     });
 
+    it('should keep the panel shut while previewing', async () => {
+      const wrapper = build({ hoverAction: 'preview', openDelay: 0 });
+      await flush();
+
+      await bars(wrapper)[0].trigger('pointerenter');
+      await trigger(wrapper).trigger('pointerenter');
+      await flush();
+
+      expect(panel(wrapper).exists()).toBe(false);
+      expect(previewCard(wrapper).exists()).toBe(true);
+    });
+
+    it('should open the full panel from a click in preview mode', async () => {
+      const wrapper = build({ hoverAction: 'preview' });
+      await flush();
+
+      await bars(wrapper)[0].trigger('pointerenter');
+      await trigger(wrapper).trigger('click');
+      await flush();
+
+      expect(panel(wrapper).exists()).toBe(true);
+    });
+
+    it('should open the full panel from focus in preview mode', async () => {
+      // Keyboard users never hover, so focus must still reach the full list.
+      const wrapper = build({ hoverAction: 'preview', openDelay: 0 });
+      await flush();
+
+      await trigger(wrapper).trigger('focus');
+      await flush();
+      expect(panel(wrapper).exists()).toBe(true);
+    });
+
     it('should prefer an explicit summary over the section text', async () => {
       const wrapper = track(
         mount(
           defineComponent({
             setup: () => () =>
-              h(SnFloatingToc, null, () => [
+              h(SnFloatingToc, { hoverAction: 'preview' }, () => [
                 h(SnFloatingTocTrigger, null, () => [
                   h(SnFloatingTocBar, {
                     href: '#intro',
@@ -549,7 +599,7 @@ describe('SnFloatingToc', () => {
     });
 
     it('should hide the preview when the pointer leaves the bar', async () => {
-      const wrapper = build();
+      const wrapper = build({ hoverAction: 'preview' });
       await flush();
 
       await bars(wrapper)[0].trigger('pointerenter');
@@ -558,7 +608,7 @@ describe('SnFloatingToc', () => {
 
       await bars(wrapper)[0].trigger('pointerleave');
       await flush();
-      wrapper.unmount();
+      await wrapper.unmount();
       await flush();
       expect(
         document.body.querySelector('[data-snui-component="floating-toc-preview"]'),
@@ -566,7 +616,7 @@ describe('SnFloatingToc', () => {
     });
 
     it('should drop the preview once the panel expands', async () => {
-      const wrapper = build();
+      const wrapper = build({ hoverAction: 'preview' });
       await flush();
 
       await bars(wrapper)[0].trigger('pointerenter');
@@ -589,7 +639,7 @@ describe('SnFloatingToc', () => {
     it('should truncate a long auto summary', async () => {
       const section = document.getElementById('intro');
       section!.textContent = 'x'.repeat(300);
-      const wrapper = build();
+      const wrapper = build({ hoverAction: 'preview' });
       await flush();
 
       await bars(wrapper)[0].trigger('pointerenter');

@@ -68,6 +68,15 @@ const props = withDefaults(
     placement?: 'left' | 'right';
     /** `hover` opens on pointer / focus entry; `press` toggles on click. */
     triggerMode?: 'hover' | 'press';
+    /**
+     * What resting the pointer on the rail does.
+     *
+     * `open` (default, HeroUI parity) expands the full panel after
+     * `openDelay`. `preview` instead shows a title + summary card for the
+     * single bar under the pointer and leaves the panel to click / keyboard —
+     * the two are mutually exclusive so they never stack on screen.
+     */
+    hoverAction?: 'open' | 'preview';
     /** Controlled open state. Omit it to keep the TOC uncontrolled. */
     open?: boolean | undefined;
     /** Initial open state when uncontrolled. */
@@ -86,6 +95,7 @@ const props = withDefaults(
   {
     placement: 'right',
     triggerMode: 'hover',
+    hoverAction: 'open',
     open: undefined,
     defaultOpen: false,
     onOpenChange: undefined,
@@ -155,17 +165,30 @@ function requestClose(): void {
   closeTimer = schedule(props.closeDelay, () => setOpen(false));
 }
 
+function triggerPointerEnter(): void {
+  // Preview mode keeps the panel shut on hover: the bar card is the only
+  // thing that should appear, so the two overlays never overlap.
+  if (props.hoverAction === 'preview') return;
+  requestOpen();
+}
+
+function triggerPointerLeave(): void {
+  requestClose();
+}
+
 function toggleOpen(): void {
   setOpen(!isOpen.value);
 }
 
 function triggerActivate(): void {
-  if (props.triggerMode === 'press') {
+  // In press mode, and in preview mode (where hovering never opened the
+  // panel), a click is the only way to get the full list, so it toggles.
+  if (props.triggerMode === 'press' || props.hoverAction === 'preview') {
     toggleOpen();
     return;
   }
-  // Hover mode: the panel is normally already open by the time the pointer
-  // lands, so a click confirms it instead of closing it.
+  // Plain hover mode: the panel is normally already open by the time the
+  // pointer lands, so a click confirms it instead of closing it.
   setOpen(true);
 }
 
@@ -188,6 +211,7 @@ const preview = ref<SnFloatingTocPreview | null>(null);
 const panelSide = computed<'left' | 'right'>(() => (props.placement === 'left' ? 'right' : 'left'));
 
 function showPreview(next: SnFloatingTocPreview): void {
+  if (props.hoverAction !== 'preview') return;
   preview.value = next;
 }
 
@@ -312,6 +336,8 @@ provide(snFloatingTocInjectionKey, {
   moveActive,
   activateSection,
   requestOpen,
+  triggerPointerEnter,
+  triggerPointerLeave,
   requestClose,
   setOpen,
   toggleOpen,

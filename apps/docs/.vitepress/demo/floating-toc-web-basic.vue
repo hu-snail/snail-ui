@@ -15,7 +15,7 @@ import {
 const scrollRef = ref<HTMLElement | null>(null);
 
 const sections = [
-  { href: '#ftoc-basic-intro', title: '简介', summary: '组件解决什么问题、适合放在哪些页面。' },
+  { href: '#ftoc-basic-intro', title: '简介' },
   {
     href: '#ftoc-basic-install',
     title: '安装',
@@ -26,7 +26,7 @@ const sections = [
     title: '用法',
     summary: 'Trigger + Bar + Content + Item 的组合写法。',
   },
-  { href: '#ftoc-basic-faq', title: '常见问题', summary: '滚动容器、层级与主题的常见疑问。' },
+  { href: '#ftoc-basic-faq', title: '常见问题' },
 ];
 </script>
 
@@ -57,7 +57,6 @@ const sections = [
           :key="section.href"
           :href="section.href"
           :title="section.title"
-          :summary="section.summary"
         />
       </SnFloatingTocTrigger>
       <SnFloatingTocContent aria-label="页面目录">

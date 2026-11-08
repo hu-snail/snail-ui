@@ -66,7 +66,6 @@ const sections = [
           :key="section.href"
           :href="section.href"
           :title="section.title"
-          :summary="section.summary"
         />
       </SnFloatingTocTrigger>
       <SnFloatingTocContent aria-label="On this page">

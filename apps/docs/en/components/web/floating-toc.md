@@ -29,6 +29,12 @@ The rail follows the scroll container and expands on hover.
 
 <Demo name="floating-toc-web-hierarchical" description="Levels 1 / 2 / 3" />
 
+### Single-section preview
+
+`hover-action="preview"` makes hovering show only that one section's title and summary, leaving the full list to a click or keyboard focus — the two overlays are mutually exclusive and never stack.
+
+<Demo name="floating-toc-web-preview" description="Hover one bar for its summary; click for the full list" />
+
 ### Controlled
 
 Pass `open` to own the expanded state; `open-change` reports every change.
@@ -64,17 +70,18 @@ Pass `open` to own the expanded state; `open-change` reports every change.
 
 ### SnFloatingToc Props
 
-| Name              | Type                      | Default     | Description                                                                                                          |
-| ----------------- | ------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `placement`       | `'left' \| 'right'`       | `'right'`   | Edge the rail sits on.                                                                                               |
-| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` opens on pointer / focus after a delay; `press` toggles on click.                                            |
-| `open`            | `boolean`                 | `undefined` | Controlled open state. Omit to stay uncontrolled.                                                                    |
-| `defaultOpen`     | `boolean`                 | `false`     | Initial open state when uncontrolled.                                                                                |
-| `openDelay`       | `number`                  | `200`       | Milliseconds before opening after hover / focus (hover mode only).                                                   |
-| `closeDelay`      | `number`                  | `300`       | Milliseconds before closing after pointer / focus leaves (hover mode only).                                          |
-| `scrollContainer` | `string \| HTMLElement`   | `undefined` | Scroll container. Defaults to the sections' nearest scrollable ancestor, then the document.                          |
-| `bound`           | `number`                  | `0`         | Distance in px below the container top at which a section becomes active. Positive switches later, negative earlier. |
-| `onOpenChange`    | `(open: boolean) => void` | `undefined` | Called when the open state changes.                                                                                  |
+| Name              | Type                      | Default     | Description                                                                                                                                                                               |
+| ----------------- | ------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `placement`       | `'left' \| 'right'`       | `'right'`   | Edge the rail sits on.                                                                                                                                                                    |
+| `triggerMode`     | `'hover' \| 'press'`      | `'hover'`   | `hover` opens on pointer / focus after a delay; `press` toggles on click.                                                                                                                 |
+| `hoverAction`     | `'open' \| 'preview'`     | `'open'`    | What resting the pointer on the rail does: `open` expands the full panel (HeroUI behaviour); `preview` shows only one section's title and summary, leaving the panel to click / keyboard. |
+| `open`            | `boolean`                 | `undefined` | Controlled open state. Omit to stay uncontrolled.                                                                                                                                         |
+| `defaultOpen`     | `boolean`                 | `false`     | Initial open state when uncontrolled.                                                                                                                                                     |
+| `openDelay`       | `number`                  | `200`       | Milliseconds before opening after hover / focus (hover mode only).                                                                                                                        |
+| `closeDelay`      | `number`                  | `300`       | Milliseconds before closing after pointer / focus leaves (hover mode only).                                                                                                               |
+| `scrollContainer` | `string \| HTMLElement`   | `undefined` | Scroll container. Defaults to the sections' nearest scrollable ancestor, then the document.                                                                                               |
+| `bound`           | `number`                  | `0`         | Distance in px below the container top at which a section becomes active. Positive switches later, negative earlier.                                                                      |
+| `onOpenChange`    | `(open: boolean) => void` | `undefined` | Called when the open state changes.                                                                                                                                                       |
 
 ### SnFloatingTocBar Props
 
@@ -137,13 +144,20 @@ The active section is the last one whose viewport top has passed the `bound` lin
 
 `bound` keeps `SnAnchor`'s name and sign: `0` is the viewport top, a positive value moves the line down the page (switching later), a negative value moves it above the viewport (switching earlier).
 
-## Hover preview
+## Two hover modes
 
-Resting the pointer on a single bar floats a small card on the content side showing that section's title and a one-line summary.
+`hoverAction` decides what appears when the pointer rests on the rail. The two modes are mutually exclusive, so two overlays never stack:
+
+| Value            | On hover                                  | Full list opens via                    |
+| ---------------- | ----------------------------------------- | -------------------------------------- |
+| `open` (default) | The full panel expands (HeroUI behaviour) | hover                                  |
+| `preview`        | A single section's title + summary card   | click on the trigger or keyboard focus |
+
+In `open` mode the panel is already open on entry, so a card would duplicate it and is not rendered. In `preview` mode the pointer only shows the card and the panel never auto-opens — but **keyboard focus always opens the full panel**, so keyboard-only users still reach every section.
 
 The summary comes from the explicit `summary` prop when given; otherwise from the section element's own text, whitespace-collapsed and cut at 120 characters. A page that already has headings and paragraphs therefore needs no second source of truth.
 
-The card is `pointer-events: none` (it never steals the hover that shows it) and disappears as soon as the panel expands — the panel already lists every section, so a single-bar preview would only repeat it.
+The card is `pointer-events: none` (it never steals the hover that shows it) and disappears as soon as the panel expands.
 
 ## Controlled and uncontrolled
 
