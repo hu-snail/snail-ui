@@ -14,6 +14,12 @@
 
 </div>
 
+## 指标卡组合
+
+设计稿里常见的「折线 + 指标读数」卡片：头部是大字读数 + 涨幅胶囊 + 粒度切换，图表区用 `areaStyle.color` 的线性渐变填充和虚线 axisPointer。渐变是运行时对象（`new graphic.LinearGradient`），进不了复制配置，所以用完整 Demo 呈现：
+
+<Demo name="echarts-web-line-card" description="1:1 还原设计稿：指标头部 + 渐变面积折线 + 虚线轴指针；粒度切换在卡片右上角。" />
+
 ## 面板里能改什么
 
 | 控制项   | 落到哪里                                                     | 默认               |
