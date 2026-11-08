@@ -239,7 +239,7 @@ function onLocaleClick(event: MouseEvent): void {
   <SnConfigProvider skin="">
     <div class="sn-docs-nav" :class="{ 'sn-docs-nav--inverted': inverted }">
       <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
-        <img class="sn-docs-nav__brand-icon" src="/logo.png" width="247" height="120" alt="" />
+        <img class="sn-docs-nav__brand-icon" src="/logo.webp" width="330" height="200" alt="" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
       <div class="sn-docs-nav__search-slot">
@@ -356,7 +356,7 @@ function onLocaleClick(event: MouseEvent): void {
   text-decoration: none;
   white-space: nowrap;
 }
-/* Brand mark is a raster logo (public/logo.png, transparent bg) — it carries
+/* Brand mark is a raster logo (public/logo.webp, transparent bg) — it carries
  * its own color on both light/dark bands, so no CSS color is applied here.
  * 固有 width/height 属性锁宽高比 + flex-shrink: 0 —— 防止 flex 布局把
  * 图片横向压扁（width: auto 在受挤压的 flex 项上会被牺牲）。 */
