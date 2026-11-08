@@ -79,7 +79,9 @@ function formatInt(value: number): string {
 }
 
 /** Per-channel totals — derived from the series data so they cannot drift. */
-const totals = computed(() => channels.value.map((item) => item.data.reduce((sum, v) => sum + v, 0)));
+const totals = computed(() =>
+  channels.value.map((item) => item.data.reduce((sum, v) => sum + v, 0)),
+);
 
 /** The header figure is the sum of the channel totals. */
 const grandTotal = computed(() => formatInt(totals.value.reduce((sum, v) => sum + v, 0)));
@@ -88,7 +90,10 @@ const grandTotal = computed(() => formatInt(totals.value.reduce((sum, v) => sum 
 const delta = computed(() => {
   const other: Year = year.value === 'This year' ? 'Last year' : 'This year';
   const current = totals.value.reduce((sum, v) => sum + v, 0);
-  const previous = years[other].reduce((sum, item) => sum + item.data.reduce((s, v) => s + v, 0), 0);
+  const previous = years[other].reduce(
+    (sum, item) => sum + item.data.reduce((s, v) => s + v, 0),
+    0,
+  );
   const ratio = ((current - previous) / previous) * 100;
   return `${ratio >= 0 ? '+' : ''}${ratio.toFixed(1)}%`;
 });
@@ -161,7 +166,12 @@ const option = computed<SnEChartsOption>(() => ({
         <SnSelect v-model="year" :options="yearOptions" size="small" aria-label="Reporting year" />
       </div>
     </div>
-    <SnChart :option="option" :height="248" :not-merge="true" aria-label="Visitor composition trend" />
+    <SnChart
+      :option="option"
+      :height="248"
+      :not-merge="true"
+      aria-label="Visitor composition trend"
+    />
     <div class="echarts-area-card__stats">
       <div v-for="(item, index) in channels" :key="item.name" class="echarts-area-card__stat">
         <span class="echarts-area-card__dot" :style="{ background: item.color }" />

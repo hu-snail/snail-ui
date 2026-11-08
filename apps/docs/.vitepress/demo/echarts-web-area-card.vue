@@ -23,7 +23,20 @@ interface Channel {
   readonly data: readonly number[];
 }
 
-const MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+const MONTHS = [
+  '1月',
+  '2月',
+  '3月',
+  '4月',
+  '5月',
+  '6月',
+  '7月',
+  '8月',
+  '9月',
+  '10月',
+  '11月',
+  '12月',
+];
 
 /** 每个年份一套渠道数据（颜色与渠道名共享，只有数值换）。 */
 const years: Record<Year, readonly Channel[]> = {
@@ -77,7 +90,9 @@ function formatInt(value: number): string {
 }
 
 /** 每个渠道的合计 —— 由 series 数据现算，保证与图表自洽。 */
-const totals = computed(() => channels.value.map((item) => item.data.reduce((sum, v) => sum + v, 0)));
+const totals = computed(() =>
+  channels.value.map((item) => item.data.reduce((sum, v) => sum + v, 0)),
+);
 
 /** 头部大字 = 三个渠道合计之和。 */
 const grandTotal = computed(() => formatInt(totals.value.reduce((sum, v) => sum + v, 0)));
@@ -86,7 +101,10 @@ const grandTotal = computed(() => formatInt(totals.value.reduce((sum, v) => sum 
 const delta = computed(() => {
   const other: Year = year.value === '今年' ? '去年' : '今年';
   const current = totals.value.reduce((sum, v) => sum + v, 0);
-  const previous = years[other].reduce((sum, item) => sum + item.data.reduce((s, v) => s + v, 0), 0);
+  const previous = years[other].reduce(
+    (sum, item) => sum + item.data.reduce((s, v) => s + v, 0),
+    0,
+  );
   const ratio = ((current - previous) / previous) * 100;
   return `${ratio >= 0 ? '+' : ''}${ratio.toFixed(1)}%`;
 });
