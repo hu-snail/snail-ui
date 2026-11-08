@@ -1,21 +1,21 @@
 name: uni-demo deploy
 
-# uni 端演示站（apps/uni-demo）的 H5 产物独立部署到 GitHub Pages。
+# uni 端演示站（apps/uni-demo）的 H5 产物部署到 GitHub Pages。
 # docs 组件文档的 uni 预览 iframe 指向该站点（ADR-0005）。
+#
+# ⚠️ 本 workflow 只在手动触发时使用，**不要**给它加 `push` 触发。
+# GitHub Pages 每仓库只有一个站点，而它的产物是"仅演示站"的整站快照
+# （upload path = apps/uni-demo/dist/build/h5），一旦部署就会把
+# `/uni-templates/` 子目录整个抹掉——那里是场景模板站。
+#
+# 日常部署走 `.github/workflows/uni-sites-deploy.yml`：它一次构建两个站点、
+# 合并成同一个产物（根 = 演示站，/uni-templates/ = 模板站）。它的触发路径
+# 是本文件原先那组的严格超集，所以删掉 `push` 不会漏部署。
+#
+# 本文件保留给"只想单独重发演示站、且明确接受模板站会掉"的应急场景。
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'apps/uni-demo/**'
-      - 'packages/uni/**'
-      - 'packages/templates/**'
-      - 'packages/tokens/**'
-      - 'packages/tokens-mp/**'
-      - 'packages/style-packs/**'
-      - 'pnpm-lock.yaml'
-      - '.github/workflows/uni-demo-deploy.yml'
 
 permissions:
   contents: read
