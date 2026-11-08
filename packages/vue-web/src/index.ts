@@ -73,6 +73,10 @@ export type {
 export { default as SnTreeSelect } from './tree-select/SnTreeSelect.vue';
 export type {
   SnTreeSelectValue,
+  SnTreeSelectIcon,
+  SnTreeSelectLineCorner,
+  SnTreeSelectLineMode,
+  SnTreeSelectLineStyle,
   SnTreeSelectOptionInput,
   SnTreeSelectNode,
 } from './tree-select/sn-tree-select-types';

@@ -10,8 +10,37 @@
  * resolver.ts) is touched.
  */
 
+import type { Component, VNodeChild } from 'vue';
+
 /** Value type selectable inside SnTreeSelect — naive tree keys are string | number. */
 export type SnTreeSelectValue = string | number;
+
+/**
+ * Per-node icon (AUI additive, data-level):
+ * a registered SnIcon name / plain text, a VNode (or array), an icon
+ * component, or a zero-arg render fn.
+ */
+export type SnTreeSelectIcon = VNodeChild | Component | (() => VNodeChild);
+
+/** Connector-line stroke style (AUI additive — `showLine` is the reference prop). */
+export type SnTreeSelectLineStyle = 'solid' | 'dashed';
+
+/**
+ * Connector-line geometry (AUI additive):
+ * `'branch'` = L-shaped parent→child connectors (default);
+ * `'guide'` = indent-guide style — a full-height vertical at every ancestor
+ * level and no horizontal segment. `lineStyle` / `lineColor` still apply;
+ * `lineCorner` only affects `'branch'`.
+ */
+export type SnTreeSelectLineMode = 'branch' | 'guide';
+
+/**
+ * Connector-line elbow shape (AUI additive):
+ * `'square'` = right-angle L (default), `'rounded'` = compact quarter-arc elbow.
+ * The corner radius (both axes) is tunable with
+ * `--sn-web-tree-select-line-radius` (3px by default).
+ */
+export type SnTreeSelectLineCorner = 'square' | 'rounded';
 
 /** Visual size preset (AUI convention adds `mini` below naive's `tiny`). */
 export type SnTreeSelectSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
@@ -39,6 +68,8 @@ export interface SnTreeSelectNode {
   value: SnTreeSelectValue;
   /** Node-level disabled (selection + toggling blocked, children still render). */
   disabled: boolean;
+  /** Raw data-level icon config (resolved at render time). */
+  icon: unknown;
   /** Depth in the tree (0 = root level) — drives indent. */
   depth: number;
   /** Normalized children (undefined / empty for leaves). */

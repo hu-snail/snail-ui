@@ -166,8 +166,17 @@
           v-if="isMenuOpen"
           :id="menuId"
           ref="menuRef"
-          :class="['sn-tree-select-menu', `sn-tree-select-menu--${placement}`]"
-          :style="menuStyle"
+          :class="[
+            'sn-tree-select-menu',
+            `sn-tree-select-menu--${placement}`,
+            {
+              'sn-tree-select-menu--line-guide': showLine && lineMode === 'guide',
+              'sn-tree-select-menu--line-dashed': showLine && lineStyle === 'dashed',
+              'sn-tree-select-menu--line-rounded':
+                showLine && lineMode === 'branch' && lineCorner === 'rounded',
+            },
+          ]"
+          :style="[menuStyle, lineVars]"
           role="tree"
           :aria-label="ariaLabel || 'Options'"
           :aria-multiselectable="isMulti ? 'true' : undefined"
@@ -200,6 +209,26 @@
                 @click="chooseNode(node)"
                 @mouseenter="onNodeEnter(node)"
               >
+                <span v-if="node.line" class="sn-tree-select-node__lines" aria-hidden="true">
+                  <span
+                    v-for="segment in node.line.verticals"
+                    :key="`v-${segment.index}`"
+                    class="sn-tree-select-node__line sn-tree-select-node__line--vertical"
+                    :class="{
+                      'sn-tree-select-node__line--half': segment.half,
+                      'sn-tree-select-node__line--elbow':
+                        node.line.horizontalIndex === segment.index,
+                    }"
+                    :style="{ '--sn-web-tree-select-line-index': String(segment.index) }"
+                  />
+                  <span
+                    v-if="node.line.horizontalIndex !== null"
+                    class="sn-tree-select-node__line sn-tree-select-node__line--horizontal"
+                    :style="{
+                      '--sn-web-tree-select-line-index': String(node.line.horizontalIndex),
+                    }"
+                  />
+                </span>
                 <button
                   v-if="hasChildren(node)"
                   type="button"
@@ -226,6 +255,9 @@
                   </svg>
                 </button>
                 <span v-else class="sn-tree-select-node__switcher-placeholder" aria-hidden="true" />
+                <span v-if="node.icon != null" class="sn-tree-select-node__icon">
+                  <SnTreePart :content="resolveTreeIcon(node.icon)" />
+                </span>
                 <span class="sn-tree-select-node__label">{{ node.label }}</span>
               </div>
             </template>
@@ -257,6 +289,13 @@
  *     the parent's own value only
  *   - defaultExpandAll (non-controlled expansion; expandedKeys control
  *     simplified away)
+ *   - `show-line` + `line-style` / `line-corner` / `line-color` (AUI additive):
+ *     L-shaped connectors between parent/child rows, solid (default) or
+ *     dashed, square (default) or rounded elbow, with a custom stroke color;
+ *     geometry comes from the shared flat-row resolver in
+ *     `_internal/tree-line-layout.ts`
+ *   - option-level `icon` (AUI additive): name / component / VNode / render
+ *     fn / plain text, resolved by `resolveTreeIcon()`
  *   - placeholder / clearable / filterable (label match, ancestors of
  *     matches auto-expand while filtering) / disabled / readonly /
  *     size / status
@@ -276,12 +315,18 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
 import {
   defaultTreeSelectFilter,
+  type SnTreeSelectLineCorner,
+  type SnTreeSelectLineMode,
+  type SnTreeSelectLineStyle,
   type SnTreeSelectNode,
   type SnTreeSelectOptionInput,
   type SnTreeSelectSize,
   type SnTreeSelectStatus,
   type SnTreeSelectValue,
 } from './sn-tree-select-types';
+import { resolveTreeLineLayout } from '../_internal/tree-line-layout';
+import { resolveTreeIcon, SnTreePart } from '../_internal/tree-node-parts';
+import type { SnTreeLineLayout } from '../_internal/tree-line-layout';
 import { useOverlayFollow } from '../_internal/use-overlay-follow';
 
 defineOptions({ name: 'SnTreeSelect' });
@@ -326,6 +371,16 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the root wrapper. */
     customStyle?: string | Record<string, string>;
+    /** Draw connector lines between parent and child rows. */
+    showLine?: boolean;
+    /** Connector geometry: L-shaped branch lines (default) or indent guides. */
+    lineMode?: SnTreeSelectLineMode;
+    /** Connector stroke style (solid by default). */
+    lineStyle?: SnTreeSelectLineStyle;
+    /** Connector elbow shape: right-angle L (default) or rounded quarter-arc. */
+    lineCorner?: SnTreeSelectLineCorner;
+    /** Any CSS color / token for connector lines; overrides the CSS var fallback. */
+    lineColor?: string | undefined;
   }>(),
   {
     modelValue: null,
@@ -347,7 +402,19 @@ const props = withDefaults(
     emptyText: 'No data',
     customClass: '',
     customStyle: '',
+    showLine: false,
+    lineMode: 'branch',
+    lineStyle: 'solid',
+    lineCorner: 'square',
+    lineColor: undefined,
   },
+);
+
+/** `lineColor` is exposed as the token the panel CSS already reads. The menu
+ * is Teleported to <body>, so the var must live on the menu element itself
+ * (not the component root) for the line nodes to inherit it. */
+const lineVars = computed<Record<string, string>>(() =>
+  props.lineColor ? { '--sn-web-tree-select-line-color': props.lineColor } : {},
 );
 
 const emit = defineEmits<{
@@ -387,6 +454,7 @@ function normalizeTree(
     const labelRaw: unknown = raw[props.labelField];
     const keyRaw: unknown = raw[props.keyField] !== undefined ? raw[props.keyField] : raw['value'];
     const disabledRaw: unknown = raw['disabled'];
+    const iconRaw: unknown = raw['icon'];
     const childrenRaw: unknown = raw[props.childrenField];
     const value: SnTreeSelectValue =
       typeof keyRaw === 'string' || typeof keyRaw === 'number' ? keyRaw : index;
@@ -402,6 +470,7 @@ function normalizeTree(
       label: labelRaw === undefined || labelRaw === null ? String(value) : String(labelRaw),
       value,
       disabled: disabledRaw === true,
+      icon: iconRaw,
       depth,
       children,
       parentKeys,
@@ -543,7 +612,12 @@ const filterState = computed<TreeFilterState | null>(() => {
  * render and every ancestor of a match is descended into (auto-expand);
  * otherwise only user-expanded parents are descended into.
  */
-const visibleNodes = computed<SnTreeSelectNode[]>(() => {
+/** A visible row: the normalized node plus its connector-line layout. */
+interface SnTreeSelectVisibleNode extends SnTreeSelectNode {
+  line: SnTreeLineLayout | null;
+}
+
+const visibleNodes = computed<SnTreeSelectVisibleNode[]>(() => {
   const filter = filterState.value;
   const out: SnTreeSelectNode[] = [];
   const walk = (nodes: SnTreeSelectNode[]): void => {
@@ -555,7 +629,15 @@ const visibleNodes = computed<SnTreeSelectNode[]>(() => {
     }
   };
   walk(normalizedNodes.value);
-  return out;
+  // Flat depth-first rows are enough for branch termination; lines are
+  // computed once per render and attached without touching the node tree.
+  const layouts = props.showLine
+    ? resolveTreeLineLayout(
+        out.map((node) => node.depth),
+        props.lineMode,
+      )
+    : [];
+  return out.map((node, index) => ({ ...node, line: layouts[index] ?? null }));
 });
 
 /* ─────────── Open state / ids / pending ─────────── */
@@ -1261,13 +1343,101 @@ const wrapperStyle = computed<string>(() => {
   color: var(--sn-web-tree-select-node-text-color-disabled, var(--sn-web-color-text-disabled));
 }
 
+/* Connector lines — x positions follow the same padding / indent /
+ * switcher-size tokens as the row, so host overrides stay aligned. */
+.sn-tree-select-node__lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sn-tree-select-node__line {
+  position: absolute;
+  color: var(--sn-web-tree-select-line-color, var(--sn-web-color-border-default));
+}
+
+.sn-tree-select-node__line--vertical,
+.sn-tree-select-node__line--horizontal {
+  left: calc(
+    var(--sn-web-tree-select-node-padding-x, 10px) + var(--sn-web-tree-select-line-index, 0) *
+      var(--sn-web-tree-select-node-indent, 16px) + var(--sn-web-tree-select-switcher-size, 16px) /
+      2
+  );
+}
+
+.sn-tree-select-node__line--vertical {
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid currentColor;
+}
+
+.sn-tree-select-node__line--vertical.sn-tree-select-node__line--half {
+  bottom: 50%;
+}
+
+.sn-tree-select-node__line--horizontal {
+  top: 50%;
+  width: calc(var(--sn-web-tree-select-node-indent, 16px) - 6px);
+  border-top: 1px solid currentColor;
+}
+
+.sn-tree-select-menu--line-dashed .sn-tree-select-node__line--vertical {
+  border-left-style: dashed;
+}
+
+.sn-tree-select-menu--line-dashed .sn-tree-select-node__line--horizontal {
+  border-top-style: dashed;
+}
+
+/* Rounded elbow (AUI additive `line-corner="rounded"`): a compact
+ * quarter-circle with the same radius on both axes. The box is R tall and
+ * starts just above the row center line, so the branch peels off the straight
+ * trunk and flattens into the horizontal segment within a few pixels. A
+ * non-last child keeps its full-height guide, so the trunk stays unbroken
+ * while the branch curves away from it; a last child trims the guide at the
+ * arc's top edge, so the arc alone terminates the branch.
+ * `--sn-web-tree-select-line-radius` (default 3px) is the corner radius. */
+.sn-tree-select-menu--line-rounded .sn-tree-select-node__line--horizontal {
+  box-sizing: border-box;
+  /* +1px aligns the bottom border with square mode's `top: 50%` border-top. */
+  top: calc(50% - var(--sn-web-tree-select-line-radius, 3px) + 1px);
+  height: var(--sn-web-tree-select-line-radius, 3px);
+  border-top: 0;
+  border-bottom: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+  border-bottom-left-radius: var(--sn-web-tree-select-line-radius, 3px);
+}
+
+.sn-tree-select-menu--line-rounded
+  .sn-tree-select-node__line--vertical.sn-tree-select-node__line--elbow.sn-tree-select-node__line--half {
+  bottom: calc(50% + var(--sn-web-tree-select-line-radius, 3px) - 1px);
+}
+
+.sn-tree-select-menu--line-rounded.sn-tree-select-menu--line-dashed
+  .sn-tree-select-node__line--horizontal {
+  border-bottom-style: dashed;
+}
+
+/* Data-level node icon — same 14px slot for every icon source. */
+.sn-tree-select-node__icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--sn-web-tree-select-node-icon-color, var(--sn-web-color-text-tertiary));
+}
+
+.sn-tree-select-node__icon :deep(svg),
+.sn-tree-select-node__icon :deep(.sn-icon) {
+  width: 14px;
+  height: 14px;
+}
+
 /* Expand / collapse switcher */
 .sn-tree-select-node__switcher {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: var(--sn-web-tree-select-switcher-size, 16px);
+  height: var(--sn-web-tree-select-switcher-size, 16px);
   flex: none;
   padding: 0;
   border: none;
@@ -1292,7 +1462,7 @@ const wrapperStyle = computed<string>(() => {
 
 /* Leaf alignment spacer — same width as the switcher. */
 .sn-tree-select-node__switcher-placeholder {
-  width: 16px;
+  width: var(--sn-web-tree-select-switcher-size, 16px);
   flex: none;
 }
 </style>
