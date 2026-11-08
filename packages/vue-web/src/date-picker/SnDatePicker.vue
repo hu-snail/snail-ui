@@ -81,7 +81,14 @@
           v-if="isPanelOpen"
           :id="panelId"
           ref="panelRef"
-          :class="['sn-date-picker-panel', `sn-date-picker-panel--${placement}`]"
+          :class="[
+            'sn-date-picker-panel',
+            `sn-date-picker-panel--${placement}`,
+            {
+              'sn-date-picker-panel--range': isRange,
+              'sn-date-picker-panel--month-range': isMonthRange,
+            },
+          ]"
           :style="panelStyle"
           role="group"
           :aria-label="ariaLabel || 'Date picker panel'"
@@ -103,8 +110,185 @@
                 {{ sc.label }}
               </button>
             </div>
-            <div class="sn-date-picker-panel__body">
-              <div class="sn-date-picker-panel__calendars">
+            <div
+              class="sn-date-picker-panel__body"
+              :class="{ 'sn-date-picker-panel__body--inputs-bottom': isInputBottom }"
+            >
+              <!-- Datetime range: 4 header fields (start date / start time |
+                   end date / end time). Clicking a time field opens the
+                   hour/minute/second popover below it. -->
+              <div
+                v-if="isDatetimeRange"
+                class="sn-date-picker-panel__inputs"
+                :class="{ 'sn-date-picker-panel__inputs--bottom': isInputBottom }"
+              >
+                <div class="sn-date-picker-panel__input-pair">
+                  <input
+                    class="sn-date-picker-field"
+                    type="text"
+                    readonly
+                    :value="rangeInputDateText('start')"
+                    :placeholder="datePickerLocale.rangeStartPlaceholder"
+                    :aria-label="datePickerLocale.rangeStartPlaceholder"
+                  />
+                  <input
+                    class="sn-date-picker-field sn-date-picker-field--time"
+                    :class="{ 'sn-date-picker-field--active': timePopoverSide === 'start' }"
+                    type="text"
+                    readonly
+                    :value="rangeInputTimeText('start')"
+                    placeholder="HH:mm:ss"
+                    :aria-label="datePickerLocale.startTime"
+                    @click="openTimePopover('start')"
+                  />
+                </div>
+                <span class="sn-date-picker-panel__input-divider" aria-hidden="true" />
+                <div class="sn-date-picker-panel__input-pair">
+                  <input
+                    class="sn-date-picker-field"
+                    type="text"
+                    readonly
+                    :value="rangeInputDateText('end')"
+                    :placeholder="datePickerLocale.rangeEndPlaceholder"
+                    :aria-label="datePickerLocale.rangeEndPlaceholder"
+                  />
+                  <input
+                    class="sn-date-picker-field sn-date-picker-field--time"
+                    :class="{ 'sn-date-picker-field--active': timePopoverSide === 'end' }"
+                    type="text"
+                    readonly
+                    :value="rangeInputTimeText('end')"
+                    placeholder="HH:mm:ss"
+                    :aria-label="datePickerLocale.endTime"
+                    @click="openTimePopover('end')"
+                  />
+                </div>
+
+                <!-- Time popover — overlays the dual calendars -->
+                <div
+                  v-if="timePopoverSide !== null"
+                  class="sn-date-picker-time-popover"
+                  :class="`sn-date-picker-time-popover--${timePopoverSide}`"
+                  role="group"
+                  :aria-label="datePickerLocale.selectTime"
+                >
+                  <div class="sn-date-picker-time-group">
+                    <div class="sn-date-picker-time-popover__current">
+                      <span v-for="col in timeColumns" :key="col.key">{{
+                        pad2(popoverTimeDraft[col.key])
+                      }}</span>
+                    </div>
+                    <div class="sn-date-picker-panel__time sn-date-picker-panel__time--popover">
+                      <div
+                        v-for="col in timeColumns"
+                        :key="col.key"
+                        class="sn-date-picker-time-col"
+                        role="listbox"
+                        :aria-label="datePickerLocale[col.key]"
+                      >
+                        <div
+                          v-for="v in col.values"
+                          :key="v"
+                          class="sn-date-picker-time-item"
+                          :class="{
+                            'sn-date-picker-time-item--selected': popoverTimeDraft[col.key] === v,
+                          }"
+                          role="option"
+                          :aria-selected="popoverTimeDraft[col.key] === v ? 'true' : 'false'"
+                          :data-unit="col.key"
+                          :data-value="v"
+                          @click="onPopoverTimeCellClick(col.key, v)"
+                        >
+                          {{ pad2(v) }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="sn-date-picker-time-popover__footer">
+                      <button
+                        type="button"
+                        class="sn-date-picker-time-popover__now"
+                        :tabindex="-1"
+                        @click="setCurrentTime"
+                      >
+                        {{ datePickerLocale.now }}
+                      </button>
+                      <button
+                        type="button"
+                        class="sn-date-picker-panel__confirm"
+                        :tabindex="-1"
+                        @click="closeTimePopover"
+                      >
+                        {{ datePickerLocale.confirm }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Month range: two year | month panes (start / end) -->
+              <div
+                v-if="isMonthRange"
+                class="sn-date-picker-panel__months"
+                role="group"
+                :aria-label="datePickerLocale.monthRangeLabel"
+              >
+                <div v-for="pane in monthPanes" :key="pane.side" class="sn-date-picker-month-pane">
+                  <div class="sn-date-picker-month-pane__header">
+                    <div class="sn-date-picker-month-pane__current">{{ pane.year }}</div>
+                    <div class="sn-date-picker-month-pane__current">{{ pane.month + 1 }}</div>
+                  </div>
+                  <div class="sn-date-picker-month-pane__body">
+                    <div
+                      class="sn-date-picker-month-pane__col"
+                      role="listbox"
+                      :aria-label="datePickerLocale.yearColumnLabel"
+                    >
+                      <div
+                        v-for="y in pane.years"
+                        :key="y"
+                        class="sn-date-picker-month-cell"
+                        :class="{
+                          'sn-date-picker-month-cell--current': y === pane.year,
+                        }"
+                        role="option"
+                        :aria-selected="y === pane.year ? 'true' : 'false'"
+                        :data-year="y"
+                        @click="onMonthPaneYearClick(pane.side, y)"
+                      >
+                        {{ y }}
+                      </div>
+                    </div>
+                    <div
+                      class="sn-date-picker-month-pane__col"
+                      role="listbox"
+                      :aria-label="datePickerLocale.monthColumnLabel"
+                    >
+                      <div
+                        v-for="m in 12"
+                        :key="m"
+                        class="sn-date-picker-month-cell"
+                        :class="[
+                          monthCellClasses(pane.side, m - 1),
+                          { 'sn-date-picker-month-cell--current': m - 1 === pane.month },
+                        ]"
+                        role="option"
+                        :aria-selected="monthCellSelected(pane.side, m - 1) ? 'true' : 'false'"
+                        :aria-disabled="
+                          isMonthCellDisabled(monthCellTs(pane.side, m - 1)) ? 'true' : undefined
+                        "
+                        :data-side="pane.side"
+                        :data-month="m - 1"
+                        @click="onMonthPaneMonthClick(pane.side, m - 1)"
+                        @mouseenter="onMonthPaneHover(pane.side, m - 1)"
+                      >
+                        {{ m }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="sn-date-picker-panel__calendars">
                 <template v-for="(cal, calIndex) in calendars" :key="cal.key">
                   <div class="sn-date-picker-calendar">
                     <div class="sn-date-picker-calendar__header">
@@ -132,7 +316,7 @@
                         :tabindex="-1"
                         @click="onTitleClick"
                       >
-                        {{ cal.title }}
+                        {{ headerTitleOf(cal) }}
                       </button>
                       <button
                         type="button"
@@ -210,7 +394,7 @@
                     <!-- Quarter view (quarter types commit; date modes: nav drill) -->
                     <div
                       v-else-if="viewMode === 'quarter'"
-                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      class="sn-date-picker-grid sn-date-picker-grid--unit sn-date-picker-grid--quarter"
                       role="grid"
                       :aria-label="cal.yearTitle"
                     >
@@ -230,6 +414,9 @@
                               cell.ts,
                               cal.year,
                             ),
+                            'sn-date-picker-cell--start': isQuarterCellStart(cell.ts),
+                            'sn-date-picker-cell--end': isQuarterCellEnd(cell.ts),
+                            'sn-date-picker-cell--in-range': isQuarterCellInRange(cell.ts),
                             'sn-date-picker-cell--cursor': isQuarterCellCursor(cell.ts, cal.year),
                             'sn-date-picker-cell--disabled': isQuarterCellDisabled(cell.ts),
                           }"
@@ -249,7 +436,7 @@
                     <!-- Month-of-year view -->
                     <div
                       v-else-if="viewMode === 'month'"
-                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      class="sn-date-picker-grid sn-date-picker-grid--unit sn-date-picker-grid--month"
                       role="grid"
                       :aria-label="cal.yearTitle"
                     >
@@ -283,7 +470,7 @@
                     <!-- Year view -->
                     <div
                       v-else
-                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      class="sn-date-picker-grid sn-date-picker-grid--unit sn-date-picker-grid--year"
                       role="grid"
                       :aria-label="cal.decadeTitle"
                     >
@@ -315,9 +502,10 @@
                     </div>
                   </div>
 
-                  <!-- Aside time columns — one group per calendar (showTime) -->
+                  <!-- Aside time columns — single datetime only (range mode
+                       uses the header input row + time popover instead). -->
                   <div
-                    v-if="hasTime"
+                    v-if="hasTime && !isRange"
                     class="sn-date-picker-panel__time sn-date-picker-panel__time--aside"
                   >
                     <div class="sn-date-picker-time-group">
@@ -375,7 +563,10 @@
             </div>
           </div>
 
-          <div v-if="hasTime || showTodayFooter" class="sn-date-picker-panel__footer">
+          <div
+            v-if="hasTime || showTodayFooter || isMonthRange"
+            class="sn-date-picker-panel__footer"
+          >
             <button
               v-if="showTodayFooter"
               type="button"
@@ -386,7 +577,16 @@
               {{ locale.DatePicker.today }}
             </button>
             <button
-              v-if="hasTime"
+              v-if="isDatetimeRange || isMonthRange"
+              type="button"
+              class="sn-date-picker-panel__clear"
+              :tabindex="-1"
+              @click="clearPanelDraft"
+            >
+              {{ locale.DatePicker.clear }}
+            </button>
+            <button
+              v-if="hasTime || isMonthRange"
               type="button"
               class="sn-date-picker-panel__confirm"
               :tabindex="-1"
@@ -410,8 +610,8 @@
  *
  * Parity (this version):
  *   - type: 'date' | 'datetime' | 'week' | 'quarter' | 'month' | 'year' |
- *     'daterange' | 'datetimerange' | 'weekrange' | 'quarterrange'. Range
- *     types bind `[start, end]` timestamps.
+ *     'daterange' | 'datetimerange' | 'weekrange' | 'quarterrange' |
+ *     'monthrange'. Range types bind `[start, end]` timestamps.
  *   - modelValue: millisecond timestamps, local timezone (Date convention).
  *     Week values are the week's Monday midnight; quarter values the
  *     quarter's first midnight.
@@ -425,7 +625,8 @@
  *     cells disable via their period start; week picks via their Monday).
  *   - shortcuts + shortcutsPosition ('left' | 'right' | 'bottom'): quick
  *     picks rendered beside or under the panel body; lazy values resolve
- *     at click time.
+ *     at click time. inputPosition ('top' | 'bottom'): datetime-range
+ *     four-field input bar placement.
  *   - select event: fires per pick with the draft value (range: the
  *     provisional start, then the sorted pair) — pair with disabledDate
  *     for dynamic range constraints.
@@ -434,8 +635,12 @@
  *     the panel title to drill down — navigation-only in date modes,
  *     committing in week / quarter / month / year types).
  *   - datetime: aside time columns RIGHT of the calendar (选择时间 header,
- *     single mode) — datetimerange puts one time group per calendar.
- *     Footer: 今天 jump (date type) + 确认 confirm (time modes).
+ *     single mode only). datetimerange instead uses a four-field header row
+ *     (start date / start time | end date / end time) — clicking a time field
+ *     opens an hour/minute/second popover with 此刻 / 确认. Both time modes
+ *     show a 确认 footer; range time modes also show 清除.
+ *   - monthrange: two side-by-side year | month panes with range highlight,
+ *     auto swap, 清除 / 确认 footer and month-step keyboard navigation.
  *   - range: two side-by-side calendars, start-then-end selection with
  *     automatic swap when end < start, selected interval highlighted.
  *   - keyboard: Arrow keys move the cursor, PageUp/PageDown page by the
@@ -468,6 +673,7 @@ import {
   DEFAULT_FORMATS,
   addMonths,
   addYears,
+  buildDate,
   buildMonthGrid,
   buildMonthUnitGrid,
   buildQuarterUnitGrid,
@@ -480,6 +686,7 @@ import {
   hasTimePart,
   isQuarterType,
   isRangeType,
+  isMonthRangeType,
   isSameDay,
   isSameMonth,
   isSameQuarter,
@@ -493,6 +700,7 @@ import {
   startOfWeek,
   type SnDatePickerShortcut,
   type SnDatePickerShortcutsPosition,
+  type SnDatePickerInputPosition,
   type SnDateRangeValue,
   type SnDatePickerSize,
   type SnDatePickerStatus,
@@ -535,6 +743,11 @@ const props = withDefaults(
     shortcuts?: SnDatePickerShortcut[];
     /** Where the shortcuts bar renders. */
     shortcutsPosition?: SnDatePickerShortcutsPosition;
+    /**
+     * Where the four-field input bar renders in `datetimerange` panels.
+     * `bottom` places it under the calendars (the time popover opens upward).
+     */
+    inputPosition?: SnDatePickerInputPosition;
     /** Accessible name for the trigger (fallback: 'Date picker'). */
     ariaLabel?: string;
     /** Class on the root wrapper. */
@@ -553,6 +766,7 @@ const props = withDefaults(
     status: 'default',
     ariaLabel: '',
     shortcutsPosition: 'bottom',
+    inputPosition: 'top',
     customClass: '',
     customStyle: '',
   },
@@ -646,8 +860,37 @@ const isRange = computed(() => isRangeType(props.type));
 const hasTime = computed(() => hasTimePart(props.type));
 const isWeek = computed(() => isWeekType(props.type));
 const isQuarter = computed(() => isQuarterType(props.type));
+const isDatetimeRange = computed(() => props.type === 'datetimerange');
+const isMonthRange = computed(() => isMonthRangeType(props.type));
+/** Bottom-placed datetime-range input bar (time popover opens upward). */
+const isInputBottom = computed(() => isDatetimeRange.value && props.inputPosition === 'bottom');
 const isInteractive = computed(() => !props.disabled && !props.readonly);
 const resolvedFormat = computed(() => props.format || DEFAULT_FORMATS[props.type]);
+
+/**
+ * Datetime-range time popover: which side's time field opened it. Kept in
+ * the panel (not teleported) so it overlays the dual calendars like the
+ * reference design instead of stealing width from them.
+ */
+const timePopoverSide = ref<SnRangeSide | null>(null);
+
+/** Draft time-of-day shown/edited by the open popover. */
+const popoverTimeDraft = computed<SnTimeOfDay>(() =>
+  timePopoverSide.value === null
+    ? { hour: 0, minute: 0, second: 0 }
+    : rangeTimeDraft.value[timePopoverSide.value],
+);
+
+/** Year shown by each month-range pane (left = start, right = end). */
+const monthPaneYear = ref<{ start: number; end: number }>(defaultMonthPaneYears());
+
+/** Hover preview while picking the month-range end. */
+const monthHoverEnd = ref<number | null>(null);
+
+function defaultMonthPaneYears(): { start: number; end: number } {
+  const year = getDateParts(Date.now()).year;
+  return { start: year, end: year + 1 };
+}
 
 /** Shortcuts split by render position. */
 const sideShortcuts = computed(() =>
@@ -705,8 +948,31 @@ const rangePlaceholders = computed<readonly [string, string]>(() => {
   if (Array.isArray(props.placeholder) && props.placeholder.length === 2) {
     return [props.placeholder[0], props.placeholder[1]];
   }
+  if (isMonthRange.value) {
+    return [
+      datePickerLocale.value.monthRangeStartPlaceholder,
+      datePickerLocale.value.monthRangeEndPlaceholder,
+    ];
+  }
   return [datePickerLocale.value.rangeStartPlaceholder, datePickerLocale.value.rangeEndPlaceholder];
 });
+
+/** Fixed panel-field date format (the trigger still honours `format`). */
+const PANEL_DATE_FORMAT = 'yyyy-MM-dd';
+
+/** Header date field text for a datetime-range side ('' until a date exists). */
+function rangeInputDateText(side: SnRangeSide): string {
+  const draft = side === 'start' ? rangeDraft.value.start : rangeDraft.value.end;
+  const model = rangeModel.value?.[side === 'start' ? 0 : 1] ?? null;
+  const ts = draft ?? model;
+  return ts === null ? '' : formatDate(ts, PANEL_DATE_FORMAT);
+}
+
+/** Header time field text for a datetime-range side (pending time-of-day). */
+function rangeInputTimeText(side: SnRangeSide): string {
+  const t = rangeTimeDraft.value[side];
+  return `${pad2(t.hour)}:${pad2(t.minute)}:${pad2(t.second)}`;
+}
 
 const singleText = computed<string | null>(() =>
   singleModel.value === null ? null : formatDate(singleModel.value, resolvedFormat.value),
@@ -787,23 +1053,59 @@ function calendarOf(anchor: number, key: string): SnCalendarViewModel {
   };
 }
 
+/**
+ * Anchor of the right-hand calendar.
+ *
+ * Range panels show the range END when it lies after the left anchor (the
+ * reference behaviour: start month | end month for a wide range), otherwise
+ * step one unit from the left anchor so an empty panel still shows the
+ * adjacent month / year. Only committed or drafted picks count — the hover
+ * preview must not drag the calendar around.
+ */
+function secondAnchor(): number {
+  const left = anchorTs.value;
+  const stepped = viewMode.value === 'quarter' ? addYears(left, 1) : addMonths(left, 1);
+  if (!isRange.value) return stepped;
+  const draft = rangeDraft.value;
+  const end =
+    draft.start !== null && draft.end !== null ? draft.end : (rangeModel.value?.[1] ?? null);
+  if (end === null) return stepped;
+  const unitOf = viewMode.value === 'quarter' ? startOfQuarter : startOfMonthTs;
+  return unitOf(end) > unitOf(left) ? end : stepped;
+}
+
 const calendars = computed<SnCalendarViewModel[]>(() => {
   if (isRange.value) {
     // Quarter view steps one YEAR per calendar; every other view one month.
-    const second =
-      viewMode.value === 'quarter' ? addYears(anchorTs.value, 1) : addMonths(anchorTs.value, 1);
-    return [calendarOf(anchorTs.value, 'a'), calendarOf(second, 'b')];
+    return [calendarOf(anchorTs.value, 'a'), calendarOf(secondAnchor(), 'b')];
   }
   return [calendarOf(anchorTs.value, 'a')];
 });
 
+/**
+ * Header title follows the active unit: month for the day grid, year for the
+ * quarter / month-of-year grids, decade window for the year grid. Showing the
+ * month title on quarter grids made the quarter panel look like a date panel
+ * and mislabelled its year-based navigation.
+ */
+function headerTitleOf(cal: SnCalendarViewModel): string {
+  if (viewMode.value === 'day') return cal.title;
+  if (viewMode.value === 'year') return cal.decadeTitle;
+  return cal.yearTitle;
+}
+
 /** Header step unit label (a11y for the nav buttons). */
 const navUnitLabel = computed(() =>
-  viewMode.value === 'day' ? 'month' : viewMode.value === 'month' ? 'year' : 'decade',
+  viewMode.value === 'day' ? 'month' : viewMode.value === 'year' ? 'decade' : 'year',
 );
 
-/** Big step: ±1 year in day view, ±decade in month/year views. */
-const navBigStep = computed(() => (viewMode.value === 'day' ? 12 : 120));
+/**
+ * Big step expressed in *small steps* of the active view:
+ * day = 12 months (1 year), unit views = 10 small steps (10 years / 100
+ * years). Previously a flat 120 was multiplied by 12 again in shiftAnchor,
+ * which jumped 120 years from a quarter / month / year grid.
+ */
+const navBigStep = computed(() => (viewMode.value === 'day' ? 12 : 10));
 
 /* ─────────── Disabled predicate ─────────── */
 
@@ -885,18 +1187,29 @@ function isCellInRange(ts: number): boolean {
 
 /* ─────────── Quarter / month / year view predicates ─────────── */
 
+/** Quarter-precision range bounds for `quarterrange` (draft wins over model). */
+function quarterRangeBounds(): { start: number | null; end: number | null } {
+  const draft = rangeDraft.value;
+  if (draft.start !== null && draft.end === null) {
+    return { start: startOfQuarter(draft.start), end: null };
+  }
+  const model = rangeModel.value;
+  if (model !== null) {
+    return { start: startOfQuarter(model[0]), end: startOfQuarter(model[1]) };
+  }
+  return {
+    start: draft.start === null ? null : startOfQuarter(draft.start),
+    end: draft.end === null ? null : startOfQuarter(draft.end),
+  };
+}
+
 function isQuarterCellSelected(ts: number, calYear: number): boolean {
   if (isQuarter.value) {
     if (isRange.value) {
-      const model = rangeModel.value;
-      const reference =
-        rangeDraft.value.start !== null && rangeDraft.value.end !== null
-          ? rangeDraft.value.start
-          : (model?.[0] ?? null);
-      if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-        return isSameQuarter(ts, rangeDraft.value.start);
-      }
-      return reference !== null && isSameQuarter(ts, reference);
+      const { start, end } = quarterRangeBounds();
+      return (
+        (start !== null && isSameQuarter(ts, start)) || (end !== null && isSameQuarter(ts, end))
+      );
     }
     if (!isPanelOpen.value || dateDraft.value === null) {
       return singleModel.value !== null && isSameQuarter(ts, singleModel.value);
@@ -905,6 +1218,26 @@ function isQuarterCellSelected(ts: number, calYear: number): boolean {
   }
   // date modes: navigation grid — highlight the anchor quarter.
   return isSameQuarter(ts, anchorTs.value) && getDateParts(ts).year === calYear;
+}
+
+function isQuarterCellStart(ts: number): boolean {
+  if (!isRange.value || !isQuarter.value) return false;
+  const { start } = quarterRangeBounds();
+  return start !== null && isSameQuarter(ts, start);
+}
+
+function isQuarterCellEnd(ts: number): boolean {
+  if (!isRange.value || !isQuarter.value) return false;
+  const { end } = quarterRangeBounds();
+  return end !== null && isSameQuarter(ts, end);
+}
+
+function isQuarterCellInRange(ts: number): boolean {
+  if (!isRange.value || !isQuarter.value) return false;
+  const { start, end } = quarterRangeBounds();
+  if (start === null || end === null) return false;
+  const cell = startOfQuarter(ts);
+  return cell > start && cell < end;
 }
 
 function isQuarterCellCursor(ts: number, calYear: number): boolean {
@@ -955,6 +1288,134 @@ function isYearCellDisabled(ts: number): boolean {
   return props.disabledDate?.(startOfYearTs(ts)) === true;
 }
 
+/* ─────────── Month range (dual year | month panes) ─────────── */
+
+interface SnMonthPaneViewModel {
+  side: SnRangeSide;
+  year: number;
+  /** 0-based month shown in the pane header. */
+  month: number;
+  /** Scrollable year window centred on the pane's year. */
+  years: number[];
+}
+
+const monthPanes = computed<SnMonthPaneViewModel[]>(() =>
+  (['start', 'end'] as const).map((side) => {
+    const year = monthPaneYear.value[side];
+    const reference =
+      (side === 'start' ? rangeDraft.value.start : rangeDraft.value.end) ??
+      rangeModel.value?.[side === 'start' ? 0 : 1] ??
+      anchorTs.value;
+    return {
+      side,
+      year,
+      month: getDateParts(reference).month,
+      years: rangeInclusive(year - 5, year + 6),
+    };
+  }),
+);
+
+/** First-day timestamp of a month cell in the given pane. */
+function monthCellTs(side: SnRangeSide, monthIdx: number): number {
+  return buildDate(monthPaneYear.value[side], monthIdx, 1);
+}
+
+/**
+ * Month-precision range bounds. During the first pick only the start is
+ * known; hovering a month previews the interval just like the day range.
+ */
+function monthRangeBounds(): { start: number | null; end: number | null } {
+  const draft = rangeDraft.value;
+  if (draft.start !== null && draft.end === null) {
+    const a = startOfMonthTs(draft.start);
+    const b = monthHoverEnd.value === null ? null : startOfMonthTs(monthHoverEnd.value);
+    if (b === null) return { start: a, end: null };
+    return a <= b ? { start: a, end: b } : { start: b, end: a };
+  }
+  const model = rangeModel.value;
+  if (model !== null) {
+    return { start: startOfMonthTs(model[0]), end: startOfMonthTs(model[1]) };
+  }
+  return {
+    start: draft.start === null ? null : startOfMonthTs(draft.start),
+    end: draft.end === null ? null : startOfMonthTs(draft.end),
+  };
+}
+
+function monthCellSelected(side: SnRangeSide, monthIdx: number): boolean {
+  const ts = monthCellTs(side, monthIdx);
+  const { start, end } = monthRangeBounds();
+  return (start !== null && isSameMonth(ts, start)) || (end !== null && isSameMonth(ts, end));
+}
+
+function monthCellClasses(side: SnRangeSide, monthIdx: number): Record<string, boolean> {
+  const ts = monthCellTs(side, monthIdx);
+  const { start, end } = monthRangeBounds();
+  const cell = startOfMonthTs(ts);
+  return {
+    'sn-date-picker-month-cell--selected': monthCellSelected(side, monthIdx),
+    'sn-date-picker-month-cell--start': start !== null && cell === start,
+    'sn-date-picker-month-cell--end': end !== null && cell === end,
+    'sn-date-picker-month-cell--in-range':
+      start !== null && end !== null && cell > start && cell < end,
+    'sn-date-picker-month-cell--disabled': isMonthCellDisabled(ts),
+  };
+}
+
+function onMonthPaneYearClick(side: SnRangeSide, year: number): void {
+  if (!isInteractive.value) return;
+  monthPaneYear.value = { ...monthPaneYear.value, [side]: year };
+}
+
+function onMonthPaneHover(side: SnRangeSide, monthIdx: number): void {
+  if (!isInteractive.value || rangeDraft.value.start === null || rangeDraft.value.end !== null) {
+    return;
+  }
+  monthHoverEnd.value = monthCellTs(side, monthIdx);
+}
+
+function onMonthPaneMonthClick(side: SnRangeSide, monthIdx: number): void {
+  if (!isInteractive.value) return;
+  const ts = monthCellTs(side, monthIdx);
+  if (isMonthCellDisabled(ts)) return;
+  cursor.value = ts;
+  if (rangeDraft.value.start === null || rangeDraft.value.end !== null) {
+    rangeDraft.value = { start: ts, end: null };
+    monthHoverEnd.value = null;
+    emit('select', ts);
+    return;
+  }
+  const start = rangeDraft.value.start;
+  const [lo, hi] = ts < start ? [ts, start] : [start, ts];
+  rangeDraft.value = { start: lo, end: hi };
+  monthHoverEnd.value = null;
+  monthPaneYear.value = {
+    start: getDateParts(lo).year,
+    end: getDateParts(hi).year,
+  };
+  emit('select', [lo, hi]);
+  commitRange();
+}
+
+/** Keyboard pick in month-range mode — uses the cursor's own year/month. */
+function onMonthRangePick(ms: number): void {
+  const p = getDateParts(ms);
+  monthPaneYear.value = { ...monthPaneYear.value, start: p.year };
+  onMonthPaneMonthClick('start', p.month);
+}
+
+/** Scroll both panes so the NEXT year / month follows the pane header (the
+ * header carries the current value, mirroring the reference layout). */
+function scrollMonthPanesToSelection(): void {
+  const panes = panelRef.value?.querySelectorAll<HTMLElement>('.sn-date-picker-month-pane');
+  panes?.forEach((pane) => {
+    pane.querySelectorAll<HTMLElement>('.sn-date-picker-month-pane__col').forEach((col) => {
+      const current = col.querySelector<HTMLElement>('.sn-date-picker-month-cell--current');
+      if (current) col.scrollTop = current.offsetTop - col.offsetTop + current.offsetHeight;
+    });
+  });
+}
+
 /* ─────────── Time columns ─────────── */
 
 const timeColumns = computed(() => [
@@ -966,7 +1427,7 @@ const timeColumns = computed(() => [
 /* ─────────── aria-activedescendant ─────────── */
 
 const activeDescendant = computed<string | null>(() => {
-  if (!isPanelOpen.value) return null;
+  if (!isPanelOpen.value || isMonthRange.value) return null;
   if (viewMode.value === 'day') {
     return cellId(startOfDay(cursor.value));
   }
@@ -1044,6 +1505,8 @@ function onDocumentMouseDown(event: MouseEvent): void {
 
 function initDraftsFromModel(): void {
   const now = Date.now();
+  timePopoverSide.value = null;
+  monthHoverEnd.value = null;
   if (isRange.value) {
     const v = rangeModel.value;
     if (v !== null) {
@@ -1057,6 +1520,10 @@ function initDraftsFromModel(): void {
       };
       anchorTs.value = v[0];
       cursor.value = v[0];
+      monthPaneYear.value = {
+        start: sa.year,
+        end: sb.year,
+      };
     } else {
       rangeDraft.value = { start: null, end: null };
       rangeHoverEnd.value = null;
@@ -1066,6 +1533,7 @@ function initDraftsFromModel(): void {
       };
       anchorTs.value = now;
       cursor.value = now;
+      monthPaneYear.value = defaultMonthPaneYears();
     }
   } else {
     const v = singleModel.value;
@@ -1099,6 +1567,7 @@ function openPanel(): void {
   void nextTick(() => {
     repositionPanel();
     followViewport.start();
+    scrollMonthPanesToSelection();
   });
 }
 
@@ -1106,6 +1575,8 @@ function closePanel(): void {
   if (!isPanelOpen.value) return;
   isPanelOpen.value = false;
   rangeHoverEnd.value = null;
+  monthHoverEnd.value = null;
+  timePopoverSide.value = null;
   followViewport.stop();
 }
 
@@ -1294,10 +1765,73 @@ function onTimeCellClick(side: SnRangeSide, unit: SnTimeUnit, value: number): vo
   commitSingle();
 }
 
+/* ─────────── Datetime-range time popover ─────────── */
+
+/** Toggle the popover for one side's time field and scroll to its selection. */
+function openTimePopover(side: SnRangeSide): void {
+  timePopoverSide.value = timePopoverSide.value === side ? null : side;
+  if (timePopoverSide.value !== null) {
+    void nextTick(scrollTimePopoverToSelection);
+  }
+}
+
+function closeTimePopover(): void {
+  timePopoverSide.value = null;
+}
+
+function onPopoverTimeCellClick(unit: SnTimeUnit, value: number): void {
+  const side = timePopoverSide.value;
+  if (side === null) return;
+  onTimeCellClick(side, unit, value);
+}
+
+/** 此刻 — set the open side's time-of-day to the current clock. */
+function setCurrentTime(): void {
+  const side = timePopoverSide.value;
+  if (side === null || !isInteractive.value) return;
+  const now = new Date();
+  rangeTimeDraft.value[side] = {
+    hour: now.getHours(),
+    minute: now.getMinutes(),
+    second: now.getSeconds(),
+  };
+  if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange();
+  void nextTick(scrollTimePopoverToSelection);
+}
+
+/** Align each column so the NEXT value follows the popover header (the
+ * header already shows the selected value, so the selected row scrolls just
+ * above the viewport — same as the reference time spinner). */
+function scrollTimePopoverToSelection(): void {
+  const cols = panelRef.value?.querySelectorAll<HTMLElement>(
+    '.sn-date-picker-time-popover .sn-date-picker-time-col',
+  );
+  cols?.forEach((col) => {
+    const selected = col.querySelector<HTMLElement>('.sn-date-picker-time-item--selected');
+    if (selected) col.scrollTop = selected.offsetTop - col.offsetTop + selected.offsetHeight;
+  });
+}
+
+/** Footer 清除 — reset the panel drafts without closing it. */
+function clearPanelDraft(): void {
+  if (!isInteractive.value) return;
+  timePopoverSide.value = null;
+  rangeDraft.value = { start: null, end: null };
+  rangeHoverEnd.value = null;
+  monthHoverEnd.value = null;
+  monthPaneYear.value = defaultMonthPaneYears();
+  emitCommit(null);
+  emit('clear');
+}
+
 function confirmAndClose(): void {
   if (!isInteractive.value) return;
   if (isRange.value) {
-    if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange();
+    // datetime ranges commit again on confirm so the latest time draft wins;
+    // month ranges already committed on the second pick.
+    if (hasTime.value && rangeDraft.value.start !== null && rangeDraft.value.end !== null) {
+      commitRange();
+    }
   } else {
     commitSingle();
   }
@@ -1328,11 +1862,20 @@ function jumpToday(): void {
 
 /* ─────────── Header navigation ─────────── */
 
-/** Shift anchors by whole months (day view) / years (unit views). */
-function shiftAnchor(deltaUnits: number): void {
-  const months = viewMode.value === 'day' ? deltaUnits : deltaUnits * 12;
-  anchorTs.value = addMonths(anchorTs.value, months);
-  cursor.value = addMonths(cursor.value, months);
+/**
+ * Shift anchors by the active view's small step: one month for the day grid,
+ * one year for quarter / month-of-year grids, one decade for the year grid.
+ * The double-chevron passes `navBigStep` small steps.
+ */
+function shiftAnchor(deltaSteps: number): void {
+  if (viewMode.value === 'day') {
+    anchorTs.value = addMonths(anchorTs.value, deltaSteps);
+    cursor.value = addMonths(cursor.value, deltaSteps);
+    return;
+  }
+  const years = viewMode.value === 'year' ? deltaSteps * 10 : deltaSteps;
+  anchorTs.value = addYears(anchorTs.value, years);
+  cursor.value = addYears(cursor.value, years);
 }
 
 function onTitleClick(): void {
@@ -1371,6 +1914,10 @@ function pickCursor(): void {
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
   if (!isInteractive.value) return;
+  if (isMonthRange.value) {
+    onMonthRangeKeyDown(event);
+    return;
+  }
   switch (event.key) {
     case 'Enter': {
       event.preventDefault();
@@ -1435,6 +1982,66 @@ function onTriggerKeyDown(event: KeyboardEvent): void {
       pageCursor(1);
       break;
     }
+    default:
+      break;
+  }
+}
+
+/** Month-range keyboard: months on ←/→, quarters on ↑/↓, years on PageUp/Down. */
+function onMonthRangeKeyDown(event: KeyboardEvent): void {
+  switch (event.key) {
+    case 'Enter': {
+      event.preventDefault();
+      if (!isPanelOpen.value) {
+        openPanel();
+        return;
+      }
+      if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) confirmAndClose();
+      else onMonthRangePick(cursor.value);
+      break;
+    }
+    case ' ': {
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      break;
+    }
+    case 'Escape': {
+      if (isPanelOpen.value) {
+        event.preventDefault();
+        closePanel();
+      }
+      break;
+    }
+    case 'ArrowLeft':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addMonths(cursor.value, -1);
+      break;
+    case 'ArrowRight':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addMonths(cursor.value, 1);
+      break;
+    case 'ArrowUp':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addMonths(cursor.value, -3);
+      break;
+    case 'ArrowDown':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addMonths(cursor.value, 3);
+      break;
+    case 'PageUp':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addYears(cursor.value, -1);
+      break;
+    case 'PageDown':
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      cursor.value = addYears(cursor.value, 1);
+      break;
     default:
       break;
   }
@@ -1512,14 +2119,25 @@ watch(
   outline: none;
 }
 
+/* Focus / active halo is derived from the theme primary — the global
+ * --sn-web-focus-ring stays blue under custom primary themes, which made
+ * the trigger look two-toned next to the primary-coloured selection. */
 .sn-date-picker__selection:focus-visible {
   border-color: var(--sn-web-date-picker-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, var(--sn-web-color-action-primary-soft));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-date-picker-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 24%, transparent)
+    );
 }
 
 .sn-date-picker--active .sn-date-picker__selection {
   border-color: var(--sn-web-date-picker-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, var(--sn-web-color-action-primary-soft));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-date-picker-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 24%, transparent)
+    );
 }
 
 /* Sizes — height + font-size presets (mirror SnSelect / SnTimePicker). */
@@ -1703,6 +2321,279 @@ watch(
 
 .sn-date-picker-panel__body {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/**
+ * Range panels are sized by their two calendars, NOT by the intrinsic width
+ * of four <input> elements (each defaults to ~20 characters). Leaving the
+ * inputs to drive the shrink-to-fit panel produced a large empty area to the
+ * right of the calendars. `--sn-web-date-picker-cell-size` stays the single
+ * knob: one grid = 7 cells + 6×2px gaps; two grids + 12px gap = body width.
+ */
+.sn-date-picker-panel--range .sn-date-picker-panel__body {
+  width: calc(2 * (7 * var(--sn-web-date-picker-cell-size, 28px) + 12px) + 12px);
+  max-width: 100%;
+}
+
+/* Top position is the default DOM order (inputs → calendars → shortcuts). */
+.sn-date-picker-panel__body--inputs-bottom .sn-date-picker-panel__calendars {
+  order: 1;
+}
+
+.sn-date-picker-panel__body--inputs-bottom .sn-date-picker-panel__shortcuts--bottom {
+  order: 2;
+}
+
+.sn-date-picker-panel__body--inputs-bottom .sn-date-picker-panel__inputs {
+  order: 3;
+}
+
+/* Datetime range — four header fields spanning the dual calendars. */
+.sn-date-picker-panel__inputs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 0 0 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid
+    var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+/* Bottom placement: separator above the bar, time popover opens upward. */
+.sn-date-picker-panel__inputs--bottom {
+  margin: 10px 0 0;
+  padding: 8px 0 0;
+  border-bottom: none;
+  border-top: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-panel__inputs--bottom .sn-date-picker-time-popover {
+  top: auto;
+  bottom: calc(100% + 2px);
+}
+
+/* Bottom placement has less headroom inside the panel — cap the columns so
+ * the popover stays inside the panel instead of covering the trigger. */
+.sn-date-picker-panel__inputs--bottom .sn-date-picker-time-col {
+  max-height: 150px;
+}
+
+.sn-date-picker-panel__input-pair {
+  display: flex;
+  flex: 1 1 0;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sn-date-picker-panel__input-divider {
+  flex: 0 0 1px;
+  align-self: stretch;
+  background-color: var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-field {
+  /* width:0 keeps the native ~20ch input size out of the panel's
+   * shrink-to-fit calculation; flex-grow fills the calendar-width row. */
+  width: 0;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--sn-web-date-picker-border-color, var(--sn-web-color-border-subtle));
+  border-radius: var(--sn-web-date-picker-radius, 4px);
+  background-color: var(--sn-web-date-picker-bg, var(--sn-web-color-background-surface));
+  color: var(--sn-web-date-picker-text-color, var(--sn-web-color-text-primary));
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  cursor: default;
+}
+
+.sn-date-picker-field::placeholder {
+  color: var(--sn-web-date-picker-placeholder-color, var(--sn-web-color-text-tertiary));
+}
+
+.sn-date-picker-field--time {
+  cursor: pointer;
+}
+
+.sn-date-picker-field:focus,
+.sn-date-picker-field--active {
+  border-color: var(--sn-web-date-picker-border-color-focus, var(--sn-web-color-action-primary));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--sn-web-color-action-primary) 18%, transparent);
+}
+
+/* Time popover — anchored under the clicked time field, overlays calendars. */
+.sn-date-picker-time-popover {
+  position: absolute;
+  top: calc(100% + 2px);
+  z-index: 5;
+  padding: 6px;
+  box-sizing: border-box;
+  border: 1px solid var(--sn-web-date-picker-panel-border-color, var(--sn-web-color-border-subtle));
+  border-radius: var(--sn-web-date-picker-panel-radius, 3px);
+  background-color: var(--sn-web-date-picker-panel-bg, var(--sn-web-color-background-elevated));
+  box-shadow: var(
+    --sn-web-date-picker-panel-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
+}
+
+.sn-date-picker-time-popover--start {
+  left: 8px;
+}
+
+.sn-date-picker-time-popover--end {
+  left: 50%;
+}
+
+.sn-date-picker-time-popover__current {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.sn-date-picker-time-popover__current > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sn-web-date-picker-time-col-width, 56px);
+  height: var(--sn-web-date-picker-time-item-height, 30px);
+  border-radius: var(--sn-web-date-picker-time-item-radius, 4px);
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+  color: var(--sn-web-color-action-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.sn-date-picker-time-popover .sn-date-picker-panel__time {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.sn-date-picker-time-popover__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-time-popover__now {
+  padding: 4px 10px;
+  border: 1px solid var(--sn-web-color-border-subtle);
+  border-radius: var(--sn-web-date-picker-confirm-radius, 4px);
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.sn-date-picker-time-popover__now:hover {
+  border-color: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-action-primary);
+}
+
+.sn-date-picker-time-popover__footer .sn-date-picker-panel__confirm {
+  margin-left: auto;
+}
+
+/* Month range — two side-by-side year | month panes. */
+.sn-date-picker-panel__months {
+  display: flex;
+  gap: 12px;
+}
+
+.sn-date-picker-month-pane {
+  display: flex;
+  flex-direction: column;
+  width: calc(7 * var(--sn-web-date-picker-cell-size, 28px) + 12px);
+  box-sizing: border-box;
+}
+
+.sn-date-picker-month-pane + .sn-date-picker-month-pane {
+  padding-left: 12px;
+  border-left: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-month-pane__header {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.sn-date-picker-month-pane__current {
+  flex: 1 1 0;
+  padding: 6px 0;
+  text-align: center;
+  border-radius: var(--sn-web-date-picker-cell-radius, 4px);
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+  color: var(--sn-web-color-action-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.sn-date-picker-month-pane__body {
+  display: flex;
+  gap: 4px;
+  height: 180px;
+  overflow: hidden;
+}
+
+.sn-date-picker-month-pane__col {
+  flex: 1 1 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.sn-date-picker-month-pane__col::-webkit-scrollbar {
+  display: none;
+}
+
+.sn-date-picker-month-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--sn-web-date-picker-time-item-height, 30px);
+  border-radius: var(--sn-web-date-picker-cell-radius, 4px);
+  color: var(--sn-web-date-picker-cell-color, var(--sn-web-color-text-primary));
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sn-date-picker-month-cell:hover {
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+
+.sn-date-picker-month-cell--current {
+  color: var(--sn-web-color-action-primary);
+}
+
+.sn-date-picker-month-cell--selected,
+.sn-date-picker-month-cell--start,
+.sn-date-picker-month-cell--end {
+  background-color: var(--sn-web-date-picker-cell-bg-selected, var(--sn-web-color-action-primary));
+  color: var(--sn-web-date-picker-cell-text-color-selected, var(--sn-web-color-text-on-primary));
+}
+
+.sn-date-picker-month-cell--in-range {
+  background-color: color-mix(in srgb, var(--sn-web-color-action-primary) 12%, transparent);
+}
+
+.sn-date-picker-month-cell--disabled {
+  color: var(--sn-web-date-picker-cell-color-disabled, var(--sn-web-color-text-disabled));
+  cursor: not-allowed;
 }
 
 .sn-date-picker-panel__calendars {
@@ -1832,12 +2723,34 @@ watch(
 .sn-date-picker-cell--in-range {
   background-color: var(
     --sn-web-date-picker-cell-bg-in-range,
-    var(--sn-web-color-action-primary-soft)
+    color-mix(in srgb, var(--sn-web-color-action-primary) 12%, transparent)
   );
 }
 
 .sn-date-picker-cell--unit {
   width: var(--sn-web-date-picker-unit-cell-size, 52px);
+}
+
+/* Unit views span the full day-grid width. Quarter cells are a 2x2 grid
+ * with evenly sized cells instead of two squeezed 52px labels; month/year
+ * views keep their 4-column layout but fill the same width. */
+.sn-date-picker-grid--unit {
+  width: calc(7 * var(--sn-web-date-picker-cell-size, 28px) + 12px);
+}
+
+.sn-date-picker-grid--unit .sn-date-picker-grid__row {
+  gap: 6px;
+}
+
+.sn-date-picker-grid--unit .sn-date-picker-cell--unit {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  height: 32px;
+}
+
+.sn-date-picker-grid--quarter .sn-date-picker-cell--unit {
+  height: 36px;
 }
 
 /* Disabled cells — dimmed, click refused by the handlers. */
@@ -2008,6 +2921,27 @@ watch(
 
 .sn-date-picker-panel__footer .sn-date-picker-panel__confirm {
   margin-left: auto;
+}
+
+/* 清除 — plain ghost button next to 确认 in confirmable range panels. */
+.sn-date-picker-panel__clear {
+  margin-left: auto;
+  padding: 4px 10px;
+  border: 1px solid var(--sn-web-date-picker-panel-border-color, var(--sn-web-color-border-subtle));
+  border-radius: var(--sn-web-date-picker-confirm-radius, 4px);
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.sn-date-picker-panel__clear:hover {
+  border-color: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-action-primary);
+}
+
+.sn-date-picker-panel__clear + .sn-date-picker-panel__confirm {
+  margin-left: 0;
 }
 
 .sn-date-picker-panel__confirm {

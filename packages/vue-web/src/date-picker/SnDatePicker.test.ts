@@ -11,7 +11,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h, nextTick, ref } from 'vue';
 import SnDatePicker from './SnDatePicker.vue';
-import { buildMonthGrid, formatDecadeTitle, formatDate, isSameDay } from './sn-date-picker-types';
+import {
+  DEFAULT_FORMATS,
+  buildMonthGrid,
+  formatDecadeTitle,
+  formatDate,
+  isMonthRangeType,
+  isRangeType,
+  isSameDay,
+} from './sn-date-picker-types';
 
 /** Mounted wrappers tracked so afterEach can unmount before clearing body. */
 const mounted: Array<{ unmount: () => void }> = [];
@@ -158,6 +166,13 @@ describe('SnDatePicker', () => {
   });
 
   /* ───── pure helpers ───── */
+
+  it('treats monthrange as a range mode with a yyyy-MM default format', () => {
+    expect(isRangeType('monthrange')).toBe(true);
+    expect(isMonthRangeType('monthrange')).toBe(true);
+    expect(isMonthRangeType('month')).toBe(false);
+    expect(DEFAULT_FORMATS.monthrange).toBe('yyyy-MM');
+  });
 
   it('builds a Monday-first 6x7 month grid', () => {
     const grid = buildMonthGrid(2026, 0); // January 2026 starts on Thursday
@@ -381,6 +396,25 @@ describe('SnDatePicker', () => {
     expect(titles[1]?.textContent).toBe('2026年2月');
   });
 
+  it('range panels anchor the right calendar on the range end', async () => {
+    const w = mountPicker({
+      type: 'datetimerange',
+      modelValue: [ts(2007, 5, 30, 0, 41, 0), ts(2026, 10, 8, 10, 3, 57)],
+    });
+    await openPanel(w);
+    const titles = document.body.querySelectorAll('.sn-date-picker-calendar__title');
+    expect(titles[0]?.textContent).toBe('2007年6月');
+    expect(titles[1]?.textContent).toBe('2026年11月');
+  });
+
+  it('range panels keep the adjacent month when start and end share it', async () => {
+    const w = mountPicker({ type: 'daterange', modelValue: [ts(2026, 0, 5), ts(2026, 0, 20)] });
+    await openPanel(w);
+    const titles = document.body.querySelectorAll('.sn-date-picker-calendar__title');
+    expect(titles[0]?.textContent).toBe('2026年1月');
+    expect(titles[1]?.textContent).toBe('2026年2月');
+  });
+
   it('commits after picking start then end', async () => {
     const { wrapper, value } = mountVModel(null, { type: 'daterange' });
     await openPanel(wrapper);
@@ -461,20 +495,53 @@ describe('SnDatePicker', () => {
     expect(value.value).toEqual([ts(2026, 0, 5), ts(2026, 0, 12)]);
   });
 
-  it('renders two time groups in datetimerange mode', async () => {
+  it('renders four header fields in datetimerange mode and a time popover on click', async () => {
     const w = mountPicker({
       type: 'datetimerange',
-      modelValue: [ts(2026, 0, 5, 9, 0, 0), ts(2026, 0, 20, 18, 0, 0)],
+      modelValue: [ts(2026, 0, 5, 9, 41, 0), ts(2026, 0, 20, 18, 3, 57)],
     });
     await openPanel(w);
-    expect(document.body.querySelectorAll('.sn-date-picker-time-group')).toHaveLength(2);
-    // First group hour 9 selected, second group hour 18 selected.
-    expect(timeCell('hour', 9, 0)?.classList.contains('sn-date-picker-time-item--selected')).toBe(
+    const fields = panelEl()?.querySelectorAll('.sn-date-picker-field');
+    expect(fields).toHaveLength(4);
+    expect((fields?.[0] as HTMLInputElement).value).toBe('2026-01-05');
+    expect((fields?.[1] as HTMLInputElement).value).toBe('09:41:00');
+    expect((fields?.[2] as HTMLInputElement).value).toBe('2026-01-20');
+    expect((fields?.[3] as HTMLInputElement).value).toBe('18:03:57');
+    // Fixed aside time columns are gone — the calendars get the full width.
+    expect(panelEl()?.querySelectorAll('.sn-date-picker-panel__time--aside')).toHaveLength(0);
+    expect(panelEl()?.querySelector('.sn-date-picker-time-popover')).toBeNull();
+    (fields?.[1] as HTMLInputElement).click();
+    await nextTick();
+    const popover = panelEl()?.querySelector('.sn-date-picker-time-popover');
+    expect(popover).not.toBeNull();
+    expect(popover?.querySelectorAll('.sn-date-picker-time-col')).toHaveLength(3);
+    expect(timeCell('hour', 9)?.classList.contains('sn-date-picker-time-item--selected')).toBe(
       true,
     );
-    expect(timeCell('hour', 18, 1)?.classList.contains('sn-date-picker-time-item--selected')).toBe(
+    expect(timeCell('minute', 41)?.classList.contains('sn-date-picker-time-item--selected')).toBe(
       true,
     );
+    // 此刻 / 确认 live in the popover footer.
+    expect(popover?.querySelector('.sn-date-picker-time-popover__now')?.textContent?.trim()).toBe(
+      '此刻',
+    );
+    expect(
+      popover?.querySelector('.sn-date-picker-time-popover__footer .sn-date-picker-panel__confirm'),
+    ).not.toBeNull();
+  });
+
+  it('datetimerange: picking a time in the popover commits the combined value', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'datetimerange' });
+    await openPanel(wrapper);
+    dayCell(ts(2026, 0, 5))?.click();
+    dayCell(ts(2026, 0, 20))?.click();
+    await nextTick();
+    const timeField = panelEl()?.querySelectorAll<HTMLInputElement>('.sn-date-picker-field')[1];
+    timeField?.click();
+    await nextTick();
+    timeCell('hour', 14)?.click();
+    await nextTick();
+    expect(value.value).toEqual([ts(2026, 0, 5, 14, 0, 0), ts(2026, 0, 20)]);
   });
 
   /* ───── keyboard ───── */
@@ -781,6 +848,9 @@ describe('SnDatePicker', () => {
 
 describe('SnDatePicker extended modes', () => {
   beforeEach(() => {
+    // Pin "today" to the October 2026 grid these fixtures were written
+    // against — otherwise null-model panels drift with the wall clock.
+    vi.setSystemTime(new Date(2026, 9, 15, 9, 5, 7));
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement,
     ) {
@@ -814,6 +884,7 @@ describe('SnDatePicker extended modes', () => {
   afterEach(async () => {
     for (const w of mounted.splice(0)) w.unmount();
     vi.restoreAllMocks();
+    vi.useRealTimers();
     document.body.innerHTML = '';
   });
 
@@ -892,6 +963,25 @@ describe('SnDatePicker extended modes', () => {
     expect(value.value).toEqual([ts(2026, 3, 1), ts(2027, 0, 1)]);
   });
 
+  it('quarterrange: marks both the start and end quarter', async () => {
+    const w = mountPicker({
+      type: 'quarterrange',
+      modelValue: [ts(2026, 3, 1), ts(2027, 0, 1)],
+    });
+    await openPanel(w);
+    const panels = panelEl()?.querySelectorAll('.sn-date-picker-calendar');
+    expect(
+      panels?.[0]
+        ?.querySelector('.sn-date-picker-cell--unit[data-value="1"]')
+        ?.classList.contains('sn-date-picker-cell--start'),
+    ).toBe(true);
+    expect(
+      panels?.[1]
+        ?.querySelector('.sn-date-picker-cell--unit[data-value="0"]')
+        ?.classList.contains('sn-date-picker-cell--end'),
+    ).toBe(true);
+  });
+
   it('disabledDate: blocked day cells refuse clicks and carry aria-disabled', async () => {
     const disabled = (t: number): boolean => t === ts(2026, 9, 15);
     const { value } = mountVModel(null, { disabledDate: disabled });
@@ -957,16 +1047,40 @@ describe('SnDatePicker extended modes', () => {
     expect(aside?.querySelectorAll('.sn-date-picker-time-col').length).toBe(3);
   });
 
-  it('datetimerange panel: one aside time group per calendar', async () => {
+  it('datetimerange panel: header input row + 清除/确认 footer, no aside columns', async () => {
     const w = mountPicker({ type: 'datetimerange' });
     await openPanel(w);
-    expect(panelEl()?.querySelectorAll('.sn-date-picker-panel__time--aside')).toHaveLength(2);
-    // No visible per-side labels in range mode (aria only).
+    expect(panelEl()?.querySelectorAll('.sn-date-picker-panel__time--aside')).toHaveLength(0);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__inputs')).not.toBeNull();
+    expect(panelEl()?.querySelectorAll('.sn-date-picker-calendar')).toHaveLength(2);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__clear')?.textContent?.trim()).toBe(
+      '清除',
+    );
     expect(
-      panelEl()?.querySelector(
-        '.sn-date-picker-panel__time--aside .sn-date-picker-time-group__label',
-      ),
-    ).toBeNull();
+      panelEl()
+        ?.querySelector('.sn-date-picker-panel__footer .sn-date-picker-panel__confirm')
+        ?.textContent?.trim(),
+    ).toBe('确认');
+  });
+
+  it('datetimerange: inputPosition="bottom" moves the bar under the calendars', async () => {
+    const w = mountPicker({ type: 'datetimerange', inputPosition: 'bottom' });
+    await openPanel(w);
+    // Range panels are width-constrained by the two calendars.
+    expect(panelEl()?.classList.contains('sn-date-picker-panel--range')).toBe(true);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__body--inputs-bottom')).not.toBeNull();
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__inputs--bottom')).not.toBeNull();
+    const timeField = panelEl()?.querySelectorAll<HTMLInputElement>('.sn-date-picker-field')[1];
+    timeField?.click();
+    await nextTick();
+    expect(panelEl()?.querySelector('.sn-date-picker-time-popover')).not.toBeNull();
+  });
+
+  it('datetimerange: inputPosition defaults to top', async () => {
+    const w = mountPicker({ type: 'datetimerange' });
+    await openPanel(w);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__body--inputs-bottom')).toBeNull();
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__inputs--bottom')).toBeNull();
   });
 
   it('date type shows the 今天 footer jump that commits today', async () => {
@@ -979,6 +1093,116 @@ describe('SnDatePicker extended modes', () => {
     const committed = w.emitted('update:modelValue')?.at(-1)?.[0];
     expect(typeof committed).toBe('number');
     expect(isSameDay(committed as number, Date.now())).toBe(true);
+  });
+
+  /* ───── quarter panel layout / navigation ───── */
+
+  it('quarter view shows a year title and steps by year / decade', async () => {
+    const w = mountPicker({ type: 'quarter' });
+    await openPanel(w);
+    const title = () => document.body.querySelector('.sn-date-picker-calendar__title')?.textContent;
+    expect(title()).toBe('2026年');
+    expect(panelEl()?.querySelector('.sn-date-picker-grid--quarter')).not.toBeNull();
+    const navs = document.body.querySelectorAll<HTMLButtonElement>('.sn-date-picker-nav');
+    navs[1]?.click(); // ‹ previous year
+    await nextTick();
+    expect(title()).toBe('2025年');
+    navs[3]?.click(); // » forward one decade (not 120 years)
+    await nextTick();
+    expect(title()).toBe('2035年');
+  });
+
+  it('quarterrange shows two year-titled quarter panels one year apart', async () => {
+    const w = mountPicker({ type: 'quarterrange' });
+    await openPanel(w);
+    const titles = document.body.querySelectorAll('.sn-date-picker-calendar__title');
+    expect(titles[0]?.textContent).toBe('2026年');
+    expect(titles[1]?.textContent).toBe('2027年');
+    expect(panelEl()?.querySelectorAll('.sn-date-picker-grid--quarter')).toHaveLength(2);
+  });
+
+  /* ───── monthrange ───── */
+
+  it('monthrange renders two year | month panes from the bound value', async () => {
+    const { wrapper } = mountVModel([ts(2007, 5, 1), ts(2026, 10, 1)], { type: 'monthrange' });
+    await openPanel(wrapper);
+    const panes = panelEl()?.querySelectorAll('.sn-date-picker-month-pane');
+    expect(panes).toHaveLength(2);
+    const startHeader = panes?.[0]?.querySelectorAll('.sn-date-picker-month-pane__current');
+    const endHeader = panes?.[1]?.querySelectorAll('.sn-date-picker-month-pane__current');
+    expect(startHeader?.[0]?.textContent?.trim()).toBe('2007');
+    expect(startHeader?.[1]?.textContent?.trim()).toBe('6');
+    expect(endHeader?.[0]?.textContent?.trim()).toBe('2026');
+    expect(endHeader?.[1]?.textContent?.trim()).toBe('11');
+    expect(
+      panelEl()
+        ?.querySelector('.sn-date-picker-month-cell[data-side="start"][data-month="5"]')
+        ?.classList.contains('sn-date-picker-month-cell--start'),
+    ).toBe(true);
+    expect(
+      panelEl()
+        ?.querySelector('.sn-date-picker-month-cell[data-side="end"][data-month="10"]')
+        ?.classList.contains('sn-date-picker-month-cell--end'),
+    ).toBe(true);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__clear')).not.toBeNull();
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__confirm')).not.toBeNull();
+  });
+
+  it('monthrange: two picks commit sorted month starts, 确认 closes', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'monthrange' });
+    await openPanel(wrapper);
+    const startYear = Number(
+      panelEl()?.querySelector('.sn-date-picker-month-pane__current')?.textContent?.trim(),
+    );
+    const monthCell = (side: string, month: number): HTMLElement | null =>
+      panelEl()?.querySelector(
+        `.sn-date-picker-month-cell[data-side="${side}"][data-month="${month}"]`,
+      ) ?? null;
+    monthCell('start', 3)?.click();
+    expect(value.value).toBeNull();
+    monthCell('end', 8)?.click();
+    await nextTick();
+    expect(value.value).toEqual([ts(startYear, 3, 1), ts(startYear + 1, 8, 1)]);
+    expect(panelEl()).not.toBeNull();
+    panelEl()
+      ?.querySelector<HTMLButtonElement>(
+        '.sn-date-picker-panel__footer .sn-date-picker-panel__confirm',
+      )
+      ?.click();
+    await nextTick();
+    await panelLeft();
+    expect(panelEl()).toBeNull();
+    expect(wrapper.find('.sn-date-picker__value').text()).toBe(`${startYear}-04`);
+  });
+
+  it('monthrange: swaps reversed picks, 清除 resets without closing', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'monthrange' });
+    await openPanel(wrapper);
+    const monthCell = (month: number): HTMLElement | null =>
+      panelEl()?.querySelector(
+        `.sn-date-picker-month-cell[data-side="start"][data-month="${month}"]`,
+      ) ?? null;
+    monthCell(10)?.click();
+    monthCell(2)?.click();
+    await nextTick();
+    const startYear = Number(
+      panelEl()?.querySelector('.sn-date-picker-month-pane__current')?.textContent?.trim(),
+    );
+    expect(value.value).toEqual([ts(startYear, 2, 1), ts(startYear, 10, 1)]);
+    panelEl()?.querySelector<HTMLButtonElement>('.sn-date-picker-panel__clear')?.click();
+    await nextTick();
+    expect(value.value).toBeNull();
+    expect(panelEl()).not.toBeNull();
+  });
+
+  it('monthrange: ArrowRight moves the cursor a month and Enter picks', async () => {
+    const { wrapper } = mountVModel(null, { type: 'monthrange' });
+    const trigger = triggerOf(wrapper);
+    await trigger.trigger('keydown', { key: 'Enter' }); // opens
+    await nextTick();
+    await trigger.trigger('keydown', { key: 'ArrowRight' });
+    await trigger.trigger('keydown', { key: 'Enter' }); // first pick
+    expect(wrapper.emitted('select')?.at(-1)).toBeTruthy();
   });
 });
 

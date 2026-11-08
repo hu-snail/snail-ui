@@ -1,15 +1,20 @@
 <script setup lang="ts">
-/** Demo: SnDatePicker — range modes. */
+/** Demo: SnDatePicker — range modes + datetime-range input bar placement. */
 import { ref } from 'vue';
 import { SnDatePicker } from '@snui/vue-web';
 const range = ref<[number, number] | null>(null);
 const datetimeRange = ref<[number, number] | null>(null);
+const bottomRange = ref<[number, number] | null>(null);
 </script>
 
 <template>
   <div class="demo-col">
     <SnDatePicker v-model="range" type="daterange" />
     <SnDatePicker v-model="datetimeRange" type="datetimerange" />
+    <div class="demo-row">
+      <SnDatePicker v-model="bottomRange" type="datetimerange" input-position="bottom" />
+      <span class="demo-hint">input-position="bottom"：输入框栏置于月历下方</span>
+    </div>
     <pre class="demo-log">range: {{ range?.[0] }} ~ {{ range?.[1] }}</pre>
   </div>
 </template>
@@ -20,6 +25,15 @@ const datetimeRange = ref<[number, number] | null>(null);
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
+}
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-hint {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
 }
 .demo-log {
   margin: 0;
