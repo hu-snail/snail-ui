@@ -206,8 +206,10 @@ export const buttonDocPage: SnDocPageData = {
         name: 'focus-ring',
         raw: '--aui-button-focus-ring',
         alias: '--sn-button-focus-ring',
-        value: 'rgba(22, 119, 255, 0.25)',
-        swatch: 'rgba(22, 119, 255, 0.25)',
+        // Derived from the active primary, so a custom theme never leaves a
+        // blue halo behind (form controls share the same token chain).
+        value: 'color-mix(in srgb, primary 25%, transparent)',
+        swatch: 'color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent)',
       },
       {
         name: 'color-action-primary',

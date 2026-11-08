@@ -665,7 +665,13 @@ const classList = computed(() => [
 .sn-mention:focus-within {
   border-color: var(--sn-web-mention-border-color-focus, var(--sn-web-color-action-primary));
   box-shadow: 0 0 0 3px
-    var(--sn-web-mention-focus-ring, var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15)));
+    var(
+      --sn-web-mention-focus-ring,
+      var(
+        --sn-web-focus-ring,
+        color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+      )
+    );
 }
 
 /* Textarea variant: align top, grow vertically. */

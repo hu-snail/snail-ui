@@ -1054,7 +1054,7 @@ const ariaText = (index: number): string => {
 .sn-slider-bar__handle:focus-visible {
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.3),
-    0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.25));
+    0 0 0 3px var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent));
 }
 
 .sn-slider-bar--disabled .sn-slider-bar__handle,

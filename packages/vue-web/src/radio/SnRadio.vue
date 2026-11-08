@@ -264,7 +264,11 @@ function onBlur(event: FocusEvent): void {
 }
 
 .sn-radio__native:focus-visible ~ .sn-radio__dot {
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
   border-color: var(--sn-web-radio-border-color-focus, var(--sn-web-color-action-primary));
 }
 

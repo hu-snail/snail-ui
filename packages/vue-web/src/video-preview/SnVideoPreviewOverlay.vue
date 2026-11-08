@@ -507,7 +507,11 @@ function handleVideoEnded(): void {
 }
 
 .sn-video-preview-overlay__close:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, #1677ff73);
+  outline: 2px solid
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 45%, transparent)
+    );
   outline-offset: 2px;
 }
 

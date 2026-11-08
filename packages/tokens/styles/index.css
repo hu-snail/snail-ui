@@ -126,7 +126,13 @@
 
   --aui-color-action-primary: var(--aui-color-blue-500);
   --aui-color-action-primary-hover: var(--aui-color-blue-400);
-  --aui-color-action-primary-soft: var(--aui-color-blue-50);
+  /* Tint derived from the active primary (not a frozen blue-50), so custom
+     themes keep every soft / hover surface in the same hue. */
+  --aui-color-action-primary-soft: color-mix(
+    in srgb,
+    var(--aui-color-action-primary) 10%,
+    var(--aui-color-background-surface)
+  );
 
   --aui-color-feedback-success: var(--aui-color-success);
   --aui-color-feedback-warning: var(--aui-color-warning);
@@ -184,8 +190,10 @@
   --aui-shadow-card: var(--aui-shadow-sm);
   --aui-shadow-overlay: var(--aui-shadow-xl);
 
-  /* Focus ring — consumed via the --sn-web-focus-ring alias */
-  --aui-focus-ring: rgba(22, 119, 255, 0.25);
+  /* Focus ring — consumed via the --sn-web-focus-ring alias.
+   * Derived from the active primary: a literal blue here stayed blue after a
+   * theme swap and produced a two-toned control (red border + blue halo). */
+  --aui-focus-ring: color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent);
 
   /* Sn-* alias layer (brand) */
   --sn-color-text-primary: var(--aui-color-text-primary);
@@ -228,7 +236,7 @@
   --aui-button-radius: 4px;
   --aui-button-font-size: 14px;
   --aui-button-shadow: none;
-  --aui-button-focus-ring: rgba(22, 119, 255, 0.25);
+  --aui-button-focus-ring: color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent);
 
   /* Sn-* component aliases — button */
   --sn-button-height-tiny: var(--aui-button-height-tiny);
@@ -457,7 +465,11 @@
    * as elevation, which is the opposite of "sunken").
    */
   --aui-color-background-sunken: #18181b;
-  --aui-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --aui-color-action-primary-soft: color-mix(
+    in srgb,
+    var(--aui-color-action-primary) 22%,
+    var(--aui-color-background-surface)
+  );
   --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
   --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
   --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);

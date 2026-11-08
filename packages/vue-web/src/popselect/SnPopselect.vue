@@ -857,13 +857,13 @@ defineExpose({
 
 /* Selected row — primary text + trailing check glyph. */
 .sn-popselect-option--selected {
-  color: var(--sn-web-color-action-primary, #2080f0);
+  color: var(--sn-web-color-action-primary);
   font-weight: 500;
 }
 
 .sn-popselect-option__check {
   flex-shrink: 0;
-  color: var(--sn-web-color-action-primary, #2080f0);
+  color: var(--sn-web-color-action-primary);
 }
 
 .sn-popselect-option--disabled {
@@ -877,7 +877,7 @@ defineExpose({
 }
 
 .sn-popselect-option:focus-visible {
-  outline: 2px solid var(--sn-web-focus-ring, rgba(32, 128, 240, 0.35));
+  outline: 2px solid var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 35%, transparent));
   outline-offset: -2px;
 }
 

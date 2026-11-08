@@ -612,7 +612,11 @@ const classList = computed(() => [
 
 .sn-input-number:focus-within {
   border-color: var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 .sn-input-number--border-bottom {
@@ -626,7 +630,11 @@ const classList = computed(() => [
 }
 .sn-input-number--border-none:focus-within {
   border-color: transparent;
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 /* Sizes — mirror SnInput presets. */
@@ -754,10 +762,7 @@ const classList = computed(() => [
 }
 
 .sn-input-number__btn:hover:not(:disabled) {
-  color: var(
-    --sn-web-color-action-primary-hover,
-    var(--sn-web-color-action-primary, rgba(22, 119, 255, 0.9))
-  );
+  color: var(--sn-web-color-action-primary-hover, var(--sn-web-color-action-primary));
 }
 
 /* Hover plate — `both` only: with minus and plus split to opposite ends the

@@ -180,7 +180,10 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     radius: '4px',
     fontSize: '14px',
     shadow: 'none',
-    focusRing: 'rgba(22, 119, 255, 0.25)',
+    // Derived from the active primary so custom themes cannot leave a blue
+    // halo around buttons / form controls (the old literal survived every
+    // theme swap).
+    focusRing: 'color-mix(in srgb, var(--aui-color-action-primary) 25%, transparent)',
   },
   input: {
     heightSmall: '32px',

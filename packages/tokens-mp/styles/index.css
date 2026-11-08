@@ -171,7 +171,7 @@
   --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
   --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
-  --sn-mp-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --sn-mp-color-action-primary-soft: var(--aui-color-action-primary-soft);
   --sn-mp-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
   --sn-mp-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
   --sn-mp-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);

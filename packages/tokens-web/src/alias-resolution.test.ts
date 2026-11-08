@@ -106,8 +106,16 @@ describe('@snui/tokens-web — alias targets resolve in the base cascade', () =>
 
     const walk = (dir: string): void => {
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
-        // `dist` is a build artifact (vitepress output), not a source file.
-        if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name.startsWith('._'))
+        // `dist` / `.temp` / `.cache` are build artifacts (VitePress output),
+        // not source files — scanning them turns an old build into a false
+        // positive for aliases the current source no longer uses.
+        if (
+          entry.name === 'node_modules' ||
+          entry.name === 'dist' ||
+          entry.name === '.temp' ||
+          entry.name === '.cache' ||
+          entry.name.startsWith('._')
+        )
           continue;
         const full = join(dir, entry.name);
         if (entry.isDirectory()) {

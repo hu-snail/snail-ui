@@ -540,7 +540,11 @@ const wrapperStyle = computed(() => {
 }
 .sn-input--border-none:focus-within {
   border-color: transparent;
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 /* Background tones */
@@ -579,7 +583,11 @@ const wrapperStyle = computed(() => {
  * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
   border-color: var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px
+    var(
+      --sn-web-focus-ring,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent)
+    );
 }
 
 /* Sizes — `mini` is the wot-ui-parity extra size added below `tiny`. */

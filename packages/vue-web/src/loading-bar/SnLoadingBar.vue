@@ -62,7 +62,7 @@ defineProps<{
 
 .sn-loading-bar__bar {
   height: var(--sn-web-loading-bar-height, 2px);
-  background: var(--sn-web-color-action-primary, #4098fc);
+  background: var(--sn-web-color-action-primary);
   will-change: width, opacity;
 }
 

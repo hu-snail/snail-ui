@@ -477,7 +477,7 @@ const knobLabels = computed(() =>
   --sn-bar-height: auto;
   --sn-bar-radius: 9999rpx;
   --sn-bar-pad: 0rpx;
-  --sn-bar-fill: var(--sn-mp-color-action-primary, #1677ff);
+  --sn-bar-fill: var(--sn-mp-color-action-primary);
   --sn-bar-track: rgba(0, 0, 0, 0.08);
   --sn-bar-thumb: #ffffff;
 

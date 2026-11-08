@@ -156,7 +156,7 @@ function onDividerDblClick(): void {
  }
 
 .sn-split__divider:focus-visible {
-  box-shadow: var(--sn-web-focus-ring, 0 0 0 3px rgba(22, 119, 255, 0.15));
+  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, color-mix(in srgb, var(--sn-web-color-action-primary) 15%, transparent));
 }
 
 .sn-split__divider[aria-disabled='true'] {

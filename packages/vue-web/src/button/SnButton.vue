@@ -486,7 +486,11 @@ function onClick(event: MouseEvent): void {
 
 /* Strong — heavier emphasis on filled variants. */
 .sn-button--strong.sn-button--primary {
-  box-shadow: 0 0 8px var(--sn-web-color-action-primary-soft, rgba(22, 119, 255, 0.4));
+  box-shadow: 0 0 8px
+    var(
+      --sn-web-color-action-primary-soft,
+      color-mix(in srgb, var(--sn-web-color-action-primary) 40%, transparent)
+    );
 }
 
 /* Icon placement — render content + icon in row-reverse for right. */
