@@ -15,7 +15,7 @@
  * 契约出现两种表述。
  */
 import { computed, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
-import { useData, useRouter } from 'vitepress';
+import { useData, useRoute, useRouter } from 'vitepress';
 import {
   ArrowLeft,
   ArrowRight,
@@ -41,8 +41,12 @@ import {
   SnIcon,
 } from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
-import { registerDemo, unregisterDemo } from '../../utils/demo-dock';
-import type { DocFeature, DocSeg, DocQuickAction, SnDocPageData } from './types';
+import { registerDemo, unregisterDemo, uniCompFromRoute } from '../../utils/demo-dock';
+import { readPageSource, writeClipboardText } from '../../utils/doc-source';
+import { uniDemoPageUrl } from '../../utils/uni-demo-base';
+import PhoneFrame from '../PhoneFrame.vue';
+import demoManifest from '../../../../uni-demo/src/demos-manifest.json';
+import type { DocFeature, DocSeg, DocQuickAction, DocTocItem, SnDocPageData } from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
 
@@ -117,6 +121,8 @@ const UI = computed(() =>
         prev: 'Previous',
         next: 'Next',
         tocLabel: 'On this page',
+        copySource: 'Copy page source',
+        copiedSource: 'Source copied',
       }
     : {
         crumbs: '面包屑',
@@ -139,9 +145,12 @@ const UI = computed(() =>
         prev: '上一篇 Previous',
         next: '下一篇 Next',
         tocLabel: '本页目录',
+        copySource: '复制文档源码',
+        copiedSource: '源码已复制',
       },
 );
 const router = useRouter();
+const route = useRoute();
 function navTo(url: string | undefined): void {
   if (url) router.go(url);
 }
@@ -178,6 +187,28 @@ onBeforeUnmount(() => clearTimeout(copyTimer));
 function onQuickAction(act: DocQuickAction): void {
   if (act.copy) void copyText('quick', act.copy);
   else navTo(act.href);
+}
+
+/**
+ * 「复制文档源码」——头卡里与 GitHub 源码并列的那颗按钮。
+ *
+ * 它取代了文章标题行右上角的复制图标：同一个动作，放到读者已经在看的那排
+ * 按钮里。源码取自页面自带的 hidden 载荷（见 utils/doc-source.ts），不是从
+ * 渲染结果反推，粘出来就是作者写的那份 Markdown。
+ */
+async function copyDocSource(): Promise<void> {
+  const source = readPageSource();
+  if (source === '') return;
+  try {
+    await writeClipboardText(source);
+    copiedKey.value = 'doc-source';
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copiedKey.value = '';
+    }, 1600);
+  } catch {
+    // 复制失败没有可补救的下一步：保持按钮原样，读者可再次点击重试。
+  }
 }
 
 /* ── 代码高亮（自有静态内容的最小着色，无 eval / 无外部依赖） ─────────── */
@@ -245,9 +276,12 @@ type DemoMode = 'preview' | 'code';
 const demoModes = ref<Record<string, DemoMode>>({});
 
 function demoMode(name: string): DemoMode {
-  // uni 案例只有源码：它们跑不了在 docs 里（未编译），预览统一在右侧手机
-  // 面板 —— 本文列里再放一个空的「预览」态没有意义，所以固定代码态。
-  if (isUniDoc.value) return 'code';
+  // uni 案例的手机只有一个宿主：窄屏是本页第一个案例（.sn-docpage__phone），
+  // 宽屏是右下角 DemoDock。只有前者需要一个「预览」态的卡片，其余一律源码。
+  // 都不套「预览 / 源码」胶囊 —— 那个胶囊只给 web 案例的活体渲染用。
+  if (isUniDoc.value) {
+    return showInlinePhone.value && name === doc.value.demos[0]?.name ? 'preview' : 'code';
+  }
   return demoModes.value[name] ?? 'preview';
 }
 
@@ -388,6 +422,92 @@ function demoSectionHtml(name: string): string {
  */
 const isMpDemo = (name: string): boolean => /(^|-)mp(-|$)/.test(name);
 const isUniDoc = computed(() => doc.value.demos.some((d) => isMpDemo(d.name)));
+// 页面路由形态与 DemoDock 的判定同一份（/components/uni/<comp>、/en/…/<comp>），
+// 用它取部署的 uni-demo 页，页面数据里的面包屑不带 link。
+const uniComp = computed(() => uniCompFromRoute(route.path));
+
+/**
+ * uni 手机模拟的 iframe 地址（部署的 uni-demo 页，ADR-0005 单一事实源）。
+ *
+ * 宽屏时 DemoDock 把这一页放进右下角的手机面板；窄屏（<1280px）没有那 400px
+ * 的侧栏空间，改由文档流里第一个案例承载同一台手机。两处共用一个源。
+ */
+const dockPreviewUrl = computed<string>(() => {
+  const entry = (demoManifest.components as Record<string, { page: string }>)[uniComp.value];
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+});
+
+/**
+ * 文档流里的手机只在窄屏出现 —— 断点与 DemoDock 的
+ * `matchMedia('(min-width: 1280px)')` 一致，两种宽度各自只有一台手机在屏。
+ */
+const narrowViewport = ref(false);
+let narrowMq: MediaQueryList | null = null;
+let onNarrowMqChange: ((e: MediaQueryListEvent) => void) | null = null;
+const showInlinePhone = computed(() => isUniDoc.value && narrowViewport.value);
+
+/**
+ * 本页目录（含子目录）。
+ *
+ * `doc.toc` 只有四个顶层区块；宽档要「完整目录」，于是把每个案例挂到「案例」
+ * 之下当二级条目 —— 案例是本页唯一有稳定锚点、且数量会变的一层（标题来自
+ * `doc.demos`，锚点由案例卡上的 `demo-<name>` id 提供）。窄档仍只用顶层，
+ * 条子太多就没有「一列横条」的信息量了。
+ */
+const tocWithChildren = computed<DocTocItem[]>(() =>
+  doc.value.toc.flatMap((item) => [
+    item,
+    ...(item.id === 'demos'
+      ? doc.value.demos.map((d) => ({
+          id: `demo-${d.name}`,
+          // 案例标题常常带一长串 prop 说明（「变体（`variant`：…）」）。目录是
+          // 索引，不是解释：取第一个分句，过长再截断。
+          text: tocDemoLabel(d.title),
+          level: 2,
+        }))
+      : []),
+  ]),
+);
+
+/**
+ * 常驻目录的高亮：滚动时把「已越过视口上部 140px 的最后一个锚点」标为当前项
+ * （与 SnFloatingToc 的 `bound` 同一约定，两条目录不会打架）。
+ *
+ * 只在宽档需要 —— 窄档的当前项由 SnFloatingToc 自己算。观察者随组件卸载断开
+ * （AGENTS.md §41 / §82）。
+ */
+const activeTocId = ref('');
+let tocObserver: IntersectionObserver | null = null;
+
+function syncActiveToc(): void {
+  let active = tocWithChildren.value[0]?.id ?? '';
+  for (const item of tocWithChildren.value) {
+    const el = document.getElementById(item.id);
+    if (!el) continue;
+    if (el.getBoundingClientRect().top - TOC_ACTIVE_LINE > 0) break;
+    active = item.id;
+  }
+  activeTocId.value = active;
+}
+
+function scrollToToc(id: string): void {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({
+    top: el.getBoundingClientRect().top + window.scrollY - TOC_ACTIVE_LINE,
+    behavior: reduce ? 'auto' : 'smooth',
+  });
+}
+
+/** 目录里的一行案例名：第一个分句，最长 18 个字。 */
+function tocDemoLabel(title: string): string {
+  const head = (title.split(/[：:（(，,。]/)[0] ?? title).trim();
+  return head.length > 18 ? `${head.slice(0, 18)}…` : head;
+}
+
+/** 目录当前项的判定线：站点悬浮导航高度 + 呼吸空隙。 */
+const TOC_ACTIVE_LINE = 140;
 
 onMounted(() => {
   if (isUniDoc.value) {
@@ -395,11 +515,41 @@ onMounted(() => {
       registerDemo({ name: d.name, label: d.title, description: d.blurb });
     }
   }
+  narrowMq = window.matchMedia('(min-width: 1280px)');
+  const apply = (wide: boolean): void => {
+    narrowViewport.value = !wide;
+  };
+  apply(narrowMq.matches);
+  onNarrowMqChange = (e: MediaQueryListEvent) => apply(e.matches);
+  narrowMq.addEventListener('change', onNarrowMqChange);
+
+  // 常驻目录：滚动 + 布局变化都重算当前项。观察者只用来捕捉「无滚动事件的重排」
+  // （字体、图片、折叠面板），位置判定仍由 syncActiveToc 统一处理。
+  syncActiveToc();
+  tocObserver = new IntersectionObserver(syncActiveToc, {
+    rootMargin: `-${TOC_ACTIVE_LINE}px 0px -70% 0px`,
+  });
+  watchEffect(() => {
+    tocObserver?.disconnect();
+    for (const item of tocWithChildren.value) {
+      const el = document.getElementById(item.id);
+      if (el) tocObserver?.observe(el);
+    }
+  });
+  window.addEventListener('scroll', syncActiveToc, { passive: true });
 });
 onBeforeUnmount(() => {
   if (isUniDoc.value) {
     for (const d of doc.value.demos) unregisterDemo(d.name);
   }
+  if (narrowMq !== null && onNarrowMqChange !== null) {
+    narrowMq.removeEventListener('change', onNarrowMqChange);
+  }
+  narrowMq = null;
+  onNarrowMqChange = null;
+  tocObserver?.disconnect();
+  tocObserver = null;
+  window.removeEventListener('scroll', syncActiveToc);
 });
 </script>
 
@@ -476,6 +626,18 @@ onBeforeUnmount(() => {
                 <span v-else>{{ act.label }}</span>
               </button>
             </template>
+            <!-- 「复制文档源码」与 GitHub 源码并列：原文章标题行右上角的复制图标
+                 移到这里，页面上只留一处复制入口。 -->
+            <button
+              type="button"
+              class="sn-docpage__action"
+              :aria-label="UI.copySource"
+              :title="UI.copySource"
+              @click="copyDocSource"
+            >
+              <SnIcon :icon="copiedKey === 'doc-source' ? Check : Copy" :size="14" />
+              <span>{{ copiedKey === 'doc-source' ? UI.copiedSource : UI.copySource }}</span>
+            </button>
           </div>
 
           <!-- 头卡特性条：参考稿底部一行「生态 / 交互 / 运行时」要点。
@@ -531,7 +693,12 @@ onBeforeUnmount(() => {
           <!-- 一个案例一行：案例之间是并列的契约说明，横排会压缩演示宽度
                 并让阅读顺序变得含糊。 -->
           <div class="sn-docpage__demo-fall">
-            <div v-for="d in doc.demos" :key="d.name" class="sn-docpage__demo">
+            <div
+              v-for="d in doc.demos"
+              :id="`demo-${d.name}`"
+              :key="d.name"
+              class="sn-docpage__demo"
+            >
               <!-- 标题与描述在卡片外：它们是案例的正文说明，不是卡片饰面。
                    卡片只承载预览 / 源码面板本体。 -->
               <div class="sn-docpage__demo-head">
@@ -583,7 +750,19 @@ onBeforeUnmount(() => {
                      不套客户端边界就会在 SSR 阶段抛 "window is not defined"，整页
                      构建失败。Demo.vue 一直是这么做的，这里是把它补齐。 -->
                   <ClientOnly>
-                    <component :is="demoComponents[d.name]" />
+                    <!-- uni 案例的手机宿主：窄屏是本页第一个案例（文档流里这台），
+                       宽屏是右下角的 DemoDock —— 所以这里的预览态只会出现在窄屏的
+                       第一个案例上（见 demoMode）。 -->
+                    <div v-if="showInlinePhone" class="sn-docpage__phone">
+                      <PhoneFrame :title="doc.title">
+                        <iframe
+                          class="sn-docpage__phone-frame"
+                          :src="dockPreviewUrl"
+                          :title="`uni preview: ${doc.title}`"
+                        />
+                      </PhoneFrame>
+                    </div>
+                    <component :is="demoComponents[d.name]" v-else />
                   </ClientOnly>
                 </div>
                 <div v-else class="sn-docpage__demo-codebody">
@@ -740,7 +919,10 @@ onBeforeUnmount(() => {
         反馈模块所在的高度；横条 hover / 点击 / 焦点展开目录面板，组件自己
         测量各区块锚点并在滚动时高亮，bound 140 与站点悬浮导航对齐。 -->
       <aside v-if="doc.toc.length" class="sn-docpage__rail">
-        <div class="sn-docpage__ftoc">
+        <!-- 窄屏（960–1279px）右轨只让出目录条的宽度：同一套 SnFloatingToc 数据
+             渲染成贴栏左缘的一列横条，剩下的宽度留给右下角的手机面板。展开面板
+             仍然可用（同一组 Item），但默认收起，免得盖住正文。 -->
+        <div class="sn-docpage__ftoc-rail">
           <SnFloatingToc placement="right" :bound="140" :aria-label="UI.tocLabel">
             <SnFloatingTocTrigger>
               <SnFloatingTocBar
@@ -760,6 +942,23 @@ onBeforeUnmount(() => {
             </SnFloatingTocContent>
           </SnFloatingToc>
         </div>
+        <!-- 宽档：完整目录常驻（含子目录），不再需要 hover 才展开 —— 232px 的
+             栏放得下，浮出的面板反而会盖住正文。 -->
+        <nav class="sn-docpage__toc" :aria-label="UI.tocLabel">
+          <a
+            v-for="item in tocWithChildren"
+            :key="item.id"
+            class="sn-docpage__toc-link"
+            :class="{
+              'sn-docpage__toc-link--sub': (item.level ?? 1) > 1,
+              'sn-docpage__toc-link--on': activeTocId === item.id,
+            }"
+            :href="`#${item.id}`"
+            @click.prevent="scrollToToc(item.id)"
+          >
+            {{ item.text }}
+          </a>
+        </nav>
       </aside>
     </div>
   </div>
@@ -846,6 +1045,12 @@ onBeforeUnmount(() => {
   gap: 40px;
   max-width: 1392px;
   margin-inline: auto;
+}
+/* 右轨窄档只占目录条宽度，正文拿回其余空间（手机面板在右下角，两者不重叠）。 */
+@media (min-width: 960px) {
+  .sn-docpage__layout {
+    grid-template-columns: minmax(0, 1fr) var(--sn-doc-rail-narrow, 64px);
+  }
 }
 @media (min-width: 1280px) {
   .sn-docpage__layout {
@@ -1595,6 +1800,22 @@ onBeforeUnmount(() => {
   justify-content: center;
   background: var(--sn-doc-surface-lowest);
 }
+/* uni 案例的手机模拟：与 DemoDock 同一块设备（同一个 uni-demo iframe），换到
+ * 文档流里当第一个案例的预览。高度取一个「滚动屏」的固定值——手机里是可滚动
+ * 页面，让它按内容撑开会把整页拉到几千像素。 */
+.sn-docpage__phone {
+  width: 100%;
+  height: 560px;
+  display: flex;
+}
+.sn-docpage__phone-frame {
+  display: block;
+  /* iframe 是替换元素，flex 的 100% 高度撑不开它，必须显式给高度。 */
+  height: 100%;
+  width: 100%;
+  border: 0;
+  background: #f8f8f8;
+}
 .sn-docpage__demo-codebody {
   background: var(--sn-doc-code-bg);
 }
@@ -2015,32 +2236,85 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-accent);
 }
 
-/* ═══ 右侧浮轨 ═══
- * 右栏只承载「本页目录」：SnFloatingToc 收进这一列、贴栏左缘（不贴视口
- * 右边），高度与旧的反馈模块一致；与旧目录一样 <1280px 整列不显示。 */
+/* ═══ 右侧浮轨：本页目录 ═══
+ * 两档宽度两种形态，同一份目录数据：
+ *   - 960–1279px（窄）：右轨只占目录条的宽度（--sn-doc-rail-narrow）。SnFloatingToc
+ *     收进这一列、贴栏左缘竖排横条，展开面板按需向左浮出；正文让出的宽度留给
+ *     右下角的手机面板 —— 以前这一档整列隐藏，uni 页既没有目录也没有手机。
+ *   - ≥1280px（宽）：完整的 232px 栏，常驻显示全部条目（含案例子目录），当前项
+ *     随滚动高亮。这里不用浮出面板：面板会盖住正文，而这一档本来就有地方。
+ * 960px 以下右轨整体不出现（VitePress 自身在 960px 收起桌面侧栏）。
+ * 纵向停靠点不变：sticky 96px，即旧目录卡的顶边。 */
 .sn-docpage__rail {
+  --sn-doc-rail-narrow: 64px;
   display: none;
 }
-@media (min-width: 1280px) {
+@media (min-width: 960px) {
   .sn-docpage__rail {
     display: block;
     position: sticky;
     top: 96px;
     align-self: start;
+    width: var(--sn-doc-rail-narrow);
   }
 }
-/* ═══ 本页目录浮标（SnFloatingToc） ═══
- * 组件根默认 position: fixed（视口右缘 / 垂直居中）；这里拉回文档流，让
- * 它落在右栏左缘，展开面板仍由组件自己相对本容器向左定位。 */
-.sn-docpage__ftoc {
+
+/* ═══ 窄档：SnFloatingToc 横条 ═══
+ * 组件根默认 position: fixed（视口右缘 / 垂直居中）；这里拉回文档流，让它落在
+ * 右栏左缘，展开面板仍由组件自己相对本容器向左定位。 */
+.sn-docpage__ftoc-rail {
   position: relative;
   z-index: 5;
 }
-.sn-docpage__ftoc :deep(.sn-floating-toc) {
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc) {
   position: relative;
   top: auto;
   right: auto;
   transform: none;
+}
+
+/* ═══ 宽档：常驻完整目录 ═══
+ * 横条给「扫一眼有几个区块」，清单给「直接跳转」；两者共用 tocWithChildren。 */
+.sn-docpage__toc {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+}
+@media (min-width: 1280px) {
+  .sn-docpage__ftoc-rail {
+    display: none;
+  }
+  .sn-docpage__toc {
+    display: flex;
+  }
+  .sn-docpage__rail {
+    width: auto;
+  }
+}
+.sn-docpage__toc-link {
+  padding: 5px 8px;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
+  color: var(--sn-doc-text-3);
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-decoration: none;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+}
+.sn-docpage__toc-link:hover {
+  color: var(--sn-doc-text-1);
+  background: var(--sn-doc-card-soft);
+}
+.sn-docpage__toc-link--sub {
+  padding-left: 20px;
+  font-size: 12px;
+}
+.sn-docpage__toc-link--on {
+  border-left-color: var(--sn-doc-accent);
+  color: var(--sn-doc-accent);
 }
 
 /* ═══ 氛围背景（原型还原）：弥散光晕 + 亚像素点阵，配色全部走主题变量 ═══ */

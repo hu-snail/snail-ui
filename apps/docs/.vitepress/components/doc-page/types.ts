@@ -53,6 +53,8 @@ export interface DocAiStat {
 export interface DocTocItem {
   id: string;
   text: string;
+  /** Nesting depth for the expanded TOC panel (1 = top level, default). */
+  level?: number;
 }
 
 export interface DocPagerItem {

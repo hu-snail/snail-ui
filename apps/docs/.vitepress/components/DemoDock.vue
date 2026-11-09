@@ -31,7 +31,7 @@
  *
  * ## Mobile / narrow viewport
  *
- * Below 1200px there is no room for a 400px side panel next to a readable
+ * Below 1280px there is no room for a 400px side panel next to a readable
  * article, so the dock stays unmounted and every demo renders inline exactly
  * as before. `Demo.vue` keys its teleport decision off `dockState.active`, so
  * the fallback is automatic.
@@ -116,15 +116,15 @@ let mq: MediaQueryList | null = null;
 let onMqChange: ((e: MediaQueryListEvent) => void) | null = null;
 
 onMounted(() => {
-  mq = window.matchMedia('(min-width: 1200px)');
+  mq = window.matchMedia('(min-width: 1280px)');
   const apply = (matches: boolean): void => {
     wideEnough.value = matches;
     // Wide again on a uni route: re-open so the dock claims the demos.
     // Narrow: close it — `Demo.vue` then falls back to inline rendering.
     // Opening the dock on a narrow viewport used to hide every demo (the
-    // panel is not rendered below 1200px, so the inline slot only showed the
+    // panel is not rendered below 1280px, so the inline slot only showed the
     // "moved to the panel" note). The re-open keeps a window that grows past
-    // 1200px after mount from staying closed until the route changes.
+    // 1280px after mount from staying closed until the route changes.
     if (matches && isDockRoute.value) setDockOpen(true);
     if (!matches) setDockOpen(false);
   };
