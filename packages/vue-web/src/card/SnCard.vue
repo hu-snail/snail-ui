@@ -362,7 +362,7 @@ void useSlots;
   cursor: pointer;
 }
 .sn-card--hoverable:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--sn-web-shadow-md);
 }
 
 /* Size presets — padding + font-size */
@@ -454,7 +454,7 @@ void useSlots;
     color 0.15s ease;
 }
 .sn-card__close:hover {
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--sn-web-color-background-subtle);
   color: var(--sn-web-color-text-primary);
 }
 .sn-card__close:focus-visible {

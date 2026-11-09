@@ -1244,7 +1244,10 @@ const ariaText = (index: number): string => {
 .sn-slider-bar--aurora {
   --sn-bar-thickness: 40px;
   --sn-bar-radius: 999px;
-  --sn-bar-thumb: #ffffff;
+  /* Thumb rides the elevated surface so dark mode / skins follow; the stars
+   * below stay literal white — they twinkle *inside* the coloured fill and are
+   * not a surface. */
+  --sn-bar-thumb: var(--sn-web-color-background-elevated);
   --sn-slider-bar-handle-width: var(--sn-bar-thickness);
   --sn-slider-bar-handle-height: var(--sn-bar-thickness);
 }

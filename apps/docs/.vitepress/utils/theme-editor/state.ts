@@ -29,6 +29,7 @@ import {
   type SizeName,
   type SpacingName,
 } from './vars';
+import { BUILTIN_THEMES } from '@snui/tokens';
 import { buildProjectSnippet, buildSiteCss } from './library';
 import { hexToRgb, rgbToHex } from './palette';
 
@@ -222,13 +223,21 @@ export interface ThemePreset {
   radius: number;
 }
 
-export const PRESETS: ReadonlyArray<ThemePreset> = [
-  { name: 'aui', label: 'AUI 橙', brand: '#ff4d24', palette: 'zinc', radius: 0.375 },
-  { name: 'ocean', label: '海蓝', brand: '#2563eb', palette: 'slate', radius: 0.5 },
-  { name: 'forest', label: '森林', brand: '#16a34a', palette: 'stone', radius: 0.625 },
-  { name: 'grape', label: '葡萄', brand: '#7c3aed', palette: 'zinc', radius: 0.75 },
-  { name: 'mono', label: '黑白', brand: '#71717a', palette: 'neutral', radius: 0.25 },
-];
+/**
+ * 预设 = `@snui/tokens` 的五个内置主题（ADR-0010），**不在这里另写色值**。
+ *
+ * 此前这里是五组手写 hex（AUI 橙 / 海蓝 / 森林 / 葡萄 / 黑白），与 token 层的
+ * 调色板各存一份，改一边就会漂移。现在品牌色直接取主题的 `brand`（它本身
+ * 又是从 primitive 色阶的 500 读出来的），中性板与圆角维持站点基线 ——
+ * 这正是 ADR-0010 的选择：主题只移动品牌色，中性色全局共用一个已审计的色阶。
+ */
+export const PRESETS: ReadonlyArray<ThemePreset> = BUILTIN_THEMES.map((theme) => ({
+  name: theme.name,
+  label: theme.label,
+  brand: theme.brand,
+  palette: 'zinc',
+  radius: DEFAULT_CONFIG.radius,
+}));
 
 /** 应用预设（只改品牌色 / 中性板 / 圆角，保留明暗与反馈色选择）。 */
 export function applyPreset(preset: ThemePreset): void {

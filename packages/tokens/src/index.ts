@@ -68,6 +68,17 @@ export {
   type TokenEnvironment,
 } from './theme.js';
 
+export {
+  AZURE_THEME,
+  FOREST_THEME,
+  EMBER_THEME,
+  VIOLET_THEME,
+  CRIMSON_THEME,
+  BUILTIN_THEMES,
+  getBuiltinTheme,
+  type BuiltinTheme,
+} from './themes.js';
+
 export { resolveEnvironment, renderStyleBlock, type TokenBinding } from './resolver.js';
 
 export { snCssVars, snVarName, auiVarName, type SnCssVarsOptions } from './css-vars.js';

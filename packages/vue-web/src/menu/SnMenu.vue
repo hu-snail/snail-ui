@@ -684,7 +684,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
   justify-content: flex-start;
 }
 .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--sn-web-color-background-subtle);
 }
 .sn-menu-item--active {
   background: var(--sn-web-color-action-primary);
@@ -763,9 +763,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
   padding: 0;
   border-radius: 999px;
   background: var(--sn-web-color-background-elevated, #fff);
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.08),
-    0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--sn-web-shadow-sm);
   color: var(--sn-web-color-text-primary);
   border: none;
   cursor: pointer;
@@ -775,9 +773,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
     background-color 0.18s ease;
 }
 .sn-menu--popButton .sn-menu-item:hover:not(.sn-menu-item--disabled) {
-  box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--sn-web-shadow-md);
   transform: translateY(-1px);
 }
 .sn-menu--popButton .sn-menu-item--active {
@@ -900,8 +896,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
   border-radius: 8px;
   background: var(--sn-web-color-background-elevated, #fff);
   box-shadow:
-    0 6px 16px -4px rgba(0, 0, 0, 0.12),
-    0 4px 8px -2px rgba(0, 0, 0, 0.08),
+    var(--sn-web-shadow-lg),
     0 0 0 1px var(--sn-web-color-border-default, rgba(0, 0, 0, 0.06));
   display: flex;
   flex-direction: column;
