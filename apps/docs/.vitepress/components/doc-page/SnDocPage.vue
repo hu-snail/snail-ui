@@ -93,7 +93,6 @@ const UI = computed(() =>
         usage: 'Code Usage',
         demos: 'Examples',
         demosAside: 'Live · rendered from the docs corpus',
-        inPhonePanel: 'Previewed in the phone panel on the right; this section is the contract.',
         ai: 'AI-Native Integration',
         previewSource: 'Preview / Source',
         preview: 'Preview',
@@ -119,7 +118,6 @@ const UI = computed(() =>
         usage: '代码用法 Code Usage',
         demos: '案例 Demos',
         demosAside: '实时渲染 · 来自组件文档案例',
-        inPhonePanel: '预览在右侧手机面板中查看；此处是案例的契约说明。',
         ai: 'AI 原生集成 AI-Native Integration',
         previewSource: '预览 / 源码',
         preview: '预览',
@@ -244,6 +242,9 @@ type DemoMode = 'preview' | 'code';
 const demoModes = ref<Record<string, DemoMode>>({});
 
 function demoMode(name: string): DemoMode {
+  // uni 案例只有源码：它们跑不了在 docs 里（未编译），预览统一在右侧手机
+  // 面板 —— 本文列里再放一个空的「预览」态没有意义，所以固定代码态。
+  if (isUniDoc.value) return 'code';
   return demoModes.value[name] ?? 'preview';
 }
 
@@ -566,9 +567,17 @@ onBeforeUnmount(() => {
                 <h3>{{ d.title }}</h3>
                 <p>{{ d.blurb }}</p>
               </div>
-              <div class="sn-docpage__demo-card">
+              <div
+                class="sn-docpage__demo-card"
+                :class="{ 'sn-docpage__demo-card--uni': isUniDoc }"
+              >
                 <!-- 切换胶囊浮在预览面板右上角；源码模式下浮在代码面板右上角。 -->
-                <div class="sn-docpage__demo-switch" role="tablist" :aria-label="UI.previewSource">
+                <div
+                  v-if="!isUniDoc"
+                  class="sn-docpage__demo-switch"
+                  role="tablist"
+                  :aria-label="UI.previewSource"
+                >
                   <span
                     class="sn-docpage__demo-thumb"
                     :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
@@ -598,17 +607,11 @@ onBeforeUnmount(() => {
                   </button>
                 </div>
                 <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
-                  <!-- uni 案例不在这里渲染：它们只在真实的 uni runtime 里跑，
-                     docs 管线解析不到对应文件。预览统一放右侧手机面板（见
-                     demo-dock），这里给一句指路，和 Demo.vue 的 dock 态一致。 -->
-                  <p v-if="isMpDemo(d.name)" class="sn-docpage__demo-hint">
-                    {{ UI.inPhonePanel }}
-                  </p>
                   <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
                      document / navigator（视频小窗、上传、日志自动滚动等）。这里
                      不套客户端边界就会在 SSR 阶段抛 "window is not defined"，整页
                      构建失败。Demo.vue 一直是这么做的，这里是把它补齐。 -->
-                  <ClientOnly v-else>
+                  <ClientOnly>
                     <component :is="demoComponents[d.name]" />
                   </ClientOnly>
                 </div>
@@ -1558,15 +1561,6 @@ onBeforeUnmount(() => {
   line-height: 1.6;
   color: var(--sn-doc-text-2);
 }
-/* uni 案例在本文列里的占位提示：预览在右侧手机面板，这里只说明契约。 */
-.sn-docpage__demo-hint {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--sn-doc-text-3);
-  text-align: center;
-}
-
 .sn-docpage__demo-card {
   position: relative;
   overflow: hidden;
@@ -1649,6 +1643,10 @@ onBeforeUnmount(() => {
   gap: 10px;
   /* 右侧留出浮动切换胶囊的宽度，复制按钮不被压住。 */
   padding: 8px 84px 8px 12px;
+}
+/* uni 案例没有切换胶囊，把为它预留的右侧空间收回。 */
+.sn-docpage__demo-card--uni .sn-docpage__codebar {
+  padding-right: 12px;
 }
 .sn-docpage__codebar-tabs {
   display: inline-flex;

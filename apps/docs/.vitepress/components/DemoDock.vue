@@ -190,7 +190,9 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
    * reader switched pages. Pinning the height keeps the device stable; content
    * that overflows scrolls inside the screen, which is what a real device does.
    */
-  height: calc(100vh - var(--vp-nav-height) - 48px);
+  /* 高度封顶：满屏高的面板在长文页上过于压迫，且底部内容常超出视线。
+     640px 大致是一台手机的比例（400×640 ≈ 19.5:9），再高也不会更真实。 */
+  height: min(640px, calc(100vh - var(--vp-nav-height) - 48px));
   border: 0;
   border-radius: 44px;
   background: var(--vp-c-bg);
