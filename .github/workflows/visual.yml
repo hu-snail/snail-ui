@@ -13,9 +13,6 @@ concurrency:
   group: visual-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  PNPM_VERSION: '10'
-
 jobs:
   visual:
     name: Visual (placeholder, Phase 2+)
@@ -24,10 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No explicit `version:` on purpose: package.json already declares
+      # `packageManager`, and pnpm/action-setup@v4 hard-fails with
+      # "Multiple versions of pnpm specified" when both are present — which is
+      # exactly why this job died ~6s in on every PR. The other four workflows
+      # already rely on packageManager; this one was the outlier.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
