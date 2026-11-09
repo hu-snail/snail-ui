@@ -21,6 +21,7 @@
  */
 
 import type { ThemeDefinition } from './theme.js';
+import { DEFAULT_PRIMITIVE_TOKENS } from './primitive.js';
 
 /**
  * A built-in theme plus the copy the docs site and the MCP tools render.
@@ -33,6 +34,14 @@ export interface BuiltinTheme extends ThemeDefinition {
   readonly label: string;
   /** One-line description for docs / MCP listings. */
   readonly description: string;
+  /**
+   * The brand hue at full strength, as a literal hex.
+   *
+   * Read straight off `DEFAULT_PRIMITIVE_TOKENS` so a UI swatch (docs theme
+   * editor, MCP listings) never restates a colour the ramp already owns —
+   * restating it is exactly how a palette drifts out of sync with the tokens.
+   */
+  readonly brand: string;
 }
 
 /**
@@ -57,6 +66,7 @@ function brandTheme(
     name,
     label,
     description,
+    brand: DEFAULT_PRIMITIVE_TOKENS.color[hue][500],
     semantic: {
       text: { onPrimary },
       background: { accent: `var(--aui-color-${hue}-50)` },

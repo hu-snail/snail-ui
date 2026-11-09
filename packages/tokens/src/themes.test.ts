@@ -81,6 +81,20 @@ describe('built-in colour themes', () => {
     expect(bindingsOf(FOREST_THEME).get('--aui-color-text-on-primary')).toBe('#ffffff');
   });
 
+  it('should expose a brand hex that matches the primitive ramp', () => {
+    // The swatch colour must be the ramp's own 500, not a restated literal.
+    const expected: Record<string, string> = {
+      azure: '#1677ff',
+      forest: '#22c55e',
+      ember: '#f59e0b',
+      violet: '#a855f7',
+      crimson: '#ef4444',
+    };
+    for (const theme of BUILTIN_THEMES) {
+      expect(theme.brand, theme.name).toBe(expected[theme.name]);
+    }
+  });
+
   it('should look a preset up by name', () => {
     expect(getBuiltinTheme('forest')).toBe(FOREST_THEME);
     expect(getBuiltinTheme('nope')).toBeUndefined();
