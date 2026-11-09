@@ -76,25 +76,15 @@ import { Slider } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'SliderValue',
-        default: '0',
-        desc: 'Current value — `number`, or `[start, end]` in `range` mode.',
-      },
-      { name: 'min', type: 'number', default: '0', desc: 'Lower bound.' },
-      { name: 'max', type: 'number', default: '100', desc: 'Upper bound.' },
+      { name: 'modelValue', type: 'SliderValue', default: '0', desc: '`0`' },
+      { name: 'min', type: 'number', default: '0', desc: '下界。' },
+      { name: 'max', type: 'number', default: '100', desc: '上界。' },
       { name: 'step', type: 'number', default: '1', desc: '步长' },
       { name: 'range', type: 'boolean', default: 'false', desc: '双向滑块模式' },
       { name: 'vertical', type: 'boolean', default: 'false', desc: '垂直展示' },
       { name: 'theme', type: 'SliderTheme', default: "'default'", desc: 'Visual style.' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
-      {
-        name: 'showExtremeValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the `min` / `max` captions at both ends.',
-      },
+      { name: 'showExtremeValue', type: 'boolean', default: 'false', desc: '显示两端极值文案' },
       {
         name: 'popoverVisible',
         type: 'SliderPopoverVisible',
@@ -105,7 +95,7 @@ import { Slider } from '@snui/uni';
         name: 'marks',
         type: 'SliderMarks | undefined',
         default: 'undefined',
-        desc: 'Tick marks (array or `{ value: label }` record).',
+        desc: '刻度标记（数组或 `{ value: label }`）',
       },
       {
         name: 'activeColor',

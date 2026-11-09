@@ -104,7 +104,7 @@ import { DatePicker } from '@snui/vue-web';
         name: 'modelValue',
         type: 'number | [number, number] | null',
         default: 'null',
-        desc: 'Bound value: timestamp (single) | [start, end] (range) | null.',
+        desc: '绑定值。',
       },
       { name: 'type', type: 'SnDatePickerType', default: "'date'", desc: 'Panel / value mode.' },
       {
@@ -113,24 +113,14 @@ import { DatePicker } from '@snui/vue-web';
         default: "''",
         desc: 'Display format — lowercase tokens (yyyy MM dd HH mm ss).',
       },
-      {
-        name: 'placeholder',
-        type: 'string | [string, string]',
-        default: '—',
-        desc: 'Placeholder; `[start, end]` pair in range modes.',
-      },
-      {
-        name: 'clearable',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the clear (×) button when a value is present.',
-      },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables interaction.' },
+      { name: 'placeholder', type: 'string | [string, string]', default: '—', desc: '—' },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '清空按钮' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用交互。' },
       {
         name: 'readonly',
         type: 'boolean',
         default: 'false',
-        desc: 'Read-only — opens nothing, commits nothing.',
+        desc: '只读：不打开面板，也不提交值。',
       },
       { name: 'size', type: 'SnDatePickerSize', default: "'medium'", desc: 'Visual size preset.' },
       {
@@ -139,12 +129,7 @@ import { DatePicker } from '@snui/vue-web';
         default: "'default'",
         desc: 'Validation-driven visual status.',
       },
-      {
-        name: 'shortcuts',
-        type: 'SnDatePickerShortcut[]',
-        default: '—',
-        desc: 'Quick-pick entries rendered inside the panel. `value` may be a lazy getter — it is resolved at click time.',
-      },
+      { name: 'shortcuts', type: 'SnDatePickerShortcut[]', default: '—', desc: '(() => …) }[]`' },
       {
         name: 'shortcutsPosition',
         type: 'SnDatePickerShortcutsPosition',

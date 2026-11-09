@@ -77,17 +77,12 @@ import { Skeleton } from '@snui/uni';
         default: "'text'",
         desc: 'Preset layout when `rowCol` is empty.',
       },
-      {
-        name: 'rowCol',
-        type: 'SkeletonRowCol[]',
-        default: '() => []',
-        desc: 'Per-row layout: a column count or an explicit column list per row.',
-      },
+      { name: 'rowCol', type: 'SkeletonRowCol[]', default: '() => []', desc: '[]' },
       {
         name: 'loading',
         type: 'boolean',
         default: 'true',
-        desc: 'Whether the skeleton is shown; `false` renders the default slot.',
+        desc: '是否显示骨架屏；`false` 渲染 default 插槽',
       },
       { name: 'animation', type: 'SkeletonAnimation', default: "''", desc: 'Shimmer kind.' },
       {

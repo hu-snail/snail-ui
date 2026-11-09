@@ -68,12 +68,7 @@ import { TimePicker } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'number | null',
-        default: 'null',
-        desc: 'Bound value: millisecond timestamp, or null when empty.',
-      },
+      { name: 'modelValue', type: 'number | null', default: 'null', desc: '绑定值。' },
       {
         name: 'format',
         type: 'SnTimePickerFormat',
@@ -86,18 +81,13 @@ import { TimePicker } from '@snui/vue-web';
         default: "'Please select time'",
         desc: 'Placeholder text when empty.',
       },
-      {
-        name: 'clearable',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the clear (×) button when a value is present.',
-      },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables interaction.' },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '清空按钮' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用交互。' },
       {
         name: 'readonly',
         type: 'boolean',
         default: 'false',
-        desc: 'Read-only — opens nothing, commits nothing.',
+        desc: '只读：不打开面板，也不提交值。',
       },
       { name: 'size', type: 'SnTimePickerSize', default: "'medium'", desc: 'Visual size preset.' },
       {
@@ -106,12 +96,7 @@ import { TimePicker } from '@snui/vue-web';
         default: "'default'",
         desc: 'Validation-driven visual status.',
       },
-      {
-        name: 'use12Hours',
-        type: 'boolean',
-        default: 'false',
-        desc: '12-hour clock: hour faces 1–12 plus an AM/PM column.',
-      },
+      { name: 'use12Hours', type: 'boolean', default: 'false', desc: '12 小时制 + AM/PM' },
       {
         name: 'ariaLabel',
         type: 'string',

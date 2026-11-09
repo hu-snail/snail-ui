@@ -75,12 +75,7 @@ import { Popup } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the popup is visible (v-model).',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       {
         name: 'transition',
         type: "PopupTransition | ''",
@@ -99,51 +94,21 @@ import { Popup } from '@snui/uni';
         default: "'center'",
         desc: 'Anchor of the panel.',
       },
-      {
-        name: 'closeOnClickModal',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Tapping the scrim closes the popup (emits `click-modal` either way).',
-      },
-      {
-        name: 'duration',
-        type: 'PopupDuration',
-        default: 'DEFAULT_DURATION',
-        desc: 'Animation duration in ms. `false` = no animation, record = per-leg.',
-      },
+      { name: 'closeOnClickModal', type: 'boolean', default: 'true', desc: '点击遮罩是否关闭' },
+      { name: 'duration', type: 'PopupDuration', default: 'DEFAULT_DURATION', desc: '动画时长。' },
       { name: 'modal', type: 'boolean', default: 'true', desc: '是否显示遮罩' },
       { name: 'zIndex', type: 'number', default: '10', desc: '弹层层级' },
-      {
-        name: 'hideWhenClose',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Remove the node from the tree once the leave animation finished.',
-      },
+      { name: 'hideWhenClose', type: 'boolean', default: 'true', desc: '关闭时是否移除节点' },
       { name: 'modalStyle', type: 'string', default: "''", desc: 'Inline style for the scrim.' },
       {
         name: 'safeAreaInsetBottom',
         type: 'boolean',
         default: 'false',
-        desc: 'Pad the bottom sheet for the device safe area.',
+        desc: '底部弹层是否适配底部安全区',
       },
-      {
-        name: 'lazyRender',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Defer panel content rendering until the popup is first opened.',
-      },
-      {
-        name: 'lockScroll',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Intercept touchmove on the scrim so the page behind cannot scroll.',
-      },
-      {
-        name: 'round',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Rounded corners, adapted to `position`.',
-      },
+      { name: 'lazyRender', type: 'boolean', default: 'true', desc: '弹层内容是否懒渲染' },
+      { name: 'lockScroll', type: 'boolean', default: 'true', desc: '是否锁定背景滚动' },
+      { name: 'round', type: 'boolean', default: 'false', desc: '是否开启圆角（按位置自动适配）' },
       {
         name: 'customClass',
         type: 'string',

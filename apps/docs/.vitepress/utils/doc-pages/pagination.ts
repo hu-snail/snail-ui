@@ -73,41 +73,36 @@ import { Pagination } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'page',
-        type: 'number | undefined',
-        default: 'undefined',
-        desc: 'Current page (controlled). When undefined the component is uncontrolled. Mirrors n-pagination `page`.',
-      },
+      { name: 'page', type: 'number | undefined', default: 'undefined', desc: '当前页码。' },
       {
         name: 'itemCount',
         type: 'number',
         default: '0',
-        desc: 'Total item count used to derive the page count. Mirrors n-pagination `itemCount`.',
+        desc: '用于推导总页数的条目总数。对应 n-pagination 的 `itemCount`。',
       },
       {
         name: 'pageSize',
         type: 'number | null | undefined',
         default: 'undefined',
-        desc: 'Page size (controlled). `undefined` / `null` falls back to internal state. Mirrors n-pagination `pageSize`.',
+        desc: '每页条数（受控）；为 `undefined` / `null` 时使用内部状态。对应 n-pagination 的 `pageSize`。',
       },
       {
         name: 'defaultPage',
         type: 'number',
         default: '1',
-        desc: 'Initial page for uncontrolled mode. Mirrors n-pagination `defaultPage`.',
+        desc: '非受控模式下的初始页码。对应 n-pagination 的 `defaultPage`。',
       },
       {
         name: 'defaultPageSize',
         type: 'number',
         default: '10',
-        desc: 'Initial page size for uncontrolled mode. Mirrors n-pagination `defaultPageSize`.',
+        desc: '非受控模式下的初始每页条数。对应 n-pagination 的 `defaultPageSize`。',
       },
       {
         name: 'pageCount',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Explicit page count — takes precedence over itemCount / pageSize. Mirrors n-pagination `pageCount`.',
+        desc: '显式页码总数，优先于 `itemCount` / `pageSize`。对应 n-pagination 的 `pageCount`。',
       },
       {
         name: 'pageSizes',
@@ -119,19 +114,19 @@ import { Pagination } from '@snui/vue-web';
         name: 'showQuickJumper',
         type: 'boolean',
         default: 'false',
-        desc: 'Render the quick page-jumper input. Mirrors n-pagination `showQuickJumper`.',
+        desc: '渲染快速跳页输入框。对应 n-pagination 的 `showQuickJumper`。',
       },
       {
         name: 'showSizePicker',
         type: 'boolean',
         default: 'false',
-        desc: 'Render the page-size picker. Mirrors n-pagination `showSizePicker`.',
+        desc: '渲染每页条数选择器。对应 n-pagination 的 `showSizePicker`。',
       },
       {
         name: 'pageSlot',
         type: 'number',
         default: '9',
-        desc: 'Maximum number of page buttons rendered before collapsing into first / last / neighborhood + ellipsis. Mirrors n-pagination `pageSlot`. Default 9.',
+        desc: '页码按钮的最大数量，超出后折叠为首 / 尾 / 邻近页加省略号。对应 n-pagination 的 `pageSlot`，默认 9。',
       },
       {
         name: 'showTotal',
@@ -143,7 +138,7 @@ import { Pagination } from '@snui/vue-web';
         name: 'simple',
         type: 'boolean',
         default: 'false',
-        desc: 'Compact mode: prev / page input / page count / next only. Mirrors n-pagination `simple`.',
+        desc: '简洁模式：上一页 / 页码输入 / 总页数 / 下一页，不渲染页码列表与跳页输入。',
       },
       {
         name: 'quickSwitch',
@@ -155,7 +150,7 @@ import { Pagination } from '@snui/vue-web';
         name: 'disabled',
         type: 'boolean',
         default: 'false',
-        desc: 'Disable every control. Mirrors n-pagination `disabled`.',
+        desc: '禁用全部控件；禁用期间的交互不提交事件。',
       },
     ],
   },

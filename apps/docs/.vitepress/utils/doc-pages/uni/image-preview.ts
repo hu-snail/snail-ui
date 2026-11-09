@@ -93,18 +93,8 @@ import { ImagePreview } from '@snui/uni';
       },
       { name: 'images', type: 'string[]', default: '() => []', desc: '图片 URL 数组' },
       { name: 'startPosition', type: 'number', default: '0', desc: '起始位置索引' },
-      {
-        name: 'showIndex',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Show the `current / total` counter.',
-      },
-      {
-        name: 'loop',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Loop from the last image to the first.',
-      },
+      { name: 'showIndex', type: 'boolean', default: 'true', desc: '是否显示页码' },
+      { name: 'loop', type: 'boolean', default: 'true', desc: '是否循环播放' },
       { name: 'closeable', type: 'boolean', default: 'true', desc: '是否显示关闭按钮' },
       {
         name: 'closeIcon',
@@ -118,17 +108,12 @@ import { ImagePreview } from '@snui/uni';
         default: "'top-right'",
         desc: 'Close-button anchor.',
       },
-      {
-        name: 'closeOnClick',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Tapping the image or the scrim closes the viewer.',
-      },
+      { name: 'closeOnClick', type: 'boolean', default: 'true', desc: '点击图片或遮罩是否关闭' },
       {
         name: 'showMenuByLongpress',
         type: 'boolean',
         default: 'true',
-        desc: 'Long-press shows the miniprogram QR menu on the image.',
+        desc: '长按图片显示识别小程序码菜单',
       },
       { name: 'zIndex', type: 'number', default: '1000', desc: '层级' },
       {

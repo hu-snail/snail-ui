@@ -78,7 +78,7 @@ import { Captcha } from '@snui/uni';
         name: 'modelValue',
         type: 'boolean',
         default: 'false',
-        desc: 'Whether the captcha popup is shown (v-model).',
+        desc: '验证码弹层是否显示（`v-model`）。',
       },
       {
         name: 'src',
@@ -90,7 +90,7 @@ import { Captcha } from '@snui/uni';
         name: 'width',
         type: 'number',
         default: '300',
-        desc: 'Stage width in design px; the box fills its container up to this.',
+        desc: '舞台最大宽度（设计 px），也是无法测量时的行程基准',
       },
       { name: 'height', type: 'number', default: '200', desc: '舞台高度（设计 px）' },
       {
@@ -100,30 +100,15 @@ import { Captcha } from '@snui/uni';
         desc: 'Hint text under the stage while dragging.',
       },
       { name: 'successText', type: 'string', default: "''", desc: 'Success text overlay.' },
-      {
-        name: 'tolerance',
-        type: 'number',
-        default: '10',
-        desc: 'Snap tolerance around the target X (px design units).',
-      },
+      { name: 'tolerance', type: 'number', default: '10', desc: '对齐容差（设计 px）' },
       { name: 'zIndex', type: 'number', default: '100', desc: '弹层层级（`inline` 下不生效）' },
-      {
-        name: 'closeOnClickModal',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Close the popup when the scrim is tapped.',
-      },
-      {
-        name: 'refreshable',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Show the re-roll button (top-right of the stage).',
-      },
+      { name: 'closeOnClickModal', type: 'boolean', default: 'true', desc: '点遮罩关闭' },
+      { name: 'refreshable', type: 'boolean', default: 'true', desc: '显示「换一张」按钮' },
       {
         name: 'inline',
         type: 'boolean',
         default: 'false',
-        desc: 'Render embedded in the host layout instead of as a fixed popup — no scrim, no close button, no auto close (additive, AUI-OPT-12, AGENTS.md §112.3a). `v-model` is ignored; the host controls mounting.',
+        desc: '内嵌展示：不渲染遮罩与关闭按钮，通过后不自动关闭',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Extra class on the root node.' },
       {

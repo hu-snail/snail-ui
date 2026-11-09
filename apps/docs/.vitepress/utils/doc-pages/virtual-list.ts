@@ -62,23 +62,18 @@ import { VirtualList } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'items',
-        type: 'SnVirtualListItem[]',
-        default: '() => []',
-        desc: 'Full data list (only the visible window renders). Mirrors n-virtual-list `items`.',
-      },
+      { name: 'items', type: 'SnVirtualListItem[]', default: '() => []', desc: '列表数据。' },
       {
         name: 'itemSize',
         type: 'number',
         default: '30',
-        desc: 'Fixed row height in px (also the fallback estimate for unmeasured rows). Mirrors n-virtual-list `itemSize`.',
+        desc: '固定行高（px，也是未测量行的兜底估算值）。对应 n-virtual-list 的 `itemSize`。',
       },
       {
         name: 'itemResizable',
         type: 'boolean',
         default: 'false',
-        desc: 'Measure rendered rows with ResizeObserver and reflow from measured heights. Mirrors n-virtual-list `itemResizable`.',
+        desc: '用 ResizeObserver 测量实际行高，并按实测值重排。对应 n-virtual-list 的 `itemResizable`。',
       },
       {
         name: 'keyField',
@@ -90,13 +85,13 @@ import { VirtualList } from '@snui/vue-web';
         name: 'overscan',
         type: 'number',
         default: '3',
-        desc: 'Extra rows rendered above / below the visible window. Mirrors n-virtual-list `overscan`.',
+        desc: '视口上下额外渲染的行数，用于吸收快速滚动。',
       },
       {
         name: 'visibleHeight',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Viewport height in px; when omitted the container height is measured.',
+        desc: '视口高度（px）；省略时测量容器高度。',
       },
     ],
   },

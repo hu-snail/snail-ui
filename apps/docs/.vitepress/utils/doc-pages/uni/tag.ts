@@ -121,7 +121,7 @@ import { Tag } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。',
+        desc: '是否按 CSS 图标处理。',
       },
       {
         name: 'shape',
@@ -129,17 +129,12 @@ import { Tag } from '@snui/uni';
         default: "'square'",
         desc: '异形形态（AUI-OPT-17，§112.3a）：square 直角矩形、skew 平行四边形、 ribbon 右端旗标、fold 右上折角、ticket 两侧票券缺口、round 胶囊。 非 square 时优先于 `round` sugar。',
       },
-      {
-        name: 'closable',
-        type: 'boolean',
-        default: 'false',
-        desc: '是否可关闭（渲染关闭按钮，点击 emit `close`）。',
-      },
+      { name: 'closable', type: 'boolean', default: 'false', desc: '是否可关闭' },
       {
         name: 'dynamic',
         type: 'boolean',
         default: 'false',
-        desc: '是否为新增标签（渲染输入框，确认后 emit `confirm`）。',
+        desc: '是否为新增标签（渲染行内输入）',
       },
       { name: 'color', type: 'string', default: "''", desc: '文字颜色（内联覆盖）。' },
       { name: 'bgColor', type: 'string', default: "''", desc: '背景色和边框色（内联覆盖）。' },
@@ -149,12 +144,7 @@ import { Tag } from '@snui/uni';
         default: 'false',
         desc: "是否圆角（胶囊形）。等价于 `shape: 'round'` 的 sugar，`shape` 优先。",
       },
-      {
-        name: 'mark',
-        type: 'boolean',
-        default: 'false',
-        desc: '是否标记样式（左上 / 右下不对称圆角）。',
-      },
+      { name: 'mark', type: 'boolean', default: 'false', desc: '是否标记样式（非对称圆角）' },
       {
         name: 'variant',
         type: "'light' | 'dark' | 'plain' | 'dashed' | 'text'",

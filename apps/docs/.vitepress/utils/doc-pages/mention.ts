@@ -63,7 +63,7 @@ import { Mention } from '@snui/vue-web';
         name: 'options',
         type: 'SnMentionRawOption[]',
         default: '() => []',
-        desc: 'Static candidate list.',
+        desc: '候选（string 或 {label, value?, disabled?}）',
       },
       {
         name: 'delimiter',
@@ -72,17 +72,12 @@ import { Mention } from '@snui/vue-web';
         desc: "Trigger character(s). A string delimiter uses its last character as the trigger char (n-mention semantics); an array accepts any of the entries' last characters (each simplified to a single char).",
       },
       { name: 'placeholder', type: 'string', default: "''", desc: 'Placeholder text.' },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables interaction (typing, selecting).',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用交互（输入、选择）。' },
       {
         name: 'readonly',
         type: 'boolean',
         default: 'false',
-        desc: 'Read-only — value visible, not editable, no panel.',
+        desc: '只读：值可见但不可编辑，不弹面板。',
       },
       {
         name: 'size',
@@ -102,7 +97,7 @@ import { Mention } from '@snui/vue-web';
         default: "'text'",
         desc: 'Input variant: single-line text or multi-line textarea.',
       },
-      { name: 'rows', type: 'number', default: '3', desc: 'Rows for `type="textarea"`.' },
+      { name: 'rows', type: 'number', default: '3', desc: '`type="textarea"` 时的行数。' },
       { name: 'ariaLabel', type: 'string', default: "''", desc: 'Native ARIA label.' },
     ],
   },

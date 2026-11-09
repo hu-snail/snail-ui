@@ -114,12 +114,7 @@ export const dynamicInputDocPage: SnDocPageData = {
       },
     ],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'DynamicInputValue[]',
-        default: '[]',
-        desc: '绑定数组；每项一个独立值，变更 emit 整个新数组。',
-      },
+      { name: 'modelValue', type: 'DynamicInputValue[]', default: '[]', desc: '绑定值。' },
       {
         name: 'preset',
         type: '() => DynamicInputValue',
@@ -130,7 +125,7 @@ export const dynamicInputDocPage: SnDocPageData = {
         name: 'onCreate',
         type: '(value, index) => DynamicInputValue',
         default: '—',
-        desc: 'preset 产出草稿值后的加工钩子，返回值成为新行。',
+        desc: 'preset 后加工',
       },
       {
         name: 'min',

@@ -93,24 +93,9 @@ import { Radio } from '@snui/vue-web';
         default: "''",
         desc: 'Label text rendered next to the dot. Slot `label` overrides.',
       },
-      {
-        name: 'name',
-        type: 'string | undefined',
-        default: '—',
-        desc: 'Native radio group name — required for arrow-key nav. Provided by group.',
-      },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables this radio. Group-level disabled ORs in.',
-      },
-      {
-        name: 'readonly',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Read-only — renders but ignores activation.',
-      },
+      { name: 'name', type: 'string | undefined', default: '—', desc: '原生 radio name（组提供）' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用（组级 OR）' },
+      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读视觉态' },
       {
         name: 'size',
         type: 'SnRadioSize',
@@ -127,7 +112,7 @@ import { Radio } from '@snui/vue-web';
         name: 'ariaLabel',
         type: 'string | undefined',
         default: '—',
-        desc: 'Native ARIA label (overrides label for the accessible name).',
+        desc: '原生 ARIA 标签，覆盖 `label` 作为无障碍名称。',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {

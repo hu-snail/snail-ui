@@ -338,8 +338,6 @@ const sidebar = withCollapsibleGroups({
     {
       text: 'Display 展示组件',
       items: [
-        { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
-        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
         { text: 'sn-card 卡片'.trim(), link: '/components/uni/card' },
         { text: 'sn-img 图片'.trim(), link: '/components/uni/img' },
         { text: 'sn-swiper 轮播'.trim(), link: '/components/uni/swiper' },
@@ -551,6 +549,13 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Navigation',
       items: [
+        { text: 'Menu', link: '/en/components/web/menu' },
+        { text: 'Breadcrumb', link: '/en/components/web/breadcrumb' },
+        { text: 'Steps', link: '/en/components/web/steps' },
+        { text: 'Anchor', link: '/en/components/web/anchor' },
+        { text: 'Affix', link: '/en/components/web/affix' },
+        { text: 'BackTop', link: '/en/components/web/back-top' },
+        { text: 'Tooltip', link: '/en/components/web/tooltip' },
         { text: 'Pagination', link: '/en/components/web/pagination' },
         { text: 'PageHeader', link: '/en/components/web/page-header' },
         { text: 'FloatButton', link: '/en/components/web/float-button' },
@@ -560,6 +565,11 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Feedback',
       items: [
+        { text: 'Alert', link: '/en/components/web/alert' },
+        { text: 'Dialog', link: '/en/components/web/dialog' },
+        { text: 'Drawer', link: '/en/components/web/drawer' },
+        { text: 'Loading', link: '/en/components/web/loading' },
+        { text: 'Skeleton', link: '/en/components/web/skeleton' },
         { text: 'Notification', link: '/en/components/web/notification' },
         { text: 'LoadingBar', link: '/en/components/web/loading-bar' },
         { text: 'Progress', link: '/en/components/web/progress' },
@@ -707,8 +717,6 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Display',
       items: [
-        { text: 'sn-avatar', link: '/en/components/uni/avatar' },
-        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
         { text: 'sn-card', link: '/en/components/uni/card' },
         { text: 'sn-img', link: '/en/components/uni/img' },
         { text: 'sn-swiper', link: '/en/components/uni/swiper' },

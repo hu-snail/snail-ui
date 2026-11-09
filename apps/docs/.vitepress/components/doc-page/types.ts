@@ -67,38 +67,6 @@ export interface DocFeature {
   icon?: 'eco' | 'touch' | 'layers' | 'a11y' | 'dual';
 }
 
-export interface SnDocPageData {
-  crumbs: DocCrumb[];
-  title: string;
-  badges: DocBadge[];
-  description: DocSeg[];
-  quickActions: DocQuickAction[];
-  /** 头卡底部的特性条，省略则不渲染。 */
-  features?: DocFeature[];
-  usage: {
-    hint: DocSeg[];
-    fileLabel: string;
-    meta: string;
-    code: string;
-  };
-  props: {
-    hint: DocSeg[];
-    rows: DocPropRow[];
-  };
-  ai: {
-    badge: string;
-    heading: string;
-    copy: string;
-    chip: string;
-    chipCopy: string;
-    stats: DocAiStat[];
-  };
-  pager: {
-    prev?: DocPagerItem;
-    next?: DocPagerItem;
-  };
-  toc: DocTocItem[];
-}
 /** demo 瀑布流条目 —— 复用 demo-loader 的活体渲染与源码。 */
 export interface DocDemoItem {
   /** demo 文件名（demo/ 下，不含 .vue）。 */
@@ -115,13 +83,15 @@ export interface SnDocPageData {
   badges: DocBadge[];
   description: DocSeg[];
   quickActions: DocQuickAction[];
+  /** 头卡底部的特性条，省略则不渲染。 */
+  features?: DocFeature[];
   usage: {
     hint: DocSeg[];
     fileLabel: string;
     meta: string;
     code: string;
   };
-  /** 组件 demo 案例瀑布流（en 文档案例清单，活体渲染 + 预览/源码切换）。 */
+  /** 案例清单 —— 复用 demo-loader 的活体渲染与源码面板。 */
   demos: DocDemoItem[];
   props: {
     hint: DocSeg[];

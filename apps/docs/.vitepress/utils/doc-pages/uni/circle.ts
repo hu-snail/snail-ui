@@ -72,18 +72,8 @@ import { Circle } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'number',
-        default: '0',
-        desc: 'Current progress, 0–100 (out-of-range values are clamped).',
-      },
-      {
-        name: 'size',
-        type: 'number | string',
-        default: '120',
-        desc: 'Ring diameter. A bare number is treated as rpx (750 design).',
-      },
+      { name: 'modelValue', type: 'number', default: '0', desc: '当前进度，0–100（越界截断）' },
+      { name: 'size', type: 'number | string', default: '120', desc: '120' },
       {
         name: 'color',
         type: 'string | Record<string, string>',
@@ -101,7 +91,7 @@ import { Circle } from '@snui/uni';
         name: 'speed',
         type: 'number',
         default: '50',
-        desc: 'Animation speed in percent per second; `0` disables the transition.',
+        desc: '动画速度（百分比 / 秒）；`0` 关闭过渡',
       },
       {
         name: 'text',
@@ -109,24 +99,14 @@ import { Circle } from '@snui/uni';
         default: "''",
         desc: 'Text shown in the middle; empty shows the rounded percentage.',
       },
-      {
-        name: 'strokeWidth',
-        type: 'number | string',
-        default: '18',
-        desc: 'Ring thickness. A bare number is treated as rpx.',
-      },
+      { name: 'strokeWidth', type: 'number | string', default: '18', desc: '18' },
       {
         name: 'strokeLinecap',
         type: 'CircleLinecap',
         default: "'round'",
         desc: 'Stroke cap (parity only — a conic sweep has no caps).',
       },
-      {
-        name: 'clockwise',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Sweep clockwise (the default) or counter-clockwise.',
-      },
+      { name: 'clockwise', type: 'boolean', default: 'true', desc: '是否顺时针增加' },
       {
         name: 'customClass',
         type: 'string',

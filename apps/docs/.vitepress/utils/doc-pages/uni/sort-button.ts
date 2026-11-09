@@ -78,31 +78,11 @@ import { SortButton } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'SortButtonValue',
-        default: '0',
-        desc: 'Current direction (`v-model`).',
-      },
+      { name: 'modelValue', type: 'SortButtonValue', default: '0', desc: '-1`' },
       { name: 'title', type: 'string', default: "''", desc: 'Button label.' },
-      {
-        name: 'allowReset',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Include the reset state in the tap cycle.',
-      },
-      {
-        name: 'descFirst',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Cycle to descending before ascending.',
-      },
-      {
-        name: 'line',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render an underline under the label.',
-      },
+      { name: 'allowReset', type: 'boolean', default: 'false', desc: '循环是否包含重置态' },
+      { name: 'descFirst', type: 'boolean', default: 'false', desc: '优先切换到降序' },
+      { name: 'line', type: 'boolean', default: 'false', desc: '显示下划线' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

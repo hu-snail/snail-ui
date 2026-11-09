@@ -56,31 +56,11 @@ import { Rate } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'number | null',
-        default: 'null',
-        desc: 'Bound rating value. 0 (or null) = unrated.',
-      },
-      { name: 'count', type: 'number', default: '5', desc: 'Number of stars rendered.' },
-      {
-        name: 'allowHalf',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Allow half-star precision (0.5 steps).',
-      },
-      {
-        name: 'readonly',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Read-only — visible but not interactive.',
-      },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disabled — greyed out, not interactive.',
-      },
+      { name: 'modelValue', type: 'number | null', default: 'null', desc: '绑定值。' },
+      { name: 'count', type: 'number', default: '5', desc: '星数' },
+      { name: 'allowHalf', type: 'boolean', default: 'false', desc: '半星' },
+      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读：可见但不可交互。' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用：置灰且不可交互。' },
       {
         name: 'size',
         type: "'small' | 'medium' | 'large'",
@@ -93,12 +73,7 @@ import { Rate } from '@snui/vue-web';
         default: "''",
         desc: 'Filled-star color. Accepts any CSS color (token variable like `var(--sn-web-color-feedback-warning)` is recommended); applied via the `--sn-rate-color` CSS variable so it stays themeable.',
       },
-      {
-        name: 'clearable',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Clicking the same rating again resets the value to 0.',
-      },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '点同值清零' },
       {
         name: 'ariaLabel',
         type: 'string',

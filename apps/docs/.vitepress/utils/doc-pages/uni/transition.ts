@@ -92,25 +92,20 @@ import { Transition } from '@snui/uni';
         name: 'duration',
         type: 'TransitionDuration',
         default: 'DEFAULT_DURATION',
-        desc: 'Animation duration in ms; `false` disables it, a record sets per-leg.',
+        desc: '动画时长。',
       },
-      {
-        name: 'lazyRender',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Defer the very first render until `show` turns true.',
-      },
+      { name: 'lazyRender', type: 'boolean', default: 'false', desc: '是否在首次展示时再渲染内容' },
       {
         name: 'name',
         type: 'TransitionName | TransitionName[] | undefined',
         default: 'undefined',
-        desc: 'One animation name, or several to combine.',
+        desc: '—',
       },
       {
         name: 'destroy',
         type: 'boolean',
         default: 'true',
-        desc: 'Hide with `display: none` once the leave animation finished.',
+        desc: '是否在动画结束后通过 `display: none` 隐藏内容',
       },
       {
         name: 'enterClass',
@@ -148,12 +143,7 @@ import { Transition } from '@snui/uni';
         default: "''",
         desc: 'Class applied on the leave end frame.',
       },
-      {
-        name: 'disableTouchMove',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Intercept touchmove so the page behind cannot scroll.',
-      },
+      { name: 'disableTouchMove', type: 'boolean', default: 'false', desc: '是否阻止触摸滚动' },
       {
         name: 'customClass',
         type: 'string',

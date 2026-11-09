@@ -56,32 +56,22 @@ import { Collapse } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'collapse-web-basic', title: '实时预览', blurb: '实时预览' },
-    { name: 'collapse-web-accordion', title: '实时预览', blurb: '实时预览' },
-    { name: 'collapse-web-bordered', title: '实时预览', blurb: '实时预览' },
-    { name: 'collapse-web-trigger', title: '实时预览', blurb: '实时预览' },
+    { name: 'collapse-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'collapse-web-accordion', title: '手风琴模式', blurb: '手风琴模式' },
+    { name: 'collapse-web-bordered', title: '边框样式', blurb: '边框样式' },
+    { name: 'collapse-web-trigger', title: '触发区域', blurb: '触发区域' },
   ],
   props: {
     hint: [],
     rows: [
-      {
-        name: 'expandedNames',
-        type: 'Array<string | number>',
-        default: '() => []',
-        desc: 'Names of currently expanded items (controlled).',
-      },
+      { name: 'expandedNames', type: 'Array<string | number>', default: '() => []', desc: '`[]`' },
       {
         name: 'defaultExpandedNames',
         type: 'Array<string | number>',
         default: '() => []',
-        desc: 'Initial expanded names (uncontrolled).',
+        desc: '`[]`',
       },
-      {
-        name: 'accordion',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Allow expanding only one item at a time. Mirrors n-collapse `accordion`.',
-      },
+      { name: 'accordion', type: 'boolean', default: 'false', desc: '一次只展开一个' },
       {
         name: 'arrowPlacement',
         type: "'left' | 'right'",
@@ -94,12 +84,7 @@ import { Collapse } from '@snui/vue-web';
         default: "'click'",
         desc: 'Trigger mode. Mirrors n-collapse `trigger`.',
       },
-      {
-        name: 'bordered',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether to render a bordered container around the collapse group. Mirrors n-collapse `bordered`. Default false.',
-      },
+      { name: 'bordered', type: 'boolean', default: 'false', desc: '卡片化外框（共享分隔线）' },
       {
         name: 'displayDirective',
         type: "'show' | 'if'",

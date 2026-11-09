@@ -69,12 +69,7 @@ import { Gap } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'height',
-        type: 'string | number',
-        default: '14',
-        desc: '间隔槽高度：数字按 px，字符串原样转发（如 `20rpx`）。',
-      },
+      { name: 'height', type: 'string | number', default: '14', desc: '`14`' },
       {
         name: 'bgColor',
         type: 'string',
@@ -85,7 +80,7 @@ import { Gap } from '@snui/uni';
         name: 'safeAreaBottom',
         type: 'boolean',
         default: 'false',
-        desc: '是否开启底部安全区适配（叠加 `env(safe-area-inset-bottom)`）。',
+        desc: '是否叠加底部安全区 inset',
       },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义 inline style。' },

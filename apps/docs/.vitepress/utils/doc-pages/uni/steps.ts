@@ -103,19 +103,14 @@ import { Steps } from '@snui/uni';
         default: "''",
         desc: '步骤图标名（registry → 内置目录依次解析，未命中回退内置状态图标 / 序号）。',
       },
-      {
-        name: 'status',
-        type: 'SnStepStatus | undefined',
-        default: 'undefined',
-        desc: '步骤状态：finished / process / error / wait（不传时由 active 推导）。',
-      },
+      { name: 'status', type: 'SnStepStatus | undefined', default: 'undefined', desc: '状态。' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
       {
         name: 'iconData',
         type: 'IconData | undefined',
         default: '—',
-        desc: '图标数据对象（内置图标集 / 自定义 IconData），优先级最高。',
+        desc: '图标数据对象（优先级最高）',
       },
       {
         name: 'iconUrl',
@@ -123,12 +118,7 @@ import { Steps } from '@snui/uni';
         default: "''",
         desc: '图标图片地址：渲染为 `<image>`，优先级低于 `iconData`、高于 `icon`。',
       },
-      {
-        name: 'iconSize',
-        type: 'string | number | undefined',
-        default: '—',
-        desc: '图标尺寸：数字按 px；档位名（tiny/small/medium/large/xlarge）映射 `--sn-mp-icon-size-*`。',
-      },
+      { name: 'iconSize', type: 'string | number | undefined', default: '—', desc: '图标尺寸。' },
       {
         name: 'iconColor',
         type: 'string',

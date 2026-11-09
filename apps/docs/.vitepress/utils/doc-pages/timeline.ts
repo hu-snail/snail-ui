@@ -87,7 +87,7 @@ import { Timeline } from '@snui/vue-web';
         name: 'horizontal',
         type: 'boolean',
         default: 'false',
-        desc: 'Legacy flag: lay the items out horizontally (`direction="horizontal"` preferred).',
+        desc: '兼容保留：水平排布（推荐 `direction`）',
       },
       {
         name: 'itemPlacement',
@@ -101,7 +101,7 @@ import { Timeline } from '@snui/vue-web';
         default: "'medium'",
         desc: 'Title scale of the items.',
       },
-      { name: 'iconSize', type: 'number', default: '—', desc: 'Node/icon edge length in px.' },
+      { name: 'iconSize', type: 'number', default: '—', desc: '节点 / 图标的边长（px）。' },
     ],
   },
   ai: {

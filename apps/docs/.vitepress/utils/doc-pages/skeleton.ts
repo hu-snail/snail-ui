@@ -63,60 +63,20 @@ import { Skeleton } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'text',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render as an inline text placeholder. Mirrors n-skeleton `text`.',
-      },
-      {
-        name: 'round',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Fully rounded ends (pill). Mirrors n-skeleton `round`.',
-      },
-      {
-        name: 'circle',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Circular block; width and height are forced equal. Mirrors `circle`.',
-      },
-      {
-        name: 'height',
-        type: 'string | number',
-        default: 'undefined as any',
-        desc: 'Block height — number is px. Mirrors n-skeleton `height`.',
-      },
-      {
-        name: 'width',
-        type: 'string | number',
-        default: 'undefined as any',
-        desc: 'Block width — number is px. Mirrors n-skeleton `width`.',
-      },
+      { name: 'text', type: 'boolean', default: 'false', desc: '渲染为文本骨架。' },
+      { name: 'round', type: 'boolean', default: 'false', desc: '渲染为圆角骨架。' },
+      { name: 'circle', type: 'boolean', default: 'false', desc: '渲染为圆形骨架。' },
+      { name: 'height', type: 'string | number', default: 'undefined as any', desc: '高度。' },
+      { name: 'width', type: 'string | number', default: 'undefined as any', desc: '宽度。' },
       {
         name: 'size',
         type: "'small' | 'medium' | 'large'",
         default: 'undefined as any',
         desc: 'Height tier used when no explicit height/width is given.',
       },
-      {
-        name: 'repeat',
-        type: 'number',
-        default: '1',
-        desc: 'Number of sibling blocks to render. Mirrors n-skeleton `repeat`.',
-      },
-      {
-        name: 'animated',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Run the shimmer animation. Mirrors n-skeleton `animated`.',
-      },
-      {
-        name: 'sharp',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Keep square corners (unset the token radius). Mirrors `sharp`.',
-      },
+      { name: 'repeat', type: 'number', default: '1', desc: '`1`' },
+      { name: 'animated', type: 'boolean', default: 'true', desc: '是否启用闪烁动画。' },
+      { name: 'sharp', type: 'boolean', default: 'true', desc: '是否渲染为直角骨架。' },
     ],
   },
   ai: {

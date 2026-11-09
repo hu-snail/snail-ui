@@ -76,7 +76,7 @@ import { Lucky } from '@snui/uni';
         name: 'prizes',
         type: 'SnLuckyPrize[]',
         default: '() => []',
-        desc: '奖品列表（沿周长顺序排列，不足的格子显示占位）。',
+        desc: '奖品列表（沿周长排列，`{ name, img?, color? }`）',
       },
       { name: 'gutter', type: 'string', default: "'8rpx'", desc: '格子间距。' },
       { name: 'cellHeight', type: 'string', default: "'120rpx'", desc: '格子高度。' },

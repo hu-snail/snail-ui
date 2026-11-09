@@ -51,7 +51,7 @@ import { Divider } from '@snui/vue-web';
   demos: [
     {
       name: 'divider-web',
-      title: '实时预览',
+      title: '全部形态',
       blurb: '水平 / 虚线 / 带文字 / marginSize / 垂直 等全部 variants 的综合预览。',
     },
   ],

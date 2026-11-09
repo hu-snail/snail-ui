@@ -54,23 +54,18 @@ import { InfiniteScroll } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'distance',
-        type: 'number',
-        default: '0',
-        desc: 'Bottom-distance threshold in px that triggers `load`. Mirrors n-infinite-scroll `distance`.',
-      },
+      { name: 'distance', type: 'number', default: '0', desc: '触底触发 `load` 的距离阈值（px）' },
       {
         name: 'scrollbarProps',
         type: 'Record<string, unknown> | undefined',
         default: 'undefined',
-        desc: 'Extra attributes for the internal scroll container (the reference applies them to its Scrollbar). Mirrors n-infinite-scroll `scrollbar-props`.',
+        desc: '附加到内部滚动容器上的属性',
       },
       {
         name: 'showLoading',
         type: 'boolean',
         default: 'true',
-        desc: 'Render an inline-SVG spinner at the bottom while `load` is pending (addition — the reference ships no loading UI).',
+        desc: '`load` 未决期间在内容底部显示转圈',
       },
     ],
   },

@@ -57,17 +57,12 @@ import { Calendar } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'value',
-        type: 'number | null | undefined',
-        default: 'undefined',
-        desc: 'Selected date (millisecond timestamp), v-model:value. Mirrors n-calendar `value`.',
-      },
+      { name: 'value', type: 'number | null | undefined', default: 'undefined', desc: '当前值。' },
       {
         name: 'defaultValue',
         type: 'number | null | undefined',
         default: 'null',
-        desc: 'Uncontrolled initial selection (millisecond timestamp); also anchors the first panel month. Mirrors n-calendar `defaultValue`.',
+        desc: '非受控模式下的初始选中日期（毫秒时间戳），同时决定首个面板月份。对应 n-calendar 的 `defaultValue`。',
       },
     ],
   },

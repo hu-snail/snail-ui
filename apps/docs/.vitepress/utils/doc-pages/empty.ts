@@ -57,19 +57,14 @@ import { Empty } from '@snui/vue-web';
         name: 'description',
         type: 'string',
         default: '—',
-        desc: 'Description text; the `default` slot overrides it.',
+        desc: '描述文本，缺省为「无数据」，`default` 插槽可覆盖',
       },
-      {
-        name: 'showDescription',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Render the description line.',
-      },
+      { name: 'showDescription', type: 'boolean', default: 'true', desc: '渲染描述行。' },
       {
         name: 'showIcon',
         type: 'boolean',
         default: 'true',
-        desc: 'Render the default glyph (or the `icon` slot).',
+        desc: '渲染默认图形（或使用 `icon` 插槽）。',
       },
       {
         name: 'size',

@@ -118,34 +118,19 @@ import { Tabs } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'name',
-        type: 'SnTabsValue | undefined',
-        default: 'undefined',
-        desc: '标签唯一标识，默认取索引。',
-      },
+      { name: 'name', type: 'SnTabsValue | undefined', default: 'undefined', desc: '该项的标识。' },
       { name: 'title', type: 'string', default: "''", desc: '标签标题。' },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用。' },
-      {
-        name: 'lazy',
-        type: 'boolean',
-        default: 'true',
-        desc: '是否懒加载内容（首次激活后才渲染）。',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
+      { name: 'lazy', type: 'boolean', default: 'true', desc: '是否懒加载内容（首次激活后渲染）' },
       {
         name: 'badgeProps',
         type: 'SnTabBadgeProps | undefined',
         default: '—',
-        desc: '标题角标配置，透传给 `sn-badge`（对齐 wd-tab `badge-props`）。',
+        desc: '标题角标配置，透传 `sn-badge`（见下表）',
       },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
-      {
-        name: 'icon',
-        type: 'IconData | string | undefined',
-        default: '—',
-        desc: '导航项标题左侧图标：IconData 数据或注册 / 内置图标名。',
-      },
+      { name: 'icon', type: 'IconData | string | undefined', default: '—', desc: '图标。' },
       {
         name: 'iconImage',
         type: 'string',

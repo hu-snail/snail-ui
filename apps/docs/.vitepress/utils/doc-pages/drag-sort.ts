@@ -62,7 +62,7 @@ import { DragSort } from '@snui/vue-web';
         name: 'modelValue',
         type: 'SnDragSortItem[]',
         default: '() => []',
-        desc: 'Bound row array (`v-model`). Emits the complete reordered array.',
+        desc: '`v-model` 绑定行数组；`key` 必填，其余字段透传给插槽',
       },
       {
         name: 'direction',
@@ -70,17 +70,12 @@ import { DragSort } from '@snui/vue-web';
         default: "'vertical'",
         desc: 'Layout axis the drag is measured against.',
       },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables dragging AND keyboard moves for the whole list.',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用整表拖拽与键盘移动' },
       {
         name: 'handle',
         type: 'boolean',
         default: 'false',
-        desc: 'Restrict drag initiation to the built-in grip handle — rows stay text-selectable; without it every row is grabbable.',
+        desc: '仅内置把手可发起拖拽，行内容保持文本可选中',
       },
     ],
   },

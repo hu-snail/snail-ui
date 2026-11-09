@@ -107,7 +107,7 @@ import { ConfigProvider } from '@snui/uni';
         name: 'themeVars',
         type: 'ConfigProviderThemeVars',
         default: '() => ({})',
-        desc: 'Per-subtree CSS variable overrides. Mirrors `wd-config-provider` theme-vars.',
+        desc: '子树级 CSS 变量覆盖',
       },
       {
         name: 'customClass',

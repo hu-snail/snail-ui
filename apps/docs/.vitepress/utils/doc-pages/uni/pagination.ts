@@ -84,12 +84,7 @@ import { Pagination } from '@snui/uni';
     hint: [],
     rows: [
       { name: 'modelValue', type: 'number', default: '1', desc: '当前页码' },
-      {
-        name: 'totalPage',
-        type: 'number',
-        default: '1',
-        desc: '总页数；传入 total 时优先根据 total 与 pageSize 计算。',
-      },
+      { name: 'totalPage', type: 'number', default: '1', desc: '总页数（`total` 存在时被覆盖）' },
       { name: 'total', type: 'number', default: '0', desc: '总数据条数（优先于 `totalPage`）' },
       { name: 'pageSize', type: 'number', default: '10', desc: '每页条数' },
       {
@@ -112,19 +107,9 @@ import { Pagination } from '@snui/uni';
         default: "'text'",
         desc: '分页按钮风格：base / plain / dashed / text。',
       },
-      {
-        name: 'hideIfOnePage',
-        type: 'boolean',
-        default: 'false',
-        desc: '总页数只有一页时是否隐藏。',
-      },
+      { name: 'hideIfOnePage', type: 'boolean', default: 'false', desc: '只有一页时是否隐藏' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '整控件禁用（冻结全部交互）' },
-      {
-        name: 'simple',
-        type: 'boolean',
-        default: 'false',
-        desc: '简单模式：只展示 prev / 当前页 / next，不渲染页码条。',
-      },
+      { name: 'simple', type: 'boolean', default: 'false', desc: '简单模式（无数字条）' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
     ],

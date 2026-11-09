@@ -68,24 +68,14 @@ import { Liquid } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'percent',
-        type: 'number',
-        default: '0',
-        desc: '进度百分比（0-100），超出范围会被夹取。',
-      },
+      { name: 'percent', type: 'number', default: '0', desc: '进度百分比（0-100，超出自动夹取）' },
       {
         name: 'size',
         type: 'string',
         default: "'160rpx'",
         desc: '球体尺寸（rpx / px 长度字符串）。',
       },
-      {
-        name: 'duration',
-        type: 'number',
-        default: '500',
-        desc: '水位 / current 过渡时长（ms），0 表示立即到位。',
-      },
+      { name: 'duration', type: 'number', default: '500', desc: '水位过渡时长（ms），0 立即到位' },
       { name: 'outline', type: 'boolean', default: 'false', desc: '是否显示外圈描边' },
       { name: 'radius', type: 'string', default: "'50%'", desc: '圆角（默认正圆）。' },
       {

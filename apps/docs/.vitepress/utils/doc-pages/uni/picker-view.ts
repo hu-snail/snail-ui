@@ -82,30 +82,10 @@ import { PickerView } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'PickerValue[]',
-        default: '() => []',
-        desc: 'Selected value per column (`v-model`).',
-      },
-      {
-        name: 'columns',
-        type: 'PickerColumn[]',
-        default: '() => []',
-        desc: 'Columns. Each entry is a column of primitives / option objects. In `cascade` mode pass the option *tree* here instead: the component derives the visible columns from the selected path.',
-      },
-      {
-        name: 'itemHeight',
-        type: 'number',
-        default: '44',
-        desc: 'Row height in px design units (converted to rpx for layout).',
-      },
-      {
-        name: 'visibleItemCount',
-        type: 'number',
-        default: '6',
-        desc: 'Number of visible rows; must be odd so a row can sit in the middle.',
-      },
+      { name: 'modelValue', type: 'PickerValue[]', default: '() => []', desc: '`[]`' },
+      { name: 'columns', type: 'PickerColumn[]', default: '() => []', desc: '列配置。' },
+      { name: 'itemHeight', type: 'number', default: '44', desc: '单项高度（px 设计值）' },
+      { name: 'visibleItemCount', type: 'number', default: '6', desc: '可见项数量' },
       {
         name: 'valueKey',
         type: 'string',
@@ -128,14 +108,9 @@ import { PickerView } from '@snui/uni';
         name: 'immediateChange',
         type: 'boolean',
         default: 'false',
-        desc: 'Emit `change` while dragging instead of only on release.',
+        desc: '拖动过程中立即触发 change',
       },
-      {
-        name: 'cascade',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Treat `columns` as a nested option tree.',
-      },
+      { name: 'cascade', type: 'boolean', default: 'false', desc: '把 columns 当树处理' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用滚轮' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {

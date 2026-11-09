@@ -87,12 +87,7 @@ import { Notify } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'visible',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the notification is visible (v-model:visible).',
-      },
+      { name: 'visible', type: 'boolean', default: 'false', desc: '是否显示（`v-model:visible`）' },
       {
         name: 'type',
         type: 'NotifyType',
@@ -105,12 +100,7 @@ import { Notify } from '@snui/uni';
         default: "''",
         desc: 'Message text; `\\n` renders as a line break.',
       },
-      {
-        name: 'duration',
-        type: 'number',
-        default: '3000',
-        desc: 'Auto-dismiss delay in ms; `0` keeps the notification open.',
-      },
+      { name: 'duration', type: 'number', default: '3000', desc: '展示时长（ms），`0` 表示不消失' },
       { name: 'position', type: 'NotifyPosition', default: "'top'", desc: 'Anchor of the banner.' },
       {
         name: 'color',
@@ -125,12 +115,7 @@ import { Notify } from '@snui/uni';
         desc: 'Background color override (any CSS color value).',
       },
       { name: 'zIndex', type: 'number', default: '99', desc: '层级' },
-      {
-        name: 'safeHeight',
-        type: 'number | string | undefined',
-        default: 'undefined',
-        desc: 'Extra top offset in px (or any CSS length) — accounts for a custom nav bar.',
-      },
+      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: '—' },
       { name: 'closable', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
         name: 'variant',

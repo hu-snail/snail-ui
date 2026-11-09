@@ -79,25 +79,10 @@ import { PlateInput } from '@snui/uni';
         default: "''",
         desc: 'Current value (`v-model`), e.g. `京A12345`.',
       },
-      {
-        name: 'maxlength',
-        type: 'number',
-        default: '7',
-        desc: 'Plate length in boxes — 7 for standard plates, 8 for new-energy.',
-      },
+      { name: 'maxlength', type: 'number', default: '7', desc: '方框数量（普通车牌 7，新能源 8）' },
       { name: 'title', type: 'string', default: "'请输入车牌号'", desc: 'Keyboard title.' },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Freeze the field (tapping no longer opens the keyboard).',
-      },
-      {
-        name: 'visible',
-        type: 'boolean | undefined',
-        default: 'undefined',
-        desc: 'Keyboard visibility (`v-model:visible`). Uncontrolled when omitted — the field opens on tap; one-way bindings keep full control.',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '冻结字段，点击不再弹起键盘' },
+      { name: 'visible', type: 'boolean | undefined', default: 'undefined', desc: '是否显示。' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

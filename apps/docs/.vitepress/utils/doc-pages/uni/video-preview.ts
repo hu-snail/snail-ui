@@ -85,12 +85,7 @@ import { VideoPreview } from '@snui/uni';
         desc: 'Instance identifier (parity with the reference; useful for logs / telemetry).',
       },
       { name: 'zIndex', type: 'number', default: '1000', desc: '预览层级' },
-      {
-        name: 'fullScreen',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Fill the viewport with the video instead of the centred 16:9 stage.',
-      },
+      { name: 'fullScreen', type: 'boolean', default: 'false', desc: '是否全屏预览' },
       {
         name: 'closePosition',
         type: 'VideoPreviewClosePosition',

@@ -85,7 +85,7 @@ import { CountDown } from '@snui/uni';
         name: 'millisecond',
         type: 'boolean',
         default: 'false',
-        desc: 'Render milliseconds too (ticks every frame-ish 16ms instead of 1s).',
+        desc: '是否开启毫秒级渲染（约 16ms 一跳）',
       },
       {
         name: 'format',
@@ -97,7 +97,7 @@ import { CountDown } from '@snui/uni';
         name: 'autoStart',
         type: 'boolean',
         default: 'true',
-        desc: 'Start automatically on mount and after `time` changes.',
+        desc: '是否在初始化和 `time` 变化后自动开始',
       },
       {
         name: 'customClass',

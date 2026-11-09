@@ -102,7 +102,7 @@ import { Loadmore } from '@snui/uni';
         name: 'loadingProps',
         type: 'Record<string, unknown>',
         default: '() => ({})',
-        desc: 'Props forwarded to the inner sn-loading.',
+        desc: '透传给内部 `sn-loading` 的属性',
       },
       {
         name: 'customClass',

@@ -114,13 +114,8 @@ export const dynamicTagsDocPage: SnDocPageData = {
       { t: 'text', s: ' prop。' },
     ],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'SnDynamicTagValue[]',
-        default: '[]',
-        desc: '绑定标签数组，变更 emit 整个新数组。',
-      },
-      { name: 'closable', type: 'boolean', default: 'true', desc: '每个标签显示 × 关闭按钮。' },
+      { name: 'modelValue', type: 'SnDynamicTagValue[]', default: '[]', desc: '`[]`' },
+      { name: 'closable', type: 'boolean', default: 'true', desc: 'tag 可删除' },
       {
         name: 'disabled',
         type: 'boolean',
@@ -139,7 +134,7 @@ export const dynamicTagsDocPage: SnDocPageData = {
         default: "'medium'",
         desc: '尺寸档位。',
       },
-      { name: 'max', type: 'number', default: '—', desc: '标签数上限，到界隐藏添加触发。' },
+      { name: 'max', type: 'number', default: '—', desc: '上限（到界隐藏添加）' },
       {
         name: 'trigger',
         type: "'click' | 'focus'",

@@ -81,12 +81,7 @@ import { SlideVerify } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'tolerance',
-        type: 'number',
-        default: '10',
-        desc: 'Pixels of slack at the right edge.',
-      },
+      { name: 'tolerance', type: 'number', default: '10', desc: '右边缘容差（px）' },
       { name: 'text', type: 'string', default: "''", desc: 'Hint text. Empty = built-in copy.' },
       {
         name: 'successText',
@@ -129,19 +124,19 @@ import { SlideVerify } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'Render the name as a bare CSS class (`true` = also apply the raw name).',
+        desc: '把名称直接渲染为 CSS 类名（`true` 时同时应用原始名称）。',
       },
       {
         name: 'iconSize',
         type: 'number | string',
         default: '28',
-        desc: 'Handle glyph size — a bare number is rpx.',
+        desc: '手柄图形尺寸——纯数字按 rpx 处理。',
       },
       {
         name: 'successIconSize',
         type: 'number | string',
         default: '28',
-        desc: 'Success glyph size — a bare number is rpx.',
+        desc: '成功图形尺寸——纯数字按 rpx 处理。',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {

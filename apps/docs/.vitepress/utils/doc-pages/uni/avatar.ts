@@ -109,7 +109,7 @@ import { Avatar } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。',
+        desc: '是否按 CSS 图标处理。',
       },
       {
         name: 'size',

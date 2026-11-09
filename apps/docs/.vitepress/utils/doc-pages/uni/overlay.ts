@@ -83,14 +83,9 @@ import { Overlay } from '@snui/uni';
         name: 'duration',
         type: 'OverlayDuration',
         default: 'DEFAULT_DURATION',
-        desc: 'Animation duration in ms. `false` = no animation, record = per-leg.',
+        desc: '动画时长。',
       },
-      {
-        name: 'lockScroll',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Lock background scroll while shown (intercepts touchmove).',
-      },
+      { name: 'lockScroll', type: 'boolean', default: 'true', desc: '是否锁定背景滚动' },
       { name: 'zIndex', type: 'number', default: '10', desc: '层级' },
       {
         name: 'customStyle',

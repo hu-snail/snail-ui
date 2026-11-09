@@ -56,18 +56,8 @@ import { Descriptions } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'title',
-        type: 'string',
-        default: '—',
-        desc: 'Title above the table; the `header` slot overrides it.',
-      },
-      {
-        name: 'column',
-        type: 'number',
-        default: '3',
-        desc: 'Total number of logical columns the grid is laid out with.',
-      },
+      { name: 'title', type: 'string', default: '—', desc: '表格上方的标题，`header` 插槽可覆盖' },
+      { name: 'column', type: 'number', default: '3', desc: '网格总列数' },
       {
         name: 'labelPlacement',
         type: "'left' | 'top'",
@@ -92,35 +82,30 @@ import { Descriptions } from '@snui/vue-web';
         default: "'medium'",
         desc: 'Font scale.',
       },
-      {
-        name: 'bordered',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Draw the bordered grid (outlined cells + tinted label background).',
-      },
+      { name: 'bordered', type: 'boolean', default: 'false', desc: '是否显示描边网格' },
       {
         name: 'labelClass',
         type: 'string',
         default: '—',
-        desc: 'Class applied to every rendered label cell / span.',
+        desc: '每个标签单元格 / 片段附加的类名。',
       },
       {
         name: 'labelStyle',
         type: 'string | CSSProperties',
         default: '—',
-        desc: 'Style applied to every rendered label cell / span.',
+        desc: '每个标签单元格 / 片段附加的样式。',
       },
       {
         name: 'contentClass',
         type: 'string',
         default: '—',
-        desc: 'Class applied to every rendered content cell / span.',
+        desc: '每个内容单元格 / 片段附加的类名。',
       },
       {
         name: 'contentStyle',
         type: 'string | CSSProperties',
         default: '—',
-        desc: 'Style applied to every rendered content cell / span.',
+        desc: '每个内容单元格 / 片段附加的样式。',
       },
     ],
   },

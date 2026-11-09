@@ -109,12 +109,7 @@ import { CodeInput } from '@snui/uni';
         default: "''",
         desc: 'Error text below the boxes (takes precedence over `info`).',
       },
-      {
-        name: 'gutter',
-        type: 'number | string',
-        default: '8',
-        desc: 'Gap between boxes. A number is treated as an rpx design value.',
-      },
+      { name: 'gutter', type: 'number | string', default: '8', desc: '`8`' },
       {
         name: 'border',
         type: "'all' | 'none'",
@@ -134,12 +129,7 @@ import { CodeInput } from '@snui/uni';
         desc: 'Cell background color (any CSS color or `var(--sn-mp-color-*)`, additive).',
       },
       { name: 'length', type: 'number', default: '6', desc: '方框数量' },
-      {
-        name: 'focused',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Whether the field is focused (shows the caret).',
-      },
+      { name: 'focused', type: 'boolean', default: 'true', desc: '是否聚焦（显示光标）' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

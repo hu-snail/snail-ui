@@ -61,48 +61,23 @@ import { NumberAnimation } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'to',
-        type: 'number',
-        default: '0',
-        desc: 'Target value; the animation runs from `from` towards `to`. Mirrors n-number-animation `to`.',
-      },
-      {
-        name: 'precision',
-        type: 'number',
-        default: '0',
-        desc: 'Digits kept after the decimal point. Mirrors n-number-animation `precision`.',
-      },
+      { name: 'to', type: 'number', default: '0', desc: '目标值' },
+      { name: 'precision', type: 'number', default: '0', desc: '小数位数' },
       {
         name: 'showSeparator',
         type: 'boolean',
         default: 'false',
-        desc: 'Format the integer part with locale thousands separators. Mirrors n-number-animation `showSeparator`.',
+        desc: '整数部分按语言环境加千分位。对应 n-number-animation 的 `showSeparator`。',
       },
       {
         name: 'locale',
         type: 'string | undefined',
         default: 'undefined',
-        desc: 'BCP-47 locale for Intl.NumberFormat (separators + decimal mark). Mirrors n-number-animation `locale`.',
+        desc: 'BCP-47 语言（默认跟随运行时 locale）',
       },
-      {
-        name: 'from',
-        type: 'number',
-        default: '0',
-        desc: 'Start value. Mirrors n-number-animation `from`.',
-      },
-      {
-        name: 'active',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Start / restart the animation. Mirrors n-number-animation `active`.',
-      },
-      {
-        name: 'duration',
-        type: 'number',
-        default: '2000',
-        desc: 'Animation duration in ms (non-reactive, captured at setup). Mirrors n-number-animation `duration`.',
-      },
+      { name: 'from', type: 'number', default: '0', desc: '起始值' },
+      { name: 'active', type: 'boolean', default: 'true', desc: '是否播放动画（true 时从头开始）' },
+      { name: 'duration', type: 'number', default: '2000', desc: '动画时长 ms（非响应式）' },
     ],
   },
   ai: {

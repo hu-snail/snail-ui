@@ -63,12 +63,7 @@ import { Split } from '@snui/vue-web';
         default: "'horizontal'",
         desc: 'Split axis. Panels lay out in a row (horizontal) or column (vertical).',
       },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disable all divider interaction.',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用拖拽' },
     ],
   },
   ai: {

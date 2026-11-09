@@ -88,18 +88,8 @@ import { SwipeAction } from '@snui/uni';
         default: "'close'",
         desc: 'Current swipe state (v-model): `left` / `close` / `right`.',
       },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disable swiping — the row stays closed.',
-      },
-      {
-        name: 'beforeClose',
-        type: 'SwipeActionBeforeClose',
-        default: '—',
-        desc: 'Close guard; `false` (or a promise of it) blocks the close.',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用滑动' },
+      { name: 'beforeClose', type: 'SwipeActionBeforeClose', default: '—', desc: '—' },
       {
         name: 'customClass',
         type: 'string',

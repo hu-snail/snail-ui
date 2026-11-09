@@ -77,31 +77,11 @@ import { Rate } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'number | null',
-        default: 'null',
-        desc: 'Current score (`v-model`); `null` = nothing selected.',
-      },
+      { name: 'modelValue', type: 'number | null', default: 'null', desc: '绑定值。' },
       { name: 'num', type: 'number', default: '5', desc: '图标数量' },
-      {
-        name: 'readonly',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Read-only — the icons render but do not react to taps.',
-      },
-      {
-        name: 'size',
-        type: 'string | number | undefined',
-        default: 'undefined',
-        desc: 'Icon size. A number is treated as a px design value.',
-      },
-      {
-        name: 'space',
-        type: 'string | number | undefined',
-        default: 'undefined',
-        desc: 'Gap between icons. A number is treated as an rpx design value.',
-      },
+      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读' },
+      { name: 'size', type: 'string | number | undefined', default: 'undefined', desc: '尺寸。' },
+      { name: 'space', type: 'string | number | undefined', default: 'undefined', desc: '间距。' },
       {
         name: 'color',
         type: 'string',
@@ -136,22 +116,12 @@ import { Rate } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'Treat `icon` / `activeIcon` as CSS class names instead of icon names.',
+        desc: '是否按 CSS 图标处理。',
       },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
       { name: 'allowHalf', type: 'boolean', default: 'false', desc: '允许半选' },
-      {
-        name: 'clearable',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Tapping the current score clears it back to `null`.',
-      },
-      {
-        name: 'block',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Stretch the icons across the full row width.',
-      },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '再次点击当前分数清空为 null' },
+      { name: 'block', type: 'boolean', default: 'false', desc: '块级撑满整行' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

@@ -64,7 +64,7 @@ import { LoadingBar } from '@snui/vue-web';
         name: 'barStyle',
         type: 'StyleValue',
         default: '—',
-        desc: 'Inline style (width / opacity / transition) computed by the provider.',
+        desc: '由 Provider 计算的内联样式（宽度 / 透明度 / 过渡）。',
       },
       {
         name: 'status',

@@ -89,7 +89,7 @@ import { IndexBar } from '@snui/uni';
         name: 'showIndicator',
         type: 'boolean',
         default: 'false',
-        desc: '是否在列表视口中央显示当前索引提示气泡（AUI 追加能力， additive (AUI-OPT-05, AGENTS.md §112.3a)；wd-index-bar 无对应 prop）。',
+        desc: '是否在列表视口中央显示当前索引提示气泡',
       },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },

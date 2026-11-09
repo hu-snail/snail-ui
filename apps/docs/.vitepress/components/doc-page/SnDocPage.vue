@@ -2,8 +2,10 @@
 /**
  * SnDocPage — 组件详情页渲染器（版式参考高保真原型，配色跟随站点主题）。
  *
- * 三栏叙事：中央文档流 + 右侧「本页目录 / 反馈」浮轨（xl 以上双栏），
- * 左侧站点原生侧栏保留。所有颜色经由 --sn-doc-* 局部变量映射到
+ * 三栏叙事：中央文档流 + 右侧反馈卡（xl 以上双栏），左侧站点原生侧栏保留；
+ * 「本页目录」交给库里的 SnFloatingToc（右缘浮标，hover / 点击展开面板），
+ * 组件自己测量滚动并高亮当前区块，本页不再自建 scroll-spy。
+ * 所有颜色经由 --sn-doc-* 局部变量映射到
  * --vp-c-*（站点）与 --sn-web-color-*（UI 库语义层），因此暗色模式与
  * Style Pack 换肤自动生效，本组件不携带任何私有色值。
  *
@@ -30,7 +32,14 @@ import {
   Sparkles,
   Table2,
 } from 'lucide-vue-next';
-import { SnIcon } from '@snui/vue-web';
+import {
+  SnFloatingToc,
+  SnFloatingTocBar,
+  SnFloatingTocContent,
+  SnFloatingTocItem,
+  SnFloatingTocTrigger,
+  SnIcon,
+} from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
 import { registerDemo, unregisterDemo } from '../../utils/demo-dock';
 import type { DocFeature, DocSeg, DocQuickAction, SnDocPageData } from './types';
@@ -107,10 +116,7 @@ const UI = computed(() =>
         thDesc: 'Description',
         prev: 'Previous',
         next: 'Next',
-        railhead: 'On this page',
-        feedbackQ: 'Was this page helpful?',
-        helpful: 'Helpful',
-        needsWork: 'Needs work',
+        tocLabel: 'On this page',
       }
     : {
         crumbs: '面包屑',
@@ -132,10 +138,7 @@ const UI = computed(() =>
         thDesc: '说明 Description',
         prev: '上一篇 Previous',
         next: '下一篇 Next',
-        railhead: '本页目录 · On this page',
-        feedbackQ: '此文档对您是否有帮助？',
-        helpful: '有用',
-        needsWork: '待优化',
+        tocLabel: '本页目录',
       },
 );
 const router = useRouter();
@@ -373,32 +376,6 @@ function demoSectionHtml(name: string): string {
   return sec ? highlightCached(sec.code, sec.lang) : '';
 }
 
-/* ── 反馈挂件 ────────────────────────────────────────────────────────── */
-
-const feedback = ref<'' | 'up' | 'down'>('');
-
-/* ── 右栏目录滚动高亮（scroll-spy，与内容区滚动联动） ── */
-const activeSection = ref('');
-let spyRaf = 0;
-function spySections(): void {
-  const ids = doc.value.toc.map((t) => t.id);
-  let current = ids[0] ?? '';
-  for (const id of ids) {
-    const el = document.getElementById(id);
-    if (!el) continue;
-    if (el.getBoundingClientRect().top <= 140) current = id;
-    else break;
-  }
-  /* 底部兜底：滚到底高亮最后一项 */
-  if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
-    current = ids[ids.length - 1] ?? current;
-  }
-  activeSection.value = current;
-}
-function onSpyScroll(): void {
-  cancelAnimationFrame(spyRaf);
-  spyRaf = requestAnimationFrame(spySections);
-}
 /**
  * uni 组件页：把本页的案例登记到 DemoDock，让右侧固定手机面板渲染预览。
  *
@@ -413,9 +390,6 @@ const isMpDemo = (name: string): boolean => /(^|-)mp(-|$)/.test(name);
 const isUniDoc = computed(() => doc.value.demos.some((d) => isMpDemo(d.name)));
 
 onMounted(() => {
-  spySections();
-  window.addEventListener('scroll', onSpyScroll, { passive: true });
-  window.addEventListener('resize', onSpyScroll);
   if (isUniDoc.value) {
     for (const d of doc.value.demos) {
       registerDemo({ name: d.name, label: d.title, description: d.blurb });
@@ -423,9 +397,6 @@ onMounted(() => {
   }
 });
 onBeforeUnmount(() => {
-  cancelAnimationFrame(spyRaf);
-  window.removeEventListener('scroll', onSpyScroll);
-  window.removeEventListener('resize', onSpyScroll);
   if (isUniDoc.value) {
     for (const d of doc.value.demos) unregisterDemo(d.name);
   }
@@ -764,42 +735,30 @@ onBeforeUnmount(() => {
         </div>
       </main>
 
-      <!-- ═══════════════ 右侧浮轨：本页目录 + 反馈 ═══════════════ -->
-      <aside class="sn-docpage__rail">
-        <div class="sn-docpage__railcard">
-          <div class="sn-docpage__railhead">{{ UI.railhead }}</div>
-          <nav class="sn-docpage__toc">
-            <a
-              v-for="item in doc.toc"
-              :key="item.id"
-              :href="`#${item.id}`"
-              class="sn-docpage__toc-link"
-              :class="{ 'sn-docpage__toc-link--active': activeSection === item.id }"
-            >
-              {{ item.text }}
-            </a>
-          </nav>
-          <div class="sn-docpage__fb">
-            <span>{{ UI.feedbackQ }}</span>
-            <div class="sn-docpage__fb-row">
-              <button
-                type="button"
-                class="sn-docpage__fb-btn"
-                :class="{ 'sn-docpage__fb-btn--on': feedback === 'up' }"
-                @click="feedback = 'up'"
-              >
-                {{ UI.helpful }}
-              </button>
-              <button
-                type="button"
-                class="sn-docpage__fb-btn sn-docpage__fb-btn--down"
-                :class="{ 'sn-docpage__fb-btn--on': feedback === 'down' }"
-                @click="feedback = 'down'"
-              >
-                {{ UI.needsWork }}
-              </button>
-            </div>
-          </div>
+      <!-- ═══════════════ 右侧浮轨：本页目录 ═══════════════
+        SnFloatingToc 收进右栏，贴在栏的左缘（不贴视口右边），竖向停在旧
+        反馈模块所在的高度；横条 hover / 点击 / 焦点展开目录面板，组件自己
+        测量各区块锚点并在滚动时高亮，bound 140 与站点悬浮导航对齐。 -->
+      <aside v-if="doc.toc.length" class="sn-docpage__rail">
+        <div class="sn-docpage__ftoc">
+          <SnFloatingToc placement="right" :bound="140" :aria-label="UI.tocLabel">
+            <SnFloatingTocTrigger>
+              <SnFloatingTocBar
+                v-for="item in doc.toc"
+                :key="item.id"
+                :href="`#${item.id}`"
+                :title="item.text"
+              />
+            </SnFloatingTocTrigger>
+            <SnFloatingTocContent :aria-label="UI.tocLabel">
+              <SnFloatingTocItem
+                v-for="item in doc.toc"
+                :key="item.id"
+                :href="`#${item.id}`"
+                :title="item.text"
+              />
+            </SnFloatingTocContent>
+          </SnFloatingToc>
         </div>
       </aside>
     </div>
@@ -2056,7 +2015,9 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-accent);
 }
 
-/* ═══ 右侧浮轨 ═══ */
+/* ═══ 右侧浮轨 ═══
+ * 右栏只承载「本页目录」：SnFloatingToc 收进这一列、贴栏左缘（不贴视口
+ * 右边），高度与旧的反馈模块一致；与旧目录一样 <1280px 整列不显示。 */
 .sn-docpage__rail {
   display: none;
 }
@@ -2068,90 +2029,18 @@ onBeforeUnmount(() => {
     align-self: start;
   }
 }
-/* 目录卡：磨砂玻璃（盖在点阵画布上） */
-.sn-docpage__railcard {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--vp-c-bg) 55%, transparent);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgb(255 255 255 / 0.6);
-  box-shadow: var(--sn-doc-shadow);
+/* ═══ 本页目录浮标（SnFloatingToc） ═══
+ * 组件根默认 position: fixed（视口右缘 / 垂直居中）；这里拉回文档流，让
+ * 它落在右栏左缘，展开面板仍由组件自己相对本容器向左定位。 */
+.sn-docpage__ftoc {
+  position: relative;
+  z-index: 5;
 }
-.sn-docpage--dark .sn-docpage__railcard {
-  background: rgb(15 23 42 / 0.5);
-  border-color: rgb(255 255 255 / 0.1);
-}
-.sn-docpage__railhead {
-  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--sn-doc-text-3);
-}
-.sn-docpage__toc {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  font-size: 12.5px;
-}
-.sn-docpage__toc a {
-  padding: 5px 8px;
-  border-radius: 7px;
-  color: var(--sn-doc-text-2);
-  text-decoration: none;
-  transition:
-    background 0.14s,
-    color 0.14s;
-}
-.sn-docpage__toc-link--active {
-  color: var(--sn-doc-accent);
-  font-weight: 600;
-}
-.sn-docpage__toc a:hover {
-  background: var(--sn-doc-card-soft);
-  color: var(--sn-doc-accent);
-}
-.sn-docpage__fb {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding-top: 12px;
-  border-top: 1px solid var(--sn-doc-border);
-  font-size: 11.5px;
-  color: var(--sn-doc-text-3);
-}
-.sn-docpage__fb-row {
-  display: flex;
-  gap: 6px;
-}
-.sn-docpage__fb-btn {
-  flex: 1;
-  padding: 6px 0;
-  border: 1px solid var(--sn-doc-border);
-  border-radius: 8px;
-  background: var(--sn-doc-card-soft);
-  color: var(--sn-doc-text-2);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
-}
-.sn-docpage__fb-btn:hover {
-  border-color: color-mix(in srgb, var(--sn-doc-accent) 40%, var(--sn-doc-border));
-  color: var(--sn-doc-accent);
-}
-.sn-docpage__fb-btn--on {
-  border-color: var(--sn-doc-accent);
-  background: var(--sn-doc-accent-soft);
-  color: var(--sn-doc-accent);
+.sn-docpage__ftoc :deep(.sn-floating-toc) {
+  position: relative;
+  top: auto;
+  right: auto;
+  transform: none;
 }
 
 /* ═══ 氛围背景（原型还原）：弥散光晕 + 亚像素点阵，配色全部走主题变量 ═══ */

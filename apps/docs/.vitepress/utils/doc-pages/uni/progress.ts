@@ -85,7 +85,7 @@ import { Progress } from '@snui/uni';
         name: 'percentage',
         type: 'number',
         default: '0',
-        desc: 'Progress value, 0–100 (values outside the range are clamped).',
+        desc: '进度数值，最大值 100（越界截断）',
       },
       { name: 'hideText', type: 'boolean', default: 'false', desc: '是否隐藏进度文字' },
       {
@@ -100,12 +100,7 @@ import { Progress } from '@snui/uni';
         default: "''",
         desc: 'Semantic status; overrides `color` when set.',
       },
-      {
-        name: 'duration',
-        type: 'number',
-        default: '30',
-        desc: 'Milliseconds the bar takes to advance 1% (total = percentage × this).',
-      },
+      { name: 'duration', type: 'number', default: '30', desc: '进度增加 1% 所需毫秒数' },
       {
         name: 'percentPosition',
         type: 'SnProgressPercentPosition',

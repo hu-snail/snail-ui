@@ -53,30 +53,15 @@ import { Comment } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'author',
-        type: 'string',
-        default: '—',
-        desc: 'Author name; the `author` slot overrides it.',
-      },
+      { name: 'author', type: 'string', default: '—', desc: '作者名，`author` 插槽可覆盖' },
       {
         name: 'avatar',
         type: 'string',
         default: '—',
-        desc: 'Avatar image URL; the `avatar` slot overrides it.',
+        desc: '头像图片 URL（渲染为 32px 圆形），`avatar` 插槽可覆盖',
       },
-      {
-        name: 'content',
-        type: 'string',
-        default: '—',
-        desc: 'Comment body; the `content` slot overrides it.',
-      },
-      {
-        name: 'datetime',
-        type: 'string',
-        default: '—',
-        desc: 'Datetime text; the `datetime` slot overrides it.',
-      },
+      { name: 'content', type: 'string', default: '—', desc: '评论内容，`content` 插槽可覆盖' },
+      { name: 'datetime', type: 'string', default: '—', desc: '时间描述，`datetime` 插槽可覆盖' },
       {
         name: 'align',
         type: 'SnCommentAlign',

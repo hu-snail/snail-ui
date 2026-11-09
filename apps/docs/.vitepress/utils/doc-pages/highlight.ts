@@ -56,18 +56,8 @@ import { Highlight } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'text',
-        type: 'string | undefined',
-        default: 'undefined',
-        desc: 'Full text to render. Mirrors n-highlight `text`.',
-      },
-      {
-        name: 'patterns',
-        type: 'string[]',
-        default: '() => []',
-        desc: 'Substrings to highlight; matched fragments render inside `highlight-tag`. Mirrors n-highlight `patterns`.',
-      },
+      { name: 'text', type: 'string | undefined', default: 'undefined', desc: '完整文本' },
+      { name: 'patterns', type: 'string[]', default: '() => []', desc: '需要高亮的内容' },
       {
         name: 'highlightTag',
         type: 'string',
@@ -78,25 +68,25 @@ import { Highlight } from '@snui/vue-web';
         name: 'caseSensitive',
         type: 'boolean',
         default: 'false',
-        desc: 'Case-sensitive matching. Mirrors n-highlight `case-sensitive`.',
+        desc: '匹配区分大小写。对应 n-highlight 的 `case-sensitive`。',
       },
       {
         name: 'autoEscape',
         type: 'boolean',
         default: 'true',
-        desc: 'Escape regex metacharacters in `patterns` so they match literally. Mirrors n-highlight `auto-escape`.',
+        desc: '转义 `patterns` 中的正则元字符，使其按字面匹配。对应 n-highlight 的 `auto-escape`。',
       },
       {
         name: 'highlightClass',
         type: 'string | undefined',
         default: 'undefined',
-        desc: 'Extra class merged onto matched fragments. Mirrors n-highlight `highlight-class`.',
+        desc: '匹配片段附加的类名。对应 n-highlight 的 `highlight-class`。',
       },
       {
         name: 'highlightStyle',
         type: 'CSSProperties | string | undefined',
         default: 'undefined',
-        desc: 'Inline style (object or string) merged onto matched fragments. Mirrors n-highlight `highlight-style`.',
+        desc: '匹配片段附加的内联样式（对象或字符串）。对应 n-highlight 的 `highlight-style`。',
       },
     ],
   },

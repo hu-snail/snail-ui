@@ -96,7 +96,7 @@ import { Empty } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'CSS-icon mode: treat `icon` / `iconPrefix` as class names.',
+        desc: '是否按 CSS 图标处理。',
       },
       {
         name: 'iconSize',

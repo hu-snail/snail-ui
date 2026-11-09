@@ -67,23 +67,18 @@ import { Switch } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean | string | number',
-        default: 'false',
-        desc: 'Bound value compared against `checkedValue` / `uncheckedValue`.',
-      },
+      { name: 'modelValue', type: 'boolean | string | number', default: 'false', desc: '绑定值。' },
       {
         name: 'checkedValue',
         type: 'boolean | string | number',
         default: 'true',
-        desc: 'Value emitted when the switch is on. Compared by strict equality.',
+        desc: '选中时取的值。',
       },
       {
         name: 'uncheckedValue',
         type: 'boolean | string | number',
         default: 'false',
-        desc: 'Value emitted when the switch is off.',
+        desc: '未选中时取的值。',
       },
       {
         name: 'size',
@@ -91,24 +86,9 @@ import { Switch } from '@snui/vue-web';
         default: "'medium'",
         desc: 'Visual size preset. Drives rail width / height / knob size.',
       },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables interaction + dims the rail.',
-      },
-      {
-        name: 'readonly',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Read-only — renders normally but does not toggle.',
-      },
-      {
-        name: 'loading',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Shows a spinner in the knob and blocks interaction while pending.',
-      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
+      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读' },
+      { name: 'loading', type: 'boolean', default: 'false', desc: '加载中（不响应切换）' },
       {
         name: 'ariaLabel',
         type: 'string',

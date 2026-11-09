@@ -198,12 +198,7 @@ import { Form } from '@snui/uni';
         default: "'message'",
         desc: 'Error display strategy: inline message / toast / silent.',
       },
-      {
-        name: 'border',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Add a hairline divider under every FormItem.',
-      },
+      { name: 'border', type: 'boolean', default: 'false', desc: '字段行之间画分隔线。' },
       {
         name: 'center',
         type: 'boolean',
@@ -228,29 +223,19 @@ import { Form } from '@snui/uni';
         default: "'left'",
         desc: 'Asterisk position for required fields.',
       },
-      {
-        name: 'hideAsterisk',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Hide the asterisk on required fields.',
-      },
-      {
-        name: 'ellipsis',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Truncate long labels with ellipsis.',
-      },
+      { name: 'hideAsterisk', type: 'boolean', default: 'false', desc: '隐藏必填星号。' },
+      { name: 'ellipsis', type: 'boolean', default: 'false', desc: '长标签截断为省略号。' },
       {
         name: 'schema',
         type: 'Record<string, unknown> | undefined',
         default: 'undefined',
-        desc: 'Form-level validation schema (`wd-form` `schema`). Declared for parity; rules are still supplied through `rules` / per-item `rules`, so this object is stored on the context and never interpreted here.',
+        desc: '表单 schema。',
       },
       {
         name: 'titleWidth',
         type: 'number | string | undefined',
         default: 'undefined',
-        desc: 'Left title column width (`wd-form` `title-width`). Inherited by items.',
+        desc: '标题列宽度。',
       },
       {
         name: 'layout',

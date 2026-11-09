@@ -56,24 +56,9 @@ import { Countdown } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'duration',
-        type: 'number',
-        default: '0',
-        desc: 'Countdown length in ms (non-reactive). Mirrors n-countdown `duration`.',
-      },
-      {
-        name: 'active',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Whether the countdown is ticking. Mirrors n-countdown `active`.',
-      },
-      {
-        name: 'precision',
-        type: '0 | 1 | 2 | 3',
-        default: '0',
-        desc: 'Displayed precision: 0 = seconds, 1-3 add decimal digits. Mirrors n-countdown `precision`.',
-      },
+      { name: 'duration', type: 'number', default: '0', desc: '倒计时总时长 ms（非响应式）' },
+      { name: 'active', type: 'boolean', default: 'true', desc: '是否处于计时状态' },
+      { name: 'precision', type: '0 | 1 | 2 | 3', default: '0', desc: '2 \\' },
     ],
   },
   ai: {

@@ -62,12 +62,7 @@ import { Layout } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'hasSider',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the layout arranges children in a row (sider present). Mirrors n-layout `has-sider`. Default false.',
-      },
+      { name: 'hasSider', type: 'boolean', default: 'false', desc: '横向编排（含 Sider）' },
       {
         name: 'position',
         type: 'SnLayoutPosition',
@@ -78,25 +73,25 @@ import { Layout } from '@snui/vue-web';
         name: 'contentStyle',
         type: 'SnLayoutStyleValue',
         default: '—',
-        desc: 'Inline style forwarded to SnLayoutContent children. Mirrors n-layout `content-style`.',
+        desc: '透传到 `SnLayoutContent` 子节点的内联样式。对应 n-layout 的 `content-style`。',
       },
       {
         name: 'headerStyle',
         type: 'SnLayoutStyleValue',
         default: '—',
-        desc: 'Inline style forwarded to SnLayoutHeader children.',
+        desc: '透传到 `SnLayoutHeader` 子节点的内联样式。',
       },
       {
         name: 'footerStyle',
         type: 'SnLayoutStyleValue',
         default: '—',
-        desc: 'Inline style forwarded to SnLayoutFooter children.',
+        desc: '透传到 `SnLayoutFooter` 子节点的内联样式。',
       },
       {
         name: 'siderStyle',
         type: 'SnLayoutStyleValue',
         default: '—',
-        desc: 'Inline style forwarded to SnLayoutSider children. Mirrors n-layout `sider-style`.',
+        desc: '透传到 `SnLayoutSider` 子节点的内联样式。对应 n-layout 的 `sider-style`。',
       },
     ],
   },

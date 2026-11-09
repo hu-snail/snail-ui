@@ -110,12 +110,7 @@ import { Fab } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'active',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the menu is expanded (v-model:active).',
-      },
+      { name: 'active', type: 'boolean', default: 'false', desc: '是否激活（`v-model:active`）' },
       { name: 'type', type: 'FabType', default: "'primary'", desc: 'Color theme.' },
       { name: 'position', type: 'FabPosition', default: "'right-bottom'", desc: 'Anchor preset.' },
       { name: 'draggable', type: 'boolean', default: 'false', desc: '按钮能否拖动' },
@@ -135,13 +130,13 @@ import { Fab } from '@snui/uni';
         name: 'actions',
         type: 'SnFabAction[]',
         default: '() => []',
-        desc: 'Fan-mode action items (structured source; the slot is ignored in fan mode).',
+        desc: '扇形模式动作项（fan 模式下忽略插槽）',
       },
       {
         name: 'fanRadius',
         type: 'number',
         default: '96',
-        desc: 'Fan radius in px — distance from the trigger centre to an item centre.',
+        desc: '扇形半径 px（按钮中心到动作项中心）',
       },
       {
         name: 'fanMotion',
@@ -163,41 +158,36 @@ import { Fab } from '@snui/uni';
         desc: 'Icon while expanded (registry name).',
       },
       { name: 'zIndex', type: 'number', default: '99', desc: '自定义悬浮按钮层级' },
-      {
-        name: 'gap',
-        type: 'SnFabGap',
-        default: '() => ({ top: 16',
-        desc: 'Default gap from each screen edge.',
-      },
+      { name: 'gap', type: 'SnFabGap', default: '() => ({ top: 16', desc: '与可视区域边缘的间距' },
       {
         name: 'expandable',
         type: 'boolean',
         default: 'true',
-        desc: 'Expand the menu on tap; `false` emits `click` instead.',
+        desc: '点击时是否展开菜单；`false` 时抛 `click`',
       },
       {
         name: 'top',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Explicit distance from the top edge (overrides `gap.top`).',
+        desc: '距顶部间距（覆盖 `gap.top`）',
       },
       {
         name: 'bottom',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Explicit distance from the bottom edge (overrides `gap.bottom`).',
+        desc: '距底部间距（覆盖 `gap.bottom`）',
       },
       {
         name: 'left',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Explicit distance from the left edge (overrides `gap.left`).',
+        desc: '距左边间距（覆盖 `gap.left`）',
       },
       {
         name: 'right',
         type: 'number | undefined',
         default: 'undefined',
-        desc: 'Explicit distance from the right edge (overrides `gap.right`).',
+        desc: '距右边间距（覆盖 `gap.right`）',
       },
       {
         name: 'customClass',

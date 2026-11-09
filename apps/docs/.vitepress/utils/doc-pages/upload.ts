@@ -83,12 +83,7 @@ import { Upload } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'multiple',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Allow picking / dropping several files at once.',
-      },
+      { name: 'multiple', type: 'boolean', default: 'false', desc: '多文件' },
       {
         name: 'accept',
         type: 'string',
@@ -99,26 +94,11 @@ import { Upload } from '@snui/vue-web';
         name: 'disabled',
         type: 'boolean',
         default: 'false',
-        desc: 'Disables interaction — no trigger, no drops, no removes.',
+        desc: '禁用交互：不可触发、不可拖入、不可移除。',
       },
-      {
-        name: 'readonly',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Read-only — files visible, no adding / removing.',
-      },
-      {
-        name: 'max',
-        type: 'number',
-        default: '—',
-        desc: 'Max file count — the trigger hides once reached.',
-      },
-      {
-        name: 'showFileList',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Show the file list (default true).',
-      },
+      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读：文件可见，但不可增删。' },
+      { name: 'max', type: 'number', default: '—', desc: '文件数上限（到界隐藏触发）' },
+      { name: 'showFileList', type: 'boolean', default: 'true', desc: '显示文件列表' },
       {
         name: 'listType',
         type: 'SnUploadListType',
@@ -129,31 +109,31 @@ import { Upload } from '@snui/vue-web';
         name: 'customRequest',
         type: 'SnUploadCustomRequest | undefined',
         default: 'undefined',
-        desc: 'Custom upload driver. Resolve → done, reject → error. Without it no network request is made — the component only maintains local state.',
+        desc: '自定义上传（未传不发网络请求直接 done）',
       },
       {
         name: 'defaultUpload',
         type: 'boolean',
         default: 'true',
-        desc: 'Auto-upload on accept (default true). false → pending until submit().',
+        desc: 'false 时只入列等手动 submit',
       },
       {
         name: 'onBeforeUpload',
         type: 'SnUploadBeforeUpload | undefined',
         default: 'undefined',
-        desc: 'Per-file gate; false (or a throw) keeps the file out of the list.',
+        desc: '单个文件的准入判断；返回 `false`（或抛错）会把该文件排除在列表之外。',
       },
       {
         name: 'dragger',
         type: 'boolean',
         default: 'false',
-        desc: 'Render a full dashed drop area instead of the compact trigger button. Additive divergence — n-upload has no `dragger`. The accept path is identical (click opens the picker, drops anywhere on the root land in the list).',
+        desc: '虚线拖放区替代紧凑触发按钮（追加式偏离，见 ai-description.md）',
       },
       {
         name: 'showProgress',
         type: 'boolean',
         default: 'true',
-        desc: 'Render a determinate progress bar on `uploading` entries that carry a `percentage` (written by the `customRequest` driver). Entries without one keep the indeterminate spinner.',
+        desc: '上传中且带 `percentage` 时渲染确定性进度条',
       },
       {
         name: 'onPreview',

@@ -90,12 +90,7 @@ import { Tooltip } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the bubble is shown (v-model).',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       {
         name: 'content',
         type: 'string | TooltipContentRow[]',
@@ -103,30 +98,10 @@ import { Tooltip } from '@snui/uni';
         desc: 'Bubble text; an array renders one line per entry.',
       },
       { name: 'placement', type: 'TooltipPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
-      {
-        name: 'offset',
-        type: 'PopoverOffset',
-        default: '0',
-        desc: 'Gap between trigger and bubble, in design px.',
-      },
-      {
-        name: 'visibleArrow',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Render the arrow pointing at the trigger.',
-      },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables the trigger — taps are ignored and the bubble stays closed.',
-      },
-      {
-        name: 'showClose',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render a close button inside the bubble.',
-      },
+      { name: 'offset', type: 'PopoverOffset', default: '0', desc: '{ x?, y? }`' },
+      { name: 'visibleArrow', type: 'boolean', default: 'true', desc: '是否显示箭头' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
+      { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
         name: 'customArrow',
         type: 'string',

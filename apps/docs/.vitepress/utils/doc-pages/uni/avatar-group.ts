@@ -67,7 +67,7 @@ import { AvatarGroup } from '@snui/uni';
         name: 'maxCount',
         type: 'number | undefined',
         default: 'undefined',
-        desc: '最大显示数量（含折叠头像占用的 1 个位置），超出后显示折叠头像。',
+        desc: '最大显示数量（含折叠头像占用的 1 个位置）',
       },
       {
         name: 'cascading',
@@ -81,12 +81,7 @@ import { AvatarGroup } from '@snui/uni';
         default: "''",
         desc: '超出最大数量时折叠头像显示文本；留空时自动显示 `+N`。',
       },
-      {
-        name: 'vertical',
-        type: 'boolean',
-        default: 'false',
-        desc: '是否垂直展示（垂直时忽略 `cascading`）。',
-      },
+      { name: 'vertical', type: 'boolean', default: 'false', desc: '是否垂直展示' },
       {
         name: 'shape',
         type: "'round' | 'square'",

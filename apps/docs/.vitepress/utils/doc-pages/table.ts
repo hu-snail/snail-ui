@@ -77,29 +77,24 @@ import { Table } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'bordered',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Draw the surrounding border. Mirrors n-table `bordered`.',
-      },
+      { name: 'bordered', type: 'boolean', default: 'true', desc: '是否显示外框边框' },
       {
         name: 'bottomBordered',
         type: 'boolean',
         default: 'true',
-        desc: 'Keep the bottom border of the last row (ignored when bordered). Mirrors n-table `bottom-bordered`.',
+        desc: '保留最后一行的下边框（`bordered` 时忽略）。对应 n-table 的 `bottom-bordered`。',
       },
       {
         name: 'singleColumn',
         type: 'boolean',
         default: 'false',
-        desc: 'Remove the row separators (cell bottom borders). Mirrors n-table `single-column`.',
+        desc: '去掉行分隔线（单元格下边框）。对应 n-table 的 `single-column`。',
       },
       {
         name: 'singleLine',
         type: 'boolean',
         default: 'true',
-        desc: 'Remove the column separators (cell right borders). Mirrors n-table `single-line`.',
+        desc: '去掉列分隔线（单元格右边框）。对应 n-table 的 `single-line`。',
       },
       {
         name: 'size',
@@ -107,12 +102,7 @@ import { Table } from '@snui/vue-web';
         default: "'medium'",
         desc: 'Table scale. Mirrors n-table `size`.',
       },
-      {
-        name: 'striped',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Zebra stripes on even tbody rows. Mirrors n-table `striped`.',
-      },
+      { name: 'striped', type: 'boolean', default: 'false', desc: '是否使用斑马线条纹' },
     ],
   },
   ai: {

@@ -53,24 +53,14 @@ import { Space } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'vertical',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Stack children vertically (column). Default false (row).',
-      },
+      { name: 'vertical', type: 'boolean', default: 'false', desc: '纵向排布（强制 nowrap）' },
       {
         name: 'size',
         type: 'SnSpaceGap',
         default: "'medium'",
         desc: "Gap between children: px number, preset, or [horizontal, vertical] tuple. Default 'medium'.",
       },
-      {
-        name: 'wrap',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Let horizontal children wrap across lines. Default true.',
-      },
+      { name: 'wrap', type: 'boolean', default: 'true', desc: '换行' },
       {
         name: 'justify',
         type: 'SnSpaceJustify',
@@ -83,12 +73,7 @@ import { Space } from '@snui/vue-web';
         default: '—',
         desc: "Cross-axis alignment. Default undefined (CSS 'normal', like n-space).",
       },
-      {
-        name: 'inline',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render as inline-flex. Default false.',
-      },
+      { name: 'inline', type: 'boolean', default: 'false', desc: '行内容器' },
       {
         name: 'customClass',
         type: 'string',

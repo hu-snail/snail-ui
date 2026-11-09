@@ -62,30 +62,15 @@ import { Alert } from '@snui/vue-web';
         default: "''",
         desc: 'Alert heading. Mirrors n-alert `title`.',
       },
-      {
-        name: 'showIcon',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Show the leading type icon. Mirrors n-alert `showIcon` (default true).',
-      },
+      { name: 'showIcon', type: 'boolean', default: 'true', desc: '是否显示前置类型图标。' },
       {
         name: 'type',
         type: "'info' | 'warning' | 'error' | 'success' | 'default'",
         default: "'default'",
         desc: 'Semantic type — drives color + default icon. Mirrors n-alert `type`.',
       },
-      {
-        name: 'bordered',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Draw the surrounding border. Mirrors n-alert `bordered` (default true).',
-      },
-      {
-        name: 'closable',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render the close button. Mirrors n-alert `closable`.',
-      },
+      { name: 'bordered', type: 'boolean', default: 'true', desc: '是否绘制外边框。' },
+      { name: 'closable', type: 'boolean', default: 'false', desc: '是否渲染关闭按钮。' },
     ],
   },
   ai: {

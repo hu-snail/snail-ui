@@ -80,12 +80,7 @@ import { Popover } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the bubble is shown (v-model).',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       {
         name: 'content',
         type: 'string | SnPopoverMenuItem[]',
@@ -94,35 +89,15 @@ import { Popover } from '@snui/uni';
       },
       { name: 'mode', type: 'PopoverMode', default: "'normal'", desc: 'Bubble display mode.' },
       { name: 'placement', type: 'PopoverPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
-      {
-        name: 'offset',
-        type: 'PopoverOffset',
-        default: '0',
-        desc: 'Gap between trigger and bubble, in design px.',
-      },
-      {
-        name: 'visibleArrow',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Render the arrow pointing at the trigger.',
-      },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables the trigger — taps are ignored and the bubble stays closed.',
-      },
-      {
-        name: 'showClose',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render a close button inside the bubble.',
-      },
+      { name: 'offset', type: 'PopoverOffset', default: '0', desc: '{ x?, y? }`' },
+      { name: 'visibleArrow', type: 'boolean', default: 'true', desc: '是否显示箭头' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
+      { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
         name: 'closeOnClickOutside',
         type: 'boolean',
         default: 'true',
-        desc: 'Close the bubble when the user taps outside it (additive, AUI-OPT-07). The close rides the page-root `closeOutside` channel and never swallows the tap — the same gesture still lands on whatever button sits under it. Pass `false` to unregister the outside-close while mounted.',
+        desc: '点击气泡外部是否关闭（走外部关闭队列，不吞点击）',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Extra class on the root node.' },
       {

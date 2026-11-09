@@ -84,7 +84,7 @@ import { Dropdown } from '@snui/vue-web';
         default: "'hover'",
         desc: "What gesture opens the menu; the keyboard path works regardless. `'contextMenu'` opens on right-click anchored to the pointer.",
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables opening entirely.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
       {
         name: 'size',
         type: 'SnDropdownSize',
@@ -95,7 +95,7 @@ import { Dropdown } from '@snui/vue-web';
         name: 'show',
         type: 'boolean | undefined',
         default: 'undefined',
-        desc: 'Controlled show state. When passed, the panel only follows it and `update:show` is emitted instead of flipping internal state; omit for uncontrolled behavior.',
+        desc: '受控开关（v-model:show）',
       },
     ],
   },

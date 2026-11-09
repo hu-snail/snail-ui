@@ -86,25 +86,15 @@ import { KeyboardPanel } from '@snui/uni';
         name: 'maxlength',
         type: 'number',
         default: 'Number.POSITIVE_INFINITY',
-        desc: 'Maximum value length.',
+        desc: '最大输入长度',
       },
-      {
-        name: 'showDeleteKey',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Render the delete key (default / car layouts).',
-      },
-      {
-        name: 'randomKeyOrder',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Shuffle the digit keys.',
-      },
+      { name: 'showDeleteKey', type: 'boolean', default: 'true', desc: '是否显示删除键' },
+      { name: 'randomKeyOrder', type: 'boolean', default: 'false', desc: '随机排序数字键' },
       {
         name: 'extraKey',
         type: 'string | string[] | undefined',
         default: 'undefined',
-        desc: 'Extra key(s) appended to the digit grid.',
+        desc: '额外的功能键。',
       },
       {
         name: 'carLang',
@@ -112,12 +102,7 @@ import { KeyboardPanel } from '@snui/uni';
         default: "'zh'",
         desc: "Car-plate language (`v-model:car-lang`, `mode: 'car'`).",
       },
-      {
-        name: 'autoSwitchLang',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Auto-switch the car language once the province is picked.',
-      },
+      { name: 'autoSwitchLang', type: 'boolean', default: 'false', desc: '选省份后自动切字母' },
       {
         name: 'title',
         type: 'string',

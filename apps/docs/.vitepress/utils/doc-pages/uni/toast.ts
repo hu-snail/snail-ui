@@ -76,18 +76,13 @@ import { Toast } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the toast is shown (v-model). Component-form counterpart of `show`.',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       { name: 'msg', type: 'string', default: "''", desc: 'Message text.' },
       {
         name: 'duration',
         type: 'number',
         default: '2000',
-        desc: 'Auto-close delay in ms; `0` keeps the toast open.',
+        desc: '持续时间（ms）；`0` 表示不自动关闭',
       },
       {
         name: 'direction',
@@ -101,12 +96,7 @@ import { Toast } from '@snui/uni';
         default: "''",
         desc: 'Built-in icon kind; empty renders no icon.',
       },
-      {
-        name: 'iconSize',
-        type: 'number | string | undefined',
-        default: 'undefined',
-        desc: 'Icon size (bare number = rpx, string passes through).',
-      },
+      { name: 'iconSize', type: 'number | string | undefined', default: 'undefined', desc: '—' },
       {
         name: 'loadingType',
         type: 'ToastLoadingType',
@@ -119,12 +109,7 @@ import { Toast } from '@snui/uni';
         default: "''",
         desc: 'Spinner color (any CSS color value).',
       },
-      {
-        name: 'loadingSize',
-        type: 'number | string | undefined',
-        default: 'undefined',
-        desc: 'Spinner size (bare number = rpx, string passes through).',
-      },
+      { name: 'loadingSize', type: 'number | string | undefined', default: 'undefined', desc: '—' },
       {
         name: 'iconColor',
         type: 'string',
@@ -138,12 +123,7 @@ import { Toast } from '@snui/uni';
         desc: 'Anchor of the toast box.',
       },
       { name: 'zIndex', type: 'number', default: '100', desc: '层级' },
-      {
-        name: 'cover',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render a transparent full-screen scrim that blocks the page behind.',
-      },
+      { name: 'cover', type: 'boolean', default: 'false', desc: '是否显示阻断式透明遮罩' },
       {
         name: 'iconClass',
         type: 'string',
@@ -160,7 +140,7 @@ import { Toast } from '@snui/uni';
         name: 'cssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'CSS-icon mode (parity; inert on the uni end).',
+        desc: '是否按 CSS 图标处理。',
       },
       {
         name: 'selector',

@@ -87,24 +87,14 @@ import { Curtain } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the curtain is shown (v-model).',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       {
         name: 'src',
         type: 'string',
         default: "''",
         desc: 'Image URL — must be a network / package path, not a base64 blob.',
       },
-      {
-        name: 'width',
-        type: 'number',
-        default: '0',
-        desc: 'Image width in design px; 0 = fit the screen width.',
-      },
+      { name: 'width', type: 'number', default: '0', desc: '图片宽度（设计稿 px）；`0` 铺满屏宽' },
       {
         name: 'to',
         type: 'string',
@@ -117,24 +107,9 @@ import { Curtain } from '@snui/uni';
         default: "'inset'",
         desc: 'Where the close button sits.',
       },
-      {
-        name: 'closeOnClickModal',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Close the curtain when the scrim is tapped.',
-      },
-      {
-        name: 'closeOnClick',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Close the curtain when the image is tapped.',
-      },
-      {
-        name: 'hideWhenClose',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Remove the node from the tree once the leave animation finished.',
-      },
+      { name: 'closeOnClickModal', type: 'boolean', default: 'false', desc: '点击遮罩是否关闭' },
+      { name: 'closeOnClick', type: 'boolean', default: 'true', desc: '点击图片是否关闭' },
+      { name: 'hideWhenClose', type: 'boolean', default: 'true', desc: '关闭后是否移除节点' },
       { name: 'zIndex', type: 'number', default: '10', desc: '层级' },
       {
         name: 'customCloseClass',
@@ -152,7 +127,7 @@ import { Curtain } from '@snui/uni';
         name: 'showMenuByLongpress',
         type: 'boolean',
         default: 'false',
-        desc: 'Show the WeChat long-press menu on the image (WeChat only).',
+        desc: '长按图片显示识别菜单（仅微信小程序）',
       },
       {
         name: 'customClass',

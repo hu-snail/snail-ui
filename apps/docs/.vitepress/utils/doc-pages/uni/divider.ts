@@ -51,7 +51,7 @@ import { Divider } from '@snui/uni';
   demos: [
     {
       name: 'divider-mp',
-      title: '实时预览',
+      title: '全部形态',
       blurb: '水平 / 虚线 / 带文字 / marginSize / 垂直 等全部 variants 的综合预览。',
     },
     {
@@ -81,12 +81,7 @@ import { Divider } from '@snui/uni';
         desc: 'Axis: horizontal (full-width line) or vertical (inline line).',
       },
       { name: 'dashed', type: 'boolean', default: 'false', desc: '虚线' },
-      {
-        name: 'hairline',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Hairline (0.5px-like thin line) — mobile common. Default true.',
-      },
+      { name: 'hairline', type: 'boolean', default: 'true', desc: '细线（1rpx）' },
       {
         name: 'color',
         type: 'string',

@@ -128,14 +128,9 @@ export const autoCompleteDocPage: SnDocPageData = {
     ],
     rows: [
       { name: 'modelValue', type: 'string', default: "''", desc: 'v-model 绑定值。' },
-      {
-        name: 'options',
-        type: 'SnAutoCompleteRawOption[]',
-        default: '[]',
-        desc: '静态候选；label 支持 string 或嵌套 string[]（按段渲染 + 命中段高亮）。',
-      },
+      { name: 'options', type: 'SnAutoCompleteRawOption[]', default: '[]', desc: '`[]`' },
       { name: 'placeholder', type: 'string', default: "''", desc: '占位文案。' },
-      { name: 'clearable', type: 'boolean', default: 'false', desc: '显示清空按钮。' },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '清空按钮' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用输入 / 选中 / 清空。' },
       {
         name: 'readonly',
@@ -155,17 +150,12 @@ export const autoCompleteDocPage: SnDocPageData = {
         default: "'default'",
         desc: '校验状态，驱动边框色。',
       },
-      {
-        name: 'blurAfterSelect',
-        type: 'boolean',
-        default: 'false',
-        desc: '选中候选后让输入框失焦。',
-      },
+      { name: 'blurAfterSelect', type: 'boolean', default: 'false', desc: '选中候选后失焦' },
       {
         name: 'getShow',
         type: '(value: string) => SnAutoCompleteRawOption[]',
         default: '—',
-        desc: '按当前输入动态计算候选，优先于 options。',
+        desc: '动态候选',
       },
       { name: 'ariaLabel', type: 'string', default: "''", desc: '原生 ARIA 标签。' },
     ],

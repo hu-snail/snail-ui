@@ -85,12 +85,7 @@ import { QrCode } from '@snui/uni';
     hint: [],
     rows: [
       { name: 'text', type: 'string', default: "''", desc: 'Payload encoded into the code.' },
-      {
-        name: 'size',
-        type: 'number',
-        default: '200',
-        desc: 'Canvas side length in design px (`wd-qr-code` `size`).',
-      },
+      { name: 'size', type: 'number', default: '200', desc: '画布边长，设计稿 px（钳制 40-1000）' },
       {
         name: 'correctLevel',
         type: 'QrCorrectLevel',
@@ -109,25 +104,10 @@ import { QrCode } from '@snui/uni';
         default: "''",
         desc: "Light module + quiet-zone color; `''` = the code's own light color.",
       },
-      {
-        name: 'margin',
-        type: 'number',
-        default: '0',
-        desc: 'Quiet-zone width in design px, painted inside the canvas.',
-      },
+      { name: 'margin', type: 'number', default: '0', desc: '静区宽度，设计稿 px' },
       { name: 'dotType', type: 'QrDotType', default: "'square'", desc: 'Module shape.' },
-      {
-        name: 'dotScale',
-        type: 'number',
-        default: '1',
-        desc: 'Module fill ratio inside its cell, `0.4`-`1`.',
-      },
-      {
-        name: 'enableGradient',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Paint dark modules with a linear gradient.',
-      },
+      { name: 'dotScale', type: 'number', default: '1', desc: '码点填充比例（钳制 0.4-1）' },
+      { name: 'enableGradient', type: 'boolean', default: 'false', desc: '是否启用渐变' },
       {
         name: 'gradientColor',
         type: 'string',
@@ -138,7 +118,7 @@ import { QrCode } from '@snui/uni';
         name: 'gradientColors',
         type: 'string[]',
         default: '() => []',
-        desc: 'Multi-stop gradient colors (2+); wins over `gradientColor`.',
+        desc: '多色渐变（2 色以上），优先于 `gradientColor`',
       },
       {
         name: 'gradientDirection',

@@ -58,7 +58,7 @@ import { AvatarGroup } from '@snui/vue-web';
         name: 'maxOptions',
         type: 'SnAvatarGroupMaxOptions | number | undefined',
         default: 'undefined',
-        desc: 'Overflow control: `{ max, onExpand }` or a plain number. When the slot renders more avatars than `max`, the group shows `max − 1` avatars plus a clickable `+k` summary that calls `onExpand`. Mirrors n-avatar-group `maxOptions`.',
+        desc: '最多展示的选项数。',
       },
       {
         name: 'size',

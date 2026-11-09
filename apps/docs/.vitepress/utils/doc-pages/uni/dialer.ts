@@ -74,7 +74,7 @@ import { Dialer } from '@snui/uni';
         name: 'prizeList',
         type: 'SnDialerPrize[]',
         default: '() => []',
-        desc: '奖品列表（2-12 项）。',
+        desc: '奖品列表（`{ id, name, img?, color? }`，2-12 项）',
       },
       { name: 'turns', type: 'number', default: '5', desc: '旋转圈数' },
       { name: 'duration', type: 'number', default: '3', desc: '旋转时长（秒）' },

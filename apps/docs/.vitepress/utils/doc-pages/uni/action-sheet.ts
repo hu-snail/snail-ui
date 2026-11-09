@@ -95,18 +95,13 @@ import { ActionSheet } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the sheet is visible (v-model).',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       { name: 'actions', type: 'SnActionSheetAction[]', default: '() => []', desc: '列表行' },
       {
         name: 'panels',
         type: 'Array<SnActionSheetPanel | SnActionSheetPanel[]>',
         default: '() => []',
-        desc: 'Grid cells; a nested array is treated as multiple rows.',
+        desc: '[]',
       },
       { name: 'title', type: 'string', default: "''", desc: 'Title text above the list.' },
       {
@@ -121,37 +116,17 @@ import { ActionSheet } from '@snui/uni';
         default: "''",
         desc: 'Cancel button label. An empty string hides the cancel button.',
       },
-      {
-        name: 'showClose',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the close button in the title row (AUI-additive).',
-      },
-      {
-        name: 'closeOnClickAction',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Close the sheet after a row / cell is selected.',
-      },
-      {
-        name: 'closeOnClickModal',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Close the sheet when the scrim is tapped.',
-      },
+      { name: 'showClose', type: 'boolean', default: 'false', desc: '标题行关闭按钮（AUI 追加）' },
+      { name: 'closeOnClickAction', type: 'boolean', default: 'true', desc: '点击选项后是否关闭' },
+      { name: 'closeOnClickModal', type: 'boolean', default: 'true', desc: '点击遮罩是否关闭' },
       { name: 'duration', type: 'number', default: '200', desc: '动画持续时间（ms）' },
       { name: 'zIndex', type: 'number', default: '10', desc: '菜单层级' },
-      {
-        name: 'lazyRender',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Defer panel content rendering until the sheet is first opened.',
-      },
+      { name: 'lazyRender', type: 'boolean', default: 'true', desc: '弹层内容懒渲染' },
       {
         name: 'safeAreaInsetBottom',
         type: 'boolean',
         default: 'true',
-        desc: 'Pad the bottom sheet for the device safe area.',
+        desc: '是否设置底部安全距离',
       },
       {
         name: 'customTitleClass',

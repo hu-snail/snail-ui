@@ -95,18 +95,8 @@ import { Switch } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'SnSwitchValue',
-        default: 'false',
-        desc: 'Bound value — compared against `activeValue` / `inactiveValue`.',
-      },
-      {
-        name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables interaction and dims the rail.',
-      },
+      { name: 'modelValue', type: 'SnSwitchValue', default: 'false', desc: '绑定值。' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用并置灰。' },
       {
         name: 'inactiveActionIcon',
         type: 'string',
@@ -141,25 +131,25 @@ import { Switch } from '@snui/uni';
         name: 'inactiveActionCssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'When `true`, `inactiveActionIcon` is a CSS class name, not an icon name.',
+        desc: '未激活态操作图标是否按 CSS 图标处理。',
       },
       {
         name: 'activeActionCssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'When `true`, `activeActionIcon` is a CSS class name, not an icon name.',
+        desc: '激活态操作图标是否按 CSS 图标处理。',
       },
       {
         name: 'activeCssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'When `true`, `activeIcon` is a CSS class name, not an icon name.',
+        desc: '激活态图标是否按 CSS 图标处理。',
       },
       {
         name: 'inactiveCssIcon',
         type: 'boolean | string',
         default: 'false',
-        desc: 'When `true`, `inactiveIcon` is a CSS class name, not an icon name.',
+        desc: '未激活态图标是否按 CSS 图标处理。',
       },
       {
         name: 'activeText',
@@ -173,18 +163,8 @@ import { Switch } from '@snui/uni';
         default: "''",
         desc: 'Label shown inside the rail while inactive.',
       },
-      {
-        name: 'activeValue',
-        type: 'SnSwitchValue',
-        default: 'true',
-        desc: 'Value that means "on". Compared by strict equality.',
-      },
-      {
-        name: 'inactiveValue',
-        type: 'SnSwitchValue',
-        default: 'false',
-        desc: 'Value that means "off". Compared by strict equality.',
-      },
+      { name: 'activeValue', type: 'SnSwitchValue', default: 'true', desc: '激活时取的值。' },
+      { name: 'inactiveValue', type: 'SnSwitchValue', default: 'false', desc: '未激活时取的值。' },
       {
         name: 'activeColor',
         type: 'string',
@@ -197,26 +177,16 @@ import { Switch } from '@snui/uni';
         default: "''",
         desc: 'Inactive rail color (user CSS color; falls back to the token default).',
       },
-      {
-        name: 'size',
-        type: 'string | number | undefined',
-        default: 'undefined',
-        desc: 'Rail size — a number is treated as an rpx design value.',
-      },
+      { name: 'size', type: 'string | number | undefined', default: 'undefined', desc: '—' },
       { name: 'shape', type: "'round' | 'square'", default: "'round'", desc: 'Rail shape.' },
       {
         name: 'loading',
         type: 'boolean',
         default: 'false',
-        desc: 'Shows a spinner in the knob and blocks interaction while pending.',
+        desc: '旋钮内显示 loading，阻断交互。',
       },
-      { name: 'color', type: 'string', default: '—', desc: 'color' },
-      {
-        name: 'size',
-        type: 'number | string',
-        default: 'undefined',
-        desc: 'Rail size — a number is treated as an rpx design value.',
-      },
+      { name: 'color', type: 'string', default: '—', desc: '颜色。' },
+      { name: 'size', type: 'number | string', default: 'undefined', desc: '—' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
         name: 'customStyle',

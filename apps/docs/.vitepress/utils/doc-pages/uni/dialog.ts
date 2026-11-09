@@ -71,12 +71,7 @@ import { Dialog } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the dialog is visible (v-model). Component-form counterpart of `useDialog().show()`.',
-      },
+      { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
       { name: 'title', type: 'string', default: "''", desc: 'Title text.' },
       { name: 'msg', type: 'string', default: "''", desc: 'Message body text.' },
       {
@@ -92,12 +87,7 @@ import { Dialog } from '@snui/uni';
         desc: 'Button style: filled buttons or borderless text buttons.',
       },
       { name: 'zIndex', type: 'number', default: '99', desc: '弹窗层级' },
-      {
-        name: 'lazyRender',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Defer body rendering until the dialog is first opened.',
-      },
+      { name: 'lazyRender', type: 'boolean', default: 'true', desc: '弹层内容懒渲染' },
       {
         name: 'headerImage',
         type: 'string',
@@ -120,7 +110,7 @@ import { Dialog } from '@snui/uni';
         name: 'iconProps',
         type: 'Record<string, unknown>',
         default: '() => ({})',
-        desc: 'Props forwarded to the inner sn-icon.',
+        desc: '透传给内部 `sn-icon` 的属性',
       },
       {
         name: 'inputValue',
@@ -132,19 +122,19 @@ import { Dialog } from '@snui/uni';
         name: 'inputProps',
         type: 'Record<string, unknown>',
         default: '() => ({})',
-        desc: 'Props forwarded to the inner sn-input (prompt mode).',
+        desc: 'Prompt 模式下透传给 `sn-input` 的属性',
       },
       {
         name: 'textareaProps',
         type: 'Record<string, unknown>',
         default: '() => ({})',
-        desc: 'When non-empty, prompt mode renders sn-textarea instead of sn-input.',
+        desc: '非空时 prompt 模式改为渲染 `sn-textarea`',
       },
       {
         name: 'inputPattern',
         type: 'RegExp | undefined',
         default: 'undefined',
-        desc: 'Regexp the prompt value must match.',
+        desc: 'Prompt 输入正则校验规则',
       },
       {
         name: 'inputError',
@@ -152,12 +142,7 @@ import { Dialog } from '@snui/uni';
         default: "''",
         desc: 'Fallback message shown when prompt validation fails.',
       },
-      {
-        name: 'showErr',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the validation message under the input.',
-      },
+      { name: 'showErr', type: 'boolean', default: 'false', desc: '是否展示错误信息' },
       {
         name: 'actionLayout',
         type: 'DialogActionLayout',
@@ -168,7 +153,7 @@ import { Dialog } from '@snui/uni';
         name: 'showCancelButton',
         type: 'boolean | undefined',
         default: 'undefined',
-        desc: 'Show the cancel button. Defaults to `false` for `alert`, `true` otherwise.',
+        desc: '是否显示取消按钮；`alert` 默认 `false`，其余默认 `true`',
       },
       { name: 'confirmButtonText', type: 'string', default: "''", desc: 'Confirm button label.' },
       { name: 'cancelButtonText', type: 'string', default: "''", desc: 'Cancel button label.' },
@@ -176,32 +161,27 @@ import { Dialog } from '@snui/uni';
         name: 'confirmButtonProps',
         type: 'DialogButtonOption',
         default: '() => ({})',
-        desc: 'Confirm button option (label / extra props / `null` to hide).',
+        desc: '确认按钮的额外属性（透传给 SnButton）。',
       },
       {
         name: 'cancelButtonProps',
         type: 'DialogButtonOption | undefined',
         default: 'undefined',
-        desc: 'Cancel button option (label / extra props / `null` to hide).',
+        desc: '取消按钮的额外属性（透传给 SnButton）。',
       },
       {
         name: 'actions',
         type: 'DialogAction[]',
         default: '() => []',
-        desc: 'Custom action rows; when set they replace the confirm / cancel buttons.',
+        desc: '自定义操作按钮数组，优先级高于确认 / 取消按钮',
       },
       {
         name: 'closeOnClickModal',
         type: 'boolean',
         default: 'false',
-        desc: 'Close when the scrim is tapped.',
+        desc: '是否支持点击遮罩关闭',
       },
-      {
-        name: 'showClose',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Show the close button in the top-right corner.',
-      },
+      { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示右上角关闭按钮' },
       {
         name: 'selector',
         type: 'string',

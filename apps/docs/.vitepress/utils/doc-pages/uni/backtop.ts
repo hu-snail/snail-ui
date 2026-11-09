@@ -96,12 +96,7 @@ import { Backtop } from '@snui/uni';
     rows: [
       { name: 'scrollTop', type: 'number', default: '0', desc: '页面滚动距离（由宿主提供）' },
       { name: 'text', type: 'string', default: "''", desc: '按钮文字。' },
-      {
-        name: 'top',
-        type: 'number',
-        default: '300',
-        desc: '滚动距离超过该值时显示按钮，单位为 px。',
-      },
+      { name: 'top', type: 'number', default: '300', desc: '显示阈值（px）' },
       { name: 'duration', type: 'number', default: '100', desc: '返回顶部滚动时长（ms）' },
       { name: 'zIndex', type: 'number', default: '10', desc: '组件层级' },
       { name: 'iconStyle', type: 'string', default: "''", desc: '自定义图标样式。' },

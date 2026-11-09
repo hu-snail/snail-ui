@@ -69,18 +69,8 @@ import { Layout } from '@snui/uni';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'span',
-        type: 'number',
-        default: '24',
-        desc: '列元素宽度（栅格占据的列数，共 24 列）。',
-      },
-      {
-        name: 'offset',
-        type: 'number',
-        default: '0',
-        desc: '列元素偏移距离（栅格左侧的间隔列数）。',
-      },
+      { name: 'span', type: 'number', default: '24', desc: '列元素宽度（24 栅格中的列数）' },
+      { name: 'offset', type: 'number', default: '0', desc: '列元素左侧偏移列数' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
     ],

@@ -53,23 +53,18 @@ import { Statistic } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'label',
-        type: 'string | undefined',
-        default: 'undefined',
-        desc: 'Label shown above the value. Mirrors n-statistic `label`.',
-      },
+      { name: 'label', type: 'string | undefined', default: 'undefined', desc: '数值上方的标签' },
       {
         name: 'value',
         type: 'string | number | undefined',
         default: 'undefined',
-        desc: 'Statistic value; when set it takes precedence over the default slot. Mirrors n-statistic `value`.',
+        desc: '当前值。',
       },
       {
         name: 'tabularNums',
         type: 'boolean',
         default: 'false',
-        desc: 'Render digits with equal widths (font-variant-numeric: tabular-nums). Mirrors n-statistic `tabularNums`.',
+        desc: '数字等宽渲染（`font-variant-numeric: tabular-nums`）。对应 n-statistic 的 `tabularNums`。',
       },
     ],
   },

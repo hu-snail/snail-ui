@@ -57,24 +57,14 @@ import { Flex } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      {
-        name: 'vertical',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Stack children vertically (column). Default false (row).',
-      },
+      { name: 'vertical', type: 'boolean', default: 'false', desc: '纵向排布' },
       {
         name: 'gap',
         type: 'SnFlexGap',
         default: "'medium'",
         desc: "Gap between children: px number, preset, or [horizontal, vertical] tuple. Default 'medium'.",
       },
-      {
-        name: 'wrap',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Let horizontal children wrap across lines. Default true.',
-      },
+      { name: 'wrap', type: 'boolean', default: 'true', desc: '换行' },
       {
         name: 'justify',
         type: 'SnFlexJustify',
@@ -87,18 +77,8 @@ import { Flex } from '@snui/vue-web';
         default: '—',
         desc: "Cross-axis alignment. Default undefined (CSS 'normal', like n-flex).",
       },
-      {
-        name: 'inline',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render as inline-flex. Default false.',
-      },
-      {
-        name: 'expand',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Grow direct children to fill the free main-axis space (snail extension). Default false.',
-      },
+      { name: 'inline', type: 'boolean', default: 'false', desc: '行内容器' },
+      { name: 'expand', type: 'boolean', default: 'false', desc: '子项 flex:1 撑满（snail 扩展）' },
       {
         name: 'customClass',
         type: 'string',
