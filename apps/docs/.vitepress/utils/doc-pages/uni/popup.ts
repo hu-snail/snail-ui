@@ -1,0 +1,202 @@
+/**
+ * Popup 弹出层（uni 端）组件详情页数据。
+ *
+ * Props 与默认值取自 sn-popup.vue 的 defineProps / withDefaults；
+ * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
+ */
+import type { SnDocPageData } from '../../../components/doc-page/types';
+
+export const popupDocPage: SnDocPageData = {
+  crumbs: [
+    { text: '文档首页', link: '/' },
+    { text: '反馈组件 Feedback' },
+    { text: 'Popup 弹出层' },
+  ],
+  title: 'Popup 弹出层',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    { t: 'text', s: '组件的遮罩与面板分别走 ' },
+    { t: 'code', s: '--sn-mp-color-background-overlay' },
+    { t: 'text', s: ' / ' },
+    { t: 'code', s: '--sn-mp-color-background-elevated' },
+    { t: 'text', s: '，两者都在 ' },
+    { t: 'code', s: '@snui/tokens-mp/styles' },
+    { t: 'text', s: ' 的 ' },
+    { t: 'code', s: '.sn-theme-dark' },
+    {
+      t: 'text',
+      s: ' 块里覆盖过，因此暗色下自动适配，无需额外配置。可用 sn-config-provider 的 theme 设为 dark 包裹验证：',
+    },
+  ],
+  quickActions: [
+    {
+      icon: 'copy',
+      label: 'pnpm add @snui/uni',
+      copy: 'pnpm add @snui/uni',
+      copiedLabel: '已复制',
+    },
+    {
+      icon: 'link',
+      label: '查看源码',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/uni/src/components/sn-popup',
+    },
+  ],
+  features: [
+    { text: 'rpx 跨设备缩放', icon: 'layers' },
+    { text: 'easycom 自动注册', icon: 'eco' },
+    { text: '触控交互优化', icon: 'touch' },
+  ],
+  usage: {
+    hint: [
+      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+    ],
+    fileLabel: 'Popup 弹出层.vue',
+    meta: 'Vue 3 · <script setup>',
+    code: `
+<script setup lang="ts">
+import { Popup } from '@snui/uni';
+</script>
+
+<template>
+  <sn-popup />
+</template>`,
+  },
+  demos: [
+    {
+      name: 'popup-mp-basic',
+      title: '基础用法',
+      blurb: '底部弹层（bottom + round）与居中弹层（center + closable 关闭按钮）。',
+    },
+    { name: 'popup-mp-position', title: '弹出位置', blurb: '5 个方位 + 自动匹配的进出场动画。' },
+    {
+      name: 'popup-mp-config',
+      title: '遮罩与关闭行为',
+      blurb: 'modal / closeOnClickModal / transition + duration，以及动画事件。',
+    },
+    {
+      name: 'popup-mp-surface',
+      title: '样式、懒渲染与安全区',
+      blurb: '遮罩内联样式 / 面板内联样式 + 安全区 / lazy-render=false。',
+    },
+  ],
+  tokens: { hint: [], note: '', rows: [] },
+  props: {
+    hint: [],
+    rows: [
+      {
+        name: 'modelValue',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Whether the popup is visible (v-model).',
+      },
+      {
+        name: 'transition',
+        type: "PopupTransition | ''",
+        default: "''",
+        desc: 'Animation name; empty falls back to the default for `position`.',
+      },
+      {
+        name: 'closable',
+        type: 'boolean',
+        default: 'false',
+        desc: "Show the close button in the panel's top-right corner.",
+      },
+      {
+        name: 'position',
+        type: 'PopupPosition',
+        default: "'center'",
+        desc: 'Anchor of the panel.',
+      },
+      {
+        name: 'closeOnClickModal',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Tapping the scrim closes the popup (emits `click-modal` either way).',
+      },
+      {
+        name: 'duration',
+        type: 'PopupDuration',
+        default: 'DEFAULT_DURATION',
+        desc: 'Animation duration in ms. `false` = no animation, record = per-leg.',
+      },
+      { name: 'modal', type: 'boolean', default: 'true', desc: 'Render the scrim.' },
+      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level of the root node.' },
+      {
+        name: 'hideWhenClose',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Remove the node from the tree once the leave animation finished.',
+      },
+      { name: 'modalStyle', type: 'string', default: "''", desc: 'Inline style for the scrim.' },
+      {
+        name: 'safeAreaInsetBottom',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Pad the bottom sheet for the device safe area.',
+      },
+      {
+        name: 'lazyRender',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Defer panel content rendering until the popup is first opened.',
+      },
+      {
+        name: 'lockScroll',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Intercept touchmove on the scrim so the page behind cannot scroll.',
+      },
+      {
+        name: 'round',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Rounded corners, adapted to `position`.',
+      },
+      {
+        name: 'customClass',
+        type: 'string',
+        default: "''",
+        desc: 'Custom class for the root node.',
+      },
+      {
+        name: 'customStyle',
+        type: 'string',
+        default: "''",
+        desc: 'Custom inline style for the panel.',
+      },
+      {
+        name: 'rootPortal',
+        type: 'boolean',
+        default: 'false',
+        desc: "Accepted for wot-ui parity, NOT implemented — miniprogram has no portal host, so the layer cannot leave the page's document flow.",
+      },
+    ],
+  },
+  ai: {
+    badge: 'ai-description.md · 已内置',
+    heading: '为 LLM 提供语义化组件契约',
+    copy: 'Popup 弹出层 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
+    chip: "import { Popup } from '@snui/uni';",
+    chipCopy: "import { Popup } from '@snui/uni';",
+    stats: [
+      { key: 'intent.action', value: 'sn-popup', tone: 'accent' },
+      { key: 'intent.end', value: 'uni', tone: 'cyan' },
+      { key: 'unit', value: 'rpx', tone: 'ok' },
+    ],
+  },
+  pager: {
+    prev: { text: 'sn-captcha', link: '/components/uni/captcha' },
+    next: { text: 'sn-overlay', link: '/components/uni/overlay' },
+  },
+  toc: [
+    { id: 'usage', text: '代码用法' },
+    { id: 'demos', text: '案例 Demos' },
+    { id: 'tokens', text: '设计令牌 Tokens' },
+    { id: 'api', text: 'API 属性参考' },
+    { id: 'ai-native', text: 'AI 原生集成' },
+  ],
+};

@@ -1,0 +1,234 @@
+/**
+ * SelectPicker 单复选选择器（uni 端）组件详情页数据。
+ *
+ * Props 与默认值取自 sn-select-picker.vue 的 defineProps / withDefaults；
+ * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
+ */
+import type { SnDocPageData } from '../../../components/doc-page/types';
+
+export const selectPickerDocPage: SnDocPageData = {
+  crumbs: [
+    { text: '文档首页', link: '/' },
+    { text: '录入组件 Form' },
+    { text: 'SelectPicker 单复选选择器' },
+  ],
+  title: 'SelectPicker 单复选选择器',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    { t: 'text', s: 'checkbox 类型用数组 v-model；min / max 限制可选数量；tap 行即切换。' },
+  ],
+  quickActions: [
+    {
+      icon: 'copy',
+      label: 'pnpm add @snui/uni',
+      copy: 'pnpm add @snui/uni',
+      copiedLabel: '已复制',
+    },
+    {
+      icon: 'link',
+      label: '查看源码',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/uni/src/components/sn-select-picker',
+    },
+  ],
+  features: [
+    { text: 'rpx 跨设备缩放', icon: 'layers' },
+    { text: 'easycom 自动注册', icon: 'eco' },
+    { text: '触控交互优化', icon: 'touch' },
+  ],
+  usage: {
+    hint: [
+      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+    ],
+    fileLabel: 'SelectPicker 单复选选择器.vue',
+    meta: 'Vue 3 · <script setup>',
+    code: `
+<script setup lang="ts">
+import { SelectPicker } from '@snui/uni';
+</script>
+
+<template>
+  <sn-select-picker />
+</template>`,
+  },
+  demos: [
+    {
+      name: 'select-picker-mp-basic',
+      title: '基础用法',
+      blurb: 'checkbox 类型用数组 v-model；min / max 限制可选数量；tap 行即切换。',
+    },
+    {
+      name: 'select-picker-mp-radio-filter',
+      title: '单选与搜索（`type` / `filterable` / `checkedColor`）',
+      blurb: 'type=radio 写回标量；filterable 打开搜索框按 label 过滤；checkedColor 覆盖选中色。',
+    },
+    {
+      name: 'select-picker-mp-fields-size',
+      title:
+        '字段映射与按钮（`valueKey` / `labelKey` / `confirmButtonText` / `showConfirm` / `selectSize`）',
+      blurb:
+        'valueKey / labelKey 字段映射；confirmButtonText；showConfirm=false；selectSize（声明但未参与渲染）。',
+    },
+    {
+      name: 'select-picker-mp-loading-sheet',
+      title:
+        '加载态与弹层（`loading` / `loadingColor` / `beforeConfirm` / `scrollIntoView` / 遮罩层级 / `custom*`）',
+      blurb:
+        'loading / loadingColor；beforeConfirm；closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；scrollIntoView；customClass / customStyle / customContentClass。',
+    },
+  ],
+  tokens: { hint: [], note: '', rows: [] },
+  props: {
+    hint: [],
+    rows: [
+      {
+        name: 'modelValue',
+        type: 'SelectValue | SelectValue[] | undefined',
+        default: 'undefined',
+        desc: 'Selected value(s) (`v-model`): scalar for radio, array for checkbox.',
+      },
+      {
+        name: 'visible',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Sheet visibility (`v-model:visible`).',
+      },
+      { name: 'title', type: 'string', default: "'选择器'", desc: 'Toolbar title.' },
+      {
+        name: 'checkedColor',
+        type: 'string',
+        default: "''",
+        desc: 'Checked accent color (CSS color). Empty = token default.',
+      },
+      {
+        name: 'selectSize',
+        type: "'mini' | 'small' | 'medium' | 'large'",
+        default: "'medium'",
+        desc: 'Chip size preset — mirrors wot-ui `select-size`.',
+      },
+      {
+        name: 'min',
+        type: 'number',
+        default: '0',
+        desc: 'Minimum number of selections (`0` = unconstrained).',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        default: '0',
+        desc: 'Maximum number of selections (`0` = unconstrained).',
+      },
+      {
+        name: 'type',
+        type: "'checkbox' | 'radio'",
+        default: "'checkbox'",
+        desc: 'Selection type.',
+      },
+      {
+        name: 'valueKey',
+        type: 'string',
+        default: "'value'",
+        desc: 'Option key holding the value.',
+      },
+      {
+        name: 'labelKey',
+        type: 'string',
+        default: "'label'",
+        desc: 'Option key holding the label.',
+      },
+      {
+        name: 'confirmButtonText',
+        type: 'string',
+        default: "'确认'",
+        desc: 'Confirm button label.',
+      },
+      {
+        name: 'loading',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Loading state of the option list.',
+      },
+      {
+        name: 'loadingColor',
+        type: 'string',
+        default: "''",
+        desc: 'Loading spinner color (CSS color).',
+      },
+      {
+        name: 'closeOnClickModal',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Tapping the mask closes the sheet.',
+      },
+      { name: 'columns', type: 'SelectOption[]', default: '() => []', desc: 'Option list.' },
+      { name: 'value', type: 'SelectValue | SelectValue[]', default: '—', desc: 'value' },
+      { name: 'selectedItems', type: 'SelectOption[]', default: '—', desc: 'selectedItems' },
+      { name: 'zIndex', type: 'number', default: '15', desc: 'Stacking level.' },
+      {
+        name: 'safeAreaInsetBottom',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Pad the sheet for the device safe area.',
+      },
+      { name: 'filterable', type: 'boolean', default: 'false', desc: 'Render the search field.' },
+      {
+        name: 'filterPlaceholder',
+        type: 'string',
+        default: "'搜索'",
+        desc: 'Search field placeholder.',
+      },
+      {
+        name: 'scrollIntoView',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Scroll the selected row into view on open.',
+      },
+      {
+        name: 'customContentClass',
+        type: 'string',
+        default: "''",
+        desc: 'Class on the option content wrapper.',
+      },
+      { name: 'showConfirm', type: 'boolean', default: 'true', desc: 'Render the confirm button.' },
+      { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
+      {
+        name: 'customStyle',
+        type: 'string',
+        default: "''",
+        desc: 'Inline style on the root node.',
+      },
+      {
+        name: 'rootPortal',
+        type: 'boolean',
+        default: 'false',
+        desc: "Accepted for wot-ui parity, NOT implemented — miniprogram has no portal host, so the layer cannot leave the page's document flow.",
+      },
+    ],
+  },
+  ai: {
+    badge: 'ai-description.md · 已内置',
+    heading: '为 LLM 提供语义化组件契约',
+    copy: 'SelectPicker 单复选选择器 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
+    chip: "import { SelectPicker } from '@snui/uni';",
+    chipCopy: "import { SelectPicker } from '@snui/uni';",
+    stats: [
+      { key: 'intent.action', value: 'sn-select-picker', tone: 'accent' },
+      { key: 'intent.end', value: 'uni', tone: 'cyan' },
+      { key: 'unit', value: 'rpx', tone: 'ok' },
+    ],
+  },
+  pager: {
+    prev: { text: 'sn-picker-view', link: '/components/uni/picker-view' },
+    next: { text: 'sn-cascader', link: '/components/uni/cascader' },
+  },
+  toc: [
+    { id: 'usage', text: '代码用法' },
+    { id: 'demos', text: '案例 Demos' },
+    { id: 'tokens', text: '设计令牌 Tokens' },
+    { id: 'api', text: 'API 属性参考' },
+    { id: 'ai-native', text: 'AI 原生集成' },
+  ],
+};
