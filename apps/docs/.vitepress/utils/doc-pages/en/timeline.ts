@@ -1,0 +1,121 @@
+/** Timeline · Web (Web) — English page data. Props from timeline SFC; demos from the en page. */
+import type { SnDocPageData } from '../../components/doc-page/types';
+
+export const timelineDocPageEn: SnDocPageData = {
+  crumbs: [
+    { text: 'Docs', link: '/en/' },
+    { text: 'Feedback Components' },
+    { text: 'Timeline · Web' },
+  ],
+  title: 'Timeline · Web',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    {
+      t: 'text',
+      s: 'Event rail: node dots + connecting lines, each item with title, content, time and',
+    },
+  ],
+  quickActions: [
+    {
+      icon: 'copy',
+      label: 'Add @snui/vue-web',
+      copy: 'pnpm add @snui/vue-web',
+      copiedLabel: 'Copied',
+    },
+    {
+      icon: 'link',
+      label: 'View source',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/vue-web/src/timeline',
+    },
+  ],
+  usage: {
+    hint: [],
+    fileLabel: 'Timeline · Web.vue',
+    meta: 'Vue 3 · <script setup>',
+    code: `
+<script setup lang="ts">
+import { Timeline } from '@snui/vue-web';
+</script>
+
+<template>
+  <Timeline />
+</template>`,
+  },
+  demos: [
+    {
+      name: 'timeline-web-basic',
+      title: 'Examples',
+      blurb: 'type semantic nodes + dashed line-type segments.',
+    },
+  ],
+  tokens: { hint: [], note: '', rows: [] },
+  props: {
+    hint: [],
+    rows: [
+      {
+        name: 'direction',
+        type: "'vertical' | 'horizontal'",
+        default: '—',
+        desc: 'Layout axis. Wins over the legacy `horizontal` flag when set.',
+      },
+      {
+        name: 'mode',
+        type: "'left' | 'right' | 'top' | 'bottom' | 'alternate'",
+        default: '—',
+        desc: 'Which side the rail (the axis) sits on — the content takes the opposite side — or `alternate` to flip per item (an item `position` overrides its parity). Vertical reads left / right, horizontal reads top / bottom; off-axis values are normalized. Wins over the legacy `item-placement`.',
+      },
+      {
+        name: 'labelPosition',
+        type: "'same' | 'relative'",
+        default: "'relative'",
+        desc: 'Where item labels render: across the axis from the content (`relative`, default) or on the content side next to the rail (`same`).',
+      },
+      {
+        name: 'horizontal',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Legacy flag: lay the items out horizontally (`direction="horizontal"` preferred).',
+      },
+      {
+        name: 'itemPlacement',
+        type: "'left' | 'right'",
+        default: "'left'",
+        desc: 'Legacy: which side the rail sits on (vertical mode only). `mode` preferred.',
+      },
+      {
+        name: 'size',
+        type: "'medium' | 'large'",
+        default: "'medium'",
+        desc: 'Title scale of the items.',
+      },
+      { name: 'iconSize', type: 'number', default: '—', desc: 'Node/icon edge length in px.' },
+    ],
+  },
+  ai: {
+    badge: 'ai-description.md · bundled',
+    heading: 'A machine-readable contract for LLMs',
+    copy: 'Timeline · Web ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    chip: "import { Timeline } from '@snui/vue-web';",
+    chipCopy: "import { Timeline } from '@snui/vue-web';",
+    stats: [
+      { key: 'intent.action', value: 'Timeline', tone: 'accent' },
+      { key: 'intent.end', value: 'web', tone: 'cyan' },
+      { key: 'a11y', value: 'token-driven', tone: 'ok' },
+    ],
+  },
+  pager: {
+    prev: { text: 'time', link: '/en/components/web/time' },
+    next: { text: 'tree', link: '/en/components/web/tree' },
+  },
+  toc: [
+    { id: 'usage', text: 'Usage' },
+    { id: 'demos', text: 'Examples' },
+    { id: 'tokens', text: 'Design tokens' },
+    { id: 'api', text: 'API reference' },
+    { id: 'ai-native', text: 'AI-native integration' },
+  ],
+};

@@ -211,13 +211,20 @@ watchEffect(async () => {
   demoSources.value = out;
 });
 
-/** demo-loader 返回 defineAsyncComponent —— 缓存一份避免每次渲染重建。 */
+/**
+ * demo-loader 返回 defineAsyncComponent —— 缓存一份避免每次渲染重建。
+ *
+ * 缓存键必须带 locale：英文站优先取 demo-en/ 影子文件，用中文键缓存会让
+ * /en/ 页面渲染出中文 demo。这个标志以前写死成 false，英文站一直拿的是
+ * 中文语料。
+ */
 const demoComponentCache = new Map<string, unknown>();
 function markRawDemo(name: string): unknown {
-  if (!demoComponentCache.has(name)) {
-    demoComponentCache.set(name, markRaw(loadDemoComponent(name, false)));
+  const key = `${isEn.value ? 'en' : 'zh'}:${name}`;
+  if (!demoComponentCache.has(key)) {
+    demoComponentCache.set(key, markRaw(loadDemoComponent(name, isEn.value)));
   }
-  return demoComponentCache.get(name);
+  return demoComponentCache.get(key);
 }
 
 /* SFC 拆段：template / script / style（缺失则整份 source）——与 Demo.vue 同思路 */
@@ -504,7 +511,13 @@ onBeforeUnmount(() => {
                 </div>
               </div>
               <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
-                <component :is="demoComponents[d.name]" />
+                <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
+                     document / navigator（视频小窗、上传、日志自动滚动等）。这里
+                     不套客户端边界就会在 SSR 阶段抛 "window is not defined"，整页
+                     构建失败。Demo.vue 一直是这么做的，这里是把它补齐。 -->
+                <ClientOnly>
+                  <component :is="demoComponents[d.name]" />
+                </ClientOnly>
               </div>
               <div v-else class="sn-docpage__demo-codebody">
                 <div class="sn-docpage__codebar">

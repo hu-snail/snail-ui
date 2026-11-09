@@ -7,7 +7,7 @@ next: false
 
 <script setup lang="ts">
 import SnDocPage from '../../../.vitepress/components/doc-page/SnDocPage.vue';
-import { sliderBarDocPage } from '../../../.vitepress/utils/doc-pages/slider-bar';
+import { sliderBarDocPageEn } from '../../../.vitepress/utils/doc-pages/en/slider-bar';
 </script>
 
-<SnDocPage :doc="sliderBarDocPage" />
+<SnDocPage :doc="sliderBarDocPageEn" />
