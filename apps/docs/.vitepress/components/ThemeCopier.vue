@@ -14,7 +14,7 @@
  */
 
 import { ref, watch } from 'vue';
-import { defaultPack, iosPack, darkPack, allPacks, getPack } from '@snui/style-packs';
+import { allPacks, getPack } from '@snui/style-packs';
 import { Check, Copy } from 'lucide-vue-next';
 import { SnIcon } from '@snui/vue-web';
 
@@ -85,11 +85,11 @@ async function copy(): Promise<void> {
   }
 }
 
-// Suppress unused-import warnings (defaultPack / darkPack / iosPack are public
-// references for tree-shaking + future direct API usage).
-void defaultPack;
-void iosPack;
-void darkPack;
+/* No "keep for tree-shaking" placeholder imports here any more. Importing an
+ * export you never call cannot help tree-shaking, and a dead reference is
+ * invisible to the production build (Rollup drops it) while dev fails hard:
+ * `darkPack` was removed by ADR-0010, the build stayed green, and the browser
+ * threw "does not provide an export named 'darkPack'". */
 </script>
 
 <template>
