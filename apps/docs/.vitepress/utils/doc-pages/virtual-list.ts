@@ -51,13 +51,14 @@ import { VirtualList } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'virtual-list-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'virtual-list-web-resizable', title: '动态行高', blurb: '动态行高' },
     {
-      name: 'virtual-list-web-basic',
-      title: '代码演示',
-      blurb: '固定 item-size + visible-height + overscan + item 插槽。',
+      name: 'virtual-list-web-scroll',
+      title: '滚动回显与 overscan 缓冲',
+      blurb: '滚动回显与 overscan 缓冲',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -117,7 +118,6 @@ import { VirtualList } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

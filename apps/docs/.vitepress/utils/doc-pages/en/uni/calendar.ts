@@ -52,14 +52,47 @@ import { Calendar } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'calendar-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
-      name: 'calendar-mp-basic',
-      title: 'Code demos',
+      name: 'calendar-mp-card',
+      title: 'Card entries (cells card pattern)',
+      blurb: 'Card entries (cells card pattern)',
+    },
+    {
+      name: 'calendar-mp-grid-range',
+      title:
+        'Grid & range constraints (`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`)',
       blurb:
-        'Sheet calendar: rolling only updates the draft and `v-model` is written on confirm; cancel discards the draft.',
+        'Grid & range constraints (`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`)',
+    },
+    {
+      name: 'calendar-mp-header',
+      title: 'Sheet header slot (`header`, AUI-added)',
+      blurb: 'Sheet header slot (`header`, AUI-added)',
+    },
+    {
+      name: 'calendar-mp-hooks-parity',
+      title: 'Shortcut callback & declared props (`onShortcutsClick` / `beforeConfirm`)',
+      blurb: 'Shortcut callback & declared props (`onShortcutsClick` / `beforeConfirm`)',
+    },
+    {
+      name: 'calendar-mp-lunar',
+      title: 'Lunar captions (`showLunar`, AUI-added)',
+      blurb: 'Lunar captions (`showLunar`, AUI-added)',
+    },
+    {
+      name: 'calendar-mp-panel-sheet',
+      title:
+        'Panel & sheet (`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / scrim and stacking)',
+      blurb:
+        'Panel & sheet (`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / scrim and stacking)',
+    },
+    {
+      name: 'calendar-mp-shortcuts-range',
+      title: 'Shortcuts & range (`shortcuts` / `type`)',
+      blurb: 'Shortcuts & range (`shortcuts` / `type`)',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -221,7 +254,6 @@ import { Calendar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

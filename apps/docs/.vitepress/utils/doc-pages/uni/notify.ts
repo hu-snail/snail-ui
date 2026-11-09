@@ -84,7 +84,6 @@ import { Notify } from '@snui/uni';
       blurb: '自定义底色与文字色 / safe-height=88 / zIndex=300 + custom-style。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,14 +124,14 @@ import { Notify } from '@snui/uni';
         default: "''",
         desc: 'Background color override (any CSS color value).',
       },
-      { name: 'zIndex', type: 'number', default: '99', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '99', desc: '层级' },
       {
         name: 'safeHeight',
         type: 'number | string | undefined',
         default: 'undefined',
         desc: 'Extra top offset in px (or any CSS length) — accounts for a custom nav bar.',
       },
-      { name: 'closable', type: 'boolean', default: 'false', desc: 'Show the close button.' },
+      { name: 'closable', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
         name: 'variant',
         type: 'NotifyVariant',
@@ -184,7 +183,6 @@ import { Notify } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

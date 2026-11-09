@@ -127,97 +127,6 @@ export const treeSelectDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '触发器、面板节点与连接线各自成族：' },
-      { t: 'code', s: '--sn-web-tree-select-*' },
-      { t: 'text', s: ' 覆盖 bg / 边框 / 节点缩进与行高 / 连接线色与半径，颜色回落到 ' },
-      { t: 'code', s: '--sn-web-color-*' },
-      { t: 'text', s: ' 语义层。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'height',
-        raw: '—',
-        alias: '--sn-web-tree-select-height',
-        value: '32px',
-      },
-      {
-        name: 'padding-x',
-        raw: '—',
-        alias: '--sn-web-tree-select-padding-x',
-        value: '10px',
-      },
-      {
-        name: 'radius',
-        raw: '—',
-        alias: '--sn-web-tree-select-radius',
-        value: '6px',
-        kind: 'curve',
-      },
-      {
-        name: 'node-indent',
-        raw: '—',
-        alias: '--sn-web-tree-select-node-indent',
-        value: '16px',
-      },
-      {
-        name: 'node-min-height',
-        raw: '—',
-        alias: '--sn-web-tree-select-node-min-height',
-        value: '30px',
-      },
-      {
-        name: 'line-color',
-        raw: '--aui-color-border-default',
-        alias: '--sn-web-tree-select-line-color',
-        value: '#e4e4e7',
-        swatch: '#e4e4e7',
-      },
-      {
-        name: 'line-radius',
-        raw: '—',
-        alias: '--sn-web-tree-select-line-radius',
-        value: '3px',
-        kind: 'curve',
-      },
-      {
-        name: 'node-icon-color',
-        raw: '--aui-color-text-tertiary',
-        alias: '--sn-web-tree-select-node-icon-color',
-        value: '#a1a1aa',
-        swatch: '#a1a1aa',
-      },
-      {
-        name: 'menu-bg',
-        raw: '--aui-color-background-elevated',
-        alias: '--sn-web-tree-select-menu-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'menu-max-height',
-        raw: '—',
-        alias: '--sn-web-tree-select-menu-max-height',
-        value: '260px',
-      },
-      {
-        name: 'menu-z-index',
-        raw: '—',
-        alias: '--sn-web-tree-select-menu-z-index',
-        value: '1000',
-      },
-      {
-        name: 'node-text-color-selected',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-tree-select-node-text-color-selected',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -358,7 +267,6 @@ export const treeSelectDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

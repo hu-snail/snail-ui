@@ -60,7 +60,6 @@ import { AvatarGroup } from '@snui/uni';
         '最大数量折叠（max-count）、自定义折叠文本（collapse-avatar）、叠层方向（cascading）、垂直堆叠（vertical）与统一尺寸 / 形状。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -123,7 +122,6 @@ import { AvatarGroup } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

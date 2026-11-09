@@ -52,14 +52,25 @@ import { RichText } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'rich-text-mp-basic', title: 'Basic article', blurb: 'Basic article' },
+    { name: 'rich-text-mp-images', title: 'Images and preview', blurb: 'Images and preview' },
     {
-      name: 'rich-text-mp-basic',
-      title: 'Demos',
-      blurb:
-        'Headings, paragraphs, emphasis, quote and ordered / unordered lists composing a full article.',
+      name: 'rich-text-mp-links',
+      title: 'Links and linked images',
+      blurb: 'Links and linked images',
+    },
+    { name: 'rich-text-mp-table', title: 'Tables', blurb: 'Tables' },
+    {
+      name: 'rich-text-mp-media',
+      title: 'Media and playback control',
+      blurb: 'Media and playback control',
+    },
+    {
+      name: 'rich-text-mp-styles',
+      title: 'Style maps, outline and empty state',
+      blurb: 'Style maps, outline and empty state',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -147,7 +158,6 @@ import { RichText } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

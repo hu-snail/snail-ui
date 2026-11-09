@@ -43,13 +43,10 @@ import { Marquee } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'marquee-web-basic',
-      title: 'Examples',
-      blurb: 'Basic horizontal ticker: 12s per pass, 24px gap, pauses on hover.',
-    },
+    { name: 'marquee-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'marquee-web-direction', title: 'Directions', blurb: 'Directions' },
+    { name: 'marquee-web-notice', title: 'Notice bar', blurb: 'Notice bar' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -122,7 +119,6 @@ import { Marquee } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

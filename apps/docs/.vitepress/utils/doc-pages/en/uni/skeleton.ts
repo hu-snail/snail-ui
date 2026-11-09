@@ -73,24 +73,28 @@ import { Skeleton } from '@snui/uni';
 </template>`,
   },
   demos: [
-    { name: 'skeleton-mp-basic', title: 'Basic usage', blurb: 'The four preset layouts.' },
+    { name: 'skeleton-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
       name: 'skeleton-mp-custom',
       title: 'Custom rows and columns',
-      blurb: 'A card layout and a mixed image + text layout.',
+      blurb: 'Custom rows and columns',
     },
     {
       name: 'skeleton-mp-animation',
       title: 'Shimmer and switching',
-      blurb: 'Both shimmer kinds, plus a loading toggle that reveals the real content.',
+      blurb: 'Shimmer and switching',
     },
     {
       name: 'skeleton-mp-custom-style',
       title: 'Custom class and style',
-      blurb: 'custom-class dashed frame / custom-style padding and radius / both together.',
+      blurb: 'Custom class and style',
+    },
+    {
+      name: 'skeleton-mp-custom-class-forms',
+      title: 'Custom class and style',
+      blurb: 'Custom class and style',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -146,7 +150,6 @@ import { Skeleton } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

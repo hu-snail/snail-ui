@@ -50,8 +50,10 @@ import { Equation } from '@snui/vue-web';
   <Equation />
 </template>`,
   },
-  demos: [{ name: 'equation-web-basic', title: '代码演示', blurb: '行内公式 + 行间公式。' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'equation-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'equation-web-katex-options', title: '使用 katex 配置', blurb: '使用 katex 配置' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -94,7 +96,6 @@ import { Equation } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -82,7 +82,6 @@ import { Tooltip } from '@snui/uni';
         'array content renders multiple lines; the content slot carries a custom structure; offset as [x, y] and { x, y }.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -169,7 +168,6 @@ import { Tooltip } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

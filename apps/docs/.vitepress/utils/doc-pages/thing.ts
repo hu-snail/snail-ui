@@ -44,13 +44,9 @@ import { Thing } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'thing-web-basic',
-      title: '代码演示',
-      blurb: 'title / description / 正文 + footer / action 插槽。',
-    },
+    { name: 'thing-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'thing-web-indent', title: '内容缩进', blurb: '内容缩进' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -129,7 +125,6 @@ import { Thing } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

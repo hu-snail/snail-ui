@@ -140,7 +140,6 @@ import { Form } from '@snui/uni';
         'Item-level rules (required → async) run first, then the form-level rules (pattern / type).',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -255,7 +254,6 @@ import { Form } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

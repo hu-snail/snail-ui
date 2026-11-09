@@ -53,7 +53,6 @@ import { Code } from '@snui/vue-web';
       blurb: 'code prop updates re-render tokens.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -120,7 +119,6 @@ import { Code } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

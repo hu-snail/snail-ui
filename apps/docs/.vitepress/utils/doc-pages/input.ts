@@ -146,82 +146,6 @@ export const inputDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '视觉属性通过 ' },
-      { t: 'code', s: 'var(--sn-web-input-*)' },
-      { t: 'text', s: ' 解析，别名回落到 ' },
-      { t: 'code', s: '@snui/tokens' },
-      { t: 'text', s: ' 的 ' },
-      { t: 'code', s: '--aui-*' },
-      { t: 'text', s: ' 基座，可在任意父级 selector 上覆盖做局部换肤。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-input-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'text-color',
-        raw: '--aui-color-text-primary',
-        alias: '--sn-web-input-text-color',
-        value: '#09090b',
-        swatch: '#09090b',
-      },
-      {
-        name: 'border-color',
-        raw: '--aui-color-border-default',
-        alias: '--sn-web-input-border-color',
-        value: '#e4e4e7',
-        swatch: '#e4e4e7',
-      },
-      {
-        name: 'border-color-focus',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-input-border-color-focus',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'placeholder-color',
-        raw: '--aui-color-text-tertiary',
-        alias: '--sn-web-input-placeholder-color',
-        value: '#a1a1aa',
-        swatch: '#a1a1aa',
-      },
-      {
-        name: 'padding-x',
-        raw: '--aui-input-padding-x',
-        alias: '--sn-web-input-padding-x',
-        value: '12px',
-      },
-      {
-        name: 'height-medium',
-        raw: '--aui-input-height-medium',
-        alias: '--sn-web-input-height-medium',
-        value: '36px',
-      },
-      {
-        name: 'radius',
-        raw: '--aui-input-radius',
-        alias: '--sn-web-input-radius',
-        value: '4px',
-        kind: 'curve',
-      },
-      {
-        name: 'focus-ring',
-        raw: '--aui-focus-ring',
-        alias: '--sn-web-focus-ring',
-        value: 'color-mix(in srgb, primary 25%, transparent)',
-        swatch: 'color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent)',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -398,7 +322,6 @@ export const inputDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

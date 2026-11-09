@@ -47,13 +47,12 @@ import { NumberAnimation } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'number-animation-web-basic',
-      title: 'Basic',
-      blurb: 'Rolling inside SnStatistic + play() replay.',
-    },
+    { name: 'number-animation-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'number-animation-web-precision', title: 'Precision', blurb: 'Precision' },
+    { name: 'number-animation-web-separator', title: 'Separator', blurb: 'Separator' },
+    { name: 'number-animation-web-intl', title: 'Locale', blurb: 'Locale' },
+    { name: 'number-animation-web-finish', title: 'Finish', blurb: 'Finish' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -120,7 +119,6 @@ import { NumberAnimation } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

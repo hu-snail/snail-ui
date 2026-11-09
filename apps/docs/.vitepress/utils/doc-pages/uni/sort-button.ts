@@ -75,7 +75,6 @@ import { SortButton } from '@snui/uni';
         'customClass 追加在根节点上；customStyle 是根节点内联样式，可覆盖内边距 / 底色 / 圆角。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -132,7 +131,6 @@ import { SortButton } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

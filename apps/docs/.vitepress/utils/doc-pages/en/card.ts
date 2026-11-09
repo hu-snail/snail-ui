@@ -48,7 +48,6 @@ import { Card } from '@snui/vue-web';
         'Default variant (bordered) + elevated variant (borderless + shadow). Shows title + header slot + footer slot + body.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -193,7 +192,6 @@ import { Card } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

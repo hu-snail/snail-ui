@@ -42,13 +42,15 @@ import { Transfer } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'transfer-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'transfer-web-basic',
-      title: 'Examples',
-      blurb: 'v-model:value two-panel shuttle with a selected-order readout.',
+      name: 'transfer-web-filter',
+      title: 'Filtering and panel titles',
+      blurb: 'Filtering and panel titles',
     },
+    { name: 'transfer-web-render', title: 'Custom row rendering', blurb: 'Custom row rendering' },
+    { name: 'transfer-web-disabled', title: 'Disabled state', blurb: 'Disabled state' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -145,7 +147,6 @@ import { Transfer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

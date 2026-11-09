@@ -78,7 +78,6 @@ import { Picker } from '@snui/uni';
         'itemHeight / visibleItemCount; immediateChange; closeOnClickModal=false; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle / customViewClass.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -200,7 +199,6 @@ import { Picker } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

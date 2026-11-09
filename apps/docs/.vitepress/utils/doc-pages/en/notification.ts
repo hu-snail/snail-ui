@@ -50,13 +50,16 @@ import { Notification } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'notification-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'notification-web-types', title: 'Four semantic types', blurb: 'Four semantic types' },
+    { name: 'notification-web-placement', title: 'Stack placement', blurb: 'Stack placement' },
+    { name: 'notification-web-max', title: 'Max count', blurb: 'Max count' },
     {
-      name: 'notification-web-basic',
-      title: 'Demos',
-      blurb: 'Provider wrapper + four notification types + destroyAll',
+      name: 'notification-web-custom',
+      title: 'Custom content and handle-based closing',
+      blurb: 'Custom content and handle-based closing',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -128,7 +131,6 @@ import { Notification } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -62,7 +62,6 @@ import { Watermark } from '@snui/uni';
       blurb: 'Image tiles, font family / style / weight, z-index and customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -147,7 +146,6 @@ import { Watermark } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -55,9 +55,11 @@ import { Skeleton } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'skeleton-web-basic', title: '代码演示', blurb: '行内 / 块级 / 圆形 / 段落四种形状' },
+    { name: 'skeleton-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'skeleton-web-box', title: '盒子形态', blurb: '盒子形态' },
+    { name: 'skeleton-web-size', title: '尺寸与形状', blurb: '尺寸与形状' },
+    { name: 'skeleton-web-card', title: '卡片占位', blurb: '卡片占位' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -136,7 +138,6 @@ import { Skeleton } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

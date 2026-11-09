@@ -45,13 +45,10 @@ import { DragSort } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'drag-sort-web-basic',
-      title: 'Examples',
-      blurb: 'Live preview + locked row + Alt+arrow keyboard moves.',
-    },
+    { name: 'drag-sort-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'drag-sort-web-handle', title: 'Handle mode', blurb: 'Handle mode' },
+    { name: 'drag-sort-web-horizontal', title: 'Horizontal', blurb: 'Horizontal' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -100,7 +97,6 @@ import { DragSort } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

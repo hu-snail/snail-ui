@@ -84,7 +84,6 @@ import { Curtain } from '@snui/uni';
       blurb: '关闭按钮内联样式 + 根节点内联样式 + 长按识别菜单。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -136,7 +135,7 @@ import { Curtain } from '@snui/uni';
         default: 'true',
         desc: 'Remove the node from the tree once the leave animation finished.',
       },
-      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level of the curtain.' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '层级' },
       {
         name: 'customCloseClass',
         type: 'string',
@@ -194,7 +193,6 @@ import { Curtain } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

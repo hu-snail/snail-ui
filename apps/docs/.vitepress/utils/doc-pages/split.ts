@@ -54,7 +54,6 @@ import { Split } from '@snui/vue-web';
       blurb: '拖到 min 以下 snap 收起，双击手柄恢复。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -91,7 +90,6 @@ import { Split } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

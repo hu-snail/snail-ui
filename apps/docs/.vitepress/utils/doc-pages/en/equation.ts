@@ -43,9 +43,9 @@ import { Equation } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'equation-web-basic', title: 'Examples', blurb: 'Inline and display-mode formulas.' },
+    { name: 'equation-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'equation-web-katex-options', title: 'Katex options', blurb: 'Katex options' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -88,7 +88,6 @@ import { Equation } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

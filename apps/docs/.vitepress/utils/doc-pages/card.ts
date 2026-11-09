@@ -47,19 +47,13 @@ import { Card } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'card-web',
-      title: '基本用法',
-      blurb:
-        '默认 variant（带边框）+ elevated variant（无边框 + 阴影）。展示 title + header slot + footer slot + body 内容。',
-    },
-    {
-      name: 'card-web-cover',
-      title: '实时预览',
-      blurb: 'cover 槽位（顶部 banner）+ action 槽位（底部按钮）',
-    },
+    { name: 'card-web', title: '基本用法', blurb: '基本用法' },
+    { name: 'card-web-cover', title: '实时预览', blurb: '实时预览' },
+    { name: 'card-web-footer', title: '实时预览', blurb: '实时预览' },
+    { name: 'card-web-closable', title: '实时预览', blurb: '实时预览' },
+    { name: 'card-web-hoverable', title: '实时预览', blurb: '实时预览' },
+    { name: 'card-web-sizes', title: '实时预览', blurb: '实时预览' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -205,7 +199,6 @@ import { Card } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -51,19 +51,25 @@ import { Pagination } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'pagination-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'pagination-web-jumper', title: '快速跳转与每页条数', blurb: '快速跳转与每页条数' },
     {
-      name: 'pagination-web-basic',
-      title: '代码演示',
-      blurb:
-        'v-model:page 受控 + item-count 推导页数 + show-total 总条数 + show-quick-jumper 跳页输入。',
+      name: 'pagination-web-pagesize',
+      title: '每页条数档位与数据量联动',
+      blurb: '每页条数档位与数据量联动',
     },
+    {
+      name: 'pagination-web-picker-simple',
+      title: '省略折叠、简洁模式与页码插槽',
+      blurb: '省略折叠、简洁模式与页码插槽',
+    },
+    { name: 'pagination-web-disabled', title: '省略折叠与禁用态', blurb: '省略折叠与禁用态' },
     {
       name: 'pagination-web-quick-switch',
       title: '快速切换（quick-switch）',
-      blurb: '省略号快速切换面板 + 描边箭头按钮，100 页长列表直达。',
+      blurb: '快速切换（quick-switch）',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -172,7 +178,6 @@ import { Pagination } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

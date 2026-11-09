@@ -54,13 +54,9 @@ import { LoadingBar } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'loading-bar-web-basic',
-      title: '代码演示',
-      blurb: 'Provider 包裹 + 开始 / 完成 / 出错三种触发',
-    },
+    { name: 'loading-bar-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'loading-bar-web-flow', title: '完整流程与出错对照', blurb: '完整流程与出错对照' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +93,6 @@ import { LoadingBar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

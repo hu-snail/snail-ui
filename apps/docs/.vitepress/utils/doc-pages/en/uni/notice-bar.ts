@@ -76,7 +76,6 @@ import { NoticeBar } from '@snui/uni';
       blurb: 'Overridden text and fill color / custom-class border / custom-style radius.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -174,7 +173,6 @@ import { NoticeBar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

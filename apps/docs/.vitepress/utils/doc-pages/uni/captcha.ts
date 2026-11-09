@@ -57,13 +57,20 @@ import { Captcha } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'captcha-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'captcha-mp-verify', title: '内嵌展示', blurb: '内嵌展示' },
+    { name: 'captcha-mp-popup', title: '点击弹出', blurb: '点击弹出' },
     {
-      name: 'captcha-mp-basic',
-      title: '代码演示',
-      blurb: '拼图验证：v-model 打开弹层，拖动拼图对齐缺口，success / fail 回调。',
+      name: 'captcha-mp-interaction',
+      title: '两段式验证（组合滑块）',
+      blurb: '两段式验证（组合滑块）',
+    },
+    {
+      name: 'captcha-mp-custom',
+      title: '自定义文案 / 尺寸 / 容差',
+      blurb: '自定义文案 / 尺寸 / 容差',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -85,7 +92,7 @@ import { Captcha } from '@snui/uni';
         default: '300',
         desc: 'Stage width in design px; the box fills its container up to this.',
       },
-      { name: 'height', type: 'number', default: '200', desc: 'Stage height in design px.' },
+      { name: 'height', type: 'number', default: '200', desc: '舞台高度（设计 px）' },
       {
         name: 'tips',
         type: 'string',
@@ -99,7 +106,7 @@ import { Captcha } from '@snui/uni';
         default: '10',
         desc: 'Snap tolerance around the target X (px design units).',
       },
-      { name: 'zIndex', type: 'number', default: '100', desc: 'Stacking level of the popup.' },
+      { name: 'zIndex', type: 'number', default: '100', desc: '弹层层级（`inline` 下不生效）' },
       {
         name: 'closeOnClickModal',
         type: 'boolean',
@@ -146,7 +153,6 @@ import { Captcha } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

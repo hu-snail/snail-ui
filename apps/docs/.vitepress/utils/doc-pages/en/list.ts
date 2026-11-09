@@ -39,13 +39,10 @@ import { List } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'list-web-basic',
-      title: 'Examples',
-      blurb: 'header / footer + prefix / suffix slots.',
-    },
+    { name: 'list-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'list-web-hoverable', title: 'Hoverable & clickable', blurb: 'Hoverable & clickable' },
+    { name: 'list-web-border', title: 'Border & dividers', blurb: 'Border & dividers' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,7 +92,6 @@ import { List } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -70,7 +70,6 @@ import { SortButton } from '@snui/uni';
         '`customClass` is appended to the root; `customStyle` is the root inline style and can override padding, fill and radius.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -127,7 +126,6 @@ import { SortButton } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

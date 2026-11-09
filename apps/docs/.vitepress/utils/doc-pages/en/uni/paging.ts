@@ -50,14 +50,33 @@ import { Paging } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'paging-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
-      name: 'paging-mp-basic',
-      title: 'Demos',
-      blurb:
-        'Pull-to-refresh, auto load-more, completeByTotal stopping; capsules switch the spinner shape and pull-area theme live.',
+      name: 'paging-mp-states',
+      title: 'Empty and fail-retry states',
+      blurb: 'Empty and fail-retry states',
+    },
+    {
+      name: 'paging-mp-scroll',
+      title: 'Pure scroll container and gesture switches',
+      blurb: 'Pure scroll container and gesture switches',
+    },
+    {
+      name: 'paging-mp-second-floor',
+      title: 'Pull down to the second floor',
+      blurb: 'Pull down to the second floor',
+    },
+    {
+      name: 'paging-mp-popup',
+      title: 'Pull-to-refresh inside a popup',
+      blurb: 'Pull-to-refresh inside a popup',
+    },
+    {
+      name: 'paging-mp-app',
+      title: 'App case: full-page feed app (compact preview + fullscreen scenario)',
+      blurb: 'App case: full-page feed app (compact preview + fullscreen scenario)',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -286,7 +305,6 @@ import { Paging } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

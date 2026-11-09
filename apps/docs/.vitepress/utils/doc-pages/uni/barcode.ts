@@ -63,13 +63,12 @@ import { Barcode } from '@snui/uni';
       blurb: '自动校验位 / 显式 13 位与自定义条色 / 非法输入 error。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
       { name: 'text', type: 'string', default: "''", desc: '条码内容（校验位规则见各格式说明）。' },
       { name: 'format', type: 'SnBarcodeFormat', default: "'EAN13'", desc: '条码格式。' },
-      { name: 'showText', type: 'boolean', default: 'true', desc: '是否在条码旁显示文本。' },
+      { name: 'showText', type: 'boolean', default: 'true', desc: '是否显示条码文本' },
       {
         name: 'layout',
         type: "'horizontal' | 'vertical'",
@@ -94,7 +93,7 @@ import { Barcode } from '@snui/uni';
         default: "'transparent'",
         desc: '背景色（默认透明）。',
       },
-      { name: 'moduleWidth', type: 'number', default: '2', desc: '单模块宽度（px）。' },
+      { name: 'moduleWidth', type: 'number', default: '2', desc: '单模块宽度（px）' },
       {
         name: 'height',
         type: 'string',
@@ -148,7 +147,6 @@ import { Barcode } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -82,7 +82,6 @@ import { CalendarView } from '@snui/uni';
         'allowSameDay 允许区间起止同一天；defaultTime 决定写回时间戳的时分秒；immediateChange 点中即触发；customClass / customStyle 落在根节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -223,7 +222,6 @@ import { CalendarView } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

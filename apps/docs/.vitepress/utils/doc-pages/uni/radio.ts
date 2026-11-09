@@ -88,7 +88,6 @@ import { Radio } from '@snui/uni';
         'checkedColor / uncheckedColor 组级下发与单项覆盖；customLabelClass 落在标签节点；customClass / customStyle 落在根节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -174,7 +173,6 @@ import { Radio } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

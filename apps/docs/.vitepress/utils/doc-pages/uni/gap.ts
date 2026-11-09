@@ -66,7 +66,6 @@ import { Gap } from '@snui/uni';
         'height=&quot;24rpx&quot; 字符串原样转发；数字仍按 px；customClass / customStyle 与 bg-color 叠加。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -111,7 +110,6 @@ import { Gap } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

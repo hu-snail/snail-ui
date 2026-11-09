@@ -101,90 +101,6 @@ export const dynamicTagsDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '标签本体、内嵌输入与触发按钮各有一族变量：' },
-      { t: 'code', s: '--sn-web-dynamic-tags-tag-*' },
-      { t: 'text', s: ' / ' },
-      { t: 'code', s: '--sn-web-dynamic-tags-input-*' },
-      { t: 'text', s: ' / ' },
-      { t: 'code', s: '--sn-web-dynamic-tags-trigger-*' },
-      { t: 'text', s: '，颜色回落到 ' },
-      { t: 'code', s: '--sn-web-color-*' },
-      { t: 'text', s: ' 语义层。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'gap',
-        raw: '—',
-        alias: '--sn-web-dynamic-tags-gap',
-        value: '6px',
-      },
-      {
-        name: 'tag-bg',
-        raw: '--aui-color-background-subtle',
-        alias: '--sn-web-dynamic-tags-tag-bg',
-        value: '#f4f4f5',
-        swatch: '#f4f4f5',
-      },
-      {
-        name: 'tag-radius',
-        raw: '—',
-        alias: '--sn-web-dynamic-tags-tag-radius',
-        value: '999px',
-        kind: 'curve',
-      },
-      {
-        name: 'tag-padding-x',
-        raw: '—',
-        alias: '--sn-web-dynamic-tags-tag-padding-x',
-        value: '8px',
-      },
-      {
-        name: 'tag-text-color',
-        raw: '--aui-color-text-primary',
-        alias: '--sn-web-dynamic-tags-tag-text-color',
-        value: '#09090b',
-        swatch: '#09090b',
-      },
-      {
-        name: 'input-bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-dynamic-tags-input-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'input-border-color',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-dynamic-tags-input-border-color',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'input-min-width',
-        raw: '—',
-        alias: '--sn-web-dynamic-tags-input-min-width',
-        value: '100px',
-      },
-      {
-        name: 'trigger-color',
-        raw: '--aui-color-text-secondary',
-        alias: '--sn-web-dynamic-tags-trigger-color',
-        value: '#71717a',
-        swatch: '#71717a',
-      },
-      {
-        name: 'trigger-radius',
-        raw: '—',
-        alias: '--sn-web-dynamic-tags-trigger-radius',
-        value: '999px',
-        kind: 'curve',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -259,7 +175,6 @@ export const dynamicTagsDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

@@ -63,7 +63,6 @@ import { PlateInput } from '@snui/uni';
       blurb: '`maxlength=8` for new-energy plates; `disabled` freezes the field.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -120,7 +119,6 @@ import { PlateInput } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

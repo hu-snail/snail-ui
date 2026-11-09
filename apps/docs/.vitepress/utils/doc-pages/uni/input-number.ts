@@ -85,7 +85,6 @@ import { InputNumber } from '@snui/uni';
       blurb: 'customClass 与 customStyle 两个挂载点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,9 +94,9 @@ import { InputNumber } from '@snui/uni';
         default: '0',
         desc: 'Bound value (`v-model`).',
       },
-      { name: 'min', type: 'number', default: '1', desc: 'Lower bound.' },
-      { name: 'max', type: 'number', default: 'Number.MAX_SAFE_INTEGER', desc: 'Upper bound.' },
-      { name: 'step', type: 'number', default: '1', desc: 'Increment / decrement step.' },
+      { name: 'min', type: 'number', default: '1', desc: '最小值' },
+      { name: 'max', type: 'number', default: 'Number.MAX_SAFE_INTEGER', desc: '最大值' },
+      { name: 'step', type: 'number', default: '1', desc: '步进值' },
       {
         name: 'stepStrictly',
         type: 'boolean',
@@ -110,7 +109,7 @@ import { InputNumber } from '@snui/uni';
         default: '0',
         desc: 'Decimal places kept after every commit.',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables the whole stepper.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用整个计数器' },
       {
         name: 'disableInput',
         type: 'boolean',
@@ -184,7 +183,7 @@ import { InputNumber } from '@snui/uni';
         desc: 'Native keyboard type for the field.',
       },
       { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme.' },
-      { name: 'round', type: 'boolean', default: 'false', desc: 'Fully rounded action buttons.' },
+      { name: 'round', type: 'boolean', default: 'false', desc: '圆角样式' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -213,7 +212,6 @@ import { InputNumber } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

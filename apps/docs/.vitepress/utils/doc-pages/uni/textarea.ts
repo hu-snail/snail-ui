@@ -94,7 +94,6 @@ import { Textarea } from '@snui/uni';
       blurb: 'customClass + customStyle 挂根节点；customTextareaClass 挂内层 textarea。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -140,7 +139,7 @@ import { Textarea } from '@snui/uni';
         default: '-1',
         desc: 'Max character length. `-1` means unlimited (wd-textarea default).',
       },
-      { name: 'clearable', type: 'boolean', default: 'false', desc: 'Show the × clear button.' },
+      { name: 'clearable', type: 'boolean', default: 'false', desc: '显示 × 清空按钮。' },
       {
         name: 'prefixIcon',
         type: 'string',
@@ -183,7 +182,7 @@ import { Textarea } from '@snui/uni';
         default: 'false',
         desc: 'Error state — red border + `aria-invalid`.',
       },
-      { name: 'focus', type: 'boolean', default: 'false', desc: 'Focus the field on mount.' },
+      { name: 'focus', type: 'boolean', default: 'false', desc: '挂载即聚焦。' },
       {
         name: 'autoFocus',
         type: 'boolean',
@@ -320,7 +319,6 @@ import { Textarea } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

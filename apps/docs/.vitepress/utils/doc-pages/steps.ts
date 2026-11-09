@@ -54,9 +54,15 @@ import { Steps } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'steps-web-basic', title: '代码演示', blurb: '横向基础布局，状态随 current 推导' },
+    { name: 'steps-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'steps-web-vertical', title: '垂直布局', blurb: '垂直布局' },
+    { name: 'steps-web-size', title: '尺寸', blurb: '尺寸' },
+    { name: 'steps-web-content-placement', title: '内容位置', blurb: '内容位置' },
+    { name: 'steps-web-content', title: '富文本内容', blurb: '富文本内容' },
+    { name: 'steps-web-custom-icon', title: '自定义图标', blurb: '自定义图标' },
+    { name: 'steps-web-status', title: '状态总览', blurb: '状态总览' },
+    { name: 'steps-web-clickable', title: '可点击切换', blurb: '可点击切换' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -105,7 +111,6 @@ import { Steps } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

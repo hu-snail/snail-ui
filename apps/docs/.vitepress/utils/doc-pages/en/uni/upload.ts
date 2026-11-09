@@ -102,7 +102,6 @@ import { Upload } from '@snui/uni';
         '`change` fires on every list mutation; `remove` carries the removed entry; `progress` is reserved; `showLimitNum=false` hides the counter; `accept` media / all switches the picker.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -226,7 +225,6 @@ import { Upload } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

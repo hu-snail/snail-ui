@@ -51,9 +51,11 @@ import { Watermark } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'watermark-web-basic', title: '代码演示', blurb: '包裹内容平铺 / 旋转与透明度。' },
+    { name: 'watermark-web-basic', title: '基础水印', blurb: '基础水印' },
+    { name: 'watermark-web-content', title: '多行文案与交错瓦片', blurb: '多行文案与交错瓦片' },
+    { name: 'watermark-web-style', title: '样式定制', blurb: '样式定制' },
+    { name: 'watermark-web-fullscreen', title: '全屏水印', blurb: '全屏水印' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -198,7 +200,6 @@ import { Watermark } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

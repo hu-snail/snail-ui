@@ -43,8 +43,13 @@ import { Code } from '@snui/vue-web';
   <Code />
 </template>`,
   },
-  demos: [{ name: 'code-web-basic', title: '代码演示', blurb: 'json 语法着色 + 纯文本语言。' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'code-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'code-web-inline', title: '行内显示', blurb: '行内显示' },
+    { name: 'code-web-softwrap', title: '软换行', blurb: '软换行' },
+    { name: 'code-web-line-numbers', title: '显示行号', blurb: '显示行号' },
+    { name: 'code-web-loop-debug', title: '动态更新', blurb: '动态更新' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -111,7 +116,6 @@ import { Code } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

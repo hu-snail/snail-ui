@@ -60,7 +60,6 @@ import { Dialer } from '@snui/uni';
       blurb: '6-prize wheel, random target on GO, result shown on done.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -115,7 +114,6 @@ import { Dialer } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

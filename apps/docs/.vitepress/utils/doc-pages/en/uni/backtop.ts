@@ -86,7 +86,6 @@ import { Backtop } from '@snui/uni';
       blurb: 'top=120 visibility threshold; icon-style custom icon colour; z-index level.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -144,7 +143,6 @@ import { Backtop } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

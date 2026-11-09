@@ -80,7 +80,6 @@ import { SelectPicker } from '@snui/uni';
         'loading / loadingColor；beforeConfirm；closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；scrollIntoView；customClass / customStyle / customContentClass。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -163,7 +162,7 @@ import { SelectPicker } from '@snui/uni';
         default: 'true',
         desc: 'Tapping the mask closes the sheet.',
       },
-      { name: 'columns', type: 'SelectOption[]', default: '() => []', desc: 'Option list.' },
+      { name: 'columns', type: 'SelectOption[]', default: '() => []', desc: '选项列表' },
       { name: 'value', type: 'SelectValue | SelectValue[]', default: '—', desc: 'value' },
       { name: 'selectedItems', type: 'SelectOption[]', default: '—', desc: 'selectedItems' },
       { name: 'zIndex', type: 'number', default: '15', desc: 'Stacking level.' },
@@ -192,7 +191,7 @@ import { SelectPicker } from '@snui/uni';
         default: "''",
         desc: 'Class on the option content wrapper.',
       },
-      { name: 'showConfirm', type: 'boolean', default: 'true', desc: 'Render the confirm button.' },
+      { name: 'showConfirm', type: 'boolean', default: 'true', desc: '是否渲染确认按钮' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -227,7 +226,6 @@ import { SelectPicker } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

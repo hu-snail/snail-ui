@@ -45,13 +45,19 @@ import { AvatarGroup } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'avatar-group-web-basic', title: 'Basic group', blurb: 'Basic group' },
     {
-      name: 'avatar-group-web-basic',
-      title: 'Demos',
-      blurb: 'Tightening overlap / shrink scaling / maxOptions overflow + onExpand.',
+      name: 'avatar-group-web-max',
+      title: 'Overflow cap and expand callback',
+      blurb: 'Overflow cap and expand callback',
     },
+    {
+      name: 'avatar-group-web-shrink',
+      title: 'Shrink behavior vs tightening',
+      blurb: 'Shrink behavior vs tightening',
+    },
+    { name: 'avatar-group-web-image', title: 'Image avatars', blurb: 'Image avatars' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -94,7 +100,6 @@ import { AvatarGroup } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

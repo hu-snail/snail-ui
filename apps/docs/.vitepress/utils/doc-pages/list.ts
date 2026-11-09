@@ -44,13 +44,10 @@ import { List } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'list-web-basic',
-      title: '代码演示',
-      blurb: 'header / footer + prefix / suffix 槽位。',
-    },
+    { name: 'list-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'list-web-hoverable', title: '悬浮与可点击', blurb: '悬浮与可点击' },
+    { name: 'list-web-border', title: '边框与分割线', blurb: '边框与分割线' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -72,7 +69,7 @@ import { List } from '@snui/vue-web';
         default: 'false',
         desc: 'Rows get the pointer cursor.',
       },
-      { name: 'hoverable', type: 'boolean', default: 'false', desc: 'Rows highlight on hover.' },
+      { name: 'hoverable', type: 'boolean', default: 'false', desc: '行悬浮时是否高亮' },
       {
         name: 'showDivider',
         type: 'boolean',
@@ -100,7 +97,6 @@ import { List } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

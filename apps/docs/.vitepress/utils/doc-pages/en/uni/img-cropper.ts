@@ -73,7 +73,6 @@ import { ImgCropper } from '@snui/uni';
         'img-width / img-height preview box, the max-scale cap, and export-scale / quality / file-type substituted into the confirm result.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -152,7 +151,6 @@ import { ImgCropper } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

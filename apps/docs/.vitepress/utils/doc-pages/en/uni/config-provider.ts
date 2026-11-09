@@ -83,7 +83,6 @@ import { ConfigProvider } from '@snui/uni';
       blurb: 'Light and dark subtrees coexist on one page without affecting each other.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -138,7 +137,6 @@ import { ConfigProvider } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

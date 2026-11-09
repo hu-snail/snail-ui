@@ -70,7 +70,6 @@ import { Text } from '@snui/uni';
         'customClass / customStyle on the root; the prefix / suffix / default slots render nodes rather than strings.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -145,7 +144,6 @@ import { Text } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -52,13 +52,11 @@ import { Popconfirm } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'popconfirm-web-basic',
-      title: '代码演示',
-      blurb: '默认确认框、自定义文案、自定义插槽图标与阻止关闭',
-    },
+    { name: 'popconfirm-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'popconfirm-web-async', title: '异步确认', blurb: '异步确认' },
+    { name: 'popconfirm-web-icon', title: '图标自定义', blurb: '图标自定义' },
+    { name: 'popconfirm-web-action', title: '自定义操作区', blurb: '自定义操作区' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -245,7 +243,6 @@ import { Popconfirm } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

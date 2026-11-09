@@ -50,13 +50,11 @@ import { Waterfall } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'waterfall-web-basic',
-      title: '代码演示',
-      blurb: '默认 3 列；v-for 数据驱动，高度参差不齐。',
-    },
+    { name: 'waterfall-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'waterfall-web-image', title: '图片墙 + 懒加载', blurb: '图片墙 + 懒加载' },
+    { name: 'waterfall-web-responsive', title: '响应式列宽', blurb: '响应式列宽' },
+    { name: 'waterfall-web-card', title: '卡片墙与关闭瀑布流', blurb: '卡片墙与关闭瀑布流' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -111,7 +109,6 @@ import { Waterfall } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

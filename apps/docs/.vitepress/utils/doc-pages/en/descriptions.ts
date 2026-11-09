@@ -43,13 +43,13 @@ import { Descriptions } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'descriptions-web-basic',
-      title: 'Examples',
-      blurb: 'Three columns by default, labels above content.',
-    },
+    { name: 'descriptions-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'descriptions-web-columns', title: 'Columns', blurb: 'Columns' },
+    { name: 'descriptions-web-span', title: 'Span', blurb: 'Span' },
+    { name: 'descriptions-web-placement', title: 'Label placement', blurb: 'Label placement' },
+    { name: 'descriptions-web-bordered', title: 'Bordered', blurb: 'Bordered' },
+    { name: 'descriptions-web-size', title: 'Size', blurb: 'Size' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -140,7 +140,6 @@ import { Descriptions } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -95,7 +95,6 @@ import { Form } from '@snui/vue-web';
         'Select / radio / checkbox / number / date / time / switch with unified validation + submit.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -228,7 +227,6 @@ import { Form } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

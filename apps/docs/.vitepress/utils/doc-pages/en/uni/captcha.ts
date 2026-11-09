@@ -49,14 +49,20 @@ import { Captcha } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'captcha-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'captcha-mp-verify', title: 'Inline display', blurb: 'Inline display' },
+    { name: 'captcha-mp-popup', title: 'Tap to open', blurb: 'Tap to open' },
     {
-      name: 'captcha-mp-basic',
-      title: 'Demos',
-      blurb:
-        'Jigsaw captcha: open with v-model, drag the piece onto the gap, success / fail callbacks.',
+      name: 'captcha-mp-interaction',
+      title: 'Two-stage verification (slider chain)',
+      blurb: 'Two-stage verification (slider chain)',
+    },
+    {
+      name: 'captcha-mp-custom',
+      title: 'Custom copy / size / tolerance',
+      blurb: 'Custom copy / size / tolerance',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -139,7 +145,6 @@ import { Captcha } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

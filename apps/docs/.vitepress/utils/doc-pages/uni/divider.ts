@@ -71,7 +71,6 @@ import { Divider } from '@snui/uni';
       blurb: 'hairline 开 / 关对比：水平线、带文字、垂直线与细虚线。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -81,7 +80,7 @@ import { Divider } from '@snui/uni';
         default: "'horizontal'",
         desc: 'Axis: horizontal (full-width line) or vertical (inline line).',
       },
-      { name: 'dashed', type: 'boolean', default: 'false', desc: 'Dashed instead of solid.' },
+      { name: 'dashed', type: 'boolean', default: 'false', desc: '虚线' },
       {
         name: 'hairline',
         type: 'boolean',
@@ -145,7 +144,6 @@ import { Divider } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

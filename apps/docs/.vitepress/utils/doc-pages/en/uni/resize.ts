@@ -61,7 +61,6 @@ import { Resize } from '@snui/uni';
         'customClass / customStyle draw the outer wrapper boundary; customContainerClass draws the measured inner node.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -94,7 +93,6 @@ import { Resize } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

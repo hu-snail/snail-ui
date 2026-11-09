@@ -90,7 +90,6 @@ import { Tag } from '@snui/uni';
         'bgColor 品牌色接管（底色与边框同步改）；color 只改文字色；iconPrefix + cssIcon 字体图标类；customClass 与 customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -185,7 +184,6 @@ import { Tag } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

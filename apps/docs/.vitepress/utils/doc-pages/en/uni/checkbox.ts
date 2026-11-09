@@ -85,7 +85,6 @@ import { Checkbox } from '@snui/uni';
         'Standalone `v-model` with `trueValue` / `falseValue`; `checkedColor` / `uncheckedColor`; `size` large and `placement` right; `maxWidth` + `customLabelClass`; `customClass` / `customStyle`.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -207,7 +206,6 @@ import { Checkbox } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

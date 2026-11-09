@@ -67,7 +67,6 @@ import { FitSwiper } from '@snui/uni';
       blurb: 'A custom indicator rendered through the #indicator slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -179,7 +178,6 @@ import { FitSwiper } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

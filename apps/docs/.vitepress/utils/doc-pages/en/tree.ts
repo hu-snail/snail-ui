@@ -39,51 +39,22 @@ import { Tree } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'tree-web-basic',
-      title: 'Basic',
-      blurb: 'defaultExpandedKeys + v-model:selected-keys.',
-    },
-    {
-      name: 'tree-web-fields',
-      title: 'Custom Fields',
-      blurb: 'keyField / labelField / childrenField remapping.',
-    },
-    { name: 'tree-web-multiple', title: 'Multiple', blurb: 'Array v-model, click to toggle.' },
-    {
-      name: 'tree-web-cascade',
-      title: 'Cascade',
-      blurb: 'checkable + cascade, v-model:checked-keys.',
-    },
+    { name: 'tree-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'tree-web-fields', title: 'Custom Fields', blurb: 'Custom Fields' },
+    { name: 'tree-web-multiple', title: 'Multiple', blurb: 'Multiple' },
+    { name: 'tree-web-cascade', title: 'Cascade', blurb: 'Cascade' },
     {
       name: 'tree-web-checkable-drag',
       title: 'Checkboxes + Drag & Drop',
-      blurb:
-        'checkable + draggable + line-mode=&quot;guide&quot;; drag to reorder or move into a folder.',
+      blurb: 'Checkboxes + Drag & Drop',
     },
-    {
-      name: 'tree-web-disabled',
-      title: 'Disabled',
-      blurb: 'disabled blocks select/check/expand; checkboxDisabled blocks checking only.',
-    },
-    {
-      name: 'tree-web-prefix-suffix',
-      title: 'Prefix & Suffix',
-      blurb: 'option-level fields and tree-level render fns.',
-    },
-    {
-      name: 'tree-web-block-line',
-      title: 'Block Line',
-      blurb: 'Hover/selected background spans the whole row.',
-    },
-    {
-      name: 'tree-web-line',
-      title: 'Connector Lines',
-      blurb: 'Square solid / square dashed / rounded custom color.',
-    },
-    { name: 'tree-web-empty', title: 'Empty', blurb: 'Default empty text + empty slot.' },
+    { name: 'tree-web-disabled', title: 'Disabled', blurb: 'Disabled' },
+    { name: 'tree-web-prefix-suffix', title: 'Prefix & Suffix', blurb: 'Prefix & Suffix' },
+    { name: 'tree-web-block-line', title: 'Block Line', blurb: 'Block Line' },
+    { name: 'tree-web-line', title: 'Connector Lines', blurb: 'Connector Lines' },
+    { name: 'tree-web-guide', title: 'Connector Lines', blurb: 'Connector Lines' },
+    { name: 'tree-web-empty', title: 'Empty', blurb: 'Empty' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -270,7 +241,6 @@ import { Tree } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

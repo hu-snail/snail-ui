@@ -66,24 +66,12 @@ import { Popup } from '@snui/uni';
 </template>`,
   },
   demos: [
-    {
-      name: 'popup-mp-basic',
-      title: '基础用法',
-      blurb: '底部弹层（bottom + round）与居中弹层（center + closable 关闭按钮）。',
-    },
-    { name: 'popup-mp-position', title: '弹出位置', blurb: '5 个方位 + 自动匹配的进出场动画。' },
-    {
-      name: 'popup-mp-config',
-      title: '遮罩与关闭行为',
-      blurb: 'modal / closeOnClickModal / transition + duration，以及动画事件。',
-    },
-    {
-      name: 'popup-mp-surface',
-      title: '样式、懒渲染与安全区',
-      blurb: '遮罩内联样式 / 面板内联样式 + 安全区 / lazy-render=false。',
-    },
+    { name: 'popup-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'popup-mp-position', title: '弹出位置', blurb: '弹出位置' },
+    { name: 'popup-mp-config', title: '遮罩与关闭行为', blurb: '遮罩与关闭行为' },
+    { name: 'popup-mp-surface', title: '样式、懒渲染与安全区', blurb: '样式、懒渲染与安全区' },
+    { name: 'popup-mp-scroll', title: '样式、懒渲染与安全区', blurb: '样式、懒渲染与安全区' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -123,8 +111,8 @@ import { Popup } from '@snui/uni';
         default: 'DEFAULT_DURATION',
         desc: 'Animation duration in ms. `false` = no animation, record = per-leg.',
       },
-      { name: 'modal', type: 'boolean', default: 'true', desc: 'Render the scrim.' },
-      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level of the root node.' },
+      { name: 'modal', type: 'boolean', default: 'true', desc: '是否显示遮罩' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '弹层层级' },
       {
         name: 'hideWhenClose',
         type: 'boolean',
@@ -195,7 +183,6 @@ import { Popup } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

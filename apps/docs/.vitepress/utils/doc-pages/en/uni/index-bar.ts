@@ -79,7 +79,6 @@ import { IndexBar } from '@snui/uni';
         'Full-page contacts: the compact preview is interactive (search filter); tap Full page for the fullscreen screen (Navbar + search + index bar + count bar); tap a contact for the profile page.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -113,7 +112,6 @@ import { IndexBar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

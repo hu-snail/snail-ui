@@ -43,13 +43,21 @@ import { Image } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'image-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'image-web-group', title: 'Group', blurb: 'Group' },
+    { name: 'image-web-fallback', title: 'Fallback', blurb: 'Fallback' },
+    { name: 'image-web-error-slot', title: 'Error slot', blurb: 'Error slot' },
+    { name: 'image-web-preview-disabled', title: 'Preview disabled', blurb: 'Preview disabled' },
+    { name: 'image-web-lazy', title: 'Lazy loading', blurb: 'Lazy loading' },
+    { name: 'image-web-manual-preview', title: 'Manual preview', blurb: 'Manual preview' },
     {
-      name: 'image-web-basic',
-      title: 'Examples',
-      blurb: 'width / height / object-fit thumbnails.',
+      name: 'image-web-previewed-img-props',
+      title: 'Previewed image props',
+      blurb: 'Previewed image props',
     },
+    { name: 'image-web-toolbar-tooltip', title: 'Toolbar hints', blurb: 'Toolbar hints' },
+    { name: 'image-web-custom-toolbar', title: 'Custom toolbar', blurb: 'Custom toolbar' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -164,7 +172,6 @@ import { Image } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

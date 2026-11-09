@@ -59,7 +59,6 @@ import { Lucky } from '@snui/uni';
       blurb: '3×3 grid, play/stop two-phase animation, custom prize slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +96,6 @@ import { Lucky } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

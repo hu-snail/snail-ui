@@ -92,82 +92,6 @@ export const buttonDocPage: SnDocPageData = {
     ].join('\n'),
   },
 
-  tokens: {
-    hint: [
-      { t: 'text', s: 'Token 由 ' },
-      { t: 'code', s: '@snui/tokens' },
-      { t: 'text', s: ' 静态级联发射两族变量：' },
-      { t: 'code', s: '--aui-button-*' },
-      { t: 'text', s: '（原始级联输出）与 ' },
-      { t: 'code', s: '--sn-button-*' },
-      { t: 'text', s: '（品牌别名，组件实际消费）。语义色经由 ' },
-      { t: 'code', s: '--sn-web-color-action-*' },
-      { t: 'text', s: ' 下发，主题编辑器与风格包换肤即改写这一层。' },
-    ],
-    note: '100% 双端编译映射',
-    rows: [
-      {
-        name: 'height-tiny',
-        raw: '--aui-button-height-tiny',
-        alias: '--sn-button-height-tiny',
-        value: '24px',
-      },
-      {
-        name: 'height-small',
-        raw: '--aui-button-height-small',
-        alias: '--sn-button-height-small',
-        value: '32px',
-      },
-      {
-        name: 'height-medium',
-        raw: '--aui-button-height-medium',
-        alias: '--sn-button-height-medium',
-        value: '36px',
-      },
-      {
-        name: 'height-large',
-        raw: '--aui-button-height-large',
-        alias: '--sn-button-height-large',
-        value: '40px',
-      },
-      {
-        name: 'padding-x',
-        raw: '--aui-button-padding-x',
-        alias: '--sn-button-padding-x',
-        value: '16px',
-      },
-      {
-        name: 'radius',
-        raw: '--aui-button-radius',
-        alias: '--sn-button-radius',
-        value: '4px',
-        kind: 'curve',
-      },
-      {
-        name: 'font-size',
-        raw: '--aui-button-font-size',
-        alias: '--sn-button-font-size',
-        value: '14px',
-      },
-      {
-        name: 'focus-ring',
-        raw: '--aui-button-focus-ring',
-        alias: '--sn-button-focus-ring',
-        // Derived from the active primary, so a custom theme never leaves a
-        // blue halo behind (form controls share the same token chain).
-        value: 'color-mix(in srgb, primary 25%, transparent)',
-        swatch: 'color-mix(in srgb, var(--sn-web-color-action-primary) 25%, transparent)',
-      },
-      {
-        name: 'color-action-primary',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-color-action-primary',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -243,16 +167,16 @@ export const buttonDocPage: SnDocPageData = {
       },
       { name: 'focusable', type: 'boolean', default: 'true', desc: '是否可 tab 聚焦。' },
       { name: 'icon', type: 'IconComponent', default: '—', desc: '直接传 lucide 组件。' },
-      { name: 'iconName', type: 'string', default: '—', desc: '通过 registerSnIcons 注册表解析。' },
+      { name: 'iconName', type: 'string', default: '—', desc: '通过 `registerSnIcons` 解析。' },
       { name: 'iconPlacement', type: "'left' | 'right'", default: "'left'", desc: '图标位置。' },
-      { name: 'iconSize', type: 'number | string', default: '14', desc: '图标 px / CSS 长度。' },
+      { name: 'iconSize', type: 'number | string', default: '14', desc: '`14`' },
       {
         name: 'showIcon',
         type: 'boolean',
         default: 'true',
         desc: '是否显示图标。false 隐藏（loading 仍显示 spinner）。',
       },
-      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签覆盖。' },
+      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签。' },
       {
         name: 'htmlType (deprecated)',
         type: "'button' | 'submit' | 'reset'",
@@ -346,7 +270,6 @@ export const buttonDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

@@ -78,7 +78,6 @@ import { Picker } from '@snui/uni';
         'itemHeight / visibleItemCount；immediateChange；closeOnClickModal=false；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle / customViewClass。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -152,7 +151,7 @@ import { Picker } from '@snui/uni';
         default: 'true',
         desc: 'Tapping the mask closes the sheet.',
       },
-      { name: 'zIndex', type: 'number', default: '15', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '15', desc: '弹层层级' },
       {
         name: 'safeAreaInsetBottom',
         type: 'boolean',
@@ -200,7 +199,6 @@ import { Picker } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

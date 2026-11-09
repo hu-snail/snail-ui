@@ -72,7 +72,6 @@ import { DynamicTags } from '@snui/vue-web';
       blurb: 'disabled blocks interaction; readonly hides the add button.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -145,7 +144,6 @@ import { DynamicTags } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

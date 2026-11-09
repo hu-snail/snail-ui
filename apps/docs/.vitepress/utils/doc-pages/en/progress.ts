@@ -45,11 +45,23 @@ import { Progress } from '@snui/vue-web';
   demos: [
     {
       name: 'progress-web-basic',
-      title: 'Demos',
-      blurb: 'Line / status colors / indicator placement / processing stripes / custom indicator.',
+      title: 'Line and status colors',
+      blurb: 'Line and status colors',
     },
+    { name: 'progress-web-indicator', title: 'Indicator placement', blurb: 'Indicator placement' },
+    {
+      name: 'progress-web-processing',
+      title: 'Processing and the four statuses',
+      blurb: 'Processing and the four statuses',
+    },
+    {
+      name: 'progress-web-dynamic',
+      title: 'Driving the value at runtime',
+      blurb: 'Driving the value at runtime',
+    },
+    { name: 'progress-web-circle', title: 'Circle', blurb: 'Circle' },
+    { name: 'progress-web-multiple', title: 'Multiple circles', blurb: 'Multiple circles' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -152,7 +164,6 @@ import { Progress } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

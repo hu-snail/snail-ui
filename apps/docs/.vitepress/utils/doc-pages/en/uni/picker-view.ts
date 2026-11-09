@@ -76,7 +76,6 @@ import { PickerView } from '@snui/uni';
         '`immediateChange` fires `change` continuously while dragging; `customClass` / `customStyle` restyle the root frame and fill.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -163,7 +162,6 @@ import { PickerView } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

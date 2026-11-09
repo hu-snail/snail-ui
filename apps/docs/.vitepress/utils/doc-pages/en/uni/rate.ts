@@ -74,7 +74,6 @@ import { Rate } from '@snui/uni';
         'A string `cssIcon` renders as a bare class and the boolean form applies both names; `disabled` blocks taps; `customClass` / `customStyle` land on the root.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -181,7 +180,6 @@ import { Rate } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

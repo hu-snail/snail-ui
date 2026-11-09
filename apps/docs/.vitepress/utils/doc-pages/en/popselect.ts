@@ -46,13 +46,15 @@ import { Popselect } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'popselect-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
-      name: 'popselect-web-basic',
-      title: 'Demos',
-      blurb: 'single select, selected state, disabled row and grouped options',
+      name: 'popselect-web-multiple',
+      title: 'Multiple and scrolling',
+      blurb: 'Multiple and scrolling',
     },
+    { name: 'popselect-web-groups', title: 'Grouped options', blurb: 'Grouped options' },
+    { name: 'popselect-web-render', title: 'Custom row rendering', blurb: 'Custom row rendering' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -143,7 +145,6 @@ import { Popselect } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

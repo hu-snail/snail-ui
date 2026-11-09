@@ -102,77 +102,6 @@ export const dynamicInputDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '行容器与行间节奏由 ' },
-      { t: 'code', s: '--sn-web-dynamic-input-*' },
-      { t: 'text', s: ' 下发（' },
-      { t: 'code', s: 'row-gap' },
-      { t: 'text', s: ' / ' },
-      { t: 'code', s: 'action-gap' },
-      { t: 'text', s: ' / ' },
-      { t: 'code', s: 'btn-size' },
-      { t: 'text', s: '）；内置行输入框复用 ' },
-      { t: 'code', s: '--sn-web-input-*' },
-      { t: 'text', s: ' 回退，因此与 Input 同层换肤。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'row-gap',
-        raw: '—',
-        alias: '--sn-web-dynamic-input-row-gap',
-        value: '8px',
-      },
-      {
-        name: 'action-gap',
-        raw: '—',
-        alias: '--sn-web-dynamic-input-action-gap',
-        value: '6px',
-      },
-      {
-        name: 'btn-size',
-        raw: '—',
-        alias: '--sn-web-dynamic-input-btn-size',
-        value: '26px',
-      },
-      {
-        name: 'bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-dynamic-input-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'border-color',
-        raw: '--aui-color-border-default',
-        alias: '--sn-web-dynamic-input-border-color',
-        value: '#e4e4e7',
-        swatch: '#e4e4e7',
-      },
-      {
-        name: 'text-color',
-        raw: '--aui-color-text-primary',
-        alias: '--sn-web-dynamic-input-text-color',
-        value: '#09090b',
-        swatch: '#09090b',
-      },
-      {
-        name: 'input-radius',
-        raw: '--aui-input-radius',
-        alias: '--sn-web-input-radius',
-        value: '4px',
-        kind: 'curve',
-      },
-      {
-        name: 'input-padding-x',
-        raw: '--aui-input-padding-x',
-        alias: '--sn-web-input-padding-x',
-        value: '12px',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -262,7 +191,6 @@ export const dynamicInputDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

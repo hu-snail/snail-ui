@@ -69,7 +69,6 @@ import { VideoPreview } from '@snui/uni';
         'A custom z-index and customStyle, the selector instance marker, and on-open / on-close counters.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,7 +124,6 @@ import { VideoPreview } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

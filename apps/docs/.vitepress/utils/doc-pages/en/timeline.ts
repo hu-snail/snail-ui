@@ -46,13 +46,21 @@ import { Timeline } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'timeline-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'timeline-web-size', title: 'Size', blurb: 'Size' },
+    { name: 'timeline-web-customize-dot', title: 'Custom node', blurb: 'Custom node' },
+    { name: 'timeline-web-customize-line', title: 'Custom line style', blurb: 'Custom line style' },
+    { name: 'timeline-web-item-placement', title: 'Item placement', blurb: 'Item placement' },
+    { name: 'timeline-web-mode', title: 'Display modes', blurb: 'Display modes' },
     {
-      name: 'timeline-web-basic',
-      title: 'Examples',
-      blurb: 'type semantic nodes + dashed line-type segments.',
+      name: 'timeline-web-label',
+      title: 'Vertical timeline with labels',
+      blurb: 'Vertical timeline with labels',
     },
+    { name: 'timeline-web-horizontal', title: 'Horizontal timeline', blurb: 'Horizontal timeline' },
+    { name: 'timeline-web-label-position', title: 'Label position', blurb: 'Label position' },
+    { name: 'timeline-web-customize-icon', title: 'Custom icon', blurb: 'Custom icon' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -114,7 +122,6 @@ import { Timeline } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

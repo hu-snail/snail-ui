@@ -76,59 +76,6 @@ import { SnIcon } from '@snui/vue-web';
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '尺寸与描边由 ' },
-      { t: 'code', s: '--sn-web-icon-*' },
-      { t: 'text', s: ' 别名族下发，底层是 ' },
-      { t: 'code', s: '@snui/tokens' },
-      { t: 'text', s: ' 的 ' },
-      { t: 'code', s: '--aui-icon-*' },
-      { t: 'text', s: '。颜色默认继承 ' },
-      { t: 'code', s: 'currentColor' },
-      { t: 'text', s: '，因此图标自动跟随所在文字语义。' },
-    ],
-    note: '颜色走 currentColor',
-    rows: [
-      {
-        name: 'size-tiny',
-        raw: '--aui-icon-size-tiny',
-        alias: '--sn-web-icon-size-tiny',
-        value: '14px',
-      },
-      {
-        name: 'size-small',
-        raw: '--aui-icon-size-small',
-        alias: '--sn-web-icon-size-small',
-        value: '16px',
-      },
-      {
-        name: 'size-medium',
-        raw: '--aui-icon-size-medium',
-        alias: '--sn-web-icon-size-medium',
-        value: '18px',
-      },
-      {
-        name: 'size-large',
-        raw: '--aui-icon-size-large',
-        alias: '--sn-web-icon-size-large',
-        value: '24px',
-      },
-      {
-        name: 'size-xlarge',
-        raw: '--aui-icon-size-xlarge',
-        alias: '--sn-web-icon-size-xlarge',
-        value: '32px',
-      },
-      {
-        name: 'stroke-width',
-        raw: '--aui-icon-stroke-width',
-        alias: '--sn-web-icon-stroke-width',
-        value: '2',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'code', s: 'icon' },
@@ -146,9 +93,9 @@ import { SnIcon } from '@snui/vue-web';
         default: '—',
         desc: '从注册表查图标，需先调用 registerSnIcons()',
       },
-      { name: 'size', type: 'number | string', default: '16', desc: '图标尺寸（px 或 CSS 长度）' },
+      { name: 'size', type: 'number | string', default: '16', desc: '`16`' },
       { name: 'color', type: 'string', default: "'currentColor'", desc: '描边颜色' },
-      { name: 'strokeWidth', type: 'number | string', default: '2', desc: '描边宽度' },
+      { name: 'strokeWidth', type: 'number | string', default: '2', desc: '`2`' },
       {
         name: 'strokeWidthAbsolute',
         type: 'boolean',
@@ -179,7 +126,6 @@ import { SnIcon } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

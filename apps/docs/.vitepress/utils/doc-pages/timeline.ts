@@ -51,13 +51,17 @@ import { Timeline } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'timeline-web-basic',
-      title: '代码演示',
-      blurb: 'type 语义色节点 + line-type 虚线段。',
-    },
+    { name: 'timeline-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'timeline-web-size', title: '尺寸', blurb: '尺寸' },
+    { name: 'timeline-web-customize-dot', title: '自定义节点', blurb: '自定义节点' },
+    { name: 'timeline-web-customize-line', title: '自定义轴线风格', blurb: '自定义轴线风格' },
+    { name: 'timeline-web-item-placement', title: '轨道位置', blurb: '轨道位置' },
+    { name: 'timeline-web-mode', title: '时间轴展示类型', blurb: '时间轴展示类型' },
+    { name: 'timeline-web-label', title: '纵向时间轴（标签）', blurb: '纵向时间轴（标签）' },
+    { name: 'timeline-web-horizontal', title: '横向时间轴', blurb: '横向时间轴' },
+    { name: 'timeline-web-label-position', title: '标签文本位置', blurb: '标签文本位置' },
+    { name: 'timeline-web-customize-icon', title: '自定义图标', blurb: '自定义图标' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -119,7 +123,6 @@ import { Timeline } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -64,7 +64,6 @@ import { Resize } from '@snui/uni';
       blurb: 'customClass / customStyle 画外层包裹边界，customContainerClass 画被测量的内层节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +96,6 @@ import { Resize } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -68,35 +68,38 @@ import { Icon } from '@snui/uni';
   demos: [
     {
       name: 'icon-mp-string',
-      title: '用法',
-      blurb:
-        'string icon API：内置目录名称直接渲染；registry 同名覆盖；与 SnButton 的 #icon slot 集成。',
+      title: '方式 1：string icon — 内置图标库（推荐）',
+      blurb: '方式 1：string icon — 内置图标库（推荐）',
     },
     {
-      name: 'icon-mp-basic',
-      title: '基础用法',
-      blurb:
-        '5 个内置 shortcut 图标（ChevronRight / Search / Settings / Heart / Trash）。每个 named import 是一个独立的 ESM 数据模块。',
+      name: 'icon-mp-gallery',
+      title: '内置图标库总览（搜索 + 分类）',
+      blurb: '内置图标库总览（搜索 + 分类）',
     },
     {
-      name: 'icon-mp-size',
-      title: '尺寸与描边',
-      blurb:
-        '五档尺寸（14 / 18 / 24 / 32 / 48）+ 三档描边宽度（1 / 2 / 3）。移动端推荐 32rpx 为默认点击目标。',
+      name: 'icon-mp-iconify',
+      title: '方式 2：Iconify 按需加载（第三方图标库）',
+      blurb: '方式 2：Iconify 按需加载（第三方图标库）',
     },
     {
-      name: 'icon-mp-registry',
-      title: '自定义 + 按钮集成',
-      blurb: '自定义 IconData + SnButton 的 #icon slot 集成（Plus / 自定义 / X）。',
+      name: 'icon-mp-name',
+      title: '方式 4：阿里 iconfont（字体图标）',
+      blurb: '方式 4：阿里 iconfont（字体图标）',
     },
+    {
+      name: 'icon-mp-css',
+      title: '方式 4：阿里 iconfont（字体图标）',
+      blurb: '方式 4：阿里 iconfont（字体图标）',
+    },
+    { name: 'icon-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'icon-mp-size', title: '尺寸与描边', blurb: '尺寸与描边' },
+    { name: 'icon-mp-registry', title: '自定义 + 按钮集成', blurb: '自定义 + 按钮集成' },
     {
       name: 'icon-mp-custom',
       title: '根节点自定义类名与样式（`customClass` / `customStyle`）',
-      blurb:
-        'customClass 加虚线框；customStyle 字符串改颜色 / 内边距 / 底色；两者叠加；color prop 对照。',
+      blurb: '根节点自定义类名与样式（`customClass` / `customStyle`）',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -181,7 +184,6 @@ import { Icon } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

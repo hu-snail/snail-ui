@@ -43,13 +43,10 @@ import { Comment } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'comment-web-basic',
-      title: 'Examples',
-      blurb: 'Full avatar / author / datetime / content scene + the actions slot.',
-    },
+    { name: 'comment-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'comment-web-align', title: 'Alignment', blurb: 'Alignment' },
+    { name: 'comment-web-nest', title: 'Nested comments', blurb: 'Nested comments' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -104,7 +101,6 @@ import { Comment } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

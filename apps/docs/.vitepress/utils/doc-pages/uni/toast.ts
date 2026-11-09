@@ -73,7 +73,6 @@ import { Toast } from '@snui/uni';
       blurb: '图标与加载器尺寸颜色 / cover 遮罩 / zIndex + custom-style。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -138,7 +137,7 @@ import { Toast } from '@snui/uni';
         default: "'middle'",
         desc: 'Anchor of the toast box.',
       },
-      { name: 'zIndex', type: 'number', default: '100', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '100', desc: '层级' },
       {
         name: 'cover',
         type: 'boolean',
@@ -202,7 +201,6 @@ import { Toast } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

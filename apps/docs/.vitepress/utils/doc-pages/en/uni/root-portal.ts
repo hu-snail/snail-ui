@@ -64,7 +64,6 @@ import { RootPortal } from '@snui/uni';
         'customClass drives the fixed layer (the preview makes it absolute so it does not cover the phone screen); customStyle adds inline styles.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -101,7 +100,6 @@ import { RootPortal } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

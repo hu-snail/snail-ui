@@ -51,8 +51,15 @@ import { Tooltip } from '@snui/vue-web';
   <Tooltip />
 </template>`,
   },
-  demos: [{ name: 'tooltip-web-basic', title: '代码演示', blurb: '四方向 + 边缘对齐，按区块分组' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'tooltip-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'tooltip-web-trigger', title: '触发方式', blurb: '触发方式' },
+    { name: 'tooltip-web-placement', title: '全部方位', blurb: '全部方位' },
+    { name: 'tooltip-web-appearance', title: '外观控制', blurb: '外观控制' },
+    { name: 'tooltip-web-content-slot', title: '富文本内容', blurb: '富文本内容' },
+    { name: 'tooltip-web-event', title: '事件回调', blurb: '事件回调' },
+    { name: 'tooltip-web-controlled', title: '受控显示', blurb: '受控显示' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -227,7 +234,6 @@ import { Tooltip } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -50,8 +50,20 @@ import { QrCode } from '@snui/vue-web';
   <QrCode />
 </template>`,
   },
-  demos: [{ name: 'qr-code-web-basic', title: '代码演示', blurb: 'value 生成默认尺寸的二维码。' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'qr-code-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'qr-code-web-size', title: '尺寸', blurb: '尺寸' },
+    { name: 'qr-code-web-color', title: '颜色', blurb: '颜色' },
+    { name: 'qr-code-web-error-correction', title: '纠错等级', blurb: '纠错等级' },
+    { name: 'qr-code-web-icon', title: '中心图标', blurb: '中心图标' },
+    { name: 'qr-code-web-download', title: '下载', blurb: '下载' },
+    { name: 'qr-code-web-type', title: '渲染类型', blurb: '渲染类型' },
+    {
+      name: 'qr-code-web-shape',
+      title: '形状与多色（shape / colors）',
+      blurb: '形状与多色（shape / colors）',
+    },
+  ],
   props: {
     hint: [],
     rows: [
@@ -160,7 +172,6 @@ import { QrCode } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -116,7 +116,6 @@ import { Button } from '@snui/uni';
       blurb: "form-type='submit' submits form; form-type='reset' resets form.",
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -332,7 +331,6 @@ import { Button } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

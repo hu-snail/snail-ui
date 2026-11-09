@@ -52,13 +52,10 @@ import { Marquee } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'marquee-web-basic',
-      title: '代码演示',
-      blurb: '基础横向跑马灯：默认 12 秒一轮、24px 间距、悬停暂停。',
-    },
+    { name: 'marquee-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'marquee-web-direction', title: '四个方向', blurb: '四个方向' },
+    { name: 'marquee-web-notice', title: '通知栏形态', blurb: '通知栏形态' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -131,7 +128,6 @@ import { Marquee } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

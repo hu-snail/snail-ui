@@ -67,12 +67,11 @@ import { Lucky } from '@snui/uni';
       blurb: '3×3 九宫格，play/stop 两段式动画，自定义格子插槽。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'rows', type: 'number', default: '3', desc: '行数（≥3）。' },
-      { name: 'cols', type: 'number', default: '3', desc: '列数（≥3）。' },
+      { name: 'rows', type: 'number', default: '3', desc: '行数（≥3）' },
+      { name: 'cols', type: 'number', default: '3', desc: '列数（≥3）' },
       {
         name: 'prizes',
         type: 'SnLuckyPrize[]',
@@ -81,7 +80,7 @@ import { Lucky } from '@snui/uni';
       },
       { name: 'gutter', type: 'string', default: "'8rpx'", desc: '格子间距。' },
       { name: 'cellHeight', type: 'string', default: "'120rpx'", desc: '格子高度。' },
-      { name: 'speed', type: 'number', default: '60', desc: '循环高亮步进间隔（ms）。' },
+      { name: 'speed', type: 'number', default: '60', desc: '循环高亮步进间隔（ms）' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
     ],
@@ -105,7 +104,6 @@ import { Lucky } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -55,14 +55,31 @@ import { VideoPlayer } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'video-player-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'video-player-web-danmaku', title: '弹幕', blurb: '弹幕' },
     {
-      name: 'video-player-web-basic',
-      title: '代码演示',
-      blurb:
-        'src + poster 即用：中央播放按钮、完整控制条、进度悬停预览、音量滑杆、键盘快捷键（Space 播放暂停、←→ 快进退 5s、↑↓ 音量、M 静音、F 全屏）。',
+      name: 'video-player-web-quality',
+      title: '分辨率切换（渐进式阶梯）',
+      blurb: '分辨率切换（渐进式阶梯）',
+    },
+    { name: 'video-player-web-pip', title: '画中画', blurb: '画中画' },
+    {
+      name: 'video-player-web-mini',
+      title: '小窗播放（滚动自动停靠）',
+      blurb: '小窗播放（滚动自动停靠）',
+    },
+    { name: 'video-player-web-download', title: '下载', blurb: '下载' },
+    {
+      name: 'video-player-web-hls-live',
+      title: '直播模式 + HLS 桥接（hls.js，公开直播源）',
+      blurb: '直播模式 + HLS 桥接（hls.js，公开直播源）',
+    },
+    {
+      name: 'video-player-web-hls-vod',
+      title: '多码率点播（清晰度来自流）',
+      blurb: '多码率点播（清晰度来自流）',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -96,17 +113,22 @@ import { VideoPlayer } from '@snui/vue-web';
         default: 'undefined as unknown as string | number',
         desc: 'Initially selected ladder entry (`qualities[].value`).',
       },
-      { name: 'autoplay', type: 'boolean', default: 'false', desc: 'autoplay' },
-      { name: 'muted', type: 'boolean', default: 'false', desc: 'muted' },
-      { name: 'loop', type: 'boolean', default: 'false', desc: 'loop' },
+      {
+        name: 'autoplay',
+        type: 'boolean',
+        default: 'false',
+        desc: '自动播放（浏览器要求静音，见「兼容性说明」）',
+      },
+      { name: 'muted', type: 'boolean', default: 'false', desc: '静音起播' },
+      { name: 'loop', type: 'boolean', default: 'false', desc: '循环播放' },
       {
         name: 'preload',
         type: "'none' | 'metadata' | 'auto'",
         default: "'metadata'",
         desc: 'preload',
       },
-      { name: 'volume', type: 'number', default: '1', desc: '0–1, applied on mount.' },
-      { name: 'rate', type: 'number', default: '1', desc: 'Initial playback rate.' },
+      { name: 'volume', type: 'number', default: '1', desc: '初始音量 0–1' },
+      { name: 'rate', type: 'number', default: '1', desc: '初始倍速' },
       {
         name: 'live',
         type: 'boolean',
@@ -119,7 +141,12 @@ import { VideoPlayer } from '@snui/vue-web';
         default: 'true',
         desc: 'Keyboard shortcuts (Space/K, ←→, ↑↓, M, F, P, D).',
       },
-      { name: 'danmus', type: 'SnVideoDanmu[]', default: '() => []', desc: 'Danmaku timeline.' },
+      {
+        name: 'danmus',
+        type: 'SnVideoDanmu[]',
+        default: '() => []',
+        desc: '弹幕时间轴 `{ text, time, color?, type?, self? }`',
+      },
       { name: 'danmuVisible', type: 'boolean', default: 'true', desc: 'Show the danmu layer.' },
       { name: 'danmuSend', type: 'boolean', default: 'true', desc: 'Show the danmu input box.' },
       { name: 'danmuOpacity', type: 'number', default: '1', desc: '0–1.' },
@@ -201,7 +228,6 @@ import { VideoPlayer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

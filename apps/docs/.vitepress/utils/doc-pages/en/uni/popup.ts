@@ -59,28 +59,24 @@ import { Popup } from '@snui/uni';
 </template>`,
   },
   demos: [
-    {
-      name: 'popup-mp-basic',
-      title: 'Basic usage',
-      blurb: 'Bottom sheet (bottom + round) and a centered popup (center + closable close button).',
-    },
-    {
-      name: 'popup-mp-position',
-      title: 'Positions',
-      blurb: 'All five anchors with their auto-matched enter / leave animations.',
-    },
+    { name: 'popup-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'popup-mp-position', title: 'Positions', blurb: 'Positions' },
     {
       name: 'popup-mp-config',
       title: 'Scrim and close behaviour',
-      blurb: 'modal / closeOnClickModal / transition + duration, plus the animation events.',
+      blurb: 'Scrim and close behaviour',
     },
     {
       name: 'popup-mp-surface',
       title: 'Styles, lazy render and safe area',
-      blurb: 'Scrim inline style / panel inline style + safe area / lazy-render=false.',
+      blurb: 'Styles, lazy render and safe area',
+    },
+    {
+      name: 'popup-mp-scroll',
+      title: 'Styles, lazy render and safe area',
+      blurb: 'Styles, lazy render and safe area',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -192,7 +188,6 @@ import { Popup } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

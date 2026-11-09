@@ -107,7 +107,6 @@ import { Fab } from '@snui/uni';
         '左下 icon-name 轨道（Edit ↔ X）、右下 trigger 插槽图标对象（Sparkles ↔ X）+ 色板实时切换 5 档主题色。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -119,7 +118,7 @@ import { Fab } from '@snui/uni';
       },
       { name: 'type', type: 'FabType', default: "'primary'", desc: 'Color theme.' },
       { name: 'position', type: 'FabPosition', default: "'right-bottom'", desc: 'Anchor preset.' },
-      { name: 'draggable', type: 'boolean', default: 'false', desc: 'Allow dragging the trigger.' },
+      { name: 'draggable', type: 'boolean', default: 'false', desc: '按钮能否拖动' },
       {
         name: 'direction',
         type: 'FabDirection',
@@ -150,7 +149,7 @@ import { Fab } from '@snui/uni';
         default: "'bloom'",
         desc: 'Fan expansion motion: radial bloom or folding-fan arc sweep.',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disable the whole button.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
       {
         name: 'inactiveIcon',
         type: 'string',
@@ -163,7 +162,7 @@ import { Fab } from '@snui/uni';
         default: "'close'",
         desc: 'Icon while expanded (registry name).',
       },
-      { name: 'zIndex', type: 'number', default: '99', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '99', desc: '自定义悬浮按钮层级' },
       {
         name: 'gap',
         type: 'SnFabGap',
@@ -233,7 +232,6 @@ import { Fab } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

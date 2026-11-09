@@ -115,97 +115,6 @@ export const cascaderDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '触发器与列面板各自成族：' },
-      { t: 'code', s: '--sn-web-cascader-*' },
-      { t: 'text', s: ' 覆盖 bg / 边框 / 圆角 / 列宽 / 选项几何与勾选框，颜色回落到 ' },
-      { t: 'code', s: '--sn-web-color-*' },
-      { t: 'text', s: ' 语义层。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'height',
-        raw: '—',
-        alias: '--sn-web-cascader-height',
-        value: '34px',
-      },
-      {
-        name: 'padding-x',
-        raw: '—',
-        alias: '--sn-web-cascader-padding-x',
-        value: '10px',
-      },
-      {
-        name: 'radius',
-        raw: '—',
-        alias: '--sn-web-cascader-radius',
-        value: '6px',
-        kind: 'curve',
-      },
-      {
-        name: 'column-width',
-        raw: '—',
-        alias: '--sn-web-cascader-column-width',
-        value: '160px',
-      },
-      {
-        name: 'bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-cascader-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'border-color-focus',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-cascader-border-color-focus',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'menu-bg',
-        raw: '--aui-color-background-elevated',
-        alias: '--sn-web-cascader-menu-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'menu-max-height',
-        raw: '—',
-        alias: '--sn-web-cascader-menu-max-height',
-        value: '260px',
-      },
-      {
-        name: 'menu-z-index',
-        raw: '—',
-        alias: '--sn-web-cascader-menu-z-index',
-        value: '1000',
-      },
-      {
-        name: 'option-height',
-        raw: '—',
-        alias: '--sn-web-cascader-option-height',
-        value: '28px',
-      },
-      {
-        name: 'checkbox-bg-checked',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-cascader-checkbox-bg-checked',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'tag-radius',
-        raw: '—',
-        alias: '--sn-web-cascader-tag-radius',
-        value: '4px',
-        kind: 'curve',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -236,15 +145,15 @@ export const cascaderDocPage: SnDocPageData = {
       { name: 'valueField', type: 'string', default: "'value'", desc: 'value 字段名映射。' },
       { name: 'childrenField', type: 'string', default: "'children'", desc: '子级字段名映射。' },
       { name: 'placeholder', type: 'string', default: "'Please select'", desc: '占位文案。' },
-      { name: 'clearable', type: 'boolean', default: 'false', desc: '显示清空按钮。' },
+      { name: 'clearable', type: 'boolean', default: '—', desc: '显示清空按钮。' },
       {
         name: 'filterable',
         type: 'boolean',
         default: 'false',
         desc: '启用内嵌过滤输入（按完整路径文本匹配）。',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用交互。' },
-      { name: 'readonly', type: 'boolean', default: 'false', desc: '只读，不展开也不提交。' },
+      { name: 'disabled', type: 'boolean', default: '—', desc: '禁用交互。' },
+      { name: 'readonly', type: 'boolean', default: '—', desc: '只读，不展开也不提交。' },
       {
         name: 'size',
         type: "'mini' | 'tiny' | 'small' | 'medium' | 'large'",
@@ -311,7 +220,6 @@ export const cascaderDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

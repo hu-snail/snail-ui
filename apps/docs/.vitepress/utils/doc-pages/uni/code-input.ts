@@ -97,12 +97,11 @@ import { CodeInput } from '@snui/uni';
       blurb: 'customClass 追加在根节点上；customStyle 追加在组件自身变量之后，可继续覆盖其它属性。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
       { name: 'modelValue', type: 'string', default: "''", desc: 'Current value (`v-model`).' },
-      { name: 'mask', type: 'boolean', default: 'true', desc: 'Mask the characters as dots.' },
+      { name: 'mask', type: 'boolean', default: 'true', desc: '是否隐藏为圆点' },
       { name: 'info', type: 'string', default: "''", desc: 'Helper text below the boxes.' },
       {
         name: 'errorInfo',
@@ -134,7 +133,7 @@ import { CodeInput } from '@snui/uni';
         default: "''",
         desc: 'Cell background color (any CSS color or `var(--sn-mp-color-*)`, additive).',
       },
-      { name: 'length', type: 'number', default: '6', desc: 'Number of boxes.' },
+      { name: 'length', type: 'number', default: '6', desc: '方框数量' },
       {
         name: 'focused',
         type: 'boolean',
@@ -169,7 +168,6 @@ import { CodeInput } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

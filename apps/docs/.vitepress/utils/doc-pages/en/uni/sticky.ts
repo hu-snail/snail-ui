@@ -71,7 +71,6 @@ import { Sticky } from '@snui/uni';
         'custom-class / custom-style on the root; two layers with different offset-top pin in sequence; z-index ordering.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -100,7 +99,6 @@ import { Sticky } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

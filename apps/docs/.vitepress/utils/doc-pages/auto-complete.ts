@@ -114,81 +114,6 @@ export const autoCompleteDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '字段本体回退到 ' },
-      { t: 'code', s: '--sn-web-input-*' },
-      { t: 'text', s: '（bg / 边框 / 圆角 / 内边距），候选面板独立由 ' },
-      { t: 'code', s: '--sn-web-auto-complete-*' },
-      { t: 'text', s: ' 下发。命中段高亮色取 ' },
-      { t: 'code', s: '--sn-web-color-action-primary' },
-      { t: 'text', s: '。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'radius',
-        raw: '--aui-input-radius',
-        alias: '--sn-web-auto-complete-radius',
-        value: 'var(--sn-web-input-radius, 6px)',
-        kind: 'curve',
-      },
-      {
-        name: 'padding-x',
-        raw: '--aui-input-padding-x',
-        alias: '--sn-web-auto-complete-padding-x',
-        value: 'var(--sn-web-input-padding-x, 10px)',
-      },
-      {
-        name: 'menu-bg',
-        raw: '--aui-color-background-elevated',
-        alias: '--sn-web-auto-complete-menu-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'menu-radius',
-        raw: '—',
-        alias: '--sn-web-auto-complete-menu-radius',
-        value: '3px',
-        kind: 'curve',
-      },
-      {
-        name: 'menu-max-height',
-        raw: '—',
-        alias: '--sn-web-auto-complete-menu-max-height',
-        value: '240px',
-      },
-      {
-        name: 'menu-z-index',
-        raw: '—',
-        alias: '--sn-web-auto-complete-menu-z-index',
-        value: '100',
-      },
-      {
-        name: 'option-text-color-active',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-auto-complete-option-text-color-active',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'highlight-color',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-auto-complete-highlight-color',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'empty-color',
-        raw: '--aui-color-text-tertiary',
-        alias: '--sn-web-auto-complete-empty-color',
-        value: '#a1a1aa',
-        swatch: '#a1a1aa',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -266,7 +191,6 @@ export const autoCompleteDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

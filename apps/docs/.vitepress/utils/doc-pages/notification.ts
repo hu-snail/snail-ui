@@ -54,13 +54,16 @@ import { Notification } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'notification-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'notification-web-types', title: '四种语义类型', blurb: '四种语义类型' },
+    { name: 'notification-web-placement', title: '堆叠方位', blurb: '堆叠方位' },
+    { name: 'notification-web-max', title: '数量上限', blurb: '数量上限' },
     {
-      name: 'notification-web-basic',
-      title: '代码演示',
-      blurb: 'Provider 包裹 + 四种类型通知触发 + destroyAll',
+      name: 'notification-web-custom',
+      title: '自定义内容与句柄关闭',
+      blurb: '自定义内容与句柄关闭',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -133,7 +136,6 @@ import { Notification } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

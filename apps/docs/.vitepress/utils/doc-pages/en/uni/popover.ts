@@ -57,13 +57,25 @@ import { Popover } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'popover-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'popover-mp-height', title: 'Auto height', blurb: 'Auto height' },
     {
-      name: 'popover-mp-basic',
-      title: 'Code demos',
-      blurb: 'normal mode + close button; the trigger toggles it, an outside tap closes it.',
+      name: 'popover-mp-menu',
+      title: 'Menu mode and icon configuration',
+      blurb: 'Menu mode and icon configuration',
+    },
+    {
+      name: 'popover-mp-placement',
+      title: 'Placement / arrow / disabled / colors',
+      blurb: 'Placement / arrow / disabled / colors',
+    },
+    { name: 'popover-mp-theme', title: 'Dark theme', blurb: 'Dark theme' },
+    {
+      name: 'popover-mp-slot',
+      title: 'Legacy icon field / content slot / node classes',
+      blurb: 'Legacy icon field / content slot / node classes',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -152,7 +164,6 @@ import { Popover } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

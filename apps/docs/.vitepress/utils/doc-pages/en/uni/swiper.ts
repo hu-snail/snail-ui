@@ -118,7 +118,6 @@ import { Swiper } from '@snui/uni';
         'Custom field names, a controlled current index, aspectFit cropping and all three events.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -363,7 +362,6 @@ import { Swiper } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

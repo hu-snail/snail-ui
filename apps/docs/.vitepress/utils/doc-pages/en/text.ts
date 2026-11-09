@@ -59,7 +59,6 @@ import { Text } from '@snui/vue-web';
       blurb: 'SnTitle levels 1-6; SnParagraph line-height presets.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -150,7 +149,6 @@ import { Text } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

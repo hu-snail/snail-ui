@@ -74,7 +74,6 @@ import { Rate } from '@snui/uni';
         'cssIcon 传字符串按裸类名渲染、布尔形式挂两个类名；disabled 拦掉点击；customClass / customStyle 落在根节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -84,7 +83,7 @@ import { Rate } from '@snui/uni';
         default: 'null',
         desc: 'Current score (`v-model`); `null` = nothing selected.',
       },
-      { name: 'num', type: 'number', default: '5', desc: 'Number of icons.' },
+      { name: 'num', type: 'number', default: '5', desc: '图标数量' },
       {
         name: 'readonly',
         type: 'boolean',
@@ -139,8 +138,8 @@ import { Rate } from '@snui/uni';
         default: 'false',
         desc: 'Treat `icon` / `activeIcon` as CSS class names instead of icon names.',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables every icon.' },
-      { name: 'allowHalf', type: 'boolean', default: 'false', desc: 'Allow half-star selection.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
+      { name: 'allowHalf', type: 'boolean', default: 'false', desc: '允许半选' },
       {
         name: 'clearable',
         type: 'boolean',
@@ -181,7 +180,6 @@ import { Rate } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -55,7 +55,6 @@ import { Barcode } from '@snui/uni';
       blurb: 'Auto check digit / explicit 13 digits with custom bar color / invalid input error.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -140,7 +139,6 @@ import { Barcode } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

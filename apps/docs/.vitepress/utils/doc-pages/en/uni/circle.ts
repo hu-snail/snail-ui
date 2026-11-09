@@ -63,7 +63,6 @@ import { Circle } from '@snui/uni';
         'speed=0 / 200 / 10 transitions, the three stroke-linecap values, plus a root class and inline style.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -155,7 +154,6 @@ import { Circle } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

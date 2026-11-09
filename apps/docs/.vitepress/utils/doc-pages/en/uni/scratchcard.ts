@@ -60,7 +60,6 @@ import { Scratchcard } from '@snui/uni';
       blurb: 'Real pointer scratching, threshold open callback, and reset.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -107,7 +106,6 @@ import { Scratchcard } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

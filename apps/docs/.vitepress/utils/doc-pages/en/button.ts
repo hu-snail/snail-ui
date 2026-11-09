@@ -106,7 +106,6 @@ import { Button } from '@snui/vue-web';
       blurb: 'attrType for form submit / reset; focusable false removes tab focus.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -271,7 +270,6 @@ import { Button } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -70,7 +70,6 @@ import { CountTo } from '@snui/uni';
       blurb: 'The rhythm with use-easing on and off, plus customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -139,7 +138,6 @@ import { CountTo } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

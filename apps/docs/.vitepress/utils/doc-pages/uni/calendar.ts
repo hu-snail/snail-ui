@@ -55,17 +55,51 @@ import { Calendar } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'calendar-mp-basic', title: '基础用法', blurb: '基础用法' },
     {
-      name: 'calendar-mp-basic',
-      title: '代码演示',
-      blurb: '弹层日历：滚动只改草稿，确认才写 v-model；取消会丢弃草稿。',
+      name: 'calendar-mp-card',
+      title: '卡片入口（cells card 形态）',
+      blurb: '卡片入口（cells card 形态）',
+    },
+    {
+      name: 'calendar-mp-grid-range',
+      title:
+        '网格与区间约束（`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`）',
+      blurb:
+        '网格与区间约束（`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`）',
+    },
+    {
+      name: 'calendar-mp-header',
+      title: '弹层头部插槽（`header`，AUI 追加）',
+      blurb: '弹层头部插槽（`header`，AUI 追加）',
+    },
+    {
+      name: 'calendar-mp-hooks-parity',
+      title: '快捷回调与声明参数（`onShortcutsClick` / `beforeConfirm`）',
+      blurb: '快捷回调与声明参数（`onShortcutsClick` / `beforeConfirm`）',
+    },
+    {
+      name: 'calendar-mp-lunar',
+      title: '农历角标（`showLunar`，AUI 追加）',
+      blurb: '农历角标（`showLunar`，AUI 追加）',
+    },
+    {
+      name: 'calendar-mp-panel-sheet',
+      title:
+        '面板与弹层（`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / 遮罩层级）',
+      blurb:
+        '面板与弹层（`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / 遮罩层级）',
+    },
+    {
+      name: 'calendar-mp-shortcuts-range',
+      title: '快捷选项与区间（`shortcuts` / `type`）',
+      blurb: '快捷选项与区间（`shortcuts` / `type`）',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'modelValue', type: 'CalendarValue', default: 'null', desc: 'Selected value.' },
+      { name: 'modelValue', type: 'CalendarValue', default: 'null', desc: 'null`' },
       {
         name: 'visible',
         type: 'boolean',
@@ -85,7 +119,7 @@ import { Calendar } from '@snui/uni';
         default: 'undefined',
         desc: 'Maximum date (timestamp).',
       },
-      { name: 'firstDayOfWeek', type: 'number', default: '0', desc: 'First weekday of the grid.' },
+      { name: 'firstDayOfWeek', type: 'number', default: '0', desc: '周起始日' },
       {
         name: 'formatter',
         type: 'CalendarFormatter | undefined',
@@ -123,7 +157,7 @@ import { Calendar } from '@snui/uni';
         default: 'true',
         desc: 'Tapping the mask closes the sheet.',
       },
-      { name: 'zIndex', type: 'number', default: '15', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '15', desc: '弹层层级' },
       { name: 'showConfirm', type: 'boolean', default: 'true', desc: 'Render the confirm button.' },
       { name: 'confirmText', type: 'string', default: "'确定'", desc: 'Confirm button label.' },
       {
@@ -168,7 +202,7 @@ import { Calendar } from '@snui/uni';
         default: "'none'",
         desc: 'Month-switch mode.',
       },
-      { name: 'duration', type: 'number', default: '200', desc: 'Sheet animation duration in ms.' },
+      { name: 'duration', type: 'number', default: '200', desc: '弹层动画时长（ms）' },
       {
         name: 'timeFilter',
         type: 'CalendarTimeFilter | undefined',
@@ -223,7 +257,6 @@ import { Calendar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

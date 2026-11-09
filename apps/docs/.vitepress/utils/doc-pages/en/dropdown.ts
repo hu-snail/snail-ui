@@ -73,7 +73,6 @@ import { Dropdown } from '@snui/vue-web';
       blurb: '#content slot: custom icon rows, danger row, footer; close() dismisses.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -129,7 +128,6 @@ import { Dropdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

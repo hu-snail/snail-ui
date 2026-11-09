@@ -48,13 +48,11 @@ import { Popconfirm } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'popconfirm-web-basic',
-      title: 'Demos',
-      blurb: 'default confirm, custom texts, slot icon and veto on close',
-    },
+    { name: 'popconfirm-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'popconfirm-web-async', title: 'Async confirm', blurb: 'Async confirm' },
+    { name: 'popconfirm-web-icon', title: 'Icon variants', blurb: 'Icon variants' },
+    { name: 'popconfirm-web-action', title: 'Custom action row', blurb: 'Custom action row' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -241,7 +239,6 @@ import { Popconfirm } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

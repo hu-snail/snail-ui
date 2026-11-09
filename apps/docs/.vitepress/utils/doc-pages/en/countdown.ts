@@ -47,13 +47,11 @@ import { Countdown } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'countdown-web-basic',
-      title: 'Basic',
-      blurb: 'duration 5000ms, active toggles ticking.',
-    },
+    { name: 'countdown-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'countdown-web-precision', title: 'Precision', blurb: 'Precision' },
+    { name: 'countdown-web-render', title: 'Custom render', blurb: 'Custom render' },
+    { name: 'countdown-web-reset', title: 'Reset', blurb: 'Reset' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -96,7 +94,6 @@ import { Countdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

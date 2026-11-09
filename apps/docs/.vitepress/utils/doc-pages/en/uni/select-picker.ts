@@ -77,7 +77,6 @@ import { SelectPicker } from '@snui/uni';
         'loading / loadingColor; beforeConfirm; closeOnClickModal; safeAreaInsetBottom; zIndex; rootPortal; scrollIntoView; customClass / customStyle / customContentClass.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -224,7 +223,6 @@ import { SelectPicker } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

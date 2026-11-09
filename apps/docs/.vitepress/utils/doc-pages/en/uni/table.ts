@@ -73,7 +73,6 @@ import { Table } from '@snui/uni';
         'The border / stripe switches, an index config object, show-header off, and customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -138,7 +137,6 @@ import { Table } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

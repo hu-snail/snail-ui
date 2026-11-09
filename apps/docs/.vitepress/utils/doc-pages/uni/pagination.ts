@@ -80,19 +80,18 @@ import { Pagination } from '@snui/uni';
       blurb: 'hide-if-one-page 单页时整体不渲染；四个插槽自定义翻页按钮与提示。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'modelValue', type: 'number', default: '1', desc: '当前页码。' },
+      { name: 'modelValue', type: 'number', default: '1', desc: '当前页码' },
       {
         name: 'totalPage',
         type: 'number',
         default: '1',
         desc: '总页数；传入 total 时优先根据 total 与 pageSize 计算。',
       },
-      { name: 'total', type: 'number', default: '0', desc: '总数据条数。' },
-      { name: 'pageSize', type: 'number', default: '10', desc: '每页条数。' },
+      { name: 'total', type: 'number', default: '0', desc: '总数据条数（优先于 `totalPage`）' },
+      { name: 'pageSize', type: 'number', default: '10', desc: '每页条数' },
       {
         name: 'prevText',
         type: 'string',
@@ -105,8 +104,8 @@ import { Pagination } from '@snui/uni';
         default: "''",
         desc: '下一页按钮文字；未设置时使用内置文案。',
       },
-      { name: 'showIcon', type: 'boolean', default: 'false', desc: '是否展示翻页图标。' },
-      { name: 'showMessage', type: 'boolean', default: 'false', desc: '是否展示文字提示。' },
+      { name: 'showIcon', type: 'boolean', default: 'false', desc: '是否展示翻页图标' },
+      { name: 'showMessage', type: 'boolean', default: 'false', desc: '是否展示文字提示' },
       {
         name: 'buttonVariant',
         type: "'base' | 'plain' | 'dashed' | 'text'",
@@ -119,7 +118,7 @@ import { Pagination } from '@snui/uni';
         default: 'false',
         desc: '总页数只有一页时是否隐藏。',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否整体禁用。' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '整控件禁用（冻结全部交互）' },
       {
         name: 'simple',
         type: 'boolean',
@@ -149,7 +148,6 @@ import { Pagination } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

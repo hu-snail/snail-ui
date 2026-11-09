@@ -43,13 +43,9 @@ import { PageHeader } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'page-header-web-basic',
-      title: 'Demos',
-      blurb: 'Back + title / subtitle / extra actions / footer separator.',
-    },
+    { name: 'page-header-web-basic', title: 'Basic header', blurb: 'Basic header' },
+    { name: 'page-header-web-composite', title: 'Composite header', blurb: 'Composite header' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -91,7 +87,6 @@ import { PageHeader } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

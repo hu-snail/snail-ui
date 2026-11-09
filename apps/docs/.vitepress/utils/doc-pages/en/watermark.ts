@@ -43,9 +43,15 @@ import { Watermark } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'watermark-web-basic', title: 'Demos', blurb: 'Wrapped content / rotate and opacity.' },
+    { name: 'watermark-web-basic', title: 'Basic', blurb: 'Basic' },
+    {
+      name: 'watermark-web-content',
+      title: 'Multi-line content and staggered tiles',
+      blurb: 'Multi-line content and staggered tiles',
+    },
+    { name: 'watermark-web-style', title: 'Style customisation', blurb: 'Style customisation' },
+    { name: 'watermark-web-fullscreen', title: 'Fullscreen', blurb: 'Fullscreen' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -190,7 +196,6 @@ import { Watermark } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -60,7 +60,6 @@ import { Table } from '@snui/vue-web';
     },
     { name: 'table-web-striped', title: 'Striped', blurb: 'Zebra stripes on even tbody rows.' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -121,7 +120,6 @@ import { Table } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

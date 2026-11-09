@@ -43,14 +43,31 @@ import { VideoPlayer } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'video-player-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'video-player-web-danmaku', title: 'Danmaku', blurb: 'Danmaku' },
     {
-      name: 'video-player-web-basic',
-      title: 'Examples',
-      blurb:
-        'src + poster: centered play button, full control bar, hover time preview, volume slider and keyboard shortcuts (Space play/pause, ←→ ±5s, ↑↓ volume, M mute, F fullscreen).',
+      name: 'video-player-web-quality',
+      title: 'Quality ladder (progressive)',
+      blurb: 'Quality ladder (progressive)',
+    },
+    { name: 'video-player-web-pip', title: 'Picture-in-picture', blurb: 'Picture-in-picture' },
+    {
+      name: 'video-player-web-mini',
+      title: 'Mini window (auto-dock on scroll)',
+      blurb: 'Mini window (auto-dock on scroll)',
+    },
+    { name: 'video-player-web-download', title: 'Download', blurb: 'Download' },
+    {
+      name: 'video-player-web-hls-live',
+      title: 'Live + HLS bridge (hls.js, public live stream)',
+      blurb: 'Live + HLS bridge (hls.js, public live stream)',
+    },
+    {
+      name: 'video-player-web-hls-vod',
+      title: 'Multi-bitrate VOD (qualities from the stream)',
+      blurb: 'Multi-bitrate VOD (qualities from the stream)',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -189,7 +206,6 @@ import { VideoPlayer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

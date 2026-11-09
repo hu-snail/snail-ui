@@ -65,7 +65,6 @@ import { Navbar } from '@snui/uni';
         'left-disabled / right-disabled veto taps; safe-area-inset-top adds the safe area; capsule slot plus custom-class / custom-style.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -123,7 +122,6 @@ import { Navbar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

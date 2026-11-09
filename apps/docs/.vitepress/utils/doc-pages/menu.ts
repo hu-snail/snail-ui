@@ -50,13 +50,17 @@ import { Menu } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'menu-web-basic',
-      title: '实时预览',
-      blurb: 'horizontal 模式 + selected state (v-model:value)',
-    },
+    { name: 'menu-web-basic', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-vertical', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-icons', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-inverted', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-field-remap', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-collapsed', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-collapsed-inline', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-responsive-collapse', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-inline-submenu', title: '实时预览', blurb: '实时预览' },
+    { name: 'menu-web-pop-button', title: '实时预览', blurb: '实时预览' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -213,7 +217,6 @@ import { Menu } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

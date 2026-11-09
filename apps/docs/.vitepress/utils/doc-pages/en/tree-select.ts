@@ -46,38 +46,22 @@ import { TreeSelect } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'tree-select-web-basic',
-      title: 'Basic',
-      blurb: 'Tree panel single select; parents and leaves selectable.',
-    },
-    {
-      name: 'tree-select-web-multiple',
-      title: 'Multiple',
-      blurb: 'Tag display with removal; independent checks, no cascade.',
-    },
+    { name: 'tree-select-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'tree-select-web-multiple', title: 'Multiple', blurb: 'Multiple' },
     {
       name: 'tree-select-web-filter',
       title: 'Expand-all + filterable',
-      blurb: 'defaultExpandAll; filterable expands ancestors of hits.',
+      blurb: 'Expand-all + filterable',
     },
-    {
-      name: 'tree-select-web-fields',
-      title: 'Custom fields',
-      blurb: 'labelField / keyField / childrenField.',
-    },
+    { name: 'tree-select-web-fields', title: 'Custom fields', blurb: 'Custom fields' },
     {
       name: 'tree-select-web-states',
       title: 'Clearable / disabled',
-      blurb: 'clearable, disabled, disabled option.',
+      blurb: 'Clearable / disabled',
     },
-    {
-      name: 'tree-select-web-line',
-      title: 'Connector Lines',
-      blurb: 'Square solid / square dashed / rounded custom color.',
-    },
+    { name: 'tree-select-web-line', title: 'Connector Lines', blurb: 'Connector Lines' },
+    { name: 'tree-select-web-guide', title: 'Connector Lines', blurb: 'Connector Lines' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -231,7 +215,6 @@ import { TreeSelect } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

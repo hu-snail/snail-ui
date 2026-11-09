@@ -50,8 +50,21 @@ import { Tabs } from '@snui/vue-web';
   <Tabs />
 </template>`,
   },
-  demos: [{ name: 'tabs-web-basic', title: '代码演示', blurb: 'bar 与 line 两种基础样式' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'tabs-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'tabs-web-card-segment', title: '卡片与分段', blurb: '卡片与分段' },
+    { name: 'tabs-web-chrome', title: 'Chrome 浏览器风格', blurb: 'Chrome 浏览器风格' },
+    { name: 'tabs-web-chrome-toolbar', title: 'Chrome 浏览器风格', blurb: 'Chrome 浏览器风格' },
+    { name: 'tabs-web-size', title: '尺寸', blurb: '尺寸' },
+    { name: 'tabs-web-addable', title: '新增与关闭', blurb: '新增与关闭' },
+    { name: 'tabs-web-before-leave', title: '切换前置守卫', blurb: '切换前置守卫' },
+    { name: 'tabs-web-trigger', title: '触发方式', blurb: '触发方式' },
+    { name: 'tabs-web-display-directive', title: '面板留存策略', blurb: '面板留存策略' },
+    { name: 'tabs-web-bar-width', title: '标签条宽度', blurb: '标签条宽度' },
+    { name: 'tabs-web-disabled', title: '禁用标签', blurb: '禁用标签' },
+    { name: 'tabs-web-placement-closable', title: '位置与关闭', blurb: '位置与关闭' },
+    { name: 'tabs-web-pane-style', title: '样式钩子', blurb: '样式钩子' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -202,7 +215,6 @@ import { Tabs } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

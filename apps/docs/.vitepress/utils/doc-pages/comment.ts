@@ -46,13 +46,10 @@ import { Comment } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'comment-web-basic',
-      title: '代码演示',
-      blurb: 'avatar / author / datetime / content 完整场景 + actions 插槽。',
-    },
+    { name: 'comment-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'comment-web-align', title: '对齐方式', blurb: '对齐方式' },
+    { name: 'comment-web-nest', title: '嵌套评论', blurb: '嵌套评论' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -107,7 +104,6 @@ import { Comment } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

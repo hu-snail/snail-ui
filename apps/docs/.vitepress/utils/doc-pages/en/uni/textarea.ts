@@ -95,7 +95,6 @@ import { Textarea } from '@snui/uni';
       blurb: 'customClass + customStyle on the root; customTextareaClass on the inner textarea.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -321,7 +320,6 @@ import { Textarea } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

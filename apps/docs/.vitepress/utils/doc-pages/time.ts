@@ -46,9 +46,13 @@ import { Time } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'time-web-basic', title: '代码演示', blurb: 'number / Date 输入，默认 datetime。' },
+    { name: 'time-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'time-web-type', title: '类型', blurb: '类型' },
+    { name: 'time-web-format', title: '格式化', blurb: '格式化' },
+    { name: 'time-web-relative', title: '相对时间', blurb: '相对时间' },
+    { name: 'time-web-unix', title: 'Unix 时间戳', blurb: 'Unix 时间戳' },
+    { name: 'time-web-timezone', title: '时区', blurb: '时区' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -115,7 +119,6 @@ import { Time } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

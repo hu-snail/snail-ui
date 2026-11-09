@@ -77,7 +77,6 @@ import { KeyboardPanel } from '@snui/uni';
         '内嵌键盘面板：默认 / 小数点（extraKey=.）/ 车牌（mode=car），收起键发 collapse 事件。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -154,7 +153,6 @@ import { KeyboardPanel } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

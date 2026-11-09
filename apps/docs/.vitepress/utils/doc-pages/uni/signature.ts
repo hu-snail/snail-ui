@@ -85,7 +85,6 @@ import { Signature } from '@snui/uni';
         'fileType / quality / exportScale（宿主导出用）；pressure / maxWidth / minWidth / minSpeed（未实现）；customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,7 +94,7 @@ import { Signature } from '@snui/uni';
         default: "''",
         desc: 'Stroke color (CSS color). Empty = `--sn-mp-color-text-primary`.',
       },
-      { name: 'lineWidth', type: 'number', default: '3', desc: 'Stroke width in px design units.' },
+      { name: 'lineWidth', type: 'number', default: '3', desc: '笔宽（px 设计值）' },
       { name: 'confirmText', type: 'string', default: "'确认'", desc: 'Confirm button label.' },
       { name: 'clearText', type: 'string', default: "'清空'", desc: 'Clear button label.' },
       { name: 'revokeText', type: 'string', default: "'撤回'", desc: 'Undo button label.' },
@@ -204,7 +203,6 @@ import { Signature } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

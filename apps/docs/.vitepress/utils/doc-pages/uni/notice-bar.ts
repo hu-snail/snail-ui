@@ -82,7 +82,6 @@ import { NoticeBar } from '@snui/uni';
       blurb: '覆盖文字色与底色 / custom-class 加边框 / custom-style 加圆角。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -122,7 +121,7 @@ import { NoticeBar } from '@snui/uni';
         default: '50',
         desc: 'Marquee speed in px per second (converted into a cycle duration).',
       },
-      { name: 'closable', type: 'boolean', default: 'false', desc: 'Show the close button.' },
+      { name: 'closable', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
         name: 'wrapable',
         type: 'boolean',
@@ -180,7 +179,6 @@ import { NoticeBar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

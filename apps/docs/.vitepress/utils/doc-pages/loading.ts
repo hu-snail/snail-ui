@@ -51,8 +51,14 @@ import { Loading } from '@snui/vue-web';
   <Loading />
 </template>`,
   },
-  demos: [{ name: 'loading-web-basic', title: '代码演示', blurb: '五个内置尺寸档 + 数字尺寸' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'loading-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'loading-web-wrapper', title: '遮罩模式', blurb: '遮罩模式' },
+    { name: 'loading-web-description', title: '加载文案', blurb: '加载文案' },
+    { name: 'loading-web-customize-icon', title: '自定义图形', blurb: '自定义图形' },
+    { name: 'loading-web-delay', title: '延迟显示', blurb: '延迟显示' },
+    { name: 'loading-web-custom', title: '颜色与缩放', blurb: '颜色与缩放' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -149,7 +155,6 @@ import { Loading } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

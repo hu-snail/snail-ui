@@ -47,13 +47,11 @@ import { Transfer } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'transfer-web-basic',
-      title: '代码演示',
-      blurb: 'v-model:value 双面板穿梭 + 已选顺序回显。',
-    },
+    { name: 'transfer-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'transfer-web-filter', title: '搜索过滤与面板标题', blurb: '搜索过滤与面板标题' },
+    { name: 'transfer-web-render', title: '自定义行渲染', blurb: '自定义行渲染' },
+    { name: 'transfer-web-disabled', title: '禁用态', blurb: '禁用态' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -150,7 +148,6 @@ import { Transfer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

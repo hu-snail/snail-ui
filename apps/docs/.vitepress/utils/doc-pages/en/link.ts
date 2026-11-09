@@ -42,13 +42,14 @@ import { Link } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'link-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'link-web-type', title: 'Semantic colors compared', blurb: 'Semantic colors compared' },
     {
-      name: 'link-web-basic',
-      title: 'Demos',
-      blurb: 'Type colors / underline / disabled / custom tag / icon slot.',
+      name: 'link-web-state',
+      title: 'Underline, disabled and custom tag',
+      blurb: 'Underline, disabled and custom tag',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -115,7 +116,6 @@ import { Link } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

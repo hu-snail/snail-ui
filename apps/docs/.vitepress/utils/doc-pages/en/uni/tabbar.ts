@@ -58,7 +58,6 @@ import { Tabbar } from '@snui/uni';
         'Full playground: the bar is fixed to the screen bottom; mode (standard / glass / elevate), top border, safe area, placeholder, badges and active colour all switch live.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,7 +124,6 @@ import { Tabbar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

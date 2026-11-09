@@ -47,13 +47,14 @@ import { Link } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'link-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'link-web-type', title: '语义色对照', blurb: '语义色对照' },
     {
-      name: 'link-web-basic',
-      title: '代码演示',
-      blurb: 'type 语义色 / underline / disabled / 自定义 tag / 图标插槽。',
+      name: 'link-web-state',
+      title: '下划线、禁用与自定义标签',
+      blurb: '下划线、禁用与自定义标签',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -120,7 +121,6 @@ import { Link } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

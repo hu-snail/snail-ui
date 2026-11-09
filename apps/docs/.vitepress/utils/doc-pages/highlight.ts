@@ -47,8 +47,12 @@ import { Highlight } from '@snui/vue-web';
   <Highlight />
 </template>`,
   },
-  demos: [{ name: 'highlight-web-basic', title: '代码演示', blurb: '多关键词命中渲染 mark。' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'highlight-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'highlight-web-style', title: '自定义样式', blurb: '自定义样式' },
+    { name: 'highlight-web-case-sensitive', title: '区分大小写', blurb: '区分大小写' },
+    { name: 'highlight-web-component', title: '自定义高亮元素', blurb: '自定义高亮元素' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -115,7 +119,6 @@ import { Highlight } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

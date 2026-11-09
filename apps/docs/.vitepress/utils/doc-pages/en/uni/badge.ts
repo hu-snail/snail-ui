@@ -74,7 +74,6 @@ import { Badge } from '@snui/uni';
         "customClass puts a dashed frame on the wrapper; customStyle adds padding and fill; both together; a control showing the marker's own type / bgColor / offsets.",
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -152,7 +151,6 @@ import { Badge } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

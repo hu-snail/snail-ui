@@ -77,7 +77,6 @@ import { CountTo } from '@snui/uni';
       blurb: 'use-easing 开 / 关的节奏对比，以及 customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -93,16 +92,16 @@ import { CountTo } from '@snui/uni';
         default: "'default'",
         desc: 'Semantic text theme; `default` uses the body text token.',
       },
-      { name: 'startVal', type: 'number', default: '0', desc: 'Start value.' },
-      { name: 'endVal', type: 'number', default: '2024', desc: 'End value.' },
-      { name: 'duration', type: 'number', default: '3000', desc: 'Tween duration in ms.' },
+      { name: 'startVal', type: 'number', default: '0', desc: '起始值' },
+      { name: 'endVal', type: 'number', default: '2024', desc: '最终值' },
+      { name: 'duration', type: 'number', default: '3000', desc: '补间时长（ms）' },
       {
         name: 'autoStart',
         type: 'boolean',
         default: 'true',
         desc: 'Start the animation on mount / on value change.',
       },
-      { name: 'decimals', type: 'number', default: '0', desc: 'Decimal places to keep (>= 0).' },
+      { name: 'decimals', type: 'number', default: '0', desc: '保留的小数位数' },
       { name: 'decimal', type: 'string', default: "'.'", desc: 'Decimal separator character.' },
       { name: 'separator', type: 'string', default: "'", desc: 'Thousands separator character.' },
       { name: 'prefix', type: 'string', default: "''", desc: 'Text before the number.' },
@@ -146,7 +145,6 @@ import { CountTo } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

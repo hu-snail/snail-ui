@@ -44,13 +44,13 @@ import { LoadingBar } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'loading-bar-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
-      name: 'loading-bar-web-basic',
-      title: 'Demos',
-      blurb: 'Provider wrapper + start / finish / error triggers',
+      name: 'loading-bar-web-flow',
+      title: 'Full flow and error comparison',
+      blurb: 'Full flow and error comparison',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -87,7 +87,6 @@ import { LoadingBar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

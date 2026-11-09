@@ -82,7 +82,6 @@ import { ImagePreview } from '@snui/uni';
         'selector 命中区、关闭 loop、隐藏关闭按钮、close-on-click 关闭、自定义 z-index 与长按事件。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -92,8 +91,8 @@ import { ImagePreview } from '@snui/uni';
         default: "''",
         desc: 'CSS selector whose matched elements open the viewer (see header).',
       },
-      { name: 'images', type: 'string[]', default: '() => []', desc: 'Image URL list.' },
-      { name: 'startPosition', type: 'number', default: '0', desc: 'Index shown when opened.' },
+      { name: 'images', type: 'string[]', default: '() => []', desc: '图片 URL 数组' },
+      { name: 'startPosition', type: 'number', default: '0', desc: '起始位置索引' },
       {
         name: 'showIndex',
         type: 'boolean',
@@ -106,7 +105,7 @@ import { ImagePreview } from '@snui/uni';
         default: 'true',
         desc: 'Loop from the last image to the first.',
       },
-      { name: 'closeable', type: 'boolean', default: 'true', desc: 'Render the close button.' },
+      { name: 'closeable', type: 'boolean', default: 'true', desc: '是否显示关闭按钮' },
       {
         name: 'closeIcon',
         type: 'string',
@@ -131,7 +130,7 @@ import { ImagePreview } from '@snui/uni';
         default: 'true',
         desc: 'Long-press shows the miniprogram QR menu on the image.',
       },
-      { name: 'zIndex', type: 'number', default: '1000', desc: 'Stacking level of the layer.' },
+      { name: 'zIndex', type: 'number', default: '1000', desc: '层级' },
       {
         name: 'customClass',
         type: 'string',
@@ -165,7 +164,6 @@ import { ImagePreview } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

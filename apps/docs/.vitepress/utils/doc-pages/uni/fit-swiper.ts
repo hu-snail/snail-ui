@@ -73,7 +73,6 @@ import { FitSwiper } from '@snui/uni';
       blurb: '用 #indicator 插槽渲染「第 n / N 页」文案的自定义指示器。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -89,15 +88,15 @@ import { FitSwiper } from '@snui/uni';
         default: '0',
         desc: 'Current page index (v-model:current).',
       },
-      { name: 'autoplay', type: 'boolean', default: 'true', desc: 'Autoplay.' },
-      { name: 'interval', type: 'number', default: '5000', desc: 'Autoplay interval in ms.' },
+      { name: 'autoplay', type: 'boolean', default: 'true', desc: '自动播放。' },
+      { name: 'interval', type: 'number', default: '5000', desc: '自动播放间隔（ms）。' },
       {
         name: 'duration',
         type: 'number',
         default: '300',
         desc: 'Slide transition duration in ms.',
       },
-      { name: 'loop', type: 'boolean', default: 'true', desc: 'Loop the pages.' },
+      { name: 'loop', type: 'boolean', default: 'true', desc: '循环播放。' },
       {
         name: 'height',
         type: 'string | number',
@@ -185,7 +184,6 @@ import { FitSwiper } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

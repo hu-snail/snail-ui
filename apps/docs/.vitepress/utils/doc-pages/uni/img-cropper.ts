@@ -80,7 +80,6 @@ import { ImgCropper } from '@snui/uni';
         'img-width / img-height 预览框、max-scale 上限，以及 export-scale / quality / file-type 代入 confirm 结果。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -109,9 +108,24 @@ import { ImgCropper } from '@snui/uni';
         default: 'false',
         desc: 'Disable rotation entirely.',
       },
-      { name: 'maxScale', type: 'number', default: '3', desc: 'Maximum zoom factor.' },
-      { name: 'exportScale', type: 'number', default: '1', desc: 'Export image scale factor.' },
-      { name: 'quality', type: 'number', default: '0.92', desc: 'Export image quality, 0–1.' },
+      {
+        name: 'maxScale',
+        type: 'number',
+        default: '3',
+        desc: '最大缩放倍数（小于等于 0.5 时回落到 3）',
+      },
+      {
+        name: 'exportScale',
+        type: 'number',
+        default: '1',
+        desc: '导出缩放倍数（已声明，本实现不栅格化）',
+      },
+      {
+        name: 'quality',
+        type: 'number',
+        default: '0.92',
+        desc: '导出质量 0–1（已声明，本实现不栅格化）',
+      },
       { name: 'fileType', type: "'png' | 'jpg'", default: "'png'", desc: 'Export image type.' },
       { name: 'cancelButtonText', type: 'string', default: "'取消'", desc: 'Cancel button label.' },
       {
@@ -159,7 +173,6 @@ import { ImgCropper } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

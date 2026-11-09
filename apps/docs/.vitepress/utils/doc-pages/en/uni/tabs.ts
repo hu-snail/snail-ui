@@ -124,7 +124,6 @@ import { Tabs } from '@snui/uni';
       blurb: 'animated / duration; sticky + offset-top; inline line-width / line-height.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -183,7 +182,6 @@ import { Tabs } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

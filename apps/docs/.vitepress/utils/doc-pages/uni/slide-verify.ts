@@ -78,7 +78,6 @@ import { SlideVerify } from '@snui/uni';
         'icon / successIcon 走 iconfont 约定；cssIcon 按裸类名渲染；iconSize / successIconSize 独立控制两个字形尺寸；tolerance 放宽容差；customClass / customStyle 落在根节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,7 +94,7 @@ import { SlideVerify } from '@snui/uni';
         default: "''",
         desc: 'Success text. Empty = built-in copy.',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables dragging.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用拖动' },
       {
         name: 'backgroundColor',
         type: 'string',
@@ -172,7 +171,6 @@ import { SlideVerify } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

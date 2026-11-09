@@ -57,7 +57,6 @@ import { Typing } from '@snui/uni';
   demos: [
     { name: 'typing-mp', title: '代码演示', blurb: '默认 / 自定义文案与圆点色 / 气泡场景。' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -67,8 +66,8 @@ import { Typing } from '@snui/uni';
         default: "'输入中'",
         desc: '随圆点一起展示的文案（空字符串则只显示圆点）。',
       },
-      { name: 'dotCount', type: 'number', default: '3', desc: '圆点数量。' },
-      { name: 'speed', type: 'number', default: '350', desc: '单个圆点脉动周期（ms）。' },
+      { name: 'dotCount', type: 'number', default: '3', desc: '圆点数量（1-5 自动夹取）' },
+      { name: 'speed', type: 'number', default: '350', desc: '单点脉动周期（ms）' },
       {
         name: 'activeDotColor',
         type: 'string',
@@ -97,7 +96,6 @@ import { Typing } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

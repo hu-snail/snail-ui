@@ -72,7 +72,6 @@ import { Text } from '@snui/uni';
         'customClass / customStyle 追加到根节点；prefix / suffix / default 插槽渲染节点而非字符串。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -112,7 +111,7 @@ import { Text } from '@snui/uni';
         default: 'false',
         desc: '`mode="phone"` 时点击文本是否拨号。',
       },
-      { name: 'bold', type: 'boolean', default: 'false', desc: '是否粗体。' },
+      { name: 'bold', type: 'boolean', default: 'false', desc: '是否粗体' },
       {
         name: 'format',
         type: 'boolean',
@@ -122,7 +121,12 @@ import { Text } from '@snui/uni';
       { name: 'color', type: 'string', default: "''", desc: '文本颜色（内联覆盖 `type`）。' },
       { name: 'prefix', type: 'string', default: "''", desc: '前缀内容（`prefix` slot 优先）。' },
       { name: 'suffix', type: 'string', default: "''", desc: '后缀内容（`suffix` slot 优先）。' },
-      { name: 'lines', type: 'number', default: '0', desc: '展示行数，超出后显示省略号。' },
+      {
+        name: 'lines',
+        type: 'number',
+        default: '0',
+        desc: '展示行数，超出显示省略号；`0` 表示不截断',
+      },
       { name: 'lineHeight', type: 'string', default: "''", desc: '文本行高（原样转发）。' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义 inline style。' },
@@ -147,7 +151,6 @@ import { Text } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

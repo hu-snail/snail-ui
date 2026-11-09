@@ -67,7 +67,6 @@ import { Divider } from '@snui/uni';
         'hairline on / off side by side: horizontal, with text, vertical and a thin dashed line.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -141,7 +140,6 @@ import { Divider } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

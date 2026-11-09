@@ -67,7 +67,6 @@ import { Scratchcard } from '@snui/uni';
       blurb: '真刮擦（指针擦除涂层）、阈值 open 回调与重置。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -78,13 +77,13 @@ import { Scratchcard } from '@snui/uni';
         desc: '封面颜色（coverImg 优先）。',
       },
       { name: 'coverImg', type: 'string', default: "''", desc: '封面图片。' },
-      { name: 'ratio', type: 'number', default: '0.8', desc: '刮开比例阈值（0-1）。' },
-      { name: 'scratchRadius', type: 'number', default: '10', desc: '刮擦半径（px）。' },
+      { name: 'ratio', type: 'number', default: '0.8', desc: '刮开比例阈值（0-1）' },
+      { name: 'scratchRadius', type: 'number', default: '10', desc: '刮擦半径（px）' },
       { name: 'watermarkText', type: 'string', default: "''", desc: '封面水印文字。' },
-      { name: 'watermarkSize', type: 'number', default: '14', desc: '水印字号（px）。' },
+      { name: 'watermarkSize', type: 'number', default: '14', desc: '水印字号（px）' },
       { name: 'watermarkColor', type: 'string', default: "'rgba(0", desc: '水印颜色。' },
       { name: 'title', type: 'string', default: "''", desc: '封面标题文字。' },
-      { name: 'titleSize', type: 'number', default: '24', desc: '标题字号（px）。' },
+      { name: 'titleSize', type: 'number', default: '24', desc: '标题字号（px）' },
       { name: 'titleColor', type: 'string', default: "'rgba(0", desc: '标题颜色。' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       {
@@ -114,7 +113,6 @@ import { Scratchcard } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

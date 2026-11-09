@@ -74,7 +74,6 @@ import { Waterfall } from '@snui/uni';
       blurb: 'masonry=false 退化为一列垂直堆叠。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -90,7 +89,7 @@ import { Waterfall } from '@snui/uni';
         default: "''",
         desc: '最小列宽（数字 = rpx，字符串原样透传）。设置后列数跟随实测容器宽度 （响应式模式），`columns` 仅作测量前的猜测。',
       },
-      { name: 'columnGap', type: 'string | number', default: '16', desc: '列间距（数字 = rpx）。' },
+      { name: 'columnGap', type: 'string | number', default: '16', desc: '16' },
       {
         name: 'rowGap',
         type: 'string | number',
@@ -132,7 +131,6 @@ import { Waterfall } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

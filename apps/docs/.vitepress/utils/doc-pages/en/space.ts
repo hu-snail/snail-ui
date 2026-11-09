@@ -47,7 +47,6 @@ import { Space } from '@snui/vue-web';
     },
     { name: 'space-web-align', title: 'Align & wrap', blurb: 'justify / align / wrap.' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -119,7 +118,6 @@ import { Space } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

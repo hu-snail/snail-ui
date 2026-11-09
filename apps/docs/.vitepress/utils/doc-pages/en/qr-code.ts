@@ -43,9 +43,19 @@ import { QrCode } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'qr-code-web-basic', title: 'Examples', blurb: 'A default-size code from value.' },
+    { name: 'qr-code-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'qr-code-web-size', title: 'Size', blurb: 'Size' },
+    { name: 'qr-code-web-color', title: 'Color', blurb: 'Color' },
+    { name: 'qr-code-web-error-correction', title: 'Error correction', blurb: 'Error correction' },
+    { name: 'qr-code-web-icon', title: 'Icon', blurb: 'Icon' },
+    { name: 'qr-code-web-download', title: 'Download', blurb: 'Download' },
+    { name: 'qr-code-web-type', title: 'Render type', blurb: 'Render type' },
+    {
+      name: 'qr-code-web-shape',
+      title: 'Shape & multi-color (shape / colors)',
+      blurb: 'Shape & multi-color (shape / colors)',
+    },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -154,7 +164,6 @@ import { QrCode } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

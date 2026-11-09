@@ -74,7 +74,6 @@ import { Notify } from '@snui/uni';
       blurb: 'Custom fill and text color / safe-height=88 / zIndex=300 + custom-style.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -174,7 +173,6 @@ import { Notify } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

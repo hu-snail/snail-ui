@@ -62,7 +62,6 @@ import { AvatarGroup } from '@snui/uni';
         'Max-count collapse, custom collapse text (collapse-avatar), cascading direction, vertical stacking and uniform size / shape.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,7 +124,6 @@ import { AvatarGroup } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

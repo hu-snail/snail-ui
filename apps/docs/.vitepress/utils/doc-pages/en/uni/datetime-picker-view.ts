@@ -82,7 +82,6 @@ import { DatetimePickerView } from '@snui/uni';
         'boundaryMinDate / boundaryMaxDate (declared but not rendered); immediateChange; customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -178,7 +177,6 @@ import { DatetimePickerView } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

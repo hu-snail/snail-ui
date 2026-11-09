@@ -117,7 +117,6 @@ import { Button } from '@snui/uni';
       blurb: "form-type='submit' 提交表单；form-type='reset' 重置表单。",
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -134,8 +133,8 @@ import { Button } from '@snui/uni';
         default: '—',
         desc: 'Block (full-width) layout — common on mobile.',
       },
-      { name: 'round', type: 'boolean', default: '—', desc: 'Pill shape.' },
-      { name: 'disabled', type: 'boolean', default: '—', desc: 'Disabled. Skips click.' },
+      { name: 'round', type: 'boolean', default: '—', desc: '胶囊形。' },
+      { name: 'disabled', type: 'boolean', default: '—', desc: '禁用。' },
       {
         name: 'loading',
         type: 'boolean',
@@ -172,7 +171,7 @@ import { Button } from '@snui/uni';
         default: '—',
         desc: 'Cell-style preset. Mirrors wd-button cell.',
       },
-      { name: 'loadingColor', type: 'string', default: '—', desc: 'Custom loading spinner color.' },
+      { name: 'loadingColor', type: 'string', default: '—', desc: '自定义 spinner 颜色。' },
       {
         name: 'loadingSize',
         type: 'number | string',
@@ -203,16 +202,16 @@ import { Button } from '@snui/uni';
         default: '—',
         desc: 'Form submission type.',
       },
-      { name: 'customClass', type: 'string', default: '—', desc: 'Class on the root element.' },
+      { name: 'customClass', type: 'string', default: '—', desc: '根元素额外 class。' },
       {
         name: 'customStyle',
         type: 'string | Record<string, string>',
         default: '—',
         desc: 'Inline style on the root element.',
       },
-      { name: 'bgColor', type: 'string', default: '—', desc: 'Custom background color override.' },
-      { name: 'color', type: 'string', default: '—', desc: 'Custom text/border color override.' },
-      { name: 'ariaLabel', type: 'string', default: '—', desc: 'Accessible label override.' },
+      { name: 'bgColor', type: 'string', default: '—', desc: '内联 `background-color` 覆盖。' },
+      { name: 'color', type: 'string', default: '—', desc: '内联 `color` + `border-color` 覆盖。' },
+      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签。' },
       {
         name: 'iconData',
         type: 'IconData',
@@ -255,8 +254,8 @@ import { Button } from '@snui/uni';
         default: '—',
         desc: 'CSS icon class (or `true` to also apply the raw name). Mirrors `css-icon`.',
       },
-      { name: 'color', type: 'string', default: '—', desc: 'Custom text/border color override.' },
-      { name: 'size', type: 'number | string', default: '—', desc: 'Size preset.' },
+      { name: 'color', type: 'string', default: '—', desc: '内联 `color` + `border-color` 覆盖。' },
+      { name: 'size', type: 'number | string', default: '—', desc: "'large'`" },
       { name: 'text', type: 'string', default: '—', desc: 'text' },
       {
         name: 'hoverStopPropagation',
@@ -306,7 +305,7 @@ import { Button } from '@snui/uni';
         default: '—',
         desc: '`open-type=contact` — show the session message card.',
       },
-      { name: 'buttonId', type: 'string', default: '—', desc: 'Unique button identifier.' },
+      { name: 'buttonId', type: 'string', default: '—', desc: '客服消息定位用的唯一标识。' },
       {
         name: 'scope',
         type: "'phoneNumber' | 'userInfo' | ''",
@@ -333,7 +332,6 @@ import { Button } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

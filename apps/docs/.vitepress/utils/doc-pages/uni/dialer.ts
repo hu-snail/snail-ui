@@ -67,7 +67,6 @@ import { Dialer } from '@snui/uni';
       blurb: '6 奖品转盘，点击 GO 随机落点，done 展示结果。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -77,8 +76,8 @@ import { Dialer } from '@snui/uni';
         default: '() => []',
         desc: '奖品列表（2-12 项）。',
       },
-      { name: 'turns', type: 'number', default: '5', desc: '旋转圈数。' },
-      { name: 'duration', type: 'number', default: '3', desc: '旋转时长（秒）。' },
+      { name: 'turns', type: 'number', default: '5', desc: '旋转圈数' },
+      { name: 'duration', type: 'number', default: '3', desc: '旋转时长（秒）' },
       {
         name: 'size',
         type: 'string',
@@ -122,7 +121,6 @@ import { Dialer } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

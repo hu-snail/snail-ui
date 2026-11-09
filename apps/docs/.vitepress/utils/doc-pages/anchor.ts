@@ -50,8 +50,13 @@ import { Anchor } from '@snui/vue-web';
   <Anchor />
 </template>`,
   },
-  demos: [{ name: 'anchor-web-basic', title: '代码演示', blurb: '轨道锚点跟踪三个章节' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'anchor-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'anchor-web-ignore-gap', title: '高亮判定', blurb: '高亮判定' },
+    { name: 'anchor-web-affix', title: '吸附固定', blurb: '吸附固定' },
+    { name: 'anchor-web-scrollto', title: '程序化跳转', blurb: '程序化跳转' },
+    { name: 'anchor-web-variants', title: '样式变体', blurb: '样式变体' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -121,8 +126,8 @@ import { Anchor } from '@snui/vue-web';
         default: 'undefined as any',
         desc: 'Forwarded to SnAffix when `affix` is true.',
       },
-      { name: 'offsetTop', type: 'number', default: 'undefined as any', desc: 'offsetTop' },
-      { name: 'offsetBottom', type: 'number', default: 'undefined as any', desc: 'offsetBottom' },
+      { name: 'offsetTop', type: 'number', default: 'undefined as any', desc: '顶部偏移量。' },
+      { name: 'offsetBottom', type: 'number', default: 'undefined as any', desc: '底部偏移量。' },
     ],
   },
   ai: {
@@ -144,7 +149,6 @@ import { Anchor } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

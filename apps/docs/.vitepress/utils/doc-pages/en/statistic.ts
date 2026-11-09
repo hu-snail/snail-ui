@@ -52,7 +52,6 @@ import { Statistic } from '@snui/vue-web';
       blurb: 'label + value, prefix / suffix slots and the default slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,7 +94,6 @@ import { Statistic } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

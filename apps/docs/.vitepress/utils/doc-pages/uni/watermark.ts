@@ -65,7 +65,6 @@ import { Watermark } from '@snui/uni';
       blurb: '图片瓦片、字体族 / 样式 / 粗细、z-index 与 customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -82,7 +81,7 @@ import { Watermark } from '@snui/uni';
         default: '100',
         desc: 'Image height in px (per the wd reference).',
       },
-      { name: 'imageWidth', type: 'number', default: '100', desc: 'Image width in px.' },
+      { name: 'imageWidth', type: 'number', default: '100', desc: '图片宽度（px）' },
       {
         name: 'gutterX',
         type: 'number',
@@ -95,8 +94,8 @@ import { Watermark } from '@snui/uni';
         default: '0',
         desc: 'Vertical gutter between tiles, in px.',
       },
-      { name: 'width', type: 'number', default: '100', desc: 'Tile width in px.' },
-      { name: 'height', type: 'number', default: '100', desc: 'Tile height in px.' },
+      { name: 'width', type: 'number', default: '100', desc: '单个瓦片宽度（px）' },
+      { name: 'height', type: 'number', default: '100', desc: '单个瓦片高度（px）' },
       {
         name: 'fullScreen',
         type: 'boolean',
@@ -109,13 +108,18 @@ import { Watermark } from '@snui/uni';
         default: "''",
         desc: 'Text color override (any CSS color value).',
       },
-      { name: 'size', type: 'number', default: '14', desc: 'Text size in px.' },
+      { name: 'size', type: 'number', default: '14', desc: '水印文字大小（px）' },
       { name: 'fontStyle', type: 'WatermarkFontStyle', default: "'normal'", desc: 'Font style.' },
       { name: 'fontWeight', type: 'string | number', default: "'normal'", desc: 'Font weight.' },
       { name: 'fontFamily', type: 'string', default: "'PingFang SC'", desc: 'Font family.' },
-      { name: 'rotate', type: 'number', default: '-25', desc: 'Rotation angle in degrees.' },
-      { name: 'zIndex', type: 'number', default: '1100', desc: 'Stacking level.' },
-      { name: 'opacity', type: 'number | undefined', default: 'undefined', desc: 'Opacity, 0–1.' },
+      { name: 'rotate', type: 'number', default: '-25', desc: '水印旋转角度' },
+      { name: 'zIndex', type: 'number', default: '1100', desc: '水印层级' },
+      {
+        name: 'opacity',
+        type: 'number | undefined',
+        default: 'undefined',
+        desc: '水印透明度，0–1',
+      },
       { name: 'layout', type: 'WatermarkLayout', default: "'grid'", desc: 'Repeat layout.' },
       {
         name: 'customStyle',
@@ -150,7 +154,6 @@ import { Watermark } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

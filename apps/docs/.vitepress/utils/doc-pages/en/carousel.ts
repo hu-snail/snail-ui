@@ -42,8 +42,35 @@ import { Carousel } from '@snui/vue-web';
   <Carousel />
 </template>`,
   },
-  demos: [{ name: 'carousel-web-basic', title: 'Examples', blurb: 'Basic looping carousel' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'carousel-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'carousel-web-autoplay', title: 'Autoplay', blurb: 'Autoplay' },
+    { name: 'carousel-web-arrow', title: 'Arrows', blurb: 'Arrows' },
+    { name: 'carousel-web-dots', title: 'Dots', blurb: 'Dots' },
+    { name: 'carousel-web-vertical', title: 'Vertical', blurb: 'Vertical' },
+    { name: 'carousel-web-effect', title: 'Effects', blurb: 'Effects' },
+    { name: 'carousel-web-effect-custom', title: 'Custom transition', blurb: 'Custom transition' },
+    { name: 'carousel-web-card-3d', title: '3D card effect', blurb: '3D card effect' },
+    {
+      name: 'carousel-web-slides-per-view',
+      title: 'Multiple slides per view',
+      blurb: 'Multiple slides per view',
+    },
+    { name: 'carousel-web-mousewheel', title: 'Mouse wheel', blurb: 'Mouse wheel' },
+    {
+      name: 'carousel-web-custom-arrow-and-dots',
+      title: 'Custom arrows and dots',
+      blurb: 'Custom arrows and dots',
+    },
+    { name: 'carousel-web-video', title: 'Video', blurb: 'Video' },
+    { name: 'carousel-web-banner', title: 'Real-world scenarios', blurb: 'Real-world scenarios' },
+    {
+      name: 'carousel-web-product-cards',
+      title: 'Real-world scenarios',
+      blurb: 'Real-world scenarios',
+    },
+    { name: 'carousel-web-news', title: 'Real-world scenarios', blurb: 'Real-world scenarios' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -183,7 +210,6 @@ import { Carousel } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

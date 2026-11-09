@@ -78,7 +78,6 @@ import { ActionSheet } from '@snui/uni';
       blurb: 'Title class + panel inline style + eager render + no safe-area padding.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -185,7 +184,6 @@ import { ActionSheet } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

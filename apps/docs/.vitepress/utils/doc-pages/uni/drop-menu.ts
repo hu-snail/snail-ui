@@ -95,7 +95,6 @@ import { DropMenu } from '@snui/uni';
         'modal=false 无蒙层；close-on-click-modal=false；popup-height 限制高度；custom-popup-class / custom-popup-style；disabled；default 插槽。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -105,7 +104,7 @@ import { DropMenu } from '@snui/uni';
         default: "''",
         desc: 'Current selected value (v-model).',
       },
-      { name: 'options', type: 'SnDropMenuOption[]', default: '() => []', desc: 'Option rows.' },
+      { name: 'options', type: 'SnDropMenuOption[]', default: '() => []', desc: '选项列表' },
       {
         name: 'direction',
         type: 'DropDirection',
@@ -242,7 +241,6 @@ import { DropMenu } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

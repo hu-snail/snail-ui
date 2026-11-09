@@ -58,14 +58,17 @@ import { Paging } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'paging-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'paging-mp-states', title: '空态与失败重试', blurb: '空态与失败重试' },
+    { name: 'paging-mp-scroll', title: '纯滑动容器与手势开关', blurb: '纯滑动容器与手势开关' },
+    { name: 'paging-mp-second-floor', title: '下拉进入二楼', blurb: '下拉进入二楼' },
+    { name: 'paging-mp-popup', title: '弹窗内下拉刷新加载', blurb: '弹窗内下拉刷新加载' },
     {
-      name: 'paging-mp-basic',
-      title: '代码演示',
-      blurb:
-        '下拉刷新 / 触底自动翻页 / completeByTotal 判停；胶囊实时切换加载动画形态与下拉区配色。',
+      name: 'paging-mp-app',
+      title: '应用案例：整页信息流 App（紧凑预览 + 全屏场景）',
+      blurb: '应用案例：整页信息流 App（紧凑预览 + 全屏场景）',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -294,7 +297,6 @@ import { Paging } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

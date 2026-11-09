@@ -84,11 +84,10 @@ import { Transition } from '@snui/uni';
       blurb: 'lazy-render 开 / 关对比与插槽渲染状态；disable-touch-move 配合背景滚动区验证拦截。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'show', type: 'boolean', default: 'false', desc: 'Whether the content is shown.' },
+      { name: 'show', type: 'boolean', default: 'false', desc: '是否展示组件' },
       {
         name: 'duration',
         type: 'TransitionDuration',
@@ -188,7 +187,6 @@ import { Transition } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

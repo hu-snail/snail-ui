@@ -55,7 +55,6 @@ import { Divider } from '@snui/vue-web';
       blurb: '水平 / 虚线 / 带文字 / marginSize / 垂直 等全部 variants 的综合预览。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -65,7 +64,7 @@ import { Divider } from '@snui/vue-web';
         default: "'horizontal'",
         desc: 'Axis: horizontal (full-width line) or vertical (inline line).',
       },
-      { name: 'dashed', type: 'boolean', default: 'false', desc: 'Dashed instead of solid.' },
+      { name: 'dashed', type: 'boolean', default: 'false', desc: '虚线' },
       {
         name: 'color',
         type: 'string',
@@ -99,7 +98,6 @@ import { Divider } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

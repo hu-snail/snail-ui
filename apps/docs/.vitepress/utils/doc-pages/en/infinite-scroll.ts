@@ -54,7 +54,6 @@ import { InfiniteScroll } from '@snui/vue-web';
       blurb: 'Message stream + pending spinner + no-more notice.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +96,6 @@ import { InfiniteScroll } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

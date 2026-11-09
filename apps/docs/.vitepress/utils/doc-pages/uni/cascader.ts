@@ -96,7 +96,6 @@ import { Cascader } from '@snui/uni';
         'lineTheme underline / dot；closeOnClickModal=false；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -112,7 +111,7 @@ import { Cascader } from '@snui/uni';
         default: 'false',
         desc: 'Sheet visibility (`v-model:visible`).',
       },
-      { name: 'options', type: 'CascaderOption[]', default: '() => []', desc: 'Option tree.' },
+      { name: 'options', type: 'CascaderOption[]', default: '() => []', desc: '层级选项树' },
       { name: 'title', type: 'string', default: "''", desc: 'Toolbar title.' },
       {
         name: 'checkStrictly',
@@ -218,7 +217,6 @@ import { Cascader } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

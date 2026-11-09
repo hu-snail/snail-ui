@@ -74,7 +74,6 @@ import { Layout } from '@snui/uni';
         'justify center / end / space-around / space-evenly; align middle / bottom; row-level and column-level customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -113,7 +112,6 @@ import { Layout } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

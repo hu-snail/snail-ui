@@ -43,21 +43,13 @@ import { Heatmap } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'heatmap-web-basic', title: 'Basic', blurb: 'Data + label/indicator toggles + size.' },
-    {
-      name: 'heatmap-web-colors',
-      title: 'Custom colors',
-      blurb: 'active-colors / minimum-color customization.',
-    },
-    {
-      name: 'heatmap-web-slots',
-      title: 'Slots',
-      blurb: 'footer / indicator / indicator text slots.',
-    },
-    { name: 'heatmap-web-tooltip', title: 'Tooltip', blurb: 'The tooltip switch.' },
-    { name: 'heatmap-web-themes', title: 'Color themes', blurb: 'The five built-in color themes.' },
+    { name: 'heatmap-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'heatmap-web-colors', title: 'Custom colors', blurb: 'Custom colors' },
+    { name: 'heatmap-web-slots', title: 'Slots', blurb: 'Slots' },
+    { name: 'heatmap-web-tooltip', title: 'Tooltip', blurb: 'Tooltip' },
+    { name: 'heatmap-web-tooltip-slot', title: 'Tooltip', blurb: 'Tooltip' },
+    { name: 'heatmap-web-themes', title: 'Color themes', blurb: 'Color themes' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -172,7 +164,6 @@ import { Heatmap } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

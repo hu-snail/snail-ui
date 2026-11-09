@@ -78,7 +78,6 @@ import { CalendarView } from '@snui/uni';
         '`allowSameDay` lets both range ends be the same day; `defaultTime` sets the clock time written back; `immediateChange` fires on tap; `customClass` / `customStyle` land on the root.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -219,7 +218,6 @@ import { CalendarView } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

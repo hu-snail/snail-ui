@@ -88,7 +88,6 @@ import { Collapse } from '@snui/uni';
         'more slot with custom-more-slot-class; item border=false; before-expend guard; title slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -164,7 +163,6 @@ import { Collapse } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

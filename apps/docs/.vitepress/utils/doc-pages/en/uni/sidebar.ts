@@ -85,7 +85,6 @@ import { Sidebar } from '@snui/uni';
         'Scroll the right pane and the left highlight follows; a tap jumps the content through before-change.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -137,7 +136,6 @@ import { Sidebar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

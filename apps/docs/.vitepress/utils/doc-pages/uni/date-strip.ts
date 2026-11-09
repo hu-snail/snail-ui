@@ -88,7 +88,6 @@ import { DateStrip } from '@snui/uni';
       blurb: 'custom-class / custom-style 换条底色与圆角。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -99,7 +98,7 @@ import { DateStrip } from '@snui/uni';
         desc: '选中值：时间戳；`range` 模式为 `[start, end]`（进行中允许 `[start]`）。',
       },
       { name: 'type', type: "'single' | 'range'", default: "'single'", desc: '选择模式。' },
-      { name: 'count', type: 'number', default: '7', desc: '每页天数。' },
+      { name: 'count', type: 'number', default: '7', desc: '每页天数（swiper 每页一屏）' },
       {
         name: 'startDate',
         type: 'number | undefined',
@@ -118,7 +117,7 @@ import { DateStrip } from '@snui/uni';
         default: 'undefined',
         desc: '晚于该日（时间戳）的格子禁用，并夹住可翻页右边界。',
       },
-      { name: 'showWeek', type: 'boolean', default: 'true', desc: '显示每列顶部的星期字。' },
+      { name: 'showWeek', type: 'boolean', default: 'true', desc: '每列顶部的星期字' },
       {
         name: 'showLunar',
         type: 'boolean',
@@ -131,7 +130,7 @@ import { DateStrip } from '@snui/uni';
         default: 'false',
         desc: '显示两侧翻页按钮（内容可用 `#prev` / `#next` 插槽自定义）。',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: '整条禁用。' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '整条禁用' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -160,7 +159,6 @@ import { DateStrip } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

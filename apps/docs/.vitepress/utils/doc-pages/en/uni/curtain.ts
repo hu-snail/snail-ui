@@ -79,7 +79,6 @@ import { Curtain } from '@snui/uni';
       blurb: 'Close button inline style + root inline style + long-press recognition menu.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -189,7 +188,6 @@ import { Curtain } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

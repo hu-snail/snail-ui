@@ -73,7 +73,6 @@ import { Slider } from '@snui/uni';
         'vertical 竖排轨道；popoverVisible 取 always / normal / never；activeColor / inactiveColor 覆盖轨道配色；customClass / customStyle 落在根节点。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -85,11 +84,11 @@ import { Slider } from '@snui/uni';
       },
       { name: 'min', type: 'number', default: '0', desc: 'Lower bound.' },
       { name: 'max', type: 'number', default: '100', desc: 'Upper bound.' },
-      { name: 'step', type: 'number', default: '1', desc: 'Snap granularity.' },
-      { name: 'range', type: 'boolean', default: 'false', desc: 'Two-knob mode.' },
-      { name: 'vertical', type: 'boolean', default: 'false', desc: 'Vertical orientation.' },
+      { name: 'step', type: 'number', default: '1', desc: '步长' },
+      { name: 'range', type: 'boolean', default: 'false', desc: '双向滑块模式' },
+      { name: 'vertical', type: 'boolean', default: 'false', desc: '垂直展示' },
       { name: 'theme', type: 'SliderTheme', default: "'default'", desc: 'Visual style.' },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables dragging.' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用' },
       {
         name: 'showExtremeValue',
         type: 'boolean',
@@ -148,7 +147,6 @@ import { Slider } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

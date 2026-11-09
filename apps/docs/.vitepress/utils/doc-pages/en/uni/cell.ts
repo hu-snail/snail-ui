@@ -82,7 +82,6 @@ import { Cell } from '@snui/uni';
         'Card mode: each row stands alone with a leading icon + title + right arrow; enabling it on the group inherits to every row.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -256,7 +255,6 @@ import { Cell } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

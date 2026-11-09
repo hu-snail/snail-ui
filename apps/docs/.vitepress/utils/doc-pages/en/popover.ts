@@ -45,13 +45,22 @@ import { Popover } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'popover-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     {
-      name: 'popover-web-basic',
-      title: 'Demos',
-      blurb: 'hover trigger, header + content, arrow and common placements',
+      name: 'popover-web-trigger',
+      title: 'Triggers and controlled mode',
+      blurb: 'Triggers and controlled mode',
     },
+    { name: 'popover-web-placement', title: 'Twelve placements', blurb: 'Twelve placements' },
+    { name: 'popover-web-delay', title: 'Open / close timing', blurb: 'Open / close timing' },
+    { name: 'popover-web-width', title: 'Width control', blurb: 'Width control' },
+    {
+      name: 'popover-web-scrollable',
+      title: 'Long scrollable content',
+      blurb: 'Long scrollable content',
+    },
+    { name: 'popover-web-slots', title: 'Custom header and body', blurb: 'Custom header and body' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -232,7 +241,6 @@ import { Popover } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

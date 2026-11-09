@@ -76,20 +76,19 @@ import { Table } from '@snui/uni';
         'border / stripe 开关、index 配置对象、show-header 关闭，以及 customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'data', type: 'SnTableRow[]', default: '() => []', desc: 'Table rows.' },
-      { name: 'border', type: 'boolean', default: 'true', desc: 'Draw cell borders.' },
-      { name: 'stripe', type: 'boolean', default: 'true', desc: 'Zebra-stripe the body rows.' },
+      { name: 'data', type: 'SnTableRow[]', default: '() => []', desc: '表格数据源' },
+      { name: 'border', type: 'boolean', default: 'true', desc: '是否显示边框' },
+      { name: 'stripe', type: 'boolean', default: 'true', desc: '是否显示斑马纹' },
       {
         name: 'height',
         type: 'string | number | undefined',
         default: 'undefined',
         desc: 'Max height — a bare number is design px. Setting it turns on vertical scrolling.',
       },
-      { name: 'showHeader', type: 'boolean', default: 'true', desc: 'Render the header row.' },
+      { name: 'showHeader', type: 'boolean', default: 'true', desc: '是否显示表头' },
       {
         name: 'ellipsis',
         type: 'boolean',
@@ -141,7 +140,6 @@ import { Table } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

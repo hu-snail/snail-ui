@@ -58,35 +58,42 @@ import { Icon } from '@snui/uni';
   demos: [
     {
       name: 'icon-mp-string',
-      title: 'Usage',
-      blurb:
-        "String icon API: catalog names render directly; a registry entry of the same name overrides; integrated with SnButton's #icon slot.",
+      title: '1. String icon — built-in catalog (recommended)',
+      blurb: '1. String icon — built-in catalog (recommended)',
     },
     {
-      name: 'icon-mp-basic',
-      title: 'Basic usage',
-      blurb:
-        '5 shortcut icons (ChevronRight / Search / Settings / Heart / Trash). Each named import is an independent ESM module.',
+      name: 'icon-mp-gallery',
+      title: 'Built-in catalog gallery (search + categories)',
+      blurb: 'Built-in catalog gallery (search + categories)',
     },
     {
-      name: 'icon-mp-size',
-      title: 'Sizes & stroke',
-      blurb:
-        'Five sizes (14 / 18 / 24 / 32 / 48) + three stroke widths (1 / 2 / 3). Mobile default: 32rpx.',
+      name: 'icon-mp-iconify',
+      title: '2. Iconify on demand (third-party icon libraries)',
+      blurb: '2. Iconify on demand (third-party icon libraries)',
     },
+    {
+      name: 'icon-mp-name',
+      title: '4. Alibaba iconfont (font glyphs)',
+      blurb: '4. Alibaba iconfont (font glyphs)',
+    },
+    {
+      name: 'icon-mp-css',
+      title: '4. Alibaba iconfont (font glyphs)',
+      blurb: '4. Alibaba iconfont (font glyphs)',
+    },
+    { name: 'icon-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'icon-mp-size', title: 'Sizes & stroke', blurb: 'Sizes & stroke' },
     {
       name: 'icon-mp-registry',
       title: 'Custom + button integration',
-      blurb: "Custom IconData + SnButton's #icon slot (Plus / custom / X).",
+      blurb: 'Custom + button integration',
     },
     {
       name: 'icon-mp-custom',
       title: 'Root class and inline style (`customClass` / `customStyle`)',
-      blurb:
-        'customClass adds a dashed frame; a string customStyle sets colour / padding / fill; both together; the color prop as a control.',
+      blurb: 'Root class and inline style (`customClass` / `customStyle`)',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -171,7 +178,6 @@ import { Icon } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

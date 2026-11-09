@@ -75,7 +75,6 @@ import { VideoPreview } from '@snui/uni';
       blurb: '自定义 z-index 与 customStyle、selector 实例标识，以及 on-open / on-close 计数。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -85,7 +84,7 @@ import { VideoPreview } from '@snui/uni';
         default: "''",
         desc: 'Instance identifier (parity with the reference; useful for logs / telemetry).',
       },
-      { name: 'zIndex', type: 'number', default: '1000', desc: 'Stacking level of the layer.' },
+      { name: 'zIndex', type: 'number', default: '1000', desc: '预览层级' },
       {
         name: 'fullScreen',
         type: 'boolean',
@@ -131,7 +130,6 @@ import { VideoPreview } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

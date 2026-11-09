@@ -47,9 +47,17 @@ import { Image } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'image-web-basic', title: '代码演示', blurb: 'width/height/object-fit 控制缩略图。' },
+    { name: 'image-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'image-web-group', title: '组内预览', blurb: '组内预览' },
+    { name: 'image-web-fallback', title: '加载失败回退', blurb: '加载失败回退' },
+    { name: 'image-web-error-slot', title: '自定义加载失败占位', blurb: '自定义加载失败占位' },
+    { name: 'image-web-preview-disabled', title: '禁止预览', blurb: '禁止预览' },
+    { name: 'image-web-lazy', title: '懒加载', blurb: '懒加载' },
+    { name: 'image-web-manual-preview', title: '手动打开预览', blurb: '手动打开预览' },
+    { name: 'image-web-previewed-img-props', title: '预览图属性', blurb: '预览图属性' },
+    { name: 'image-web-toolbar-tooltip', title: '工具栏提示', blurb: '工具栏提示' },
+    { name: 'image-web-custom-toolbar', title: '自定义工具栏', blurb: '自定义工具栏' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -164,7 +172,6 @@ import { Image } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -86,7 +86,6 @@ import { Signature } from '@snui/uni';
         'fileType / quality / exportScale (used by the host); pressure / maxWidth / minWidth / minSpeed (unimplemented); customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -205,7 +204,6 @@ import { Signature } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

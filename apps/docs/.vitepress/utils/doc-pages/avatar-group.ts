@@ -46,13 +46,11 @@ import { AvatarGroup } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'avatar-group-web-basic',
-      title: '代码演示',
-      blurb: '收紧叠放 / shrink 逐个缩小 / maxOptions 溢出折叠 + onExpand。',
-    },
+    { name: 'avatar-group-web-basic', title: '基础头像组', blurb: '基础头像组' },
+    { name: 'avatar-group-web-max', title: '数量上限与展开回调', blurb: '数量上限与展开回调' },
+    { name: 'avatar-group-web-shrink', title: '尺寸渐变与收紧叠放', blurb: '尺寸渐变与收紧叠放' },
+    { name: 'avatar-group-web-image', title: '图片头像', blurb: '图片头像' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -95,7 +93,6 @@ import { AvatarGroup } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

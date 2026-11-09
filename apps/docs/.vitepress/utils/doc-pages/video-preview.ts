@@ -51,18 +51,24 @@ import { VideoPreview } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'video-preview-web-basic', title: '基础用法', blurb: '基础用法' },
     {
-      name: 'video-preview-web-basic',
-      title: '代码演示',
-      blurb:
-        '默认即为自定义控制条；width / height / aspect-ratio 控制媒体框尺寸，object-fit 控制填充方式。',
+      name: 'video-preview-web-controls',
+      title: '自定义控制条 vs 原生控制条',
+      blurb: '自定义控制条 vs 原生控制条',
+    },
+    { name: 'video-preview-web-background', title: '背景 / 横幅视频', blurb: '背景 / 横幅视频' },
+    { name: 'video-preview-web-overlay', title: '全屏预览', blurb: '全屏预览' },
+    {
+      name: 'video-preview-web-custom-poster',
+      title: '自定义封面与插槽',
+      blurb: '自定义封面与插槽',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'src', type: 'string', default: '—', desc: 'Video source. Required.' },
+      { name: 'src', type: 'string', default: '—', desc: '视频地址（必填）' },
       {
         name: 'poster',
         type: 'string | undefined',
@@ -123,8 +129,8 @@ import { VideoPreview } from '@snui/vue-web';
         default: 'false',
         desc: 'Start inline playback on mount (browsers require `muted` for this).',
       },
-      { name: 'loop', type: 'boolean', default: 'false', desc: 'Loop inline playback.' },
-      { name: 'muted', type: 'boolean', default: 'false', desc: 'Mute inline playback.' },
+      { name: 'loop', type: 'boolean', default: 'false', desc: '循环播放' },
+      { name: 'muted', type: 'boolean', default: 'false', desc: '静音播放' },
       {
         name: 'preload',
         type: "'none' | 'metadata' | 'auto'",
@@ -182,7 +188,6 @@ import { VideoPreview } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

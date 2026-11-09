@@ -54,13 +54,12 @@ import { Breadcrumb } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'breadcrumb-web-basic',
-      title: '实时预览',
-      blurb: '默认分隔符 / 自定义分隔符 / 最后一页不可点',
-    },
+    { name: 'breadcrumb-web-basic', title: '实时预览', blurb: '实时预览' },
+    { name: 'breadcrumb-web-separator', title: '实时预览', blurb: '实时预览' },
+    { name: 'breadcrumb-web-icon', title: '实时预览', blurb: '实时预览' },
+    { name: 'breadcrumb-web-variant', title: '实时预览', blurb: '实时预览' },
+    { name: 'breadcrumb-web-max-count', title: '实时预览', blurb: '实时预览' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +96,6 @@ import { Breadcrumb } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

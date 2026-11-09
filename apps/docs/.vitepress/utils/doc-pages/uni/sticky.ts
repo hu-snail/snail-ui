@@ -76,12 +76,11 @@ import { Sticky } from '@snui/uni';
         'custom-class / custom-style 自定义根节点；两层不同 offset-top 依次吸顶；z-index 控制层级。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'zIndex', type: 'number', default: '1', desc: '层级。' },
-      { name: 'offsetTop', type: 'number', default: '0', desc: '吸顶距离（px）。' },
+      { name: 'zIndex', type: 'number', default: '1', desc: '层级' },
+      { name: 'offsetTop', type: 'number', default: '0', desc: '吸顶距离（px）' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
     ],
@@ -105,7 +104,6 @@ import { Sticky } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

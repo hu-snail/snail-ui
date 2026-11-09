@@ -46,9 +46,10 @@ import { Empty } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'empty-web-basic', title: '代码演示', blurb: '默认内联 SVG 图标 +「无数据」描述。' },
+    { name: 'empty-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'empty-web-icon', title: '自定义图标与操作', blurb: '自定义图标与操作' },
+    { name: 'empty-web-size', title: '尺寸', blurb: '尺寸' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +98,6 @@ import { Empty } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

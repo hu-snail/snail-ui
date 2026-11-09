@@ -46,13 +46,13 @@ import { Progress } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'progress-web-basic',
-      title: '代码演示',
-      blurb: '线形 / 状态色 / 指示器位置 / 处理中条纹 / 自定义指示器。',
-    },
+    { name: 'progress-web-basic', title: '线形与状态色', blurb: '线形与状态色' },
+    { name: 'progress-web-indicator', title: '指示器位置对照', blurb: '指示器位置对照' },
+    { name: 'progress-web-processing', title: '处理中与状态四态', blurb: '处理中与状态四态' },
+    { name: 'progress-web-dynamic', title: '动态改变进度', blurb: '动态改变进度' },
+    { name: 'progress-web-circle', title: '环形进度', blurb: '环形进度' },
+    { name: 'progress-web-multiple', title: '多环对照', blurb: '多环对照' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -155,7 +155,6 @@ import { Progress } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

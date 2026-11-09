@@ -45,13 +45,14 @@ import { Alert } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'alert-web-basic',
-      title: '代码演示',
-      blurb: '五种 type：底色淡染，类型色只落在图标与边框上',
-    },
+    { name: 'alert-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'alert-web-bordered', title: '边框控制', blurb: '边框控制' },
+    { name: 'alert-web-icon', title: '自定义图标', blurb: '自定义图标' },
+    { name: 'alert-web-no-icon', title: '隐藏图标', blurb: '隐藏图标' },
+    { name: 'alert-web-closable', title: '可关闭与拦截', blurb: '可关闭与拦截' },
+    { name: 'alert-web-slots', title: '插槽覆盖', blurb: '插槽覆盖' },
+    { name: 'alert-web-marquee', title: '滚动公告', blurb: '滚动公告' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -106,7 +107,6 @@ import { Alert } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

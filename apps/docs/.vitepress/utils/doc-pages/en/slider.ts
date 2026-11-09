@@ -75,7 +75,6 @@ import { Slider } from '@snui/vue-web';
         'Rail gradient and transparent diffuse (railBackground / railShadow), trackBackground gradient, railWidth thickness and tooltip colors.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -204,7 +203,6 @@ import { Slider } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

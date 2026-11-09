@@ -69,7 +69,6 @@ import { Loading } from '@snui/uni';
         'inherit-color from the parent / root class and inline style / scaling the spinner alone.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -143,7 +142,6 @@ import { Loading } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

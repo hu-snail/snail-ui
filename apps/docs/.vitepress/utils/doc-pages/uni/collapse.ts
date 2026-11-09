@@ -94,7 +94,6 @@ import { Collapse } from '@snui/uni';
         'more 插槽 + custom-more-slot-class；item border=false；before-expend 拦截展开；title 插槽。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -122,7 +121,7 @@ import { Collapse } from '@snui/uni';
         default: 'false',
         desc: '查看更多模式下是否启用 more 插槽。',
       },
-      { name: 'lineNum', type: 'number', default: '2', desc: '查看更多模式下收起显示行数。' },
+      { name: 'lineNum', type: 'number', default: '2', desc: '查看更多模式下收起显示行数' },
       {
         name: 'customMoreSlotClass',
         type: 'string',
@@ -170,7 +169,6 @@ import { Collapse } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

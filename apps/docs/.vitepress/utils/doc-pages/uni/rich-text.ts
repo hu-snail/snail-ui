@@ -59,13 +59,17 @@ import { RichText } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'rich-text-mp-basic', title: '基础图文', blurb: '基础图文' },
+    { name: 'rich-text-mp-images', title: '图片与预览', blurb: '图片与预览' },
+    { name: 'rich-text-mp-links', title: '链接与图片链接', blurb: '链接与图片链接' },
+    { name: 'rich-text-mp-table', title: '表格', blurb: '表格' },
+    { name: 'rich-text-mp-media', title: '音视频与媒体控制', blurb: '音视频与媒体控制' },
     {
-      name: 'rich-text-mp-basic',
-      title: '代码演示',
-      blurb: '标题 / 段落 / 强调 / 引用 / 有序与无序列表组合成完整文章。',
+      name: 'rich-text-mp-styles',
+      title: '样式映射、目录与空状态',
+      blurb: '样式映射、目录与空状态',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -153,7 +157,6 @@ import { RichText } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

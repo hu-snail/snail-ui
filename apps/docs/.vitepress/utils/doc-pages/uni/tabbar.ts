@@ -60,7 +60,6 @@ import { Tabbar } from '@snui/uni';
         '标签栏固定在屏幕底部；形态胶囊（标准 / 毛玻璃 / 凸起）、边框 / 安全区 / 占位 / 徽标开关、激活色切换，全部设置项实时生效。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -70,9 +69,9 @@ import { Tabbar } from '@snui/uni';
         default: '—',
         desc: '选中标签的索引值或者名称。',
       },
-      { name: 'fixed', type: 'boolean', default: '—', desc: '是否固定在底部。' },
-      { name: 'bordered', type: 'boolean', default: '—', desc: '是否显示顶部边框。' },
-      { name: 'safeAreaInsetBottom', type: 'boolean', default: '—', desc: '是否设置底部安全区。' },
+      { name: 'fixed', type: 'boolean', default: '—', desc: '是否固定在底部' },
+      { name: 'bordered', type: 'boolean', default: '—', desc: '是否显示顶部边框' },
+      { name: 'safeAreaInsetBottom', type: 'boolean', default: '—', desc: '是否设置底部安全区' },
       {
         name: 'shape',
         type: "'default' | 'round'",
@@ -97,15 +96,15 @@ import { Tabbar } from '@snui/uni';
         default: '—',
         desc: '固定在底部时，是否生成等高占位元素。',
       },
-      { name: 'zIndex', type: 'number', default: '—', desc: '组件层级。' },
+      { name: 'zIndex', type: 'number', default: '—', desc: '组件层级（仅在 `fixed` 时写入）' },
       {
         name: 'glass',
         type: 'boolean',
         default: '—',
         desc: '毛玻璃风格（additive，Human 指令 2026-11-01）：背景换成半透明表面 + backdrop-filter 高斯模糊；固定在底部时页面内容从栏后透出。`bordered` 照常叠加。',
       },
-      { name: 'customClass', type: 'string', default: '—', desc: '根节点自定义类名。' },
-      { name: 'customStyle', type: 'string', default: '—', desc: '根节点自定义样式。' },
+      { name: 'customClass', type: 'string', default: '—', desc: '根节点自定义类名' },
+      { name: 'customStyle', type: 'string', default: '—', desc: '根节点自定义 inline style' },
     ],
   },
   ai: {
@@ -127,7 +126,6 @@ import { Tabbar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

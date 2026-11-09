@@ -111,67 +111,6 @@ export const sliderBarDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '组件不新造色值：填充取 ' },
-      { t: 'code', s: '--sn-web-color-action-primary' },
-      { t: 'text', s: '，轨道底由 ' },
-      { t: 'code', s: '--sn-web-color-text-primary' },
-      { t: 'text', s: ' 按 8% 混出，圆角取 ' },
-      { t: 'code', s: '--sn-web-radius-*' },
-      { t: 'text', s: '。因此换肤 / 暗色自动生效。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'fill',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-bar-fill',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'track',
-        raw: '--aui-color-text-primary',
-        alias: '--sn-bar-bg',
-        value: '8% mix',
-      },
-      {
-        name: 'thumb',
-        raw: '--aui-color-text-on-primary',
-        alias: '--sn-bar-thumb',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'radius',
-        raw: '--aui-radius-lg',
-        alias: '--sn-bar-radius',
-        value: '8px',
-        kind: 'curve',
-      },
-      {
-        name: 'aurora frame',
-        raw: '—',
-        alias: '--sn-slider-bar-aurora-frame',
-        value: '6% mix',
-      },
-      {
-        name: 'aurora glow',
-        raw: '—',
-        alias: '--sn-slider-bar-aurora-glow',
-        value: 'rgba(124, 108, 246, 0.35)',
-        swatch: 'rgba(124, 108, 246, 0.35)',
-      },
-      {
-        name: 'thickness',
-        raw: '—',
-        alias: '--sn-bar-thickness',
-        value: '40px',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -210,7 +149,7 @@ export const sliderBarDocPage: SnDocPageData = {
       {
         name: 'gradient / sparkles / animated',
         type: 'string / number / boolean',
-        default: '内置渐变 / 14 / true',
+        default: 'aurora 渐变 / 14 / true',
         desc: 'aurora 的渐变、星点密度（0–40）与动效开关。',
       },
       {
@@ -270,7 +209,7 @@ export const sliderBarDocPage: SnDocPageData = {
         default: '40',
         desc: '条厚度（水平为高、竖排为宽），数字按 px。',
       },
-      { name: 'radius', type: 'string', default: '半径 token', desc: '条圆角，任意 CSS 长度。' },
+      { name: 'radius', type: 'string', default: '—', desc: '条圆角，任意 CSS 长度。' },
       { name: 'fade', type: 'boolean', default: 'true', desc: '竖排：空余部分向上渐隐。' },
       { name: 'tooltipOnly', type: 'boolean', default: 'false', desc: '竖排：仅用气泡读数。' },
       { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍名称。' },
@@ -303,7 +242,6 @@ export const sliderBarDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

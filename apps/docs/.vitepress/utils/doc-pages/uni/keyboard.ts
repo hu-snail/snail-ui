@@ -96,7 +96,6 @@ import { Keyboard } from '@snui/uni';
         'modal；hideOnClickOutside=false；lockScroll=false；closeButtonLoading；safeAreaInsetBottom；rootPortal；customClass / customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -109,7 +108,7 @@ import { Keyboard } from '@snui/uni';
       { name: 'modelValue', type: 'string', default: "''", desc: 'Current value (`v-model`).' },
       { name: 'title', type: 'string', default: "''", desc: 'Keyboard title.' },
       { name: 'mode', type: 'KeyboardMode', default: "'default'", desc: 'Layout preset.' },
-      { name: 'zIndex', type: 'number', default: '100', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '100', desc: '层级' },
       {
         name: 'maxlength',
         type: 'number',
@@ -207,7 +206,6 @@ import { Keyboard } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

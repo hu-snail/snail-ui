@@ -51,9 +51,11 @@ import { Grid } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'grid-web-basic', title: '实时预览', blurb: '3 列 / 4 列基础网格 + xGap / yGap 调整' },
+    { name: 'grid-web-basic', title: '实时预览', blurb: '实时预览' },
+    { name: 'grid-web-responsive', title: '实时预览', blurb: '实时预览' },
+    { name: 'grid-web-collapsed', title: '实时预览', blurb: '实时预览' },
+    { name: 'grid-web-gap', title: '实时预览', blurb: '实时预览' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -126,7 +128,6 @@ import { Grid } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

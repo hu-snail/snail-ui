@@ -70,23 +70,22 @@ import { Navbar } from '@snui/uni';
         'left-disabled / right-disabled 拦截点击；safe-area-inset-top 补安全区；capsule 插槽与 custom-class / custom-style。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
       { name: 'title', type: 'string', default: "''", desc: '标题文字。' },
       { name: 'leftText', type: 'string', default: "''", desc: '左侧文案。' },
       { name: 'rightText', type: 'string', default: "''", desc: '右侧文案。' },
-      { name: 'leftArrow', type: 'boolean', default: 'false', desc: '是否显示左侧返回箭头。' },
-      { name: 'bordered', type: 'boolean', default: 'false', desc: '是否显示下边框。' },
-      { name: 'fixed', type: 'boolean', default: 'false', desc: '是否固定到顶部。' },
+      { name: 'leftArrow', type: 'boolean', default: 'false', desc: '是否显示左侧返回箭头' },
+      { name: 'bordered', type: 'boolean', default: 'false', desc: '是否显示下边框' },
+      { name: 'fixed', type: 'boolean', default: 'false', desc: '是否固定到顶部' },
       {
         name: 'placeholder',
         type: 'boolean',
         default: 'false',
         desc: '固定到顶部时，是否在原位置生成一个等高的占位元素。',
       },
-      { name: 'zIndex', type: 'number', default: '10', desc: '导航栏 z-index。' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '导航栏层级（仅在 `fixed` 时写入）' },
       {
         name: 'safeAreaInsetTop',
         type: 'boolean',
@@ -128,7 +127,6 @@ import { Navbar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

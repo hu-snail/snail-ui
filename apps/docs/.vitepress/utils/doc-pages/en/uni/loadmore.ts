@@ -73,7 +73,6 @@ import { Loadmore } from '@snui/uni';
         'loading-props swaps spinner shape and color / custom-class dashed outline / custom-style radius.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -140,7 +139,6 @@ import { Loadmore } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

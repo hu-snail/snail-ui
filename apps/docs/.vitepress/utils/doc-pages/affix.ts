@@ -51,8 +51,10 @@ import { Affix } from '@snui/vue-web';
   <Affix />
 </template>`,
   },
-  demos: [{ name: 'affix-web-basic', title: '代码演示', blurb: '滚动到达阈值后吸附在顶部' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'affix-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'affix-web-position', title: '吸附位置', blurb: '吸附位置' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -109,7 +111,6 @@ import { Affix } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

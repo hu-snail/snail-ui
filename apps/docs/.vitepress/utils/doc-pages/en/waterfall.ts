@@ -44,13 +44,19 @@ import { Waterfall } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'waterfall-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'waterfall-web-basic',
-      title: 'Examples',
-      blurb: 'Three columns by default; v-for driven, uneven heights.',
+      name: 'waterfall-web-image',
+      title: 'Image wall & lazy loading',
+      blurb: 'Image wall & lazy loading',
+    },
+    { name: 'waterfall-web-responsive', title: 'Responsive columns', blurb: 'Responsive columns' },
+    {
+      name: 'waterfall-web-card',
+      title: 'Card wall & masonry off',
+      blurb: 'Card wall & masonry off',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -104,7 +110,6 @@ import { Waterfall } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

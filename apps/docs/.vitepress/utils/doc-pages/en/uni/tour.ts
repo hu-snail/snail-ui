@@ -70,7 +70,6 @@ import { Tour } from '@snui/uni';
         'mask=false leaves no scrim; mask-color / duration / z-index; show-tour-buttons=false with a custom footer slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -148,7 +147,6 @@ import { Tour } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

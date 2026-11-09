@@ -97,7 +97,6 @@ import { Segmented } from '@snui/uni';
         '`:value` + `@update:value`（不同步）与 `@update:model-value`（同步）对比；customClass 外框；customStyle 覆盖底色与圆角。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -113,7 +112,7 @@ import { Segmented } from '@snui/uni';
         default: 'undefined',
         desc: 'wot-ui `value` 别名 —— `wd-segmented` 把选中值叫 `value`，本组件叫 `modelValue`。两者同时存在时 `value` 优先，便于从 wot-ui 直接迁移。',
       },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用分段器。' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用分段器' },
       {
         name: 'options',
         type: 'SegmentedRawOption[]',
@@ -155,7 +154,6 @@ import { Segmented } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

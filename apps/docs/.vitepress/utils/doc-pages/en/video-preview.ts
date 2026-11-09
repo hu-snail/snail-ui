@@ -46,14 +46,28 @@ import { VideoPreview } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'video-preview-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'video-preview-web-basic',
-      title: 'Examples',
-      blurb:
-        'The custom control bar is the default; width / height / aspect-ratio size the media box and object-fit controls the fill.',
+      name: 'video-preview-web-controls',
+      title: 'Custom bar vs native controls',
+      blurb: 'Custom bar vs native controls',
+    },
+    {
+      name: 'video-preview-web-background',
+      title: 'Background / banner video',
+      blurb: 'Background / banner video',
+    },
+    {
+      name: 'video-preview-web-overlay',
+      title: 'Full-screen preview',
+      blurb: 'Full-screen preview',
+    },
+    {
+      name: 'video-preview-web-custom-poster',
+      title: 'Custom poster and slots',
+      blurb: 'Custom poster and slots',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -177,7 +191,6 @@ import { VideoPreview } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

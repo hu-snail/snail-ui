@@ -93,7 +93,6 @@ import { Keyboard } from '@snui/uni';
         'modal; hideOnClickOutside=false; lockScroll=false; closeButtonLoading; safeAreaInsetBottom; rootPortal; customClass / customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -204,7 +203,6 @@ import { Keyboard } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

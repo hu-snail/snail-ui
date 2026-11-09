@@ -145,14 +145,33 @@ import { Form } from '@snui/uni';
       blurb: '字段级规则（required → 异步占用）先跑，再跑表单级规则（pattern / type）。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'model', type: 'Record<string, unknown>', default: '—', desc: 'model' },
-      { name: 'rules', type: 'FormRules', default: '() => ({})', desc: 'rules' },
-      { name: 'showMessage', type: 'boolean', default: 'true', desc: 'showMessage' },
-      { name: 'statusIcon', type: 'boolean', default: 'false', desc: 'statusIcon' },
+      {
+        name: 'model',
+        type: 'Record<string, unknown>',
+        default: '—',
+        desc: '表单数据对象（必传），字段用 `prop` 指向它的路径。',
+      },
+      {
+        name: 'rules',
+        type: 'FormRules',
+        default: '() => ({})',
+        desc: '按 `prop` 索引的校验规则集。',
+      },
+      {
+        name: 'showMessage',
+        type: 'boolean',
+        default: 'true',
+        desc: '是否渲染字段下方的错误消息行。',
+      },
+      {
+        name: 'statusIcon',
+        type: 'boolean',
+        default: 'false',
+        desc: '是否在错误消息前渲染状态图标，字段行可单独覆盖。',
+      },
       {
         name: 'labelPosition',
         type: "'left' | 'right' | 'top'",
@@ -160,7 +179,7 @@ import { Form } from '@snui/uni';
         desc: 'labelPosition',
       },
       { name: 'labelWidth', type: 'number | string', default: "'auto'", desc: 'labelWidth' },
-      { name: 'disabled', type: 'boolean', default: 'false', desc: 'disabled' },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: '整体禁用，级联到所有字段行。' },
       {
         name: 'validateTrigger',
         type: "'blur' | 'change'",
@@ -260,7 +279,6 @@ import { Form } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

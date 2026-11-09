@@ -48,13 +48,9 @@ import { PageHeader } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'page-header-web-basic',
-      title: '代码演示',
-      blurb: '返回 + 标题 / 副标题 / extra 操作区 / footer 分隔。',
-    },
+    { name: 'page-header-web-basic', title: '基础页头', blurb: '基础页头' },
+    { name: 'page-header-web-composite', title: '组合式页头', blurb: '组合式页头' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +93,6 @@ import { PageHeader } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -75,7 +75,6 @@ import { Avatar } from '@snui/uni';
         'online / offline presence dots, plus badge avatars composed from sn-badge + sn-avatar (count badge / dot).',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -159,7 +158,6 @@ import { Avatar } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -56,7 +56,6 @@ import { Avatar } from '@snui/vue-web';
         '长列表 / 可滚动容器内的头像：lazy 走原生 loading=lazy；再加 intersection-observer-options 则进入视口后才请求（注意把 root 指向滚动容器）。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -136,7 +135,6 @@ import { Avatar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -75,7 +75,6 @@ import { ColorPicker } from '@snui/vue-web';
       blurb: 'clearable resets to default; disabled; readonly.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -169,7 +168,6 @@ import { ColorPicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

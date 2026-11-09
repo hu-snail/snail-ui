@@ -81,7 +81,6 @@ import { QrCode } from '@snui/uni';
       blurb: '三色渐变、45° 角度渐变、自定义 canvasId 与根节点类名 / 样式。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -186,7 +185,6 @@ import { QrCode } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

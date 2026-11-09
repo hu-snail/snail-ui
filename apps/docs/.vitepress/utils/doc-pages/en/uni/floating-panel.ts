@@ -77,7 +77,6 @@ import { FloatingPanel } from '@snui/uni';
         'custom-style radius / custom-class shadow, with snapping still working on the handle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -150,7 +149,6 @@ import { FloatingPanel } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

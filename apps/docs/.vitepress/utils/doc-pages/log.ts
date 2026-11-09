@@ -41,8 +41,13 @@ import { Log } from '@snui/vue-web';
   <Log />
 </template>`,
   },
-  demos: [{ name: 'log-web-size', title: '代码演示', blurb: 'rows 控制日志高度。' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'log-web-size', title: '尺寸', blurb: '尺寸' },
+    { name: 'log-web-event', title: '事件', blurb: '事件' },
+    { name: 'log-web-scroll', title: '滚动控制', blurb: '滚动控制' },
+    { name: 'log-web-loading', title: '加载中', blurb: '加载中' },
+    { name: 'log-web-auto-bottom', title: '滚动到最新', blurb: '滚动到最新' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -121,7 +126,6 @@ import { Log } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

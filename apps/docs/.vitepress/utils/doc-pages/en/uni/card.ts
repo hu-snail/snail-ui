@@ -59,7 +59,6 @@ import { Card } from '@snui/uni';
         'Three region classes, the root class plus inline style, and the same customisation on the rectangle variant.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -126,7 +125,6 @@ import { Card } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

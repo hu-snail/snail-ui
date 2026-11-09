@@ -74,7 +74,6 @@ import { SlideVerify } from '@snui/uni';
         '`icon` / `successIcon` follow the iconfont convention; `cssIcon` renders as a bare class; `iconSize` / `successIconSize` size the two glyphs independently; `tolerance` widens the slack; `customClass` / `customStyle` land on the root.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -168,7 +167,6 @@ import { SlideVerify } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

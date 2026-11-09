@@ -73,7 +73,6 @@ import { Tag } from '@snui/vue-web';
         'color accepts a string or a { color, borderColor, textColor } object; text color is auto-picked for contrast when textColor is omitted.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -164,7 +163,6 @@ import { Tag } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

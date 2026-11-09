@@ -81,7 +81,6 @@ import { Img } from '@snui/uni';
       blurb: '根节点类名 / inline style 与内部 image 类名分别生效。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -105,7 +104,7 @@ import { Img } from '@snui/uni';
         desc: 'Height — a bare number is treated as rpx.',
       },
       { name: 'mode', type: 'ImageMode', default: "'scaleToFill'", desc: 'Crop mode.' },
-      { name: 'round', type: 'boolean', default: 'false', desc: 'Render as a circle.' },
+      { name: 'round', type: 'boolean', default: 'false', desc: '是否显示为圆形' },
       {
         name: 'radius',
         type: 'string | number',
@@ -181,7 +180,6 @@ import { Img } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

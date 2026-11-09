@@ -72,7 +72,6 @@ import { QrCode } from '@snui/uni';
       blurb: 'A three-color gradient, a 45° gradient, a custom canvasId and root class / style.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -177,7 +176,6 @@ import { QrCode } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

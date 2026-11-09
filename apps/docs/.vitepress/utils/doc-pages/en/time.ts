@@ -44,9 +44,13 @@ import { Time } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'time-web-basic', title: 'Basic', blurb: 'number / Date input, datetime by default.' },
+    { name: 'time-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'time-web-type', title: 'Type', blurb: 'Type' },
+    { name: 'time-web-format', title: 'Format', blurb: 'Format' },
+    { name: 'time-web-relative', title: 'Relative', blurb: 'Relative' },
+    { name: 'time-web-unix', title: 'Unix', blurb: 'Unix' },
+    { name: 'time-web-timezone', title: 'Time zone', blurb: 'Time zone' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -113,7 +117,6 @@ import { Time } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

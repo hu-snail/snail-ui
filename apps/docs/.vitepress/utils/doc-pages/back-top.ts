@@ -48,8 +48,13 @@ import { BackTop } from '@snui/vue-web';
   <BackTop />
 </template>`,
   },
-  demos: [{ name: 'back-top-web-basic', title: '代码演示', blurb: '滚动超过 200px 后浮出按钮' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'back-top-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'back-top-web-visibility-height', title: '显示阈值', blurb: '显示阈值' },
+    { name: 'back-top-web-change-position', title: '调整位置', blurb: '调整位置' },
+    { name: 'back-top-web-target-container', title: '自动绑定容器', blurb: '自动绑定容器' },
+    { name: 'back-top-web-control', title: '受控显示', blurb: '受控显示' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -104,7 +109,6 @@ import { BackTop } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

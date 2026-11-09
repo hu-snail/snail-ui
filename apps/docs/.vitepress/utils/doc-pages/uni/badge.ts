@@ -76,7 +76,6 @@ import { Badge } from '@snui/uni';
         'customClass 给包裹容器加虚线框；customStyle 加内边距与底色；两者叠加；角标自身 type / bgColor / 偏移的对照。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -104,15 +103,15 @@ import { Badge } from '@snui/uni';
         default: 'undefined',
         desc: '为正时，角标向左偏移对应像素。',
       },
-      { name: 'isDot', type: 'boolean', default: 'false', desc: '红色点状标注（不显示数值）。' },
-      { name: 'hidden', type: 'boolean', default: 'false', desc: '隐藏角标（内容照常渲染）。' },
+      { name: 'isDot', type: 'boolean', default: 'false', desc: '圆点模式，不显示数值' },
+      { name: 'hidden', type: 'boolean', default: 'false', desc: '隐藏角标（被包裹内容照常渲染）' },
       {
         name: 'type',
         type: "'primary' | 'success' | 'warning' | 'danger' | 'info' | undefined",
         default: 'undefined',
         desc: '类型：primary / success / warning / danger / info。 不设置时用危险色（红）—— 默认角标为红色。',
       },
-      { name: 'bgColor', type: 'string', default: '—', desc: '背景色（内联覆盖 `type`）。' },
+      { name: 'bgColor', type: 'string', default: '—', desc: '角标背景色（内联覆盖）' },
       {
         name: 'showZero',
         type: 'boolean',
@@ -154,7 +153,6 @@ import { Badge } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

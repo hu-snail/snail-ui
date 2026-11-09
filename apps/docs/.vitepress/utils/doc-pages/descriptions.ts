@@ -46,9 +46,13 @@ import { Descriptions } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'descriptions-web-basic', title: '代码演示', blurb: '默认三列，label 在内容上方。' },
+    { name: 'descriptions-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'descriptions-web-columns', title: '总列数', blurb: '总列数' },
+    { name: 'descriptions-web-span', title: '跨列', blurb: '跨列' },
+    { name: 'descriptions-web-placement', title: 'label 位置', blurb: 'label 位置' },
+    { name: 'descriptions-web-bordered', title: '描边', blurb: '描边' },
+    { name: 'descriptions-web-size', title: '尺寸', blurb: '尺寸' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -139,7 +143,6 @@ import { Descriptions } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

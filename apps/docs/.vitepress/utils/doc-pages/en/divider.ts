@@ -44,7 +44,6 @@ import { Divider } from '@snui/vue-web';
         'Comprehensive preview of all variants: horizontal / dashed / with text / marginSize / vertical.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -88,7 +87,6 @@ import { Divider } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

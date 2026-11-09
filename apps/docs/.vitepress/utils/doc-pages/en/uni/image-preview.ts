@@ -77,7 +77,6 @@ import { ImagePreview } from '@snui/uni';
         'Selector hit zones, loop off, close button hidden, close-on-click off, a custom z-index and the long-press event.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -160,7 +159,6 @@ import { ImagePreview } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

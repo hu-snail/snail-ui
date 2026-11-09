@@ -86,7 +86,6 @@ import { Search } from '@snui/uni';
         'placeholderStyle / placeholderClass 只作用于占位文本；customClass / customStyle 改根包装的外框与底色。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -139,7 +138,7 @@ import { Search } from '@snui/uni';
         default: 'false',
         desc: 'Left-align the placeholder instead of centering it.',
       },
-      { name: 'focus', type: 'boolean', default: 'false', desc: 'Focus the field on mount.' },
+      { name: 'focus', type: 'boolean', default: 'false', desc: '挂载即聚焦。' },
       {
         name: 'focusWhenClear',
         type: 'boolean',
@@ -186,7 +185,6 @@ import { Search } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

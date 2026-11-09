@@ -92,7 +92,6 @@ import { ActionSheet } from '@snui/uni';
       blurb: '标题类名 + 面板内联样式 + 提前渲染 + 关闭安全区。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -102,7 +101,7 @@ import { ActionSheet } from '@snui/uni';
         default: 'false',
         desc: 'Whether the sheet is visible (v-model).',
       },
-      { name: 'actions', type: 'SnActionSheetAction[]', default: '() => []', desc: 'List rows.' },
+      { name: 'actions', type: 'SnActionSheetAction[]', default: '() => []', desc: '列表行' },
       {
         name: 'panels',
         type: 'Array<SnActionSheetPanel | SnActionSheetPanel[]>',
@@ -140,8 +139,8 @@ import { ActionSheet } from '@snui/uni';
         default: 'true',
         desc: 'Close the sheet when the scrim is tapped.',
       },
-      { name: 'duration', type: 'number', default: '200', desc: 'Animation duration in ms.' },
-      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level of the sheet.' },
+      { name: 'duration', type: 'number', default: '200', desc: '动画持续时间（ms）' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '菜单层级' },
       {
         name: 'lazyRender',
         type: 'boolean',
@@ -199,7 +198,6 @@ import { ActionSheet } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

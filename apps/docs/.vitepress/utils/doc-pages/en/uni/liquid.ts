@@ -57,7 +57,6 @@ import { Liquid } from '@snui/uni';
       blurb: 'Basic / outline / custom wave color, with a button that raises the level.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -116,7 +115,6 @@ import { Liquid } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -48,13 +48,11 @@ import { Countdown } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'countdown-web-basic',
-      title: '代码演示',
-      blurb: 'duration 5000ms，active 控制走/停。',
-    },
+    { name: 'countdown-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'countdown-web-precision', title: '精度', blurb: '精度' },
+    { name: 'countdown-web-render', title: '自定义渲染', blurb: '自定义渲染' },
+    { name: 'countdown-web-reset', title: '重置', blurb: '重置' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -97,7 +95,6 @@ import { Countdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

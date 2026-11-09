@@ -65,7 +65,6 @@ import { Liquid } from '@snui/uni';
       blurb: '基础 / outline 外圈 / 自定义波浪色，点击按钮渐增进度。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -87,7 +86,7 @@ import { Liquid } from '@snui/uni';
         default: '500',
         desc: '水位 / current 过渡时长（ms），0 表示立即到位。',
       },
-      { name: 'outline', type: 'boolean', default: 'false', desc: '是否显示外圈描边。' },
+      { name: 'outline', type: 'boolean', default: 'false', desc: '是否显示外圈描边' },
       { name: 'radius', type: 'string', default: "'50%'", desc: '圆角（默认正圆）。' },
       {
         name: 'waveColor',
@@ -124,7 +123,6 @@ import { Liquid } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

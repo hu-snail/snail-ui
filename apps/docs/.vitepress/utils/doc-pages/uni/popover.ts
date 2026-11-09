@@ -62,13 +62,21 @@ import { Popover } from '@snui/uni';
 </template>`,
   },
   demos: [
+    { name: 'popover-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'popover-mp-height', title: '自适应高度', blurb: '自适应高度' },
+    { name: 'popover-mp-menu', title: '菜单模式与图标配置', blurb: '菜单模式与图标配置' },
     {
-      name: 'popover-mp-basic',
-      title: '代码演示',
-      blurb: 'normal 模式 + 关闭按钮；触发器切换，点击外部关闭。',
+      name: 'popover-mp-placement',
+      title: '弹出位置 / 箭头 / 禁用 / 配色',
+      blurb: '弹出位置 / 箭头 / 禁用 / 配色',
+    },
+    { name: 'popover-mp-theme', title: '暗黑主题', blurb: '暗黑主题' },
+    {
+      name: 'popover-mp-slot',
+      title: '兼容图标字段 / content 插槽 / 节点类名',
+      blurb: '兼容图标字段 / content 插槽 / 节点类名',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -157,7 +165,6 @@ import { Popover } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

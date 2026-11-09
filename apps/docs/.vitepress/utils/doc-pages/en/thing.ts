@@ -43,13 +43,9 @@ import { Thing } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'thing-web-basic',
-      title: 'Examples',
-      blurb: 'title / description / body + footer / action slots.',
-    },
+    { name: 'thing-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'thing-web-indent', title: 'Indented content', blurb: 'Indented content' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -128,7 +124,6 @@ import { Thing } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

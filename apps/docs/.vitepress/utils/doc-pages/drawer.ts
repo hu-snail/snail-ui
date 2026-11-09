@@ -49,8 +49,15 @@ import { Drawer } from '@snui/vue-web';
   <Drawer />
 </template>`,
   },
-  demos: [{ name: 'drawer-web-basic', title: '代码演示', blurb: '右侧滑入的基础抽屉' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'drawer-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'drawer-web-content', title: '内容骨架', blurb: '内容骨架' },
+    { name: 'drawer-web-resizable', title: '拖拽调整尺寸', blurb: '拖拽调整尺寸' },
+    { name: 'drawer-web-multiple', title: '多层嵌套', blurb: '多层嵌套' },
+    { name: 'drawer-web-target', title: '指定挂载容器', blurb: '指定挂载容器' },
+    { name: 'drawer-web-scroll', title: '内容滚动', blurb: '内容滚动' },
+    { name: 'drawer-web-closable', title: '关闭按钮', blurb: '关闭按钮' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -219,7 +226,6 @@ import { Drawer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

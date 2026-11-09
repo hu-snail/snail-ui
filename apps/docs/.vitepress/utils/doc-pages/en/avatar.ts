@@ -53,7 +53,6 @@ import { Avatar } from '@snui/vue-web';
         'Avatars in a long scrollable list: lazy uses the native loading=lazy attribute; adding intersection-observer-options defers the request until the avatar enters the viewport (point root at the scroll container).',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -133,7 +132,6 @@ import { Avatar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -72,7 +72,6 @@ import { SwipeAction } from '@snui/uni';
       blurb: 'Swipeable + custom-class / custom-style, plus a disabled row that stays closed.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -127,7 +126,6 @@ import { SwipeAction } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

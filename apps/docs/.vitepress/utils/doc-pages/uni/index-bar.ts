@@ -81,11 +81,10 @@ import { IndexBar } from '@snui/uni';
         '整页通讯录：紧凑预览搜索过滤可直接交互；点「整页演示」进全屏（Navbar + 搜索 + 索引栏 + 统计条）；点联系人进资料页。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'sticky', type: 'boolean', default: 'false', desc: '索引是否吸顶。' },
+      { name: 'sticky', type: 'boolean', default: 'false', desc: '索引是否吸顶' },
       {
         name: 'showIndicator',
         type: 'boolean',
@@ -115,7 +114,6 @@ import { IndexBar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

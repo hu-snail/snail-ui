@@ -88,7 +88,6 @@ import { Tag } from '@snui/uni';
         'bgColor brand-colour takeover (fill and border change together); color overrides the label only; iconPrefix + cssIcon font-glyph classes; customClass and customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -183,7 +182,6 @@ import { Tag } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

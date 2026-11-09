@@ -53,8 +53,31 @@ import { Carousel } from '@snui/vue-web';
   <Carousel />
 </template>`,
   },
-  demos: [{ name: 'carousel-web-basic', title: '代码演示', blurb: '基础轮播，循环滚动' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'carousel-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'carousel-web-autoplay', title: '自动播放', blurb: '自动播放' },
+    { name: 'carousel-web-arrow', title: '箭头', blurb: '箭头' },
+    { name: 'carousel-web-dots', title: '指示点', blurb: '指示点' },
+    { name: 'carousel-web-vertical', title: '垂直方向', blurb: '垂直方向' },
+    { name: 'carousel-web-effect', title: '切换效果对比', blurb: '切换效果对比' },
+    { name: 'carousel-web-effect-custom', title: '自定义过渡效果', blurb: '自定义过渡效果' },
+    { name: 'carousel-web-card-3d', title: '3D 卡片效果', blurb: '3D 卡片效果' },
+    { name: 'carousel-web-slides-per-view', title: '多屏展示', blurb: '多屏展示' },
+    { name: 'carousel-web-mousewheel', title: '滚轮切换', blurb: '滚轮切换' },
+    {
+      name: 'carousel-web-custom-arrow-and-dots',
+      title: '自定义箭头与指示点',
+      blurb: '自定义箭头与指示点',
+    },
+    {
+      name: 'carousel-web-video',
+      title: '视频 / 图片（options 数据驱动）',
+      blurb: '视频 / 图片（options 数据驱动）',
+    },
+    { name: 'carousel-web-banner', title: '业务场景', blurb: '业务场景' },
+    { name: 'carousel-web-product-cards', title: '业务场景', blurb: '业务场景' },
+    { name: 'carousel-web-news', title: '业务场景', blurb: '业务场景' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -194,7 +217,6 @@ import { Carousel } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

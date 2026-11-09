@@ -51,13 +51,12 @@ import { FloatButton } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'float-button-web-basic',
-      title: '代码演示',
-      blurb: '默认圆形 / 品牌色圆形 / 方形带文字，右下角三档偏移',
-    },
+    { name: 'float-button-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'float-button-web-placement', title: '八个方位', blurb: '八个方位' },
+    { name: 'float-button-web-group', title: '按钮组', blurb: '按钮组' },
+    { name: 'float-button-web-direction', title: '展开方向', blurb: '展开方向' },
+    { name: 'float-button-web-badge-link', title: '徽标与链接', blurb: '徽标与链接' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -127,7 +126,7 @@ import { FloatButton } from '@snui/vue-web';
         default: 'false',
         desc: 'Disabled state — no `click` event, `aria-disabled` on the root.',
       },
-      { name: 'visible', type: 'boolean', default: 'true', desc: '`v-if` the whole button.' },
+      { name: 'visible', type: 'boolean', default: 'true', desc: '是否渲染整个按钮（`v-if`）。' },
       {
         name: 'placement',
         type: 'SnFloatButtonPlacement',
@@ -197,7 +196,6 @@ import { FloatButton } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

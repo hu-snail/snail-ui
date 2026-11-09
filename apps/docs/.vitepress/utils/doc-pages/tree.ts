@@ -51,13 +51,22 @@ import { Tree } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'tree-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'tree-web-fields', title: '自定义字段名', blurb: '自定义字段名' },
+    { name: 'tree-web-multiple', title: '多选', blurb: '多选' },
+    { name: 'tree-web-cascade', title: '级联勾选', blurb: '级联勾选' },
+    { name: 'tree-web-checkable-drag', title: '复选框 + 拖拽', blurb: '复选框 + 拖拽' },
+    { name: 'tree-web-disabled', title: '禁用与状态', blurb: '禁用与状态' },
+    { name: 'tree-web-prefix-suffix', title: '前缀与后缀', blurb: '前缀与后缀' },
     {
-      name: 'tree-web-basic',
-      title: '代码演示',
-      blurb: 'defaultExpandedKeys 展开父级，v-model:selected-keys 单选。',
+      name: 'tree-web-block-line',
+      title: '整行选中（block-line）',
+      blurb: '整行选中（block-line）',
     },
+    { name: 'tree-web-line', title: '连接线（show-line）', blurb: '连接线（show-line）' },
+    { name: 'tree-web-guide', title: '连接线（show-line）', blurb: '连接线（show-line）' },
+    { name: 'tree-web-empty', title: '空状态', blurb: '空状态' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -244,7 +253,6 @@ import { Tree } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

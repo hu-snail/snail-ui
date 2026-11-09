@@ -75,7 +75,6 @@ import { Loading } from '@snui/uni';
       blurb: 'inherit-color 继承父级色 / 根节点类名与内联样式 / 单独放大 spinner。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -149,7 +148,6 @@ import { Loading } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

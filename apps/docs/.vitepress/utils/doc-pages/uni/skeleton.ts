@@ -58,20 +58,16 @@ import { Skeleton } from '@snui/uni';
 </template>`,
   },
   demos: [
-    { name: 'skeleton-mp-basic', title: '基础用法', blurb: '四种预设布局。' },
-    { name: 'skeleton-mp-custom', title: '自定义行列', blurb: '卡片布局与图文混排布局。' },
+    { name: 'skeleton-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'skeleton-mp-custom', title: '自定义行列', blurb: '自定义行列' },
+    { name: 'skeleton-mp-animation', title: '微光动画与切换', blurb: '微光动画与切换' },
+    { name: 'skeleton-mp-custom-style', title: '自定义类名与样式', blurb: '自定义类名与样式' },
     {
-      name: 'skeleton-mp-animation',
-      title: '微光动画与切换',
-      blurb: '两种微光动画，以及 loading 开关切换真实内容。',
-    },
-    {
-      name: 'skeleton-mp-custom-style',
+      name: 'skeleton-mp-custom-class-forms',
       title: '自定义类名与样式',
-      blurb: 'custom-class 加虚线框 / custom-style 加内边距与圆角 / 两者叠加。',
+      blurb: '自定义类名与样式',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -127,7 +123,6 @@ import { Skeleton } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -43,13 +43,33 @@ import { Pagination } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'pagination-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'pagination-web-basic',
-      title: 'Examples',
-      blurb: 'v-model:page + item-count derived page count + show-total + show-quick-jumper.',
+      name: 'pagination-web-jumper',
+      title: 'Quick jumper and page size',
+      blurb: 'Quick jumper and page size',
+    },
+    {
+      name: 'pagination-web-pagesize',
+      title: 'Page-size options and item-count coupling',
+      blurb: 'Page-size options and item-count coupling',
+    },
+    {
+      name: 'pagination-web-picker-simple',
+      title: 'Ellipsis collapsing, simple mode and the label slot',
+      blurb: 'Ellipsis collapsing, simple mode and the label slot',
+    },
+    {
+      name: 'pagination-web-disabled',
+      title: 'Ellipsis collapsing and disabled state',
+      blurb: 'Ellipsis collapsing and disabled state',
+    },
+    {
+      name: 'pagination-web-quick-switch',
+      title: 'Quick switch (ellipsis jump)',
+      blurb: 'Quick switch (ellipsis jump)',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -158,7 +178,6 @@ import { Pagination } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

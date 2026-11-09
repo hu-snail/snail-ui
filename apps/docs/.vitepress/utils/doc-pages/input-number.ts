@@ -123,74 +123,6 @@ export const inputNumberDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '步进按钮底色由 ' },
-      { t: 'code', s: '--sn-web-input-number-btn-bg' },
-      { t: 'text', s: ' 控制，其余几何与文字回退到 ' },
-      { t: 'code', s: '--sn-web-input-*' },
-      { t: 'text', s: '，因此与 Input 共享同一套换肤层。五档高度由 ' },
-      { t: 'code', s: 'sn-input-number--{size}' },
-      { t: 'text', s: ' 类直接给定（22 / 24 / 28 / 32 / 40px）。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'btn-bg',
-        raw: '—',
-        alias: '--sn-web-input-number-btn-bg',
-        value: 'transparent',
-      },
-      {
-        name: 'btn-hover-bg',
-        raw: '—',
-        alias: '--sn-web-input-number-btn-hover-bg',
-        value: 'var(--sn-web-color-background-soft)',
-      },
-      {
-        name: 'bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-input-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'border-color',
-        raw: '--aui-color-border-default',
-        alias: '--sn-web-input-border-color',
-        value: '#e4e4e7',
-        swatch: '#e4e4e7',
-      },
-      {
-        name: 'border-color-focus',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-input-border-color-focus',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'padding-x',
-        raw: '--aui-input-padding-x',
-        alias: '--sn-web-input-padding-x',
-        value: '12px',
-      },
-      {
-        name: 'radius',
-        raw: '--aui-input-radius',
-        alias: '--sn-web-input-radius',
-        value: '4px',
-        kind: 'curve',
-      },
-      {
-        name: 'placeholder-color',
-        raw: '--aui-color-text-tertiary',
-        alias: '--sn-web-input-placeholder-color',
-        value: '#a1a1aa',
-        swatch: '#a1a1aa',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -312,7 +244,6 @@ export const inputNumberDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

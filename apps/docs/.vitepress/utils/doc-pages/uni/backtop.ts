@@ -91,11 +91,10 @@ import { Backtop } from '@snui/uni';
       blurb: 'top=120 显示阈值；icon-style 自定义图标颜色；z-index 层级。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'scrollTop', type: 'number', default: '0', desc: '页面滚动距离（由宿主提供）。' },
+      { name: 'scrollTop', type: 'number', default: '0', desc: '页面滚动距离（由宿主提供）' },
       { name: 'text', type: 'string', default: "''", desc: '按钮文字。' },
       {
         name: 'top',
@@ -103,8 +102,8 @@ import { Backtop } from '@snui/uni';
         default: '300',
         desc: '滚动距离超过该值时显示按钮，单位为 px。',
       },
-      { name: 'duration', type: 'number', default: '100', desc: '返回顶部滚动时间，单位为 ms。' },
-      { name: 'zIndex', type: 'number', default: '10', desc: '组件层级。' },
+      { name: 'duration', type: 'number', default: '100', desc: '返回顶部滚动时长（ms）' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '组件层级' },
       { name: 'iconStyle', type: 'string', default: "''", desc: '自定义图标样式。' },
       {
         name: 'shape',
@@ -112,8 +111,8 @@ import { Backtop } from '@snui/uni';
         default: "'circle'",
         desc: '按钮形状：circle / square。',
       },
-      { name: 'bottom', type: 'number', default: '100', desc: '距离屏幕底部的距离，单位为 px。' },
-      { name: 'right', type: 'number', default: '20', desc: '距离屏幕右侧的距离，单位为 px。' },
+      { name: 'bottom', type: 'number', default: '100', desc: '距屏幕底部距离（px）' },
+      { name: 'right', type: 'number', default: '20', desc: '距屏幕右侧距离（px）' },
       { name: 'customStyle', type: 'string', default: "''", desc: '自定义根节点样式。' },
       { name: 'customClass', type: 'string', default: "''", desc: '自定义根节点样式类。' },
       {
@@ -149,7 +148,6 @@ import { Backtop } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

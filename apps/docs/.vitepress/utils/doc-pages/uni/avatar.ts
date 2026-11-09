@@ -78,7 +78,6 @@ import { Avatar } from '@snui/uni';
         'online / offline 状态点，以及 sn-badge + sn-avatar 组合出的微标头像（数字角标 / 红点）。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -162,7 +161,6 @@ import { Avatar } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

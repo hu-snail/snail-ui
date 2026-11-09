@@ -89,7 +89,6 @@ import { DropMenu } from '@snui/uni';
         'modal=false; close-on-click-modal=false; popup-height cap; custom-popup-class / custom-popup-style; disabled; default slot.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -236,7 +235,6 @@ import { DropMenu } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

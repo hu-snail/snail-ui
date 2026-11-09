@@ -48,13 +48,10 @@ import { Ellipsis } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'ellipsis-web-basic',
-      title: '代码演示',
-      blurb: '单行 / 多行 lineClamp / 溢出气泡 / 点击展开。',
-    },
+    { name: 'ellipsis-web-basic', title: '基础截断', blurb: '基础截断' },
+    { name: 'ellipsis-web-lines', title: '单行与多行对照', blurb: '单行与多行对照' },
+    { name: 'ellipsis-web-expand', title: '点击展开与收起', blurb: '点击展开与收起' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -127,7 +124,6 @@ import { Ellipsis } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

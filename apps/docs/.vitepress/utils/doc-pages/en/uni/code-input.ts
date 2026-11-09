@@ -93,7 +93,6 @@ import { CodeInput } from '@snui/uni';
         "`customClass` is appended to the root; `customStyle` is appended after the component's own variables and can override other properties.",
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -165,7 +164,6 @@ import { CodeInput } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

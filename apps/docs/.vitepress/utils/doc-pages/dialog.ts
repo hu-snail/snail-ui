@@ -48,8 +48,20 @@ import { Dialog } from '@snui/vue-web';
   <Dialog />
 </template>`,
   },
-  demos: [{ name: 'dialog-web-basic', title: '代码演示', blurb: '默认面板 + 两个按钮，事件回显' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'dialog-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'dialog-web-types', title: '类型与布局', blurb: '类型与布局' },
+    { name: 'dialog-web-async', title: '异步确认', blurb: '异步确认' },
+    { name: 'dialog-web-action', title: '自定义操作区', blurb: '自定义操作区' },
+    { name: 'dialog-web-borderless', title: '无边框与隐藏图标', blurb: '无边框与隐藏图标' },
+    { name: 'dialog-web-slots', title: '插槽全接管', blurb: '插槽全接管' },
+    { name: 'dialog-web-controlled', title: '受控显示', blurb: '受控显示' },
+    {
+      name: 'dialog-web-use-dialog',
+      title: '命令式调用（useDialog）',
+      blurb: '命令式调用（useDialog）',
+    },
+  ],
   props: {
     hint: [],
     rows: [
@@ -194,7 +206,6 @@ import { Dialog } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

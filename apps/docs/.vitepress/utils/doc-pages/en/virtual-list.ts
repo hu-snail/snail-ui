@@ -46,13 +46,18 @@ import { VirtualList } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'virtual-list-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'virtual-list-web-basic',
-      title: 'Examples',
-      blurb: 'Fixed item-size + visible-height + overscan + the item slot.',
+      name: 'virtual-list-web-resizable',
+      title: 'Dynamic row heights',
+      blurb: 'Dynamic row heights',
+    },
+    {
+      name: 'virtual-list-web-scroll',
+      title: 'Scroll readout and overscan buffering',
+      blurb: 'Scroll readout and overscan buffering',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -112,7 +117,6 @@ import { VirtualList } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

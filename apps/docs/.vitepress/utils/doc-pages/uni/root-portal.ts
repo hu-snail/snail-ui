@@ -71,7 +71,6 @@ import { RootPortal } from '@snui/uni';
         'customClass 控制固定层（预览里改 absolute 以免盖住手机屏），customStyle 追加内联样式。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -108,7 +107,6 @@ import { RootPortal } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

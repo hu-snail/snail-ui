@@ -62,28 +62,12 @@ import { Dialog } from '@snui/uni';
 </template>`,
   },
   demos: [
-    {
-      name: 'dialog-mp-basic',
-      title: '基础用法',
-      blurb: 'alert / confirm / prompt 三种形态，prompt 带长度校验。',
-    },
-    {
-      name: 'dialog-mp-variant',
-      title: '形态与图标',
-      blurb: '成功 / 警告图标、text 主题按钮、竖排按钮。',
-    },
-    {
-      name: 'dialog-mp-actions',
-      title: '自定义操作与拦截',
-      blurb: '自定义 actions 行（含禁用项）与 beforeConfirm 拦截。',
-    },
-    {
-      name: 'dialog-mp-custom',
-      title: '自定义面板样式',
-      blurb: 'custom-style 追加内边距与最小宽度；selector / root-portal 为对齐声明。',
-    },
+    { name: 'dialog-mp-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'dialog-mp-variant', title: '形态与图标', blurb: '形态与图标' },
+    { name: 'dialog-mp-vertical', title: '形态与图标', blurb: '形态与图标' },
+    { name: 'dialog-mp-actions', title: '自定义操作与拦截', blurb: '自定义操作与拦截' },
+    { name: 'dialog-mp-custom', title: '自定义面板样式', blurb: '自定义面板样式' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -107,7 +91,7 @@ import { Dialog } from '@snui/uni';
         default: "'button'",
         desc: 'Button style: filled buttons or borderless text buttons.',
       },
-      { name: 'zIndex', type: 'number', default: '99', desc: 'Stacking level of the dialog.' },
+      { name: 'zIndex', type: 'number', default: '99', desc: '弹窗层级' },
       {
         name: 'lazyRender',
         type: 'boolean',
@@ -263,7 +247,6 @@ import { Dialog } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

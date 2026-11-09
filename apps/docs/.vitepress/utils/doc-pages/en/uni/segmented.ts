@@ -81,7 +81,6 @@ import { Segmented } from '@snui/uni';
         '`:value` + `@update:value` (stays out of sync) versus `@update:model-value` (in sync); customClass frame; customStyle overriding fill and radius.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -139,7 +138,6 @@ import { Segmented } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

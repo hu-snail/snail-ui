@@ -43,13 +43,18 @@ import { Ellipsis } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'ellipsis-web-basic', title: 'Basic clamping', blurb: 'Basic clamping' },
     {
-      name: 'ellipsis-web-basic',
-      title: 'Demos',
-      blurb: 'Single line / lineClamp / overflow tooltip / click to expand.',
+      name: 'ellipsis-web-lines',
+      title: 'Single line vs multi-line',
+      blurb: 'Single line vs multi-line',
+    },
+    {
+      name: 'ellipsis-web-expand',
+      title: 'Click to expand and collapse',
+      blurb: 'Click to expand and collapse',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -122,7 +127,6 @@ import { Ellipsis } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

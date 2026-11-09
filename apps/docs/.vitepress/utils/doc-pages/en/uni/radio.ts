@@ -86,7 +86,6 @@ import { Radio } from '@snui/uni';
         '`checkedColor` / `uncheckedColor` at group level with a per-option override; `customLabelClass` lands on the label node; `customClass` / `customStyle` on the root.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -172,7 +171,6 @@ import { Radio } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

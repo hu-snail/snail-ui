@@ -41,13 +41,20 @@ import { FloatingToc } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'floating-toc-web-basic', title: 'Basic', blurb: 'Basic' },
     {
-      name: 'floating-toc-web-basic',
-      title: 'Examples',
-      blurb: 'Rail tracks scrolling; hover expands the section list',
+      name: 'floating-toc-web-placements',
+      title: 'Placements and trigger modes',
+      blurb: 'Placements and trigger modes',
     },
+    { name: 'floating-toc-web-hierarchical', title: 'Hierarchical', blurb: 'Hierarchical' },
+    {
+      name: 'floating-toc-web-preview',
+      title: 'Single-section preview',
+      blurb: 'Single-section preview',
+    },
+    { name: 'floating-toc-web-controlled', title: 'Controlled', blurb: 'Controlled' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,7 +132,6 @@ import { FloatingToc } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

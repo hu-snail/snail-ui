@@ -96,11 +96,10 @@ import { Swiper } from '@snui/uni';
       blurb: '自定义字段名、受控 current、aspectFit 裁剪、三个事件回传。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'autoplay', type: 'boolean', default: 'true', desc: 'Autoplay.' },
+      { name: 'autoplay', type: 'boolean', default: 'true', desc: '是否自动播放' },
       {
         name: 'current',
         type: 'number',
@@ -132,14 +131,14 @@ import { Swiper } from '@snui/uni';
         default: '192',
         desc: 'Height of the carousel — a bare number is treated as rpx.',
       },
-      { name: 'interval', type: 'number', default: '5000', desc: 'Autoplay interval in ms.' },
+      { name: 'interval', type: 'number', default: '5000', desc: '自动轮播间隔（ms）' },
       {
         name: 'list',
         type: 'Array<string | SnSwiperItem>',
         default: '() => []',
         desc: 'Slide data: strings or `SwiperItem` objects.',
       },
-      { name: 'loop', type: 'boolean', default: 'true', desc: 'Loop the slides.' },
+      { name: 'loop', type: 'boolean', default: 'true', desc: '是否循环播放' },
       {
         name: 'coverflow',
         type: 'boolean',
@@ -341,7 +340,6 @@ import { Swiper } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -80,7 +80,6 @@ import { Pagination } from '@snui/uni';
       blurb: 'hide-if-one-page skips rendering; all four slots customised.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -149,7 +148,6 @@ import { Pagination } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

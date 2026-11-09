@@ -63,7 +63,6 @@ import { Dropdown } from '@snui/vue-web';
       blurb: '#content 插槽接管面板：自定义图标行、危险操作行、页脚，close() 关闭。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -119,7 +118,6 @@ import { Dropdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

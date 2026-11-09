@@ -48,13 +48,13 @@ import { Heatmap } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'heatmap-web-basic',
-      title: '代码演示',
-      blurb: '数据 + 周/月份标签 + 指示器开关 + 尺寸。',
-    },
+    { name: 'heatmap-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'heatmap-web-colors', title: '自定义颜色', blurb: '自定义颜色' },
+    { name: 'heatmap-web-slots', title: '插槽用法', blurb: '插槽用法' },
+    { name: 'heatmap-web-tooltip', title: '悬浮提示', blurb: '悬浮提示' },
+    { name: 'heatmap-web-tooltip-slot', title: '悬浮提示', blurb: '悬浮提示' },
+    { name: 'heatmap-web-themes', title: '内置色系', blurb: '内置色系' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -169,7 +169,6 @@ import { Heatmap } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -119,104 +119,6 @@ export const selectDocPage: SnDocPageData = {
     },
   ],
 
-  tokens: {
-    hint: [
-      { t: 'text', s: '触发器与菜单各自成族：' },
-      { t: 'code', s: '--sn-web-select-*' },
-      { t: 'text', s: ' 覆盖 bg / 边框 / 圆角 / 高度 / tag，颜色回落到 ' },
-      { t: 'code', s: '--sn-web-color-*' },
-      { t: 'text', s: ' 语义层。尺寸通过 ' },
-      { t: 'code', s: 'sn-select--{size}' },
-      { t: 'text', s: ' 重写 ' },
-      { t: 'code', s: '--sn-web-select-height' },
-      { t: 'text', s: '（22 / 24 / 28 / 32 / 40px）。' },
-    ],
-    note: '100% Token 驱动',
-    rows: [
-      {
-        name: 'height',
-        raw: '—',
-        alias: '--sn-web-select-height',
-        value: '34px',
-      },
-      {
-        name: 'padding-x',
-        raw: '—',
-        alias: '--sn-web-select-padding-x',
-        value: '10px',
-      },
-      {
-        name: 'radius',
-        raw: '—',
-        alias: '--sn-web-select-radius',
-        value: '6px',
-        kind: 'curve',
-      },
-      {
-        name: 'bg',
-        raw: '--aui-color-background-surface',
-        alias: '--sn-web-select-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'border-color',
-        raw: '--aui-color-border-subtle',
-        alias: '--sn-web-select-border-color',
-        value: '#f4f4f5',
-        swatch: '#f4f4f5',
-      },
-      {
-        name: 'border-color-focus',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-select-border-color-focus',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'menu-bg',
-        raw: '--aui-color-background-elevated',
-        alias: '--sn-web-select-menu-bg',
-        value: '#ffffff',
-        swatch: '#ffffff',
-      },
-      {
-        name: 'menu-radius',
-        raw: '—',
-        alias: '--sn-web-select-menu-radius',
-        value: '3px',
-        kind: 'curve',
-      },
-      {
-        name: 'menu-z-index',
-        raw: '—',
-        alias: '--sn-web-select-menu-z-index',
-        value: '1000',
-      },
-      {
-        name: 'option-text-color-selected',
-        raw: '--aui-color-action-primary',
-        alias: '--sn-web-select-option-text-color-selected',
-        value: '#1677ff',
-        swatch: '#1677ff',
-      },
-      {
-        name: 'tag-radius',
-        raw: '—',
-        alias: '--sn-web-select-tag-radius',
-        value: 'var(--sn-web-select-radius, 6px)',
-        kind: 'curve',
-      },
-      {
-        name: 'placeholder-color',
-        raw: '--aui-color-text-tertiary',
-        alias: '--sn-web-select-placeholder-color',
-        value: '#a1a1aa',
-        swatch: '#a1a1aa',
-      },
-    ],
-  },
-
   props: {
     hint: [
       { t: 'text', s: '与 ' },
@@ -328,7 +230,6 @@ export const selectDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],

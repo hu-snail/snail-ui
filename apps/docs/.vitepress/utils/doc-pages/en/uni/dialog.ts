@@ -56,29 +56,16 @@ import { Dialog } from '@snui/uni';
 </template>`,
   },
   demos: [
-    {
-      name: 'dialog-mp-basic',
-      title: 'Basic usage',
-      blurb: 'alert / confirm / prompt, with length validation on prompt.',
-    },
-    {
-      name: 'dialog-mp-variant',
-      title: 'Flavours and icons',
-      blurb: 'success / warning icons, text-theme buttons, stacked buttons.',
-    },
+    { name: 'dialog-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    { name: 'dialog-mp-variant', title: 'Flavours and icons', blurb: 'Flavours and icons' },
+    { name: 'dialog-mp-vertical', title: 'Flavours and icons', blurb: 'Flavours and icons' },
     {
       name: 'dialog-mp-actions',
       title: 'Custom actions and guards',
-      blurb: 'Custom action rows (with a disabled entry) and a beforeConfirm veto.',
+      blurb: 'Custom actions and guards',
     },
-    {
-      name: 'dialog-mp-custom',
-      title: 'Custom panel styles',
-      blurb:
-        'custom-style adds padding and a min-width; selector / root-portal are parity declarations.',
-    },
+    { name: 'dialog-mp-custom', title: 'Custom panel styles', blurb: 'Custom panel styles' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -258,7 +245,6 @@ import { Dialog } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

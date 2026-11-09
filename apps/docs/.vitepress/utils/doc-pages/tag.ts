@@ -83,7 +83,6 @@ import { Tag } from '@snui/vue-web';
         'color 支持 string 或 { color, borderColor, textColor } 对象；未给 textColor 时自动按对比度选字色。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -174,7 +173,6 @@ import { Tag } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

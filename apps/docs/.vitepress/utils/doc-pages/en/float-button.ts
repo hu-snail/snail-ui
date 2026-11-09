@@ -41,13 +41,12 @@ import { FloatButton } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'float-button-web-basic',
-      title: 'Examples',
-      blurb: 'Default circle / primary circle / square with text, three corner offsets.',
-    },
+    { name: 'float-button-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'float-button-web-placement', title: 'The eight anchors', blurb: 'The eight anchors' },
+    { name: 'float-button-web-group', title: 'Group', blurb: 'Group' },
+    { name: 'float-button-web-direction', title: 'Opening direction', blurb: 'Opening direction' },
+    { name: 'float-button-web-badge-link', title: 'Badge and link', blurb: 'Badge and link' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -187,7 +186,6 @@ import { FloatButton } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -52,13 +52,14 @@ import { Popover } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'popover-web-basic',
-      title: '代码演示',
-      blurb: 'hover 触发、标题 + 正文、箭头与常用方位',
-    },
+    { name: 'popover-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'popover-web-trigger', title: '触发方式与受控模式', blurb: '触发方式与受控模式' },
+    { name: 'popover-web-placement', title: '十二个方位', blurb: '十二个方位' },
+    { name: 'popover-web-delay', title: '弹出时序', blurb: '弹出时序' },
+    { name: 'popover-web-width', title: '宽度控制', blurb: '宽度控制' },
+    { name: 'popover-web-scrollable', title: '长内容滚动', blurb: '长内容滚动' },
+    { name: 'popover-web-slots', title: '自定义标题与正文', blurb: '自定义标题与正文' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -239,7 +240,6 @@ import { Popover } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

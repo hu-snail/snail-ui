@@ -43,13 +43,10 @@ import { Empty } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'empty-web-basic',
-      title: 'Examples',
-      blurb: 'Default inline SVG glyph + no-data description.',
-    },
+    { name: 'empty-web-basic', title: 'Basic', blurb: 'Basic' },
+    { name: 'empty-web-icon', title: 'Custom icon & action', blurb: 'Custom icon & action' },
+    { name: 'empty-web-size', title: 'Size', blurb: 'Size' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -98,7 +95,6 @@ import { Empty } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

@@ -55,8 +55,12 @@ import { Collapse } from '@snui/vue-web';
   <Collapse />
 </template>`,
   },
-  demos: [{ name: 'collapse-web-basic', title: '实时预览', blurb: 'basic 模式（多组可同时展开）' }],
-  tokens: { hint: [], note: '', rows: [] },
+  demos: [
+    { name: 'collapse-web-basic', title: '实时预览', blurb: '实时预览' },
+    { name: 'collapse-web-accordion', title: '实时预览', blurb: '实时预览' },
+    { name: 'collapse-web-bordered', title: '实时预览', blurb: '实时预览' },
+    { name: 'collapse-web-trigger', title: '实时预览', blurb: '实时预览' },
+  ],
   props: {
     hint: [],
     rows: [
@@ -123,7 +127,6 @@ import { Collapse } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

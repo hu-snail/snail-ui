@@ -76,7 +76,6 @@ import { ColorPicker } from '@snui/vue-web';
       blurb: 'clearable 恢复默认色、disabled、readonly。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -170,7 +169,6 @@ import { ColorPicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

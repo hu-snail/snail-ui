@@ -92,7 +92,6 @@ import { Switch } from '@snui/uni';
         'loading (spinner in the knob); loadingProps (declared but not rendered); customClass; customStyle.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -246,7 +245,6 @@ import { Switch } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

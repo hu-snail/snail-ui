@@ -101,7 +101,6 @@ import { Upload } from '@snui/uni';
         'change 每次列表变化触发；remove 带被删项；progress 为保留事件；showLimitNum=false 关掉计数；accept=media / all 切换选择器。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -225,7 +224,6 @@ import { Upload } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

@@ -52,13 +52,16 @@ import { FloatingToc } from '@snui/vue-web';
 </template>`,
   },
   demos: [
+    { name: 'floating-toc-web-basic', title: '基础用法', blurb: '基础用法' },
     {
-      name: 'floating-toc-web-basic',
-      title: '代码演示',
-      blurb: '浮标跟随滚动高亮，悬停展开章节列表',
+      name: 'floating-toc-web-placements',
+      title: '左右两侧与触发方式',
+      blurb: '左右两侧与触发方式',
     },
+    { name: 'floating-toc-web-hierarchical', title: '分层目录', blurb: '分层目录' },
+    { name: 'floating-toc-web-preview', title: '单条预览模式', blurb: '单条预览模式' },
+    { name: 'floating-toc-web-controlled', title: '受控展开', blurb: '受控展开' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -137,7 +140,6 @@ import { FloatingToc } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

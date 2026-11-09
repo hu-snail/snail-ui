@@ -71,7 +71,6 @@ import { Slider } from '@snui/uni';
         '`vertical` stands the track up; `popoverVisible` takes always / normal / never; `activeColor` / `inactiveColor` override the track colors; `customClass` / `customStyle` land on the root.',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -146,7 +145,6 @@ import { Slider } from '@snui/uni';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'tokens', text: 'Design tokens' },
     { id: 'api', text: 'API reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],

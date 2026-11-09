@@ -52,13 +52,12 @@ import { NumberAnimation } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    {
-      name: 'number-animation-web-basic',
-      title: '代码演示',
-      blurb: 'SnStatistic 内滚动 + play() 重放。',
-    },
+    { name: 'number-animation-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'number-animation-web-precision', title: '精度', blurb: '精度' },
+    { name: 'number-animation-web-separator', title: '分隔符', blurb: '分隔符' },
+    { name: 'number-animation-web-intl', title: '国际化', blurb: '国际化' },
+    { name: 'number-animation-web-finish', title: '结束回调', blurb: '结束回调' },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
@@ -125,7 +124,6 @@ import { NumberAnimation } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],

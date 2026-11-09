@@ -75,11 +75,10 @@ import { Overlay } from '@snui/uni';
       blurb: 'duration=false / duration=800 + zIndex / lockScroll=false + customStyle。',
     },
   ],
-  tokens: { hint: [], note: '', rows: [] },
   props: {
     hint: [],
     rows: [
-      { name: 'show', type: 'boolean', default: 'false', desc: 'Whether the overlay is shown.' },
+      { name: 'show', type: 'boolean', default: 'false', desc: '是否展示遮罩层' },
       {
         name: 'duration',
         type: 'OverlayDuration',
@@ -92,7 +91,7 @@ import { Overlay } from '@snui/uni';
         default: 'true',
         desc: 'Lock background scroll while shown (intercepts touchmove).',
       },
-      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level.' },
+      { name: 'zIndex', type: 'number', default: '10', desc: '层级' },
       {
         name: 'customStyle',
         type: 'string',
@@ -126,7 +125,6 @@ import { Overlay } from '@snui/uni';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'tokens', text: '设计令牌 Tokens' },
     { id: 'api', text: 'API 属性参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
