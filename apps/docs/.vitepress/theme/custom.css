@@ -280,7 +280,6 @@
   }
 }
 
-
 /* ── 滚动条：全站统一成细窄玻璃胶囊 ────────────────────────────────────
  * UA 默认给的是 15px 粗白块（深色模式尤其刺眼），和站点的磨砂质感冲突。
  * 只改观感不改行为：8px 槽 + 2px 透明描边把胶囊收窄到 4px。
@@ -350,13 +349,13 @@
   color: var(--vp-c-text-3);
 }
 /* Rows: 32px, soft fill on hover, 8px radius, no vertical bar. */
- #VPSidebarNav .VPSidebarItem:not(.level-0) > .item {
-   position: relative; /* 树形虚线横线（::before）的定位基准 */
-   margin: 1px -8px;
-   padding: 0 8px;
-   border-radius: 8px;
-   transition: background-color 0.15s ease;
- }
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item {
+  position: relative; /* 树形虚线横线（::before）的定位基准 */
+  margin: 1px -8px;
+  padding: 0 8px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease;
+}
 
 /* Rows breathe: 2px gap between sibling entries（默认挤在一起成一堵墙）。 */
 #VPSidebarNav .VPSidebarItem.level-1 > .items,
@@ -417,48 +416,46 @@
   display: none;
 }
 
- /* ── 树形虚线连接线 ────────────────────────────────────────────────
+/* ── 树形虚线连接线 ────────────────────────────────────────────────
   * VitePress 这里只有 level-0 分组 + level-1 叶项，且分组 .items 原本
   * 零缩进（条目文字与分组标题左对齐），所以竖导轨必须先自己造出来：
   *   margin-left 7px —— 导轨落在分组图标中线下方；
   *   padding-left 12px —— 条目文字对齐到分组标题文字（图标 15 + gap 6）。
   * 每条目再补一条短横向虚线（::before）从导轨连到条目左缘。
   * 选中分类（has-active = 分组内含当前页）的导轨与横线转主题色。 */
- #VPSidebarNav .VPSidebarItem.level-0 > .items {
-   margin-left: 7px;
-   padding-left: 12px;
-   border-left: 1px dashed var(--vp-c-divider);
- }
- #VPSidebarNav .VPSidebarItem.level-1 .items,
- #VPSidebarNav .VPSidebarItem.level-2 .items,
- #VPSidebarNav .VPSidebarItem.level-3 .items,
- #VPSidebarNav .VPSidebarItem.level-4 .items,
- #VPSidebarNav .VPSidebarItem.level-5 .items {
-   border-left: 1px dashed var(--vp-c-divider);
-   padding-left: 12px;
- }
- /* 条目行左缘比导轨再外扩 8px（.item 的负 margin），横线从导轨起点
+#VPSidebarNav .VPSidebarItem.level-0 > .items {
+  margin-left: 7px;
+  padding-left: 12px;
+  border-left: 1px dashed var(--vp-c-divider);
+}
+#VPSidebarNav .VPSidebarItem.level-1 .items,
+#VPSidebarNav .VPSidebarItem.level-2 .items,
+#VPSidebarNav .VPSidebarItem.level-3 .items,
+#VPSidebarNav .VPSidebarItem.level-4 .items,
+#VPSidebarNav .VPSidebarItem.level-5 .items {
+  border-left: 1px dashed var(--vp-c-divider);
+  padding-left: 12px;
+}
+/* 条目行左缘比导轨再外扩 8px（.item 的负 margin），横线从导轨起点
     （left: -5px）延伸进条目行内 7px（width 12px）——连接感更明显；
     z-index: -1 把横线压到行背景（含选中项的蓝色胶囊）之下，不侵入。 */
- #VPSidebarNav .VPSidebarItem:not(.level-0) > .item::before {
-   content: '';
-   position: absolute;
-   left: -5px;
-   top: 50%;
-   width: 12px;
-   height: 0;
-   z-index: -1;
-   border-top: 1px dashed var(--vp-c-divider);
-   transform: translateY(-50%);
- }
- #VPSidebarNav .VPSidebarItem.level-0.has-active > .items {
-   border-left-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
- }
- #VPSidebarNav .VPSidebarItem.level-0.has-active
-   .VPSidebarItem:not(.level-0)
-   > .item::before {
-   border-top-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
- }
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  width: 12px;
+  height: 0;
+  z-index: -1;
+  border-top: 1px dashed var(--vp-c-divider);
+  transform: translateY(-50%);
+}
+#VPSidebarNav .VPSidebarItem.level-0.has-active > .items {
+  border-left-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
+}
+#VPSidebarNav .VPSidebarItem.level-0.has-active .VPSidebarItem:not(.level-0) > .item::before {
+  border-top-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
+}
 
 /* =====================================================================
    6. Right-hand outline (on-page TOC)
@@ -862,7 +859,13 @@ table.props code {
  * .content-container[data-v-…]` and outrank any unscoped selector we can
  * write. */
 .VPDoc.has-aside .content-container {
-  max-width: 100% !important;
+  /* A prose column needs a ceiling: at 1920px a full-bleed article puts the
+   * `## heading` at one edge and its paragraph trailing off the other, and the
+   * demo cards stretch to a width no component is designed for. 1120px is the
+   * widest a card-heavy page stays readable; narrower windows keep using every
+   * pixel they have. */
+  max-width: min(1120px, 100%) !important;
+  margin-inline: auto;
 }
 
 /* Desktop only: below 960px vitepress's own 24px gutter is already a large
@@ -959,8 +962,7 @@ table.props code {
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
   html.sn-sidebar-collapsed .sn-docs-sidebar-handle {
-    transform: translateY(-50%)
-      translateX(calc(16px - var(--vp-sidebar-width)));
+    transform: translateY(-50%) translateX(calc(16px - var(--vp-sidebar-width)));
   }
 
   /* 折叠 = 面板滑出（display: none 会杀掉动画）。 */
@@ -994,17 +996,20 @@ table.props code {
 }
 
 /* =====================================================================
-   13. Demo cards — waterfall layout, two columns
+   13. Demo cards — one per row, stacked
    ----------------------------------------------------------------------
  * utils/demo-grid.ts wraps every "one demo per heading" section in
  * `.sn-demo-cell`, and every run of two or more consecutive cells in
  * `.sn-demo-grid`.
  *
- * The container is a CSS multi-column box, not a grid: each column packs
- * on its own, so a tall card never pushes the card next to it downwards
- * and leaves a hole beside it (the "height mismatch" a grid produces).
- * It also re-flows for free — when a demo's async chunk lands, the code
- * panel expands or the window resizes — with no JS measuring step.
+ * Each card owns a full row: a demo is a piece of the component's contract, and
+ * a reader compares it against the prose directly above and below it. Two
+ * cards side by side halve the width a demo can use (forms, tables and layout
+ * shells were the first to look squeezed) and make the reading order ambiguous
+ * on a phone.
+ *
+ * `.sn-demo-grid` therefore stays a plain block wrapper — it exists so a run of
+ * demos can be spaced as a group, not to lay them out horizontally.
  *
  * These rules reach across a component boundary: `.sn-demo*` is a
  * `<style scoped>` block inside Demo.vue, i.e. it ships as
@@ -1015,32 +1020,7 @@ table.props code {
  * ===================================================================== */
 
 .sn-demo-grid {
-  column-count: 1;
-  column-gap: 16px;
   margin: 16px 0 24px;
-}
-
-/* Two columns once the article can hold them. 1200px is where the article
- * (sidebar + gutters excluded) is ~860px, i.e. two ~420px cards; below that
- * one full-width column keeps wider demos (forms, model config) usable. */
-@media (min-width: 1200px) {
-  .sn-demo-grid {
-    column-count: 2;
-  }
-}
-
-/* 布局（admin-layout）的演示页：一行一个
- * ---------------------------------------------------------------------
- * 布局壳是横向铺开的（侧栏 + 顶栏 + 内容区），塞进两列瀑布流会被挤扁，
- * 所以只在这几个页面取消分栏；站点其它页（表单、表格、组件演示）保持
- * 上面的两列瀑布流不变。
- *
- * 选择器用「页面内的 article 上挂的 class」。页面 class 由
- * `markdown.config` 里的 demoGrid 插件加在 `layout: doc` 的页面上
- * （见 ./utils/demo-grid.ts 的 `ADMIN_LAYOUT_ROUTES`）。两条声明与上面的
- * media query 特异性相同，靠书写顺序取胜，不需要 `!important`。 */
-.sn-layout-single-column .sn-demo-grid {
-  column-count: 1;
 }
 
 /* The card. Border is an airy hairline (naive-ui docs style): a translucent
@@ -1051,7 +1031,9 @@ table.props code {
   margin: 16px 0 24px;
   padding: 16px 16px 12px;
   border: 1px solid rgba(9, 9, 11, 0.08);
-  border-radius: 10px;
+  /* Small radius: the card should read as a grouped block, not a floating
+     panel; 6px matches the control radius the components themselves use. */
+  border-radius: 6px;
   background: var(--vp-c-bg);
 }
 
@@ -1059,14 +1041,9 @@ table.props code {
   border-color: rgba(250, 250, 250, 0.09);
 }
 
-/* Inside the waterfall the column gap owns the horizontal spacing and each
- * card owns the vertical one. `break-inside` keeps a card in one piece, so a
- * column break can only land between cards. */
+/* Rows are stacked, so the card owns its own vertical spacing. */
 .sn-demo-grid > .sn-demo-cell {
   margin: 0 0 16px;
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
 }
 
 /* The section heading becomes the card title. It stays a real heading, so its
@@ -1448,41 +1425,41 @@ html[data-sn-template-end='uni']
   .dark .VPNavBar,
   .dark .VPNavBar.home {
     background: var(--vp-c-bg) !important;
-   }
-    /* ── 悬浮态（body.sn-nav-floating）── 材质共用；几何按页面拆分 */
-    body.sn-nav-floating .VPNavBar,
-    body.sn-nav-floating .VPNavBar.home {
-      top: 16px;
-      border-radius: 999px;
-      border: 1px solid rgb(255 255 255 / 0.85) !important;
-      background: rgb(255 255 255 / 0.55) !important;
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      box-shadow:
-        0 12px 36px -8px rgb(15 23 42 / 0.08),
-        0 4px 16px -2px rgb(15 23 42 / 0.04),
-        inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
-    }
-    /* 文档页（非 .home）：岛在内容区域内居中，不依赖 :has()——
+  }
+  /* ── 悬浮态（body.sn-nav-floating）── 材质共用；几何按页面拆分 */
+  body.sn-nav-floating .VPNavBar,
+  body.sn-nav-floating .VPNavBar.home {
+    top: 16px;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.85) !important;
+    background: rgb(255 255 255 / 0.55) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      0 12px 36px -8px rgb(15 23 42 / 0.08),
+      0 4px 16px -2px rgb(15 23 42 / 0.04),
+      inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
+  }
+  /* 文档页（非 .home）：岛在内容区域内居中，不依赖 :has()——
        margin-left = 侧栏宽 + (内容区宽 − 岛宽)/2；内容区宽 =
        100% − 侧栏宽（margin/width 的百分比均以父容器视口宽为基准），
        左右各留 16px，窄视口岛自动收窄。品牌（logo + 标题）从侧栏
        迁移到岛上 —— 左缘即品牌起点，与首页 navbar 一致。 */
-    body.sn-nav-floating .VPNavBar:not(.home) {
-      width: min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) !important;
-      margin-left: calc(
-        50% + var(--vp-sidebar-width) / 2 -
-        min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) / 2
-      ) !important;
-      margin-right: 0 !important;
-    }
-    /* 首页：保持原行为——岛视口居中、含品牌 */
-    body.sn-nav-floating .VPNavBar.home {
-      width: min(1200px, calc(100% - clamp(48px, 8vw, 128px))) !important;
-      margin: 0 auto;
-      /* 首页悬浮岛去掉描边（要求：首页 nav 任何状态都无边线）。 */
-      border: 0 !important;
-    }
+  body.sn-nav-floating .VPNavBar:not(.home) {
+    width: min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) !important;
+    margin-left: calc(
+      50% + var(--vp-sidebar-width) / 2 - min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) /
+        2
+    ) !important;
+    margin-right: 0 !important;
+  }
+  /* 首页：保持原行为——岛视口居中、含品牌 */
+  body.sn-nav-floating .VPNavBar.home {
+    width: min(1200px, calc(100% - clamp(48px, 8vw, 128px))) !important;
+    margin: 0 auto;
+    /* 首页悬浮岛去掉描边（要求：首页 nav 任何状态都无边线）。 */
+    border: 0 !important;
+  }
 
   .dark body.sn-nav-floating .VPNavBar {
     border-color: rgb(255 255 255 / 0.1) !important;
@@ -1509,21 +1486,21 @@ html[data-sn-template-end='uni']
     padding-top: calc(var(--vp-nav-height) + 26px) !important;
   }
 
-   .VPSidebar {
-     /* 侧栏内容起点 = 顶部让位高度。端切换胶囊的 sticky 约束线也用它推导
+  .VPSidebar {
+    /* 侧栏内容起点 = 顶部让位高度。端切换胶囊的 sticky 约束线也用它推导
         （见下方 .sn-end-switch），抽一个变量保证两处永不脱节。 */
-     --sn-sidebar-clearance: 76px;
-     padding-top: var(--sn-sidebar-clearance) !important;
-     transition:
-       top 0.35s ease,
-       left 0.35s ease,
-       width 0.35s ease,
-       border-radius 0.35s ease,
-       background-color 0.3s ease,
-       box-shadow 0.35s ease;
-   }
- 
-   /* 端切换胶囊：零滑动吸顶。sticky 元素实际落在
+    --sn-sidebar-clearance: 76px;
+    padding-top: var(--sn-sidebar-clearance) !important;
+    transition:
+      top 0.35s ease,
+      left 0.35s ease,
+      width 0.35s ease,
+      border-radius 0.35s ease,
+      background-color 0.3s ease,
+      box-shadow 0.35s ease;
+  }
+
+  /* 端切换胶囊：零滑动吸顶。sticky 元素实际落在
     * max(自然位置, 内容起点 + top)——令 top == margin-top，约束线与自然
     * 位置重合，胶囊从第一像素起钉死在导航条下缘（--vp-nav-height = 56），
     * 随侧栏滚动零位移；负 margin 把不透明底条向上延伸 20px，盖住吸顶线
@@ -1532,116 +1509,116 @@ html[data-sn-template-end='uni']
     * 悬浮态（sn-nav-floating）由下方规则归零（top/margin-top/padding-top: 0），
     * 钉在悬浮面板顶。#VPSidebarNav 的 id 特异性压过组件内 scoped 规则
     * （移动端抽屉 <960px 不受本块影响，组件内以同样手法钉在抽屉顶部）。 */
-   #VPSidebarNav .sn-end-switch {
-     --sn-switch-pin: calc(var(--vp-nav-height) - var(--sn-sidebar-clearance));
-     top: var(--sn-switch-pin);
-     margin-top: var(--sn-switch-pin);
-     padding-top: calc(var(--sn-sidebar-clearance) - var(--vp-nav-height) + 6px);
-   }
+  #VPSidebarNav .sn-end-switch {
+    --sn-switch-pin: calc(var(--vp-nav-height) - var(--sn-sidebar-clearance));
+    top: var(--sn-switch-pin);
+    margin-top: var(--sn-switch-pin);
+    padding-top: calc(var(--sn-sidebar-clearance) - var(--vp-nav-height) + 6px);
+  }
 
-   /* ── 文档页常驻悬浮：侧栏为圆角玻璃面板（与导航岛同材质） ──
+  /* ── 文档页常驻悬浮：侧栏为圆角玻璃面板（与导航岛同材质） ──
     * 面板置顶：top: 16px 与右上导航岛同一水平线（岛 margin-right 16px
     * 对称）；面板右缘 = 16 + (w - 16) = --vp-sidebar-width，与内容区
     * 分界线严格对齐。品牌行 / 胶囊底条 ±32px 负 margin 通铺到面板
     * 边缘会横向撑宽内层 .nav —— overflow-x: clip 裁掉溢出且不产生
     * 滚动条（hidden 会改 sticky 的滚动容器语义，clip 不改）。 */
-    body.sn-nav-floating .VPSidebar {
-      --sn-sidebar-brand-h: 44px;
-      /* flex 布局：面板自身不滚动；吸顶头部（品牌行 + 胶囊底条）absolute
+  body.sn-nav-floating .VPSidebar {
+    --sn-sidebar-brand-h: 44px;
+    /* flex 布局：面板自身不滚动；吸顶头部（品牌行 + 胶囊底条）absolute
          钉在面板顶，唯一滚动区是 #VPSidebarNav —— 滚动条物理上不可能
          越过 logo 与胶囊。nav 用 padding-top 让出头部高度。 */
-      position: fixed;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      top: 16px;
-      bottom: 16px;
-      left: 16px;
-      width: calc(var(--vp-sidebar-width) - 16px) !important;
-      padding: 0 !important;
-      border-radius: 20px;
-      background: rgb(255 255 255 / 0.55) !important;
-      backdrop-filter: blur(24px) saturate(180%);
-      -webkit-backdrop-filter: blur(24px) saturate(180%);
-      border: 1px solid rgb(255 255 255 / 0.85);
-      box-shadow:
-        0 12px 36px -8px rgb(15 23 42 / 0.08),
-        0 4px 16px -2px rgb(15 23 42 / 0.04),
-        inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
-    }
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    top: 16px;
+    bottom: 16px;
+    left: 16px;
+    width: calc(var(--vp-sidebar-width) - 16px) !important;
+    padding: 0 !important;
+    border-radius: 20px;
+    background: rgb(255 255 255 / 0.55) !important;
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgb(255 255 255 / 0.85);
+    box-shadow:
+      0 12px 36px -8px rgb(15 23 42 / 0.08),
+      0 4px 16px -2px rgb(15 23 42 / 0.04),
+      inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
+  }
 
-    /* ── 吸顶头部：品牌行 + 胶囊底条，absolute 钉死在面板顶 ──
+  /* ── 吸顶头部：品牌行 + 胶囊底条，absolute 钉死在面板顶 ──
      * 头部与滚动区（nav）是兄弟层，滚动条只在 nav 里画，永不相交。
      * 实心底（非玻璃）：菜单项从头部下方滚过被完全盖住。 */
-    body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 4;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      height: var(--sn-sidebar-brand-h);
-      padding: 0 14px;
-      color: var(--sn-web-color-text-primary, var(--vp-c-text-1));
-      background: var(--vp-c-bg);
-    }
-    /* 「文档目录 / Contents」——面板分区标签（品牌已迁至导航岛）。 */
-    body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand__title {
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing: 0.02em;
-    }
-    /* nav 是唯一滚动区：margin-top 让出吸顶头部（104px）——原生滚动条
+  body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--sn-sidebar-brand-h);
+    padding: 0 14px;
+    color: var(--sn-web-color-text-primary, var(--vp-c-text-1));
+    background: var(--vp-c-bg);
+  }
+  /* 「文档目录 / Contents」——面板分区标签（品牌已迁至导航岛）。 */
+  body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand__title {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+  }
+  /* nav 是唯一滚动区：margin-top 让出吸顶头部（104px）——原生滚动条
      * 只画在 nav 盒内（从菜单起始位置开始），不再纵贯整个面板。
      * 菜单左右 padding 14px。 */
-    body.sn-nav-floating #VPSidebarNav {
-      --sn-sidebar-head-h: calc(var(--sn-sidebar-brand-h) + 60px);
-      flex: 1;
-      min-height: 0;
-      margin-top: var(--sn-sidebar-head-h);
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 0 14px;
-    }
-    /* 吸顶头部是 absolute（包含块 = aside），不受 nav 滚动与裁剪影响。 */
-    body.sn-nav-floating #VPSidebarNav .sn-end-switch {
-      position: absolute;
-      top: var(--sn-sidebar-brand-h);
-      left: 0;
-      right: 0;
-      z-index: 4;
-      /* 覆盖组件 scoped 的 margin: -32px 0 6px（移动端钉），否则胶囊
+  body.sn-nav-floating #VPSidebarNav {
+    --sn-sidebar-head-h: calc(var(--sn-sidebar-brand-h) + 60px);
+    flex: 1;
+    min-height: 0;
+    margin-top: var(--sn-sidebar-head-h);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0 14px;
+  }
+  /* 吸顶头部是 absolute（包含块 = aside），不受 nav 滚动与裁剪影响。 */
+  body.sn-nav-floating #VPSidebarNav .sn-end-switch {
+    position: absolute;
+    top: var(--sn-sidebar-brand-h);
+    left: 0;
+    right: 0;
+    z-index: 4;
+    /* 覆盖组件 scoped 的 margin: -32px 0 6px（移动端钉），否则胶囊
          上移 32px 压进品牌行 —— 上下布局被破坏的根因。 */
-      margin: 0;
-      padding: 8px 14px;
-      background: var(--vp-c-bg);
-    }
-    body.sn-nav-floating .sn-end-switch__pill {
-      margin: 0;
-    }
-    /* 旧设计的 curtain（顶栏遮条）在 flex 面板里会占位并盖住吸顶头部，移除。 */
-    body.sn-nav-floating .VPSidebar .curtain {
-      display: none;
-    }
-    .dark body.sn-nav-floating .VPSidebar {
-      border-color: rgb(255 255 255 / 0.1);
-      background: rgb(15 23 42 / 0.55) !important;
-      box-shadow:
-        0 12px 36px -8px rgb(0 0 0 / 0.4),
-        inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
-    }
-    body.sn-nav-floating .sn-end-switch__pill {
-      margin: 0;
-    }
-     .dark body.sn-nav-floating .VPSidebar {
-       border-color: rgb(255 255 255 / 0.1);
-       background: rgb(15 23 42 / 0.55) !important;
-       box-shadow:
-         0 12px 36px -8px rgb(0 0 0 / 0.4),
-         inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
-     }
+    margin: 0;
+    padding: 8px 14px;
+    background: var(--vp-c-bg);
+  }
+  body.sn-nav-floating .sn-end-switch__pill {
+    margin: 0;
+  }
+  /* 旧设计的 curtain（顶栏遮条）在 flex 面板里会占位并盖住吸顶头部，移除。 */
+  body.sn-nav-floating .VPSidebar .curtain {
+    display: none;
+  }
+  .dark body.sn-nav-floating .VPSidebar {
+    border-color: rgb(255 255 255 / 0.1);
+    background: rgb(15 23 42 / 0.55) !important;
+    box-shadow:
+      0 12px 36px -8px rgb(0 0 0 / 0.4),
+      inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
+  }
+  body.sn-nav-floating .sn-end-switch__pill {
+    margin: 0;
+  }
+  .dark body.sn-nav-floating .VPSidebar {
+    border-color: rgb(255 255 255 / 0.1);
+    background: rgb(15 23 42 / 0.55) !important;
+    box-shadow:
+      0 12px 36px -8px rgb(0 0 0 / 0.4),
+      inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
+  }
 }
 
 /* ── 搜索框对齐内容区（红框位置 = 侧栏分界线之后） ──

@@ -40,7 +40,6 @@ import SnDocsDocActions from '../components/SnDocsDocActions.vue';
 import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue';
 import SnHomeThemeDock from '../components/SnHomeThemeDock.vue';
 import { applyStoredSiteTheme } from '../utils/theme-editor/state';
-import { usesSingleColumnLayout } from '../utils/demo-grid';
 import { enNav, nav } from '../config-nav';
 import { useData } from 'vitepress';
 import { SnConfigProvider, enUS } from '@snui/vue-web';
@@ -58,18 +57,6 @@ const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
  * 唯一的语义，指南 / 主题 / 模板 / 生态等页没有「端」概念，不需要它。
  */
 const showEndSwitch = computed(() => route.path.startsWith('/components/'));
-
-/**
- * Demo cards: one per row on the admin-layout pages, the shared two-column
- * waterfall everywhere else.
- *
- * The class rides on the layout root and custom.css §13 scopes the
- * `.sn-layout-single-column .sn-demo-grid` override to it. Doing it here — and
- * not by wrapping the markdown page — keeps the page markup valid: a raw
- * `<div>` around a whole page would swallow the nested `<template #…>` blocks
- * the compiled page template contains.
- */
-const singleColumnLayout = computed(() => usesSingleColumnLayout(route.path));
 
 /**
  * 主题编辑器页（/theme/editor）的侧栏移除与全宽画布由 **frontmatter** 承担
@@ -132,7 +119,7 @@ watch(
 
 <template>
   <SnConfigProvider :locale="siteLocale">
-    <DefaultTheme.Layout :class="singleColumnLayout ? 'sn-layout-single-column' : ''">
+    <DefaultTheme.Layout>
       <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
       <template #nav-bar-content-before>
         <SnDocsNav :items="navItems" :inverted="homeNavInverted" />
