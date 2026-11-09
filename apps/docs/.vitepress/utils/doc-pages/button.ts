@@ -47,11 +47,6 @@ export const buttonDocPage: SnDocPageData = {
     },
   ],
 
-  playground: {
-    fileLabel: 'SnButton.playground.vue',
-    stageLabel: '主要操作',
-  },
-
   usage: {
     hint: [
       { t: 'text', s: '从 ' },
@@ -89,60 +84,6 @@ export const buttonDocPage: SnDocPageData = {
       '  </SnButton>',
       '</template>',
     ].join('\n'),
-  },
-
-  variants: {
-    hint: [
-      { t: 'text', s: '四组高频场景模式，全部为 ' },
-      { t: 'code', s: 'SnButton' },
-      { t: 'text', s: ' 的真实 props 组合 —— 配色随当前主题 / 风格包实时变化。' },
-    ],
-    cards: [
-      {
-        title: '语义类型 Semantic',
-        tag: '最高频',
-        tagTone: 'accent',
-        copy: 'type 直接映射业务语义：主操作 primary，成功 / 警告 / 危险反馈各有专属配色，default 用于中性操作。',
-        demos: [
-          { label: '默认', type: 'default' },
-          { label: '主要', type: 'primary' },
-          { label: '成功', type: 'success' },
-          { label: '警告', type: 'warning' },
-          { label: '危险', type: 'error' },
-        ],
-      },
-      {
-        title: '文字与幽灵 text / ghost',
-        tag: '轻量',
-        tagTone: 'plain',
-        copy: 'text 完全透明无边框，ghost 保留着色描边 —— 用于工具栏、卡片内嵌等低视觉权重场景。',
-        demos: [
-          { label: '文字按钮', type: 'primary', text: true },
-          { label: '幽灵按钮', type: 'primary', ghost: true },
-        ],
-      },
-      {
-        title: '虚线与强调 dashed / strong',
-        tag: '占位 / 突出',
-        tagTone: 'plain',
-        copy: 'dashed 虚线边框用于占位与过渡态视觉；strong 加重实心按钮阴影，强化首屏主 CTA。',
-        demos: [
-          { label: '虚线边框', dashed: true },
-          { label: '加重主色', type: 'primary', strong: true },
-        ],
-      },
-      {
-        title: '强调梯度 secondary / tertiary / quaternary',
-        tag: '层级化',
-        tagTone: 'ai',
-        copy: '同一语义下的三级弱化：secondary 反色 hover、tertiary 弱化填充、quaternary 纯文字，适配密集工具栏。',
-        demos: [
-          { label: 'secondary', type: 'primary', secondary: true },
-          { label: 'tertiary', type: 'primary', tertiary: true },
-          { label: 'quaternary', type: 'primary', quaternary: true },
-        ],
-      },
-    ],
   },
 
   tokens: {
@@ -397,9 +338,7 @@ export const buttonDocPage: SnDocPageData = {
   },
 
   toc: [
-    { id: 'playground', text: '交互式演练 Playground' },
     { id: 'usage', text: '代码用法 Usage' },
-    { id: 'variants', text: '样式变体 Variants' },
     { id: 'demos', text: '案例 Demos' },
     { id: 'tokens', text: 'Token 映射 Tokens' },
     { id: 'api', text: 'API 属性参考 Props' },

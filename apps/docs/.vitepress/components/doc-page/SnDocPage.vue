@@ -7,19 +7,12 @@
  * --vp-c-*（站点）与 --sn-web-color-*（UI 库语义层），因此暗色模式与
  * Style Pack 换肤自动生效，本组件不携带任何私有色值。
  *
- * Playground 控件直接使用 @snui/vue-web 的 SnSelect / SnRadioGroup /
- * SnSwitch —— 文档页本身就在消费被文档化的组件。
+ * 本页只负责「读」：头部信息、代码用法、案例、Token 表、Props 表与 AI 集成。
+ * 交互式演练（Playground）与样式变体（Style Variants）两块已按需求移除 ——
+ * 案例区已经承担了「真实可运行」的职责，再叠一个可调参数的舞台会让同一份
+ * 契约出现两种表述。
  */
-import {
-  computed,
-  markRaw,
-  onBeforeUnmount,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  watchEffect,
-} from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { useData, useRouter } from 'vitepress';
 import {
   ArrowLeft,
@@ -29,28 +22,17 @@ import {
   Copy,
   Code2,
   Cpu,
-  FlaskConical,
   Layers,
   Link as LinkIcon,
   Monitor,
   Palette,
   Play,
-  SlidersHorizontal,
   Sparkles,
   Table2,
 } from 'lucide-vue-next';
-import {
-  SnButton,
-  SnIcon,
-  SnRadioGroup,
-  SnSelect,
-  SnSlider,
-  SnSliderBar,
-  SnSwitch,
-  SnWaterfall,
-} from '@snui/vue-web';
+import { SnIcon } from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
-import type { DocButtonDemo, DocSeg, DocQuickAction, SnDocPageData } from './types';
+import type { DocSeg, DocQuickAction, SnDocPageData } from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
 
@@ -95,68 +77,6 @@ function onQuickAction(act: DocQuickAction): void {
   if (act.copy) void copyText('quick', act.copy);
   else navTo(act.href);
 }
-
-/* ── Playground ──────────────────────────────────────────────────────── */
-
-type PgType = 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'tertiary';
-type PgSize = 'tiny' | 'small' | 'medium' | 'large' | 'huge';
-
-const pg = reactive({
-  type: 'primary' as PgType,
-  size: 'medium' as PgSize,
-  shape: 'default' as 'default' | 'round' | 'circle',
-  iconPlacement: 'left' as 'left' | 'right',
-  showIcon: true,
-  loading: false,
-  disabled: false,
-});
-
-/** 语义类型预设（色点跟随 UI 库语义变量，风格包换肤同步变化）。 */
-const typePresets: Array<{ key: PgType; label: string; dot: string }> = [
-  {
-    key: 'default',
-    label: 'Default',
-    dot: 'var(--sn-web-color-border-default, var(--vp-c-border))',
-  },
-  { key: 'primary', label: 'Primary', dot: 'var(--sn-doc-accent)' },
-  { key: 'info', label: 'Info', dot: 'var(--sn-web-color-feedback-info, var(--vp-c-text-2))' },
-  { key: 'success', label: 'Success', dot: 'var(--sn-doc-ok)' },
-  { key: 'warning', label: 'Warning', dot: 'var(--sn-doc-warn)' },
-  { key: 'error', label: 'Error', dot: 'var(--sn-doc-err)' },
-  { key: 'tertiary', label: 'Tertiary', dot: 'var(--sn-doc-accent-soft)' },
-];
-
-const typeOptions = typePresets.map((p) => ({ label: p.label, value: p.key }));
-const sizeOptions = [
-  { label: 'tiny', value: 'tiny' },
-  { label: 'small', value: 'small' },
-  { label: 'medium', value: 'medium' },
-  { label: 'large', value: 'large' },
-  { label: 'huge', value: 'huge' },
-];
-const shapeOptions = [
-  { label: '默认', value: 'default' },
-  { label: '胶囊', value: 'round' },
-  { label: '圆形', value: 'circle' },
-];
-const iconPlacementOptions = [
-  { label: '左', value: 'left' },
-  { label: '右', value: 'right' },
-];
-
-const activeTab = ref<'preview' | 'code' | 'token'>('preview');
-
-/** 点击反馈：真实事件语义（disabled / loading 时 SnButton 不会 emit）。 */
-const toast = ref('');
-let toastTimer: ReturnType<typeof setTimeout> | undefined;
-function onDemoClick(): void {
-  toast.value = '已触发 click 事件 · MouseEvent';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toast.value = '';
-  }, 1500);
-}
-onBeforeUnmount(() => clearTimeout(toastTimer));
 
 /* ── 代码高亮（自有静态内容的最小着色，无 eval / 无外部依赖） ─────────── */
 
@@ -214,181 +134,7 @@ function codeToHtml(code: string, lang: 'vue' | 'ts' | 'css' = 'vue'): string {
     .join('\n');
 }
 
-/** 由 Playground 当前状态生成的真实可运行片段。 */
-/** PascalCase component name derived from the page title (e.g. SliderBar). */
-const componentTag = computed(() => {
-  const raw = props.doc.title.split(/[\s·—]/).find((w) => /^[A-Za-z]/.test(w)) ?? 'Component';
-  return raw.startsWith('Sn') ? raw : 'Sn' + raw;
-});
-
-/**
- * Playground 状态 ⇄ 可运行片段（非按钮组件的通用分支）。
- * 属性按 kebab-case 输出，布尔只输出出现即为 true，数值走 v-bind。
- */
-function attrOf(name: string, value: unknown): string {
-  if (name === 'modelValue') return '';
-  if (value === undefined || value === null || value === '') return '';
-  const kebab = name.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-  if (typeof value === 'boolean') return value ? ' ' + kebab : '';
-  if (typeof value === 'number') return ' :' + kebab + '="' + value + '"';
-  return ' ' + kebab + '="' + String(value) + '"';
-}
-
-const generatedCode = computed(() => {
-  const component = props.doc.playground.component;
-  if (component) {
-    const tag = componentTag.value;
-    const attrs = [
-      ...Object.entries(pgProps.value).map(([k, v]) => attrOf(k, v)),
-      ...pgControls.value.map((c) => attrOf(c.prop, pgValues[c.prop])),
-    ].join('');
-    const initial = typeof pgValues.modelValue === 'number' ? pgValues.modelValue : 0;
-    return [
-      '<script setup lang="ts">',
-      "import { ref } from 'vue';",
-      'import { ' + tag + " } from '@snui/vue-web';",
-      '',
-      'const value = ref(' + initial + ');',
-      '<\\/script>',
-      '',
-      '<template>',
-      '  <' + tag + attrs + ' v-model="value" />',
-      '</template>',
-    ].join('\n');
-  }
-  const attrs: string[] = [];
-  if (pg.type !== 'default') attrs.push(`type="${pg.type}"`);
-  if (pg.size !== 'medium') attrs.push(`size="${pg.size}"`);
-  if (pg.shape === 'round') attrs.push('round');
-  if (pg.shape === 'circle') attrs.push('circle');
-  if (pg.loading) attrs.push('loading');
-  if (pg.disabled) attrs.push('disabled');
-  if (pg.showIcon && pg.iconPlacement === 'right') attrs.push('icon-placement="right"');
-  if (!pg.showIcon) attrs.push(':show-icon="false"');
-  const attrStr = attrs.length > 0 ? ` ${attrs.join(' ')}` : '';
-  return [
-    '<script setup lang="ts">',
-    "import { SnButton } from '@snui/vue-web';",
-    '<\/script>',
-    '',
-    '<template>',
-    `  <SnButton${attrStr}>`,
-    `    ${props.doc.playground.stageLabel}`,
-    '  </SnButton>',
-    '</template>',
-  ].join('\n');
-});
-
-/* ── 通用 Playground 预览（非按钮组件） ───────────────────────────────── */
-
-/**
- * `doc.playground.preview` 指向一个 demo 文件时，Playground 舞台渲染该组件
- * 的真实案例；按钮页不传该字段，继续使用内置的 SnButton 控件矩阵。
- * 与 demos 瀑布流共用 demo-loader，仅在需要时动态加载。
- */
-/**
- * 舞台组件：`playground.component` 留空时直接用内联的 SnSliderBar 渲染
- * （文档页本身就在消费被文档化的组件，与 Button 页同一个思路）。
- */
-const STAGE_REGISTRY = {
-  SnSliderBar,
-} as const;
-
-const previewComponent = computed(() => {
-  const name = props.doc.playground.component;
-  if (!name) return null;
-  const local = STAGE_REGISTRY[name as keyof typeof STAGE_REGISTRY];
-  return local ? markRaw(local) : markRaw(loadDemoComponent(name, isEn.value));
-});
-
-/**
- * 通用 Playground 状态：每个控件绑定组件的一个 prop，`bindings` 汇总成
- * 真实 props 喂给舞台上的组件。没有 controls 时退回只读预览。
- */
-const pgValues = reactive<Record<string, unknown>>({});
-const pgControls = computed(() => props.doc.playground.controls ?? []);
-const pgProps = computed(() => props.doc.playground.props ?? {});
-
-watch(
-  pgControls,
-  (list) => {
-    for (const c of list) pgValues[c.prop] = c.value;
-  },
-  { immediate: true },
-);
-
-function resetPlayground(): void {
-  for (const c of pgControls.value) pgValues[c.prop] = c.value;
-}
-
-/** modelValue 单独处理：舞台需要可写绑定，其余按 prop 名直传。 */
-const pgBindings = computed<Record<string, unknown>>(() => {
-  const out: Record<string, unknown> = { ...pgProps.value };
-  for (const c of pgControls.value) {
-    out[c.prop] = pgValues[c.prop];
-  }
-  return out;
-});
-
-const pgValue = computed<unknown>({
-  get: () => pgValues.modelValue,
-  set: (v) => {
-    pgValues.modelValue = v;
-  },
-});
-
-const generatedHtml = computed(() => codeToHtml(generatedCode.value));
 const usageHtml = codeToHtml(props.doc.usage.code);
-
-/* ── Token 实时读数（Playground · Token 变量页签） ────────────────────── */
-
-const tokenVars = [
-  '--aui-button-radius',
-  '--sn-button-radius',
-  '--aui-button-height-medium',
-  '--sn-button-height-medium',
-  '--aui-button-padding-x',
-  '--aui-button-font-size',
-  '--aui-button-focus-ring',
-  '--sn-web-color-action-primary',
-  '--sn-web-color-action-primary-hover',
-  '--sn-web-color-action-primary-soft',
-];
-
-const liveTokens = ref<Array<{ name: string; value: string }>>([]);
-function readLiveTokens(): void {
-  const cs = getComputedStyle(document.documentElement);
-  liveTokens.value = tokenVars.map((name) => ({
-    name,
-    value: cs.getPropertyValue(name).trim() || '(未设置 · 组件回退值)',
-  }));
-}
-watch(activeTab, (tab) => {
-  if (tab === 'token') readLiveTokens();
-});
-onMounted(readLiveTokens);
-
-function isColorToken(name: string): boolean {
-  return name.includes('color');
-}
-
-/* ── 变体卡演示 ──────────────────────────────────────────────────────── */
-
-function demoBind(demo: DocButtonDemo) {
-  return {
-    type: demo.type ?? ('default' as const),
-    size: demo.size ?? ('medium' as const),
-    text: demo.text || undefined,
-    ghost: demo.ghost || undefined,
-    dashed: demo.dashed || undefined,
-    strong: demo.strong || undefined,
-    secondary: demo.secondary || undefined,
-    tertiary: demo.tertiary || undefined,
-    quaternary: demo.quaternary || undefined,
-    round: demo.round || undefined,
-    circle: demo.circle || undefined,
-  };
-}
 
 /* ── demo 案例瀑布流（复用 demo-loader：活体渲染 + 源码，切换而非展开） ── */
 
@@ -408,12 +154,6 @@ function setDemoMode(name: string, mode: DemoMode): void {
  * demo 按奇偶分列（自管两列瀑布）：列是独立 flex 容器，卡片展开只推挤
  * 本列后续项 —— 无空高度。不经过 slot 传递，预览/源码状态走标准响应式。
  */
-const demoColumns = computed(() => {
-  const cols: Array<typeof props.doc.demos> = [[], []];
-  props.doc.demos.forEach((d, i) => cols[i % 2].push(d));
-  return cols;
-});
-
 const demoComponents = computed(() =>
   Object.fromEntries(props.doc.demos.map((d) => [d.name, markRawDemo(d.name)])),
 );
@@ -638,262 +378,6 @@ onBeforeUnmount(() => {
           </div>
         </header>
 
-        <!-- 交互式演练 Playground -->
-        <section id="playground" class="sn-docpage__section">
-          <div class="sn-docpage__sec-head">
-            <div class="sn-docpage__sec-title">
-              <SnIcon
-                class="sn-docpage__sec-icon sn-docpage__sec-icon--playground"
-                :icon="SlidersHorizontal"
-                :size="15"
-              />
-              <h2>交互式演练 Playground</h2>
-            </div>
-            <span class="sn-docpage__sec-aside">{{
-              previewComponent ? '实时渲染真实组件' : '实时驱动真实 SnButton'
-            }}</span>
-          </div>
-
-          <div class="sn-docpage__window">
-            <div class="sn-docpage__win-bar">
-              <div class="sn-docpage__win-left">
-                <span class="sn-docpage__dot sn-docpage__dot--r" />
-                <span class="sn-docpage__dot sn-docpage__dot--y" />
-                <span class="sn-docpage__dot sn-docpage__dot--g" />
-                <span class="sn-docpage__win-file">{{ doc.playground.fileLabel }}</span>
-              </div>
-              <div class="sn-docpage__tabs" role="tablist" aria-label="Playground 视图">
-                <button
-                  v-for="tab in [
-                    { key: 'preview', label: '交互预览' },
-                    { key: 'code', label: '代码' },
-                    { key: 'token', label: 'Token 变量' },
-                  ]"
-                  :key="tab.key"
-                  type="button"
-                  role="tab"
-                  class="sn-docpage__tab"
-                  :class="{ 'sn-docpage__tab--active': activeTab === tab.key }"
-                  :aria-selected="activeTab === tab.key"
-                  @click="activeTab = tab.key as 'preview' | 'code' | 'token'"
-                >
-                  {{ tab.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- 预览舞台 -->
-            <div v-if="activeTab === 'preview'" class="sn-docpage__stage">
-              <!-- 通用预览：doc.playground.preview 指定 demo 时，舞台上渲染该
-                   组件的真实案例，而不是内置的 SnButton 控件。 -->
-              <div v-if="previewComponent" class="sn-docpage__stage-custom">
-                <component :is="previewComponent" v-bind="pgBindings" v-model="pgValue" />
-              </div>
-              <div v-else class="sn-docpage__stage-center">
-                <SnButton
-                  :type="pg.type"
-                  :size="pg.size"
-                  :round="pg.shape === 'round'"
-                  :circle="pg.shape === 'circle'"
-                  :icon-placement="pg.iconPlacement"
-                  :show-icon="pg.showIcon"
-                  :loading="pg.loading"
-                  :disabled="pg.disabled"
-                  :icon="Cpu"
-                  @click="onDemoClick"
-                >
-                  {{ doc.playground.stageLabel }}
-                </SnButton>
-                <div
-                  class="sn-docpage__toast"
-                  :class="{ 'sn-docpage__toast--on': toast !== '' }"
-                  aria-live="polite"
-                >
-                  {{ toast || '点击按钮触发 click 事件' }}
-                </div>
-              </div>
-
-              <div
-                v-if="!previewComponent"
-                class="sn-docpage__presets"
-                role="group"
-                aria-label="语义类型预设"
-              >
-                <button
-                  v-for="preset in typePresets"
-                  :key="preset.key"
-                  type="button"
-                  class="sn-docpage__preset"
-                  :class="{ 'sn-docpage__preset--on': pg.type === preset.key }"
-                  @click="pg.type = preset.key"
-                >
-                  <span class="sn-docpage__preset-dot" :style="{ background: preset.dot }" />
-                  {{ preset.label }}
-                </button>
-              </div>
-            </div>
-
-            <!-- 代码页签 -->
-            <div v-else-if="activeTab === 'code'" class="sn-docpage__codebody">
-              <pre class="sn-code" v-html="generatedHtml" />
-              <div class="sn-docpage__code-foot">
-                <span>随左侧控件实时生成 · 与预览状态一致</span>
-                <button
-                  type="button"
-                  class="sn-docpage__mini"
-                  @click="copyText('gen', generatedCode)"
-                >
-                  <SnIcon :icon="copiedKey === 'gen' ? Check : Copy" :size="13" />
-                  {{ copiedKey === 'gen' ? '已复制' : '复制' }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Token 页签 -->
-            <div v-else class="sn-docpage__tokenbody">
-              <table class="sn-docpage__token-live">
-                <tbody>
-                  <tr v-for="tk in liveTokens" :key="tk.name">
-                    <td class="sn-docpage__token-name">{{ tk.name }}</td>
-                    <td class="sn-docpage__token-val">
-                      <span
-                        v-if="isColorToken(tk.name) && tk.value.startsWith('#')"
-                        class="sn-docpage__swatch"
-                        :style="{ background: tk.value }"
-                      />
-                      {{ tk.value }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <p class="sn-docpage__token-note">
-                读取当前文档根节点的 computed style —— 切换主题编辑器或风格包后数值同步变化。
-              </p>
-            </div>
-
-            <!-- 控制工具条 -->
-            <div v-if="!previewComponent" class="sn-docpage__controls">
-              <div class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">类型 Type</span>
-                <SnSelect
-                  v-model="pg.type"
-                  :options="typeOptions"
-                  size="small"
-                  aria-label="按钮类型"
-                />
-              </div>
-              <div class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">尺寸 Size</span>
-                <SnRadioGroup
-                  v-model="pg.size"
-                  :options="sizeOptions"
-                  size="small"
-                  button
-                  aria-label="按钮尺寸"
-                />
-              </div>
-              <div class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">形状 Shape</span>
-                <SnRadioGroup
-                  v-model="pg.shape"
-                  :options="shapeOptions"
-                  size="small"
-                  button
-                  aria-label="按钮形状"
-                />
-              </div>
-              <div class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">图标 Icon</span>
-                <div class="sn-docpage__ctrl-iconrow">
-                  <SnRadioGroup
-                    v-model="pg.iconPlacement"
-                    :options="iconPlacementOptions"
-                    size="small"
-                    button
-                    aria-label="图标位置"
-                  />
-                  <label class="sn-docpage__switch-line">
-                    <span>显示图标</span>
-                    <SnSwitch v-model="pg.showIcon" size="small" />
-                  </label>
-                </div>
-              </div>
-              <div class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">状态 State</span>
-                <label class="sn-docpage__switch-line">
-                  <span>加载 loading</span>
-                  <SnSwitch v-model="pg.loading" size="small" />
-                </label>
-                <label class="sn-docpage__switch-line">
-                  <span>禁用 disabled</span>
-                  <SnSwitch v-model="pg.disabled" size="small" />
-                </label>
-              </div>
-            </div>
-
-            <!-- 通用控件面板：每个控件驱动舞台组件的一个 prop -->
-            <div v-if="pgControls.length" class="sn-docpage__controls">
-              <div v-for="c in pgControls" :key="c.prop" class="sn-docpage__ctrl">
-                <span class="sn-docpage__ctrl-label">
-                  {{ c.label }}
-                  <em v-if="c.hint" class="sn-docpage__ctrl-hint">{{ c.hint }}</em>
-                </span>
-
-                <label v-if="c.kind === 'switch'" class="sn-docpage__switch-line">
-                  <span>{{ c.prop }}</span>
-                  <SnSwitch
-                    :model-value="Boolean(pgValues[c.prop])"
-                    size="small"
-                    @update:model-value="(v: boolean) => (pgValues[c.prop] = v)"
-                  />
-                </label>
-
-                <SnSelect
-                  v-else-if="c.kind === 'select'"
-                  :model-value="pgValues[c.prop] as string | number"
-                  :options="c.options ?? []"
-                  size="small"
-                  :aria-label="c.label"
-                  @update:model-value="(v: string | number) => (pgValues[c.prop] = v)"
-                />
-
-                <!-- 数值控件用库自身的 SnSlider：文档站也在消费被文档化的组件。 -->
-                <div v-else-if="c.kind === 'range'" class="sn-docpage__ctrl-range">
-                  <SnSlider
-                    class="sn-docpage__range-slider"
-                    :model-value="Number(pgValues[c.prop])"
-                    :min="c.min ?? 0"
-                    :max="c.max ?? 100"
-                    :step="c.step ?? 1"
-                    show-input
-                    :aria-label="c.label"
-                    @update:model-value="
-                      (v: number | [number, number]) =>
-                        (pgValues[c.prop] = Array.isArray(v) ? v[0] : v)
-                    "
-                  />
-                </div>
-
-                <input
-                  v-else
-                  class="sn-docpage__ctrl-input"
-                  type="text"
-                  :value="String(pgValues[c.prop] ?? '')"
-                  :aria-label="c.label"
-                  @input="(e: Event) => (pgValues[c.prop] = (e.target as HTMLInputElement).value)"
-                />
-              </div>
-
-              <div class="sn-docpage__ctrl sn-docpage__ctrl--actions">
-                <span class="sn-docpage__ctrl-label">状态 State</span>
-                <div class="sn-docpage__ctrl-iconrow">
-                  <SnButton size="small" @click="resetPlayground">重置</SnButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- 代码用法 -->
         <section id="usage" class="sn-docpage__section">
           <div class="sn-docpage__sec-head">
@@ -921,53 +405,6 @@ onBeforeUnmount(() => {
           </div>
         </section>
 
-        <!-- 样式变体（可选：无 variants 数据的组件不渲染本区块） -->
-        <section v-if="doc.variants" id="variants" class="sn-docpage__section">
-          <div class="sn-docpage__sec-head">
-            <div class="sn-docpage__sec-title">
-              <SnIcon
-                class="sn-docpage__sec-icon sn-docpage__sec-icon--variants"
-                :icon="FlaskConical"
-                :size="15"
-              />
-              <h2>样式变体 Style Variants</h2>
-            </div>
-          </div>
-          <p class="sn-docpage__hint">
-            <template v-for="(seg, i) in segs(doc.variants?.hint)" :key="i">
-              <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
-              <template v-else>{{ seg.s }}</template>
-            </template>
-          </p>
-          <div class="sn-docpage__variant-grid">
-            <div
-              v-for="card in doc.variants?.cards ?? []"
-              :key="card.title"
-              class="sn-docpage__vcard"
-            >
-              <div class="sn-docpage__vcard-head">
-                <h3>{{ card.title }}</h3>
-                <span
-                  class="sn-docpage__vcard-tag"
-                  :class="`sn-docpage__vcard-tag--${card.tagTone}`"
-                  >{{ card.tag }}</span
-                >
-              </div>
-              <p class="sn-docpage__vcard-copy">{{ card.copy }}</p>
-              <div class="sn-docpage__vcard-stage">
-                <SnButton
-                  v-for="(demo, i) in card.demos"
-                  :key="i"
-                  v-bind="demoBind(demo)"
-                  @click.stop
-                >
-                  {{ demo.label }}
-                </SnButton>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- demo 案例瀑布流（预览 / 源码胶囊切换，不展开） -->
         <section id="demos" class="sn-docpage__section">
           <div class="sn-docpage__sec-head">
@@ -981,75 +418,72 @@ onBeforeUnmount(() => {
             </div>
             <span class="sn-docpage__sec-aside">实时渲染 · 来自组件文档案例</span>
           </div>
-          <!-- demo 两列瀑布：自管双列（每列独立 flex），卡片展开自然推挤
-                本列后续项，无空高度。不用 slot 传递（编译插槽稳定化会跳过
-                子组件更新导致预览/源码切换失效，见 SnWaterfall 签名修复）。 -->
+          <!-- 一个案例一行：案例之间是并列的契约说明，横排会压缩演示宽度
+                并让阅读顺序变得含糊。 -->
           <div class="sn-docpage__demo-fall">
-            <div v-for="(column, ci) in demoColumns" :key="'col' + ci" class="sn-docpage__demo-col">
-              <div v-for="d in column" :key="d.name" class="sn-docpage__demo">
-                <div class="sn-docpage__demo-head">
-                  <div class="sn-docpage__demo-meta">
-                    <h3>{{ d.title }}</h3>
-                    <p>{{ d.blurb }}</p>
-                  </div>
-                  <div class="sn-docpage__demo-switch" role="tablist" aria-label="预览 / 源码">
-                    <span
-                      class="sn-docpage__demo-thumb"
-                      :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
-                      aria-hidden="true"
-                    />
-                    <button
-                      type="button"
-                      role="tab"
-                      class="sn-docpage__demo-tab"
-                      :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'preview' }"
-                      :aria-selected="demoMode(d.name) === 'preview'"
-                      aria-label="预览"
-                      @click="setDemoMode(d.name, 'preview')"
-                    >
-                      <SnIcon :icon="Box" :size="13" />
-                    </button>
-                    <button
-                      type="button"
-                      role="tab"
-                      class="sn-docpage__demo-tab"
-                      :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'code' }"
-                      :aria-selected="demoMode(d.name) === 'code'"
-                      aria-label="源码"
-                      @click="setDemoMode(d.name, 'code')"
-                    >
-                      <SnIcon :icon="Code2" :size="13" />
-                    </button>
-                  </div>
+            <div v-for="d in doc.demos" :key="d.name" class="sn-docpage__demo">
+              <div class="sn-docpage__demo-head">
+                <div class="sn-docpage__demo-meta">
+                  <h3>{{ d.title }}</h3>
+                  <p>{{ d.blurb }}</p>
                 </div>
-                <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
-                  <component :is="demoComponents[d.name]" />
+                <div class="sn-docpage__demo-switch" role="tablist" aria-label="预览 / 源码">
+                  <span
+                    class="sn-docpage__demo-thumb"
+                    :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    role="tab"
+                    class="sn-docpage__demo-tab"
+                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'preview' }"
+                    :aria-selected="demoMode(d.name) === 'preview'"
+                    aria-label="预览"
+                    @click="setDemoMode(d.name, 'preview')"
+                  >
+                    <SnIcon :icon="Box" :size="13" />
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    class="sn-docpage__demo-tab"
+                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'code' }"
+                    :aria-selected="demoMode(d.name) === 'code'"
+                    aria-label="源码"
+                    @click="setDemoMode(d.name, 'code')"
+                  >
+                    <SnIcon :icon="Code2" :size="13" />
+                  </button>
                 </div>
-                <div v-else class="sn-docpage__demo-codebody">
-                  <div class="sn-docpage__codebar">
-                    <div class="sn-docpage__codebar-tabs">
-                      <button
-                        v-for="(sec, si) in demoSections[d.name]"
-                        :key="sec.label"
-                        type="button"
-                        class="sn-docpage__codebar-tab"
-                        :class="{ 'sn-docpage__codebar-tab--on': demoSectionIndex(d.name) === si }"
-                        @click="setDemoSection(d.name, si)"
-                      >
-                        {{ sec.label }}
-                      </button>
-                    </div>
+              </div>
+              <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
+                <component :is="demoComponents[d.name]" />
+              </div>
+              <div v-else class="sn-docpage__demo-codebody">
+                <div class="sn-docpage__codebar">
+                  <div class="sn-docpage__codebar-tabs">
                     <button
+                      v-for="(sec, si) in demoSections[d.name]"
+                      :key="sec.label"
                       type="button"
-                      class="sn-docpage__mini"
-                      @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
+                      class="sn-docpage__codebar-tab"
+                      :class="{ 'sn-docpage__codebar-tab--on': demoSectionIndex(d.name) === si }"
+                      @click="setDemoSection(d.name, si)"
                     >
-                      <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
-                      {{ copiedKey === 'demo-' + d.name ? '已复制' : '复制' }}
+                      {{ sec.label }}
                     </button>
                   </div>
-                  <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
+                  <button
+                    type="button"
+                    class="sn-docpage__mini"
+                    @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
+                  >
+                    <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
+                    {{ copiedKey === 'demo-' + d.name ? '已复制' : '复制' }}
+                  </button>
                 </div>
+                <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
               </div>
             </div>
           </div>
@@ -1662,26 +1096,6 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 18px;
 }
-.sn-docpage__toast {
-  padding: 4px 12px;
-  border: 1px solid var(--sn-doc-border);
-  border-radius: 999px;
-  background: var(--sn-doc-card);
-  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
-  font-size: 11.5px;
-  color: var(--sn-doc-text-3);
-  opacity: 0.6;
-  transition:
-    opacity 0.25s,
-    color 0.2s,
-    border-color 0.2s;
-}
-.sn-docpage__toast--on {
-  opacity: 1;
-  border-color: color-mix(in srgb, var(--sn-doc-accent) 45%, var(--sn-doc-border));
-  color: var(--sn-doc-accent);
-}
-
 .sn-docpage__presets {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1942,25 +1356,11 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-text-1);
 }
 
-/* ═══ demo 案例瀑布流（预览/源码切换） ═══ */
-/* demo 两列瀑布：自管双列 flex —— 每列独立堆叠，卡片展开自然推挤
- * 本列后续项（无空高度）；<1200px 单列。 */
+/* ═══ demo 案例（预览/源码切换，一个案例一行） ═══ */
 .sn-docpage__demo-fall {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-}
-.sn-docpage__demo-col {
-  flex: 1 1 0;
-  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-@media (max-width: 1199px) {
-  .sn-docpage__demo-fall {
-    flex-direction: column;
-  }
 }
 .sn-docpage__demo {
   overflow: hidden;
@@ -2640,14 +2040,6 @@ onBeforeUnmount(() => {
   .sn-docpage__win-file {
     white-space: nowrap;
     flex: none;
-  }
-  /* demo 两列在窄屏强制单列（与 §demos 的 1199 断点双保险） */
-  .sn-docpage__demo-fall {
-    flex-direction: column;
-  }
-  .sn-docpage__demo-col {
-    flex: 1 1 auto;
-    width: 100%;
   }
   .sn-docpage__tab {
     padding: 4px 10px;

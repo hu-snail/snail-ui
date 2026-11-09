@@ -45,114 +45,6 @@ export const sliderBarDocPage: SnDocPageData = {
     },
   ],
 
-  playground: {
-    fileLabel: 'SliderBar.playground.vue',
-    // 舞台内联渲染真实 SnSliderBar（无需额外 demo 文件）。
-    component: 'SnSliderBar',
-    stageLabel: '音量',
-    // 舞台渲染真实 SnSliderBar，控件直接驱动它的 props（可拖拽、可切状态）。
-    controls: [
-      {
-        prop: 'modelValue',
-        label: '数值 Value',
-        kind: 'range',
-        min: 0,
-        max: 100,
-        step: 1,
-        value: 64,
-      },
-      {
-        prop: 'theme',
-        label: '主题 Theme',
-        kind: 'select',
-        value: 'aurora',
-        options: [
-          { label: 'default 扁平', value: 'default' },
-          { label: 'aurora 渐变星光', value: 'aurora' },
-        ],
-      },
-      {
-        prop: 'variant',
-        label: '形态 Variant',
-        kind: 'select',
-        value: 'bar',
-        options: [
-          { label: 'bar 横向', value: 'bar' },
-          { label: 'column 竖排', value: 'column' },
-        ],
-      },
-      {
-        prop: 'format',
-        label: '读数 Format',
-        kind: 'select',
-        value: 'percent',
-        options: [
-          { label: 'percent 比例', value: 'percent' },
-          { label: 'value 原值', value: 'value' },
-        ],
-      },
-      {
-        prop: 'size',
-        label: '尺寸 Size',
-        kind: 'select',
-        value: 'medium',
-        options: [
-          { label: 'small 28', value: 'small' },
-          { label: 'medium 40', value: 'medium' },
-          { label: 'large 52', value: 'large' },
-        ],
-      },
-      {
-        prop: 'leadingIcon',
-        label: '头图标 Icon',
-        kind: 'text',
-        value: 'Volume2',
-        hint: '注册名，默认画在轨道内',
-      },
-      {
-        prop: 'iconPlacement',
-        label: '图标位置 Icon',
-        kind: 'select',
-        value: 'inside',
-        options: [
-          { label: 'leading 外侧', value: 'leading' },
-          { label: 'inside 条内', value: 'inside' },
-          { label: 'trailing 尾部', value: 'trailing' },
-        ],
-      },
-      {
-        prop: 'label',
-        label: '条内文字 Label',
-        kind: 'text',
-        value: '音量',
-      },
-      {
-        prop: 'suffix',
-        label: '尾部文字 Suffix',
-        kind: 'text',
-        value: '',
-      },
-      {
-        prop: 'showValue',
-        label: '显示读数 Show value',
-        kind: 'switch',
-        value: true,
-      },
-      {
-        prop: 'disabled',
-        label: '禁用 Disabled',
-        kind: 'switch',
-        value: false,
-      },
-      {
-        prop: 'reverse',
-        label: '反向 Reverse',
-        kind: 'switch',
-        value: false,
-      },
-    ],
-  },
-
   usage: {
     hint: [
       { t: 'text', s: '从 ' },
@@ -409,7 +301,6 @@ export const sliderBarDocPage: SnDocPageData = {
   },
 
   toc: [
-    { id: 'playground', text: '交互式演练 Playground' },
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
     { id: 'tokens', text: 'Token 映射 Tokens' },

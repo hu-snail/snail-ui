@@ -37,33 +37,6 @@ export interface DocQuickAction {
   href?: string;
 }
 
-export type DemoType =
-  'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'tertiary';
-
-/** 变体卡内的真实 SnButton 演示描述（可序列化，不携带 VNode）。 */
-export interface DocButtonDemo {
-  label: string;
-  type?: DemoType;
-  size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge';
-  text?: boolean;
-  ghost?: boolean;
-  dashed?: boolean;
-  strong?: boolean;
-  secondary?: boolean;
-  tertiary?: boolean;
-  quaternary?: boolean;
-  round?: boolean;
-  circle?: boolean;
-}
-
-export interface DocVariantCard {
-  title: string;
-  tag: string;
-  tagTone: 'plain' | 'accent' | 'ai';
-  copy: string;
-  demos: DocButtonDemo[];
-}
-
 export interface DocTokenRow {
   /** Token 语义名（kebab）。 */
   name: string;
@@ -76,24 +49,6 @@ export interface DocTokenRow {
   /** 预览色块颜色（仅 color 类 token 提供）。 */
   swatch?: string;
   kind?: 'color' | 'blur' | 'curve';
-}
-
-/** A live playground control, bound to one prop of the previewed component. */
-export interface DocPlaygroundControl {
-  /** Prop name on the component (`modelValue` is the bound value). */
-  prop: string;
-  label: string;
-  kind: 'range' | 'select' | 'switch' | 'text';
-  /** range */
-  min?: number;
-  max?: number;
-  step?: number;
-  /** Initial value (also the reset target). */
-  value: unknown;
-  /** select */
-  options?: Array<{ label: string; value: string | number }>;
-  /** Short hint rendered under the label. */
-  hint?: string;
 }
 
 export interface DocPropRow {
@@ -125,30 +80,11 @@ export interface SnDocPageData {
   badges: DocBadge[];
   description: DocSeg[];
   quickActions: DocQuickAction[];
-  playground: {
-    fileLabel: string;
-    stageLabel: string;
-    /**
-     * Component rendered live in the playground stage instead of the built-in
-     * SnButton controls. Non-button components use this so the stage shows
-     * their real API while the page keeps the same layout.
-     */
-    component?: string;
-    /** Props passed to `component` on top of the playground bindings. */
-    props?: Record<string, unknown>;
-    /** Live controls — each one drives one prop of `component`. */
-    controls?: DocPlaygroundControl[];
-  };
   usage: {
     hint: DocSeg[];
     fileLabel: string;
     meta: string;
     code: string;
-  };
-  /** Style-variant cards — omit for components without a button-style matrix. */
-  variants?: {
-    hint: DocSeg[];
-    cards: DocVariantCard[];
   };
   tokens: {
     hint: DocSeg[];
@@ -189,30 +125,11 @@ export interface SnDocPageData {
   badges: DocBadge[];
   description: DocSeg[];
   quickActions: DocQuickAction[];
-  playground: {
-    fileLabel: string;
-    stageLabel: string;
-    /**
-     * Component rendered live in the playground stage instead of the built-in
-     * SnButton controls. Non-button components use this so the stage shows
-     * their real API while the page keeps the same layout.
-     */
-    component?: string;
-    /** Props passed to `component` on top of the playground bindings. */
-    props?: Record<string, unknown>;
-    /** Live controls — each one drives one prop of `component`. */
-    controls?: DocPlaygroundControl[];
-  };
   usage: {
     hint: DocSeg[];
     fileLabel: string;
     meta: string;
     code: string;
-  };
-  /** Style-variant cards — omit for components without a button-style matrix. */
-  variants?: {
-    hint: DocSeg[];
-    cards: DocVariantCard[];
   };
   /** 组件 demo 案例瀑布流（en 文档案例清单，活体渲染 + 预览/源码切换）。 */
   demos: DocDemoItem[];
