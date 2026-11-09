@@ -842,8 +842,11 @@ onBeforeUnmount(() => {
   --sn-doc-err: var(--sn-web-color-feedback-danger, #ef4444);
   --sn-doc-cyan: var(--sn-web-color-feedback-info, #06b6d4);
   /* 代码面板跟随主题：浅色模式浅色终端，深色模式烟熏终端（见 .sn-docpage--dark） */
-  --sn-doc-code-bg: color-mix(in srgb, var(--vp-c-bg-soft) 72%, var(--vp-c-bg));
-  --sn-doc-code-bar: var(--vp-c-bg-soft);
+  /* 代码面纯白：与预览台同一块底面，代码不该在浅色主题里再压一层灰。
+     层次交给 codebar 的细分割线与外框，而不是底色。深色主题仍走烟熏终端
+     （见 .dark 覆盖），那里的深底是代码可读性的一部分。 */
+  --sn-doc-code-bg: var(--vp-c-bg);
+  --sn-doc-code-bar: var(--vp-c-bg);
   --sn-doc-code-border: var(--vp-c-divider);
   --sn-doc-code-text: var(--vp-c-text-1);
   --sn-doc-code-dim: var(--vp-c-text-3);

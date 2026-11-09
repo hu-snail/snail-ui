@@ -176,7 +176,9 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
  */
 .sn-dock {
   position: fixed;
-  top: calc(var(--vp-nav-height) + 16px);
+  /* 与站点头栏再让开一段：手机的状态栏/灵动岛紧贴面板顶边，16px 时和
+     导航条几乎叠在一起，看起来像被顶栏压住。 */
+  top: calc(var(--vp-nav-height) + 32px);
   right: 24px;
   z-index: 60;
   display: flex;
@@ -190,9 +192,12 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
    * reader switched pages. Pinning the height keeps the device stable; content
    * that overflows scrolls inside the screen, which is what a real device does.
    */
-  /* 高度封顶：满屏高的面板在长文页上过于压迫，且底部内容常超出视线。
-     640px 大致是一台手机的比例（400×640 ≈ 19.5:9），再高也不会更真实。 */
-  height: min(640px, calc(100vh - var(--vp-nav-height) - 48px));
+  /* 真实手机比例：现代机约 9:19.5，400px 宽对应 867px 高。之前钉死 640px
+     是 400×640 ≈ 1:1.6，读起来像早期 iPhone 的矮胖比例，内容也被裁得突兀。
+     高度由比例推导，再受视口约束——矮屏上按可用高度截断，屏幕内部滚动。 */
+  aspect-ratio: 9 / 19.5;
+  height: auto;
+  max-height: calc(100vh - var(--vp-nav-height) - 64px);
   border: 0;
   border-radius: 44px;
   background: var(--vp-c-bg);
