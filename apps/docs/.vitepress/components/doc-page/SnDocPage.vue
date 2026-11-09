@@ -48,7 +48,6 @@ const doc = computed(() => {
   return {
     ...raw,
     usage: raw.usage ?? { hint: [], fileLabel: '', meta: '', code: '' },
-    tokens: raw.tokens ?? { hint: [], note: '', rows: [] },
     props: raw.props ?? { hint: [], rows: [] },
     ai: raw.ai ?? {
       badge: '',
@@ -76,6 +75,68 @@ const FEATURE_ICONS: Record<NonNullable<DocFeature['icon']>, typeof Monitor> = {
 const { isDark, lang } = useData();
 /** 英文站：demo 走 demo-en 影子文件（与 demos 瀑布流一致）。 */
 const isEn = computed(() => lang.value.startsWith('en'));
+
+/**
+ * 界面文案随站点语言切换。
+ *
+ * 中文站保留「中文 + 英文」双语复合标题（项目文档的品牌习惯），英文站给纯
+ * 英文——否则 /en/ 页面的区块标题、表头和按钮会混入中文。数据层的文案
+ * （标题、描述、features、pager）本来就在各语言的数据模块里，这里只管
+ * 布局壳自己的固定串。
+ */
+const UI = computed(() =>
+  isEn.value
+    ? {
+        crumbs: 'Breadcrumb',
+        copiedAll: 'Copied to clipboard',
+        usage: 'Code Usage',
+        demos: 'Examples',
+        demosAside: 'Live · rendered from the docs corpus',
+        ai: 'AI-Native Integration',
+        previewSource: 'Preview / Source',
+        preview: 'Preview',
+        source: 'Source',
+        copy: 'Copy',
+        copied: 'Copied',
+        copyChip: 'Copy',
+        api: 'Props Reference',
+        thProp: 'Prop',
+        thType: 'Type',
+        thDefault: 'Default',
+        thDesc: 'Description',
+        prev: 'Previous',
+        next: 'Next',
+        railhead: 'On this page',
+        feedbackQ: 'Was this page helpful?',
+        helpful: 'Helpful',
+        needsWork: 'Needs work',
+      }
+    : {
+        crumbs: '面包屑',
+        copiedAll: '已复制到剪贴板',
+        usage: '代码用法 Code Usage',
+        demos: '案例 Demos',
+        demosAside: '实时渲染 · 来自组件文档案例',
+        ai: 'AI 原生集成 AI-Native Integration',
+        previewSource: '预览 / 源码',
+        preview: '预览',
+        source: '源码',
+        copy: '复制',
+        copied: '已复制',
+        copyChip: '复制',
+        api: 'API 属性参考 Props Reference',
+        thProp: '属性 Prop',
+        thType: '类型 Type',
+        thDefault: '默认值',
+        thDesc: '说明 Description',
+        prev: '上一篇 Previous',
+        next: '下一篇 Next',
+        railhead: '本页目录 · On this page',
+        feedbackQ: '此文档对您是否有帮助？',
+        helpful: '有用',
+        needsWork: '待优化',
+      },
+);
 const router = useRouter();
 function navTo(url: string | undefined): void {
   if (url) router.go(url);
@@ -360,7 +421,7 @@ onBeforeUnmount(() => {
       <main class="sn-docpage__main">
         <!-- 头部：面包屑 / 标题+徽章 / 描述 / 快捷操作 -->
         <header class="sn-docpage__head">
-          <nav class="sn-docpage__crumbs" aria-label="面包屑">
+          <nav class="sn-docpage__crumbs" :aria-label="UI.crumbs">
             <template v-for="(crumb, i) in doc.crumbs" :key="i">
               <a
                 v-if="crumb.link && i < doc.crumbs.length - 1"
@@ -415,7 +476,7 @@ onBeforeUnmount(() => {
                   :icon="act.icon === 'copy' ? Copy : act.icon === 'palette' ? Palette : LinkIcon"
                   :size="14"
                 />
-                <span v-if="act.copy && copiedKey === 'quick'">已复制到剪贴板</span>
+                <span v-if="act.copy && copiedKey === 'quick'">{{ UI.copiedAll }}</span>
                 <span v-else>{{ act.label }}</span>
               </button>
             </template>
@@ -440,7 +501,7 @@ onBeforeUnmount(() => {
                 :icon="Box"
                 :size="15"
               />
-              <h2>代码用法 Code Usage</h2>
+              <h2>{{ UI.usage }}</h2>
             </div>
           </div>
           <p class="sn-docpage__hint">
@@ -467,20 +528,23 @@ onBeforeUnmount(() => {
                 :icon="Play"
                 :size="15"
               />
-              <h2>案例 Demos</h2>
+              <h2>{{ UI.demos }}</h2>
             </div>
-            <span class="sn-docpage__sec-aside">实时渲染 · 来自组件文档案例</span>
+            <span class="sn-docpage__sec-aside">{{ UI.demosAside }}</span>
           </div>
           <!-- 一个案例一行：案例之间是并列的契约说明，横排会压缩演示宽度
                 并让阅读顺序变得含糊。 -->
           <div class="sn-docpage__demo-fall">
             <div v-for="d in doc.demos" :key="d.name" class="sn-docpage__demo">
+              <!-- 标题与描述在卡片外：它们是案例的正文说明，不是卡片饰面。
+                   卡片只承载预览 / 源码面板本体。 -->
               <div class="sn-docpage__demo-head">
-                <div class="sn-docpage__demo-meta">
-                  <h3>{{ d.title }}</h3>
-                  <p>{{ d.blurb }}</p>
-                </div>
-                <div class="sn-docpage__demo-switch" role="tablist" aria-label="预览 / 源码">
+                <h3>{{ d.title }}</h3>
+                <p>{{ d.blurb }}</p>
+              </div>
+              <div class="sn-docpage__demo-card">
+                <!-- 切换胶囊浮在预览面板右上角；源码模式下浮在代码面板右上角。 -->
+                <div class="sn-docpage__demo-switch" role="tablist" :aria-label="UI.previewSource">
                   <span
                     class="sn-docpage__demo-thumb"
                     :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
@@ -492,7 +556,7 @@ onBeforeUnmount(() => {
                     class="sn-docpage__demo-tab"
                     :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'preview' }"
                     :aria-selected="demoMode(d.name) === 'preview'"
-                    aria-label="预览"
+                    :aria-label="UI.preview"
                     @click="setDemoMode(d.name, 'preview')"
                   >
                     <SnIcon :icon="Box" :size="13" />
@@ -503,108 +567,47 @@ onBeforeUnmount(() => {
                     class="sn-docpage__demo-tab"
                     :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'code' }"
                     :aria-selected="demoMode(d.name) === 'code'"
-                    aria-label="源码"
+                    :aria-label="UI.source"
                     @click="setDemoMode(d.name, 'code')"
                   >
                     <SnIcon :icon="Code2" :size="13" />
                   </button>
                 </div>
-              </div>
-              <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
-                <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
+                <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
+                  <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
                      document / navigator（视频小窗、上传、日志自动滚动等）。这里
                      不套客户端边界就会在 SSR 阶段抛 "window is not defined"，整页
                      构建失败。Demo.vue 一直是这么做的，这里是把它补齐。 -->
-                <ClientOnly>
-                  <component :is="demoComponents[d.name]" />
-                </ClientOnly>
-              </div>
-              <div v-else class="sn-docpage__demo-codebody">
-                <div class="sn-docpage__codebar">
-                  <div class="sn-docpage__codebar-tabs">
+                  <ClientOnly>
+                    <component :is="demoComponents[d.name]" />
+                  </ClientOnly>
+                </div>
+                <div v-else class="sn-docpage__demo-codebody">
+                  <div class="sn-docpage__codebar">
+                    <div class="sn-docpage__codebar-tabs">
+                      <button
+                        v-for="(sec, si) in demoSections[d.name]"
+                        :key="sec.label"
+                        type="button"
+                        class="sn-docpage__codebar-tab"
+                        :class="{ 'sn-docpage__codebar-tab--on': demoSectionIndex(d.name) === si }"
+                        @click="setDemoSection(d.name, si)"
+                      >
+                        {{ sec.label }}
+                      </button>
+                    </div>
                     <button
-                      v-for="(sec, si) in demoSections[d.name]"
-                      :key="sec.label"
                       type="button"
-                      class="sn-docpage__codebar-tab"
-                      :class="{ 'sn-docpage__codebar-tab--on': demoSectionIndex(d.name) === si }"
-                      @click="setDemoSection(d.name, si)"
+                      class="sn-docpage__mini"
+                      @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
                     >
-                      {{ sec.label }}
+                      <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
+                      {{ copiedKey === 'demo-' + d.name ? UI.copied : UI.copy }}
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    class="sn-docpage__mini"
-                    @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
-                  >
-                    <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
-                    {{ copiedKey === 'demo-' + d.name ? '已复制' : '复制' }}
-                  </button>
+                  <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
                 </div>
-                <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
               </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Token 映射 -->
-        <section id="tokens" class="sn-docpage__section">
-          <div class="sn-docpage__sec-head">
-            <div class="sn-docpage__sec-title">
-              <SnIcon
-                class="sn-docpage__sec-icon sn-docpage__sec-icon--tokens"
-                :icon="Layers"
-                :size="15"
-              />
-              <h2>Token 规范与多端映射 Design Tokens</h2>
-            </div>
-            <span class="sn-docpage__sec-aside">{{ doc.tokens.note }}</span>
-          </div>
-          <p class="sn-docpage__hint">
-            <template v-for="(seg, i) in segs(doc.tokens.hint)" :key="i">
-              <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
-              <template v-else>{{ seg.s }}</template>
-            </template>
-          </p>
-          <div class="sn-docpage__tablecard">
-            <div class="sn-docpage__table-scroll">
-              <table class="sn-docpage__table">
-                <thead>
-                  <tr>
-                    <th>Token</th>
-                    <th>原始级联（@snui/tokens）</th>
-                    <th>品牌别名（组件消费）</th>
-                    <th>浅色基准值</th>
-                    <th class="sn-docpage__th-right">预览</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="row in doc.tokens.rows" :key="row.name">
-                    <td class="sn-docpage__td-name">{{ row.name }}</td>
-                    <td class="sn-docpage__td-var">{{ row.raw }}</td>
-                    <td class="sn-docpage__td-var">{{ row.alias }}</td>
-                    <td class="sn-docpage__td-value">{{ row.value }}</td>
-                    <td class="sn-docpage__td-preview">
-                      <span
-                        v-if="row.swatch"
-                        class="sn-docpage__swatch"
-                        :style="{ background: row.swatch }"
-                      />
-                      <span
-                        v-else-if="row.kind === 'curve'"
-                        class="sn-docpage__swatch-curve"
-                        :style="{ borderRadius: row.value }"
-                      />
-                      <span
-                        v-else-if="row.kind === 'blur'"
-                        class="sn-docpage__swatch swatch-soft"
-                      />
-                      <span v-else class="sn-docpage__swatch sn-docpage__swatch--empty" />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </section>
@@ -618,7 +621,7 @@ onBeforeUnmount(() => {
                 :icon="Table2"
                 :size="15"
               />
-              <h2>API 属性参考 Props Reference</h2>
+              <h2>{{ UI.api }}</h2>
             </div>
           </div>
           <p class="sn-docpage__hint">
@@ -632,10 +635,10 @@ onBeforeUnmount(() => {
               <table class="sn-docpage__table">
                 <thead>
                   <tr>
-                    <th>属性 Prop</th>
-                    <th>类型 Type</th>
-                    <th>默认值</th>
-                    <th>说明 Description</th>
+                    <th>{{ UI.thProp }}</th>
+                    <th>{{ UI.thType }}</th>
+                    <th>{{ UI.thDefault }}</th>
+                    <th>{{ UI.thDesc }}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -660,7 +663,7 @@ onBeforeUnmount(() => {
                 :icon="Sparkles"
                 :size="15"
               />
-              <h2>AI 原生集成 AI-Native Integration</h2>
+              <h2>{{ UI.ai }}</h2>
             </div>
           </div>
           <div class="sn-docpage__ai">
@@ -676,7 +679,7 @@ onBeforeUnmount(() => {
                 <button
                   type="button"
                   class="sn-docpage__mini"
-                  :aria-label="'复制 ' + doc.ai.chip"
+                  :aria-label="UI.copyChip + ' ' + doc.ai.chip"
                   @click="copyText('ai', doc.ai.chipCopy)"
                 >
                   <SnIcon :icon="copiedKey === 'ai' ? Check : Copy" :size="13" />
@@ -706,7 +709,7 @@ onBeforeUnmount(() => {
             class="sn-docpage__page"
             @click="navTo(doc.pager.prev.link)"
           >
-            <span class="sn-docpage__page-label">上一篇 Previous</span>
+            <span class="sn-docpage__page-label">{{ UI.prev }}</span>
             <span class="sn-docpage__page-title">
               <SnIcon :icon="ArrowLeft" :size="14" />
               {{ doc.pager.prev.text }}
@@ -719,7 +722,7 @@ onBeforeUnmount(() => {
             class="sn-docpage__page sn-docpage__page--right"
             @click="navTo(doc.pager.next.link)"
           >
-            <span class="sn-docpage__page-label">下一篇 Next</span>
+            <span class="sn-docpage__page-label">{{ UI.next }}</span>
             <span class="sn-docpage__page-title">
               {{ doc.pager.next.text }}
               <SnIcon :icon="ArrowRight" :size="14" />
@@ -731,7 +734,7 @@ onBeforeUnmount(() => {
       <!-- ═══════════════ 右侧浮轨：本页目录 + 反馈 ═══════════════ -->
       <aside class="sn-docpage__rail">
         <div class="sn-docpage__railcard">
-          <div class="sn-docpage__railhead">本页目录 · On this page</div>
+          <div class="sn-docpage__railhead">{{ UI.railhead }}</div>
           <nav class="sn-docpage__toc">
             <a
               v-for="item in doc.toc"
@@ -744,7 +747,7 @@ onBeforeUnmount(() => {
             </a>
           </nav>
           <div class="sn-docpage__fb">
-            <span>此文档对您是否有帮助？</span>
+            <span>{{ UI.feedbackQ }}</span>
             <div class="sn-docpage__fb-row">
               <button
                 type="button"
@@ -752,7 +755,7 @@ onBeforeUnmount(() => {
                 :class="{ 'sn-docpage__fb-btn--on': feedback === 'up' }"
                 @click="feedback = 'up'"
               >
-                有用
+                {{ UI.helpful }}
               </button>
               <button
                 type="button"
@@ -760,7 +763,7 @@ onBeforeUnmount(() => {
                 :class="{ 'sn-docpage__fb-btn--on': feedback === 'down' }"
                 @click="feedback = 'down'"
               >
-                待优化
+                {{ UI.needsWork }}
               </button>
             </div>
           </div>
@@ -837,12 +840,17 @@ onBeforeUnmount(() => {
   --sn-doc-tok-kw: #c4b5fd;
 }
 
+/* 内容区封顶：正文列 1120px + 右轨 232px + 列距 40px = 1392px。超宽屏居中，
+ * 避免 2560px 显示器上正文被拉到组件从未设计过的宽度（与 markdown 页的
+ * content-container 上限同一语义）。 */
 .sn-docpage__layout {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 40px;
+  max-width: 1392px;
+  margin-inline: auto;
 }
 @media (min-width: 1280px) {
   .sn-docpage__layout {
@@ -896,7 +904,9 @@ onBeforeUnmount(() => {
   left: -48px;
   width: 256px;
   height: 256px;
-  background: color-mix(in srgb, var(--sn-doc-ok) 12%, transparent);
+  /* 同一根主题色相的更深一档（hover 态即深色锚点），而不是固定的 success 绿 ——
+     换主题 / 换风格包时两团光晕仍然是一对，不会出现孤立的杂色。 */
+  background: color-mix(in srgb, var(--sn-doc-accent-hover) 14%, transparent);
   filter: blur(40px);
 }
 
@@ -1499,43 +1509,50 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 16px;
 }
+/* 案例容器不再是卡片：标题、描述、切换胶囊都是页面正文层，无背景；
+ * 卡片饰面（圆角 / 底色 / 阴影）只属于预览面板本体。 */
 .sn-docpage__demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sn-docpage__demo-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sn-doc-text-1);
+}
+.sn-docpage__demo-head p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--sn-doc-text-2);
+}
+.sn-docpage__demo-card {
+  position: relative;
   overflow: hidden;
   border-radius: 16px;
   background: var(--sn-doc-card);
   box-shadow: var(--sn-doc-shadow);
-}
-.sn-docpage__demo-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px 0;
-}
-.sn-docpage__demo-meta h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--sn-doc-text-1);
-}
-.sn-docpage__demo-meta p {
-  margin: 3px 0 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--sn-doc-text-3);
 }
 
 /* 预览 / 源码切换胶囊（图标，参照 heroui 的 eye/code 双态）。
   * 滑块是唯一的运动物：cubic-bezier(0.34, 1.56, 0.64, 1) 的 back-out
   * 曲线让它带一次可见回弹（过冲约 10% 后落位）——与侧栏端切换胶囊
   * 同一套「确认感」语言。 */
+/* 胶囊浮在预览面板右上角：绝对定位脱离内容流，预览本体始终居中。
+ * z-index 高于预览内容，源码模式下同样浮在代码面板右上角。 */
 .sn-docpage__demo-switch {
-  position: relative;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
   display: inline-flex;
   flex: none;
   padding: 3px;
   border-radius: 999px;
   background: var(--sn-doc-card-soft);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.08);
 }
 .sn-docpage__demo-thumb {
   position: absolute;
@@ -1574,13 +1591,14 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-accent);
 }
 .sn-docpage__demo-stage {
-  margin: 12px 16px 16px;
+  /* 白底面：预览是「作品台」，灰底会把组件自身的浅色控件吃掉一层对比。
+     给一个最小高度，避免单行演示（一个按钮 / 一个开关）把卡片压成细条。 */
+  min-height: 240px;
   padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--sn-doc-card-soft) 60%, transparent);
+  background: var(--sn-doc-surface-lowest);
 }
 .sn-docpage__demo-codebody {
   background: var(--sn-doc-code-bg);
@@ -1590,7 +1608,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 12px;
+  /* 右侧留出浮动切换胶囊的宽度，复制按钮不被压住。 */
+  padding: 8px 84px 8px 12px;
 }
 .sn-docpage__codebar-tabs {
   display: inline-flex;
@@ -1727,11 +1746,11 @@ onBeforeUnmount(() => {
 }
 
 /* ═══ 表格 ═══ */
+/* 表格无边框：层级交给字重与留白，不画线。表头用小号等宽字体 + 弱色区分，
+ * 行与行之间靠 padding 呼吸，悬停给一层极浅底色保持可扫读性。 */
 .sn-docpage__tablecard {
-  overflow: hidden;
   border-radius: 14px;
-  background: var(--sn-doc-card);
-  box-shadow: var(--sn-doc-shadow);
+  background: transparent;
 }
 .sn-docpage__table-scroll {
   overflow-x: auto;
@@ -1743,9 +1762,7 @@ onBeforeUnmount(() => {
 }
 .sn-docpage__table th {
   padding: 10px 14px;
-  border-bottom: 1px solid var(--sn-doc-border);
-  background: var(--sn-doc-card-soft);
-  color: var(--sn-doc-text-2);
+  color: var(--sn-doc-text-3);
   font-family: var(--vp-font-family-mono, ui-monospace, monospace);
   font-size: 11.5px;
   font-weight: 600;
@@ -1753,13 +1770,12 @@ onBeforeUnmount(() => {
   white-space: nowrap;
 }
 .sn-docpage__table td {
-  padding: 9px 14px;
-  border-bottom: 1px solid color-mix(in srgb, var(--sn-doc-border) 55%, transparent);
+  padding: 10px 14px;
   color: var(--sn-doc-text-2);
   vertical-align: top;
 }
-.sn-docpage__table tbody tr:last-child td {
-  border-bottom: 0;
+.sn-docpage__table tbody tr:hover td {
+  background: color-mix(in srgb, var(--sn-doc-accent) 4%, transparent);
 }
 .sn-docpage__table tbody tr {
   transition: background 0.12s;
@@ -2181,16 +2197,12 @@ onBeforeUnmount(() => {
   .sn-docpage__tab {
     padding: 4px 10px;
   }
-  .sn-docpage__demo-head {
-    padding: 12px 12px 0;
-    gap: 8px;
-  }
   .sn-docpage__demo-stage {
-    margin: 10px 12px 12px;
+    min-height: 180px;
     padding: 16px 10px;
   }
   .sn-docpage__demo-codebody .sn-docpage__codebar {
-    padding: 8px 10px;
+    padding: 8px 84px 8px 10px;
   }
   .sn-docpage__demo-code {
     font-size: 12px;

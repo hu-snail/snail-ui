@@ -37,20 +37,6 @@ export interface DocQuickAction {
   href?: string;
 }
 
-export interface DocTokenRow {
-  /** Token 语义名（kebab）。 */
-  name: string;
-  /** @snui/tokens 原始级联变量（--aui-button-*）。 */
-  raw: string;
-  /** 品牌别名（--sn-button-*）。 */
-  alias: string;
-  /** 浅色基准默认值。 */
-  value: string;
-  /** 预览色块颜色（仅 color 类 token 提供）。 */
-  swatch?: string;
-  kind?: 'color' | 'blur' | 'curve';
-}
-
 export interface DocPropRow {
   name: string;
   type: string;
@@ -95,11 +81,6 @@ export interface SnDocPageData {
     meta: string;
     code: string;
   };
-  tokens: {
-    hint: DocSeg[];
-    note: string;
-    rows: DocTokenRow[];
-  };
   props: {
     hint: DocSeg[];
     rows: DocPropRow[];
@@ -142,11 +123,6 @@ export interface SnDocPageData {
   };
   /** 组件 demo 案例瀑布流（en 文档案例清单，活体渲染 + 预览/源码切换）。 */
   demos: DocDemoItem[];
-  tokens: {
-    hint: DocSeg[];
-    note: string;
-    rows: DocTokenRow[];
-  };
   props: {
     hint: DocSeg[];
     rows: DocPropRow[];
