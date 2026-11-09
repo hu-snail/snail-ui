@@ -36,6 +36,34 @@ import type { DocFeature, DocSeg, DocQuickAction, SnDocPageData } from './types'
 
 const props = defineProps<{ doc: SnDocPageData }>();
 
+/**
+ * 区块数据兜底。
+ *
+ * 90 多个页面正在分批迁移，任何一页漏了 `usage` / `tokens` / `props` / `ai`
+ * 都会让模板直接读 undefined 而白屏 —— 一页的错误不该炸掉整站构建。这里把
+ * 缺失的区块归一成空集合：页面少显示一块，而不是整页崩掉。
+ */
+const doc = computed(() => {
+  const raw = props.doc;
+  return {
+    ...raw,
+    usage: raw.usage ?? { hint: [], fileLabel: '', meta: '', code: '' },
+    tokens: raw.tokens ?? { hint: [], note: '', rows: [] },
+    props: raw.props ?? { hint: [], rows: [] },
+    ai: raw.ai ?? {
+      badge: '',
+      heading: '',
+      copy: '',
+      chip: '',
+      chipCopy: '',
+      stats: [],
+    },
+    demos: raw.demos ?? [],
+    pager: raw.pager ?? {},
+    toc: raw.toc ?? [],
+  };
+});
+
 /** 特性条图标：把数据里的语义名映射到具体图标组件。 */
 const FEATURE_ICONS: Record<NonNullable<DocFeature['icon']>, typeof Monitor> = {
   eco: Sparkles,
@@ -143,7 +171,7 @@ function codeToHtml(code: string, lang: 'vue' | 'ts' | 'css' = 'vue'): string {
     .join('\n');
 }
 
-const usageHtml = codeToHtml(props.doc.usage.code);
+const usageHtml = computed(() => codeToHtml(doc.value.usage.code));
 
 /* ── demo 案例瀑布流（复用 demo-loader：活体渲染 + 源码，切换而非展开） ── */
 
@@ -164,7 +192,7 @@ function setDemoMode(name: string, mode: DemoMode): void {
  * 本列后续项 —— 无空高度。不经过 slot 传递，预览/源码状态走标准响应式。
  */
 const demoComponents = computed(() =>
-  Object.fromEntries(props.doc.demos.map((d) => [d.name, markRawDemo(d.name)])),
+  Object.fromEntries(doc.value.demos.map((d) => [d.name, markRawDemo(d.name)])),
 );
 /**
  * Demo 源码：懒加载（async）。之前三个 eager raw glob 把全部 ~1900 个
@@ -176,7 +204,7 @@ watchEffect(async () => {
   const out: Record<string, string> = {};
   // 并发拉取本页全部 demo 源码（per-file chunk，Promise.all 一次收敛）
   await Promise.all(
-    props.doc.demos.map(async (d) => {
+    doc.value.demos.map(async (d) => {
       out[d.name] = await loadDemoSource(d.name, false);
     }),
   );
@@ -227,7 +255,7 @@ function parseSfcSections(src: string): SfcSection[] {
 
 const demoSections = computed<Record<string, SfcSection[]>>(() => {
   const out: Record<string, SfcSection[]> = {};
-  for (const d of props.doc.demos) {
+  for (const d of doc.value.demos) {
     out[d.name] = parseSfcSections(demoSources.value[d.name] ?? '');
   }
   return out;
@@ -281,7 +309,7 @@ const feedback = ref<'' | 'up' | 'down'>('');
 const activeSection = ref('');
 let spyRaf = 0;
 function spySections(): void {
-  const ids = props.doc.toc.map((t) => t.id);
+  const ids = doc.value.toc.map((t) => t.id);
   let current = ids[0] ?? '';
   for (const id of ids) {
     const el = document.getElementById(id);
