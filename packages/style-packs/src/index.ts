@@ -8,24 +8,30 @@
 
 export { defaultPack } from './default.js';
 export { iosPack } from './ios.js';
-export { darkPack } from './dark.js';
 export { doodlePack } from './doodle.js';
 export type { StylePackDefinition } from './types.js';
 
+// The colour axis lives in @snui/tokens; re-exported here so a host that only
+// depends on style-packs can still reach the built-in themes.
+export {
+  AZURE_THEME,
+  FOREST_THEME,
+  EMBER_THEME,
+  VIOLET_THEME,
+  CRIMSON_THEME,
+  BUILTIN_THEMES,
+  getBuiltinTheme,
+  type BuiltinTheme,
+} from '@snui/tokens';
+
 import { defaultPack } from './default.js';
 import { iosPack } from './ios.js';
-import { darkPack } from './dark.js';
 import { doodlePack } from './doodle.js';
 
 import type { StylePackDefinition } from './types.js';
 
 /** All official packs, in display order for the docs site. */
-export const allPacks: ReadonlyArray<StylePackDefinition> = [
-  defaultPack,
-  iosPack,
-  doodlePack,
-  darkPack,
-];
+export const allPacks: ReadonlyArray<StylePackDefinition> = [defaultPack, iosPack, doodlePack];
 
 /** Lookup by name. Returns undefined for unknown packs. */
 export function getPack(name: string): StylePackDefinition | undefined {
