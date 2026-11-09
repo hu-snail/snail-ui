@@ -46,6 +46,12 @@ export const buttonDocPage: SnDocPageData = {
       href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/vue-web/src/button',
     },
   ],
+  features: [
+    { text: 'Emerald Cloud 调色规范', icon: 'eco' },
+    { text: '触控与焦点反馈', icon: 'touch' },
+    { text: 'Zero-Runtime CSS 变量', icon: 'layers' },
+    { text: 'WAI-ARIA 无障碍语义', icon: 'a11y' },
+  ],
 
   usage: {
     hint: [

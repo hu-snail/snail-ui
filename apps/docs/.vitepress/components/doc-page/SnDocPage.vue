@@ -32,9 +32,18 @@ import {
 } from 'lucide-vue-next';
 import { SnIcon } from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
-import type { DocSeg, DocQuickAction, SnDocPageData } from './types';
+import type { DocFeature, DocSeg, DocQuickAction, SnDocPageData } from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
+
+/** 特性条图标：把数据里的语义名映射到具体图标组件。 */
+const FEATURE_ICONS: Record<NonNullable<DocFeature['icon']>, typeof Monitor> = {
+  eco: Sparkles,
+  touch: Play,
+  layers: Layers,
+  a11y: Check,
+  dual: Monitor,
+};
 
 const { isDark, lang } = useData();
 /** 英文站：demo 走 demo-en 影子文件（与 demos 瀑布流一致）。 */
@@ -376,6 +385,15 @@ onBeforeUnmount(() => {
               </button>
             </template>
           </div>
+
+          <!-- 头卡特性条：参考稿底部一行「生态 / 交互 / 运行时」要点。
+               数据来自 doc.features，省略时不渲染。 -->
+          <ul v-if="doc.features?.length" class="sn-docpage__features">
+            <li v-for="f in doc.features" :key="f.text">
+              <SnIcon :icon="FEATURE_ICONS[f.icon ?? 'eco']" :size="15" />
+              {{ f.text }}
+            </li>
+          </ul>
         </header>
 
         <!-- 代码用法 -->
@@ -726,9 +744,23 @@ onBeforeUnmount(() => {
   --sn-doc-text-2: var(--vp-c-text-2);
   --sn-doc-text-3: var(--vp-c-text-3);
   --sn-doc-ok: var(--sn-web-color-feedback-success, #10b981);
-  /* 清爽风：无边线，圆角 + 极浅阴影承托层次 */
-  --sn-doc-shadow: 0 2px 12px rgb(15 23 42 / 0.05), 0 1px 3px rgb(15 23 42 / 0.04);
-  --sn-doc-shadow-hover: 0 10px 28px -6px rgb(15 23 42 / 0.1), 0 2px 6px rgb(15 23 42 / 0.05);
+
+  /* ── 表面色阶（参考稿 "Emerald Cloud" 的 Level 0–3）────────────────────
+   * 参考稿用五级表面 + 极低对比边框来分层，而不是投影。落到主题变量上：
+   * canvas 是页面底、lowest 是卡面、low/low-high 是卡内嵌块（代码条、表头、
+   * 控件底），这样深色模式与风格包仍然各自生效，组件不携带私有色值。 */
+  --sn-doc-canvas: var(--vp-c-bg);
+  --sn-doc-surface-lowest: var(--vp-c-bg-elv);
+  --sn-doc-surface-low: var(--vp-c-bg-soft);
+  --sn-doc-surface-high: color-mix(in srgb, var(--vp-c-bg-soft) 62%, var(--vp-c-bg));
+
+  /* 参考稿的「超轻环境光」：靠色阶分层，投影只做贴地感，不做戏剧化浮起。 */
+  --sn-doc-shadow: 0 1px 3px rgb(15 23 42 / 0.04), 0 1px 2px rgb(15 23 42 / 0.02);
+  --sn-doc-shadow-hover: 0 4px 6px -1px rgb(15 23 42 / 0.07), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+  /* 卡片圆角：参考稿容器用 16px，内部小块 12px。 */
+  --sn-doc-radius-card: 16px;
+  --sn-doc-radius-block: 12px;
+  --sn-doc-radius-chip: 9999px;
   --sn-doc-warn: var(--sn-web-color-feedback-warning, #f59e0b);
   --sn-doc-err: var(--sn-web-color-feedback-danger, #ef4444);
   --sn-doc-cyan: var(--sn-web-color-feedback-info, #06b6d4);
@@ -786,11 +818,75 @@ onBeforeUnmount(() => {
 }
 
 /* ═══ 头部 ═══ */
+/* 头卡：参考稿把标题区做成一张独立白卡（Level 1 表面 + 超轻投影），
+ * 右上 / 左下各一团弥散光晕，标题与徽章在内层正常流里。这样页面第一屏
+ * 就有明确的「一块内容」而不是漂浮在画布上的文字。 */
 .sn-docpage__head {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 28px 30px 24px;
+  border-radius: var(--sn-doc-radius-card);
+  background: var(--sn-doc-surface-lowest);
+  box-shadow: var(--sn-doc-shadow);
+  overflow: hidden;
 }
+
+/* 弥散光晕：纯装饰，不参与布局也不拦截交互。 */
+.sn-docpage__head::before,
+.sn-docpage__head::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+.sn-docpage__head::before {
+  top: -96px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  background: color-mix(in srgb, var(--sn-doc-accent) 14%, transparent);
+  filter: blur(48px);
+}
+.sn-docpage__head::after {
+  bottom: -64px;
+  left: -48px;
+  width: 256px;
+  height: 256px;
+  background: color-mix(in srgb, var(--sn-doc-ok) 12%, transparent);
+  filter: blur(40px);
+}
+
+/* 内层内容压在光晕之上。 */
+.sn-docpage__head > * {
+  position: relative;
+  z-index: 1;
+}
+/* 特性条：一行轻量要点，细线分隔，图标随语义色。 */
+.sn-docpage__features {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  margin: 4px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--sn-doc-border);
+  list-style: none;
+  font-size: 12.5px;
+  color: var(--sn-doc-text-2);
+}
+.sn-docpage__features li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sn-docpage__features li svg {
+  color: var(--sn-doc-accent);
+  flex: none;
+}
+
 .sn-docpage__crumbs {
   display: flex;
   align-items: center;

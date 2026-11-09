@@ -74,12 +74,21 @@ export interface DocPagerItem {
   link: string;
 }
 
+/** 头卡底部特性条的一项（参考稿的「翡翠云调色规范 / 触控反馈 / 零运行时」）。 */
+export interface DocFeature {
+  text: string;
+  /** 图标语义：生态 / 交互 / 分层 / 无障碍 / 双端。 */
+  icon?: 'eco' | 'touch' | 'layers' | 'a11y' | 'dual';
+}
+
 export interface SnDocPageData {
   crumbs: DocCrumb[];
   title: string;
   badges: DocBadge[];
   description: DocSeg[];
   quickActions: DocQuickAction[];
+  /** 头卡底部的特性条，省略则不渲染。 */
+  features?: DocFeature[];
   usage: {
     hint: DocSeg[];
     fileLabel: string;
