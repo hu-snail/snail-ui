@@ -501,7 +501,7 @@ watch(
 
 .sn-demo__card {
   border: 1px solid rgba(9, 9, 11, 0.08);
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 24px;
   /* 预览面与页面底色一致（白底），避免浅灰内嵌。 */
   background: var(--vp-c-bg);
@@ -631,7 +631,7 @@ html.dark .sn-demo__card {
 .sn-demo__code {
   margin-top: 12px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 6px;
   background: var(--vp-c-bg-soft);
   overflow: hidden;
 }
