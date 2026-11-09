@@ -1,0 +1,154 @@
+/**
+ * TimePicker 组件详情页数据。
+ *
+ * Props 与默认值取自组件 SFC 的 defineProps / withDefaults；
+ * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
+ */
+import type { SnDocPageData } from '../../components/doc-page/types';
+
+export const timePickerDocPage: SnDocPageData = {
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'TimePicker' }],
+  title: 'TimePicker',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    { t: 'text', s: '时间选择器。Teleport 三列（时/分/秒）面板，支持 12 小时制与全键盘操作。' },
+  ],
+  quickActions: [
+    {
+      icon: 'copy',
+      label: 'pnpm add @snui/vue-web',
+      copy: 'pnpm add @snui/vue-web',
+      copiedLabel: '已复制',
+    },
+    {
+      icon: 'link',
+      label: '查看源码',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/vue-web/src/time-picker',
+    },
+  ],
+  usage: {
+    hint: [],
+    fileLabel: 'TimePicker.vue',
+    meta: 'Vue 3 · <script setup>',
+    code: `
+<script setup lang="ts">
+import { TimePicker } from '@snui/vue-web';
+</script>
+
+<template>
+  <TimePicker />
+</template>`,
+  },
+  demos: [
+    {
+      name: 'time-picker-web-basic',
+      title: '基础用法',
+      blurb: 'v-model（毫秒时间戳）+ 默认 HH:mm:ss。',
+    },
+    {
+      name: 'time-picker-web-format',
+      title: 'format（列数）',
+      blurb: 'HH:mm 隐藏秒列，提交秒归零。',
+    },
+    {
+      name: 'time-picker-web-12h',
+      title: '12 小时制（use12Hours）',
+      blurb: '钟面序 12/1…11 + AM/PM 列。',
+    },
+    {
+      name: 'time-picker-web-states',
+      title: '可清空 / 禁用 / 只读',
+      blurb: 'clearable、disabled、readonly。',
+    },
+  ],
+  tokens: { hint: [], note: '', rows: [] },
+  props: {
+    hint: [],
+    rows: [
+      {
+        name: 'modelValue',
+        type: 'number | null',
+        default: 'null',
+        desc: 'Bound value: millisecond timestamp, or null when empty.',
+      },
+      {
+        name: 'format',
+        type: 'SnTimePickerFormat',
+        default: "'HH:mm:ss'",
+        desc: 'Display format — also decides whether the seconds column renders.',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        default: "'Please select time'",
+        desc: 'Placeholder text when empty.',
+      },
+      {
+        name: 'clearable',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Show the clear (×) button when a value is present.',
+      },
+      { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables interaction.' },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Read-only — opens nothing, commits nothing.',
+      },
+      { name: 'size', type: 'SnTimePickerSize', default: "'medium'", desc: 'Visual size preset.' },
+      {
+        name: 'status',
+        type: 'SnTimePickerStatus',
+        default: "'default'",
+        desc: 'Validation-driven visual status.',
+      },
+      {
+        name: 'use12Hours',
+        type: 'boolean',
+        default: 'false',
+        desc: '12-hour clock: hour faces 1–12 plus an AM/PM column.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        default: "''",
+        desc: "Accessible name for the trigger (fallback: 'Time picker').",
+      },
+      { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
+      {
+        name: 'customStyle',
+        type: 'string | Record<string, string>',
+        default: "''",
+        desc: 'Inline style on the root wrapper.',
+      },
+    ],
+  },
+  ai: {
+    badge: 'ai-description.md · 已内置',
+    heading: '为 LLM 提供语义化组件契约',
+    copy: 'TimePicker 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
+    chip: "import { TimePicker } from '@snui/vue-web';",
+    chipCopy: "import { TimePicker } from '@snui/vue-web';",
+    stats: [
+      { key: 'intent.action', value: 'TimePicker', tone: 'accent' },
+      { key: 'intent.end', value: 'web', tone: 'cyan' },
+      { key: 'a11y', value: 'token-driven', tone: 'ok' },
+    ],
+  },
+  pager: {
+    prev: { text: 'tree-select', link: '/components/web/tree-select' },
+    next: { text: 'date-picker', link: '/components/web/date-picker' },
+  },
+  toc: [
+    { id: 'usage', text: '代码用法' },
+    { id: 'demos', text: '案例 Demos' },
+    { id: 'tokens', text: '设计令牌 Tokens' },
+    { id: 'api', text: 'API 属性参考' },
+    { id: 'ai-native', text: 'AI 原生集成' },
+  ],
+};
