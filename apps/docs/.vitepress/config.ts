@@ -1026,7 +1026,15 @@ export default defineConfig({
     // the JS). The browser is the source of truth that proves the dist is
     // usable.
     optimizeDeps: {
-      include: ['@snui/tokens', '@snui/style-packs', 'lucide-vue-next', 'vue'],
+      include: ['lucide-vue-next', 'vue'],
+      // Workspace packages stay OUT of pre-bundling on purpose. Vite keys the
+      // dep cache on package.json / lockfile, not on `dist` contents, so a
+      // package that gains a new export keeps serving the stale pre-bundled
+      // module: the browser then dies with "does not provide an export named
+      // …" until someone deletes .vitepress/cache by hand. That happened for
+      // `BUILTIN_THEMES` (ADR-0010) and would repeat on every token change.
+      // Both packages ship plain ESM, so serving them unbundled costs nothing.
+      exclude: ['@snui/tokens', '@snui/style-packs'],
     },
   },
 
