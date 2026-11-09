@@ -32,6 +32,7 @@ import {
 } from 'lucide-vue-next';
 import { SnIcon } from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
+import { registerDemo, unregisterDemo } from '../../utils/demo-dock';
 import type { DocFeature, DocSeg, DocQuickAction, SnDocPageData } from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
@@ -92,6 +93,7 @@ const UI = computed(() =>
         usage: 'Code Usage',
         demos: 'Examples',
         demosAside: 'Live · rendered from the docs corpus',
+        inPhonePanel: 'Previewed in the phone panel on the right; this section is the contract.',
         ai: 'AI-Native Integration',
         previewSource: 'Preview / Source',
         preview: 'Preview',
@@ -117,6 +119,7 @@ const UI = computed(() =>
         usage: '代码用法 Code Usage',
         demos: '案例 Demos',
         demosAside: '实时渲染 · 来自组件文档案例',
+        inPhonePanel: '预览在右侧手机面板中查看；此处是案例的契约说明。',
         ai: 'AI 原生集成 AI-Native Integration',
         previewSource: '预览 / 源码',
         preview: '预览',
@@ -395,15 +398,36 @@ function onSpyScroll(): void {
   cancelAnimationFrame(spyRaf);
   spyRaf = requestAnimationFrame(spySections);
 }
+/**
+ * uni 组件页：把本页的案例登记到 DemoDock，让右侧固定手机面板渲染预览。
+ *
+ * DemoDock 自己负责「宽屏 + uni 路由」的开关，唯一的前提是 entries 非空——
+ * 它拿这份清单渲染手机里的那个 iframe（部署的 uni-demo 页），并给面板提供
+ * 场景切换的标签。旧的 `<Demo>` 页之所以能显示手机，就是因为每个 Demo
+ * 在挂载时登记了自己；数据页绕过了 Demo.vue，必须补上这一环。
+ *
+ * web 页面不登记：web demo 不是手机形态，右下角面板对它们没有意义。
+ */
+const isMpDemo = (name: string): boolean => /(^|-)mp(-|$)/.test(name);
+const isUniDoc = computed(() => doc.value.demos.some((d) => isMpDemo(d.name)));
+
 onMounted(() => {
   spySections();
   window.addEventListener('scroll', onSpyScroll, { passive: true });
   window.addEventListener('resize', onSpyScroll);
+  if (isUniDoc.value) {
+    for (const d of doc.value.demos) {
+      registerDemo({ name: d.name, label: d.title, description: d.blurb });
+    }
+  }
 });
 onBeforeUnmount(() => {
   cancelAnimationFrame(spyRaf);
   window.removeEventListener('scroll', onSpyScroll);
   window.removeEventListener('resize', onSpyScroll);
+  if (isUniDoc.value) {
+    for (const d of doc.value.demos) unregisterDemo(d.name);
+  }
 });
 </script>
 
@@ -574,11 +598,17 @@ onBeforeUnmount(() => {
                   </button>
                 </div>
                 <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
+                  <!-- uni 案例不在这里渲染：它们只在真实的 uni runtime 里跑，
+                     docs 管线解析不到对应文件。预览统一放右侧手机面板（见
+                     demo-dock），这里给一句指路，和 Demo.vue 的 dock 态一致。 -->
+                  <p v-if="isMpDemo(d.name)" class="sn-docpage__demo-hint">
+                    {{ UI.inPhonePanel }}
+                  </p>
                   <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
                      document / navigator（视频小窗、上传、日志自动滚动等）。这里
                      不套客户端边界就会在 SSR 阶段抛 "window is not defined"，整页
                      构建失败。Demo.vue 一直是这么做的，这里是把它补齐。 -->
-                  <ClientOnly>
+                  <ClientOnly v-else>
                     <component :is="demoComponents[d.name]" />
                   </ClientOnly>
                 </div>
@@ -1528,6 +1558,15 @@ onBeforeUnmount(() => {
   line-height: 1.6;
   color: var(--sn-doc-text-2);
 }
+/* uni 案例在本文列里的占位提示：预览在右侧手机面板，这里只说明契约。 */
+.sn-docpage__demo-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--sn-doc-text-3);
+  text-align: center;
+}
+
 .sn-docpage__demo-card {
   position: relative;
   overflow: hidden;
