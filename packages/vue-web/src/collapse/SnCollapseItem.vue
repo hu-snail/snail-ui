@@ -159,7 +159,7 @@ const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded();
   transition: background-color 0.15s ease;
 }
 .sn-collapse-item__header:hover:not(.sn-collapse-item__header--disabled) {
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--sn-web-color-background-subtle);
 }
 .sn-collapse-item__header--arrow-right {
   flex-direction: row;
