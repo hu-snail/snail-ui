@@ -904,9 +904,7 @@ void slots;
   /* The arrow is positioned in the band *outside* the padding box (a
    * negative inset), so the bubble must not clip its own overflow. */
   overflow: visible;
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.08),
-    0 6px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--sn-web-shadow-lg);
   /* Enter animation: fade + tiny offset toward trigger. Set up
    * direction-aware classes via placement so the arrow points at
    * the trigger and the bubble "grows from" the trigger side. */

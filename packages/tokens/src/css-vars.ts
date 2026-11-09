@@ -25,6 +25,7 @@ import {
   type TokenEnvironment,
 } from './theme.js';
 import { renderStyleBlock, resolveEnvironment, type TokenBinding } from './resolver.js';
+import { BUILTIN_THEMES } from './themes.js';
 
 const SN_PREFIX = '--sn-';
 const AUI_PREFIX = '--aui-';
@@ -37,6 +38,15 @@ export interface SnCssVarsOptions {
   readonly instanceOverrides?: Readonly<Record<string, string>>;
   /** Whether to include the dark-theme override under `[data-theme="dark"]`. Default: true. */
   readonly withDark?: boolean;
+  /**
+   * Whether to emit one `[data-theme="<name>"]` block per built-in colour
+   * theme (`BUILTIN_THEMES`). Default: true.
+   *
+   * Emitting them all costs a few KB and lets a host switch themes with a
+   * single attribute (`documentElement.dataset.theme = 'forest'`) instead of
+   * re-rendering the stylesheet from JS.
+   */
+  readonly withThemeBlocks?: boolean;
 }
 
 /** Convert `--aui-foo-bar` to `--sn-foo-bar`. Identity for non-prefixed names. */
@@ -95,7 +105,39 @@ export function snCssVars(options: SnCssVarsOptions = {}): string {
   const darkAui = renderStyleBlock(darkBindings).replace(/:root/, darkSelector);
   const darkAlias = renderAliasBlock(darkBindings, darkSelector);
 
-  return [lightAui, lightAlias, darkAui, darkAlias].join('\n');
+  const blocks = [lightAui, lightAlias];
+  if (options.withThemeBlocks !== false) blocks.push(...renderBuiltinThemeBlocks(options));
+  // Dark last: with both `data-theme="forest"` and `.dark` present they would
+  // tie on specificity, so the later block decides — and dark must win.
+  blocks.push(darkAui, darkAlias);
+
+  return blocks.join('\n');
+}
+
+/**
+ * One `[data-theme="<name>"]` block per built-in colour theme.
+ *
+ * Only the theme axis changes per block; style and density are held at the
+ * caller's values so switching theme never reshapes a component.
+ */
+function renderBuiltinThemeBlocks(options: SnCssVarsOptions): string[] {
+  const style = options.style ?? MODERN_STYLE;
+  const density = options.density ?? COMFORTABLE_DENSITY;
+  const blocks: string[] = [];
+
+  for (const theme of BUILTIN_THEMES) {
+    // The requested theme is already the light block; re-emitting it under an
+    // attribute selector would just duplicate the same declarations.
+    if (options.theme?.name === theme.name) continue;
+    const bindings = resolveEnvironment({ theme, style, density });
+    const selector = `[data-theme="${theme.name}"]`;
+    blocks.push(
+      renderStyleBlock(bindings).replace(/:root/, selector),
+      renderAliasBlock(bindings, selector),
+    );
+  }
+
+  return blocks;
 }
 
 function renderAliasBlock(bindings: readonly TokenBinding[], selector = ':root'): string {

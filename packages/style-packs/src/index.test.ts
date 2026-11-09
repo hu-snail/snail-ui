@@ -1,9 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { defaultPack, iosPack, darkPack, doodlePack, allPacks, getPack } from './index.js';
+import {
+  defaultPack,
+  iosPack,
+  doodlePack,
+  allPacks,
+  getPack,
+  BUILTIN_THEMES,
+  getBuiltinTheme,
+} from './index.js';
 
 describe('@snui/style-packs', () => {
-  it('exposes four official packs', () => {
-    expect(allPacks.length).toBe(4);
+  it('exposes three official packs', () => {
+    // `dark` was removed: it mixed the colour axis into a style pack, and the
+    // axis now lives in @snui/tokens as five named themes (ADR-0010).
+    expect(allPacks.length).toBe(3);
+  });
+
+  it('no longer ships a dark style pack', () => {
+    expect(getPack('dark')).toBeUndefined();
+    expect(allPacks.map((p) => p.name)).not.toContain('dark');
   });
 
   it('all packs have required fields', () => {
@@ -24,13 +39,14 @@ describe('@snui/style-packs', () => {
     expect(iosPack.theme?.semantic?.action?.primary).toBe('#007AFF');
   });
 
-  it('darkPack has dark backgrounds', () => {
-    expect(darkPack.theme?.semantic?.background?.surface).toBe('#18181b');
-  });
-
   it('doodlePack has marker-pink primary and sticker shadows', () => {
     expect(doodlePack.theme?.semantic?.action?.primary).toBe('#FF6B9D');
     expect(doodlePack.style.component.button?.shadow).toContain('#1a1a1a');
+  });
+
+  it('re-exports the five built-in colour themes', () => {
+    expect(BUILTIN_THEMES).toHaveLength(5);
+    expect(getBuiltinTheme('forest')?.name).toBe('forest');
   });
 
   it('getPack() returns the right pack', () => {

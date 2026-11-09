@@ -1,7 +1,7 @@
 /**
  * get_style_pack — return Style Pack definition + ready-to-paste snippet.
  *
- * Stub: returns default / ios / dark directly (no dependency on @snui/style-packs
+ * Stub: returns default / ios directly (no dependency on @snui/style-packs
  * to keep this package minimal). Real implementation will import from style-packs
  * once the package is stable.
  *
@@ -39,22 +39,6 @@ el.textContent = snCssVars({
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)`,
-    hasSkinCss: false,
-  },
-  dark: {
-    name: 'dark',
-    label: 'Dark (现代暗色)',
-    description: '低饱和度暗色背景。',
-    snippet: `import { snCssVars } from '@snui/tokens'
-import { darkPack } from '@snui/style-packs/dark'
-
-const el = document.createElement('style')
-el.textContent = snCssVars({
-  theme: darkPack.theme,
-  style: darkPack.style,
-  density: darkPack.density,
 })
 document.head.appendChild(el)`,
     hasSkinCss: false,
