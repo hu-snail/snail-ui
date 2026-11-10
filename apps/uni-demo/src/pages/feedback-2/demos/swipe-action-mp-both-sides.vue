@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-swipe-action (uni-end) — left + right action areas and a close guard.
+ * Demo: sn-swipe-action (uni-end) — left + right action areas (#left / #right slots).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
 import { ref } from 'vue';
@@ -8,15 +8,6 @@ import { ref } from 'vue';
 import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
 
 const both = ref<'left' | 'close' | 'right'>('close');
-const guarded = ref<'left' | 'close' | 'right'>('close');
-
-const guardHits = ref(0);
-
-/** Refuse the first close so the blocking behaviour is visible. */
-function beforeClose(): boolean {
-  guardHits.value += 1;
-  return guardHits.value > 1;
-}
 </script>
 
 <template>
@@ -36,19 +27,6 @@ function beforeClose(): boolean {
       <template #right>
         <view class="sn-swipe-demo__action">
           <text class="sn-swipe-demo__action-text">删除</text>
-        </view>
-      </template>
-    </SnSwipeAction>
-
-    <SnSwipeAction v-model="guarded" :before-close="beforeClose">
-      <view class="sn-swipe-demo__row">
-        <text class="sn-swipe-demo__title">before-close 拦截第一次关闭</text>
-        <text class="sn-swipe-demo__desc">已调用 {{ guardHits }} 次</text>
-      </view>
-
-      <template #right>
-        <view class="sn-swipe-demo__action">
-          <text class="sn-swipe-demo__action-text">归档</text>
         </view>
       </template>
     </SnSwipeAction>

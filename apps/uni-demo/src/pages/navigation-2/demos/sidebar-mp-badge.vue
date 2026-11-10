@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-sidebar — 图标、徽标与禁用项。 */
+/** Demo: sn-sidebar — 徽标（badge / is-dot）。 */
 import { ref } from 'vue';
 import SnSidebar from '@snui/uni-src/components/sn-sidebar/sn-sidebar.vue';
 import SnSidebarItem from '@snui/uni-src/components/sn-sidebar/sn-sidebar-item.vue';
@@ -10,9 +10,8 @@ const active = ref('inbox');
 <template>
   <view class="sn-demo sn-demo--row">
     <SnSidebar v-model="active" class="sn-demo__side">
-      <SnSidebarItem label="收件箱" value="inbox" icon="Bell" :badge="12" />
-      <SnSidebarItem label="收藏" value="star" icon="Star" is-dot />
-      <SnSidebarItem label="已归档" value="archive" icon="Trash" disabled />
+      <SnSidebarItem label="收件箱" value="inbox" :badge="12" />
+      <SnSidebarItem label="收藏" value="star" is-dot />
     </SnSidebar>
     <view class="sn-demo__panel">
       <text>当前：{{ active }}</text>

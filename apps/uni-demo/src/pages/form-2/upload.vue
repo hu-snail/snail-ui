@@ -1,12 +1,15 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— upload 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/upload-mp-basic.vue';
-import Demo1 from './demos/upload-mp-before-hooks.vue';
-import Demo2 from './demos/upload-mp-disabled-status.vue';
-import Demo3 from './demos/upload-mp-events-counter.vue';
-import Demo4 from './demos/upload-mp-multiple-source.vue';
-import Demo5 from './demos/upload-mp-preview-custom.vue';
-import Demo6 from './demos/upload-mp-request-method.vue';
+import Demo0 from './demos/upload-mp-accept.vue';
+import Demo1 from './demos/upload-mp-basic.vue';
+import Demo2 from './demos/upload-mp-before-hooks.vue';
+import Demo3 from './demos/upload-mp-custom-style.vue';
+import Demo4 from './demos/upload-mp-disabled.vue';
+import Demo5 from './demos/upload-mp-events-counter.vue';
+import Demo6 from './demos/upload-mp-image-mode.vue';
+import Demo7 from './demos/upload-mp-multiple-source.vue';
+import Demo8 from './demos/upload-mp-request-method.vue';
+import Demo9 from './demos/upload-mp-status.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -19,45 +22,78 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'上传'" :title-en="'Upload'" :desc="'文件 / 图片上传'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="t('选择器类型（`accept`）', 'Picker type (`accept`)')"
+          badge="accept"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('before-hooks', 'Before Hooks')" badge="before-hooks" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('disabled-status', 'Disabled Status')" badge="disabled-status" />
+        <DemoModuleHead :title="t('before-hooks', 'Before Hooks')" badge="before-hooks" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('events-counter', 'Events Counter')" badge="events-counter" />
+        <DemoModuleHead
+          :title="t('三层样式挂载点', 'Three styling mount points')"
+          badge="custom-style"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('multiple-source', 'Multiple Source')" badge="multiple-source" />
+        <DemoModuleHead
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('preview-custom', 'Preview Custom')" badge="preview-custom" />
+        <DemoModuleHead :title="t('events-counter', 'Events Counter')" badge="events-counter" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('request-method', 'Request Method')" badge="request-method" />
+        <DemoModuleHead
+          :title="t('缩略图模式（`imageMode`）', 'Thumbnail mode (`imageMode`)')"
+          badge="image-mode"
+        />
         <view class="module__body">
           <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('multiple-source', 'Multiple Source')" badge="multiple-source" />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('request-method', 'Request Method')" badge="request-method" />
+        <view class="module__body">
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('文件状态渲染（`status`）', 'File status rendering (`status`)')"
+          badge="status"
+        />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

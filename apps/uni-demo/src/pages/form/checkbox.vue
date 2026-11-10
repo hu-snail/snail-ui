@@ -1,9 +1,14 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— checkbox 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/checkbox-mp-basic.vue';
-import Demo1 from './demos/checkbox-mp-group-limits.vue';
-import Demo2 from './demos/checkbox-mp-standalone-style.vue';
-import Demo3 from './demos/checkbox-mp-type.vue';
+import Demo1 from './demos/checkbox-mp-colors.vue';
+import Demo2 from './demos/checkbox-mp-custom-style.vue';
+import Demo3 from './demos/checkbox-mp-group-limits.vue';
+import Demo4 from './demos/checkbox-mp-group-state.vue';
+import Demo5 from './demos/checkbox-mp-placement.vue';
+import Demo6 from './demos/checkbox-mp-standalone.vue';
+import Demo7 from './demos/checkbox-mp-toggle-all.vue';
+import Demo8 from './demos/checkbox-mp-type.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,24 +27,69 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('group-limits', 'Group Limits')" badge="group-limits" />
+        <DemoModuleHead
+          :title="t('选中颜色（checkedColor）', 'Checked colors (checkedColor)')"
+          badge="colors"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('standalone-style', 'Standalone Style')"
-          badge="standalone-style"
-        />
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead
+          :title="t('数量限制（min / max）', 'Count limits (min / max)')"
+          badge="group-limits"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('组状态与半选', 'Group state & half-check')"
+          badge="group-state"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('布局与标签（placement / maxWidth）', 'Layout & label (placement / maxWidth)')"
+          badge="placement"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('独立用法与自定义取值', 'Standalone usage & custom values')"
+          badge="standalone"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('全选 / 全不选（toggleAll）', 'Select all / clear all (toggleAll)')"
+          badge="toggle-all"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

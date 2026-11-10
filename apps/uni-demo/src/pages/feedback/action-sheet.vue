@@ -1,10 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— action-sheet 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/action-sheet-mp-basic.vue';
-import Demo1 from './demos/action-sheet-mp-behavior.vue';
-import Demo2 from './demos/action-sheet-mp-custom.vue';
-import Demo3 from './demos/action-sheet-mp-header.vue';
-import Demo4 from './demos/action-sheet-mp-panels.vue';
+import Demo0 from './demos/action-sheet-mp-action-icons.vue';
+import Demo1 from './demos/action-sheet-mp-basic.vue';
+import Demo2 from './demos/action-sheet-mp-behavior.vue';
+import Demo3 from './demos/action-sheet-mp-custom-style.vue';
+import Demo4 from './demos/action-sheet-mp-header.vue';
+import Demo5 from './demos/action-sheet-mp-panels.vue';
+import Demo6 from './demos/action-sheet-mp-render.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -17,33 +19,48 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'动作面板'" :title-en="'Action Sheet'" :desc="'底部操作列表'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('行图标（icon）', 'Row icons (`icon`)')" badge="action-icons" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
+        <DemoModuleHead :title="t('自定义样式', 'Custom styles')" badge="custom-style" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('多列面板', 'Panels')" badge="panels" />
+        <DemoModuleHead :title="t('标题与关闭按钮', 'Header & close button')" badge="header" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('多列面板', 'Panels')" badge="panels" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('渲染时机与安全区', 'Render timing & safe area')"
+          badge="render"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

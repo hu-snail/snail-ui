@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-count-down (uni-end) — start / pause / reset + millisecond mode.
+ * Demo: sn-count-down (uni-end) — controls (start / pause / reset).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
  */
 import { ref } from 'vue';
@@ -22,8 +22,6 @@ const finished = ref(0);
     </view>
 
     <text class="sn-count-down-demo__meta">Finished {{ finished }} time(s)</text>
-
-    <SnCountDown :time="10000" millisecond format="ss.S" />
   </view>
 </template>
 

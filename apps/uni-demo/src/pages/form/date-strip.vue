@@ -47,7 +47,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('导航按钮', 'Navigation')" badge="nav" />
+        <DemoModuleHead
+          :title="t('导航按钮（show-nav）', 'Navigation buttons (show-nav)')"
+          badge="nav"
+        />
         <view class="module__body">
           <Demo4 />
         </view>

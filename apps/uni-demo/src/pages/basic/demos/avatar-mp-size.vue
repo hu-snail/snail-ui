@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-avatar (uni-end) — 尺寸预设 + 圆形 / 方形。 */
+/** Demo: sn-avatar (uni-end) — 尺寸预设 + 自定义数值 / 百分比尺寸。 */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 </script>
 
@@ -12,9 +12,7 @@ import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
       <SnAvatar text="L" size="large" />
     </view>
     <view class="sn-demo-row">
-      <SnAvatar text="圆" size="large" shape="round" />
-      <SnAvatar text="方" size="large" shape="square" />
-      <SnAvatar text="56" :size="56" shape="square" />
+      <SnAvatar text="56" :size="56" />
       <SnAvatar text="20%" size="20%" />
     </view>
   </view>

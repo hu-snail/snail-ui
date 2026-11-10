@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-sidebar — icons, badges and a disabled entry. */
+/** Demo: sn-sidebar — English shadow of sidebar-mp-badge. */
 import { ref } from 'vue';
 import SnSidebar from '@snui/uni-src/components/sn-sidebar/sn-sidebar.vue';
 import SnSidebarItem from '@snui/uni-src/components/sn-sidebar/sn-sidebar-item.vue';
@@ -10,9 +10,8 @@ const active = ref('inbox');
 <template>
   <view class="sn-demo sn-demo--row">
     <SnSidebar v-model="active" class="sn-demo__side">
-      <SnSidebarItem label="Inbox" value="inbox" icon="Bell" :badge="12" />
-      <SnSidebarItem label="Starred" value="star" icon="Star" is-dot />
-      <SnSidebarItem label="Archived" value="archive" icon="Trash" disabled />
+      <SnSidebarItem label="Inbox" value="inbox" :badge="12" />
+      <SnSidebarItem label="Starred" value="star" is-dot />
     </SnSidebar>
     <view class="sn-demo__panel">
       <text>Current: {{ active }}</text>

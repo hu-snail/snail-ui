@@ -1,11 +1,10 @@
 <script setup lang="ts">
 /**
- * Demo: sn-collapse — accordion mode with title icons and a disabled panel.
+ * Demo: sn-collapse — English shadow of collapse-mp-accordion.
  *
- * A disabled panel keeps the neutral icon colour and never reacts to taps.
+ * accordion turns v-model into a string and keeps one panel open at a time.
  */
 import { ref } from 'vue';
-import { HelpCircle, Info, Lock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCollapse from '@snui/uni-src/components/sn-collapse/sn-collapse.vue';
 import SnCollapseItem from '@snui/uni-src/components/sn-collapse/sn-collapse-item.vue';
 
@@ -15,14 +14,11 @@ const open = ref('a');
 <template>
   <view class="sn-demo sn-demo--column">
     <SnCollapse v-model="open" accordion>
-      <SnCollapseItem name="a" title="FAQ" :title-icon-data="HelpCircle">
+      <SnCollapseItem name="a" title="FAQ">
         <text class="sn-demo__body">Only one panel stays open at a time.</text>
       </SnCollapseItem>
-      <SnCollapseItem name="b" title="Return policy" :title-icon-data="Info">
+      <SnCollapseItem name="b" title="Return policy">
         <text class="sn-demo__body">7-day no-questions returns.</text>
-      </SnCollapseItem>
-      <SnCollapseItem name="c" title="Unavailable" :title-icon-data="Lock" disabled>
-        <text class="sn-demo__body">This panel is disabled.</text>
       </SnCollapseItem>
     </SnCollapse>
     <text class="sn-demo__meta">Currently open: {{ open || 'none' }}</text>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— dialer 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/dialer-mp.vue';
-import Demo1 from './demos/dialer-mp-basic.vue';
-import Demo2 from './demos/dialer-mp-states.vue';
-import Demo3 from './demos/dialer-mp-variants.vue';
+import Demo0 from './demos/dialer-mp-basic.vue';
+import Demo1 from './demos/dialer-mp-colors.vue';
+import Demo2 from './demos/dialer-mp-pointer-slot.vue';
+import Demo3 from './demos/dialer-mp-size.vue';
+import Demo4 from './demos/dialer-mp-spin.vue';
+import Demo5 from './demos/dialer-mp-states.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,27 +23,45 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('扇区配色', 'Sector colors')" badge="colors" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead
+          :title="t('自定义指针（pointer 插槽）', 'Custom pointer')"
+          badge="pointer-slot"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('variants', 'Variants')" badge="variants" />
+        <DemoModuleHead :title="t('尺寸（size）', 'Size')" badge="size" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('圈数与时长（turns / duration）', 'Turns & duration')"
+          badge="spin"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

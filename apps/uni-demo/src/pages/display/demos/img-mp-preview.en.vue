@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-img (uni-end) — enable-preview / preview-src / lazy-load / show-menu-by-longpress.
+ * Demo: sn-img (uni-end) — tap-to-preview (`enablePreview`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
@@ -23,26 +23,21 @@ const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
         radius="16"
         mode="aspectFill"
       />
-      <SnImg :src="plain" enable-preview :width="200" :height="200" radius="16" mode="aspectFill" />
+      <SnImg
+        :src="plain"
+        enable-preview
+        show-menu-by-longpress
+        :width="200"
+        :height="200"
+        radius="16"
+        mode="aspectFill"
+      />
     </view>
     <text class="sn-demo__meta">
       Left: enable-preview + preview-src opens the large image that previewSrc points at; right:
-      enable-preview alone opens src itself. Where the host has no uni.previewImage (the docs
-      preview, for instance) a tap only emits click.
-    </text>
-
-    <SnImg
-      :src="plain"
-      lazy-load
-      show-menu-by-longpress
-      :width="'100%'"
-      height="240rpx"
-      mode="aspectFill"
-      radius="24"
-    />
-    <text class="sn-demo__meta">
-      lazy-load is handed to the native &lt;image lazy-load&gt;; show-menu-by-longpress opens the
-      miniprogram QR menu on long press (WeChat only).
+      enable-preview alone opens src itself, plus show-menu-by-longpress (the recognise-miniprogram-QR
+      menu on long press, WeChat only). Where the host has no uni.previewImage (the docs preview,
+      for instance) a tap only emits click.
     </text>
   </view>
 </template>

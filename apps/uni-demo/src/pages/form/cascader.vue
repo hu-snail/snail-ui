@@ -1,12 +1,14 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— cascader 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/cascader-mp-basic.vue';
-import Demo1 from './demos/cascader-mp-card.vue';
-import Demo2 from './demos/cascader-mp-disabled.vue';
-import Demo3 from './demos/cascader-mp-fields.vue';
-import Demo4 from './demos/cascader-mp-lazy-confirm.vue';
-import Demo5 from './demos/cascader-mp-sheet.vue';
-import Demo6 from './demos/cascader-mp-strict-lazy.vue';
+import Demo1 from './demos/cascader-mp-before-confirm.vue';
+import Demo2 from './demos/cascader-mp-card.vue';
+import Demo3 from './demos/cascader-mp-disabled.vue';
+import Demo4 from './demos/cascader-mp-fields.vue';
+import Demo5 from './demos/cascader-mp-indicator.vue';
+import Demo6 from './demos/cascader-mp-lazy-load.vue';
+import Demo7 from './demos/cascader-mp-sheet-chrome.vue';
+import Demo8 from './demos/cascader-mp-strict-lazy.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -25,39 +27,68 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead
+          :title="t('确认拦截（beforeConfirm）', 'Confirm veto (beforeConfirm)')"
+          badge="before-confirm"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
+        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('lazy-confirm', 'Lazy Confirm')" badge="lazy-confirm" />
+        <DemoModuleHead
+          :title="t('字段映射（valueKey 等）', 'Field mapping (valueKey etc.)')"
+          badge="fields"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('动作面板', 'Action sheet')" badge="sheet" />
+        <DemoModuleHead
+          :title="t('指示条形态（lineTheme）', 'Indicator shape (lineTheme)')"
+          badge="indicator"
+        />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('strict-lazy', 'Strict Lazy')" badge="strict-lazy" />
+        <DemoModuleHead
+          :title="t('异步加载（lazyLoad）', 'Lazy loading (lazyLoad)')"
+          badge="lazy-load"
+        />
         <view class="module__body">
           <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('弹层配置（遮罩 / 层级 / 自定义）', 'Sheet settings (scrim / stacking / custom)')
+          "
+          badge="sheet-chrome"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('strict-lazy', 'Strict Lazy')" badge="strict-lazy" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

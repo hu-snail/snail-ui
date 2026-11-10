@@ -3,6 +3,7 @@
 import Demo0 from './demos/count-down-mp-autostart.vue';
 import Demo1 from './demos/count-down-mp-basic.vue';
 import Demo2 from './demos/count-down-mp-control.vue';
+import Demo3 from './demos/count-down-mp-millisecond.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +28,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('control', 'Control')" badge="control" />
+        <DemoModuleHead
+          :title="t('控制方法（start / pause / reset）', 'Controls (start / pause / reset)')"
+          badge="control"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('毫秒渲染（millisecond）', 'Millisecond rendering (`millisecond`)')"
+          badge="millisecond"
+        />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

@@ -4,8 +4,10 @@ import Demo0 from './demos/code-input-mp-basic.vue';
 import Demo1 from './demos/code-input-mp-shape.vue';
 import Demo2 from './demos/code-input-mp-background.vue';
 import Demo3 from './demos/code-input-mp-no-border.vue';
-import Demo4 from './demos/code-input-mp-error-gutter.vue';
-import Demo5 from './demos/code-input-mp-custom-style.vue';
+import Demo4 from './demos/code-input-mp-custom-style.vue';
+import Demo5 from './demos/code-input-mp-error-info.vue';
+import Demo6 from './demos/code-input-mp-gutter.vue';
+import Demo7 from './demos/code-input-mp-mask.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -47,15 +49,30 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('明文与错误态', 'Plain text & error')" badge="error-gutter" />
+        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
+        <DemoModuleHead
+          :title="t('错误态（errorInfo）', 'Error state (errorInfo)')"
+          badge="error-info"
+        />
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('格子间距（gutter）', 'Cell gap (gutter)')" badge="gutter" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('明文显示（mask）', 'Plain display (mask)')" badge="mask" />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

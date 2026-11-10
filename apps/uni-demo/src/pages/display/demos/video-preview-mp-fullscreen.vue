@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-video-preview (uni-end) — 全屏模式与关闭按钮位置。
+ * Demo: sn-video-preview (uni-end) — 全屏模式（fullScreen）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-video-preview from its SFC source.
  */
 import { ref } from 'vue';
@@ -13,7 +13,7 @@ const preview = ref<{
 
 const clip = {
   src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  title: '全屏 + 右上关闭 + 自动播放',
+  title: '全屏播放',
   autoplay: true,
 };
 
@@ -28,7 +28,6 @@ const calls = ref(0);
     <SnVideoPreview
       ref="preview"
       full-screen
-      close-position="right-top"
       custom-class="sn-demo-contained"
       :on-open="() => (calls += 1)"
     />

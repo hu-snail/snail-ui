@@ -1,15 +1,12 @@
 <script setup lang="ts">
 /**
- * Demo: sn-segmented — wot-ui 写法 `value` 别名。
+ * Demo: sn-segmented — wot-ui 写法 `value` 别名与优先级。
  *
  * `wd-segmented` 把选中值叫 `value`，本组件叫 `modelValue`。为了让从 wot-ui
  * 迁移过来的代码原样可用，两个 prop 都接受，且同时存在时 `value` 优先。
  *
- * 事件名保持本组件的 `update:modelValue`（wot-ui 侧写作 `@update:value`）；
- * 下面用 `:value` + `@update:model-value` 的组合，等价于 `v-model` 的展开写法。
- *
- * 另外演示 `vibrate-short`：切换时调用 `uni.vibrateShort`，H5 / 部分宿主
- * 没有振动马达时静默跳过，不影响点击。
+ * 事件名保持本组件的 `update:modelValue`；下面用 `:value` + `@update:model-value`
+ * 的组合，等价于 `v-model` 的展开写法（事件名差异见 segmented-mp-value-alias）。
  */
 import { ref } from 'vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
@@ -36,12 +33,7 @@ function onLayoutUpdate(next: string | number): void {
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label">`:value` 别名 + `@update:model-value`</text>
-    <SnSegmented
-      :value="size"
-      :options="sizeOptions"
-      vibrate-short
-      @update:model-value="onSizeUpdate"
-    />
+    <SnSegmented :value="size" :options="sizeOptions" @update:model-value="onSizeUpdate" />
     <text class="sn-demo__meta">当前尺寸：{{ size }}</text>
 
     <text class="sn-demo__label">`value` 优先于 `model-value`（同时传入时）</text>

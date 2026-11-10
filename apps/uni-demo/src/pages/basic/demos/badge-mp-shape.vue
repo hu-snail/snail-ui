@@ -1,13 +1,10 @@
 <script setup lang="ts">
-/** Demo: sn-badge (uni-end) — 圆点 / 形状 / 描边 / 偏移。 */
+/** Demo: sn-badge (uni-end) — 形状与描边（shape / border）。 */
 import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
 </script>
 
 <template>
   <view class="sn-demo">
-    <SnBadge is-dot>
-      <view class="sn-demo-host">点</view>
-    </SnBadge>
     <SnBadge :value="12" shape="square">
       <view class="sn-demo-host">方形</view>
     </SnBadge>
@@ -16,12 +13,6 @@ import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
     </SnBadge>
     <SnBadge :value="12" border>
       <view class="sn-demo-host">描边</view>
-    </SnBadge>
-    <SnBadge :value="12" :top="6" :right="6">
-      <view class="sn-demo-host">偏移</view>
-    </SnBadge>
-    <SnBadge :value="12" bg-color="var(--sn-mp-color-purple)">
-      <view class="sn-demo-host">自定义</view>
     </SnBadge>
   </view>
 </template>

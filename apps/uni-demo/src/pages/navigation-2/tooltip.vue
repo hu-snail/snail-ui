@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— tooltip 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/tooltip-mp-basic.vue';
-import Demo1 from './demos/tooltip-mp-config.vue';
-import Demo2 from './demos/tooltip-mp-content.vue';
-import Demo3 from './demos/tooltip-mp-placement.vue';
+import Demo0 from './demos/tooltip-mp-arrow.vue';
+import Demo1 from './demos/tooltip-mp-basic.vue';
+import Demo2 from './demos/tooltip-mp-close.vue';
+import Demo3 from './demos/tooltip-mp-content.vue';
+import Demo4 from './demos/tooltip-mp-disabled.vue';
+import Demo5 from './demos/tooltip-mp-placement.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,27 +18,42 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'文字提示'" :title-en="'Tooltip'" :desc="'轻量气泡说明'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="t('箭头（visible-arrow）', 'Arrow (`visible-arrow`)')"
+          badge="arrow"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('content', 'Content')" badge="content" />
+        <DemoModuleHead :title="t('关闭按钮与偏移', 'Close button & offset')" badge="close" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('弹出位置', 'Placement')" badge="placement" />
+        <DemoModuleHead :title="t('content', 'Content')" badge="content" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('弹出位置', 'Placement')" badge="placement" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— toast 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/toast-mp-basic.vue';
-import Demo1 from './demos/toast-mp-icon.vue';
-import Demo2 from './demos/toast-mp-style.vue';
+import Demo1 from './demos/toast-mp-cover.vue';
+import Demo2 from './demos/toast-mp-icon.vue';
+import Demo3 from './demos/toast-mp-icon-style.vue';
+import Demo4 from './demos/toast-mp-z-index.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,15 +23,30 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead
+          :title="t('遮罩阻挡（cover）', 'Click-blocking scrim (`cover`)')"
+          badge="cover"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('样式', 'Style')" badge="style" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标尺寸与颜色', 'Glyph size & colors')" badge="icon-style" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('层级与样式', 'Stacking & styling')" badge="z-index" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

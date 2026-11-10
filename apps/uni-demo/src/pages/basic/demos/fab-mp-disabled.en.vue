@@ -1,63 +1,24 @@
 <script setup lang="ts">
 /**
- * Demo: sn-fab (uni-end) — states and gestures: click-only / disabled /
- * draggable.
+ * Demo: sn-fab (uni-end) — disabled.
  *
- *   - `expandable=false`: tapping the trigger skips expansion and emits
- *     `click` only (bottom-right; the trigger slot renders a Phone icon,
- *     a single-action dialer); the counter shows the feedback.
- *   - `disabled`: blocks every interaction, trigger at half opacity
- *     (bottom-left, built-in plus icon sized with --sn-mp-icon-size-large).
- *   - `draggable`: drag the trigger with a gesture, release clamps inside
- *     the viewport; the menu still opens after dragging (top-right,
- *     direction="down" icon bubbles).
+ * `disabled` blocks every interaction, trigger at half opacity (bottom-left,
+ * built-in plus icon sized with --sn-mp-icon-size-large).
  *
  * Copy is kept in parity with fab-mp-disabled.vue.
  */
-import { computed, ref } from 'vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
-import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Bell, Phone, Zap } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-
-const clicks = ref(0);
-const dragActive = ref(false);
-const lastAction = ref('');
-
-const actionNote = computed(() =>
-  lastAction.value === '' ? '' : `Last action: ${lastAction.value}`,
-);
-
-function onClick(): void {
-  clicks.value += 1;
-}
-
-function pick(label: string): void {
-  lastAction.value = label;
-  dragActive.value = false;
-}
 </script>
 
 <template>
   <view class="sn-demo sn-fab-demo__stage">
     <view class="sn-fab-demo__hint">
-      <text class="sn-fab-demo__hint-title">States and gestures</text>
+      <text class="sn-fab-demo__hint-title">Disabled</text>
       <text class="sn-fab-demo__hint-text">
-        Bottom-right: expandable=false emits click only ({{ clicks }} taps); bottom-left: disabled
-        blocks interaction; top-right: draggable. {{ actionNote }}
+        Bottom-left: disabled blocks every interaction, trigger at half opacity (built-in plus
+        icon).
       </text>
     </view>
-
-    <SnFab
-      position="right-bottom"
-      :expandable="false"
-      :gap="{ bottom: 16, right: 16 }"
-      custom-class="sn-demo-contained"
-      @click="onClick"
-    >
-      <template #trigger>
-        <SnIcon :icon="Phone" size="var(--sn-mp-icon-size-large)" />
-      </template>
-    </SnFab>
 
     <SnFab
       position="left-bottom"
@@ -65,28 +26,6 @@ function pick(label: string): void {
       :gap="{ bottom: 16, left: 16 }"
       custom-class="sn-demo-contained"
     />
-
-    <SnFab
-      v-model:active="dragActive"
-      type="info"
-      position="right-top"
-      direction="down"
-      draggable
-      :gap="{ top: 16, right: 16 }"
-      custom-class="sn-demo-contained"
-    >
-      <view
-        class="sn-fab-demo__bubble"
-        role="button"
-        aria-label="Quick launch"
-        @tap="pick('Quick launch')"
-      >
-        <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
-      </view>
-      <view class="sn-fab-demo__bubble" role="button" aria-label="Remind" @tap="pick('Remind')">
-        <SnIcon :icon="Bell" size="var(--sn-mp-icon-size-large)" />
-      </view>
-    </SnFab>
   </view>
 </template>
 
@@ -116,18 +55,6 @@ function pick(label: string): void {
 
 .sn-fab-demo__hint-text {
   font-size: var(--sn-mp-font-size-sm);
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-fab-demo__bubble {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-background-elevated);
-  box-shadow: var(--sn-mp-shadow-sm);
   color: var(--sn-mp-color-text-secondary);
 }
 

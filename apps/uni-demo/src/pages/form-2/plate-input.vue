@@ -2,6 +2,7 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— plate-input 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/plate-input-mp-basic.vue';
 import Demo1 from './demos/plate-input-mp-new-energy.vue';
+import Demo2 from './demos/plate-input-mp-disabled.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -25,9 +26,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('新能源车牌', 'New-energy plate')" badge="new-energy" />
+        <DemoModuleHead
+          :title="t('新能源车牌（`maxlength=8`）', 'New-energy plates (`maxlength=8`)')"
+          badge="new-energy"
+        />
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('禁用态（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo2 />
         </view>
       </view>
     </view>

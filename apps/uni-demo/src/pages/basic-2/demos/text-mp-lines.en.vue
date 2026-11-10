@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-text (uni-end) — multi-line clamp + size / lineHeight / colour overrides. */
+/** Demo: sn-text (uni-end) — multi-line clamp. */
 import SnText from '@snui/uni-src/components/sn-text/sn-text.vue';
 
 const longText =
@@ -11,10 +11,6 @@ const longText =
     <SnText :text="longText" :lines="1" />
     <SnText :text="longText" :lines="2" />
     <SnText :text="longText" :lines="3" />
-    <SnText text="Size 18px" size="18px" />
-    <SnText text="Line height 28px" size="14px" line-height="28px" />
-    <SnText text="Custom colour" color="var(--sn-mp-color-purple)" />
-    <SnText text="Affixes" prefix="[" suffix="]" type="primary" />
   </view>
 </template>
 

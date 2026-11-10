@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — the `loading-props` object plus `hairline`.
+ * Demo: sn-button (uni-end) — the `loading-props` object.
  *
  * `loading-props` is the wot-ui `wd-button` shape (`{ color, size, text }`). This
  * component reads `color` / `size` and ignores the rest, so a config written
@@ -8,18 +8,8 @@
  *
  * Precedence: the flat `loading-color` / `loading-size` props win; the
  * `loading-props` fields are the fallback.
- *
- * `hairline` only applies to `type="default"` (the semantic types already carry
- * a coloured border). It defaults to true; false makes the border transparent.
  */
-import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
-
-const busy = ref(false);
-
-function toggleBusy(): void {
-  busy.value = !busy.value;
-}
 
 const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 };
 </script>
@@ -57,24 +47,6 @@ const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 
         :loading-props="{ color: 'var(--sn-mp-color-action-primary)', size: 64 }"
       >
         loading-color wins
-      </SnButton>
-    </view>
-
-    <text class="sn-demo__meta"
-      >hairline: on a default button true draws a thin border, false drops it</text
-    >
-    <view class="sn-demo__row">
-      <SnButton>hairline (default)</SnButton>
-      <SnButton :hairline="false">hairline=false</SnButton>
-      <SnButton hairline :disabled="true">hairline + disabled</SnButton>
-    </view>
-
-    <text class="sn-demo__meta">loading plus hairline: the loading state of a bordered button</text>
-    <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }">Loading (hairline)</SnButton>
-      <SnButton :hairline="false" loading>Loading (no border)</SnButton>
-      <SnButton type="primary" :loading="busy" @tap="toggleBusy">
-        {{ busy ? 'Requesting…' : 'Tap to toggle loading' }}
       </SnButton>
     </view>
   </view>

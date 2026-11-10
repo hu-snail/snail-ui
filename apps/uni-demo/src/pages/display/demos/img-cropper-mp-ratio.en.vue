@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-img-cropper (uni-end) — aspect-ratio switching and disabled rotation.
+ * Demo: sn-img-cropper (uni-end) — aspect ratio (`aspectRatio`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img-cropper from its SFC source.
  */
 import { ref } from 'vue';
@@ -36,9 +36,6 @@ function onConfirm() {
       v-model="visible"
       :img-src="imgSrc"
       :aspect-ratio="ratio"
-      disabled-rotate
-      cancel-button-text="Discard"
-      confirm-button-text="Save"
       custom-class="sn-demo-contained"
       @confirm="onConfirm"
     />

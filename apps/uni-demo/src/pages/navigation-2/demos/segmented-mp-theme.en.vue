@@ -1,21 +1,19 @@
 <script setup lang="ts">
-/** Demo: sn-segmented — outline theme, object options and disabled states. */
+/** Demo: sn-segmented — English shadow of segmented-mp-theme. */
 import { ref } from 'vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 
-const theme = ref('card');
+const theme = ref('outline');
 const options = [
   { value: 'card', label: 'Card' },
   { value: 'outline', label: 'Outline' },
-  { value: 'locked', label: 'Disabled', disabled: true },
 ];
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
     <SnSegmented v-model="theme" :options="options" theme="outline" />
-    <SnSegmented :options="options" disabled />
-    <text class="sn-demo__meta">theme=outline; object options; control-level disabled</text>
+    <text class="sn-demo__meta">theme=outline gives the outlined look; object options carry labels.</text>
   </view>
 </template>
 

@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo: sn-action-sheet (uni-end) — title + description + close button and
- * rows with icons (AUI-additive description / showClose props).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-action-sheet from its SFC
- * source. Per AGENTS.md §113, icons come from the SnIcon catalog.
+ * Demo: sn-action-sheet (uni-end) — title + description + close button
+ * (AUI-additive description / showClose props).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-action-sheet from its SFC source.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -12,11 +11,7 @@ import SnActionSheet from '@snui/uni-src/components/sn-action-sheet/sn-action-sh
 const open = ref(false);
 const picked = ref('—');
 
-const actions = [
-  { name: '选项一', icon: 'star' },
-  { name: '选项二', icon: 'heart' },
-  { name: '选项三', icon: 'wallet' },
-];
+const actions = [{ name: '选项一' }, { name: '选项二' }, { name: '选项三' }];
 </script>
 
 <template>

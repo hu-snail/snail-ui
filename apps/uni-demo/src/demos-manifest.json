@@ -8,8 +8,18 @@
       "page": "pages/basic/avatar",
       "demos": [
         {
+          "name": "avatar-mp-badge",
+          "title": "微标头像（badge 组合）",
+          "hasEn": true
+        },
+        {
           "name": "avatar-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "avatar-mp-css-icon",
+          "title": "字体图标（cssIcon / iconPrefix）",
           "hasEn": true
         },
         {
@@ -23,18 +33,23 @@
           "hasEn": true
         },
         {
-          "name": "avatar-mp-icon-font",
-          "title": "字体图标",
+          "name": "avatar-mp-mode",
+          "title": "图片裁切（mode）",
+          "hasEn": true
+        },
+        {
+          "name": "avatar-mp-shape",
+          "title": "形状（shape）",
           "hasEn": true
         },
         {
           "name": "avatar-mp-size",
-          "title": "尺寸",
+          "title": "尺寸（size）",
           "hasEn": true
         },
         {
           "name": "avatar-mp-status",
-          "title": "状态",
+          "title": "在线状态（status）",
           "hasEn": true
         }
       ]
@@ -56,8 +71,18 @@
           "hasEn": true
         },
         {
+          "name": "badge-mp-dot",
+          "title": "红点（is-dot）",
+          "hasEn": true
+        },
+        {
+          "name": "badge-mp-offset",
+          "title": "偏移与颜色（top / right / bgColor）",
+          "hasEn": true
+        },
+        {
           "name": "badge-mp-shape",
-          "title": "形状",
+          "title": "形状与描边（shape / border）",
           "hasEn": true
         },
         {
@@ -81,11 +106,6 @@
         {
           "name": "button-mp-size",
           "title": "尺寸",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-shape",
-          "title": "形状",
           "hasEn": true
         },
         {
@@ -115,12 +135,7 @@
         },
         {
           "name": "button-mp-loading-props",
-          "title": "loading-props",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-custom",
-          "title": "自定义",
+          "title": "loading-props 对象写法",
           "hasEn": true
         },
         {
@@ -136,6 +151,31 @@
         {
           "name": "button-mp-mp-open-type",
           "title": "mp-open-type",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-block",
+          "title": "块级按钮（block）",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-color-override",
+          "title": "内联颜色覆盖（bgColor / color）",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-hairline",
+          "title": "细边框（hairline）",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-loading-color",
+          "title": "加载 spinner 定制（loadingColor / loadingSize）",
+          "hasEn": true
+        },
+        {
+          "name": "button-mp-round",
+          "title": "圆角按钮（round）",
           "hasEn": true
         }
       ]
@@ -247,7 +287,7 @@
         },
         {
           "name": "fab-mp-disabled",
-          "title": "禁用",
+          "title": "禁用（disabled）",
           "hasEn": true
         },
         {
@@ -256,18 +296,28 @@
           "hasEn": true
         },
         {
+          "name": "fab-mp-expandable",
+          "title": "仅点击不展开（expandable）",
+          "hasEn": true
+        },
+        {
           "name": "fab-mp-fan",
           "title": "扇形展开",
           "hasEn": true
         },
         {
-          "name": "fab-mp-icons",
-          "title": "图标",
+          "name": "fab-mp-position",
+          "title": "位置",
           "hasEn": true
         },
         {
-          "name": "fab-mp-position",
-          "title": "位置",
+          "name": "fab-mp-trigger-icons",
+          "title": "触发图标双轨",
+          "hasEn": true
+        },
+        {
+          "name": "fab-mp-type",
+          "title": "主题色（type）",
           "hasEn": true
         }
       ]
@@ -338,12 +388,17 @@
         },
         {
           "name": "icon-mp-size",
-          "title": "尺寸",
+          "title": "尺寸（size）",
           "hasEn": true
         },
         {
           "name": "icon-mp-string",
           "title": "目录用法",
+          "hasEn": true
+        },
+        {
+          "name": "icon-mp-stroke-width",
+          "title": "描边粗细（strokeWidth）",
           "hasEn": true
         }
       ]
@@ -366,7 +421,7 @@
         },
         {
           "name": "layout-mp-gutter",
-          "title": "gutter",
+          "title": "间距与偏移（gutter / offset）",
           "hasEn": true
         }
       ]
@@ -420,17 +475,32 @@
         },
         {
           "name": "tag-mp-closable",
-          "title": "closable",
+          "title": "可关闭标签（closable）",
           "hasEn": true
         },
         {
-          "name": "tag-mp-color-custom",
-          "title": "color-custom",
+          "name": "tag-mp-color",
+          "title": "自定义颜色（bgColor / color）",
+          "hasEn": true
+        },
+        {
+          "name": "tag-mp-css-icon",
+          "title": "字体图标（cssIcon）",
+          "hasEn": true
+        },
+        {
+          "name": "tag-mp-dynamic",
+          "title": "动态新增标签（dynamic）",
           "hasEn": true
         },
         {
           "name": "tag-mp-icon",
           "title": "图标",
+          "hasEn": true
+        },
+        {
+          "name": "tag-mp-round-mark",
+          "title": "胶囊与标记形（round / mark）",
           "hasEn": true
         },
         {
@@ -440,7 +510,7 @@
         },
         {
           "name": "tag-mp-size",
-          "title": "尺寸",
+          "title": "尺寸（size）",
           "hasEn": true
         },
         {
@@ -468,12 +538,17 @@
         },
         {
           "name": "text-mp-lines",
-          "title": "lines",
+          "title": "多行截断（lines）",
           "hasEn": true
         },
         {
           "name": "text-mp-mode",
           "title": "mode",
+          "hasEn": true
+        },
+        {
+          "name": "text-mp-typography",
+          "title": "排版覆盖（size / lineHeight / color）",
           "hasEn": true
         }
       ]
@@ -490,8 +565,8 @@
           "hasEn": true
         },
         {
-          "name": "transition-mp-config",
-          "title": "配置",
+          "name": "transition-mp-combined",
+          "title": "组合动画（name 数组）",
           "hasEn": true
         },
         {
@@ -500,8 +575,23 @@
           "hasEn": true
         },
         {
-          "name": "transition-mp-lazy",
-          "title": "lazy",
+          "name": "transition-mp-destroy",
+          "title": "保留节点（destroy）",
+          "hasEn": true
+        },
+        {
+          "name": "transition-mp-duration",
+          "title": "分段时长（duration）",
+          "hasEn": true
+        },
+        {
+          "name": "transition-mp-lazy-render",
+          "title": "懒渲染（lazyRender）",
+          "hasEn": true
+        },
+        {
+          "name": "transition-mp-touch-move",
+          "title": "阻止触摸滚动（disableTouchMove）",
           "hasEn": true
         }
       ]
@@ -518,6 +608,11 @@
           "hasEn": true
         },
         {
+          "name": "backtop-mp-icon-style",
+          "title": "图标样式与层级",
+          "hasEn": true
+        },
+        {
           "name": "backtop-mp-shape",
           "title": "形状",
           "hasEn": true
@@ -529,7 +624,7 @@
         },
         {
           "name": "backtop-mp-threshold",
-          "title": "阈值",
+          "title": "显示阈值（top）",
           "hasEn": true
         }
       ]
@@ -542,7 +637,7 @@
       "demos": [
         {
           "name": "collapse-mp-accordion",
-          "title": "accordion",
+          "title": "手风琴模式（accordion）",
           "hasEn": true
         },
         {
@@ -551,8 +646,18 @@
           "hasEn": true
         },
         {
+          "name": "collapse-mp-before-expend",
+          "title": "展开拦截（before-expend）",
+          "hasEn": true
+        },
+        {
           "name": "collapse-mp-card",
           "title": "卡片",
+          "hasEn": true
+        },
+        {
+          "name": "collapse-mp-disabled",
+          "title": "禁用面板（disabled）",
           "hasEn": true
         },
         {
@@ -561,8 +666,13 @@
           "hasEn": true
         },
         {
-          "name": "collapse-mp-slots",
-          "title": "插槽",
+          "name": "collapse-mp-more-slot",
+          "title": "more 插槽",
+          "hasEn": true
+        },
+        {
+          "name": "collapse-mp-title-slot",
+          "title": "title 插槽与内容样式",
           "hasEn": true
         },
         {
@@ -589,8 +699,13 @@
           "hasEn": true
         },
         {
+          "name": "drop-menu-mp-disabled",
+          "title": "禁用（disabled）",
+          "hasEn": true
+        },
+        {
           "name": "drop-menu-mp-guard",
-          "title": "拦截",
+          "title": "开关拦截（beforeToggle）",
           "hasEn": true
         },
         {
@@ -599,8 +714,23 @@
           "hasEn": true
         },
         {
-          "name": "drop-menu-mp-panel",
-          "title": "panel",
+          "name": "drop-menu-mp-keys",
+          "title": "字段重命名（labelKey / valueKey）",
+          "hasEn": true
+        },
+        {
+          "name": "drop-menu-mp-modal",
+          "title": "蒙层行为（modal）",
+          "hasEn": true
+        },
+        {
+          "name": "drop-menu-mp-popup-height",
+          "title": "面板高度与样式",
+          "hasEn": true
+        },
+        {
+          "name": "drop-menu-mp-slot",
+          "title": "自定义面板插槽",
           "hasEn": true
         }
       ]
@@ -617,8 +747,8 @@
           "hasEn": true
         },
         {
-          "name": "grid-mp-feedback",
-          "title": "feedback",
+          "name": "grid-mp-clickable",
+          "title": "点击反馈（clickable）",
           "hasEn": true
         },
         {
@@ -629,6 +759,11 @@
         {
           "name": "grid-mp-layout",
           "title": "布局",
+          "hasEn": true
+        },
+        {
+          "name": "grid-mp-look",
+          "title": "外观（bg-color / center / icon-size）",
           "hasEn": true
         }
       ]
@@ -673,13 +808,28 @@
           "hasEn": true
         },
         {
-          "name": "navbar-mp-config",
-          "title": "配置",
+          "name": "navbar-mp-capsule-slot",
+          "title": "胶囊插槽",
+          "hasEn": true
+        },
+        {
+          "name": "navbar-mp-disabled",
+          "title": "禁用侧按钮（left-disabled）",
+          "hasEn": true
+        },
+        {
+          "name": "navbar-mp-fixed",
+          "title": "固定定位（fixed / placeholder）",
+          "hasEn": true
+        },
+        {
+          "name": "navbar-mp-safe-area",
+          "title": "安全区与层级",
           "hasEn": true
         },
         {
           "name": "navbar-mp-slots",
-          "title": "插槽",
+          "title": "左右插槽",
           "hasEn": true
         }
       ]
@@ -701,13 +851,18 @@
           "hasEn": true
         },
         {
+          "name": "pagination-mp-hide-on-one-page",
+          "title": "单页隐藏（hide-if-one-page）",
+          "hasEn": true
+        },
+        {
           "name": "pagination-mp-simple",
           "title": "simple",
           "hasEn": true
         },
         {
           "name": "pagination-mp-slots",
-          "title": "插槽",
+          "title": "插槽自定义",
           "hasEn": true
         },
         {
@@ -729,8 +884,23 @@
           "hasEn": true
         },
         {
+          "name": "popover-mp-content-slot",
+          "title": "content 插槽",
+          "hasEn": true
+        },
+        {
+          "name": "popover-mp-custom-style",
+          "title": "节点类名与偏移",
+          "hasEn": true
+        },
+        {
           "name": "popover-mp-height",
           "title": "高度",
+          "hasEn": true
+        },
+        {
+          "name": "popover-mp-icon-class",
+          "title": "兼容图标字段（iconClass）",
           "hasEn": true
         },
         {
@@ -741,11 +911,6 @@
         {
           "name": "popover-mp-placement",
           "title": "弹出位置",
-          "hasEn": true
-        },
-        {
-          "name": "popover-mp-slot",
-          "title": "slot",
           "hasEn": true
         },
         {
@@ -767,18 +932,33 @@
           "hasEn": true
         },
         {
+          "name": "segmented-mp-custom-style",
+          "title": "根节点样式",
+          "hasEn": true
+        },
+        {
+          "name": "segmented-mp-disabled",
+          "title": "禁用（disabled）",
+          "hasEn": true
+        },
+        {
           "name": "segmented-mp-theme",
-          "title": "主题",
+          "title": "主题（theme）",
           "hasEn": true
         },
         {
           "name": "segmented-mp-value",
-          "title": "value",
+          "title": "value 别名（wot-ui 迁移）",
           "hasEn": true
         },
         {
           "name": "segmented-mp-value-alias",
-          "title": "value-alias",
+          "title": "事件名差异（update:value）",
+          "hasEn": true
+        },
+        {
+          "name": "segmented-mp-vibrate",
+          "title": "切换振动（vibrate-short）",
           "hasEn": true
         }
       ]
@@ -791,7 +971,7 @@
       "demos": [
         {
           "name": "sidebar-mp-badge",
-          "title": "徽标",
+          "title": "徽标（badge / is-dot）",
           "hasEn": true
         },
         {
@@ -800,8 +980,18 @@
           "hasEn": true
         },
         {
+          "name": "sidebar-mp-disabled",
+          "title": "禁用项（disabled）",
+          "hasEn": true
+        },
+        {
           "name": "sidebar-mp-guard",
           "title": "拦截",
+          "hasEn": true
+        },
+        {
+          "name": "sidebar-mp-icon",
+          "title": "图标（icon）",
           "hasEn": true
         },
         {
@@ -828,6 +1018,21 @@
           "hasEn": true
         },
         {
+          "name": "steps-mp-custom-class",
+          "title": "根节点样式（customClass）",
+          "hasEn": true
+        },
+        {
+          "name": "steps-mp-dot",
+          "title": "点状步骤条（dot）",
+          "hasEn": true
+        },
+        {
+          "name": "steps-mp-error",
+          "title": "错误状态（status=error）",
+          "hasEn": true
+        },
+        {
           "name": "steps-mp-icon",
           "title": "图标",
           "hasEn": true
@@ -838,13 +1043,23 @@
           "hasEn": true
         },
         {
+          "name": "steps-mp-slots",
+          "title": "内容插槽",
+          "hasEn": true
+        },
+        {
           "name": "steps-mp-space",
-          "title": "space",
+          "title": "间距与对齐（space / align-center）",
+          "hasEn": true
+        },
+        {
+          "name": "steps-mp-status",
+          "title": "显式状态（status）",
           "hasEn": true
         },
         {
           "name": "steps-mp-vertical",
-          "title": "垂直模式",
+          "title": "垂直步骤条（vertical）",
           "hasEn": true
         }
       ]
@@ -893,7 +1108,7 @@
       "demos": [
         {
           "name": "tabs-mp-animate",
-          "title": "animate",
+          "title": "切换动画（animated）",
           "hasEn": true
         },
         {
@@ -907,13 +1122,18 @@
           "hasEn": true
         },
         {
+          "name": "tabs-mp-disabled",
+          "title": "禁用页签（disabled）",
+          "hasEn": true
+        },
+        {
           "name": "tabs-mp-icon",
-          "title": "图标",
+          "title": "页签图标（icon）",
           "hasEn": true
         },
         {
           "name": "tabs-mp-line",
-          "title": "line",
+          "title": "底部条样式（line-theme）",
           "hasEn": true
         },
         {
@@ -924,6 +1144,11 @@
         {
           "name": "tabs-mp-scroll",
           "title": "滚动",
+          "hasEn": true
+        },
+        {
+          "name": "tabs-mp-sticky",
+          "title": "吸顶（sticky）",
           "hasEn": true
         },
         {
@@ -945,18 +1170,28 @@
       "page": "pages/navigation-2/tooltip",
       "demos": [
         {
+          "name": "tooltip-mp-arrow",
+          "title": "箭头（visible-arrow）",
+          "hasEn": true
+        },
+        {
           "name": "tooltip-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "tooltip-mp-config",
-          "title": "配置",
+          "name": "tooltip-mp-close",
+          "title": "关闭按钮与偏移",
           "hasEn": true
         },
         {
           "name": "tooltip-mp-content",
           "title": "content",
+          "hasEn": true
+        },
+        {
+          "name": "tooltip-mp-disabled",
+          "title": "禁用（disabled）",
           "hasEn": true
         },
         {
@@ -984,7 +1219,17 @@
         },
         {
           "name": "tour-mp-mask",
-          "title": "mask",
+          "title": "蒙版（mask / mask-color）",
+          "hasEn": true
+        },
+        {
+          "name": "tour-mp-panel-slot",
+          "title": "自定义面板与按钮",
+          "hasEn": true
+        },
+        {
+          "name": "tour-mp-z-index",
+          "title": "层级与时长",
           "hasEn": true
         }
       ]
@@ -1006,8 +1251,18 @@
           "hasEn": true
         },
         {
-          "name": "calendar-mp-grid-range",
-          "title": "grid-range",
+          "name": "calendar-mp-declared-props",
+          "title": "声明对齐参数（timeFilter / hideSecond 等）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-mp-first-day-of-week",
+          "title": "周起始日（firstDayOfWeek）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-mp-formatter",
+          "title": "单元格格式化（formatter）",
           "hasEn": true
         },
         {
@@ -1016,8 +1271,8 @@
           "hasEn": true
         },
         {
-          "name": "calendar-mp-hooks-parity",
-          "title": "hooks-parity",
+          "name": "calendar-mp-immediate-change",
+          "title": "即时写回（immediateChange）",
           "hasEn": true
         },
         {
@@ -1026,8 +1281,23 @@
           "hasEn": true
         },
         {
-          "name": "calendar-mp-panel-sheet",
-          "title": "panel-sheet",
+          "name": "calendar-mp-panel",
+          "title": "面板尺寸与切换（panelHeight / switchMode）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-mp-range-constraints",
+          "title": "区间约束（maxRange / allowSameDay / defaultTime）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-mp-sheet-chrome",
+          "title": "弹层外观与底栏插槽",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-mp-shortcuts-events",
+          "title": "快捷回调与确认拦截（onShortcutsClick / beforeConfirm）",
           "hasEn": true
         },
         {
@@ -1049,18 +1319,43 @@
           "hasEn": true
         },
         {
-          "name": "calendar-view-mp-formatter-week",
-          "title": "formatter-week",
+          "name": "calendar-view-mp-default-time",
+          "title": "默认时分与即时写回",
           "hasEn": true
         },
         {
-          "name": "calendar-view-mp-range-switch",
-          "title": "range-switch",
+          "name": "calendar-view-mp-first-day-of-week",
+          "title": "周起始日",
           "hasEn": true
         },
         {
-          "name": "calendar-view-mp-same-day-time",
-          "title": "same-day-time",
+          "name": "calendar-view-mp-formatter",
+          "title": "单元格格式化",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-view-mp-panel-title",
+          "title": "面板标题（showPanelTitle）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-view-mp-range",
+          "title": "区间选择（type=\"daterange\"）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-view-mp-same-day",
+          "title": "起止同一天（allowSameDay）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-view-mp-switch-mode",
+          "title": "月 / 年切换（switchMode）",
+          "hasEn": true
+        },
+        {
+          "name": "calendar-view-mp-time-props",
+          "title": "时间列声明参数",
           "hasEn": true
         }
       ]
@@ -1077,8 +1372,8 @@
           "hasEn": true
         },
         {
-          "name": "captcha-mp-custom",
-          "title": "自定义",
+          "name": "captcha-mp-copy",
+          "title": "自定义文案（tips / successText）",
           "hasEn": true
         },
         {
@@ -1089,6 +1384,11 @@
         {
           "name": "captcha-mp-popup",
           "title": "弹窗",
+          "hasEn": true
+        },
+        {
+          "name": "captcha-mp-size-tolerance",
+          "title": "尺寸与容差（width / height / tolerance）",
           "hasEn": true
         },
         {
@@ -1110,6 +1410,11 @@
           "hasEn": true
         },
         {
+          "name": "cascader-mp-before-confirm",
+          "title": "确认拦截（beforeConfirm）",
+          "hasEn": true
+        },
+        {
           "name": "cascader-mp-card",
           "title": "卡片",
           "hasEn": true
@@ -1121,17 +1426,22 @@
         },
         {
           "name": "cascader-mp-fields",
-          "title": "字段",
+          "title": "字段映射（valueKey 等）",
           "hasEn": true
         },
         {
-          "name": "cascader-mp-lazy-confirm",
-          "title": "lazy-confirm",
+          "name": "cascader-mp-indicator",
+          "title": "指示条形态（lineTheme）",
           "hasEn": true
         },
         {
-          "name": "cascader-mp-sheet",
-          "title": "动作面板",
+          "name": "cascader-mp-lazy-load",
+          "title": "异步加载（lazyLoad）",
+          "hasEn": true
+        },
+        {
+          "name": "cascader-mp-sheet-chrome",
+          "title": "弹层配置（遮罩 / 层级 / 自定义）",
           "hasEn": true
         },
         {
@@ -1153,13 +1463,38 @@
           "hasEn": true
         },
         {
-          "name": "checkbox-mp-group-limits",
-          "title": "group-limits",
+          "name": "checkbox-mp-colors",
+          "title": "选中颜色（checkedColor）",
           "hasEn": true
         },
         {
-          "name": "checkbox-mp-standalone-style",
-          "title": "standalone-style",
+          "name": "checkbox-mp-custom-style",
+          "title": "自定义样式",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-group-limits",
+          "title": "数量限制（min / max）",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-group-state",
+          "title": "组状态与半选",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-placement",
+          "title": "布局与标签（placement / maxWidth）",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-standalone",
+          "title": "独立用法与自定义取值",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-toggle-all",
+          "title": "全选 / 全不选（toggleAll）",
           "hasEn": true
         },
         {
@@ -1196,13 +1531,23 @@
           "hasEn": true
         },
         {
-          "name": "code-input-mp-error-gutter",
-          "title": "明文与错误态",
+          "name": "code-input-mp-custom-style",
+          "title": "自定义样式",
           "hasEn": true
         },
         {
-          "name": "code-input-mp-custom-style",
-          "title": "自定义样式",
+          "name": "code-input-mp-error-info",
+          "title": "错误态（errorInfo）",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-gutter",
+          "title": "格子间距（gutter）",
+          "hasEn": true
+        },
+        {
+          "name": "code-input-mp-mask",
+          "title": "明文显示（mask）",
           "hasEn": true
         }
       ]
@@ -1235,7 +1580,7 @@
         },
         {
           "name": "date-strip-mp-nav",
-          "title": "导航按钮",
+          "title": "导航按钮（show-nav）",
           "hasEn": false
         },
         {
@@ -1257,13 +1602,18 @@
           "hasEn": true
         },
         {
+          "name": "datetime-picker-mp-before-confirm",
+          "title": "确认拦截（beforeConfirm）",
+          "hasEn": true
+        },
+        {
           "name": "datetime-picker-mp-card",
           "title": "卡片",
           "hasEn": true
         },
         {
-          "name": "datetime-picker-mp-columns-bounds",
-          "title": "columns-bounds",
+          "name": "datetime-picker-mp-column-format",
+          "title": "列文案与过滤（formatter / filter）",
           "hasEn": true
         },
         {
@@ -1272,18 +1622,33 @@
           "hasEn": true
         },
         {
+          "name": "datetime-picker-mp-immediate-change",
+          "title": "即时写回（immediateChange）",
+          "hasEn": true
+        },
+        {
           "name": "datetime-picker-mp-lunar",
           "title": "农历",
           "hasEn": true
         },
         {
-          "name": "datetime-picker-mp-sheet",
-          "title": "动作面板",
+          "name": "datetime-picker-mp-roller-geometry",
+          "title": "滚筒几何（itemHeight / visibleItemCount）",
           "hasEn": true
         },
         {
-          "name": "datetime-picker-mp-time-confirm",
-          "title": "time-confirm",
+          "name": "datetime-picker-mp-sheet-chrome",
+          "title": "弹层外观（文案 / 遮罩 / 层级）",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-mp-time-bounds",
+          "title": "时分秒边界",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-mp-time-type",
+          "title": "时间类型（type=\"time\"）",
           "hasEn": true
         }
       ]
@@ -1300,13 +1665,33 @@
           "hasEn": true
         },
         {
-          "name": "datetime-picker-view-mp-columns",
-          "title": "columns",
+          "name": "datetime-picker-view-mp-boundary",
+          "title": "区间联动（boundaryMinDate / boundaryMaxDate）",
           "hasEn": true
         },
         {
-          "name": "datetime-picker-view-mp-range-boundary",
-          "title": "range-boundary",
+          "name": "datetime-picker-view-mp-column-formatter",
+          "title": "列改写（columnFormatter）",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-view-mp-formatter",
+          "title": "列文案格式化（formatter）",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-view-mp-immediate-change",
+          "title": "即时 change（immediateChange）",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-view-mp-keys",
+          "title": "字段映射（valueKey / labelKey）",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-view-mp-roller-geometry",
+          "title": "滚筒几何",
           "hasEn": true
         },
         {
@@ -1315,8 +1700,8 @@
           "hasEn": true
         },
         {
-          "name": "datetime-picker-view-mp-time-format",
-          "title": "time-format",
+          "name": "datetime-picker-view-mp-time-type",
+          "title": "时间类型写回",
           "hasEn": true
         }
       ]
@@ -1328,18 +1713,28 @@
       "page": "pages/form/form",
       "demos": [
         {
+          "name": "form-mp-asterisk",
+          "title": "必填星号（asteriskPosition / hideAsterisk）",
+          "hasEn": true
+        },
+        {
           "name": "form-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "form-mp-cell",
-          "title": "单元格",
+          "name": "form-mp-cell-border",
+          "title": "单元格分隔与截断",
           "hasEn": true
         },
         {
-          "name": "form-mp-cell-style",
-          "title": "cell-style",
+          "name": "form-mp-cell-clickable",
+          "title": "可点击行（clickable / isLink）",
+          "hasEn": true
+        },
+        {
+          "name": "form-mp-cell-text",
+          "title": "占位与副文案",
           "hasEn": true
         },
         {
@@ -1378,6 +1773,16 @@
           "hasEn": true
         },
         {
+          "name": "form-mp-layout",
+          "title": "排布（layout / center）",
+          "hasEn": true
+        },
+        {
+          "name": "form-mp-message-display",
+          "title": "错误消息展示策略",
+          "hasEn": true
+        },
+        {
           "name": "form-mp-reset-submit",
           "title": "reset-submit",
           "hasEn": true
@@ -1388,13 +1793,23 @@
           "hasEn": true
         },
         {
-          "name": "form-mp-schema-layout",
-          "title": "schema-layout",
+          "name": "form-mp-schema",
+          "title": "表单 schema",
           "hasEn": true
         },
         {
-          "name": "form-mp-state",
-          "title": "状态",
+          "name": "form-mp-size",
+          "title": "尺寸（size）",
+          "hasEn": true
+        },
+        {
+          "name": "form-mp-status-icon",
+          "title": "状态图标（statusIcon）",
+          "hasEn": true
+        },
+        {
+          "name": "form-mp-title-width",
+          "title": "标签列宽（titleWidth）",
           "hasEn": true
         },
         {
@@ -1405,6 +1820,11 @@
         {
           "name": "form-mp-validation-flow",
           "title": "validation-flow",
+          "hasEn": true
+        },
+        {
+          "name": "form-mp-value-align",
+          "title": "值对齐（valueAlign）",
           "hasEn": true
         }
       ]
@@ -1436,11 +1856,6 @@
           "hasEn": true
         },
         {
-          "name": "input-mp-bordered-bg-radius",
-          "title": "边框与背景",
-          "hasEn": true
-        },
-        {
           "name": "input-mp-prefix-suffix",
           "title": "前后图标",
           "hasEn": true
@@ -1448,16 +1863,6 @@
         {
           "name": "input-mp-slots",
           "title": "插槽",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-clearable-count",
-          "title": "清空与字数",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-clear-focus",
-          "title": "清空与聚焦",
           "hasEn": true
         },
         {
@@ -1481,23 +1886,93 @@
           "hasEn": true
         },
         {
-          "name": "input-mp-align-compact",
-          "title": "对齐与紧凑",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-native-attrs",
-          "title": "原生属性",
-          "hasEn": true
-        },
-        {
-          "name": "input-mp-runtime",
-          "title": "运行时属性",
-          "hasEn": true
-        },
-        {
           "name": "input-mp-custom-class",
           "title": "自定义类名",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-align",
+          "title": "右对齐（alignRight）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-bg",
+          "title": "背景（bg）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-border",
+          "title": "边框（border）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-clear-trigger",
+          "title": "清空按钮细节（clearTrigger / focusWhenClear）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-clearable",
+          "title": "清空按钮（clearable）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-compact",
+          "title": "紧凑行内形态（compact）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-composition",
+          "title": "输入合成（ignoreCompositionEvent）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-confirm-hold",
+          "title": "确认键保持键盘（confirmHold）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-confirm-type",
+          "title": "确认键文案（confirmType）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-count",
+          "title": "字数计数（showCount）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-cursor-selection",
+          "title": "光标与选区",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-cursor-spacing",
+          "title": "光标间距（cursorSpacing）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-enable-native",
+          "title": "原生输入（enableNative）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-focus",
+          "title": "自动聚焦（focus）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-inputmode",
+          "title": "软键盘提示（inputmode）",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-keyboard-hold",
+          "title": "键盘保持与页面上推",
+          "hasEn": true
+        },
+        {
+          "name": "input-mp-placeholder",
+          "title": "占位符样式（placeholderClass / placeholderStyle）",
           "hasEn": true
         }
       ]
@@ -1509,13 +1984,28 @@
       "page": "pages/form/input-number",
       "demos": [
         {
+          "name": "input-number-mp-allow-null",
+          "title": "可空输入（allowNull）",
+          "hasEn": true
+        },
+        {
           "name": "input-number-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
+          "name": "input-number-mp-before-change",
+          "title": "提交拦截（beforeChange）",
+          "hasEn": true
+        },
+        {
           "name": "input-number-mp-commit-hooks",
           "title": "commit-hooks",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-commit-timing",
+          "title": "提交时机与输入属性",
           "hasEn": true
         },
         {
@@ -1526,6 +2016,31 @@
         {
           "name": "input-number-mp-custom-class",
           "title": "自定义类名",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-disabled",
+          "title": "禁用（disabled）",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-long-press",
+          "title": "长按连加（longPress）",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-round",
+          "title": "圆角（round）",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-step-strictly",
+          "title": "步进吸附（stepStrictly）",
+          "hasEn": true
+        },
+        {
+          "name": "input-number-mp-theme",
+          "title": "主题（theme）",
           "hasEn": true
         },
         {
@@ -1563,12 +2078,27 @@
         },
         {
           "name": "keyboard-mp-labels",
-          "title": "labels",
+          "title": "键位文案（deleteText / closeText）",
           "hasEn": true
         },
         {
           "name": "keyboard-mp-scrim",
-          "title": "scrim",
+          "title": "遮罩与弹层行为",
+          "hasEn": true
+        },
+        {
+          "name": "keyboard-mp-close-loading",
+          "title": "关闭键加载态（closeButtonLoading）",
+          "hasEn": true
+        },
+        {
+          "name": "keyboard-mp-delete-key",
+          "title": "删除键开关（showDeleteKey）",
+          "hasEn": true
+        },
+        {
+          "name": "keyboard-mp-random-order",
+          "title": "随机键序（randomKeyOrder）",
           "hasEn": true
         }
       ]
@@ -1598,18 +2128,33 @@
           "hasEn": true
         },
         {
+          "name": "picker-mp-button-text",
+          "title": "按钮文案（`cancelButtonText` / `confirmButtonText`）",
+          "hasEn": true
+        },
+        {
           "name": "picker-mp-cascade-confirm",
           "title": "cascade-confirm",
           "hasEn": true
         },
         {
           "name": "picker-mp-fields",
-          "title": "字段",
+          "title": "字段映射（`valueKey` / `labelKey` / `childrenKey`）",
           "hasEn": true
         },
         {
-          "name": "picker-mp-rows-sheet",
-          "title": "rows-sheet",
+          "name": "picker-mp-immediate",
+          "title": "滚动即写回（`immediateChange`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-mp-rows",
+          "title": "滚筒几何（`itemHeight` / `visibleItemCount`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-mp-sheet",
+          "title": "弹层行为（遮罩 / 层级 / 安全区）",
           "hasEn": true
         }
       ]
@@ -1627,17 +2172,32 @@
         },
         {
           "name": "picker-view-mp-cascade",
-          "title": "cascade",
+          "title": "级联模式（`cascade`）",
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-immediate-custom",
-          "title": "immediate-custom",
+          "name": "picker-view-mp-custom-style",
+          "title": "根节点样式（`customClass` / `customStyle`）",
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-keys-geometry",
-          "title": "keys-geometry",
+          "name": "picker-view-mp-disabled",
+          "title": "禁用（`disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-immediate",
+          "title": "拖动即时回写（`immediateChange`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-keys",
+          "title": "自定义字段名（`valueKey` / `labelKey` / `childrenKey`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-rows",
+          "title": "滚筒几何（`itemHeight` / `visibleItemCount`）",
           "hasEn": true
         }
       ]
@@ -1655,7 +2215,12 @@
         },
         {
           "name": "plate-input-mp-new-energy",
-          "title": "新能源车牌",
+          "title": "新能源车牌（`maxlength=8`）",
+          "hasEn": true
+        },
+        {
+          "name": "plate-input-mp-disabled",
+          "title": "禁用态（`disabled`）",
           "hasEn": true
         }
       ]
@@ -1672,18 +2237,33 @@
           "hasEn": true
         },
         {
-          "name": "radio-mp-colors-custom",
-          "title": "colors-custom",
+          "name": "radio-mp-colors",
+          "title": "选中色（`checkedColor` / `uncheckedColor`）",
           "hasEn": true
         },
         {
-          "name": "radio-mp-states",
-          "title": "状态",
+          "name": "radio-mp-custom-style",
+          "title": "自定义类名与样式",
+          "hasEn": true
+        },
+        {
+          "name": "radio-mp-disabled-readonly",
+          "title": "禁用与只读（`disabled` / `readonly`）",
+          "hasEn": true
+        },
+        {
+          "name": "radio-mp-placement",
+          "title": "标记位置（`placement`）",
           "hasEn": true
         },
         {
           "name": "radio-mp-type",
           "title": "类型",
+          "hasEn": true
+        },
+        {
+          "name": "radio-mp-uncheck",
+          "title": "可反选（`allowUncheck`）",
           "hasEn": true
         }
       ]
@@ -1700,18 +2280,48 @@
           "hasEn": true
         },
         {
-          "name": "rate-mp-css-icon-disabled",
-          "title": "css-icon-disabled",
+          "name": "rate-mp-clearable",
+          "title": "可清空（`clearable`）",
           "hasEn": true
         },
         {
-          "name": "rate-mp-half-color",
-          "title": "half-color",
+          "name": "rate-mp-color",
+          "title": "评分颜色（`activeColor`）",
           "hasEn": true
         },
         {
-          "name": "rate-mp-icon-space",
-          "title": "icon-space",
+          "name": "rate-mp-css-icon",
+          "title": "CSS 类图标（`cssIcon`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-custom-style",
+          "title": "根节点样式（`customClass` / `customStyle`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-disabled",
+          "title": "禁用（`disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-half",
+          "title": "半星（`allowHalf`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-icon",
+          "title": "自定义图标（`icon` / `activeIcon`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-readonly",
+          "title": "只读（`readonly`）",
+          "hasEn": true
+        },
+        {
+          "name": "rate-mp-space",
+          "title": "间距与铺满（`space` / `size` / `block`）",
           "hasEn": true
         }
       ]
@@ -1728,18 +2338,38 @@
           "hasEn": true
         },
         {
-          "name": "search-mp-cancel-states",
-          "title": "cancel-states",
+          "name": "search-mp-cancel",
+          "title": "取消按钮（`cancelTxt` / `hideCancel`）",
           "hasEn": true
         },
         {
-          "name": "search-mp-input-attrs",
-          "title": "input-attrs",
+          "name": "search-mp-custom-style",
+          "title": "输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`)",
+          "hasEn": true
+        },
+        {
+          "name": "search-mp-disabled",
+          "title": "禁用（`disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "search-mp-focus",
+          "title": "聚焦（`focus` / `focusWhenClear`）",
+          "hasEn": true
+        },
+        {
+          "name": "search-mp-maxlength",
+          "title": "字数上限（`maxlength`）",
+          "hasEn": true
+        },
+        {
+          "name": "search-mp-placeholder-left",
+          "title": "占位符左对齐（`placeholderLeft`）",
           "hasEn": true
         },
         {
           "name": "search-mp-placeholder-style",
-          "title": "placeholder-style",
+          "title": "占位符样式（`placeholderStyle` / `placeholderClass`）",
           "hasEn": true
         },
         {
@@ -1761,18 +2391,48 @@
           "hasEn": true
         },
         {
-          "name": "select-picker-mp-fields-size",
-          "title": "fields-size",
+          "name": "select-picker-mp-before-confirm",
+          "title": "确认拦截（`beforeConfirm`）",
           "hasEn": true
         },
         {
-          "name": "select-picker-mp-loading-sheet",
-          "title": "loading-sheet",
+          "name": "select-picker-mp-checked-color",
+          "title": "选中色（`checkedColor`）",
           "hasEn": true
         },
         {
-          "name": "select-picker-mp-radio-filter",
-          "title": "radio-filter",
+          "name": "select-picker-mp-chip-size",
+          "title": "chip 尺寸与确认（`selectSize` / `showConfirm`）",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-fields",
+          "title": "字段映射（`valueKey` / `labelKey`）",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-filterable",
+          "title": "可搜索（`filterable`）",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-loading",
+          "title": "加载态（`loading`）",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-scroll-into-view",
+          "title": "滚动定位（`scrollIntoView`）",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-sheet",
+          "title": "弹层行为与样式",
+          "hasEn": true
+        },
+        {
+          "name": "select-picker-mp-type-radio",
+          "title": "单选模式（`type=radio`）",
           "hasEn": true
         }
       ]
@@ -1794,18 +2454,43 @@
           "hasEn": true
         },
         {
-          "name": "signature-mp-export-parity",
-          "title": "export-parity",
+          "name": "signature-mp-disabled",
+          "title": "禁用（`disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "signature-mp-export",
+          "title": "导出参数（`fileType` / `quality` / `exportScale`）",
           "hasEn": true
         },
         {
           "name": "signature-mp-history",
-          "title": "history",
+          "title": "撤销与恢复（`enableHistory`）",
           "hasEn": true
         },
         {
-          "name": "signature-mp-pad-look",
-          "title": "pad-look",
+          "name": "signature-mp-pen",
+          "title": "笔迹外观（`penColor` / `lineWidth`）",
+          "hasEn": true
+        },
+        {
+          "name": "signature-mp-scroll",
+          "title": "画板滚动（`disableScroll`）",
+          "hasEn": true
+        },
+        {
+          "name": "signature-mp-size",
+          "title": "画板尺寸与底色",
+          "hasEn": true
+        },
+        {
+          "name": "signature-mp-step",
+          "title": "撤回步长（`step`）",
+          "hasEn": true
+        },
+        {
+          "name": "signature-mp-stroke",
+          "title": "笔迹参数（`pressure` / `lineWidth`）",
           "hasEn": true
         }
       ]
@@ -1822,13 +2507,33 @@
           "hasEn": true
         },
         {
-          "name": "slide-verify-mp-custom",
-          "title": "自定义",
+          "name": "slide-verify-mp-color",
+          "title": "轨道配色（`backgroundColor`）",
+          "hasEn": true
+        },
+        {
+          "name": "slide-verify-mp-custom-style",
+          "title": "根节点样式",
+          "hasEn": true
+        },
+        {
+          "name": "slide-verify-mp-disabled",
+          "title": "禁用（`disabled`）",
           "hasEn": true
         },
         {
           "name": "slide-verify-mp-icons",
-          "title": "图标",
+          "title": "图标字形（`icon` / `successIcon`）",
+          "hasEn": true
+        },
+        {
+          "name": "slide-verify-mp-text",
+          "title": "文案（`text` / `successText`）",
+          "hasEn": true
+        },
+        {
+          "name": "slide-verify-mp-tolerance",
+          "title": "容差（`tolerance`）",
           "hasEn": true
         }
       ]
@@ -1845,26 +2550,38 @@
           "hasEn": true
         },
         {
-          "name": "slider-mp-range-theme",
-          "title": "range-theme",
+          "name": "slider-mp-color",
+          "title": "轨道配色（`activeColor`）",
           "hasEn": true
         },
         {
-          "name": "slider-mp-vertical-popover-color",
-          "title": "vertical-popover-color",
+          "name": "slider-mp-custom-style",
+          "title": "根节点样式",
           "hasEn": true
-        }
-      ]
-    },
-    "slider-bar": {
-      "group": "form-2",
-      "title": "胶囊滑条",
-      "desc": "胶囊 / 渐变星光滑条",
-      "page": "pages/form-2/slider-bar",
-      "demos": [
+        },
         {
-          "name": "slider-bar-mp-basic",
-          "title": "基础用法",
+          "name": "slider-mp-disabled",
+          "title": "禁用（`disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-mp-popover",
+          "title": "数值气泡（`popoverVisible`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-mp-range",
+          "title": "区间与刻度（`range` / `marks`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-mp-theme",
+          "title": "主题（`theme`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-mp-vertical",
+          "title": "竖排（`vertical`）",
           "hasEn": true
         }
       ]
@@ -1886,8 +2603,13 @@
           "hasEn": true
         },
         {
-          "name": "sort-button-mp-reset-line",
-          "title": "reset-line",
+          "name": "sort-button-mp-cycle",
+          "title": "排序循环（`allowReset` / `descFirst`）",
+          "hasEn": true
+        },
+        {
+          "name": "sort-button-mp-line",
+          "title": "下划线（`line`）",
           "hasEn": true
         }
       ]
@@ -1899,13 +2621,13 @@
       "page": "pages/form-2/switch",
       "demos": [
         {
-          "name": "switch-mp-appearance",
-          "title": "appearance",
+          "name": "switch-mp-basic",
+          "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "switch-mp-basic",
-          "title": "基础用法",
+          "name": "switch-mp-color",
+          "title": "开关配色（`activeColor`）",
           "hasEn": true
         },
         {
@@ -1914,13 +2636,33 @@
           "hasEn": true
         },
         {
+          "name": "switch-mp-custom-style",
+          "title": "根节点样式",
+          "hasEn": true
+        },
+        {
           "name": "switch-mp-icons",
           "title": "图标",
           "hasEn": true
         },
         {
-          "name": "switch-mp-loading-custom",
-          "title": "loading-custom",
+          "name": "switch-mp-loading",
+          "title": "加载态（`loading`）",
+          "hasEn": true
+        },
+        {
+          "name": "switch-mp-shape",
+          "title": "形状（`shape`）",
+          "hasEn": true
+        },
+        {
+          "name": "switch-mp-size",
+          "title": "尺寸（`size`）",
+          "hasEn": true
+        },
+        {
+          "name": "switch-mp-text",
+          "title": "轨道文案（`activeText` / `inactiveText`）",
           "hasEn": true
         }
       ]
@@ -1932,6 +2674,11 @@
       "page": "pages/form-2/textarea",
       "demos": [
         {
+          "name": "textarea-mp-auto-height",
+          "title": "自动增高（`autoHeight`）",
+          "hasEn": true
+        },
+        {
           "name": "textarea-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -1942,8 +2689,13 @@
           "hasEn": true
         },
         {
-          "name": "textarea-mp-counter-clear",
-          "title": "counter-clear",
+          "name": "textarea-mp-clearable",
+          "title": "可清空（`clearable`）",
+          "hasEn": true
+        },
+        {
+          "name": "textarea-mp-compact",
+          "title": "紧凑模式（`compact`）",
           "hasEn": true
         },
         {
@@ -1952,18 +2704,33 @@
           "hasEn": true
         },
         {
+          "name": "textarea-mp-disabled-readonly",
+          "title": "只读与禁用（`readonly` / `disabled`）",
+          "hasEn": true
+        },
+        {
+          "name": "textarea-mp-error",
+          "title": "错误态（`error`）",
+          "hasEn": true
+        },
+        {
           "name": "textarea-mp-mp-runtime",
           "title": "mp-runtime",
           "hasEn": true
         },
         {
-          "name": "textarea-mp-prefix-icon",
-          "title": "prefix-icon",
+          "name": "textarea-mp-placeholder",
+          "title": "占位符样式",
           "hasEn": true
         },
         {
-          "name": "textarea-mp-states",
-          "title": "状态",
+          "name": "textarea-mp-prefix-icon",
+          "title": "前置图标（`prefixIcon`）",
+          "hasEn": true
+        },
+        {
+          "name": "textarea-mp-word-limit",
+          "title": "字数统计（`showWordLimit`）",
           "hasEn": true
         }
       ]
@@ -1975,6 +2742,11 @@
       "page": "pages/form-2/upload",
       "demos": [
         {
+          "name": "upload-mp-accept",
+          "title": "选择器类型（`accept`）",
+          "hasEn": true
+        },
+        {
           "name": "upload-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -1985,8 +2757,13 @@
           "hasEn": true
         },
         {
-          "name": "upload-mp-disabled-status",
-          "title": "disabled-status",
+          "name": "upload-mp-custom-style",
+          "title": "三层样式挂载点",
+          "hasEn": true
+        },
+        {
+          "name": "upload-mp-disabled",
+          "title": "禁用（`disabled`）",
           "hasEn": true
         },
         {
@@ -1995,18 +2772,23 @@
           "hasEn": true
         },
         {
+          "name": "upload-mp-image-mode",
+          "title": "缩略图模式（`imageMode`）",
+          "hasEn": true
+        },
+        {
           "name": "upload-mp-multiple-source",
           "title": "multiple-source",
           "hasEn": true
         },
         {
-          "name": "upload-mp-preview-custom",
-          "title": "preview-custom",
+          "name": "upload-mp-request-method",
+          "title": "request-method",
           "hasEn": true
         },
         {
-          "name": "upload-mp-request-method",
-          "title": "request-method",
+          "name": "upload-mp-status",
+          "title": "文件状态渲染（`status`）",
           "hasEn": true
         }
       ]
@@ -2018,6 +2800,11 @@
       "page": "pages/feedback/action-sheet",
       "demos": [
         {
+          "name": "action-sheet-mp-action-icons",
+          "title": "行图标（icon）",
+          "hasEn": true
+        },
+        {
           "name": "action-sheet-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -2028,18 +2815,23 @@
           "hasEn": true
         },
         {
-          "name": "action-sheet-mp-custom",
-          "title": "自定义",
+          "name": "action-sheet-mp-custom-style",
+          "title": "自定义样式",
           "hasEn": true
         },
         {
           "name": "action-sheet-mp-header",
-          "title": "标题与描述",
+          "title": "标题与关闭按钮",
           "hasEn": true
         },
         {
           "name": "action-sheet-mp-panels",
           "title": "多列面板",
+          "hasEn": true
+        },
+        {
+          "name": "action-sheet-mp-render",
+          "title": "渲染时机与安全区",
           "hasEn": true
         }
       ]
@@ -2061,8 +2853,13 @@
           "hasEn": true
         },
         {
-          "name": "circle-mp-custom",
-          "title": "自定义",
+          "name": "circle-mp-custom-style",
+          "title": "根节点样式",
+          "hasEn": true
+        },
+        {
+          "name": "circle-mp-speed",
+          "title": "动画速度（speed）",
           "hasEn": true
         }
       ]
@@ -2089,13 +2886,18 @@
           "hasEn": true
         },
         {
-          "name": "curtain-mp-custom",
-          "title": "自定义",
+          "name": "curtain-mp-custom-style",
+          "title": "自定义样式",
           "hasEn": true
         },
         {
           "name": "curtain-mp-image-tap",
           "title": "点图片关闭",
+          "hasEn": true
+        },
+        {
+          "name": "curtain-mp-longpress",
+          "title": "长按识别菜单（showMenuByLongpress）",
           "hasEn": true
         }
       ]
@@ -2122,8 +2924,13 @@
           "hasEn": true
         },
         {
-          "name": "dialog-mp-variant",
-          "title": "变体",
+          "name": "dialog-mp-icon",
+          "title": "状态图标（icon）",
+          "hasEn": true
+        },
+        {
+          "name": "dialog-mp-theme",
+          "title": "按钮主题（theme）",
           "hasEn": true
         },
         {
@@ -2242,18 +3049,28 @@
           "hasEn": true
         },
         {
+          "name": "notice-bar-mp-closable",
+          "title": "可关闭（closable）",
+          "hasEn": true
+        },
+        {
           "name": "notice-bar-mp-custom",
           "title": "自定义",
           "hasEn": true
         },
         {
           "name": "notice-bar-mp-marquee",
-          "title": "marquee",
+          "title": "跑马灯参数（delay / speed）",
+          "hasEn": true
+        },
+        {
+          "name": "notice-bar-mp-prefix",
+          "title": "前缀图标（prefix）",
           "hasEn": true
         },
         {
           "name": "notice-bar-mp-type",
-          "title": "类型",
+          "title": "类型（type）",
           "hasEn": true
         },
         {
@@ -2321,18 +3138,23 @@
           "hasEn": true
         },
         {
+          "name": "popup-mp-custom-style",
+          "title": "面板与遮罩样式",
+          "hasEn": true
+        },
+        {
           "name": "popup-mp-position",
           "title": "位置",
           "hasEn": true
         },
         {
-          "name": "popup-mp-scroll",
-          "title": "滚动",
+          "name": "popup-mp-render",
+          "title": "懒渲染与安全区",
           "hasEn": true
         },
         {
-          "name": "popup-mp-surface",
-          "title": "surface",
+          "name": "popup-mp-scroll",
+          "title": "滚动",
           "hasEn": true
         }
       ]
@@ -2410,13 +3232,23 @@
           "hasEn": true
         },
         {
+          "name": "swipe-action-mp-before-close",
+          "title": "关闭拦截（before-close）",
+          "hasEn": true
+        },
+        {
           "name": "swipe-action-mp-both-sides",
-          "title": "both-sides",
+          "title": "两侧操作区",
+          "hasEn": true
+        },
+        {
+          "name": "swipe-action-mp-custom-style",
+          "title": "根节点样式",
           "hasEn": true
         },
         {
           "name": "swipe-action-mp-disabled",
-          "title": "禁用",
+          "title": "禁用（disabled）",
           "hasEn": true
         }
       ]
@@ -2433,13 +3265,23 @@
           "hasEn": true
         },
         {
+          "name": "toast-mp-cover",
+          "title": "遮罩阻挡（cover）",
+          "hasEn": true
+        },
+        {
           "name": "toast-mp-icon",
           "title": "图标",
           "hasEn": true
         },
         {
-          "name": "toast-mp-style",
-          "title": "样式",
+          "name": "toast-mp-icon-style",
+          "title": "图标尺寸与颜色",
+          "hasEn": true
+        },
+        {
+          "name": "toast-mp-z-index",
+          "title": "层级与样式",
           "hasEn": true
         }
       ]
@@ -2480,7 +3322,12 @@
         },
         {
           "name": "count-down-mp-control",
-          "title": "control",
+          "title": "控制方法（start / pause / reset）",
+          "hasEn": true
+        },
+        {
+          "name": "count-down-mp-millisecond",
+          "title": "毫秒渲染（millisecond）",
           "hasEn": true
         }
       ]
@@ -2497,13 +3344,18 @@
           "hasEn": true
         },
         {
+          "name": "count-to-mp-control",
+          "title": "控制方法",
+          "hasEn": true
+        },
+        {
           "name": "count-to-mp-easing",
           "title": "easing",
           "hasEn": true
         },
         {
           "name": "count-to-mp-type",
-          "title": "类型",
+          "title": "主题色（type）",
           "hasEn": true
         }
       ]
@@ -2543,18 +3395,33 @@
           "hasEn": true
         },
         {
-          "name": "image-preview-mp-behavior",
-          "title": "行为",
+          "name": "image-preview-mp-close-behavior",
+          "title": "关闭与循环行为",
           "hasEn": true
         },
         {
-          "name": "image-preview-mp-config",
-          "title": "配置",
+          "name": "image-preview-mp-close-position",
+          "title": "关闭按钮位置（closeIconPosition）",
           "hasEn": true
         },
         {
           "name": "image-preview-mp-gestures",
           "title": "gestures",
+          "hasEn": true
+        },
+        {
+          "name": "image-preview-mp-index",
+          "title": "页码与底部插槽",
+          "hasEn": true
+        },
+        {
+          "name": "image-preview-mp-longpress",
+          "title": "长按菜单与事件",
+          "hasEn": true
+        },
+        {
+          "name": "image-preview-mp-selector",
+          "title": "selector 命中区",
           "hasEn": true
         }
       ]
@@ -2566,18 +3433,28 @@
       "page": "pages/display/img",
       "demos": [
         {
-          "name": "img-mp-basic",
-          "title": "基础用法",
-          "hasEn": true
-        },
-        {
           "name": "img-mp-custom",
           "title": "自定义",
           "hasEn": true
         },
         {
+          "name": "img-mp-lazy-load",
+          "title": "懒加载（lazyLoad）",
+          "hasEn": true
+        },
+        {
+          "name": "img-mp-mode",
+          "title": "裁剪模式（mode）",
+          "hasEn": true
+        },
+        {
           "name": "img-mp-preview",
-          "title": "preview",
+          "title": "点击预览（enablePreview）",
+          "hasEn": true
+        },
+        {
+          "name": "img-mp-shape",
+          "title": "圆形与圆角（round / radius）",
           "hasEn": true
         },
         {
@@ -2594,13 +3471,28 @@
       "page": "pages/display/img-cropper",
       "demos": [
         {
-          "name": "img-cropper-mp-export",
-          "title": "导出",
+          "name": "img-cropper-mp-export-props",
+          "title": "导出声明参数",
+          "hasEn": true
+        },
+        {
+          "name": "img-cropper-mp-frame",
+          "title": "预览框尺寸（imgWidth / imgHeight）",
+          "hasEn": true
+        },
+        {
+          "name": "img-cropper-mp-max-scale",
+          "title": "缩放上限（maxScale）",
           "hasEn": true
         },
         {
           "name": "img-cropper-mp-ratio",
-          "title": "ratio",
+          "title": "裁剪比例（aspectRatio）",
+          "hasEn": true
+        },
+        {
+          "name": "img-cropper-mp-rotate",
+          "title": "禁止旋转与按钮文案（disabledRotate）",
           "hasEn": true
         }
       ]
@@ -2617,18 +3509,28 @@
           "hasEn": true
         },
         {
-          "name": "qr-code-mp-canvas",
-          "title": "canvas",
+          "name": "qr-code-mp-canvas-id",
+          "title": "画布 id（canvasId）",
+          "hasEn": true
+        },
+        {
+          "name": "qr-code-mp-color",
+          "title": "自定义颜色（colorDark / colorLight）",
           "hasEn": true
         },
         {
           "name": "qr-code-mp-dot-type",
-          "title": "dot-type",
+          "title": "码点形状（dotType）",
           "hasEn": true
         },
         {
           "name": "qr-code-mp-export",
           "title": "导出",
+          "hasEn": true
+        },
+        {
+          "name": "qr-code-mp-gradient",
+          "title": "渐变码（enableGradient）",
           "hasEn": true
         }
       ]
@@ -2640,8 +3542,18 @@
       "page": "pages/display/rich-text",
       "demos": [
         {
+          "name": "rich-text-mp-anchor",
+          "title": "锚点目录（enableAnchor）",
+          "hasEn": false
+        },
+        {
           "name": "rich-text-mp-basic",
           "title": "基础用法",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-empty",
+          "title": "空状态插槽",
           "hasEn": false
         },
         {
@@ -2660,8 +3572,8 @@
           "hasEn": false
         },
         {
-          "name": "rich-text-mp-styles",
-          "title": "styles",
+          "name": "rich-text-mp-style-map",
+          "title": "样式映射（tagStyle / classStyles）",
           "hasEn": false
         },
         {
@@ -2693,8 +3605,13 @@
           "hasEn": true
         },
         {
-          "name": "swiper-mp-data",
-          "title": "data",
+          "name": "swiper-mp-data-keys",
+          "title": "数据字段映射",
+          "hasEn": true
+        },
+        {
+          "name": "swiper-mp-image-mode",
+          "title": "图片裁切（imageMode）",
           "hasEn": true
         },
         {
@@ -2736,18 +3653,43 @@
       "page": "pages/display/table",
       "demos": [
         {
-          "name": "table-mp-basic",
-          "title": "基础用法",
+          "name": "table-mp-border-stripe",
+          "title": "边框与斑马纹（border / stripe）",
           "hasEn": true
         },
         {
-          "name": "table-mp-cell",
-          "title": "单元格",
+          "name": "table-mp-cell-slot",
+          "title": "自定义单元格（value 插槽）",
           "hasEn": true
         },
         {
-          "name": "table-mp-style",
-          "title": "样式",
+          "name": "table-mp-ellipsis",
+          "title": "单元格省略（ellipsis）",
+          "hasEn": true
+        },
+        {
+          "name": "table-mp-empty",
+          "title": "空态",
+          "hasEn": true
+        },
+        {
+          "name": "table-mp-fixed",
+          "title": "固定表头与固定列",
+          "hasEn": true
+        },
+        {
+          "name": "table-mp-header",
+          "title": "表头开关（showHeader）",
+          "hasEn": true
+        },
+        {
+          "name": "table-mp-index",
+          "title": "索引列（index）",
+          "hasEn": true
+        },
+        {
+          "name": "table-mp-sort",
+          "title": "排序（sortable）",
           "hasEn": true
         }
       ]
@@ -2764,13 +3706,23 @@
           "hasEn": true
         },
         {
-          "name": "video-preview-mp-config",
-          "title": "配置",
+          "name": "video-preview-mp-close-position",
+          "title": "关闭按钮位置（closePosition）",
           "hasEn": true
         },
         {
           "name": "video-preview-mp-fullscreen",
-          "title": "fullscreen",
+          "title": "全屏模式（fullScreen）",
+          "hasEn": true
+        },
+        {
+          "name": "video-preview-mp-layer",
+          "title": "层级与样式（zIndex / customStyle）",
+          "hasEn": true
+        },
+        {
+          "name": "video-preview-mp-selector",
+          "title": "实例标识（selector）",
           "hasEn": true
         }
       ]
@@ -2820,8 +3772,13 @@
           "hasEn": true
         },
         {
+          "name": "watermark-mp-font",
+          "title": "文字字体（fontFamily 等）",
+          "hasEn": true
+        },
+        {
           "name": "watermark-mp-image",
-          "title": "image",
+          "title": "图片水印（image）",
           "hasEn": true
         }
       ]
@@ -2833,13 +3790,18 @@
       "page": "pages/business/barcode",
       "demos": [
         {
-          "name": "barcode-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "barcode-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "barcode-mp-format",
+          "title": "条码格式（format）",
+          "hasEn": true
+        },
+        {
+          "name": "barcode-mp-layout",
+          "title": "布局方向（layout）",
           "hasEn": true
         },
         {
@@ -2848,8 +3810,8 @@
           "hasEn": true
         },
         {
-          "name": "barcode-mp-variants",
-          "title": "variants",
+          "name": "barcode-mp-style",
+          "title": "样式属性",
           "hasEn": true
         }
       ]
@@ -2861,23 +3823,33 @@
       "page": "pages/business/dialer",
       "demos": [
         {
-          "name": "dialer-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "dialer-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "dialer-mp-states",
-          "title": "状态",
+          "name": "dialer-mp-colors",
+          "title": "扇区配色",
           "hasEn": true
         },
         {
-          "name": "dialer-mp-variants",
-          "title": "variants",
+          "name": "dialer-mp-pointer-slot",
+          "title": "自定义指针（pointer 插槽）",
+          "hasEn": true
+        },
+        {
+          "name": "dialer-mp-size",
+          "title": "尺寸（size）",
+          "hasEn": true
+        },
+        {
+          "name": "dialer-mp-spin",
+          "title": "圈数与时长（turns / duration）",
+          "hasEn": true
+        },
+        {
+          "name": "dialer-mp-states",
+          "title": "状态",
           "hasEn": true
         }
       ]
@@ -2889,23 +3861,33 @@
       "page": "pages/business/liquid",
       "demos": [
         {
-          "name": "liquid-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "liquid-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "liquid-mp-states",
-          "title": "状态",
+          "name": "liquid-mp-colors",
+          "title": "水波配色（waveColor / innerColor）",
           "hasEn": true
         },
         {
-          "name": "liquid-mp-variants",
-          "title": "variants",
+          "name": "liquid-mp-outline",
+          "title": "外圈（outline）",
+          "hasEn": true
+        },
+        {
+          "name": "liquid-mp-radius",
+          "title": "容器圆角（radius）",
+          "hasEn": true
+        },
+        {
+          "name": "liquid-mp-size",
+          "title": "尺寸（size）",
+          "hasEn": true
+        },
+        {
+          "name": "liquid-mp-states",
+          "title": "状态",
           "hasEn": true
         }
       ]
@@ -2917,23 +3899,33 @@
       "page": "pages/business/lucky",
       "demos": [
         {
-          "name": "lucky-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "lucky-mp-basic",
           "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "lucky-mp-states",
-          "title": "状态",
+          "name": "lucky-mp-button-slot",
+          "title": "自定义按钮（button 插槽）",
           "hasEn": true
         },
         {
-          "name": "lucky-mp-variants",
-          "title": "variants",
+          "name": "lucky-mp-cell",
+          "title": "格子间距与高度（gutter / cellHeight）",
+          "hasEn": true
+        },
+        {
+          "name": "lucky-mp-grid",
+          "title": "网格规模（rows / cols）",
+          "hasEn": true
+        },
+        {
+          "name": "lucky-mp-speed",
+          "title": "速度与高亮色（speed）",
+          "hasEn": true
+        },
+        {
+          "name": "lucky-mp-states",
+          "title": "状态",
           "hasEn": true
         }
       ]
@@ -2945,13 +3937,18 @@
       "page": "pages/business/scratchcard",
       "demos": [
         {
-          "name": "scratchcard-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "scratchcard-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "scratchcard-mp-cover",
+          "title": "封面色（coverColor）",
+          "hasEn": true
+        },
+        {
+          "name": "scratchcard-mp-ratio",
+          "title": "刮开阈值（ratio）",
           "hasEn": true
         },
         {
@@ -2960,8 +3957,13 @@
           "hasEn": true
         },
         {
-          "name": "scratchcard-mp-variants",
-          "title": "variants",
+          "name": "scratchcard-mp-title-style",
+          "title": "标题样式（titleSize / titleColor）",
+          "hasEn": true
+        },
+        {
+          "name": "scratchcard-mp-watermark",
+          "title": "水印（watermark*）",
           "hasEn": true
         }
       ]
@@ -2973,13 +3975,23 @@
       "page": "pages/business/typing",
       "demos": [
         {
-          "name": "typing-mp",
-          "title": "基础用法",
-          "hasEn": false
-        },
-        {
           "name": "typing-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "typing-mp-dot-color",
+          "title": "圆点颜色（activeDotColor）",
+          "hasEn": true
+        },
+        {
+          "name": "typing-mp-dot-count",
+          "title": "圆点数量（dotCount）",
+          "hasEn": true
+        },
+        {
+          "name": "typing-mp-speed",
+          "title": "脉动速度（speed）",
           "hasEn": true
         },
         {
@@ -2988,8 +4000,8 @@
           "hasEn": true
         },
         {
-          "name": "typing-mp-variants",
-          "title": "variants",
+          "name": "typing-mp-text",
+          "title": "文案开关（text）",
           "hasEn": true
         }
       ]
@@ -3054,6 +4066,39 @@
         {
           "name": "paging-mp-states",
           "title": "状态",
+          "hasEn": true
+        }
+      ]
+    },
+    "slider-bar": {
+      "group": "more",
+      "title": "slider-bar",
+      "desc": "",
+      "page": "pages/more/slider-bar",
+      "demos": [
+        {
+          "name": "slider-bar-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-range",
+          "title": "区间（`range`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-size",
+          "title": "尺寸（`size`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-theme",
+          "title": "主题（`theme`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-variant",
+          "title": "竖排（`variant=column`）",
           "hasEn": true
         }
       ]

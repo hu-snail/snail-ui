@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo: sn-cascader — 字段映射与指示条：valueKey / textKey / childrenKey / tipKey。
+ * Demo: sn-cascader — 字段映射：valueKey / textKey / childrenKey / tipKey。
  *
- * 选项的 value / 文案 / 子级 / 提示字段名完全可配；lineTheme / lineHeight
- * 控制当前列指示条（数字按 rpx 设计值，1 设计值 = 2rpx）。
+ * 选项的 value / 文案 / 子级 / 提示字段名完全可配。
  */
 import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
@@ -37,8 +36,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"；指示条 lineTheme="text"
-      + lineHeight。</text
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
     >
     <view class="sn-demo__cards">
       <SnCell
@@ -61,8 +59,6 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
       title="选择城市"
       check-strictly
       confirm-text="就它"
-      line-theme="text"
-      :line-height="4"
     />
   </view>
 </template>

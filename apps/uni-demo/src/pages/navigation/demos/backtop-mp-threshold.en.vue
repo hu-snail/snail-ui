@@ -1,12 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-backtop — `top` threshold, `icon-style`, `z-index` and `custom-class`.
- *
- * - `top` is the visibility threshold in px; `scroll-top` comes from the host
- * - `icon-style` is appended after the icon's inline style (which already carries
- *   `rotate(-90deg)` so the glyph points up)
- * - `z-index` participates in the root's positioning style
- * - `custom-class` / `custom-style` land on the root node
+ * Demo: sn-backtop — English shadow of backtop-mp-threshold (`top` visibility threshold).
  *
  * Docs-preview only: the root is `position: fixed`, so `custom-class` pins it inside
  * this stage.
@@ -32,8 +26,6 @@ const clicks = ref(0);
       <SnBacktop
         :scroll-top="scrollTop"
         :top="120"
-        :z-index="30"
-        icon-style="color: var(--sn-mp-color-action-primary);"
         text="Top"
         custom-class="sn-demo-contained"
         @click="clicks += 1"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-layout — gutter, offset and alignment. */
+/** Demo: sn-layout — gutters and offsets. */
 import SnLayout from '@snui/uni-src/components/sn-layout/sn-layout.vue';
 import SnCol from '@snui/uni-src/components/sn-layout/sn-col.vue';
 </script>
@@ -14,11 +14,7 @@ import SnCol from '@snui/uni-src/components/sn-layout/sn-col.vue';
     <SnLayout>
       <SnCol :span="8" :offset="8"><view class="sn-demo__block">offset=8</view></SnCol>
     </SnLayout>
-    <SnLayout justify="space-between" align="middle">
-      <SnCol :span="6"><view class="sn-demo__block">6</view></SnCol>
-      <SnCol :span="6"><view class="sn-demo__block">6</view></SnCol>
-    </SnLayout>
-    <text class="sn-demo__meta">gutter=16; offset=8; space-between with middle alignment</text>
+    <text class="sn-demo__meta">gutter=16; offset=8</text>
   </view>
 </template>
 

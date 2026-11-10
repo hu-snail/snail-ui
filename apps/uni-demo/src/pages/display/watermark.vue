@@ -2,7 +2,8 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— watermark 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/watermark-mp-basic.vue';
 import Demo1 from './demos/watermark-mp-config.vue';
-import Demo2 from './demos/watermark-mp-image.vue';
+import Demo2 from './demos/watermark-mp-font.vue';
+import Demo3 from './demos/watermark-mp-image.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +28,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('image', 'Image')" badge="image" />
+        <DemoModuleHead
+          :title="t('文字字体（fontFamily 等）', 'Text font (`fontFamily` etc.)')"
+          badge="font"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('图片水印（image）', 'Image watermark (`image`)')"
+          badge="image"
+        />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— datetime-picker-view 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/datetime-picker-view-mp-basic.vue';
-import Demo1 from './demos/datetime-picker-view-mp-columns.vue';
-import Demo2 from './demos/datetime-picker-view-mp-range-boundary.vue';
-import Demo3 from './demos/datetime-picker-view-mp-time-bounds.vue';
-import Demo4 from './demos/datetime-picker-view-mp-time-format.vue';
+import Demo1 from './demos/datetime-picker-view-mp-boundary.vue';
+import Demo2 from './demos/datetime-picker-view-mp-column-formatter.vue';
+import Demo3 from './demos/datetime-picker-view-mp-formatter.vue';
+import Demo4 from './demos/datetime-picker-view-mp-immediate-change.vue';
+import Demo5 from './demos/datetime-picker-view-mp-keys.vue';
+import Demo6 from './demos/datetime-picker-view-mp-roller-geometry.vue';
+import Demo7 from './demos/datetime-picker-view-mp-time-bounds.vue';
+import Demo8 from './demos/datetime-picker-view-mp-time-type.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -28,27 +32,71 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('columns', 'Columns')" badge="columns" />
+        <DemoModuleHead
+          :title="
+            t(
+              '区间联动（boundaryMinDate / boundaryMaxDate）',
+              'Range linkage (boundaryMinDate / boundaryMaxDate)',
+            )
+          "
+          badge="boundary"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('range-boundary', 'Range Boundary')" badge="range-boundary" />
+        <DemoModuleHead
+          :title="t('列改写（columnFormatter）', 'Column rewriting (columnFormatter)')"
+          badge="column-formatter"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('time-bounds', 'Time Bounds')" badge="time-bounds" />
+        <DemoModuleHead
+          :title="t('列文案格式化（formatter）', 'Column label formatting (formatter)')"
+          badge="formatter"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('time-format', 'Time Format')" badge="time-format" />
+        <DemoModuleHead
+          :title="t('即时 change（immediateChange）', 'Immediate change (immediateChange)')"
+          badge="immediate-change"
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('字段映射（valueKey / labelKey）', 'Field mapping (valueKey / labelKey)')"
+          badge="keys"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('滚筒几何', 'Roller geometry')" badge="roller-geometry" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('time-bounds', 'Time Bounds')" badge="time-bounds" />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('时间类型写回', 'Time type write-back')" badge="time-type" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

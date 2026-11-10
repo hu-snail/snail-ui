@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-drop-menu (uni-end) — up direction, before-toggle guard, custom keys.
+ * Demo: sn-drop-menu (uni-end) — up direction and the before-toggle guard.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-drop-menu from its SFC source.
  */
 import { ref } from 'vue';
@@ -8,11 +8,10 @@ import SnDropMenu from '@snui/uni-src/components/sn-drop-menu/sn-drop-menu.vue';
 
 const value = ref('');
 
-/** Fields renamed — the guard demo also shows the key remapping. */
 const options = [
-  { name: '不限', id: 'all' },
-  { name: '50 元以下', id: 'lt50' },
-  { name: '50 - 200 元', id: 'mid' },
+  { label: '不限', value: 'all' },
+  { label: '50 元以下', value: 'lt50' },
+  { label: '50 - 200 元', value: 'mid' },
 ];
 
 const blocked = ref(0);
@@ -32,8 +31,6 @@ function beforeToggle(): boolean {
       v-model="value"
       :options="options"
       direction="up"
-      label-key="name"
-      value-key="id"
       title="价格区间"
       :before-toggle="beforeToggle"
       custom-class="sn-demo-contained"

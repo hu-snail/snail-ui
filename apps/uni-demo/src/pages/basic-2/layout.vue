@@ -27,7 +27,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('gutter', 'Gutter')" badge="gutter" />
+        <DemoModuleHead
+          :title="t('间距与偏移（gutter / offset）', 'Gutters & offsets (`gutter` / `offset`)')"
+          badge="gutter"
+        />
         <view class="module__body">
           <Demo2 />
         </view>

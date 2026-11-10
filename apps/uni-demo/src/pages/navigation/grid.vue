@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— grid 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/grid-mp-basic.vue';
-import Demo1 from './demos/grid-mp-feedback.vue';
+import Demo1 from './demos/grid-mp-clickable.vue';
 import Demo2 from './demos/grid-mp-kingkong.vue';
 import Demo3 from './demos/grid-mp-layout.vue';
+import Demo4 from './demos/grid-mp-look.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,7 +23,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('feedback', 'Feedback')" badge="feedback" />
+        <DemoModuleHead
+          :title="t('点击反馈（clickable）', 'Tap feedback (`clickable`)')"
+          badge="clickable"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -37,6 +41,20 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '外观（bg-color / center / icon-size）',
+              'Looks (`bg-color` / `center` / `icon-size`)',
+            )
+          "
+          badge="look"
+        />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

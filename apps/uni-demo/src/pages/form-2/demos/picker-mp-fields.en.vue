@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-picker — field mapping and button labels: valueKey / labelKey / childrenKey / cancelButtonText. */
+/** Demo: sn-picker — field mapping: valueKey / labelKey / childrenKey point the component at custom field names. */
 import { ref } from 'vue';
 import SnPicker from '@snui/uni-src/components/sn-picker/sn-picker.vue';
 
@@ -26,9 +26,7 @@ const open = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title"
-      >valueKey="id" / labelKey="name" / childrenKey="sub" + cancelButtonText</text
-    >
+    <text class="sn-demo__title">valueKey="id" / labelKey="name" / childrenKey="sub"</text>
     <view class="sn-demo__button" @tap="open = true">Pick a region</view>
     <text class="sn-demo__meta">Selected: {{ region.join(' / ') || '(not selected)' }}</text>
     <SnPicker
@@ -40,8 +38,6 @@ const open = ref(false);
       label-key="name"
       children-key="sub"
       title="Pick a region"
-      cancel-button-text="Not now"
-      confirm-button-text="Use it"
     />
   </view>
 </template>

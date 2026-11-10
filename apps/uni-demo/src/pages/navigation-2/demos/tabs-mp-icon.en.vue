@@ -1,18 +1,13 @@
 <script setup lang="ts">
 /**
- * Demo: sn-tabs — nav icons (`icon` / `icon-image`) and badges (`badge-props`).
- *
- * - `icon` takes IconData data or a registered / built-in icon name; its size rides `--sn-mp-icon-size-small`
- * - `icon-image` takes an image address (URL / base64) and wins over `icon`
- * - `badge-props` is forwarded to `sn-badge`: value / overflow cap / dot / semantic colour
+ * Demo: sn-tabs — English shadow of tabs-mp-icon.
  */
 import { ref } from 'vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
 import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
-import { Home, Search, Star, Heart, Bell } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import { Home, Search, Star, Heart } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const iconActive = ref(0);
-const badgeActive = ref(0);
 </script>
 
 <template>
@@ -32,19 +27,7 @@ const badgeActive = ref(0);
       <SnTab title="Saved" :name="2" icon="star">Saved items</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__label">badge-props: numeric / overflow cap / dot / semantic colour</text>
-    <SnTabs v-model="badgeActive">
-      <SnTab title="Messages" :name="0" :badge-props="{ value: 12 }">Message list</SnTab>
-      <SnTab title="Todos" :name="1" :badge-props="{ value: 128, max: 99 }">Todo items</SnTab>
-      <SnTab title="Feed" :name="2" :badge-props="{ isDot: true, type: 'success' }">
-        Activity feed
-      </SnTab>
-      <SnTab title="Alerts" :name="3" :icon="Bell" :badge-props="{ value: 3, type: 'warning' }">
-        Alert list
-      </SnTab>
-    </SnTabs>
-
-    <text class="sn-demo__meta">Active tab: {{ iconActive }} / {{ badgeActive }}</text>
+    <text class="sn-demo__meta">Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text>
   </view>
 </template>
 

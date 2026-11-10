@@ -1,9 +1,7 @@
 <script setup lang="ts">
 /**
- * Demo: sn-pagination — single-page hiding, custom slots and root styling.
+ * Demo: sn-pagination — English shadow of pagination-mp-slots.
  *
- * - `hide-if-one-page` skips rendering entirely when the page count is 1 (`v-if`
- *   removes the root node)
  * - the `prev` / `size` / `next` / `message` slots all receive
  *   `{ modelValue, totalPageNum, total, pageSize }`
  * - `custom-class` / `custom-style` land on the root node
@@ -12,16 +10,10 @@ import { ref } from 'vue';
 import SnPagination from '@snui/uni-src/components/sn-pagination/sn-pagination.vue';
 
 const page = ref(1);
-const singlePage = ref(1);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__label">hide-if-one-page (one page → not rendered)</text>
-    <SnPagination v-model="singlePage" :total-page="1" hide-if-one-page />
-    <text class="sn-demo__meta">No pager above means the prop took effect</text>
-
-    <text class="sn-demo__label">all four slots customised</text>
     <SnPagination
       v-model="page"
       :total="48"
@@ -49,9 +41,10 @@ const singlePage = ref(1);
 </template>
 
 <style scoped>
-.sn-demo__label {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-secondary);
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 .sn-demo__meta {
   font-size: 24rpx;

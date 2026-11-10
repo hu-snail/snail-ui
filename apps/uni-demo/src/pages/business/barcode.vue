@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— barcode 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/barcode-mp.vue';
-import Demo1 from './demos/barcode-mp-basic.vue';
-import Demo2 from './demos/barcode-mp-states.vue';
-import Demo3 from './demos/barcode-mp-variants.vue';
+import Demo0 from './demos/barcode-mp-basic.vue';
+import Demo1 from './demos/barcode-mp-format.vue';
+import Demo2 from './demos/barcode-mp-layout.vue';
+import Demo3 from './demos/barcode-mp-states.vue';
+import Demo4 from './demos/barcode-mp-style.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,27 +17,33 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'" :desc="'EAN-13 条码渲染'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('条码格式（format）', 'Barcode formats')" badge="format" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead :title="t('布局方向（layout）', 'Layout direction')" badge="layout" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('variants', 'Variants')" badge="variants" />
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('样式属性', 'Style props')" badge="style" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

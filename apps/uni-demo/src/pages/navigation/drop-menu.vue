@@ -2,9 +2,13 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— drop-menu 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/drop-menu-mp-basic.vue';
 import Demo1 from './demos/drop-menu-mp-direction.vue';
-import Demo2 from './demos/drop-menu-mp-guard.vue';
-import Demo3 from './demos/drop-menu-mp-icon.vue';
-import Demo4 from './demos/drop-menu-mp-panel.vue';
+import Demo2 from './demos/drop-menu-mp-disabled.vue';
+import Demo3 from './demos/drop-menu-mp-guard.vue';
+import Demo4 from './demos/drop-menu-mp-icon.vue';
+import Demo5 from './demos/drop-menu-mp-keys.vue';
+import Demo6 from './demos/drop-menu-mp-modal.vue';
+import Demo7 from './demos/drop-menu-mp-popup-height.vue';
+import Demo8 from './demos/drop-menu-mp-slot.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -29,21 +33,54 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead
+          :title="t('开关拦截（beforeToggle）', 'Toggle guard (`beforeToggle`)')"
+          badge="guard"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('panel', 'Panel')" badge="panel" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('字段重命名（labelKey / valueKey）', 'Field keys (`labelKey` / `valueKey`)')"
+          badge="keys"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('蒙层行为（modal）', 'Scrim behavior (`modal`)')" badge="modal" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('面板高度与样式', 'Panel height & styling')"
+          badge="popup-height"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义面板插槽', 'Custom panel slot')" badge="slot" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

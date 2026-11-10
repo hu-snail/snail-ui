@@ -1,9 +1,15 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— rate 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/rate-mp-basic.vue';
-import Demo1 from './demos/rate-mp-css-icon-disabled.vue';
-import Demo2 from './demos/rate-mp-half-color.vue';
-import Demo3 from './demos/rate-mp-icon-space.vue';
+import Demo1 from './demos/rate-mp-clearable.vue';
+import Demo2 from './demos/rate-mp-color.vue';
+import Demo3 from './demos/rate-mp-css-icon.vue';
+import Demo4 from './demos/rate-mp-custom-style.vue';
+import Demo5 from './demos/rate-mp-disabled.vue';
+import Demo6 from './demos/rate-mp-half.vue';
+import Demo7 from './demos/rate-mp-icon.vue';
+import Demo8 from './demos/rate-mp-readonly.vue';
+import Demo9 from './demos/rate-mp-space.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,23 +29,93 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('css-icon-disabled', 'Css Icon Disabled')"
-          badge="css-icon-disabled"
+          :title="t('可清空（`clearable`）', 'Clearable (`clearable`)')"
+          badge="clearable"
         />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('half-color', 'Half Color')" badge="half-color" />
+        <DemoModuleHead
+          :title="t('评分颜色（`activeColor`）', 'Rating colors (`activeColor`)')"
+          badge="color"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('icon-space', 'Icon Space')" badge="icon-space" />
+        <DemoModuleHead
+          :title="t('CSS 类图标（`cssIcon`）', 'CSS-class glyphs (`cssIcon`)')"
+          badge="css-icon"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '根节点样式（`customClass` / `customStyle`）',
+              'Root styling (`customClass` / `customStyle`)',
+            )
+          "
+          badge="custom-style"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('半星（`allowHalf`）', 'Half stars (`allowHalf`)')"
+          badge="half"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('自定义图标（`icon` / `activeIcon`）', 'Custom icons (`icon` / `activeIcon`)')"
+          badge="icon"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('只读（`readonly`）', 'Readonly (`readonly`)')"
+          badge="readonly"
+        />
+        <view class="module__body">
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '间距与铺满（`space` / `size` / `block`）',
+              'Gap & full-row spread (`space` / `size` / `block`)',
+            )
+          "
+          badge="space"
+        />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

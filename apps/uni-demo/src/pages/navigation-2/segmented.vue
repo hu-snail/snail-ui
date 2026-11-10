@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— segmented 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/segmented-mp-basic.vue';
-import Demo1 from './demos/segmented-mp-theme.vue';
-import Demo2 from './demos/segmented-mp-value.vue';
-import Demo3 from './demos/segmented-mp-value-alias.vue';
+import Demo1 from './demos/segmented-mp-custom-style.vue';
+import Demo2 from './demos/segmented-mp-disabled.vue';
+import Demo3 from './demos/segmented-mp-theme.vue';
+import Demo4 from './demos/segmented-mp-value.vue';
+import Demo5 from './demos/segmented-mp-value-alias.vue';
+import Demo6 from './demos/segmented-mp-vibrate.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,21 +25,48 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" />
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('value', 'Value')" badge="value" />
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('value-alias', 'Value Alias')" badge="value-alias" />
+        <DemoModuleHead :title="t('主题（theme）', 'Theme (`theme`)')" badge="theme" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('value 别名（wot-ui 迁移）', 'The `value` alias (wot-ui migration)')"
+          badge="value"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('事件名差异（update:value）', 'Event-name difference (`update:value`)')"
+          badge="value-alias"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('切换振动（vibrate-short）', 'Switch haptics (`vibrate-short`)')"
+          badge="vibrate"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

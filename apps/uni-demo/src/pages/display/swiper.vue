@@ -3,13 +3,14 @@
 import Demo0 from './demos/swiper-mp-basic.vue';
 import Demo1 from './demos/swiper-mp-coverflow.vue';
 import Demo2 from './demos/swiper-mp-custom.vue';
-import Demo3 from './demos/swiper-mp-data.vue';
-import Demo4 from './demos/swiper-mp-indicator.vue';
-import Demo5 from './demos/swiper-mp-indicator-position.vue';
-import Demo6 from './demos/swiper-mp-multiple.vue';
-import Demo7 from './demos/swiper-mp-playback.vue';
-import Demo8 from './demos/swiper-mp-vertical.vue';
-import Demo9 from './demos/swiper-mp-video.vue';
+import Demo3 from './demos/swiper-mp-data-keys.vue';
+import Demo4 from './demos/swiper-mp-image-mode.vue';
+import Demo5 from './demos/swiper-mp-indicator.vue';
+import Demo6 from './demos/swiper-mp-indicator-position.vue';
+import Demo7 from './demos/swiper-mp-multiple.vue';
+import Demo8 from './demos/swiper-mp-playback.vue';
+import Demo9 from './demos/swiper-mp-vertical.vue';
+import Demo10 from './demos/swiper-mp-video.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -40,15 +41,24 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('data', 'Data')" badge="data" />
+        <DemoModuleHead :title="t('数据字段映射', 'Data field mapping')" badge="data-keys" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('indicator', 'Indicator')" badge="indicator" />
+        <DemoModuleHead
+          :title="t('图片裁切（imageMode）', 'Image fit (`imageMode`)')"
+          badge="image-mode"
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('indicator', 'Indicator')" badge="indicator" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
       <view class="module">
@@ -57,31 +67,31 @@ const { t } = useDemoUi();
           badge="indicator-position"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('multiple', 'Multiple')" badge="multiple" />
         <view class="module__body">
-          <Demo6 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('playback', 'Playback')" badge="playback" />
         <view class="module__body">
-          <Demo7 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
         <view class="module__body">
-          <Demo8 />
+          <Demo9 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('video', 'Video')" badge="video" />
         <view class="module__body">
-          <Demo9 />
+          <Demo10 />
         </view>
       </view>
     </view>

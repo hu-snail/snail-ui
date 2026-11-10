@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— transition 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/transition-mp-basic.vue';
-import Demo1 from './demos/transition-mp-config.vue';
+import Demo1 from './demos/transition-mp-combined.vue';
 import Demo2 from './demos/transition-mp-custom-class.vue';
-import Demo3 from './demos/transition-mp-lazy.vue';
+import Demo3 from './demos/transition-mp-destroy.vue';
+import Demo4 from './demos/transition-mp-duration.vue';
+import Demo5 from './demos/transition-mp-lazy-render.vue';
+import Demo6 from './demos/transition-mp-touch-move.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,7 +25,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
+        <DemoModuleHead
+          :title="t('组合动画（name 数组）', 'Combined animations (`name` array)')"
+          badge="combined"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -34,9 +40,39 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('lazy', 'Lazy')" badge="lazy" />
+        <DemoModuleHead
+          :title="t('保留节点（destroy）', 'Keep node (`destroy`)')"
+          badge="destroy"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('分段时长（duration）', 'Per-leg durations (`duration`)')"
+          badge="duration"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('懒渲染（lazyRender）', 'Lazy rendering (`lazyRender`)')"
+          badge="lazy-render"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('阻止触摸滚动（disableTouchMove）', 'Block touch scroll (`disableTouchMove`)')"
+          badge="touch-move"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

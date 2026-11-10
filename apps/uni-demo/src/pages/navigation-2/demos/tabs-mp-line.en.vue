@@ -1,11 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-tabs — active-bar styles (`line-theme`) and a disabled tab.
- *
- * - `line-theme` switches the bar shape: normal short bar / text full-label backdrop / underline full-width rule / dot
- * - `line-width` / `line-height` override the bar size (numbers are px, strings are forwarded verbatim)
- * - `sticky` pins the strip and `offset-top` leaves an offset
- * - `disabled` blocks the switch and only emits `disabled`
+ * Demo: sn-tabs — English shadow of tabs-mp-line.
  */
 import { ref } from 'vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
@@ -14,7 +9,6 @@ import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
 const normalActive = ref(0);
 const underlineActive = ref(1);
 const dotActive = ref(0);
-const disabledActive = ref(0);
 </script>
 
 <template>
@@ -48,18 +42,8 @@ const disabledActive = ref(0);
       <SnTab title="Month" :name="2">Monthly stats</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__label">sticky + offset-top=12; the third tab is disabled</text>
-    <SnTabs v-model="disabledActive" sticky :offset-top="12">
-      <SnTab title="For you" :name="0">For you content</SnTab>
-      <SnTab title="Following" :name="1">Following content</SnTab>
-      <SnTab title="Disabled" :name="2" disabled
-        >Not tappable — a tap only emits the disabled event</SnTab
-      >
-    </SnTabs>
-
     <text class="sn-demo__meta">
-      Active tab: {{ normalActive }} / {{ underlineActive }} / {{ dotActive }} /
-      {{ disabledActive }}
+      Active tab: {{ normalActive }} / {{ underlineActive }} / {{ dotActive }}
     </text>
   </view>
 </template>

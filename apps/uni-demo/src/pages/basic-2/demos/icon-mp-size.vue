@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-icon (uni-end) — size + stroke-width variants.
+ * Demo: sn-icon (uni-end) — size variants.
  */
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
@@ -13,9 +13,6 @@ import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
     <SnIcon :icon="Star" :size="24" />
     <SnIcon :icon="Star" :size="32" />
     <SnIcon :icon="Star" :size="48" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="1" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="2" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="3" />
   </view>
 </template>
 

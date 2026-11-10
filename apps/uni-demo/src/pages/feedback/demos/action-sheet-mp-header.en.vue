@@ -9,11 +9,7 @@ import SnActionSheet from '@snui/uni-src/components/sn-action-sheet/sn-action-sh
 const open = ref(false);
 const picked = ref('—');
 
-const actions = [
-  { name: 'Option one', icon: 'star' },
-  { name: 'Option two', icon: 'heart' },
-  { name: 'Option three', icon: 'wallet' },
-];
+const actions = [{ name: 'Option one' }, { name: 'Option two' }, { name: 'Option three' }];
 </script>
 
 <template>

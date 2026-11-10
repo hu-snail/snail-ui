@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— img 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/img-mp-basic.vue';
-import Demo1 from './demos/img-mp-custom.vue';
-import Demo2 from './demos/img-mp-preview.vue';
-import Demo3 from './demos/img-mp-state.vue';
+import Demo0 from './demos/img-mp-custom.vue';
+import Demo1 from './demos/img-mp-lazy-load.vue';
+import Demo2 from './demos/img-mp-mode.vue';
+import Demo3 from './demos/img-mp-preview.vue';
+import Demo4 from './demos/img-mp-shape.vue';
+import Demo5 from './demos/img-mp-state.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,27 +18,48 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'图片'" :title-en="'Img'" :desc="'增强图片，多填充模式'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead
+          :title="t('懒加载（lazyLoad）', 'Lazy loading (`lazyLoad`)')"
+          badge="lazy-load"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('preview', 'Preview')" badge="preview" />
+        <DemoModuleHead :title="t('裁剪模式（mode）', 'Crop modes (`mode`)')" badge="mode" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="state" />
+        <DemoModuleHead
+          :title="t('点击预览（enablePreview）', 'Tap-to-preview (`enablePreview`)')"
+          badge="preview"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('圆形与圆角（round / radius）', 'Round & radius (`round` / `radius`)')"
+          badge="shape"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('状态', 'State')" badge="state" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>
