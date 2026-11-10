@@ -47,39 +47,13 @@ const route = useRoute();
 const router = useRouter();
 const { isDark } = useData();
 
-/**
- * 每个导航入口一个 lucide 图标（对照参考站点的导航）。
- *
- * 按 link 前缀匹配而不是文案 —— 中英两个 locale 的 `text` 不同，但 link
- * 结构一致（enNav 只是多了 `/en` 前缀，匹配前先剥掉）。
- */
-const NAV_ICONS: ReadonlyArray<readonly [prefix: string, icon: unknown]> = [
-  ['/guide', Rocket],
-  ['/components/web', LayoutGrid],
-  ['/components/uni', Smartphone],
-  ['/style-packs', Layers],
-  ['/theme', Palette],
-  ['/ai', Bot],
-  ['/ecosystem', Puzzle],
-  ['/echarts', ChartLine],
-  ['/templates', LayoutTemplate],
-];
-
-function navIcon(link: string): unknown {
-  const bare = link.replace(/^\/en(?=\/|$)/, '');
-  const hit = NAV_ICONS.find(([prefix]) => bare === prefix || bare.startsWith(`${prefix}/`));
-  // markRaw：组件对象进 reactive options 会触发 Vue 的性能警告
-  return hit ? markRaw(hit[1]) : undefined;
-}
-
-/** Map nav items → SnMenu options. Active state is derived from useRoute(). */
-/** Map nav items → SnMenu options（icon 按 link 前缀匹配）。 */
+/** Map nav items → SnMenu options（纯文字，不带图标）。
+ * Active state is derived from useRoute(). */
 function toMenuOptions(items: NavItem[]): SnMenuOption[] {
   return items.map((it) => ({
     key: it.link,
     label: it.text,
     href: it.link,
-    icon: navIcon(it.link),
   }));
 }
 
@@ -98,7 +72,6 @@ const menuOptionsBefore = computed<SnMenuOption[]>(() =>
 const menuOptionsAfter = computed<SnMenuOption[]>(() =>
   toMenuOptions(dropdownIndex.value >= 0 ? (props.items ?? []).slice(dropdownIndex.value + 1) : []),
 );
-const ecoIcon = computed(() => (dropdownItem.value ? navIcon(dropdownItem.value.link) : undefined));
 
 /**
  * Active key = 最长匹配前缀。合并入口（match 额外前缀）与其 children
@@ -280,7 +253,6 @@ function onLocaleClick(event: MouseEvent): void {
             aria-haspopup="menu"
             @click="toggleEco"
           >
-            <SnIcon v-if="ecoIcon" class="sn-docs-nav__dd-icon" :icon="ecoIcon" :size="15" />
             {{ dropdownItem.text }}
             <SnIcon class="sn-docs-nav__dd-chevron" :icon="ChevronDown" :size="14" />
           </button>
@@ -432,21 +404,15 @@ function onLocaleClick(event: MouseEvent): void {
   color: var(--sn-web-color-text-primary);
 }
 /* ─────────── 选中态 ───────────
- * 主题色浅底 + 主题色文字（对照参考站点的导航胶囊）。图标与文字一起
- * 走 brand 色；inverted（首页深色画布）下保持浅色文字、底色用白 10% 透明。 */
+ * 主题色浅底 + 主题色文字（对照参考站点的导航胶囊）；
+ * inverted（首页深色画布）下保持浅色文字、底色用白 10% 透明。 */
 .sn-docs-nav__menu :deep(.sn-menu-item--active) {
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   font-weight: 600;
 }
-.sn-docs-nav__menu :deep(.sn-menu-item--active .sn-menu-item__icon) {
-  color: var(--vp-c-brand-1);
-}
 .sn-docs-nav--inverted .sn-docs-nav__menu :deep(.sn-menu-item--active) {
   background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-}
-.sn-docs-nav--inverted .sn-docs-nav__menu :deep(.sn-menu-item--active .sn-menu-item__icon) {
   color: #ffffff;
 }
 
