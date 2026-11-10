@@ -1387,15 +1387,15 @@ html[data-sn-template-end='uni']
   border-top: 0;
 }
 /* =====================================================================
-   18. 导航双态：文档页常驻悬浮（岛靠右 + 侧栏面板置顶），首页保持
-       「通栏（未滚动）→ 滚动后磨砂胶囊岛」的原行为（≥960px）
+   18. 顶部导航：文档页固定为通栏常规布局，只有首页保留
+       「通栏（未滚动）→ 滚动后磨砂胶囊岛」的两态（≥960px）
    ----------------------------------------------------------------------
-  * SnDocsNav 按 `isHome` 决定挂 `sn-nav-floating` 的方式：文档页挂载即
-  * 悬浮（不做滚动判断）；首页仍在 scrollY > 8 时挂上。本段据此切换：
-  *   默认态  —— 通栏、无圆角 / 阴影 / 底色（band 自带发丝线）；首页用；
-  *   悬浮态  —— 磨砂玻璃岛（top 16px、右缘留 16px）+ 左侧悬浮面板。
-  * 首页两态切换走 transition 动画；不使用 transform（避免成为 SnMenu
-  * 弹层的 fixed 包含块）。
+  * SnDocsNav 只在**首页**挂 `sn-nav-floating`（且 scrollY > 8 才挂），所以
+  * 下面所有 `body.sn-nav-floating` 规则只作用于首页。
+  *
+  * 文档页走 VitePress 的常规版式：通栏 navbar 钉在视口顶、左侧常驻侧栏从
+  * navbar 下缘开始。文档是长时间阅读的界面，浮岛 + 悬浮面板会让导航和目录
+  * 每滚一屏换一次位置。
   * ===================================================================== */
 @media (min-width: 960px) {
   /* ── 默认态（页面未滚动） ── */
@@ -1426,6 +1426,11 @@ html[data-sn-template-end='uni']
   .dark .VPNavBar.home {
     background: var(--vp-c-bg) !important;
   }
+  /* 文档页的常规 navbar：通栏 + 一条发丝分界线，和左侧侧栏的分界线接成一体。
+   * 首页不需要（画布与 hero 同色，无边线是设计要求）。 */
+  html:has(.VPSidebar) .VPNavBar {
+    border-bottom: 1px solid var(--vp-c-divider) !important;
+  }
   /* ── 悬浮态（body.sn-nav-floating）── 材质共用；几何按页面拆分 */
   body.sn-nav-floating .VPNavBar,
   body.sn-nav-floating .VPNavBar.home {
@@ -1440,20 +1445,7 @@ html[data-sn-template-end='uni']
       0 4px 16px -2px rgb(15 23 42 / 0.04),
       inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
   }
-  /* 文档页（非 .home）：岛在内容区域内居中，不依赖 :has()——
-       margin-left = 侧栏宽 + (内容区宽 − 岛宽)/2；内容区宽 =
-       100% − 侧栏宽（margin/width 的百分比均以父容器视口宽为基准），
-       左右各留 16px，窄视口岛自动收窄。品牌（logo + 标题）从侧栏
-       迁移到岛上 —— 左缘即品牌起点，与首页 navbar 一致。 */
-  body.sn-nav-floating .VPNavBar:not(.home) {
-    width: min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) !important;
-    margin-left: calc(
-      50% + var(--vp-sidebar-width) / 2 - min(1200px, calc(100% - var(--vp-sidebar-width) - 32px)) /
-        2
-    ) !important;
-    margin-right: 0 !important;
-  }
-  /* 首页：保持原行为——岛视口居中、含品牌 */
+  /* 首页：岛视口居中、含品牌 */
   body.sn-nav-floating .VPNavBar.home {
     width: min(1200px, calc(100% - clamp(48px, 8vw, 128px))) !important;
     margin: 0 auto;
@@ -1480,10 +1472,13 @@ html[data-sn-template-end='uni']
     background: transparent !important;
   }
 
-  /* 内容与侧栏整体下移（悬浮态岛底 ≈ 16 + 64 = 80px；默认态多出的
-   * 26px 呼吸空隙与画布同色，视觉不可见，且两态间内容不跳动）。 */
+  /* 内容与侧栏整体下移。首页要为悬浮岛留出 26px 呼吸空隙（岛底 ≈
+   * 16 + 64 = 80px）；文档页是常规通栏导航，直接贴 navbar 下缘。 */
   .VPContent {
     padding-top: calc(var(--vp-nav-height) + 26px) !important;
+  }
+  html:has(.VPSidebar) .VPContent {
+    padding-top: var(--vp-nav-height) !important;
   }
 
   .VPSidebar {
@@ -1506,130 +1501,22 @@ html[data-sn-template-end='uni']
     * 随侧栏滚动零位移；负 margin 把不透明底条向上延伸 20px，盖住吸顶线
     * 之上的让位区，菜单项只能从条的下缘滚入、被完全盖住（无缝隙）。
     * padding-top 同步 +20，胶囊自身的视觉位置与原先完全一致。
-    * 悬浮态（sn-nav-floating）由下方规则归零（top/margin-top/padding-top: 0），
-    * 钉在悬浮面板顶。#VPSidebarNav 的 id 特异性压过组件内 scoped 规则
-    * （移动端抽屉 <960px 不受本块影响，组件内以同样手法钉在抽屉顶部）。 */
+    * #VPSidebarNav 的 id 特异性压过组件内 scoped 规则（移动端抽屉 <960px
+    * 不受本块影响，组件内以同样手法钉在抽屉顶部）。 */
   #VPSidebarNav .sn-end-switch {
     --sn-switch-pin: calc(var(--vp-nav-height) - var(--sn-sidebar-clearance));
     top: var(--sn-switch-pin);
     margin-top: var(--sn-switch-pin);
     padding-top: calc(var(--sn-sidebar-clearance) - var(--vp-nav-height) + 6px);
   }
-
-  /* ── 文档页常驻悬浮：侧栏为圆角玻璃面板（与导航岛同材质） ──
-    * 面板置顶：top: 16px 与右上导航岛同一水平线（岛 margin-right 16px
-    * 对称）；面板右缘 = 16 + (w - 16) = --vp-sidebar-width，与内容区
-    * 分界线严格对齐。品牌行 / 胶囊底条 ±32px 负 margin 通铺到面板
-    * 边缘会横向撑宽内层 .nav —— overflow-x: clip 裁掉溢出且不产生
-    * 滚动条（hidden 会改 sticky 的滚动容器语义，clip 不改）。 */
-  body.sn-nav-floating .VPSidebar {
-    --sn-sidebar-brand-h: 44px;
-    /* flex 布局：面板自身不滚动；吸顶头部（品牌行 + 胶囊底条）absolute
-         钉在面板顶，唯一滚动区是 #VPSidebarNav —— 滚动条物理上不可能
-         越过 logo 与胶囊。nav 用 padding-top 让出头部高度。 */
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    top: 16px;
-    bottom: 16px;
-    left: 16px;
-    width: calc(var(--vp-sidebar-width) - 16px) !important;
-    padding: 0 !important;
-    border-radius: 20px;
-    background: rgb(255 255 255 / 0.55) !important;
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgb(255 255 255 / 0.85);
-    box-shadow:
-      0 12px 36px -8px rgb(15 23 42 / 0.08),
-      0 4px 16px -2px rgb(15 23 42 / 0.04),
-      inset 0 1px 1px 0 rgb(255 255 255 / 0.95);
-  }
-
-  /* ── 吸顶头部：品牌行 + 胶囊底条，absolute 钉死在面板顶 ──
-     * 头部与滚动区（nav）是兄弟层，滚动条只在 nav 里画，永不相交。
-     * 实心底（非玻璃）：菜单项从头部下方滚过被完全盖住。 */
-  body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: var(--sn-sidebar-brand-h);
-    padding: 0 14px;
-    color: var(--sn-web-color-text-primary, var(--vp-c-text-1));
-    background: var(--vp-c-bg);
-  }
-  /* 「文档目录 / Contents」——面板分区标签（品牌已迁至导航岛）。 */
-  body.sn-nav-floating #VPSidebarNav .sn-sidebar-brand__title {
-    font-size: 15px;
-    font-weight: 650;
-    letter-spacing: 0.02em;
-  }
-  /* nav 是唯一滚动区：margin-top 让出吸顶头部（104px）——原生滚动条
-     * 只画在 nav 盒内（从菜单起始位置开始），不再纵贯整个面板。
-     * 菜单左右 padding 14px。 */
-  body.sn-nav-floating #VPSidebarNav {
-    --sn-sidebar-head-h: calc(var(--sn-sidebar-brand-h) + 60px);
-    flex: 1;
-    min-height: 0;
-    margin-top: var(--sn-sidebar-head-h);
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0 14px;
-  }
-  /* 吸顶头部是 absolute（包含块 = aside），不受 nav 滚动与裁剪影响。 */
-  body.sn-nav-floating #VPSidebarNav .sn-end-switch {
-    position: absolute;
-    top: var(--sn-sidebar-brand-h);
-    left: 0;
-    right: 0;
-    z-index: 4;
-    /* 覆盖组件 scoped 的 margin: -32px 0 6px（移动端钉），否则胶囊
-         上移 32px 压进品牌行 —— 上下布局被破坏的根因。 */
-    margin: 0;
-    padding: 8px 14px;
-    background: var(--vp-c-bg);
-  }
-  body.sn-nav-floating .sn-end-switch__pill {
-    margin: 0;
-  }
-  /* 旧设计的 curtain（顶栏遮条）在 flex 面板里会占位并盖住吸顶头部，移除。 */
-  body.sn-nav-floating .VPSidebar .curtain {
-    display: none;
-  }
-  .dark body.sn-nav-floating .VPSidebar {
-    border-color: rgb(255 255 255 / 0.1);
-    background: rgb(15 23 42 / 0.55) !important;
-    box-shadow:
-      0 12px 36px -8px rgb(0 0 0 / 0.4),
-      inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
-  }
-  body.sn-nav-floating .sn-end-switch__pill {
-    margin: 0;
-  }
-  .dark body.sn-nav-floating .VPSidebar {
-    border-color: rgb(255 255 255 / 0.1);
-    background: rgb(15 23 42 / 0.55) !important;
-    box-shadow:
-      0 12px 36px -8px rgb(0 0 0 / 0.4),
-      inset 0 1px 1px 0 rgb(255 255 255 / 0.08);
-  }
 }
 
 /* ── 搜索框对齐内容区（红框位置 = 侧栏分界线之后） ──
- * 文档页（渲染了 VPSidebar）且未折叠且未进入悬浮态时，搜索槽左移一个
- * 侧栏宽度（band 自身 24px 内边距，补差 -24px，正好落在分界线上）。
- * 首页（无侧栏）、折叠态与悬浮态（宽视口下岛起点可能已越过侧栏边界，
- * 物理上无法对齐）归零，搜索跟随岛内自然位置。 */
+ * 文档页（渲染了 VPSidebar）且侧栏展开时，搜索槽左移一个侧栏宽度（band 自身
+ * 24px 内边距，补差 -24px，正好落在分界线上）。首页（无侧栏）与折叠态归零，
+ * 搜索跟随导航条内的自然位置。 */
 @media (min-width: 960px) {
-  html:has(.VPSidebar):not(.sn-sidebar-collapsed)
-    body:not(.sn-nav-floating)
-    .sn-docs-nav__search-slot {
+  html:has(.VPSidebar):not(.sn-sidebar-collapsed) .sn-docs-nav__search-slot {
     margin-left: calc(var(--vp-sidebar-width) - 24px);
   }
 }

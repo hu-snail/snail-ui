@@ -154,15 +154,20 @@ function onKeydown(event: KeyboardEvent): void {
   if (event.key === 'Escape') ecoOpen.value = false;
 }
 
-/** 导航悬浮：body.sn-nav-floating 驱动 §18 的胶囊岛 + 悬浮侧栏面板。
- *  文档页默认即悬浮（不再做滚动判断）；首页保持原行为——滚动超过
- *  8px 后才切到悬浮岛。 */
+/**
+ * 导航悬浮：`body.sn-nav-floating` 驱动 §18 的胶囊岛 + 悬浮侧栏面板。
+ *
+ * **只有首页**用它 —— 首页是一张 landing 画布，滚动后收成磨砂胶囊岛，与深色
+ * hero 是同一套设计。文档页一律常规布局：通栏 navbar + 左侧常驻侧栏，不做
+ * 悬浮岛、不做悬浮面板 —— 文档是长时间阅读的界面，浮岛会让导航和目录每滚动
+ * 一屏就换一次位置。
+ */
 const isHome = computed(
   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
 );
 const navFloating = ref(false);
 function syncFloating(): void {
-  navFloating.value = isHome.value ? window.scrollY > 8 : true;
+  navFloating.value = isHome.value && window.scrollY > 8;
 }
 onMounted(() => {
   syncFloating();
