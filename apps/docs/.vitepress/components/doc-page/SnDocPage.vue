@@ -1814,14 +1814,14 @@ onBeforeUnmount(() => {
   z-index: 3;
   display: inline-flex;
   flex: none;
-  padding: 3px;
+  /* 水平内边距 + 图标间隙把胶囊拉长，读作一个完整的开关件而不是两枚
+   * 紧贴的图标按钮；垂直内边距保持 3px（滑块 28px + 6 = 34px 高）。 */
+  padding: 3px 10px;
+  gap: 8px;
   border-radius: 999px;
   background: var(--sn-doc-card);
-  /* 白胶囊浮在浅灰预览台上：靠发丝线描边 + 贴地投影读出边界（与全站
-   * 「白底 + hairline」语言一致）。 */
-  box-shadow:
-    0 1px 3px rgb(2 6 16 / 0.08),
-    0 0 0 1px var(--sn-doc-border);
+  /* 白胶囊浮在浅灰预览台上：不描边，只留一层很淡的投影做分离。 */
+  box-shadow: 0 2px 8px rgb(2 6 16 / 0.08);
 }
 .sn-docpage--dark .sn-docpage__demo-switch {
   /* 深色模式：胶囊与预览台落在同一级 card-soft 色阶，投影是唯一分层
@@ -1833,7 +1833,8 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 3px;
   bottom: 3px;
-  left: 3px;
+  /* left 跟随胶囊水平内边距，滑块才能正好套住第一个图标。 */
+  left: 10px;
   width: 28px;
   border-radius: 999px;
   /* 选中段 = 主题色滑块，图标反白（见 --on 的颜色对调）。 */
@@ -1843,7 +1844,8 @@ onBeforeUnmount(() => {
   transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .sn-docpage__demo-thumb--code {
-  transform: translateX(28px);
+  /* 28px 滑块 + 8px 图标间隙。 */
+  transform: translateX(36px);
 }
 .sn-docpage__demo-tab {
   position: relative;
