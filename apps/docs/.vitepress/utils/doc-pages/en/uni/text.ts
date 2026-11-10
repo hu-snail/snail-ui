@@ -59,9 +59,13 @@ import { Text } from '@snui/uni';
     },
     {
       name: 'text-mp-lines',
-      title: 'Line clamp and typography overrides',
-      blurb:
-        'lines=1/2/3 multi-line clamp; size / lineHeight / color overrides; prefix / suffix affixes.',
+      title: 'Line clamping (`lines`)',
+      blurb: 'lines=1/2/3 truncates the overflow with an ellipsis so cards keep the same height.',
+    },
+    {
+      name: 'text-mp-typography',
+      title: 'Typography overrides (`size` / `lineHeight` / `color`)',
+      blurb: 'size sets the font size; line-height the leading; color the text colour.',
     },
     {
       name: 'text-mp-custom',

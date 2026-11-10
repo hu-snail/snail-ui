@@ -61,8 +61,13 @@ import { CountTo } from '@snui/uni';
     },
     {
       name: 'count-to-mp-type',
-      title: 'Type colors and controls',
-      blurb: 'Five type colors plus manual start / pause / reset.',
+      title: 'Type colors (`type`)',
+      blurb: 'The five themes: default / primary / success / warning / error.',
+    },
+    {
+      name: 'count-to-mp-control',
+      title: 'Controls',
+      blurb: 'auto-start=false with manual start / pause / reset.',
     },
     {
       name: 'count-to-mp-easing',

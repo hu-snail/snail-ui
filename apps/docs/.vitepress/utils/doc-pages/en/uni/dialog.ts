@@ -57,8 +57,17 @@ import { Dialog } from '@snui/uni';
   },
   demos: [
     { name: 'dialog-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
-    { name: 'dialog-mp-variant', title: 'Flavours and icons', blurb: 'Flavours and icons' },
-    { name: 'dialog-mp-vertical', title: 'Flavours and icons', blurb: 'Flavours and icons' },
+    {
+      name: 'dialog-mp-icon',
+      title: 'Status icon (`icon`)',
+      blurb: 'icon picks the status glyph; icon-color overrides its color.',
+    },
+    {
+      name: 'dialog-mp-theme',
+      title: 'Button theme (`theme`)',
+      blurb: 'theme="text" renders borderless text buttons.',
+    },
+    { name: 'dialog-mp-vertical', title: 'Vertical actions', blurb: 'actionLayout="vertical" stacks the buttons.' },
     {
       name: 'dialog-mp-actions',
       title: 'Custom actions and guards',

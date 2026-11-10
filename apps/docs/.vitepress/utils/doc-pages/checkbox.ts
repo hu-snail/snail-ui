@@ -11,7 +11,7 @@ export const checkboxDocPage: SnDocPageData = {
   title: 'Checkbox',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -65,9 +65,14 @@ import { Checkbox } from '@snui/vue-web';
       blurb: 'mini / tiny / small / medium / large 五档。',
     },
     {
-      name: 'checkbox-web-states',
-      title: '禁用 / 只读',
-      blurb: 'disabled 交互与视觉禁用；readonly 视觉态。',
+      name: 'checkbox-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '选中 / 未选中两种禁用态。',
+    },
+    {
+      name: 'checkbox-web-readonly',
+      title: '只读（readonly）',
+      blurb: '视觉态正常，不可切换。',
     },
     {
       name: 'checkbox-web-values',

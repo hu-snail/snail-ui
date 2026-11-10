@@ -6,7 +6,7 @@ export const collapseDocPageEn: SnDocPageData = {
   title: 'Collapse',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -47,7 +47,12 @@ import { Collapse } from '@snui/vue-web';
     { name: 'collapse-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     { name: 'collapse-web-accordion', title: 'Accordion mode', blurb: 'Accordion mode' },
     { name: 'collapse-web-bordered', title: 'Bordered', blurb: 'Bordered' },
-    { name: 'collapse-web-trigger', title: 'Trigger area', blurb: 'Trigger area' },
+    { name: 'collapse-web-trigger', title: 'Hover trigger', blurb: 'trigger="hover" expands on mouseenter.' },
+    {
+      name: 'collapse-web-display-directive',
+      title: 'Display directive',
+      blurb: 'displayDirective="show" keeps the DOM mounted and toggles display.',
+    },
   ],
   props: {
     hint: [],

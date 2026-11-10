@@ -6,7 +6,7 @@ export const alertDocPageEn: SnDocPageData = {
   title: 'Alert',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,6 +43,11 @@ import { Alert } from '@snui/vue-web';
   },
   demos: [
     { name: 'alert-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
+    {
+      name: 'alert-web-title',
+      title: 'Title visibility',
+      blurb: 'Without a title, the title row is not rendered.',
+    },
     { name: 'alert-web-bordered', title: 'Bordered', blurb: 'Bordered' },
     { name: 'alert-web-icon', title: 'Icon items', blurb: 'Icon items' },
     { name: 'alert-web-no-icon', title: 'Without icon', blurb: 'Without icon' },

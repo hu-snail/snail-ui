@@ -62,9 +62,34 @@ import { Dialer } from '@snui/uni';
   },
   demos: [
     {
-      name: 'dialer-mp',
-      title: '代码演示',
-      blurb: '6 奖品转盘，点击 GO 随机落点，done 展示结果。',
+      name: 'dialer-mp-basic',
+      title: '基础用法',
+      blurb: '点击 GO → 宿主决定索引 → run(index) → done 反馈。',
+    },
+    {
+      name: 'dialer-mp-states',
+      title: '状态与事件',
+      blurb: 'click → 模拟请求 → run(index) → done 完整流程；旋转期间忽略指针点击。',
+    },
+    {
+      name: 'dialer-mp-size',
+      title: '尺寸（size）',
+      blurb: '420rpx 小盘 / 560rpx 大盘。',
+    },
+    {
+      name: 'dialer-mp-colors',
+      title: '扇区配色',
+      blurb: 'prizeBgColors + borderColor；单奖品 color 覆盖优先。',
+    },
+    {
+      name: 'dialer-mp-pointer-slot',
+      title: '自定义指针（pointer 插槽）',
+      blurb: '#pointer 插槽完全接管指针。',
+    },
+    {
+      name: 'dialer-mp-spin',
+      title: '圈数与时长（turns / duration）',
+      blurb: '默认 6 圈 3s；快节奏 8 圈 1.2s。',
     },
   ],
   props: {

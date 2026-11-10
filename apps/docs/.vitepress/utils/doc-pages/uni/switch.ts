@@ -61,16 +61,24 @@ import { Switch } from '@snui/uni';
   demos: [
     { name: 'switch-mp-basic', title: '基础用法', blurb: 'v-model + change 事件。' },
     {
-      name: 'switch-mp-appearance',
-      title:
-        '外观（`activeText` / `inactiveText` / `shape` / `size` / `activeColor` / `inactiveColor`）',
-      blurb: '轨道文案、square 形状、自定义尺寸、自定义颜色。',
+      name: 'switch-mp-text',
+      title: '轨道文案（`activeText` / `inactiveText`）',
+      blurb: 'activeText / inactiveText 显示在轨道两侧。',
     },
     {
-      name: 'switch-mp-before-change',
-      title:
-        '受控守卫与状态（`activeValue` / `inactiveValue` / `beforeChange` / `loading` / `disabled`）',
-      blurb: '字符串 activeValue/inactiveValue；beforeChange 拦截；loading；disabled。',
+      name: 'switch-mp-shape',
+      title: '形状（`shape`）',
+      blurb: 'shape="square" 方形轨道。',
+    },
+    {
+      name: 'switch-mp-size',
+      title: '尺寸（`size`）',
+      blurb: 'size 控制开关尺寸（数字按 rpx 处理）。',
+    },
+    {
+      name: 'switch-mp-color',
+      title: '开关配色（`activeColor`）',
+      blurb: 'activeColor / inactiveColor 覆盖开与关的轨道颜色。',
     },
     {
       name: 'switch-mp-icons',
@@ -86,10 +94,14 @@ import { Switch } from '@snui/uni';
         'activeActionCssIcon / inactiveActionCssIcon；activeCssIcon / inactiveCssIcon；classPrefix。',
     },
     {
-      name: 'switch-mp-loading-custom',
-      title: '加载与自定义样式（`loadingProps` / `customClass` / `customStyle`）',
-      blurb:
-        'loading（旋钮内 spinner）；loadingProps（声明但未参与渲染）；customClass；customStyle。',
+      name: 'switch-mp-loading',
+      title: '加载态（`loading`）',
+      blurb: 'loading（旋钮内 spinner）；loadingProps 配置 spinner（color / size）。',
+    },
+    {
+      name: 'switch-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'customClass / customStyle 挂根节点。',
     },
   ],
   props: {

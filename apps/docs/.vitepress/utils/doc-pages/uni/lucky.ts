@@ -62,9 +62,34 @@ import { Lucky } from '@snui/uni';
   },
   demos: [
     {
-      name: 'lucky-mp',
-      title: '代码演示',
-      blurb: '3×3 九宫格，play/stop 两段式动画，自定义格子插槽。',
+      name: 'lucky-mp-basic',
+      title: '基础用法',
+      blurb: '3×3 九宫格，play/stop 两段式动画。',
+    },
+    {
+      name: 'lucky-mp-states',
+      title: '状态与事件',
+      blurb: 'start / end 事件日志 + 手动 play()/stop(index)；防重入。',
+    },
+    {
+      name: 'lucky-mp-grid',
+      title: '网格规模（rows / cols）',
+      blurb: '3×3 / 4×4，周长格子数 = 2(rows+cols) - 4。',
+    },
+    {
+      name: 'lucky-mp-cell',
+      title: '格子间距与高度（gutter / cellHeight）',
+      blurb: 'gutter="16rpx" + cell-height="150rpx"。',
+    },
+    {
+      name: 'lucky-mp-speed',
+      title: '速度与高亮色（speed）',
+      blurb: 'speed 高亮切换间隔；奖品 color 高亮覆盖。',
+    },
+    {
+      name: 'lucky-mp-button-slot',
+      title: '自定义按钮（button 插槽）',
+      blurb: '#button 插槽作用域提供 isPlaying。',
     },
   ],
   props: {

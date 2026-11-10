@@ -55,9 +55,34 @@ import { Scratchcard } from '@snui/uni';
   },
   demos: [
     {
-      name: 'scratchcard-mp',
-      title: 'Demos',
+      name: 'scratchcard-mp-basic',
+      title: 'Basic usage',
       blurb: 'Real pointer scratching, threshold open callback, and reset.',
+    },
+    {
+      name: 'scratchcard-mp-states',
+      title: 'State & events',
+      blurb: 'open fires once per round; reset() starts a new one; two cards report independently.',
+    },
+    {
+      name: 'scratchcard-mp-cover',
+      title: 'Cover color',
+      blurb: 'canvas fillStyle does not resolve CSS variables — use literal colors.',
+    },
+    {
+      name: 'scratchcard-mp-ratio',
+      title: 'Scratch threshold',
+      blurb: '0.3 opens easily vs 0.9 needs a full scratch.',
+    },
+    {
+      name: 'scratchcard-mp-watermark',
+      title: 'Watermark',
+      blurb: 'watermark-text / watermark-size / watermark-color.',
+    },
+    {
+      name: 'scratchcard-mp-title-style',
+      title: 'Title styling',
+      blurb: 'Title font size and color.',
     },
   ],
   props: {

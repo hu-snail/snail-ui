@@ -6,7 +6,7 @@ export const mentionDocPageEn: SnDocPageData = {
   title: 'Mention · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -59,7 +59,16 @@ import { Mention } from '@snui/vue-web';
       title: 'Custom delimiter',
       blurb: "delimiter='#' topic mentions.",
     },
-    { name: 'mention-web-states', title: 'Disabled / readonly', blurb: 'disabled / readonly.' },
+    {
+      name: 'mention-web-disabled',
+      title: 'Disabled',
+      blurb: 'disabled — no typing, no candidate panel.',
+    },
+    {
+      name: 'mention-web-readonly',
+      title: 'Readonly',
+      blurb: 'readonly — value visible but not editable.',
+    },
   ],
   props: {
     hint: [],

@@ -15,7 +15,7 @@ export const ellipsisDocPage: SnDocPageData = {
   title: 'Ellipsis 文本省略',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -48,9 +48,11 @@ import { Ellipsis } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'ellipsis-web-basic', title: '基础截断', blurb: '基础截断' },
+    { name: 'ellipsis-web-basic', title: '基础截断', blurb: '单行省略；未溢出不弹气泡。' },
     { name: 'ellipsis-web-lines', title: '单行与多行对照', blurb: '单行与多行对照' },
-    { name: 'ellipsis-web-expand', title: '点击展开与收起', blurb: '点击展开与收起' },
+    { name: 'ellipsis-web-tooltip', title: '溢出提示', blurb: '悬浮气泡查看完整内容，方位可配置。' },
+    { name: 'ellipsis-web-expand', title: '点击展开与收起', blurb: 'expandPosition suffix / bottom + expandTrigger。' },
+    { name: 'ellipsis-web-fade', title: '边缘渐隐', blurb: 'fade 截断边缘烟雾渐隐。' },
   ],
   props: {
     hint: [],

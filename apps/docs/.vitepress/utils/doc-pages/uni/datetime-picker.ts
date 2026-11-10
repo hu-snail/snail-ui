@@ -77,23 +77,41 @@ import { DatetimePicker } from '@snui/uni';
         'lunar：年干支 / 月含闰月 / 日初一三十；v-model 仍是公历时间戳；datetime + lunar 保留时分。',
     },
     {
-      name: 'datetime-picker-mp-time-confirm',
-      title: '时间类型与确认校验（`type="time"` / `beforeConfirm`）',
-      blurb: 'type=time 写回 HH:mm 字符串；beforeConfirm 返回 false 时弹层不关闭。',
+      name: 'datetime-picker-mp-time-type',
+      title: '时间类型（type="time"）',
+      blurb: 'type=time 写回 HH:mm 字符串。',
     },
     {
-      name: 'datetime-picker-mp-columns-bounds',
-      title:
-        '滚筒几何与列取值（`itemHeight` / `visibleItemCount` / 时分秒边界 / `formatter` / `filter`）',
-      blurb:
-        'itemHeight / visibleItemCount；minHour / maxHour / minMinute / maxMinute；useSecond + minSecond / maxSecond；formatter / filter；valueKey / labelKey。',
+      name: 'datetime-picker-mp-before-confirm',
+      title: '确认拦截（beforeConfirm）',
+      blurb: 'beforeConfirm 返回 false 时弹层不关闭。',
     },
     {
-      name: 'datetime-picker-mp-sheet',
-      title:
-        '弹层外观与写回时机（`cancelButtonText` / `immediateChange` / `zIndex` / `rootPortal` / `custom*`）',
+      name: 'datetime-picker-mp-roller-geometry',
+      title: '滚筒几何（itemHeight / visibleItemCount）',
+      blurb: 'itemHeight / visibleItemCount 调整滚筒行高与可见行数。',
+    },
+    {
+      name: 'datetime-picker-mp-time-bounds',
+      title: '时分秒边界',
       blurb:
-        'immediateChange；cancelButtonText；closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle / customViewClass；displayFormatTabLabel。',
+        'minHour / maxHour / minMinute / maxMinute；useSecond + minSecond / maxSecond。',
+    },
+    {
+      name: 'datetime-picker-mp-column-format',
+      title: '列文案与过滤（formatter / filter）',
+      blurb: 'formatter 改写列文案；filter 过滤列取值。',
+    },
+    {
+      name: 'datetime-picker-mp-immediate-change',
+      title: '即时写回（immediateChange）',
+      blurb: 'immediateChange：滚动即写 v-model，不必确认。',
+    },
+    {
+      name: 'datetime-picker-mp-sheet-chrome',
+      title: '弹层外观（文案 / 遮罩 / 层级）',
+      blurb:
+        'cancelButtonText；closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle / customViewClass；displayFormatTabLabel。',
     },
   ],
   props: {

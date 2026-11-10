@@ -52,9 +52,34 @@ import { Liquid } from '@snui/uni';
   },
   demos: [
     {
-      name: 'liquid-mp',
-      title: 'Demos',
-      blurb: 'Basic / outline / custom wave color, with a button that raises the level.',
+      name: 'liquid-mp-basic',
+      title: 'Basic usage',
+      blurb: 'percent drives the water level with an increment interaction; clamps out of range.',
+    },
+    {
+      name: 'liquid-mp-states',
+      title: 'State & bounds',
+      blurb: '0 / 100 / clamping / duration=0 immediate / custom ball-core slot.',
+    },
+    {
+      name: 'liquid-mp-size',
+      title: 'Size',
+      blurb: '120 / 160 / 200rpx.',
+    },
+    {
+      name: 'liquid-mp-outline',
+      title: 'Outline ring',
+      blurb: 'outline on/off side by side.',
+    },
+    {
+      name: 'liquid-mp-radius',
+      title: 'Container radius',
+      blurb: 'radius="32rpx" squircle container.',
+    },
+    {
+      name: 'liquid-mp-colors',
+      title: 'Wave colors',
+      blurb: 'waveColor / innerColor configured in pairs.',
     },
   ],
   props: {

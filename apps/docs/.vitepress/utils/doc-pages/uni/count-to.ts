@@ -68,8 +68,13 @@ import { CountTo } from '@snui/uni';
     },
     {
       name: 'count-to-mp-type',
-      title: '主题色与控制方法',
-      blurb: '五种主题色，以及手动开始 / 暂停 / 重置。',
+      title: '主题色（type）',
+      blurb: 'default / primary / success / warning / error 五档主题色。',
+    },
+    {
+      name: 'count-to-mp-control',
+      title: '控制方法',
+      blurb: 'auto-start=false 手动开始 / 暂停 / 重置。',
     },
     {
       name: 'count-to-mp-easing',

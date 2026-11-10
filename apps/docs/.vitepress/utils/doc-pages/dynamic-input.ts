@@ -96,9 +96,14 @@ export const dynamicInputDocPage: SnDocPageData = {
       blurb: '到界隐藏 −/+ 按钮。',
     },
     {
-      name: 'dynamic-input-web-states',
-      title: '禁用 / 只读',
-      blurb: 'disabled 禁交互，readonly 冻结行结构。',
+      name: 'dynamic-input-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '整组禁交互。',
+    },
+    {
+      name: 'dynamic-input-web-readonly',
+      title: '只读（readonly）',
+      blurb: '冻结行结构。',
     },
   ],
 

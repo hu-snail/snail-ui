@@ -53,9 +53,14 @@ import { Button } from '@snui/uni';
       blurb: 'Three height tiers, mobile usually only needs these three.',
     },
     {
-      name: 'button-mp-shape',
-      title: 'Block & round',
-      blurb: 'block spans the parent width; round applies pill-shaped corners.',
+      name: 'button-mp-block',
+      title: 'Block button (`block`)',
+      blurb: 'block spans the parent width.',
+    },
+    {
+      name: 'button-mp-round',
+      title: 'Round button (`round`)',
+      blurb: 'round applies pill-shaped corners.',
     },
     {
       name: 'button-mp-state',
@@ -75,21 +80,31 @@ import { Button } from '@snui/uni';
       blurb: 'Cell list: hover (active bg), fill (always gray bg), menu (transparent + no radius).',
     },
     {
-      name: 'button-mp-custom',
-      title: 'Custom background / color / loading color',
+      name: 'button-mp-color-override',
+      title: 'Inline color overrides (`bgColor` / `color`)',
       blurb:
-        'bgColor / color overrides; loadingColor changes spinner color; loadingSize changes rpx size.',
+        'bgColor / color override the semantic colours inline (they win over the type token); plus customClass / customStyle root styling.',
     },
     {
-      name: 'button-mp-iconfont',
+      name: 'button-mp-loading-color',
+      title: 'Spinner customization (`loadingColor` / `loadingSize`)',
+      blurb: 'loadingColor recolours the spinner; loadingSize sets the rpx size.',
+    },
+    {
+      name: 'button-mp-icon-button',
       title: 'Iconfont icons (`icon` / `class-prefix` / `css-icon`)',
       blurb:
         'icon + class-prefix build {prefix}-{icon}; a string css-icon renders verbatim; the boolean form applies both class names.',
     },
     {
       name: 'button-mp-loading-props',
-      title: 'loading config and hairline (`loading-props` / `hairline`)',
-      blurb: 'loading-props color / size; the flat props win; hairline next to the loading state.',
+      title: 'The `loading-props` object',
+      blurb: 'loading-props color / size; the flat props win.',
+    },
+    {
+      name: 'button-mp-hairline',
+      title: 'Hairline border (`hairline`)',
+      blurb: 'hairline only applies to the default type; stacked with the loading state.',
     },
     {
       name: 'button-mp-open-type',

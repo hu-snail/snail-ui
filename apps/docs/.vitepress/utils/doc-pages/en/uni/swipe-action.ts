@@ -63,13 +63,23 @@ import { SwipeAction } from '@snui/uni';
     },
     {
       name: 'swipe-action-mp-both-sides',
-      title: 'Both sides / close guard',
-      blurb: 'Left and right action areas + before-close blocking the first close.',
+      title: 'Both sides',
+      blurb: 'The #left / #right slots render action areas on both sides.',
+    },
+    {
+      name: 'swipe-action-mp-before-close',
+      title: 'Close guard (`before-close`)',
+      blurb: 'before-close blocks the first close by returning false.',
     },
     {
       name: 'swipe-action-mp-disabled',
-      title: 'Disabled and custom styles',
-      blurb: 'Swipeable + custom-class / custom-style, plus a disabled row that stays closed.',
+      title: 'Disabled (`disabled`)',
+      blurb: 'disabled ignores the gesture; the row stays closed.',
+    },
+    {
+      name: 'swipe-action-mp-custom-style',
+      title: 'Root styling',
+      blurb: 'custom-class / custom-style land on the root node.',
     },
   ],
   props: {

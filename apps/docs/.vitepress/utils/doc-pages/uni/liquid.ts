@@ -60,9 +60,34 @@ import { Liquid } from '@snui/uni';
   },
   demos: [
     {
-      name: 'liquid-mp',
-      title: '代码演示',
-      blurb: '基础 / outline 外圈 / 自定义波浪色，点击按钮渐增进度。',
+      name: 'liquid-mp-basic',
+      title: '基础用法',
+      blurb: 'percent 驱动水位 + 渐增交互，超界自动夹取。',
+    },
+    {
+      name: 'liquid-mp-states',
+      title: '状态与边界',
+      blurb: '0 / 100 / 超界夹取 / duration=0 立即到位 / 自定义球心插槽。',
+    },
+    {
+      name: 'liquid-mp-size',
+      title: '尺寸（size）',
+      blurb: '120 / 160 / 200rpx。',
+    },
+    {
+      name: 'liquid-mp-outline',
+      title: '外圈（outline）',
+      blurb: 'outline 开关对照。',
+    },
+    {
+      name: 'liquid-mp-radius',
+      title: '容器圆角（radius）',
+      blurb: 'radius="32rpx" 方圆容器。',
+    },
+    {
+      name: 'liquid-mp-colors',
+      title: '水波配色（waveColor / innerColor）',
+      blurb: '波浪色与球内底色成对配置。',
     },
   ],
   props: {

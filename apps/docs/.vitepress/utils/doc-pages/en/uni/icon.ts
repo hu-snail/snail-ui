@@ -82,7 +82,12 @@ import { Icon } from '@snui/uni';
       blurb: '4. Alibaba iconfont (font glyphs)',
     },
     { name: 'icon-mp-basic', title: 'Basic usage', blurb: 'Basic usage' },
-    { name: 'icon-mp-size', title: 'Sizes & stroke', blurb: 'Sizes & stroke' },
+    { name: 'icon-mp-size', title: 'Sizes (`size`)', blurb: 'size steps: 14 / 18 / 24 / 32 / 48.' },
+    {
+      name: 'icon-mp-stroke-width',
+      title: 'Stroke width (`strokeWidth`)',
+      blurb: 'strokeWidth 1 / 2 / 3 compared at the same size.',
+    },
     {
       name: 'icon-mp-registry',
       title: 'Custom + button integration',

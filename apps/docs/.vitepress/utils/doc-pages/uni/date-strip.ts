@@ -64,8 +64,8 @@ import { DateStrip } from '@snui/uni';
     },
     {
       name: 'date-strip-mp-nav',
-      title: '导航按钮',
-      blurb: 'show-nav 两侧翻页 + #prev / #next 自定义插槽 + pagechange + show-lunar。',
+      title: '导航按钮（show-nav）',
+      blurb: 'show-nav 两侧翻页 + #prev / #next 自定义插槽 + pagechange。',
     },
     {
       name: 'date-strip-mp-lunar',

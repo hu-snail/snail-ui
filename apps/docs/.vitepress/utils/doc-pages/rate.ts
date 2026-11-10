@@ -11,7 +11,7 @@ export const rateDocPage: SnDocPageData = {
   title: 'Rate',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,11 +46,8 @@ import { Rate } from '@snui/vue-web';
   demos: [
     { name: 'rate-web-basic', title: '基础用法', blurb: 'v-model + count。' },
     { name: 'rate-web-half', title: '半星（allowHalf）', blurb: '每星两个 50% 命中区，0.5 步进。' },
-    {
-      name: 'rate-web-states',
-      title: '只读 / 禁用',
-      blurb: 'readonly 展示态；disabled 不可交互。',
-    },
+    { name: 'rate-web-readonly', title: '只读', blurb: 'readonly：展示态不可交互。' },
+    { name: 'rate-web-disabled', title: '禁用', blurb: 'disabled：置灰且不可点。' },
     { name: 'rate-web-clearable', title: '再次点击清零（clearable）', blurb: '点当前值星清零。' },
   ],
   props: {

@@ -6,7 +6,7 @@ export const switchDocPageEn: SnDocPageData = {
   title: 'Switch · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,9 +49,19 @@ import { Switch } from '@snui/vue-web';
     },
     { name: 'switch-web-sizes', title: 'Sizes', blurb: 'small / medium / large.' },
     {
-      name: 'switch-web-states',
-      title: 'Disabled / readonly / loading',
-      blurb: 'disabled / readonly / loading spinner.',
+      name: 'switch-web-disabled',
+      title: 'Disabled',
+      blurb: 'Disabled on / off states.',
+    },
+    {
+      name: 'switch-web-readonly',
+      title: 'Readonly',
+      blurb: 'Looks normal, cannot toggle.',
+    },
+    {
+      name: 'switch-web-loading',
+      title: 'Loading',
+      blurb: 'Spinner state during async submission.',
     },
     {
       name: 'switch-web-slots',

@@ -60,9 +60,14 @@ import { Img } from '@snui/uni';
   },
   demos: [
     {
-      name: 'img-mp-basic',
-      title: 'Basic usage',
-      blurb: 'Three crop modes, plus circular / rounded / full-width.',
+      name: 'img-mp-mode',
+      title: 'Crop modes (`mode`)',
+      blurb: 'The three crop modes: scaleToFill / aspectFit / aspectFill.',
+    },
+    {
+      name: 'img-mp-shape',
+      title: 'Round & radius (`round` / `radius`)',
+      blurb: 'round makes a circle; radius sets a custom corner; the square default as a control.',
     },
     {
       name: 'img-mp-state',
@@ -72,9 +77,14 @@ import { Img } from '@snui/uni';
     },
     {
       name: 'img-mp-preview',
-      title: 'Tap-to-preview and lazy loading',
+      title: 'Tap-to-preview (`enablePreview`)',
       blurb:
-        'Thumbnail opens the large image, preview-src overrides, lazy loading and the long-press menu.',
+        'Thumbnail opens the large image, preview-src overrides; plus the show-menu-by-longpress menu (WeChat only).',
+    },
+    {
+      name: 'img-mp-lazy-load',
+      title: 'Lazy loading (`lazyLoad`)',
+      blurb: 'lazy-load is handed to the native image; loading starts near the viewport.',
     },
     {
       name: 'img-mp-custom',

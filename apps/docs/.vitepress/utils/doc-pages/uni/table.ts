@@ -60,20 +60,45 @@ import { Table } from '@snui/uni';
   },
   demos: [
     {
-      name: 'table-mp-basic',
-      title: '基础用法',
-      blurb: '索引列 + 可排序表头 + 固定高度 / 固定表头 / 左固定列。',
+      name: 'table-mp-index',
+      title: '索引列（index）',
+      blurb: 'index 打开首列序号；传对象可自定义序号列表头 / 宽度 / 对齐。',
     },
     {
-      name: 'table-mp-cell',
-      title: '单元格与空态',
-      blurb: '两行省略、value 插槽渲染 sn-tag、内置空态。',
+      name: 'table-mp-sort',
+      title: '排序（sortable）',
+      blurb: '列加 sortable 出现排序箭头，@sort-method 驱动数据升 / 降 / 取消。',
     },
     {
-      name: 'table-mp-style',
-      title: '边框、斑马纹与表头',
+      name: 'table-mp-fixed',
+      title: '固定表头与固定列',
+      blurb: '固定高度 + fixed-header 固定表头 + 首列 fixed 左固定。',
+    },
+    {
+      name: 'table-mp-ellipsis',
+      title: '单元格省略（ellipsis）',
+      blurb: 'ellipsis 让长文本两行内截断并显示省略号。',
+    },
+    {
+      name: 'table-mp-cell-slot',
+      title: '自定义单元格（value 插槽）',
+      blurb: '列的 #value 插槽拿到 row，可渲染 sn-tag 等任意节点。',
+    },
+    {
+      name: 'table-mp-empty',
+      title: '空态',
+      blurb: 'data 为空时的内置空态行。',
+    },
+    {
+      name: 'table-mp-border-stripe',
+      title: '边框与斑马纹（border / stripe）',
       blurb:
-        'border / stripe 开关、index 配置对象、show-header 关闭，以及 customClass / customStyle。',
+        'border / stripe 开关对比；附带 customClass / customStyle 根节点样式。',
+    },
+    {
+      name: 'table-mp-header',
+      title: '表头开关（showHeader）',
+      blurb: 'show-header=false 隐藏表头，只剩数据行。',
     },
   ],
   props: {

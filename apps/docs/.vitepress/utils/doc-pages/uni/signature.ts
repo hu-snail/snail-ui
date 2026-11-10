@@ -62,8 +62,18 @@ import { Signature } from '@snui/uni';
     },
     {
       name: 'signature-mp-history',
-      title: '撤销 / 恢复与外观（`enableHistory` / `penColor` / `disabled`）',
-      blurb: 'enableHistory 显示撤回 / 恢复按钮；penColor 覆盖笔色；disabled 锁掉画板。',
+      title: '撤销与恢复（`enableHistory`）',
+      blurb: 'enableHistory 显示撤回 / 恢复按钮，画板自带历史栈。',
+    },
+    {
+      name: 'signature-mp-pen',
+      title: '笔迹外观（`penColor` / `lineWidth`）',
+      blurb: 'penColor 覆盖笔色，lineWidth 控制笔宽。',
+    },
+    {
+      name: 'signature-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 锁掉画板，不能绘制。',
     },
     {
       name: 'signature-mp-button-labels',
@@ -73,16 +83,29 @@ import { Signature } from '@snui/uni';
         'confirmText / clearText；enableHistory 下 revokeText / restoreText；undoText / redoText 覆盖。',
     },
     {
-      name: 'signature-mp-pad-look',
-      title: '画板外观与滚动（`height` / `width` / `backgroundColor` / `disableScroll` / `step`）',
-      blurb: 'height / width；backgroundColor 覆盖底色；disableScroll=false；step=2 一次撤回两笔。',
+      name: 'signature-mp-size',
+      title: '画板尺寸与底色',
+      blurb: 'height（数字按 rpx 设计值）/ width；backgroundColor 覆盖画板底色 token。',
     },
     {
-      name: 'signature-mp-export-parity',
-      title:
-        '导出与压感对齐参数（`fileType` / `quality` / `exportScale` / `pressure` / `maxWidth` / `minWidth` / `minSpeed` / `custom*`）',
-      blurb:
-        'fileType / quality / exportScale（宿主导出用）；pressure / maxWidth / minWidth / minSpeed（未实现）；customClass / customStyle。',
+      name: 'signature-mp-scroll',
+      title: '画板滚动（`disableScroll`）',
+      blurb: 'disableScroll=false 画的时候页面仍可滚动。',
+    },
+    {
+      name: 'signature-mp-step',
+      title: '撤回步长（`step`）',
+      blurb: 'step=2 一次撤回两笔（需配合 enableHistory）。',
+    },
+    {
+      name: 'signature-mp-export',
+      title: '导出参数（`fileType` / `quality` / `exportScale`）',
+      blurb: 'fileType / quality / exportScale（宿主导出时使用，本构建不做栅格化）。',
+    },
+    {
+      name: 'signature-mp-stroke',
+      title: '笔迹参数（`pressure` / `lineWidth`）',
+      blurb: 'pressure / maxWidth / minWidth / minSpeed（压感模拟未实现）；lineWidth 直接控制笔宽。',
     },
   ],
   props: {

@@ -58,17 +58,39 @@ import { Slider } from '@snui/uni';
         'Single-knob slider: min / max / step drive the range and granularity; showExtremeValue renders both end captions.',
     },
     {
-      name: 'slider-mp-range-theme',
-      title: 'Range, marks & theme (`range` / `marks` / `theme` / `disabled`)',
-      blurb:
-        '`range` returns a `[start, end]` pair; `marks` accepts a record; `theme=capsule` thickens the track; disabled blocks dragging.',
+      name: 'slider-mp-range',
+      title: 'Range & marks (`range` / `marks`)',
+      blurb: '`range` returns a `[start, end]` pair; `marks` accepts a record.',
     },
     {
-      name: 'slider-mp-vertical-popover-color',
-      title:
-        'Vertical track, value bubble, track colors & root styling (`vertical` / `popoverVisible` / `activeColor` / `inactiveColor` / `customClass` / `customStyle`)',
-      blurb:
-        '`vertical` stands the track up; `popoverVisible` takes always / normal / never; `activeColor` / `inactiveColor` override the track colors; `customClass` / `customStyle` land on the root.',
+      name: 'slider-mp-theme',
+      title: 'Theme (`theme`)',
+      blurb: 'theme=capsule thickens the track.',
+    },
+    {
+      name: 'slider-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` blocks dragging.',
+    },
+    {
+      name: 'slider-mp-vertical',
+      title: 'Vertical (`vertical`)',
+      blurb: '`vertical` stands the track up (400rpx tall by default).',
+    },
+    {
+      name: 'slider-mp-popover',
+      title: 'Value bubble (`popoverVisible`)',
+      blurb: '`popoverVisible` takes always / normal / never.',
+    },
+    {
+      name: 'slider-mp-color',
+      title: 'Track colors (`activeColor`)',
+      blurb: '`activeColor` / `inactiveColor` override the filled and unfilled track colors.',
+    },
+    {
+      name: 'slider-mp-custom-style',
+      title: 'Root styling',
+      blurb: '`customClass` / `customStyle` land on the root node.',
     },
   ],
   props: {

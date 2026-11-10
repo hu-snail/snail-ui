@@ -63,9 +63,8 @@ import { Layout } from '@snui/uni';
     },
     {
       name: 'layout-mp-gutter',
-      title: 'Gutters, offsets and alignment',
-      blurb:
-        'gutter=16 spaces the columns; offset=8 pushes a column right; justify=space-between with align=middle aligns the row.',
+      title: 'Gutters & offsets (`gutter` / `offset`)',
+      blurb: 'gutter=16 spaces the columns; offset=8 pushes a column right.',
     },
     {
       name: 'layout-mp-align',

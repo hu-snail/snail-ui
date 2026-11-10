@@ -73,10 +73,14 @@ import { Input } from '@snui/uni';
       blurb: 'disabled / readonly / required + aria-*。',
     },
     {
-      name: 'input-mp-clearable-count',
-      title: '清空 + 计数（`clearable` / `showCount`）',
-      blurb:
-        "clearable × 按钮；clearTrigger: 'always' | 'focus'；showCount / showWordLimit + maxlength 计数。",
+      name: 'input-mp-clearable',
+      title: '清空按钮（clearable）',
+      blurb: 'clearable × 按钮一键清空。',
+    },
+    {
+      name: 'input-mp-count',
+      title: '字数计数（showCount）',
+      blurb: 'showCount / showWordLimit + maxlength 计数。',
     },
     {
       name: 'input-mp-password-toggle',
@@ -96,28 +100,59 @@ import { Input } from '@snui/uni';
         "radius: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square'，档位映射 --sn-mp-radius-*。",
     },
     {
-      name: 'input-mp-bordered-bg-radius',
-      title: '边框 / 背景（`border` / `bg`）',
-      blurb:
-        "border: 'all' | 'bottom' | 'none'（bordered alias）；bg: 'surface' | 'transparent' | 'soft'；customBg。",
+      name: 'input-mp-border',
+      title: '边框（border）',
+      blurb: "border: 'all' | 'bottom' | 'none'（bordered alias）。",
     },
     {
-      name: 'input-mp-align-compact',
-      title: '右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）',
-      blurb: '金额字段右对齐；compact 紧凑模式；inputmode 软键盘提示。',
+      name: 'input-mp-bg',
+      title: '背景（bg）',
+      blurb: "bg: 'surface' | 'transparent' | 'soft'；customBg。",
     },
     {
-      name: 'input-mp-runtime',
-      title: '小程序运行时专属属性（MP-only）',
-      blurb:
-        'confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class。',
+      name: 'input-mp-align',
+      title: '右对齐（alignRight）',
+      blurb: '金额字段右对齐。',
     },
     {
-      name: 'input-mp-clear-focus',
-      title:
-        '清空与聚焦细节（`clearTrigger` / `focusWhenClear` / `focus` / `placeholderClass` / `placeholderStyle`）',
-      blurb:
-        'clearTrigger always / focus；focusWhenClear；focus 挂载即聚焦；placeholderClass + placeholderStyle。',
+      name: 'input-mp-compact',
+      title: '紧凑行内形态（compact）',
+      blurb: 'compact + border="bottom"：嵌进 Cell / FormItem 的行内形态。',
+    },
+    {
+      name: 'input-mp-inputmode',
+      title: '软键盘提示（inputmode）',
+      blurb: 'inputmode 软键盘提示。',
+    },
+    {
+      name: 'input-mp-confirm-type',
+      title: '确认键文案（confirmType）',
+      blurb: 'confirm-type：软键盘右下角按钮文案。',
+    },
+    {
+      name: 'input-mp-keyboard-hold',
+      title: '键盘保持与页面上推',
+      blurb: 'hold-keyboard / adjust-position / always-embed。',
+    },
+    {
+      name: 'input-mp-cursor-selection',
+      title: '光标与选区',
+      blurb: 'cursor / selection-start / selection-end。',
+    },
+    {
+      name: 'input-mp-clear-trigger',
+      title: '清空按钮细节（clearTrigger / focusWhenClear）',
+      blurb: "clearTrigger always / focus；focusWhenClear。",
+    },
+    {
+      name: 'input-mp-focus',
+      title: '自动聚焦（focus）',
+      blurb: 'focus 挂载即聚焦。',
+    },
+    {
+      name: 'input-mp-placeholder',
+      title: '占位符样式（placeholderClass / placeholderStyle）',
+      blurb: 'placeholderClass + placeholderStyle。',
     },
     {
       name: 'input-mp-word-limit',
@@ -125,10 +160,24 @@ import { Input } from '@snui/uni';
       blurb: 'showWordLimit + maxlength；与 showCount 等价。',
     },
     {
-      name: 'input-mp-native-attrs',
-      title:
-        '原生键盘属性（`cursorSpacing` / `confirmHold` / `ignoreCompositionEvent` / `enableNative`）',
-      blurb: 'cursorSpacing；confirmHold；ignoreCompositionEvent=false；enableNative=false。',
+      name: 'input-mp-cursor-spacing',
+      title: '光标间距（cursorSpacing）',
+      blurb: 'cursorSpacing：光标与键盘保持指定间距。',
+    },
+    {
+      name: 'input-mp-confirm-hold',
+      title: '确认键保持键盘（confirmHold）',
+      blurb: 'confirmHold：点确认键不收起软键盘。',
+    },
+    {
+      name: 'input-mp-composition',
+      title: '输入合成（ignoreCompositionEvent）',
+      blurb: 'ignoreCompositionEvent=false：合成期间也触发 input。',
+    },
+    {
+      name: 'input-mp-enable-native',
+      title: '原生输入（enableNative）',
+      blurb: 'enableNative=false：支付宝小程序用模拟输入框。',
     },
     {
       name: 'input-mp-custom-class',

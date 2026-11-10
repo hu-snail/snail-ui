@@ -10,7 +10,7 @@ export const floatButtonDocPageEn: SnDocPageData = {
   title: 'FloatButton · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'above the trigger when opened.' }],
@@ -45,7 +45,8 @@ import { FloatButton } from '@snui/vue-web';
     { name: 'float-button-web-placement', title: 'The eight anchors', blurb: 'The eight anchors' },
     { name: 'float-button-web-group', title: 'Group', blurb: 'Group' },
     { name: 'float-button-web-direction', title: 'Opening direction', blurb: 'Opening direction' },
-    { name: 'float-button-web-badge-link', title: 'Badge and link', blurb: 'Badge and link' },
+    { name: 'float-button-web-badge', title: 'Badge', blurb: 'badge count bubble + badge-dot.' },
+    { name: 'float-button-web-link', title: 'Link button', blurb: 'href + target switch to an <a> root.' },
   ],
   props: {
     hint: [],

@@ -6,7 +6,7 @@ export const selectDocPageEn: SnDocPageData = {
   title: 'Select · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -64,9 +64,19 @@ import { Select } from '@snui/vue-web';
       blurb: 'Non-label/value field mapping.',
     },
     {
-      name: 'select-web-states',
-      title: 'Clearable / disabled / loading',
-      blurb: 'clearable, disabled, loading.',
+      name: 'select-web-clearable',
+      title: 'Clearable',
+      blurb: 'clearable: one click clears the value.',
+    },
+    {
+      name: 'select-web-disabled',
+      title: 'Disabled',
+      blurb: 'disabled: greyed out entirely.',
+    },
+    {
+      name: 'select-web-loading',
+      title: 'Loading',
+      blurb: 'loading: loading placeholder.',
     },
     {
       name: 'select-web-remote',

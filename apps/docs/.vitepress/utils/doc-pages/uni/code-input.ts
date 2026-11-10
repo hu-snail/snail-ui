@@ -81,15 +81,24 @@ import { CodeInput } from '@snui/uni';
       blurb: 'background 属性给格子自定义背景色（token 或任意 CSS 色均可）。',
     },
     {
-      name: 'code-input-mp-border',
+      name: 'code-input-mp-no-border',
       title: '无边框（`border`）',
       blurb: "border='none' 去掉格子全部边框（含下划线底线），纯背景色格子；常与 background 搭配。",
     },
     {
-      name: 'code-input-mp-error-gutter',
-      title: '明文、错误态与间距（`mask` / `errorInfo` / `gutter`）',
-      blurb:
-        'mask=false 显示明文；errorInfo 覆盖 info 并把边框切成危险色；默认 16rpx 格子间距，gutter 可调。',
+      name: 'code-input-mp-mask',
+      title: '明文显示（mask）',
+      blurb: 'mask=false 显示明文。',
+    },
+    {
+      name: 'code-input-mp-error-info',
+      title: '错误态（errorInfo）',
+      blurb: 'errorInfo 覆盖 info 并把边框切成危险色。',
+    },
+    {
+      name: 'code-input-mp-gutter',
+      title: '格子间距（gutter）',
+      blurb: '默认 16rpx 格子间距，gutter 可调。',
     },
     {
       name: 'code-input-mp-custom-style',

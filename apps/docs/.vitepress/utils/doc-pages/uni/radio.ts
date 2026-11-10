@@ -76,16 +76,29 @@ import { Radio } from '@snui/uni';
       blurb: '四种形状：circle / dot / square / button（button 配 direction=horizontal）。',
     },
     {
-      name: 'radio-mp-states',
-      title: '状态（`allowUncheck` / `disabled` / `readonly` / `placement`）',
-      blurb: "allowUncheck 取消选中；整组 disabled / readonly；placement='right'。",
+      name: 'radio-mp-uncheck',
+      title: '可反选（`allowUncheck`）',
+      blurb: 'allowUncheck 再点一次取消选中，v-model 回到 undefined。',
     },
     {
-      name: 'radio-mp-colors-custom',
-      title:
-        '颜色与自定义类名（`checkedColor` / `uncheckedColor` / `customLabelClass` / `customClass` / `customStyle`）',
-      blurb:
-        'checkedColor / uncheckedColor 组级下发与单项覆盖；customLabelClass 落在标签节点；customClass / customStyle 落在根节点。',
+      name: 'radio-mp-disabled-readonly',
+      title: '禁用与只读（`disabled` / `readonly`）',
+      blurb: '整组 disabled 禁用 / readonly 只读。',
+    },
+    {
+      name: 'radio-mp-placement',
+      title: '标记位置（`placement`）',
+      blurb: "placement='right' 把选中标记放到右侧。",
+    },
+    {
+      name: 'radio-mp-colors',
+      title: '选中色（`checkedColor` / `uncheckedColor`）',
+      blurb: 'checkedColor / uncheckedColor 组级下发与单项覆盖。',
+    },
+    {
+      name: 'radio-mp-custom-style',
+      title: '自定义类名与样式',
+      blurb: 'customLabelClass 落在标签节点；customClass / customStyle 落在根节点。',
     },
   ],
   props: {

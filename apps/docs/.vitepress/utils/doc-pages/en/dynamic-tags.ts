@@ -10,7 +10,7 @@ export const dynamicTagsDocPageEn: SnDocPageData = {
   title: 'DynamicTags · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -57,9 +57,14 @@ import { DynamicTags } from '@snui/vue-web';
       blurb: 'Enter commits and keeps typing; Esc cancels; blur submits.',
     },
     {
-      name: 'dynamic-tags-web-bounds',
-      title: 'max / closable',
-      blurb: 'max hides the add button; closable=false hides removal.',
+      name: 'dynamic-tags-web-max',
+      title: 'Max tags',
+      blurb: 'max hides the add button at the cap.',
+    },
+    {
+      name: 'dynamic-tags-web-closable',
+      title: 'Closable',
+      blurb: 'closable=false hides removal.',
     },
     {
       name: 'dynamic-tags-web-slots',
@@ -67,9 +72,14 @@ import { DynamicTags } from '@snui/vue-web';
       blurb: 'tag / trigger / empty customization.',
     },
     {
-      name: 'dynamic-tags-web-states',
-      title: 'Disabled / readonly',
-      blurb: 'disabled blocks interaction; readonly hides the add button.',
+      name: 'dynamic-tags-web-disabled',
+      title: 'Disabled',
+      blurb: 'Whole group inert.',
+    },
+    {
+      name: 'dynamic-tags-web-readonly',
+      title: 'Readonly',
+      blurb: 'The add button is hidden.',
     },
   ],
   props: {

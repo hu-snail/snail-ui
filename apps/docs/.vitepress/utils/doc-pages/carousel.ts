@@ -15,7 +15,7 @@ export const carouselDocPage: SnDocPageData = {
   title: 'Carousel 轮播图',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [

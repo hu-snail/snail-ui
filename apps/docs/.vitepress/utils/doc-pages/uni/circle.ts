@@ -64,9 +64,14 @@ import { Circle } from '@snui/uni';
       blurb: '状态色 / 渐变色 / 自定义轨道与底盘 / 逆时针。',
     },
     {
-      name: 'circle-mp-custom',
-      title: '动画速度与自定义样式',
-      blurb: 'speed=0 / 200 / 10 三档过渡，stroke-linecap 三种取值，以及根节点类名与内联样式。',
+      name: 'circle-mp-speed',
+      title: '动画速度（speed）',
+      blurb: 'speed=0 / 200 / 10 三档过渡对比，0 关闭过渡。',
+    },
+    {
+      name: 'circle-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'custom-class 与 custom-style 都落在 sn-circle 根节点上。',
     },
   ],
   props: {

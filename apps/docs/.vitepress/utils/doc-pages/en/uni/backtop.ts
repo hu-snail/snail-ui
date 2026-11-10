@@ -82,8 +82,13 @@ import { Backtop } from '@snui/uni';
     },
     {
       name: 'backtop-mp-threshold',
-      title: 'Visibility threshold and icon style',
-      blurb: 'top=120 visibility threshold; icon-style custom icon colour; z-index level.',
+      title: 'Visibility threshold (`top`)',
+      blurb: 'top=120 threshold; the button appears once scroll-top crosses it.',
+    },
+    {
+      name: 'backtop-mp-icon-style',
+      title: 'Icon styling & stacking',
+      blurb: 'icon-style recolors the glyph; z-index stacking; custom-class on the root.',
     },
   ],
   props: {

@@ -63,15 +63,38 @@ import { Steps } from '@snui/uni';
     },
     {
       name: 'steps-mp-vertical',
-      title: 'Vertical / dot / error states',
-      blurb:
-        'vertical stacks the steps; status=error overrides one step; dot renders dot indicators.',
+      title: 'Vertical steps (`vertical`)',
+      blurb: 'vertical stacks the steps top-down.',
+    },
+    {
+      name: 'steps-mp-dot',
+      title: 'Dot steps (`dot`)',
+      blurb: 'dot swaps the indicators for plain dots.',
+    },
+    {
+      name: 'steps-mp-error',
+      title: 'Error state (`status=error`)',
+      blurb: 'status="error" marks the step as failed.',
     },
     {
       name: 'steps-mp-space',
-      title: 'Spacing, centring and explicit status',
-      blurb:
-        'space=120rpx with align-center; explicit status overrides; icon / title / description slots.',
+      title: 'Spacing & alignment (`space` / `align-center`)',
+      blurb: 'space=120rpx widens the gaps; align-centres the row (horizontal only).',
+    },
+    {
+      name: 'steps-mp-custom-class',
+      title: 'Root styling (`customClass`)',
+      blurb: 'custom-class mounts a class on the root for host-side overrides.',
+    },
+    {
+      name: 'steps-mp-status',
+      title: 'Explicit status (`status`)',
+      blurb: 'status overrides the state derived from active.',
+    },
+    {
+      name: 'steps-mp-slots',
+      title: 'Content slots',
+      blurb: 'The #icon / #title / #description slots replace their regions.',
     },
     {
       name: 'steps-mp-node',

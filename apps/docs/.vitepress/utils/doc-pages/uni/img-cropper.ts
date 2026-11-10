@@ -64,20 +64,30 @@ import { ImgCropper } from '@snui/uni';
   },
   demos: [
     {
-      name: 'img-cropper-mp-basic',
-      title: '基础用法',
-      blurb: '打开裁剪层、拖拽 / 缩放 / 旋转，确认后展示几何结果。',
-    },
-    {
       name: 'img-cropper-mp-ratio',
-      title: '比例与旋转',
-      blurb: '1:1 / 16:9 / 9:16 三种比例切换，禁止旋转与自定义按钮文案。',
+      title: '裁剪比例（aspectRatio）',
+      blurb: '1:1 / 16:9 / 9:16 三种比例切换，confirm 记录上次比例。',
     },
     {
-      name: 'img-cropper-mp-export',
-      title: '声明但对本实现无效的属性',
+      name: 'img-cropper-mp-rotate',
+      title: '禁止旋转与按钮文案（disabledRotate）',
+      blurb: 'disabled-rotate 隐藏旋转能力；cancel / confirm-button-text 自定义底栏按钮文案。',
+    },
+    {
+      name: 'img-cropper-mp-frame',
+      title: '预览框尺寸（imgWidth / imgHeight）',
+      blurb: 'img-width / img-height 以设计稿 px 给出（内部 ×2 换 rpx），决定预览框尺寸。',
+    },
+    {
+      name: 'img-cropper-mp-max-scale',
+      title: '缩放上限（maxScale）',
+      blurb: 'max-scale 限制双指缩放上限（最小 0.5），2 / 6 两档对比。',
+    },
+    {
+      name: 'img-cropper-mp-export-props',
+      title: '导出声明参数',
       blurb:
-        'img-width / img-height 预览框、max-scale 上限，以及 export-scale / quality / file-type 代入 confirm 结果。',
+        'export-scale / quality / file-type 只对齐参考 API：组件不做栅格化，宿主按 confirm 几何自行导出。',
     },
   ],
   props: {

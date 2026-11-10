@@ -67,9 +67,18 @@ import { Tour } from '@snui/uni';
     },
     {
       name: 'tour-mp-mask',
-      title: '蒙版开关与自定义面板',
-      blurb:
-        'mask=false 无蒙层；mask-color / duration / z-index；show-tour-buttons=false + footer 插槽自定义操作区。',
+      title: '蒙版（mask / mask-color）',
+      blurb: 'mask=false 无蒙层；mask-color 覆盖蒙版底色。',
+    },
+    {
+      name: 'tour-mp-panel-slot',
+      title: '自定义面板与按钮',
+      blurb: 'show-tour-buttons=false 隐藏默认按钮；#footer 自定义操作区；#default 自定义面板正文。',
+    },
+    {
+      name: 'tour-mp-z-index',
+      title: '层级与时长',
+      blurb: 'duration 覆盖动画时长；z-index 抬升层级；custom-class 落在根节点。',
     },
   ],
   props: {

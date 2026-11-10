@@ -10,7 +10,7 @@ export const avatarGroupDocPageEn: SnDocPageData = {
   title: 'AvatarGroup · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,7 +45,7 @@ import { AvatarGroup } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'avatar-group-web-basic', title: 'Basic group', blurb: 'Basic group' },
+    { name: 'avatar-group-web-basic', title: 'Basic group', blurb: 'A single default tightening group.' },
     {
       name: 'avatar-group-web-max',
       title: 'Overflow cap and expand callback',

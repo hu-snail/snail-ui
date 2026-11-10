@@ -6,7 +6,7 @@ export const radioDocPageEn: SnDocPageData = {
   title: 'Radio · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -58,9 +58,14 @@ import { Radio } from '@snui/vue-web';
     },
     { name: 'radio-web-sizes', title: 'Sizes', blurb: 'mini / tiny / small / medium / large.' },
     {
-      name: 'radio-web-states',
-      title: 'Disabled / readonly',
-      blurb: 'Group-level OR item-level disabled; readonly visual.',
+      name: 'radio-web-disabled',
+      title: 'Disabled',
+      blurb: 'disabled: checked and unchecked greyed states.',
+    },
+    {
+      name: 'radio-web-readonly',
+      title: 'Readonly',
+      blurb: 'readonly: visible but not editable.',
     },
   ],
   props: {

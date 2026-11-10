@@ -76,11 +76,6 @@ import { Swiper } from '@snui/uni';
       blurb: '圆点 / 条形 / 分式 / 带左右控制按钮。',
     },
     {
-      name: 'swiper-mp-card3d',
-      title: '3D 卡片（card3d）',
-      blurb: '3D 卡片一屏 2 张 / 1 张，以及普通模式对照；指示器按页计数。',
-    },
-    {
       name: 'swiper-mp-video',
       title: '视频项',
       blurb: '视频项渲染 poster；五个视频类 props 已声明但不改变画面。',
@@ -91,9 +86,15 @@ import { Swiper } from '@snui/uni';
       blurb: '圆角 + 根 / 项 / 图片 / 文案 / 指示器的自定义类名与样式。',
     },
     {
-      name: 'swiper-mp-data',
-      title: '数据字段与事件',
-      blurb: '自定义字段名、受控 current、aspectFit 裁剪、三个事件回传。',
+      name: 'swiper-mp-data-keys',
+      title: '数据字段映射',
+      blurb:
+        'valueKey / textKey 改字段名（默认 value / text）；v-model:current 受控跳张；change / animationfinish / click 事件回传。',
+    },
+    {
+      name: 'swiper-mp-image-mode',
+      title: '图片裁切（imageMode）',
+      blurb: 'imageMode 透传给内部 sn-img：aspectFit 完整显示并露出底盘。',
     },
   ],
   props: {

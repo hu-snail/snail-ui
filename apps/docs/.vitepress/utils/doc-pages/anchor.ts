@@ -15,7 +15,7 @@ export const anchorDocPage: SnDocPageData = {
   title: 'Anchor 锚点',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,7 +55,8 @@ import { Anchor } from '@snui/vue-web';
     { name: 'anchor-web-ignore-gap', title: '高亮判定', blurb: '高亮判定' },
     { name: 'anchor-web-affix', title: '吸附固定', blurb: '吸附固定' },
     { name: 'anchor-web-scrollto', title: '程序化跳转', blurb: '程序化跳转' },
-    { name: 'anchor-web-variants', title: '样式变体', blurb: '样式变体' },
+    { name: 'anchor-web-type', title: '块状类型（type="block"）', blurb: '块状链接，无导轨。' },
+    { name: 'anchor-web-show-rail', title: '隐藏导轨（showRail=false）', blurb: '仅保留链接列表。' },
   ],
   props: {
     hint: [],

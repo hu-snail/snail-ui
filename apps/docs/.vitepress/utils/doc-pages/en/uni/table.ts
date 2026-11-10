@@ -57,20 +57,46 @@ import { Table } from '@snui/uni';
   },
   demos: [
     {
-      name: 'table-mp-basic',
-      title: 'Basic usage',
-      blurb: 'Index column, sortable header, fixed height / pinned header / left-pinned column.',
-    },
-    {
-      name: 'table-mp-cell',
-      title: 'Cells and empty state',
-      blurb: 'Two-line ellipsis, a value slot rendering sn-tag, and the built-in empty row.',
-    },
-    {
-      name: 'table-mp-style',
-      title: 'Borders, stripes and the header',
+      name: 'table-mp-index',
+      title: 'Index column (`index`)',
       blurb:
-        'The border / stripe switches, an index config object, show-header off, and customClass / customStyle.',
+        'index turns on the leading number column; an object customises its header / width / alignment.',
+    },
+    {
+      name: 'table-mp-sort',
+      title: 'Sorting (`sortable`)',
+      blurb:
+        'sortable adds the sort arrows; @sort-method drives the data ascending / descending / unsorted.',
+    },
+    {
+      name: 'table-mp-fixed',
+      title: 'Pinned header & columns',
+      blurb: 'Fixed height + fixed-header + a left-pinned first column.',
+    },
+    {
+      name: 'table-mp-ellipsis',
+      title: 'Cell ellipsis (`ellipsis`)',
+      blurb: 'ellipsis clamps long cell text to two lines with an ellipsis.',
+    },
+    {
+      name: 'table-mp-cell-slot',
+      title: 'Custom cells (`value` slot)',
+      blurb: 'A column\u2019s #value slot receives row and can render an sn-tag or any node.',
+    },
+    {
+      name: 'table-mp-empty',
+      title: 'Empty state',
+      blurb: 'The built-in empty row when data is empty.',
+    },
+    {
+      name: 'table-mp-border-stripe',
+      title: 'Borders & stripes (`border` / `stripe`)',
+      blurb: 'The border / stripe switches compared; plus customClass / customStyle root styling.',
+    },
+    {
+      name: 'table-mp-header',
+      title: 'Header toggle (`showHeader`)',
+      blurb: 'show-header=false hides the header row, leaving the body only.',
     },
   ],
   props: {

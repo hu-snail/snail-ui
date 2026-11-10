@@ -10,7 +10,7 @@ export const timePickerDocPageEn: SnDocPageData = {
   title: 'TimePicker · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -62,9 +62,19 @@ import { TimePicker } from '@snui/vue-web';
       blurb: 'Clock-face order 12/1…11 + AM/PM column.',
     },
     {
-      name: 'time-picker-web-states',
-      title: 'Clearable / disabled / readonly',
-      blurb: 'clearable, disabled, readonly.',
+      name: 'time-picker-web-clearable',
+      title: 'Clearable',
+      blurb: 'A clear button empties the value.',
+    },
+    {
+      name: 'time-picker-web-disabled',
+      title: 'Disabled',
+      blurb: 'Interaction disabled.',
+    },
+    {
+      name: 'time-picker-web-readonly',
+      title: 'Readonly',
+      blurb: 'Visible but not editable.',
     },
   ],
   props: {

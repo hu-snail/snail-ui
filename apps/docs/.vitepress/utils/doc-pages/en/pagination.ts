@@ -10,7 +10,7 @@ export const paginationDocPageEn: SnDocPageData = {
   title: 'Pagination · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,8 +46,8 @@ import { Pagination } from '@snui/vue-web';
     { name: 'pagination-web-basic', title: 'Basic', blurb: 'Basic' },
     {
       name: 'pagination-web-jumper',
-      title: 'Quick jumper and page size',
-      blurb: 'Quick jumper and page size',
+      title: 'Quick jumper',
+      blurb: 'show-quick-jumper input; submits on Enter.',
     },
     {
       name: 'pagination-web-pagesize',
@@ -55,14 +55,24 @@ import { Pagination } from '@snui/vue-web';
       blurb: 'Page-size options and item-count coupling',
     },
     {
-      name: 'pagination-web-picker-simple',
-      title: 'Ellipsis collapsing, simple mode and the label slot',
-      blurb: 'Ellipsis collapsing, simple mode and the label slot',
+      name: 'pagination-web-simple',
+      title: 'Simple mode',
+      blurb: 'simple + show-total compact form.',
+    },
+    {
+      name: 'pagination-web-label-slot',
+      title: 'Custom page label slot',
+      blurb: 'The #label slot restyles page numbers.',
+    },
+    {
+      name: 'pagination-web-ellipsis',
+      title: 'Ellipsis collapsing (pageSlot)',
+      blurb: 'A narrow pageSlot keeps the ends and folds the middle into ellipses.',
     },
     {
       name: 'pagination-web-disabled',
-      title: 'Ellipsis collapsing and disabled state',
-      blurb: 'Ellipsis collapsing and disabled state',
+      title: 'Disabled',
+      blurb: 'disabled disables everything: pages / jumper / page size.',
     },
     {
       name: 'pagination-web-quick-switch',

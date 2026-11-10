@@ -6,7 +6,7 @@ export const backTopDocPageEn: SnDocPageData = {
   title: 'BackTop',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -58,7 +58,8 @@ import { BackTop } from '@snui/vue-web';
       title: 'Top web target container',
       blurb: 'Top web target container',
     },
-    { name: 'back-top-web-control', title: 'Top web control', blurb: 'Top web control' },
+    { name: 'back-top-web-control', title: 'Controlled visibility', blurb: 'Controlled by show; scroll ignored.' },
+    { name: 'back-top-web-custom-content', title: 'Custom content', blurb: 'Default slot replaces the icon.' },
   ],
   props: {
     hint: [],

@@ -11,7 +11,7 @@ export const mentionDocPage: SnDocPageData = {
   title: 'Mention',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -53,7 +53,8 @@ import { Mention } from '@snui/vue-web';
     },
     { name: 'mention-web-textarea', title: 'textarea 多行', blurb: "type='textarea' 多行提及。" },
     { name: 'mention-web-delimiter', title: '自定义分隔符', blurb: "delimiter='#' 话题提及。" },
-    { name: 'mention-web-states', title: '禁用 / 只读', blurb: 'disabled / readonly。' },
+    { name: 'mention-web-disabled', title: '禁用', blurb: 'disabled：不可输入，不弹候选面板。' },
+    { name: 'mention-web-readonly', title: '只读', blurb: 'readonly：值可见但不可编辑。' },
   ],
   props: {
     hint: [],

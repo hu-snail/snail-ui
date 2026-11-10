@@ -56,10 +56,19 @@ import { Badge } from '@snui/uni';
       blurb: 'Numeric markers: plain value, max overflow shown as 99+, five semantic types.',
     },
     {
+      name: 'badge-mp-dot',
+      title: 'Dot badge (`is-dot`)',
+      blurb: 'is-dot renders a small red dot instead of a count.',
+    },
+    {
       name: 'badge-mp-shape',
-      title: 'Shape and offset',
-      blurb:
-        'isDot dot; shape circle / square / bubble; border ring; top / right offsets; bgColor override.',
+      title: 'Shape & border (`shape` / `border`)',
+      blurb: 'shape circle / square / bubble; border adds a ring.',
+    },
+    {
+      name: 'badge-mp-offset',
+      title: 'Offset & color (`top` / `right` / `bgColor`)',
+      blurb: 'top / right nudge the badge position; bgColor overrides the fill.',
     },
     {
       name: 'badge-mp-visibility',

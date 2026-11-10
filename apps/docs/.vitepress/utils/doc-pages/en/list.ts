@@ -6,7 +6,7 @@ export const listDocPageEn: SnDocPageData = {
   title: 'List · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -40,8 +40,26 @@ import { List } from '@snui/vue-web';
   },
   demos: [
     { name: 'list-web-basic', title: 'Basic', blurb: 'Basic' },
-    { name: 'list-web-hoverable', title: 'Hoverable & clickable', blurb: 'Hoverable & clickable' },
-    { name: 'list-web-border', title: 'Border & dividers', blurb: 'Border & dividers' },
+    {
+      name: 'list-web-hoverable',
+      title: 'Hover highlight (hoverable)',
+      blurb: 'hoverable highlights rows on hover.',
+    },
+    {
+      name: 'list-web-clickable',
+      title: 'Clickable rows (clickable)',
+      blurb: 'clickable pointer cursor + click handler.',
+    },
+    {
+      name: 'list-web-bordered',
+      title: 'Border (bordered)',
+      blurb: 'bordered outer frame with rounded corners.',
+    },
+    {
+      name: 'list-web-divider',
+      title: 'Dividers (show-divider)',
+      blurb: 'show-divider=false hides row dividers.',
+    },
   ],
   props: {
     hint: [],

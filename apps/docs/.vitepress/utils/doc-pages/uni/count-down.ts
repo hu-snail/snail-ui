@@ -68,8 +68,13 @@ import { CountDown } from '@snui/uni';
     { name: 'count-down-mp-basic', title: '基础用法', blurb: '三种格式与 finish 回调。' },
     {
       name: 'count-down-mp-control',
-      title: '控制方法与毫秒',
-      blurb: '开始 / 暂停 / 重置，以及毫秒级渲染。',
+      title: '控制方法（start / pause / reset）',
+      blurb: '实例方法开始 / 继续、暂停、重置，finish 回调计数。',
+    },
+    {
+      name: 'count-down-mp-millisecond',
+      title: '毫秒渲染（millisecond）',
+      blurb: 'millisecond 打开后按 ss.S 渲染，小数位实时跳动。',
     },
     {
       name: 'count-down-mp-autostart',

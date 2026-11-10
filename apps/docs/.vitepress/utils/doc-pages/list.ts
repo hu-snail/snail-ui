@@ -11,7 +11,7 @@ export const listDocPage: SnDocPageData = {
   title: '列表 List',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,8 +45,22 @@ import { List } from '@snui/vue-web';
   },
   demos: [
     { name: 'list-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'list-web-hoverable', title: '悬浮与可点击', blurb: '悬浮与可点击' },
-    { name: 'list-web-border', title: '边框与分割线', blurb: '边框与分割线' },
+    { name: 'list-web-hoverable', title: '悬浮高亮（hoverable）', blurb: 'hoverable 悬浮高亮。' },
+    {
+      name: 'list-web-clickable',
+      title: '可点击行（clickable）',
+      blurb: 'clickable 指针光标 + 点击回调。',
+    },
+    {
+      name: 'list-web-bordered',
+      title: '边框（bordered）',
+      blurb: 'bordered 外边框 + 3px 圆角。',
+    },
+    {
+      name: 'list-web-divider',
+      title: '分割线（show-divider）',
+      blurb: 'show-divider=false 关闭分割线。',
+    },
   ],
   props: {
     hint: [],

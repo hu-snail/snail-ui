@@ -61,10 +61,24 @@ import { InputNumber } from '@snui/uni';
       blurb: 'sn-input-number 基础计数器：min / max 边界、step 步进、precision 精度。',
     },
     {
-      name: 'input-number-mp-theme-state',
-      title: '主题与状态（`theme` / `round` / `disabled` / `longPress`）',
-      blurb:
-        'default / outline / outline-split / primary 四种主题；round 圆角；disabled 拦掉全部交互；longPress 按住连续加减。',
+      name: 'input-number-mp-theme',
+      title: '主题（theme）',
+      blurb: 'default / outline / outline-split / primary 四种主题。',
+    },
+    {
+      name: 'input-number-mp-round',
+      title: '圆角（round）',
+      blurb: 'round 圆角胶囊。',
+    },
+    {
+      name: 'input-number-mp-long-press',
+      title: '长按连加（longPress）',
+      blurb: 'longPress 按住连续加减。',
+    },
+    {
+      name: 'input-number-mp-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 拦掉全部交互。',
     },
     {
       name: 'input-number-mp-controls',
@@ -73,11 +87,25 @@ import { InputNumber } from '@snui/uni';
       blurb: 'disableInput / disableMinus / disablePlus；withoutInput 只留按钮；inputWidth。',
     },
     {
-      name: 'input-number-mp-commit-hooks',
-      title:
-        '取值规则与提交时机（`stepStrictly` / `allowNull` / `placeholder` / `beforeChange` / `immediateChange` / `updateOnInit` / `inputType` / `adjustPosition` / `custom*`）',
+      name: 'input-number-mp-step-strictly',
+      title: '步进吸附（stepStrictly）',
+      blurb: 'stepStrictly 值吸附到步进网格。',
+    },
+    {
+      name: 'input-number-mp-allow-null',
+      title: '可空输入（allowNull）',
+      blurb: 'allowNull + placeholder：输入框可留空。',
+    },
+    {
+      name: 'input-number-mp-before-change',
+      title: '提交拦截（beforeChange）',
+      blurb: 'beforeChange 拦截。',
+    },
+    {
+      name: 'input-number-mp-commit-timing',
+      title: '提交时机与输入属性',
       blurb:
-        'stepStrictly；allowNull + placeholder；beforeChange 拦截；immediateChange=false；updateOnInit；inputType；adjustPosition。',
+        'immediateChange=false；updateOnInit；inputType；adjustPosition。',
     },
     {
       name: 'input-number-mp-custom-class',

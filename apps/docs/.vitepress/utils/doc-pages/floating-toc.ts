@@ -15,7 +15,7 @@ export const floatingTocDocPage: SnDocPageData = {
   title: 'FloatingToc 悬浮目录',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,8 +55,13 @@ import { FloatingToc } from '@snui/vue-web';
     { name: 'floating-toc-web-basic', title: '基础用法', blurb: '基础用法' },
     {
       name: 'floating-toc-web-placements',
-      title: '左右两侧与触发方式',
-      blurb: '左右两侧与触发方式',
+      title: '左右放置（placement）',
+      blurb: 'placement left / right 两侧轨道。',
+    },
+    {
+      name: 'floating-toc-web-trigger-mode',
+      title: '触发方式（trigger-mode）',
+      blurb: 'trigger-mode="press" 按下展开目录。',
     },
     { name: 'floating-toc-web-hierarchical', title: '分层目录', blurb: '分层目录' },
     { name: 'floating-toc-web-preview', title: '单条预览模式', blurb: '单条预览模式' },

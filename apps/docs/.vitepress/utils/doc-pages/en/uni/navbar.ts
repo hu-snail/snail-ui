@@ -54,15 +54,29 @@ import { Navbar } from '@snui/uni';
     },
     {
       name: 'navbar-mp-slots',
-      title: 'Slots and fixed positioning',
-      blurb:
-        'left / right slots carry custom icons; fixed + placeholder pins the bar and renders the spacer.',
+      title: 'Left & right slots',
+      blurb: 'The #left / #right slots carry custom side content.',
     },
     {
-      name: 'navbar-mp-config',
-      title: 'Disabled sides / safe area / capsule slot',
+      name: 'navbar-mp-fixed',
+      title: 'Fixed positioning (`fixed` / `placeholder`)',
+      blurb: 'fixed pins the bar; placeholder renders an equal-height spacer in place.',
+    },
+    {
+      name: 'navbar-mp-disabled',
+      title: 'Disabled sides (`left-disabled`)',
+      blurb: 'left-disabled / right-disabled veto the corresponding side without emitting.',
+    },
+    {
+      name: 'navbar-mp-safe-area',
+      title: 'Safe area & stacking',
+      blurb: 'safe-area-inset-top adds the status-bar padding; z-index applies while fixed.',
+    },
+    {
+      name: 'navbar-mp-capsule-slot',
+      title: 'Capsule slot',
       blurb:
-        'left-disabled / right-disabled veto taps; safe-area-inset-top adds the safe area; capsule slot plus custom-class / custom-style.',
+        '#capsule takes over the left zone; #title replaces the heading; custom-class / custom-style land on the root.',
     },
   ],
   props: {

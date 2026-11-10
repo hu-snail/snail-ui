@@ -76,20 +76,24 @@ import { Tabs } from '@snui/uni';
     },
     {
       name: 'tabs-mp-icon',
-      title: '页签图标与角标',
-      blurb:
-        'icon 传图标数据与图标名两种写法；badge-props 的数字角标、溢出上限、点状角标与语义色。',
+      title: '页签图标（icon）',
+      blurb: 'icon 传图标数据与图标名两种写法（badge-props 见 tabs-mp-badge）。',
     },
     {
       name: 'tabs-mp-badge',
       title: '角标配置',
-      blurb: '数字角标与语义色；点状角标、零值显示与隐藏；按钮可实时改配置验证联动。',
+      blurb: 'badge-props 的数字角标、溢出上限、点状角标与语义色；零值显示与隐藏。',
     },
     {
       name: 'tabs-mp-line',
-      title: '底部条样式与禁用页签',
+      title: '底部条样式（line-theme）',
       blurb:
-        'line-theme=normal/underline/dot 三种底部条；line-width/line-height 覆盖尺寸；sticky + offset-top；disabled 页签点击只触发 disabled 事件。',
+        'line-theme=normal/underline/dot 三种底部条；line-width/line-height 覆盖尺寸。',
+    },
+    {
+      name: 'tabs-mp-disabled',
+      title: '禁用页签（disabled）',
+      blurb: 'disabled 页签不可切换，点击只触发 disabled 事件。',
     },
     {
       name: 'tabs-mp-scroll',
@@ -111,8 +115,13 @@ import { Tabs } from '@snui/uni';
     },
     {
       name: 'tabs-mp-animate',
-      title: '切换动画与吸顶',
-      blurb: 'animated / duration；sticky + offset-top；line-width / line-height 内联尺寸。',
+      title: '切换动画（animated）',
+      blurb: 'animated / duration：底部条过渡 + 选中项平滑滚入。',
+    },
+    {
+      name: 'tabs-mp-sticky',
+      title: '吸顶（sticky）',
+      blurb: 'sticky + offset-top 让页签条吸顶并留出偏移。',
     },
   ],
   props: {

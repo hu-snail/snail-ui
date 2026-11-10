@@ -60,17 +60,39 @@ import { Slider } from '@snui/uni';
       blurb: 'sn-slider 单滑块：min / max / step 控制范围与步长，showExtremeValue 显示两端文案。',
     },
     {
-      name: 'slider-mp-range-theme',
-      title: '双向、刻度与主题（`range` / `marks` / `theme` / `disabled`）',
-      blurb:
-        'range 双滑块返回 [start, end]；marks 支持对象形式；theme=capsule 加粗轨道；disabled 拦掉拖动。',
+      name: 'slider-mp-range',
+      title: '区间与刻度（`range` / `marks`）',
+      blurb: 'range 双滑块返回 [start, end]；marks 支持对象形式。',
     },
     {
-      name: 'slider-mp-vertical-popover-color',
-      title:
-        '竖排、数值气泡、轨道配色与根节点样式（`vertical` / `popoverVisible` / `activeColor` / `inactiveColor` / `customClass` / `customStyle`）',
-      blurb:
-        'vertical 竖排轨道；popoverVisible 取 always / normal / never；activeColor / inactiveColor 覆盖轨道配色；customClass / customStyle 落在根节点。',
+      name: 'slider-mp-theme',
+      title: '主题（`theme`）',
+      blurb: 'theme=capsule 加粗轨道。',
+    },
+    {
+      name: 'slider-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 拦掉拖动。',
+    },
+    {
+      name: 'slider-mp-vertical',
+      title: '竖排（`vertical`）',
+      blurb: 'vertical 竖排轨道（默认高度 400rpx）。',
+    },
+    {
+      name: 'slider-mp-popover',
+      title: '数值气泡（`popoverVisible`）',
+      blurb: 'popoverVisible 取 always / normal / never 控制数值气泡。',
+    },
+    {
+      name: 'slider-mp-color',
+      title: '轨道配色（`activeColor`）',
+      blurb: 'activeColor / inactiveColor 覆盖已填充与未填充轨道颜色。',
+    },
+    {
+      name: 'slider-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'customClass / customStyle 落在根节点上。',
     },
   ],
   props: {

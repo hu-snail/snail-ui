@@ -56,17 +56,29 @@ import { DatetimePickerView } from '@snui/uni';
       blurb: 'Roller body: `type` sets the column set and minDate / maxDate bound the range.',
     },
     {
-      name: 'datetime-picker-view-mp-time-format',
-      title: 'Time type & formatting (`type="time"` / `formatter` / `filter`)',
-      blurb:
-        '`type=time` renders hour / minute only and writes an `HH:mm` string; `formatter` rewrites labels and `filter` trims the values.',
+      name: 'datetime-picker-view-mp-time-type',
+      title: 'Time type write-back',
+      blurb: '`type=time` renders hour / minute only and writes an `HH:mm` string.',
     },
     {
-      name: 'datetime-picker-view-mp-columns',
-      title:
-        'Roller geometry & column rewriting (`itemHeight` / `visibleItemCount` / `valueKey` / `labelKey` / `columnFormatter`)',
-      blurb:
-        'itemHeight / visibleItemCount; valueKey / labelKey; columnFormatter reverses the year column.',
+      name: 'datetime-picker-view-mp-formatter',
+      title: 'Column label formatting (formatter)',
+      blurb: '`formatter` rewrites the column labels.',
+    },
+    {
+      name: 'datetime-picker-view-mp-roller-geometry',
+      title: 'Roller geometry',
+      blurb: 'itemHeight / visibleItemCount tune the row height and visible rows.',
+    },
+    {
+      name: 'datetime-picker-view-mp-keys',
+      title: 'Field mapping (valueKey / labelKey)',
+      blurb: 'valueKey / labelKey are parity props (columns are generated).',
+    },
+    {
+      name: 'datetime-picker-view-mp-column-formatter',
+      title: 'Column rewriting (columnFormatter)',
+      blurb: 'columnFormatter reverses the year column.',
     },
     {
       name: 'datetime-picker-view-mp-time-bounds',
@@ -75,11 +87,14 @@ import { DatetimePickerView } from '@snui/uni';
       blurb: 'minMinute / maxMinute; useSecond + minSecond / maxSecond.',
     },
     {
-      name: 'datetime-picker-view-mp-range-boundary',
-      title:
-        'Range linkage & write-back timing (`boundaryMinDate` / `boundaryMaxDate` / `immediateChange` / `custom*`)',
-      blurb:
-        'boundaryMinDate / boundaryMaxDate (declared but not rendered); immediateChange; customClass / customStyle.',
+      name: 'datetime-picker-view-mp-boundary',
+      title: 'Range linkage (boundaryMinDate / boundaryMaxDate)',
+      blurb: 'boundaryMinDate / boundaryMaxDate (declared but not rendered).',
+    },
+    {
+      name: 'datetime-picker-view-mp-immediate-change',
+      title: 'Immediate change (immediateChange)',
+      blurb: 'immediateChange: emits change on every roll.',
     },
   ],
   props: {

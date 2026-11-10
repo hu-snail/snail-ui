@@ -11,7 +11,7 @@ export const iconDocPage: SnDocPageData = {
   title: 'Icon 图标',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -66,8 +66,13 @@ import { SnIcon } from '@snui/vue-web';
     },
     {
       name: 'icon-web-size',
-      title: '尺寸与描边',
-      blurb: '五档尺寸（14 / 18 / 24 / 32 / 48）+ 三档描边宽度（1 / 2 / 3）+ 绝对描边。',
+      title: '尺寸',
+      blurb: '五档尺寸（14 / 18 / 24 / 32 / 48）。',
+    },
+    {
+      name: 'icon-web-stroke',
+      title: '描边宽度',
+      blurb: '三档描边宽度（1 / 2 / 3）+ 绝对描边（strokeWidthAbsolute）。',
     },
     {
       name: 'icon-web-registry',

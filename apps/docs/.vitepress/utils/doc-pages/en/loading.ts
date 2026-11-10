@@ -6,7 +6,7 @@ export const loadingDocPageEn: SnDocPageData = {
   title: 'Loading',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Loading indicator. Two modes share one component:' }],
@@ -42,7 +42,11 @@ import { Loading } from '@snui/vue-web';
     { name: 'loading-web-description', title: 'Loading text', blurb: 'Loading text' },
     { name: 'loading-web-customize-icon', title: 'Custom glyph', blurb: 'Custom glyph' },
     { name: 'loading-web-delay', title: 'Delayed display', blurb: 'Delayed display' },
-    { name: 'loading-web-custom', title: 'Color and scale', blurb: 'Color and scale' },
+    {
+      name: 'loading-web-stroke',
+      title: 'Stroke color (stroke)',
+      blurb: 'stroke recolours the arc.',
+    },
   ],
   props: {
     hint: [],

@@ -69,7 +69,16 @@ import { Popup } from '@snui/uni';
     { name: 'popup-mp-basic', title: '基础用法', blurb: '基础用法' },
     { name: 'popup-mp-position', title: '弹出位置', blurb: '弹出位置' },
     { name: 'popup-mp-config', title: '遮罩与关闭行为', blurb: '遮罩与关闭行为' },
-    { name: 'popup-mp-surface', title: '样式、懒渲染与安全区', blurb: '样式、懒渲染与安全区' },
+    {
+      name: 'popup-mp-custom-style',
+      title: '面板与遮罩样式',
+      blurb: 'modal-style 写在遮罩上；custom-style 写在面板上。',
+    },
+    {
+      name: 'popup-mp-render',
+      title: '懒渲染与安全区',
+      blurb: 'lazy-render=false 提前渲染；safe-area-inset-bottom 底部安全区。',
+    },
     { name: 'popup-mp-scroll', title: '样式、懒渲染与安全区', blurb: '样式、懒渲染与安全区' },
   ],
   props: {

@@ -67,10 +67,19 @@ import { Sidebar } from '@snui/uni';
       blurb: 'v-model binds the value; each item renders its label; the panel is driven by change.',
     },
     {
+      name: 'sidebar-mp-icon',
+      title: 'Icons (`icon`)',
+      blurb: 'The item icon resolves through the registry name.',
+    },
+    {
       name: 'sidebar-mp-badge',
-      title: 'Icons and badges',
-      blurb:
-        'icon renders an icon; badge renders a numeric marker; is-dot renders a dot; disabled blocks the entry.',
+      title: 'Badges (`badge` / `is-dot`)',
+      blurb: 'badge renders a numeric marker; is-dot renders a dot (the max cap lives in sidebar-mp-guard).',
+    },
+    {
+      name: 'sidebar-mp-disabled',
+      title: 'Disabled items (`disabled`)',
+      blurb: 'disabled blocks the entry — taps are ignored.',
     },
     {
       name: 'sidebar-mp-guard',

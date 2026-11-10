@@ -11,7 +11,7 @@ export const transferDocPage: SnDocPageData = {
   title: 'Transfer 穿梭框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -48,7 +48,7 @@ import { Transfer } from '@snui/vue-web';
   },
   demos: [
     { name: 'transfer-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'transfer-web-filter', title: '搜索过滤与面板标题', blurb: '搜索过滤与面板标题' },
+    { name: 'transfer-web-filter', title: '搜索过滤（filterable）', blurb: '双面板搜索过滤 + 面板标题。' },
     { name: 'transfer-web-render', title: '自定义行渲染', blurb: '自定义行渲染' },
     { name: 'transfer-web-disabled', title: '禁用态', blurb: '禁用态' },
   ],

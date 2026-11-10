@@ -6,7 +6,7 @@ export const inputDocPageEn: SnDocPageData = {
   title: 'Input · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -61,15 +61,29 @@ import { Input } from '@snui/vue-web';
       blurb: 'default / error / warning — driven by FormItem validation, manual override allowed.',
     },
     {
-      name: 'input-states',
-      title: 'States',
-      blurb: 'disabled / readonly / required — sets aria-* attributes accordingly.',
+      name: 'input-disabled',
+      title: 'Disabled',
+      blurb: 'disabled blocks interaction.',
     },
     {
-      name: 'input-clearable-count',
-      title: 'Clearable + Counter',
-      blurb:
-        "clearable × button; clearTrigger 'always' | 'focus'; showCount / showWordLimit + maxlength.",
+      name: 'input-readonly',
+      title: 'Readonly',
+      blurb: 'readonly — value cannot be edited.',
+    },
+    {
+      name: 'input-required',
+      title: 'Required',
+      blurb: 'required sets aria-required.',
+    },
+    {
+      name: 'input-clearable',
+      title: 'Clearable',
+      blurb: "clearable × button; clearTrigger 'always' | 'focus'.",
+    },
+    {
+      name: 'input-count',
+      title: 'Character counter (showCount)',
+      blurb: 'showCount with maxlength.',
     },
     {
       name: 'input-password-toggle',
@@ -82,19 +96,54 @@ import { Input } from '@snui/vue-web';
       blurb: 'prefixIcon / suffixIcon rendered through SnIcon; cssIcon falls back to CSS class.',
     },
     {
-      name: 'input-bordered-bg-radius',
-      title: 'Border / Background / Radius',
-      blurb: "border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius tiers.",
+      name: 'input-slots',
+      title: 'Slots usage',
+      blurb: '#prefix / #suffix / #clear-icon / #count scoped slots.',
     },
     {
-      name: 'input-align-compact',
-      title: 'alignRight / compact / inputmode',
-      blurb: 'amount-field right-align; compact mode; inputmode soft-keyboard hint.',
+      name: 'input-bordered',
+      title: 'Border (bordered / border)',
+      blurb: "border: 'all' | 'bottom' | 'none' (bordered alias).",
     },
     {
-      name: 'input-custom',
-      title: 'customClass / customStyle / customInputClass',
-      blurb: 'Three class / style hooks at root / inner / via slot.',
+      name: 'input-bg',
+      title: 'Background tone (bg)',
+      blurb: 'surface / transparent / soft tones.',
+    },
+    {
+      name: 'input-radius',
+      title: 'Radius presets (radius)',
+      blurb: 'default / pill / square tiers.',
+    },
+    {
+      name: 'input-align-right',
+      title: 'Right alignment (alignRight)',
+      blurb: 'amount-field right-align.',
+    },
+    {
+      name: 'input-compact',
+      title: 'Compact mode',
+      blurb: 'compact mode for inline search rows.',
+    },
+    {
+      name: 'input-inputmode',
+      title: 'Input mode (inputmode)',
+      blurb: 'inputmode soft-keyboard hints (tel / search).',
+    },
+    {
+      name: 'input-custom-class',
+      title: 'Custom class (customClass)',
+      blurb: 'customClass on the root.',
+    },
+    {
+      name: 'input-custom-style',
+      title: 'Custom style (customStyle / placeholderStyle)',
+      blurb: 'customStyle on the inner input; placeholderStyle for the placeholder.',
+    },
+    {
+      name: 'input-custom-input-class',
+      title: 'Inner input class (customInputClass)',
+      blurb: 'customInputClass on the native input.',
     },
   ],
   props: {

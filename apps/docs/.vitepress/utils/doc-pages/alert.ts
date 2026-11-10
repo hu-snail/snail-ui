@@ -11,7 +11,7 @@ export const alertDocPage: SnDocPageData = {
   title: 'Alert 提示',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,6 +46,7 @@ import { Alert } from '@snui/vue-web';
   },
   demos: [
     { name: 'alert-web-basic', title: '基础用法', blurb: '基础用法' },
+    { name: 'alert-web-title', title: '标题显隐', blurb: '仅正文时不渲染标题行。' },
     { name: 'alert-web-bordered', title: '边框控制', blurb: '边框控制' },
     { name: 'alert-web-icon', title: '自定义图标', blurb: '自定义图标' },
     { name: 'alert-web-no-icon', title: '隐藏图标', blurb: '隐藏图标' },

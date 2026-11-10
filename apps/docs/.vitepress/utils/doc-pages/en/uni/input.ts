@@ -62,10 +62,14 @@ import { Input } from '@snui/uni';
     { name: 'input-mp-status', title: 'Status', blurb: 'default / error / warning.' },
     { name: 'input-mp-states', title: 'States', blurb: 'disabled / readonly / required + aria-*.' },
     {
-      name: 'input-mp-clearable-count',
-      title: 'Clearable + Counter',
-      blurb:
-        "clearable × button; clearTrigger 'always' | 'focus'; showCount / showWordLimit + maxlength counter.",
+      name: 'input-mp-clearable',
+      title: 'Clear button (clearable)',
+      blurb: 'clearable × button clears the value in one tap.',
+    },
+    {
+      name: 'input-mp-count',
+      title: 'Character count (showCount)',
+      blurb: 'showCount / showWordLimit + maxlength counter.',
     },
     {
       name: 'input-mp-password-toggle',
@@ -85,28 +89,59 @@ import { Input } from '@snui/uni';
         "radius: 'default' | 'sm' | 'lg' | 'xl' | 'pill' | 'square', tiers map to --sn-mp-radius-*.",
     },
     {
-      name: 'input-mp-bordered-bg-radius',
-      title: 'Border / Background',
-      blurb:
-        "border: 'all' | 'bottom' | 'none' (bordered alias); bg: 'surface' | 'transparent' | 'soft'; customBg.",
+      name: 'input-mp-border',
+      title: 'Border',
+      blurb: "border: 'all' | 'bottom' | 'none' (bordered alias).",
     },
     {
-      name: 'input-mp-align-compact',
-      title: 'alignRight / compact / inputmode',
-      blurb: 'amount right-align; compact mode; inputmode soft-keyboard hint.',
+      name: 'input-mp-bg',
+      title: 'Background',
+      blurb: "bg: 'surface' | 'transparent' | 'soft'; customBg.",
     },
     {
-      name: 'input-mp-runtime',
-      title: 'MP-only runtime attrs',
-      blurb:
-        'confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class.',
+      name: 'input-mp-align',
+      title: 'Right alignment (alignRight)',
+      blurb: 'amount fields right-align.',
     },
     {
-      name: 'input-mp-clear-focus',
-      title:
-        'Clear & focus details (`clearTrigger` / `focusWhenClear` / `focus` / `placeholderClass` / `placeholderStyle`)',
-      blurb:
-        'clearTrigger always / focus; focusWhenClear; focus on mount; placeholderClass + placeholderStyle.',
+      name: 'input-mp-compact',
+      title: 'Compact inline form (compact)',
+      blurb: 'compact + border="bottom": an inline row inside Cell / FormItem.',
+    },
+    {
+      name: 'input-mp-inputmode',
+      title: 'Soft keyboard hint (inputmode)',
+      blurb: 'inputmode soft-keyboard hint.',
+    },
+    {
+      name: 'input-mp-confirm-type',
+      title: 'Confirm button label (confirmType)',
+      blurb: 'confirm-type: the soft-keyboard confirm button label.',
+    },
+    {
+      name: 'input-mp-keyboard-hold',
+      title: 'Keyboard hold & page push',
+      blurb: 'hold-keyboard / adjust-position / always-embed.',
+    },
+    {
+      name: 'input-mp-cursor-selection',
+      title: 'Caret & selection',
+      blurb: 'cursor / selection-start / selection-end.',
+    },
+    {
+      name: 'input-mp-clear-trigger',
+      title: 'Clear button details (clearTrigger / focusWhenClear)',
+      blurb: 'clearTrigger always / focus; focusWhenClear.',
+    },
+    {
+      name: 'input-mp-focus',
+      title: 'Autofocus (focus)',
+      blurb: 'focus on mount.',
+    },
+    {
+      name: 'input-mp-placeholder',
+      title: 'Placeholder styling (placeholderClass / placeholderStyle)',
+      blurb: 'placeholderClass + placeholderStyle.',
     },
     {
       name: 'input-mp-word-limit',
@@ -114,10 +149,24 @@ import { Input } from '@snui/uni';
       blurb: 'showWordLimit + maxlength; equivalent to showCount.',
     },
     {
-      name: 'input-mp-native-attrs',
-      title:
-        'Native keyboard attrs (`cursorSpacing` / `confirmHold` / `ignoreCompositionEvent` / `enableNative`)',
-      blurb: 'cursorSpacing; confirmHold; ignoreCompositionEvent=false; enableNative=false.',
+      name: 'input-mp-cursor-spacing',
+      title: 'Cursor spacing (cursorSpacing)',
+      blurb: 'cursorSpacing: keep the caret a fixed distance above the keyboard.',
+    },
+    {
+      name: 'input-mp-confirm-hold',
+      title: 'Keyboard hold on confirm (confirmHold)',
+      blurb: 'confirmHold: the confirm key does not dismiss the keyboard.',
+    },
+    {
+      name: 'input-mp-composition',
+      title: 'Composition input (ignoreCompositionEvent)',
+      blurb: 'ignoreCompositionEvent=false: input fires mid-composition.',
+    },
+    {
+      name: 'input-mp-enable-native',
+      title: 'Native input (enableNative)',
+      blurb: 'enableNative=false: Alipay MP renders the simulated widget.',
     },
     {
       name: 'input-mp-custom-class',

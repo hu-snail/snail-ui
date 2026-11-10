@@ -10,7 +10,7 @@ export const colorPickerDocPageEn: SnDocPageData = {
   title: 'ColorPicker · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -70,9 +70,19 @@ import { ColorPicker } from '@snui/vue-web';
       blurb: 'panelOnly inline panels, multiple instances side by side.',
     },
     {
-      name: 'color-picker-web-states',
-      title: 'Clearable / disabled',
-      blurb: 'clearable resets to default; disabled; readonly.',
+      name: 'color-picker-web-clearable',
+      title: 'Clearable',
+      blurb: 'The clear button resets to the default color and emits clear.',
+    },
+    {
+      name: 'color-picker-web-disabled',
+      title: 'Disabled',
+      blurb: 'Interaction disabled.',
+    },
+    {
+      name: 'color-picker-web-readonly',
+      title: 'Readonly',
+      blurb: 'Visible but not editable.',
     },
   ],
   props: {

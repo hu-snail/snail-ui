@@ -85,14 +85,33 @@ import { DropMenu } from '@snui/uni';
     },
     {
       name: 'drop-menu-mp-guard',
-      title: '开关拦截 / 字段重命名',
-      blurb: '向上展开 + beforeToggle 拦截前两次点击 + 自定义字段名。',
+      title: '开关拦截（beforeToggle）',
+      blurb: '向上展开 + beforeToggle 拦截前两次点击。',
     },
     {
-      name: 'drop-menu-mp-panel',
-      title: '无蒙层 / 面板高度 / 自定义面板',
-      blurb:
-        'modal=false 无蒙层；close-on-click-modal=false；popup-height 限制高度；custom-popup-class / custom-popup-style；disabled；default 插槽。',
+      name: 'drop-menu-mp-keys',
+      title: '字段重命名（labelKey / valueKey）',
+      blurb: 'label-key / value-key 把选项字段重命名为 name / id。',
+    },
+    {
+      name: 'drop-menu-mp-modal',
+      title: '蒙层行为（modal）',
+      blurb: 'modal=false 无蒙层；close-on-click-modal=false 点蒙层不关闭；duration 动画时长。',
+    },
+    {
+      name: 'drop-menu-mp-popup-height',
+      title: '面板高度与样式',
+      blurb: 'popup-height 限制高度；custom-popup-class / custom-popup-style 作用于选项面板。',
+    },
+    {
+      name: 'drop-menu-mp-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 禁用整条菜单栏，点击无反应。',
+    },
+    {
+      name: 'drop-menu-mp-slot',
+      title: '自定义面板插槽',
+      blurb: 'default 插槽替换选项列表，仍复用面板与动画。',
     },
   ],
   props: {

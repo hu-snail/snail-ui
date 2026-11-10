@@ -1,7 +1,5 @@
 <script setup lang="ts">
-/**
- * Demo: SnIcon (web-end) — size scale + stroke-width variants.
- */
+/** Demo: SnIcon (web-end) — size scale. */
 import { Star } from 'lucide-vue-next';
 import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue';
 </script>
@@ -13,10 +11,6 @@ import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue';
     <SnIcon :icon="Star" :size="24" />
     <SnIcon :icon="Star" :size="32" />
     <SnIcon :icon="Star" :size="48" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="1" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="2" />
-    <SnIcon :icon="Star" :size="32" :stroke-width="3" />
-    <SnIcon :icon="Star" :size="32" stroke-width-absolute />
   </div>
 </template>
 

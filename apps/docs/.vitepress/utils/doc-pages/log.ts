@@ -11,7 +11,7 @@ export const logDocPage: SnDocPageData = {
   title: 'Log 日志',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '固定高度的滚动日志查看器，支持按行渲染、触边加载与加载指示。' }],

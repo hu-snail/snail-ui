@@ -6,7 +6,7 @@ export const anchorDocPageEn: SnDocPageData = {
   title: 'Anchor',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,7 +46,8 @@ import { Anchor } from '@snui/vue-web';
     { name: 'anchor-web-ignore-gap', title: 'Highlight detection', blurb: 'Highlight detection' },
     { name: 'anchor-web-affix', title: 'Affixed', blurb: 'Affixed' },
     { name: 'anchor-web-scrollto', title: 'Programmatic scroll', blurb: 'Programmatic scroll' },
-    { name: 'anchor-web-variants', title: 'Style variants', blurb: 'Style variants' },
+    { name: 'anchor-web-type', title: 'Block type', blurb: 'type="block" — block links, no rail.' },
+    { name: 'anchor-web-show-rail', title: 'Hide rail', blurb: 'showRail=false — links only.' },
   ],
   props: {
     hint: [],

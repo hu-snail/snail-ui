@@ -57,8 +57,13 @@ import { NoticeBar } from '@snui/uni';
     { name: 'notice-bar-mp-basic', title: 'Basic usage', blurb: 'Marquee / static / wrapping.' },
     {
       name: 'notice-bar-mp-type',
-      title: 'Types and closing',
-      blurb: 'Three tints plus a closable notice (restorable).',
+      title: 'Types (`type`)',
+      blurb: 'The warning / info / danger tints.',
+    },
+    {
+      name: 'notice-bar-mp-closable',
+      title: 'Closable (`closable`)',
+      blurb: 'closable shows the close button; the notice can be restored after close.',
     },
     {
       name: 'notice-bar-mp-vertical',
@@ -66,9 +71,14 @@ import { NoticeBar } from '@snui/uni';
       blurb: 'Three announcements rotating, with the current index shown.',
     },
     {
+      name: 'notice-bar-mp-prefix',
+      title: 'Prefix icon (`prefix`)',
+      blurb: 'A registry prefix icon replaces the type glyph, with a fallback on miss.',
+    },
+    {
       name: 'notice-bar-mp-marquee',
-      title: 'Icon, delay and speed',
-      blurb: 'Registry prefix icon / delay=3 / speed=120.',
+      title: 'Marquee params (`delay` / `speed`)',
+      blurb: 'delay=3 waits before scrolling; speed=120 scrolls faster.',
     },
     {
       name: 'notice-bar-mp-custom',

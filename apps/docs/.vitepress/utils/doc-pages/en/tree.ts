@@ -6,7 +6,7 @@ export const treeDocPageEn: SnDocPageData = {
   title: 'Tree · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -44,9 +44,9 @@ import { Tree } from '@snui/vue-web';
     { name: 'tree-web-multiple', title: 'Multiple', blurb: 'Multiple' },
     { name: 'tree-web-cascade', title: 'Cascade', blurb: 'Cascade' },
     {
-      name: 'tree-web-checkable-drag',
-      title: 'Checkboxes + Drag & Drop',
-      blurb: 'Checkboxes + Drag & Drop',
+      name: 'tree-web-draggable',
+      title: 'Drag & drop',
+      blurb: 'Drag to reorder siblings or nest into folders.',
     },
     { name: 'tree-web-disabled', title: 'Disabled', blurb: 'Disabled' },
     { name: 'tree-web-prefix-suffix', title: 'Prefix & Suffix', blurb: 'Prefix & Suffix' },

@@ -66,16 +66,32 @@ import { Picker } from '@snui/uni';
     },
     {
       name: 'picker-mp-fields',
-      title:
-        'Field mapping & button labels (`valueKey` / `labelKey` / `childrenKey` / `cancelButtonText`)',
-      blurb: 'valueKey / labelKey / childrenKey mapping; cancelButtonText; confirmButtonText.',
+      title: 'Field mapping (`valueKey` / `labelKey` / `childrenKey`)',
+      blurb:
+        'A cascade tree with `valueKey` / `labelKey` / `childrenKey` mapping, so business data need not be reshaped into value / label / children.',
     },
     {
-      name: 'picker-mp-rows-sheet',
-      title:
-        'Roller geometry & sheet (`itemHeight` / `visibleItemCount` / `immediateChange` / scrim and stacking / `custom*`)',
+      name: 'picker-mp-button-text',
+      title: 'Button labels (`cancelButtonText` / `confirmButtonText`)',
+      blurb: '`cancelButtonText` / `confirmButtonText` override the cancel and confirm labels.',
+    },
+    {
+      name: 'picker-mp-rows',
+      title: 'Roller geometry (`itemHeight` / `visibleItemCount`)',
       blurb:
-        'itemHeight / visibleItemCount; immediateChange; closeOnClickModal=false; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle / customViewClass.',
+        '`itemHeight` tunes the row height and `visibleItemCount` the visible rows; `customViewClass` tweaks the roller.',
+    },
+    {
+      name: 'picker-mp-immediate',
+      title: 'Commit while scrolling (`immediateChange`)',
+      blurb:
+        '`immediateChange` writes `v-model` continuously during the roll instead of on confirm.',
+    },
+    {
+      name: 'picker-mp-sheet',
+      title: 'Sheet behavior (scrim / stacking / safe area)',
+      blurb:
+        'closeOnClickModal=false; safeAreaInsetBottom=false; zIndex; rootPortal; customClass / customStyle.',
     },
   ],
   props: {

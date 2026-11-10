@@ -57,8 +57,8 @@ import { DateStrip } from '@snui/uni';
     },
     {
       name: 'date-strip-mp-nav',
-      title: 'Navigation buttons',
-      blurb: 'show-nav side buttons + #prev / #next slots + pagechange + show-lunar.',
+      title: 'Navigation buttons (show-nav)',
+      blurb: 'show-nav side buttons + #prev / #next slots + pagechange.',
     },
     {
       name: 'date-strip-mp-lunar',

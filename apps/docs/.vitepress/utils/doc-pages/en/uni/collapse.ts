@@ -59,9 +59,13 @@ import { Collapse } from '@snui/uni';
     },
     {
       name: 'collapse-mp-accordion',
-      title: 'Accordion mode',
-      blurb:
-        'accordion makes v-model a string and keeps one panel open; a disabled panel cannot expand.',
+      title: 'Accordion mode (`accordion`)',
+      blurb: 'accordion makes v-model a string and keeps one panel open at a time.',
+    },
+    {
+      name: 'collapse-mp-disabled',
+      title: 'Disabled panel (`disabled`)',
+      blurb: 'A disabled item keeps the neutral colour and ignores taps.',
     },
     {
       name: 'collapse-mp-viewmore',
@@ -82,10 +86,20 @@ import { Collapse } from '@snui/uni';
         'Three title-icon sources: a built-in set object, an image URL and the name chain; iconSize tiers tiny/small/medium/large plus a custom length; iconColor takes a colour token.',
     },
     {
-      name: 'collapse-mp-slots',
-      title: 'The more slot, item border and before-expend',
+      name: 'collapse-mp-more-slot',
+      title: 'The `more` slot',
+      blurb: 'The #more slot customises the viewmore footer; custom-more-slot-class appends a class.',
+    },
+    {
+      name: 'collapse-mp-before-expend',
+      title: 'Expand guard (`before-expend`)',
+      blurb: 'before-expend blocks the first two expands by returning false.',
+    },
+    {
+      name: 'collapse-mp-title-slot',
+      title: '`title` slot & content styling',
       blurb:
-        'more slot with custom-more-slot-class; item border=false; before-expend guard; title slot.',
+        '#title replaces the heading; custom-body-class targets the content; item border=false drops the rule.',
     },
   ],
   props: {

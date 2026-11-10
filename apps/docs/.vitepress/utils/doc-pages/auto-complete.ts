@@ -108,9 +108,19 @@ export const autoCompleteDocPage: SnDocPageData = {
       blurb: '按输入动态计算候选。',
     },
     {
-      name: 'auto-complete-web-states',
-      title: 'blurAfterSelect / clearable / 禁用',
-      blurb: '选中后失焦、清空、禁用态。',
+      name: 'auto-complete-web-blur-after-select',
+      title: '选中后失焦（blurAfterSelect）',
+      blurb: '选择候选即失焦收起输入。',
+    },
+    {
+      name: 'auto-complete-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '清空按钮一键置空。',
+    },
+    {
+      name: 'auto-complete-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '禁用输入 / 选中 / 清空。',
     },
   ],
 

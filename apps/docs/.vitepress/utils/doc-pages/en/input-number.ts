@@ -10,7 +10,7 @@ export const inputNumberDocPageEn: SnDocPageData = {
   title: 'InputNumber · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,8 +49,13 @@ import { InputNumber } from '@snui/vue-web';
     { name: 'input-number-web-basic', title: 'Basic', blurb: 'v-model + stepper buttons.' },
     {
       name: 'input-number-web-bounds',
-      title: 'Bounds & step',
-      blurb: 'min / max / step / stepStrictly snapping.',
+      title: 'Bounds (min / max)',
+      blurb: 'Out-of-range commits clamp back into range.',
+    },
+    {
+      name: 'input-number-web-step',
+      title: 'Step (step / stepStrictly)',
+      blurb: 'Buttons / keyboard snap to step; stepStrictly enforces the step grid.',
     },
     { name: 'input-number-web-precision', title: 'Precision', blurb: 'Decimal rounding.' },
     {
@@ -59,15 +64,39 @@ import { InputNumber } from '@snui/vue-web';
       blurb: 'Display formatting + parse back to number.',
     },
     {
-      name: 'input-number-web-layout',
-      title: 'Button placement / sizes',
-      blurb:
-        'buttonPlacement: left / both / right; buttonMode: symbol (− +) / spinner (↑ ↓); five sizes.',
+      name: 'input-number-web-size',
+      title: 'Size',
+      blurb: 'mini / tiny / small / medium / large — five presets.',
     },
     {
-      name: 'input-number-web-states',
-      title: 'Disabled / readonly / clearable',
-      blurb: 'disabled / readonly / clearable.',
+      name: 'input-number-web-placement',
+      title: 'Button placement',
+      blurb: 'left / both / right stepper layouts.',
+    },
+    {
+      name: 'input-number-web-mode',
+      title: 'Button mode',
+      blurb: 'symbol (− +) vs spinner (↑ ↓) stepper shapes.',
+    },
+    {
+      name: 'input-number-web-button-style',
+      title: 'Button style',
+      blurb: 'Stepper plate colors; the hover plate paints in the both placement.',
+    },
+    {
+      name: 'input-number-web-disabled',
+      title: 'Disabled',
+      blurb: 'Input / buttons / clear all inert.',
+    },
+    {
+      name: 'input-number-web-readonly',
+      title: 'Readonly',
+      blurb: 'Value visible, not editable.',
+    },
+    {
+      name: 'input-number-web-clearable',
+      title: 'Clearable',
+      blurb: 'Shows an × button when a value is present.',
     },
   ],
   props: {

@@ -64,22 +64,45 @@ import { CalendarView } from '@snui/uni';
       blurb: 'sn-calendar-view 平铺月网格：minDate / maxDate 决定月份范围，tap 某天写回时间戳。',
     },
     {
-      name: 'calendar-view-mp-range-switch',
-      title: '区间与月份切换（`type` / `maxRange` / `switchMode`）',
-      blurb:
-        'type=daterange 选区间；maxRange 限制跨度并显示提示；switchMode=month 改为单月 + 上下月按钮。',
+      name: 'calendar-view-mp-range',
+      title: '区间选择（type="daterange"）',
+      blurb: 'type=daterange 选区间；maxRange 限制跨度并显示提示。',
     },
     {
-      name: 'calendar-view-mp-formatter-week',
-      title: '周起始、单元格格式与面板标题（`firstDayOfWeek` / `formatter` / `showPanelTitle`）',
-      blurb:
-        'firstDayOfWeek=1 周一起始；formatter 在周末格底部加「休」；showPanelTitle=false 收起月份标题。',
+      name: 'calendar-view-mp-switch-mode',
+      title: '月 / 年切换（switchMode）',
+      blurb: 'switchMode=month 改为单月 + 上下月按钮。',
     },
     {
-      name: 'calendar-view-mp-same-day-time',
-      title: '同日区间、默认时分与自定义样式（`allowSameDay` / `defaultTime` / `immediateChange`）',
+      name: 'calendar-view-mp-first-day-of-week',
+      title: '周起始日',
+      blurb: 'firstDayOfWeek=1 把周一挪到第一列。',
+    },
+    {
+      name: 'calendar-view-mp-formatter',
+      title: '单元格格式化',
+      blurb: 'formatter 在周末格底部加「休」。',
+    },
+    {
+      name: 'calendar-view-mp-panel-title',
+      title: '面板标题（showPanelTitle）',
+      blurb: 'showPanelTitle=false 收起月份标题，面板只剩网格。',
+    },
+    {
+      name: 'calendar-view-mp-same-day',
+      title: '起止同一天（allowSameDay）',
+      blurb: 'allowSameDay 允许区间起止同一天。',
+    },
+    {
+      name: 'calendar-view-mp-default-time',
+      title: '默认时分与即时写回',
+      blurb: 'defaultTime 决定写回时间戳的时分秒；immediateChange 点中即触发。',
+    },
+    {
+      name: 'calendar-view-mp-time-props',
+      title: '时间列声明参数',
       blurb:
-        'allowSameDay 允许区间起止同一天；defaultTime 决定写回时间戳的时分秒；immediateChange 点中即触发；customClass / customStyle 落在根节点。',
+        'timeFilter / timeItemHeight / timeVisibleItemCount / hideSecond 只做声明对齐（面板内无时间滚筒）；customClass / customStyle 落在根节点。',
     },
   ],
   props: {

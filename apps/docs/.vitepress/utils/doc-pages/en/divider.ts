@@ -6,7 +6,7 @@ export const dividerDocPageEn: SnDocPageData = {
   title: 'Divider',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: "import { SnDivider } from '@snui/vue-web';" }],

@@ -57,24 +57,53 @@ import { SelectPicker } from '@snui/uni';
         'The checkbox type takes an array `v-model`; min / max cap the selection; tapping a row toggles it.',
     },
     {
-      name: 'select-picker-mp-radio-filter',
-      title: 'Radio & search (`type` / `filterable` / `checkedColor`)',
-      blurb:
-        '`type=radio` writes a scalar; `filterable` adds a search box that filters on the label; `checkedColor` overrides the accent.',
+      name: 'select-picker-mp-type-radio',
+      title: 'Radio mode (`type=radio`)',
+      blurb: '`type=radio` writes a scalar instead of an array.',
     },
     {
-      name: 'select-picker-mp-fields-size',
-      title:
-        'Field mapping & buttons (`valueKey` / `labelKey` / `confirmButtonText` / `showConfirm` / `selectSize`)',
+      name: 'select-picker-mp-filterable',
+      title: 'Filterable (`filterable`)',
       blurb:
-        'valueKey / labelKey mapping; confirmButtonText; showConfirm=false; selectSize (declared but not rendered).',
+        '`filterable` adds a search box that filters on the label; `filterPlaceholder` customizes its hint.',
     },
     {
-      name: 'select-picker-mp-loading-sheet',
-      title:
-        'Loading state & sheet (`loading` / `loadingColor` / `beforeConfirm` / `scrollIntoView` / scrim and stacking / `custom*`)',
+      name: 'select-picker-mp-fields',
+      title: 'Field mapping (`valueKey` / `labelKey`)',
+      blurb: '`valueKey` / `labelKey` point the component at custom field names.',
+    },
+    {
+      name: 'select-picker-mp-chip-size',
+      title: 'Chip size & confirm (`selectSize` / `showConfirm`)',
       blurb:
-        'loading / loadingColor; beforeConfirm; closeOnClickModal; safeAreaInsetBottom; zIndex; rootPortal; scrollIntoView; customClass / customStyle / customContentClass.',
+        '`selectSize` picks the chip size; `showConfirm=false` hides the confirm button; `confirmButtonText` overrides its label.',
+    },
+    {
+      name: 'select-picker-mp-checked-color',
+      title: 'Checked color (`checkedColor`)',
+      blurb: '`checkedColor` overrides the accent of the checked row.',
+    },
+    {
+      name: 'select-picker-mp-loading',
+      title: 'Loading state (`loading`)',
+      blurb: '`loading` shows the option list as loading; `loadingColor` recolors the spinner.',
+    },
+    {
+      name: 'select-picker-mp-before-confirm',
+      title: 'Confirm guard (`beforeConfirm`)',
+      blurb: 'A `beforeConfirm` returning false leaves the model untouched.',
+    },
+    {
+      name: 'select-picker-mp-sheet',
+      title: 'Sheet behavior & styling',
+      blurb:
+        'closeOnClickModal; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle.',
+    },
+    {
+      name: 'select-picker-mp-scroll-into-view',
+      title: 'Scroll into view (`scrollIntoView`)',
+      blurb:
+        '`scrollIntoView` scrolls the selected row into view on open; `customContentClass` restyles the content area.',
     },
   ],
   props: {

@@ -11,7 +11,7 @@ export const formDocPage: SnDocPageData = {
   title: 'Form',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -83,16 +83,29 @@ import { Form } from '@snui/vue-web';
         'Cell 列表化：border 加分割线、ellipsis 长 label 截断、clickable 整行可点 + click 事件、isLink 显示 › 箭头、placeholder 占位、description 副文本。',
     },
     {
-      name: 'form-cell-style',
-      title: '表单级默认（`size` / `valueAlign` / `asteriskPosition` / `hideAsterisk`）',
-      blurb:
-        'Form 级统一：size 缩放、valueAlign right、asteriskPosition right、hideAsterisk 关掉 * 标记。',
+      name: 'form-size',
+      title: '表单尺寸（size）',
+      blurb: 'Form 级 size 统一缩放全部 FormItem。',
     },
     {
-      name: 'form-validation-flow',
-      title: '校验触发 / 重置切换 / 错误展示（`validateTrigger` / `resetOnChange` / `errorType`）',
-      blurb:
-        "validateTrigger: 'blur' | 'change'；resetOnChange 提交后自动清错误；errorType: 'message' | 'toast' | 'none'。",
+      name: 'form-value-align',
+      title: '值对齐（valueAlign）',
+      blurb: 'valueAlign right + 输入框 align-right。',
+    },
+    {
+      name: 'form-asterisk',
+      title: '必填星号（asteriskPosition / hideAsterisk）',
+      blurb: 'asteriskPosition right、hideAsterisk 关掉 * 标记。',
+    },
+    {
+      name: 'form-validate-trigger',
+      title: '校验时机（validateTrigger）',
+      blurb: "validateTrigger: 'blur'（默认）| 'change'。",
+    },
+    {
+      name: 'form-error-type',
+      title: '错误展示（errorType）',
+      blurb: "errorType: 'message' | 'toast' | 'none'（静默校验）。",
     },
     {
       name: 'form-web-assembly',

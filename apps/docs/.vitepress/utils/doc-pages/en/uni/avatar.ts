@@ -53,9 +53,13 @@ import { Avatar } from '@snui/uni';
     },
     {
       name: 'avatar-mp-size',
-      title: 'Size and shape',
-      blurb:
-        'Presets small / normal / medium / large; round and square shapes; custom numeric and percentage sizes.',
+      title: 'Size (`size`)',
+      blurb: 'Presets small / normal / medium / large; custom numeric and percentage sizes.',
+    },
+    {
+      name: 'avatar-mp-shape',
+      title: 'Shape (`shape`)',
+      blurb: 'Round and square shapes.',
     },
     {
       name: 'avatar-mp-fallback',
@@ -63,16 +67,26 @@ import { Avatar } from '@snui/uni';
       blurb: 'Image fails → alt text → text → icon, with an error event.',
     },
     {
-      name: 'avatar-mp-icon-font',
-      title: 'Font icons and mode',
+      name: 'avatar-mp-css-icon',
+      title: 'Font icons (`cssIcon` / `iconPrefix`)',
       blurb:
-        'cssIcon + iconPrefix font icons, a string cssIcon prefix, mode cropping and customClass / customStyle.',
+        'cssIcon + iconPrefix build the font-icon class; a string cssIcon is the prefix itself; placeholder glyphs prove the class landed on the glyph node.',
+    },
+    {
+      name: 'avatar-mp-mode',
+      title: 'Image fit (`mode`)',
+      blurb:
+        'mode is forwarded to the inner image (aspectFill crops / aspectFit letterboxes); plus customClass / customStyle root styling.',
     },
     {
       name: 'avatar-mp-status',
-      title: 'Presence status and badge avatars',
-      blurb:
-        'online / offline presence dots, plus badge avatars composed from sn-badge + sn-avatar (count badge / dot).',
+      title: 'Presence status (`status`)',
+      blurb: 'online green dot / offline grey dot (AUI addition), announced via aria-label.',
+    },
+    {
+      name: 'avatar-mp-badge',
+      title: 'Badge avatars (badge composition)',
+      blurb: 'sn-badge wrapping sn-avatar: count badge / icon avatar / dot.',
     },
   ],
   props: {

@@ -11,7 +11,7 @@ export const switchDocPage: SnDocPageData = {
   title: 'Switch',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -54,9 +54,19 @@ import { Switch } from '@snui/vue-web';
     },
     { name: 'switch-web-sizes', title: '尺寸（size）', blurb: 'small / medium / large 三档。' },
     {
-      name: 'switch-web-states',
-      title: '禁用 / 只读 / 加载中',
-      blurb: 'disabled / readonly / loading spinner。',
+      name: 'switch-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '开 / 关两种禁用态。',
+    },
+    {
+      name: 'switch-web-readonly',
+      title: '只读（readonly）',
+      blurb: '视觉态正常，不可切换。',
+    },
+    {
+      name: 'switch-web-loading',
+      title: '加载中（loading）',
+      blurb: '异步提交中的 spinner 态。',
     },
     {
       name: 'switch-web-slots',

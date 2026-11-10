@@ -56,8 +56,8 @@ import { Layout } from '@snui/uni';
     },
     {
       name: 'layout-mp-gutter',
-      title: '间距、偏移与对齐',
-      blurb: 'gutter=16 列间距；offset=8 左侧偏移；justify=space-between + align=middle 对齐。',
+      title: '间距与偏移（gutter / offset）',
+      blurb: 'gutter=16 列间距；offset=8 左侧偏移。',
     },
     {
       name: 'layout-mp-align',

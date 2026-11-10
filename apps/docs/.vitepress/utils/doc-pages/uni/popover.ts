@@ -72,9 +72,19 @@ import { Popover } from '@snui/uni';
     },
     { name: 'popover-mp-theme', title: '暗黑主题', blurb: '暗黑主题' },
     {
-      name: 'popover-mp-slot',
-      title: '兼容图标字段 / content 插槽 / 节点类名',
-      blurb: '兼容图标字段 / content 插槽 / 节点类名',
+      name: 'popover-mp-icon-class',
+      title: '兼容图标字段（iconClass）',
+      blurb: 'menu 模式下旧字段 iconClass 仍兼容：名称走 SnIcon，图片地址按 image 渲染。',
+    },
+    {
+      name: 'popover-mp-content-slot',
+      title: 'content 插槽',
+      blurb: '#content 插槽完全替换气泡正文，两种模式都可用。',
+    },
+    {
+      name: 'popover-mp-custom-style',
+      title: '节点类名与偏移',
+      blurb: 'custom-arrow / custom-pop 追加类名；offset 与 custom-style 作用在根节点。',
     },
   ],
   props: {

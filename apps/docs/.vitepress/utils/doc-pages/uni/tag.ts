@@ -57,8 +57,13 @@ import { Tag } from '@snui/uni';
     },
     {
       name: 'tag-mp-size',
-      title: '尺寸与形态',
-      blurb: '尺寸 small / medium / large / extra-large；round 胶囊形；mark 非对称圆角标记形。',
+      title: '尺寸（size）',
+      blurb: '尺寸 small / default / large / extra-large 四档对比。',
+    },
+    {
+      name: 'tag-mp-round-mark',
+      title: '胶囊与标记形（round / mark）',
+      blurb: 'round 胶囊形；mark 非对称圆角标记形；两者可叠加。',
     },
     {
       name: 'tag-mp-variant',
@@ -80,14 +85,25 @@ import { Tag } from '@snui/uni';
     },
     {
       name: 'tag-mp-closable',
-      title: '可关闭 / 新增标签',
-      blurb: 'closable 可移除的筛选条件（清空后点虚线标签恢复）；dynamic 行内输入新增标签。',
+      title: '可关闭标签（closable）',
+      blurb: 'closable 可移除的筛选条件，@close 实时移除；清空后点虚线标签恢复。',
     },
     {
-      name: 'tag-mp-color-custom',
-      title: '自定义颜色与根节点样式',
+      name: 'tag-mp-dynamic',
+      title: '动态新增标签（dynamic）',
+      blurb: 'dynamic 行内输入，@confirm 确认后进入已添加列表，同样可关闭。',
+    },
+    {
+      name: 'tag-mp-color',
+      title: '自定义颜色（bgColor / color）',
       blurb:
-        'bgColor 品牌色接管（底色与边框同步改）；color 只改文字色；iconPrefix + cssIcon 字体图标类；customClass 与 customStyle。',
+        'bgColor 品牌色接管（底色与边框同步改）；color 只改文字色；附带 customClass / customStyle 根节点样式。',
+    },
+    {
+      name: 'tag-mp-css-icon',
+      title: '字体图标（cssIcon）',
+      blurb:
+        'iconPrefix + cssIcon 拼出字体图标类；字符串 cssIcon 直接当前缀；几何形占位验证类名挂载。',
     },
   ],
   props: {

@@ -75,9 +75,15 @@ import { Pagination } from '@snui/uni';
       blurb: 'simple mode: prev / counter / next, shown with and without the counter text.',
     },
     {
+      name: 'pagination-mp-hide-on-one-page',
+      title: 'Hide on single page (`hide-if-one-page`)',
+      blurb: 'hide-if-one-page skips rendering entirely when there is a single page.',
+    },
+    {
       name: 'pagination-mp-slots',
-      title: 'Single-page hiding and custom slots',
-      blurb: 'hide-if-one-page skips rendering; all four slots customised.',
+      title: 'Slot customization',
+      blurb:
+        'The prev / size / next / message slots customised; custom-class / custom-style on the root.',
     },
   ],
   props: {

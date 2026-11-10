@@ -65,17 +65,35 @@ import { SlideVerify } from '@snui/uni';
         'sn-slide-verify 拖动验证：滑块拖到最右端（容差 tolerance 内）触发 success，否则 fail 并归位。',
     },
     {
-      name: 'slide-verify-mp-custom',
-      title: '文案、颜色与禁用（`text` / `successText` / `backgroundColor` / `disabled`）',
-      blurb:
-        'text / successText 覆盖内置文案；backgroundColor / activeBackgroundColor 覆盖轨道色；disabled 拦掉拖动。',
+      name: 'slide-verify-mp-text',
+      title: '文案（`text` / `successText`）',
+      blurb: 'text / successText 覆盖内置提示与成功文案。',
+    },
+    {
+      name: 'slide-verify-mp-color',
+      title: '轨道配色（`backgroundColor`）',
+      blurb: 'backgroundColor / activeBackgroundColor 覆盖轨道底色与拖过填充。',
+    },
+    {
+      name: 'slide-verify-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 拦掉拖动。',
     },
     {
       name: 'slide-verify-mp-icons',
-      title:
-        '图标字形与根节点样式（`icon` / `successIcon` / `iconPrefix` / `cssIcon` / `iconSize` / `successIconSize` / `tolerance` / `customClass` / `customStyle`）',
+      title: '图标字形（`icon` / `successIcon`）',
       blurb:
-        'icon / successIcon 走 iconfont 约定；cssIcon 按裸类名渲染；iconSize / successIconSize 独立控制两个字形尺寸；tolerance 放宽容差；customClass / customStyle 落在根节点。',
+        'icon / successIcon 走 iconfont 约定；cssIcon 按裸类名渲染；iconSize / successIconSize 独立控制两个字形尺寸。',
+    },
+    {
+      name: 'slide-verify-mp-tolerance',
+      title: '容差（`tolerance`）',
+      blurb: 'tolerance 放宽右边缘容差（px）。',
+    },
+    {
+      name: 'slide-verify-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'customClass / customStyle 落在根节点上。',
     },
   ],
   props: {

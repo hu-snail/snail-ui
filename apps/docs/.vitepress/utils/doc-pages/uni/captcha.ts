@@ -66,9 +66,14 @@ import { Captcha } from '@snui/uni';
       blurb: '两段式验证（组合滑块）',
     },
     {
-      name: 'captcha-mp-custom',
-      title: '自定义文案 / 尺寸 / 容差',
-      blurb: '自定义文案 / 尺寸 / 容差',
+      name: 'captcha-mp-copy',
+      title: '自定义文案（tips / successText）',
+      blurb: '自定义文案（tips / successText）',
+    },
+    {
+      name: 'captcha-mp-size-tolerance',
+      title: '尺寸与容差（width / height / tolerance）',
+      blurb: '尺寸与容差（width / height / tolerance）',
     },
   ],
   props: {

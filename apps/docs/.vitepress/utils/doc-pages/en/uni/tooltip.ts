@@ -71,9 +71,19 @@ import { Tooltip } from '@snui/uni';
       blurb: 'All 12 directions in the wot-ui demo grid, one open at a time.',
     },
     {
-      name: 'tooltip-mp-config',
-      title: 'Arrow / close button / offset / colors',
-      blurb: 'No arrow / close button + offset / disabled.',
+      name: 'tooltip-mp-arrow',
+      title: 'Arrow (`visible-arrow`)',
+      blurb: 'visible-arrow=false drops the arrow pointing at the trigger.',
+    },
+    {
+      name: 'tooltip-mp-close',
+      title: 'Close button & offset',
+      blurb: 'show-close renders a close button; offset tweaks the gap to the trigger.',
+    },
+    {
+      name: 'tooltip-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: 'disabled freezes the trigger — taps do not open the bubble.',
     },
     {
       name: 'tooltip-mp-content',

@@ -85,10 +85,14 @@ import { Form } from '@snui/uni';
         'label 插槽放复合标签、default 插槽放自定义优先级选择、description 插槽放自定义副文案。',
     },
     {
-      name: 'form-mp-state',
-      title: '校验状态与展示策略',
-      blurb:
-        '默认内联消息 / statusIcon 状态图标 / showMessage=false 隐藏消息行 / errorType=none 静默校验。',
+      name: 'form-mp-status-icon',
+      title: '状态图标（statusIcon）',
+      blurb: 'statusIcon：消息前带状态图标。',
+    },
+    {
+      name: 'form-mp-message-display',
+      title: '错误消息展示策略',
+      blurb: 'showMessage=false 隐藏消息行 / errorType=none 静默校验。',
     },
     {
       name: 'form-mp-disabled',
@@ -96,15 +100,34 @@ import { Form } from '@snui/uni';
       blurb: 'SnForm.disabled 级联到所有 FormItem，提交按钮一并禁用。',
     },
     {
-      name: 'form-mp-cell',
-      title: 'Cell 列表化',
-      blurb:
-        'border 分隔线 / ellipsis 长标签截断 / clickable + isLink 点击行 / placeholder 空值兜底 / description 副文案。',
+      name: 'form-mp-cell-border',
+      title: '单元格分隔与截断',
+      blurb: 'border 分隔线 / ellipsis 长标签截断。',
     },
     {
-      name: 'form-mp-cell-style',
-      title: '表单级默认',
-      blurb: 'size 缩放、valueAlign 右对齐、asteriskPosition 星号位置、hideAsterisk 隐藏必填星号。',
+      name: 'form-mp-cell-clickable',
+      title: '可点击行（clickable / isLink）',
+      blurb: 'clickable + isLink：整行可点并显示箭头。',
+    },
+    {
+      name: 'form-mp-cell-text',
+      title: '占位与副文案',
+      blurb: 'placeholder 空值兜底 / description 副文案。',
+    },
+    {
+      name: 'form-mp-size',
+      title: '尺寸（size）',
+      blurb: 'size 缩放：默认 medium 与 size="small" 两档对比。',
+    },
+    {
+      name: 'form-mp-value-align',
+      title: '值对齐（valueAlign）',
+      blurb: 'valueAlign 右对齐。',
+    },
+    {
+      name: 'form-mp-asterisk',
+      title: '必填星号（asteriskPosition / hideAsterisk）',
+      blurb: 'asteriskPosition 星号位置、hideAsterisk 隐藏必填星号。',
     },
     {
       name: 'form-mp-icon',
@@ -134,10 +157,19 @@ import { Form } from '@snui/uni';
         'validate() / validateField(prop) / validateField([props]) / clearValidate(prop)，并回显 @validate 的 errors。',
     },
     {
-      name: 'form-mp-schema-layout',
-      title: '表单级配置（schema / titleWidth / layout / center）',
-      blurb:
-        'titleWidth 列宽 / layout horizontal 与 vertical / center 垂直居中 / schema 存进上下文。',
+      name: 'form-mp-title-width',
+      title: '标签列宽（titleWidth）',
+      blurb: 'titleWidth 列宽。',
+    },
+    {
+      name: 'form-mp-layout',
+      title: '排布（layout / center）',
+      blurb: 'layout horizontal 与 vertical / center 垂直居中。',
+    },
+    {
+      name: 'form-mp-schema',
+      title: '表单 schema',
+      blurb: 'schema 存进上下文。',
     },
     {
       name: 'form-mp-validation-flow',

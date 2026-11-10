@@ -61,21 +61,45 @@ import { Textarea } from '@snui/uni';
   demos: [
     { name: 'textarea-mp-basic', title: 'Basic usage', blurb: 'v-model binding + placeholder.' },
     {
-      name: 'textarea-mp-counter-clear',
-      title: 'Word limit & clear (`showWordLimit` / `clearable`)',
-      blurb: 'showWordLimit + maxlength counter; clearable; error state.',
+      name: 'textarea-mp-word-limit',
+      title: 'Word limit (`showWordLimit`)',
+      blurb: '`showWordLimit` + `maxlength` render the counter.',
     },
     {
-      name: 'textarea-mp-states',
-      title: 'States (`autoHeight` / `readonly` / `disabled` / `compact`)',
-      blurb: 'autoHeight / readonly / disabled / compact.',
+      name: 'textarea-mp-clearable',
+      title: 'Clearable (`clearable`)',
+      blurb: '`clearable` shows a × on the right that clears the value in one tap.',
+    },
+    {
+      name: 'textarea-mp-error',
+      title: 'Error state (`error`)',
+      blurb: '`error` marks the value as invalid (form-driven).',
+    },
+    {
+      name: 'textarea-mp-auto-height',
+      title: 'Auto height (`autoHeight`)',
+      blurb: '`autoHeight` grows the box with its content.',
+    },
+    {
+      name: 'textarea-mp-disabled-readonly',
+      title: 'Readonly & disabled (`readonly` / `disabled`)',
+      blurb: '`readonly` is selectable but not editable; `disabled` locks the whole field.',
+    },
+    {
+      name: 'textarea-mp-compact',
+      title: 'Compact (`compact`)',
+      blurb: '`compact` drops the border and background — for inline form rows.',
     },
     {
       name: 'textarea-mp-prefix-icon',
-      title:
-        'Leading icon & placeholder (`prefixIcon` / `iconPrefix` / `cssIcon` / `placeholderStyle` / `placeholderClass`)',
+      title: 'Leading icon (`prefixIcon`)',
+      blurb: '`prefixIcon` resolves through the registry; `iconPrefix` + `cssIcon` render a raw CSS class.',
+    },
+    {
+      name: 'textarea-mp-placeholder',
+      title: 'Placeholder styling',
       blurb:
-        'prefixIcon via the registry; iconPrefix + cssIcon via a CSS class; placeholderStyle / placeholderClass restyle the placeholder.',
+        '`placeholderStyle` (inline declarations) + `placeholderClass` (a class) affect only the placeholder text.',
     },
     {
       name: 'textarea-mp-clear-trigger',

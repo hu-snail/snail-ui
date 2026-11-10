@@ -15,7 +15,7 @@ export const avatarGroupDocPage: SnDocPageData = {
   title: 'AvatarGroup 头像组',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '把多个头像叠放成组，溢出部分自动折叠为「+N」汇总头像。' }],
@@ -46,7 +46,7 @@ import { AvatarGroup } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'avatar-group-web-basic', title: '基础头像组', blurb: '基础头像组' },
+    { name: 'avatar-group-web-basic', title: '基础头像组', blurb: '默认收紧叠放。' },
     { name: 'avatar-group-web-max', title: '数量上限与展开回调', blurb: '数量上限与展开回调' },
     { name: 'avatar-group-web-shrink', title: '尺寸渐变与收紧叠放', blurb: '尺寸渐变与收紧叠放' },
     { name: 'avatar-group-web-image', title: '图片头像', blurb: '图片头像' },

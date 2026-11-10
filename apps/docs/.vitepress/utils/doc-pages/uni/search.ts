@@ -68,22 +68,39 @@ import { Search } from '@snui/uni';
       blurb: '三种 variant：plain / filled / light。',
     },
     {
-      name: 'search-mp-cancel-states',
-      title: '取消文案与状态（`cancelTxt` / `hideCancel` / `placeholderLeft` / `disabled`）',
-      blurb: 'cancelTxt + cancel 事件；hideCancel；placeholderLeft；disabled。',
+      name: 'search-mp-cancel',
+      title: '取消按钮（`cancelTxt` / `hideCancel`）',
+      blurb: 'cancelTxt + cancel 事件；hideCancel 隐藏取消按钮。',
     },
     {
-      name: 'search-mp-input-attrs',
-      title: '输入属性（`maxlength` / `focus` / `focusWhenClear` / `customInputClass`）',
-      blurb:
-        'maxlength 限制字符数；focus 挂载即聚焦；focusWhenClear 清空后重新聚焦；customInputClass 追加到内部输入节点。',
+      name: 'search-mp-placeholder-left',
+      title: '占位符左对齐（`placeholderLeft`）',
+      blurb: 'placeholderLeft 让占位文本靠左。',
+    },
+    {
+      name: 'search-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 锁掉输入与清空。',
+    },
+    {
+      name: 'search-mp-maxlength',
+      title: '字数上限（`maxlength`）',
+      blurb: 'maxlength 限制可输入字符数（-1 不限制）。',
+    },
+    {
+      name: 'search-mp-focus',
+      title: '聚焦（`focus` / `focusWhenClear`）',
+      blurb: 'focus 挂载即聚焦；focusWhenClear 清空后重新聚焦。',
+    },
+    {
+      name: 'search-mp-custom-style',
+      title: '输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`）',
+      blurb: 'customInputClass 追加到内部输入节点；customClass / customStyle 改根包装的外框与底色。',
     },
     {
       name: 'search-mp-placeholder-style',
-      title:
-        '占位文本与根节点样式（`placeholderStyle` / `placeholderClass` / `customClass` / `customStyle`）',
-      blurb:
-        'placeholderStyle / placeholderClass 只作用于占位文本；customClass / customStyle 改根包装的外框与底色。',
+      title: '占位符样式（`placeholderStyle` / `placeholderClass`）',
+      blurb: 'placeholderStyle / placeholderClass 只作用于占位文本。',
     },
   ],
   props: {

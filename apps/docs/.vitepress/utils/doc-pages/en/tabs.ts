@@ -6,7 +6,7 @@ export const tabsDocPageEn: SnDocPageData = {
   title: 'Tabs',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -58,9 +58,9 @@ import { Tabs } from '@snui/vue-web';
     { name: 'tabs-web-bar-width', title: 'Bar width', blurb: 'Bar width' },
     { name: 'tabs-web-disabled', title: 'Disabled tabs', blurb: 'Disabled tabs' },
     {
-      name: 'tabs-web-placement-closable',
-      title: 'Placement and closable',
-      blurb: 'Placement and closable',
+      name: 'tabs-web-placement-left',
+      title: 'Left placement',
+      blurb: 'placement="left" — a vertical tab strip.',
     },
     { name: 'tabs-web-pane-style', title: 'Style hooks', blurb: 'Style hooks' },
   ],

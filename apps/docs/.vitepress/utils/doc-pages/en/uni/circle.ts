@@ -57,10 +57,14 @@ import { Circle } from '@snui/uni';
       blurb: 'Status colors / gradient / custom track and disc / counter-clockwise.',
     },
     {
-      name: 'circle-mp-custom',
-      title: 'Animation speed and custom styles',
-      blurb:
-        'speed=0 / 200 / 10 transitions, the three stroke-linecap values, plus a root class and inline style.',
+      name: 'circle-mp-speed',
+      title: 'Animation speed (`speed`)',
+      blurb: 'speed=0 / 200 / 10 transitions side by side; 0 disables the transition.',
+    },
+    {
+      name: 'circle-mp-custom-style',
+      title: 'Root styling',
+      blurb: 'custom-class and custom-style both land on the sn-circle root node.',
     },
   ],
   props: {

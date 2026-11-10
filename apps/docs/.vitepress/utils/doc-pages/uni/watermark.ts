@@ -61,8 +61,14 @@ import { Watermark } from '@snui/uni';
     },
     {
       name: 'watermark-mp-image',
-      title: '图片瓦片与字体控制',
-      blurb: '图片瓦片、字体族 / 样式 / 粗细、z-index 与 customClass / customStyle。',
+      title: '图片水印（image）',
+      blurb: 'image 优先于 content，瓦片尺寸由 imageWidth / imageHeight 决定。',
+    },
+    {
+      name: 'watermark-mp-font',
+      title: '文字字体（fontFamily 等）',
+      blurb:
+        'fontFamily / fontStyle / fontWeight / size 作用在渲染出的 text 上；附带 zIndex 与 customClass / customStyle 根节点样式。',
     },
   ],
   props: {

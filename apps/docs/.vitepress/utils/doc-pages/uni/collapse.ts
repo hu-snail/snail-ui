@@ -66,8 +66,13 @@ import { Collapse } from '@snui/uni';
     },
     {
       name: 'collapse-mp-accordion',
-      title: '手风琴模式',
-      blurb: 'accordion 手风琴模式，v-model 为字符串；disabled 面板无法展开。',
+      title: '手风琴模式（accordion）',
+      blurb: 'accordion 手风琴模式，v-model 为字符串，同时只展开一项。',
+    },
+    {
+      name: 'collapse-mp-disabled',
+      title: '禁用面板（disabled）',
+      blurb: 'item disabled 禁用面板，点击无反应。',
     },
     {
       name: 'collapse-mp-viewmore',
@@ -88,10 +93,19 @@ import { Collapse } from '@snui/uni';
         '标题图标三种来源：内置图标集对象、图片地址、名称解析链；iconSize 档位 tiny/small/medium/large 与自定义长度；iconColor 走颜色 token。',
     },
     {
-      name: 'collapse-mp-slots',
-      title: 'more 插槽、item 边框与 before-expend',
-      blurb:
-        'more 插槽 + custom-more-slot-class；item border=false；before-expend 拦截展开；title 插槽。',
+      name: 'collapse-mp-more-slot',
+      title: 'more 插槽',
+      blurb: 'viewmore 模式下 #more 插槽自定义底部区域；custom-more-slot-class 追加类名。',
+    },
+    {
+      name: 'collapse-mp-before-expend',
+      title: '展开拦截（before-expend）',
+      blurb: 'before-expend 拦截前两次展开，返回 false 阻止。',
+    },
+    {
+      name: 'collapse-mp-title-slot',
+      title: 'title 插槽与内容样式',
+      blurb: '#title 自定义标题；custom-body-class 作用于内容容器；item border=false 去掉下边框。',
     },
   ],
   props: {

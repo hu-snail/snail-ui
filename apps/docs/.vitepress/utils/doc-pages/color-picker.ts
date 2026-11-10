@@ -11,7 +11,7 @@ export const colorPickerDocPage: SnDocPageData = {
   title: 'ColorPicker',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -71,9 +71,19 @@ import { ColorPicker } from '@snui/vue-web';
       blurb: 'panelOnly 内联面板，可多实例并排。',
     },
     {
-      name: 'color-picker-web-states',
-      title: '可清空 / 禁用',
-      blurb: 'clearable 恢复默认色、disabled、readonly。',
+      name: 'color-picker-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '清空按钮恢复默认色并 emit clear。',
+    },
+    {
+      name: 'color-picker-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '禁用交互。',
+    },
+    {
+      name: 'color-picker-web-readonly',
+      title: '只读（readonly）',
+      blurb: '可见不可改。',
     },
   ],
   props: {

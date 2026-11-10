@@ -15,7 +15,7 @@ export const inputNumberDocPage: SnDocPageData = {
   title: 'InputNumber 数字输入',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -97,8 +97,13 @@ export const inputNumberDocPage: SnDocPageData = {
     },
     {
       name: 'input-number-web-bounds',
-      title: '边界与步长',
-      blurb: 'min / max / step / stepStrictly 吸附。',
+      title: '边界（min / max）',
+      blurb: '越界提交 clamp 回边界内。',
+    },
+    {
+      name: 'input-number-web-step',
+      title: '步长（step / stepStrictly）',
+      blurb: '按钮 / 键盘按 step 吸附；stepStrictly 严格对齐步长网格。',
     },
     {
       name: 'input-number-web-precision',
@@ -111,15 +116,39 @@ export const inputNumberDocPage: SnDocPageData = {
       blurb: '展示层格式化 + 解析回数字。',
     },
     {
-      name: 'input-number-web-layout',
-      title: '按钮位置 / 尺寸',
-      blurb:
-        'buttonPlacement: left / both / right；buttonMode: symbol（− +）/ spinner（↑↓）；五档 size。',
+      name: 'input-number-web-size',
+      title: '尺寸（size）',
+      blurb: 'mini / tiny / small / medium / large 五档。',
     },
     {
-      name: 'input-number-web-states',
-      title: '禁用 / 只读 / 可清空',
-      blurb: 'disabled / readonly / clearable。',
+      name: 'input-number-web-placement',
+      title: '按钮位置（buttonPlacement）',
+      blurb: 'left / both / right 三种步进按钮布局。',
+    },
+    {
+      name: 'input-number-web-mode',
+      title: '按钮模式（buttonMode）',
+      blurb: 'symbol（− +）与 spinner（↑ ↓）两种步进形态。',
+    },
+    {
+      name: 'input-number-web-button-style',
+      title: '按钮样式（buttonBackground）',
+      blurb: '步进按钮底色与悬停底色（悬停板在 both 位置绘制）。',
+    },
+    {
+      name: 'input-number-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '输入 / 按钮 / 清空全部不可交互。',
+    },
+    {
+      name: 'input-number-web-readonly',
+      title: '只读（readonly）',
+      blurb: '值可见但不可编辑。',
+    },
+    {
+      name: 'input-number-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '有值时显示 × 一键清空。',
     },
   ],
 

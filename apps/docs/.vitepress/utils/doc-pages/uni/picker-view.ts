@@ -62,21 +62,33 @@ import { PickerView } from '@snui/uni';
     },
     {
       name: 'picker-view-mp-cascade',
-      title: '级联与禁用（`cascade` / `disabled` / `valueKey`）',
-      blurb: 'cascade 模式下 columns 传树形结构，组件按已选路径推导后续列；disabled 整列不可交互。',
+      title: '级联模式（`cascade`）',
+      blurb: 'cascade 模式下 columns 传树形结构，组件按已选路径推导后续列。',
     },
     {
-      name: 'picker-view-mp-keys-geometry',
-      title:
-        '几何与自定义字段名（`itemHeight` / `visibleItemCount` / `valueKey` / `labelKey` / `childrenKey`）',
-      blurb:
-        'itemHeight / visibleItemCount 调行高与可见行数；valueKey / labelKey / childrenKey 读取自定义字段名。',
+      name: 'picker-view-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 整列不可交互，滚轮冻结在当前值。',
     },
     {
-      name: 'picker-view-mp-immediate-custom',
-      title: '拖动即时回写与根节点样式（`immediateChange` / `customClass` / `customStyle`）',
-      blurb:
-        'immediateChange 拖动中持续触发 change；customClass / customStyle 改根节点外框与底色。',
+      name: 'picker-view-mp-rows',
+      title: '滚筒几何（`itemHeight` / `visibleItemCount`）',
+      blurb: 'itemHeight 调行高（px 设计值 → rpx），visibleItemCount 调可见行数。',
+    },
+    {
+      name: 'picker-view-mp-keys',
+      title: '自定义字段名（`valueKey` / `labelKey` / `childrenKey`）',
+      blurb: 'valueKey / labelKey / childrenKey 让组件读取自定义字段名，业务数据不必重命名。',
+    },
+    {
+      name: 'picker-view-mp-immediate',
+      title: '拖动即时回写（`immediateChange`）',
+      blurb: 'immediateChange 拖动中持续触发 change，配合事件实时联动。',
+    },
+    {
+      name: 'picker-view-mp-custom-style',
+      title: '根节点样式（`customClass` / `customStyle`）',
+      blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',
     },
   ],
   props: {

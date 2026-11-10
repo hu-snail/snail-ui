@@ -10,7 +10,7 @@ export const highlightDocPageEn: SnDocPageData = {
   title: 'Highlight · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -57,7 +57,7 @@ import { Highlight } from '@snui/vue-web';
     {
       name: 'highlight-web-component',
       title: 'Custom tag',
-      blurb: 'highlight-tag=span + underline style.',
+      blurb: 'highlight-tag=span renders matched fragments as spans.',
     },
   ],
   props: {

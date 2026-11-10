@@ -64,15 +64,29 @@ import { DatetimePickerView } from '@snui/uni';
       blurb: 'sn-datetime-picker-view 滚筒本体：type 决定列集合，minDate / maxDate 限制可选范围。',
     },
     {
-      name: 'datetime-picker-view-mp-time-format',
-      title: '时间类型与格式化（`type="time"` / `formatter` / `filter`）',
-      blurb: 'type=time 只出时分列并写回 HH:mm 字符串；formatter 改文案，filter 过滤列取值。',
+      name: 'datetime-picker-view-mp-time-type',
+      title: '时间类型写回',
+      blurb: 'type=time 只出时分列并写回 HH:mm 字符串。',
     },
     {
-      name: 'datetime-picker-view-mp-columns',
-      title:
-        '滚筒几何与列改写（`itemHeight` / `visibleItemCount` / `valueKey` / `labelKey` / `columnFormatter`）',
-      blurb: 'itemHeight / visibleItemCount；valueKey / labelKey；columnFormatter 倒序年份列。',
+      name: 'datetime-picker-view-mp-formatter',
+      title: '列文案格式化（formatter）',
+      blurb: 'formatter 改写列文案。',
+    },
+    {
+      name: 'datetime-picker-view-mp-roller-geometry',
+      title: '滚筒几何',
+      blurb: 'itemHeight / visibleItemCount 调整滚筒行高与可见行数。',
+    },
+    {
+      name: 'datetime-picker-view-mp-keys',
+      title: '字段映射（valueKey / labelKey）',
+      blurb: 'valueKey / labelKey 为对齐参数（列由组件生成）。',
+    },
+    {
+      name: 'datetime-picker-view-mp-column-formatter',
+      title: '列改写（columnFormatter）',
+      blurb: 'columnFormatter 倒序年份列。',
     },
     {
       name: 'datetime-picker-view-mp-time-bounds',
@@ -81,11 +95,14 @@ import { DatetimePickerView } from '@snui/uni';
       blurb: 'minMinute / maxMinute；useSecond + minSecond / maxSecond。',
     },
     {
-      name: 'datetime-picker-view-mp-range-boundary',
-      title:
-        '区间联动与写回时机（`boundaryMinDate` / `boundaryMaxDate` / `immediateChange` / `custom*`）',
-      blurb:
-        'boundaryMinDate / boundaryMaxDate（声明但未参与渲染）；immediateChange；customClass / customStyle。',
+      name: 'datetime-picker-view-mp-boundary',
+      title: '区间联动（boundaryMinDate / boundaryMaxDate）',
+      blurb: 'boundaryMinDate / boundaryMaxDate（声明但未参与渲染）。',
+    },
+    {
+      name: 'datetime-picker-view-mp-immediate-change',
+      title: '即时 change（immediateChange）',
+      blurb: 'immediateChange：每次滚动立即 emit change。',
     },
   ],
   props: {

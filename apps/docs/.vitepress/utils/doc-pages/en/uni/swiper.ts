@@ -96,11 +96,6 @@ import { Swiper } from '@snui/uni';
       blurb: 'Dots / bar / fraction / with prev-next controls.',
     },
     {
-      name: 'swiper-mp-card3d',
-      title: '3D cards (card3d)',
-      blurb: '3D cards 2 / 1 per screen plus the flat-mode control; the indicator counts pages.',
-    },
-    {
       name: 'swiper-mp-video',
       title: 'Video items',
       blurb:
@@ -112,10 +107,15 @@ import { Swiper } from '@snui/uni';
       blurb: 'Radius plus custom classes / styles on the root, item, image, caption and indicator.',
     },
     {
-      name: 'swiper-mp-data',
-      title: 'Data fields and events',
+      name: 'swiper-mp-data-keys',
+      title: 'Data field mapping',
       blurb:
-        'Custom field names, a controlled current index, aspectFit cropping and all three events.',
+        'valueKey / textKey rename the fields (defaults value / text); a controlled current index with jump buttons; change / animationfinish / click events.',
+    },
+    {
+      name: 'swiper-mp-image-mode',
+      title: 'Image fit (`imageMode`)',
+      blurb: 'imageMode is forwarded to the inner sn-img: aspectFit letterboxes the whole image.',
     },
   ],
   props: {

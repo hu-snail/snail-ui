@@ -67,9 +67,14 @@ import { Popup } from '@snui/uni';
       blurb: 'Scrim and close behaviour',
     },
     {
-      name: 'popup-mp-surface',
-      title: 'Styles, lazy render and safe area',
-      blurb: 'Styles, lazy render and safe area',
+      name: 'popup-mp-custom-style',
+      title: 'Panel & scrim styling',
+      blurb: 'modal-style lands on the scrim; custom-style lands on the panel.',
+    },
+    {
+      name: 'popup-mp-render',
+      title: 'Lazy render & safe area',
+      blurb: 'lazy-render=false renders up front; safe-area-inset-bottom pads the sheet.',
     },
     {
       name: 'popup-mp-scroll',

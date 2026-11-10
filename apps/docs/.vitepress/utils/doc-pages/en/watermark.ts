@@ -10,7 +10,7 @@ export const watermarkDocPageEn: SnDocPageData = {
   title: 'Watermark · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,8 +46,13 @@ import { Watermark } from '@snui/vue-web';
     { name: 'watermark-web-basic', title: 'Basic', blurb: 'Basic' },
     {
       name: 'watermark-web-content',
-      title: 'Multi-line content and staggered tiles',
-      blurb: 'Multi-line content and staggered tiles',
+      title: 'Multi-line content',
+      blurb: 'content array rendered as tiled lines.',
+    },
+    {
+      name: 'watermark-web-cross',
+      title: 'Staggered tiles (cross)',
+      blurb: 'cross offsets adjacent tiles by half a gap.',
     },
     { name: 'watermark-web-style', title: 'Style customisation', blurb: 'Style customisation' },
     { name: 'watermark-web-fullscreen', title: 'Fullscreen', blurb: 'Fullscreen' },

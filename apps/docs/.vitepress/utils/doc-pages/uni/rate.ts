@@ -55,23 +55,49 @@ import { Rate } from '@snui/uni';
       blurb: 'sn-rate 基础评分：num 控制图标数量，tap 图标写回 v-model。',
     },
     {
-      name: 'rate-mp-half-color',
-      title: '半星、可清空与颜色（`allowHalf` / `clearable` / `activeColor`）',
-      blurb:
-        'allowHalf 允许半星；clearable 再次点击当前分数清空为 null；activeColor 支持逐图标数组；readonly 拦掉点击。',
+      name: 'rate-mp-half',
+      title: '半星（`allowHalf`）',
+      blurb: 'allowHalf 允许半星评分，v-model 出现 .5。',
     },
     {
-      name: 'rate-mp-icon-space',
-      title: '间距、图标与整行铺满（`space` / `icon` / `activeIcon` / `iconPrefix` / `block`）',
-      blurb:
-        'space 控制图标间距；icon / activeIcon 走 sn-icon 注册表；iconPrefix 仅为对齐；block 均分整行宽度。',
+      name: 'rate-mp-clearable',
+      title: '可清空（`clearable`）',
+      blurb: 'clearable 再次点击当前分数清空为 null。',
     },
     {
-      name: 'rate-mp-css-icon-disabled',
-      title:
-        '自定义图标、禁用与根节点样式（`cssIcon` / `disabled` / `customClass` / `customStyle`）',
-      blurb:
-        'cssIcon 传字符串按裸类名渲染、布尔形式挂两个类名；disabled 拦掉点击；customClass / customStyle 落在根节点。',
+      name: 'rate-mp-color',
+      title: '评分颜色（`activeColor`）',
+      blurb: 'activeColor 支持逐图标数组（红 → 橙 → …）。',
+    },
+    {
+      name: 'rate-mp-readonly',
+      title: '只读（`readonly`）',
+      blurb: 'readonly 拦掉点击，仅展示评分。',
+    },
+    {
+      name: 'rate-mp-space',
+      title: '间距与铺满（`space` / `size` / `block`）',
+      blurb: 'space 控制图标间距（数字按 rpx 设计值 ×2）；size 控制图标尺寸；block 均分整行宽度。',
+    },
+    {
+      name: 'rate-mp-icon',
+      title: '自定义图标（`icon` / `activeIcon`）',
+      blurb: 'icon / activeIcon 走 sn-icon 注册表；iconPrefix 仅为对齐；color / activeColor 覆盖颜色。',
+    },
+    {
+      name: 'rate-mp-css-icon',
+      title: 'CSS 类图标（`cssIcon`）',
+      blurb: 'cssIcon 传字符串按裸类名渲染、布尔形式挂 icon / active-icon 两个类名。',
+    },
+    {
+      name: 'rate-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 图标变淡且点击无效。',
+    },
+    {
+      name: 'rate-mp-custom-style',
+      title: '根节点样式（`customClass` / `customStyle`）',
+      blurb: 'customClass / customStyle 追加在根节点上。',
     },
   ],
   props: {

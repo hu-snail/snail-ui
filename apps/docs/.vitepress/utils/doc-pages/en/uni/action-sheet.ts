@@ -59,8 +59,14 @@ import { ActionSheet } from '@snui/uni';
     },
     {
       name: 'action-sheet-mp-header',
-      title: 'Title, description and close button',
-      blurb: 'Title + description + close button + rows with icons.',
+      title: 'Header & close button',
+      blurb:
+        'Title + description + title-row close button (description / show-close are AUI-additive).',
+    },
+    {
+      name: 'action-sheet-mp-action-icons',
+      title: 'Row icons (`icon`)',
+      blurb: 'Each action row can carry an icon, resolved by registry name.',
     },
     {
       name: 'action-sheet-mp-panels',
@@ -73,9 +79,15 @@ import { ActionSheet } from '@snui/uni';
       blurb: 'Stays open after selecting / scrim tap does not close / duration=600 + zIndex=200.',
     },
     {
-      name: 'action-sheet-mp-custom',
-      title: 'Custom styles and render timing',
-      blurb: 'Title class + panel inline style + eager render + no safe-area padding.',
+      name: 'action-sheet-mp-custom-style',
+      title: 'Custom styles',
+      blurb: 'custom-title-class styles the title; custom-style lands on the panel.',
+    },
+    {
+      name: 'action-sheet-mp-render',
+      title: 'Render timing & safe area',
+      blurb:
+        'lazy-render=false renders up front; safe-area-inset-bottom=false drops the bottom padding.',
     },
   ],
   props: {

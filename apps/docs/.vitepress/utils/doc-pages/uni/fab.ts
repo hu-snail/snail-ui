@@ -95,16 +95,25 @@ import { Fab } from '@snui/uni';
       blurb: '左上 / 右上 / 左下 / 底部居中四个锚点各配一组胶囊动作项，方向与锚点联动。',
     },
     {
-      name: 'fab-mp-disabled',
-      title: '禁用与只点击',
-      blurb:
-        'expandable=false 只抛 click（计数反馈）、disabled 半透明拦截、draggable 拖动后仍可展开菜单。',
+      name: 'fab-mp-expandable',
+      title: '仅点击不展开（expandable）',
+      blurb: 'expandable=false 点触发按钮不展开动作项，只抛 click（计数反馈）。',
     },
     {
-      name: 'fab-mp-icons',
-      title: '触发图标与主题切换（`inactive-icon` / `active-icon` / `type`）',
+      name: 'fab-mp-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 拦截一切交互，触发按钮半透明。',
+    },
+    {
+      name: 'fab-mp-trigger-icons',
+      title: '触发图标双轨',
       blurb:
-        '左下 icon-name 轨道（Edit ↔ X）、右下 trigger 插槽图标对象（Sparkles ↔ X）+ 色板实时切换 5 档主题色。',
+        'icon-name 轨道（inactive-icon / active-icon，经 registerSnIcons 解析）与 trigger 插槽 IconData 轨道并排演示。',
+    },
+    {
+      name: 'fab-mp-type',
+      title: '主题色（type）',
+      blurb: '色板实时切换 FAB 的 type（5 档主题色），点动作项反馈并收起。',
     },
   ],
   props: {

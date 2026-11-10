@@ -6,7 +6,7 @@ export const linkDocPageEn: SnDocPageData = {
   title: 'Link · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -44,10 +44,21 @@ import { Link } from '@snui/vue-web';
   demos: [
     { name: 'link-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     { name: 'link-web-type', title: 'Semantic colors compared', blurb: 'Semantic colors compared' },
+    { name: 'link-web-icon-slot', title: 'Icon slot', blurb: '#icon leading icon slot.' },
     {
-      name: 'link-web-state',
-      title: 'Underline, disabled and custom tag',
-      blurb: 'Underline, disabled and custom tag',
+      name: 'link-web-underline',
+      title: 'Underline',
+      blurb: 'underline always-on vs. hover-only.',
+    },
+    {
+      name: 'link-web-disabled',
+      title: 'Disabled',
+      blurb: 'disabled blocks clicks and navigation.',
+    },
+    {
+      name: 'link-web-tag',
+      title: 'Custom tag',
+      blurb: "tag='span' renders a pseudo-link that only dispatches click.",
     },
   ],
   props: {

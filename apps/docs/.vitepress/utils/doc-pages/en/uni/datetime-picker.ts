@@ -73,24 +73,41 @@ import { DatetimePicker } from '@snui/uni';
         'lunar: stem-branch year / months with leap month / days 初一…三十; v-model stays a solar timestamp; datetime + lunar keeps the clock.',
     },
     {
-      name: 'datetime-picker-mp-time-confirm',
-      title: 'Time type & confirm guard (`type="time"` / `beforeConfirm`)',
-      blurb:
-        '`type=time` writes an `HH:mm` string; a `beforeConfirm` that returns false keeps the sheet open.',
+      name: 'datetime-picker-mp-time-type',
+      title: 'Time type (type="time")',
+      blurb: '`type=time` writes an `HH:mm` string.',
     },
     {
-      name: 'datetime-picker-mp-columns-bounds',
-      title:
-        'Roller geometry & column values (`itemHeight` / `visibleItemCount` / h-m-s bounds / `formatter` / `filter`)',
-      blurb:
-        'itemHeight / visibleItemCount; minHour / maxHour / minMinute / maxMinute; useSecond + minSecond / maxSecond; formatter / filter; valueKey / labelKey.',
+      name: 'datetime-picker-mp-before-confirm',
+      title: 'Confirm veto (beforeConfirm)',
+      blurb: 'A `beforeConfirm` that returns false keeps the sheet open.',
     },
     {
-      name: 'datetime-picker-mp-sheet',
-      title:
-        'Sheet chrome & write-back timing (`cancelButtonText` / `immediateChange` / `zIndex` / `rootPortal` / `custom*`)',
+      name: 'datetime-picker-mp-roller-geometry',
+      title: 'Roller geometry (itemHeight / visibleItemCount)',
+      blurb: 'itemHeight / visibleItemCount tune the row height and visible rows.',
+    },
+    {
+      name: 'datetime-picker-mp-time-bounds',
+      title: 'Hour-minute-second bounds',
       blurb:
-        'immediateChange; cancelButtonText; closeOnClickModal; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle / customViewClass; displayFormatTabLabel.',
+        'minHour / maxHour / minMinute / maxMinute; useSecond + minSecond / maxSecond.',
+    },
+    {
+      name: 'datetime-picker-mp-column-format',
+      title: 'Column copy & filtering (formatter / filter)',
+      blurb: '`formatter` rewrites the labels; `filter` trims the values.',
+    },
+    {
+      name: 'datetime-picker-mp-immediate-change',
+      title: 'Immediate write-back (immediateChange)',
+      blurb: 'immediateChange: every roll writes v-model, no confirm needed.',
+    },
+    {
+      name: 'datetime-picker-mp-sheet-chrome',
+      title: 'Sheet chrome (labels / scrim / stacking)',
+      blurb:
+        'cancelButtonText; closeOnClickModal; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle / customViewClass; displayFormatTabLabel.',
     },
   ],
   props: {

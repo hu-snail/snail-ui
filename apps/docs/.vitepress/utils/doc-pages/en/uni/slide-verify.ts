@@ -61,17 +61,35 @@ import { SlideVerify } from '@snui/uni';
         'Drag-to-confirm: reaching the right edge (within `tolerance`) fires `success`; a short drag fires `fail` and snaps back.',
     },
     {
-      name: 'slide-verify-mp-custom',
-      title: 'Copy, colors & disabled (`text` / `successText` / `backgroundColor` / `disabled`)',
-      blurb:
-        '`text` / `successText` override the built-in copy; `backgroundColor` / `activeBackgroundColor` override the track; `disabled` blocks dragging.',
+      name: 'slide-verify-mp-text',
+      title: 'Copy (`text` / `successText`)',
+      blurb: '`text` / `successText` override the built-in hint and success copy.',
+    },
+    {
+      name: 'slide-verify-mp-color',
+      title: 'Track colors (`backgroundColor`)',
+      blurb: '`backgroundColor` / `activeBackgroundColor` override the track fill and the dragged-over tint.',
+    },
+    {
+      name: 'slide-verify-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` blocks dragging.',
     },
     {
       name: 'slide-verify-mp-icons',
-      title:
-        'Icon glyphs & root styling (`icon` / `successIcon` / `iconPrefix` / `cssIcon` / `iconSize` / `successIconSize` / `tolerance` / `customClass` / `customStyle`)',
+      title: 'Icon glyphs (`icon` / `successIcon`)',
       blurb:
-        '`icon` / `successIcon` follow the iconfont convention; `cssIcon` renders as a bare class; `iconSize` / `successIconSize` size the two glyphs independently; `tolerance` widens the slack; `customClass` / `customStyle` land on the root.',
+        '`icon` / `successIcon` follow the iconfont convention; `cssIcon` renders as a bare class; `iconSize` / `successIconSize` size the two glyphs independently.',
+    },
+    {
+      name: 'slide-verify-mp-tolerance',
+      title: 'Tolerance (`tolerance`)',
+      blurb: '`tolerance` widens the right-edge slack (px).',
+    },
+    {
+      name: 'slide-verify-mp-custom-style',
+      title: 'Root styling',
+      blurb: '`customClass` / `customStyle` land on the root node.',
     },
   ],
   props: {

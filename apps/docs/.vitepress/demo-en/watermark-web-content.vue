@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: SnWatermark — multi-line text content next to the `cross` stagger mode.
+ * Demo: SnWatermark — multi-line text content (content array).
  *
  * Note: `fontColor` is painted into a canvas tile, so it must be a real CSS
  * colour value (a `var(--sn-web-*)` string cannot be resolved by canvas).
@@ -32,30 +32,6 @@ import { SnWatermark } from '@snui/vue-web';
             The watermark layer is purely decorative and does not affect selecting, copying, or
             clicking the body content.
           </p>
-        </div>
-      </SnWatermark>
-    </section>
-
-    <section class="watermark-content-demo__block">
-      <h4>Staggered tiles (cross = true, adjacent tiles offset by half a gap)</h4>
-      <SnWatermark
-        :content="['Snail AUI platform', 'Internal docs', 'Internal use only']"
-        :cross="true"
-        :rotate="-24"
-        :opacity="0.5"
-        :width="180"
-        :height="110"
-        :font-size="14"
-        :line-height="22"
-        font-color="rgba(96, 98, 122, 0.34)"
-      >
-        <div class="watermark-content-demo__panel">
-          <h5>Staggered layout of the same copy</h5>
-          <p>
-            With cross on, adjacent tiles in a row are offset vertically by half a tile height —
-            denser visually and harder to crop out.
-          </p>
-          <p>Both blocks have identical content / rotation / opacity; only cross differs.</p>
         </div>
       </SnWatermark>
     </section>

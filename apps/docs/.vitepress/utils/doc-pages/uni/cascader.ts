@@ -79,21 +79,29 @@ import { Cascader } from '@snui/uni';
     },
     {
       name: 'cascader-mp-fields',
-      title:
-        '字段映射与提示（`valueKey` / `textKey` / `childrenKey` / `tipKey` / `lineWidth` / `lineHeight`）',
-      blurb: 'valueKey / textKey / childrenKey / tipKey 字段映射；lineTheme=text 与 lineHeight。',
+      title: '字段映射（valueKey 等）',
+      blurb: 'valueKey / textKey / childrenKey / tipKey 字段映射。',
     },
     {
-      name: 'cascader-mp-lazy-confirm',
-      title: '异步加载与确认拦截（`lazyLoad` / `isLeafKey` / `beforeConfirm`）',
-      blurb: 'lazyLoad + isLeafKey；checkStrictly；beforeConfirm 拦截，守卫结论由 sn-cell 行回报。',
+      name: 'cascader-mp-lazy-load',
+      title: '异步加载（lazyLoad）',
+      blurb: 'lazyLoad + isLeafKey 按需请求子级；checkStrictly。',
     },
     {
-      name: 'cascader-mp-sheet',
-      title:
-        '弹层与指示条（`closeOnClickModal` / `zIndex` / `safeAreaInsetBottom` / `lineTheme` / `custom*`）',
+      name: 'cascader-mp-before-confirm',
+      title: '确认拦截（beforeConfirm）',
+      blurb: 'beforeConfirm 拦截，守卫结论由 sn-cell 行回报。',
+    },
+    {
+      name: 'cascader-mp-indicator',
+      title: '指示条形态（lineTheme）',
+      blurb: 'lineTheme underline / text / dot，lineWidth / lineHeight 控制指示条几何。',
+    },
+    {
+      name: 'cascader-mp-sheet-chrome',
+      title: '弹层配置（遮罩 / 层级 / 自定义）',
       blurb:
-        'lineTheme underline / dot；closeOnClickModal=false；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle。',
+        'closeOnClickModal=false；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle。',
     },
   ],
   props: {

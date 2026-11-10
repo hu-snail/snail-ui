@@ -15,7 +15,7 @@ export const loadingDocPage: SnDocPageData = {
   title: 'Loading 加载中',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -57,7 +57,7 @@ import { Loading } from '@snui/vue-web';
     { name: 'loading-web-description', title: '加载文案', blurb: '加载文案' },
     { name: 'loading-web-customize-icon', title: '自定义图形', blurb: '自定义图形' },
     { name: 'loading-web-delay', title: '延迟显示', blurb: '延迟显示' },
-    { name: 'loading-web-custom', title: '颜色与缩放', blurb: '颜色与缩放' },
+    { name: 'loading-web-stroke', title: '描边颜色（stroke）', blurb: 'stroke 重置圆弧颜色。' },
   ],
   props: {
     hint: [],
