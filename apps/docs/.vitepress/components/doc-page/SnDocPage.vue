@@ -721,7 +721,10 @@ onBeforeUnmount(() => {
                    卡片只承载预览 / 源码面板本体。 -->
               <div class="sn-docpage__demo-head">
                 <h3>{{ d.title }}</h3>
-                <p>{{ d.blurb }}</p>
+                <!-- 描述只在补充信息时出现：blurb 与标题同文（「基础用法 /
+                     基础用法」）是数据层的省写，渲染层去重，避免正文出现
+                     两行一模一样的话。 -->
+                <p v-if="d.blurb !== d.title">{{ d.blurb }}</p>
               </div>
               <div
                 class="sn-docpage__demo-card"
@@ -1780,7 +1783,7 @@ onBeforeUnmount(() => {
 }
 .sn-docpage__demo-head h3 {
   margin: 0;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--sn-doc-text-1);
 }
@@ -1813,8 +1816,18 @@ onBeforeUnmount(() => {
   flex: none;
   padding: 3px;
   border-radius: 999px;
+  background: var(--sn-doc-card);
+  /* 白胶囊浮在浅灰预览台上：靠发丝线描边 + 贴地投影读出边界（与全站
+   * 「白底 + hairline」语言一致）。 */
+  box-shadow:
+    0 1px 3px rgb(2 6 16 / 0.08),
+    0 0 0 1px var(--sn-doc-border);
+}
+.sn-docpage--dark .sn-docpage__demo-switch {
+  /* 深色模式：胶囊与预览台落在同一级 card-soft 色阶，投影是唯一分层
+   * 手段，比浅色略加重让胶囊浮出来。 */
   background: var(--sn-doc-card-soft);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.08);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.3);
 }
 .sn-docpage__demo-thumb {
   position: absolute;
@@ -1823,8 +1836,9 @@ onBeforeUnmount(() => {
   left: 3px;
   width: 28px;
   border-radius: 999px;
-  background: var(--sn-doc-card);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.1);
+  /* 选中段 = 主题色滑块，图标反白（见 --on 的颜色对调）。 */
+  background: var(--sn-doc-accent);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.2);
   transform: translateX(0);
   transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -1850,18 +1864,18 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-text-1);
 }
 .sn-docpage__demo-tab--on {
-  color: var(--sn-doc-accent);
+  color: var(--sn-doc-text-on-accent);
 }
 .sn-docpage__demo-stage {
-  /* 浅灰底（#f5f5f5）：预览是「作品台」，纯白会和卡片外壳糊在一起，
-     浅灰给出边界又不抢组件自身的对比。深色模式回落主题表面色。
+  /* 浅灰底 #f8f8f8：预览是「作品台」，与手机 iframe 预览同底，比页面
+     纯白低半档，靠卡片投影分层；深色模式回落主题表面色。
      给一个最小高度，避免单行演示（一个按钮 / 一个开关）把卡片压成细条。 */
   min-height: 240px;
   padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  background: #f8f8f8;
 }
 .sn-docpage--dark .sn-docpage__demo-stage {
   background: var(--sn-doc-surface-lowest);
