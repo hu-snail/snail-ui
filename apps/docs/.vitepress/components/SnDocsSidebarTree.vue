@@ -76,8 +76,11 @@ function onSelect(keys: SnTreeKey[]): void {
       :data="data"
       :selected-keys="selectedKeys"
       block-line
+      show-line
+      line-mode="branch"
+      line-corner="rounded"
       default-expand-all
-      :indent="14"
+      :indent="18"
       @update:selected-keys="onSelect"
     />
   </div>
@@ -88,7 +91,8 @@ function onSelect(keys: SnTreeKey[]): void {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 4px 12px 24px;
+  /* 8px 而不是 12px：省下的 4px 全给菜单文字，长中文标签少折一行。 */
+  padding: 4px 8px 24px;
 }
 
 .sn-docs-tree__heading {
@@ -107,7 +111,7 @@ function onSelect(keys: SnTreeKey[]): void {
   font-size: 13px;
 }
 
-.sn-docs-tree :deep(.sn-tree__node-label) {
-  line-height: 1.5;
+.sn-docs-tree :deep(.sn-tree__node-text) {
+  line-height: 1.45;
 }
 </style>

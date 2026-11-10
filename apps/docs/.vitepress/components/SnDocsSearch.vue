@@ -57,6 +57,7 @@ function onPanelClose(): void {
       v-model="query"
       class="sn-docs-search__field"
       size="small"
+      radius="pill"
       type="search"
       :placeholder="'搜索文档'"
       :aria-label="'搜索文档'"

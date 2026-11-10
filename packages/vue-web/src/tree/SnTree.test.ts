@@ -434,8 +434,10 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       expect(abLines).toHaveLength(1);
       expect(abLines?.[0]?.classes()).toContain('sn-tree__line--half');
       expect(abLines?.[0]?.attributes('style')).toContain('left: 20px');
+      // The connector runs from the trunk (mid-cell) into the next cell's
+      // padding, so it lands against the label instead of floating beside it.
       expect(rows[2]?.find('.sn-tree__line--horizontal').attributes('style')).toContain(
-        'width: 32px',
+        'width: 28px',
       );
       // baa keeps a level-1 connector; its parent branch has no sibling.
       const baaLines = rows[5]?.findAll('.sn-tree__line--vertical');

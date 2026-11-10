@@ -1753,13 +1753,17 @@ onBeforeUnmount(() => {
   color: var(--sn-doc-accent);
 }
 .sn-docpage__demo-stage {
-  /* 白底面：预览是「作品台」，灰底会把组件自身的浅色控件吃掉一层对比。
+  /* 浅灰底（#f5f5f5）：预览是「作品台」，纯白会和卡片外壳糊在一起，
+     浅灰给出边界又不抢组件自身的对比。深色模式回落主题表面色。
      给一个最小高度，避免单行演示（一个按钮 / 一个开关）把卡片压成细条。 */
   min-height: 240px;
   padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #f5f5f5;
+}
+.sn-docpage--dark .sn-docpage__demo-stage {
   background: var(--sn-doc-surface-lowest);
 }
 /* uni 案例的手机模拟：与 DemoDock 同一块设备（同一个 uni-demo iframe），换到

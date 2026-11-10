@@ -309,6 +309,14 @@ function expandForCascade(source: Set<SnTreeKey>): Set<SnTreeKey> {
  * prop `number | undefined` in type space, so the default is re-applied here. */
 const indentWidth = computed(() => props.indent ?? 24);
 
+/**
+ * How far the branch connector reaches past the trunk, measured from the middle
+ * of the indent cell (where the elbow turns). n-tree draws the stub only across
+ * the left half of the cell, which reads as a tick floating beside the label;
+ * reaching into the next cell's padding puts the line back against the text.
+ */
+const TREE_LINE_TEXT_GAP = 8;
+
 const expandedSet = computed<Set<SnTreeKey>>(() =>
   props.expandedKeys === undefined ? uncontrolledExpandedKeys.value : new Set(props.expandedKeys),
 );
@@ -659,7 +667,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
           class="sn-tree__line sn-tree__line--horizontal"
           :style="{
             left: `${row.lines.horizontalIndex * indentWidth + indentWidth / 2}px`,
-            width: `${Math.max(0, indentWidth - 8)}px`,
+            width: `${Math.max(0, indentWidth / 2 + TREE_LINE_TEXT_GAP)}px`,
           }"
         />
       </span>
@@ -873,7 +881,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: 2px;
+  border-radius: var(--sn-web-tree-node-radius, var(--sn-web-radius-sm, 4px));
 }
 
 .sn-tree__indent {
@@ -987,7 +995,8 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   min-height: 24px;
   box-sizing: border-box;
   padding: 0 6px 0 4px;
-  border-radius: 2px;
+  /* 与 .sn-tree__node 同一个圆角变量：选中 / 悬停底色的圆角只有一处来源。 */
+  border-radius: var(--sn-web-tree-node-radius, var(--sn-web-radius-sm, 4px));
   user-select: none;
   transition:
     background-color 0.3s,

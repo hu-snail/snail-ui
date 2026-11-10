@@ -1293,6 +1293,11 @@ const wrapperStyle = computed<string>(() => {
   display: flex;
   align-items: center;
   gap: 4px;
+  /* 圆角与 SnTree 行共用一套 token：选中 / 悬停底色是「胶囊」而不是通栏色块。
+   * 菜单本身没有横向内边距（padding: 4px 0），所以行内缩 4px，圆角才不会被
+   * 面板边框切掉。 */
+  margin: 0 4px;
+  border-radius: var(--sn-web-tree-select-node-radius, var(--sn-web-radius-sm, 4px));
   min-height: var(--sn-web-tree-select-node-min-height, 30px);
   padding-right: var(--sn-web-tree-select-node-padding-x, 10px);
   padding-left: calc(
@@ -1309,6 +1314,13 @@ const wrapperStyle = computed<string>(() => {
 }
 
 .sn-tree-select-node--pending {
+  background-color: var(
+    --sn-web-tree-select-node-bg-hover,
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.045))
+  );
+}
+
+.sn-tree-select-node:not(.sn-tree-select-node--disabled):not(.sn-tree-select-node--selected):hover {
   background-color: var(
     --sn-web-tree-select-node-bg-hover,
     var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.045))
