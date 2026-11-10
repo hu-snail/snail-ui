@@ -90,8 +90,7 @@ function go(end: End): void {
   grid-template-columns: 1fr 1fr;
   padding: 4px;
   border-radius: 999px;
-  /* 非悬浮 = 实心底：菜单项滚过胶囊时不透出（悬浮态的玻璃磨砂由
-      custom.css 的 sn-nav-floating 规则覆盖） */
+  /* 实心底：菜单项滚过胶囊时不透出。 */
   border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
   background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
 }

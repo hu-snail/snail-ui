@@ -27,7 +27,6 @@ import { computed, onMounted, watch } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import { useRoute, useData } from 'vitepress';
 import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
-import SnSidebarBrand from '../components/SnSidebarBrand.vue';
 import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DemoDock from '../components/DemoDock.vue';
@@ -124,7 +123,6 @@ watch(
       </template>
 
       <template #sidebar-nav-before>
-        <SnSidebarBrand />
         <SnSidebarEndSwitch v-if="showEndSwitch" />
         <SnDocsTemplateEnd v-if="showTemplateEnd" />
       </template>
