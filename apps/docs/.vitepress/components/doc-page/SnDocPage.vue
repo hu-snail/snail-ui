@@ -480,6 +480,8 @@ const activeTocId = ref('');
 let tocObserver: IntersectionObserver | null = null;
 
 function syncActiveToc(): void {
+  // 小屏没有常驻清单：高亮只服务于大屏那一列，别白读 17 个 rect。
+  if (narrowViewport.value) return;
   let active = tocWithChildren.value[0]?.id ?? '';
   for (const item of tocWithChildren.value) {
     const el = document.getElementById(item.id);
@@ -919,9 +921,8 @@ onBeforeUnmount(() => {
         反馈模块所在的高度；横条 hover / 点击 / 焦点展开目录面板，组件自己
         测量各区块锚点并在滚动时高亮，bound 140 与站点悬浮导航对齐。 -->
       <aside v-if="doc.toc.length" class="sn-docpage__rail">
-        <!-- 窄屏（960–1279px）右轨只让出目录条的宽度：同一套 SnFloatingToc 数据
-             渲染成贴栏左缘的一列横条，剩下的宽度留给右下角的手机面板。展开面板
-             仍然可用（同一组 Item），但默认收起，免得盖住正文。 -->
+        <!-- 小屏（960–1440px）右轨只让出目录条的宽度：横条贴栏左缘竖排，展开面板
+             里是完整目录（含案例子目录），剩下的宽度留给右下角的手机面板。 -->
         <div class="sn-docpage__ftoc-rail">
           <SnFloatingToc placement="right" :bound="140" :aria-label="UI.tocLabel">
             <SnFloatingTocTrigger>
@@ -934,16 +935,17 @@ onBeforeUnmount(() => {
             </SnFloatingTocTrigger>
             <SnFloatingTocContent :aria-label="UI.tocLabel">
               <SnFloatingTocItem
-                v-for="item in doc.toc"
+                v-for="item in tocWithChildren"
                 :key="item.id"
                 :href="`#${item.id}`"
                 :title="item.text"
+                :level="item.level ?? 1"
               />
             </SnFloatingTocContent>
           </SnFloatingToc>
         </div>
-        <!-- 宽档：完整目录常驻（含子目录），不再需要 hover 才展开 —— 232px 的
-             栏放得下，浮出的面板反而会盖住正文。 -->
+        <!-- 大屏（≥1441px）：完整目录常驻，不再需要 hover 才展开 —— 232px 的栏
+             放得下，浮出的面板反而会盖住正文。 -->
         <nav class="sn-docpage__toc" :aria-label="UI.tocLabel">
           <a
             v-for="item in tocWithChildren"
@@ -1052,7 +1054,8 @@ onBeforeUnmount(() => {
     grid-template-columns: minmax(0, 1fr) var(--sn-doc-rail-narrow, 64px);
   }
 }
-@media (min-width: 1280px) {
+/* 1440px 及以下都算「小屏」：目录用悬浮条 + 浮出面板，不常驻清单。 */
+@media (min-width: 1441px) {
   .sn-docpage__layout {
     grid-template-columns: minmax(0, 1fr) 232px;
   }
@@ -2238,10 +2241,11 @@ onBeforeUnmount(() => {
 
 /* ═══ 右侧浮轨：本页目录 ═══
  * 两档宽度两种形态，同一份目录数据：
- *   - 960–1279px（窄）：右轨只占目录条的宽度（--sn-doc-rail-narrow）。SnFloatingToc
- *     收进这一列、贴栏左缘竖排横条，展开面板按需向左浮出；正文让出的宽度留给
- *     右下角的手机面板 —— 以前这一档整列隐藏，uni 页既没有目录也没有手机。
- *   - ≥1280px（宽）：完整的 232px 栏，常驻显示全部条目（含案例子目录），当前项
+ *   - 960–1440px（小屏）：右轨只占目录条的宽度（--sn-doc-rail-narrow）。
+ *     SnFloatingToc 收进这一列、贴栏左缘竖排横条，展开面板按需向左浮出；正文
+ *     让出的宽度留给右下角的手机面板 —— 这一档常驻清单会把正文挤窄，也会和手机
+ *     面板抢位置。
+ *   - ≥1441px（大屏）：完整的 232px 栏，常驻显示全部条目（含案例子目录），当前项
  *     随滚动高亮。这里不用浮出面板：面板会盖住正文，而这一档本来就有地方。
  * 960px 以下右轨整体不出现（VitePress 自身在 960px 收起桌面侧栏）。
  * 纵向停靠点不变：sticky 96px，即旧目录卡的顶边。 */
@@ -2272,15 +2276,28 @@ onBeforeUnmount(() => {
   right: auto;
   transform: none;
 }
+/* 面板里是完整目录（13+ 条），比横条高得多。组件默认把它垂直居中在横条上，
+ * 顶部附近展开就会溢到视口外；这里改成与横条顶边对齐，并限高可滚。入场动画
+ * 的位移也是围绕「居中」写的，同样要收掉。 */
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc__content),
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc__content[data-placement='right']) {
+  top: 0;
+  transform: none;
+  max-height: calc(100vh - 128px);
+}
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc-panel-enter-from[data-placement='right']),
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc-panel-leave-to[data-placement='right']) {
+  transform: translateX(-6px);
+}
 
-/* ═══ 宽档：常驻完整目录 ═══
+/* ═══ 大屏：常驻完整目录 ═══
  * 横条给「扫一眼有几个区块」，清单给「直接跳转」；两者共用 tocWithChildren。 */
 .sn-docpage__toc {
   display: none;
   flex-direction: column;
   gap: 2px;
 }
-@media (min-width: 1280px) {
+@media (min-width: 1441px) {
   .sn-docpage__ftoc-rail {
     display: none;
   }
