@@ -264,16 +264,14 @@
    (#VPSidebarNav scopes these above the component's own scoped rules)
    ===================================================================== */
 
-#VPSidebarNav .group + .group {
-  border-top: 0;
-  padding-top: 6px;
+/* 左侧菜单改由 SnTree 渲染（components/SnDocsSidebarTree.vue，挂在
+ * sidebar-nav-before 槽里）。VitePress 自己的 `.group` 列表仍在 DOM 中
+ * （它没有「替换」槽），这里只把它藏起来，避免两套菜单同时出现。 */
+#VPSidebarNav .group {
+  display: none;
 }
 
 @media (min-width: 960px) {
-  #VPSidebarNav .group {
-    padding-top: 6px;
-  }
-
   /* Hairline hand-off between sidebar and content. */
   .VPSidebar {
     border-right: 1px solid var(--vp-c-divider);
@@ -321,140 +319,6 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--sn-scrollbar-thumb-hover);
-}
-
-#VPSidebarNav .VPSidebarItem.level-0 {
-  padding-bottom: 6px;
-}
-
-/* Group label —— 原型风格：等宽字体 + 全大写 + 宽字距的小节标题 */
-#VPSidebarNav .VPSidebarItem.level-0 > .item > .text,
-#VPSidebarNav .VPSidebarItem.level-0 > .item > .link > .text {
-  font-family: var(--vp-font-family-mono, ui-monospace, monospace);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  line-height: 24px;
-  padding: 8px 0 4px;
-  color: var(--vp-c-text-2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-/* 一级分类图标（SnSidebarGroupIcons 注入 .sn-sidebar-group-icon）——中性色 */
-.sn-sidebar-group-icon {
-  display: inline-flex;
-  flex: 0 0 auto;
-  color: var(--vp-c-text-3);
-}
-/* Rows: 32px, soft fill on hover, 8px radius, no vertical bar. */
-#VPSidebarNav .VPSidebarItem:not(.level-0) > .item {
-  position: relative; /* 树形虚线横线（::before）的定位基准 */
-  margin: 1px -8px;
-  padding: 0 8px;
-  border-radius: 8px;
-  transition: background-color 0.15s ease;
-}
-
-/* Rows breathe: 2px gap between sibling entries（默认挤在一起成一堵墙）。 */
-#VPSidebarNav .VPSidebarItem.level-1 > .items,
-#VPSidebarNav .VPSidebarItem.level-2 > .items,
-#VPSidebarNav .VPSidebarItem.level-3 > .items,
-#VPSidebarNav .VPSidebarItem.level-4 > .items,
-#VPSidebarNav .VPSidebarItem.level-5 > .items {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-top: 2px;
-}
-
-#VPSidebarNav .VPSidebarItem:not(.level-0) > .item:hover {
-  background-color: var(--vp-c-bg-soft);
-}
-
-#VPSidebarNav .VPSidebarItem:not(.level-0) > .item .text {
-  font-size: 13.5px;
-  font-weight: 400;
-  line-height: 32px;
-  padding: 0;
-  color: var(--vp-c-text-2);
-}
-
-#VPSidebarNav .VPSidebarItem:not(.level-0) > .item:hover .text,
-#VPSidebarNav .VPSidebarItem:not(.level-0).has-active > .item .text {
-  color: var(--vp-c-text-1);
-}
-
-/* ── 选中态：原型风格 —— 主题色实底胶囊 + 白字 + 右侧圆点 ──
- * 色值跟随 UI 库语义层（--sn-web-color-action-*），风格包换肤同步。 */
-#VPSidebarNav .VPSidebarItem:not(.level-0).is-active > .item {
-  position: relative;
-  background-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  box-shadow: 0 2px 8px -2px
-    color-mix(in srgb, var(--sn-web-color-action-primary, var(--vp-c-brand-1)) 35%, transparent);
-}
-
-#VPSidebarNav .VPSidebarItem:not(.level-0).is-active > .item .text {
-  font-weight: 600;
-  color: var(--sn-web-color-text-on-primary, #ffffff);
-}
-
-#VPSidebarNav .VPSidebarItem:not(.level-0).is-active > .item::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--sn-web-color-text-on-primary, #ffffff);
-  transform: translateY(-50%);
-}
-
-#VPSidebarNav .VPSidebarItem > .item > .indicator {
-  display: none;
-}
-
-/* ── 树形虚线连接线 ────────────────────────────────────────────────
-  * VitePress 这里只有 level-0 分组 + level-1 叶项，且分组 .items 原本
-  * 零缩进（条目文字与分组标题左对齐），所以竖导轨必须先自己造出来：
-  *   margin-left 7px —— 导轨落在分组图标中线下方；
-  *   padding-left 12px —— 条目文字对齐到分组标题文字（图标 15 + gap 6）。
-  * 每条目再补一条短横向虚线（::before）从导轨连到条目左缘。
-  * 选中分类（has-active = 分组内含当前页）的导轨与横线转主题色。 */
-#VPSidebarNav .VPSidebarItem.level-0 > .items {
-  margin-left: 7px;
-  padding-left: 12px;
-  border-left: 1px dashed var(--vp-c-divider);
-}
-#VPSidebarNav .VPSidebarItem.level-1 .items,
-#VPSidebarNav .VPSidebarItem.level-2 .items,
-#VPSidebarNav .VPSidebarItem.level-3 .items,
-#VPSidebarNav .VPSidebarItem.level-4 .items,
-#VPSidebarNav .VPSidebarItem.level-5 .items {
-  border-left: 1px dashed var(--vp-c-divider);
-  padding-left: 12px;
-}
-/* 条目行左缘比导轨再外扩 8px（.item 的负 margin），横线从导轨起点
-    （left: -5px）延伸进条目行内 7px（width 12px）——连接感更明显；
-    z-index: -1 把横线压到行背景（含选中项的蓝色胶囊）之下，不侵入。 */
-#VPSidebarNav .VPSidebarItem:not(.level-0) > .item::before {
-  content: '';
-  position: absolute;
-  left: -5px;
-  top: 50%;
-  width: 12px;
-  height: 0;
-  z-index: -1;
-  border-top: 1px dashed var(--vp-c-divider);
-  transform: translateY(-50%);
-}
-#VPSidebarNav .VPSidebarItem.level-0.has-active > .items {
-  border-left-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-}
-#VPSidebarNav .VPSidebarItem.level-0.has-active .VPSidebarItem:not(.level-0) > .item::before {
-  border-top-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
 }
 
 /* =====================================================================
@@ -1508,15 +1372,5 @@ html[data-sn-template-end='uni']
     top: var(--sn-switch-pin);
     margin-top: var(--sn-switch-pin);
     padding-top: calc(var(--sn-sidebar-clearance) - var(--vp-nav-height) + 6px);
-  }
-}
-
-/* ── 搜索框对齐内容区（红框位置 = 侧栏分界线之后） ──
- * 文档页（渲染了 VPSidebar）且侧栏展开时，搜索槽左移一个侧栏宽度（band 自身
- * 24px 内边距，补差 -24px，正好落在分界线上）。首页（无侧栏）与折叠态归零，
- * 搜索跟随导航条内的自然位置。 */
-@media (min-width: 960px) {
-  html:has(.VPSidebar):not(.sn-sidebar-collapsed) .sn-docs-nav__search-slot {
-    margin-left: calc(var(--vp-sidebar-width) - 24px);
   }
 }
