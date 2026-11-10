@@ -122,12 +122,6 @@ export const dynamicInputDocPage: SnDocPageData = {
         desc: "新行创建工厂（文本行传 () => ''）。",
       },
       {
-        name: 'onCreate',
-        type: '(value, index) => DynamicInputValue',
-        default: '—',
-        desc: 'preset 后加工',
-      },
-      {
         name: 'min',
         type: 'number',
         default: '0',
@@ -163,6 +157,44 @@ export const dynamicInputDocPage: SnDocPageData = {
         default: "'default'",
         desc: '校验状态，级联到每个内置行输入框。',
       },
+      {
+        name: 'onCreate',
+        type: '(value, index) => DynamicInputValue',
+        default: '—',
+        desc: 'preset 后加工',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDynamicInput.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: DynamicInputValue[])',
+        desc: '`v-model` 同步——始终回传完整的新数组（编辑、插入、删除、空态新建）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDynamicInput.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '{ value: DynamicInputValue; index: number }',
+        desc: '自定义行渲染，作用域为 `{ value, index }`；优先于内置输入框。',
+      },
     ],
   },
 
@@ -186,7 +218,7 @@ export const dynamicInputDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

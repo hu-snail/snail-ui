@@ -140,6 +140,34 @@ import { ColorPicker } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnColorPicker.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(string | null)',
+        desc: '`v-model` 同步，拖动过程中实时派发，每次提交也会派发。',
+      },
+      {
+        name: 'change',
+        payload: '(string)',
+        desc: '值提交时派发（指针释放、色板、输入框或键盘）。',
+      },
+      {
+        name: 'clear',
+        payload: '—',
+        desc: '点击清除按钮时派发，此时 `modelValue` 已重置为默认色。',
+      },
+      { name: 'focus', payload: '(FocusEvent)', desc: '触发器获得焦点时派发。' },
+      { name: 'blur', payload: '(FocusEvent)', desc: '触发器失去焦点时派发。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -159,7 +187,7 @@ import { ColorPicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

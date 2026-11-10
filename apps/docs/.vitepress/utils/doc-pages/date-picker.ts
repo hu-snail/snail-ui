@@ -129,6 +129,12 @@ import { DatePicker } from '@snui/vue-web';
         default: "'default'",
         desc: 'Validation-driven visual status.',
       },
+      {
+        name: 'disabledDate',
+        type: '(ts: number) => boolean',
+        default: '—',
+        desc: '禁用日期判定函数，接收每个日期格的本地零点时间戳，返回 true 时该格变暗且不可选。',
+      },
       { name: 'shortcuts', type: 'SnDatePickerShortcut[]', default: '—', desc: '(() => …) }[]`' },
       {
         name: 'shortcutsPosition',
@@ -157,6 +163,35 @@ import { DatePicker } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDatePicker.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(number | [number, number] | null)',
+        desc: '`v-model` 同步，任意提交都会派发。',
+      },
+      {
+        name: 'change',
+        payload: '(number | [number, number] | null)',
+        desc: '值提交时派发，清除也会触发。',
+      },
+      {
+        name: 'select',
+        payload: '(number | [number, number] | null)',
+        desc: '面板中选中单元格时派发；单选为草稿值，范围首次为起始值、第二次为排序后区间。',
+      },
+      { name: 'clear', payload: '—', desc: '点击 × 清除按钮清空值时派发。' },
+      { name: 'focus', payload: '(FocusEvent)', desc: '触发器获得焦点时派发。' },
+      { name: 'blur', payload: '(FocusEvent)', desc: '触发器失去焦点时派发。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -176,7 +211,7 @@ import { DatePicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

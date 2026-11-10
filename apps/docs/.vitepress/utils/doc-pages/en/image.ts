@@ -134,6 +134,12 @@ import { Image } from '@snui/vue-web';
         desc: 'Attributes/style for the previewed <img>. Mirrors `previewed-img-props`.',
       },
       {
+        name: 'renderToolbar',
+        type: '((props: { nodes: SnImageToolbarNodes }) => unknown)',
+        default: '—',
+        desc: 'Custom preview toolbar renderer, mirrors naive-ui `render-toolbar`.',
+      },
+      {
         name: 'showToolbar',
         type: 'boolean | undefined',
         default: '—',
@@ -150,6 +156,48 @@ import { Image } from '@snui/vue-web';
         type: 'boolean | undefined',
         default: '—',
         desc: 'Keep the dragged offset after release. Mirrors `keep-drag-offset`.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnImage.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'load',
+        payload: 'Event',
+        desc: 'Fired when the thumbnail has loaded (mirrors naive-ui `on-load`).',
+      },
+      {
+        name: 'error',
+        payload: 'Event',
+        desc: 'Fired after the thumbnail fails, fallback included (naive-ui `on-error`).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnImage.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'error',
+        props: '—',
+        desc: 'Content that replaces the default `<img>` while it is in the error state.',
+      },
+      {
+        name: 'placeholder',
+        props: '—',
+        desc: 'Rendered while the image is not loaded yet (or beneath it).',
       },
     ],
   },
@@ -172,7 +220,7 @@ import { Image } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

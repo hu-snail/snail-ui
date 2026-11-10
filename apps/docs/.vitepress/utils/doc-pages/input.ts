@@ -230,7 +230,24 @@ export const inputDocPage: SnDocPageData = {
         default: "'default'",
         desc: '边框色 + aria-invalid。',
       },
-      { name: 'min / max / step', type: 'number', default: '—', desc: '数字输入限定。' },
+      {
+        name: 'min',
+        type: 'number',
+        default: '—',
+        desc: '数值输入的最小值，透传给原生 `<input>` 的 `min`。',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        default: '—',
+        desc: '数值输入的最大值，透传给原生 `<input>` 的 `max`。',
+      },
+      {
+        name: 'step',
+        type: 'number',
+        default: '—',
+        desc: '数值输入的步长，透传给原生 `<input>` 的 `step`。',
+      },
       { name: 'rows', type: 'number', default: '3', desc: 'textarea 行数。' },
       {
         name: 'autosize',
@@ -296,6 +313,62 @@ export const inputDocPage: SnDocPageData = {
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnInput.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(string | number)',
+        desc: '`v-model` 同步，随原生 input 事件派发新值。',
+      },
+      {
+        name: 'change',
+        payload: '(string | number, Event)',
+        desc: '提交时（失焦 / 回车）触发的原生 change 事件。',
+      },
+      {
+        name: 'input',
+        payload: '(string | number, Event)',
+        desc: '每次按键输入时触发的原生 input 事件。',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: '获得焦点时触发的原生 focus 事件。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '失去焦点时触发的原生 blur 事件。' },
+      { name: 'clear', payload: '—', desc: '点击清除按钮时触发；该 emit 未声明载荷。' },
+      { name: 'click', payload: 'MouseEvent', desc: '点击根容器时触发。' },
+      { name: 'clickPrefixIcon', payload: 'MouseEvent', desc: '点击前缀图标按钮时触发。' },
+      { name: 'clickSuffixIcon', payload: 'MouseEvent', desc: '点击后缀图标按钮时触发。' },
+      {
+        name: 'confirm',
+        payload: '(string | number)',
+        desc: '单行输入按回车确认时触发，携带当前值。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnInput.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'prefix', props: '—', desc: '自定义前缀内容；与 `prefixIcon` 同时存在时优先。' },
+      { name: 'suffix', props: '—', desc: '自定义后缀内容；与 `suffixIcon` 同时存在时优先。' },
+      { name: 'clear-icon', props: '—', desc: '自定义清除图标，替换默认 × 字形。' },
+      {
+        name: 'count',
+        props: '{ current: number; max: number }',
+        desc: '自定义计数展示，替换默认的 `current / max` 文本。',
+      },
+    ],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -317,7 +390,7 @@ export const inputDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

@@ -220,6 +220,44 @@ import { Popover } from '@snui/vue-web';
         default: 'undefined',
         desc: 'Style on the body section. Mirrors n-popover `contentStyle`.',
       },
+      {
+        name: 'onClickoutside',
+        type: '((e: MouseEvent) => void)',
+        default: '—',
+        desc: 'Called when a click lands outside the bubble/trigger (mirrors n-popover).',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnPopover.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: 'Fired when show state changes (`v-model:show`).',
+      },
+      { name: 'show', payload: '—', desc: 'Fired when the popover appears (local addition).' },
+      { name: 'hide', payload: '—', desc: 'Fired when the popover hides (local addition).' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnPopover.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: 'Trigger element (the visible target, e.g. a button).' },
+      { name: 'header', props: '—', desc: 'Card title; overrides the `header` prop.' },
+      { name: 'content', props: '—', desc: 'Bubble body; overrides the `content` prop.' },
     ],
   },
   ai: {
@@ -241,7 +279,7 @@ import { Popover } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

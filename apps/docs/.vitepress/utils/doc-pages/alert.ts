@@ -71,6 +71,55 @@ import { Alert } from '@snui/vue-web';
       },
       { name: 'bordered', type: 'boolean', default: 'true', desc: '是否绘制外边框。' },
       { name: 'closable', type: 'boolean', default: 'false', desc: '是否渲染关闭按钮。' },
+      {
+        name: 'onClose',
+        type: '() => unknown',
+        default: '—',
+        desc: '点击关闭时调用；返回 `false` 或 `false` 的 Promise 可阻止关闭。对齐 n-alert `onClose`。',
+      },
+      {
+        name: 'onAfterLeave',
+        type: '() => void',
+        default: '—',
+        desc: '离开过渡结束后调用。对齐 n-alert `onAfterLeave`。',
+      },
+      {
+        name: 'onAfterHide (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: '已废弃的离开回调，请改用 `onAfterLeave`。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnAlert.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'closeClick',
+        payload: '—',
+        desc: '点击关闭按钮时触发；在 `onClose` 否决结果返回前派发。',
+      },
+      { name: 'leave', payload: '—', desc: '离开过渡结束后触发，此时警告已被移除。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnAlert.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '警告主体内容。' },
+      { name: 'icon', props: '—', desc: '自定义图标，替换内置的类型图标。' },
+      { name: 'header', props: '—', desc: '自定义头部，替换 `title` 属性。' },
     ],
   },
   ai: {
@@ -92,7 +141,7 @@ import { Alert } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

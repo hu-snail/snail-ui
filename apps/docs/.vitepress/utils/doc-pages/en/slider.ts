@@ -124,6 +124,12 @@ import { Slider } from '@snui/vue-web';
         default: 'true',
         desc: 'Show the value tooltip on hover / drag.',
       },
+      {
+        name: 'formatTooltip',
+        type: '(value: number) => string | number',
+        default: '—',
+        desc: 'Formats the drag tooltip and accessible value (naive-ui `format-tooltip`).',
+      },
       { name: 'marks', type: 'Marks', default: '—', desc: 'Tick marks keyed by value.' },
       {
         name: 'placement',
@@ -184,6 +190,43 @@ import { Slider } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnSlider.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: number | [number, number])',
+        desc: '`v-model` sync: fired on every value change.',
+      },
+      {
+        name: 'change',
+        payload: '(value: number | [number, number])',
+        desc: 'Fired on a committed change (drag end / keyboard / mark click / input commit).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnSlider.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'tooltip',
+        props: '{ value: number }',
+        desc: 'Custom tooltip content; the scope exposes the current handle value.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -203,7 +246,7 @@ import { Slider } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

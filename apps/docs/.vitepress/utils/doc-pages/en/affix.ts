@@ -49,6 +49,12 @@ import { Affix } from '@snui/vue-web';
     hint: [],
     rows: [
       {
+        name: 'listenTo',
+        type: 'string | SnAffixScrollTarget | (() => HTMLElement | Document)',
+        default: '—',
+        desc: 'Scroll container to observe; falls back to `document` when omitted.',
+      },
+      {
         name: 'top',
         type: 'number',
         default: 'undefined as any',
@@ -80,7 +86,23 @@ import { Affix } from '@snui/vue-web';
       },
       { name: 'offsetTop', type: 'number', default: 'undefined as any', desc: 'offsetTop' },
       { name: 'offsetBottom', type: 'number', default: 'undefined as any', desc: 'offsetBottom' },
+      {
+        name: 'target (deprecated)',
+        type: '() => HTMLElement',
+        default: '—',
+        desc: 'Deprecated scroll target callback; use `listenTo`. Mirrors n-affix `target`.',
+      },
     ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnAffix.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: 'The element to affix.' }],
   },
   ai: {
     badge: 'ai-description.md · bundled',
@@ -98,7 +120,7 @@ import { Affix } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

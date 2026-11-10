@@ -147,6 +147,18 @@ import { Popconfirm } from '@snui/vue-web';
         default: 'undefined',
         desc: '透传到确认 `SnButton` 的额外属性。',
       },
+      {
+        name: 'onPositiveClick',
+        type: '((e: MouseEvent) => SnPopconfirmActionReturn)',
+        default: '—',
+        desc: '点击确认按钮时调用；返回 `false` 可保持气泡打开（对齐 n-popconfirm）。',
+      },
+      {
+        name: 'onNegativeClick',
+        type: '((e: MouseEvent) => SnPopconfirmActionReturn)',
+        default: '—',
+        desc: '点击取消按钮时调用；返回 `false` 可保持气泡打开（对齐 n-popconfirm）。',
+      },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用弹出。' },
       {
         name: 'displayDirective',
@@ -187,6 +199,42 @@ import { Popconfirm } from '@snui/vue-web';
         default: 'undefined',
         desc: '内层主体的样式。',
       },
+      {
+        name: 'onClickoutside',
+        type: '((e: MouseEvent) => void)',
+        default: '—',
+        desc: '点击气泡与其触发元素之外时调用。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnPopconfirm.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: '显示状态变化时派发（`v-model:show`）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnPopconfirm.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '触发元素（可见目标，如删除按钮）。' },
+      { name: 'icon', props: '—', desc: '前导图标区域，覆盖 `icon` 属性与默认图标。' },
+      { name: 'action', props: '—', desc: '操作行，替换内置的两个按钮。' },
     ],
   },
   ai: {
@@ -208,7 +256,7 @@ import { Popconfirm } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -119,6 +119,12 @@ import { Image } from '@snui/vue-web';
         desc: '预览图片的额外属性与样式。对应 ``previewed-img-props``。',
       },
       {
+        name: 'renderToolbar',
+        type: '((props: { nodes: SnImageToolbarNodes }) => unknown)',
+        default: '—',
+        desc: '自定义预览工具栏渲染函数，透传给预览层（对齐 naive-ui `render-toolbar`）。',
+      },
+      {
         name: 'showToolbar',
         type: 'boolean | undefined',
         default: '—',
@@ -136,6 +142,36 @@ import { Image } from '@snui/vue-web';
         default: '—',
         desc: '释放后保留拖拽偏移。对应 ``keep-drag-offset``。',
       },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnImage.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      { name: 'load', payload: 'Event', desc: '缩略图加载完成时触发（对齐 naive-ui `on-load`）。' },
+      {
+        name: 'error',
+        payload: 'Event',
+        desc: '缩略图加载失败（已尝试回退图）后触发（对齐 naive-ui `on-error`）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnImage.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'error', props: '—', desc: '错误态下替换默认 `<img>` 的自定义内容。' },
+      { name: 'placeholder', props: '—', desc: '图片未加载完成时渲染（或垫在图片下方）。' },
     ],
   },
   ai: {
@@ -157,7 +193,7 @@ import { Image } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

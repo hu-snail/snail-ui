@@ -78,12 +78,65 @@ import { Select } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
-      { name: 'label', type: 'string', default: '—', desc: 'Row label text.' },
       {
-        name: 'value',
-        type: 'string | number | boolean',
+        name: 'modelValue',
+        type: 'SnSelectValue | SnSelectValue[] | null',
+        default: 'null',
+        desc: 'Bound value: a single value or `null`; an array when `multiple`.',
+      },
+      {
+        name: 'multiple',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Allow selecting several values (tag-style display).',
+      },
+      {
+        name: 'options',
+        type: 'SnSelectOptionInput[]',
         default: '—',
-        desc: 'Row value — what selection commits to the v-model.',
+        desc: 'Option list: object options or bare values.',
+      },
+      {
+        name: 'labelField',
+        type: 'string',
+        default: "'label'",
+        desc: 'Field remapping for object option labels (naive `label-field`).',
+      },
+      {
+        name: 'valueField',
+        type: 'string',
+        default: "'value'",
+        desc: 'Field remapping for object option values (naive `value-field`).',
+      },
+      {
+        name: 'childrenField',
+        type: 'string',
+        default: "'children'",
+        desc: 'Field remapping for group children (naive `children-field`).',
+      },
+      {
+        name: 'placeholder',
+        type: 'string',
+        default: "'Please select'",
+        desc: 'Placeholder text shown when empty.',
+      },
+      {
+        name: 'clearable',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Show the clear (×) button when a value is present.',
+      },
+      {
+        name: 'filterable',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Enable the internal filter input.',
+      },
+      {
+        name: 'filter',
+        type: 'SnSelectFilter',
+        default: '—',
+        desc: 'Custom filter predicate; replaces the default label match.',
       },
       {
         name: 'disabled',
@@ -91,6 +144,107 @@ import { Select } from '@snui/vue-web';
         default: 'false',
         desc: 'Row-level disabled (ORs with select-level disabled).',
       },
+      {
+        name: 'readonly',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Read-only — opens nothing and commits nothing.',
+      },
+      { name: 'size', type: 'SnSelectSize', default: "'medium'", desc: 'Visual size preset.' },
+      {
+        name: 'status',
+        type: 'SnSelectStatus',
+        default: "'default'",
+        desc: 'Validation-driven visual status.',
+      },
+      {
+        name: 'maxTagCount',
+        type: 'number',
+        default: '—',
+        desc: 'Collapse tags into `+N` beyond this count.',
+      },
+      { name: 'tag', type: 'boolean', default: 'false', desc: 'Tag visual style (naive `tag`).' },
+      {
+        name: 'loading',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Show the loading spinner in place of the arrow.',
+      },
+      {
+        name: 'remote',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Remote search mode: typing emits `search`; the host drives options.',
+      },
+      {
+        name: 'ariaLabel',
+        type: 'string',
+        default: "''",
+        desc: 'Accessible name for the trigger (falls back to `label`).',
+      },
+      { name: 'label', type: 'string', default: '—', desc: 'Row label text.' },
+      {
+        name: 'emptyText',
+        type: 'string',
+        default: '—',
+        desc: 'Empty-state text (overridden by the `empty` slot).',
+      },
+      { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
+      {
+        name: 'customStyle',
+        type: 'string | Record<string, string>',
+        default: "''",
+        desc: 'Inline style on the root wrapper.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnSelect.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: '`v-model` sync.',
+      },
+      {
+        name: 'update:value',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: "naive-ui's `onUpdate:value` spelling.",
+      },
+      {
+        name: 'change',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: 'Fired when a selection is committed (also for tag removal and clear).',
+      },
+      {
+        name: 'search',
+        payload: '(query: string)',
+        desc: 'Fired when the filter query changes (`filterable`; remote keystrokes too).',
+      },
+      { name: 'clear', payload: '—', desc: 'Fired when the clear button is activated.' },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Fired when the trigger gains focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Fired when the trigger loses focus.' },
+      { name: 'scroll', payload: 'Event', desc: 'Fired when the menu body scrolls to the bottom.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnSelect.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'header', props: '—', desc: 'Dropdown top area.' },
+      { name: 'empty', props: '—', desc: 'Empty state.' },
+      { name: 'action', props: '—', desc: 'Dropdown bottom area.' },
     ],
   },
   ai: {
@@ -112,7 +266,7 @@ import { Select } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

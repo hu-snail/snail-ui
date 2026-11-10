@@ -57,6 +57,12 @@ import { Card } from '@snui/vue-web';
   props: {
     hint: [],
     rows: [
+      {
+        name: 'title',
+        type: 'string | (() => unknown)',
+        default: '—',
+        desc: '标题文本或渲染函数；未提供 header 插槽时渲染在头部。',
+      },
       { name: 'contentClass', type: 'string', default: '—', desc: '内容区 class 名' },
       { name: 'contentStyle', type: 'string | Record<string, string>', default: '—', desc: '标准' },
       {
@@ -77,6 +83,12 @@ import { Card } from '@snui/vue-web';
       { name: 'footerClass', type: 'string', default: '—', desc: '底部 class 名' },
       { name: 'footerStyle', type: 'string | Record<string, string>', default: '—', desc: '标准' },
       { name: 'embedded', type: 'boolean', default: '—', desc: '嵌套卡片模式（去边框 + 阴影）' },
+      {
+        name: 'segmented',
+        type: "| boolean | { content?: boolean | 'soft'; footer?: boolean | 'soft'; action?: boolean | 'soft' }",
+        default: '—',
+        desc: "区域之间的分隔线；支持 `true` 或 `{ content?, footer?, action? }`，各项为 `true | 'soft'`。",
+      },
       {
         name: 'size',
         type: "'small' | 'medium' | 'large' | 'huge'",
@@ -103,6 +115,31 @@ import { Card } from '@snui/vue-web';
         default: '—',
         desc: "Root tag. Default 'div'.",
       },
+      {
+        name: 'cover',
+        type: '() => unknown',
+        default: '—',
+        desc: '封面区域的渲染函数（位于头部之上）。',
+      },
+      {
+        name: 'content',
+        type: 'string | (() => unknown)',
+        default: '—',
+        desc: '内容文本或渲染函数；未提供默认插槽时渲染在主体。',
+      },
+      { name: 'footer', type: '() => unknown', default: '—', desc: '底部区域的渲染函数。' },
+      {
+        name: 'action',
+        type: '() => unknown',
+        default: '—',
+        desc: '操作区域的渲染函数（位于底部之下）。',
+      },
+      {
+        name: 'headerExtra',
+        type: '() => unknown',
+        default: '—',
+        desc: '头部右侧附加区域的渲染函数。',
+      },
       { name: 'closeFocusable', type: 'boolean', default: '—', desc: '关闭按钮是否可键盘聚焦' },
       {
         name: 'variant',
@@ -125,6 +162,35 @@ import { Card } from '@snui/vue-web';
       { name: 'ariaLabel', type: 'string', default: '—', desc: '转发到根节点 `aria-label`' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnCard.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      { name: 'close', payload: '—', desc: '点击关闭按钮时触发（仅当 `closable` 为 true）。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnCard.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '卡片主体内容，渲染在头部与底部之间。' },
+      { name: 'cover', props: '—', desc: '封面区域，位于头部之上。' },
+      { name: 'header', props: '—', desc: '头部区域，会覆盖 `title` 属性。' },
+      { name: 'header-extra', props: '—', desc: '头部右侧的附加区域。' },
+      { name: 'footer', props: '—', desc: '底部区域。' },
+      { name: 'action', props: '—', desc: '操作区域，位于底部之下。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -144,7 +210,7 @@ import { Card } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

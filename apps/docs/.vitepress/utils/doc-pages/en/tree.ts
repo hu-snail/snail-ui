@@ -222,6 +222,70 @@ import { Tree } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTree.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:expandedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeExpandAction })',
+        desc: 'Expansion changed; mirrors n-tree `on-update:expanded-keys`.',
+      },
+      {
+        name: 'update:selectedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeSelectAction })',
+        desc: 'Selection changed; mirrors n-tree `on-update:selected-keys`.',
+      },
+      {
+        name: 'update:checkedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeCheckAction })',
+        desc: 'Checking changed; mirrors n-tree `on-update:checked-keys`.',
+      },
+      {
+        name: 'dragStart',
+        payload: '(info: SnTreeDragInfo)',
+        desc: 'A row started being dragged; mirrors n-tree `on-dragstart`.',
+      },
+      {
+        name: 'dragEnter',
+        payload: '(info: SnTreeDragInfo)',
+        desc: 'A dragged row entered another row; mirrors n-tree `on-dragenter`.',
+      },
+      {
+        name: 'dragLeave',
+        payload: '(info: SnTreeDragInfo)',
+        desc: 'A dragged row left another row; mirrors n-tree `on-dragleave`.',
+      },
+      {
+        name: 'dragEnd',
+        payload: '(info: SnTreeDragInfo)',
+        desc: 'A drag ended (dropped or cancelled); mirrors n-tree `on-dragend`.',
+      },
+      {
+        name: 'drop',
+        payload: '(info: SnTreeDropInfo)',
+        desc: 'A row was dropped on another row; mirrors n-tree `on-drop`.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnTree.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: 'Rendered when `data` produces no rows.' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -241,7 +305,7 @@ import { Tree } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

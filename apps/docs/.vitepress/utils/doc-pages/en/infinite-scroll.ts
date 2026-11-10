@@ -64,6 +64,12 @@ import { InfiniteScroll } from '@snui/vue-web';
         desc: 'Bottom-distance threshold in px that triggers `load`. Mirrors n-infinite-scroll `distance`.',
       },
       {
+        name: 'load',
+        type: '(() => Promise<void> | void)',
+        default: '—',
+        desc: 'Bottom-distance trigger; pending load blocks retriggers (naive-ui `on-load`).',
+      },
+      {
         name: 'scrollbarProps',
         type: 'Record<string, unknown> | undefined',
         default: 'undefined',
@@ -76,6 +82,16 @@ import { InfiniteScroll } from '@snui/vue-web';
         desc: 'Render an inline-SVG spinner at the bottom while `load` is pending (addition — the reference ships no loading UI).',
       },
     ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnInfiniteScroll.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: 'Content inside the scroll container.' }],
   },
   ai: {
     badge: 'ai-description.md · bundled',
@@ -96,7 +112,7 @@ import { InfiniteScroll } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

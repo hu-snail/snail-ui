@@ -145,6 +145,58 @@ import { Checkbox } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnCheckbox.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(SnCheckboxValue)',
+        desc: '`v-model` 同步，独立使用时派发切换后的值。',
+      },
+      {
+        name: 'update:checked',
+        payload: '(boolean)',
+        desc: '点击或空格提交选中状态时派发，对应 n-checkbox 的 `onUpdate:checked`。',
+      },
+      {
+        name: 'checkedChange',
+        payload: '(boolean)',
+        desc: '选中状态提交时派发，载荷与 naive-ui 的 `checked-change` 一致。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnCheckbox.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '{ checked: boolean; disabled: boolean; indeterminate: boolean }',
+        desc: '富内容 Label，优先于 `label` 属性，作用域提供选中状态。',
+      },
+      {
+        name: 'icon',
+        props: '{ checked: boolean }',
+        desc: '自定义勾选图标，渲染在勾选框内替代 CSS 对勾。',
+      },
+      {
+        name: 'indicator',
+        props: '{ checked: boolean; indeterminate: boolean }',
+        desc: '整体替换勾选框，用于卡片 / 标签形态，并接收状态以自绘选中视觉。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -164,7 +216,7 @@ import { Checkbox } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

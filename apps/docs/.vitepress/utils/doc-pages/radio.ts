@@ -123,6 +123,52 @@ import { Radio } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnRadio.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnRadioValue | null)',
+        desc: '`v-model` 同步，激活时派发本项的 `checkedValue`。',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnRadioValue, event: Event)',
+        desc: '用户激活时触发（原生 `change`）。',
+      },
+      { name: 'checked', payload: '(value: SnRadioValue)', desc: '用户交互把选中态切为真时触发。' },
+      {
+        name: 'update',
+        payload: '(value: SnRadioValue | null, event: Event)',
+        desc: '原生 `update` 事件，每次状态变化都触发。',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: '原生聚焦事件。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '原生失焦事件。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnRadio.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '兜底标签内容；`label` 插槽缺失时渲染。' },
+      {
+        name: 'label',
+        props: '{ checked: boolean; disabled: boolean }',
+        desc: '自定义标签内容，作用域为 `{ checked, disabled }`，替代 `label` 属性文本。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -142,7 +188,7 @@ import { Radio } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

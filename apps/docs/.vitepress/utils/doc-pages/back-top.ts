@@ -73,7 +73,47 @@ import { BackTop } from '@snui/vue-web';
         desc: 'Element to render the button into. Accepted for API parity.',
       },
       { name: 'visibilityHeight', type: 'number', default: '180', desc: '触发显示的滚动高度。' },
+      {
+        name: 'listenTo',
+        type: 'string | HTMLElement | Document | (() => HTMLElement | Document)',
+        default: '—',
+        desc: '滚动容器；省略时自动探测最近的滚动祖先。',
+      },
+      {
+        name: 'target (deprecated)',
+        type: '() => HTMLElement',
+        default: '—',
+        desc: '已废弃的滚动目标回调，请改用 `listenTo`；对齐 n-back-top `target`。',
+      },
+      {
+        name: 'onUpdateShow',
+        type: '(value: boolean) => void',
+        default: '—',
+        desc: '可见性变化时以新值调用，对应 `update:show`。',
+      },
+      {
+        name: 'onShow (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: '已废弃的显示回调，请改用 `onUpdateShow`。',
+      },
+      {
+        name: 'onHide (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: '已废弃的隐藏回调，请改用 `onUpdateShow`。',
+      },
     ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnBackTop.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '自定义按钮内容，替换内置箭头图标。' }],
   },
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -94,7 +134,7 @@ import { BackTop } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -76,6 +76,24 @@ import { Thing } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnThing.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '内容主体。' },
+      { name: 'avatar', props: '—', desc: '头像；缩进模式下作为整块前导区渲染。' },
+      { name: 'header', props: '—', desc: '头部内容，覆盖 `title` 属性。' },
+      { name: 'header-extra', props: '—', desc: '头部尾部内容，覆盖 `title-extra` 属性。' },
+      { name: 'description', props: '—', desc: '描述内容，覆盖 `description` 属性。' },
+      { name: 'footer', props: '—', desc: '底部区域。' },
+      { name: 'action', props: '—', desc: '操作区（按钮行）。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -95,7 +113,7 @@ import { Thing } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

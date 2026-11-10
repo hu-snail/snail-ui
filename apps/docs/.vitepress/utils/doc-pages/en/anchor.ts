@@ -88,10 +88,22 @@ import { Anchor } from '@snui/vue-web';
         desc: 'Keep the previous link active while a section is scrolled out of view, instead of activating the fully-scrolled-past link.',
       },
       {
+        name: 'offsetTarget',
+        type: 'string | OffsetTarget | (() => HTMLElement)',
+        default: '—',
+        desc: 'Element used to measure section offsets; defaults to `document`.',
+      },
+      {
         name: 'affix',
         type: 'boolean',
         default: 'false',
         desc: 'Wrap the anchor in SnAffix so it stays in view. Mirrors `affix`.',
+      },
+      {
+        name: 'listenTo',
+        type: 'string | HTMLElement | Document | (() => HTMLElement | Document)',
+        default: '—',
+        desc: 'Forwarded to `SnAffix` as the scroll container when `affix` is true.',
       },
       {
         name: 'top',
@@ -121,6 +133,16 @@ import { Anchor } from '@snui/vue-web';
       { name: 'offsetBottom', type: 'number', default: 'undefined as any', desc: 'offsetBottom' },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnAnchor.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '`SnAnchorLink` children.' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -137,7 +159,7 @@ import { Anchor } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

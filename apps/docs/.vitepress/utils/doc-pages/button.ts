@@ -110,22 +110,16 @@ export const buttonDocPage: SnDocPageData = {
         desc: '按钮语义类型，驱动配色与 hover 反馈。',
       },
       {
-        name: 'size',
-        type: "'tiny' | 'small' | 'medium' | 'large' | 'huge'",
-        default: "'medium'",
-        desc: '尺寸级别，联动高度与字号。',
-      },
-      { name: 'block', type: 'boolean', default: 'false', desc: '块级（占满父容器宽度）。' },
-      {
         name: 'round',
         type: 'boolean',
         default: 'false',
         desc: '胶囊形（`border-radius: 999px`）。',
       },
       { name: 'circle', type: 'boolean', default: 'false', desc: '圆形（正方形 padding）。' },
+      { name: 'block', type: 'boolean', default: 'false', desc: '块级（占满父容器宽度）。' },
       { name: 'text', type: 'boolean', default: 'false', desc: '文字按钮 — 透明背景、无边框。' },
-      { name: 'ghost', type: 'boolean', default: 'false', desc: '透明背景 + 着色边框。' },
       { name: 'dashed', type: 'boolean', default: 'false', desc: '虚线边框。' },
+      { name: 'ghost', type: 'boolean', default: 'false', desc: '透明背景 + 着色边框。' },
       { name: 'secondary', type: 'boolean', default: 'false', desc: '反色 hover（视觉变体）。' },
       {
         name: 'tertiary',
@@ -142,16 +136,10 @@ export const buttonDocPage: SnDocPageData = {
         desc: '自定义 CSS 颜色；`--sn-button-color` token 覆盖 type 配色。',
       },
       {
-        name: 'tag',
-        type: "'button' | 'a' | 'div' | 'span'",
-        default: "'button'",
-        desc: "根元素。'a' 时 disabled 失效（HTMLAnchorElement 不支持）。",
-      },
-      {
-        name: 'attrType',
-        type: "'button' | 'submit' | 'reset'",
-        default: "'button'",
-        desc: '原生 <button> 的 type 属性。',
+        name: 'size',
+        type: "'tiny' | 'small' | 'medium' | 'large' | 'huge'",
+        default: "'medium'",
+        desc: '尺寸级别，联动高度与字号。',
       },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用。' },
       {
@@ -160,6 +148,19 @@ export const buttonDocPage: SnDocPageData = {
         default: 'false',
         desc: '加载中（spinner + 阻止 click）。',
       },
+      {
+        name: 'attrType',
+        type: "'button' | 'submit' | 'reset'",
+        default: "'button'",
+        desc: '原生 <button> 的 type 属性。',
+      },
+      {
+        name: 'tag',
+        type: "'button' | 'a' | 'div' | 'span'",
+        default: "'button'",
+        desc: "根元素。'a' 时 disabled 失效（HTMLAnchorElement 不支持）。",
+      },
+      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签。' },
       { name: 'focusable', type: 'boolean', default: 'true', desc: '是否可 tab 聚焦。' },
       { name: 'icon', type: 'IconComponent', default: '—', desc: '直接传 lucide 组件。' },
       { name: 'iconName', type: 'string', default: '—', desc: '通过 `registerSnIcons` 解析。' },
@@ -171,7 +172,6 @@ export const buttonDocPage: SnDocPageData = {
         default: 'true',
         desc: '是否显示图标。`false` 隐藏（loading 仍显示 spinner）。',
       },
-      { name: 'ariaLabel', type: 'string', default: '—', desc: '无障碍标签。' },
       {
         name: 'htmlType (deprecated)',
         type: "'button' | 'submit' | 'reset'",
@@ -184,6 +184,36 @@ export const buttonDocPage: SnDocPageData = {
         default: 'true',
         desc: '旧 border 标志，保留向后兼容。',
       },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnButton.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'click',
+        payload: 'MouseEvent',
+        desc: '原生点击；`disabled` 或 `loading` 时不派发。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnButton.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '默认插槽，按钮文本内容。' },
+      { name: 'icon', props: '—', desc: '自定义图标，渲染在默认内容之前。' },
+      { name: 'loading', props: '—', desc: '自定义加载指示器，替换默认 spinner。' },
     ],
   },
 
@@ -265,7 +295,7 @@ export const buttonDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

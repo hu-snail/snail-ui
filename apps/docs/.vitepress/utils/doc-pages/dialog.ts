@@ -157,6 +157,44 @@ import { Dialog } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDialog.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'positive-click',
+        payload: '(MouseEvent)',
+        desc: '点击确认按钮时派发，对应 n-dialog 的 `onPositiveClick`。',
+      },
+      {
+        name: 'negative-click',
+        payload: '(MouseEvent)',
+        desc: '点击取消按钮时派发，对应 n-dialog 的 `onNegativeClick`。',
+      },
+      { name: 'close', payload: '—', desc: '点击关闭按钮时派发，对应 n-dialog 的 `onClose`。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDialog.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '对话框主体，替代 `content`。' },
+      { name: 'header', props: '—', desc: '标题行，替代 `title`。' },
+      { name: 'icon', props: '—', desc: '类型图标，替代内置的按类型字形。' },
+      { name: 'action', props: '—', desc: '操作行，完全替代内置按钮。' },
+      { name: 'close', props: '—', desc: '关闭按钮，替代内置关闭字形。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -176,7 +214,7 @@ import { Dialog } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

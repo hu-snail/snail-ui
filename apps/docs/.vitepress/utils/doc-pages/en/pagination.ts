@@ -159,6 +159,47 @@ import { Pagination } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnPagination.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:page',
+        payload: '(page: number)',
+        desc: 'Fired when a page is committed (button click or jumper).',
+      },
+      {
+        name: 'update:pageSize',
+        payload: '(pageSize: number)',
+        desc: 'Fired when the page size is committed via the size picker.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnPagination.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'prev', props: '—', desc: 'Custom arrow content for the prev button.' },
+      { name: 'next', props: '—', desc: 'Custom arrow content for the next button.' },
+      { name: 'prefix', props: '—', desc: 'Content rendered before the pager.' },
+      { name: 'suffix', props: '—', desc: 'Content rendered after the pager.' },
+      {
+        name: 'label',
+        props: '{ page: number }',
+        desc: 'Custom page-number label; scope is `{ page }`.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -178,7 +219,7 @@ import { Pagination } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

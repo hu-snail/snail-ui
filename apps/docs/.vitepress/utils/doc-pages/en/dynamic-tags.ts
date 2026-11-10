@@ -125,6 +125,70 @@ import { DynamicTags } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDynamicTags.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnDynamicTagValue[])',
+        desc: '`v-model` sync — always the complete next array.',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnDynamicTagValue[])',
+        desc: 'Fired when the tag array changes (add / remove); naive-ui `on-change` payload.',
+      },
+      {
+        name: 'add',
+        payload: '(value: SnDynamicTagValue)',
+        desc: 'Fired when a tag is added; naive-ui `on-add` payload.',
+      },
+      {
+        name: 'remove',
+        payload: '(value: SnDynamicTagValue)',
+        desc: 'Fired when a tag is removed; naive-ui `on-remove` payload.',
+      },
+      {
+        name: 'click',
+        payload: '(value: SnDynamicTagValue, event: MouseEvent)',
+        desc: 'Fired when a tag is clicked, with the tag value and the native mouse event.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDynamicTags.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'input',
+        props:
+          '{ value: string; placeholder: string; confirm: () => void; cancel: () => void; setValue: (v: string) => void }',
+        desc: 'Inline input; scope: `value`, `placeholder`, `confirm`, `cancel`, `setValue`.',
+      },
+      {
+        name: 'tag',
+        props: '{ label: SnDynamicTagValue; index: number }',
+        desc: 'Custom tag rendering, scoped `{ label, index }`.',
+      },
+      {
+        name: 'trigger',
+        props: '—',
+        desc: 'Custom add-trigger content, replacing the default + icon.',
+      },
+      { name: 'empty', props: '—', desc: 'Empty state shown when there are no tags.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -144,7 +208,7 @@ import { DynamicTags } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

@@ -188,6 +188,38 @@ import { Form } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnForm.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'validate',
+        payload: '(payload: { valid: boolean; errors: Record<string, string> })',
+        desc: '`validate()` 完成时触发一次；`valid` 为 true 表示全部字段通过。',
+      },
+      { name: 'reset', payload: '—', desc: '调用 `resetFields()` 时触发。' },
+      {
+        name: 'submit',
+        payload: '(payload: { valid: boolean })',
+        desc: '提交时触发，在 `validate()` 之后派发；`valid` 为校验结果。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnForm.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '默认插槽，通常放置 SnFormItem 与提交按钮。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -207,7 +239,7 @@ import { Form } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

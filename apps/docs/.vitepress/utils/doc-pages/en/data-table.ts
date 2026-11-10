@@ -107,6 +107,24 @@ import { DataTable } from '@snui/vue-web';
         desc: 'Row data records. Mirrors n-data-table `data`.',
       },
       {
+        name: 'rowKey',
+        type: '((row: DataTableRowData) => DataTableRowKey)',
+        default: '—',
+        desc: 'Derives the row key from a row; mirrors n-data-table `row-key`.',
+      },
+      {
+        name: 'rowProps',
+        type: '((row: DataTableRowData, index: number) => HTMLAttributes)',
+        default: '—',
+        desc: 'Returns extra `tr` attributes per row; mirrors n-data-table `row-props`.',
+      },
+      {
+        name: 'rowClassName',
+        type: 'string | ((row: DataTableRowData, index: number) => string)',
+        default: '—',
+        desc: 'Static or per-row `tr` class; mirrors n-data-table `row-class-name`.',
+      },
+      {
         name: 'striped',
         type: 'boolean',
         default: 'false',
@@ -204,6 +222,58 @@ import { DataTable } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDataTable.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:checkedRowKeys',
+        payload:
+          "(DataTableRowKey[], DataTableRowData[], { row: DataTableRowData | undefined; action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' })",
+        desc: 'Fired on check changes with the next keys, matching rows and action meta.',
+      },
+      {
+        name: 'update:expandedRowKeys',
+        payload: '(DataTableRowKey[])',
+        desc: 'Fired with the complete next key array when expanded rows change.',
+      },
+      {
+        name: 'update:filters',
+        payload: '(DataTableFilterState, DataTableBaseColumn)',
+        desc: 'Fired on filter commit with the next filter state and the column.',
+      },
+      {
+        name: 'update:sorter',
+        payload: '(DataTableSortState | DataTableSortState[] | null)',
+        desc: 'Fired when a sortable header is clicked, with the next sort state.',
+      },
+      {
+        name: 'update:page',
+        payload: '(number)',
+        desc: 'Fired with the clamped page number when pagination changes.',
+      },
+      {
+        name: 'update:pageSize',
+        payload: '(number)',
+        desc: 'Fired with the next page size when the page-size selector changes.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDataTable.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: 'Replaces the default empty state.' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -223,7 +293,7 @@ import { DataTable } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

@@ -108,6 +108,32 @@ import { Log } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnLog.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'reach-top',
+        payload: '—',
+        desc: 'Fired at the top, within `offset-top` (n-log `on-reach-top`).',
+      },
+      {
+        name: 'reach-bottom',
+        payload: '—',
+        desc: 'Fired at the bottom, within `offset-bottom` (n-log `on-reach-bottom`).',
+      },
+      {
+        name: 'require-more',
+        payload: "'top' | 'bottom'",
+        desc: "Fired past the tolerance, payload `'top' | 'bottom'` (n-log `on-require-more`).",
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -127,7 +153,7 @@ import { Log } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

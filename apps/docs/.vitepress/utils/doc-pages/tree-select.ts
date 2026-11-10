@@ -216,6 +216,40 @@ export const treeSelectDocPage: SnDocPageData = {
       { name: 'lineColor', type: 'string', default: '—', desc: '连接线颜色，覆盖面板的线色变量' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTreeSelect.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnTreeSelectValue | SnTreeSelectValue[] | null)',
+        desc: '`v-model` 同步触发。',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnTreeSelectValue | SnTreeSelectValue[] | null)',
+        desc: '选择提交时触发（移除标签、清空也会触发）。',
+      },
+      { name: 'clear', payload: '—', desc: '点击清空按钮时触发。' },
+      { name: 'focus', payload: 'FocusEvent', desc: '触发器获得焦点时触发。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '触发器失去焦点时触发。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTreeSelect.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: '空状态（无选项或无匹配结果）。' }],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -237,7 +271,7 @@ export const treeSelectDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

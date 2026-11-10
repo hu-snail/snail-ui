@@ -160,6 +160,50 @@ export const autoCompleteDocPage: SnDocPageData = {
       { name: 'ariaLabel', type: 'string', default: "''", desc: '原生 ARIA 标签。' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnAutoComplete.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: string)',
+        desc: '`v-model` 同步；每次输入、选择和清空时触发。',
+      },
+      {
+        name: 'update:value',
+        payload: '(value: string)',
+        desc: 'naive-ui 的 `on-update:value` 别名，载荷与 `update:modelValue` 相同。',
+      },
+      { name: 'change', payload: '(value: string)', desc: '值被提交时触发（选择或清空）。' },
+      {
+        name: 'select',
+        payload: '(value: string)',
+        desc: '从下拉列表选中某项时触发（点击或回车）。',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: '输入框获得焦点时触发。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '输入框失去焦点时触发。' },
+      {
+        name: 'search',
+        payload: '(value: string)',
+        desc: '每次输入时触发，对应 naive-ui 的 `on-input`。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnAutoComplete.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: '下拉列表的空状态内容。' }],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -181,7 +225,7 @@ export const autoCompleteDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

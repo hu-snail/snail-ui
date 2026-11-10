@@ -163,6 +163,53 @@ import { Upload } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnUpload.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:fileList',
+        payload: '(fileList: SnUploadFile[])',
+        desc: 'Controlled mirror of the internal list; fires on every mutation.',
+      },
+      {
+        name: 'change',
+        payload: '(fileList: SnUploadFile[])',
+        desc: 'The file list changed (add / status move / remove).',
+      },
+      {
+        name: 'remove',
+        payload: '(file: SnUploadFile)',
+        desc: 'A file was removed from the list.',
+      },
+      {
+        name: 'preview',
+        payload: '(file: SnUploadFile)',
+        desc: "An entry's preview affordance was activated (`onPreview` also fires).",
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnUpload.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'trigger',
+        props: '—',
+        desc: 'Custom trigger content (replaces the default button body).',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -182,7 +229,7 @@ import { Upload } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

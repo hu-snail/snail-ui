@@ -56,6 +56,9 @@ const props = defineProps<{ doc: SnDocPageData }>();
  * 90 多个页面正在分批迁移，任何一页漏了 `usage` / `tokens` / `props` / `ai`
  * 都会让模板直接读 undefined 而白屏 —— 一页的错误不该炸掉整站构建。这里把
  * 缺失的区块归一成空集合：页面少显示一块，而不是整页崩掉。
+ *
+ * `events` / `slots` 是可选区块：没派发事件 / 没暴露插槽的组件本来就不该
+ * 出现空表，因此归一成 `null`（而不是空 rows），模板据此整块跳过。
  */
 const doc = computed(() => {
   const raw = props.doc;
@@ -63,6 +66,8 @@ const doc = computed(() => {
     ...raw,
     usage: raw.usage ?? { hint: [], fileLabel: '', meta: '', code: '' },
     props: raw.props ?? { hint: [], rows: [] },
+    events: raw.events?.rows?.length ? raw.events : null,
+    slots: raw.slots?.rows?.length ? raw.slots : null,
     ai: raw.ai ?? {
       badge: '',
       heading: '',
@@ -113,11 +118,20 @@ const UI = computed(() =>
         copy: 'Copy',
         copied: 'Copied',
         copyChip: 'Copy',
-        api: 'Props Reference',
+        api: 'API Reference · Props / Events / Slots',
+        apiProps: 'Props',
+        apiEvents: 'Events',
+        apiSlots: 'Slots',
         thProp: 'Prop',
         thType: 'Type',
         thDefault: 'Default',
         thDesc: 'Description',
+        thEvent: 'Event',
+        thPayload: 'Payload',
+        thEventDesc: 'Description',
+        thSlot: 'Slot',
+        thSlotProps: 'Slot props',
+        thSlotDesc: 'Description',
         prev: 'Previous',
         next: 'Next',
         tocLabel: 'On this page',
@@ -137,11 +151,20 @@ const UI = computed(() =>
         copy: '复制',
         copied: '已复制',
         copyChip: '复制',
-        api: 'API 属性参考 Props Reference',
+        api: 'API 参考 Props / Events / Slots',
+        apiProps: '属性 Props',
+        apiEvents: '事件 Events',
+        apiSlots: '插槽 Slots',
         thProp: '属性 Prop',
         thType: '类型 Type',
         thDefault: '默认值',
         thDesc: '说明 Description',
+        thEvent: '事件 Event',
+        thPayload: '载荷 Payload',
+        thEventDesc: '说明 Description',
+        thSlot: '插槽 Slot',
+        thSlotProps: '作用域 Scope',
+        thSlotDesc: '说明 Description',
         prev: '上一篇 Previous',
         next: '下一篇 Next',
         tocLabel: '本页目录',
@@ -790,7 +813,7 @@ onBeforeUnmount(() => {
           </div>
         </section>
 
-        <!-- API 属性参考 -->
+        <!-- API 参考：Props / Events / Slots 同一区块，各自一张表 -->
         <section id="api" class="sn-docpage__section">
           <div class="sn-docpage__sec-head">
             <div class="sn-docpage__sec-title">
@@ -802,7 +825,9 @@ onBeforeUnmount(() => {
               <h2>{{ UI.api }}</h2>
             </div>
           </div>
-          <p class="sn-docpage__hint">
+
+          <h3 class="sn-docpage__api-subhead">{{ UI.apiProps }}</h3>
+          <p v-if="doc.props.hint.length" class="sn-docpage__hint">
             <template v-for="(seg, i) in segs(doc.props.hint)" :key="i">
               <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
               <template v-else>{{ seg.s }}</template>
@@ -830,6 +855,66 @@ onBeforeUnmount(() => {
               </table>
             </div>
           </div>
+
+          <template v-if="doc.events">
+            <h3 class="sn-docpage__api-subhead">{{ UI.apiEvents }}</h3>
+            <p v-if="doc.events.hint.length" class="sn-docpage__hint">
+              <template v-for="(seg, i) in segs(doc.events.hint)" :key="i">
+                <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+                <template v-else>{{ seg.s }}</template>
+              </template>
+            </p>
+            <div class="sn-docpage__tablecard">
+              <div class="sn-docpage__table-scroll">
+                <table class="sn-docpage__table">
+                  <thead>
+                    <tr>
+                      <th>{{ UI.thEvent }}</th>
+                      <th>{{ UI.thPayload }}</th>
+                      <th>{{ UI.thEventDesc }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in doc.events.rows" :key="row.name">
+                      <td class="sn-docpage__td-name">{{ row.name }}</td>
+                      <td class="sn-docpage__td-type">{{ row.payload }}</td>
+                      <td class="sn-docpage__td-desc">{{ row.desc }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </template>
+
+          <template v-if="doc.slots">
+            <h3 class="sn-docpage__api-subhead">{{ UI.apiSlots }}</h3>
+            <p v-if="doc.slots.hint.length" class="sn-docpage__hint">
+              <template v-for="(seg, i) in segs(doc.slots.hint)" :key="i">
+                <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+                <template v-else>{{ seg.s }}</template>
+              </template>
+            </p>
+            <div class="sn-docpage__tablecard">
+              <div class="sn-docpage__table-scroll">
+                <table class="sn-docpage__table">
+                  <thead>
+                    <tr>
+                      <th>{{ UI.thSlot }}</th>
+                      <th>{{ UI.thSlotProps }}</th>
+                      <th>{{ UI.thSlotDesc }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in doc.slots.rows" :key="row.name">
+                      <td class="sn-docpage__td-name">{{ row.name }}</td>
+                      <td class="sn-docpage__td-type">{{ row.props || '—' }}</td>
+                      <td class="sn-docpage__td-desc">{{ row.desc }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </template>
         </section>
 
         <!-- AI 原生集成 -->
@@ -1303,6 +1388,18 @@ onBeforeUnmount(() => {
   font-size: 13.5px;
   line-height: 1.7;
   color: var(--sn-doc-text-2);
+}
+/* API 区块内的子标题（Props / Events / Slots）：三段共享同一个 #api 锚点，
+ * 用字重 + 上间距分层，不加分隔线，和整页「无边框」的版式一致。 */
+.sn-docpage__api-subhead {
+  margin: 22px 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--sn-doc-text-1);
+}
+.sn-docpage__api-subhead:first-of-type {
+  margin-top: 4px;
 }
 
 /* ═══ Playground 窗口 ═══ */

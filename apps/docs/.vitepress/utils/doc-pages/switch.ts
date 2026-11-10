@@ -95,7 +95,48 @@ import { Switch } from '@snui/vue-web';
         default: "''",
         desc: 'Accessible name for the switch element.',
       },
+      {
+        name: 'railStyle',
+        type: '(info: SwitchRailStyleContext) => Record<string, string>',
+        default: '—',
+        desc: '轨道样式的渲染函数，接收 `{ checked }`，返回值合并到轨道元素上。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnSwitch.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: boolean | string | number)',
+        desc: '`v-model` 同步：载荷为 `checkedValue` 或 `uncheckedValue`。',
+      },
+      {
+        name: 'change',
+        payload: '(value: boolean | string | number)',
+        desc: '切换成功后触发，载荷为新值。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnSwitch.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'checked', props: '—', desc: '轨道在开启状态下显示的内容。' },
+      { name: 'unchecked', props: '—', desc: '轨道在关闭状态下显示的内容。' },
+      { name: 'loading-icon', props: '—', desc: '替换旋钮内默认的加载图标。' },
     ],
   },
   ai: {
@@ -117,7 +158,7 @@ import { Switch } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -194,6 +194,70 @@ import { Tree } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTree.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:expandedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeExpandAction })',
+        desc: '展开状态变化时触发；对齐 n-tree `on-update:expanded-keys`。',
+      },
+      {
+        name: 'update:selectedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeSelectAction })',
+        desc: '选中状态变化时触发；对齐 n-tree `on-update:selected-keys`。',
+      },
+      {
+        name: 'update:checkedKeys',
+        payload:
+          '(keys: SnTreeKey[], options: Array<SnTreeOption | null>, meta: { node: SnTreeOption | null; action: SnTreeCheckAction })',
+        desc: '勾选状态变化时触发；对齐 n-tree `on-update:checked-keys`。',
+      },
+      {
+        name: 'dragStart',
+        payload: '(info: SnTreeDragInfo)',
+        desc: '行开始被拖拽时触发；对齐 n-tree `on-dragstart`。',
+      },
+      {
+        name: 'dragEnter',
+        payload: '(info: SnTreeDragInfo)',
+        desc: '拖拽行进入另一行时触发；对齐 n-tree `on-dragenter`。',
+      },
+      {
+        name: 'dragLeave',
+        payload: '(info: SnTreeDragInfo)',
+        desc: '拖拽行离开另一行时触发；对齐 n-tree `on-dragleave`。',
+      },
+      {
+        name: 'dragEnd',
+        payload: '(info: SnTreeDragInfo)',
+        desc: '拖拽结束（放下或取消）时触发；对齐 n-tree `on-dragend`。',
+      },
+      {
+        name: 'drop',
+        payload: '(info: SnTreeDropInfo)',
+        desc: '行被放到另一行上时触发；对齐 n-tree `on-drop`。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTree.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: '`data` 无可用行时渲染。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -213,7 +277,7 @@ import { Tree } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

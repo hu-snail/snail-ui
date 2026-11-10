@@ -69,6 +69,41 @@ import { PageHeader } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnPageHeader.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      { name: 'back', payload: 'MouseEvent', desc: 'Fired when the back control is activated.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnPageHeader.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'header', props: '—', desc: 'Replaces the whole header row.' },
+      { name: 'back', props: '—', desc: 'Replaces the back control entirely.' },
+      { name: 'icon', props: '—', desc: 'Replaces the back glyph inside the control.' },
+      { name: 'title', props: '—', desc: 'Title content; used when `title` is not passed.' },
+      {
+        name: 'subtitle',
+        props: '—',
+        desc: 'Subtitle content; used when `subtitle` is not passed.',
+      },
+      { name: 'extra', props: '—', desc: 'Extra content; used when `extra` is not passed.' },
+      { name: 'footer', props: '—', desc: 'Bottom area, separated by a top border.' },
+      { name: 'default', props: '—', desc: 'Content between the header and the footer.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -87,7 +122,7 @@ import { PageHeader } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

@@ -198,10 +198,63 @@ import { Tooltip } from '@snui/vue-web';
         desc: 'Explicit stacking order. Mirrors n-popover `zIndex`.',
       },
       {
+        name: 'onClickoutside',
+        type: '(e: MouseEvent) => void',
+        default: '—',
+        desc: "Outside click while `trigger` is `'click'`; mirrors n-popover `onClickoutside`.",
+      },
+      {
         name: 'disabled',
         type: 'boolean',
         default: 'false',
         desc: 'Disable showing entirely. Mirrors n-tooltip `disabled`. Default false.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTooltip.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: 'Show state changed (`v-model:show`); mirrors n-tooltip `on-update-show`.',
+      },
+      {
+        name: 'show',
+        payload: '—',
+        desc: 'Fired when the popover appears; mirrors n-tooltip `on-show`.',
+      },
+      {
+        name: 'hide',
+        payload: '—',
+        desc: 'Fired when the popover hides; mirrors n-tooltip `on-hide`.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnTooltip.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'The trigger element (e.g. a button) that anchors the popover.',
+      },
+      {
+        name: 'content',
+        props: '—',
+        desc: 'Popover body; falls back to the `content` prop when empty.',
       },
     ],
   },
@@ -221,7 +274,7 @@ import { Tooltip } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

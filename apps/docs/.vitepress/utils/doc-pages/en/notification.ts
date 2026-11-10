@@ -94,6 +94,18 @@ import { Notification } from '@snui/vue-web';
         desc: 'Small footer-left caption.',
       },
       {
+        name: 'avatar',
+        type: '(() => unknown)',
+        default: '—',
+        desc: 'Leading avatar render function supplied via the API options.',
+      },
+      {
+        name: 'footer',
+        type: '(() => unknown)',
+        default: '—',
+        desc: 'Footer render function supplied via the API options.',
+      },
+      {
         name: 'duration',
         type: 'number | undefined',
         default: '3000',
@@ -110,6 +122,50 @@ import { Notification } from '@snui/vue-web';
         type: 'boolean | undefined',
         default: 'true',
         desc: 'Pause the countdown while hovered.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnNotification.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'destroy',
+        payload: '—',
+        desc: 'Fired when the card must be removed (close click or countdown end).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnNotification.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'avatar',
+        props: '—',
+        desc: 'Avatar area content; overrides the `avatar` render function.',
+      },
+      {
+        name: 'icon',
+        props: '—',
+        desc: 'Type-icon area content; overrides the built-in semantic glyph.',
+      },
+      { name: 'header', props: '—', desc: 'Header content; overrides the `title` prop.' },
+      { name: 'default', props: '—', desc: 'Body content; overrides the `content` prop.' },
+      {
+        name: 'footer',
+        props: '—',
+        desc: 'Footer area content; overrides the `footer` render function.',
       },
     ],
   },
@@ -131,7 +187,7 @@ import { Notification } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

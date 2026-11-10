@@ -87,6 +87,59 @@ import { Alert } from '@snui/vue-web';
         default: 'false',
         desc: 'Render the close button. Mirrors n-alert `closable`.',
       },
+      {
+        name: 'onClose',
+        type: '() => unknown',
+        default: '—',
+        desc: 'Called on close click; return `false` to veto dismissal (n-alert `onClose`).',
+      },
+      {
+        name: 'onAfterLeave',
+        type: '() => void',
+        default: '—',
+        desc: 'Called after the leave transition finishes. Mirrors n-alert `onAfterLeave`.',
+      },
+      {
+        name: 'onAfterHide (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: 'Deprecated leave callback; use `onAfterLeave`. Mirrors n-alert `onAfterHide`.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnAlert.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'closeClick',
+        payload: '—',
+        desc: 'Fired when the close button is clicked, before the `onClose` veto resolves.',
+      },
+      {
+        name: 'leave',
+        payload: '—',
+        desc: 'Fired after the leave transition finishes — the alert has been removed.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnAlert.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: 'Alert body content.' },
+      { name: 'icon', props: '—', desc: 'Custom icon — replaces the built-in per-type icon.' },
+      { name: 'header', props: '—', desc: 'Custom header — replaces the `title` prop.' },
     ],
   },
   ai: {
@@ -105,7 +158,7 @@ import { Alert } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

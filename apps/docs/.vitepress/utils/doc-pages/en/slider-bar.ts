@@ -153,6 +153,12 @@ import { SliderBar } from '@snui/vue-web';
         desc: 'Trailing glyph painted inside the tail of the track.',
       },
       {
+        name: 'levels',
+        type: 'Array<{ value: number; label: string; icon?: string }>',
+        default: '—',
+        desc: 'Discrete levels; the bar reads the active level instead of a percentage.',
+      },
+      {
         name: 'showLevels',
         type: 'boolean',
         default: 'true',
@@ -171,12 +177,24 @@ import { SliderBar } from '@snui/vue-web';
         desc: 'Caption source: `percent` (default) or the raw value.',
       },
       {
+        name: 'formatValue',
+        type: '(value: number, percent: number) => string',
+        default: '—',
+        desc: 'Fully custom caption text (wins over `format`).',
+      },
+      {
         name: 'valueSuffix',
         type: 'string',
         default: "'%'",
         desc: 'Suffix appended to the default caption (`%` by default).',
       },
       { name: 'tooltip', type: 'boolean', default: 'true', desc: 'Show the drag bubble.' },
+      {
+        name: 'formatTooltip',
+        type: '(value: number) => string | number',
+        default: '—',
+        desc: 'Formats the drag tooltip content.',
+      },
       {
         name: 'placement',
         type: 'string',
@@ -241,6 +259,60 @@ import { SliderBar } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnSliderBar.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: number | [number, number])',
+        desc: '`v-model` sync: fired on every value change.',
+      },
+      {
+        name: 'change',
+        payload: '(value: number | [number, number])',
+        desc: 'Fired on a committed change (drag end / keyboard commit / input commit).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnSliderBar.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'tooltip',
+        props: '{ value: number }',
+        desc: 'Custom tooltip content; the scope exposes the current handle value.',
+      },
+      {
+        name: 'icon',
+        props: '—',
+        desc: 'Leading glyph inside the bar; opt-in, nothing renders by default.',
+      },
+      {
+        name: 'start',
+        props: '—',
+        desc: 'Custom head glyph beside the track (overrides `leadingIcon`).',
+      },
+      { name: 'end', props: '—', desc: 'Custom tail glyph beside the track.' },
+      {
+        name: 'value',
+        props:
+          '{ value: number; level: string; levelIndex: number; percent: number; min: number; max: number; index: number; range: boolean }',
+        desc: 'Inline read-out content; defaults to the formatted caption.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -260,7 +332,7 @@ import { SliderBar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

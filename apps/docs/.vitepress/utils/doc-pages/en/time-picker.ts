@@ -129,6 +129,29 @@ import { TimePicker } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTimePicker.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: number | null)',
+        desc: '`v-model` sync — fires on every cell click and on Enter confirm.',
+      },
+      {
+        name: 'change',
+        payload: '(value: number | null)',
+        desc: 'Value committed; also fires for clear.',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Fired when the trigger gains focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Fired when the trigger loses focus.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -148,7 +171,7 @@ import { TimePicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

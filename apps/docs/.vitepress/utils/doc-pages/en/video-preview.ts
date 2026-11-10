@@ -172,6 +172,49 @@ import { VideoPreview } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnVideoPreview.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      { name: 'play', payload: '—', desc: 'Inline playback started.' },
+      { name: 'pause', payload: '—', desc: 'Inline playback paused.' },
+      { name: 'ended', payload: '—', desc: 'Inline playback reached the end.' },
+      { name: 'error', payload: 'Event', desc: 'The video element failed to load or decode.' },
+      { name: 'preview', payload: '—', desc: 'The overlay was opened.' },
+      {
+        name: 'close',
+        payload: '—',
+        desc: 'The overlay was closed (ESC / mask / close button / `closePreview()`).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnVideoPreview.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'placeholder',
+        props: '—',
+        desc: 'Replaces the poster area until a poster exists or playback starts.',
+      },
+      { name: 'play-icon', props: '—', desc: 'Replaces the centered play glyph.' },
+      {
+        name: 'toolbar',
+        props: '{ showPreview: () => void }',
+        desc: 'Replaces the top-right overlay affordance; receives the open trigger.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -191,7 +234,7 @@ import { VideoPreview } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

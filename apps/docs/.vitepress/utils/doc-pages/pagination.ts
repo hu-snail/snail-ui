@@ -154,6 +154,43 @@ import { Pagination } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnPagination.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:page',
+        payload: '(page: number)',
+        desc: '页码提交时派发（点击按钮或跳页）。',
+      },
+      {
+        name: 'update:pageSize',
+        payload: '(pageSize: number)',
+        desc: '通过每页条数选择器提交时派发。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnPagination.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'prev', props: '—', desc: '上一页按钮的自定义箭头内容。' },
+      { name: 'next', props: '—', desc: '下一页按钮的自定义箭头内容。' },
+      { name: 'prefix', props: '—', desc: '分页器之前的内容。' },
+      { name: 'suffix', props: '—', desc: '分页器之后的内容。' },
+      { name: 'label', props: '{ page: number }', desc: '自定义页码标签，作用域为 `{ page }`。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -173,7 +210,7 @@ import { Pagination } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

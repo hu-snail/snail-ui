@@ -70,6 +70,23 @@ import { Comment } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnComment.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'avatar', props: '—', desc: '头像列内容，覆盖 `avatar` 属性。' },
+      { name: 'author', props: '—', desc: '作者名，覆盖 `author` 属性。' },
+      { name: 'datetime', props: '—', desc: '时间文本，覆盖 `datetime` 属性。' },
+      { name: 'content', props: '—', desc: '评论正文，覆盖 `content` 属性。' },
+      { name: 'actions', props: '—', desc: '操作行内容（通常是普通 span）。' },
+      { name: 'default', props: '—', desc: '嵌套的 `<SnComment>` 回复。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -89,7 +106,7 @@ import { Comment } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

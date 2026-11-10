@@ -105,6 +105,12 @@ import { Tabs } from '@snui/vue-web';
         default: 'false',
         desc: '是否允许关闭标签（所有样式均渲染关闭位，视觉上为 `card` / `chrome` 设计）。',
       },
+      {
+        name: 'addable',
+        type: 'boolean | { disabled?: boolean }',
+        default: 'false',
+        desc: '是否显示末尾的 “+” 标签页，可传 `{ disabled }`（对应 n-tabs `addable`）。',
+      },
       { name: 'animated', type: 'boolean', default: 'false', desc: '切换面板时是否使用动画。' },
       {
         name: 'justifyContent',
@@ -154,6 +160,48 @@ import { Tabs } from '@snui/vue-web';
         default: '—',
         desc: '内容面板外层样式。',
       },
+      {
+        name: 'onBeforeLeave',
+        type: '(name: string | number, oldName: string | number | null) => boolean | Promise<boolean>',
+        default: '—',
+        desc: '切换标签前的守卫，返回 `false`（或 resolve `false`）可阻止切换（对应 n-tabs `onBeforeLeave`）。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTabs.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: string | number)',
+        desc: '激活面板变化时触发，支持 `v-model:value`。',
+      },
+      {
+        name: 'close',
+        payload: '(name: string | number)',
+        desc: '点击标签页关闭按钮时触发（对应 n-tabs `onClose`）。',
+      },
+      { name: 'add', payload: '—', desc: '点击新增标签页时触发（对应 n-tabs `onAdd`）。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTabs.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '默认插槽：一组 `<SnTabPane>` 子面板。' },
+      { name: 'prefix', props: '—', desc: '标签条之前的内容（对应 n-tabs `prefix`）。' },
+      { name: 'suffix', props: '—', desc: '标签条之后的内容（对应 n-tabs `suffix`）。' },
     ],
   },
   ai: {
@@ -175,7 +223,7 @@ import { Tabs } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

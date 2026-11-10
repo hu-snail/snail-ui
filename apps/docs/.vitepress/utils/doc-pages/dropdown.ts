@@ -99,6 +99,53 @@ import { Dropdown } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDropdown.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(value: boolean)',
+        desc: '显示状态同步；受控与非受控模式下都会派发，配合 `v-model:show` 使用。',
+      },
+      {
+        name: 'select',
+        payload: '(key: SnDropdownKey, option: SnDropdownOption)',
+        desc: '某行被激活（点击 / Enter）时触发；父级行则打开其子菜单。',
+      },
+      {
+        name: 'clickoutside',
+        payload: 'MouseEvent',
+        desc: '菜单打开时，`mousedown` 落在触发器与两层面板之外触发。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDropdown.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: '触发器内容；请放置可聚焦元素（如按钮），其 keydown 会冒泡到该包装层。',
+      },
+      {
+        name: 'content',
+        props: '{ close: () => void }',
+        desc: '完全自定义面板内容（对齐 Arco `#content`）；提供后替换 `options` 渲染并可调用 `close()` 关闭。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -118,7 +165,7 @@ import { Dropdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

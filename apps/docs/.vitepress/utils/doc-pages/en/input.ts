@@ -107,6 +107,12 @@ import { Input } from '@snui/vue-web';
         desc: 'Bound value. String for text-like types; number coerced for `type="number"`.',
       },
       {
+        name: 'type',
+        type: "| 'text' | 'number' | 'digit' | 'idcard' | 'safe-password' | 'nickname' | 'tel' | 'password' | 'email' | 'url' | 'search' | 'textarea'",
+        default: "'text'",
+        desc: 'Native input type; the 8 universal `wd-input` types plus a `textarea` mode.',
+      },
+      {
         name: 'size',
         type: "'mini' | 'tiny' | 'small' | 'medium' | 'large'",
         default: "'medium'",
@@ -226,6 +232,12 @@ import { Input } from '@snui/vue-web';
       { name: 'step', type: 'number', default: '—', desc: 'Step (numeric input only).' },
       { name: 'rows', type: 'number', default: '3', desc: 'Textarea row count (textarea only).' },
       {
+        name: 'autosize',
+        type: 'boolean | { minRows?: number; maxRows?: number }',
+        default: 'false',
+        desc: 'Auto-grows the textarea; accepts `{ minRows, maxRows }` to bound it.',
+      },
+      {
         name: 'border',
         type: "'all' | 'bottom' | 'none'",
         default: "'all'",
@@ -283,6 +295,90 @@ import { Input } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnInput.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(string | number)',
+        desc: '`v-model` sync; emits the new value on the native input event.',
+      },
+      {
+        name: 'change',
+        payload: '(string | number, Event)',
+        desc: 'Native change event fired on commit (blur / Enter).',
+      },
+      {
+        name: 'input',
+        payload: '(string | number, Event)',
+        desc: 'Native input event fired on every keystroke.',
+      },
+      {
+        name: 'focus',
+        payload: 'FocusEvent',
+        desc: 'Native focus event fired when the field gains focus.',
+      },
+      {
+        name: 'blur',
+        payload: 'FocusEvent',
+        desc: 'Native blur event fired when the field loses focus.',
+      },
+      {
+        name: 'clear',
+        payload: '—',
+        desc: 'Fired when the clear button is activated; this emit declares no payload.',
+      },
+      { name: 'click', payload: 'MouseEvent', desc: 'Fired on a click on the root wrapper.' },
+      {
+        name: 'clickPrefixIcon',
+        payload: 'MouseEvent',
+        desc: 'Fired when the prefix icon button is clicked.',
+      },
+      {
+        name: 'clickSuffixIcon',
+        payload: 'MouseEvent',
+        desc: 'Fired when the suffix icon button is clicked.',
+      },
+      {
+        name: 'confirm',
+        payload: '(string | number)',
+        desc: 'Fired when Enter confirms a single-line field, carrying the current value.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnInput.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'prefix',
+        props: '—',
+        desc: 'Custom prefix content; wins over `prefixIcon` when both are set.',
+      },
+      {
+        name: 'suffix',
+        props: '—',
+        desc: 'Custom suffix content; wins over `suffixIcon` when both are set.',
+      },
+      { name: 'clear-icon', props: '—', desc: 'Custom clear icon replacing the default × glyph.' },
+      {
+        name: 'count',
+        props: '{ current: number; max: number }',
+        desc: 'Custom count display replacing the default `current / max` text.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -302,7 +398,7 @@ import { Input } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

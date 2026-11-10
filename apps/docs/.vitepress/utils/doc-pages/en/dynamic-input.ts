@@ -123,6 +123,44 @@ import { DynamicInput } from '@snui/vue-web';
         default: "'default'",
         desc: 'Visual status, cascaded to every built-in row input.',
       },
+      {
+        name: 'onCreate',
+        type: '(value: DynamicInputValue, index: number) => DynamicInputValue',
+        default: '—',
+        desc: 'Post-processes a new row: refines the `preset` draft (naive-ui `on-create`).',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDynamicInput.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: DynamicInputValue[])',
+        desc: '`v-model` sync — always the full new array (edit, insert, remove or create).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDynamicInput.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '{ value: DynamicInputValue; index: number }',
+        desc: 'Custom row renderer scoped `{ value, index }`; overrides the built-in input.',
+      },
     ],
   },
   ai: {
@@ -144,7 +182,7 @@ import { DynamicInput } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

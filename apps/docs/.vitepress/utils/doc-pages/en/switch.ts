@@ -110,7 +110,52 @@ import { Switch } from '@snui/vue-web';
         default: "''",
         desc: 'Accessible name for the switch element.',
       },
+      {
+        name: 'railStyle',
+        type: '(info: SwitchRailStyleContext) => Record<string, string>',
+        default: '—',
+        desc: 'Rail-style function: gets `{ checked }`, returns styles merged onto the rail.',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnSwitch.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: boolean | string | number)',
+        desc: '`v-model` sync; the payload is `checkedValue` or `uncheckedValue`.',
+      },
+      {
+        name: 'change',
+        payload: '(value: boolean | string | number)',
+        desc: 'Fired after a successful toggle; the payload is the new value.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnSwitch.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'checked', props: '—', desc: 'Content shown inside the rail when checked.' },
+      { name: 'unchecked', props: '—', desc: 'Content shown inside the rail when unchecked.' },
+      {
+        name: 'loading-icon',
+        props: '—',
+        desc: 'Replaces the default loading spinner inside the knob.',
+      },
     ],
   },
   ai: {
@@ -132,7 +177,7 @@ import { Switch } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };
