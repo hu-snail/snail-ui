@@ -76,8 +76,8 @@ function go(end: End): void {
   z-index: 3;
   margin: -32px 0 6px;
   padding: 38px 6px 8px;
-  /* 非悬浮：与侧栏同色 —— 隐形接缝，菜单项不会穿过胶囊区域 */
-  background: #f8f8f8;
+  /* 非悬浮：与侧栏 / 文档纯白画布同色 —— 隐形接缝，菜单项不会穿过胶囊区域 */
+  background: #ffffff;
 }
 /* 悬浮：与玻璃面板同材质 —— 面板上不可见，滚过的菜单项被磨砂盖住 */
 .dark .sn-end-switch {

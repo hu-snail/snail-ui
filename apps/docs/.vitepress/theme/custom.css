@@ -1114,17 +1114,17 @@ html[data-sn-template-end='uni']
 }
 
 /* =====================================================================
-   15. Docs canvas background — #f8f8f8 (dark aware)
+   15. Docs canvas background — #ffffff (dark aware)
    ----------------------------------------------------------------------
- * 文档内容区整体铺一层中性灰画布：白底 demo 卡 / 组件面板浮在其上，
- * 层次与 naive-ui / shadcn 文档一致（需求：文档区域的背景全部 #f8f8f8）。
+ * 文档内容区铺纯白画布（需求：文档背景换成白色）。白底 demo 卡 / 组件面板
+ * 不再靠灰底对比分层，改由卡片自身的发丝边与超轻投影承担。
  *
  * 只动 `.VPContent`（导航栏、侧栏、首页画布各有自己的底色，不受影响）；
  * 暗黑不硬编码 —— 跟随 `--vp-c-bg`，主题编辑器注入的深色变量照常生效。
  * ===================================================================== */
 
 .VPContent {
-  background-color: #f8f8f8;
+  background-color: #ffffff;
 }
 
 .dark .VPContent {
@@ -1134,7 +1134,7 @@ html[data-sn-template-end='uni']
 /* ── 侧栏与文档画布同色（需求：左侧菜单背景与内容区域一致；暗黑跟随 --vp-c-bg） ──
  * VitePress 的 .VPSidebar[data-v] 特异性更高，改值必须走 --vp-sidebar-bg-color 变量。 */
 .VPSidebar {
-  --vp-sidebar-bg-color: #f8f8f8;
+  --vp-sidebar-bg-color: #ffffff;
 }
 
 .dark .VPSidebar {
@@ -1230,7 +1230,7 @@ html[data-sn-template-end='uni']
   display: none;
 }
 .VPLayout {
-  background-color: #f8f8f8;
+  background-color: #ffffff;
 }
 .dark .VPLayout {
   background-color: var(--vp-c-bg);
@@ -1273,7 +1273,7 @@ html[data-sn-template-end='uni']
     border-radius: 0;
     border: 0 !important;
     border-bottom: 0 !important;
-    background: #f8f8f8 !important;
+    background: #ffffff !important;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;

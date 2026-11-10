@@ -1072,6 +1072,8 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: 14px;
   padding: 28px 30px 24px;
+  /* 画布改为纯白后，靠发丝边维持白卡的边界（原先靠灰底对比分层）。 */
+  border: 1px solid var(--sn-doc-border);
   border-radius: var(--sn-doc-radius-card);
   background: var(--sn-doc-surface-lowest);
   box-shadow: var(--sn-doc-shadow);
@@ -1306,6 +1308,7 @@ onBeforeUnmount(() => {
 /* ═══ Playground 窗口 ═══ */
 .sn-docpage__window {
   overflow: hidden;
+  border: 1px solid var(--sn-doc-border);
   border-radius: 18px;
   background: var(--sn-doc-card);
   box-shadow: var(--sn-doc-shadow);
