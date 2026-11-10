@@ -1051,7 +1051,7 @@ onBeforeUnmount(() => {
 /* 右轨窄档只占目录条宽度，正文拿回其余空间（手机面板在右下角，两者不重叠）。 */
 @media (min-width: 960px) {
   .sn-docpage__layout {
-    grid-template-columns: minmax(0, 1fr) var(--sn-doc-rail-narrow, 64px);
+    grid-template-columns: minmax(0, 1fr) var(--sn-doc-rail-narrow, 20px);
   }
 }
 /* 1440px 及以下都算「小屏」：目录用悬浮条 + 浮出面板，不常驻清单。 */
@@ -2241,16 +2241,18 @@ onBeforeUnmount(() => {
 
 /* ═══ 右侧浮轨：本页目录 ═══
  * 两档宽度两种形态，同一份目录数据：
- *   - 960–1440px（小屏）：右轨只占目录条的宽度（--sn-doc-rail-narrow）。
- *     SnFloatingToc 收进这一列、贴栏左缘竖排横条，展开面板按需向左浮出；正文
- *     让出的宽度留给右下角的手机面板 —— 这一档常驻清单会把正文挤窄，也会和手机
- *     面板抢位置。
+ *   - 960–1440px（小屏）：右轨只占目录横条本身的宽度（--sn-doc-rail-narrow
+ *     = 28px），紧贴在右下角手机面板的左边。SnFloatingToc 收进这一列竖排横条，
+ *     展开面板按需向左浮出 —— 这一档常驻清单会把正文挤窄，也会和手机面板抢位置。
  *   - ≥1441px（大屏）：完整的 232px 栏，常驻显示全部条目（含案例子目录），当前项
  *     随滚动高亮。这里不用浮出面板：面板会盖住正文，而这一档本来就有地方。
  * 960px 以下右轨整体不出现（VitePress 自身在 960px 收起桌面侧栏）。
  * 纵向停靠点不变：sticky 96px，即旧目录卡的顶边。 */
 .sn-docpage__rail {
-  --sn-doc-rail-narrow: 64px;
+  /* 小屏右轨只留目录横条本身的宽度：触发区 2px 内边距 + 16px 条宽 = 20px，
+   * 横条靠这一列的右缘（见下方 align-items）。留更宽也没用 —— 那一列里只有
+   * 横条，多出来的空间只会把它和手机面板推远。 */
+  --sn-doc-rail-narrow: 20px;
   display: none;
 }
 @media (min-width: 960px) {
@@ -2275,6 +2277,14 @@ onBeforeUnmount(() => {
   top: auto;
   right: auto;
   transform: none;
+}
+/* 横条靠右缘：这一列就贴在手机面板左边，条子贴着列的右边才是「贴到手机上」，
+ * 贴左边会多出一条空缝。 */
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc__trigger) {
+  align-items: flex-end;
+}
+.sn-docpage__ftoc-rail :deep(.sn-floating-toc__trigger) > * {
+  margin-inline-start: auto;
 }
 /* 面板里是完整目录（13+ 条），比横条高得多。组件默认把它垂直居中在横条上，
  * 顶部附近展开就会溢到视口外；这里改成与横条顶边对齐，并限高可滚。入场动画
