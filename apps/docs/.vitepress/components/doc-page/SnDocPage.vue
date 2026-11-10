@@ -557,13 +557,6 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="sn-docpage" :class="{ 'sn-docpage--dark': isDark }">
-    <!-- 原型氛围背景：弥散光晕 + 亚像素点阵（fixed，不拦截交互，配色走主题变量） -->
-    <div class="sn-docpage__bg" aria-hidden="true">
-      <span class="sn-docpage__blob sn-docpage__blob--a" />
-      <span class="sn-docpage__blob sn-docpage__blob--b" />
-      <span class="sn-docpage__blob sn-docpage__blob--c" />
-      <span class="sn-docpage__dotgrid" />
-    </div>
     <div class="sn-docpage__layout">
       <!-- ═══════════════ 中央文档流 ═══════════════ -->
       <main class="sn-docpage__main">
@@ -1085,40 +1078,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-/* 弥散光晕：纯装饰，不参与布局也不拦截交互。 */
-.sn-docpage__head::before,
-.sn-docpage__head::after {
-  content: '';
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-}
-.sn-docpage__head::before {
-  top: -96px;
-  right: -80px;
-  width: 320px;
-  height: 320px;
-  background: color-mix(in srgb, var(--sn-doc-accent) 14%, transparent);
-  filter: blur(48px);
-}
-.sn-docpage__head::after {
-  bottom: -64px;
-  left: -48px;
-  width: 256px;
-  height: 256px;
-  /* 同一根主题色相的更深一档（hover 态即深色锚点），而不是固定的 success 绿 ——
-     换主题 / 换风格包时两团光晕仍然是一对，不会出现孤立的杂色。 */
-  background: color-mix(in srgb, var(--sn-doc-accent-hover) 14%, transparent);
-  filter: blur(40px);
-}
-
-/* 内层内容压在光晕之上。 */
-.sn-docpage__head > * {
-  position: relative;
-  z-index: 1;
-}
-/* 特性条：一行轻量要点，细线分隔，图标随语义色。 */
 .sn-docpage__features {
   display: flex;
   flex-wrap: wrap;
@@ -2344,67 +2303,6 @@ onBeforeUnmount(() => {
 .sn-docpage__toc-link--on {
   border-left-color: var(--sn-doc-accent);
   color: var(--sn-doc-accent);
-}
-
-/* ═══ 氛围背景（原型还原）：弥散光晕 + 亚像素点阵，配色全部走主题变量 ═══ */
-.sn-docpage__bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.sn-docpage__blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-}
-.sn-docpage__blob--a {
-  top: -18%;
-  left: 15%;
-  width: 680px;
-  height: 680px;
-  background: radial-gradient(
-    circle at 40% 40%,
-    color-mix(in srgb, var(--sn-doc-accent) 16%, transparent),
-    transparent 70%
-  );
-}
-.sn-docpage__blob--b {
-  top: 35%;
-  right: -10%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(
-    circle at 60% 40%,
-    color-mix(in srgb, var(--sn-doc-cyan) 12%, transparent),
-    transparent 70%
-  );
-}
-.sn-docpage__blob--c {
-  bottom: 5%;
-  left: 20%;
-  width: 720px;
-  height: 720px;
-  background: radial-gradient(
-    circle at 50% 60%,
-    color-mix(in srgb, var(--sn-doc-accent) 10%, transparent),
-    transparent 72%
-  );
-}
-.sn-docpage__dotgrid {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--sn-doc-accent) 14%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 24px 24px;
-  opacity: 0.55;
-}
-.sn-docpage--dark .sn-docpage__blob {
-  filter: blur(130px);
-  opacity: 0.85;
 }
 
 /* ═══ 移动端适配（<960px） ═══════════════════════════════════════════

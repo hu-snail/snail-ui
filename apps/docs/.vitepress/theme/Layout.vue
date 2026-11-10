@@ -28,6 +28,7 @@ import DefaultTheme from 'vitepress/theme';
 import { useRoute, useData } from 'vitepress';
 import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
 import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
+import SnDocsSidebarTree from '../components/SnDocsSidebarTree.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DemoDock from '../components/DemoDock.vue';
 import { resetDock } from '../utils/demo-dock';
@@ -125,6 +126,8 @@ watch(
       <template #sidebar-nav-before>
         <SnSidebarEndSwitch v-if="showEndSwitch" />
         <SnDocsTemplateEnd v-if="showTemplateEnd" />
+        <!-- 左侧菜单由 SnTree 渲染；VitePress 自己的列表在 custom.css 里隐藏。 -->
+        <SnDocsSidebarTree />
       </template>
 
       <!-- Sidebar collapse handle: one tab glued to the sidebar's LEFT edge,

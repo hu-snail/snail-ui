@@ -18,23 +18,11 @@
  * Active route detection uses vitepress's `useRoute()` to set SnMenu v-model.
  */
 
-import { computed, markRaw, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useData, useRoute, useRouter } from 'vitepress';
-import {
-  Bot,
-  ChartLine,
-  ChevronDown,
-  Layers,
-  LayoutGrid,
-  LayoutTemplate,
-  Moon,
-  Palette,
-  Puzzle,
-  Rocket,
-  Smartphone,
-  Sun,
-} from 'lucide-vue-next';
+import { ChevronDown, Moon, Sun } from 'lucide-vue-next';
 import SnNavSearch from './SnNavSearch.vue';
+import SnDocsSearch from './SnDocsSearch.vue';
 import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web';
 import type { SnMenuOption } from '@snui/vue-web';
 import type { DocsNavItem } from '../config-nav';
@@ -165,17 +153,31 @@ function onKeydown(event: KeyboardEvent): void {
 const isHome = computed(
   () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
 );
+/** 宽视口：文档页的常驻搜索框只在 ≥960px（有左侧菜单栏）时才有位置。 */
+const wideEnough = ref(false);
+let wideMq: MediaQueryList | null = null;
+let onWideChange: ((e: MediaQueryListEvent) => void) | null = null;
+
 const navFloating = ref(false);
 function syncFloating(): void {
   navFloating.value = isHome.value && window.scrollY > 8;
 }
 onMounted(() => {
+  wideMq = window.matchMedia('(min-width: 960px)');
+  wideEnough.value = wideMq.matches;
+  onWideChange = (e: MediaQueryListEvent) => {
+    wideEnough.value = e.matches;
+  };
+  wideMq.addEventListener('change', onWideChange);
   syncFloating();
   window.addEventListener('scroll', syncFloating, { passive: true });
   document.addEventListener('click', onDocClick);
   document.addEventListener('keydown', onKeydown);
 });
 onBeforeUnmount(() => {
+  if (wideMq !== null && onWideChange !== null) wideMq.removeEventListener('change', onWideChange);
+  wideMq = null;
+  onWideChange = null;
   window.removeEventListener('scroll', syncFloating);
   document.removeEventListener('click', onDocClick);
   document.removeEventListener('keydown', onKeydown);
@@ -247,7 +249,15 @@ function onLocaleClick(event: MouseEvent): void {
         <img class="sn-docs-nav__brand-icon" src="/logo.webp" width="330" height="200" alt="" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
-      <div class="sn-docs-nav__search-slot">
+      <!-- 文档页：常驻展开的搜索框（SnInput），定位在内容区左上、离侧栏 30px。
+           首页保留原本的透镜展开式搜索 —— landing 页的导航条不该被一根输入框占位。 -->
+      <div
+        v-if="!isHome && wideEnough"
+        class="sn-docs-nav__search-slot sn-docs-nav__search-slot--docs"
+      >
+        <SnDocsSearch />
+      </div>
+      <div v-else class="sn-docs-nav__search-slot">
         <SnNavSearch />
       </div>
       <div class="sn-docs-nav__menu">
@@ -379,6 +389,16 @@ function onLocaleClick(event: MouseEvent): void {
 .sn-docs-nav__search-slot {
   display: inline-flex;
   flex-shrink: 0;
+}
+/* 文档页的搜索框不跟随 flex 流：它要落在「内容区左上」这个几何位置上，
+ * 与左侧菜单右缘留 30px。绝对定位让品牌宽度、菜单项数量都不再影响它。 */
+.sn-docs-nav__search-slot--docs {
+  position: absolute;
+  /* 导航条自带 24px 内边距，菜单分界线在 --vp-sidebar-width 处 */
+  left: calc(var(--vp-sidebar-width) + 30px - 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
 }
 .sn-docs-nav__menu {
   display: flex;
