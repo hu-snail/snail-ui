@@ -800,13 +800,16 @@ onBeforeUnmount(() => {
                         {{ sec.label }}
                       </button>
                     </div>
+                    <!-- 只留图标：按钮浮在切换胶囊正下方，文字版会被加宽后
+                         的胶囊压住；复制语义由图标 + aria-label 承载，
+                         复制成功反馈走 Copy→Check 图标切换。 -->
                     <button
                       type="button"
                       class="sn-docpage__mini"
+                      :aria-label="copiedKey === 'demo-' + d.name ? UI.copied : UI.copy"
                       @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
                     >
                       <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
-                      {{ copiedKey === 'demo-' + d.name ? UI.copied : UI.copy }}
                     </button>
                   </div>
                   <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
@@ -1906,8 +1909,9 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  /* 右侧留出浮动切换胶囊的宽度，复制按钮不被压住。 */
-  padding: 8px 84px 8px 12px;
+  /* 右侧留出浮动切换胶囊的整条宽度（84px 胶囊 + 10px 右距 + 6px 呼吸），
+     复制按钮不被压住。 */
+  padding: 8px 100px 8px 12px;
 }
 /* uni 案例没有切换胶囊，把为它预留的右侧空间收回。 */
 .sn-docpage__demo-card--uni .sn-docpage__codebar {
@@ -2452,7 +2456,7 @@ onBeforeUnmount(() => {
     padding: 16px 10px;
   }
   .sn-docpage__demo-codebody .sn-docpage__codebar {
-    padding: 8px 84px 8px 10px;
+    padding: 8px 100px 8px 10px;
   }
   .sn-docpage__demo-code {
     font-size: 12px;
