@@ -399,6 +399,9 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
 .sn-home {
   --sn-home-card-shadow: 0 10px 30px rgb(2 6 16 / 0.08);
   --sn-home-card-shadow-hover: 0 18px 44px rgb(2 6 16 / 0.12);
+  /* 首页中文统一使用自托管 MiSans 字体库（--vp-font-family-base），
+   * 让 hero / 区块标题 / 卡片文案与全站中文保持同一套字形。 */
+  font-family: var(--vp-font-family-base);
   width: 100%;
   background:
     radial-gradient(1200px 480px at 16% -8%, rgb(76 110 245 / 0.16), transparent 62%),
@@ -414,6 +417,12 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
     radial-gradient(1000px 440px at 86% -6%, rgb(168 85 247 / 0.3), transparent 64%),
     radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.18), transparent 66%), #0a0f1e;
   color: #f2f5fb;
+}
+/* 胶囊 / CTA 都是 <button>，UA 默认字体不继承 body —— 不显式指回字体库，
+ * 这些中文会退回系统字库，和正文的 MiSans 字形不一致。英文手写体标题
+ * 仍由 .sn-home__title-en 单独指定 Aidian Script（只有拉丁字形）。 */
+.sn-home button {
+  font-family: var(--vp-font-family-base);
 }
 /* 全屏宽度：不设最大宽度，仅留两侧呼吸边距 */
 .sn-home__inner {

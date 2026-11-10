@@ -322,6 +322,10 @@ function onLocaleClick(event: MouseEvent): void {
   padding: 0 24px;
   background: transparent;
   color: var(--sn-web-color-text-primary);
+  /* 菜单文字统一走自托管 MiSans 字体库（--vp-font-family-base）。
+   * 不能只靠 body 继承：<button> 带 UA 默认字体，SnMenu 项也可能被组件
+   * 样式另行指定，中文会悄悄退回系统字库。 */
+  font-family: var(--vp-font-family-base);
   /* 首页要求：导航带无下边线（含悬浮态，由 custom.css 的 VPNavBar 规则负责）。 */
   border-bottom: none;
 }
@@ -393,6 +397,7 @@ function onLocaleClick(event: MouseEvent): void {
   border: none;
   border-radius: 6px;
   background: transparent;
+  font-family: var(--vp-font-family-base);
   font-size: 13.5px;
   font-weight: 400;
   line-height: 32px;
@@ -539,6 +544,7 @@ function onLocaleClick(event: MouseEvent): void {
   border: none;
   border-radius: 6px;
   background: transparent;
+  font-family: var(--vp-font-family-base);
   font-size: 13.5px;
   font-weight: 400;
   line-height: 32px;
@@ -592,6 +598,7 @@ function onLocaleClick(event: MouseEvent): void {
   align-items: center;
   padding: 8px 12px;
   border-radius: 8px;
+  font-family: var(--vp-font-family-base);
   font-size: 13.5px;
   color: var(--sn-web-color-text-secondary);
   text-decoration: none;
