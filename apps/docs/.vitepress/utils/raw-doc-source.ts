@@ -64,7 +64,7 @@ interface MarkdownRenderer {
  * Escaping cannot fix that — the tokenizer decodes entities first, then parses.
  * Base64 removes the possibility entirely: the value has no `<`, `>`, `"` or
  * `&`, so the tokenizer sees one opaque token. The reader-facing behaviour is
- * unchanged (`SnDocsDocActions` decodes it back to the exact markdown).
+ * unchanged (`utils/doc-source.ts` decodes it back to the exact markdown).
  *
  * `btoa` cannot take arbitrary Unicode, so the string is UTF-8 encoded first.
  */

@@ -881,39 +881,13 @@ table.props code {
 .VPDoc > .container > .content {
   padding-left: 0;
   padding-right: 0;
-}
-
-/* ---------------------------------------------------------------------
- * Title row: the copy / edit actions are mounted through `doc-before`,
- * which VitePress renders as a sibling ABOVE `<main class="main">` inside
- * `.content-container` — so in flow they push the `<h1>` down by their own
- * height. Park the row instead: `.content-container` becomes its containing
- * block and the row sits at the top-right, sharing the title's line.
- *
- * `z-index: 1` is load-bearing, not decoration. The <h1> that the row
- * overlaps is itself `position: relative` (vitepress ships that), so both
- * are positioned boxes and, with `z-index: auto` on each, they paint in DOM
- * order — i.e. `<main>`/`<h1>` come after the slot and cover the row.
- * Measured before this fix: `elementFromPoint()` over either button centre
- * returned the H1, so neither button could be clicked at all. Lifting the
- * row above the article's own positioned content restores the hit area.
- *
- * `.vp-doc h1` then reserves that corner so a long title wraps before it
- * reaches the two 32px buttons (2 × 32 + 6 gap + 12 breathing room).
- * --------------------------------------------------------------------- */
-.VPDoc .content-container {
-  position: relative;
-}
-
-.sn-docs-doc-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
-}
-
-.vp-doc h1 {
-  padding-right: 82px;
+  /* `.content` is a flex item of `.container`, so it keeps an automatic
+   * min-width of its content size. Component pages are grid layouts whose
+   * min-content (a code block, a 4-up badge row) is wider than the space left
+   * once the sidebar gutter and the dock gutter are reserved — the article
+   * then overflowed *into* the dock column and left a wide dead band on the
+   * right. Zero lets it shrink; long code lines scroll inside their own box. */
+  min-width: 0;
 }
 
 /* =====================================================================
@@ -992,6 +966,18 @@ table.props code {
 
   html.sn-sidebar-collapsed .VPContent.has-sidebar {
     padding-left: 0 !important;
+  }
+
+  /* 侧栏列宽从 960px 起就让给内容区：SnDocPage 的右轨同在这个断点出现，
+   * 若等到 1440px 才补上，960–1439px 这一段内容区会被两侧内边距挤成一条
+   * 窄柱（实测 1200px 时正文只剩 272px）。 */
+  @media (min-width: 960px) {
+    .VPContent.has-sidebar {
+      padding-left: var(--vp-sidebar-width) !important;
+    }
+    html.sn-sidebar-collapsed .VPContent.has-sidebar {
+      padding-left: 0 !important;
+    }
   }
 }
 
@@ -1154,20 +1140,32 @@ html[data-sn-template-end='uni']
  * prose. The outline is already hidden on these pages (the dock replaces it),
  * so the article reclaims that column and then reserves the dock gutter.
  *
- * Below 1200px the dock is not mounted at all (see DemoDock.vue), so these
+ * Below 1280px the dock is not mounted at all (see DemoDock.vue), so these
  * rules only apply where the panel actually exists.
  * ===================================================================== */
 
-@media (min-width: 1200px) {
-  /* Doc area: reserve the dock column on the right. */
+@media (min-width: 1280px) {
+  /* Doc area: reserve exactly the dock column on the right — panel width
+   * (400px) plus the panel's own right offset (24px). Nothing else: both the
+   * gutter and the fixed panel are measured from the same scrollbar-excluded
+   * viewport edge, so 424px puts the article's right edge — and with it the
+   * TOC rail — exactly on the phone's left edge. Any extra allowance here
+   * shows up as a visible empty band between the two. */
   html:has(.sn-dock) .VPContent.has-sidebar {
-    padding-right: 448px !important;
+    padding-right: 424px !important;
   }
 
   /* The right-hand outline would sit under the dock; the dock's section tabs
    * already provide page-level navigation for these pages. */
   html:has(.sn-dock) .VPDoc .aside {
     display: none !important;
+  }
+
+  /* The gutter above is now sized to the dock exactly, so the article's own
+   * 48px right gutter would push the TOC rail away from the phone again. The
+   * rail is the last thing in the row and needs no trailing space. */
+  html:has(.sn-dock) .VPDoc:has(.sn-docpage) {
+    padding-right: 0 !important;
   }
 
   html:has(.sn-dock) .VPDoc.has-aside .content-container {
@@ -1346,7 +1344,9 @@ html[data-sn-template-end='uni']
 
 /* ═══ §17 SnDocPage 组件详情页 —— 内容区放宽，容纳「主文 + 右轨」双栏 ═══
    版式参考组件详情页原型；颜色不在此定义（组件内部走 --vp-c-* / --sn-web-*）。 */
-@media (min-width: 1280px) {
+/* 960px 起就放宽：右轨在 960–1279px 只占目录条宽度（见 SnDocPage.vue），
+ * 正文需要那部分留白，否则整栏会被 VitePress 默认的内容宽度上限压缩。 */
+@media (min-width: 960px) {
   .VPDoc:has(.sn-docpage) {
     padding-left: 48px !important;
     padding-right: 48px !important;

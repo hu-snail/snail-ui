@@ -129,7 +129,7 @@ const dockLabel = computed(() => {
 if (
   isMobileDemo.value &&
   typeof window !== 'undefined' &&
-  window.matchMedia('(min-width: 1200px)').matches &&
+  window.matchMedia('(min-width: 1280px)').matches &&
   /\/components\/uni\//.test(window.location.pathname)
 ) {
   dockState.open = true;

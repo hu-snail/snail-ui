@@ -1,0 +1,130 @@
+/** VideoPreview · uni-app (uni-app) — English page data. Props from sn-video-preview.vue; demos from the en page. */
+import type { SnDocPageData } from '../../../components/doc-page/types';
+
+export const videoPreviewDocPageEn: SnDocPageData = {
+  crumbs: [
+    { text: 'Docs', link: '/en/' },
+    { text: 'Display Components' },
+    { text: 'VideoPreview · uni-app' },
+  ],
+  title: 'VideoPreview · uni-app',
+  badges: [
+    { label: 'Stable', tone: 'ok', icon: 'stable' },
+    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
+  ],
+  description: [
+    { t: 'text', s: 'It is composed from ' },
+    { t: 'code', s: 'sn-popup' },
+    { t: 'text', s: " (scrim / stacking / scroll lock / animation) wrapping the platform's own " },
+    { t: 'code', s: '<video>' },
+    { t: 'text', s: ' element, so playback and the player controls come from the vendor runtime.' },
+  ],
+  quickActions: [
+    { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
+    {
+      icon: 'link',
+      label: 'View source',
+      href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/uni/src/components/sn-video-preview',
+    },
+  ],
+  features: [
+    { text: 'rpx scales across devices', icon: 'layers' },
+    { text: 'easycom auto-registration', icon: 'eco' },
+    { text: 'Touch-optimised interaction', icon: 'touch' },
+  ],
+  usage: {
+    hint: [
+      {
+        t: 'text',
+        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+      },
+    ],
+    fileLabel: 'VideoPreview · uni-app.vue',
+    meta: 'Vue 3 · <script setup>',
+    code: `
+<script setup lang="ts">
+import { VideoPreview } from '@snui/uni';
+</script>
+
+<template>
+  <sn-video-preview />
+</template>`,
+  },
+  demos: [
+    {
+      name: 'video-preview-mp-basic',
+      title: 'Basic usage',
+      blurb: 'A button opens the video layer; open / close events are reported.',
+    },
+    {
+      name: 'video-preview-mp-fullscreen',
+      title: 'Full screen and close position',
+      blurb: 'Full-screen mode, close button on the right, autoplay, and an on-open call counter.',
+    },
+    {
+      name: 'video-preview-mp-config',
+      title: 'Stacking, style and callbacks',
+      blurb:
+        'A custom z-index and customStyle, the selector instance marker, and on-open / on-close counters.',
+    },
+  ],
+  props: {
+    hint: [],
+    rows: [
+      {
+        name: 'selector',
+        type: 'string',
+        default: "''",
+        desc: 'Instance identifier (parity with the reference; useful for logs / telemetry).',
+      },
+      { name: 'zIndex', type: 'number', default: '1000', desc: 'Stacking level of the layer.' },
+      {
+        name: 'fullScreen',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Fill the viewport with the video instead of the centred 16:9 stage.',
+      },
+      {
+        name: 'closePosition',
+        type: 'VideoPreviewClosePosition',
+        default: "'left-top'",
+        desc: 'Close-button anchor.',
+      },
+      {
+        name: 'customClass',
+        type: 'string',
+        default: "''",
+        desc: 'Custom class for the root node.',
+      },
+      {
+        name: 'customStyle',
+        type: 'string',
+        default: "''",
+        desc: 'Custom inline style for the root node.',
+      },
+    ],
+  },
+  ai: {
+    badge: 'ai-description.md · bundled',
+    heading: 'A machine-readable contract for LLMs',
+    copy: 'VideoPreview · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    chip: "import { VideoPreview } from '@snui/uni';",
+    chipCopy: "import { VideoPreview } from '@snui/uni';",
+    stats: [
+      { key: 'intent.action', value: 'sn-video-preview', tone: 'accent' },
+      { key: 'intent.end', value: 'uni', tone: 'cyan' },
+      { key: 'unit', value: 'rpx', tone: 'ok' },
+    ],
+  },
+  pager: {
+    prev: { text: 'sn-image-preview', link: '/en/components/uni/image-preview' },
+    next: { text: 'sn-img-cropper', link: '/en/components/uni/img-cropper' },
+  },
+  toc: [
+    { id: 'usage', text: 'Usage' },
+    { id: 'demos', text: 'Examples' },
+    { id: 'api', text: 'API reference' },
+    { id: 'ai-native', text: 'AI-native integration' },
+  ],
+};

@@ -25,7 +25,7 @@
 
 import { computed, onMounted, watch } from 'vue';
 import DefaultTheme from 'vitepress/theme';
-import { useRoute } from 'vitepress';
+import { useRoute, useData } from 'vitepress';
 import SnSidebarGroupIcons from '../components/SnSidebarGroupIcons.vue';
 import SnSidebarBrand from '../components/SnSidebarBrand.vue';
 import SnSidebarEndSwitch from '../components/SnSidebarEndSwitch.vue';
@@ -36,12 +36,10 @@ import SnDocsNav from '../components/SnDocsNav.vue';
 import SnDocsFooter from '../components/SnDocsFooter.vue';
 import SnDocsHome from '../components/SnDocsHome.vue';
 import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue';
-import SnDocsDocActions from '../components/SnDocsDocActions.vue';
 import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue';
 import SnHomeThemeDock from '../components/SnHomeThemeDock.vue';
 import { applyStoredSiteTheme } from '../utils/theme-editor/state';
 import { enNav, nav } from '../config-nav';
-import { useData } from 'vitepress';
 import { SnConfigProvider, enUS } from '@snui/vue-web';
 import type { SnLocaleInput } from '@snui/vue-web';
 
@@ -166,15 +164,8 @@ watch(
         <SnDocsFooter />
       </template>
 
-      <!-- Article title row: copy the page source + open it on GitHub. The
-         row is taken out of flow in custom.css §11 so it shares the line
-         with the <h1> instead of pushing it down. -->
-      <template #doc-before>
-        <SnDocsDocActions />
-      </template>
-
       <!--
-      doc-after hosts two page-level widgets:
+      doc-after hosts the page-level widgets:
         - DemoLabFab: the style / theme / preview FAB (AUI-DOCS-018)
         - DemoDock:   the fixed device preview panel on uni component pages
 

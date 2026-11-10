@@ -37,20 +37,6 @@ export interface DocQuickAction {
   href?: string;
 }
 
-export interface DocTokenRow {
-  /** Token 语义名（kebab）。 */
-  name: string;
-  /** @snui/tokens 原始级联变量（--aui-button-*）。 */
-  raw: string;
-  /** 品牌别名（--sn-button-*）。 */
-  alias: string;
-  /** 浅色基准默认值。 */
-  value: string;
-  /** 预览色块颜色（仅 color 类 token 提供）。 */
-  swatch?: string;
-  kind?: 'color' | 'blur' | 'curve';
-}
-
 export interface DocPropRow {
   name: string;
   type: string;
@@ -67,6 +53,8 @@ export interface DocAiStat {
 export interface DocTocItem {
   id: string;
   text: string;
+  /** Nesting depth for the expanded TOC panel (1 = top level, default). */
+  level?: number;
 }
 
 export interface DocPagerItem {
@@ -74,41 +62,13 @@ export interface DocPagerItem {
   link: string;
 }
 
-export interface SnDocPageData {
-  crumbs: DocCrumb[];
-  title: string;
-  badges: DocBadge[];
-  description: DocSeg[];
-  quickActions: DocQuickAction[];
-  usage: {
-    hint: DocSeg[];
-    fileLabel: string;
-    meta: string;
-    code: string;
-  };
-  tokens: {
-    hint: DocSeg[];
-    note: string;
-    rows: DocTokenRow[];
-  };
-  props: {
-    hint: DocSeg[];
-    rows: DocPropRow[];
-  };
-  ai: {
-    badge: string;
-    heading: string;
-    copy: string;
-    chip: string;
-    chipCopy: string;
-    stats: DocAiStat[];
-  };
-  pager: {
-    prev?: DocPagerItem;
-    next?: DocPagerItem;
-  };
-  toc: DocTocItem[];
+/** 头卡底部特性条的一项（参考稿的「翡翠云调色规范 / 触控反馈 / 零运行时」）。 */
+export interface DocFeature {
+  text: string;
+  /** 图标语义：生态 / 交互 / 分层 / 无障碍 / 双端。 */
+  icon?: 'eco' | 'touch' | 'layers' | 'a11y' | 'dual';
 }
+
 /** demo 瀑布流条目 —— 复用 demo-loader 的活体渲染与源码。 */
 export interface DocDemoItem {
   /** demo 文件名（demo/ 下，不含 .vue）。 */
@@ -125,19 +85,16 @@ export interface SnDocPageData {
   badges: DocBadge[];
   description: DocSeg[];
   quickActions: DocQuickAction[];
+  /** 头卡底部的特性条，省略则不渲染。 */
+  features?: DocFeature[];
   usage: {
     hint: DocSeg[];
     fileLabel: string;
     meta: string;
     code: string;
   };
-  /** 组件 demo 案例瀑布流（en 文档案例清单，活体渲染 + 预览/源码切换）。 */
+  /** 案例清单 —— 复用 demo-loader 的活体渲染与源码面板。 */
   demos: DocDemoItem[];
-  tokens: {
-    hint: DocSeg[];
-    note: string;
-    rows: DocTokenRow[];
-  };
   props: {
     hint: DocSeg[];
     rows: DocPropRow[];

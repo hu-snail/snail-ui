@@ -4,7 +4,6 @@ import type { Options as MiniSearchOptions } from 'minisearch';
 import { rawDocSource } from './utils/raw-doc-source';
 import { docsSearchIndexPlugin } from './utils/docs-search-index-plugin';
 import { demoGrid } from './utils/demo-grid';
-import { EDIT_BASE } from './utils/edit-link';
 import { rpxTransform } from './utils/rpx-transform';
 
 /**
@@ -338,8 +337,6 @@ const sidebar = withCollapsibleGroups({
     {
       text: 'Display 展示组件',
       items: [
-        { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
-        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
         { text: 'sn-card 卡片'.trim(), link: '/components/uni/card' },
         { text: 'sn-img 图片'.trim(), link: '/components/uni/img' },
         { text: 'sn-swiper 轮播'.trim(), link: '/components/uni/swiper' },
@@ -551,6 +548,13 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Navigation',
       items: [
+        { text: 'Menu', link: '/en/components/web/menu' },
+        { text: 'Breadcrumb', link: '/en/components/web/breadcrumb' },
+        { text: 'Steps', link: '/en/components/web/steps' },
+        { text: 'Anchor', link: '/en/components/web/anchor' },
+        { text: 'Affix', link: '/en/components/web/affix' },
+        { text: 'BackTop', link: '/en/components/web/back-top' },
+        { text: 'Tooltip', link: '/en/components/web/tooltip' },
         { text: 'Pagination', link: '/en/components/web/pagination' },
         { text: 'PageHeader', link: '/en/components/web/page-header' },
         { text: 'FloatButton', link: '/en/components/web/float-button' },
@@ -560,6 +564,11 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Feedback',
       items: [
+        { text: 'Alert', link: '/en/components/web/alert' },
+        { text: 'Dialog', link: '/en/components/web/dialog' },
+        { text: 'Drawer', link: '/en/components/web/drawer' },
+        { text: 'Loading', link: '/en/components/web/loading' },
+        { text: 'Skeleton', link: '/en/components/web/skeleton' },
         { text: 'Notification', link: '/en/components/web/notification' },
         { text: 'LoadingBar', link: '/en/components/web/loading-bar' },
         { text: 'Progress', link: '/en/components/web/progress' },
@@ -707,8 +716,6 @@ const enSidebar = withCollapsibleGroups({
     {
       text: 'Display',
       items: [
-        { text: 'sn-avatar', link: '/en/components/uni/avatar' },
-        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
         { text: 'sn-card', link: '/en/components/uni/card' },
         { text: 'sn-img', link: '/en/components/uni/img' },
         { text: 'sn-swiper', link: '/en/components/uni/swiper' },
@@ -866,10 +873,6 @@ export default defineConfig({
   },
 
   themeConfig: {
-    // Base URL for the title-row "edit this page" action. Branch-matched at
-    // build time (see utils/edit-link.ts) and consumed by
-    // components/SnDocsDocActions.vue; both locales inherit it.
-    editBase: EDIT_BASE,
     // Per VitePress 1.6+: local search provider is read from
     // `site.themeConfig.search`, not from root-level `search`. When defined
     // here, the build-time constant `__VP_LOCAL_SEARCH__` becomes true and

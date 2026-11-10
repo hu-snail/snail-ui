@@ -31,13 +31,13 @@
  *
  * ## Mobile / narrow viewport
  *
- * Below 1200px there is no room for a 400px side panel next to a readable
+ * Below 1280px there is no room for a 400px side panel next to a readable
  * article, so the dock stays unmounted and every demo renders inline exactly
  * as before. `Demo.vue` keys its teleport decision off `dockState.active`, so
  * the fallback is automatic.
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useData, useRoute } from 'vitepress';
 import PhoneFrame from './PhoneFrame.vue';
 import { dockState, setDockOpen, uniCompFromRoute, type DockEntry } from '../utils/demo-dock';
@@ -115,23 +115,39 @@ const wideEnough = ref(false);
 let mq: MediaQueryList | null = null;
 let onMqChange: ((e: MediaQueryListEvent) => void) | null = null;
 
+/**
+ * Open / close the dock for the current route + viewport.
+ *
+ * Runs on mount, on media change *and on every route change*. The last one is
+ * what was missing: the panel is a single long-lived instance (mounted once by
+ * the theme layout), so navigating from a web page to a uni page changed
+ * `isDockRoute` without ever re-running this — the dock stayed closed and the
+ * phone only appeared after a full reload.
+ *
+ * Closing on narrow viewports is not cosmetic either: the panel is not
+ * rendered below 1280px, so an "open" dock there would leave every demo
+ * showing the "preview moved to the panel" note with no panel in sight.
+ */
+function syncDockOpen(): void {
+  const open = wideEnough.value && isDockRoute.value;
+  setDockOpen(open);
+}
+
 onMounted(() => {
-  mq = window.matchMedia('(min-width: 1200px)');
+  mq = window.matchMedia('(min-width: 1280px)');
   const apply = (matches: boolean): void => {
     wideEnough.value = matches;
-    // Wide again on a uni route: re-open so the dock claims the demos.
-    // Narrow: close it — `Demo.vue` then falls back to inline rendering.
-    // Opening the dock on a narrow viewport used to hide every demo (the
-    // panel is not rendered below 1200px, so the inline slot only showed the
-    // "moved to the panel" note). The re-open keeps a window that grows past
-    // 1200px after mount from staying closed until the route changes.
-    if (matches && isDockRoute.value) setDockOpen(true);
-    if (!matches) setDockOpen(false);
+    syncDockOpen();
   };
   apply(mq.matches);
   onMqChange = (e: MediaQueryListEvent) => apply(e.matches);
   mq.addEventListener('change', onMqChange);
 });
+
+// Route changes keep this component mounted: re-decide without waiting for a
+// reload. `flush: 'post'` runs after the outgoing page's demos have unmounted,
+// so it cannot reopen against the previous route's registry.
+watch([isDockRoute, wideEnough], syncDockOpen, { flush: 'post' });
 
 onBeforeUnmount(() => {
   if (mq !== null && onMqChange !== null) mq.removeEventListener('change', onMqChange);
@@ -176,7 +192,9 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
  */
 .sn-dock {
   position: fixed;
-  top: calc(var(--vp-nav-height) + 16px);
+  /* 与站点头栏再让开一段：手机的状态栏/灵动岛紧贴面板顶边，16px 时和
+     导航条几乎叠在一起，看起来像被顶栏压住。 */
+  top: calc(var(--vp-nav-height) + 32px);
   right: 24px;
   z-index: 60;
   display: flex;
@@ -190,7 +208,12 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
    * reader switched pages. Pinning the height keeps the device stable; content
    * that overflows scrolls inside the screen, which is what a real device does.
    */
-  height: calc(100vh - var(--vp-nav-height) - 48px);
+  /* 真实手机比例：现代机约 9:19.5，400px 宽对应 867px 高。之前钉死 640px
+     是 400×640 ≈ 1:1.6，读起来像早期 iPhone 的矮胖比例，内容也被裁得突兀。
+     高度由比例推导，再受视口约束——矮屏上按可用高度截断，屏幕内部滚动。 */
+  aspect-ratio: 9 / 19.5;
+  height: auto;
+  max-height: calc(100vh - var(--vp-nav-height) - 64px);
   border: 0;
   border-radius: 44px;
   background: var(--vp-c-bg);
