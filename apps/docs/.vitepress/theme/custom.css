@@ -1146,11 +1146,13 @@ html[data-sn-template-end='uni']
 
 @media (min-width: 1280px) {
   /* Doc area: reserve exactly the dock column on the right — panel width
-   * (400px) plus the panel's own right offset (24px) plus the scrollbar
-   * (8px). 448px used to leave a 24px dead band between the page's TOC rail
-   * and the phone; the rail should sit right against the device. */
+   * (400px) plus the panel's own right offset (24px). Nothing else: both the
+   * gutter and the fixed panel are measured from the same scrollbar-excluded
+   * viewport edge, so 424px puts the article's right edge — and with it the
+   * TOC rail — exactly on the phone's left edge. Any extra allowance here
+   * shows up as a visible empty band between the two. */
   html:has(.sn-dock) .VPContent.has-sidebar {
-    padding-right: 432px !important;
+    padding-right: 424px !important;
   }
 
   /* The right-hand outline would sit under the dock; the dock's section tabs

@@ -2279,9 +2279,11 @@ onBeforeUnmount(() => {
   transform: none;
 }
 /* 横条靠右缘：这一列就贴在手机面板左边，条子贴着列的右边才是「贴到手机上」，
- * 贴左边会多出一条空缝。 */
+ * 贴左边会多出一条空缝。触发区左右各 2px 的内边距在这里也去掉 —— 那 2px 会
+ * 变成条子和手机之间又一条细缝。 */
 .sn-docpage__ftoc-rail :deep(.sn-floating-toc__trigger) {
   align-items: flex-end;
+  padding-inline: 0;
 }
 .sn-docpage__ftoc-rail :deep(.sn-floating-toc__trigger) > * {
   margin-inline-start: auto;
