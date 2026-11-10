@@ -53,8 +53,11 @@ const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
 /**
  * 端切换胶囊只在组件页显示：/components/web ↔ /components/uni 互跳是它
  * 唯一的语义，指南 / 主题 / 模板 / 生态等页没有「端」概念，不需要它。
+ * 英文镜像 /en/components/** 与中文站同构，胶囊同样要挂。
  */
-const showEndSwitch = computed(() => route.path.startsWith('/components/'));
+const showEndSwitch = computed(
+  () => route.path.startsWith('/components/') || route.path.startsWith('/en/components/'),
+);
 
 /**
  * 主题编辑器页（/theme/editor）的侧栏移除与全宽画布由 **frontmatter** 承担
