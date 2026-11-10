@@ -146,8 +146,12 @@ import { Carousel } from '@snui/vue-web';
       { name: 'showArrow', type: 'boolean', default: '—', desc: '显示内置的上 / 下一张按钮。' },
       { name: 'showDots', type: 'boolean', default: '—', desc: '显示指示点。' },
       { name: 'touchable', type: 'boolean', default: '—', desc: '触摸拖拽切换' },
-      { name: 'transitionDuration', type: 'string', default: '—', desc: '过渡时长。' },
-      { name: 'transitionTimingFunction', type: 'string', default: '—', desc: '过渡缓动函数。' },
+      {
+        name: 'transitionStyle',
+        type: '{ transitionDuration?: string; transitionTimingFunction?: string; }',
+        default: '—',
+        desc: '滑动/淡入/卡片过渡的时长与缓动配置。',
+      },
       {
         name: 'transitionProps',
         type: 'TransitionProps',
@@ -161,6 +165,61 @@ import { Carousel } from '@snui/vue-web';
         desc: 'How indicator dots activate.',
       },
       { name: 'keyboard', type: 'boolean', default: '—', desc: '焦点在指示点上时方向键切换' },
+      {
+        name: 'onUpdateCurrentIndex',
+        type: '(currentIndex: number, lastIndex: number) => void',
+        default: '—',
+        desc: '索引变化的次级回调通道，对齐 naive-ui。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnCarousel.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:currentIndex',
+        payload: '(currentIndex: number, lastIndex: number)',
+        desc: '当前展示索引变化时触发，并回传上一个索引。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnCarousel.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: '`SnCarouselItem` 子节点序列（设置 `options` 时忽略）。',
+      },
+      {
+        name: 'item',
+        props:
+          '{ item: SnCarouselMediaItem; index: number; isActive: boolean; isPrev: boolean; isNext: boolean }',
+        desc: '针对 `options` 每一项的插槽内容，替换内置图片/视频渲染。',
+      },
+      {
+        name: 'arrow',
+        props:
+          '{ total: number; currentIndex: number; to: (index: number) => void; prev: () => void; next: () => void; isPrevDisabled: () => boolean; isNextDisabled: () => boolean }',
+        desc: '自定义左右箭头按钮，缺省时使用内置按钮对。',
+      },
+      {
+        name: 'dots',
+        props: '{ total: number; currentIndex: number; to: (index: number) => void }',
+        desc: '自定义指示点，缺省时使用内置指示点。',
+      },
     ],
   },
   ai: {
@@ -182,7 +241,7 @@ import { Carousel } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

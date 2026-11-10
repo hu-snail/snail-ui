@@ -185,7 +185,104 @@ import { VideoPlayer } from '@snui/vue-web';
         desc: 'Player width (number → px).',
       },
       { name: 'aspectRatio', type: 'string', default: "'16 / 9'", desc: 'Player aspect ratio.' },
+      {
+        name: 'onDownload',
+        type: '(source: SnBridgeSource) => void | string | Promise<string>',
+        default: '—',
+        desc: 'Custom download handler; return a URL to open instead of the source.',
+      },
     ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnVideoPlayer.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      { name: 'play', payload: '—', desc: 'Fired when playback starts.' },
+      { name: 'pause', payload: '—', desc: 'Fired when playback pauses.' },
+      { name: 'ended', payload: '—', desc: 'Fired when playback reaches the end.' },
+      {
+        name: 'timeupdate',
+        payload: '(currentTime: number)',
+        desc: 'Fired as playback progresses; payload is the current time in seconds.',
+      },
+      {
+        name: 'seeked',
+        payload: '(currentTime: number)',
+        desc: 'Fired after a seek completes; payload is the current time in seconds.',
+      },
+      { name: 'waiting', payload: '—', desc: 'Fired when playback stalls waiting for data.' },
+      {
+        name: 'canplay',
+        payload: '—',
+        desc: 'Fired when enough data is buffered to start playing.',
+      },
+      {
+        name: 'error',
+        payload: '(error: unknown)',
+        desc: 'Fired when the media fails to load or decode.',
+      },
+      { name: 'ready', payload: '—', desc: 'Fired once the player is ready.' },
+      {
+        name: 'rate-change',
+        payload: '(rate: number)',
+        desc: 'Fired when the playback rate changes.',
+      },
+      {
+        name: 'volume-change',
+        payload: '(state: { volume: number; muted: boolean })',
+        desc: 'Fired when volume or muted state changes.',
+      },
+      {
+        name: 'fullscreen-change',
+        payload: '(fullscreen: boolean)',
+        desc: 'Fired when fullscreen state changes.',
+      },
+      {
+        name: 'pip-change',
+        payload: '(active: boolean)',
+        desc: 'Fired when picture-in-picture state changes.',
+      },
+      {
+        name: 'update:mini',
+        payload: '(mini: boolean)',
+        desc: 'Mini-window visibility changed (`v-model:mini`).',
+      },
+      {
+        name: 'mini-change',
+        payload: '(mini: boolean)',
+        desc: 'Fired when the mini floating window is toggled.',
+      },
+      {
+        name: 'quality-change',
+        payload: '(quality: { id: string | number; label?: string })',
+        desc: 'Fired when the active quality ladder entry changes.',
+      },
+      {
+        name: 'danmu-send',
+        payload: '(danmu: SnVideoDanmu)',
+        desc: 'Fired when a danmu is sent; payload is the danmu entry.',
+      },
+      {
+        name: 'download',
+        payload: '(source: SnBridgeSource)',
+        desc: 'Fired when download is activated; payload is the active source.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnVideoPlayer.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'error', props: '—', desc: 'Replaces the error panel content.' }],
   },
   ai: {
     badge: 'ai-description.md · bundled',
@@ -206,7 +303,7 @@ import { VideoPlayer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

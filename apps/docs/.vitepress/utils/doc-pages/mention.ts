@@ -101,6 +101,40 @@ import { Mention } from '@snui/vue-web';
       { name: 'ariaLabel', type: 'string', default: "''", desc: 'Native ARIA label.' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnMention.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(string)',
+        desc: '`v-model` 同步，每次输入与选择候选项时触发。',
+      },
+      { name: 'change', payload: '(string)', desc: '选择候选项提交值时触发。' },
+      {
+        name: 'select',
+        payload: 'SnMentionOption',
+        desc: '从面板中选中选项时触发（点击 / Enter / Tab）。',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: '获得焦点时触发的原生 focus 事件。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '失去焦点时触发的原生 blur 事件。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnMention.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: '面板空状态内容，默认显示 “No data” 文案。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -120,7 +154,7 @@ import { Mention } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

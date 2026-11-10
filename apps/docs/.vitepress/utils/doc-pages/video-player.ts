@@ -207,7 +207,80 @@ import { VideoPlayer } from '@snui/vue-web';
         desc: '宽度。',
       },
       { name: 'aspectRatio', type: 'string', default: "'16 / 9'", desc: 'Player aspect ratio.' },
+      {
+        name: 'onDownload',
+        type: '(source: SnBridgeSource) => void | string | Promise<string>',
+        default: '—',
+        desc: '自定义下载处理：返回 URL 则打开该地址，否则回退到媒体源。',
+      },
     ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnVideoPlayer.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      { name: 'play', payload: '—', desc: '开始播放时触发。' },
+      { name: 'pause', payload: '—', desc: '暂停播放时触发。' },
+      { name: 'ended', payload: '—', desc: '播放到结尾时触发。' },
+      {
+        name: 'timeupdate',
+        payload: '(currentTime: number)',
+        desc: '播放进度更新时触发，参数为当前时间（秒）。',
+      },
+      {
+        name: 'seeked',
+        payload: '(currentTime: number)',
+        desc: '跳转完成时触发，参数为当前时间（秒）。',
+      },
+      { name: 'waiting', payload: '—', desc: '缓冲等待数据时触发。' },
+      { name: 'canplay', payload: '—', desc: '缓冲足够、可以播放时触发。' },
+      { name: 'error', payload: '(error: unknown)', desc: '媒体加载或解码失败时触发。' },
+      { name: 'ready', payload: '—', desc: '播放器就绪时触发。' },
+      { name: 'rate-change', payload: '(rate: number)', desc: '播放速率变化时触发。' },
+      {
+        name: 'volume-change',
+        payload: '(state: { volume: number; muted: boolean })',
+        desc: '音量或静音状态变化时触发。',
+      },
+      { name: 'fullscreen-change', payload: '(fullscreen: boolean)', desc: '全屏状态变化时触发。' },
+      { name: 'pip-change', payload: '(active: boolean)', desc: '画中画状态变化时触发。' },
+      {
+        name: 'update:mini',
+        payload: '(mini: boolean)',
+        desc: '迷你窗口状态变化时触发（`v-model:mini`）。',
+      },
+      { name: 'mini-change', payload: '(mini: boolean)', desc: '迷你窗口开关时触发。' },
+      {
+        name: 'quality-change',
+        payload: '(quality: { id: string | number; label?: string })',
+        desc: '切换清晰度时触发。',
+      },
+      {
+        name: 'danmu-send',
+        payload: '(danmu: SnVideoDanmu)',
+        desc: '发送弹幕时触发，参数为弹幕数据。',
+      },
+      {
+        name: 'download',
+        payload: '(source: SnBridgeSource)',
+        desc: '点击下载时触发，参数为当前媒体源。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnVideoPlayer.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'error', props: '—', desc: '替换错误面板内容。' }],
   },
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -228,7 +301,7 @@ import { VideoPlayer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -124,6 +124,22 @@ import { Transfer } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTransfer.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: SnTransferValue[])',
+        desc: '选中值提交时触发（移动按钮）；对齐 n-transfer `on-update:value`。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -143,7 +159,7 @@ import { Transfer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

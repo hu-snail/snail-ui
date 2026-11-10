@@ -110,6 +110,12 @@ import { Tabs } from '@snui/vue-web';
         desc: 'Show a close button on each tab. Mirrors n-tabs `closable`.',
       },
       {
+        name: 'addable',
+        type: 'boolean | { disabled?: boolean }',
+        default: 'false',
+        desc: 'Show a trailing "+" tab; accepts `true` or `{ disabled }` (naive-ui `addable`).',
+      },
+      {
         name: 'animated',
         type: 'boolean',
         default: 'false',
@@ -193,6 +199,56 @@ import { Tabs } from '@snui/vue-web';
         default: '—',
         desc: 'Style on the pane wrapper element. Mirrors n-tabs `paneWrapperStyle`.',
       },
+      {
+        name: 'onBeforeLeave',
+        type: '(name: string | number, oldName: string | number | null) => boolean | Promise<boolean>',
+        default: '—',
+        desc: 'Guard before switching tabs; `false` (or a promise resolving `false`) blocks it.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTabs.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: string | number)',
+        desc: 'Fired when the active pane changes (`v-model:value`).',
+      },
+      {
+        name: 'close',
+        payload: '(name: string | number)',
+        desc: 'Fired when a tab close button is clicked (naive-ui `onClose`).',
+      },
+      { name: 'add', payload: '—', desc: 'Fired when the add tab is clicked (naive-ui `onAdd`).' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnTabs.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: 'Default slot: a sequence of `<SnTabPane>` children.' },
+      {
+        name: 'prefix',
+        props: '—',
+        desc: 'Content placed before the tab strip (naive-ui `prefix`).',
+      },
+      {
+        name: 'suffix',
+        props: '—',
+        desc: 'Content placed after the tab strip (naive-ui `suffix`).',
+      },
     ],
   },
   ai: {
@@ -211,7 +267,7 @@ import { Tabs } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

@@ -68,6 +68,29 @@ import { Statistic } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnStatistic.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: '值内容，仅在未传 `value` 时使用（对应 n-statistic `default`）。',
+      },
+      {
+        name: 'label',
+        props: '—',
+        desc: '标签内容，仅在未传 `label` 时使用（对应 n-statistic `label`）。',
+      },
+      { name: 'prefix', props: '—', desc: '值内容之前的前缀（对应 n-statistic `prefix`）。' },
+      { name: 'suffix', props: '—', desc: '值内容之后的后缀（对应 n-statistic `suffix`）。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -87,7 +110,7 @@ import { Statistic } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

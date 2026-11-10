@@ -196,6 +196,40 @@ import { TreeSelect } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTreeSelect.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnTreeSelectValue | SnTreeSelectValue[] | null)',
+        desc: '`v-model` sync.',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnTreeSelectValue | SnTreeSelectValue[] | null)',
+        desc: 'Selection committed; also fires for tag removal and clear.',
+      },
+      { name: 'clear', payload: '—', desc: 'Fired when the clear button is activated.' },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Fired when the trigger gains focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Fired when the trigger loses focus.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnTreeSelect.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: 'Empty state (no options / no filter match).' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -215,7 +249,7 @@ import { TreeSelect } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

@@ -112,6 +112,58 @@ import { Mention } from '@snui/vue-web';
       { name: 'ariaLabel', type: 'string', default: "''", desc: 'Native ARIA label.' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnMention.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(string)',
+        desc: '`v-model` sync; fired on every keystroke and on selection.',
+      },
+      {
+        name: 'change',
+        payload: '(string)',
+        desc: 'Fired when a value is committed by selecting an option.',
+      },
+      {
+        name: 'select',
+        payload: 'SnMentionOption',
+        desc: 'Fired when an option is picked from the panel (click / Enter / Tab).',
+      },
+      {
+        name: 'focus',
+        payload: 'FocusEvent',
+        desc: 'Native focus event fired when the field gains focus.',
+      },
+      {
+        name: 'blur',
+        payload: 'FocusEvent',
+        desc: 'Native blur event fired when the field loses focus.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnMention.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'empty',
+        props: '—',
+        desc: 'Empty-state content for the panel; defaults to the “No data” text.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -131,7 +183,7 @@ import { Mention } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

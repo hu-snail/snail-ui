@@ -82,6 +82,23 @@ import { Comment } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnComment.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'avatar', props: '—', desc: 'Avatar column content; overrides the `avatar` prop.' },
+      { name: 'author', props: '—', desc: 'Author name; overrides the `author` prop.' },
+      { name: 'datetime', props: '—', desc: 'Datetime text; overrides the `datetime` prop.' },
+      { name: 'content', props: '—', desc: 'Comment body; overrides the `content` prop.' },
+      { name: 'actions', props: '—', desc: 'Actions row (usually plain spans).' },
+      { name: 'default', props: '—', desc: 'Nested `<SnComment>` replies.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -101,7 +118,7 @@ import { Comment } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

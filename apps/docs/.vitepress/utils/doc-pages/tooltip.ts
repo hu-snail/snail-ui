@@ -162,7 +162,44 @@ import { Tooltip } from '@snui/vue-web';
         desc: "Pin the popover width to the trigger's width. Mirrors n-popover `width` = `'trigger'`; a number sets a fixed width in px.",
       },
       { name: 'zIndex', type: 'number', default: 'undefined as any', desc: '层级。' },
+      {
+        name: 'onClickoutside',
+        type: '(e: MouseEvent) => void',
+        default: '—',
+        desc: "点击浮层与触发器之外时调用，仅 `trigger` 为 `'click'` 时生效；对齐 n-popover `onClickoutside`。",
+      },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用弹出。' },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTooltip.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: '显示状态变化时触发（`v-model:show`）；对齐 n-tooltip `on-update-show`。',
+      },
+      { name: 'show', payload: '—', desc: '浮层出现时触发；对齐 n-tooltip `on-show`。' },
+      { name: 'hide', payload: '—', desc: '浮层隐藏时触发；对齐 n-tooltip `on-hide`。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTooltip.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '触发元素（如按钮），作为浮层的锚点。' },
+      { name: 'content', props: '—', desc: '浮层内容；为空时回退到 `content` 属性。' },
     ],
   },
   ai: {
@@ -184,7 +221,7 @@ import { Tooltip } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

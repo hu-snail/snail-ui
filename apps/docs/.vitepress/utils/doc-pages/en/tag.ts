@@ -144,6 +144,46 @@ import { Tag } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnTag.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'close',
+        payload: '—',
+        desc: 'Fired on close-button click; the tag then hides itself (naive-ui `onClose`).',
+      },
+      {
+        name: 'update:checked',
+        payload: '(checked: boolean)',
+        desc: 'Fired on a checkable toggle; supports `v-model:checked` (naive-ui `checked`).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnTag.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: 'Tag label.' },
+      {
+        name: 'icon',
+        props: '—',
+        desc: 'Leading icon, replaced by the spinner while `loading` (naive-ui `icon`).',
+      },
+      { name: 'avatar', props: '—', desc: 'Leading avatar, before the icon (naive-ui `avatar`).' },
+      { name: 'close-icon', props: '—', desc: 'Custom close glyph (naive-ui `close-icon`).' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -163,7 +203,7 @@ import { Tag } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

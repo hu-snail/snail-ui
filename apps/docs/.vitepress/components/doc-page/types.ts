@@ -44,6 +44,22 @@ export interface DocPropRow {
   desc: string;
 }
 
+/** 一行事件契约：事件名 / 载荷签名 / 触发说明。 */
+export interface DocEventRow {
+  name: string;
+  /** 载荷签名，例如 `(value: string)`；无载荷时写 `—`。 */
+  payload: string;
+  desc: string;
+}
+
+/** 一行插槽契约：插槽名 / 作用域参数 / 用途。 */
+export interface DocSlotRow {
+  name: string;
+  /** 作用域参数（`<slot :foo="…">`），无作用域时省略或写 `—`。 */
+  props?: string;
+  desc: string;
+}
+
 export interface DocAiStat {
   key: string;
   value: string;
@@ -98,6 +114,20 @@ export interface SnDocPageData {
   props: {
     hint: DocSeg[];
     rows: DocPropRow[];
+  };
+  /**
+   * 事件契约（`defineEmits` 1:1）。组件不派发任何事件时省略整个区块。
+   */
+  events?: {
+    hint: DocSeg[];
+    rows: DocEventRow[];
+  };
+  /**
+   * 插槽契约（`defineSlots` / 模板 `<slot>` 1:1）。组件不暴露任何插槽时省略。
+   */
+  slots?: {
+    hint: DocSeg[];
+    rows: DocSlotRow[];
   };
   ai: {
     badge: string;

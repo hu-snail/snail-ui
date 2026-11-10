@@ -137,6 +137,12 @@ import { Drawer } from '@snui/vue-web';
       },
       { name: 'zIndex', type: 'number', default: 'undefined as any', desc: '抽屉的层级。' },
       {
+        name: 'onMaskClick',
+        type: '(e: MouseEvent) => void',
+        default: '—',
+        desc: '点击遮罩时的回调（早于关闭），由 `mask-click` 事件映射，勿手动重复触发。',
+      },
+      {
         name: 'contentClass',
         type: 'string',
         default: 'undefined as any',
@@ -148,6 +154,12 @@ import { Drawer } from '@snui/vue-web';
         default: 'undefined as any',
         desc: '内容区样式。',
       },
+      {
+        name: 'onEsc',
+        type: '() => void',
+        default: '—',
+        desc: '按下 Escape 时的回调（早于关闭，`closeOnEsc` 为 false 时也会触发）。',
+      },
       { name: 'closeOnEsc', type: 'boolean', default: 'true', desc: '按下 Escape 是否关闭抽屉。' },
       {
         name: 'blockScroll',
@@ -155,7 +167,59 @@ import { Drawer } from '@snui/vue-web';
         default: 'true',
         desc: '打开时是否禁用 `<html>` 滚动。',
       },
+      {
+        name: 'onAfterEnter',
+        type: '() => void',
+        default: '—',
+        desc: '进入过渡动画结束后的回调。',
+      },
+      {
+        name: 'onAfterLeave',
+        type: '() => void',
+        default: '—',
+        desc: '离开过渡动画结束后的回调。',
+      },
     ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDrawer.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(boolean)',
+        desc: '可见性变化时派发，对应 n-drawer 的 `onUpdate:show`。',
+      },
+      { name: 'after-enter', payload: '—', desc: '进入过渡动画结束后派发。' },
+      { name: 'after-leave', payload: '—', desc: '离开过渡动画结束后派发。' },
+      { name: 'mask-click', payload: '(MouseEvent)', desc: '点击遮罩时派发。' },
+      { name: 'esc', payload: '—', desc: '按下 Escape 时派发。' },
+      {
+        name: 'update:width',
+        payload: '(number)',
+        desc: '拖拽调整宽度后派发新宽度，对应 n-drawer 的 `onUpdateWidth`。',
+      },
+      {
+        name: 'update:height',
+        payload: '(number)',
+        desc: '拖拽调整高度后派发新高度，对应 n-drawer 的 `onUpdateHeight`。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDrawer.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '抽屉内容，通常放置 `<SnDrawerContent>`。' }],
   },
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -176,7 +240,7 @@ import { Drawer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -165,6 +165,24 @@ import { InputNumber } from '@snui/vue-web';
         desc: 'Show the clear (×) button when a value is present.',
       },
       {
+        name: 'format',
+        type: '(value: number) => string | number',
+        default: '—',
+        desc: 'Custom display formatter, e.g. to render the value as a percentage.',
+      },
+      {
+        name: 'parse',
+        type: '(input: string) => number | null',
+        default: '—',
+        desc: "Reverse of `format`; parses the user's text back into a number.",
+      },
+      {
+        name: 'validator',
+        type: '(value: number) => boolean',
+        default: '—',
+        desc: 'Custom validator; returning `false` rejects the commit.',
+      },
+      {
         name: 'border',
         type: "'all' | 'bottom' | 'none'",
         default: "'all'",
@@ -172,6 +190,67 @@ import { InputNumber } from '@snui/vue-web';
       },
       { name: 'bordered', type: 'boolean', default: 'true', desc: 'bordered' },
       { name: 'ariaLabel', type: 'string', default: '—', desc: 'Native ARIA label.' },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnInputNumber.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(number | null)',
+        desc: '`v-model` sync; emits the current value when it changes.',
+      },
+      {
+        name: 'change',
+        payload: '(number | null)',
+        desc: 'Fired when a committed value differs from the previous one.',
+      },
+      {
+        name: 'input',
+        payload: '(number | null)',
+        desc: 'Emits the current value while the user types.',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Fired when the input gains focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Fired when the input loses focus.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnInputNumber.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'prefix', props: '—', desc: "Custom content in the input's prefix area." },
+      { name: 'suffix', props: '—', desc: "Custom content in the input's suffix area." },
+      {
+        name: 'minus-icon',
+        props: '—',
+        desc: 'Custom decrement glyph replacing the default − icon.',
+      },
+      {
+        name: 'plus-icon',
+        props: '—',
+        desc: 'Custom increment glyph replacing the default + icon.',
+      },
+      {
+        name: 'up-icon',
+        props: '—',
+        desc: 'Custom upper half of the ↑/↓ spinner, replacing the default ↑ chevron.',
+      },
+      {
+        name: 'down-icon',
+        props: '—',
+        desc: 'Custom lower half of the ↑/↓ spinner, replacing the default ↓ chevron.',
+      },
     ],
   },
   ai: {
@@ -193,7 +272,7 @@ import { InputNumber } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

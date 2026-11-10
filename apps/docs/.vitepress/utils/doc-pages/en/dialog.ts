@@ -176,6 +176,44 @@ import { Dialog } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDialog.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'positive-click',
+        payload: '(MouseEvent)',
+        desc: 'Confirm button clicked; mirrors n-dialog `onPositiveClick`.',
+      },
+      {
+        name: 'negative-click',
+        payload: '(MouseEvent)',
+        desc: 'Cancel button clicked; mirrors n-dialog `onNegativeClick`.',
+      },
+      { name: 'close', payload: '—', desc: 'Close button clicked; mirrors n-dialog `onClose`.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDialog.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: 'Dialog body; replaces `content`.' },
+      { name: 'header', props: '—', desc: 'Title row; replaces `title`.' },
+      { name: 'icon', props: '—', desc: 'Type icon; replaces the built-in per-type glyph.' },
+      { name: 'action', props: '—', desc: 'Action row; replaces the built-in buttons entirely.' },
+      { name: 'close', props: '—', desc: 'Close button; replaces the built-in close glyph.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -192,7 +230,7 @@ import { Dialog } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

@@ -189,6 +189,12 @@ import { Drawer } from '@snui/vue-web';
         desc: 'Stacking order of the overlay.',
       },
       {
+        name: 'onMaskClick',
+        type: '(e: MouseEvent) => void',
+        default: '—',
+        desc: 'Mask-click callback delivered via the `mask-click` emit; do not call it twice.',
+      },
+      {
         name: 'contentClass',
         type: 'string',
         default: 'undefined as any',
@@ -199,6 +205,12 @@ import { Drawer } from '@snui/vue-web';
         type: 'string | CSSProperties',
         default: 'undefined as any',
         desc: 'Extra style on the scroll container.',
+      },
+      {
+        name: 'onEsc',
+        type: '() => void',
+        default: '—',
+        desc: 'Called on Escape before closing; fires even when `closeOnEsc` is false.',
       },
       {
         name: 'closeOnEsc',
@@ -212,7 +224,59 @@ import { Drawer } from '@snui/vue-web';
         default: 'true',
         desc: 'Lock `<html>` scroll while open.',
       },
+      {
+        name: 'onAfterEnter',
+        type: '() => void',
+        default: '—',
+        desc: 'Called after the enter transition finishes.',
+      },
+      {
+        name: 'onAfterLeave',
+        type: '() => void',
+        default: '—',
+        desc: 'Called after the leave transition finishes.',
+      },
     ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDrawer.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(boolean)',
+        desc: 'Visibility changed; mirrors n-drawer `onUpdate:show`.',
+      },
+      { name: 'after-enter', payload: '—', desc: 'Fired after the enter transition finishes.' },
+      { name: 'after-leave', payload: '—', desc: 'Fired after the leave transition finishes.' },
+      { name: 'mask-click', payload: '(MouseEvent)', desc: 'Fired when the mask is clicked.' },
+      { name: 'esc', payload: '—', desc: 'Fired when Escape is pressed.' },
+      {
+        name: 'update:width',
+        payload: '(number)',
+        desc: 'New width after drag-resize; mirrors n-drawer `onUpdateWidth`.',
+      },
+      {
+        name: 'update:height',
+        payload: '(number)',
+        desc: 'New height after drag-resize; mirrors n-drawer `onUpdateHeight`.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDrawer.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: 'Drawer content; usually a `<SnDrawerContent>`.' }],
   },
   ai: {
     badge: 'ai-description.md · bundled',
@@ -230,7 +294,7 @@ import { Drawer } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

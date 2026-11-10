@@ -62,6 +62,54 @@ import { Calendar } from '@snui/vue-web';
         default: 'null',
         desc: 'Uncontrolled initial selection (millisecond timestamp); also anchors the first panel month. Mirrors n-calendar `defaultValue`.',
       },
+      {
+        name: 'isDateDisabled',
+        type: '((date: number) => boolean)',
+        default: '—',
+        desc: 'Return `true` to disable a date (receives the local-midnight timestamp).',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnCalendar.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: number, time: SnCalendarDateItem)',
+        desc: 'Selection changed: emits `(timestamp, { year, month, date })` (n-calendar).',
+      },
+      {
+        name: 'panel-change',
+        payload: '(info: { year: number; month: number })',
+        desc: 'Panel year/month switched (month is 1-based; n-calendar parity).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnCalendar.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '{ year: number; month: number; date: number }',
+        desc: 'Custom content under the day number, per cell. Mirrors n-calendar `default`.',
+      },
+      {
+        name: 'header',
+        props: '{ year: number; month: number }',
+        desc: 'Custom header title. Mirrors n-calendar `header`.',
+      },
     ],
   },
   ai: {
@@ -83,7 +131,7 @@ import { Calendar } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

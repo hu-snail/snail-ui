@@ -95,6 +95,43 @@ import { VirtualList } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnVirtualList.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'scroll',
+        payload: 'Event',
+        desc: '容器原生滚动事件；对齐 n-virtual-list `on-scroll`。',
+      },
+      {
+        name: 'update:scrollTop',
+        payload: '(scrollTop: number)',
+        desc: 'rAF 节流后提交的滚动偏移；对齐 n-virtual-list `on-update:scroll-top`。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnVirtualList.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'item',
+        props: '{ item: SnVirtualListItem; index: number }',
+        desc: '行内容，作用域为 `{ item, index }`。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -113,7 +150,7 @@ import { VirtualList } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

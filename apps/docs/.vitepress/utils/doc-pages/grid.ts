@@ -84,6 +84,19 @@ import { Grid } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnGrid.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '直接子节点成为网格项。' },
+      { name: 'suffix', props: '—', desc: '后缀插槽，追加在网格项之后（如“显示更多”按钮）。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -103,7 +116,7 @@ import { Grid } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

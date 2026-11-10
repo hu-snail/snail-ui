@@ -194,6 +194,55 @@ export const selectDocPage: SnDocPageData = {
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnSelect.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: '`v-model` 同步。',
+      },
+      {
+        name: 'update:value',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: 'naive-ui 的 `onUpdate:value` 写法。',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnSelectValue | SnSelectValue[] | null)',
+        desc: '选中提交时触发（移除标签 / 清空也会触发）。',
+      },
+      {
+        name: 'search',
+        payload: '(query: string)',
+        desc: '过滤词变化时触发（`filterable`，`remote` 下每次输入）。',
+      },
+      { name: 'clear', payload: '—', desc: '点击清空按钮时触发。' },
+      { name: 'focus', payload: 'FocusEvent', desc: '触发器获得焦点。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '触发器失去焦点。' },
+      { name: 'scroll', payload: 'Event', desc: '菜单滚动到底部时触发。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnSelect.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'header', props: '—', desc: '下拉顶部区域。' },
+      { name: 'empty', props: '—', desc: '空状态区域。' },
+      { name: 'action', props: '—', desc: '下拉底部区域。' },
+    ],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -215,7 +264,7 @@ export const selectDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

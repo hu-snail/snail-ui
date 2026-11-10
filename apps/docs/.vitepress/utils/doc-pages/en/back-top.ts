@@ -93,6 +93,52 @@ import { BackTop } from '@snui/vue-web';
         default: '180',
         desc: 'Scroll distance after which the button appears.',
       },
+      {
+        name: 'listenTo',
+        type: 'string | HTMLElement | Document | (() => HTMLElement | Document)',
+        default: '—',
+        desc: 'Scroll container; auto-detected when omitted.',
+      },
+      {
+        name: 'target (deprecated)',
+        type: '() => HTMLElement',
+        default: '—',
+        desc: 'Deprecated scroll target callback; use `listenTo`. Mirrors n-back-top `target`.',
+      },
+      {
+        name: 'onUpdateShow',
+        type: '(value: boolean) => void',
+        default: '—',
+        desc: 'Called with the new visibility (mirrors `update:show`).',
+      },
+      {
+        name: 'onShow (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: 'Deprecated show callback; use `onUpdateShow` instead.',
+      },
+      {
+        name: 'onHide (deprecated)',
+        type: '() => void',
+        default: '—',
+        desc: 'Deprecated hide callback; use `onUpdateShow` instead.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnBackTop.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'Custom button content — replaces the built-in arrow icon.',
+      },
     ],
   },
   ai: {
@@ -111,7 +157,7 @@ import { BackTop } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

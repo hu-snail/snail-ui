@@ -56,6 +56,12 @@ import { InfiniteScroll } from '@snui/vue-web';
     rows: [
       { name: 'distance', type: 'number', default: '0', desc: '触底触发 `load` 的距离阈值（px）' },
       {
+        name: 'load',
+        type: '(() => Promise<void> | void)',
+        default: '—',
+        desc: '滚动到距底部 `distance` 内时调用；返回的 Promise 未结束前不再触发（对齐 n-infinite-scroll `on-load`）。',
+      },
+      {
         name: 'scrollbarProps',
         type: 'Record<string, unknown> | undefined',
         default: 'undefined',
@@ -68,6 +74,16 @@ import { InfiniteScroll } from '@snui/vue-web';
         desc: '`load` 未决期间在内容底部显示转圈',
       },
     ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnInfiniteScroll.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '滚动容器内的内容。' }],
   },
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -88,7 +104,7 @@ import { InfiniteScroll } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

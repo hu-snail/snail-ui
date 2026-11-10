@@ -134,6 +134,46 @@ import { Tag } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnTag.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'close',
+        payload: '—',
+        desc: '点击关闭按钮时触发，随后标签自身隐藏（对应 n-tag `onClose`）。',
+      },
+      {
+        name: 'update:checked',
+        payload: '(checked: boolean)',
+        desc: '可选中标签切换时触发，支持 `v-model:checked`（对应 n-tag）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTag.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '标签文字内容。' },
+      {
+        name: 'icon',
+        props: '—',
+        desc: '前导图标（`loading` 时被加载图标替换，对应 n-tag `icon`）。',
+      },
+      { name: 'avatar', props: '—', desc: '位于图标之前的前导头像（对应 n-tag `avatar`）。' },
+      { name: 'close-icon', props: '—', desc: '自定义关闭图标（对应 n-tag `close-icon`）。' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -153,7 +193,7 @@ import { Tag } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

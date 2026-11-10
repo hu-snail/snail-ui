@@ -124,6 +124,54 @@ import { AutoComplete } from '@snui/vue-web';
       { name: 'ariaLabel', type: 'string', default: "''", desc: 'Native ARIA label.' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnAutoComplete.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: string)',
+        desc: '`v-model` sync; fired on every keystroke, selection and clear.',
+      },
+      {
+        name: 'update:value',
+        payload: '(value: string)',
+        desc: 'naive-ui `on-update:value` alias with the same payload as `update:modelValue`.',
+      },
+      {
+        name: 'change',
+        payload: '(value: string)',
+        desc: 'Fired when a value is committed (selection or clear).',
+      },
+      {
+        name: 'select',
+        payload: '(value: string)',
+        desc: 'Fired when an option is picked from the dropdown (click or Enter).',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Native focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Native blur.' },
+      {
+        name: 'search',
+        payload: '(value: string)',
+        desc: 'Fired on every input keystroke (naive-ui `on-input`).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnAutoComplete.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: 'Empty-state content for the dropdown.' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -143,7 +191,7 @@ import { AutoComplete } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

@@ -104,6 +104,16 @@ import { Timeline } from '@snui/vue-web';
       { name: 'iconSize', type: 'number', default: '—', desc: '节点 / 图标的边长（px）。' },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnTimeline.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '`<SnTimelineItem>` 子项（直接子节点）。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -123,7 +133,7 @@ import { Timeline } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

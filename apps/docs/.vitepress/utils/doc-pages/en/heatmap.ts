@@ -145,6 +145,34 @@ import { Heatmap } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnHeatmap.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      { name: 'footer', props: '—', desc: 'Left footer area.' },
+      { name: 'indicator', props: '—', desc: 'Replaces the whole right-side indicator.' },
+      {
+        name: 'indicator-leading-text',
+        props: '—',
+        desc: 'Leading indicator text, defaults to 「少」.',
+      },
+      {
+        name: 'indicator-trailing-text',
+        props: '—',
+        desc: 'Trailing indicator text, defaults to 「多」.',
+      },
+      {
+        name: 'tooltip',
+        props: 'SnHeatmapTooltipDay',
+        desc: "Custom per-cell tooltip content; scope is the cell's `DayRect`.",
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -164,7 +192,7 @@ import { Heatmap } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

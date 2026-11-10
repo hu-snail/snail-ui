@@ -101,6 +101,12 @@ import { Slider } from '@snui/vue-web';
       { name: 'vertical', type: 'boolean', default: 'false', desc: '垂直方向' },
       { name: 'reverse', type: 'boolean', default: 'false', desc: '反向' },
       { name: 'tooltip', type: 'boolean', default: 'true', desc: '拖拽气泡' },
+      {
+        name: 'formatTooltip',
+        type: '(value: number) => string | number',
+        default: '—',
+        desc: '自定义拖拽气泡文本，也用作无障碍朗读值（对应 n-slider `format-tooltip`）。',
+      },
       { name: 'marks', type: 'Marks', default: '—', desc: '刻度' },
       {
         name: 'placement',
@@ -146,6 +152,43 @@ import { Slider } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnSlider.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: number | [number, number])',
+        desc: '`v-model` 同步：每次值变化都会触发。',
+      },
+      {
+        name: 'change',
+        payload: '(value: number | [number, number])',
+        desc: '提交式变更时触发（拖拽结束 / 键盘提交 / 刻度点击 / 输入框提交）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnSlider.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'tooltip',
+        props: '{ value: number }',
+        desc: '自定义气泡内容，作用域提供当前手柄值。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -165,7 +208,7 @@ import { Slider } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

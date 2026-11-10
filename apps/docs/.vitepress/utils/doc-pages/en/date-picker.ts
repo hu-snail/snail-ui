@@ -143,6 +143,12 @@ import { DatePicker } from '@snui/vue-web';
         desc: 'Validation-driven visual status.',
       },
       {
+        name: 'disabledDate',
+        type: '(ts: number) => boolean',
+        default: '—',
+        desc: "Predicate on each cell's local-midnight timestamp; true disables the cell.",
+      },
+      {
         name: 'shortcuts',
         type: 'SnDatePickerShortcut[]',
         default: '—',
@@ -175,6 +181,35 @@ import { DatePicker } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDatePicker.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(number | [number, number] | null)',
+        desc: '`v-model` sync; fired on any commit.',
+      },
+      {
+        name: 'change',
+        payload: '(number | [number, number] | null)',
+        desc: 'Value committed; also fires when the value is cleared.',
+      },
+      {
+        name: 'select',
+        payload: '(number | [number, number] | null)',
+        desc: 'Fired when a panel cell is picked: the draft, or range start then end.',
+      },
+      { name: 'clear', payload: '—', desc: 'Fired when the value is cleared via the × button.' },
+      { name: 'focus', payload: '(FocusEvent)', desc: 'Fired when the trigger gains focus.' },
+      { name: 'blur', payload: '(FocusEvent)', desc: 'Fired when the trigger loses focus.' },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -194,7 +229,7 @@ import { DatePicker } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

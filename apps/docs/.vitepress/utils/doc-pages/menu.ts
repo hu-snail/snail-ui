@@ -168,6 +168,37 @@ import { Menu } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnMenu.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: string | number | null)',
+        desc: '选中项变化时派发（`v-model:value`）。',
+      },
+      {
+        name: 'update:expandedKeys',
+        payload: '(keys: Array<string | number>)',
+        desc: '展开的子菜单键变化时派发（`v-model:expandedKeys`）。',
+      },
+      {
+        name: 'select',
+        payload: '(value: string | number | null, item: SnMenuOption)',
+        desc: '点击叶子菜单项时触发，回传其键与节点。',
+      },
+      {
+        name: 'update:collapsed',
+        payload: '(collapsed: boolean)',
+        desc: '折叠状态翻转时派发；命中 `breakpoint` 时也会触发。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -187,7 +218,7 @@ import { Menu } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

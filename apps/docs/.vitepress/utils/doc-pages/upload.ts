@@ -143,6 +143,43 @@ import { Upload } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnUpload.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:fileList',
+        payload: '(fileList: SnUploadFile[])',
+        desc: '受控镜像内部列表，每次变更都触发。',
+      },
+      {
+        name: 'change',
+        payload: '(fileList: SnUploadFile[])',
+        desc: '文件列表变化（新增 / 状态流转 / 移除）时触发。',
+      },
+      { name: 'remove', payload: '(file: SnUploadFile)', desc: '文件从列表移除时触发。' },
+      {
+        name: 'preview',
+        payload: '(file: SnUploadFile)',
+        desc: '条目预览入口被激活时触发（`onPreview` 也会调用）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnUpload.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'trigger', props: '—', desc: '自定义触发内容（替换默认按钮主体）。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -162,7 +199,7 @@ import { Upload } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

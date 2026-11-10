@@ -149,6 +149,66 @@ export const dynamicTagsDocPage: SnDocPageData = {
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDynamicTags.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnDynamicTagValue[])',
+        desc: '`v-model` 同步——始终回传完整的下一个数组。',
+      },
+      {
+        name: 'change',
+        payload: '(value: SnDynamicTagValue[])',
+        desc: '标签数组变化（新增 / 删除）时触发，对应 naive-ui `on-change` 载荷。',
+      },
+      {
+        name: 'add',
+        payload: '(value: SnDynamicTagValue)',
+        desc: '新增标签时触发，对应 naive-ui `on-add` 载荷。',
+      },
+      {
+        name: 'remove',
+        payload: '(value: SnDynamicTagValue)',
+        desc: '删除标签时触发，对应 naive-ui `on-remove` 载荷。',
+      },
+      {
+        name: 'click',
+        payload: '(value: SnDynamicTagValue, event: MouseEvent)',
+        desc: '点击某个标签时触发，回传标签值与原生鼠标事件。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDynamicTags.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      {
+        name: 'input',
+        props:
+          '{ value: string; placeholder: string; confirm: () => void; cancel: () => void; setValue: (v: string) => void }',
+        desc: '自定义内联输入框；作用域：`value`、`placeholder`、`confirm`、`cancel`、`setValue`。',
+      },
+      {
+        name: 'tag',
+        props: '{ label: SnDynamicTagValue; index: number }',
+        desc: '自定义标签渲染，作用域为 `{ label, index }`。',
+      },
+      { name: 'trigger', props: '—', desc: '自定义新增触发器内容（替换默认的 + 图标）。' },
+      { name: 'empty', props: '—', desc: '无标签时展示的空状态。' },
+    ],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -170,7 +230,7 @@ export const dynamicTagsDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

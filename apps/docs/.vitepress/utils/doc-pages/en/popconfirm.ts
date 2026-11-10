@@ -159,6 +159,18 @@ import { Popconfirm } from '@snui/vue-web';
         desc: 'Extra props forwarded to the confirm SnButton.',
       },
       {
+        name: 'onPositiveClick',
+        type: '((e: MouseEvent) => SnPopconfirmActionReturn)',
+        default: '—',
+        desc: 'Called on confirm click; return `false` to keep it open (mirrors n-popconfirm).',
+      },
+      {
+        name: 'onNegativeClick',
+        type: '((e: MouseEvent) => SnPopconfirmActionReturn)',
+        default: '—',
+        desc: 'Called on cancel click; return `false` to keep it open (mirrors n-popconfirm).',
+      },
+      {
         name: 'disabled',
         type: 'boolean',
         default: 'false',
@@ -218,6 +230,50 @@ import { Popconfirm } from '@snui/vue-web';
         default: 'undefined',
         desc: 'Style on the inner body.',
       },
+      {
+        name: 'onClickoutside',
+        type: '((e: MouseEvent) => void)',
+        default: '—',
+        desc: 'Called when a click lands outside the bubble and its trigger.',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnPopconfirm.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: 'Fired when show state changes (`v-model:show`).',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnPopconfirm.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'Trigger element (the visible target, e.g. a delete button).',
+      },
+      {
+        name: 'icon',
+        props: '—',
+        desc: 'Leading icon area; overrides the `icon` prop and default glyph.',
+      },
+      { name: 'action', props: '—', desc: 'Action row; replaces the two built-in buttons.' },
     ],
   },
   ai: {
@@ -239,7 +295,7 @@ import { Popconfirm } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

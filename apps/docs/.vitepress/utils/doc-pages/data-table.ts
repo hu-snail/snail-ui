@@ -137,6 +137,24 @@ import { DataTable } from '@snui/vue-web';
         desc: '列定义（基础列 / selection / expand / index），类型见下方 Column 说明',
       },
       { name: 'data', type: 'DataTableRowData[]', default: '() => []', desc: '行数据' },
+      {
+        name: 'rowKey',
+        type: '((row: DataTableRowData) => DataTableRowKey)',
+        default: '—',
+        desc: '由行数据推导行键的函数，对应 n-data-table 的 `row-key`。',
+      },
+      {
+        name: 'rowProps',
+        type: '((row: DataTableRowData, index: number) => HTMLAttributes)',
+        default: '—',
+        desc: '按行返回额外 `tr` 属性的函数，对应 n-data-table 的 `row-props`。',
+      },
+      {
+        name: 'rowClassName',
+        type: 'string | ((row: DataTableRowData, index: number) => string)',
+        default: '—',
+        desc: '静态或按行计算的 `tr` class，对应 n-data-table 的 `row-class-name`。',
+      },
       { name: 'striped', type: 'boolean', default: 'false', desc: '斑马条纹' },
       {
         name: 'size',
@@ -230,6 +248,50 @@ import { DataTable } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnDataTable.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:checkedRowKeys',
+        payload:
+          "(DataTableRowKey[], DataTableRowData[], { row: DataTableRowData | undefined; action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' })",
+        desc: '勾选变化时派发新的键、对应行数据与动作元信息。',
+      },
+      {
+        name: 'update:expandedRowKeys',
+        payload: '(DataTableRowKey[])',
+        desc: '展开行集合变化时派发完整的键数组。',
+      },
+      {
+        name: 'update:filters',
+        payload: '(DataTableFilterState, DataTableBaseColumn)',
+        desc: '列筛选提交时派发新的筛选状态与对应列定义。',
+      },
+      {
+        name: 'update:sorter',
+        payload: '(DataTableSortState | DataTableSortState[] | null)',
+        desc: '点击可排序表头时派发新的排序状态。',
+      },
+      { name: 'update:page', payload: '(number)', desc: '翻页时派发已裁剪到合法范围内的页码。' },
+      { name: 'update:pageSize', payload: '(number)', desc: '每页条数变化时派发新的 pageSize。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnDataTable.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'empty', props: '—', desc: '替换默认的无数据空状态。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -249,7 +311,7 @@ import { DataTable } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

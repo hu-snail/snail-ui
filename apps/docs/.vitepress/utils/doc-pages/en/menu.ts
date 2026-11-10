@@ -194,6 +194,37 @@ import { Menu } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnMenu.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:value',
+        payload: '(value: string | number | null)',
+        desc: 'Fired when the selected key changes (`v-model:value`).',
+      },
+      {
+        name: 'update:expandedKeys',
+        payload: '(keys: Array<string | number>)',
+        desc: 'Fired when the expanded submenu keys change (`v-model:expandedKeys`).',
+      },
+      {
+        name: 'select',
+        payload: '(value: string | number | null, item: SnMenuOption)',
+        desc: 'Fired when a leaf menu item is clicked, with its key and node.',
+      },
+      {
+        name: 'update:collapsed',
+        payload: '(collapsed: boolean)',
+        desc: 'Fired when collapsed state flips, including via the `breakpoint` path.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -210,7 +241,7 @@ import { Menu } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Code Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'Props Reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-Native Integration' },
   ],
 };

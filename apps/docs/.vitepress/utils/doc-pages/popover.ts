@@ -194,6 +194,44 @@ import { Popover } from '@snui/vue-web';
         default: 'undefined',
         desc: '主体区块的样式。对应 n-popover 的 `contentStyle`。',
       },
+      {
+        name: 'onClickoutside',
+        type: '((e: MouseEvent) => void)',
+        default: '—',
+        desc: '点击气泡与其触发元素之外时调用（对齐 n-popover）。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnPopover.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(show: boolean)',
+        desc: '显示状态变化时派发（`v-model:show`）。',
+      },
+      { name: 'show', payload: '—', desc: '气泡显示时触发（本地新增）。' },
+      { name: 'hide', payload: '—', desc: '气泡隐藏时触发（本地新增）。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnPopover.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'default', props: '—', desc: '触发元素（可见目标，如按钮）。' },
+      { name: 'header', props: '—', desc: '卡片标题，覆盖 `header` 属性。' },
+      { name: 'content', props: '—', desc: '气泡主体，覆盖 `content` 属性。' },
     ],
   },
   ai: {
@@ -215,7 +253,7 @@ import { Popover } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

@@ -129,6 +129,60 @@ import { Radio } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnRadio.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(value: SnRadioValue | null)',
+        desc: "`v-model` sync; emits this radio's `checkedValue` on activation.",
+      },
+      {
+        name: 'change',
+        payload: '(value: SnRadioValue, event: Event)',
+        desc: 'Fired on user activation (native `change`).',
+      },
+      {
+        name: 'checked',
+        payload: '(value: SnRadioValue)',
+        desc: 'Fires when the checked state flips to true via user interaction.',
+      },
+      {
+        name: 'update',
+        payload: '(value: SnRadioValue | null, event: Event)',
+        desc: 'Native `update` event; fires on every state change.',
+      },
+      { name: 'focus', payload: 'FocusEvent', desc: 'Native focus.' },
+      { name: 'blur', payload: 'FocusEvent', desc: 'Native blur.' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnRadio.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'Fallback label content; renders when the `label` slot is absent.',
+      },
+      {
+        name: 'label',
+        props: '{ checked: boolean; disabled: boolean }',
+        desc: 'Custom label content with `{ checked, disabled }` scope; replaces `label` text.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -148,7 +202,7 @@ import { Radio } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

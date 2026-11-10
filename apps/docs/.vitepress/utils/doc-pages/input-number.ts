@@ -141,7 +141,18 @@ export const inputNumberDocPage: SnDocPageData = {
     ],
     rows: [
       { name: 'modelValue', type: 'number | null', default: 'null', desc: '绑定值。' },
-      { name: 'min / max', type: 'number', default: '—', desc: '边界 clamp' },
+      {
+        name: 'min',
+        type: 'number',
+        default: '—',
+        desc: '数值下限，越界提交会被收敛（clamp）到该值。',
+      },
+      {
+        name: 'max',
+        type: 'number',
+        default: '—',
+        desc: '数值上限，越界提交会被收敛（clamp）到该值。',
+      },
       { name: 'step', type: 'number', default: '1', desc: '步长' },
       { name: 'precision', type: 'number', default: '—', desc: '小数位' },
       {
@@ -208,6 +219,43 @@ export const inputNumberDocPage: SnDocPageData = {
       { name: 'ariaLabel', type: 'string', default: '—', desc: '原生 ARIA 标签。' },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnInputNumber.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(number | null)',
+        desc: '`v-model` 同步，值变化时派发当前值。',
+      },
+      { name: 'change', payload: '(number | null)', desc: '提交值与旧值不同时触发。' },
+      { name: 'input', payload: '(number | null)', desc: '输入过程中派发当前值。' },
+      { name: 'focus', payload: 'FocusEvent', desc: '获得焦点时触发。' },
+      { name: 'blur', payload: 'FocusEvent', desc: '失去焦点时触发。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnInputNumber.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'prefix', props: '—', desc: '输入框前缀区域的自定义内容。' },
+      { name: 'suffix', props: '—', desc: '输入框后缀区域的自定义内容。' },
+      { name: 'minus-icon', props: '—', desc: '自定义减号图标，替换默认 −。' },
+      { name: 'plus-icon', props: '—', desc: '自定义加号图标，替换默认 +。' },
+      { name: 'up-icon', props: '—', desc: '自定义 ↑/↓ 步进器的上半部分，替换默认 ↑。' },
+      { name: 'down-icon', props: '—', desc: '自定义 ↑/↓ 步进器的下半部分，替换默认 ↓。' },
+    ],
+  },
 
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -229,7 +277,7 @@ export const inputNumberDocPage: SnDocPageData = {
   toc: [
     { id: 'usage', text: '代码用法 Usage' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考 Props' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成 AI-Native' },
   ],
 };

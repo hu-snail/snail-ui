@@ -149,6 +149,45 @@ import { VideoPreview } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnVideoPreview.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      { name: 'play', payload: '—', desc: '内联播放开始时触发。' },
+      { name: 'pause', payload: '—', desc: '内联播放暂停时触发。' },
+      { name: 'ended', payload: '—', desc: '内联播放到结尾时触发。' },
+      { name: 'error', payload: 'Event', desc: '视频加载或解码失败时触发。' },
+      { name: 'preview', payload: '—', desc: '浮层打开时触发。' },
+      {
+        name: 'close',
+        payload: '—',
+        desc: '浮层关闭时触发（ESC / 遮罩 / 关闭按钮 / `closePreview()`）。',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnVideoPreview.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'placeholder', props: '—', desc: '无海报或视频未开始时替换海报区域。' },
+      { name: 'play-icon', props: '—', desc: '替换居中的播放图标。' },
+      {
+        name: 'toolbar',
+        props: '{ showPreview: () => void }',
+        desc: '替换右上角浮层入口，作用域提供打开方法。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -168,7 +207,7 @@ import { VideoPreview } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

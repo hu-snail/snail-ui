@@ -87,6 +87,32 @@ import { Log } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnLog.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'reach-top',
+        payload: '—',
+        desc: '滚动到顶部（在 `offset-top` 容差内）时触发（对齐 n-log `on-reach-top`）。',
+      },
+      {
+        name: 'reach-bottom',
+        payload: '—',
+        desc: '滚动到底部（在 `offset-bottom` 容差内）时触发（对齐 n-log `on-reach-bottom`）。',
+      },
+      {
+        name: 'require-more',
+        payload: "'top' | 'bottom'",
+        desc: '越过上/下容差时触发，载荷标识方向（对齐 n-log `on-require-more`）。',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -106,7 +132,7 @@ import { Log } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

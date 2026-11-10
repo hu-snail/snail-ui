@@ -82,10 +82,22 @@ import { Anchor } from '@snui/vue-web';
         desc: '设为 `true` 时导航显示在准确的 `href` 区域。',
       },
       {
+        name: 'offsetTarget',
+        type: 'string | OffsetTarget | (() => HTMLElement)',
+        default: '—',
+        desc: '测量各分区偏移的容器；省略时默认 `document`。',
+      },
+      {
         name: 'affix',
         type: 'boolean',
         default: 'false',
         desc: '是否像 `SnAffix` 一样展示。为 `true` 时额外接受 `SnAffix` 的 props。',
+      },
+      {
+        name: 'listenTo',
+        type: 'string | HTMLElement | Document | (() => HTMLElement | Document)',
+        default: '—',
+        desc: '`affix` 为 true 时透传给 `SnAffix` 的滚动容器。',
       },
       {
         name: 'top',
@@ -115,6 +127,16 @@ import { Anchor } from '@snui/vue-web';
       { name: 'offsetBottom', type: 'number', default: 'undefined as any', desc: '底部偏移量。' },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnAnchor.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '`SnAnchorLink` 子节点。' }],
+  },
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
@@ -134,7 +156,7 @@ import { Anchor } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

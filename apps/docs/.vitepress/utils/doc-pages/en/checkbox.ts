@@ -156,6 +156,58 @@ import { Checkbox } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnCheckbox.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:modelValue',
+        payload: '(SnCheckboxValue)',
+        desc: '`v-model` sync; emitted with the next value in standalone usage.',
+      },
+      {
+        name: 'update:checked',
+        payload: '(boolean)',
+        desc: "Checked state committed by click or Space; naive-ui's `onUpdate:checked`.",
+      },
+      {
+        name: 'checkedChange',
+        payload: '(boolean)',
+        desc: "Checked state committed; naive-ui's `checked-change` payload.",
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnCheckbox.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '{ checked: boolean; disabled: boolean; indeterminate: boolean }',
+        desc: 'Rich label content; wins over the `label` prop, scope carries the state.',
+      },
+      {
+        name: 'icon',
+        props: '{ checked: boolean }',
+        desc: 'Custom checkmark glyph rendered inside the box instead of the CSS tick.',
+      },
+      {
+        name: 'indicator',
+        props: '{ checked: boolean; indeterminate: boolean }',
+        desc: 'Replaces the whole box for card / tag styles; scope exposes the state.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -175,7 +227,7 @@ import { Checkbox } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

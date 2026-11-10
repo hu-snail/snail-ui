@@ -59,6 +59,12 @@ import { Affix } from '@snui/vue-web';
     hint: [],
     rows: [
       {
+        name: 'listenTo',
+        type: 'string | SnAffixScrollTarget | (() => HTMLElement | Document)',
+        default: '—',
+        desc: '监听的滚动容器；省略时回退到 `document`。',
+      },
+      {
         name: 'top',
         type: 'number',
         default: 'undefined as any',
@@ -100,7 +106,23 @@ import { Affix } from '@snui/vue-web';
         default: 'undefined as any',
         desc: '距底部偏移量（px）。',
       },
+      {
+        name: 'target (deprecated)',
+        type: '() => HTMLElement',
+        default: '—',
+        desc: '已废弃的滚动目标回调，请改用 `listenTo`；对齐 n-affix `target`。',
+      },
     ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnAffix.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: '需要吸附的内容元素。' }],
   },
   ai: {
     badge: 'ai-description.md · 已内置',
@@ -121,7 +143,7 @@ import { Affix } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

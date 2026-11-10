@@ -59,6 +59,28 @@ import { Countdown } from '@snui/vue-web';
       { name: 'duration', type: 'number', default: '0', desc: '倒计时总时长 ms（非响应式）' },
       { name: 'active', type: 'boolean', default: 'true', desc: '是否处于计时状态' },
       { name: 'precision', type: '0 | 1 | 2 | 3', default: '0', desc: '2 \\' },
+      {
+        name: 'render',
+        type: '((info: CountdownTimeInfo) => VNodeChild)',
+        default: '—',
+        desc: '自定义剩余时间信息的渲染函数，对应 n-countdown 的 `render`。',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnCountdown.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      {
+        name: 'finish',
+        payload: '—',
+        desc: '倒计时归零时派发一次，对应 n-countdown 的 `onFinish`。',
+      },
     ],
   },
   ai: {
@@ -80,7 +102,7 @@ import { Countdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

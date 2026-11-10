@@ -89,6 +89,12 @@ import { FloatingToc } from '@snui/vue-web';
         desc: 'Initial open state when uncontrolled.',
       },
       {
+        name: 'onOpenChange',
+        type: '((open: boolean) => void)',
+        default: '—',
+        desc: 'Called on every open-state change with the next `open` value (HeroUI parity).',
+      },
+      {
         name: 'openDelay',
         type: 'number',
         default: '200',
@@ -114,6 +120,16 @@ import { FloatingToc } from '@snui/vue-web';
       },
     ],
   },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnFloatingToc.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [{ name: 'default', props: '—', desc: 'Trigger and Content.' }],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -132,7 +148,7 @@ import { FloatingToc } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

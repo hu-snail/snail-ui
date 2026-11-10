@@ -88,6 +88,18 @@ import { Notification } from '@snui/vue-web';
         desc: '底部小字备注（如时间戳）。',
       },
       {
+        name: 'avatar',
+        type: '(() => unknown)',
+        default: '—',
+        desc: '前导头像渲染函数，由 API 选项传入。',
+      },
+      {
+        name: 'footer',
+        type: '(() => unknown)',
+        default: '—',
+        desc: '底部渲染函数，由 API 选项传入。',
+      },
+      {
         name: 'duration',
         type: 'number | undefined',
         default: '3000',
@@ -105,6 +117,34 @@ import { Notification } from '@snui/vue-web';
         default: 'true',
         desc: '指针悬停在通知上时暂停 `duration` 倒计时，移开后以剩余时间继续。',
       },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: '事件名与 ' },
+      { t: 'code', s: 'SnNotification.vue' },
+      { t: 'text', s: ' 的 ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' 签名 1:1 对齐；载荷列为回调参数。' },
+    ],
+    rows: [
+      { name: 'destroy', payload: '—', desc: '卡片需要被移除时触发（点击关闭或倒计时结束）。' },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: '插槽与 ' },
+      { t: 'code', s: 'SnNotification.vue' },
+      { t: 'text', s: ' 模板中的 ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' 1:1 对齐；作用域列出可解构的 slot props。' },
+    ],
+    rows: [
+      { name: 'avatar', props: '—', desc: '头像区域内容，覆盖 `avatar` 渲染函数。' },
+      { name: 'icon', props: '—', desc: '类型图标区域内容，覆盖内置语义图标。' },
+      { name: 'header', props: '—', desc: '标题区域内容，覆盖 `title` 属性。' },
+      { name: 'default', props: '—', desc: '正文内容，覆盖 `content` 属性。' },
+      { name: 'footer', props: '—', desc: '底部区域内容，覆盖 `footer` 渲染函数。' },
     ],
   },
   ai: {
@@ -126,7 +166,7 @@ import { Notification } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: '代码用法' },
     { id: 'demos', text: '案例 Demos' },
-    { id: 'api', text: 'API 属性参考' },
+    { id: 'api', text: 'API 参考' },
     { id: 'ai-native', text: 'AI 原生集成' },
   ],
 };

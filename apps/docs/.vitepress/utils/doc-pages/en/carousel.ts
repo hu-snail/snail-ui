@@ -164,12 +164,11 @@ import { Carousel } from '@snui/vue-web';
         default: '—',
         desc: 'Drag with touch to switch slides.',
       },
-      { name: 'transitionDuration', type: 'string', default: '—', desc: 'transitionDuration' },
       {
-        name: 'transitionTimingFunction',
-        type: 'string',
+        name: 'transitionStyle',
+        type: '{ transitionDuration?: string; transitionTimingFunction?: string; }',
         default: '—',
-        desc: 'transitionTimingFunction',
+        desc: 'Duration and easing for slide, fade and card transitions.',
       },
       {
         name: 'transitionProps',
@@ -188,6 +187,61 @@ import { Carousel } from '@snui/vue-web';
         type: 'boolean',
         default: '—',
         desc: 'Arrow keys switch slides while a dot is focused.',
+      },
+      {
+        name: 'onUpdateCurrentIndex',
+        type: '(currentIndex: number, lastIndex: number) => void',
+        default: '—',
+        desc: 'Secondary callback channel for index changes (naive-ui parity).',
+      },
+    ],
+  },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnCarousel.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:currentIndex',
+        payload: '(currentIndex: number, lastIndex: number)',
+        desc: 'Active display index changed, with the previous display index.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnCarousel.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'Sequence of `<SnCarouselItem>` children (ignored with `options`).',
+      },
+      {
+        name: 'item',
+        props:
+          '{ item: SnCarouselMediaItem; index: number; isActive: boolean; isPrev: boolean; isNext: boolean }',
+        desc: 'Per-slide override for `options` — replaces the built-in media renderer.',
+      },
+      {
+        name: 'arrow',
+        props:
+          '{ total: number; currentIndex: number; to: (index: number) => void; prev: () => void; next: () => void; isPrevDisabled: () => boolean; isNextDisabled: () => boolean }',
+        desc: 'Custom arrow buttons; falls back to the built-in pair.',
+      },
+      {
+        name: 'dots',
+        props: '{ total: number; currentIndex: number; to: (index: number) => void }',
+        desc: 'Custom indicator dots; falls back to the built-in dots.',
       },
     ],
   },
@@ -210,7 +264,7 @@ import { Carousel } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };

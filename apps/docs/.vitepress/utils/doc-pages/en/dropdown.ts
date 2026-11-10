@@ -109,6 +109,53 @@ import { Dropdown } from '@snui/vue-web';
       },
     ],
   },
+  events: {
+    hint: [
+      { t: 'text', s: 'Event names mirror the ' },
+      { t: 'code', s: 'defineEmits' },
+      { t: 'text', s: ' signature of ' },
+      { t: 'code', s: 'SnDropdown.vue' },
+      { t: 'text', s: ' 1:1; payloads list the callback arguments.' },
+    ],
+    rows: [
+      {
+        name: 'update:show',
+        payload: '(value: boolean)',
+        desc: 'Show-state sync; fires in controlled and uncontrolled mode for `v-model:show`.',
+      },
+      {
+        name: 'select',
+        payload: '(key: SnDropdownKey, option: SnDropdownOption)',
+        desc: 'Fired when a row is activated (click / Enter); parent rows open their submenu.',
+      },
+      {
+        name: 'clickoutside',
+        payload: 'MouseEvent',
+        desc: 'Fired when a `mousedown` lands outside the trigger and both panels while open.',
+      },
+    ],
+  },
+  slots: {
+    hint: [
+      { t: 'text', s: 'Slots mirror the ' },
+      { t: 'code', s: '<slot>' },
+      { t: 'text', s: ' outlets of ' },
+      { t: 'code', s: 'SnDropdown.vue' },
+      { t: 'text', s: ' 1:1; scope lists the slot props you can destructure.' },
+    ],
+    rows: [
+      {
+        name: 'default',
+        props: '—',
+        desc: 'Trigger content; use a focusable element so keyboard users can reach the menu.',
+      },
+      {
+        name: 'content',
+        props: '{ close: () => void }',
+        desc: 'Custom panel body (Arco parity); replaces `options` and receives `close()`.',
+      },
+    ],
+  },
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
@@ -128,7 +175,7 @@ import { Dropdown } from '@snui/vue-web';
   toc: [
     { id: 'usage', text: 'Usage' },
     { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
+    { id: 'api', text: 'API Reference' },
     { id: 'ai-native', text: 'AI-native integration' },
   ],
 };
