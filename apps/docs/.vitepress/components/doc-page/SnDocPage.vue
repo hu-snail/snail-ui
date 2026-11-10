@@ -313,6 +313,18 @@ function setDemoMode(name: string, mode: DemoMode): void {
 }
 
 /**
+ * 悬停预览：滑块随 hover 滑到所指档位（图标随之反白），离开后弹回真实
+ * 选中档。图标的反白跟着滑块走而不是跟着选中态走，否则滑块挪走的瞬间
+ * 原选中图标会白字落在白胶囊上消失。
+ */
+const hoveredTab = ref<{ name: string; side: DemoMode } | null>(null);
+
+function demoThumbTarget(name: string): DemoMode {
+  if (hoveredTab.value?.name === name) return hoveredTab.value.side;
+  return demoMode(name);
+}
+
+/**
  * demo 按奇偶分列（自管两列瀑布）：列是独立 flex 容器，卡片展开只推挤
  * 本列后续项 —— 无空高度。不经过 slot 传递，预览/源码状态走标准响应式。
  */
@@ -739,16 +751,18 @@ onBeforeUnmount(() => {
                 >
                   <span
                     class="sn-docpage__demo-thumb"
-                    :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
+                    :class="{ 'sn-docpage__demo-thumb--code': demoThumbTarget(d.name) === 'code' }"
                     aria-hidden="true"
                   />
                   <button
                     type="button"
                     role="tab"
                     class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'preview' }"
+                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'preview' }"
                     :aria-selected="demoMode(d.name) === 'preview'"
                     :aria-label="UI.preview"
+                    @mouseenter="hoveredTab = { name: d.name, side: 'preview' }"
+                    @mouseleave="hoveredTab = null"
                     @click="setDemoMode(d.name, 'preview')"
                   >
                     <SnIcon :icon="Box" :size="13" />
@@ -757,9 +771,11 @@ onBeforeUnmount(() => {
                     type="button"
                     role="tab"
                     class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'code' }"
+                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'code' }"
                     :aria-selected="demoMode(d.name) === 'code'"
                     :aria-label="UI.source"
+                    @mouseenter="hoveredTab = { name: d.name, side: 'code' }"
+                    @mouseleave="hoveredTab = null"
                     @click="setDemoMode(d.name, 'code')"
                   >
                     <SnIcon :icon="Code2" :size="13" />
@@ -1775,7 +1791,8 @@ onBeforeUnmount(() => {
 .sn-docpage__demo-fall {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  /* 案例块之间的纵向呼吸：模块多时靠这段距离分块。 */
+  gap: 24px;
 }
 /* 案例容器不再是卡片：标题、描述、切换胶囊都是页面正文层，无背景；
  * 卡片饰面（圆角 / 底色 / 阴影）只属于预览面板本体。 */
@@ -1865,10 +1882,9 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: color 0.15s;
 }
-.sn-docpage__demo-tab:hover {
-  color: var(--sn-doc-text-1);
-}
+/* 悬停不再单独变色：滑块会滑到悬停档位，反白由 --on 跟随滑块位置。 */
 .sn-docpage__demo-tab--on {
+  /* 滑块（真实选中或悬停预览）压着的档位，图标反白。 */
   color: var(--sn-doc-text-on-accent);
 }
 .sn-docpage__demo-stage {
