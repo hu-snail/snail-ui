@@ -29,7 +29,7 @@ SnCheckboxGroup when several checkboxes share one selection array.
 | indicatorPlacement | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | —           | **AUI additive.** Marker placement.                                                                                  |
 | checkedStyle       | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | —           | **AUI additive.** Checked paint.                                                                                     |
 | labelPlacement     | `'marker-first' \| 'label-first'`                                    | —           | **AUI additive.** Label side; `label-first` pushes the marker to the far end.                                        |
-| markerShape        | `'ring' \| 'inverted'`                                               | —           | **AUI additive.** Inline marker shape; `inverted` fills the plate with the theme colour and punches out a white dot. |
+| markerShape        | `'base' \| 'inverted'`                                               | —           | **AUI additive.** Inline marker shape; `inverted` fills the plate with the theme colour and punches out a white dot. |
 
 ## SnCheckbox Events
 

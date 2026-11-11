@@ -429,15 +429,6 @@ describe('SnCheckbox additive variants', () => {
     expect(wrapper.find('.sn-checkbox__label').exists()).toBe(false);
   });
 
-  it('icon variant renders a tile with the #icon glyph', () => {
-    const wrapper = mount(SnCheckbox, {
-      props: { modelValue: true, variant: 'icon' },
-      slots: { icon: '<svg class="my-glyph" />' },
-    });
-    expect(wrapper.find('.sn-checkbox__tile').exists()).toBe(true);
-    expect(wrapper.find('.my-glyph').exists()).toBe(true);
-  });
-
   it('group variant cascades and a child prop overrides it', () => {
     const wrapper = mount(SnCheckboxGroup, {
       props: { modelValue: ['a'], variant: 'card' },
@@ -458,7 +449,7 @@ describe('SnCheckbox additive variants', () => {
 describe('SnCheckbox inverted marker & label-first', () => {
   it('defaults to ring marker and marker-first order', () => {
     const wrapper = mount(SnCheckbox, { props: { label: 'A' } });
-    expect(wrapper.classes()).toContain('sn-checkbox--marker-ring');
+    expect(wrapper.classes()).toContain('sn-checkbox--marker-base');
     expect(wrapper.classes()).toContain('sn-checkbox--label-marker-first');
   });
 

@@ -75,8 +75,8 @@ import { Radio } from '@snui/vue-web';
     },
     {
       name: 'radio-web-icon',
-      title: 'Icon variant',
-      blurb: 'Square icon tiles with the #icon slot glyph; no label row.',
+      title: 'Icon cards (card + icon body)',
+      blurb: 'A card variant carrying an icon body; the selected card shows a corner tick.',
     },
     {
       name: 'radio-web-indicator',
@@ -149,9 +149,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
-        desc: `Card / icon layout; card uses the #card slot, icon renders a square tile. Inherited from the group.`,
+        desc: `Card layout; #card slot for custom content (icon + copy). Inherited from the group.`,
       },
       {
         name: `indicatorPlacement`,
@@ -173,8 +173,8 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
+        type: `'base' | 'inverted'`,
+        default: `'base'`,
         desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot.`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
@@ -242,11 +242,6 @@ import { Radio } from '@snui/vue-web';
         name: `card`,
         props: '{ checked: boolean; disabled: boolean }',
         desc: 'Card body for variant="card"; replaces the default marker + label row, the corner tick still applies.',
-      },
-      {
-        name: `icon`,
-        props: '{ checked: boolean }',
-        desc: 'Glyph for variant="icon" tiles; falls back to a neutral placeholder square.',
       },
     ],
   },

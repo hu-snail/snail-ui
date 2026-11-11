@@ -165,7 +165,7 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
         desc: `Card / icon layout; card uses the #card slot, icon renders a square tile. Inherited from the group.`,
       },
@@ -189,8 +189,8 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
+        type: `'base' | 'inverted'`,
+        default: `'base'`,
         desc: `Inline marker shape; inverted keeps the surface fill while the tick and border carry the theme colour.`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },

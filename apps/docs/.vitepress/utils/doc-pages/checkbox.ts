@@ -153,7 +153,7 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
         desc: `卡片 / 图标形态；card 用 #card 插槽自定义内容，icon 为方形图标砖。组级可下发。`,
       },
@@ -177,8 +177,8 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
+        type: `'base' | 'inverted'`,
+        default: `'base'`,
         desc: `行内标记形态；inverted 为反转态（主题色描边 + 主题色勾，底色保持表面色）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },

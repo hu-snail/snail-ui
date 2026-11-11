@@ -506,24 +506,6 @@ describe('SnRadio additive variants', () => {
     expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
   });
 
-  it('icon variant renders a tile and hides the label row', () => {
-    const wrapper = mount(SnRadio, {
-      props: { checkedValue: 'a', label: 'A', variant: 'icon' },
-    });
-    expect(wrapper.find('.sn-radio__tile').exists()).toBe(true);
-    expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
-    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(true);
-  });
-
-  it('icon variant renders the #icon slot glyph', () => {
-    const wrapper = mount(SnRadio, {
-      props: { checkedValue: 'a', variant: 'icon' },
-      slots: { icon: '<svg class="my-glyph" />' },
-    });
-    expect(wrapper.find('.my-glyph').exists()).toBe(true);
-    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(false);
-  });
-
   it('group variant cascades to children and a child prop overrides it', () => {
     const wrapper = mount(SnRadioGroup, {
       props: { modelValue: 'a', variant: 'card' },
@@ -544,7 +526,7 @@ describe('SnRadio additive variants', () => {
 describe('SnRadio inverted marker & label-first', () => {
   it('defaults to ring marker and marker-first label order', () => {
     const wrapper = mount(SnRadio, { props: { checkedValue: 'a', label: 'A' } });
-    expect(wrapper.classes()).toContain('sn-radio--marker-ring');
+    expect(wrapper.classes()).toContain('sn-radio--marker-base');
     expect(wrapper.classes()).toContain('sn-radio--label-marker-first');
   });
 
@@ -570,13 +552,13 @@ describe('SnRadio inverted marker & label-first', () => {
       slots: {
         default: () => [
           h(SnRadio, { checkedValue: 'a', label: 'A' }),
-          h(SnRadio, { checkedValue: 'b', label: 'B', markerShape: 'ring' }),
+          h(SnRadio, { checkedValue: 'b', label: 'B', markerShape: 'base' }),
         ],
       },
     });
     const radios = wrapper.findAll('.sn-radio');
     expect(radios[0].classes()).toContain('sn-radio--label-label-first');
     expect(radios[0].classes()).toContain('sn-radio--marker-inverted');
-    expect(radios[1].classes()).toContain('sn-radio--marker-ring');
+    expect(radios[1].classes()).toContain('sn-radio--marker-base');
   });
 });

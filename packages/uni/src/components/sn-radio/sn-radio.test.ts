@@ -492,11 +492,4 @@ describe('sn-radio additive variants', () => {
     // No `card` slot supplied → the default label renders inside the card body.
     expect(wrapper.find('.sn-radio__card .sn-radio__label').exists()).toBe(true);
   });
-
-  it('icon variant renders a tile and hides the label', () => {
-    const wrapper = mountInGroup({ variant: 'icon' }, {});
-    expect(wrapper.find('.sn-radio__tile').exists()).toBe(true);
-    expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
-    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(true);
-  });
 });

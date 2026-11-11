@@ -607,11 +607,4 @@ describe('sn-checkbox additive variants', () => {
     const wrapper = mountInGroup({ placement: 'right' }, {});
     expect(wrapper.find('.sn-checkbox').classes()).toContain('sn-checkbox--indicator-trailing');
   });
-
-  it('icon variant renders a tile and hides the label', () => {
-    const wrapper = mountInGroup({ variant: 'icon' }, {});
-    expect(wrapper.find('.sn-checkbox__tile').exists()).toBe(true);
-    expect(wrapper.find('.sn-checkbox__label').exists()).toBe(false);
-    expect(wrapper.find('.sn-checkbox__tile-glyph').exists()).toBe(true);
-  });
 });

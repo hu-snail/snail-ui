@@ -1,25 +1,31 @@
 <script setup lang="ts">
-/** Demo: SnRadio — icon variant (icon-grid picker) with #icon slot glyphs. */
+/** Demo: SnRadio — 图标卡片（card 变体 + 图标内容，选中为右上角勾图标）。 */
 import { ref } from 'vue';
 import { SnRadio, SnRadioGroup } from '@snui/vue-web';
 import { Sun, Moon, Cloud, Zap } from 'lucide-vue-next';
 
 const picked = ref('sun');
+
+const options = [
+  { value: 'sun', label: '晴天', icon: Sun },
+  { value: 'moon', label: '夜间', icon: Moon },
+  { value: 'cloud', label: '多云', icon: Cloud },
+  { value: 'zap', label: '雷暴', icon: Zap },
+];
 </script>
 
 <template>
-  <SnRadioGroup v-model="picked" variant="icon" class="demo-tiles">
-    <SnRadio checked-value="sun" aria-label="晴天">
-      <template #icon><Sun :size="22" /></template>
-    </SnRadio>
-    <SnRadio checked-value="moon" aria-label="夜间">
-      <template #icon><Moon :size="22" /></template>
-    </SnRadio>
-    <SnRadio checked-value="cloud" aria-label="多云">
-      <template #icon><Cloud :size="22" /></template>
-    </SnRadio>
-    <SnRadio checked-value="zap" aria-label="雷暴">
-      <template #icon><Zap :size="22" /></template>
+  <SnRadioGroup v-model="picked" variant="card" class="demo-tiles">
+    <SnRadio
+      v-for="option in options"
+      :key="option.value"
+      :checked-value="option.value"
+      :aria-label="option.label"
+    >
+      <template #card>
+        <component :is="option.icon" :size="22" class="demo-tile__glyph" />
+        <span class="demo-tile__label">{{ option.label }}</span>
+      </template>
     </SnRadio>
   </SnRadioGroup>
   <p class="demo-log">picked = {{ picked }}</p>
@@ -30,6 +36,21 @@ const picked = ref('sun');
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+.demo-tiles :deep(.sn-radio--variant-card) {
+  width: 96px;
+  align-items: center;
+}
+.demo-tile__glyph {
+  color: var(--sn-web-color-text-secondary);
+}
+.demo-tiles :deep(.sn-radio--checked) .demo-tile__glyph {
+  color: var(--sn-web-color-action-primary);
+}
+.demo-tile__label {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--sn-web-color-text-secondary);
 }
 .demo-log {
   margin: 12px 0 0;

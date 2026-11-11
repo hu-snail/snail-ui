@@ -75,8 +75,8 @@ import { Radio } from '@snui/vue-web';
     },
     {
       name: 'radio-web-icon',
-      title: '图标模式（variant="icon"）',
-      blurb: '方形图标砖网格，#icon 插槽放字形，无文字行。',
+      title: '图标卡片（card + 图标内容）',
+      blurb: 'card 变体承载图标内容，选中时右上角出现勾图标。',
     },
     {
       name: 'radio-web-indicator',
@@ -134,9 +134,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
-        desc: `卡片 / 图标形态；card 用 #card 插槽自定义内容，icon 为方形图标砖。组级可下发。`,
+        desc: `卡片形态；card 用 #card 插槽自定义内容（可放图标 + 文案）。组级可下发。`,
       },
       {
         name: `indicatorPlacement`,
@@ -158,8 +158,8 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
+        type: `'base' | 'inverted'`,
+        default: `'base'`,
         desc: `行内标记形态；inverted 为反转态（整盘主题色实心 + 白点）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
@@ -219,11 +219,6 @@ import { Radio } from '@snui/vue-web';
         name: `card`,
         props: '{ checked: boolean; disabled: boolean }',
         desc: '卡片内容（variant="card"）；替换默认标记 + 文字行，角标仍按 indicatorPlacement 叠加。',
-      },
-      {
-        name: `icon`,
-        props: '{ checked: boolean }',
-        desc: '图标砖字形（variant="icon"）；缺省渲染中性占位方块。',
       },
     ],
   },

@@ -191,7 +191,7 @@ const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(() =>
 
 /** Effective inline marker shape (ring vs inverted fill). */
 const effectiveMarkerShape = computed<SnChoiceMarkerShape>(() =>
-  resolve(props.markerShape, group?.groupMarkerShape.value, 'ring'),
+  resolve(props.markerShape, group?.groupMarkerShape.value, 'base'),
 );
 
 /** Whether the inline marker renders at all. */
@@ -281,15 +281,10 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         </view>
       </view>
 
-      <!-- Card body: custom content wins; icon tile renders the glyph only. -->
+      <!-- Card body: custom content wins; otherwise the historical label row. -->
       <view v-if="effectiveVariant === 'card'" class="sn-radio__card">
         <slot name="card" :checked="isChecked" :disabled="isDisabled">
           <text :class="['sn-radio__label', customLabelClass]"><slot /></text>
-        </slot>
-      </view>
-      <view v-else-if="effectiveVariant === 'icon'" class="sn-radio__tile">
-        <slot name="icon" :checked="isChecked">
-          <view class="sn-radio__tile-glyph" aria-hidden="true" />
         </slot>
       </view>
       <text v-else :class="['sn-radio__label', customLabelClass]"><slot /></text>
@@ -456,92 +451,34 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 }
 
 /* Icon tile: square, centred glyph, no label row. */
-.sn-radio--variant-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 112rpx;
-  height: 112rpx;
-  padding: 0;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-surface);
-  transition:
-    border-color 0.18s ease-out,
-    background-color 0.18s ease-out;
-}
-
-.sn-radio--variant-icon .sn-radio__main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.sn-radio--variant-icon .sn-radio__tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-radio--variant-icon.sn-radio--checked .sn-radio__tile {
-  color: var(--sn-mp-color-action-primary);
-}
-
-/* Fallback glyph when no `icon` slot is supplied. */
-.sn-radio__tile-glyph {
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: var(--sn-mp-radius-xs);
-  background-color: currentColor;
-  opacity: 0.55;
-}
-
 /* Checked paint switches (only applied while checked). */
 .sn-radio--checked-border.sn-radio--variant-card,
-.sn-radio--checked-border.sn-radio--variant-icon {
-  border-color: var(--sn-mp-color-action-primary);
-}
-
-.sn-radio--checked-fill.sn-radio--variant-card,
-.sn-radio--checked-fill.sn-radio--variant-icon {
-  background-color: var(--sn-mp-color-action-primary-soft);
-}
-
-/* Corner tick — themed circle with a white check glyph. */
+.sn-radio--checked-border.sn-radio--checked-fill.sn-radio--variant-card,
+.sn-radio--checked-fill/* Corner tick — themed circle with a white check glyph. */
 .sn-radio__tick {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 50%;
+  width: 48rpx;
+  height: 48rpx;
   background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  box-shadow: 0 0 0 4rpx var(--sn-mp-color-background-surface);
+  pointer-events: none;
 }
 
 .sn-radio__tick--top-right {
-  top: 8rpx;
-  right: 8rpx;
+  top: -2rpx;
+  right: -2rpx;
+  border-top-right-radius: inherit;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-radio__tick--bottom-right {
-  right: 8rpx;
-  bottom: 8rpx;
+  right: -2rpx;
+  bottom: -2rpx;
+  border-bottom-right-radius: inherit;
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-radio--disabled.sn-radio--variant-card,
-.sn-radio--disabled.sn-radio--variant-icon {
-  opacity: 0.6;
-}
-
-.sn-radio--disabled,
+.sn-radio--disabled.sn-radio--disabled,
 .sn-radio--readonly {
   cursor: not-allowed;
 }
