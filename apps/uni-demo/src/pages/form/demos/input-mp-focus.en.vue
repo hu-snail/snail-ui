@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-input — autofocus (focus): focused on mount. */
+import { ref } from 'vue';
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+
+const focused = ref('');
+</script>
+
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="focused" focus placeholder="Focused on mount" />
+  </view>
+</template>
+
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

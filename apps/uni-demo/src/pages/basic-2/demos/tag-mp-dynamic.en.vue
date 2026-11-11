@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/** Demo: sn-tag (uni-end) — dynamic "new tag" input. */
+import { ref } from 'vue';
+import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
+
+/** Dynamic add: confirmed values join the list, each closable in turn. */
+const added = ref<string[]>([]);
+
+function addTag(payload: { value: string }): void {
+  const value = payload.value.trim();
+  if (value !== '') added.value.push(value);
+}
+
+function removeAdded(tag: string): void {
+  added.value = added.value.filter((item) => item !== tag);
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnTag dynamic type="primary" variant="plain" @confirm="addTag" />
+      <SnTag v-for="tag in added" :key="tag" type="primary" closable @close="removeAdded(tag)">
+        {{ tag }}
+      </SnTag>
+    </view>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-5);
+  align-items: flex-start;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+}
+</style>

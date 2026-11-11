@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-img (uni-end) — lazy loading (`lazyLoad`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
+ */
+import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
+
+const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnImg
+      :src="plain"
+      lazy-load
+      :width="'100%'"
+      height="240rpx"
+      mode="aspectFill"
+      radius="24"
+    />
+    <text class="sn-demo__meta">
+      lazy-load 交给原生 &lt;image lazy-load&gt;，进入视口附近才开始加载。
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

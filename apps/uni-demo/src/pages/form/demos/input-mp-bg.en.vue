@@ -1,0 +1,20 @@
+<script setup lang="ts">
+/** Demo: sn-input — background (bg): surface / transparent / soft variants. */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+</script>
+
+<template>
+  <view class="sn-input-demo">
+    <SnInput placeholder='bg="surface" (default)' bg="surface" />
+    <SnInput placeholder='bg="transparent"' bg="transparent" border="none" />
+    <SnInput placeholder='bg="soft"' bg="soft" />
+  </view>
+</template>
+
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

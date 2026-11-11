@@ -1,0 +1,13 @@
+<script setup lang="ts">
+/** Demo: sn-slide-verify — 轨道配色：backgroundColor / activeBackgroundColor 覆盖轨道底色与拖过填充。 */
+import SnSlideVerify from '@snui/uni-src/components/sn-slide-verify/sn-slide-verify.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlideVerify
+      background-color="var(--sn-mp-color-background-soft)"
+      active-background-color="var(--sn-mp-color-feedback-success-soft)"
+    />
+  </view>
+</template>

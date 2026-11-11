@@ -1,0 +1,49 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialog (uni-end) — English shadow of dialog-mp-icon.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnDialog from '@snui/uni-src/components/sn-dialog/sn-dialog.vue';
+
+const successOpen = ref(false);
+const warningOpen = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton type="success" block @tap="successOpen = true">Success icon</SnButton>
+    <SnButton type="warning" block @tap="warningOpen = true">Warning icon + custom color</SnButton>
+
+    <SnDialog
+      v-model="successOpen"
+      type="alert"
+      icon="success"
+      title="Submitted"
+      msg="We received your request and will process it within one business day."
+      custom-class="sn-demo-contained"
+    />
+
+    <SnDialog
+      v-model="warningOpen"
+      type="alert"
+      icon="warning"
+      icon-color="var(--sn-mp-color-feedback-warning)"
+      title="Not enough credit"
+      msg="Your available credit is too low to complete this payment."
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* Docs-preview only — see dialog-mp-basic for the rationale. */
+.sn-dialog.sn-demo-contained {
+  position: absolute;
+}
+</style>

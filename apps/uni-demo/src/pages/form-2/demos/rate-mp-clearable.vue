@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-rate — 可清空：clearable 再次点击当前分数清空为 null。 */
+import { ref } from 'vue';
+import SnRate from '@snui/uni-src/components/sn-rate/sn-rate.vue';
+
+const clearable = ref<number | null>(4);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRate v-model="clearable" clearable />
+    <text class="sn-demo__meta">可清空：{{ clearable ?? '未评分' }}（再点当前分数清空）</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

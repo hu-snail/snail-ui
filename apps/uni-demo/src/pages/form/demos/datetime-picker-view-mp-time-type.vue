@@ -1,0 +1,29 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — 时间类型写回（type="time"）：只出时分列并写回 "HH:mm" 字符串。 */
+import { ref } from 'vue';
+import SnDatetimePickerView from '@snui/uni-src/components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
+
+const time = ref<string | number>('10:30');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnDatetimePickerView v-model="time" type="time" :min-hour="8" :max-hour="18" />
+    <text class="sn-demo__meta">已选：{{ time }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

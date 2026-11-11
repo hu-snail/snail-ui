@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-transition (uni-end) — 组合动画（name 数组）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-transition from its SFC source.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnTransition from '@snui/uni-src/components/sn-transition/sn-transition.vue';
+
+const combined = ref(true);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton size="small" @tap="combined = !combined">
+      组合动画 fade + up（{{ combined ? '显示' : '隐藏' }}）
+    </SnButton>
+    <SnTransition :show="combined" :name="['fade', 'up']">
+      <view class="sn-transition-demo__box">
+        <text class="sn-transition-demo__text">name = ['fade', 'up']</text>
+      </view>
+    </SnTransition>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-transition-demo__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120rpx;
+  border-radius: 16rpx;
+  background-color: var(--sn-mp-color-background-soft);
+}
+.sn-transition-demo__text {
+  font-size: 26rpx;
+  color: var(--sn-mp-color-text-primary);
+}
+</style>

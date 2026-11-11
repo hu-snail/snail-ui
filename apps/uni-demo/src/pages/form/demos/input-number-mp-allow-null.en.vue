@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-input-number — nullable input (allowNull): the field may stay empty; placeholder covers it. */
+import { ref } from 'vue';
+import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
+
+const nullable = ref<string | number>('');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">allowNull + placeholder (the field may stay empty)</text>
+    <SnInputNumber v-model="nullable" :min="0" :max="99" allow-null placeholder="May be empty" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

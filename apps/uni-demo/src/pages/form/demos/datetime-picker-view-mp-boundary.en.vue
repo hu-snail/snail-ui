@@ -1,0 +1,32 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — range linkage (boundaryMinDate / boundaryMaxDate): the end may not precede the start. */
+import { ref } from 'vue';
+import SnDatetimePickerView from '@snui/uni-src/components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
+
+const start = ref<string | number>(new Date(2024, 5, 10).getTime());
+const end = ref<string | number>(new Date(2024, 5, 20).getTime());
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnDatetimePickerView v-model="start" type="date" :boundary-max-date="end" />
+    <text class="sn-demo__meta">Start: {{ start }}</text>
+    <SnDatetimePickerView v-model="end" type="date" :boundary-min-date="start" />
+    <text class="sn-demo__meta">End: {{ end }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

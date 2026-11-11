@@ -1,0 +1,66 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-action-sheet (uni-end) — English shadow of action-sheet-mp-render.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnActionSheet from '@snui/uni-src/components/sn-action-sheet/sn-action-sheet.vue';
+
+const eager = ref(false);
+const noSafeArea = ref(false);
+
+const actions = [
+  { name: 'Share with friends' },
+  { name: 'Save to album' },
+  { name: 'Delete', disabled: true },
+];
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton type="primary" block @tap="eager = true">lazy-render=false (renders up front)</SnButton>
+    <SnButton block @tap="noSafeArea = true">safe-area-inset-bottom=false</SnButton>
+
+    <text class="sn-demo__meta">
+      lazy-render=false renders the content before the first open; safe-area-inset-bottom=false
+      drops the bottom safe-area padding; root-portal is declared for wot-ui parity only —
+      miniprogram has no portal host, so passing true does not change the stacking level.
+    </text>
+
+    <SnActionSheet
+      v-model="eager"
+      title="Eager render"
+      :actions="actions"
+      cancel-text="Cancel"
+      :lazy-render="false"
+      custom-class="sn-demo-contained"
+    />
+
+    <SnActionSheet
+      v-model="noSafeArea"
+      title="No safe-area padding"
+      :actions="actions"
+      cancel-text="Cancel"
+      :safe-area-inset-bottom="false"
+      :root-portal="true"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-action-sheet.sn-demo-contained {
+  position: absolute;
+}
+</style>

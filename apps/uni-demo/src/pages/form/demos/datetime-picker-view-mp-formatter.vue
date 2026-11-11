@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — 列文案格式化（formatter）：改写列文案。 */
+import { ref } from 'vue';
+import SnDatetimePickerView from '@snui/uni-src/components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
+
+const min = new Date(2020, 0, 1).getTime();
+const max = new Date(2030, 11, 31).getTime();
+const year = ref<string | number>(new Date(2024, 5, 15).getTime());
+const yearLabel = (_type: string, value: number) => `${value} 年`;
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnDatetimePickerView
+      v-model="year"
+      type="year"
+      :min-date="min"
+      :max-date="max"
+      :formatter="yearLabel"
+    />
+    <text class="sn-demo__meta">formatter 给年份列加「年」后缀</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,143 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-fab (uni-end) — 触发按钮的两条图标轨道（触发图标双轨）。
+ *
+ *   - icon-name 轨道：`inactive-icon` / `active-icon` 传注册名（左下，
+ *     Edit ↔ X），registry 名经 registerSnIcons() 注册后解析。
+ *   - IconData 轨道：`trigger` 插槽内直接渲染 SnIcon 对象（右下，
+ *     Sparkles ↔ X），随 active 状态切换，不经 registry。
+ *   - 动作项为图标气泡，尺寸走 --sn-mp-icon-size-large（88rpx 气泡内约
+ *     0.45 径比）；点气泡记录反馈并收起。
+ *
+ * 文案与 fab-mp-trigger-icons.en.vue 对等。
+ */
+import { onBeforeUnmount, ref } from 'vue';
+import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { registerSnIcons, clearSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
+import {
+  Bell,
+  Coffee,
+  Edit,
+  Heart,
+  Music,
+  Sparkles,
+  Star,
+  X,
+  Zap,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+registerSnIcons({ Edit, X });
+onBeforeUnmount(() => clearSnIcons());
+
+const nameTrackActive = ref(false);
+const dataTrackActive = ref(false);
+const lastAction = ref('');
+
+function pick(label: string): void {
+  lastAction.value = label;
+  nameTrackActive.value = false;
+  dataTrackActive.value = false;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-fab-demo__stage">
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">触发图标双轨</text>
+      <text class="sn-fab-demo__hint-text">
+        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）。
+        最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+      </text>
+    </view>
+
+    <SnFab
+      v-model:active="nameTrackActive"
+      inactive-icon="Edit"
+      active-icon="X"
+      type="warning"
+      position="left-bottom"
+      direction="up"
+      :gap="{ bottom: 16, left: 16 }"
+      custom-class="sn-demo-contained"
+    >
+      <view class="sn-fab-demo__bubble" role="button" aria-label="收藏" @tap="pick('收藏')">
+        <SnIcon :icon="Star" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="喜欢" @tap="pick('喜欢')">
+        <SnIcon :icon="Heart" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="提醒" @tap="pick('提醒')">
+        <SnIcon :icon="Bell" size="var(--sn-mp-icon-size-large)" />
+      </view>
+    </SnFab>
+
+    <SnFab
+      v-model:active="dataTrackActive"
+      type="success"
+      position="right-bottom"
+      direction="up"
+      :gap="{ bottom: 16, right: 16 }"
+      custom-class="sn-demo-contained"
+    >
+      <view class="sn-fab-demo__bubble" role="button" aria-label="音乐" @tap="pick('音乐')">
+        <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="咖啡" @tap="pick('咖啡')">
+        <SnIcon :icon="Coffee" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="快捷启动" @tap="pick('快捷启动')">
+        <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <template #trigger>
+        <SnIcon :icon="dataTrackActive ? X : Sparkles" size="var(--sn-mp-icon-size-large)" />
+      </template>
+    </SnFab>
+  </view>
+</template>
+
+<style scoped>
+.sn-fab-demo__stage {
+  position: relative;
+  width: 100%;
+  height: 560rpx;
+  overflow: hidden;
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-fab-demo__bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: var(--sn-mp-shadow-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-fab.sn-demo-contained {
+  position: absolute;
+}
+</style>

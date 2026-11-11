@@ -1,0 +1,57 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-img-cropper (uni-end) — disable rotation & button labels
+ * (`disabledRotate` / `cancelButtonText` / `confirmButtonText`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-img-cropper from its SFC source.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnImgCropper from '@snui/uni-src/components/sn-img-cropper/sn-img-cropper.vue';
+
+const visible = ref(false);
+const result = ref('—');
+
+const imgSrc = 'https://picsum.photos/seed/snui-crop-wide/1400/900';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnButton size="small" @tap="visible = true">Open crop (rotation off + custom labels)</SnButton>
+    <text class="sn-demo__meta">Result: {{ result }}</text>
+
+    <SnImgCropper
+      v-model="visible"
+      :img-src="imgSrc"
+      disabled-rotate
+      cancel-button-text="Discard"
+      confirm-button-text="Save"
+      custom-class="sn-demo-contained"
+      @confirm="result = 'Saved'"
+      @cancel="result = 'Discarded'"
+    />
+
+    <text class="sn-demo__meta">
+      disabled-rotate hides the rotation affordance; cancel-button-text / confirm-button-text
+      relabel the bottom bar buttons ("Discard" / "Save").
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+}
+/* Docs-preview only: the cropper root is `position: fixed`, which would cover the
+ * whole docs page instead of the phone screen. Not needed in a real app. */
+.sn-img-cropper.sn-demo-contained {
+  position: absolute;
+}
+</style>

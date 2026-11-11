@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/** Demo: sn-upload — disabled: picking and removal are locked; the list is display-only. */
+import { ref } from 'vue';
+import SnUpload from '@snui/uni-src/components/sn-upload/sn-upload.vue';
+import type { UploadFileItem } from '@snui/uni-src/components/sn-upload/sn-upload-types';
+
+const done = ref<UploadFileItem[]>([
+  {
+    uid: 1,
+    url: 'https://picsum.photos/seed/a/200',
+    name: 'a.png',
+    status: 'success',
+    percent: 100,
+  },
+  { uid: 2, url: 'https://picsum.photos/seed/b/200', name: 'b.png', status: 'fail' },
+]);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnUpload :file-list="done" disabled :limit="3" />
+    <text class="sn-demo__meta">disabled: both the picker tile and the remove buttons are locked</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

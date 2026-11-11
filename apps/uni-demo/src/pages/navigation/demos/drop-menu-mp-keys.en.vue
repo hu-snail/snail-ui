@@ -1,0 +1,52 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-keys.
+ */
+import { ref } from 'vue';
+import SnDropMenu from '@snui/uni-src/components/sn-drop-menu/sn-drop-menu.vue';
+
+const value = ref('');
+
+/** Renamed fields: label-key="name" / value-key="id". */
+const options = [
+  { name: 'Any', id: 'all' },
+  { name: 'Under 50', id: 'lt50' },
+  { name: '50 - 200', id: 'mid' },
+];
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-drop-menu-demo__spacer" />
+
+    <SnDropMenu
+      v-model="value"
+      :options="options"
+      label-key="name"
+      value-key="id"
+      title="Price range"
+      custom-class="sn-demo-contained"
+    />
+
+    <text class="sn-drop-menu-demo__meta">Current value: {{ value || 'none' }} (from the id field)</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-drop-menu-demo__spacer {
+  height: 320rpx;
+}
+.sn-drop-menu-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+/* Docs-preview only — the panel is absolutely positioned inside the root. */
+.sn-drop-menu.sn-demo-contained {
+  position: relative;
+}
+</style>

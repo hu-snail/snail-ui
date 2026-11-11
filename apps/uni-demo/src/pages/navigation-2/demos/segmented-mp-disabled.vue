@@ -1,0 +1,32 @@
+<script setup lang="ts">
+/** Demo: sn-segmented — 禁用（disabled）：整控 + item 级。 */
+import { ref } from 'vue';
+import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
+
+const picked = ref('a');
+const options = [
+  { value: 'a', label: '可选' },
+  { value: 'b', label: '禁用项', disabled: true },
+];
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSegmented v-model="picked" :options="options" />
+    <SnSegmented :options="options" disabled />
+    <text class="sn-demo__meta">第一组：item 级 disabled 禁用单个选项；第二组：整控 disabled。</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

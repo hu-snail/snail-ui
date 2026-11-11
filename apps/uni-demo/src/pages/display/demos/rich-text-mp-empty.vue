@@ -1,0 +1,54 @@
+<script setup lang="ts">
+/** Demo: sn-rich-text (uni-end) — 空状态插槽。 */
+import { ref } from 'vue';
+import SnRichText from '@snui/uni-src/components/sn-rich-text/sn-rich-text.vue';
+
+const emptyContent = ref('<p><strong>周末来信</strong></p>');
+
+function clearContent(): void {
+  emptyContent.value = '';
+}
+</script>
+
+<template>
+  <view class="sn-demo">
+    <view class="sn-demo__actions">
+      <view class="sn-demo__button" @click="clearContent">
+        <text class="sn-demo__button-text">清空内容</text>
+      </view>
+    </view>
+    <SnRichText :content="emptyContent">
+      <text class="sn-demo__empty">还没有新的来信</text>
+    </SnRichText>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sn-demo__actions {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.sn-demo__button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-demo__button-text {
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 12px;
+}
+
+.sn-demo__empty {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 13px;
+}
+</style>

@@ -1,0 +1,50 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar-view — cell formatting (formatter).
+ *
+ * `formatter` receives each cell and may rewrite text / topInfo / bottomInfo /
+ * disabled; this one captions weekends with an "OFF" mark.
+ */
+import { ref } from 'vue';
+import SnCalendarView from '@snui/uni-src/components/sn-calendar-view/sn-calendar-view.vue';
+import type { CalendarDayItem } from '@snui/uni-src/components/sn-calendar-view/sn-calendar-view-types';
+
+const min = new Date(2024, 5, 1).getTime();
+const max = new Date(2024, 5, 30).getTime();
+
+const formatted = ref<number | number[] | null>(new Date(2024, 5, 12).getTime());
+
+/** Tag weekends with a caption under the day number — formatter returns only the changed fields. */
+function markWeekend(day: CalendarDayItem): Partial<CalendarDayItem> | undefined {
+  const weekday = new Date(day.date).getDay();
+  return weekday === 0 || weekday === 6 ? { bottomInfo: 'OFF' } : undefined;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCalendarView
+      v-model="formatted"
+      :min-date="min"
+      :max-date="max"
+      :formatter="markWeekend"
+      :panel-height="240"
+    />
+    <text class="sn-demo__meta">formatter captions weekends with "OFF"</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

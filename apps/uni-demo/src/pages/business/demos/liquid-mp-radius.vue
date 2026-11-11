@@ -1,0 +1,30 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-liquid (uni-end) — 容器圆角：radius。
+ */
+import SnLiquid from '@snui/uni-src/components/sn-liquid/sn-liquid.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="liquid-row">
+      <SnLiquid :percent="70" radius="32rpx" size="160rpx" />
+    </view>
+    <text class="sn-demo__meta">radius="32rpx"（方圆容器）</text>
+  </view>
+</template>
+
+<style scoped>
+.liquid-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-4);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

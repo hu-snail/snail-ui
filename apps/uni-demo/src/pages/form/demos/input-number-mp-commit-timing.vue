@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/** Demo: sn-input-number — 提交时机与输入属性：immediateChange=false / updateOnInit / inputType="number" / adjustPosition=false。 */
+import { ref } from 'vue';
+import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
+
+const deferred = ref(5);
+const corrected = ref(0);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">immediateChange=false（只在失焦 / 按钮时提交）</text>
+    <SnInputNumber v-model="deferred" :min="0" :max="20" :immediate-change="false" />
+
+    <text class="sn-demo__title"
+      >updateOnInit（挂载即纠正越界值）+ inputType="number" + adjustPosition=false</text
+    >
+    <SnInputNumber
+      v-model="corrected"
+      :min="0"
+      :max="10"
+      :step="5"
+      update-on-init
+      input-type="number"
+      :adjust-position="false"
+    />
+    <text class="sn-demo__meta">挂载后被纠正为：{{ corrected }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

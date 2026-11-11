@@ -1,0 +1,39 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — 滚筒几何：itemHeight（行高 52px）+ visibleItemCount（可见 5 行）。 */
+import { ref } from 'vue';
+import SnDatetimePickerView from '@snui/uni-src/components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
+
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const tall = ref<string | number>(new Date(2024, 5, 15).getTime());
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnDatetimePickerView
+      v-model="tall"
+      type="date"
+      :min-date="min"
+      :max-date="max"
+      :item-height="52"
+      :visible-item-count="5"
+    />
+    <text class="sn-demo__meta">itemHeight + visibleItemCount（行高 52px、可见 5 行）</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

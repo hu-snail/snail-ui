@@ -1,0 +1,19 @@
+<script setup lang="ts">
+/** Demo: sn-signature — 撤回步长：step 一次撤回 2 笔（需配合 enableHistory）。 */
+import SnSignature from '@snui/uni-src/components/sn-signature/sn-signature.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">step（一次撤回 2 笔，需配合 enableHistory）</text>
+    <SnSignature enable-history :step="2" :height="260" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

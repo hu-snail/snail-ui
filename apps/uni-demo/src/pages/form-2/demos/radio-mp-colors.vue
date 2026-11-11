@@ -1,0 +1,55 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-radio — 选中色：checkedColor / uncheckedColor 组级下发，
+ * 单项 checkedColor 覆盖组级样式。
+ */
+import { ref } from 'vue';
+import SnRadio from '@snui/uni-src/components/sn-radio/sn-radio.vue';
+import SnRadioGroup from '@snui/uni-src/components/sn-radio/sn-radio-group.vue';
+
+const colored = ref<string | number | boolean | undefined>('a');
+const overridden = ref<string | number | boolean | undefined>('a');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">checkedColor / uncheckedColor</text>
+    <SnRadioGroup
+      v-model="colored"
+      checked-color="var(--sn-mp-color-feedback-success)"
+      unchecked-color="var(--sn-mp-color-border-default)"
+    >
+      <SnRadio value="a">选项 A</SnRadio>
+      <SnRadio value="b">选项 B</SnRadio>
+    </SnRadioGroup>
+
+    <text class="sn-demo__title">单项覆盖组级 checkedColor</text>
+    <SnRadioGroup v-model="overridden">
+      <SnRadio value="a">继承组级颜色</SnRadio>
+      <SnRadio value="b" checked-color="var(--sn-mp-color-feedback-danger)"
+        >单项覆盖为危险色</SnRadio
+      >
+    </SnRadioGroup>
+    <text class="sn-demo__meta">当前：{{ overridden ?? '（未选）' }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__title {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

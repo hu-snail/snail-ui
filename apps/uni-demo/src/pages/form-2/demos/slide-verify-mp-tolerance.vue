@@ -1,0 +1,36 @@
+<script setup lang="ts">
+/** Demo: sn-slide-verify — 容差：tolerance 放宽右边缘容差（px）。 */
+import { ref } from 'vue';
+import SnSlideVerify from '@snui/uni-src/components/sn-slide-verify/sn-slide-verify.vue';
+
+const state = ref('待验证');
+const onSuccess = (): void => {
+  state.value = '已通过';
+};
+const onFail = (): void => {
+  state.value = '未通过';
+};
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSlideVerify :tolerance="24" @success="onSuccess" @fail="onFail" />
+    <text class="sn-demo__meta">tolerance=24 放宽右边缘容差</text>
+    <text class="sn-demo__meta">状态：{{ state }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

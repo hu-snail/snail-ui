@@ -1,0 +1,26 @@
+<script setup lang="ts">
+/** Demo: sn-switch — switch colors: `activeColor` / `inactiveColor` override the on / off rail colors. */
+import { ref } from 'vue';
+import SnSwitch from '@snui/uni-src/components/sn-switch/sn-switch.vue';
+
+const colored = ref(true);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">activeColor / inactiveColor</text>
+    <SnSwitch
+      v-model="colored"
+      active-color="rgb(16, 185, 129)"
+      inactive-color="rgb(161, 161, 170)"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

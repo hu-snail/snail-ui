@@ -1,0 +1,78 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-navbar — 胶囊插槽与根节点样式。
+ *
+ * - `capsule` 插槽占据左侧区（存在时 left 插槽与 left 文案都不渲染）
+ * - `#title` 自定义标题
+ * - `custom-class` / `custom-style` 落在根节点
+ */
+import { ref } from 'vue';
+import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { MoreHorizontal } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const lastAction = ref('—');
+
+function report(label: string): void {
+  lastAction.value = label;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNavbar
+      title="自定义根节点"
+      custom-class="sn-demo__bar"
+      custom-style="background-color: var(--sn-mp-color-background-subtle);"
+    >
+      <template #title>
+        <view class="sn-demo__title">
+          <text class="sn-demo__title-text">标题插槽</text>
+        </view>
+      </template>
+      <template #capsule>
+        <view class="sn-demo__capsule" @tap="report('胶囊插槽')">
+          <SnIcon :icon="MoreHorizontal" :size="32" />
+        </view>
+      </template>
+    </SnNavbar>
+
+    <text class="sn-demo__meta">最近一次点击：{{ lastAction }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sn-demo__title-text {
+  font-size: var(--sn-mp-font-size-lg);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-action-primary);
+}
+.sn-demo__capsule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--sn-mp-spacing-3);
+  height: 56rpx;
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-full);
+  color: var(--sn-mp-color-text-secondary);
+}
+/* custom-class 落在根节点上。 */
+.sn-demo :deep(.sn-demo__bar) {
+  border-radius: var(--sn-mp-radius-md);
+}
+</style>

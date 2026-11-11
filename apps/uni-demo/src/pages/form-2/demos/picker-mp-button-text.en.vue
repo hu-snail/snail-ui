@@ -1,0 +1,51 @@
+<script setup lang="ts">
+/** Demo: sn-picker — button labels: cancelButtonText / confirmButtonText override the cancel and confirm buttons. */
+import { ref } from 'vue';
+import SnPicker from '@snui/uni-src/components/sn-picker/sn-picker.vue';
+
+const fruits = ['Apple', 'Banana', 'Cherry', 'Watermelon', 'Grape'];
+
+const fruit = ref<Array<string | number>>(['Apple']);
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">cancelButtonText="Not now" + confirmButtonText="Use it"</text>
+    <view class="sn-demo__button" @tap="open = true">Custom button labels</view>
+    <text class="sn-demo__meta">Selected: {{ fruit.join(' / ') || '(not selected)' }}</text>
+    <SnPicker
+      v-model="fruit"
+      v-model:visible="open"
+      :columns="[fruits]"
+      title="Pick a fruit"
+      cancel-button-text="Not now"
+      confirm-button-text="Use it"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

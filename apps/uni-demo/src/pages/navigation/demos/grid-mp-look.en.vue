@@ -1,0 +1,53 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-grid — English shadow of grid-mp-look.
+ *
+ * - `bg-color` overrides the grid background inline (empty string = token default)
+ * - `center` controls whether cell content is centred (`false` aligns to the top)
+ * - `icon-size` sets the icon size (numbers are px, strings forwarded verbatim)
+ * - `custom-class` / `custom-style` land on the root node
+ */
+import SnGrid from '@snui/uni-src/components/sn-grid/sn-grid.vue';
+import SnGridItem from '@snui/uni-src/components/sn-grid/sn-grid-item.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">bg-color + icon-size=48px</text>
+    <SnGrid :column="4" bg-color="var(--sn-mp-color-background-subtle)" icon-size="48px">
+      <SnGridItem text="Scan" icon="camera" />
+      <SnGridItem text="Pay" icon="wallet" />
+      <SnGridItem text="Receive" icon="banknote" />
+      <SnGridItem text="More" icon="ellipsis" />
+    </SnGrid>
+
+    <text class="sn-demo__label">center=false + custom-class / custom-style</text>
+    <SnGrid
+      :column="3"
+      border
+      :center="false"
+      custom-class="sn-demo__grid"
+      custom-style="padding: var(--sn-mp-spacing-2);"
+    >
+      <SnGridItem text="Top aligned" icon="star" />
+      <SnGridItem text="Second cell" icon="heart" />
+      <SnGridItem text="Third cell" icon="bell" />
+    </SnGrid>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+/* custom-class lands on the sn-grid root, so it needs :deep to reach. */
+.sn-demo :deep(.sn-demo__grid) {
+  border-radius: var(--sn-mp-radius-md);
+}
+</style>

@@ -1,0 +1,70 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialer (uni-end) — Custom pointer: the #pointer slot.
+ */
+import { ref } from 'vue';
+import SnDialer from '@snui/uni-src/components/sn-dialer/sn-dialer.vue';
+import type { SnDialerPrize } from '@snui/uni-src/components/sn-dialer/sn-dialer.vue';
+
+const prizes: SnDialerPrize[] = [
+  { id: 'a', name: 'Prize A' },
+  { id: 'b', name: 'Prize B' },
+  { id: 'c', name: 'Prize C' },
+  { id: 'd', name: 'Prize D' },
+];
+
+const slotRef = ref<InstanceType<typeof SnDialer> | null>(null);
+
+function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: number): void {
+  dialer?.run(Math.floor(Math.random() * count));
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="dialer-stage">
+      <SnDialer
+        ref="slotRef"
+        :prize-list="prizes"
+        @click="spinToRandom(slotRef, prizes.length)"
+      >
+        <template #pointer>
+          <view class="pointer-go">
+            <text class="pointer-go__text">Start</text>
+          </view>
+        </template>
+      </SnDialer>
+    </view>
+    <text class="sn-demo__meta">The #pointer slot fully replaces the pointer; tap to spin</text>
+  </view>
+</template>
+
+<style scoped>
+.dialer-stage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.pointer-go {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--sn-mp-color-feedback-success);
+}
+
+.pointer-go__text {
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

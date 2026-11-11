@@ -1,0 +1,47 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker — 滚筒几何（itemHeight / visibleItemCount）：大行高、多可见行。 */
+import { computed, ref } from 'vue';
+import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const bigRows = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
+const openBig = ref(false);
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const dateText = computed(() => {
+  if (bigRows.value === undefined) return '';
+  const d = new Date(Number(bigRows.value));
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+});
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="大行高滚筒"
+        label="itemHeight 44 / 可见 6 行，范围 2024 全年"
+        :prefix-icon-data="Calendar"
+        :value="dateText"
+        is-link
+        @click="openBig = true"
+      />
+    </SnCellGroup>
+
+    <SnDatetimePicker
+      v-model="bigRows"
+      v-model:visible="openBig"
+      type="date"
+      title="大行高滚筒"
+      :item-height="44"
+      :visible-item-count="6"
+      :min-date="min"
+      :max-date="max"
+    />
+  </view>
+</template>

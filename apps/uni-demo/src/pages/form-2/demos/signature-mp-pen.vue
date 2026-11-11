@@ -1,0 +1,10 @@
+<script setup lang="ts">
+/** Demo: sn-signature — 笔迹外观：penColor 覆盖笔色，lineWidth 控制笔宽。 */
+import SnSignature from '@snui/uni-src/components/sn-signature/sn-signature.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSignature :line-width="4" pen-color="var(--sn-mp-color-action-primary)" />
+  </view>
+</template>

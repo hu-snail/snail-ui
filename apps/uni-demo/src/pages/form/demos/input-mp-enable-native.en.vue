@@ -1,0 +1,25 @@
+<script setup lang="ts">
+/** Demo: sn-input — native input (enableNative): with `false`, Alipay MP renders the simulated widget. */
+import { ref } from 'vue';
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+
+const alipay = ref('');
+</script>
+
+<template>
+  <view class="sn-input-demo">
+    <SnInput
+      v-model="alipay"
+      :enable-native="false"
+      placeholder="Page stays put when keyboard opens"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

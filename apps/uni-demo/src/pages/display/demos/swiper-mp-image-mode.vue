@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-swiper (uni-end) — 图片裁切（imageMode）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
+ */
+import { ref } from 'vue';
+import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
+
+const list = [
+  { value: 'https://picsum.photos/seed/snui-sw-d1/750/400', text: 'aspectFit 1' },
+  { value: 'https://picsum.photos/seed/snui-sw-d2/750/400', text: 'aspectFit 2' },
+  { value: 'https://picsum.photos/seed/snui-sw-d3/750/400', text: 'aspectFit 3' },
+];
+
+const current = ref(0);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSwiper
+      :list="list"
+      :height="260"
+      v-model:current="current"
+      image-mode="aspectFit"
+      :autoplay="false"
+    />
+    <text class="sn-demo__meta">
+      imageMode 透传给内部 sn-img：aspectFit 完整显示图片并露出底盘（对比默认 scaleToFill 的铺满裁切）。
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

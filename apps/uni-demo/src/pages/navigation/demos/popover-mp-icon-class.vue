@@ -1,0 +1,64 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover — 旧字段 `iconClass` 兼容。
+ *
+ * - `mode="menu"` 时 `content` 是 `{ content, iconClass, disabled }` 数组；
+ *   `iconClass`（wd 兼容字段）既可是名称（走 SnIcon：内置目录 / 注册表），
+ *   也可直接是图片地址（以 `http` / `//` / `/` / `./` 开头时按图片渲染）
+ * - 新字段 `iconData` / `iconUrl` / `icon` 优先级更高（见 menu 场景）
+ *
+ * 预览专用：`custom-class="sn-demo-contained"` 把气泡定位收在 demo 内。
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+
+const menuOpen = ref(false);
+const picked = ref('—');
+
+/** 旧字段 `iconClass` 仍兼容：名称 → SnIcon 解析；图片地址 → `<image>`。 */
+const legacyMenu = [
+  { content: '设为常用', iconClass: 'star' },
+  { content: '编辑', iconClass: 'square-pen' },
+  { content: '删除', iconClass: 'trash-2', disabled: true },
+];
+
+function onMenuClick(payload: { item: { content?: string } }): void {
+  picked.value = payload.item.content ?? '—';
+  menuOpen.value = false;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPopover
+      v-model="menuOpen"
+      mode="menu"
+      :content="legacyMenu"
+      placement="bottom-start"
+      custom-class="sn-demo-contained"
+      @menuclick="onMenuClick"
+    >
+      <SnButton block>菜单模式 + iconClass 兼容字段</SnButton>
+    </SnPopover>
+
+    <text class="sn-demo__meta">已选择：{{ picked }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
+  position: relative;
+  display: block;
+}
+</style>
