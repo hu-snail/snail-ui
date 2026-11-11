@@ -470,7 +470,10 @@ const uniComp = computed(() => uniCompFromRoute(route.path));
  */
 const dockPreviewUrl = computed<string>(() => {
   const entry = (demoManifest.components as Record<string, { page: string }>)[uniComp.value];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
+  return uniDemoPageUrl(
+    entry?.page ?? 'pages/index/index',
+    uniDemoStateOf(isDark.value, lang.value),
+  );
 });
 
 /**
