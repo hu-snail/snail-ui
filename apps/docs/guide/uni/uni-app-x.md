@@ -1,7 +1,7 @@
 # uni-app x（蒸汽模式）支持
 
 `@snui/uni` 是 uni-app x（App 端蒸汽模式）的唯一组件源码：一套源码同时服务
-uni-app（H5 / 小程序 / App）与 uni-app x。uni-app x 消费的 `.uvue` 产物由
+经典 uni-app（H5 / 小程序 / App-vue）与 uni-app x。uni-app x 消费的 `.uvue` 产物由
 `@snui/uni-x` 的确定性转换管线生成（见 `ADR-0004`），不存在第二套手写组件代码。
 
 ## 何时使用
@@ -59,16 +59,21 @@ pnpm add @snui/uni-x
 
 ## 当前状态
 
+> uni-app x 是 DCloud 的新一代框架，**蒸汽模式（vapor）是官方后续维护的
+> 主方向**，也是本端兼容性工作的首要目标。
+
 | 项                              | 状态                                                                                                                                                                                                                                  |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 组件生成                        | 全量 91 组件（104 个 `.uvue`）+ 34 个 ts 工具文件                                                                                                                                                                                     |
-| 主题 / 暗色                     | 已生成 class-only token 层                                                                                                                                                                                                            |
+| 组件生成                        | 全量 98 组件（113 个 `.uvue`）+ 55 个 ts 文件（含共享 utils）                                                                                                                                                                          |
+| 主题 / 暗色                     | 已生成 class-only token 层；共享 utils（`outside-close` / `sn-lunar` / `sn-size` / `uid`）随包发布，经 `@snui/uni-x/utils/*` 解析                                                                                                      |
+| 选择器合规                      | **清零**：`pseudo-class: 0`、`combinator-unsupported: 0`、`attribute-selector: 0`——sn-slider-bar（`:not` → `--filled` 状态类）、sn-code-input（三级皮肤规则 → `__box` 镜像状态类）、sn-form-item（`[data-status]` → 原生修饰类）已在源码改写 |
 | Style Pack（skin）              | **已支持（变量注入）**：皮肤后代规则由管线降级为 `.snui-skin-*` 单类变量块（实测 59 个组件、1097 条注入、434 处消费）；仅 9 条 `:hover/:active` 交互态规则在 App 端不可表达被丢弃（登记于 PORTING-REPORT）                            |
 | sn-table                        | uvue App 端官方支持 `<component :is>`；本组件把插槽函数传给 `:is` 的形态待编译验证                                                                                                                                                    |
 | sn-sticky                       | App 端降级为普通布局（蒸汽模式不支持 `position: sticky`，内置 sticky-section 仅限 list-view 内）；列表内吸顶请用 list-view + sticky-section                                                                                           |
 | sn-rich-text                    | 转换零丢弃（仅 defineSlots 类型级移除）；媒体控制 / 锚点定位依赖平台 API，真机验证前视为待验证能力                                                                                                                                    |
 | canvas 组件                     | 仅 sn-qr-code 实际使用 canvas——已适配 uni-app x 新 API（W3C 2d 上下文 + 位图 DPR 尺寸 + `toDataURL` 导出）；sn-signature / sn-watermark / sn-img-cropper 本就是无 canvas 设计（视图描边 / 视图平铺 / 几何上报由宿主光栅化），无需改动 |
 | 桌面 H5 鼠标手势（picker-view） | 已用 `#ifdef H5` 隔离，App 端仅触摸                                                                                                                                                                                                   |
+| 仓库内示例工程                  | `apps/uni-demo-x` —— uni-demo 全量场景（100 页 / 353 中文 + 360 英文）生成到 `.uvue` 产物之上；`pnpm -F @snui/uni-demo-x gen && pnpm -F @snui/uni-demo-x check` 可复现                                                                  |
 
 每条转换决定的明细（删除的规则、包的文本、重写的事件）见
 `packages/uni-x/PORTING-REPORT.md`。
@@ -85,13 +90,15 @@ uni-app x App 端 CSS 是子集，转换管线已自动处理：
 
 ## 真机验证清单（未验证事项）
 
-以下行为**尚未在 HBuilderX + 真机环境编译验证**，接入时请优先确认：
+以下行为**尚未在 HBuilderX + 真机环境编译验证**（状态：**NOT RUN**，uni-app x
+无 CLI，编译验证依赖 HBuilderX），接入时请优先确认：
 
 - [ ] `hover-class` 按压态（sn-button / sn-cell）
 - [ ] `<image>` 渲染 SVG data URL（sn-icon；不可用时改用 iconfont glyph 路径）
 - [ ] `:style` 动态注入 CSS 变量（约 80 处，如 tabs 动画时长）
 - [ ] `gap` / `@keyframes` 在字节码渲染管线下的表现
 - [ ] `position: fixed` 与安全区变量（浮层类组件）
+- [ ] `uni.getSystemInfoSync`（28 处调用）与其余 `uni.*` API 的 App 端支持面
 - [ ] `defineProps` / `withDefaults` / `defineSlots` 宏支持面（sn-form-item 消费了 `defineSlots` 返回值）
 - [ ] sn-rich-text 的 `<video>` / 音频按钮 / 锚点选择器查询（`createSelectorQuery` / `pageScrollTo`）
 
