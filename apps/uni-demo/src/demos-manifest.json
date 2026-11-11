@@ -1463,6 +1463,11 @@
           "hasEn": true
         },
         {
+          "name": "checkbox-mp-card",
+          "title": "卡片模式（variant=card）",
+          "hasEn": true
+        },
+        {
           "name": "checkbox-mp-colors",
           "title": "选中颜色（checkedColor）",
           "hasEn": true
@@ -1480,6 +1485,11 @@
         {
           "name": "checkbox-mp-group-state",
           "title": "组状态与半选",
+          "hasEn": true
+        },
+        {
+          "name": "checkbox-mp-indicator",
+          "title": "指示器位置与选中态",
           "hasEn": true
         },
         {
@@ -2237,6 +2247,11 @@
           "hasEn": true
         },
         {
+          "name": "radio-mp-card",
+          "title": "卡片模式（variant=card）",
+          "hasEn": true
+        },
+        {
           "name": "radio-mp-colors",
           "title": "选中色（`checkedColor` / `uncheckedColor`）",
           "hasEn": true
@@ -2249,6 +2264,16 @@
         {
           "name": "radio-mp-disabled-readonly",
           "title": "禁用与只读（`disabled` / `readonly`）",
+          "hasEn": true
+        },
+        {
+          "name": "radio-mp-icon",
+          "title": "图标模式（variant=icon）",
+          "hasEn": true
+        },
+        {
+          "name": "radio-mp-indicator",
+          "title": "指示器位置与选中态",
           "hasEn": true
         },
         {

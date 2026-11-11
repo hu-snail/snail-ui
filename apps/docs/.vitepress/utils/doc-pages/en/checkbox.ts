@@ -75,6 +75,17 @@ import { Checkbox } from '@snui/vue-web';
       title: 'Custom slots (`indicator` / `icon` / default)',
       blurb: 'indicator tag / card styles + custom tick via icon slot + default slot scope.',
     },
+    {
+      name: 'checkbox-web-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'checkbox-web-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
   ],
   props: {
     hint: [],

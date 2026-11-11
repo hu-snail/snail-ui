@@ -18,8 +18,13 @@ import { computed, provide, toRef } from 'vue';
 import SnCheckbox from './SnCheckbox.vue';
 import {
   SN_CHECKBOX_GROUP_KEY,
+  type SnCheckboxCheckedStyle,
   type SnCheckboxGroupOption,
+  type SnCheckboxIndicatorPlacement,
+  type SnCheckboxLabelPlacement,
+  type SnCheckboxMarkerShape,
   type SnCheckboxValue,
+  type SnCheckboxVariant,
 } from './sn-checkbox-types';
 
 defineOptions({ name: 'SnCheckboxGroup' });
@@ -40,6 +45,16 @@ const props = withDefaults(
     disabled?: boolean;
     /** Size preset applied to every child. Mirrors n-checkbox-group `size`. */
     size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large';
+    /** Group-level layout variant inherited by children (AUI additive). */
+    variant?: SnCheckboxVariant | undefined;
+    /** Group-level indicator placement inherited by children (AUI additive). */
+    indicatorPlacement?: SnCheckboxIndicatorPlacement | undefined;
+    /** Group-level checked paint inherited by children (AUI additive). */
+    checkedStyle?: SnCheckboxCheckedStyle | undefined;
+    /** Group-level label side inherited by children (AUI additive). */
+    labelPlacement?: SnCheckboxLabelPlacement | undefined;
+    /** Group-level marker shape inherited by children (AUI additive). */
+    markerShape?: SnCheckboxMarkerShape | undefined;
     /** Class on the root wrapper. */
     customClass?: string;
     /** Inline style on the root wrapper. */
@@ -50,6 +65,11 @@ const props = withDefaults(
     options: () => [],
     disabled: false,
     size: 'medium',
+    variant: undefined,
+    indicatorPlacement: undefined,
+    checkedStyle: undefined,
+    labelPlacement: undefined,
+    markerShape: undefined,
     customClass: '',
     customStyle: '',
   },
@@ -93,6 +113,11 @@ provide(SN_CHECKBOX_GROUP_KEY, {
   selectedValues,
   groupDisabled: toRef(props, 'disabled'),
   groupSize: toRef(props, 'size'),
+  groupVariant: toRef(props, 'variant'),
+  groupIndicatorPlacement: toRef(props, 'indicatorPlacement'),
+  groupCheckedStyle: toRef(props, 'checkedStyle'),
+  groupLabelPlacement: toRef(props, 'labelPlacement'),
+  groupMarkerShape: toRef(props, 'markerShape'),
   toggleValue,
   isInsideGroup: true,
 });

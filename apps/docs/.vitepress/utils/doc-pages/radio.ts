@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const radioDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Radio' }],
-  title: 'Radio',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Radio 单选框' }],
+  title: 'Radio 单选框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -68,6 +68,27 @@ import { Radio } from '@snui/vue-web';
     },
     { name: 'radio-web-disabled', title: '禁用', blurb: 'disabled：选中 / 未选两种置灰态。' },
     { name: 'radio-web-readonly', title: '只读', blurb: 'readonly：视觉态可见但不可改。' },
+    {
+      name: 'radio-web-card',
+      title: '卡片模式（variant="card"）',
+      blurb: '整块可点选卡片，#card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
+    },
+    {
+      name: 'radio-web-icon',
+      title: '图标模式（variant="icon"）',
+      blurb: '方形图标砖网格，#icon 插槽放字形，无文字行。',
+    },
+    {
+      name: 'radio-web-indicator',
+      title: '指示器位置与选中态',
+      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+    },
+    {
+      name: 'radio-web-inverted',
+      title: '反转选中态与标题在前',
+      blurb:
+        'markerShape="inverted" 选中为主题色实心 + 白点；labelPlacement="label-first" 标题在前、选择在后。',
+    },
   ],
   props: {
     hint: [],

@@ -67,6 +67,28 @@ import { Radio } from '@snui/vue-web';
       title: 'Readonly',
       blurb: 'readonly: visible but not editable.',
     },
+    {
+      name: 'radio-web-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'radio-web-icon',
+      title: 'Icon variant',
+      blurb: 'Square icon tiles with the #icon slot glyph; no label row.',
+    },
+    {
+      name: 'radio-web-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
+    {
+      name: 'radio-web-inverted',
+      title: 'Inverted marker & label-first',
+      blurb:
+        'markerShape="inverted" fills the plate with the theme colour and punches a white dot; labelPlacement="label-first" puts the label first.',
+    },
   ],
   props: {
     hint: [],

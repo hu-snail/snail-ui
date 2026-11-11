@@ -37,6 +37,11 @@ import {
   type SnCheckboxSize,
   type SnCheckboxType,
   type SnCheckboxValue,
+  type SnChoiceCheckedStyle,
+  type SnChoiceIndicatorPlacement,
+  type SnChoiceLabelPlacement,
+  type SnChoiceMarkerShape,
+  type SnChoiceVariant,
 } from './sn-checkbox-types';
 
 defineOptions({ name: 'SnCheckbox' });
@@ -73,6 +78,26 @@ const props = withDefaults(
     direction?: SnCheckboxDirection | undefined;
     /** Max width of the label text (CSS length). */
     maxWidth?: string;
+    /* ── AUI additive surface (not part of wd-checkbox) ──────────────────── */
+
+    /**
+     * Layout variant: `default` inline marker + label, `card` selectable card
+     * (custom content via the `card` slot), `icon` square icon tile.
+     * Inherits from the group when not set.
+     */
+    variant?: SnChoiceVariant | undefined;
+    /**
+     * Where the marker sits. `leading` / `trailing` inline, `top-right` /
+     * `bottom-right` corner tick, `none` hides it. Falls back to the legacy
+     * `placement` prop, then to a variant-derived default.
+     */
+    indicatorPlacement?: SnChoiceIndicatorPlacement | undefined;
+    /** Which checked paint to apply: themed border, soft fill, or both. */
+    checkedStyle?: SnChoiceCheckedStyle | undefined;
+    /** Label side (AUI additive): label-first pushes the marker to the far end. */
+    labelPlacement?: SnChoiceLabelPlacement | undefined;
+    /** Inline marker shape (AUI additive): ring vs inverted fill. */
+    markerShape?: SnChoiceMarkerShape | undefined;
     /** Class on the label text node. */
     customLabelClass?: string;
     /** Class on the root node. */
@@ -95,6 +120,11 @@ const props = withDefaults(
     placement: undefined,
     direction: undefined,
     maxWidth: '',
+    variant: undefined,
+    indicatorPlacement: undefined,
+    checkedStyle: undefined,
+    labelPlacement: undefined,
+    markerShape: undefined,
     customLabelClass: '',
     customClass: '',
     customStyle: '',
@@ -191,10 +221,66 @@ onBeforeUnmount(() => {
   group?.unregisterChild(props.name);
 });
 
+/* ── AUI additive: variant / indicator placement / checked paint ─────────── */
+
+/** Effective variant — own prop wins, then the group, then `default`. */
+const effectiveVariant = computed<SnChoiceVariant>(() =>
+  resolve(props.variant, group?.groupVariant.value, 'default'),
+);
+
+/**
+ * Effective indicator placement. Own prop wins, then the group, then the
+ * legacy `placement` (`left`/`right` → leading/trailing) for the default
+ * variant, and a corner tick for card / icon tiles.
+ */
+const effectiveIndicatorPlacement = computed<SnChoiceIndicatorPlacement>(() => {
+  const explicit = props.indicatorPlacement ?? group?.groupIndicatorPlacement.value;
+  if (explicit !== undefined) return explicit;
+  if (effectiveVariant.value === 'default') {
+    return effectivePlacement.value === 'right' ? 'trailing' : 'leading';
+  }
+  return 'top-right';
+});
+
+/** Effective checked paint — card / icon tiles default to border + fill. */
+const effectiveCheckedStyle = computed<SnChoiceCheckedStyle>(() => {
+  const explicit = props.checkedStyle ?? group?.groupCheckedStyle.value;
+  if (explicit !== undefined) return explicit;
+  return effectiveVariant.value === 'default' ? 'default' : 'border-fill';
+});
+
+/** Corner tick (absolute) vs inline marker. */
+const isCornerIndicator = computed(
+  () =>
+    effectiveIndicatorPlacement.value === 'top-right' ||
+    effectiveIndicatorPlacement.value === 'bottom-right',
+);
+
+/** Effective label side — label-first pushes the marker to the far end. */
+const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(() =>
+  resolve(props.labelPlacement, group?.groupLabelPlacement.value, 'marker-first'),
+);
+
+/** Effective inline marker shape (ring vs inverted fill). */
+const effectiveMarkerShape = computed<SnChoiceMarkerShape>(() =>
+  resolve(props.markerShape, group?.groupMarkerShape.value, 'ring'),
+);
+
+/** Whether the inline marker renders at all. */
+const showInlineMarker = computed(
+  () =>
+    effectiveIndicatorPlacement.value === 'leading' ||
+    effectiveIndicatorPlacement.value === 'trailing',
+);
+
 const classList = computed(() => [
   'sn-checkbox',
   `sn-checkbox--${effectiveType.value}`,
   `sn-checkbox--placement-${effectivePlacement.value}`,
+  `sn-checkbox--variant-${effectiveVariant.value}`,
+  `sn-checkbox--indicator-${effectiveIndicatorPlacement.value}`,
+  `sn-checkbox--label-${effectiveLabelPlacement.value}`,
+  `sn-checkbox--marker-${effectiveMarkerShape.value}`,
   {
     'sn-checkbox--checked': isChecked.value,
     'sn-checkbox--indeterminate': props.indeterminate,
@@ -202,6 +288,12 @@ const classList = computed(() => [
     'sn-checkbox--readonly': isReadonly.value,
     'sn-checkbox--large': effectiveSize.value === 'large',
     'sn-checkbox--horizontal': effectiveDirection.value === 'horizontal',
+    'sn-checkbox--checked-border':
+      isChecked.value &&
+      (effectiveCheckedStyle.value === 'border' || effectiveCheckedStyle.value === 'border-fill'),
+    'sn-checkbox--checked-fill':
+      isChecked.value &&
+      (effectiveCheckedStyle.value === 'fill' || effectiveCheckedStyle.value === 'border-fill'),
   },
   props.customClass,
 ]);
@@ -225,7 +317,7 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
   >
     <view class="sn-checkbox__main">
       <view
-        v-if="effectivePlacement === 'left'"
+        v-if="showInlineMarker && effectiveIndicatorPlacement === 'leading'"
         class="sn-checkbox__icon"
         :class="{
           /* Filled-plate marker — lets the doodle skin override the checked
@@ -241,7 +333,23 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
         <SnIcon v-else-if="isChecked" :icon="checkIcon" :size="24" />
       </view>
 
-      <view class="sn-checkbox__label-wrap">
+      <!-- Card body: custom content wins; icon tile renders the glyph only. -->
+      <view v-if="effectiveVariant === 'card'" class="sn-checkbox__card">
+        <slot name="card" :checked="isChecked" :disabled="isDisabled">
+          <view class="sn-checkbox__label-wrap">
+            <text :class="['sn-checkbox__label', customLabelClass]" :style="labelStyle">
+              <slot />
+            </text>
+            <slot name="icon" :is-checked="isChecked" />
+          </view>
+        </slot>
+      </view>
+      <view v-else-if="effectiveVariant === 'icon'" class="sn-checkbox__tile">
+        <slot name="icon" :is-checked="isChecked">
+          <view class="sn-checkbox__tile-glyph" aria-hidden="true" />
+        </slot>
+      </view>
+      <view v-else class="sn-checkbox__label-wrap">
         <text :class="['sn-checkbox__label', customLabelClass]" :style="labelStyle">
           <slot />
         </text>
@@ -249,7 +357,7 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
       </view>
 
       <view
-        v-if="effectivePlacement === 'right'"
+        v-if="showInlineMarker && effectiveIndicatorPlacement === 'trailing'"
         class="sn-checkbox__icon"
         :class="{ 'sn-checkbox__icon--checked': isChecked || props.indeterminate }"
         :style="iconStyle"
@@ -257,6 +365,16 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
       >
         <SnIcon v-if="indeterminate" :icon="indeterminateIcon" :size="24" />
         <SnIcon v-else-if="isChecked" :icon="checkIcon" :size="24" />
+      </view>
+
+      <!-- Corner tick: top-right / bottom-right, only while checked. -->
+      <view
+        v-if="isCornerIndicator && isChecked"
+        class="sn-checkbox__tick"
+        :class="`sn-checkbox__tick--${effectiveIndicatorPlacement}`"
+        aria-hidden="true"
+      >
+        <SnIcon :icon="checkIcon" :size="16" />
       </view>
     </view>
   </view>
@@ -388,5 +506,141 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
 }
 .snui-skin-doodle .sn-checkbox__label {
   font-weight: 600;
+}
+
+/* ── AUI additive: card / icon variants + checked paint + corner tick ────── */
+
+/* Card: the whole option becomes a selectable surface. */
+.sn-checkbox--variant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+  transition:
+    border-color 0.18s ease-out,
+    background-color 0.18s ease-out;
+}
+
+.sn-checkbox--variant-card .sn-checkbox__main {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--sn-mp-spacing-1);
+}
+
+.sn-checkbox--variant-card .sn-checkbox__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Icon tile: square, centred glyph, no label row. */
+.sn-checkbox--variant-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  height: 112rpx;
+  padding: 0;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+  transition:
+    border-color 0.18s ease-out,
+    background-color 0.18s ease-out;
+}
+
+.sn-checkbox--variant-icon .sn-checkbox__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.sn-checkbox--variant-icon .sn-checkbox__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-checkbox--variant-icon.sn-checkbox--checked .sn-checkbox__tile {
+  color: var(--sn-mp-color-action-primary);
+}
+
+/* Fallback glyph when no `icon` slot is supplied. */
+.sn-checkbox__tile-glyph {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: var(--sn-mp-radius-xs);
+  background-color: currentColor;
+  opacity: 0.55;
+}
+
+/* Checked paint switches (only applied while checked). */
+.sn-checkbox--checked-border.sn-checkbox--variant-card,
+.sn-checkbox--checked-border.sn-checkbox--variant-icon {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-checkbox--checked-fill.sn-checkbox--variant-card,
+.sn-checkbox--checked-fill.sn-checkbox--variant-icon {
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
+/* Corner tick — themed circle with a white check glyph. */
+.sn-checkbox__tick {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  box-shadow: 0 0 0 4rpx var(--sn-mp-color-background-surface);
+}
+
+.sn-checkbox__tick--top-right {
+  top: 8rpx;
+  right: 8rpx;
+}
+
+.sn-checkbox__tick--bottom-right {
+  right: 8rpx;
+  bottom: 8rpx;
+}
+
+.sn-checkbox--disabled.sn-checkbox--variant-card,
+.sn-checkbox--disabled.sn-checkbox--variant-icon {
+  opacity: 0.6;
+}
+
+/* ── AUI additive: label-first + inverted marker ─────────────────────────── */
+
+.sn-checkbox--label-first .sn-checkbox__main {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  width: 100%;
+}
+.sn-checkbox--label-first .sn-checkbox__label-wrap,
+.sn-checkbox--label-first .sn-checkbox__card {
+  flex: 1 1 auto;
+}
+
+.sn-checkbox--marker-inverted.sn-checkbox--checked .sn-checkbox__label {
+  color: var(--sn-mp-color-action-primary);
+}
+.sn-checkbox--marker-inverted.sn-checkbox--checked .sn-checkbox__icon {
+  border-color: var(--sn-mp-color-action-primary);
+  background-color: var(--sn-mp-color-background-surface);
+  color: var(--sn-mp-color-action-primary);
 }
 </style>
