@@ -554,3 +554,64 @@ describe('sn-checkbox-group', () => {
     });
   });
 });
+
+/** AUI additive surface — variant / indicator placement / checked paint. */
+describe('sn-checkbox additive variants', () => {
+  /** Minimal group host so a child can resolve group-level props. */
+  function mountInGroup(
+    groupProps: Record<string, unknown>,
+    checkboxProps: Record<string, unknown>,
+  ) {
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnCheckboxGroup, { modelValue: ['a'], ...groupProps }, () => [
+            h(SnCheckbox, { name: 'a', ...checkboxProps }, () => 'A'),
+          ]);
+      },
+    });
+    return mount(Host);
+  }
+
+  it('defaults to the legacy box with no variant classes', () => {
+    const wrapper = mount(SnCheckbox, { props: { name: 'a' }, slots: { default: () => 'A' } });
+    expect(wrapper.classes()).toContain('sn-checkbox--variant-default');
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-leading');
+    expect(wrapper.find('.sn-checkbox__icon').exists()).toBe(true);
+  });
+
+  it('card variant shows the corner tick and paints border + fill', () => {
+    const wrapper = mountInGroup({ variant: 'card' }, {});
+    const box = wrapper.find('.sn-checkbox');
+    expect(box.classes()).toContain('sn-checkbox--variant-card');
+    expect(box.classes()).toContain('sn-checkbox--checked-border');
+    expect(box.classes()).toContain('sn-checkbox--checked-fill');
+    expect(box.find('.sn-checkbox__icon').exists()).toBe(false);
+    expect(box.find('.sn-checkbox__tick--top-right').exists()).toBe(true);
+  });
+
+  it('checkedStyle="fill" omits the border class', () => {
+    const wrapper = mountInGroup({ checkedStyle: 'fill' }, { variant: 'card' });
+    const box = wrapper.find('.sn-checkbox');
+    expect(box.classes()).toContain('sn-checkbox--checked-fill');
+    expect(box.classes()).not.toContain('sn-checkbox--checked-border');
+  });
+
+  it('indicatorPlacement="none" hides both marker and tick', () => {
+    const wrapper = mountInGroup({ indicatorPlacement: 'none' }, { variant: 'card' });
+    expect(wrapper.find('.sn-checkbox__icon').exists()).toBe(false);
+    expect(wrapper.find('.sn-checkbox__tick').exists()).toBe(false);
+  });
+
+  it('legacy placement="right" maps to a trailing indicator', () => {
+    const wrapper = mountInGroup({ placement: 'right' }, {});
+    expect(wrapper.find('.sn-checkbox').classes()).toContain('sn-checkbox--indicator-trailing');
+  });
+
+  it('icon variant renders a tile and hides the label', () => {
+    const wrapper = mountInGroup({ variant: 'icon' }, {});
+    expect(wrapper.find('.sn-checkbox__tile').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__label').exists()).toBe(false);
+    expect(wrapper.find('.sn-checkbox__tile-glyph').exists()).toBe(true);
+  });
+});

@@ -23,6 +23,46 @@ export type SnCheckboxDirection = 'horizontal' | 'vertical';
 /** Size preset — `large` is the only named tier wd-checkbox documents. */
 export type SnCheckboxSize = 'large' | undefined;
 
+/**
+ * Layout variant (AUI additive — orthogonal to the wot-ui `type` marker
+ * shape): `default` inline marker + label, `card` selectable card (custom
+ * content via the `card` slot), `icon` square icon tile.
+ */
+export type SnChoiceVariant = 'default' | 'card' | 'icon';
+
+/**
+ * Where the marker / corner tick sits (AUI additive).
+ *   - `leading` / `trailing` — inline before / after the label
+ *   - `top-right` / `bottom-right` — absolute corner tick inside a card/tile
+ *   - `none` — no marker; the card state alone carries the selection
+ */
+export type SnChoiceIndicatorPlacement =
+  'leading' | 'trailing' | 'top-right' | 'bottom-right' | 'none';
+
+/**
+ * Which checked-state paint to apply (AUI additive).
+ *   - `default`     — marker-only (existing behaviour)
+ *   - `border`      — themed border
+ *   - `fill`        — themed soft background
+ *   - `border-fill` — both (default for `card` / `icon`)
+ */
+export type SnChoiceCheckedStyle = 'default' | 'border' | 'fill' | 'border-fill';
+
+/**
+ * Which side the label sits on (AUI additive). `marker-first` keeps the
+ * historical order; `label-first` puts the label first and pushes the marker
+ * to the far end — 标题在前、选择在后.
+ */
+export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
+
+/**
+ * Inline marker shape (AUI additive).
+ *   - `ring`     — outlined circle / box with a small inner dot
+ *   - `inverted` — the whole plate fills with the theme colour and the inner
+ *                  dot is punched out in the surface colour (反转态)
+ */
+export type SnChoiceMarkerShape = 'ring' | 'inverted';
+
 /** One registered child, as seen by the group (`toggleAll` enumeration). */
 export interface SnCheckboxChild {
   /** The child's `name` — the value stored in the group selection. */
@@ -53,6 +93,16 @@ export interface SnCheckboxGroupContext {
   groupPlacement: Ref<SnCheckboxPlacement>;
   /** Group-level layout direction. */
   groupDirection: Ref<SnCheckboxDirection>;
+  /** Group-level layout variant (AUI additive). */
+  groupVariant: Ref<SnChoiceVariant | undefined>;
+  /** Group-level indicator placement (AUI additive). */
+  groupIndicatorPlacement: Ref<SnChoiceIndicatorPlacement | undefined>;
+  /** Group-level checked paint (AUI additive). */
+  groupCheckedStyle: Ref<SnChoiceCheckedStyle | undefined>;
+  /** Group-level label side (AUI additive). */
+  groupLabelPlacement: Ref<SnChoiceLabelPlacement | undefined>;
+  /** Group-level marker shape (AUI additive). */
+  groupMarkerShape: Ref<SnChoiceMarkerShape | undefined>;
   /** Register a child so `toggleAll` can enumerate the real options. */
   registerChild: (child: SnCheckboxChild) => void;
   /** Unregister a child on unmount — keeps the registry leak-free (§41). */

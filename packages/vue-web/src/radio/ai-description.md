@@ -39,16 +39,21 @@ checkbox group for multi-select.
 
 ## Props — SnRadioGroup
 
-| Prop                      | Type                                                 | Default     | Notes                                                                                    |
-| ------------------------- | ---------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
-| modelValue                | `string \| number \| boolean \| null`                | `null`      | v-model.                                                                                 |
-| options                   | `Array<SnRadioOption \| value>`                      | `[]`        | `{ label, value, disabled, readonly, size, status }` or plain values. Default slot wins. |
-| name                      | `string`                                             | —           | Shared native name (arrow-key navigation).                                               |
-| disabled                  | `boolean`                                            | `false`     | Disables every child.                                                                    |
-| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`  | Group size.                                                                              |
-| status                    | `'default' \| 'error' \| 'warning'`                  | `'default'` | Group status.                                                                            |
-| button                    | `boolean`                                            | `false`     | Render `options` as SnRadioButton children.                                              |
-| customClass / customStyle | `string` / `string \| Record<string,string>`         | `''`        | Root hooks.                                                                              |
+| Prop                      | Type                                                                 | Default     | Notes                                                                                    |
+| ------------------------- | -------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| modelValue                | `string \| number \| boolean \| null`                                | `null`      | v-model.                                                                                 |
+| options                   | `Array<SnRadioOption \| value>`                                      | `[]`        | `{ label, value, disabled, readonly, size, status }` or plain values. Default slot wins. |
+| name                      | `string`                                                             | —           | Shared native name (arrow-key navigation).                                               |
+| disabled                  | `boolean`                                                            | `false`     | Disables every child.                                                                    |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                 | `'medium'`  | Group size.                                                                              |
+| status                    | `'default' \| 'error' \| 'warning'`                                  | `'default'` | Group status.                                                                            |
+| button                    | `boolean`                                                            | `false`     | Render `options` as SnRadioButton children.                                              |
+| variant                   | `'default' \| 'card' \| 'icon'`                                      | —           | **AUI additive.** Group-level layout inherited by children.                              |
+| indicatorPlacement        | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | —           | **AUI additive.** Group-level marker placement.                                          |
+| checkedStyle              | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | —           | **AUI additive.** Group-level checked paint.                                             |
+| labelPlacement | `'marker-first' \| 'label-first'` | — | **AUI additive.** Label side; `label-first` pushes the marker to the far end. |
+| markerShape | `'ring' \| 'inverted'` | — | **AUI additive.** Inline marker shape; `inverted` fills the plate with the theme colour and punches out a white dot. |
+| customClass / customStyle | `string` / `string \| Record<string,string>`                         | `''`        | Root hooks.                                                                              |
 
 ## Events
 
@@ -65,6 +70,24 @@ checkbox group for multi-select.
 - `default` (group) — custom SnRadio / SnRadioButton children; wins over `options`.
 - `label` (radio children) — custom label content, scoped `{ checked, disabled }`.
 - `default` (radio children) — fallback label content when the `label` slot is absent.
+- `card` (radio children, **AUI additive**) — card body for `variant="card"`, scoped `{ checked, disabled }`. Replaces the default marker + label row; the corner tick still follows `indicatorPlacement`.
+- `icon` (radio children, **AUI additive**) — glyph for `variant="icon"` tiles, scoped `{ checked }`.
+
+## Layout variants (AUI additive)
+
+| Prop / value                                       | Result                                                                                                              |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `variant="default"`                                | Historical inline marker + label (unchanged).                                                                       |
+| `variant="card"`                                   | Whole row becomes a selectable card; defaults to `indicatorPlacement="top-right"` and `checkedStyle="border-fill"`. |
+| `variant="icon"`                                   | 56×56 tile with a centred glyph; no label row.                                                                      |
+| `indicatorPlacement="leading" \| "trailing"`       | Inline marker before / after the label.                                                                             |
+| `indicatorPlacement="top-right" \| "bottom-right"` | Absolute corner tick, rendered only while checked.                                                                  |
+| `indicatorPlacement="none"`                        | No marker; the card border/fill alone carries the state.                                                            |
+| `checkedStyle="border"`                            | Themed border only (`--sn-web-color-action-primary`).                                                               |
+| `checkedStyle="fill"`                              | Themed soft background only (`--sn-web-color-action-primary-soft`).                                                 |
+| `checkedStyle="border-fill"`                       | Both.                                                                                                               |
+
+All three props cascade from `SnRadioGroup` to children; a child prop always wins.
 
 ## Tokens
 

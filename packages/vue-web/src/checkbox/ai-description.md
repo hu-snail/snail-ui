@@ -10,21 +10,26 @@ SnCheckboxGroup when several checkboxes share one selection array.
 
 ## SnCheckbox Props
 
-| Prop           | Type                                                 | Default     | Notes                                                     |
-| -------------- | ---------------------------------------------------- | ----------- | --------------------------------------------------------- |
-| modelValue     | `boolean \| string \| number \| Array`               | `false`     | `v-model`. Standalone: `checkedValue` / `uncheckedValue`. |
-| defaultChecked | `boolean`                                            | `false`     | Uncontrolled initial state (naive `default-checked`).     |
-| label          | `string`                                             | `''`        | Label text; default slot wins for rich content.           |
-| value          | `string \| number \| boolean`                        | —           | Value inside a group (naive `value`).                     |
-| disabled       | `boolean`                                            | `false`     | Group `disabled` ORs with this.                           |
-| readonly       | `boolean`                                            | `false`     | Visible but not toggleable.                               |
-| indeterminate  | `boolean`                                            | `false`     | Renders `aria-checked="mixed"` + dash mark.               |
-| size           | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`  | Box size + font size. Group size wins.                    |
-| checkedValue   | `string \| number \| boolean`                        | `true`      | Emitted value when checked (naive `checked-value`).       |
-| uncheckedValue | `string \| number \| boolean`                        | `false`     | Emitted value when unchecked (naive `unchecked-value`).   |
-| status         | `'default' \| 'error' \| 'warning'`                  | `'default'` | Box border color + `aria-invalid`.                        |
-| focusable      | `boolean`                                            | `true`      | `tabindex="-1"` when `false` (naive `focusable`).         |
-| ariaLabel      | `string`                                             | `''`        | Accessible name when no label.                            |
+| Prop               | Type                                                                 | Default     | Notes                                                     |
+| ------------------ | -------------------------------------------------------------------- | ----------- | --------------------------------------------------------- |
+| modelValue         | `boolean \| string \| number \| Array`                               | `false`     | `v-model`. Standalone: `checkedValue` / `uncheckedValue`. |
+| defaultChecked     | `boolean`                                                            | `false`     | Uncontrolled initial state (naive `default-checked`).     |
+| label              | `string`                                                             | `''`        | Label text; default slot wins for rich content.           |
+| value              | `string \| number \| boolean`                                        | —           | Value inside a group (naive `value`).                     |
+| disabled           | `boolean`                                                            | `false`     | Group `disabled` ORs with this.                           |
+| readonly           | `boolean`                                                            | `false`     | Visible but not toggleable.                               |
+| indeterminate      | `boolean`                                                            | `false`     | Renders `aria-checked="mixed"` + dash mark.               |
+| size               | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                 | `'medium'`  | Box size + font size. Group size wins.                    |
+| checkedValue       | `string \| number \| boolean`                                        | `true`      | Emitted value when checked (naive `checked-value`).       |
+| uncheckedValue     | `string \| number \| boolean`                                        | `false`     | Emitted value when unchecked (naive `unchecked-value`).   |
+| status             | `'default' \| 'error' \| 'warning'`                                  | `'default'` | Box border color + `aria-invalid`.                        |
+| focusable          | `boolean`                                                            | `true`      | `tabindex="-1"` when `false` (naive `focusable`).         |
+| ariaLabel          | `string`                                                             | `''`        | Accessible name when no label.                            |
+| variant            | `'default' \| 'card' \| 'icon'`                                      | —           | **AUI additive.** Layout inherited from the group.        |
+| indicatorPlacement | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | —           | **AUI additive.** Marker placement.                       |
+| checkedStyle       | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | —           | **AUI additive.** Checked paint.                          |
+| labelPlacement | `'marker-first' \| 'label-first'` | — | **AUI additive.** Label side; `label-first` pushes the marker to the far end. |
+| markerShape | `'ring' \| 'inverted'` | — | **AUI additive.** Inline marker shape; `inverted` fills the plate with the theme colour and punches out a white dot. |
 
 ## SnCheckbox Events
 
@@ -39,22 +44,26 @@ SnCheckboxGroup when several checkboxes share one selection array.
 All slots are scoped with the live state so consumers can render their own
 selected visuals.
 
-| Slot        | Scope                                  | Description                                                              |
-| ----------- | -------------------------------------- | ------------------------------------------------------------------------ |
-| `default`   | `{ checked, disabled, indeterminate }` | Rich label content (over `label`).                                       |
-| `icon`      | `{ checked }`                          | Custom checkmark glyph; keeps the built-in box, replaces the CSS tick.   |
-| `indicator` | `{ checked, indeterminate }`           | Replaces the whole box — the hook for tag-style / card-style checkboxes. |
+| Slot        | Scope                                  | Description                                                                                                               |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `default`   | `{ checked, disabled, indeterminate }` | Rich label content (over `label`).                                                                                        |
+| `icon`      | `{ checked }`                          | Custom checkmark glyph; keeps the built-in box, replaces the CSS tick.                                                    |
+| `indicator` | `{ checked, indeterminate }`           | Replaces the whole box — the hook for tag-style / card-style checkboxes.                                                  |
+| `card`      | `{ checked, disabled }`                | **AUI additive.** Card body for `variant="card"`; replaces the default marker + label row, the corner tick still applies. |
 
 ## SnCheckboxGroup Props
 
-| Prop                      | Type                                                              | Default    | Notes                                                                                               |
-| ------------------------- | ----------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
-| modelValue                | `(string \| number \| boolean)[]`                                 | `[]`       | `v-model` selection array.                                                                          |
-| defaultValue              | `(string \| number \| boolean)[]`                                 | `[]`       | Uncontrolled initial selection.                                                                     |
-| options                   | `{ label, value, disabled }[] \| (string \| number \| boolean)[]` | `[]`       | Renders children from a list; plain values are coerced to `{ label, value }` (SnRadioGroup parity). |
-| disabled                  | `boolean`                                                         | `false`    | Disables every child.                                                                               |
-| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`              | `'medium'` | Applied to children.                                                                                |
-| customClass / customStyle | `string` / `string \| object`                                     | —          | Root wrapper passthrough.                                                                           |
+| Prop                      | Type                                                                 | Default    | Notes                                                                                               |
+| ------------------------- | -------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| modelValue                | `(string \| number \| boolean)[]`                                    | `[]`       | `v-model` selection array.                                                                          |
+| defaultValue              | `(string \| number \| boolean)[]`                                    | `[]`       | Uncontrolled initial selection.                                                                     |
+| options                   | `{ label, value, disabled }[] \| (string \| number \| boolean)[]`    | `[]`       | Renders children from a list; plain values are coerced to `{ label, value }` (SnRadioGroup parity). |
+| disabled                  | `boolean`                                                            | `false`    | Disables every child.                                                                               |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                 | `'medium'` | Applied to children.                                                                                |
+| variant                   | `'default' \| 'card' \| 'icon'`                                      | —          | **AUI additive.** Group-level layout inherited by children.                                         |
+| indicatorPlacement        | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | —          | **AUI additive.** Group-level marker placement.                                                     |
+| checkedStyle              | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | —          | **AUI additive.** Group-level checked paint.                                                        |
+| customClass / customStyle | `string` / `string \| object`                                        | —          | Root wrapper passthrough.                                                                           |
 
 SnCheckboxGroup Events: `update:modelValue`, `update:value` — both carry the
 full next selection array.

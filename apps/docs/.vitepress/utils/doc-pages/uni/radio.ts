@@ -100,6 +100,21 @@ import { Radio } from '@snui/uni';
       title: '自定义类名与样式',
       blurb: 'customLabelClass 落在标签节点；customClass / customStyle 落在根节点。',
     },
+    {
+      name: 'radio-mp-card',
+      title: '卡片模式（variant="card"）',
+      blurb: '整块可点选卡片，card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
+    },
+    {
+      name: 'radio-mp-icon',
+      title: '图标模式（variant="icon"）',
+      blurb: '方形图标砖网格，icon 插槽放字形，无文字行。',
+    },
+    {
+      name: 'radio-mp-indicator',
+      title: '指示器位置与选中态',
+      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+    },
   ],
   props: {
     hint: [],
@@ -165,8 +180,8 @@ import { Radio } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-checkbox', link: '/components/uni/checkbox' },
-    next: { text: 'sn-switch', link: '/components/uni/switch' },
+    prev: { text: 'Checkbox', link: '/components/uni/checkbox' },
+    next: { text: 'Switch', link: '/components/uni/switch' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

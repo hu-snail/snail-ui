@@ -12,6 +12,11 @@ import SnRadio from './SnRadio.vue';
 import SnRadioButton from './SnRadioButton.vue';
 import {
   snRadioGroupInjectionKey,
+  type SnChoiceCheckedStyle,
+  type SnChoiceIndicatorPlacement,
+  type SnChoiceLabelPlacement,
+  type SnChoiceMarkerShape,
+  type SnChoiceVariant,
   type SnRadioOption,
   type SnRadioSize,
   type SnRadioStatus,
@@ -36,6 +41,16 @@ const props = withDefaults(
     status?: SnRadioStatus;
     /** Render children as buttons (naive `button`-styled group children). */
     button?: boolean;
+    /** Group-level layout variant inherited by children (AUI additive). */
+    variant?: SnChoiceVariant | undefined;
+    /** Group-level indicator placement inherited by children (AUI additive). */
+    indicatorPlacement?: SnChoiceIndicatorPlacement | undefined;
+    /** Group-level checked paint inherited by children (AUI additive). */
+    checkedStyle?: SnChoiceCheckedStyle | undefined;
+    /** Group-level label side inherited by children (AUI additive). */
+    labelPlacement?: SnChoiceLabelPlacement | undefined;
+    /** Group-level marker shape inherited by children (AUI additive). */
+    markerShape?: SnChoiceMarkerShape | undefined;
     /** Class on the root wrapper. */
     customClass?: string;
     /** Inline style on the root wrapper. */
@@ -48,6 +63,11 @@ const props = withDefaults(
     size: 'medium',
     status: 'default',
     button: false,
+    variant: undefined,
+    indicatorPlacement: undefined,
+    checkedStyle: undefined,
+    labelPlacement: undefined,
+    markerShape: undefined,
     customClass: '',
     customStyle: '',
   },
@@ -72,6 +92,11 @@ const nameRef = computed(() => props.name);
 const sizeRef = computed(() => props.size);
 const statusRef = computed(() => props.status);
 const disabledRef = computed(() => props.disabled);
+const variantRef = computed(() => props.variant);
+const indicatorPlacementRef = computed(() => props.indicatorPlacement);
+const checkedStyleRef = computed(() => props.checkedStyle);
+const labelPlacementRef = computed(() => props.labelPlacement);
+const markerShapeRef = computed(() => props.markerShape);
 
 provide(snRadioGroupInjectionKey, {
   modelValue: modelValueRef,
@@ -79,6 +104,11 @@ provide(snRadioGroupInjectionKey, {
   size: sizeRef,
   status: statusRef,
   disabled: disabledRef,
+  variant: variantRef,
+  indicatorPlacement: indicatorPlacementRef,
+  checkedStyle: checkedStyleRef,
+  labelPlacement: labelPlacementRef,
+  markerShape: markerShapeRef,
   onChange(value: SnRadioValue) {
     emit('update:modelValue', value);
     emit('change', value);

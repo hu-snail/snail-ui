@@ -1,12 +1,15 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— radio 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/radio-mp-basic.vue';
-import Demo1 from './demos/radio-mp-colors.vue';
-import Demo2 from './demos/radio-mp-custom-style.vue';
-import Demo3 from './demos/radio-mp-disabled-readonly.vue';
-import Demo4 from './demos/radio-mp-placement.vue';
-import Demo5 from './demos/radio-mp-type.vue';
-import Demo6 from './demos/radio-mp-uncheck.vue';
+import Demo1 from './demos/radio-mp-card.vue';
+import Demo2 from './demos/radio-mp-colors.vue';
+import Demo3 from './demos/radio-mp-custom-style.vue';
+import Demo4 from './demos/radio-mp-disabled-readonly.vue';
+import Demo5 from './demos/radio-mp-icon.vue';
+import Demo6 from './demos/radio-mp-indicator.vue';
+import Demo7 from './demos/radio-mp-placement.vue';
+import Demo8 from './demos/radio-mp-type.vue';
+import Demo9 from './demos/radio-mp-uncheck.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -25,6 +28,12 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
+        <DemoModuleHead :title="t('卡片模式（variant=card）', 'Card variant')" badge="card" />
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module">
         <DemoModuleHead
           :title="
             t(
@@ -35,7 +44,7 @@ const { t } = useDemoUi();
           badge="colors"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo2 />
         </view>
       </view>
       <view class="module">
@@ -44,7 +53,7 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo3 />
         </view>
       </view>
       <view class="module">
@@ -58,7 +67,22 @@ const { t } = useDemoUi();
           badge="disabled-readonly"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标模式（variant=icon）', 'Icon variant')" badge="icon" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('指示器位置与选中态', 'Indicator placement & checked paint')"
+          badge="indicator"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -67,13 +91,13 @@ const { t } = useDemoUi();
           badge="placement"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
-          <Demo5 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
@@ -82,7 +106,7 @@ const { t } = useDemoUi();
           badge="uncheck"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo9 />
         </view>
       </view>
     </view>

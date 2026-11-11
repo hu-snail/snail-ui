@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const checkboxDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Checkbox' }],
-  title: 'Checkbox',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Checkbox 多选框' }],
+  title: 'Checkbox 多选框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -83,6 +83,16 @@ import { Checkbox } from '@snui/vue-web';
       name: 'checkbox-web-custom',
       title: '自定义插槽（`indicator` / `icon` / 默认插槽）',
       blurb: 'indicator 标签 / 卡片形态 + icon 自定义对勾 + 默认插槽作用域。',
+    },
+    {
+      name: 'checkbox-web-card',
+      title: '卡片模式（variant="card"）',
+      blurb: '整块可点选卡片，#card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
+    },
+    {
+      name: 'checkbox-web-indicator',
+      title: '指示器位置与选中态',
+      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
     },
   ],
   props: {
