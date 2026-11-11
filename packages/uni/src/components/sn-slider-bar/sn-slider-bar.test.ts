@@ -73,7 +73,15 @@ describe('sn-slider-bar (uni)', () => {
     stubUni();
     const wrapper = mount(SnSliderBar, { props: { modelValue: 0 } });
     expect(wrapper.classes()).toContain('sn-slider-bar--empty');
+    expect(wrapper.classes()).not.toContain('sn-slider-bar--filled');
     expect(styleOf(wrapper, '.sn-slider-bar__fill')).toContain('opacity:0');
+  });
+
+  it('binds the filled state as a class instead of a :not pseudo (uni-app x)', () => {
+    stubUni();
+    const wrapper = mount(SnSliderBar, { props: { modelValue: 40 } });
+    expect(wrapper.classes()).toContain('sn-slider-bar--filled');
+    expect(wrapper.classes()).not.toContain('sn-slider-bar--empty');
   });
 
   it('reads percent / value captions', () => {

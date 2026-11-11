@@ -94,51 +94,10 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
   ],
 
-  'sn-form/sn-form-item.vue': [
-    {
-      anchor: `        class="sn-form-item__message"
-        :data-status="status"
-`,
-      replacement: `        class="sn-form-item__message"
-        :class="'sn-form-item__message--' + status"
-`,
-      note: 'message [data-status] attribute selector → status modifier class',
-    },
-    {
-      anchor: `          class="sn-form-item__status-icon"
-          :data-status="status"
-`,
-      replacement: `          class="sn-form-item__status-icon"
-          :class="'sn-form-item__status-icon--' + status"
-`,
-      note: 'status-icon [data-status] attribute selector → status modifier class',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='error'] {",
-      replacement: '.sn-form-item__status-icon--error {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='warning'] {",
-      replacement: '.sn-form-item__status-icon--warning {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='success'] {",
-      replacement: '.sn-form-item__status-icon--success {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__message[data-status='error'] {",
-      replacement: '.sn-form-item__message--error {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__message[data-status='warning'] {",
-      replacement: '.sn-form-item__message--warning {',
-      note: 'attribute selector rewritten',
-    },
-  ],
+  // sn-form/sn-form-item.vue: former [data-status] attribute-selector patches
+  // are gone — the source now binds `--error/--warning` modifier classes
+  // natively (messageStatusClass / iconStatusClass computeds), so the uni-x
+  // output no longer needs any rewrite here.
 
   'sn-loading/sn-loading.vue': [
     {
