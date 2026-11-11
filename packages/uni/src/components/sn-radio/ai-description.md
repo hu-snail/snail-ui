@@ -35,24 +35,24 @@ import SnRadioGroup from '@snui/uni-src/components/sn-radio/sn-radio-group.vue';
 
 ## sn-radio Props
 
-| Name                 | Type                                                                 | Default                                              | Required | Description                                                 |
-| -------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- | -------- | ----------------------------------------------------------- |
-| `value`              | `string \| number \| boolean`                                        | `''`                                                 | no       | This option's value, matched against the group's `v-model`. |
-| `type`               | `'circle' \| 'dot' \| 'square' \| 'button'`                          | inherits group (`'circle'`)                          | no       | Shape preset.                                               |
-| `checkedColor`       | `string`                                                             | inherits group (`''`)                                | no       | Checked color (CSS color, inline override).                 |
-| `uncheckedColor`     | `string`                                                             | inherits group (`''`)                                | no       | Unchecked color.                                            |
-| `disabled`           | `boolean`                                                            | inherits group (`false`)                             | no       | Disables this option.                                       |
-| `readonly`           | `boolean`                                                            | inherits group (`false`)                             | no       | Read-only.                                                  |
-| `placement`          | `'left' \| 'right'`                                                  | inherits group (`'left'`)                            | no       | Marker position.                                            |
-| `direction`          | `'horizontal' \| 'vertical'`                                         | inherits group (`'vertical'`)                        | no       | Layout hint.                                                |
-| `variant`            | `'default' \| 'card' \| 'icon'`                                      | inherits group (`'default'`)                         | no       | **AUI additive.** Layout variant (card / icon tile).        |
-| `indicatorPlacement` | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | derived from `placement` / variant                   | no       | **AUI additive.** Marker or corner-tick position.           |
-| `checkedStyle`       | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | derived from variant (`'border-fill'` for card/icon) | no       | **AUI additive.** Checked paint.                            |
-| `labelPlacement` | `'marker-first' \| 'label-first'` | inherits group | no | **AUI additive.** Label side; `label-first` pushes the marker to the far end. |
-| `markerShape` | `'ring' \| 'inverted'` | inherits group | no | **AUI additive.** Inline marker shape (`inverted` = theme plate + punched dot). |
-| `customLabelClass`   | `string`                                                             | `''`                                                 | no       | Class on the label text.                                    |
-| `customClass`        | `string`                                                             | `''`                                                 | no       | Class on the root node.                                     |
-| `customStyle`        | `string`                                                             | `''`                                                 | no       | Inline style on the root node.                              |
+| Name                 | Type                                                                 | Default                                              | Required | Description                                                                     |
+| -------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| `value`              | `string \| number \| boolean`                                        | `''`                                                 | no       | This option's value, matched against the group's `v-model`.                     |
+| `type`               | `'circle' \| 'dot' \| 'square' \| 'button'`                          | inherits group (`'circle'`)                          | no       | Shape preset.                                                                   |
+| `checkedColor`       | `string`                                                             | inherits group (`''`)                                | no       | Checked color (CSS color, inline override).                                     |
+| `uncheckedColor`     | `string`                                                             | inherits group (`''`)                                | no       | Unchecked color.                                                                |
+| `disabled`           | `boolean`                                                            | inherits group (`false`)                             | no       | Disables this option.                                                           |
+| `readonly`           | `boolean`                                                            | inherits group (`false`)                             | no       | Read-only.                                                                      |
+| `placement`          | `'left' \| 'right'`                                                  | inherits group (`'left'`)                            | no       | Marker position.                                                                |
+| `direction`          | `'horizontal' \| 'vertical'`                                         | inherits group (`'vertical'`)                        | no       | Layout hint.                                                                    |
+| `variant`            | `'default' \| 'card' \| 'icon'`                                      | inherits group (`'default'`)                         | no       | **AUI additive.** Layout variant (card / icon tile).                            |
+| `indicatorPlacement` | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | derived from `placement` / variant                   | no       | **AUI additive.** Marker or corner-tick position.                               |
+| `checkedStyle`       | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | derived from variant (`'border-fill'` for card/icon) | no       | **AUI additive.** Checked paint.                                                |
+| `labelPlacement`     | `'marker-first' \| 'label-first'`                                    | inherits group                                       | no       | **AUI additive.** Label side; `label-first` pushes the marker to the far end.   |
+| `markerShape`        | `'ring' \| 'inverted'`                                               | inherits group                                       | no       | **AUI additive.** Inline marker shape (`inverted` = theme plate + punched dot). |
+| `customLabelClass`   | `string`                                                             | `''`                                                 | no       | Class on the label text.                                                        |
+| `customClass`        | `string`                                                             | `''`                                                 | no       | Class on the root node.                                                         |
+| `customStyle`        | `string`                                                             | `''`                                                 | no       | Inline style on the root node.                                                  |
 
 ## sn-radio Events
 
