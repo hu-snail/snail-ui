@@ -64,7 +64,11 @@ import { Img } from '@snui/uni';
 </template>`,
   },
   demos: [
-    { name: 'img-mp-mode', title: '裁剪模式（mode）', blurb: 'scaleToFill / aspectFit / aspectFill 三种裁剪模式。' },
+    {
+      name: 'img-mp-mode',
+      title: '裁剪模式（mode）',
+      blurb: 'scaleToFill / aspectFit / aspectFill 三种裁剪模式。',
+    },
     {
       name: 'img-mp-shape',
       title: '圆形与圆角（round / radius）',

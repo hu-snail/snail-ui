@@ -19,7 +19,9 @@ const done = ref<UploadFileItem[]>([
 <template>
   <view class="sn-demo sn-demo--column">
     <SnUpload :file-list="done" disabled :limit="3" />
-    <text class="sn-demo__meta">disabled: both the picker tile and the remove buttons are locked</text>
+    <text class="sn-demo__meta"
+      >disabled: both the picker tile and the remove buttons are locked</text
+    >
   </view>
 </template>
 

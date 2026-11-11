@@ -35,9 +35,9 @@ const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
     </view>
     <text class="sn-demo__meta">
       Left: enable-preview + preview-src opens the large image that previewSrc points at; right:
-      enable-preview alone opens src itself, plus show-menu-by-longpress (the recognise-miniprogram-QR
-      menu on long press, WeChat only). Where the host has no uni.previewImage (the docs preview,
-      for instance) a tap only emits click.
+      enable-preview alone opens src itself, plus show-menu-by-longpress (the
+      recognise-miniprogram-QR menu on long press, WeChat only). Where the host has no
+      uni.previewImage (the docs preview, for instance) a tap only emits click.
     </text>
   </view>
 </template>

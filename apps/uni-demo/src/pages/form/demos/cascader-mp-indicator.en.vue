@@ -64,7 +64,9 @@ const dotText = computed(() => TEXT[String(dotValue.value)] ?? '');
       :line-height="4"
     />
 
-    <text class="sn-demo__label">lineTheme="text" + lineWidth: the dot / text indicator takes a width and height.</text>
+    <text class="sn-demo__label"
+      >lineTheme="text" + lineWidth: the dot / text indicator takes a width and height.</text
+    >
     <view class="sn-demo__cards">
       <SnCell
         card

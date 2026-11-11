@@ -9,13 +9,10 @@ const changes = ref(0);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnDatetimePickerView
-      v-model="instant"
-      type="date"
-      immediate-change
-      @change="changes += 1"
-    />
-    <text class="sn-demo__meta">immediateChange（每次滚动立即 emit change，已触发 {{ changes }} 次）</text>
+    <SnDatetimePickerView v-model="instant" type="date" immediate-change @change="changes += 1" />
+    <text class="sn-demo__meta"
+      >immediateChange（每次滚动立即 emit change，已触发 {{ changes }} 次）</text
+    >
   </view>
 </template>
 

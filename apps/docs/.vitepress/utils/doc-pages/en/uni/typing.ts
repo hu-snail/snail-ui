@@ -54,7 +54,11 @@ import { Typing } from '@snui/uni';
       blurb: 'Conversation simulation: peer goes typing after send, replaced by the real message.',
     },
     { name: 'typing-mp-text', title: 'Label toggle', blurb: 'text="" shows dots only.' },
-    { name: 'typing-mp-dot-count', title: 'Dot count', blurb: 'dot-count 1 / 3 / 5 (clamped to 1-5).' },
+    {
+      name: 'typing-mp-dot-count',
+      title: 'Dot count',
+      blurb: 'dot-count 1 / 3 / 5 (clamped to 1-5).',
+    },
     { name: 'typing-mp-speed', title: 'Pulse speed', blurb: '180ms fast / 600ms slow.' },
     { name: 'typing-mp-dot-color', title: 'Dot color', blurb: 'active-dot-color theme colors.' },
   ],

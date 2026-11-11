@@ -81,7 +81,7 @@ import { Segmented } from '@snui/uni';
       name: 'segmented-mp-value-alias',
       title: 'Event-name difference (`update:value`)',
       blurb:
-        'The wot-ui-style `@update:value` and this component\'s `@update:model-value` both keep parent and child in sync.',
+        "The wot-ui-style `@update:value` and this component's `@update:model-value` both keep parent and child in sync.",
     },
     {
       name: 'segmented-mp-vibrate',

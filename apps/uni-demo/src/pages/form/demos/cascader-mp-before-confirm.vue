@@ -41,13 +41,7 @@ const guard = (payload: { value: string | number | Array<string | number> }) => 
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label">beforeConfirm 拦截确认，进度由守卫卡片行回报。</text>
     <view class="sn-demo__cards">
-      <SnCell
-        card
-        title="通知地区"
-        placeholder="请选择"
-        is-link
-        @click="open = true"
-      />
+      <SnCell card title="通知地区" placeholder="请选择" is-link @click="open = true" />
       <SnCell card title="确认守卫" :value="lastGuard" />
     </view>
     <SnCascader

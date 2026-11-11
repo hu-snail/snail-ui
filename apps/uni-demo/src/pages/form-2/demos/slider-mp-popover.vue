@@ -15,9 +15,7 @@ const never = ref(70);
         <text class="sn-demo__label">always</text>
       </view>
     </view>
-    <text class="sn-demo__meta"
-      >popoverVisible 默认只在拖动时显示，always 常驻</text
-    >
+    <text class="sn-demo__meta">popoverVisible 默认只在拖动时显示，always 常驻</text>
 
     <SnSlider v-model="never" popover-visible="never" />
     <text class="sn-demo__meta">popoverVisible="never"：拖动时也不显示数值气泡</text>

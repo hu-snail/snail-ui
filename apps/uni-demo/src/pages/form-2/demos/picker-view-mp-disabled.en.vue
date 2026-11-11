@@ -10,7 +10,9 @@ const locked = ref<Array<string | number>>(['Banana']);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnPickerView v-model="locked" :columns="[fruits]" disabled />
-    <text class="sn-demo__meta">disabled: drags are ignored, the value stays {{ locked.join(' / ') }}</text>
+    <text class="sn-demo__meta"
+      >disabled: drags are ignored, the value stays {{ locked.join(' / ') }}</text
+    >
   </view>
 </template>
 

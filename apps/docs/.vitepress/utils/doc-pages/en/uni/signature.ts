@@ -99,7 +99,8 @@ import { Signature } from '@snui/uni';
     {
       name: 'signature-mp-export',
       title: 'Export params (`fileType` / `quality` / `exportScale`)',
-      blurb: 'fileType / quality / exportScale (used by the host when exporting; this build never rasterizes).',
+      blurb:
+        'fileType / quality / exportScale (used by the host when exporting; this build never rasterizes).',
     },
     {
       name: 'signature-mp-stroke',

@@ -82,7 +82,8 @@ import { Rate } from '@snui/uni';
     {
       name: 'rate-mp-icon',
       title: '自定义图标（`icon` / `activeIcon`）',
-      blurb: 'icon / activeIcon 走 sn-icon 注册表；iconPrefix 仅为对齐；color / activeColor 覆盖颜色。',
+      blurb:
+        'icon / activeIcon 走 sn-icon 注册表；iconPrefix 仅为对齐；color / activeColor 覆盖颜色。',
     },
     {
       name: 'rate-mp-css-icon',

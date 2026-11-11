@@ -9,9 +9,7 @@ const page = ref(2);
 <template>
   <div class="pagination-demo">
     <SnPagination v-model:page="page" :item-count="326" show-quick-jumper />
-    <p class="pagination-demo__hint">
-      当前第 {{ page }} 页（update:page 回显，跳页输入回车提交）
-    </p>
+    <p class="pagination-demo__hint">当前第 {{ page }} 页（update:page 回显，跳页输入回车提交）</p>
   </div>
 </template>
 

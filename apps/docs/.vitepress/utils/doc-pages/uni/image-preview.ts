@@ -83,8 +83,7 @@ import { ImagePreview } from '@snui/uni';
     {
       name: 'image-preview-mp-selector',
       title: 'selector 命中区',
-      blurb:
-        'selector=".sn-demo__thumb" 在 open() 时为缩略图铺透明点击区；open / close 事件回传。',
+      blurb: 'selector=".sn-demo__thumb" 在 open() 时为缩略图铺透明点击区；open / close 事件回传。',
     },
     {
       name: 'image-preview-mp-close-behavior',
@@ -94,7 +93,8 @@ import { ImagePreview } from '@snui/uni';
     {
       name: 'image-preview-mp-longpress',
       title: '长按菜单与事件',
-      blurb: 'show-menu-by-longpress 长按弹出识别小程序码菜单（仅微信小程序），同时抛 long-press 事件。',
+      blurb:
+        'show-menu-by-longpress 长按弹出识别小程序码菜单（仅微信小程序），同时抛 long-press 事件。',
     },
   ],
   props: {

@@ -47,7 +47,11 @@ import { Collapse } from '@snui/vue-web';
     { name: 'collapse-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
     { name: 'collapse-web-accordion', title: 'Accordion mode', blurb: 'Accordion mode' },
     { name: 'collapse-web-bordered', title: 'Bordered', blurb: 'Bordered' },
-    { name: 'collapse-web-trigger', title: 'Hover trigger', blurb: 'trigger="hover" expands on mouseenter.' },
+    {
+      name: 'collapse-web-trigger',
+      title: 'Hover trigger',
+      blurb: 'trigger="hover" expands on mouseenter.',
+    },
     {
       name: 'collapse-web-display-directive',
       title: 'Display directive',

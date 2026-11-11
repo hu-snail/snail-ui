@@ -9,11 +9,7 @@ const errored = ref('Invalid content');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__title">error</text>
-    <SnTextarea
-      v-model="errored"
-      error
-      placeholder="Form drives error when the value is invalid"
-    />
+    <SnTextarea v-model="errored" error placeholder="Form drives error when the value is invalid" />
   </view>
 </template>
 

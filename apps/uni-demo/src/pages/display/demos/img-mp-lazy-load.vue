@@ -10,14 +10,7 @@ const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnImg
-      :src="plain"
-      lazy-load
-      :width="'100%'"
-      height="240rpx"
-      mode="aspectFill"
-      radius="24"
-    />
+    <SnImg :src="plain" lazy-load :width="'100%'" height="240rpx" mode="aspectFill" radius="24" />
     <text class="sn-demo__meta">
       lazy-load 交给原生 &lt;image lazy-load&gt;，进入视口附近才开始加载。
     </text>

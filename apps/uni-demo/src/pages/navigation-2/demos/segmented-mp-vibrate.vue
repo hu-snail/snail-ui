@@ -18,7 +18,9 @@ const sizeOptions = [
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSegmented v-model="size" :options="sizeOptions" vibrate-short />
-    <text class="sn-demo__meta">vibrate-short：切换选项时触发短振动；无振动马达的宿主静默跳过。</text>
+    <text class="sn-demo__meta"
+      >vibrate-short：切换选项时触发短振动；无振动马达的宿主静默跳过。</text
+    >
   </view>
 </template>
 

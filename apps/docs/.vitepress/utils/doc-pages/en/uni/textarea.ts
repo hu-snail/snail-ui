@@ -93,7 +93,8 @@ import { Textarea } from '@snui/uni';
     {
       name: 'textarea-mp-prefix-icon',
       title: 'Leading icon (`prefixIcon`)',
-      blurb: '`prefixIcon` resolves through the registry; `iconPrefix` + `cssIcon` render a raw CSS class.',
+      blurb:
+        '`prefixIcon` resolves through the registry; `iconPrefix` + `cssIcon` render a raw CSS class.',
     },
     {
       name: 'textarea-mp-placeholder',

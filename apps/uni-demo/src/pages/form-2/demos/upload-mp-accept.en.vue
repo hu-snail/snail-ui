@@ -10,7 +10,9 @@ const videoFiles = ref<UploadFileItem[]>([]);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnUpload v-model:file-list="videoFiles" accept="video" :limit="1" />
-    <text class="sn-demo__meta">accept="video": the picker targets videos (image / video / file)</text>
+    <text class="sn-demo__meta"
+      >accept="video": the picker targets videos (image / video / file)</text
+    >
   </view>
 </template>
 

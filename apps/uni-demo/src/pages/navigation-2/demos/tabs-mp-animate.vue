@@ -20,7 +20,9 @@ const animatedActive = ref(0);
       <SnTab title="热榜" :name="2">热榜内容</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__meta">animated + duration=600：底部条过渡 + 选中项平滑滚入；当前页签：{{ animatedActive }}</text>
+    <text class="sn-demo__meta"
+      >animated + duration=600：底部条过渡 + 选中项平滑滚入；当前页签：{{ animatedActive }}</text
+    >
   </view>
 </template>
 

@@ -13,7 +13,9 @@ const options = [
 <template>
   <view class="sn-demo sn-demo--column">
     <SnSegmented v-model="theme" :options="options" theme="outline" />
-    <text class="sn-demo__meta">theme=outline gives the outlined look; object options carry labels.</text>
+    <text class="sn-demo__meta"
+      >theme=outline gives the outlined look; object options carry labels.</text
+    >
   </view>
 </template>
 

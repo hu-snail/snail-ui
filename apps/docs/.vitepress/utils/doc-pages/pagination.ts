@@ -52,7 +52,11 @@ import { Pagination } from '@snui/vue-web';
   },
   demos: [
     { name: 'pagination-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'pagination-web-jumper', title: '快速跳页', blurb: 'show-quick-jumper 跳页输入，回车提交。' },
+    {
+      name: 'pagination-web-jumper',
+      title: '快速跳页',
+      blurb: 'show-quick-jumper 跳页输入，回车提交。',
+    },
     {
       name: 'pagination-web-pagesize',
       title: '每页条数档位与数据量联动',

@@ -87,8 +87,7 @@ import { Tabs } from '@snui/uni';
     {
       name: 'tabs-mp-line',
       title: '底部条样式（line-theme）',
-      blurb:
-        'line-theme=normal/underline/dot 三种底部条；line-width/line-height 覆盖尺寸。',
+      blurb: 'line-theme=normal/underline/dot 三种底部条；line-width/line-height 覆盖尺寸。',
     },
     {
       name: 'tabs-mp-disabled',

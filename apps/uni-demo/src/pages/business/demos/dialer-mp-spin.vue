@@ -25,11 +25,7 @@ function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: numbe
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__title">默认（turns=6 / duration=3s）</text>
     <view class="dialer-stage">
-      <SnDialer
-        ref="slowRef"
-        :prize-list="prizes"
-        @click="spinToRandom(slowRef, prizes.length)"
-      />
+      <SnDialer ref="slowRef" :prize-list="prizes" @click="spinToRandom(slowRef, prizes.length)" />
     </view>
 
     <text class="sn-demo__title">turns=8 / duration=1.2（快节奏）</text>

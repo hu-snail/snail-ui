@@ -191,7 +191,10 @@ interface DemoManifestEntry {
 const mpPreviewUrl = computed(() => {
   const comp = uniCompFromRoute(route.path);
   const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
+  return uniDemoPageUrl(
+    entry?.page ?? 'pages/index/index',
+    uniDemoStateOf(isDark.value, lang.value),
+  );
 });
 
 /** Theme / locale sync into the inline uni frame (uni-demo-sync protocol). */

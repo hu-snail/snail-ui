@@ -12,9 +12,7 @@ const covered = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="warning" block @tap="covered = true">
-      cover（透明全屏遮罩阻挡点击）
-    </SnButton>
+    <SnButton type="warning" block @tap="covered = true"> cover（透明全屏遮罩阻挡点击） </SnButton>
 
     <text class="sn-demo__meta">toast 展示期间页面无法点击，duration 结束后自动恢复。</text>
 

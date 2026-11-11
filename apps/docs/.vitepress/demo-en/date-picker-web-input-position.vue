@@ -14,7 +14,9 @@ const bottomRange = ref<[number, number] | null>(null);
     </div>
     <div class="demo-row">
       <SnDatePicker v-model="bottomRange" type="datetimerange" input-position="bottom" />
-      <span class="demo-hint">input-position="bottom": input bar below the calendars (time popover opens upward)</span>
+      <span class="demo-hint"
+        >input-position="bottom": input bar below the calendars (time popover opens upward)</span
+      >
     </div>
   </div>
 </template>

@@ -96,8 +96,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-commit-timing',
       title: 'Commit timing & input attrs',
-      blurb:
-        'immediateChange=false; updateOnInit; inputType; adjustPosition.',
+      blurb: 'immediateChange=false; updateOnInit; inputType; adjustPosition.',
     },
     {
       name: 'input-number-mp-custom-class',

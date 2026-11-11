@@ -12,9 +12,7 @@ import { SnFloatButton } from '@snui/vue-web';
 
 <template>
   <div class="float-button-demo">
-    <p class="float-button-demo__hint">
-      链接根元素（<code>href</code> + <code>target</code>）。
-    </p>
+    <p class="float-button-demo__hint">链接根元素（<code>href</code> + <code>target</code>）。</p>
 
     <div class="float-button-demo__stage">
       <span class="float-button-demo__stage-label">position: relative 的容器</span>

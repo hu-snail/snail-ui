@@ -58,8 +58,16 @@ import { BackTop } from '@snui/vue-web';
       title: 'Top web target container',
       blurb: 'Top web target container',
     },
-    { name: 'back-top-web-control', title: 'Controlled visibility', blurb: 'Controlled by show; scroll ignored.' },
-    { name: 'back-top-web-custom-content', title: 'Custom content', blurb: 'Default slot replaces the icon.' },
+    {
+      name: 'back-top-web-control',
+      title: 'Controlled visibility',
+      blurb: 'Controlled by show; scroll ignored.',
+    },
+    {
+      name: 'back-top-web-custom-content',
+      title: 'Custom content',
+      blurb: 'Default slot replaces the icon.',
+    },
   ],
   props: {
     hint: [],

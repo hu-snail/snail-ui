@@ -88,7 +88,8 @@ import { Collapse } from '@snui/uni';
     {
       name: 'collapse-mp-more-slot',
       title: 'The `more` slot',
-      blurb: 'The #more slot customises the viewmore footer; custom-more-slot-class appends a class.',
+      blurb:
+        'The #more slot customises the viewmore footer; custom-more-slot-class appends a class.',
     },
     {
       name: 'collapse-mp-before-expend',

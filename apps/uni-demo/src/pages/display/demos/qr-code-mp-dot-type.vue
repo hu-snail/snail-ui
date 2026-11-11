@@ -14,7 +14,9 @@ import SnQrCode from '@snui/uni-src/components/sn-qr-code/sn-qr-code.vue';
       <SnQrCode text="https://snui.dev" :size="130" dot-type="rounded" />
       <SnQrCode text="https://snui.dev" :size="130" dot-type="liquid" />
     </view>
-    <text class="sn-demo__meta">dot-type：square / dots / rounded / liquid；dot-scale 缩小码点。</text>
+    <text class="sn-demo__meta"
+      >dot-type：square / dots / rounded / liquid；dot-scale 缩小码点。</text
+    >
   </view>
 </template>
 

@@ -67,7 +67,11 @@ import { Dialog } from '@snui/uni';
       title: 'Button theme (`theme`)',
       blurb: 'theme="text" renders borderless text buttons.',
     },
-    { name: 'dialog-mp-vertical', title: 'Vertical actions', blurb: 'actionLayout="vertical" stacks the buttons.' },
+    {
+      name: 'dialog-mp-vertical',
+      title: 'Vertical actions',
+      blurb: 'actionLayout="vertical" stacks the buttons.',
+    },
     {
       name: 'dialog-mp-actions',
       title: 'Custom actions and guards',

@@ -39,7 +39,9 @@ function onSort(payload: { prop: string; order: 'none' | 'asc' | 'desc' }) {
       <SnTableColumn prop="amount" label="金额" :width="110" align="right" sortable />
       <SnTableColumn prop="status" label="状态" :width="120" align="center" />
     </SnTable>
-    <text class="sn-demo__meta">点「金额」表头切换升序 / 降序 / 取消排序，数据由 @sort-method 驱动。</text>
+    <text class="sn-demo__meta"
+      >点「金额」表头切换升序 / 降序 / 取消排序，数据由 @sort-method 驱动。</text
+    >
   </view>
 </template>
 

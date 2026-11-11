@@ -9,9 +9,7 @@ import { SnLink } from '@snui/vue-web';
       <SnLink type="primary" href="#underline-off"
         >underline = false (default, shown on hover)</SnLink
       >
-      <SnLink type="primary" underline href="#underline-on"
-        >underline = true (always shown)</SnLink
-      >
+      <SnLink type="primary" underline href="#underline-on">underline = true (always shown)</SnLink>
     </div>
   </div>
 </template>

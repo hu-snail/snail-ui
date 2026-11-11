@@ -90,7 +90,8 @@ import { Radio } from '@snui/uni';
     {
       name: 'radio-mp-colors',
       title: 'Checked colors (`checkedColor` / `uncheckedColor`)',
-      blurb: '`checkedColor` / `uncheckedColor` flow down from the group with a per-option override.',
+      blurb:
+        '`checkedColor` / `uncheckedColor` flow down from the group with a per-option override.',
     },
     {
       name: 'radio-mp-custom-style',

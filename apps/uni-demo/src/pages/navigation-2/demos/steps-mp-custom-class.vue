@@ -13,7 +13,9 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
     </SnSteps>
-    <text class="sn-demo__meta">custom-class="steps-brand" 给根节点挂自定义类，便于宿主覆盖内部样式。</text>
+    <text class="sn-demo__meta"
+      >custom-class="steps-brand" 给根节点挂自定义类，便于宿主覆盖内部样式。</text
+    >
   </view>
 </template>
 

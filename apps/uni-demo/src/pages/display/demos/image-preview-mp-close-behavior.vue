@@ -18,7 +18,9 @@ const images = ['/demo/snui-photo-2.jpg', '/demo/snui-photo-3.jpg'];
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton size="small" @tap="preview?.open()">打开（不循环 / 无关闭按钮 / 点遮罩不关）</SnButton>
+    <SnButton size="small" @tap="preview?.open()"
+      >打开（不循环 / 无关闭按钮 / 点遮罩不关）</SnButton
+    >
 
     <SnImagePreview
       ref="preview"

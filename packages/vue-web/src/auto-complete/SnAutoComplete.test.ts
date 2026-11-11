@@ -310,7 +310,9 @@ describe('SnAutoComplete', () => {
 
     // Listener must be removed on unmount — dispatch after unmount is a no-op.
     wrapper.unmount();
-    expect(() => document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))).not.toThrow();
+    expect(() =>
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })),
+    ).not.toThrow();
   });
 
   it('exposes aria combobox wiring on the input and listbox in the panel', async () => {

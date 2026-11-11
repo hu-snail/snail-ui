@@ -92,8 +92,7 @@ import { Table } from '@snui/uni';
     {
       name: 'table-mp-border-stripe',
       title: '边框与斑马纹（border / stripe）',
-      blurb:
-        'border / stripe 开关对比；附带 customClass / customStyle 根节点样式。',
+      blurb: 'border / stripe 开关对比；附带 customClass / customStyle 根节点样式。',
     },
     {
       name: 'table-mp-header',

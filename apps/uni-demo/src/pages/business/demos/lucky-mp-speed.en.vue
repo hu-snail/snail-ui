@@ -39,7 +39,9 @@ function scheduleStop(lucky: InstanceType<typeof SnLucky> | null, count: number)
       :speed="120"
       @start="scheduleStop(slowRef, coloredPrizes.length)"
     />
-    <text class="sn-demo__meta">speed is the highlight step interval (ms); color only affects the highlight background</text>
+    <text class="sn-demo__meta"
+      >speed is the highlight step interval (ms); color only affects the highlight background</text
+    >
   </view>
 </template>
 

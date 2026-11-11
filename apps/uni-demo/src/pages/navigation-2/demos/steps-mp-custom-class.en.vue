@@ -13,7 +13,10 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
       <SnStep title="Pay" description="09:05" />
       <SnStep title="Ship" description="Pending" />
     </SnSteps>
-    <text class="sn-demo__meta">custom-class="steps-brand" mounts a custom class on the root for host-side style overrides.</text>
+    <text class="sn-demo__meta"
+      >custom-class="steps-brand" mounts a custom class on the root for host-side style
+      overrides.</text
+    >
   </view>
 </template>
 

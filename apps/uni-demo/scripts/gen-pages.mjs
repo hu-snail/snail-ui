@@ -282,7 +282,8 @@ const SCENARIO_LABEL_OVERRIDES = {
   'search-disabled': '禁用（`disabled`）',
   'search-maxlength': '字数上限（`maxlength`）',
   'search-focus': '聚焦（`focus` / `focusWhenClear`）',
-  'search-custom-style': '输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`)',
+  'search-custom-style':
+    '输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`)',
   'search-placeholder-style': '占位符样式（`placeholderStyle` / `placeholderClass`）',
   'select-picker-type-radio': '单选模式（`type=radio`）',
   'select-picker-filterable': '可搜索（`filterable`）',
@@ -707,7 +708,8 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'calendar-first-day-of-week': 'First day of week (firstDayOfWeek)',
   'calendar-formatter': 'Cell formatting (formatter)',
   'calendar-range-constraints': 'Range constraints (maxRange / allowSameDay / defaultTime)',
-  'calendar-shortcuts-events': 'Shortcut callback & confirm veto (onShortcutsClick / beforeConfirm)',
+  'calendar-shortcuts-events':
+    'Shortcut callback & confirm veto (onShortcutsClick / beforeConfirm)',
   'calendar-declared-props': 'Declared parity props (timeFilter / hideSecond etc.)',
   'calendar-panel': 'Panel size & switching (panelHeight / switchMode)',
   'calendar-immediate-change': 'Immediate write-back (immediateChange)',
@@ -825,7 +827,8 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'search-disabled': 'Disabled (`disabled`)',
   'search-maxlength': 'Character cap (`maxlength`)',
   'search-focus': 'Focus (`focus` / `focusWhenClear`)',
-  'search-custom-style': 'Inner-input & root styling (`customInputClass` / `customClass` / `customStyle`)',
+  'search-custom-style':
+    'Inner-input & root styling (`customInputClass` / `customClass` / `customStyle`)',
   'search-placeholder-style': 'Placeholder styling (`placeholderStyle` / `placeholderClass`)',
   'select-picker-type-radio': 'Radio mode (`type=radio`)',
   'select-picker-filterable': 'Filterable (`filterable`)',

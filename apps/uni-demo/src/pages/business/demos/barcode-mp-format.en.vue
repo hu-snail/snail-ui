@@ -16,7 +16,9 @@ import SnBarcode from '@snui/uni-src/components/sn-barcode/sn-barcode.vue';
       <SnBarcode text="69012345" format="EAN8" :module-width="2" />
       <SnBarcode text="012345678905" format="UPC" :module-width="2" />
     </view>
-    <text class="sn-demo__meta">EAN series auto-computes the check digit; invalid input goes through the error event</text>
+    <text class="sn-demo__meta"
+      >EAN series auto-computes the check digit; invalid input goes through the error event</text
+    >
   </view>
 </template>
 

@@ -77,7 +77,8 @@ import { Tour } from '@snui/uni';
     {
       name: 'tour-mp-z-index',
       title: 'Stacking & duration',
-      blurb: 'duration overrides the animation length; z-index lifts the layer; custom-class on the root.',
+      blurb:
+        'duration overrides the animation length; z-index lifts the layer; custom-class on the root.',
     },
   ],
   props: {

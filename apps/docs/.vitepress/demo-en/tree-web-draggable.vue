@@ -92,7 +92,8 @@ function handleDrop(info: SnTreeDropInfo): void {
 <template>
   <div class="sn-demo">
     <p class="sn-demo__hint">
-      Drag onto the top / bottom edge of a row to reorder siblings, or into a folder to nest it; guide lines draw the vertical indent only.
+      Drag onto the top / bottom edge of a row to reorder siblings, or into a folder to nest it;
+      guide lines draw the vertical indent only.
     </p>
     <div class="sn-demo__tree">
       <SnTree

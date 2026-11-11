@@ -12,7 +12,9 @@ const noSafeArea = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="eager = true">lazy-render=false (renders up front)</SnButton>
+    <SnButton type="primary" block @tap="eager = true"
+      >lazy-render=false (renders up front)</SnButton
+    >
     <SnButton block @tap="noSafeArea = true">safe-area-inset-bottom (bottom safe area)</SnButton>
 
     <text class="sn-demo__meta">

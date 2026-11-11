@@ -25,7 +25,8 @@ const current = ref(0);
       :autoplay="false"
     />
     <text class="sn-demo__meta">
-      imageMode 透传给内部 sn-img：aspectFit 完整显示图片并露出底盘（对比默认 scaleToFill 的铺满裁切）。
+      imageMode 透传给内部 sn-img：aspectFit 完整显示图片并露出底盘（对比默认 scaleToFill
+      的铺满裁切）。
     </text>
   </view>
 </template>

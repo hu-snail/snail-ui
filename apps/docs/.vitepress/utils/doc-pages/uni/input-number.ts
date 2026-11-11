@@ -104,8 +104,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-commit-timing',
       title: '提交时机与输入属性',
-      blurb:
-        'immediateChange=false；updateOnInit；inputType；adjustPosition。',
+      blurb: 'immediateChange=false；updateOnInit；inputType；adjustPosition。',
     },
     {
       name: 'input-number-mp-custom-class',

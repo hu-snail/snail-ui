@@ -14,7 +14,9 @@ const options = [
   <view class="sn-demo sn-demo--column">
     <SnSegmented v-model="picked" :options="options" />
     <SnSegmented :options="options" disabled />
-    <text class="sn-demo__meta">第一组：item 级 disabled 禁用单个选项；第二组：整控 disabled。</text>
+    <text class="sn-demo__meta"
+      >第一组：item 级 disabled 禁用单个选项；第二组：整控 disabled。</text
+    >
   </view>
 </template>
 

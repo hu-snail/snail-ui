@@ -14,7 +14,10 @@ const plainSteps = [
 
 const tintedVisible = ref(false);
 const tintedCurrent = ref(0);
-const tintedSteps = [{ content: 'mask-color overrides the scrim background.' }, { content: 'Second step.' }];
+const tintedSteps = [
+  { content: 'mask-color overrides the scrim background.' },
+  { content: 'Second step.' },
+];
 </script>
 
 <template>

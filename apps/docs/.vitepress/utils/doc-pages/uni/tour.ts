@@ -73,7 +73,8 @@ import { Tour } from '@snui/uni';
     {
       name: 'tour-mp-panel-slot',
       title: '自定义面板与按钮',
-      blurb: 'show-tour-buttons=false 隐藏默认按钮；#footer 自定义操作区；#default 自定义面板正文。',
+      blurb:
+        'show-tour-buttons=false 隐藏默认按钮；#footer 自定义操作区；#default 自定义面板正文。',
     },
     {
       name: 'tour-mp-z-index',

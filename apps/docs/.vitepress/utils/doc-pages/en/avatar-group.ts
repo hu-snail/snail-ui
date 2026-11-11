@@ -45,7 +45,11 @@ import { AvatarGroup } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'avatar-group-web-basic', title: 'Basic group', blurb: 'A single default tightening group.' },
+    {
+      name: 'avatar-group-web-basic',
+      title: 'Basic group',
+      blurb: 'A single default tightening group.',
+    },
     {
       name: 'avatar-group-web-max',
       title: 'Overflow cap and expand callback',

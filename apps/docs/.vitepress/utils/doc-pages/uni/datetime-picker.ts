@@ -94,8 +94,7 @@ import { DatetimePicker } from '@snui/uni';
     {
       name: 'datetime-picker-mp-time-bounds',
       title: '时分秒边界',
-      blurb:
-        'minHour / maxHour / minMinute / maxMinute；useSecond + minSecond / maxSecond。',
+      blurb: 'minHour / maxHour / minMinute / maxMinute；useSecond + minSecond / maxSecond。',
     },
     {
       name: 'datetime-picker-mp-column-format',

@@ -68,7 +68,8 @@ import { SlideVerify } from '@snui/uni';
     {
       name: 'slide-verify-mp-color',
       title: 'Track colors (`backgroundColor`)',
-      blurb: '`backgroundColor` / `activeBackgroundColor` override the track fill and the dragged-over tint.',
+      blurb:
+        '`backgroundColor` / `activeBackgroundColor` override the track fill and the dragged-over tint.',
     },
     {
       name: 'slide-verify-mp-disabled',

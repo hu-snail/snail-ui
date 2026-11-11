@@ -48,8 +48,8 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">Trigger icon dual-track</text>
       <text class="sn-fab-demo__hint-text">
-        Bottom-left: icon-name track (Edit ↔ X); bottom-right: trigger slot IconData (Sparkles ↔
-        X). Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
+        Bottom-left: icon-name track (Edit ↔ X); bottom-right: trigger slot IconData (Sparkles ↔ X).
+        Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
       </text>
     </view>
 

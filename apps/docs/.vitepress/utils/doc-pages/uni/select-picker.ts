@@ -78,7 +78,8 @@ import { SelectPicker } from '@snui/uni';
     {
       name: 'select-picker-mp-chip-size',
       title: 'chip 尺寸与确认（`selectSize` / `showConfirm`）',
-      blurb: 'selectSize 控制 chip 尺寸档位；showConfirm=false 隐藏确认按钮；confirmButtonText 覆盖文案。',
+      blurb:
+        'selectSize 控制 chip 尺寸档位；showConfirm=false 隐藏确认按钮；confirmButtonText 覆盖文案。',
     },
     {
       name: 'select-picker-mp-checked-color',

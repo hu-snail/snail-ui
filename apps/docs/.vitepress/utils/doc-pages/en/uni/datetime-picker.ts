@@ -90,8 +90,7 @@ import { DatetimePicker } from '@snui/uni';
     {
       name: 'datetime-picker-mp-time-bounds',
       title: 'Hour-minute-second bounds',
-      blurb:
-        'minHour / maxHour / minMinute / maxMinute; useSecond + minSecond / maxSecond.',
+      blurb: 'minHour / maxHour / minMinute / maxMinute; useSecond + minSecond / maxSecond.',
     },
     {
       name: 'datetime-picker-mp-column-format',

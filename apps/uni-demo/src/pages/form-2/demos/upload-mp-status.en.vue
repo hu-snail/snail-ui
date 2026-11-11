@@ -19,7 +19,9 @@ const files = ref<UploadFileItem[]>([
 <template>
   <view class="sn-demo sn-demo--column">
     <SnUpload :file-list="files" :auto-upload="false" />
-    <text class="sn-demo__meta">status="success" renders done; status="fail" renders the failure state</text>
+    <text class="sn-demo__meta"
+      >status="success" renders done; status="fail" renders the failure state</text
+    >
   </view>
 </template>
 

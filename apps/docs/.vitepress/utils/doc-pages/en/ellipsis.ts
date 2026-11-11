@@ -43,7 +43,11 @@ import { Ellipsis } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'ellipsis-web-basic', title: 'Basic clamping', blurb: 'Single-line ellipsis; no bubble when not overflowing.' },
+    {
+      name: 'ellipsis-web-basic',
+      title: 'Basic clamping',
+      blurb: 'Single-line ellipsis; no bubble when not overflowing.',
+    },
     {
       name: 'ellipsis-web-lines',
       title: 'Single line vs multi-line',

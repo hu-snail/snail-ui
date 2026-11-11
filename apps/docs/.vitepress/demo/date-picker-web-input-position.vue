@@ -14,7 +14,9 @@ const bottomRange = ref<[number, number] | null>(null);
     </div>
     <div class="demo-row">
       <SnDatePicker v-model="bottomRange" type="datetimerange" input-position="bottom" />
-      <span class="demo-hint">input-position="bottom"：输入框栏置于月历下方（时间弹层向上打开）</span>
+      <span class="demo-hint"
+        >input-position="bottom"：输入框栏置于月历下方（时间弹层向上打开）</span
+      >
     </div>
   </div>
 </template>

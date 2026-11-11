@@ -40,13 +40,7 @@ const guard = (payload: { value: string | number | Array<string | number> }) => 
       >beforeConfirm vetoes the confirm, with its verdict reported by the guard card row.</text
     >
     <view class="sn-demo__cards">
-      <SnCell
-        card
-        title="Alert region"
-        placeholder="Please select"
-        is-link
-        @click="open = true"
-      />
+      <SnCell card title="Alert region" placeholder="Please select" is-link @click="open = true" />
       <SnCell card title="Confirm guard" :value="lastGuard" />
     </view>
     <SnCascader

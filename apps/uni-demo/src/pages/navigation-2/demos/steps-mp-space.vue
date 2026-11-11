@@ -17,7 +17,9 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
       <SnStep title="发货" description="待处理" />
     </SnSteps>
 
-    <text class="sn-demo__meta">space="120rpx" 拉开间距；align-center 让步骤条整体居中（仅横向）。</text>
+    <text class="sn-demo__meta"
+      >space="120rpx" 拉开间距；align-center 让步骤条整体居中（仅横向）。</text
+    >
   </view>
 </template>
 

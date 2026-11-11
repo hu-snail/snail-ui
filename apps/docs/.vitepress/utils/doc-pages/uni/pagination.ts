@@ -82,7 +82,8 @@ import { Pagination } from '@snui/uni';
     {
       name: 'pagination-mp-slots',
       title: '插槽自定义',
-      blurb: 'prev / size / next / message 四个插槽自定义；custom-class / custom-style 落在根节点。',
+      blurb:
+        'prev / size / next / message 四个插槽自定义；custom-class / custom-style 落在根节点。',
     },
   ],
   props: {

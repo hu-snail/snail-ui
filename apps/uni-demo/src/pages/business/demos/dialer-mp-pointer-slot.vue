@@ -23,11 +23,7 @@ function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: numbe
 <template>
   <view class="sn-demo sn-demo--column">
     <view class="dialer-stage">
-      <SnDialer
-        ref="slotRef"
-        :prize-list="prizes"
-        @click="spinToRandom(slotRef, prizes.length)"
-      >
+      <SnDialer ref="slotRef" :prize-list="prizes" @click="spinToRandom(slotRef, prizes.length)">
         <template #pointer>
           <view class="pointer-go">
             <text class="pointer-go__text">Start</text>

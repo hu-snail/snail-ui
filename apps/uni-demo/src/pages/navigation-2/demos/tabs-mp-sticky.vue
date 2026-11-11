@@ -19,7 +19,9 @@ const stickyActive = ref(0);
       <SnTab title="热榜" :name="2">热榜内容</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__meta">sticky + offset-top=12：页签条吸顶并留出偏移；当前页签：{{ stickyActive }}</text>
+    <text class="sn-demo__meta"
+      >sticky + offset-top=12：页签条吸顶并留出偏移；当前页签：{{ stickyActive }}</text
+    >
   </view>
 </template>
 

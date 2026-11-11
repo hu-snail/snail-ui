@@ -32,8 +32,8 @@ const clip = {
     />
 
     <text class="sn-demo__meta">
-      z-index is forwarded to the inner sn-popup; customStyle is appended to the layer root's
-      inline style (a radius here).
+      z-index is forwarded to the inner sn-popup; customStyle is appended to the layer root's inline
+      style (a radius here).
     </text>
   </view>
 </template>

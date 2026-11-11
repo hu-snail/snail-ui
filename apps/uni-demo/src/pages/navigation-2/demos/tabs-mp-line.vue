@@ -43,7 +43,9 @@ const dotActive = ref(0);
       <SnTab title="月" :name="2">按月统计</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__meta">当前页签：{{ normalActive }} / {{ underlineActive }} / {{ dotActive }}</text>
+    <text class="sn-demo__meta"
+      >当前页签：{{ normalActive }} / {{ underlineActive }} / {{ dotActive }}</text
+    >
   </view>
 </template>
 

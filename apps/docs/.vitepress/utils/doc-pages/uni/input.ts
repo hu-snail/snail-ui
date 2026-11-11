@@ -142,7 +142,7 @@ import { Input } from '@snui/uni';
     {
       name: 'input-mp-clear-trigger',
       title: '清空按钮细节（clearTrigger / focusWhenClear）',
-      blurb: "clearTrigger always / focus；focusWhenClear。",
+      blurb: 'clearTrigger always / focus；focusWhenClear。',
     },
     {
       name: 'input-mp-focus',

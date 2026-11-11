@@ -63,9 +63,17 @@ import { Dialog } from '@snui/uni';
   },
   demos: [
     { name: 'dialog-mp-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'dialog-mp-icon', title: '状态图标（icon）', blurb: 'icon 状态图标；icon-color 自定义颜色。' },
+    {
+      name: 'dialog-mp-icon',
+      title: '状态图标（icon）',
+      blurb: 'icon 状态图标；icon-color 自定义颜色。',
+    },
     { name: 'dialog-mp-theme', title: '按钮主题（theme）', blurb: 'theme="text" 文本按钮形态。' },
-    { name: 'dialog-mp-vertical', title: '竖排操作区（actionLayout）', blurb: 'actionLayout="vertical" 按钮纵向排列。' },
+    {
+      name: 'dialog-mp-vertical',
+      title: '竖排操作区（actionLayout）',
+      blurb: 'actionLayout="vertical" 按钮纵向排列。',
+    },
     { name: 'dialog-mp-actions', title: '自定义操作与拦截', blurb: '自定义操作与拦截' },
     { name: 'dialog-mp-custom', title: '自定义面板样式', blurb: '自定义面板样式' },
   ],

@@ -23,11 +23,7 @@ const clip = {
   <view class="sn-demo sn-demo--column">
     <SnButton size="small" @tap="preview?.open(clip)">打开（关闭按钮右上）</SnButton>
 
-    <SnVideoPreview
-      ref="preview"
-      close-position="right-top"
-      custom-class="sn-demo-contained"
-    />
+    <SnVideoPreview ref="preview" close-position="right-top" custom-class="sn-demo-contained" />
 
     <text class="sn-demo__meta">closePosition 指定关闭按钮位置，这里用 right-top。</text>
   </view>

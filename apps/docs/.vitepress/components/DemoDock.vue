@@ -76,7 +76,10 @@ interface DemoManifestEntry {
 const dockPreviewUrl = computed(() => {
   const comp = uniCompFromRoute(route.path);
   const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
+  return uniDemoPageUrl(
+    entry?.page ?? 'pages/index/index',
+    uniDemoStateOf(isDark.value, lang.value),
+  );
 });
 
 /**

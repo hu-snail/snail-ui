@@ -74,7 +74,8 @@ import { Sidebar } from '@snui/uni';
     {
       name: 'sidebar-mp-badge',
       title: 'Badges (`badge` / `is-dot`)',
-      blurb: 'badge renders a numeric marker; is-dot renders a dot (the max cap lives in sidebar-mp-guard).',
+      blurb:
+        'badge renders a numeric marker; is-dot renders a dot (the max cap lives in sidebar-mp-guard).',
     },
     {
       name: 'sidebar-mp-disabled',

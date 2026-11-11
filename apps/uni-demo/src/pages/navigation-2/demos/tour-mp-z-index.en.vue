@@ -25,7 +25,9 @@ const steps = [{ content: 'duration=150 + z-index=60.' }, { content: 'Second ste
       />
     </view>
 
-    <text class="sn-demo__meta">duration=150 overrides the animation length; z-index=60 lifts the layer.</text>
+    <text class="sn-demo__meta"
+      >duration=150 overrides the animation length; z-index=60 lifts the layer.</text
+    >
   </view>
 </template>
 

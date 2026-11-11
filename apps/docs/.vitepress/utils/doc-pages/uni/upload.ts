@@ -97,7 +97,8 @@ import { Upload } from '@snui/uni';
     {
       name: 'upload-mp-custom-style',
       title: '三层样式挂载点',
-      blurb: 'customEvokeClass 改选择瓦片；customPreviewClass 改文件瓦片；customClass / customStyle 改根节点。',
+      blurb:
+        'customEvokeClass 改选择瓦片；customPreviewClass 改文件瓦片；customClass / customStyle 改根节点。',
     },
     {
       name: 'upload-mp-request-method',

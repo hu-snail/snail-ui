@@ -46,8 +46,9 @@ function pick(label: string): void {
     <view class="sn-fab-demo__hint">
       <text class="sn-fab-demo__hint-title">触发图标双轨</text>
       <text class="sn-fab-demo__hint-text">
-        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）。
-        最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）。 最近选择：{{
+          lastAction === '' ? '尚未选择' : lastAction
+        }}
       </text>
     </view>
 

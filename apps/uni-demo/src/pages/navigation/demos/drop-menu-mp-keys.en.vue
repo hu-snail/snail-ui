@@ -28,7 +28,9 @@ const options = [
       custom-class="sn-demo-contained"
     />
 
-    <text class="sn-drop-menu-demo__meta">Current value: {{ value || 'none' }} (from the id field)</text>
+    <text class="sn-drop-menu-demo__meta"
+      >Current value: {{ value || 'none' }} (from the id field)</text
+    >
   </view>
 </template>
 

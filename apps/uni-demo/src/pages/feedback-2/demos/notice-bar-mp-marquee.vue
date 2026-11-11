@@ -8,11 +8,7 @@ import SnNoticeBar from '@snui/uni-src/components/sn-notice-bar/sn-notice-bar.vu
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnNoticeBar
-      type="warning"
-      :delay="3"
-      text="delay=3：跑马灯延迟 3 秒才开始滚动。"
-    />
+    <SnNoticeBar type="warning" :delay="3" text="delay=3：跑马灯延迟 3 秒才开始滚动。" />
 
     <SnNoticeBar
       type="danger"

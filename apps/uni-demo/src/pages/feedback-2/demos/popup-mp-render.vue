@@ -21,7 +21,13 @@ const noSafeArea = ref(false);
       留白；root-portal 仅为 wot-ui 对齐而声明，小程序没有 portal 宿主，传 true 不改变层级。
     </text>
 
-    <SnPopup v-model="eager" position="center" round :lazy-render="false" custom-class="sn-demo-contained">
+    <SnPopup
+      v-model="eager"
+      position="center"
+      round
+      :lazy-render="false"
+      custom-class="sn-demo-contained"
+    >
       <view class="sn-demo__body">
         <text class="sn-demo__title">lazyRender = false</text>
         <text class="sn-demo__text">

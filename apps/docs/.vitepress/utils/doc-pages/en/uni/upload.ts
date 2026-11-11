@@ -73,7 +73,8 @@ import { Upload } from '@snui/uni';
     {
       name: 'upload-mp-status',
       title: 'File status rendering (`status`)',
-      blurb: 'The list renders from `status`: `success` shows done, `fail` shows the failure state.',
+      blurb:
+        'The list renders from `status`: `success` shows done, `fail` shows the failure state.',
     },
     {
       name: 'upload-mp-multiple-source',

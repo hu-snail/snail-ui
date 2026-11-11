@@ -86,7 +86,8 @@ import { PickerView } from '@snui/uni';
     {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
-      blurb: '`customClass` / `customStyle` land on the root and restyle the roller frame and fill.',
+      blurb:
+        '`customClass` / `customStyle` land on the root and restyle the roller frame and fill.',
     },
   ],
   props: {

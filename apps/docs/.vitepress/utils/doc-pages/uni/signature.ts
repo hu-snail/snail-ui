@@ -105,7 +105,8 @@ import { Signature } from '@snui/uni';
     {
       name: 'signature-mp-stroke',
       title: '笔迹参数（`pressure` / `lineWidth`）',
-      blurb: 'pressure / maxWidth / minWidth / minSpeed（压感模拟未实现）；lineWidth 直接控制笔宽。',
+      blurb:
+        'pressure / maxWidth / minWidth / minSpeed（压感模拟未实现）；lineWidth 直接控制笔宽。',
     },
   ],
   props: {

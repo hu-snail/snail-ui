@@ -60,8 +60,7 @@ import { CalendarView } from '@snui/uni';
     {
       name: 'calendar-view-mp-range',
       title: 'Range selection (type="daterange")',
-      blurb:
-        '`type=daterange` selects a span; `maxRange` caps it and shows the prompt.',
+      blurb: '`type=daterange` selects a span; `maxRange` caps it and shows the prompt.',
     },
     {
       name: 'calendar-view-mp-switch-mode',
@@ -91,8 +90,7 @@ import { CalendarView } from '@snui/uni';
     {
       name: 'calendar-view-mp-default-time',
       title: 'Default time & immediate write-back',
-      blurb:
-        '`defaultTime` sets the clock time written back; `immediateChange` fires on tap.',
+      blurb: '`defaultTime` sets the clock time written back; `immediateChange` fires on tap.',
     },
     {
       name: 'calendar-view-mp-time-props',

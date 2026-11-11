@@ -95,7 +95,8 @@ import { Search } from '@snui/uni';
     {
       name: 'search-mp-custom-style',
       title: '输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`）',
-      blurb: 'customInputClass 追加到内部输入节点；customClass / customStyle 改根包装的外框与底色。',
+      blurb:
+        'customInputClass 追加到内部输入节点；customClass / customStyle 改根包装的外框与底色。',
     },
     {
       name: 'search-mp-placeholder-style',

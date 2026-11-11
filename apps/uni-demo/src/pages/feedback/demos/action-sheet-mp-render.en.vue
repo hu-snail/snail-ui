@@ -18,7 +18,9 @@ const actions = [
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="eager = true">lazy-render=false (renders up front)</SnButton>
+    <SnButton type="primary" block @tap="eager = true"
+      >lazy-render=false (renders up front)</SnButton
+    >
     <SnButton block @tap="noSafeArea = true">safe-area-inset-bottom=false</SnButton>
 
     <text class="sn-demo__meta">

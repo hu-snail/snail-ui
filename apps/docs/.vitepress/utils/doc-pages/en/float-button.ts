@@ -46,7 +46,11 @@ import { FloatButton } from '@snui/vue-web';
     { name: 'float-button-web-group', title: 'Group', blurb: 'Group' },
     { name: 'float-button-web-direction', title: 'Opening direction', blurb: 'Opening direction' },
     { name: 'float-button-web-badge', title: 'Badge', blurb: 'badge count bubble + badge-dot.' },
-    { name: 'float-button-web-link', title: 'Link button', blurb: 'href + target switch to an <a> root.' },
+    {
+      name: 'float-button-web-link',
+      title: 'Link button',
+      blurb: 'href + target switch to an <a> root.',
+    },
   ],
   props: {
     hint: [],

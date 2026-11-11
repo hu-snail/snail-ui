@@ -27,7 +27,9 @@ const iconActive = ref(0);
       <SnTab title="Saved" :name="2" icon="star">Saved items</SnTab>
     </SnTabs>
 
-    <text class="sn-demo__meta">Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text>
+    <text class="sn-demo__meta"
+      >Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text
+    >
   </view>
 </template>
 

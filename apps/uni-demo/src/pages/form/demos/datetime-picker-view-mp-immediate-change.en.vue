@@ -9,12 +9,7 @@ const changes = ref(0);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnDatetimePickerView
-      v-model="instant"
-      type="date"
-      immediate-change
-      @change="changes += 1"
-    />
+    <SnDatetimePickerView v-model="instant" type="date" immediate-change @change="changes += 1" />
     <text class="sn-demo__meta"
       >immediateChange (emits change on every roll; fired {{ changes }} times)</text
     >

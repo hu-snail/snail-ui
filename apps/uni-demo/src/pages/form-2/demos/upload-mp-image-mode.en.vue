@@ -28,7 +28,12 @@ const photos = ref<UploadFileItem[]>([
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnUpload v-model:file-list="photos" :image-mode="'aspectFit'" :limit="4" :auto-upload="false" />
+    <SnUpload
+      v-model:file-list="photos"
+      :image-mode="'aspectFit'"
+      :limit="4"
+      :auto-upload="false"
+    />
     <text class="sn-demo__meta"
       >imageMode="aspectFit": the whole image stays visible, no cropping</text
     >

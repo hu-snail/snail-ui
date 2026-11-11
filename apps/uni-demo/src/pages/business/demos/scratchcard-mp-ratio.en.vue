@@ -16,7 +16,9 @@ function resetAll(): void {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <text class="sn-demo__title">ratio threshold: 0.3 opens easily vs 0.9 needs a full scratch</text>
+    <text class="sn-demo__title"
+      >ratio threshold: 0.3 opens easily vs 0.9 needs a full scratch</text
+    >
     <view class="scratch-pair">
       <SnScratchcard
         ref="easyRef"

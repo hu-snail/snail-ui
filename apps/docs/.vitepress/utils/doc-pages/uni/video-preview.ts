@@ -77,8 +77,7 @@ import { VideoPreview } from '@snui/uni';
     {
       name: 'video-preview-mp-selector',
       title: '实例标识（selector）',
-      blurb:
-        'selector 渲染成 data-selector（实例标识）；附带 on-open / on-close 回调计数。',
+      blurb: 'selector 渲染成 data-selector（实例标识）；附带 on-open / on-close 回调计数。',
     },
     {
       name: 'video-preview-mp-layer',

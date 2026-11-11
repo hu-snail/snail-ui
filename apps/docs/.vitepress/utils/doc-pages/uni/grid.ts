@@ -68,7 +68,8 @@ import { Grid } from '@snui/uni';
     {
       name: 'grid-mp-look',
       title: '外观（bg-color / center / icon-size）',
-      blurb: 'bg-color 背景色；center=false 顶对齐；icon-size 图标尺寸；custom-class / custom-style。',
+      blurb:
+        'bg-color 背景色；center=false 顶对齐；icon-size 图标尺寸；custom-class / custom-style。',
     },
   ],
   props: {

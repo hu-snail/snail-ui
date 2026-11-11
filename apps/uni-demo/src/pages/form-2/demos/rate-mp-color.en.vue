@@ -12,7 +12,9 @@ const colored = ref<number | null>(3);
       v-model="colored"
       :active-color="['var(--sn-mp-color-feedback-danger)', 'var(--sn-mp-color-feedback-warning)']"
     />
-    <text class="sn-demo__meta">activeColor as an array: one color per icon (red → orange → …)</text>
+    <text class="sn-demo__meta"
+      >activeColor as an array: one color per icon (red → orange → …)</text
+    >
   </view>
 </template>
 

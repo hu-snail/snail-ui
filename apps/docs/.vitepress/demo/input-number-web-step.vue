@@ -9,7 +9,14 @@ const strict = ref(25);
 <template>
   <div class="demo-row">
     <SnInputNumber v-model="stepped" :min="0" :max="100" :step="5" class="demo-field" />
-    <SnInputNumber v-model="strict" :min="0" :max="100" :step="25" step-strictly class="demo-field" />
+    <SnInputNumber
+      v-model="strict"
+      :min="0"
+      :max="100"
+      :step="25"
+      step-strictly
+      class="demo-field"
+    />
   </div>
 </template>
 
