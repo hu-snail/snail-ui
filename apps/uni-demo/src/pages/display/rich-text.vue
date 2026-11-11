@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— rich-text 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/rich-text-mp-basic.vue';
-import Demo1 from './demos/rich-text-mp-images.vue';
-import Demo2 from './demos/rich-text-mp-links.vue';
-import Demo3 from './demos/rich-text-mp-media.vue';
-import Demo4 from './demos/rich-text-mp-styles.vue';
-import Demo5 from './demos/rich-text-mp-table.vue';
+import Demo0 from './demos/rich-text-mp-anchor.vue';
+import Demo1 from './demos/rich-text-mp-basic.vue';
+import Demo2 from './demos/rich-text-mp-empty.vue';
+import Demo3 from './demos/rich-text-mp-images.vue';
+import Demo4 from './demos/rich-text-mp-links.vue';
+import Demo5 from './demos/rich-text-mp-media.vue';
+import Demo6 from './demos/rich-text-mp-style-map.vue';
+import Demo7 from './demos/rich-text-mp-table.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,39 +25,59 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="t('锚点目录（enableAnchor）', 'Heading anchors (`enableAnchor`)')"
+          badge="anchor"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('images', 'Images')" badge="images" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('links', 'Links')" badge="links" />
+        <DemoModuleHead :title="t('空状态插槽', 'Empty state slot')" badge="empty" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('media', 'Media')" badge="media" />
+        <DemoModuleHead :title="t('images', 'Images')" badge="images" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('styles', 'Styles')" badge="styles" />
+        <DemoModuleHead :title="t('links', 'Links')" badge="links" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('table', 'Table')" badge="table" />
+        <DemoModuleHead :title="t('media', 'Media')" badge="media" />
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('样式映射（tagStyle / classStyles）', 'Style maps (`tagStyle` / `classStyles`)')
+          "
+          badge="style-map"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('table', 'Table')" badge="table" />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

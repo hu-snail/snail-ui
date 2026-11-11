@@ -11,7 +11,7 @@ export const avatarDocPage: SnDocPageData = {
   title: 'Avatar',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '头像组件。图片 / 文字缩略 / 图标三态，加载失败自动 fallback。' }],

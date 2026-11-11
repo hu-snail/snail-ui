@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-tag (uni-end) — 五档尺寸；round 胶囊 / mark 标记两种形态叠加。 */
+/** Demo: sn-tag (uni-end) — 尺寸档位。 */
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 
 /** 尺寸档位自 小 到 超大，default 为基准档。 */
@@ -12,12 +12,6 @@ const sizes = ['small', 'default', 'large', 'extra-large'] as const;
       <SnTag v-for="size in sizes" :key="size" type="primary" :size="size">
         {{ size }}
       </SnTag>
-    </view>
-    <view class="sn-demo__row">
-      <SnTag type="primary">直角</SnTag>
-      <SnTag type="primary" round>胶囊</SnTag>
-      <SnTag type="primary" mark>标记</SnTag>
-      <SnTag type="primary" round mark>胶囊 + 标记</SnTag>
     </view>
   </view>
 </template>

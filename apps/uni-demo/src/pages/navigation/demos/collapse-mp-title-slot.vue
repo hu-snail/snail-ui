@@ -1,0 +1,66 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — `title` 插槽、`custom-body-class` 与 item 级 `border`。
+ *
+ * - `title` 插槽作用域 `{ expanded, disabled, isFirst }`
+ * - `custom-body-class` 作用于内容容器
+ * - item 的 `border=false` 去掉下边框
+ */
+import { ref } from 'vue';
+import { Truck } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import SnCollapse from '@snui/uni-src/components/sn-collapse/sn-collapse.vue';
+import SnCollapseItem from '@snui/uni-src/components/sn-collapse/sn-collapse-item.vue';
+
+const open = ref(['a']);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCollapse v-model="open">
+      <SnCollapseItem name="a" title="配送方式" custom-body-class="sn-demo__body">
+        <template #title="{ expanded }">
+          <view class="sn-demo__title">
+            <SnIcon
+              class="sn-demo__title-icon"
+              :icon="Truck"
+              size="var(--sn-mp-icon-size-medium)"
+            />
+            <text class="sn-demo__title-text"
+              >配送方式（title 插槽 · {{ expanded ? '已展开' : '已收起' }}）</text
+            >
+          </view>
+        </template>
+        <text class="sn-demo__body">顺丰速运，预计 2 天送达。</text>
+      </SnCollapseItem>
+      <SnCollapseItem name="b" title="无边框面板" :border="false">
+        <text class="sn-demo__body">border=false 去掉了这一项的下边框。</text>
+      </SnCollapseItem>
+    </SnCollapse>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__title {
+  display: flex;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+}
+.sn-demo__title-icon {
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__title-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+}
+/* custom-body-class 落在 item 的内容容器上。 */
+.sn-demo :deep(.sn-demo__body) {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

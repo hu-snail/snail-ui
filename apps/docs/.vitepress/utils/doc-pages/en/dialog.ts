@@ -6,7 +6,7 @@ export const dialogDocPageEn: SnDocPageData = {
   title: 'Dialog',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,10 +43,28 @@ import { Dialog } from '@snui/vue-web';
   },
   demos: [
     { name: 'dialog-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
-    { name: 'dialog-web-types', title: 'Types and layout', blurb: 'Types and layout' },
+    {
+      name: 'dialog-web-types',
+      title: 'Semantic types',
+      blurb: 'default / info / success / warning / error.',
+    },
+    {
+      name: 'dialog-web-icon-placement',
+      title: 'Icon placement',
+      blurb: 'iconPlacement left (default) / top.',
+    },
     { name: 'dialog-web-async', title: 'Async confirm', blurb: 'Async confirm' },
     { name: 'dialog-web-action', title: 'Custom actions', blurb: 'Custom actions' },
-    { name: 'dialog-web-borderless', title: 'Borderless', blurb: 'Borderless' },
+    {
+      name: 'dialog-web-bordered',
+      title: 'Bordered',
+      blurb: 'The bordered switch toggles the outline.',
+    },
+    {
+      name: 'dialog-web-icon-visibility',
+      title: 'Icon visibility',
+      blurb: 'show-icon toggles the leading icon.',
+    },
     { name: 'dialog-web-slots', title: 'Slot overrides', blurb: 'Slot overrides' },
     { name: 'dialog-web-controlled', title: 'Controlled', blurb: 'Controlled' },
     { name: 'dialog-web-use-dialog', title: 'Use dialog', blurb: 'Use dialog' },

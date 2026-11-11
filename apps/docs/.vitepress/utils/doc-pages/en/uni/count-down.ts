@@ -67,8 +67,13 @@ import { CountDown } from '@snui/uni';
     },
     {
       name: 'count-down-mp-control',
-      title: 'Controls and milliseconds',
-      blurb: 'Start / pause / reset, plus millisecond rendering.',
+      title: 'Controls (start / pause / reset)',
+      blurb: 'Instance methods to start / resume, pause and reset, with a finish counter.',
+    },
+    {
+      name: 'count-down-mp-millisecond',
+      title: 'Millisecond rendering (`millisecond`)',
+      blurb: 'With millisecond on, the ss.S format ticks the fraction digit in real time.',
     },
     {
       name: 'count-down-mp-autostart',

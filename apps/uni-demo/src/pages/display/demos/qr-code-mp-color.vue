@@ -1,0 +1,41 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-qr-code (uni-end) — 自定义颜色（colorDark / colorLight）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
+ */
+import SnQrCode from '@snui/uni-src/components/sn-qr-code/sn-qr-code.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="sn-demo__row">
+      <SnQrCode
+        text="https://snui.dev"
+        :size="150"
+        color-dark="midnightblue"
+        color-light="azure"
+        :margin="10"
+      />
+    </view>
+    <text class="sn-demo__meta">color-dark 换码点色，color-light 换留白色。</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: flex-start;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+}
+</style>

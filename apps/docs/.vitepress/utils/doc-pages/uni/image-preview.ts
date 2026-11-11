@@ -66,9 +66,14 @@ import { ImagePreview } from '@snui/uni';
       blurb: '点击缩略图从对应位置打开；按钮从第一张打开；事件回传。',
     },
     {
-      name: 'image-preview-mp-config',
-      title: '配置项',
-      blurb: '左上关闭按钮、关闭页码、底部插槽显示当前张数。',
+      name: 'image-preview-mp-close-position',
+      title: '关闭按钮位置（closeIconPosition）',
+      blurb: 'closeIconPosition 默认 top-right，这里切到 top-left。',
+    },
+    {
+      name: 'image-preview-mp-index',
+      title: '页码与底部插槽',
+      blurb: 'showIndex=false 隐藏内置页码；#default 插槽拿到 current 渲染底部自定义文案。',
     },
     {
       name: 'image-preview-mp-gestures',
@@ -76,10 +81,20 @@ import { ImagePreview } from '@snui/uni';
       blurb: '捏合缩放、双击放大、缩放后拖动、下滑关闭——微信图片预览同款手势。',
     },
     {
-      name: 'image-preview-mp-behavior',
-      title: 'selector 模式',
+      name: 'image-preview-mp-selector',
+      title: 'selector 命中区',
+      blurb: 'selector=".sn-demo__thumb" 在 open() 时为缩略图铺透明点击区；open / close 事件回传。',
+    },
+    {
+      name: 'image-preview-mp-close-behavior',
+      title: '关闭与循环行为',
+      blurb: 'loop=false 不循环；closeable=false 无关闭按钮；close-on-click=false 点遮罩不关。',
+    },
+    {
+      name: 'image-preview-mp-longpress',
+      title: '长按菜单与事件',
       blurb:
-        'selector 命中区、关闭 loop、隐藏关闭按钮、close-on-click 关闭、自定义 z-index 与长按事件。',
+        'show-menu-by-longpress 长按弹出识别小程序码菜单（仅微信小程序），同时抛 long-press 事件。',
     },
   ],
   props: {

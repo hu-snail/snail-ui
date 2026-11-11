@@ -10,7 +10,7 @@ export const floatingTocDocPageEn: SnDocPageData = {
   title: 'FloatingToc',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Avoid it on pages short enough not to scroll.' }],
@@ -44,8 +44,13 @@ import { FloatingToc } from '@snui/vue-web';
     { name: 'floating-toc-web-basic', title: 'Basic', blurb: 'Basic' },
     {
       name: 'floating-toc-web-placements',
-      title: 'Placements and trigger modes',
-      blurb: 'Placements and trigger modes',
+      title: 'Placements',
+      blurb: 'placement left / right rails.',
+    },
+    {
+      name: 'floating-toc-web-trigger-mode',
+      title: 'Trigger mode',
+      blurb: 'trigger-mode="press" opens the rail on press.',
     },
     { name: 'floating-toc-web-hierarchical', title: 'Hierarchical', blurb: 'Hierarchical' },
     {

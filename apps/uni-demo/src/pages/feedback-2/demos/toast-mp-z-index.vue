@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-toast (uni-end) — z-index / custom-style.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-toast from its SFC source.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnToast from '@snui/uni-src/components/sn-toast/sn-toast.vue';
+
+const styled = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @tap="styled = true"> z-index=300 + custom-style </SnButton>
+
+    <SnToast
+      v-model="styled"
+      msg="z-index 与 custom-style"
+      icon-name="info"
+      :z-index="300"
+      custom-style="padding: var(--sn-mp-spacing-5); border-radius: var(--sn-mp-radius-xl);"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-toast.sn-demo-contained {
+  position: absolute;
+}
+</style>

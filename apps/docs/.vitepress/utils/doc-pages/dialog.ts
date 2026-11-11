@@ -15,7 +15,7 @@ export const dialogDocPage: SnDocPageData = {
   title: 'Dialog 对话框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -50,10 +50,24 @@ import { Dialog } from '@snui/vue-web';
   },
   demos: [
     { name: 'dialog-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'dialog-web-types', title: '类型与布局', blurb: '类型与布局' },
+    {
+      name: 'dialog-web-types',
+      title: '语义类型（type）',
+      blurb: 'default / info / success / warning / error 五种语义类型。',
+    },
+    {
+      name: 'dialog-web-icon-placement',
+      title: '图标位置（icon-placement）',
+      blurb: 'iconPlacement left（默认）/ top。',
+    },
     { name: 'dialog-web-async', title: '异步确认', blurb: '异步确认' },
     { name: 'dialog-web-action', title: '自定义操作区', blurb: '自定义操作区' },
-    { name: 'dialog-web-borderless', title: '无边框与隐藏图标', blurb: '无边框与隐藏图标' },
+    { name: 'dialog-web-bordered', title: '边框（bordered）', blurb: 'bordered 开关外边框。' },
+    {
+      name: 'dialog-web-icon-visibility',
+      title: '图标显隐（show-icon）',
+      blurb: 'show-icon 开关前置图标。',
+    },
     { name: 'dialog-web-slots', title: '插槽全接管', blurb: '插槽全接管' },
     { name: 'dialog-web-controlled', title: '受控显示', blurb: '受控显示' },
     {

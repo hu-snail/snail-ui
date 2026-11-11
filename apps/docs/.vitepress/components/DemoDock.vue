@@ -42,9 +42,10 @@ import { useData, useRoute } from 'vitepress';
 import PhoneFrame from './PhoneFrame.vue';
 import { dockState, setDockOpen, uniCompFromRoute, type DockEntry } from '../utils/demo-dock';
 import { uniDemoPageUrl } from '../utils/uni-demo-base';
+import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../utils/uni-demo-sync';
 import demoManifest from '../../../uni-demo/src/demos-manifest.json';
 
-const { lang } = useData();
+const { isDark, lang } = useData();
 const route = useRoute();
 const isEn = computed(() => lang.value === 'en-US');
 
@@ -75,8 +76,31 @@ interface DemoManifestEntry {
 const dockPreviewUrl = computed(() => {
   const comp = uniCompFromRoute(route.path);
   const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+  return uniDemoPageUrl(
+    entry?.page ?? 'pages/index/index',
+    uniDemoStateOf(isDark.value, lang.value),
+  );
 });
+
+/**
+ * Theme / locale sync into the frame: URL query carries the initial state on
+ * every load, then a postMessage watch + ready-handshake covers live toggles
+ * (docs theme button, locale switch) without reloading the SPA inside the
+ * frame. See utils/uni-demo-sync.ts for the protocol.
+ */
+const frameRef = ref<HTMLIFrameElement | null>(null);
+
+function syncFrameState(): void {
+  postUniDemoState(frameRef, uniDemoStateOf(isDark.value, lang.value));
+}
+
+const unlistenReady = onUniDemoReady(syncFrameState);
+
+onBeforeUnmount(() => {
+  unlistenReady();
+});
+
+watch([isDark, lang], syncFrameState);
 
 /**
  * Navigation title for the device chrome — the page's own `<h1>`, which is
@@ -173,7 +197,7 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
       -->
       <div class="sn-dock__body">
         <PhoneFrame v-if="entries.length > 0 && dockPreviewUrl !== ''">
-          <iframe class="sn-dock__frame" :src="dockPreviewUrl" :title="pageTitle" />
+          <iframe ref="frameRef" class="sn-dock__frame" :src="dockPreviewUrl" :title="pageTitle" />
         </PhoneFrame>
         <p v-else class="sn-dock__empty">{{ t.empty }}</p>
       </div>
@@ -241,13 +265,19 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
   overflow: hidden;
 }
 
-/* The preview surface: the demo page owns its own background and scrolling. */
+/* The preview surface: the demo page owns its own background and scrolling.
+ * Dark keeps the surface in step with the frame (PhoneFrame #17171a) so the
+ * theme toggle never flashes white inside the screen. */
 .sn-dock__frame {
   display: block;
   width: 100%;
   height: 100%;
   border: 0;
   background: #f8f8f8;
+}
+
+.dark .sn-dock__frame {
+  background: #17171a;
 }
 
 .sn-dock__empty {

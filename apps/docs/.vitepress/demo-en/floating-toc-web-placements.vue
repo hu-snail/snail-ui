@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /**
- * floating-toc-web-placements — the same rail on the left and on the right,
- * with a `press` trigger on one of them.
+ * floating-toc-web-placements — the same rail on the left and on the right.
  */
 import { ref } from 'vue';
 import {
@@ -21,8 +20,8 @@ const sections = [
 ];
 
 const rightSections = [
-  { href: '#ftoc-place-right-a', title: 'Section A' },
-  { href: '#ftoc-place-right-b', title: 'Section B' },
+  { href: '#ftoc-place-right-a', title: 'Chapter A' },
+  { href: '#ftoc-place-right-b', title: 'Chapter B' },
 ];
 </script>
 
@@ -60,22 +59,21 @@ const rightSections = [
     </div>
 
     <div class="ftoc-place__pane">
-      <span class="ftoc-place__label">placement="right" trigger-mode="press"</span>
+      <span class="ftoc-place__label">placement="right"</span>
       <div ref="rightScrollRef" class="ftoc-place__scroller ftoc-place__scroller--right">
         <section id="ftoc-place-right-a">
-          <h4>Section A</h4>
-          <p v-for="n in 4" :key="n">Paragraph {{ n }} of section A.</p>
+          <h4>Chapter A</h4>
+          <p v-for="n in 4" :key="n">Paragraph {{ n }} of chapter A.</p>
         </section>
         <section id="ftoc-place-right-b">
-          <h4>Section B</h4>
-          <p v-for="n in 4" :key="n">Paragraph {{ n }} of section B.</p>
+          <h4>Chapter B</h4>
+          <p v-for="n in 4" :key="n">Paragraph {{ n }} of chapter B.</p>
         </section>
       </div>
       <SnFloatingToc
         class="ftoc-place__toc ftoc-place__toc--right"
         :scroll-container="rightScrollRef as HTMLElement"
         placement="right"
-        trigger-mode="press"
       >
         <SnFloatingTocTrigger>
           <SnFloatingTocBar

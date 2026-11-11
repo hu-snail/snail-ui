@@ -6,7 +6,7 @@ export const rateDocPageEn: SnDocPageData = {
   title: 'Rate · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,9 +49,14 @@ import { Rate } from '@snui/vue-web';
       blurb: 'Two 50% hit zones per star, 0.5 steps.',
     },
     {
-      name: 'rate-web-states',
-      title: 'Readonly / disabled',
-      blurb: 'readonly display; disabled interaction.',
+      name: 'rate-web-readonly',
+      title: 'Readonly',
+      blurb: 'readonly display state.',
+    },
+    {
+      name: 'rate-web-disabled',
+      title: 'Disabled',
+      blurb: 'disabled: greyed out, no interaction.',
     },
     {
       name: 'rate-web-clearable',

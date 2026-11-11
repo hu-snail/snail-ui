@@ -62,9 +62,34 @@ import { Scratchcard } from '@snui/uni';
   },
   demos: [
     {
-      name: 'scratchcard-mp',
-      title: '代码演示',
+      name: 'scratchcard-mp-basic',
+      title: '基础用法',
       blurb: '真刮擦（指针擦除涂层）、阈值 open 回调与重置。',
+    },
+    {
+      name: 'scratchcard-mp-states',
+      title: '状态与事件',
+      blurb: 'open 每轮只触发一次，reset() 进入新一轮；双卡独立状态。',
+    },
+    {
+      name: 'scratchcard-mp-cover',
+      title: '封面色（coverColor）',
+      blurb: 'canvas fillStyle 不解析 CSS 变量，用字面量色值。',
+    },
+    {
+      name: 'scratchcard-mp-ratio',
+      title: '刮开阈值（ratio）',
+      blurb: '0.3 一刮就开 vs 0.9 刮满才开。',
+    },
+    {
+      name: 'scratchcard-mp-watermark',
+      title: '水印（watermark*）',
+      blurb: 'watermark-text / watermark-size / watermark-color。',
+    },
+    {
+      name: 'scratchcard-mp-title-style',
+      title: '标题样式（titleSize / titleColor）',
+      blurb: '标题字号与颜色。',
     },
   ],
   props: {

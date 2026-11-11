@@ -1,0 +1,32 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-typing (uni-end) — 圆点数量：dot-count（夹取到 1-5）。
+ */
+import SnTyping from '@snui/uni-src/components/sn-typing/sn-typing.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="typing-row">
+      <SnTyping text="" :dot-count="1" />
+      <SnTyping text="" :dot-count="3" />
+      <SnTyping text="" :dot-count="5" />
+    </view>
+    <text class="sn-demo__meta">dot-count 1 / 3 / 5（超出被夹取到 1-5）</text>
+  </view>
+</template>
+
+<style scoped>
+.typing-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

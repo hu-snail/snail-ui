@@ -92,7 +92,12 @@ import { Icon } from '@snui/uni';
       blurb: '方式 4：阿里 iconfont（字体图标）',
     },
     { name: 'icon-mp-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'icon-mp-size', title: '尺寸与描边', blurb: '尺寸与描边' },
+    { name: 'icon-mp-size', title: '尺寸（size）', blurb: 'size 各档：14 / 18 / 24 / 32 / 48。' },
+    {
+      name: 'icon-mp-stroke-width',
+      title: '描边粗细（strokeWidth）',
+      blurb: 'strokeWidth 1 / 2 / 3 三档，同尺寸下对比线宽。',
+    },
     { name: 'icon-mp-registry', title: '自定义 + 按钮集成', blurb: '自定义 + 按钮集成' },
     {
       name: 'icon-mp-custom',

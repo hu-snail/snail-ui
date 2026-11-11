@@ -1,14 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo: SnProgress — `processing` animation next to the four status colours,
- * plus a custom circle glyph through the `icon` slot.
+ * Demo: SnProgress — the `processing` animation on line and circle bars.
  */
-import { SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web';
-import { Check, X } from 'lucide-vue-next';
-
-registerSnIcons({ Check, X });
-
-const statuses = ['success', 'error', 'warning', 'info'] as const;
+import { SnProgress } from '@snui/vue-web';
 </script>
 
 <template>
@@ -20,31 +14,10 @@ const statuses = ['success', 'error', 'warning', 'info'] as const;
     </section>
 
     <section class="progress-processing-demo__block">
-      <h4>The four statuses (success / error / warning / info)</h4>
-      <SnProgress v-for="status in statuses" :key="status" :percentage="62" :status="status" />
-    </section>
-
-    <section class="progress-processing-demo__block">
       <h4>Circle processing (breathing arc)</h4>
       <div class="progress-processing-demo__row">
         <SnProgress type="circle" :percentage="58" processing />
         <SnProgress type="circle" :percentage="82" status="success" processing />
-      </div>
-    </section>
-
-    <section class="progress-processing-demo__block">
-      <h4>Custom circle icon (icon slot + SnIcon)</h4>
-      <div class="progress-processing-demo__row">
-        <SnProgress type="circle" :percentage="100" status="success">
-          <template #icon>
-            <SnIcon name="Check" :size="30" />
-          </template>
-        </SnProgress>
-        <SnProgress type="circle" :percentage="35" status="error">
-          <template #icon>
-            <SnIcon name="X" :size="30" />
-          </template>
-        </SnProgress>
       </div>
     </section>
   </div>

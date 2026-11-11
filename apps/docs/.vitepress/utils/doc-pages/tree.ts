@@ -15,7 +15,7 @@ export const treeDocPage: SnDocPageData = {
   title: 'Tree 树形控件',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,7 +55,7 @@ import { Tree } from '@snui/vue-web';
     { name: 'tree-web-fields', title: '自定义字段名', blurb: '自定义字段名' },
     { name: 'tree-web-multiple', title: '多选', blurb: '多选' },
     { name: 'tree-web-cascade', title: '级联勾选', blurb: '级联勾选' },
-    { name: 'tree-web-checkable-drag', title: '复选框 + 拖拽', blurb: '复选框 + 拖拽' },
+    { name: 'tree-web-draggable', title: '拖拽节点', blurb: '拖拽调整顺序 / 移入文件夹。' },
     { name: 'tree-web-disabled', title: '禁用与状态', blurb: '禁用与状态' },
     { name: 'tree-web-prefix-suffix', title: '前缀与后缀', blurb: '前缀与后缀' },
     {

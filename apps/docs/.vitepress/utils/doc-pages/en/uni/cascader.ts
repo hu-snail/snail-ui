@@ -79,22 +79,29 @@ import { Cascader } from '@snui/uni';
     },
     {
       name: 'cascader-mp-fields',
-      title:
-        'Field mapping & tips (`valueKey` / `textKey` / `childrenKey` / `tipKey` / `lineWidth` / `lineHeight`)',
-      blurb: 'valueKey / textKey / childrenKey / tipKey mapping; lineTheme=text with lineHeight.',
+      title: 'Field mapping (valueKey etc.)',
+      blurb: 'valueKey / textKey / childrenKey / tipKey mapping.',
     },
     {
-      name: 'cascader-mp-lazy-confirm',
-      title: 'Lazy loading & confirm veto (`lazyLoad` / `isLeafKey` / `beforeConfirm`)',
-      blurb:
-        'lazyLoad + isLeafKey; checkStrictly; beforeConfirm veto with its verdict reported by a sn-cell row.',
+      name: 'cascader-mp-lazy-load',
+      title: 'Lazy loading (lazyLoad)',
+      blurb: 'lazyLoad + isLeafKey fetch children on demand; checkStrictly.',
     },
     {
-      name: 'cascader-mp-sheet',
-      title:
-        'Sheet & indicator (`closeOnClickModal` / `zIndex` / `safeAreaInsetBottom` / `lineTheme` / `custom*`)',
+      name: 'cascader-mp-before-confirm',
+      title: 'Confirm veto (beforeConfirm)',
+      blurb: 'beforeConfirm veto with its verdict reported by a sn-cell row.',
+    },
+    {
+      name: 'cascader-mp-indicator',
+      title: 'Indicator shape (lineTheme)',
+      blurb: 'lineTheme underline / text / dot, with lineWidth / lineHeight geometry.',
+    },
+    {
+      name: 'cascader-mp-sheet-chrome',
+      title: 'Sheet settings (scrim / stacking / custom)',
       blurb:
-        'lineTheme underline / dot; closeOnClickModal=false; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle.',
+        'closeOnClickModal=false; safeAreaInsetBottom; zIndex; rootPortal; customClass / customStyle.',
     },
   ],
   props: {

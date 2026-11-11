@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-textarea — compact: no border, no background — for inline form rows. */
+import { ref } from 'vue';
+import SnTextarea from '@snui/uni-src/components/sn-textarea/sn-textarea.vue';
+
+const grow = ref('This textarea grows with its content.');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">compact (for inline form rows)</text>
+    <SnTextarea v-model="grow" compact placeholder="Compact mode: no border, no background" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

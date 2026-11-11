@@ -55,9 +55,34 @@ import { Dialer } from '@snui/uni';
   },
   demos: [
     {
-      name: 'dialer-mp',
-      title: 'Demos',
-      blurb: '6-prize wheel, random target on GO, result shown on done.',
+      name: 'dialer-mp-basic',
+      title: 'Basic usage',
+      blurb: 'Tap GO → host decides the index → run(index) → done reports it.',
+    },
+    {
+      name: 'dialer-mp-states',
+      title: 'State & events',
+      blurb: 'click → fake request → run(index) → done flow; pointer taps ignored while spinning.',
+    },
+    {
+      name: 'dialer-mp-size',
+      title: 'Size',
+      blurb: '420rpx small / 560rpx large.',
+    },
+    {
+      name: 'dialer-mp-colors',
+      title: 'Sector colors',
+      blurb: 'prizeBgColors + borderColor; per-prize color wins.',
+    },
+    {
+      name: 'dialer-mp-pointer-slot',
+      title: 'Custom pointer',
+      blurb: 'The #pointer slot fully replaces the pointer.',
+    },
+    {
+      name: 'dialer-mp-spin',
+      title: 'Turns & duration',
+      blurb: 'Default 6 turns / 3s; quick pace 8 turns / 1.2s.',
     },
   ],
   props: {

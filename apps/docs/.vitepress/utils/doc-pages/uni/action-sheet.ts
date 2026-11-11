@@ -73,8 +73,13 @@ import { ActionSheet } from '@snui/uni';
     },
     {
       name: 'action-sheet-mp-header',
-      title: '标题、描述与关闭按钮',
-      blurb: '标题 + 描述 + 关闭按钮 + 带图标的列表行。',
+      title: '标题与关闭按钮',
+      blurb: '标题 + 描述 + 标题行关闭按钮（description / show-close 为 AUI 追加）。',
+    },
+    {
+      name: 'action-sheet-mp-action-icons',
+      title: '行图标（icon）',
+      blurb: 'actions 行携带 icon，图标走注册表名称解析。',
     },
     {
       name: 'action-sheet-mp-panels',
@@ -87,9 +92,14 @@ import { ActionSheet } from '@snui/uni';
       blurb: '选完不关闭 / 点遮罩不关闭 / duration=600 + zIndex=200。',
     },
     {
-      name: 'action-sheet-mp-custom',
-      title: '自定义样式与渲染时机',
-      blurb: '标题类名 + 面板内联样式 + 提前渲染 + 关闭安全区。',
+      name: 'action-sheet-mp-custom-style',
+      title: '自定义样式',
+      blurb: 'custom-title-class 给标题加类名；custom-style 写在面板上。',
+    },
+    {
+      name: 'action-sheet-mp-render',
+      title: '渲染时机与安全区',
+      blurb: 'lazy-render=false 提前渲染；safe-area-inset-bottom=false 关闭底部安全区。',
     },
   ],
   props: {

@@ -6,7 +6,7 @@ export const skeletonDocPageEn: SnDocPageData = {
   title: 'Skeleton',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,7 +43,13 @@ import { Skeleton } from '@snui/vue-web';
   },
   demos: [
     { name: 'skeleton-web-basic', title: 'Basic usage', blurb: 'Basic usage' },
-    { name: 'skeleton-web-box', title: 'Box shape', blurb: 'Box shape' },
+    {
+      name: 'skeleton-web-box',
+      title: 'Box placeholder',
+      blurb: 'Bare boxes at explicit width / height.',
+    },
+    { name: 'skeleton-web-repeat', title: 'Repeated rows', blurb: 'Multiple rows via repeat.' },
+    { name: 'skeleton-web-sharp', title: 'Sharp & round corners', blurb: 'sharp / round corners.' },
     { name: 'skeleton-web-size', title: 'Size', blurb: 'Size' },
     { name: 'skeleton-web-card', title: 'Card placeholder', blurb: 'Card placeholder' },
   ],

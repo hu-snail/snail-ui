@@ -52,10 +52,24 @@ import { InputNumber } from '@snui/uni';
       blurb: 'Basic sn-input-number: min / max bounds, step and precision.',
     },
     {
-      name: 'input-number-mp-theme-state',
-      title: 'Themes & states (`theme` / `round` / `disabled` / `longPress`)',
-      blurb:
-        'Four themes (default / outline / outline-split / primary), plus round, disabled and long-press repeat.',
+      name: 'input-number-mp-theme',
+      title: 'Theme (theme)',
+      blurb: 'Four themes: default / outline / outline-split / primary.',
+    },
+    {
+      name: 'input-number-mp-round',
+      title: 'Rounded (round)',
+      blurb: 'round pill shape.',
+    },
+    {
+      name: 'input-number-mp-long-press',
+      title: 'Long-press repeat (longPress)',
+      blurb: 'longPress keeps stepping while held.',
+    },
+    {
+      name: 'input-number-mp-disabled',
+      title: 'Disabled',
+      blurb: 'disabled blocks every interaction.',
     },
     {
       name: 'input-number-mp-controls',
@@ -65,11 +79,24 @@ import { InputNumber } from '@snui/uni';
         'disableInput / disableMinus / disablePlus; withoutInput leaves the buttons only; inputWidth.',
     },
     {
-      name: 'input-number-mp-commit-hooks',
-      title:
-        'Value rules & commit timing (`stepStrictly` / `allowNull` / `placeholder` / `beforeChange` / `immediateChange` / `updateOnInit` / `inputType` / `adjustPosition` / `custom*`)',
-      blurb:
-        'stepStrictly; allowNull + placeholder; beforeChange veto; immediateChange=false; updateOnInit; inputType; adjustPosition.',
+      name: 'input-number-mp-step-strictly',
+      title: 'Step snapping (stepStrictly)',
+      blurb: 'stepStrictly snaps every value onto the step grid.',
+    },
+    {
+      name: 'input-number-mp-allow-null',
+      title: 'Nullable input (allowNull)',
+      blurb: 'allowNull + placeholder: the field may stay empty.',
+    },
+    {
+      name: 'input-number-mp-before-change',
+      title: 'Commit veto (beforeChange)',
+      blurb: 'beforeChange veto.',
+    },
+    {
+      name: 'input-number-mp-commit-timing',
+      title: 'Commit timing & input attrs',
+      blurb: 'immediateChange=false; updateOnInit; inputType; adjustPosition.',
     },
     {
       name: 'input-number-mp-custom-class',

@@ -9,6 +9,7 @@ import Demo5 from './demos/icon-mp-name.vue';
 import Demo6 from './demos/icon-mp-registry.vue';
 import Demo7 from './demos/icon-mp-size.vue';
 import Demo8 from './demos/icon-mp-string.vue';
+import Demo9 from './demos/icon-mp-stroke-width.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -68,7 +69,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" />
+        <DemoModuleHead :title="t('尺寸（size）', 'Sizes (`size`)')" badge="size" />
         <view class="module__body">
           <Demo7 />
         </view>
@@ -77,6 +78,15 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('目录用法', 'Catalog names')" badge="string" />
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('描边粗细（strokeWidth）', 'Stroke width (`strokeWidth`)')"
+          badge="stroke-width"
+        />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

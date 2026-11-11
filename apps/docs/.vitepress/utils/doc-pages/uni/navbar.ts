@@ -60,14 +60,28 @@ import { Navbar } from '@snui/uni';
     },
     {
       name: 'navbar-mp-slots',
-      title: '插槽与固定定位',
-      blurb: 'left / right 插槽自定义图标；fixed + placeholder 固定定位并生成占位元素。',
+      title: '左右插槽',
+      blurb: '#left / #right 插槽自定义左右两侧内容。',
     },
     {
-      name: 'navbar-mp-config',
-      title: '禁用侧按钮 / 安全区 / 胶囊插槽',
-      blurb:
-        'left-disabled / right-disabled 拦截点击；safe-area-inset-top 补安全区；capsule 插槽与 custom-class / custom-style。',
+      name: 'navbar-mp-fixed',
+      title: '固定定位（fixed / placeholder）',
+      blurb: 'fixed 吸顶；placeholder 在原位置生成等高占位元素。',
+    },
+    {
+      name: 'navbar-mp-disabled',
+      title: '禁用侧按钮（left-disabled）',
+      blurb: 'left-disabled / right-disabled 拦截对应侧点击，不触发事件。',
+    },
+    {
+      name: 'navbar-mp-safe-area',
+      title: '安全区与层级',
+      blurb: 'safe-area-inset-top 补状态栏安全区；z-index 层级（仅 fixed 时生效）。',
+    },
+    {
+      name: 'navbar-mp-capsule-slot',
+      title: '胶囊插槽',
+      blurb: '#capsule 占据左侧区；#title 自定义标题；custom-class / custom-style 落在根节点。',
     },
   ],
   props: {

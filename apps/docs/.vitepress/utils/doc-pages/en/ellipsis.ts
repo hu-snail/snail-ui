@@ -10,7 +10,7 @@ export const ellipsisDocPageEn: SnDocPageData = {
   title: 'Ellipsis · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,16 +43,30 @@ import { Ellipsis } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'ellipsis-web-basic', title: 'Basic clamping', blurb: 'Basic clamping' },
+    {
+      name: 'ellipsis-web-basic',
+      title: 'Basic clamping',
+      blurb: 'Single-line ellipsis; no bubble when not overflowing.',
+    },
     {
       name: 'ellipsis-web-lines',
       title: 'Single line vs multi-line',
       blurb: 'Single line vs multi-line',
     },
     {
+      name: 'ellipsis-web-tooltip',
+      title: 'Overflow tooltip',
+      blurb: 'Hover bubble with the full text; placement is configurable.',
+    },
+    {
       name: 'ellipsis-web-expand',
       title: 'Click to expand and collapse',
-      blurb: 'Click to expand and collapse',
+      blurb: 'expandPosition suffix / bottom + expandTrigger.',
+    },
+    {
+      name: 'ellipsis-web-fade',
+      title: 'Fade mask',
+      blurb: 'fade dissolves the truncated edge like smoke.',
     },
   ],
   props: {

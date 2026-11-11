@@ -4,19 +4,30 @@ import Demo0 from './demos/input-mp-basic.vue';
 import Demo1 from './demos/input-mp-types.vue';
 import Demo2 from './demos/input-mp-sizes.vue';
 import Demo3 from './demos/input-mp-radius.vue';
-import Demo4 from './demos/input-mp-bordered-bg-radius.vue';
-import Demo5 from './demos/input-mp-prefix-suffix.vue';
-import Demo6 from './demos/input-mp-slots.vue';
-import Demo7 from './demos/input-mp-clearable-count.vue';
-import Demo8 from './demos/input-mp-clear-focus.vue';
-import Demo9 from './demos/input-mp-password-toggle.vue';
-import Demo10 from './demos/input-mp-word-limit.vue';
-import Demo11 from './demos/input-mp-status.vue';
-import Demo12 from './demos/input-mp-states.vue';
-import Demo13 from './demos/input-mp-align-compact.vue';
-import Demo14 from './demos/input-mp-native-attrs.vue';
-import Demo15 from './demos/input-mp-runtime.vue';
-import Demo16 from './demos/input-mp-custom-class.vue';
+import Demo4 from './demos/input-mp-prefix-suffix.vue';
+import Demo5 from './demos/input-mp-slots.vue';
+import Demo6 from './demos/input-mp-password-toggle.vue';
+import Demo7 from './demos/input-mp-word-limit.vue';
+import Demo8 from './demos/input-mp-status.vue';
+import Demo9 from './demos/input-mp-states.vue';
+import Demo10 from './demos/input-mp-custom-class.vue';
+import Demo11 from './demos/input-mp-align.vue';
+import Demo12 from './demos/input-mp-bg.vue';
+import Demo13 from './demos/input-mp-border.vue';
+import Demo14 from './demos/input-mp-clear-trigger.vue';
+import Demo15 from './demos/input-mp-clearable.vue';
+import Demo16 from './demos/input-mp-compact.vue';
+import Demo17 from './demos/input-mp-composition.vue';
+import Demo18 from './demos/input-mp-confirm-hold.vue';
+import Demo19 from './demos/input-mp-confirm-type.vue';
+import Demo20 from './demos/input-mp-count.vue';
+import Demo21 from './demos/input-mp-cursor-selection.vue';
+import Demo22 from './demos/input-mp-cursor-spacing.vue';
+import Demo23 from './demos/input-mp-enable-native.vue';
+import Demo24 from './demos/input-mp-focus.vue';
+import Demo25 from './demos/input-mp-inputmode.vue';
+import Demo26 from './demos/input-mp-keyboard-hold.vue';
+import Demo27 from './demos/input-mp-placeholder.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -53,84 +64,198 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('边框与背景', 'Border & background')"
-          badge="bordered-bg-radius"
-        />
+        <DemoModuleHead :title="t('前后图标', 'Prefix & suffix icons')" badge="prefix-suffix" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('前后图标', 'Prefix & suffix icons')" badge="prefix-suffix" />
+        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <DemoModuleHead :title="t('密码显隐', 'Password toggle')" badge="password-toggle" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('清空与字数', 'Clearable & count')" badge="clearable-count" />
+        <DemoModuleHead :title="t('字数统计', 'Word limit')" badge="word-limit" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('清空与聚焦', 'Clear & focus')" badge="clear-focus" />
+        <DemoModuleHead :title="t('校验状态', 'Validation status')" badge="status" />
         <view class="module__body">
           <Demo8 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('密码显隐', 'Password toggle')" badge="password-toggle" />
+        <DemoModuleHead :title="t('禁用与只读', 'Disabled & readonly')" badge="states" />
         <view class="module__body">
           <Demo9 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字数统计', 'Word limit')" badge="word-limit" />
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
         <view class="module__body">
           <Demo10 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('校验状态', 'Validation status')" badge="status" />
+        <DemoModuleHead
+          :title="t('右对齐（alignRight）', 'Right alignment (alignRight)')"
+          badge="align"
+        />
         <view class="module__body">
           <Demo11 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用与只读', 'Disabled & readonly')" badge="states" />
+        <DemoModuleHead :title="t('背景（bg）', 'Background')" badge="bg" />
         <view class="module__body">
           <Demo12 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('对齐与紧凑', 'Alignment & compact')" badge="align-compact" />
+        <DemoModuleHead :title="t('边框（border）', 'Border')" badge="border" />
         <view class="module__body">
           <Demo13 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('原生属性', 'Native attributes')" badge="native-attrs" />
+        <DemoModuleHead
+          :title="
+            t(
+              '清空按钮细节（clearTrigger / focusWhenClear）',
+              'Clear button details (clearTrigger / focusWhenClear)',
+            )
+          "
+          badge="clear-trigger"
+        />
         <view class="module__body">
           <Demo14 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('运行时属性', 'Runtime attributes')" badge="runtime" />
+        <DemoModuleHead
+          :title="t('清空按钮（clearable）', 'Clear button (clearable)')"
+          badge="clearable"
+        />
         <view class="module__body">
           <Demo15 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
+        <DemoModuleHead
+          :title="t('紧凑行内形态（compact）', 'Compact inline form (compact)')"
+          badge="compact"
+        />
         <view class="module__body">
           <Demo16 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('输入合成（ignoreCompositionEvent）', 'Composition input (ignoreCompositionEvent)')
+          "
+          badge="composition"
+        />
+        <view class="module__body">
+          <Demo17 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('确认键保持键盘（confirmHold）', 'Keyboard hold on confirm (confirmHold)')"
+          badge="confirm-hold"
+        />
+        <view class="module__body">
+          <Demo18 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('确认键文案（confirmType）', 'Confirm button label (confirmType)')"
+          badge="confirm-type"
+        />
+        <view class="module__body">
+          <Demo19 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('字数计数（showCount）', 'Character count (showCount)')"
+          badge="count"
+        />
+        <view class="module__body">
+          <Demo20 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('光标与选区', 'Caret & selection')" badge="cursor-selection" />
+        <view class="module__body">
+          <Demo21 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('光标间距（cursorSpacing）', 'Cursor spacing (cursorSpacing)')"
+          badge="cursor-spacing"
+        />
+        <view class="module__body">
+          <Demo22 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('原生输入（enableNative）', 'Native input (enableNative)')"
+          badge="enable-native"
+        />
+        <view class="module__body">
+          <Demo23 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自动聚焦（focus）', 'Autofocus (focus)')" badge="focus" />
+        <view class="module__body">
+          <Demo24 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('软键盘提示（inputmode）', 'Soft keyboard hint (inputmode)')"
+          badge="inputmode"
+        />
+        <view class="module__body">
+          <Demo25 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('键盘保持与页面上推', 'Keyboard hold & page push')"
+          badge="keyboard-hold"
+        />
+        <view class="module__body">
+          <Demo26 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '占位符样式（placeholderClass / placeholderStyle）',
+              'Placeholder styling (placeholderClass / placeholderStyle)',
+            )
+          "
+          badge="placeholder"
+        />
+        <view class="module__body">
+          <Demo27 />
         </view>
       </view>
     </view>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— radio 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/radio-mp-basic.vue';
-import Demo1 from './demos/radio-mp-colors-custom.vue';
-import Demo2 from './demos/radio-mp-states.vue';
-import Demo3 from './demos/radio-mp-type.vue';
+import Demo1 from './demos/radio-mp-colors.vue';
+import Demo2 from './demos/radio-mp-custom-style.vue';
+import Demo3 from './demos/radio-mp-disabled-readonly.vue';
+import Demo4 from './demos/radio-mp-placement.vue';
+import Demo5 from './demos/radio-mp-type.vue';
+import Demo6 from './demos/radio-mp-uncheck.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,21 +25,64 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('colors-custom', 'Colors Custom')" badge="colors-custom" />
+        <DemoModuleHead
+          :title="
+            t(
+              '选中色（`checkedColor` / `uncheckedColor`）',
+              'Checked colors (`checkedColor` / `uncheckedColor`)',
+            )
+          "
+          badge="colors"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead
+          :title="t('自定义类名与样式', 'Custom class names & styles')"
+          badge="custom-style"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead
+          :title="
+            t(
+              '禁用与只读（`disabled` / `readonly`）',
+              'Disabled & readonly (`disabled` / `readonly`)',
+            )
+          "
+          badge="disabled-readonly"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('标记位置（`placement`）', 'Marker placement (`placement`)')"
+          badge="placement"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('可反选（`allowUncheck`）', 'Uncheck on re-tap (`allowUncheck`)')"
+          badge="uncheck"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

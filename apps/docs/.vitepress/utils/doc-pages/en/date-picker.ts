@@ -10,7 +10,7 @@ export const datePickerDocPageEn: SnDocPageData = {
   title: 'DatePicker · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -75,7 +75,12 @@ import { DatePicker } from '@snui/vue-web';
       name: 'date-picker-web-range',
       title: 'Range (daterange / datetimerange)',
       blurb:
-        "Dual calendars; start then end; auto-swap when reversed; datetimerange uses a four-field header (start date / start time | end date / end time) with an H/M/S popover (Now / Confirm) and a Clear / Confirm footer; input-position='bottom' moves the input bar under the calendars. The panel is sized by the calendars, not by the inputs.",
+        'Dual calendars; start then end; auto-swap when reversed; datetimerange uses a four-field header with an H/M/S popover and a Clear / Confirm footer.',
+    },
+    {
+      name: 'date-picker-web-input-position',
+      title: 'Input bar position',
+      blurb: "input-position='bottom' moves the input bar under the calendars.",
     },
     {
       name: 'date-picker-web-month-range',
@@ -85,9 +90,13 @@ import { DatePicker } from '@snui/vue-web';
     },
     {
       name: 'date-picker-web-shortcuts',
-      title: 'Shortcuts / dynamic constraints',
-      blurb:
-        'shortcuts (left/right/bottom), disabledDate, and onSelect + disabledDate dynamic range limiting.',
+      title: 'Shortcuts',
+      blurb: 'Shortcut entries + shortcuts-position (left / right / bottom).',
+    },
+    {
+      name: 'date-picker-web-dynamic-range',
+      title: 'Dynamic range limiting',
+      blurb: 'onSelect + disabledDate limit the selectable range (±7 days after the first pick).',
     },
     {
       name: 'date-picker-web-format',
@@ -95,9 +104,19 @@ import { DatePicker } from '@snui/vue-web';
       blurb: 'Lowercase tokens: yyyy / MM / dd / HH / mm / ss / ww (ISO week) / qq (quarter).',
     },
     {
-      name: 'date-picker-web-states',
-      title: 'Clearable / disabled',
-      blurb: 'clearable, disabled, readonly.',
+      name: 'date-picker-web-clearable',
+      title: 'Clearable',
+      blurb: 'A clear button empties the value.',
+    },
+    {
+      name: 'date-picker-web-disabled',
+      title: 'Disabled',
+      blurb: 'Interaction disabled.',
+    },
+    {
+      name: 'date-picker-web-readonly',
+      title: 'Readonly',
+      blurb: 'Visible but not editable.',
     },
   ],
   props: {

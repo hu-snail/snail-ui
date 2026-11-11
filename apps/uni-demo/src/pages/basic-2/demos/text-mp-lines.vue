@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-text (uni-end) — 多行截断 + 字号 / 行高 / 颜色覆盖。 */
+/** Demo: sn-text (uni-end) — 多行截断。 */
 import SnText from '@snui/uni-src/components/sn-text/sn-text.vue';
 
 const longText =
@@ -11,10 +11,6 @@ const longText =
     <SnText :text="longText" :lines="1" />
     <SnText :text="longText" :lines="2" />
     <SnText :text="longText" :lines="3" />
-    <SnText text="字号 18px" size="18px" />
-    <SnText text="行高 28px" size="14px" line-height="28px" />
-    <SnText text="自定义颜色" color="var(--sn-mp-color-purple)" />
-    <SnText text="前后缀" prefix="[" suffix="]" type="primary" />
   </view>
 </template>
 

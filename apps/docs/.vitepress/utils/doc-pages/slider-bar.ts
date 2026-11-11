@@ -89,15 +89,29 @@ export const sliderBarDocPage: SnDocPageData = {
       blurb: 'theme="aurora"：紫蓝渐变填充 + 星光粒子动效 + 圆形手柄，支持自定义渐变与关闭动效。',
     },
     {
-      name: 'slider-bar-web-scenarios',
-      title: '全场景一览',
-      blurb: '音量（#icon 可选）/ 播放进度 / 价格区间 / 禁用 / 反向 / 竖排亮度与色温。',
+      name: 'slider-bar-web-column',
+      title: '竖排滑条（variant="column"）',
+      blurb: '竖排条，读数并入轨道顶部。',
+    },
+    {
+      name: 'slider-bar-web-range',
+      title: '区间双柄（range）',
+      blurb: '价格区间双柄，手柄互不交叉，formatValue 自定义读数。',
+    },
+    {
+      name: 'slider-bar-web-states',
+      title: '禁用与反向（disabled / reverse）',
+      blurb: 'disabled 禁用全部交互；reverse 翻转坐标轴。',
     },
     {
       name: 'slider-bar-web-levels',
       title: '等级 Levels',
-      blurb:
-        'levels 把数值映射成档位（风扇 / 甜度），轨道刻度随区间分布，读数显示档名；含头尾图标。',
+      blurb: 'levels 把数值映射成档位（风扇 / 甜度），轨道刻度随区间分布，读数显示档名。',
+    },
+    {
+      name: 'slider-bar-web-icons',
+      title: '头尾图标（leading-icon / trailing-icon）',
+      blurb: '轨道两端的语义图标。',
     },
     {
       name: 'slider-bar-web-readout',

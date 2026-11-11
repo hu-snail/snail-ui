@@ -321,6 +321,10 @@ function onDocumentPointerdown(event: PointerEvent): void {
   if (target === null) return;
   const root = rootEl.value;
   if (root !== null && root.contains(target)) return;
+  // 菜单已 Teleport 到 <body> —— 点在菜单内不算「外部」（选项的
+  // mousedown.prevent 之外，padding / 滚动条区域也由此兜住）。
+  const menu = menuEl.value;
+  if (menu !== null && menu.contains(target)) return;
   closeMenu();
 }
 
@@ -338,24 +342,61 @@ onBeforeUnmount(() => {
 });
 
 /* ------------------------------------------------------------------ *
- * Panel placement + scroll follow — the dropdown is absolutely positioned
- * (glued to the field by the browser), so "reposition" only maintains the
- * flip placement: drop below the field when the viewport has room, flip
- * above when it doesn't (the --flip class; the page scrolling changes the
- * room, so placement is re-derived on scroll/resize while open).
+ * Panel placement + scroll follow — the dropdown is teleported to <body>
+ * (so no overflow:hidden ancestor — cards, docs demo stages, modals — can
+ * clip it, mirroring SnSelect / SnDatePicker) and fixed-positioned from
+ * the trigger rect. repositionMenu runs on open and on every scroll /
+ * resize while open (useOverlayFollow): bottom preferred, flips above when
+ * the viewport lacks room below.
  * ------------------------------------------------------------------ */
 
 const menuEl = ref<HTMLElement | null>(null);
-const isFlipped = ref(false);
+const placement = ref<'bottom' | 'top'>('bottom');
+const menuStyle = ref<Record<string, string>>({});
 
-function repositionMenu(): void {
+/** Viewport inset the fixed menu never crosses (mirrors SnSelect's menu). */
+const MENU_VIEWPORT_GAP = 8;
+
+async function repositionMenu(): Promise<void> {
   const root = rootEl.value;
   const menu = menuEl.value;
   if (root === null || menu === null) return;
   const rootRect = root.getBoundingClientRect();
-  const roomBelow = window.innerHeight - rootRect.bottom;
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Width: at least the trigger width (naive behavior).
+  const width = Math.max(rootRect.width, menuWidth);
+  const left = Math.min(
+    Math.max(MENU_VIEWPORT_GAP, rootRect.left),
+    Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
+  );
+
+  // Bottom preferred; flip to top when the viewport lacks room below
+  // but has room above.
+  const roomBelow = vh - rootRect.bottom;
   const roomAbove = rootRect.top;
-  isFlipped.value = roomBelow < menu.offsetHeight && roomAbove > roomBelow;
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
+
+  // Gap between field and panel stays tunable via the CSS custom property.
+  const gapRaw = getComputedStyle(menu).getPropertyValue('--sn-web-auto-complete-menu-gap');
+  const gap = Number.parseFloat(gapRaw) || 4;
+  const top = useTop
+    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight - gap)
+    : rootRect.bottom + gap;
+
+  menuStyle.value = {
+    position: 'fixed',
+    left: `${Math.round(left)}px`,
+    top: `${Math.round(top)}px`,
+    'min-width': `${Math.round(rootRect.width)}px`,
+  };
 }
 
 /** Scroll/resize follow while the dropdown is open (useOverlayFollow). */
@@ -469,53 +510,59 @@ const classList = computed(() => [
       </button>
     </span>
 
-    <!-- Dropdown panel: absolutely positioned below the field (flips up when
-         there is no room below — placement derived by repositionMenu). -->
-    <Transition name="sn-pop">
-      <div
-        v-if="showMenu || showEmpty"
-        :id="`${inputId}-menu`"
-        ref="menuEl"
-        class="sn-auto-complete__menu"
-        :class="{ 'sn-auto-complete__menu--flip': isFlipped }"
-        role="listbox"
-        :aria-label="ariaLabel || 'Suggestions'"
-      >
-        <div v-if="showEmpty" class="sn-auto-complete__empty">
-          <slot name="empty">No data</slot>
-        </div>
-        <template v-else>
-          <div
-            v-for="(option, i) in renderedOptions"
-            :key="option.id"
-            :id="option.id"
-            class="sn-auto-complete__option"
-            :class="{ 'sn-auto-complete__option--active': i === activeIndex }"
-            role="option"
-            :aria-selected="i === activeIndex ? 'true' : 'false'"
-            :aria-disabled="option.disabled ? 'true' : undefined"
-            :data-disabled="option.disabled"
-            @mouseenter="onOptionEnter(i)"
-            @mousedown.prevent
-            @click="selectOption(option)"
-          >
-            <template v-for="(chunks, si) in option.chunkedSegments" :key="si">
-              <span
-                v-for="(chunk, ci) in chunks"
-                :key="ci"
-                :class="chunk.matched ? 'sn-auto-complete__option-hl' : ''"
-                >{{ chunk.text }}</span
-              >
-              <span
-                v-if="si < option.chunkedSegments.length - 1"
-                class="sn-auto-complete__option-sep"
-                >&nbsp;</span
-              >
-            </template>
+    <!-- Dropdown panel: teleported to <body> so no overflow:hidden ancestor
+         (cards, docs demo stages, modals) can clip it. Fixed position is
+         recomputed from the trigger rect on open and on scroll/resize;
+         flips above when the viewport lacks room below. -->
+    <Teleport to="body">
+      <Transition name="sn-pop">
+        <div
+          v-if="showMenu || showEmpty"
+          :id="`${inputId}-menu`"
+          ref="menuEl"
+          class="sn-auto-complete__menu"
+          :class="`sn-auto-complete__menu--${placement}`"
+          :style="menuStyle"
+          role="listbox"
+          :aria-label="ariaLabel || 'Suggestions'"
+          @mousedown.prevent
+        >
+          <div v-if="showEmpty" class="sn-auto-complete__empty">
+            <slot name="empty">No data</slot>
           </div>
-        </template>
-      </div>
-    </Transition>
+          <template v-else>
+            <div
+              v-for="(option, i) in renderedOptions"
+              :key="option.id"
+              :id="option.id"
+              class="sn-auto-complete__option"
+              :class="{ 'sn-auto-complete__option--active': i === activeIndex }"
+              role="option"
+              :aria-selected="i === activeIndex ? 'true' : 'false'"
+              :aria-disabled="option.disabled ? 'true' : undefined"
+              :data-disabled="option.disabled"
+              @mouseenter="onOptionEnter(i)"
+              @mousedown.prevent
+              @click="selectOption(option)"
+            >
+              <template v-for="(chunks, si) in option.chunkedSegments" :key="si">
+                <span
+                  v-for="(chunk, ci) in chunks"
+                  :key="ci"
+                  :class="chunk.matched ? 'sn-auto-complete__option-hl' : ''"
+                  >{{ chunk.text }}</span
+                >
+                <span
+                  v-if="si < option.chunkedSegments.length - 1"
+                  class="sn-auto-complete__option-sep"
+                  >&nbsp;</span
+                >
+              </template>
+            </div>
+          </template>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -651,13 +698,12 @@ const classList = computed(() => [
   color: var(--sn-web-auto-complete-clear-color-hover, var(--sn-web-color-text-primary));
 }
 
-/* Dropdown panel — absolutely positioned, bottom by default. */
+/* Dropdown panel — teleported to <body>, fixed-positioned from the trigger
+ * rect (coords written by repositionMenu via menuStyle; the field-panel gap
+ * lives in that math, tunable via --sn-web-auto-complete-menu-gap). Nothing
+ * between the field and the viewport can clip it. */
 .sn-auto-complete__menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin-top: var(--sn-web-auto-complete-menu-gap, 4px);
+  position: fixed;
   max-height: var(--sn-web-auto-complete-menu-max-height, 240px);
   overflow-y: auto;
   padding: var(--sn-web-auto-complete-menu-padding, 4px) 0;
@@ -672,19 +718,12 @@ const classList = computed(() => [
     0 9px 28px 8px rgba(0, 0, 0, 0.05)
   );
   z-index: var(--sn-web-auto-complete-menu-z-index, 100);
-}
-
-/* The panel drops from the trigger edge it is anchored to. */
-.sn-auto-complete__menu {
+  /* The panel drops from the trigger edge it is anchored to. */
   transform-origin: center top;
 }
 
-/* Flip-up variant (no room below) — flipped by the JS placement check. */
-.sn-auto-complete__menu--flip {
-  top: auto;
-  bottom: 100%;
-  margin-top: 0;
-  margin-bottom: var(--sn-web-auto-complete-menu-gap, 4px);
+/* Flip-up variant (no room below) — placement derived by repositionMenu. */
+.sn-auto-complete__menu--top {
   transform-origin: center bottom;
 }
 

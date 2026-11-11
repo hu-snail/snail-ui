@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-textarea — 错误态：error 由表单驱动标记内容不合规。 */
+import { ref } from 'vue';
+import SnTextarea from '@snui/uni-src/components/sn-textarea/sn-textarea.vue';
+
+const errored = ref('不合规的内容');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">error</text>
+    <SnTextarea v-model="errored" error placeholder="内容不合规时由表单驱动 error" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

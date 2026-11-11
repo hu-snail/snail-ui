@@ -1,21 +1,28 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— form 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/form-mp-basic.vue';
-import Demo1 from './demos/form-mp-cell.vue';
-import Demo2 from './demos/form-mp-cell-style.vue';
-import Demo3 from './demos/form-mp-custom.vue';
-import Demo4 from './demos/form-mp-disabled.vue';
-import Demo5 from './demos/form-mp-fields.vue';
-import Demo6 from './demos/form-mp-form-type.vue';
-import Demo7 from './demos/form-mp-guard.vue';
-import Demo8 from './demos/form-mp-icon.vue';
-import Demo9 from './demos/form-mp-label.vue';
-import Demo10 from './demos/form-mp-reset-submit.vue';
-import Demo11 from './demos/form-mp-rules.vue';
-import Demo12 from './demos/form-mp-schema-layout.vue';
-import Demo13 from './demos/form-mp-state.vue';
-import Demo14 from './demos/form-mp-validate.vue';
-import Demo15 from './demos/form-mp-validation-flow.vue';
+import Demo0 from './demos/form-mp-asterisk.vue';
+import Demo1 from './demos/form-mp-basic.vue';
+import Demo2 from './demos/form-mp-cell-border.vue';
+import Demo3 from './demos/form-mp-cell-clickable.vue';
+import Demo4 from './demos/form-mp-cell-text.vue';
+import Demo5 from './demos/form-mp-custom.vue';
+import Demo6 from './demos/form-mp-disabled.vue';
+import Demo7 from './demos/form-mp-fields.vue';
+import Demo8 from './demos/form-mp-form-type.vue';
+import Demo9 from './demos/form-mp-guard.vue';
+import Demo10 from './demos/form-mp-icon.vue';
+import Demo11 from './demos/form-mp-label.vue';
+import Demo12 from './demos/form-mp-layout.vue';
+import Demo13 from './demos/form-mp-message-display.vue';
+import Demo14 from './demos/form-mp-reset-submit.vue';
+import Demo15 from './demos/form-mp-rules.vue';
+import Demo16 from './demos/form-mp-schema.vue';
+import Demo17 from './demos/form-mp-size.vue';
+import Demo18 from './demos/form-mp-status-icon.vue';
+import Demo19 from './demos/form-mp-title-width.vue';
+import Demo20 from './demos/form-mp-validate.vue';
+import Demo21 from './demos/form-mp-validation-flow.vue';
+import Demo22 from './demos/form-mp-value-align.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -28,99 +35,170 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'表单'" :title-en="'Form'" :desc="'校验与布局容器'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="
+            t(
+              '必填星号（asteriskPosition / hideAsterisk）',
+              'Required asterisk (asteriskPosition / hideAsterisk)',
+            )
+          "
+          badge="asterisk"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('单元格', 'Cell')" badge="cell" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('cell-style', 'Cell Style')" badge="cell-style" />
+        <DemoModuleHead
+          :title="t('单元格分隔与截断', 'Cell dividers & truncation')"
+          badge="cell-border"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead
+          :title="t('可点击行（clickable / isLink）', 'Tappable rows (clickable / isLink)')"
+          badge="cell-clickable"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
+        <DemoModuleHead :title="t('占位与副文案', 'Placeholder & helper copy')" badge="cell-text" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('表单类型', 'Form type')" badge="form-type" />
+        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
+        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead :title="t('表单类型', 'Form type')" badge="form-type" />
         <view class="module__body">
           <Demo8 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标签', 'Label')" badge="label" />
+        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
         <view class="module__body">
           <Demo9 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('reset-submit', 'Reset Submit')" badge="reset-submit" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo10 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('rules', 'Rules')" badge="rules" />
+        <DemoModuleHead :title="t('标签', 'Label')" badge="label" />
         <view class="module__body">
           <Demo11 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('schema-layout', 'Schema Layout')" badge="schema-layout" />
+        <DemoModuleHead
+          :title="t('排布（layout / center）', 'Arrangement (layout / center)')"
+          badge="layout"
+        />
         <view class="module__body">
           <Demo12 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="state" />
+        <DemoModuleHead
+          :title="t('错误消息展示策略', 'Error message display strategies')"
+          badge="message-display"
+        />
         <view class="module__body">
           <Demo13 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('validate', 'Validate')" badge="validate" />
+        <DemoModuleHead :title="t('reset-submit', 'Reset Submit')" badge="reset-submit" />
         <view class="module__body">
           <Demo14 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('validation-flow', 'Validation Flow')" badge="validation-flow" />
+        <DemoModuleHead :title="t('rules', 'Rules')" badge="rules" />
         <view class="module__body">
           <Demo15 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('表单 schema', 'Form schema')" badge="schema" />
+        <view class="module__body">
+          <Demo16 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('尺寸（size）', 'Size')" badge="size" />
+        <view class="module__body">
+          <Demo17 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('状态图标（statusIcon）', 'Status icon (statusIcon)')"
+          badge="status-icon"
+        />
+        <view class="module__body">
+          <Demo18 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('标签列宽（titleWidth）', 'Label column width (titleWidth)')"
+          badge="title-width"
+        />
+        <view class="module__body">
+          <Demo19 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('validate', 'Validate')" badge="validate" />
+        <view class="module__body">
+          <Demo20 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('validation-flow', 'Validation Flow')" badge="validation-flow" />
+        <view class="module__body">
+          <Demo21 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('值对齐（valueAlign）', 'Value alignment (valueAlign)')"
+          badge="value-align"
+        />
+        <view class="module__body">
+          <Demo22 />
         </view>
       </view>
     </view>

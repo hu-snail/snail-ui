@@ -68,9 +68,19 @@ import { Transition } from '@snui/uni';
       blurb: 'fade / fade-up / zoom-in / slide-up 四种动画切换。',
     },
     {
-      name: 'transition-mp-config',
-      title: '组合、分时长与销毁',
-      blurb: '组合动画、进入 100ms / 离开 600ms、destroy=false，以及事件序列。',
+      name: 'transition-mp-combined',
+      title: '组合动画（name 数组）',
+      blurb: 'name 传数组同时叠加多个动画（fade + up）。',
+    },
+    {
+      name: 'transition-mp-duration',
+      title: '分段时长（duration）',
+      blurb: 'duration 对象给进入 / 离开各配时长（enter 100ms / leave 600ms），事件序列佐证。',
+    },
+    {
+      name: 'transition-mp-destroy',
+      title: '保留节点（destroy）',
+      blurb: 'destroy=false 收起时不销毁节点，仅隐藏。',
     },
     {
       name: 'transition-mp-custom-class',
@@ -79,9 +89,14 @@ import { Transition } from '@snui/uni';
         '六个阶段 class 与事件序列；customClass 虚线框 + customStyle 内联圆角；只给 customClass 的对照。',
     },
     {
-      name: 'transition-mp-lazy',
-      title: '懒渲染与阻止触摸滚动',
-      blurb: 'lazy-render 开 / 关对比与插槽渲染状态；disable-touch-move 配合背景滚动区验证拦截。',
+      name: 'transition-mp-lazy-render',
+      title: '懒渲染（lazyRender）',
+      blurb: 'lazy-render 开 / 关对比与插槽渲染状态：首次 show 才真正渲染。',
+    },
+    {
+      name: 'transition-mp-touch-move',
+      title: '阻止触摸滚动（disableTouchMove）',
+      blurb: 'disable-touch-move 展开时拦截 touchmove，配合背景滚动区验证拦截。',
     },
   ],
   props: {

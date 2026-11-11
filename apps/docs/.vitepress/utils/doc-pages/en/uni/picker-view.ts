@@ -57,23 +57,37 @@ import { PickerView } from '@snui/uni';
     },
     {
       name: 'picker-view-mp-cascade',
-      title: 'Cascade & disabled (`cascade` / `disabled` / `valueKey`)',
+      title: 'Cascade mode (`cascade`)',
       blurb:
-        'With `cascade`, `columns` is a tree and the following columns are derived from the path; `disabled` freezes every column.',
+        'With `cascade`, `columns` is a tree and the following columns are derived from the path.',
     },
     {
-      name: 'picker-view-mp-keys-geometry',
-      title:
-        'Geometry & custom field names (`itemHeight` / `visibleItemCount` / `valueKey` / `labelKey` / `childrenKey`)',
-      blurb:
-        '`itemHeight` / `visibleItemCount` tune row height and visible rows; `valueKey` / `labelKey` / `childrenKey` read custom field names.',
+      name: 'picker-view-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` freezes every column; dragging is ignored.',
     },
     {
-      name: 'picker-view-mp-immediate-custom',
-      title:
-        'Live commit while dragging & root styling (`immediateChange` / `customClass` / `customStyle`)',
+      name: 'picker-view-mp-rows',
+      title: 'Roller geometry (`itemHeight` / `visibleItemCount`)',
       blurb:
-        '`immediateChange` fires `change` continuously while dragging; `customClass` / `customStyle` restyle the root frame and fill.',
+        '`itemHeight` tunes the row height (px design units → rpx) and `visibleItemCount` the visible rows.',
+    },
+    {
+      name: 'picker-view-mp-keys',
+      title: 'Custom field names (`valueKey` / `labelKey` / `childrenKey`)',
+      blurb:
+        '`valueKey` / `labelKey` / `childrenKey` read custom field names, so business data need not be renamed.',
+    },
+    {
+      name: 'picker-view-mp-immediate',
+      title: 'Live commit while dragging (`immediateChange`)',
+      blurb: '`immediateChange` fires `change` continuously while dragging for live updates.',
+    },
+    {
+      name: 'picker-view-mp-custom-style',
+      title: 'Root styling (`customClass` / `customStyle`)',
+      blurb:
+        '`customClass` / `customStyle` land on the root and restyle the roller frame and fill.',
     },
   ],
   props: {

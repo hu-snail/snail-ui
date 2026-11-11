@@ -43,7 +43,7 @@ function go(end: End): void {
         :aria-selected="active === 'web'"
         @click="go('web')"
       >
-        Web 端
+        {{ isEn ? 'Web' : 'Web 端' }}
       </button>
       <button
         type="button"
@@ -53,7 +53,7 @@ function go(end: End): void {
         :aria-selected="active === 'uni'"
         @click="go('uni')"
       >
-        uni-app 端
+        {{ isEn ? 'uni-app' : 'uni-app 端' }}
       </button>
     </div>
   </div>
@@ -83,21 +83,19 @@ function go(end: End): void {
 .dark .sn-end-switch {
   background: var(--vp-c-bg);
 }
-/* 内层胶囊：磨砂玻璃质感（不再是灰底） */
+/* 内层胶囊：浅灰实心底 + 淡投影，不描边（与 demo 预览切换胶囊同一语言） */
 .sn-end-switch__pill {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 4px;
   border-radius: 999px;
-  /* 实心底：菜单项滚过胶囊时不透出。 */
-  border: 1px solid var(--sn-web-color-border-default, var(--vp-c-divider));
-  background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
+  /* 实心底：菜单项滚过胶囊时不透出。#f8f8f8 与 demo 预览台同底。 */
+  background: #f8f8f8;
 }
 
-/* 滑块：back-out 曲线自带 ~10% 过冲后落位（回弹） */
+/* 深色：回落主题软表面，同样不描边 */
 .dark .sn-end-switch__pill {
-  border-color: rgb(255 255 255 / 0.1);
   background: var(--sn-web-color-background-subtle, var(--vp-c-bg-soft));
 }
 
@@ -109,9 +107,7 @@ function go(end: End): void {
   width: calc(50% - 4px);
   border-radius: 999px;
   background: var(--sn-web-color-background-surface, var(--vp-c-bg));
-  box-shadow:
-    0 2px 8px rgb(15 23 42 / 0.12),
-    0 0 0 1px rgb(15 23 42 / 0.04);
+  box-shadow: 0 2px 8px rgb(15 23 42 / 0.12);
   transform: translateX(0);
   transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }

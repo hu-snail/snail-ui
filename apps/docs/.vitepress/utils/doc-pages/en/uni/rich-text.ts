@@ -66,9 +66,20 @@ import { RichText } from '@snui/uni';
       blurb: 'Media and playback control',
     },
     {
-      name: 'rich-text-mp-styles',
-      title: 'Style maps, outline and empty state',
-      blurb: 'Style maps, outline and empty state',
+      name: 'rich-text-mp-style-map',
+      title: 'Style maps (`tagStyle` / `classStyles`)',
+      blurb: 'tagStyle injects styles per tag name; classStyles per class.',
+    },
+    {
+      name: 'rich-text-mp-anchor',
+      title: 'Heading anchors (`enableAnchor`)',
+      blurb:
+        'enableAnchor builds the heading outline; getHeadings() reads it, scrollToAnchor() jumps smoothly.',
+    },
+    {
+      name: 'rich-text-mp-empty',
+      title: 'Empty state slot',
+      blurb: 'When content is empty the default slot renders the empty state.',
     },
   ],
   props: {

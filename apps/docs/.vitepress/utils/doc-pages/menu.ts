@@ -11,7 +11,7 @@ export const menuDocPage: SnDocPageData = {
   title: 'Menu 菜单',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -58,7 +58,12 @@ import { Menu } from '@snui/vue-web';
     { name: 'menu-web-collapsed', title: '折叠收起', blurb: '折叠收起' },
     { name: 'menu-web-collapsed-inline', title: '行内折叠', blurb: '行内折叠' },
     { name: 'menu-web-responsive-collapse', title: '响应式收起', blurb: '响应式收起' },
-    { name: 'menu-web-inline-submenu', title: '内联子菜单', blurb: '内联子菜单' },
+    {
+      name: 'menu-web-expanded-keys',
+      title: '默认展开子菜单',
+      blurb: 'defaultExpandedKeys 设置默认打开的子项。',
+    },
+    { name: 'menu-web-disabled-item', title: '禁用菜单项', blurb: 'disabled 项置灰且不可点。' },
     { name: 'menu-web-pop-button', title: '弹出菜单', blurb: '弹出菜单' },
   ],
   props: {

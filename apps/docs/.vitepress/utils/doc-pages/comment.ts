@@ -15,7 +15,7 @@ export const commentDocPage: SnDocPageData = {
   title: '评论 Comment',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '展示评论信息：头像 / 作者 / 时间 / 正文 / 操作，支持嵌套回复。' }],

@@ -15,7 +15,7 @@ export const skeletonDocPage: SnDocPageData = {
   title: 'Skeleton 骨架屏',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -56,7 +56,9 @@ import { Skeleton } from '@snui/vue-web';
   },
   demos: [
     { name: 'skeleton-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'skeleton-web-box', title: '盒子形态', blurb: '盒子形态' },
+    { name: 'skeleton-web-box', title: '盒子占位', blurb: '显式 width / height 的裸盒占位。' },
+    { name: 'skeleton-web-repeat', title: '多行占位', blurb: 'repeat 一次渲染多行。' },
+    { name: 'skeleton-web-sharp', title: '直角与圆角', blurb: 'sharp / round 圆角形态。' },
     { name: 'skeleton-web-size', title: '尺寸与形状', blurb: '尺寸与形状' },
     { name: 'skeleton-web-card', title: '卡片占位', blurb: '卡片占位' },
   ],

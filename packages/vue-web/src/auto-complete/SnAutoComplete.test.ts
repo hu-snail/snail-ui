@@ -8,39 +8,68 @@
  */
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { DOMWrapper, mount } from '@vue/test-utils';
 import { h, nextTick, ref } from 'vue';
 import SnAutoComplete from './SnAutoComplete.vue';
 
+/** Mounted wrappers tracked so afterEach can unmount before clearing body. */
+const mounted: Array<{ unmount: () => void }> = [];
+
 function mountComplete(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
-  return mount(SnAutoComplete, { props, slots });
+  // attachTo: the menu teleports to <body>, and patching a teleported
+  // subtree while the component root is detached crashes happy-dom —
+  // mirror SnSelect / SnCascader and mount into the real document.
+  const w = mount(SnAutoComplete, { props, slots, attachTo: document.body });
+  mounted.push(w);
+  return w;
 }
 
 /** Mount with a live v-model so keystrokes accumulate. */
 function mountVModel(initial: string, props: Record<string, unknown> = {}) {
   const value = ref(initial);
-  const wrapper = mount({
-    setup() {
-      return () =>
-        h(SnAutoComplete, {
-          ...props,
-          modelValue: value.value,
-          'onUpdate:modelValue': (v: string) => {
-            value.value = v;
-          },
-        });
+  const wrapper = mount(
+    {
+      setup() {
+        return () =>
+          h(SnAutoComplete, {
+            ...props,
+            modelValue: value.value,
+            'onUpdate:modelValue': (v: string) => {
+              value.value = v;
+            },
+          });
+      },
     },
-  });
+    { attachTo: document.body },
+  );
+  mounted.push(wrapper);
   return { wrapper: wrapper.findComponent(SnAutoComplete), value };
+}
+
+/* The menu teleports to <body> (so overflow:hidden ancestors cannot clip it)
+ * — panel assertions query document.body, mirroring SnSelect's tests. */
+
+/** The teleported menu element, or null while closed. */
+function menuOnBody(): HTMLElement | null {
+  return document.body.querySelector<HTMLElement>('.sn-auto-complete__menu');
+}
+
+/** All option rows currently in the teleported menu. */
+function bodyOptions(): DOMWrapper<HTMLElement>[] {
+  return [...document.body.querySelectorAll<HTMLElement>('.sn-auto-complete__option')].map(
+    (el) => new DOMWrapper(el),
+  );
+}
+
+/** The highlighted option row, or null. */
+function activeOptionOnBody(): HTMLElement | null {
+  return document.body.querySelector<HTMLElement>('.sn-auto-complete__option--active');
 }
 
 /** Focus the input to open the dropdown, then return helpers. */
 async function openDropdown(wrapper: ReturnType<typeof mount>) {
   await wrapper.find('input').trigger('focus');
-  return {
-    menu: wrapper.find('.sn-auto-complete__menu'),
-    options: wrapper.findAll('.sn-auto-complete__option'),
-  };
+  return { options: bodyOptions() };
 }
 
 /**
@@ -53,6 +82,9 @@ async function menuLeft(): Promise<void> {
 
 describe('SnAutoComplete', () => {
   afterEach(() => {
+    // Unmount first so Vue removes its own Teleport nodes cleanly (wiping
+    // document.body under a live component crashes the patcher).
+    for (const w of mounted.splice(0)) w.unmount();
     document.body.innerHTML = '';
   });
 
@@ -125,10 +157,10 @@ describe('SnAutoComplete', () => {
     const input = wrapper.find('input');
     await input.trigger('focus');
     await input.trigger('keydown', { key: 'ArrowDown' });
-    expect(wrapper.find('.sn-auto-complete__option--active').text()).toBe('apple');
+    expect(activeOptionOnBody()?.textContent).toBe('apple');
     expect(input.attributes('aria-activedescendant')).toBeDefined();
     await input.trigger('keydown', { key: 'ArrowDown' });
-    expect(wrapper.find('.sn-auto-complete__option--active').text()).toBe('banana');
+    expect(activeOptionOnBody()?.textContent).toBe('banana');
     await input.trigger('keydown', { key: 'Enter' });
     expect(wrapper.emitted('select')?.at(-1)).toEqual(['banana']);
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['banana']);
@@ -139,17 +171,17 @@ describe('SnAutoComplete', () => {
     const input = wrapper.find('input');
     await input.trigger('focus');
     await input.trigger('keydown', { key: 'ArrowUp' });
-    expect(wrapper.find('.sn-auto-complete__option--active').text()).toBe('banana');
+    expect(activeOptionOnBody()?.textContent).toBe('banana');
   });
 
   it('closes the dropdown with Escape', async () => {
     const wrapper = mountComplete({ modelValue: '', options: ['apple'] });
     const input = wrapper.find('input');
     await input.trigger('focus');
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(true);
+    expect(menuOnBody()).not.toBeNull();
     await input.trigger('keydown', { key: 'Escape' });
     await menuLeft();
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false);
+    expect(menuOnBody()).toBeNull();
   });
 
   it('does not select disabled options via keyboard', async () => {
@@ -161,7 +193,7 @@ describe('SnAutoComplete', () => {
     await input.trigger('focus');
     await input.trigger('keydown', { key: 'ArrowDown' });
     // Skips the disabled first option and lands on banana.
-    expect(wrapper.find('.sn-auto-complete__option--active').text()).toBe('banana');
+    expect(activeOptionOnBody()?.textContent).toBe('banana');
   });
 
   it('does not select disabled options via click', async () => {
@@ -209,7 +241,7 @@ describe('SnAutoComplete', () => {
       { empty: () => h('span', { class: 'custom-empty' }, 'nothing here') },
     );
     await wrapper.find('input').trigger('focus');
-    expect(wrapper.find('.custom-empty').exists()).toBe(true);
+    expect(document.body.querySelector('.custom-empty')).not.toBeNull();
   });
 
   it('blurs the input after selection when blurAfterSelect is on', async () => {
@@ -228,7 +260,7 @@ describe('SnAutoComplete', () => {
     const input = wrapper.find('input');
     await input.trigger('focus');
     (input.element as HTMLInputElement).focus();
-    await wrapper.findAll('.sn-auto-complete__option')[0].trigger('click');
+    await bodyOptions()[0].trigger('click');
     await new Promise((r) => setTimeout(r, 0));
     expect(blurListener).toHaveBeenCalledTimes(1);
     wrapper.unmount();
@@ -247,7 +279,7 @@ describe('SnAutoComplete', () => {
     const input = wrapper.find('input');
     await input.trigger('focus');
     (input.element as HTMLInputElement).focus();
-    await wrapper.findAll('.sn-auto-complete__option')[0].trigger('click');
+    await bodyOptions()[0].trigger('click');
     await new Promise((r) => setTimeout(r, 0));
     expect(blurListener).not.toHaveBeenCalled();
     wrapper.unmount();
@@ -256,29 +288,31 @@ describe('SnAutoComplete', () => {
   it('does not open the dropdown when disabled', async () => {
     const wrapper = mountComplete({ modelValue: '', disabled: true, options: ['apple'] });
     await wrapper.find('input').trigger('focus');
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false);
+    expect(menuOnBody()).toBeNull();
     expect(wrapper.find('input').attributes('disabled')).toBeDefined();
   });
 
   it('does not open the dropdown when readonly', async () => {
     const wrapper = mountComplete({ modelValue: '', readonly: true, options: ['apple'] });
     await wrapper.find('input').trigger('focus');
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false);
+    expect(menuOnBody()).toBeNull();
     expect(wrapper.find('input').attributes('readonly')).toBeDefined();
   });
 
   it('closes the dropdown on outside click and cleans up on unmount', async () => {
     const wrapper = mountComplete({ modelValue: '', options: ['apple'] });
     await wrapper.find('input').trigger('focus');
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(true);
-    document.dispatchEvent(new Event('pointerdown'));
+    expect(menuOnBody()).not.toBeNull();
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
     await wrapper.vm.$nextTick();
     await menuLeft();
-    expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false);
+    expect(menuOnBody()).toBeNull();
 
     // Listener must be removed on unmount — dispatch after unmount is a no-op.
     wrapper.unmount();
-    expect(() => document.dispatchEvent(new Event('pointerdown'))).not.toThrow();
+    expect(() =>
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true })),
+    ).not.toThrow();
   });
 
   it('exposes aria combobox wiring on the input and listbox in the panel', async () => {
@@ -288,7 +322,8 @@ describe('SnAutoComplete', () => {
     expect(input.attributes('aria-expanded')).toBe('true');
     const menuId = input.attributes('aria-controls');
     expect(menuId).toBeDefined();
-    expect(wrapper.find(`#${menuId}`).attributes('role')).toBe('listbox');
+    const listbox = document.body.querySelector(`[id="${menuId}"]`);
+    expect(listbox?.getAttribute('role')).toBe('listbox');
     await input.trigger('blur');
     expect(input.attributes('aria-expanded')).toBe('false');
   });
@@ -316,19 +351,19 @@ describe('SnAutoComplete', () => {
       global: { stubs: { transition: false } },
     });
     await wrapper.find('input').trigger('focus');
-    const menu = wrapper.find('.sn-auto-complete__menu');
+    const menuEl = menuOnBody();
     // Enter classes prove the Transition name is sn-pop (applied synchronously).
-    expect(menu.exists()).toBe(true);
+    expect(menuEl).not.toBeNull();
     expect(
-      menu.classes().includes('sn-pop-enter-from') ||
-        menu.classes().includes('sn-pop-enter-active'),
+      menuEl!.classList.contains('sn-pop-enter-from') ||
+        menuEl!.classList.contains('sn-pop-enter-active'),
     ).toBe(true);
     // Enter completes within 300ms: panel still mounted, enter classes gone.
     await new Promise((resolve) => setTimeout(resolve, 300));
-    const settled = wrapper.find('.sn-auto-complete__menu');
-    expect(settled.exists()).toBe(true);
-    expect(settled.classes().includes('sn-pop-enter-active')).toBe(false);
-    expect(settled.classes().includes('sn-pop-enter-from')).toBe(false);
+    const settled = menuOnBody();
+    expect(settled).not.toBeNull();
+    expect(settled!.classList.contains('sn-pop-enter-active')).toBe(false);
+    expect(settled!.classList.contains('sn-pop-enter-from')).toBe(false);
   });
 
   /* ───── scroll follow (useOverlayFollow) ───── */
@@ -345,10 +380,10 @@ describe('SnAutoComplete', () => {
     const w = mountComplete({ options: ['a', 'ab'] });
     await w.find('input').trigger('focus');
     await nextTick();
-    const menu = w.find('.sn-auto-complete__menu');
-    expect(menu.exists()).toBe(true);
+    let menu = menuOnBody();
+    expect(menu).not.toBeNull();
     // Default (unmocked) rects leave plenty of room below — no flip.
-    expect(menu.classes().includes('sn-auto-complete__menu--flip')).toBe(false);
+    expect(menu!.classList.contains('sn-auto-complete__menu--top')).toBe(false);
     // The page scrolled: the field now sits near the viewport bottom.
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement,
@@ -374,7 +409,8 @@ describe('SnAutoComplete', () => {
     window.dispatchEvent(new Event('scroll'));
     await nextTick();
     // No room below (768 - 732 < 160), room above — the dropdown flips up.
-    expect(w.find('.sn-auto-complete__menu').classes()).toContain('sn-auto-complete__menu--flip');
+    menu = menuOnBody();
+    expect(menu!.classList.contains('sn-auto-complete__menu--top')).toBe(true);
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });

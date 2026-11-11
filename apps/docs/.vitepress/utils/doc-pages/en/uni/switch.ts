@@ -61,16 +61,24 @@ import { Switch } from '@snui/uni';
   demos: [
     { name: 'switch-mp-basic', title: 'Basic usage', blurb: 'v-model + the change event.' },
     {
-      name: 'switch-mp-appearance',
-      title:
-        'Appearance (`activeText` / `inactiveText` / `shape` / `size` / `activeColor` / `inactiveColor`)',
-      blurb: 'Rail text, square shape, custom size, custom colors.',
+      name: 'switch-mp-text',
+      title: 'Rail text (`activeText` / `inactiveText`)',
+      blurb: '`activeText` / `inactiveText` render inside the rail.',
     },
     {
-      name: 'switch-mp-before-change',
-      title:
-        'Guard & states (`activeValue` / `inactiveValue` / `beforeChange` / `loading` / `disabled`)',
-      blurb: 'String activeValue/inactiveValue; beforeChange veto; loading; disabled.',
+      name: 'switch-mp-shape',
+      title: 'Shape (`shape`)',
+      blurb: 'shape="square" renders a square rail.',
+    },
+    {
+      name: 'switch-mp-size',
+      title: 'Size (`size`)',
+      blurb: '`size` sets the switch size (a number is treated as rpx).',
+    },
+    {
+      name: 'switch-mp-color',
+      title: 'Switch colors (`activeColor`)',
+      blurb: '`activeColor` / `inactiveColor` override the on / off rail colors.',
     },
     {
       name: 'switch-mp-icons',
@@ -86,10 +94,14 @@ import { Switch } from '@snui/uni';
         'activeActionCssIcon / inactiveActionCssIcon; activeCssIcon / inactiveCssIcon; classPrefix.',
     },
     {
-      name: 'switch-mp-loading-custom',
-      title: 'Loading & custom styling (`loadingProps` / `customClass` / `customStyle`)',
-      blurb:
-        'loading (spinner in the knob); loadingProps (declared but not rendered); customClass; customStyle.',
+      name: 'switch-mp-loading',
+      title: 'Loading (`loading`)',
+      blurb: '`loading` shows a spinner in the knob; `loadingProps` configures it (color / size).',
+    },
+    {
+      name: 'switch-mp-custom-style',
+      title: 'Root styling',
+      blurb: '`customClass` / `customStyle` land on the root node.',
     },
   ],
   props: {

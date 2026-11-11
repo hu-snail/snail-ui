@@ -15,7 +15,7 @@ export const paginationDocPage: SnDocPageData = {
   title: 'Pagination 分页器',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -52,18 +52,32 @@ import { Pagination } from '@snui/vue-web';
   },
   demos: [
     { name: 'pagination-web-basic', title: '基础用法', blurb: '基础用法' },
-    { name: 'pagination-web-jumper', title: '快速跳转与每页条数', blurb: '快速跳转与每页条数' },
+    {
+      name: 'pagination-web-jumper',
+      title: '快速跳页',
+      blurb: 'show-quick-jumper 跳页输入，回车提交。',
+    },
     {
       name: 'pagination-web-pagesize',
       title: '每页条数档位与数据量联动',
       blurb: '每页条数档位与数据量联动',
     },
+    { name: 'pagination-web-simple', title: '简洁模式', blurb: 'simple + show-total 紧凑形态。' },
     {
-      name: 'pagination-web-picker-simple',
-      title: '省略折叠、简洁模式与页码插槽',
-      blurb: '省略折叠、简洁模式与页码插槽',
+      name: 'pagination-web-label-slot',
+      title: '自定义页码插槽',
+      blurb: '#label 插槽定制页码样式。',
     },
-    { name: 'pagination-web-disabled', title: '省略折叠与禁用态', blurb: '省略折叠与禁用态' },
+    {
+      name: 'pagination-web-ellipsis',
+      title: '页码省略折叠',
+      blurb: 'pageSlot 收窄：首尾保留，中间折叠出省略号。',
+    },
+    {
+      name: 'pagination-web-disabled',
+      title: '禁用',
+      blurb: 'disabled 整体禁用：页码 / 跳页 / 条数全部不可操作。',
+    },
     {
       name: 'pagination-web-quick-switch',
       title: '快速切换（quick-switch）',

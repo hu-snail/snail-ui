@@ -1,0 +1,24 @@
+<script setup lang="ts">
+/** Demo: sn-picker-view — `disabled` freezes every column; dragging is ignored. */
+import { ref } from 'vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
+
+const fruits = ['Apple', 'Banana', 'Cherry'];
+const locked = ref<Array<string | number>>(['Banana']);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPickerView v-model="locked" :columns="[fruits]" disabled />
+    <text class="sn-demo__meta"
+      >disabled: drags are ignored, the value stays {{ locked.join(' / ') }}</text
+    >
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -80,9 +80,14 @@ import { Form } from '@snui/uni';
         'label slot for a composite label, default slot for a custom priority picker, description slot for custom helper copy.',
     },
     {
-      name: 'form-mp-state',
-      title: 'Validation state and display strategy',
-      blurb: 'Inline message / statusIcon glyph / showMessage=false / errorType=none.',
+      name: 'form-mp-status-icon',
+      title: 'Status icon (statusIcon)',
+      blurb: 'statusIcon: a glyph precedes the message.',
+    },
+    {
+      name: 'form-mp-message-display',
+      title: 'Error message display strategies',
+      blurb: 'showMessage=false drops the message row / errorType=none silences it.',
     },
     {
       name: 'form-mp-disabled',
@@ -91,15 +96,34 @@ import { Form } from '@snui/uni';
         'SnForm.disabled cascades into every FormItem; the submit button is disabled with them.',
     },
     {
-      name: 'form-mp-cell',
-      title: 'Cell list layout',
-      blurb:
-        'border divider / ellipsis truncation / clickable + isLink row / placeholder fallback / description copy.',
+      name: 'form-mp-cell-border',
+      title: 'Cell dividers & truncation',
+      blurb: 'border divider / ellipsis truncation.',
     },
     {
-      name: 'form-mp-cell-style',
-      title: 'Form-level defaults',
-      blurb: 'size scaling, valueAlign right, asteriskPosition, hideAsterisk.',
+      name: 'form-mp-cell-clickable',
+      title: 'Tappable rows (clickable / isLink)',
+      blurb: 'clickable + isLink: the whole row is tappable and shows the arrow.',
+    },
+    {
+      name: 'form-mp-cell-text',
+      title: 'Placeholder & helper copy',
+      blurb: 'placeholder fallback for empty rows / description helper copy.',
+    },
+    {
+      name: 'form-mp-size',
+      title: 'Size',
+      blurb: 'size scaling: default medium vs size="small".',
+    },
+    {
+      name: 'form-mp-value-align',
+      title: 'Value alignment (valueAlign)',
+      blurb: 'valueAlign right.',
+    },
+    {
+      name: 'form-mp-asterisk',
+      title: 'Required asterisk (asteriskPosition / hideAsterisk)',
+      blurb: 'asteriskPosition and hideAsterisk.',
     },
     {
       name: 'form-mp-icon',
@@ -129,9 +153,19 @@ import { Form } from '@snui/uni';
         'validate() / validateField(prop) / validateField([props]) / clearValidate(prop), with the @validate error map echoed.',
     },
     {
-      name: 'form-mp-schema-layout',
-      title: 'Form-level configuration (schema / titleWidth / layout / center)',
-      blurb: 'titleWidth column / layout horizontal vs vertical / center / schema on the context.',
+      name: 'form-mp-title-width',
+      title: 'Label column width (titleWidth)',
+      blurb: 'titleWidth column.',
+    },
+    {
+      name: 'form-mp-layout',
+      title: 'Arrangement (layout / center)',
+      blurb: 'layout horizontal vs vertical / center.',
+    },
+    {
+      name: 'form-mp-schema',
+      title: 'Form schema',
+      blurb: 'schema on the context.',
     },
     {
       name: 'form-mp-validation-flow',

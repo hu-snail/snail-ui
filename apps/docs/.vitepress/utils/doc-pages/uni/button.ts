@@ -56,9 +56,14 @@ import { Button } from '@snui/uni';
     },
     { name: 'button-mp-size', title: '尺寸', blurb: '三档高度。' },
     {
-      name: 'button-mp-shape',
-      title: '块级与圆角',
-      blurb: 'block 占满父容器宽度，round 应用胶囊形圆角。',
+      name: 'button-mp-block',
+      title: '块级按钮（block）',
+      blurb: 'block 占满父容器宽度。',
+    },
+    {
+      name: 'button-mp-round',
+      title: '圆角按钮（round）',
+      blurb: 'round 应用胶囊形圆角。',
     },
     {
       name: 'button-mp-state',
@@ -77,21 +82,31 @@ import { Button } from '@snui/uni';
       blurb: 'Cell 列表化：hover 按下灰底、fill 常驻灰底、menu 透明无圆角。',
     },
     {
-      name: 'button-mp-custom',
-      title:
-        '自定义背景 / 颜色 / loading 颜色（`bgColor` / `color` / `loadingColor` / `loadingSize`）',
-      blurb: 'bgColor / color 覆盖；loadingColor 改 spinner 颜色；loadingSize 改 rpx 尺寸。',
+      name: 'button-mp-color-override',
+      title: '内联颜色覆盖（bgColor / color）',
+      blurb:
+        'bgColor / color 内联覆盖语义色（优先级高于类型 token）；附带 customClass / customStyle 根节点样式。',
     },
     {
-      name: 'button-mp-iconfont',
+      name: 'button-mp-loading-color',
+      title: '加载 spinner 定制（loadingColor / loadingSize）',
+      blurb: 'loadingColor 改 spinner 颜色；loadingSize 改 rpx 尺寸。',
+    },
+    {
+      name: 'button-mp-icon-button',
       title: '字体图标（`icon` / `class-prefix` / `css-icon`）',
       blurb:
         'icon + class-prefix 拼出 {prefix}-{icon}；css-icon 字符串原样渲染；css-icon 布尔同时挂两个类名。',
     },
     {
       name: 'button-mp-loading-props',
-      title: 'loading 配置与细边框（`loading-props` / `hairline`）',
-      blurb: 'loading-props 的 color / size；扁平 prop 优先；hairline 与 loading 叠加对比。',
+      title: 'loading-props 对象写法',
+      blurb: 'loading-props 的 color / size；扁平 prop 优先。',
+    },
+    {
+      name: 'button-mp-hairline',
+      title: '细边框（hairline）',
+      blurb: 'hairline 仅对 default 类型生效；与 loading 叠加对比。',
     },
     {
       name: 'button-mp-open-type',

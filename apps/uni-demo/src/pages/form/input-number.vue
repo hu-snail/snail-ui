@@ -1,10 +1,18 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— input-number 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/input-number-mp-basic.vue';
-import Demo1 from './demos/input-number-mp-commit-hooks.vue';
-import Demo2 from './demos/input-number-mp-controls.vue';
-import Demo3 from './demos/input-number-mp-custom-class.vue';
-import Demo4 from './demos/input-number-mp-theme-state.vue';
+import Demo0 from './demos/input-number-mp-allow-null.vue';
+import Demo1 from './demos/input-number-mp-basic.vue';
+import Demo2 from './demos/input-number-mp-before-change.vue';
+import Demo3 from './demos/input-number-mp-commit-hooks.vue';
+import Demo4 from './demos/input-number-mp-commit-timing.vue';
+import Demo5 from './demos/input-number-mp-controls.vue';
+import Demo6 from './demos/input-number-mp-custom-class.vue';
+import Demo7 from './demos/input-number-mp-disabled.vue';
+import Demo8 from './demos/input-number-mp-long-press.vue';
+import Demo9 from './demos/input-number-mp-round.vue';
+import Demo10 from './demos/input-number-mp-step-strictly.vue';
+import Demo11 from './demos/input-number-mp-theme.vue';
+import Demo12 from './demos/input-number-mp-theme-state.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -17,33 +25,96 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'计数器'" :title-en="'Input Number'" :desc="'步进数值输入'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="t('可空输入（allowNull）', 'Nullable input (allowNull)')"
+          badge="allow-null"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('commit-hooks', 'Commit Hooks')" badge="commit-hooks" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('controls', 'Controls')" badge="controls" />
+        <DemoModuleHead
+          :title="t('提交拦截（beforeChange）', 'Commit veto (beforeChange)')"
+          badge="before-change"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
+        <DemoModuleHead :title="t('commit-hooks', 'Commit Hooks')" badge="commit-hooks" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('theme-state', 'Theme State')" badge="theme-state" />
+        <DemoModuleHead
+          :title="t('提交时机与输入属性', 'Commit timing & input attrs')"
+          badge="commit-timing"
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('controls', 'Controls')" badge="controls" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled')" badge="disabled" />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('长按连加（longPress）', 'Long-press repeat (longPress)')"
+          badge="long-press"
+        />
+        <view class="module__body">
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('圆角（round）', 'Rounded (round)')" badge="round" />
+        <view class="module__body">
+          <Demo9 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('步进吸附（stepStrictly）', 'Step snapping (stepStrictly)')"
+          badge="step-strictly"
+        />
+        <view class="module__body">
+          <Demo10 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题（theme）', 'Theme (theme)')" badge="theme" />
+        <view class="module__body">
+          <Demo11 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('theme-state', 'Theme State')" badge="theme-state" />
+        <view class="module__body">
+          <Demo12 />
         </view>
       </view>
     </view>

@@ -15,7 +15,7 @@ export const floatButtonDocPage: SnDocPageData = {
   title: 'FloatButton 浮动按钮',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,7 +55,8 @@ import { FloatButton } from '@snui/vue-web';
     { name: 'float-button-web-placement', title: '八个方位', blurb: '八个方位' },
     { name: 'float-button-web-group', title: '按钮组', blurb: '按钮组' },
     { name: 'float-button-web-direction', title: '展开方向', blurb: '展开方向' },
-    { name: 'float-button-web-badge-link', title: '徽标与链接', blurb: '徽标与链接' },
+    { name: 'float-button-web-badge', title: '徽标', blurb: 'badge 数量徽标 + badge-dot 红点。' },
+    { name: 'float-button-web-link', title: '链接按钮', blurb: 'href + target 切换为 a 根元素。' },
   ],
   props: {
     hint: [],

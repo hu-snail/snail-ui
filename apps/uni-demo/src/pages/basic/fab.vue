@@ -4,9 +4,11 @@ import Demo0 from './demos/fab-mp-basic.vue';
 import Demo1 from './demos/fab-mp-direction.vue';
 import Demo2 from './demos/fab-mp-disabled.vue';
 import Demo3 from './demos/fab-mp-drag.vue';
-import Demo4 from './demos/fab-mp-fan.vue';
-import Demo5 from './demos/fab-mp-icons.vue';
+import Demo4 from './demos/fab-mp-expandable.vue';
+import Demo5 from './demos/fab-mp-fan.vue';
 import Demo6 from './demos/fab-mp-position.vue';
+import Demo7 from './demos/fab-mp-trigger-icons.vue';
+import Demo8 from './demos/fab-mp-type.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -31,7 +33,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -43,13 +45,16 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('扇形展开', 'Fan')" badge="fan" />
+        <DemoModuleHead
+          :title="t('仅点击不展开（expandable）', 'Click-only (`expandable`)')"
+          badge="expandable"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
+        <DemoModuleHead :title="t('扇形展开', 'Fan')" badge="fan" />
         <view class="module__body">
           <Demo5 />
         </view>
@@ -58,6 +63,21 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('位置', 'Position')" badge="position" />
         <view class="module__body">
           <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('触发图标双轨', 'Trigger icon dual-track')"
+          badge="trigger-icons"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题色（type）', 'Theme color (`type`)')" badge="type" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

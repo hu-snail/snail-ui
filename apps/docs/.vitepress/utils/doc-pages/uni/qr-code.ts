@@ -67,8 +67,13 @@ import { QrCode } from '@snui/uni';
     { name: 'qr-code-mp-basic', title: '基础用法', blurb: '默认纠错 H 与纠错 M 的对比。' },
     {
       name: 'qr-code-mp-dot-type',
-      title: '码点形状与颜色',
-      blurb: '四种码点形状、自定义深浅色与垂直渐变。',
+      title: '码点形状（dotType）',
+      blurb: 'square / dots / rounded / liquid 四种码点形状，dot-scale 缩小码点。',
+    },
+    {
+      name: 'qr-code-mp-color',
+      title: '自定义颜色（colorDark / colorLight）',
+      blurb: 'color-dark 换码点色，color-light 换留白色。',
     },
     {
       name: 'qr-code-mp-export',
@@ -76,9 +81,16 @@ import { QrCode } from '@snui/uni';
       blurb: '带静区的二维码 + exportImage 导出临时路径。',
     },
     {
-      name: 'qr-code-mp-canvas',
-      title: '多色渐变、角度与 canvasId',
-      blurb: '三色渐变、45° 角度渐变、自定义 canvasId 与根节点类名 / 样式。',
+      name: 'qr-code-mp-gradient',
+      title: '渐变码（enableGradient）',
+      blurb:
+        'gradientColors 多色渐变覆盖 gradientColor；gradientDirection 取 diagonal / horizontal / vertical 或角度数值。',
+    },
+    {
+      name: 'qr-code-mp-canvas-id',
+      title: '画布 id（canvasId）',
+      blurb:
+        'canvasId 指定画布 id（默认按实例 uid 生成）；附带 customClass / customStyle 根节点样式。',
     },
   ],
   props: {

@@ -2,6 +2,17 @@
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import '@snui/uni/styles';
+import { initDemoBridge } from './state/demo-bridge';
+import { useDemoUi } from './state/demo-ui';
+
+const { followSystemTheme } = useDemoUi();
+
+// #ifdef H5
+// 宿主（docs iframe）桥：URL 初始态 + postMessage 同步主题/语言。
+initDemoBridge();
+// #endif
+// 系统主题跟随：无显式选择时按 prefers-color-scheme / uni.onThemeChange 走。
+followSystemTheme();
 
 onLaunch(() => {});
 onShow(() => {});
@@ -21,8 +32,6 @@ page {
   --demo-btn-bg: rgba(255, 255, 255, 0.66);
   --demo-btn-border: rgba(255, 255, 255, 0.85);
   --demo-search-bg: rgba(255, 255, 255, 0.88);
-  /* 通栏头部：半透明毛玻璃底，画布从其下透出（与内容区背景一致）。 */
-  --demo-header-bg: rgba(255, 255, 255, 0.72);
   --demo-chip-bg: rgba(241, 245, 249, 0.9);
   --demo-chip-border: rgba(226, 232, 240, 0.8);
   --demo-icon-bg: linear-gradient(135deg, #eaf1ff, #dbe7ff);
@@ -100,7 +109,6 @@ page {
   --demo-search-bg: rgba(255, 255, 255, 0.07);
   --demo-chip-bg: rgba(255, 255, 255, 0.08);
   --demo-chip-border: rgba(255, 255, 255, 0.12);
-  --demo-header-bg: rgba(23, 21, 38, 0.72);
   --demo-icon-bg: rgba(124, 92, 252, 0.22);
   --demo-icon-fg: #a9bcff;
   --demo-title: #eef1fa;

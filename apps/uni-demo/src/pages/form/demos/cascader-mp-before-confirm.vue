@@ -1,0 +1,78 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-cascader — 确认拦截（beforeConfirm）。
+ *
+ * beforeConfirm 只放行浙江分支，结果用一个 sn-cell 卡片行回报
+ * （守卫：待确认 / 已允许 / 只支持浙江）。
+ */
+import { ref } from 'vue';
+import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+
+const tree = [
+  {
+    value: 'zj',
+    text: '浙江',
+    children: [
+      { value: 'hz', text: '杭州' },
+      { value: 'nb', text: '宁波' },
+    ],
+  },
+  { value: 'js', text: '江苏', children: [{ value: 'nj', text: '南京' }] },
+];
+
+/** 叶子值 → 展示文案，示例演示用。 */
+const TEXT: Record<string, string> = { zj: '浙江', hz: '杭州', nb: '宁波', js: '江苏', nj: '南京' };
+
+const value = ref<string | number | Array<string | number>>([]);
+const open = ref(false);
+const lastGuard = ref('待确认');
+
+/** 只允许确认浙江分支。 */
+const guard = (payload: { value: string | number | Array<string | number> }) => {
+  const first = Array.isArray(payload.value) ? payload.value[0] : payload.value;
+  const allowed = first === 'zj' || first === 'hz' || first === 'nb';
+  lastGuard.value = allowed ? '已允许' : '只支持浙江';
+  return allowed;
+};
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label">beforeConfirm 拦截确认，进度由守卫卡片行回报。</text>
+    <view class="sn-demo__cards">
+      <SnCell card title="通知地区" placeholder="请选择" is-link @click="open = true" />
+      <SnCell card title="确认守卫" :value="lastGuard" />
+    </view>
+    <SnCascader
+      v-model="value"
+      v-model:visible="open"
+      :options="tree"
+      check-strictly
+      :before-confirm="guard"
+      title="通知地区"
+      confirm-text="就它"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

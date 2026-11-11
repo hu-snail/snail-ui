@@ -2,7 +2,8 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— circle 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/circle-mp-basic.vue';
 import Demo1 from './demos/circle-mp-color.vue';
-import Demo2 from './demos/circle-mp-custom.vue';
+import Demo2 from './demos/circle-mp-custom-style.vue';
+import Demo3 from './demos/circle-mp-speed.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +28,18 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('动画速度（speed）', 'Animation speed (`speed`)')"
+          badge="speed"
+        />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

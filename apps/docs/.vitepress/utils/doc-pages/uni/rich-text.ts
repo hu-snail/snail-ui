@@ -65,9 +65,19 @@ import { RichText } from '@snui/uni';
     { name: 'rich-text-mp-table', title: '表格', blurb: '表格' },
     { name: 'rich-text-mp-media', title: '音视频与媒体控制', blurb: '音视频与媒体控制' },
     {
-      name: 'rich-text-mp-styles',
-      title: '样式映射、目录与空状态',
-      blurb: '样式映射、目录与空状态',
+      name: 'rich-text-mp-style-map',
+      title: '样式映射（tagStyle / classStyles）',
+      blurb: 'tagStyle 按标签名注入样式；classStyles 按 class 注入样式。',
+    },
+    {
+      name: 'rich-text-mp-anchor',
+      title: '锚点目录（enableAnchor）',
+      blurb: 'enableAnchor 开启标题目录；getHeadings() 取目录，scrollToAnchor() 平滑跳转。',
+    },
+    {
+      name: 'rich-text-mp-empty',
+      title: '空状态插槽',
+      blurb: 'content 为空时渲染默认插槽里的空状态。',
     },
   ],
   props: {

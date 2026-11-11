@@ -71,9 +71,21 @@ import { Popover } from '@snui/uni';
     },
     { name: 'popover-mp-theme', title: 'Dark theme', blurb: 'Dark theme' },
     {
-      name: 'popover-mp-slot',
-      title: 'Legacy icon field / content slot / node classes',
-      blurb: 'Legacy icon field / content slot / node classes',
+      name: 'popover-mp-icon-class',
+      title: 'Legacy icon field (`iconClass`)',
+      blurb:
+        'In menu mode the legacy iconClass field still works: names resolve through SnIcon, image sources render as <image>.',
+    },
+    {
+      name: 'popover-mp-content-slot',
+      title: '`content` slot',
+      blurb: 'The #content slot replaces the bubble body entirely, in both modes.',
+    },
+    {
+      name: 'popover-mp-custom-style',
+      title: 'Node classes & offset',
+      blurb:
+        'custom-arrow / custom-pop append classes; offset and custom-style act on the root node.',
     },
   ],
   props: {

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— switch 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/switch-mp-appearance.vue';
-import Demo1 from './demos/switch-mp-basic.vue';
+import Demo0 from './demos/switch-mp-basic.vue';
+import Demo1 from './demos/switch-mp-color.vue';
 import Demo2 from './demos/switch-mp-css-icons.vue';
-import Demo3 from './demos/switch-mp-icons.vue';
-import Demo4 from './demos/switch-mp-loading-custom.vue';
+import Demo3 from './demos/switch-mp-custom-style.vue';
+import Demo4 from './demos/switch-mp-icons.vue';
+import Demo5 from './demos/switch-mp-loading.vue';
+import Demo6 from './demos/switch-mp-shape.vue';
+import Demo7 from './demos/switch-mp-size.vue';
+import Demo8 from './demos/switch-mp-text.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -17,13 +21,16 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'开关'" :title-en="'Switch'" :desc="'布尔切换'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('appearance', 'Appearance')" badge="appearance" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          :title="t('开关配色（`activeColor`）', 'Switch colors (`activeColor`)')"
+          badge="color"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -35,15 +42,47 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('loading-custom', 'Loading Custom')" badge="loading-custom" />
+        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('加载态（`loading`）', 'Loading (`loading`)')" badge="loading" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('形状（`shape`）', 'Shape (`shape`)')" badge="shape" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('尺寸（`size`）', 'Size (`size`)')" badge="size" />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '轨道文案（`activeText` / `inactiveText`）',
+              'Rail text (`activeText` / `inactiveText`)',
+            )
+          "
+          badge="text"
+        />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

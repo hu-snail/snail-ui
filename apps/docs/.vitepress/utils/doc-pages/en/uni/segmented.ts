@@ -64,21 +64,34 @@ import { Segmented } from '@snui/uni';
     },
     {
       name: 'segmented-mp-theme',
-      title: 'Themes and disabled states',
-      blurb:
-        'theme=outline gives the outlined look; object options carry custom labels; the control-level disabled flag blocks the whole segmented control.',
+      title: 'Theme (`theme`)',
+      blurb: 'theme=outline gives the outlined look; object options carry custom labels.',
+    },
+    {
+      name: 'segmented-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: 'Item-level disabled blocks one option; control-level disabled freezes everything.',
     },
     {
       name: 'segmented-mp-value',
-      title: 'The wot-ui `value` spelling',
-      blurb:
-        '`:value` alias with `@update:model-value`; value wins over model-value; vibrate-short haptics.',
+      title: 'The `value` alias (wot-ui migration)',
+      blurb: '`:value` alias with `@update:model-value`; value wins over model-value.',
     },
     {
       name: 'segmented-mp-value-alias',
-      title: 'Event-name difference and root styling',
+      title: 'Event-name difference (`update:value`)',
       blurb:
-        '`:value` + `@update:value` (stays out of sync) versus `@update:model-value` (in sync); customClass frame; customStyle overriding fill and radius.',
+        "The wot-ui-style `@update:value` and this component's `@update:model-value` both keep parent and child in sync.",
+    },
+    {
+      name: 'segmented-mp-vibrate',
+      title: 'Switch haptics (`vibrate-short`)',
+      blurb: 'A short haptic fires on switch; hosts without a motor skip it silently.',
+    },
+    {
+      name: 'segmented-mp-custom-style',
+      title: 'Root styling',
+      blurb: 'customClass appends a frame; customStyle overrides fill and radius.',
     },
   ],
   props: {

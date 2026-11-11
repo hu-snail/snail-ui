@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/** Demo: sn-keyboard — 删除键开关（showDeleteKey）：showDeleteKey=false 不渲染删除键。 */
+import { ref } from 'vue';
+import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
+
+const noDelete = ref('');
+const openNoDelete = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">showDeleteKey=false（不渲染删除键）</text>
+    <view class="sn-demo__button" @tap="openNoDelete = true">无删除键</view>
+    <SnKeyboard
+      v-model="noDelete"
+      v-model:visible="openNoDelete"
+      :maxlength="6"
+      title="无删除键"
+      :show-delete-key="false"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+</style>

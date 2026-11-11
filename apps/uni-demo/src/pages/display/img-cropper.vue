@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— img-cropper 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/img-cropper-mp-export.vue';
-import Demo1 from './demos/img-cropper-mp-ratio.vue';
+import Demo0 from './demos/img-cropper-mp-export-props.vue';
+import Demo1 from './demos/img-cropper-mp-frame.vue';
+import Demo2 from './demos/img-cropper-mp-max-scale.vue';
+import Demo3 from './demos/img-cropper-mp-ratio.vue';
+import Demo4 from './demos/img-cropper-mp-rotate.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -14,15 +17,52 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'图片裁剪'" :title-en="'Img Cropper'" :desc="'裁剪几何交互'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('导出', 'Export')" badge="export" />
+        <DemoModuleHead :title="t('导出声明参数', 'Declared export props')" badge="export-props" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('ratio', 'Ratio')" badge="ratio" />
+        <DemoModuleHead
+          :title="
+            t('预览框尺寸（imgWidth / imgHeight）', 'Preview frame size (`imgWidth` / `imgHeight`)')
+          "
+          badge="frame"
+        />
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('缩放上限（maxScale）', 'Zoom cap (`maxScale`)')"
+          badge="max-scale"
+        />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('裁剪比例（aspectRatio）', 'Aspect ratio (`aspectRatio`)')"
+          badge="ratio"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '禁止旋转与按钮文案（disabledRotate）',
+              'Disable rotation & button labels (`disabledRotate`)',
+            )
+          "
+          badge="rotate"
+        />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

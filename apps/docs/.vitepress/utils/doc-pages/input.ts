@@ -12,7 +12,7 @@ export const inputDocPage: SnDocPageData = {
   title: 'Input 输入框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -109,15 +109,29 @@ export const inputDocPage: SnDocPageData = {
       blurb: 'default / error / warning — 由 FormItem 校验驱动，手动覆盖也允许。',
     },
     {
-      name: 'input-states',
-      title: '表单态（disabled / readonly / required）',
-      blurb: 'disabled 禁用交互，readonly 只读不可改，required 设 aria-required。',
+      name: 'input-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 禁用交互。',
     },
     {
-      name: 'input-clearable-count',
-      title: '清空 + 计数（clearable / showCount）',
-      blurb:
-        "clearable × 按钮；clearTrigger: 'always' | 'focus'；showCount / showWordLimit + maxlength 计数。",
+      name: 'input-readonly',
+      title: '只读（readonly）',
+      blurb: 'readonly 只读不可改。',
+    },
+    {
+      name: 'input-required',
+      title: '必填标记（required）',
+      blurb: 'required 设 aria-required。',
+    },
+    {
+      name: 'input-clearable',
+      title: '可清空（clearable）',
+      blurb: "clearable × 按钮；clearTrigger: 'always' | 'focus'。",
+    },
+    {
+      name: 'input-count',
+      title: '字数统计（showCount）',
+      blurb: 'showCount + maxlength 计数。',
     },
     {
       name: 'input-password-toggle',
@@ -130,19 +144,54 @@ export const inputDocPage: SnDocPageData = {
       blurb: 'prefixIcon / suffixIcon 通过 SnIcon 渲染；cssIcon 改为 CSS class。',
     },
     {
-      name: 'input-bordered-bg-radius',
-      title: '边框 / 背景 / 圆角',
-      blurb: "border: 'all' | 'bottom' | 'none'（bordered alias）；bg 背景色调；radius 圆角档位。",
+      name: 'input-slots',
+      title: '插槽用法',
+      blurb: '#prefix / #suffix / #clear-icon / #count（作用域）插槽。',
     },
     {
-      name: 'input-align-compact',
-      title: '右对齐 / 紧凑 / 输入模式（alignRight / compact / inputmode）',
-      blurb: '金额字段右对齐；compact 紧凑模式；inputmode 软键盘提示。',
+      name: 'input-bordered',
+      title: '边框（bordered / border）',
+      blurb: "border: 'all' | 'bottom' | 'none'（bordered 兼容别名）。",
     },
     {
-      name: 'input-custom',
-      title: '自定义类 / 自定义样式（customClass / customStyle / customInputClass）',
-      blurb: '三处 class / style 钩子。',
+      name: 'input-bg',
+      title: '背景色调（bg）',
+      blurb: 'surface / transparent / soft 三档背景。',
+    },
+    {
+      name: 'input-radius',
+      title: '圆角档位（radius）',
+      blurb: 'default / pill / square 圆角档位。',
+    },
+    {
+      name: 'input-align-right',
+      title: '右对齐（alignRight）',
+      blurb: '金额字段右对齐。',
+    },
+    {
+      name: 'input-compact',
+      title: '紧凑模式（compact）',
+      blurb: 'compact 紧凑模式，适合内联搜索行。',
+    },
+    {
+      name: 'input-inputmode',
+      title: '输入模式（inputmode）',
+      blurb: 'inputmode 软键盘提示（tel / search）。',
+    },
+    {
+      name: 'input-custom-class',
+      title: '自定义类（customClass）',
+      blurb: '根节点 customClass。',
+    },
+    {
+      name: 'input-custom-style',
+      title: '自定义样式（customStyle / placeholderStyle）',
+      blurb: '内部输入框 customStyle；placeholderStyle 占位符样式。',
+    },
+    {
+      name: 'input-custom-input-class',
+      title: '内部输入类（customInputClass）',
+      blurb: '原生 input 的 customInputClass。',
     },
   ],
 

@@ -6,7 +6,7 @@ export const formDocPageEn: SnDocPageData = {
   title: 'Form · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -77,16 +77,29 @@ import { Form } from '@snui/vue-web';
         'Cell list: border divider, ellipsis long label, clickable row + click event, isLink right arrow, placeholder, description.',
     },
     {
-      name: 'form-cell-style',
-      title: 'Form-level size / valueAlign / asteriskPosition / hideAsterisk',
-      blurb:
-        'Form-level defaults: size / valueAlign / asteriskPosition / hideAsterisk cascade to all FormItems.',
+      name: 'form-size',
+      title: 'Form size',
+      blurb: 'Form-level size cascades to all FormItems.',
     },
     {
-      name: 'form-validation-flow',
-      title: 'validateTrigger / resetOnChange / errorType',
-      blurb:
-        "validateTrigger 'blur' | 'change'; resetOnChange clears after submit; errorType 'message' | 'toast' | 'none'.",
+      name: 'form-value-align',
+      title: 'Value alignment',
+      blurb: 'valueAlign right + align-right inputs.',
+    },
+    {
+      name: 'form-asterisk',
+      title: 'Required asterisk',
+      blurb: 'asteriskPosition right; hideAsterisk removes the * marker.',
+    },
+    {
+      name: 'form-validate-trigger',
+      title: 'Validate trigger',
+      blurb: "validateTrigger 'blur' (default) | 'change'.",
+    },
+    {
+      name: 'form-error-type',
+      title: 'Error display',
+      blurb: "errorType 'message' | 'toast' | 'none' (silent).",
     },
     {
       name: 'form-web-assembly',

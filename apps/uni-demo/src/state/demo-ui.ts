@@ -41,6 +41,9 @@ const isDark = ref<boolean>(readStored(THEME_KEY) === 'dark');
 const STYLE_KEY = 'snui-demo-style';
 const stylePack = ref<string>(readStored(STYLE_KEY) ?? 'default');
 
+/** 是否已有显式主题选择（存储 / URL 参数 / 父页面同步）。无则跟随系统。 */
+let themeChosen = readStored(THEME_KEY) !== undefined;
+
 /** 当前风格包展示名（按钮标签）。 */
 const stylePackLabel = computed<string>(
   () => allPacks.find((p) => p.name === stylePack.value)?.label ?? 'Default',
@@ -109,7 +112,8 @@ function applyNavBar(): void {
  * hash 路由 SPA 下导航栏元素跨页面复用，一个持久 style 节点即可。
  */
 function applyNavBarH5(): void {
-  const bg = isDark.value ? BG_DARK : BG_LIGHT;
+  // 透明：与页面画布连成一体（navigationStyle: custom 下 uni-page-head 本就
+  // 不渲染，此注入只服务 native 模式兜底）；文字颜色仍随主题翻转。
   const fg = isDark.value ? '#fafafa' : '#1c2030';
   let style = document.getElementById('snui-demo-navbar-style') as HTMLStyleElement | null;
   if (style === null) {
@@ -118,7 +122,7 @@ function applyNavBarH5(): void {
     document.head.appendChild(style);
   }
   style.textContent = [
-    `uni-page-head .uni-page-head{background-color:${bg} !important;box-shadow:none !important;}`,
+    `uni-page-head .uni-page-head{background-color:transparent !important;box-shadow:none !important;}`,
     `uni-page-head .uni-page-head__title,uni-page-head .uni-page-head-btn,uni-page-head .uni-page-head-hd,uni-page-head .uni-page-head-ft{color:${fg} !important;}`,
   ].join('');
 }
@@ -150,6 +154,60 @@ function toggleTheme(): void {
   applyNavBar();
 }
 
+/**
+ * 外部显式设定主题（URL 初始态 / 父页面 docs 同步）。与 toggle 同路径：
+ * 更新状态 + 持久化 + 导航栏同步；显式选择后不再跟随系统。
+ */
+function setTheme(dark: boolean): void {
+  themeChosen = true;
+  if (isDark.value === dark) return;
+  isDark.value = dark;
+  writeStored(THEME_KEY, dark ? 'dark' : 'light');
+  applyNavBar();
+}
+
+/** 外部显式设定语言（URL 初始态 / 父页面 docs 同步）。 */
+function setLang(value: DemoLang): void {
+  if (lang.value === value) return;
+  lang.value = value;
+  writeStored(LANG_KEY, value);
+}
+
+/**
+ * 系统主题跟随：仅在没有任何显式选择时生效。H5 监听 prefers-color-scheme，
+ * MP（manifest darkmode: true）监听 uni.onThemeChange；显式选择后静默摘除。
+ */
+function followSystemTheme(): void {
+  // #ifdef H5
+  if (typeof window.matchMedia !== 'function') return;
+  const query = window.matchMedia('(prefers-color-scheme: dark)');
+  const apply = (event: MediaQueryList | MediaQueryListEvent): void => {
+    if (themeChosen) return;
+    isDark.value = event.matches;
+    applyNavBar();
+  };
+  apply(query);
+  const onChange = (event: MediaQueryListEvent): void => apply(event);
+  if (typeof query.addEventListener === 'function') {
+    query.addEventListener('change', onChange);
+  } else if (typeof query.addListener === 'function') {
+    // 旧版 Safari 的 deprecated API
+    query.addListener(onChange);
+  }
+  // #endif
+  // #ifndef H5
+  try {
+    uni.onThemeChange?.(({ theme }) => {
+      if (themeChosen) return;
+      isDark.value = theme === 'dark';
+      applyNavBar();
+    });
+  } catch {
+    // 平台不支持时忽略（H5 走上方 matchMedia 分支）
+  }
+  // #endif
+}
+
 export function useDemoUi() {
   return {
     lang,
@@ -160,7 +218,9 @@ export function useDemoUi() {
     t,
     toggleLang,
     toggleTheme,
-    chooseStylePack,
+    setTheme,
+    setLang,
+    followSystemTheme,
     applyNavBar,
     setNavTitle,
   };

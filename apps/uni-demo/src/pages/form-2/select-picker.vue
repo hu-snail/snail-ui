@@ -1,9 +1,15 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— select-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/select-picker-mp-basic.vue';
-import Demo1 from './demos/select-picker-mp-fields-size.vue';
-import Demo2 from './demos/select-picker-mp-loading-sheet.vue';
-import Demo3 from './demos/select-picker-mp-radio-filter.vue';
+import Demo1 from './demos/select-picker-mp-before-confirm.vue';
+import Demo2 from './demos/select-picker-mp-checked-color.vue';
+import Demo3 from './demos/select-picker-mp-chip-size.vue';
+import Demo4 from './demos/select-picker-mp-fields.vue';
+import Demo5 from './demos/select-picker-mp-filterable.vue';
+import Demo6 from './demos/select-picker-mp-loading.vue';
+import Demo7 from './demos/select-picker-mp-scroll-into-view.vue';
+import Demo8 from './demos/select-picker-mp-sheet.vue';
+import Demo9 from './demos/select-picker-mp-type-radio.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,21 +33,88 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('fields-size', 'Fields Size')" badge="fields-size" />
+        <DemoModuleHead
+          :title="t('确认拦截（`beforeConfirm`）', 'Confirm guard (`beforeConfirm`)')"
+          badge="before-confirm"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('loading-sheet', 'Loading Sheet')" badge="loading-sheet" />
+        <DemoModuleHead
+          :title="t('选中色（`checkedColor`）', 'Checked color (`checkedColor`)')"
+          badge="checked-color"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('radio-filter', 'Radio Filter')" badge="radio-filter" />
+        <DemoModuleHead
+          :title="
+            t(
+              'chip 尺寸与确认（`selectSize` / `showConfirm`）',
+              'Chip size & confirm (`selectSize` / `showConfirm`)',
+            )
+          "
+          badge="chip-size"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('字段映射（`valueKey` / `labelKey`）', 'Field mapping (`valueKey` / `labelKey`)')
+          "
+          badge="fields"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('可搜索（`filterable`）', 'Filterable (`filterable`)')"
+          badge="filterable"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('加载态（`loading`）', 'Loading state (`loading`)')"
+          badge="loading"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('滚动定位（`scrollIntoView`）', 'Scroll into view (`scrollIntoView`)')"
+          badge="scroll-into-view"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('弹层行为与样式', 'Sheet behavior & styling')" badge="sheet" />
+        <view class="module__body">
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('单选模式（`type=radio`）', 'Radio mode (`type=radio`)')"
+          badge="type-radio"
+        />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

@@ -3,8 +3,9 @@
 import Demo0 from './demos/dialog-mp-actions.vue';
 import Demo1 from './demos/dialog-mp-basic.vue';
 import Demo2 from './demos/dialog-mp-custom.vue';
-import Demo3 from './demos/dialog-mp-variant.vue';
-import Demo4 from './demos/dialog-mp-vertical.vue';
+import Demo3 from './demos/dialog-mp-icon.vue';
+import Demo4 from './demos/dialog-mp-theme.vue';
+import Demo5 from './demos/dialog-mp-vertical.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -35,15 +36,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <DemoModuleHead :title="t('状态图标（icon）', 'Status icon (`icon`)')" badge="icon" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
+        <DemoModuleHead :title="t('按钮主题（theme）', 'Button theme (`theme`)')" badge="theme" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

@@ -1,0 +1,50 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover — English shadow of popover-mp-content-slot.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+
+const slotOpen = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPopover v-model="slotOpen" mode="normal" placement="top" custom-class="sn-demo-contained">
+      <SnButton block>normal mode + content slot</SnButton>
+      <template #content>
+        <view class="sn-demo__body">
+          <text class="sn-demo__title">Custom bubble body</text>
+          <text class="sn-demo__text">The content slot accepts any structure.</text>
+        </view>
+      </template>
+    </SnPopover>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+}
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+.sn-demo__text {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
+  position: relative;
+  display: block;
+}
+</style>

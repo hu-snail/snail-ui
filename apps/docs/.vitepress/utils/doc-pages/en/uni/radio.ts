@@ -73,17 +73,31 @@ import { Radio } from '@snui/uni';
       blurb: 'Four shapes: circle / dot / square / button (button with direction=horizontal).',
     },
     {
-      name: 'radio-mp-states',
-      title: 'States (`allowUncheck` / `disabled` / `readonly` / `placement`)',
-      blurb:
-        "allowUncheck clears the selection; whole-group disabled / readonly; placement='right'.",
+      name: 'radio-mp-uncheck',
+      title: 'Uncheck on re-tap (`allowUncheck`)',
+      blurb: '`allowUncheck` clears the selection back to undefined on a second tap.',
     },
     {
-      name: 'radio-mp-colors-custom',
-      title:
-        'Colors & custom class names (`checkedColor` / `uncheckedColor` / `customLabelClass` / `customClass` / `customStyle`)',
+      name: 'radio-mp-disabled-readonly',
+      title: 'Disabled & readonly (`disabled` / `readonly`)',
+      blurb: 'Whole-group `disabled` locks the group; `readonly` makes it non-interactive.',
+    },
+    {
+      name: 'radio-mp-placement',
+      title: 'Marker placement (`placement`)',
+      blurb: "placement='right' moves the check marker to the right side.",
+    },
+    {
+      name: 'radio-mp-colors',
+      title: 'Checked colors (`checkedColor` / `uncheckedColor`)',
       blurb:
-        '`checkedColor` / `uncheckedColor` at group level with a per-option override; `customLabelClass` lands on the label node; `customClass` / `customStyle` on the root.',
+        '`checkedColor` / `uncheckedColor` flow down from the group with a per-option override.',
+    },
+    {
+      name: 'radio-mp-custom-style',
+      title: 'Custom class names & styles',
+      blurb:
+        '`customLabelClass` lands on the label node; `customClass` / `customStyle` on the root.',
     },
   ],
   props: {

@@ -1,8 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— slide-verify 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/slide-verify-mp-basic.vue';
-import Demo1 from './demos/slide-verify-mp-custom.vue';
-import Demo2 from './demos/slide-verify-mp-icons.vue';
+import Demo1 from './demos/slide-verify-mp-color.vue';
+import Demo2 from './demos/slide-verify-mp-custom-style.vue';
+import Demo3 from './demos/slide-verify-mp-disabled.vue';
+import Demo4 from './demos/slide-verify-mp-icons.vue';
+import Demo5 from './demos/slide-verify-mp-text.vue';
+import Demo6 from './demos/slide-verify-mp-tolerance.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,15 +25,54 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead
+          :title="t('轨道配色（`backgroundColor`）', 'Track colors (`backgroundColor`)')"
+          badge="color"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('图标字形（`icon` / `successIcon`）', 'Icon glyphs (`icon` / `successIcon`)')"
+          badge="icons"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('文案（`text` / `successText`）', 'Copy (`text` / `successText`)')"
+          badge="text"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('容差（`tolerance`）', 'Tolerance (`tolerance`)')"
+          badge="tolerance"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

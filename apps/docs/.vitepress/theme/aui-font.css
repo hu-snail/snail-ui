@@ -1,0 +1,22 @@
+/* Docs-site font wiring — put every @snui component on the self-hosted
+ * MiSans library ('MiSans Docs', theme/fonts/misans.generated.css).
+ *
+ * '@snui/vue-web/styles' declares the token layer on :root, with the sans
+ * primitive pointing at the OS system stack (-apple-system / PingFang SC …).
+ * The docs prose already drives --vp-font-family-base at MiSans (custom.css),
+ * but the rendered @snui components — demo previews, nav menu, search chips,
+ * pagination — read the token layer instead, so they used to land on the OS
+ * face and diverge from the surrounding prose. Re-pointing the primitive here
+ * puts both layers on the same font library; the semantic
+ * (--aui-font-family-body / -heading) and --sn-web-* alias layers are var()
+ * references to the primitive, so this single override cascades to all of
+ * them.
+ *
+ * MUST be imported after '@snui/vue-web/styles' (see theme/index.ts): equal
+ * specificity on :root, so the later declaration wins.
+ */
+:root {
+  --aui-font-family-sans:
+    'MiSans Docs', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}

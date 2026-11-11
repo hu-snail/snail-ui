@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/** Demo: sn-plate-input — `disabled` freezes the field; taps no longer raise the keyboard. */
+import SnPlateInput from '@snui/uni-src/components/sn-plate-input/sn-plate-input.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPlateInput model-value="京A12345" disabled title="Disabled" />
+    <text class="sn-demo__meta">disabled: taps are ignored, the value is frozen</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

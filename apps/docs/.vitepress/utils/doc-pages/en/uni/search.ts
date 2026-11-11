@@ -69,22 +69,40 @@ import { Search } from '@snui/uni';
       blurb: 'Three variants: plain / filled / light.',
     },
     {
-      name: 'search-mp-cancel-states',
-      title: 'Cancel text & states (`cancelTxt` / `hideCancel` / `placeholderLeft` / `disabled`)',
-      blurb: 'cancelTxt + cancel event; hideCancel; placeholderLeft; disabled.',
+      name: 'search-mp-cancel',
+      title: 'Cancel button (`cancelTxt` / `hideCancel`)',
+      blurb: '`cancelTxt` + the `cancel` event; `hideCancel` removes the button.',
     },
     {
-      name: 'search-mp-input-attrs',
-      title: 'Input attributes (`maxlength` / `focus` / `focusWhenClear` / `customInputClass`)',
+      name: 'search-mp-placeholder-left',
+      title: 'Left-aligned placeholder (`placeholderLeft`)',
+      blurb: '`placeholderLeft` keeps the placeholder text on the left.',
+    },
+    {
+      name: 'search-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` locks typing and clearing.',
+    },
+    {
+      name: 'search-mp-maxlength',
+      title: 'Character cap (`maxlength`)',
+      blurb: '`maxlength` caps the typeable characters (`-1` = unlimited).',
+    },
+    {
+      name: 'search-mp-focus',
+      title: 'Focus (`focus` / `focusWhenClear`)',
+      blurb: '`focus` focuses on mount; `focusWhenClear` refocuses after clear.',
+    },
+    {
+      name: 'search-mp-custom-style',
+      title: 'Inner-input & root styling (`customInputClass` / `customClass` / `customStyle`)',
       blurb:
-        '`maxlength` caps the character count; `focus` focuses on mount; `focusWhenClear` refocuses after clear; `customInputClass` is appended to the inner input.',
+        '`customInputClass` is appended to the inner input; `customClass` / `customStyle` restyle the root frame and fill.',
     },
     {
       name: 'search-mp-placeholder-style',
-      title:
-        'Placeholder text & root styling (`placeholderStyle` / `placeholderClass` / `customClass` / `customStyle`)',
-      blurb:
-        '`placeholderStyle` / `placeholderClass` affect only the placeholder text; `customClass` / `customStyle` restyle the root frame and fill.',
+      title: 'Placeholder styling (`placeholderStyle` / `placeholderClass`)',
+      blurb: '`placeholderStyle` / `placeholderClass` affect only the placeholder text.',
     },
   ],
   props: {

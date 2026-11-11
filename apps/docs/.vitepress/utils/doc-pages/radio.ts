@@ -11,7 +11,7 @@ export const radioDocPage: SnDocPageData = {
   title: 'Radio',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -66,11 +66,8 @@ import { Radio } from '@snui/vue-web';
       title: '尺寸（size）',
       blurb: 'mini / tiny / small / medium / large 五档。',
     },
-    {
-      name: 'radio-web-states',
-      title: '禁用 / 只读',
-      blurb: '组级禁用 OR 项级禁用；readonly 视觉态。',
-    },
+    { name: 'radio-web-disabled', title: '禁用', blurb: 'disabled：选中 / 未选两种置灰态。' },
+    { name: 'radio-web-readonly', title: '只读', blurb: 'readonly：视觉态可见但不可改。' },
   ],
   props: {
     hint: [],

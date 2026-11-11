@@ -6,7 +6,7 @@ export const transferDocPageEn: SnDocPageData = {
   title: 'Transfer · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,8 +45,8 @@ import { Transfer } from '@snui/vue-web';
     { name: 'transfer-web-basic', title: 'Basic', blurb: 'Basic' },
     {
       name: 'transfer-web-filter',
-      title: 'Filtering and panel titles',
-      blurb: 'Filtering and panel titles',
+      title: 'Filtering',
+      blurb: 'Per-panel search filtering + panel titles.',
     },
     { name: 'transfer-web-render', title: 'Custom row rendering', blurb: 'Custom row rendering' },
     { name: 'transfer-web-disabled', title: 'Disabled state', blurb: 'Disabled state' },

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-picker — 字段映射与按钮文案：valueKey / labelKey / childrenKey / cancelButtonText。 */
+/** Demo: sn-picker — 字段映射：valueKey / labelKey / childrenKey 让组件读取自定义字段名。 */
 import { ref } from 'vue';
 import SnPicker from '@snui/uni-src/components/sn-picker/sn-picker.vue';
 
@@ -26,9 +26,7 @@ const open = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title"
-      >valueKey="id" / labelKey="name" / childrenKey="sub" + cancelButtonText</text
-    >
+    <text class="sn-demo__title">valueKey="id" / labelKey="name" / childrenKey="sub"</text>
     <view class="sn-demo__button" @tap="open = true">选择地区</view>
     <text class="sn-demo__meta">已选：{{ region.join(' / ') || '（未选择）' }}</text>
     <SnPicker
@@ -40,8 +38,6 @@ const open = ref(false);
       label-key="name"
       children-key="sub"
       title="选择地区"
-      cancel-button-text="先不选"
-      confirm-button-text="就它"
     />
   </view>
 </template>

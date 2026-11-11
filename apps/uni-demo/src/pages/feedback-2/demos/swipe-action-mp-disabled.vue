@@ -1,35 +1,17 @@
 <script setup lang="ts">
 /**
- * Demo: sn-swipe-action (uni-end) — disabled / custom-class / custom-style.
+ * Demo: sn-swipe-action (uni-end) — disabled.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
 import { ref } from 'vue';
 import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
 
-const enabled = ref<'left' | 'close' | 'right'>('close');
 const locked = ref<'left' | 'close' | 'right'>('close');
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnSwipeAction
-      v-model="enabled"
-      custom-class="sn-demo__swipe"
-      custom-style="border-radius: var(--sn-mp-radius-md);"
-    >
-      <view class="sn-demo__row">
-        <text class="sn-demo__title">可滑动 + custom-class / custom-style</text>
-        <text class="sn-demo__desc">状态：{{ enabled }}</text>
-      </view>
-
-      <template #right>
-        <view class="sn-demo__action">
-          <text class="sn-demo__action-text">删除</text>
-        </view>
-      </template>
-    </SnSwipeAction>
-
-    <SnSwipeAction v-model="locked" disabled custom-class="sn-demo__swipe">
+    <SnSwipeAction v-model="locked" disabled>
       <view class="sn-demo__row">
         <text class="sn-demo__title">disabled：手势被忽略，行保持关闭</text>
         <text class="sn-demo__desc">状态：{{ locked }}</text>
@@ -74,10 +56,5 @@ const locked = ref<'left' | 'close' | 'right'>('close');
 .sn-demo__action-text {
   color: var(--sn-mp-color-text-on-primary);
   font-size: var(--sn-mp-font-size-sm);
-}
-/* custom-class 落在 sn-swipe-action 根节点上。 */
-.sn-demo :deep(.sn-demo__swipe) {
-  overflow: hidden;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 </style>

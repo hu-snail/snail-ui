@@ -10,7 +10,7 @@ export const treeSelectDocPageEn: SnDocPageData = {
   title: 'TreeSelect · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,9 +55,14 @@ import { TreeSelect } from '@snui/vue-web';
     },
     { name: 'tree-select-web-fields', title: 'Custom fields', blurb: 'Custom fields' },
     {
-      name: 'tree-select-web-states',
-      title: 'Clearable / disabled',
-      blurb: 'Clearable / disabled',
+      name: 'tree-select-web-clearable',
+      title: 'Clearable',
+      blurb: 'A clear button empties the selection.',
+    },
+    {
+      name: 'tree-select-web-disabled',
+      title: 'Disabled',
+      blurb: 'Component-level disable + disabled option nodes.',
     },
     { name: 'tree-select-web-line', title: 'Connector Lines', blurb: 'Connector Lines' },
     { name: 'tree-select-web-guide', title: 'Connector Lines', blurb: 'Connector Lines' },

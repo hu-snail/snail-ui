@@ -64,7 +64,16 @@ import { Img } from '@snui/uni';
 </template>`,
   },
   demos: [
-    { name: 'img-mp-basic', title: '基础用法', blurb: '三种裁剪模式，以及圆形 / 圆角 / 满宽。' },
+    {
+      name: 'img-mp-mode',
+      title: '裁剪模式（mode）',
+      blurb: 'scaleToFill / aspectFit / aspectFill 三种裁剪模式。',
+    },
+    {
+      name: 'img-mp-shape',
+      title: '圆形与圆角（round / radius）',
+      blurb: 'round 圆形；radius 自定义圆角；默认直角作对照。',
+    },
     {
       name: 'img-mp-state',
       title: '加载与失败态',
@@ -72,8 +81,14 @@ import { Img } from '@snui/uni';
     },
     {
       name: 'img-mp-preview',
-      title: '点击预览与懒加载',
-      blurb: '缩略图点击打开大图、preview-src 覆盖、懒加载与长按菜单。',
+      title: '点击预览（enablePreview）',
+      blurb:
+        '缩略图点击打开大图、preview-src 覆盖；附带 show-menu-by-longpress 长按菜单（仅微信小程序）。',
+    },
+    {
+      name: 'img-mp-lazy-load',
+      title: '懒加载（lazyLoad）',
+      blurb: 'lazy-load 交给原生 image，进入视口附近才开始加载。',
     },
     {
       name: 'img-mp-custom',

@@ -7,6 +7,10 @@ import './fonts/script.generated.css';
 import './fonts/misans.generated.css';
 import './custom.css';
 import '@snui/vue-web/styles';
+// Docs-site font wiring: re-point the token layer's sans primitive at the
+// self-hosted 'MiSans Docs' library. Must stay AFTER '@snui/vue-web/styles' —
+// it overrides the :root primitive that file declares (see aui-font.css).
+import './aui-font.css';
 // @snui/admin-layout ships shell classes only — the token layer comes from
 // @snui/vue-web/styles above, so this import must stay after it.
 import '@snui/admin-layout/styles';

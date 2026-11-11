@@ -1,0 +1,33 @@
+<script setup lang="ts">
+/** Demo: sn-rate — 间距与铺满：space 控制图标间距（数字按 rpx 设计值 ×2）、size 控制图标尺寸、block 均分整行宽度。 */
+import { ref } from 'vue';
+import SnRate from '@snui/uni-src/components/sn-rate/sn-rate.vue';
+
+const wide = ref<number | null>(2);
+const block = ref<number | null>(4);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnRate v-model="wide" :space="16" :size="40" />
+    <text class="sn-demo__meta">space=16（rpx ×2 间距）+ size=40</text>
+
+    <SnRate v-model="block" block />
+    <text class="sn-demo__meta">block：图标均分整行宽度</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -68,13 +68,38 @@ import { Steps } from '@snui/uni';
     },
     {
       name: 'steps-mp-vertical',
-      title: '垂直 / 点状 / 错误状态',
-      blurb: 'vertical 纵向步骤条；status=error 显式覆盖状态；dot 点状步骤条。',
+      title: '垂直步骤条（vertical）',
+      blurb: 'vertical 纵向排布步骤条。',
+    },
+    {
+      name: 'steps-mp-dot',
+      title: '点状步骤条（dot）',
+      blurb: 'dot 把指示器换成圆点。',
+    },
+    {
+      name: 'steps-mp-error',
+      title: '错误状态（status=error）',
+      blurb: 'status="error" 把该步骤标记为失败态。',
     },
     {
       name: 'steps-mp-space',
-      title: '间距、居中对齐与显式状态',
-      blurb: 'space=120rpx 与 align-center；显式 status 覆盖；icon / title / description 插槽。',
+      title: '间距与对齐（space / align-center）',
+      blurb: 'space=120rpx 拉开间距；align-center 让步骤条整体居中（仅横向）。',
+    },
+    {
+      name: 'steps-mp-custom-class',
+      title: '根节点样式（customClass）',
+      blurb: 'custom-class 给根节点挂自定义类，宿主侧覆盖内部样式。',
+    },
+    {
+      name: 'steps-mp-status',
+      title: '显式状态（status）',
+      blurb: 'status 显式覆盖由 active 推导的状态。',
+    },
+    {
+      name: 'steps-mp-slots',
+      title: '内容插槽',
+      blurb: '#icon / #title / #description 插槽替换对应区域。',
     },
     {
       name: 'steps-mp-node',

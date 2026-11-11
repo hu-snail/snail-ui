@@ -58,6 +58,7 @@ function onPanelClose(): void {
       class="sn-docs-search__field"
       size="small"
       radius="pill"
+      border="none"
       type="search"
       :placeholder="'搜索文档'"
       :aria-label="'搜索文档'"

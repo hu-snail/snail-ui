@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-code-input — 明文显示（mask）：mask=false 直接显示字符而不打码。 */
+import { ref } from 'vue';
+import SnCodeInput from '@snui/uni-src/components/sn-code-input/sn-code-input.vue';
+
+const plain = ref('1234');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCodeInput v-model="plain" :length="4" :mask="false" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-lucky (uni-end) — Cell gap & height: gutter / cellHeight.
+ */
+import { ref } from 'vue';
+import SnLucky from '@snui/uni-src/components/sn-lucky/sn-lucky.vue';
+import type { SnLuckyPrize } from '@snui/uni-src/components/sn-lucky/sn-lucky.vue';
+
+const prizes: SnLuckyPrize[] = [
+  { name: 'Grand prize' },
+  { name: 'Coupon' },
+  { name: 'Points' },
+  { name: 'Thanks' },
+  { name: 'Red packet' },
+  { name: 'Physical prize' },
+  { name: 'One more go' },
+  { name: 'Free-order coupon' },
+];
+
+const bigCellRef = ref<InstanceType<typeof SnLucky> | null>(null);
+
+const settleTimers: ReturnType<typeof setTimeout>[] = [];
+
+function scheduleStop(lucky: InstanceType<typeof SnLucky> | null, count: number): void {
+  settleTimers.push(
+    setTimeout(() => {
+      lucky?.stop(Math.floor(Math.random() * count));
+    }, 1000),
+  );
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">gutter="16rpx" + cell-height="150rpx"</text>
+    <SnLucky
+      ref="bigCellRef"
+      :prizes="prizes"
+      gutter="16rpx"
+      cell-height="150rpx"
+      :speed="60"
+      @start="scheduleStop(bigCellRef, prizes.length)"
+    />
+    <text class="sn-demo__meta">Tap the center button to start; settles after 1s</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

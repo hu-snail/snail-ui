@@ -62,11 +62,19 @@ import { Calendar } from '@snui/uni';
       blurb: '卡片入口（cells card 形态）',
     },
     {
-      name: 'calendar-mp-grid-range',
-      title:
-        '网格与区间约束（`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`）',
-      blurb:
-        '网格与区间约束（`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`）',
+      name: 'calendar-mp-first-day-of-week',
+      title: '周起始日（firstDayOfWeek）',
+      blurb: '周起始日（firstDayOfWeek）',
+    },
+    {
+      name: 'calendar-mp-formatter',
+      title: '单元格格式化（formatter）',
+      blurb: '单元格格式化（formatter）',
+    },
+    {
+      name: 'calendar-mp-range-constraints',
+      title: '区间约束（maxRange / allowSameDay / defaultTime）',
+      blurb: '区间约束（maxRange / allowSameDay / defaultTime）',
     },
     {
       name: 'calendar-mp-header',
@@ -74,9 +82,14 @@ import { Calendar } from '@snui/uni';
       blurb: '弹层头部插槽（`header`，AUI 追加）',
     },
     {
-      name: 'calendar-mp-hooks-parity',
-      title: '快捷回调与声明参数（`onShortcutsClick` / `beforeConfirm`）',
-      blurb: '快捷回调与声明参数（`onShortcutsClick` / `beforeConfirm`）',
+      name: 'calendar-mp-shortcuts-events',
+      title: '快捷回调与确认拦截（onShortcutsClick / beforeConfirm）',
+      blurb: '快捷回调与确认拦截（onShortcutsClick / beforeConfirm）',
+    },
+    {
+      name: 'calendar-mp-declared-props',
+      title: '声明对齐参数（timeFilter / hideSecond 等）',
+      blurb: '声明对齐参数（timeFilter / hideSecond 等）',
     },
     {
       name: 'calendar-mp-lunar',
@@ -84,11 +97,19 @@ import { Calendar } from '@snui/uni';
       blurb: '农历角标（`showLunar`，AUI 追加）',
     },
     {
-      name: 'calendar-mp-panel-sheet',
-      title:
-        '面板与弹层（`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / 遮罩层级）',
-      blurb:
-        '面板与弹层（`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / 遮罩层级）',
+      name: 'calendar-mp-panel',
+      title: '面板尺寸与切换（panelHeight / switchMode）',
+      blurb: '面板尺寸与切换（panelHeight / switchMode）',
+    },
+    {
+      name: 'calendar-mp-immediate-change',
+      title: '即时写回（immediateChange）',
+      blurb: '即时写回（immediateChange）',
+    },
+    {
+      name: 'calendar-mp-sheet-chrome',
+      title: '弹层外观与底栏插槽',
+      blurb: '弹层外观与底栏插槽',
     },
     {
       name: 'calendar-mp-shortcuts-range',

@@ -58,24 +58,45 @@ import { CalendarView } from '@snui/uni';
         'Flat month grid: minDate / maxDate bound the month range; tapping a day writes its timestamp back.',
     },
     {
-      name: 'calendar-view-mp-range-switch',
-      title: 'Range & month switching (`type` / `maxRange` / `switchMode`)',
-      blurb:
-        '`type=daterange` selects a span; `maxRange` caps it and shows the prompt; `switchMode=month` switches to one month with prev / next controls.',
+      name: 'calendar-view-mp-range',
+      title: 'Range selection (type="daterange")',
+      blurb: '`type=daterange` selects a span; `maxRange` caps it and shows the prompt.',
     },
     {
-      name: 'calendar-view-mp-formatter-week',
-      title:
-        'Week start, cell formatter & panel title (`firstDayOfWeek` / `formatter` / `showPanelTitle`)',
-      blurb:
-        '`firstDayOfWeek=1` starts the week on Monday; `formatter` captions weekends; `showPanelTitle=false` drops the month caption.',
+      name: 'calendar-view-mp-switch-mode',
+      title: 'Month / year switching (switchMode)',
+      blurb: '`switchMode=month` switches to one month with prev / next controls.',
     },
     {
-      name: 'calendar-view-mp-same-day-time',
-      title:
-        'Same-day ranges, default time & custom styles (`allowSameDay` / `defaultTime` / `immediateChange`)',
+      name: 'calendar-view-mp-first-day-of-week',
+      title: 'First day of week',
+      blurb: '`firstDayOfWeek=1` starts the week on Monday.',
+    },
+    {
+      name: 'calendar-view-mp-formatter',
+      title: 'Cell formatting',
+      blurb: '`formatter` captions weekends.',
+    },
+    {
+      name: 'calendar-view-mp-panel-title',
+      title: 'Panel title (showPanelTitle)',
+      blurb: '`showPanelTitle=false` drops the month caption so only the grid remains.',
+    },
+    {
+      name: 'calendar-view-mp-same-day',
+      title: 'Same start & end day (allowSameDay)',
+      blurb: '`allowSameDay` lets both range ends be the same day.',
+    },
+    {
+      name: 'calendar-view-mp-default-time',
+      title: 'Default time & immediate write-back',
+      blurb: '`defaultTime` sets the clock time written back; `immediateChange` fires on tap.',
+    },
+    {
+      name: 'calendar-view-mp-time-props',
+      title: 'Declared time-column props',
       blurb:
-        '`allowSameDay` lets both range ends be the same day; `defaultTime` sets the clock time written back; `immediateChange` fires on tap; `customClass` / `customStyle` land on the root.',
+        '`timeFilter` / `timeItemHeight` / `timeVisibleItemCount` / `hideSecond` exist for parity only (no time roller in this build); `customClass` / `customStyle` land on the root.',
     },
   ],
   props: {

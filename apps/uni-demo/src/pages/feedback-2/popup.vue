@@ -2,9 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— popup 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/popup-mp-basic.vue';
 import Demo1 from './demos/popup-mp-config.vue';
-import Demo2 from './demos/popup-mp-position.vue';
-import Demo3 from './demos/popup-mp-scroll.vue';
-import Demo4 from './demos/popup-mp-surface.vue';
+import Demo2 from './demos/popup-mp-custom-style.vue';
+import Demo3 from './demos/popup-mp-position.vue';
+import Demo4 from './demos/popup-mp-render.vue';
+import Demo5 from './demos/popup-mp-scroll.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -29,21 +30,30 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('位置', 'Position')" badge="position" />
+        <DemoModuleHead
+          :title="t('面板与遮罩样式', 'Panel & scrim styling')"
+          badge="custom-style"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <DemoModuleHead :title="t('位置', 'Position')" badge="position" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('surface', 'Surface')" badge="surface" />
+        <DemoModuleHead :title="t('懒渲染与安全区', 'Lazy render & safe area')" badge="render" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

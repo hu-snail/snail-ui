@@ -66,8 +66,13 @@ import { PlateInput } from '@snui/uni';
     },
     {
       name: 'plate-input-mp-new-energy',
-      title: '新能源车牌与禁用态',
-      blurb: 'maxlength=8 的新能源车牌（8 格），disabled 冻结输入。',
+      title: '新能源车牌（`maxlength=8`）',
+      blurb: 'maxlength=8 的新能源车牌（8 格）。',
+    },
+    {
+      name: 'plate-input-mp-disabled',
+      title: '禁用态（`disabled`）',
+      blurb: 'disabled 时点击不再弹键盘，输入被冻结。',
     },
   ],
   props: {

@@ -76,9 +76,19 @@ import { Tooltip } from '@snui/uni';
       blurb: '12 个方位全部展示（wot-ui demo 网格布局），一次只开一个。',
     },
     {
-      name: 'tooltip-mp-config',
-      title: '箭头 / 关闭按钮 / 偏移 / 配色',
-      blurb: '无箭头 / 带关闭按钮 + offset / 禁用三种状态。',
+      name: 'tooltip-mp-arrow',
+      title: '箭头（visible-arrow）',
+      blurb: 'visible-arrow=false 去掉指向触发器的箭头。',
+    },
+    {
+      name: 'tooltip-mp-close',
+      title: '关闭按钮与偏移',
+      blurb: 'show-close 显示关闭按钮；offset 调整与触发器的间距。',
+    },
+    {
+      name: 'tooltip-mp-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 禁用触发器，点击不打开气泡。',
     },
     {
       name: 'tooltip-mp-content',

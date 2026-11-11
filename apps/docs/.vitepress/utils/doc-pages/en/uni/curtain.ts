@@ -74,9 +74,14 @@ import { Curtain } from '@snui/uni';
       blurb: 'Image tap keeps it open / scrim tap closes / node kept after close + zIndex=150.',
     },
     {
-      name: 'curtain-mp-custom',
+      name: 'curtain-mp-custom-style',
       title: 'Custom styles',
-      blurb: 'Close button inline style + root inline style + long-press recognition menu.',
+      blurb: 'custom-close-style lands on the close button; custom-style lands on the root node.',
+    },
+    {
+      name: 'curtain-mp-longpress',
+      title: 'Long-press menu (`showMenuByLongpress`)',
+      blurb: 'Forwarded to the image; only takes effect in the WeChat miniprogram.',
     },
   ],
   props: {

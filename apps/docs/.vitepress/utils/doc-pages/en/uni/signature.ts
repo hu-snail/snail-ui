@@ -60,9 +60,18 @@ import { Signature } from '@snui/uni';
     },
     {
       name: 'signature-mp-history',
-      title: 'Undo / redo & appearance (`enableHistory` / `penColor` / `disabled`)',
-      blurb:
-        '`enableHistory` renders the undo / redo buttons; `penColor` overrides the stroke color; `disabled` locks the pad.',
+      title: 'Undo / redo (`enableHistory`)',
+      blurb: '`enableHistory` renders the undo / redo buttons; the pad owns its own history stack.',
+    },
+    {
+      name: 'signature-mp-pen',
+      title: 'Pen look (`penColor` / `lineWidth`)',
+      blurb: '`penColor` overrides the stroke color and `lineWidth` sets the width.',
+    },
+    {
+      name: 'signature-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` locks the pad and drawing is ignored.',
     },
     {
       name: 'signature-mp-button-labels',
@@ -72,18 +81,32 @@ import { Signature } from '@snui/uni';
         'confirmText / clearText; revokeText / restoreText under enableHistory; undoText / redoText overrides.',
     },
     {
-      name: 'signature-mp-pad-look',
-      title:
-        'Pad look & scrolling (`height` / `width` / `backgroundColor` / `disableScroll` / `step`)',
+      name: 'signature-mp-size',
+      title: 'Pad size & background',
       blurb:
-        'height / width; backgroundColor override; disableScroll=false; step=2 undoes two strokes at a time.',
+        '`height` (a number is an rpx design value) / `width`; `backgroundColor` overrides the pad background token.',
     },
     {
-      name: 'signature-mp-export-parity',
-      title:
-        'Export & pressure parity props (`fileType` / `quality` / `exportScale` / `pressure` / `maxWidth` / `minWidth` / `minSpeed` / `custom*`)',
+      name: 'signature-mp-scroll',
+      title: 'Pad scrolling (`disableScroll`)',
+      blurb: '`disableScroll=false` keeps the page scrollable while drawing.',
+    },
+    {
+      name: 'signature-mp-step',
+      title: 'Undo step (`step`)',
+      blurb: 'step=2 undoes two strokes at a time (needs `enableHistory`).',
+    },
+    {
+      name: 'signature-mp-export',
+      title: 'Export params (`fileType` / `quality` / `exportScale`)',
       blurb:
-        'fileType / quality / exportScale (used by the host); pressure / maxWidth / minWidth / minSpeed (unimplemented); customClass / customStyle.',
+        'fileType / quality / exportScale (used by the host when exporting; this build never rasterizes).',
+    },
+    {
+      name: 'signature-mp-stroke',
+      title: 'Stroke params (`pressure` / `lineWidth`)',
+      blurb:
+        'pressure / maxWidth / minWidth / minSpeed (pressure simulation is not implemented); `lineWidth` sets the stroke width directly.',
     },
   ],
   props: {

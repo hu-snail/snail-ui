@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/** Demo: sn-slider — 竖排：vertical 把轨道竖起来（默认高度 400rpx）。 */
+import { ref } from 'vue';
+import SnSlider from '@snui/uni-src/components/sn-slider/sn-slider.vue';
+
+const upright = ref(60);
+const second = ref(40);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <view class="sn-demo__col">
+        <SnSlider v-model="upright" vertical :min="0" :max="100" />
+        <text class="sn-demo__label">60</text>
+      </view>
+      <view class="sn-demo__col">
+        <SnSlider v-model="second" vertical :min="0" :max="100" />
+        <text class="sn-demo__label">40</text>
+      </view>
+    </view>
+    <text class="sn-demo__meta">vertical 竖排轨道（默认高度 400rpx）</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 48rpx;
+  padding: 8rpx 0;
+}
+.sn-demo__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 96rpx;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -106,11 +106,9 @@ export const selectDocPage: SnDocPageData = {
       title: '自定义字段（labelField / valueField）',
       blurb: '非 label/value 字段名映射。',
     },
-    {
-      name: 'select-web-states',
-      title: '可清空 / 禁用 / 加载',
-      blurb: 'clearable、disabled、loading。',
-    },
+    { name: 'select-web-clearable', title: '可清空', blurb: 'clearable：一键清空选中值。' },
+    { name: 'select-web-disabled', title: '禁用', blurb: 'disabled：整体置灰不可选。' },
+    { name: 'select-web-loading', title: '加载中', blurb: 'loading：加载态占位。' },
     {
       name: 'select-web-remote',
       title: '远程搜索（remote）',

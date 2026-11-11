@@ -1,10 +1,14 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— search 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/search-mp-basic.vue';
-import Demo1 from './demos/search-mp-cancel-states.vue';
-import Demo2 from './demos/search-mp-input-attrs.vue';
-import Demo3 from './demos/search-mp-placeholder-style.vue';
-import Demo4 from './demos/search-mp-variant.vue';
+import Demo1 from './demos/search-mp-cancel.vue';
+import Demo2 from './demos/search-mp-custom-style.vue';
+import Demo3 from './demos/search-mp-disabled.vue';
+import Demo4 from './demos/search-mp-focus.vue';
+import Demo5 from './demos/search-mp-maxlength.vue';
+import Demo6 from './demos/search-mp-placeholder-left.vue';
+import Demo7 from './demos/search-mp-placeholder-style.vue';
+import Demo8 from './demos/search-mp-variant.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,30 +27,89 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('cancel-states', 'Cancel States')" badge="cancel-states" />
+        <DemoModuleHead
+          :title="
+            t(
+              '取消按钮（`cancelTxt` / `hideCancel`）',
+              'Cancel button (`cancelTxt` / `hideCancel`)',
+            )
+          "
+          badge="cancel"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('input-attrs', 'Input Attrs')" badge="input-attrs" />
+        <DemoModuleHead
+          :title="
+            t(
+              '输入节点与根节点样式（`customInputClass` / `customClass` / `customStyle`)',
+              'Inner-input & root styling (`customInputClass` / `customClass` / `customStyle`)',
+            )
+          "
+          badge="custom-style"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('placeholder-style', 'Placeholder Style')"
-          badge="placeholder-style"
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
         />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <DemoModuleHead
+          :title="t('聚焦（`focus` / `focusWhenClear`）', 'Focus (`focus` / `focusWhenClear`)')"
+          badge="focus"
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('字数上限（`maxlength`）', 'Character cap (`maxlength`)')"
+          badge="maxlength"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('占位符左对齐（`placeholderLeft`）', 'Left-aligned placeholder (`placeholderLeft`)')
+          "
+          badge="placeholder-left"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '占位符样式（`placeholderStyle` / `placeholderClass`）',
+              'Placeholder styling (`placeholderStyle` / `placeholderClass`)',
+            )
+          "
+          badge="placeholder-style"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

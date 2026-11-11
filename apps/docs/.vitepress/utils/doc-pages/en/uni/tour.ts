@@ -65,9 +65,20 @@ import { Tour } from '@snui/uni';
     },
     {
       name: 'tour-mp-mask',
-      title: 'Mask toggle and custom panel',
+      title: 'Mask (`mask` / `mask-color`)',
+      blurb: 'mask=false leaves no scrim; mask-color overrides the scrim background.',
+    },
+    {
+      name: 'tour-mp-panel-slot',
+      title: 'Custom panel & buttons',
       blurb:
-        'mask=false leaves no scrim; mask-color / duration / z-index; show-tour-buttons=false with a custom footer slot.',
+        'show-tour-buttons=false hides the default buttons; #footer renders the actions; #default replaces the panel body.',
+    },
+    {
+      name: 'tour-mp-z-index',
+      title: 'Stacking & duration',
+      blurb:
+        'duration overrides the animation length; z-index lifts the layer; custom-class on the root.',
     },
   ],
   props: {

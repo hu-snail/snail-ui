@@ -1,21 +1,19 @@
 <script setup lang="ts">
-/** Demo: sn-segmented — outline 主题、对象选项与禁用。 */
+/** Demo: sn-segmented — 主题（theme）。 */
 import { ref } from 'vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
 
-const theme = ref('card');
+const theme = ref('outline');
 const options = [
   { value: 'card', label: '卡片' },
   { value: 'outline', label: '轮廓' },
-  { value: 'locked', label: '禁用', disabled: true },
 ];
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
     <SnSegmented v-model="theme" :options="options" theme="outline" />
-    <SnSegmented :options="options" disabled />
-    <text class="sn-demo__meta">theme=outline；对象选项；整体 disabled</text>
+    <text class="sn-demo__meta">theme=outline 轮廓风格；对象选项自定义 label。</text>
   </view>
 </template>
 

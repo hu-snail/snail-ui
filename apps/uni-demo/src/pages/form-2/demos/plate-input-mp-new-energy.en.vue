@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-plate-input — `maxlength=8` for new-energy plates; `disabled` freezes the field. */
+/** Demo: sn-plate-input — `maxlength=8` renders eight boxes for new-energy plates. */
 import { ref } from 'vue';
 import SnPlateInput from '@snui/uni-src/components/sn-plate-input/sn-plate-input.vue';
 
@@ -9,8 +9,7 @@ const plate = ref('京AD12345');
 <template>
   <view class="sn-demo sn-demo--column">
     <SnPlateInput v-model="plate" :maxlength="8" title="New-energy plate" />
-    <SnPlateInput model-value="京A12345" disabled title="Disabled" />
-    <text class="sn-demo__meta">maxlength=8 fits new-energy plates; disabled ignores taps</text>
+    <text class="sn-demo__meta">maxlength=8 fits new-energy plates (8 boxes)</text>
   </view>
 </template>
 

@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-input — border: all border values plus the bordered legacy boolean alias (radius has its own scenario). */
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+</script>
+
+<template>
+  <view class="sn-input-demo">
+    <SnInput placeholder='border="all" (default)' />
+    <SnInput placeholder='border="bottom" (inline form rows)' border="bottom" />
+    <SnInput placeholder='border="none"' border="none" />
+    <SnInput placeholder="bordered=false (legacy alias → none)" :bordered="false" />
+  </view>
+</template>
+
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

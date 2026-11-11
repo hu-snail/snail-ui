@@ -68,10 +68,20 @@ import { Transition } from '@snui/uni';
       blurb: 'Switching between fade / fade-up / zoom-in / slide-up.',
     },
     {
-      name: 'transition-mp-config',
-      title: 'Combining, per-leg durations and destroy',
+      name: 'transition-mp-combined',
+      title: 'Combined animations (`name` array)',
+      blurb: 'Pass an array to `name` to stack several animations at once (fade + up).',
+    },
+    {
+      name: 'transition-mp-duration',
+      title: 'Per-leg durations (`duration`)',
       blurb:
-        'Combined animation, enter 100ms / leave 600ms, destroy=false, plus the event sequence.',
+        'The duration object sets enter / leave separately (enter 100ms / leave 600ms), with the event sequence as proof.',
+    },
+    {
+      name: 'transition-mp-destroy',
+      title: 'Keep node (`destroy`)',
+      blurb: 'destroy=false keeps the node mounted (hidden only) after collapsing.',
     },
     {
       name: 'transition-mp-custom-class',
@@ -80,10 +90,16 @@ import { Transition } from '@snui/uni';
         'All six stage classes with the event sequence; customClass dashed frame + customStyle inline radius; a customClass-only control.',
     },
     {
-      name: 'transition-mp-lazy',
-      title: 'Lazy rendering and blocking touch scroll',
+      name: 'transition-mp-lazy-render',
+      title: 'Lazy rendering (`lazyRender`)',
       blurb:
-        'lazy-render on / off with the slot render state; disable-touch-move checked against a background scroll area.',
+        'lazy-render on / off with the slot render state: nothing renders until the first show.',
+    },
+    {
+      name: 'transition-mp-touch-move',
+      title: 'Block touch scroll (`disableTouchMove`)',
+      blurb:
+        'disable-touch-move swallows touchmove while expanded, checked against a background scroll area.',
     },
   ],
   props: {

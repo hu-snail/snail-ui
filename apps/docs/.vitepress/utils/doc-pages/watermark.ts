@@ -15,7 +15,7 @@ export const watermarkDocPage: SnDocPageData = {
   title: 'Watermark 水印',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -52,7 +52,8 @@ import { Watermark } from '@snui/vue-web';
   },
   demos: [
     { name: 'watermark-web-basic', title: '基础水印', blurb: '基础水印' },
-    { name: 'watermark-web-content', title: '多行文案与交错瓦片', blurb: '多行文案与交错瓦片' },
+    { name: 'watermark-web-content', title: '多行文案', blurb: 'content 数组多行平铺。' },
+    { name: 'watermark-web-cross', title: '交错瓦片', blurb: 'cross 相邻瓦片错开半个间距。' },
     { name: 'watermark-web-style', title: '样式定制', blurb: '样式定制' },
     { name: 'watermark-web-fullscreen', title: '全屏水印', blurb: '全屏水印' },
   ],

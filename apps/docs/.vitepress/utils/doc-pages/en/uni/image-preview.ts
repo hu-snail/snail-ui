@@ -60,9 +60,15 @@ import { ImagePreview } from '@snui/uni';
         'Tap a thumbnail to open at that index; a button opens from the first image; events are reported.',
     },
     {
-      name: 'image-preview-mp-config',
-      title: 'Options',
-      blurb: 'Top-left close button, counter off, footer slot showing the current position.',
+      name: 'image-preview-mp-close-position',
+      title: 'Close button position (`closeIconPosition`)',
+      blurb: 'closeIconPosition defaults to top-right; this demo flips it to top-left.',
+    },
+    {
+      name: 'image-preview-mp-index',
+      title: 'Page counter & footer slot',
+      blurb:
+        'showIndex=false hides the built-in counter; the #default slot receives current for custom footer copy.',
     },
     {
       name: 'image-preview-mp-gestures',
@@ -71,10 +77,22 @@ import { ImagePreview } from '@snui/uni';
         'Pinch to zoom, double-tap, pan when zoomed, drag down to dismiss — WeChat image viewer gestures.',
     },
     {
-      name: 'image-preview-mp-behavior',
-      title: '`selector` mode',
+      name: 'image-preview-mp-selector',
+      title: '`selector` hit areas',
       blurb:
-        'Selector hit zones, loop off, close button hidden, close-on-click off, a custom z-index and the long-press event.',
+        'selector=".sn-demo__thumb" lays transparent hit zones over the thumbnails on open(); open / close events are reported.',
+    },
+    {
+      name: 'image-preview-mp-close-behavior',
+      title: 'Close & loop behaviour',
+      blurb:
+        'loop=no wrapping; closeable=no close button; close-on-click=backdrop taps do not close.',
+    },
+    {
+      name: 'image-preview-mp-longpress',
+      title: 'Long-press menu & event',
+      blurb:
+        'show-menu-by-longpress opens the recognise-miniprogram-QR menu on long press (WeChat only) and emits long-press.',
     },
   ],
   props: {

@@ -84,21 +84,24 @@ import { Tabs } from '@snui/uni';
     },
     {
       name: 'tabs-mp-icon',
-      title: 'Tab icons and badges',
-      blurb:
-        'icon as data and as a name; badge-props numeric value, overflow cap, dot badge and semantic colours.',
+      title: 'Tab icons (`icon`)',
+      blurb: 'icon as data and as a name (badge-props live in tabs-mp-badge).',
     },
     {
       name: 'tabs-mp-badge',
       title: 'Badge configuration',
       blurb:
-        'Numeric badges with semantic colours; dot badge, zero value and hidden; buttons change the config live.',
+        'badge-props numeric value, overflow cap, dot badge and semantic colours; zero value and hidden.',
     },
     {
       name: 'tabs-mp-line',
-      title: 'Bar styles and disabled tabs',
-      blurb:
-        'line-theme=normal/underline/dot; line-width/line-height overrides; sticky + offset-top; a disabled tab only emits the disabled event.',
+      title: 'Bar styles (`line-theme`)',
+      blurb: 'line-theme=normal/underline/dot; line-width/line-height overrides.',
+    },
+    {
+      name: 'tabs-mp-disabled',
+      title: 'Disabled tabs (`disabled`)',
+      blurb: 'A disabled tab cannot be switched; a tap only emits the disabled event.',
     },
     {
       name: 'tabs-mp-scroll',
@@ -120,8 +123,13 @@ import { Tabs } from '@snui/uni';
     },
     {
       name: 'tabs-mp-animate',
-      title: 'Switch animation and sticky pinning',
-      blurb: 'animated / duration; sticky + offset-top; inline line-width / line-height.',
+      title: 'Switch animation (`animated`)',
+      blurb: 'animated / duration: bar transition plus scroll-into-view.',
+    },
+    {
+      name: 'tabs-mp-sticky',
+      title: 'Sticky pinning (`sticky`)',
+      blurb: 'sticky + offset-top pins the strip and leaves an offset.',
     },
   ],
   props: {

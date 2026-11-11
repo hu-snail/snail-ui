@@ -61,10 +61,19 @@ import { Upload } from '@snui/uni';
         'sn-upload 基础上传：v-model:file-list 持有列表，limit 限数量，maxSize 限体积（超出触发 oversize）。',
     },
     {
-      name: 'upload-mp-disabled-status',
-      title: '禁用与状态（`disabled` / `accept` / `showLimitNum`）',
-      blurb:
-        'disabled 锁掉选择与删除；accept 切换选择器（image / video / file）；列表项按 status 显示进度与失败态。',
+      name: 'upload-mp-disabled',
+      title: '禁用（`disabled`）',
+      blurb: 'disabled 锁掉选择与删除，仅展示列表。',
+    },
+    {
+      name: 'upload-mp-accept',
+      title: '选择器类型（`accept`）',
+      blurb: 'accept 切换选择器（image / video / file）。',
+    },
+    {
+      name: 'upload-mp-status',
+      title: '文件状态渲染（`status`）',
+      blurb: '列表形态按 status 渲染：success 完成态、fail 失败态。',
     },
     {
       name: 'upload-mp-multiple-source',
@@ -81,11 +90,15 @@ import { Upload } from '@snui/uni';
         'beforeChoose / beforeUpload / beforeRemove / beforePreview 四个否决钩子（预览里可直接验证删除被拦）；maxSize 超限改发 oversize。',
     },
     {
-      name: 'upload-mp-preview-custom',
-      title:
-        '缩略图模式与三层自定义类（`imageMode` / `customEvokeClass` / `customPreviewClass` / `customClass` / `customStyle`）',
+      name: 'upload-mp-image-mode',
+      title: '缩略图模式（`imageMode`）',
+      blurb: 'imageMode 透传给缩略图 `<image mode>`：aspectFit 完整显示、aspectFill 裁切填满。',
+    },
+    {
+      name: 'upload-mp-custom-style',
+      title: '三层样式挂载点',
       blurb:
-        'imageMode aspectFit / aspectFill 切换缩略图填充；customEvokeClass、customPreviewClass、customClass / customStyle 三层独立。',
+        'customEvokeClass 改选择瓦片；customPreviewClass 改文件瓦片；customClass / customStyle 改根节点。',
     },
     {
       name: 'upload-mp-request-method',

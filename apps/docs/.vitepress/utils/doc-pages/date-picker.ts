@@ -11,7 +11,7 @@ export const datePickerDocPage: SnDocPageData = {
   title: 'DatePicker',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -72,7 +72,12 @@ import { DatePicker } from '@snui/vue-web';
       name: 'date-picker-web-range',
       title: '范围（daterange / datetimerange）',
       blurb:
-        "双月历并排，先 start 后 end，越界自动交换；datetimerange 顶部为「开始日期 / 开始时间 | 结束日期 / 结束时间」四输入框，点击时间输入弹出时分秒弹层（此刻 / 确认），底部 清除 / 确认；input-position='bottom' 可把输入框栏放到月历下方。面板宽度由双月历决定，不再被输入框撑出右侧空白。",
+        '双月历并排，先 start 后 end，越界自动交换；datetimerange 四输入框 + 时分秒弹层，底部 清除 / 确认。',
+    },
+    {
+      name: 'date-picker-web-input-position',
+      title: '输入栏位置（input-position）',
+      blurb: "input-position='bottom' 把输入框栏放到月历下方。",
     },
     {
       name: 'date-picker-web-month-range',
@@ -82,9 +87,13 @@ import { DatePicker } from '@snui/vue-web';
     },
     {
       name: 'date-picker-web-shortcuts',
-      title: '快捷入口 / 动态限选',
-      blurb:
-        'shortcuts（left/right/bottom 定位）、disabledDate 禁用日期、onSelect + disabledDate 动态控制选取范围。',
+      title: '快捷入口（shortcuts）',
+      blurb: 'shortcuts 快捷项 + shortcuts-position（left / right / bottom）定位。',
+    },
+    {
+      name: 'date-picker-web-dynamic-range',
+      title: '动态限选（disabledDate / onSelect）',
+      blurb: 'onSelect + disabledDate 动态控制选取范围（选起点后仅允许 ±7 天）。',
     },
     {
       name: 'date-picker-web-format',
@@ -92,9 +101,19 @@ import { DatePicker } from '@snui/vue-web';
       blurb: '小写 token：yyyy / MM / dd / HH / mm / ss / ww（ISO 周）/ qq（季度）。',
     },
     {
-      name: 'date-picker-web-states',
-      title: '可清空 / 禁用',
-      blurb: 'clearable、disabled、readonly。',
+      name: 'date-picker-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '清空按钮一键置空。',
+    },
+    {
+      name: 'date-picker-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '禁用交互。',
+    },
+    {
+      name: 'date-picker-web-readonly',
+      title: '只读（readonly）',
+      blurb: '可见不可改。',
     },
   ],
   props: {

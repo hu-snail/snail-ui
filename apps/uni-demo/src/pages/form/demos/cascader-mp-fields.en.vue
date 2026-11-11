@@ -1,11 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo: sn-cascader — Field mapping and the indicator: valueKey / textKey /
- * childrenKey / tipKey.
+ * Demo: sn-cascader — field mapping: valueKey / textKey / childrenKey / tipKey.
  *
- * The value / label / children / tip keys of every option are configurable;
- * lineTheme / lineHeight control the active-column indicator (a number is an
- * rpx design value — 1 design value = 2rpx).
+ * The value / label / children / tip keys of every option are configurable.
  */
 import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
@@ -45,8 +42,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"; indicator
-      lineTheme="text" + lineHeight.</text
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
     >
     <view class="sn-demo__cards">
       <SnCell
@@ -69,8 +65,6 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
       title="Pick a city"
       check-strictly
       confirm-text="Use it"
-      line-theme="text"
-      :line-height="4"
     />
   </view>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * dialog-web-types — the five semantic types plus the two icon placements.
+ * dialog-web-types — the five semantic types.
  *
  * Each type gets its own trigger; the dialog opens as a real modal so the
  * icon / colour delta is judged at panel size rather than in a cramped card.
@@ -13,11 +13,9 @@ type DialogType = (typeof types)[number];
 
 const open = ref(false);
 const active = ref<DialogType>('info');
-const topIcon = ref(false);
 
-function show(type: DialogType, iconTop = false): void {
+function show(type: DialogType): void {
   active.value = type;
-  topIcon.value = iconTop;
   open.value = true;
 }
 </script>
@@ -28,23 +26,15 @@ function show(type: DialogType, iconTop = false): void {
       <SnButton v-for="type in types" :key="type" size="small" @click="show(type)">
         {{ type }}
       </SnButton>
-      <SnButton size="small" @click="show('success', true)"
-        >icon-placement=&quot;top&quot;</SnButton
-      >
     </div>
 
     <DialogStage v-model:show="open">
       <SnDialog
         :type="active"
-        :icon-placement="topIcon ? 'top' : 'left'"
-        :title="topIcon ? 'Upload complete' : active"
-        :content="
-          topIcon
-            ? 'iconPlacement=&quot;top&quot; lifts the icon above the title and centers it.'
-            : 'Each type has its own icon and icon color.'
-        "
-        :positive-text="topIcon ? 'Got it' : 'OK'"
-        :negative-text="topIcon ? undefined : 'Cancel'"
+        :title="active"
+        content="Each type has its own icon and icon color."
+        positive-text="OK"
+        negative-text="Cancel"
         @positive-click="open = false"
         @negative-click="open = false"
       />

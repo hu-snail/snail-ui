@@ -82,9 +82,19 @@ import { Sidebar } from '@snui/uni';
       blurb: 'v-model 绑定 value；sn-sidebar-item 的 label 渲染文案；右侧面板由 change 驱动。',
     },
     {
+      name: 'sidebar-mp-icon',
+      title: '图标（icon）',
+      blurb: 'item icon 走注册表名称解析。',
+    },
+    {
       name: 'sidebar-mp-badge',
-      title: '图标与徽标',
-      blurb: 'icon 图标；badge 数字徽标；is-dot 点状徽标；disabled 禁用选项。',
+      title: '徽标（badge / is-dot）',
+      blurb: 'badge 数字徽标；is-dot 点状徽标（max 上限见 sidebar-mp-guard）。',
+    },
+    {
+      name: 'sidebar-mp-disabled',
+      title: '禁用项（disabled）',
+      blurb: 'disabled 禁用选项，点击无反应。',
     },
     {
       name: 'sidebar-mp-guard',

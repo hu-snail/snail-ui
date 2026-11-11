@@ -61,21 +61,44 @@ import { Textarea } from '@snui/uni';
   demos: [
     { name: 'textarea-mp-basic', title: '基础用法', blurb: 'v-model 双向绑定 + placeholder。' },
     {
-      name: 'textarea-mp-counter-clear',
-      title: '字数统计与清空（`showWordLimit` / `clearable`）',
-      blurb: 'showWordLimit + maxlength 计数；clearable 清空；error 错误态。',
+      name: 'textarea-mp-word-limit',
+      title: '字数统计（`showWordLimit`）',
+      blurb: 'showWordLimit + maxlength 在右下角显示计数。',
     },
     {
-      name: 'textarea-mp-states',
-      title: '状态（`autoHeight` / `readonly` / `disabled` / `compact`）',
-      blurb: 'autoHeight / readonly / disabled / compact。',
+      name: 'textarea-mp-clearable',
+      title: '可清空（`clearable`）',
+      blurb: 'clearable 在右侧显示 × 一键清空。',
+    },
+    {
+      name: 'textarea-mp-error',
+      title: '错误态（`error`）',
+      blurb: 'error 由表单驱动标记内容不合规。',
+    },
+    {
+      name: 'textarea-mp-auto-height',
+      title: '自动增高（`autoHeight`）',
+      blurb: 'autoHeight 随内容增高。',
+    },
+    {
+      name: 'textarea-mp-disabled-readonly',
+      title: '只读与禁用（`readonly` / `disabled`）',
+      blurb: 'readonly 可选中不可编辑；disabled 整体锁掉。',
+    },
+    {
+      name: 'textarea-mp-compact',
+      title: '紧凑模式（`compact`）',
+      blurb: 'compact 无边框、无背景，用于表单行内。',
     },
     {
       name: 'textarea-mp-prefix-icon',
-      title:
-        '前置图标与占位符（`prefixIcon` / `iconPrefix` / `cssIcon` / `placeholderStyle` / `placeholderClass`）',
-      blurb:
-        'prefixIcon 走 registry；iconPrefix + cssIcon 走 CSS 类；placeholderStyle / placeholderClass 定制占位符。',
+      title: '前置图标（`prefixIcon`）',
+      blurb: 'prefixIcon 走 registry；iconPrefix + cssIcon 直接当 CSS 类名。',
+    },
+    {
+      name: 'textarea-mp-placeholder',
+      title: '占位符样式',
+      blurb: 'placeholderStyle 内联声明 + placeholderClass 类名，只作用于占位文本。',
     },
     {
       name: 'textarea-mp-clear-trigger',

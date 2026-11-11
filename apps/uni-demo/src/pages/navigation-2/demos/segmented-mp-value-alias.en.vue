@@ -1,29 +1,11 @@
 <script setup lang="ts">
 /**
- * Demo: sn-segmented (uni-end) — the wot-ui `value` spelling plus `customClass` /
- * `customStyle`.
+ * Demo: sn-segmented — English shadow of segmented-mp-value-alias.
  *
- * ## The `value` alias
- *
- * wot-ui's `wd-segmented` calls the selection `value`; this component calls it
- * `modelValue`. Both are accepted, and `value` wins when both are passed, so a
- * config migrated from wd-segmented keeps working unchanged.
- *
- * ## Event name: `update:modelValue` (not `update:value`)
- *
- * The key difference: **the prop name is aligned, the event name is not**. The
- * component only emits `update:modelValue`, so a wot-ui-style `@update:value`
- * listener never fires — the demo's first control shows the thumb moving (internal
- * state) while the parent ref stays put. The second one uses
- * `@update:model-value` and stays in sync.
- *
- * When migrating, change `@update:value` to `@update:model-value` (or just use
- * `v-model`).
- *
- * ## customClass / customStyle
- *
- * Both land on the root node: `customClass` appends a class, `customStyle`
- * becomes the root inline style (replacing the component's own fill / radius).
+ * `wd-segmented` names the model `value` and its event `update:value`. This
+ * component's own API is `modelValue` / `update:modelValue`, and it **also** emits
+ * `update:value` (same payload), so both spellings keep parent and child in sync.
+ * Group one uses the wot-ui style, group two this component's own style.
  */
 import { ref } from 'vue';
 import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue';
@@ -34,13 +16,14 @@ const options = [
   { value: 'month', label: 'Month' },
 ];
 
-/** First control: the wot-ui `@update:value` spelling (this component never emits it). */
-const staleValue = ref('day');
-/** Second control: correctly paired `@update:model-value`. */
+/** Group one: the wot-ui-style `@update:value` (emitted for parity). */
+const wotValue = ref('day');
+/** Group two: this component's own `@update:model-value`. */
 const syncedValue = ref('week');
 
-/** customStyle replaces the component's default fill / radius. */
-const styledValue = ref('month');
+function onWotUpdate(next: string | number): void {
+  wotValue.value = String(next);
+}
 
 function onSyncedUpdate(next: string | number): void {
   syncedValue.value = String(next);
@@ -50,48 +33,16 @@ function onSyncedUpdate(next: string | number): void {
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta">
-      wot-ui spelling `:value` + `@update:value`: the thumb moves but the parent value does not (the
-      component never emits update:value)
+      wot-ui style `:value` + `@update:value` — parent stays in sync
     </text>
-    <SnSegmented
-      :value="staleValue"
-      :options="options"
-      @update:value="staleValue = String($event)"
-    />
-    <text class="sn-demo__meta">Parent value: {{ staleValue }} (unchanged)</text>
+    <SnSegmented :value="wotValue" :options="options" @update:value="onWotUpdate" />
+    <text class="sn-demo__meta">Value in the parent: {{ wotValue }}</text>
 
     <text class="sn-demo__meta">
-      Correctly paired `:value` + `@update:model-value`: parent and child stay in sync
+      This component's style `:value` + `@update:model-value` — parent stays in sync
     </text>
     <SnSegmented :value="syncedValue" :options="options" @update:model-value="onSyncedUpdate" />
-    <text class="sn-demo__meta">Parent value: {{ syncedValue }}</text>
-
-    <text class="sn-demo__meta">customClass: appends a root class (dashed frame)</text>
-    <SnSegmented
-      v-model="styledValue"
-      :options="options"
-      custom-class="sn-segmented-demo--framed"
-    />
-
-    <text class="sn-demo__meta">
-      customStyle: root inline style (replacing the default fill and radius)
-    </text>
-    <SnSegmented
-      v-model="styledValue"
-      :options="options"
-      custom-style="background-color: var(--sn-mp-color-action-primary-soft); border-radius: var(--sn-mp-radius-lg);"
-    />
-
-    <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle changes the fill</text
-    >
-    <SnSegmented
-      v-model="styledValue"
-      :options="options"
-      custom-class="sn-segmented-demo--framed"
-      custom-style="background-color: var(--sn-mp-color-background-subtle);"
-    />
-    <text class="sn-demo__meta">Current value: {{ styledValue }}</text>
+    <text class="sn-demo__meta">Value in the parent: {{ syncedValue }}</text>
   </view>
 </template>
 
@@ -107,9 +58,5 @@ function onSyncedUpdate(next: string | number): void {
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
-}
-/* customClass lands on the sn-segmented root node, so it needs :deep. */
-.sn-demo :deep(.sn-segmented-demo--framed) {
-  border: 2rpx dashed var(--sn-mp-color-border-default);
 }
 </style>

@@ -2,8 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— sidebar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/sidebar-mp-badge.vue';
 import Demo1 from './demos/sidebar-mp-basic.vue';
-import Demo2 from './demos/sidebar-mp-guard.vue';
-import Demo3 from './demos/sidebar-mp-scroll.vue';
+import Demo2 from './demos/sidebar-mp-disabled.vue';
+import Demo3 from './demos/sidebar-mp-guard.vue';
+import Demo4 from './demos/sidebar-mp-icon.vue';
+import Demo5 from './demos/sidebar-mp-scroll.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,7 +18,10 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'侧边导航'" :title-en="'Sidebar'" :desc="'垂直分类侧边栏'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('徽标', 'Badge')" badge="badge" />
+        <DemoModuleHead
+          :title="t('徽标（badge / is-dot）', 'Badges (`badge` / `is-dot`)')"
+          badge="badge"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -28,15 +33,30 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
+        <DemoModuleHead
+          :title="t('禁用项（disabled）', 'Disabled items (`disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标（icon）', 'Icons (`icon`)')" badge="icon" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

@@ -6,7 +6,7 @@ export const checkboxDocPageEn: SnDocPageData = {
   title: 'Checkbox · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -56,9 +56,14 @@ import { Checkbox } from '@snui/vue-web';
     },
     { name: 'checkbox-web-sizes', title: 'Sizes', blurb: 'mini / tiny / small / medium / large.' },
     {
-      name: 'checkbox-web-states',
-      title: 'Disabled / readonly',
-      blurb: 'disabled blocks interaction; readonly is visual.',
+      name: 'checkbox-web-disabled',
+      title: 'Disabled',
+      blurb: 'Disabled checked / unchecked states.',
+    },
+    {
+      name: 'checkbox-web-readonly',
+      title: 'Readonly',
+      blurb: 'Looks normal, cannot toggle.',
     },
     {
       name: 'checkbox-web-values',

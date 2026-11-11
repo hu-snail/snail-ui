@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-input-number — 步进吸附（stepStrictly）：step=3 时值吸附到 0/3/6/9…。 */
+import { ref } from 'vue';
+import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
+
+const snapped = ref(0);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">stepStrictly + step=3（值吸附到 0/3/6/9…）</text>
+    <SnInputNumber v-model="snapped" :min="0" :max="20" :step="3" step-strictly />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

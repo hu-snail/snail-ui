@@ -1,13 +1,10 @@
 <script setup lang="ts">
-/** Demo: sn-badge (uni-end) — dot, shapes, border and offsets. */
+/** Demo: sn-badge (uni-end) — shapes and border (`shape` / `border`). */
 import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
 </script>
 
 <template>
   <view class="sn-demo">
-    <SnBadge is-dot>
-      <view class="sn-demo-host">Dot</view>
-    </SnBadge>
     <SnBadge :value="12" shape="square">
       <view class="sn-demo-host">Square</view>
     </SnBadge>
@@ -16,12 +13,6 @@ import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
     </SnBadge>
     <SnBadge :value="12" border>
       <view class="sn-demo-host">Border</view>
-    </SnBadge>
-    <SnBadge :value="12" :top="6" :right="6">
-      <view class="sn-demo-host">Offset</view>
-    </SnBadge>
-    <SnBadge :value="12" bg-color="var(--sn-mp-color-purple)">
-      <view class="sn-demo-host">Custom</view>
     </SnBadge>
   </view>
 </template>

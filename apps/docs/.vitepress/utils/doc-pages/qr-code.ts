@@ -15,7 +15,7 @@ export const qrCodeDocPage: SnDocPageData = {
   title: '二维码 QR Code',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -58,11 +58,8 @@ import { QrCode } from '@snui/vue-web';
     { name: 'qr-code-web-icon', title: '中心图标', blurb: '中心图标' },
     { name: 'qr-code-web-download', title: '下载', blurb: '下载' },
     { name: 'qr-code-web-type', title: '渲染类型', blurb: '渲染类型' },
-    {
-      name: 'qr-code-web-shape',
-      title: '形状与多色（shape / colors）',
-      blurb: '形状与多色（shape / colors）',
-    },
+    { name: 'qr-code-web-shape', title: '码点形状', blurb: 'shape：方块 / 圆点 / 圆角。' },
+    { name: 'qr-code-web-colors', title: '多色码点', blurb: 'colors 调色板给码点上色。' },
   ],
   props: {
     hint: [],

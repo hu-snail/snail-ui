@@ -1,8 +1,13 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— slider 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/slider-mp-basic.vue';
-import Demo1 from './demos/slider-mp-range-theme.vue';
-import Demo2 from './demos/slider-mp-vertical-popover-color.vue';
+import Demo1 from './demos/slider-mp-color.vue';
+import Demo2 from './demos/slider-mp-custom-style.vue';
+import Demo3 from './demos/slider-mp-disabled.vue';
+import Demo4 from './demos/slider-mp-popover.vue';
+import Demo5 from './demos/slider-mp-range.vue';
+import Demo6 from './demos/slider-mp-theme.vue';
+import Demo7 from './demos/slider-mp-vertical.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,18 +26,60 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('range-theme', 'Range Theme')" badge="range-theme" />
+        <DemoModuleHead
+          :title="t('轨道配色（`activeColor`）', 'Track colors (`activeColor`)')"
+          badge="color"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('vertical-popover-color', 'Vertical Popover Color')"
-          badge="vertical-popover-color"
-        />
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('数值气泡（`popoverVisible`）', 'Value bubble (`popoverVisible`)')"
+          badge="popover"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('区间与刻度（`range` / `marks`）', 'Range & marks (`range` / `marks`)')"
+          badge="range"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题（`theme`）', 'Theme (`theme`)')" badge="theme" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('竖排（`vertical`）', 'Vertical (`vertical`)')"
+          badge="vertical"
+        />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

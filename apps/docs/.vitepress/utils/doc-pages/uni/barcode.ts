@@ -58,9 +58,29 @@ import { Barcode } from '@snui/uni';
   },
   demos: [
     {
-      name: 'barcode-mp',
-      title: '代码演示',
-      blurb: '自动校验位 / 显式 13 位与自定义条色 / 非法输入 error。',
+      name: 'barcode-mp-basic',
+      title: '基础用法',
+      blurb: '12 位输入自动补算校验位。',
+    },
+    {
+      name: 'barcode-mp-states',
+      title: '状态与事件',
+      blurb: 'error 三类错误码 + rendered 回调。',
+    },
+    {
+      name: 'barcode-mp-format',
+      title: '条码格式（format）',
+      blurb: 'CODE128 / CODE39 / EAN13 / CODEBAR / ITF / EAN8 / UPC。',
+    },
+    {
+      name: 'barcode-mp-layout',
+      title: '布局方向（layout）',
+      blurb: '水平（默认）/ 垂直。',
+    },
+    {
+      name: 'barcode-mp-style',
+      title: '样式属性',
+      blurb: 'line-length / line-color / background / text-align / margin。',
     },
   ],
   props: {

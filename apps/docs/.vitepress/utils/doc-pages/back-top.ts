@@ -15,7 +15,7 @@ export const backTopDocPage: SnDocPageData = {
   title: 'BackTop 回到顶部',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -53,7 +53,8 @@ import { BackTop } from '@snui/vue-web';
     { name: 'back-top-web-visibility-height', title: '显示阈值', blurb: '显示阈值' },
     { name: 'back-top-web-change-position', title: '调整位置', blurb: '调整位置' },
     { name: 'back-top-web-target-container', title: '自动绑定容器', blurb: '自动绑定容器' },
-    { name: 'back-top-web-control', title: '受控显示', blurb: '受控显示' },
+    { name: 'back-top-web-control', title: '受控显示', blurb: 'show 受控，忽略滚动位置。' },
+    { name: 'back-top-web-custom-content', title: '自定义内容', blurb: '默认插槽替换图标。' },
   ],
   props: {
     hint: [],

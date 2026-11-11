@@ -10,7 +10,7 @@ export const dynamicInputDocPageEn: SnDocPageData = {
   title: 'DynamicInput · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -67,9 +67,14 @@ import { DynamicInput } from '@snui/vue-web';
       blurb: 'Buttons hidden at bounds.',
     },
     {
-      name: 'dynamic-input-web-states',
-      title: 'Disabled / readonly',
-      blurb: 'disabled blocks interaction; readonly freezes rows.',
+      name: 'dynamic-input-web-disabled',
+      title: 'Disabled',
+      blurb: 'Whole group inert.',
+    },
+    {
+      name: 'dynamic-input-web-readonly',
+      title: 'Readonly',
+      blurb: 'Row structure frozen.',
     },
   ],
   props: {

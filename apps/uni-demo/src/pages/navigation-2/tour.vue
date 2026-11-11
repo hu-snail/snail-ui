@@ -3,6 +3,8 @@
 import Demo0 from './demos/tour-mp-basic.vue';
 import Demo1 from './demos/tour-mp-custom.vue';
 import Demo2 from './demos/tour-mp-mask.vue';
+import Demo3 from './demos/tour-mp-panel-slot.vue';
+import Demo4 from './demos/tour-mp-z-index.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +29,27 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('mask', 'Mask')" badge="mask" />
+        <DemoModuleHead
+          :title="t('蒙版（mask / mask-color）', 'Mask (`mask` / `mask-color`)')"
+          badge="mask"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('自定义面板与按钮', 'Custom panel & buttons')"
+          badge="panel-slot"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('层级与时长', 'Stacking & duration')" badge="z-index" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

@@ -2,7 +2,8 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— sort-button 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/sort-button-mp-basic.vue';
 import Demo1 from './demos/sort-button-mp-custom-style.vue';
-import Demo2 from './demos/sort-button-mp-reset-line.vue';
+import Demo2 from './demos/sort-button-mp-cycle.vue';
+import Demo3 from './demos/sort-button-mp-line.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -27,9 +28,20 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('reset-line', 'Reset Line')" badge="reset-line" />
+        <DemoModuleHead
+          :title="
+            t('排序循环（`allowReset` / `descFirst`）', 'Sort cycle (`allowReset` / `descFirst`)')
+          "
+          badge="cycle"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('下划线（`line`）', 'Underline (`line`)')" badge="line" />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

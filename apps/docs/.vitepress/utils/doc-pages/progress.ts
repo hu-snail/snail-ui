@@ -15,7 +15,7 @@ export const progressDocPage: SnDocPageData = {
   title: 'Progress 进度条',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '展示操作或任务的当前进度，支持线形、环形与多环三种形态。' }],
@@ -48,7 +48,16 @@ import { Progress } from '@snui/vue-web';
   demos: [
     { name: 'progress-web-basic', title: '线形与状态色', blurb: '线形与状态色' },
     { name: 'progress-web-indicator', title: '指示器位置对照', blurb: '指示器位置对照' },
-    { name: 'progress-web-processing', title: '处理中与状态四态', blurb: '处理中与状态四态' },
+    {
+      name: 'progress-web-processing',
+      title: '处理中',
+      blurb: 'processing：线形条纹滚动 / 环形呼吸。',
+    },
+    {
+      name: 'progress-web-icon',
+      title: '自定义环形图标',
+      blurb: '#icon 插槽 + SnIcon 定制环形中心。',
+    },
     { name: 'progress-web-dynamic', title: '动态改变进度', blurb: '动态改变进度' },
     { name: 'progress-web-circle', title: '环形进度', blurb: '环形进度' },
     { name: 'progress-web-multiple', title: '多环对照', blurb: '多环对照' },

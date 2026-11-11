@@ -61,23 +61,51 @@ import { SelectPicker } from '@snui/uni';
       blurb: 'checkbox 类型用数组 v-model；min / max 限制可选数量；tap 行即切换。',
     },
     {
-      name: 'select-picker-mp-radio-filter',
-      title: '单选与搜索（`type` / `filterable` / `checkedColor`）',
-      blurb: 'type=radio 写回标量；filterable 打开搜索框按 label 过滤；checkedColor 覆盖选中色。',
+      name: 'select-picker-mp-type-radio',
+      title: '单选模式（`type=radio`）',
+      blurb: 'type=radio 写回标量（不是数组）。',
     },
     {
-      name: 'select-picker-mp-fields-size',
-      title:
-        '字段映射与按钮（`valueKey` / `labelKey` / `confirmButtonText` / `showConfirm` / `selectSize`）',
-      blurb:
-        'valueKey / labelKey 字段映射；confirmButtonText；showConfirm=false；selectSize（声明但未参与渲染）。',
+      name: 'select-picker-mp-filterable',
+      title: '可搜索（`filterable`）',
+      blurb: 'filterable 打开搜索框按 label 过滤，filterPlaceholder 自定占位文案。',
     },
     {
-      name: 'select-picker-mp-loading-sheet',
-      title:
-        '加载态与弹层（`loading` / `loadingColor` / `beforeConfirm` / `scrollIntoView` / 遮罩层级 / `custom*`）',
+      name: 'select-picker-mp-fields',
+      title: '字段映射（`valueKey` / `labelKey`）',
+      blurb: 'valueKey / labelKey 让组件读取自定义字段名。',
+    },
+    {
+      name: 'select-picker-mp-chip-size',
+      title: 'chip 尺寸与确认（`selectSize` / `showConfirm`）',
       blurb:
-        'loading / loadingColor；beforeConfirm；closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；scrollIntoView；customClass / customStyle / customContentClass。',
+        'selectSize 控制 chip 尺寸档位；showConfirm=false 隐藏确认按钮；confirmButtonText 覆盖文案。',
+    },
+    {
+      name: 'select-picker-mp-checked-color',
+      title: '选中色（`checkedColor`）',
+      blurb: 'checkedColor 覆盖选中行的勾选色。',
+    },
+    {
+      name: 'select-picker-mp-loading',
+      title: '加载态（`loading`）',
+      blurb: 'loading 显示选项列表加载中，loadingColor 覆盖 spinner 颜色。',
+    },
+    {
+      name: 'select-picker-mp-before-confirm',
+      title: '确认拦截（`beforeConfirm`）',
+      blurb: 'beforeConfirm 返回 false 时不写 v-model。',
+    },
+    {
+      name: 'select-picker-mp-sheet',
+      title: '弹层行为与样式',
+      blurb:
+        'closeOnClickModal；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle。',
+    },
+    {
+      name: 'select-picker-mp-scroll-into-view',
+      title: '滚动定位（`scrollIntoView`）',
+      blurb: 'scrollIntoView 打开时把选中行滚进视野；customContentClass 定制内容区。',
     },
   ],
   props: {

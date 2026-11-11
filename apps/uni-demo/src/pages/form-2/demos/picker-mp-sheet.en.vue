@@ -1,0 +1,64 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-picker — sheet behavior: closeOnClickModal scrim tap / zIndex stacking /
+ * safeAreaInsetBottom / rootPortal teleport / customClass, customStyle sheet chrome.
+ */
+import { ref } from 'vue';
+import SnPicker from '@snui/uni-src/components/sn-picker/sn-picker.vue';
+
+const fruits = ['Apple', 'Banana', 'Cherry', 'Watermelon', 'Grape'];
+
+const sheet = ref<Array<string | number>>(['Cherry']);
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title"
+      >closeOnClickModal=false + zIndex + safeAreaInsetBottom + rootPortal + custom*</text
+    >
+    <view class="sn-demo__button" @tap="open = true">Sheet behavior</view>
+    <text class="sn-demo__meta">Selected: {{ sheet.join(' / ') }}</text>
+    <SnPicker
+      v-model="sheet"
+      v-model:visible="open"
+      :columns="[fruits]"
+      title="Sheet behavior"
+      :close-on-click-modal="false"
+      :safe-area-inset-bottom="false"
+      :z-index="1300"
+      root-portal
+      custom-class="sn-demo__sheet"
+      custom-style="border-radius: var(--sn-mp-radius-xl);"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-demo__sheet {
+  background-color: var(--sn-mp-color-background-elevated);
+}
+</style>

@@ -37,8 +37,8 @@ const props = withDefaults(
     /**
      * 顶部导航形态（可配置）：
      * - `blend`（默认）：通栏 —— pages.json 声明 `navigationStyle: custom`，
-     *   画布渐变直接铺到状态栏，顶部渲染半透明毛玻璃悬浮头部（页内返回键 +
-     *   居中标题），与内容区背景完全一致。
+     *   画布渐变直接铺到状态栏，顶部渲染透明磨砂悬浮头部（页内返回键 +
+     *   居中标题），与内容区背景融为一体。
      * - `native`：uni 原生导航栏（底色经 applyNavBar 对齐画布顶色）。
      */
     navStyle?: 'native' | 'blend';
@@ -241,7 +241,7 @@ watch(
   color: var(--demo-title);
 }
 
-/* ── 通栏头部：毛玻璃悬浮条（navigationStyle: custom 时替代原生导航栏） ── */
+/* ── 通栏头部：透明磨砂悬浮条（navigationStyle: custom 时替代原生导航栏） ── */
 
 .demo-shell__topbar {
   position: sticky;
@@ -251,10 +251,11 @@ watch(
   flex-direction: row;
   align-items: center;
   padding: var(--status-bar-height, 0px) 24rpx 0;
-  background: var(--demo-header-bg);
-  border-bottom: 1px solid var(--demo-card-border);
-  /* 毛玻璃只作用于头部自身及其后代（返回键），不构成 .demo-shell__body 里
+  /* 透明：导航栏与画布融为一体（docs 同步需求）；保留磨砂，内容滚过顶栏
+   * 下方时标题仍可读。不设描边——描边会把连续表面切出一条分界线。
+   * 毛玻璃只作用于头部自身及其后代（返回键），不构成 .demo-shell__body 里
    * fixed 弹层 demo 的 containing block。 */
+  background: transparent;
   backdrop-filter: blur(24rpx);
   -webkit-backdrop-filter: blur(24rpx);
 }

@@ -67,15 +67,30 @@ import { Picker } from '@snui/uni';
     },
     {
       name: 'picker-mp-fields',
-      title: '字段映射与按钮文案（`valueKey` / `labelKey` / `childrenKey` / `cancelButtonText`）',
-      blurb: 'valueKey / labelKey / childrenKey 字段映射；cancelButtonText；confirmButtonText。',
+      title: '字段映射（`valueKey` / `labelKey` / `childrenKey`）',
+      blurb:
+        'cascade 树配合 valueKey / labelKey / childrenKey 映射自定义字段名，业务数据不必改成 value / label / children。',
     },
     {
-      name: 'picker-mp-rows-sheet',
-      title:
-        '滚筒几何与弹层（`itemHeight` / `visibleItemCount` / `immediateChange` / 遮罩层级 / `custom*`）',
+      name: 'picker-mp-button-text',
+      title: '按钮文案（`cancelButtonText` / `confirmButtonText`）',
+      blurb: 'cancelButtonText / confirmButtonText 覆盖取消与确认按钮文案。',
+    },
+    {
+      name: 'picker-mp-rows',
+      title: '滚筒几何（`itemHeight` / `visibleItemCount`）',
+      blurb: 'itemHeight 调行高、visibleItemCount 调可见行数；customViewClass 微调滚筒。',
+    },
+    {
+      name: 'picker-mp-immediate',
+      title: '滚动即写回（`immediateChange`）',
+      blurb: 'immediateChange 让滚动过程持续写回 v-model，不等确认。',
+    },
+    {
+      name: 'picker-mp-sheet',
+      title: '弹层行为（遮罩 / 层级 / 安全区）',
       blurb:
-        'itemHeight / visibleItemCount；immediateChange；closeOnClickModal=false；safeAreaInsetBottom；zIndex；rootPortal；customClass / customStyle / customViewClass。',
+        'closeOnClickModal=false；safeAreaInsetBottom=false；zIndex；rootPortal；customClass / customStyle。',
     },
   ],
   props: {

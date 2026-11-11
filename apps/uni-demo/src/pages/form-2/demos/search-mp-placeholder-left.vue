@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-search — 占位符左对齐：placeholderLeft 让占位文本靠左。 */
+import { ref } from 'vue';
+import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
+
+const query = ref('snail');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">placeholderLeft</text>
+    <SnSearch v-model="query" placeholder-left placeholder="占位文本左对齐" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

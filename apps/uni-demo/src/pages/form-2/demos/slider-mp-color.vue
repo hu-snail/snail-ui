@@ -1,0 +1,33 @@
+<script setup lang="ts">
+/** Demo: sn-slider — 轨道配色：activeColor / inactiveColor 覆盖已填充与未填充轨道颜色。 */
+import { ref } from 'vue';
+import SnSlider from '@snui/uni-src/components/sn-slider/sn-slider.vue';
+
+const colored = ref(55);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSlider
+      v-model="colored"
+      active-color="var(--sn-mp-color-feedback-success)"
+      inactive-color="var(--sn-mp-color-background-sunken)"
+    />
+    <text class="sn-demo__meta">activeColor / inactiveColor 覆盖已填充 / 未填充轨道色</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -2,8 +2,7 @@
 /**
  * skeleton-web-box — block placeholders for non-text geometry.
  *
- * Shows: bare boxes at explicit `width` / `height`, the three `size` tiers,
- * and a `repeat` row built from them.
+ * Shows: bare boxes at explicit `width` / `height`.
  */
 import { SnSkeleton } from '@snui/vue-web';
 </script>
@@ -15,25 +14,6 @@ import { SnSkeleton } from '@snui/vue-web';
       <SnSkeleton width="180px" height="24px" />
       <SnSkeleton width="120px" height="64px" />
       <SnSkeleton width="240px" height="12px" />
-    </div>
-
-    <div class="sk-box__group">
-      <span class="sk-box__cap">size 三档高度</span>
-      <SnSkeleton size="small" width="100%" />
-      <SnSkeleton size="medium" width="100%" />
-      <SnSkeleton size="large" width="100%" />
-    </div>
-
-    <div class="sk-box__group">
-      <span class="sk-box__cap">repeat 多行</span>
-      <SnSkeleton :repeat="3" width="100%" />
-    </div>
-
-    <div class="sk-box__group">
-      <span class="sk-box__cap">直角 / 圆角</span>
-      <SnSkeleton width="100%" height="40px" />
-      <SnSkeleton width="100%" height="40px" :sharp="false" />
-      <SnSkeleton width="100%" height="40px" round />
     </div>
   </div>
 </template>

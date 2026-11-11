@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-table (uni-end) — 索引列（index）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-table from its SFC source.
+ */
+import SnTable from '@snui/uni-src/components/sn-table/sn-table.vue';
+import SnTableColumn from '@snui/uni-src/components/sn-table/sn-table-column.vue';
+
+interface Row {
+  name: string;
+  amount: number;
+  status: string;
+}
+
+const baseRows: Row[] = [
+  { name: '蜗牛 A', amount: 128, status: '已付款' },
+  { name: '蜗牛 B', amount: 256, status: '待付款' },
+  { name: '蜗牛 C', amount: 64, status: '已付款' },
+];
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnTable :data="baseRows" index>
+      <SnTableColumn prop="name" label="名称" :width="150" />
+      <SnTableColumn prop="amount" label="金额" :width="110" align="right" />
+      <SnTableColumn prop="status" label="状态" :width="120" align="center" />
+    </SnTable>
+    <text class="sn-demo__meta">index 打开首列序号（默认表头「序号」）。</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+}
+</style>

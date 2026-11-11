@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— qr-code 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/qr-code-mp-basic.vue';
-import Demo1 from './demos/qr-code-mp-canvas.vue';
-import Demo2 from './demos/qr-code-mp-dot-type.vue';
-import Demo3 from './demos/qr-code-mp-export.vue';
+import Demo1 from './demos/qr-code-mp-canvas-id.vue';
+import Demo2 from './demos/qr-code-mp-color.vue';
+import Demo3 from './demos/qr-code-mp-dot-type.vue';
+import Demo4 from './demos/qr-code-mp-export.vue';
+import Demo5 from './demos/qr-code-mp-gradient.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,21 +24,47 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('canvas', 'Canvas')" badge="canvas" />
+        <DemoModuleHead
+          :title="t('画布 id（canvasId）', 'Canvas id (`canvasId`)')"
+          badge="canvas-id"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('dot-type', 'Dot Type')" badge="dot-type" />
+        <DemoModuleHead
+          :title="
+            t('自定义颜色（colorDark / colorLight）', 'Custom colors (`colorDark` / `colorLight`)')
+          "
+          badge="color"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('导出', 'Export')" badge="export" />
+        <DemoModuleHead
+          :title="t('码点形状（dotType）', 'Module shapes (`dotType`)')"
+          badge="dot-type"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('导出', 'Export')" badge="export" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('渐变码（enableGradient）', 'Gradient codes (`enableGradient`)')"
+          badge="gradient"
+        />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

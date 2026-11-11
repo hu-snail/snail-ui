@@ -84,16 +84,25 @@ import { Fab } from '@snui/uni';
         'Top-left / top-right / bottom-left / bottom-center anchors, each with a pill group whose direction follows the anchor.',
     },
     {
-      name: 'fab-mp-disabled',
-      title: 'Disabled and click-only',
-      blurb:
-        'expandable=false (click counter), disabled at half opacity, and draggable — the menu still opens after dragging.',
+      name: 'fab-mp-expandable',
+      title: 'Click-only (`expandable`)',
+      blurb: 'expandable=false taps the trigger without expanding and emits click only (counter).',
     },
     {
-      name: 'fab-mp-icons',
-      title: 'Trigger icons and theme switching (`inactive-icon` / `active-icon` / `type`)',
+      name: 'fab-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: 'disabled blocks every interaction, trigger at half opacity.',
+    },
+    {
+      name: 'fab-mp-trigger-icons',
+      title: 'Trigger icon dual-track',
       blurb:
-        'Bottom-left icon-name track (Edit ↔ X), bottom-right trigger-slot icon object (Sparkles ↔ X) + swatches switching the 5 themes live.',
+        'The icon-name track (inactive-icon / active-icon, resolved via registerSnIcons) next to the trigger-slot IconData track.',
+    },
+    {
+      name: 'fab-mp-type',
+      title: 'Theme color (`type`)',
+      blurb: 'Swatches switch the FAB type live (5 themes); items record the pick and collapse.',
     },
   ],
   props: {

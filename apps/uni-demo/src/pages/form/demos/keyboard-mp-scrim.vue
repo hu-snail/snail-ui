@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-keyboard — 遮罩与层级：modal / hideOnClickOutside / lockScroll / closeButtonLoading / safeAreaInsetBottom / rootPortal / custom*。 */
+/** Demo: sn-keyboard — 遮罩与弹层行为：modal / hideOnClickOutside / lockScroll / safeAreaInsetBottom / rootPortal / custom*。 */
 import { ref } from 'vue';
 import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 
@@ -8,9 +8,6 @@ const openModal = ref(false);
 
 const sticky = ref('');
 const openSticky = ref(false);
-
-const busy = ref('');
-const openBusy = ref(false);
 </script>
 
 <template>
@@ -37,18 +34,6 @@ const openBusy = ref(false);
       title="点外部不关闭"
       :hide-on-click-outside="false"
       :lock-scroll="false"
-    />
-
-    <text class="sn-demo__title">closeButtonLoading（关闭键显示 spinner）+ rootPortal</text>
-    <view class="sn-demo__button" @tap="openBusy = true">关闭键加载中</view>
-    <SnKeyboard
-      v-model="busy"
-      v-model:visible="openBusy"
-      :maxlength="6"
-      title="关闭键加载中"
-      close-button-loading
-      close-text="提交中"
-      root-portal
     />
   </view>
 </template>

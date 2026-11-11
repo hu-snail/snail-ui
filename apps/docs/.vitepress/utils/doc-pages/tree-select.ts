@@ -111,9 +111,14 @@ export const treeSelectDocPage: SnDocPageData = {
       blurb: 'labelField / keyField / childrenField。',
     },
     {
-      name: 'tree-select-web-states',
-      title: '可清空 / 禁用',
-      blurb: 'clearable、disabled、disabled 项。',
+      name: 'tree-select-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '选中后一键清空。',
+    },
+    {
+      name: 'tree-select-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '组件级禁用 + disabled 选项节点。',
     },
     {
       name: 'tree-select-web-line',

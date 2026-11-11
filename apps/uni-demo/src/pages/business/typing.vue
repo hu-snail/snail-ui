@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— typing 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/typing-mp.vue';
-import Demo1 from './demos/typing-mp-basic.vue';
-import Demo2 from './demos/typing-mp-states.vue';
-import Demo3 from './demos/typing-mp-variants.vue';
+import Demo0 from './demos/typing-mp-basic.vue';
+import Demo1 from './demos/typing-mp-dot-color.vue';
+import Demo2 from './demos/typing-mp-dot-count.vue';
+import Demo3 from './demos/typing-mp-speed.vue';
+import Demo4 from './demos/typing-mp-states.vue';
+import Demo5 from './demos/typing-mp-text.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -16,27 +18,39 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'输入中'" :title-en="'Typing'" :desc="'聊天输入中跳动圆点'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('圆点颜色（activeDotColor）', 'Dot color')" badge="dot-color" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead :title="t('圆点数量（dotCount）', 'Dot count')" badge="dot-count" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('variants', 'Variants')" badge="variants" />
+        <DemoModuleHead :title="t('脉动速度（speed）', 'Pulse speed')" badge="speed" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('文案开关（text）', 'Label toggle')" badge="text" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-/** Demo: SnInputNumber — bounds / step / stepStrictly. */
+/** Demo: SnInputNumber — min / max bounds (out-of-range commits clamp). */
 import { ref } from 'vue';
 import { SnInputNumber } from '@snui/vue-web';
-const a = ref(10);
-const b = ref(25);
+const v = ref(10);
 </script>
 
 <template>
   <div class="demo-row">
-    <SnInputNumber v-model="a" :min="0" :max="100" :step="5" class="demo-field" />
-    <SnInputNumber v-model="b" :min="0" :max="100" :step="25" step-strictly class="demo-field" />
+    <SnInputNumber v-model="v" :min="0" :max="100" class="demo-field" />
   </div>
 </template>
 

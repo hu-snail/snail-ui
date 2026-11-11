@@ -3,12 +3,14 @@
 import Demo0 from './demos/tabs-mp-animate.vue';
 import Demo1 from './demos/tabs-mp-badge.vue';
 import Demo2 from './demos/tabs-mp-basic.vue';
-import Demo3 from './demos/tabs-mp-icon.vue';
-import Demo4 from './demos/tabs-mp-line.vue';
-import Demo5 from './demos/tabs-mp-paging.vue';
-import Demo6 from './demos/tabs-mp-scroll.vue';
-import Demo7 from './demos/tabs-mp-swiper.vue';
-import Demo8 from './demos/tabs-mp-type.vue';
+import Demo3 from './demos/tabs-mp-disabled.vue';
+import Demo4 from './demos/tabs-mp-icon.vue';
+import Demo5 from './demos/tabs-mp-line.vue';
+import Demo6 from './demos/tabs-mp-paging.vue';
+import Demo7 from './demos/tabs-mp-scroll.vue';
+import Demo8 from './demos/tabs-mp-sticky.vue';
+import Demo9 from './demos/tabs-mp-swiper.vue';
+import Demo10 from './demos/tabs-mp-type.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,7 +23,10 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'标签页'" :title-en="'Tabs'" :desc="'可滚动标签页与内容联动'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('animate', 'Animate')" badge="animate" />
+        <DemoModuleHead
+          :title="t('切换动画（animated）', 'Switch animation (`animated`)')"
+          badge="animate"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -39,39 +44,57 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead
+          :title="t('禁用页签（disabled）', 'Disabled tabs (`disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('line', 'Line')" badge="line" />
+        <DemoModuleHead :title="t('页签图标（icon）', 'Tab icons (`icon`)')" badge="icon" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('分页联动', 'Paging sync')" badge="paging" />
+        <DemoModuleHead
+          :title="t('底部条样式（line-theme）', 'Bar styles (`line-theme`)')"
+          badge="line"
+        />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
+        <DemoModuleHead :title="t('分页联动', 'Paging sync')" badge="paging" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('轮播联动', 'Swiper sync')" badge="swiper" />
+        <DemoModuleHead :title="t('滚动', 'Scroll')" badge="scroll" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead :title="t('吸顶（sticky）', 'Sticky pinning (`sticky`)')" badge="sticky" />
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('轮播联动', 'Swiper sync')" badge="swiper" />
+        <view class="module__body">
+          <Demo9 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <view class="module__body">
+          <Demo10 />
         </view>
       </view>
     </view>

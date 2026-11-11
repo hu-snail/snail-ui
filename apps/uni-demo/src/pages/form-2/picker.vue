@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/picker-mp-basic.vue';
-import Demo1 from './demos/picker-mp-cascade-confirm.vue';
-import Demo2 from './demos/picker-mp-fields.vue';
-import Demo3 from './demos/picker-mp-rows-sheet.vue';
+import Demo1 from './demos/picker-mp-button-text.vue';
+import Demo2 from './demos/picker-mp-cascade-confirm.vue';
+import Demo3 from './demos/picker-mp-fields.vue';
+import Demo4 from './demos/picker-mp-immediate.vue';
+import Demo5 from './demos/picker-mp-rows.vue';
+import Demo6 from './demos/picker-mp-sheet.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,21 +25,73 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('cascade-confirm', 'Cascade Confirm')" badge="cascade-confirm" />
+        <DemoModuleHead
+          :title="
+            t(
+              '按钮文案（`cancelButtonText` / `confirmButtonText`）',
+              'Button labels (`cancelButtonText` / `confirmButtonText`)',
+            )
+          "
+          badge="button-text"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
+        <DemoModuleHead :title="t('cascade-confirm', 'Cascade Confirm')" badge="cascade-confirm" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('rows-sheet', 'Rows Sheet')" badge="rows-sheet" />
+        <DemoModuleHead
+          :title="
+            t(
+              '字段映射（`valueKey` / `labelKey` / `childrenKey`）',
+              'Field mapping (`valueKey` / `labelKey` / `childrenKey`)',
+            )
+          "
+          badge="fields"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('滚动即写回（`immediateChange`）', 'Commit while scrolling (`immediateChange`)')
+          "
+          badge="immediate"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '滚筒几何（`itemHeight` / `visibleItemCount`）',
+              'Roller geometry (`itemHeight` / `visibleItemCount`)',
+            )
+          "
+          badge="rows"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('弹层行为（遮罩 / 层级 / 安全区）', 'Sheet behavior (scrim / stacking / safe area)')
+          "
+          badge="sheet"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

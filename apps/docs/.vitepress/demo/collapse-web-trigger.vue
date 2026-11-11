@@ -1,8 +1,6 @@
 <script setup lang="ts">
 /**
- * collapse-web-trigger — SnCollapse with trigger='hover' (mouseenter expands)
- * + displayDirective='show' (DOM stays mounted, toggle via display:none —
- * cheaper for content with expensive mount cost).
+ * collapse-web-trigger — SnCollapse with trigger='hover' (mouseenter expands).
  */
 import { ref } from 'vue';
 import { SnCollapse, SnCollapseItem } from '@snui/vue-web';
@@ -11,7 +9,9 @@ const open = ref<Array<string | number>>(['1']);
 </script>
 
 <template>
-  <div style="display: flex; flex-direction: column; gap: 24px">
+  <!-- The centered flex demo stage shrink-to-fits its children; pin the wrapper
+       so the collapse group keeps a stable, parent-driven width. -->
+  <div style="display: flex; flex-direction: column; gap: 24px; width: 100%; min-width: 0">
     <div>
       <p style="margin: 0 0 8px; font-size: 13px; color: var(--vp-c-text-2)">
         trigger="hover" — 鼠标移入自动展开
@@ -22,31 +22,6 @@ const open = ref<Array<string | number>>(['1']);
           >统一底层 @snui/tokens 输出 --aui-* 原始层。</SnCollapseItem
         >
         <SnCollapseItem title="Style Pack" name="3">跨端共用风格包系统。</SnCollapseItem>
-      </SnCollapse>
-    </div>
-    <div>
-      <p style="margin: 0 0 8px; font-size: 13px; color: var(--vp-c-text-2)">
-        displayDirective="show" — DOM 常驻，仅 display 切换
-      </p>
-      <SnCollapse v-model:expanded-names="open" display-directive="show" bordered>
-        <SnCollapseItem title="Heavy DOM" name="1">
-          <div
-            style="
-              height: 60px;
-              background: linear-gradient(45deg, #f0f0ff, #fff0f0);
-              border-radius: 4px;
-            "
-          ></div>
-        </SnCollapseItem>
-        <SnCollapseItem title="Heavy DOM 2" name="2">
-          <div
-            style="
-              height: 60px;
-              background: linear-gradient(45deg, #fff0f0, #f0fff0);
-              border-radius: 4px;
-            "
-          ></div>
-        </SnCollapseItem>
       </SnCollapse>
     </div>
   </div>

@@ -10,7 +10,7 @@ export const autoCompleteDocPageEn: SnDocPageData = {
   title: 'AutoComplete · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -63,9 +63,19 @@ import { AutoComplete } from '@snui/vue-web';
       blurb: 'Compute candidates from input.',
     },
     {
-      name: 'auto-complete-web-states',
-      title: 'blurAfterSelect / clearable / disabled',
-      blurb: 'Blur after select, clear, disabled.',
+      name: 'auto-complete-web-blur-after-select',
+      title: 'Blur after select',
+      blurb: 'The input blurs once a candidate is chosen.',
+    },
+    {
+      name: 'auto-complete-web-clearable',
+      title: 'Clearable',
+      blurb: 'A clear button empties the value.',
+    },
+    {
+      name: 'auto-complete-web-disabled',
+      title: 'Disabled',
+      blurb: 'Input / select / clear all disabled.',
     },
   ],
   props: {

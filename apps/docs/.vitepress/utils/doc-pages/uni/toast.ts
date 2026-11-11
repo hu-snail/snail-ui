@@ -68,9 +68,19 @@ import { Toast } from '@snui/uni';
     },
     { name: 'toast-mp-icon', title: '图标与加载形态', blurb: '四种状态图标与四种加载形态。' },
     {
-      name: 'toast-mp-style',
-      title: '图标尺寸与颜色、遮罩与层级',
-      blurb: '图标与加载器尺寸颜色 / cover 遮罩 / zIndex + custom-style。',
+      name: 'toast-mp-icon-style',
+      title: '图标尺寸与颜色',
+      blurb: 'icon-size / icon-color 与 loading-size / loading-color。',
+    },
+    {
+      name: 'toast-mp-cover',
+      title: '遮罩阻挡（cover）',
+      blurb: 'cover 透明全屏遮罩挡住页面点击。',
+    },
+    {
+      name: 'toast-mp-z-index',
+      title: '层级与样式',
+      blurb: 'z-index=300 + custom-style 内联样式。',
     },
   ],
   props: {

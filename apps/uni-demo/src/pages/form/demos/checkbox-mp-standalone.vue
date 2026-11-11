@@ -1,0 +1,39 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-checkbox — 独立用法与自定义取值。
+ *
+ * 独立 `v-model`（不经 group）、`trueValue` / `falseValue` 自定义取值。
+ */
+import { ref } from 'vue';
+import SnCheckbox from '@snui/uni-src/components/sn-checkbox/sn-checkbox.vue';
+
+const standalone = ref<boolean>(true);
+const subscribed = ref<string>('yes');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCheckbox v-model="standalone">独立 v-model（不放在 group 里）</SnCheckbox>
+    <text class="sn-demo__meta">独立模式：勾选状态写回自身 modelValue（{{ standalone }}）</text>
+
+    <SnCheckbox v-model="subscribed" true-value="yes" false-value="no">
+      trueValue / falseValue 自定义取值
+    </SnCheckbox>
+    <text class="sn-demo__meta">trueValue="yes" / falseValue="no"：当前 {{ subscribed }}</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

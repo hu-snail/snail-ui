@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — 字段映射：valueKey / labelKey 让组件读取自定义字段名。 */
+import { ref } from 'vue';
+import SnSelectPicker from '@snui/uni-src/components/sn-select-picker/sn-select-picker.vue';
+
+/** 用 id / name 当字段名，靠 valueKey / labelKey 映射。 */
+const cities = [
+  { id: 'sh', name: '上海' },
+  { id: 'bj', name: '北京' },
+  { id: 'gz', name: '广州' },
+];
+
+const mapped = ref<Array<string | number | boolean>>(['sh']);
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">valueKey="id" + labelKey="name"</text>
+    <view class="sn-demo__button" @tap="open = true">字段映射</view>
+    <text class="sn-demo__meta">已选：{{ mapped.join(' / ') || '（未选择）' }}</text>
+    <SnSelectPicker
+      v-model="mapped"
+      v-model:visible="open"
+      :columns="cities"
+      value-key="id"
+      label-key="name"
+      title="字段映射"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

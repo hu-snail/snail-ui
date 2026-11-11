@@ -1,10 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— captcha 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/captcha-mp-basic.vue';
-import Demo1 from './demos/captcha-mp-custom.vue';
+import Demo1 from './demos/captcha-mp-copy.vue';
 import Demo2 from './demos/captcha-mp-interaction.vue';
 import Demo3 from './demos/captcha-mp-popup.vue';
-import Demo4 from './demos/captcha-mp-verify.vue';
+import Demo4 from './demos/captcha-mp-size-tolerance.vue';
+import Demo5 from './demos/captcha-mp-verify.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,7 +24,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead
+          :title="t('自定义文案（tips / successText）', 'Custom copy (tips / successText)')"
+          badge="copy"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -41,9 +45,23 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('验证', 'Verification')" badge="verify" />
+        <DemoModuleHead
+          :title="
+            t(
+              '尺寸与容差（width / height / tolerance）',
+              'Size & tolerance (width / height / tolerance)',
+            )
+          "
+          badge="size-tolerance"
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('验证', 'Verification')" badge="verify" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

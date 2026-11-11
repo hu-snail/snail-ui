@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-watermark (uni-end) — image tiles / font family / z-index / custom-class / custom-style.
+ * Demo: sn-watermark (uni-end) — image watermark (`image` / `imageWidth` / `imageHeight`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-watermark from its SFC source.
  */
 import SnWatermark from '@snui/uni-src/components/sn-watermark/sn-watermark.vue';
@@ -25,33 +25,6 @@ const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
         >
       </view>
     </view>
-
-    <view class="sn-watermark-demo__stage">
-      <SnWatermark
-        content="Font family / style / z-index"
-        :full-screen="false"
-        font-family="serif"
-        font-style="italic"
-        font-weight="700"
-        :size="16"
-        :z-index="5"
-        :opacity="0.4"
-        custom-class="sn-watermark-demo__custom"
-        custom-style="border-radius: 8rpx"
-      />
-      <view class="sn-watermark-demo__card">
-        <text class="sn-watermark-demo__title">Font control on a text watermark</text>
-        <text class="sn-watermark-demo__body">
-          fontFamily / fontStyle / fontWeight apply to the rendered text; zIndex and customStyle
-          apply to the root node.
-        </text>
-      </view>
-    </view>
-
-    <text class="sn-demo__meta">
-      The watermark layer is pointer-events: none and never blocks taps; customClass lands on the
-      root and customStyle is appended to its inline style.
-    </text>
   </view>
 </template>
 
@@ -60,11 +33,6 @@ const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
   display: flex;
   flex-direction: column;
   gap: 16rpx;
-}
-.sn-demo__meta {
-  color: var(--sn-mp-color-text-tertiary);
-  font-size: 24rpx;
-  line-height: var(--sn-mp-font-line-height-normal);
 }
 .sn-watermark-demo__stage {
   position: relative;
@@ -89,8 +57,5 @@ const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
 .sn-watermark-demo__body {
   font-size: 26rpx;
   color: var(--sn-mp-color-text-secondary);
-}
-.sn-demo :deep(.sn-watermark-demo__custom) {
-  border: 2rpx dashed var(--sn-mp-color-border-subtle);
 }
 </style>

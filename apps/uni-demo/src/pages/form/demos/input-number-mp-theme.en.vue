@@ -1,0 +1,28 @@
+<script setup lang="ts">
+/** Demo: sn-input-number — theme: default / outline / outline-split / primary. */
+import { ref } from 'vue';
+import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
+
+const a = ref(1);
+const b = ref(2);
+const c = ref(3);
+const d = ref(4);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnInputNumber v-model="a" theme="default" />
+    <SnInputNumber v-model="b" theme="outline" />
+    <SnInputNumber v-model="c" theme="outline-split" />
+    <SnInputNumber v-model="d" theme="primary" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+}
+</style>

@@ -8,12 +8,7 @@ const patterns = ['Snail AUI', 'Schema', 'TypeScript', '快'];
 
 <template>
   <div class="sn-demo">
-    <SnHighlight
-      :text="text"
-      highlight-tag="span"
-      :patterns="patterns"
-      highlight-style="text-decoration: underline"
-    />
+    <SnHighlight :text="text" highlight-tag="span" :patterns="patterns" />
   </div>
 </template>
 

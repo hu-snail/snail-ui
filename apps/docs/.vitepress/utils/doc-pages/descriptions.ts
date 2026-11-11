@@ -15,7 +15,7 @@ export const descriptionsDocPage: SnDocPageData = {
   title: '描述列表 Descriptions',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '成组的 key/value 明细展示，网格布局，支持多列、跨列与描边。' }],

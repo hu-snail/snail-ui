@@ -61,10 +61,15 @@ import { Grid } from '@snui/uni';
         'column=4 + gutter 间距 + square 正方形；direction=horizontal 横向排列；reverse 调换图标与文字位置。',
     },
     {
-      name: 'grid-mp-feedback',
-      title: '背景色、点击反馈与图标尺寸',
+      name: 'grid-mp-clickable',
+      title: '点击反馈（clickable）',
+      blurb: 'clickable 开启格子点击；hover-class 自定义按压反馈；click 事件回报点击格子。',
+    },
+    {
+      name: 'grid-mp-look',
+      title: '外观（bg-color / center / icon-size）',
       blurb:
-        'bg-color 背景色；clickable + hover-class 点击反馈；center=false 顶对齐；icon-size；custom-class / custom-style。',
+        'bg-color 背景色；center=false 顶对齐；icon-size 图标尺寸；custom-class / custom-style。',
     },
   ],
   props: {

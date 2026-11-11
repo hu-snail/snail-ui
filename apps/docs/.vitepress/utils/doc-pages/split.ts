@@ -11,7 +11,7 @@ export const splitDocPage: SnDocPageData = {
   title: 'Split',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '分栏容器。拖拽调整面板比例，键盘可达，支持折叠。' }],

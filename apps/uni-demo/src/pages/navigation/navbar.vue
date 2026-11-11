@@ -1,8 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— navbar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/navbar-mp-basic.vue';
-import Demo1 from './demos/navbar-mp-config.vue';
-import Demo2 from './demos/navbar-mp-slots.vue';
+import Demo1 from './demos/navbar-mp-capsule-slot.vue';
+import Demo2 from './demos/navbar-mp-disabled.vue';
+import Demo3 from './demos/navbar-mp-fixed.vue';
+import Demo4 from './demos/navbar-mp-safe-area.vue';
+import Demo5 from './demos/navbar-mp-slots.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,15 +24,41 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
+        <DemoModuleHead :title="t('胶囊插槽', 'Capsule slot')" badge="capsule-slot" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <DemoModuleHead
+          :title="t('禁用侧按钮（left-disabled）', 'Disabled sides (`left-disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('固定定位（fixed / placeholder）', 'Fixed positioning (`fixed` / `placeholder`)')
+          "
+          badge="fixed"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('安全区与层级', 'Safe area & stacking')" badge="safe-area" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('左右插槽', 'Left & right slots')" badge="slots" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

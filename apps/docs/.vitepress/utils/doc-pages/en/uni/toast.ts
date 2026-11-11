@@ -66,9 +66,19 @@ import { Toast } from '@snui/uni';
       blurb: 'Four status glyphs and four loading shapes.',
     },
     {
-      name: 'toast-mp-style',
-      title: 'Icon size and color, scrim and stacking',
-      blurb: 'Glyph and spinner size/color / cover scrim / zIndex + custom-style.',
+      name: 'toast-mp-icon-style',
+      title: 'Glyph size & colors',
+      blurb: 'icon-size / icon-color and loading-size / loading-color.',
+    },
+    {
+      name: 'toast-mp-cover',
+      title: 'Click-blocking scrim (`cover`)',
+      blurb: 'cover renders a transparent full-screen scrim that blocks taps.',
+    },
+    {
+      name: 'toast-mp-z-index',
+      title: 'Stacking & styling',
+      blurb: 'z-index=300 plus a custom-style inline style.',
     },
   ],
   props: {

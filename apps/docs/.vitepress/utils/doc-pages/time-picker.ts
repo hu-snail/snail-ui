@@ -11,7 +11,7 @@ export const timePickerDocPage: SnDocPageData = {
   title: 'TimePicker',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -60,9 +60,19 @@ import { TimePicker } from '@snui/vue-web';
       blurb: '钟面序 12/1…11 + AM/PM 列。',
     },
     {
-      name: 'time-picker-web-states',
-      title: '可清空 / 禁用 / 只读',
-      blurb: 'clearable、disabled、readonly。',
+      name: 'time-picker-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '清空按钮一键置空。',
+    },
+    {
+      name: 'time-picker-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '禁用交互。',
+    },
+    {
+      name: 'time-picker-web-readonly',
+      title: '只读（readonly）',
+      blurb: '可见不可改。',
     },
   ],
   props: {

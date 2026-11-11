@@ -2,8 +2,11 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— picker-view 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/picker-view-mp-basic.vue';
 import Demo1 from './demos/picker-view-mp-cascade.vue';
-import Demo2 from './demos/picker-view-mp-immediate-custom.vue';
-import Demo3 from './demos/picker-view-mp-keys-geometry.vue';
+import Demo2 from './demos/picker-view-mp-custom-style.vue';
+import Demo3 from './demos/picker-view-mp-disabled.vue';
+import Demo4 from './demos/picker-view-mp-immediate.vue';
+import Demo5 from './demos/picker-view-mp-keys.vue';
+import Demo6 from './demos/picker-view-mp-rows.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,24 +25,74 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('cascade', 'Cascade')" badge="cascade" />
+        <DemoModuleHead
+          :title="t('级联模式（`cascade`）', 'Cascade mode (`cascade`)')"
+          badge="cascade"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('immediate-custom', 'Immediate Custom')"
-          badge="immediate-custom"
+          :title="
+            t(
+              '根节点样式（`customClass` / `customStyle`）',
+              'Root styling (`customClass` / `customStyle`)',
+            )
+          "
+          badge="custom-style"
         />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('keys-geometry', 'Keys Geometry')" badge="keys-geometry" />
+        <DemoModuleHead
+          :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('拖动即时回写（`immediateChange`）', 'Live commit while dragging (`immediateChange`)')
+          "
+          badge="immediate"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '自定义字段名（`valueKey` / `labelKey` / `childrenKey`）',
+              'Custom field names (`valueKey` / `labelKey` / `childrenKey`)',
+            )
+          "
+          badge="keys"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '滚筒几何（`itemHeight` / `visibleItemCount`）',
+              'Roller geometry (`itemHeight` / `visibleItemCount`)',
+            )
+          "
+          badge="rows"
+        />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

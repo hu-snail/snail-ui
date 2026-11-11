@@ -58,10 +58,14 @@ import { SortButton } from '@snui/uni';
         'Tri-state sort toggle: 1 ascending / 0 reset / -1 descending; by default it toggles between ascending and descending.',
     },
     {
-      name: 'sort-button-mp-reset-line',
-      title: 'Reset, descending-first & underline (`allowReset` / `descFirst` / `line`)',
-      blurb:
-        '`allowReset` puts 0 back into the cycle; `descFirst` starts with descending; `line` adds an underline.',
+      name: 'sort-button-mp-cycle',
+      title: 'Sort cycle (`allowReset` / `descFirst`)',
+      blurb: '`allowReset` puts 0 back into the cycle; `descFirst` starts with descending.',
+    },
+    {
+      name: 'sort-button-mp-line',
+      title: 'Underline (`line`)',
+      blurb: '`line` adds an underline to the label.',
     },
     {
       name: 'sort-button-mp-custom-style',

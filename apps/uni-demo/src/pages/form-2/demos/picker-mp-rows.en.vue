@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/** Demo: sn-picker — roller geometry: itemHeight row height / visibleItemCount visible rows, customViewClass tweaks the roller. */
+import { ref } from 'vue';
+import SnPicker from '@snui/uni-src/components/sn-picker/sn-picker.vue';
+
+const fruits = ['Apple', 'Banana', 'Cherry', 'Watermelon', 'Grape'];
+
+const tall = ref<Array<string | number>>(['Apple']);
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">itemHeight=52 + visibleItemCount=5 + customViewClass</text>
+    <view class="sn-demo__button" @tap="open = true">Tall rows</view>
+    <text class="sn-demo__meta">Selected: {{ tall.join(' / ') }}</text>
+    <SnPicker
+      v-model="tall"
+      v-model:visible="open"
+      :columns="[fruits]"
+      title="Tall rows"
+      :item-height="52"
+      :visible-item-count="5"
+      custom-view-class="sn-demo__roller"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-demo__roller {
+  padding-bottom: 8rpx;
+}
+</style>

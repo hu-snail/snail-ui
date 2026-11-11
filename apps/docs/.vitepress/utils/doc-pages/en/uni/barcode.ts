@@ -50,9 +50,29 @@ import { Barcode } from '@snui/uni';
   },
   demos: [
     {
-      name: 'barcode-mp',
-      title: 'Demos',
-      blurb: 'Auto check digit / explicit 13 digits with custom bar color / invalid input error.',
+      name: 'barcode-mp-basic',
+      title: 'Basic usage',
+      blurb: 'A 12-digit input auto-completes the check digit.',
+    },
+    {
+      name: 'barcode-mp-states',
+      title: 'State & events',
+      blurb: 'Three error codes via error + the rendered callback.',
+    },
+    {
+      name: 'barcode-mp-format',
+      title: 'Barcode formats',
+      blurb: 'CODE128 / CODE39 / EAN13 / CODEBAR / ITF / EAN8 / UPC.',
+    },
+    {
+      name: 'barcode-mp-layout',
+      title: 'Layout direction',
+      blurb: 'Horizontal (default) / vertical.',
+    },
+    {
+      name: 'barcode-mp-style',
+      title: 'Style props',
+      blurb: 'line-length / line-color / background / text-align / margin.',
     },
   ],
   props: {

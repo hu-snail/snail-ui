@@ -75,16 +75,25 @@ import { CodeInput } from '@snui/uni';
       blurb: 'The `background` prop paints custom cell backgrounds (tokens or any CSS color).',
     },
     {
-      name: 'code-input-mp-border',
+      name: 'code-input-mp-no-border',
       title: 'Cell border (`border`)',
       blurb:
         "`border='none'` strips every cell border (the underline rule included) for background-only cells.",
     },
     {
-      name: 'code-input-mp-error-gutter',
-      title: 'Plain text, error & gap (`mask` / `errorInfo` / `gutter`)',
-      blurb:
-        '`mask=false` shows the characters; `errorInfo` overrides `info` and turns the borders danger-colored; the default 16rpx gap is tunable via `gutter`.',
+      name: 'code-input-mp-mask',
+      title: 'Plain display (mask)',
+      blurb: '`mask=false` shows the characters.',
+    },
+    {
+      name: 'code-input-mp-error-info',
+      title: 'Error state (errorInfo)',
+      blurb: '`errorInfo` overrides `info` and turns the borders danger-colored.',
+    },
+    {
+      name: 'code-input-mp-gutter',
+      title: 'Cell gap (gutter)',
+      blurb: 'The default 16rpx gap is tunable via `gutter`.',
     },
     {
       name: 'code-input-mp-custom-style',

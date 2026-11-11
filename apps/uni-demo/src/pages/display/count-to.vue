@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— count-to 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/count-to-mp-basic.vue';
-import Demo1 from './demos/count-to-mp-easing.vue';
-import Demo2 from './demos/count-to-mp-type.vue';
+import Demo1 from './demos/count-to-mp-control.vue';
+import Demo2 from './demos/count-to-mp-easing.vue';
+import Demo3 from './demos/count-to-mp-type.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,15 +22,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('easing', 'Easing')" badge="easing" />
+        <DemoModuleHead :title="t('控制方法', 'Controls')" badge="control" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead :title="t('easing', 'Easing')" badge="easing" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题色（type）', 'Type colors (`type`)')" badge="type" />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

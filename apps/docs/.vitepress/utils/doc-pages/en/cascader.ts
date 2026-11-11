@@ -6,7 +6,7 @@ export const cascaderDocPageEn: SnDocPageData = {
   title: 'Cascader · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -69,9 +69,14 @@ import { Cascader } from '@snui/vue-web';
     },
     { name: 'cascader-web-trigger', title: 'Expand trigger', blurb: 'click (default) / hover.' },
     {
-      name: 'cascader-web-states',
-      title: 'Clearable / disabled',
-      blurb: 'clearable, disabled, disabled option.',
+      name: 'cascader-web-clearable',
+      title: 'Clearable',
+      blurb: 'A clear button empties the selection.',
+    },
+    {
+      name: 'cascader-web-disabled',
+      title: 'Disabled',
+      blurb: 'Component-level disable + disabled option nodes.',
     },
   ],
   props: {

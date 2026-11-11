@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-slide-verify — icon / successIcon / iconPrefix / cssIcon / iconSize / successIconSize。
+ * Demo: sn-slide-verify — 图标字形（icon / successIcon）。
  *
  * 不给 `icon` / `success-icon` 时用内置 SVG 字形；给了名字就走 iconfont 约定
  * （`icon-prefix` + `-` + 名字），`css-icon` 则把名字当裸类名。`icon-size` /
@@ -35,17 +35,6 @@ const onFail = (): void => {
 
     <SnSlideVerify css-icon="demo-verify-css" :icon-size="32" @success="onSuccess" @fail="onFail" />
     <text class="sn-demo__meta">cssIcon 传字符串：类名原样渲染，不加 iconPrefix 前缀</text>
-
-    <SnSlideVerify
-      :tolerance="24"
-      custom-class="sn-demo__verify"
-      custom-style="padding: 8rpx; border-radius: var(--sn-mp-radius-md); background-color: var(--sn-mp-color-background-soft);"
-      @success="onSuccess"
-      @fail="onFail"
-    />
-    <text class="sn-demo__meta"
-      >tolerance=24 放宽右边缘容差；customClass / customStyle 落在根节点上</text
-    >
 
     <text class="sn-demo__meta">状态：{{ state }}</text>
   </view>
@@ -88,9 +77,5 @@ const onFail = (): void => {
 }
 .sn-demo :deep(.demo-verify-css)::after {
   content: 'C';
-}
-/* custom-class 落在 sn-slide-verify 根节点上，需要 :deep 穿透组件边界。 */
-.sn-demo :deep(.sn-demo__verify) {
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 </style>

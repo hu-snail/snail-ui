@@ -15,7 +15,7 @@ export const tabsDocPage: SnDocPageData = {
   title: 'Tabs 标签页',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -62,7 +62,11 @@ import { Tabs } from '@snui/vue-web';
     { name: 'tabs-web-display-directive', title: '面板留存策略', blurb: '面板留存策略' },
     { name: 'tabs-web-bar-width', title: '标签条宽度', blurb: '标签条宽度' },
     { name: 'tabs-web-disabled', title: '禁用标签', blurb: '禁用标签' },
-    { name: 'tabs-web-placement-closable', title: '位置与关闭', blurb: '位置与关闭' },
+    {
+      name: 'tabs-web-placement-left',
+      title: '左侧标签（placement）',
+      blurb: 'placement="left" 竖排标签条。',
+    },
     { name: 'tabs-web-pane-style', title: '样式钩子', blurb: '样式钩子' },
   ],
   props: {

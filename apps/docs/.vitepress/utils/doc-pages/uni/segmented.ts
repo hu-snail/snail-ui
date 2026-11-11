@@ -81,20 +81,33 @@ import { Segmented } from '@snui/uni';
     },
     {
       name: 'segmented-mp-theme',
-      title: '主题与禁用',
-      blurb: 'theme=outline 轮廓风格；对象选项自定义 label；整体 disabled 禁用整个分段器。',
+      title: '主题（theme）',
+      blurb: 'theme=outline 轮廓风格；对象选项自定义 label。',
+    },
+    {
+      name: 'segmented-mp-disabled',
+      title: '禁用（disabled）',
+      blurb: 'item 级 disabled 禁用单个选项；整控 disabled 禁用整个分段器。',
     },
     {
       name: 'segmented-mp-value',
-      title: 'wot-ui `value` 写法',
-      blurb:
-        '`:value` 别名 + `@update:model-value` 展开写法；value 优先于 model-value；vibrate-short 短振动。',
+      title: 'value 别名（wot-ui 迁移）',
+      blurb: '`:value` 别名 + `@update:model-value` 展开写法；value 优先于 model-value。',
     },
     {
       name: 'segmented-mp-value-alias',
-      title: '事件名差异与根节点样式',
-      blurb:
-        '`:value` + `@update:value`（不同步）与 `@update:model-value`（同步）对比；customClass 外框；customStyle 覆盖底色与圆角。',
+      title: '事件名差异（update:value）',
+      blurb: 'wot-ui 风格 `@update:value` 与本组件 `@update:model-value` 均可父子同步。',
+    },
+    {
+      name: 'segmented-mp-vibrate',
+      title: '切换振动（vibrate-short）',
+      blurb: '切换选项时触发短振动；无振动马达的宿主静默跳过。',
+    },
+    {
+      name: 'segmented-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'customClass 追加类名；customStyle 覆盖底色与圆角。',
     },
   ],
   props: {

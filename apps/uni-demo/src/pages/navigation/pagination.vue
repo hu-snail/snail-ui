@@ -2,9 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— pagination 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/pagination-mp-basic.vue';
 import Demo1 from './demos/pagination-mp-disabled.vue';
-import Demo2 from './demos/pagination-mp-simple.vue';
-import Demo3 from './demos/pagination-mp-slots.vue';
-import Demo4 from './demos/pagination-mp-variant.vue';
+import Demo2 from './demos/pagination-mp-hide-on-one-page.vue';
+import Demo3 from './demos/pagination-mp-simple.vue';
+import Demo4 from './demos/pagination-mp-slots.vue';
+import Demo5 from './demos/pagination-mp-variant.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -29,21 +30,30 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('simple', 'Simple')" badge="simple" />
+        <DemoModuleHead
+          :title="t('单页隐藏（hide-if-one-page）', 'Hide on single page (`hide-if-one-page`)')"
+          badge="hide-on-one-page"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <DemoModuleHead :title="t('simple', 'Simple')" badge="simple" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <DemoModuleHead :title="t('插槽自定义', 'Slot customization')" badge="slots" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

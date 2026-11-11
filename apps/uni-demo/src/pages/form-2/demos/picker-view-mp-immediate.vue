@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-picker-view — 拖动即时回写（immediateChange）。
+ *
+ * `immediate-change` 让拖动过程中就持续 commit（不等松手），配合 `change`
+ * 事件可以实时联动。
+ */
+import { ref } from 'vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
+
+const seconds = ['10 秒', '30 秒', '1 分钟', '5 分钟'];
+const value = ref<Array<string | number>>(['30 秒']);
+const changes = ref(0);
+
+function onChange(): void {
+  changes.value += 1;
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPickerView v-model="value" :columns="[seconds]" immediate-change @change="onChange" />
+    <text class="sn-demo__meta"
+      >immediateChange：拖动中持续触发 change（已触发 {{ changes }} 次）</text
+    >
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

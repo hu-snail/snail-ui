@@ -15,7 +15,7 @@ export const cascaderDocPage: SnDocPageData = {
   title: 'Cascader 级联选择',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -109,9 +109,14 @@ export const cascaderDocPage: SnDocPageData = {
       blurb: 'click（默认）/ hover 展开下级。',
     },
     {
-      name: 'cascader-web-states',
-      title: '可清空 / 禁用',
-      blurb: 'clearable、disabled、disabled 项。',
+      name: 'cascader-web-clearable',
+      title: '可清空（clearable）',
+      blurb: '选中后一键清空。',
+    },
+    {
+      name: 'cascader-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '组件级禁用 + 选项级 disabled 节点。',
     },
   ],
 

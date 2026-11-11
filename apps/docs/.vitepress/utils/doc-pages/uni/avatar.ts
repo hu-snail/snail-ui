@@ -56,9 +56,13 @@ import { Avatar } from '@snui/uni';
     },
     {
       name: 'avatar-mp-size',
-      title: '尺寸与形状',
-      blurb:
-        '预设尺寸 small / normal / medium / large；round 圆形与 square 方形；自定义数值与百分比尺寸。',
+      title: '尺寸（size）',
+      blurb: '预设尺寸 small / normal / medium / large；自定义数值与百分比尺寸。',
+    },
+    {
+      name: 'avatar-mp-shape',
+      title: '形状（shape）',
+      blurb: 'round 圆形与 square 方形。',
     },
     {
       name: 'avatar-mp-fallback',
@@ -66,16 +70,26 @@ import { Avatar } from '@snui/uni';
       blurb: '图片失败 → alt 文本 → 文字 → 图标，同时触发 error 事件。',
     },
     {
-      name: 'avatar-mp-icon-font',
-      title: '字体图标与 mode',
+      name: 'avatar-mp-css-icon',
+      title: '字体图标（cssIcon / iconPrefix）',
       blurb:
-        'cssIcon + iconPrefix 字体图标、cssIcon 字符串前缀、mode 裁剪与 customClass / customStyle。',
+        'cssIcon + iconPrefix 拼出字体图标类；cssIcon 传字符串则直接作前缀；占位字形证明 class 落在字形节点。',
+    },
+    {
+      name: 'avatar-mp-mode',
+      title: '图片裁切（mode）',
+      blurb:
+        'mode 透传给内部 image（aspectFill 裁切 / aspectFit 留白）；附带 customClass / customStyle 根节点样式。',
     },
     {
       name: 'avatar-mp-status',
-      title: '在线状态与微标头像',
-      blurb:
-        'online / offline 状态点，以及 sn-badge + sn-avatar 组合出的微标头像（数字角标 / 红点）。',
+      title: '在线状态（status）',
+      blurb: 'online 绿点 / offline 灰点（AUI 追加能力），状态追加进 aria-label。',
+    },
+    {
+      name: 'avatar-mp-badge',
+      title: '微标头像（badge 组合）',
+      blurb: 'sn-badge 包裹 sn-avatar 组合出微标头像：数字角标 / 图标头像 / 红点。',
     },
   ],
   props: {

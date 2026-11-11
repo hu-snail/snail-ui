@@ -57,20 +57,32 @@ import { ImgCropper } from '@snui/uni';
   },
   demos: [
     {
-      name: 'img-cropper-mp-basic',
-      title: 'Basic usage',
-      blurb: 'Open the cropper, drag / zoom / rotate, and see the geometry reported on confirm.',
-    },
-    {
       name: 'img-cropper-mp-ratio',
-      title: 'Ratio and rotation',
-      blurb: 'Switching between 1:1 / 16:9 / 9:16, disabled rotation and custom button labels.',
+      title: 'Aspect ratio (`aspectRatio`)',
+      blurb: 'Switching between 1:1 / 16:9 / 9:16, with the last confirmed ratio reported.',
     },
     {
-      name: 'img-cropper-mp-export',
-      title: 'Declared but inert in this implementation',
+      name: 'img-cropper-mp-rotate',
+      title: 'Disable rotation & button labels (`disabledRotate`)',
       blurb:
-        'img-width / img-height preview box, the max-scale cap, and export-scale / quality / file-type substituted into the confirm result.',
+        'disabled-rotate hides the rotation affordance; cancel / confirm-button-text relabel the bottom bar.',
+    },
+    {
+      name: 'img-cropper-mp-frame',
+      title: 'Preview frame size (`imgWidth` / `imgHeight`)',
+      blurb:
+        'img-width / img-height are design px (multiplied by 2 into rpx internally) and size the preview box.',
+    },
+    {
+      name: 'img-cropper-mp-max-scale',
+      title: 'Zoom cap (`maxScale`)',
+      blurb: 'max-scale caps the pinch zoom (floor 0.5), compared at 2 and 6.',
+    },
+    {
+      name: 'img-cropper-mp-export-props',
+      title: 'Declared export props',
+      blurb:
+        'export-scale / quality / file-type only mirror the reference API: no rasterizing, the host exports from the confirm geometry.',
     },
   ],
   props: {

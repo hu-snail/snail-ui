@@ -65,16 +65,30 @@ import { NoticeBar } from '@snui/uni';
   },
   demos: [
     { name: 'notice-bar-mp-basic', title: '基础用法', blurb: '跑马灯 / 静态 / 换行三种模式。' },
-    { name: 'notice-bar-mp-type', title: '类型与关闭', blurb: '三种色调 + 可关闭通知（可恢复）。' },
+    {
+      name: 'notice-bar-mp-type',
+      title: '类型（type）',
+      blurb: 'warning / info / danger 三种色调。',
+    },
+    {
+      name: 'notice-bar-mp-closable',
+      title: '可关闭（closable）',
+      blurb: 'closable 显示关闭按钮，close 事件后可恢复。',
+    },
     {
       name: 'notice-bar-mp-vertical',
       title: '纵向轮换',
       blurb: '三条公告轮换展示，并显示当前序号。',
     },
     {
+      name: 'notice-bar-mp-prefix',
+      title: '前缀图标（prefix）',
+      blurb: 'prefix 注册表图标替换默认 type 字形，未命中回落。',
+    },
+    {
       name: 'notice-bar-mp-marquee',
-      title: '图标、延迟与速度',
-      blurb: 'prefix 注册表图标 / delay=3 / speed=120。',
+      title: '跑马灯参数（delay / speed）',
+      blurb: 'delay=3 延迟开滚；speed=120 加快滚动。',
     },
     {
       name: 'notice-bar-mp-custom',

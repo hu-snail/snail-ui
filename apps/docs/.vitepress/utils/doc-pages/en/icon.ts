@@ -6,7 +6,7 @@ export const iconDocPageEn: SnDocPageData = {
   title: 'Icon',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,9 +49,13 @@ import { Icon } from '@snui/vue-web';
     },
     {
       name: 'icon-web-size',
-      title: 'Sizes & stroke',
-      blurb:
-        'Five sizes (14 / 18 / 24 / 32 / 48) + three stroke widths (1 / 2 / 3) + absolute stroke (no scale with size).',
+      title: 'Sizes',
+      blurb: 'Five sizes (14 / 18 / 24 / 32 / 48).',
+    },
+    {
+      name: 'icon-web-stroke',
+      title: 'Stroke width',
+      blurb: 'Three stroke widths (1 / 2 / 3) + absolute stroke (no scale with size).',
     },
     {
       name: 'icon-web-registry',

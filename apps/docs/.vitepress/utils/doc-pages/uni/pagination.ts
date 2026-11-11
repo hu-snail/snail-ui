@@ -75,9 +75,15 @@ import { Pagination } from '@snui/uni';
       blurb: 'simple 简单模式：prev / 页码计数 / next；带计数文字与纯计数两种形态。',
     },
     {
+      name: 'pagination-mp-hide-on-one-page',
+      title: '单页隐藏（hide-if-one-page）',
+      blurb: 'hide-if-one-page 在总页数为 1 时整体不渲染。',
+    },
+    {
       name: 'pagination-mp-slots',
-      title: '单页隐藏与插槽自定义',
-      blurb: 'hide-if-one-page 单页时整体不渲染；四个插槽自定义翻页按钮与提示。',
+      title: '插槽自定义',
+      blurb:
+        'prev / size / next / message 四个插槽自定义；custom-class / custom-style 落在根节点。',
     },
   ],
   props: {

@@ -66,13 +66,23 @@ import { VideoPreview } from '@snui/uni';
     },
     {
       name: 'video-preview-mp-fullscreen',
-      title: '全屏与关闭位置',
-      blurb: '全屏模式、右上关闭按钮、自动播放，以及 on-open 回调计数。',
+      title: '全屏模式（fullScreen）',
+      blurb: 'full-screen 全屏播放（自动播放），on-open 回调计数。',
     },
     {
-      name: 'video-preview-mp-config',
-      title: '层级、样式与回调',
-      blurb: '自定义 z-index 与 customStyle、selector 实例标识，以及 on-open / on-close 计数。',
+      name: 'video-preview-mp-close-position',
+      title: '关闭按钮位置（closePosition）',
+      blurb: 'closePosition 指定关闭按钮位置，这里用 right-top。',
+    },
+    {
+      name: 'video-preview-mp-selector',
+      title: '实例标识（selector）',
+      blurb: 'selector 渲染成 data-selector（实例标识）；附带 on-open / on-close 回调计数。',
+    },
+    {
+      name: 'video-preview-mp-layer',
+      title: '层级与样式（zIndex / customStyle）',
+      blurb: 'z-index 透传给内部 sn-popup；customStyle 追加到层根节点的 inline style。',
     },
   ],
   props: {

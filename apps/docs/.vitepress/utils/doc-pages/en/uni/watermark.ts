@@ -58,8 +58,14 @@ import { Watermark } from '@snui/uni';
     },
     {
       name: 'watermark-mp-image',
-      title: 'Image tiles and font control',
-      blurb: 'Image tiles, font family / style / weight, z-index and customClass / customStyle.',
+      title: 'Image watermark (`image`)',
+      blurb: 'image wins over content; imageWidth / imageHeight size the tile.',
+    },
+    {
+      name: 'watermark-mp-font',
+      title: 'Text font (`fontFamily` etc.)',
+      blurb:
+        'fontFamily / fontStyle / fontWeight / size apply to the rendered text; plus zIndex and customClass / customStyle root styling.',
     },
   ],
   props: {

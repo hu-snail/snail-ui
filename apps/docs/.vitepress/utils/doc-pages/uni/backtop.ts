@@ -87,8 +87,13 @@ import { Backtop } from '@snui/uni';
     },
     {
       name: 'backtop-mp-threshold',
-      title: '显示阈值与图标样式',
-      blurb: 'top=120 显示阈值；icon-style 自定义图标颜色；z-index 层级。',
+      title: '显示阈值（top）',
+      blurb: 'top=120 显示阈值，scroll-top 跨越阈值时按钮出现。',
+    },
+    {
+      name: 'backtop-mp-icon-style',
+      title: '图标样式与层级',
+      blurb: 'icon-style 自定义图标颜色；z-index 层级；custom-class 根节点类名。',
     },
   ],
   props: {

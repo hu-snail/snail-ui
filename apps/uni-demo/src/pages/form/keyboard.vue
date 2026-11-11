@@ -6,6 +6,9 @@ import Demo2 from './demos/keyboard-mp-idcard.vue';
 import Demo3 from './demos/keyboard-mp-car-custom.vue';
 import Demo4 from './demos/keyboard-mp-labels.vue';
 import Demo5 from './demos/keyboard-mp-scrim.vue';
+import Demo6 from './demos/keyboard-mp-close-loading.vue';
+import Demo7 from './demos/keyboard-mp-delete-key.vue';
+import Demo8 from './demos/keyboard-mp-random-order.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -42,15 +45,47 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('labels', 'Labels')" badge="labels" />
+        <DemoModuleHead
+          :title="t('键位文案（deleteText / closeText）', 'Key labels (deleteText / closeText)')"
+          badge="labels"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('scrim', 'Scrim')" badge="scrim" />
+        <DemoModuleHead :title="t('遮罩与弹层行为', 'Scrim & sheet behaviour')" badge="scrim" />
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('关闭键加载态（closeButtonLoading）', 'Close-button loading (closeButtonLoading)')
+          "
+          badge="close-loading"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('删除键开关（showDeleteKey）', 'Delete key toggle (showDeleteKey)')"
+          badge="delete-key"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('随机键序（randomKeyOrder）', 'Shuffled keys (randomKeyOrder)')"
+          badge="random-order"
+        />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

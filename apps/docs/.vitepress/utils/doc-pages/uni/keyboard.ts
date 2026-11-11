@@ -84,16 +84,29 @@ import { Keyboard } from '@snui/uni';
     },
     {
       name: 'keyboard-mp-labels',
-      title:
-        '键位文案与删除键（`deleteText` / `closeText` / `showDeleteKey` / `randomKeyOrder` / `zIndex`）',
-      blurb: 'deleteText / closeText；showDeleteKey=false；randomKeyOrder；zIndex。',
+      title: '键位文案（deleteText / closeText）',
+      blurb: 'deleteText / closeText；zIndex。',
+    },
+    {
+      name: 'keyboard-mp-delete-key',
+      title: '删除键开关（showDeleteKey）',
+      blurb: 'showDeleteKey=false 不渲染删除键。',
+    },
+    {
+      name: 'keyboard-mp-random-order',
+      title: '随机键序（randomKeyOrder）',
+      blurb: 'randomKeyOrder 随机排列数字键。',
     },
     {
       name: 'keyboard-mp-scrim',
-      title:
-        '遮罩与行为（`modal` / `hideOnClickOutside` / `lockScroll` / `closeButtonLoading` / `safeAreaInsetBottom` / `rootPortal` / `custom*`）',
+      title: '遮罩与弹层行为',
       blurb:
-        'modal；hideOnClickOutside=false；lockScroll=false；closeButtonLoading；safeAreaInsetBottom；rootPortal；customClass / customStyle。',
+        'modal；hideOnClickOutside=false；lockScroll=false；safeAreaInsetBottom；rootPortal；customClass / customStyle。',
+    },
+    {
+      name: 'keyboard-mp-close-loading',
+      title: '关闭键加载态（closeButtonLoading）',
+      blurb: 'closeButtonLoading：关闭键显示 spinner，可换 close-text。',
     },
   ],
   props: {

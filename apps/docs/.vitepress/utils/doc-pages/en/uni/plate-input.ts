@@ -59,8 +59,13 @@ import { PlateInput } from '@snui/uni';
     },
     {
       name: 'plate-input-mp-new-energy',
-      title: 'New-energy plates & disabled',
-      blurb: '`maxlength=8` for new-energy plates; `disabled` freezes the field.',
+      title: 'New-energy plates (`maxlength=8`)',
+      blurb: '`maxlength=8` renders eight boxes for new-energy plates.',
+    },
+    {
+      name: 'plate-input-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` freezes the field; taps no longer raise the keyboard.',
     },
   ],
   props: {

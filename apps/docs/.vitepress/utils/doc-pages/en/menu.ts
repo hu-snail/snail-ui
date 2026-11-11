@@ -6,7 +6,7 @@ export const menuDocPageEn: SnDocPageData = {
   title: 'Menu',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -54,7 +54,16 @@ import { Menu } from '@snui/vue-web';
       title: 'Responsive collapse',
       blurb: 'Responsive collapse',
     },
-    { name: 'menu-web-inline-submenu', title: 'Inline submenu', blurb: 'Inline submenu' },
+    {
+      name: 'menu-web-expanded-keys',
+      title: 'Default expanded submenus',
+      blurb: 'defaultExpandedKeys opens sub-items by default.',
+    },
+    {
+      name: 'menu-web-disabled-item',
+      title: 'Disabled menu items',
+      blurb: 'disabled items render greyed out.',
+    },
     { name: 'menu-web-pop-button', title: 'Pop-up menu', blurb: 'Pop-up menu' },
   ],
   props: {

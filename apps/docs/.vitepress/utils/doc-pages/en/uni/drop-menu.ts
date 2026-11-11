@@ -79,14 +79,35 @@ import { DropMenu } from '@snui/uni';
     },
     {
       name: 'drop-menu-mp-guard',
-      title: 'Toggle guard / field keys',
-      blurb: 'Upwards panel + beforeToggle blocking the first two taps + custom field names.',
+      title: 'Toggle guard (`beforeToggle`)',
+      blurb: 'Upwards panel + beforeToggle blocking the first two taps.',
     },
     {
-      name: 'drop-menu-mp-panel',
-      title: 'No scrim / panel height / custom panel',
+      name: 'drop-menu-mp-keys',
+      title: 'Field keys (`labelKey` / `valueKey`)',
+      blurb: 'label-key / value-key rename the option fields to name / id.',
+    },
+    {
+      name: 'drop-menu-mp-modal',
+      title: 'Scrim behavior (`modal`)',
       blurb:
-        'modal=false; close-on-click-modal=false; popup-height cap; custom-popup-class / custom-popup-style; disabled; default slot.',
+        'modal=false renders no scrim; close-on-click-modal=false keeps scrim taps from closing; duration sets the animation length.',
+    },
+    {
+      name: 'drop-menu-mp-popup-height',
+      title: 'Panel height & styling',
+      blurb:
+        'popup-height caps the height; custom-popup-class / custom-popup-style target the option panel.',
+    },
+    {
+      name: 'drop-menu-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: 'disabled freezes the whole bar — taps are ignored.',
+    },
+    {
+      name: 'drop-menu-mp-slot',
+      title: 'Custom panel slot',
+      blurb: 'The default slot replaces the option list, reusing the panel and animation.',
     },
   ],
   props: {

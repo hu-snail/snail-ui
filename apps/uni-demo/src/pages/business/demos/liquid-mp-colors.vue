@@ -1,0 +1,47 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-liquid (uni-end) — 水波配色：waveColor / innerColor。
+ */
+import SnLiquid from '@snui/uni-src/components/sn-liquid/sn-liquid.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="liquid-row">
+      <SnLiquid
+        :percent="45"
+        size="140rpx"
+        wave-color="var(--sn-mp-color-feedback-success)"
+        inner-color="var(--sn-mp-color-feedback-success-soft)"
+      />
+      <SnLiquid
+        :percent="65"
+        size="140rpx"
+        wave-color="var(--sn-mp-color-feedback-warning)"
+        inner-color="var(--sn-mp-color-feedback-warning-soft)"
+      />
+      <SnLiquid
+        :percent="85"
+        size="140rpx"
+        wave-color="var(--sn-mp-color-feedback-danger)"
+        inner-color="var(--sn-mp-color-feedback-danger-soft)"
+      />
+    </view>
+    <text class="sn-demo__meta">波浪色与球内底色成对配置（soft 色做水面以上区域）</text>
+  </view>
+</template>
+
+<style scoped>
+.liquid-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-4);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -59,11 +59,19 @@ import { Calendar } from '@snui/uni';
       blurb: 'Card entries (cells card pattern)',
     },
     {
-      name: 'calendar-mp-grid-range',
-      title:
-        'Grid & range constraints (`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`)',
-      blurb:
-        'Grid & range constraints (`firstDayOfWeek` / `formatter` / `maxRange` / `rangePrompt` / `allowSameDay` / `defaultTime`)',
+      name: 'calendar-mp-first-day-of-week',
+      title: 'First day of week (firstDayOfWeek)',
+      blurb: 'First day of week (firstDayOfWeek)',
+    },
+    {
+      name: 'calendar-mp-formatter',
+      title: 'Cell formatting (formatter)',
+      blurb: 'Cell formatting (formatter)',
+    },
+    {
+      name: 'calendar-mp-range-constraints',
+      title: 'Range constraints (maxRange / allowSameDay / defaultTime)',
+      blurb: 'Range constraints (maxRange / allowSameDay / defaultTime)',
     },
     {
       name: 'calendar-mp-header',
@@ -71,9 +79,14 @@ import { Calendar } from '@snui/uni';
       blurb: 'Sheet header slot (`header`, AUI-added)',
     },
     {
-      name: 'calendar-mp-hooks-parity',
-      title: 'Shortcut callback & declared props (`onShortcutsClick` / `beforeConfirm`)',
-      blurb: 'Shortcut callback & declared props (`onShortcutsClick` / `beforeConfirm`)',
+      name: 'calendar-mp-shortcuts-events',
+      title: 'Shortcut callback & confirm veto (onShortcutsClick / beforeConfirm)',
+      blurb: 'Shortcut callback & confirm veto (onShortcutsClick / beforeConfirm)',
+    },
+    {
+      name: 'calendar-mp-declared-props',
+      title: 'Declared parity props (timeFilter / hideSecond etc.)',
+      blurb: 'Declared parity props (timeFilter / hideSecond etc.)',
     },
     {
       name: 'calendar-mp-lunar',
@@ -81,11 +94,19 @@ import { Calendar } from '@snui/uni';
       blurb: 'Lunar captions (`showLunar`, AUI-added)',
     },
     {
-      name: 'calendar-mp-panel-sheet',
-      title:
-        'Panel & sheet (`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / scrim and stacking)',
-      blurb:
-        'Panel & sheet (`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / scrim and stacking)',
+      name: 'calendar-mp-panel',
+      title: 'Panel size & switching (panelHeight / switchMode)',
+      blurb: 'Panel size & switching (panelHeight / switchMode)',
+    },
+    {
+      name: 'calendar-mp-immediate-change',
+      title: 'Immediate write-back (immediateChange)',
+      blurb: 'Immediate write-back (immediateChange)',
+    },
+    {
+      name: 'calendar-mp-sheet-chrome',
+      title: 'Sheet chrome & footer slot',
+      blurb: 'Sheet chrome & footer slot',
     },
     {
       name: 'calendar-mp-shortcuts-range',

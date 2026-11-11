@@ -11,7 +11,7 @@ export const linkDocPage: SnDocPageData = {
   title: 'Link 链接',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,10 +49,21 @@ import { Link } from '@snui/vue-web';
   demos: [
     { name: 'link-web-basic', title: '基础用法', blurb: '基础用法' },
     { name: 'link-web-type', title: '语义色对照', blurb: '语义色对照' },
+    { name: 'link-web-icon-slot', title: '图标插槽', blurb: '#icon 前置图标插槽。' },
     {
-      name: 'link-web-state',
-      title: '下划线、禁用与自定义标签',
-      blurb: '下划线、禁用与自定义标签',
+      name: 'link-web-underline',
+      title: '下划线（underline）',
+      blurb: 'underline 常显 / 悬停显示。',
+    },
+    {
+      name: 'link-web-disabled',
+      title: '禁用（disabled）',
+      blurb: 'disabled 阻止点击与导航。',
+    },
+    {
+      name: 'link-web-tag',
+      title: '自定义标签（tag）',
+      blurb: "tag='span' 渲染伪链接，只派发 click。",
     },
   ],
   props: {

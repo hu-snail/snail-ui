@@ -77,17 +77,38 @@ import { Checkbox } from '@snui/uni';
     },
     {
       name: 'checkbox-mp-group-limits',
-      title:
-        '数量限制与状态（`min` / `max` / `disabled` / `readonly` / `indeterminate` / `toggleAll`）',
-      blurb:
-        'min/max 限制；整组 disabled / readonly；indeterminate 半选；toggleAll 全选 / 全不选。',
+      title: '数量限制（min / max）',
+      blurb: 'min/max 限制可选数量。',
     },
     {
-      name: 'checkbox-mp-standalone-style',
-      title:
-        '独立用法与剩余属性（`v-model` / `trueValue` / `falseValue` / `checkedColor` / `size` / `placement` / `maxWidth`）',
-      blurb:
-        '独立 v-model 与 trueValue / falseValue；checkedColor / uncheckedColor；size large、placement right；maxWidth + customLabelClass；customClass / customStyle。',
+      name: 'checkbox-mp-group-state',
+      title: '组状态与半选',
+      blurb: '整组 disabled / readonly；indeterminate 半选。',
+    },
+    {
+      name: 'checkbox-mp-toggle-all',
+      title: '全选 / 全不选（toggleAll）',
+      blurb: 'toggleAll 通过 expose 调用，全选 / 全不选。',
+    },
+    {
+      name: 'checkbox-mp-standalone',
+      title: '独立用法与自定义取值',
+      blurb: '独立 v-model 与 trueValue / falseValue。',
+    },
+    {
+      name: 'checkbox-mp-colors',
+      title: '选中颜色（checkedColor）',
+      blurb: 'checkedColor / uncheckedColor。',
+    },
+    {
+      name: 'checkbox-mp-placement',
+      title: '布局与标签（placement / maxWidth）',
+      blurb: 'size large、placement right；maxWidth + customLabelClass。',
+    },
+    {
+      name: 'checkbox-mp-custom-style',
+      title: '自定义样式',
+      blurb: 'customClass / customStyle 落在组件节点上。',
     },
   ],
   props: {

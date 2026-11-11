@@ -70,13 +70,23 @@ import { SwipeAction } from '@snui/uni';
     },
     {
       name: 'swipe-action-mp-both-sides',
-      title: '左右两侧 / 关闭拦截',
-      blurb: '左右两侧操作区 + before-close 拦截第一次关闭。',
+      title: '两侧操作区',
+      blurb: '#left / #right 插槽同时渲染两侧操作区。',
+    },
+    {
+      name: 'swipe-action-mp-before-close',
+      title: '关闭拦截（before-close）',
+      blurb: 'before-close 拦截第一次关闭，返回 false 阻止。',
     },
     {
       name: 'swipe-action-mp-disabled',
-      title: '禁用与自定义样式',
-      blurb: '可滑动 + custom-class / custom-style，以及 disabled 行保持关闭。',
+      title: '禁用（disabled）',
+      blurb: 'disabled 手势被忽略，行保持关闭。',
+    },
+    {
+      name: 'swipe-action-mp-custom-style',
+      title: '根节点样式',
+      blurb: 'custom-class / custom-style 落在根节点上。',
     },
   ],
   props: {

@@ -59,10 +59,19 @@ import { Badge } from '@snui/uni';
       blurb: '数值角标：普通数值、max 溢出显示 99+、五种语义类型。',
     },
     {
+      name: 'badge-mp-dot',
+      title: '红点（is-dot）',
+      blurb: 'is-dot 渲染小红点，不显示数值。',
+    },
+    {
       name: 'badge-mp-shape',
-      title: '形态与偏移',
-      blurb:
-        'isDot 圆点；shape 圆 / 方 / 气泡；border 描边；top / right 偏移；bgColor 自定义底色。',
+      title: '形状与描边（shape / border）',
+      blurb: 'shape 圆 / 方 / 气泡三种形态；border 给角标加描边。',
+    },
+    {
+      name: 'badge-mp-offset',
+      title: '偏移与颜色（top / right / bgColor）',
+      blurb: 'top / right 微调角标位置；bgColor 自定义底色。',
     },
     {
       name: 'badge-mp-visibility',

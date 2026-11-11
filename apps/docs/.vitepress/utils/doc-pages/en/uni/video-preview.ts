@@ -59,14 +59,25 @@ import { VideoPreview } from '@snui/uni';
     },
     {
       name: 'video-preview-mp-fullscreen',
-      title: 'Full screen and close position',
-      blurb: 'Full-screen mode, close button on the right, autoplay, and an on-open call counter.',
+      title: 'Full-screen mode (`fullScreen`)',
+      blurb: 'full-screen playback (autoplay) with an on-open call counter.',
     },
     {
-      name: 'video-preview-mp-config',
-      title: 'Stacking, style and callbacks',
+      name: 'video-preview-mp-close-position',
+      title: 'Close button position (`closePosition`)',
+      blurb: 'closePosition sets where the close button sits; right-top here.',
+    },
+    {
+      name: 'video-preview-mp-selector',
+      title: 'Instance id (`selector`)',
       blurb:
-        'A custom z-index and customStyle, the selector instance marker, and on-open / on-close counters.',
+        'selector renders as data-selector (an instance marker); plus on-open / on-close counters.',
+    },
+    {
+      name: 'video-preview-mp-layer',
+      title: 'Stacking & style (`zIndex` / `customStyle`)',
+      blurb:
+        'z-index is forwarded to the inner sn-popup; customStyle is appended to the layer root\u2019s inline style.',
     },
   ],
   props: {

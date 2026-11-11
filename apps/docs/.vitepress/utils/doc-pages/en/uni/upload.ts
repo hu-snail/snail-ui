@@ -61,10 +61,20 @@ import { Upload } from '@snui/uni';
         'Basic upload: `v-model:file-list` holds the list, `limit` caps the count and `maxSize` caps the bytes (oversize fires otherwise).',
     },
     {
-      name: 'upload-mp-disabled-status',
-      title: 'Disabled & status (`disabled` / `accept` / `showLimitNum`)',
+      name: 'upload-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` locks picking and removal; the list is display-only.',
+    },
+    {
+      name: 'upload-mp-accept',
+      title: 'Picker type (`accept`)',
+      blurb: '`accept` switches the picker (image / video / file).',
+    },
+    {
+      name: 'upload-mp-status',
+      title: 'File status rendering (`status`)',
       blurb:
-        '`disabled` locks picking and removal; `accept` switches the picker (image / video / file); list entries render progress and the failure state from `status`.',
+        'The list renders from `status`: `success` shows done, `fail` shows the failure state.',
     },
     {
       name: 'upload-mp-multiple-source',
@@ -81,11 +91,16 @@ import { Upload } from '@snui/uni';
         '`beforeChoose` / `beforeUpload` / `beforeRemove` / `beforePreview` are veto hooks (the blocked removal is verifiable in the preview); an oversized file emits `oversize`.',
     },
     {
-      name: 'upload-mp-preview-custom',
-      title:
-        'Thumbnail mode & three custom-class layers (`imageMode` / `customEvokeClass` / `customPreviewClass` / `customClass` / `customStyle`)',
+      name: 'upload-mp-image-mode',
+      title: 'Thumbnail mode (`imageMode`)',
       blurb:
-        '`imageMode` aspectFit / aspectFill switches the thumbnail fit; `customEvokeClass`, `customPreviewClass` and `customClass` / `customStyle` are three independent layers.',
+        '`imageMode` is forwarded to the thumbnail `<image mode>`: aspectFit shows the whole image, aspectFill crops to fill.',
+    },
+    {
+      name: 'upload-mp-custom-style',
+      title: 'Three styling mount points',
+      blurb:
+        '`customEvokeClass` restyles the picker tile; `customPreviewClass` the file tiles; `customClass` / `customStyle` the root.',
     },
     {
       name: 'upload-mp-request-method',

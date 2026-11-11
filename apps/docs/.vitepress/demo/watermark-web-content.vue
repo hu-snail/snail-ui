@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: SnWatermark — multi-line text content next to the `cross` stagger mode.
+ * Demo: SnWatermark — multi-line text content (content array).
  *
  * Note: `fontColor` is painted into a canvas tile, so it must be a real CSS
  * colour value (a `var(--sn-web-*)` string cannot be resolved by canvas).
@@ -29,30 +29,6 @@ import { SnWatermark } from '@snui/vue-web';
             组成网格平铺，默认不交错。
           </p>
           <p>水印层为纯装饰元素，不影响正文的选择、复制与点击交互。</p>
-        </div>
-      </SnWatermark>
-    </section>
-
-    <section class="watermark-content-demo__block">
-      <h4>交错瓦片（cross = true，相邻瓦片错开半个间距）</h4>
-      <SnWatermark
-        :content="['蜗牛 AUI 平台', '内部资料', '请勿外传']"
-        :cross="true"
-        :rotate="-24"
-        :opacity="0.5"
-        :width="180"
-        :height="110"
-        :font-size="14"
-        :line-height="22"
-        font-color="rgba(96, 98, 122, 0.34)"
-      >
-        <div class="watermark-content-demo__panel">
-          <h5>同一份文案的交错排布</h5>
-          <p>
-            打开 cross 后，同一行的相邻瓦片在垂直方向偏移半个瓦片高度，
-            视觉上更密集，也更难被裁剪规避。
-          </p>
-          <p>两块的 content / 旋转 / 透明度完全一致，只有 cross 不同。</p>
         </div>
       </SnWatermark>
     </section>

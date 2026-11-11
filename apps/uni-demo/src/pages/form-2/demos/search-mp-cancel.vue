@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/** Demo: sn-search — 取消按钮：cancelTxt 覆盖取消文案并监听 cancel 事件，hideCancel 隐藏取消按钮。 */
+import { ref } from 'vue';
+import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
+
+const query = ref('snail');
+const lastCancel = ref('—');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">cancelTxt + cancel 事件</text>
+    <SnSearch v-model="query" cancel-txt="清空搜索" @cancel="lastCancel = $event" />
+    <text class="sn-demo__meta">cancel 载荷：{{ lastCancel }}</text>
+
+    <text class="sn-demo__title">hideCancel</text>
+    <SnSearch v-model="query" hide-cancel placeholder="无右侧文案" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

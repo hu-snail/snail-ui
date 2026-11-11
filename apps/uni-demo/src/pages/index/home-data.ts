@@ -27,7 +27,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '头像',
         titleEn: 'Avatar',
         desc: '圆形 / 方形头像与徽标组合',
-        count: 6,
+        count: 9,
       },
       {
         key: 'badge',
@@ -35,7 +35,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '徽标',
         titleEn: 'Badge',
         desc: '角标 / 红点提示',
-        count: 4,
+        count: 6,
       },
       {
         key: 'button',
@@ -43,7 +43,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '按钮',
         titleEn: 'Button',
         desc: '多种类型与变体的主操作按钮',
-        count: 13,
+        count: 16,
       },
       {
         key: 'cell',
@@ -75,7 +75,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '悬浮按钮',
         titleEn: 'Fab',
         desc: '可拖拽的悬浮操作按钮',
-        count: 7,
+        count: 9,
       },
       {
         key: 'gap',
@@ -98,7 +98,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图标',
         titleEn: 'Icon',
         desc: 'SVG 数据 / iconfont 双路径图标',
-        count: 9,
+        count: 10,
       },
       {
         key: 'layout',
@@ -130,7 +130,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '标签',
         titleEn: 'Tag',
         desc: '多色标记与可关闭标签',
-        count: 7,
+        count: 10,
       },
       {
         key: 'text',
@@ -138,7 +138,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '文本',
         titleEn: 'Text',
         desc: '增强文本，支持省略与高亮',
-        count: 4,
+        count: 5,
       },
       {
         key: 'transition',
@@ -146,7 +146,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '动画',
         titleEn: 'Transition',
         desc: '出入场过渡动画封装',
-        count: 4,
+        count: 7,
       },
     ],
   },
@@ -161,7 +161,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '回到顶部',
         titleEn: 'Backtop',
         desc: '滚动回顶按钮',
-        count: 4,
+        count: 5,
       },
       {
         key: 'collapse',
@@ -169,7 +169,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '折叠面板',
         titleEn: 'Collapse',
         desc: '可展开收起的内容分组',
-        count: 6,
+        count: 9,
       },
       {
         key: 'drop-menu',
@@ -177,7 +177,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '下拉菜单',
         titleEn: 'Drop Menu',
         desc: '顶部下拉筛选',
-        count: 5,
+        count: 9,
       },
       {
         key: 'grid',
@@ -185,7 +185,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '宫格',
         titleEn: 'Grid',
         desc: '功能入口宫格',
-        count: 4,
+        count: 5,
       },
       {
         key: 'index-bar',
@@ -201,7 +201,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '导航栏',
         titleEn: 'Navbar',
         desc: '页面顶部标题栏',
-        count: 3,
+        count: 6,
       },
       {
         key: 'pagination',
@@ -209,7 +209,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '分页',
         titleEn: 'Pagination',
         desc: '页码切换',
-        count: 5,
+        count: 6,
       },
       {
         key: 'popover',
@@ -217,7 +217,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '气泡',
         titleEn: 'Popover',
         desc: '锚点弹出气泡卡片',
-        count: 6,
+        count: 8,
       },
     ],
   },
@@ -232,7 +232,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '分段器',
         titleEn: 'Segmented',
         desc: '分段选择控件',
-        count: 4,
+        count: 7,
       },
       {
         key: 'sidebar',
@@ -240,7 +240,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '侧边导航',
         titleEn: 'Sidebar',
         desc: '垂直分类侧边栏',
-        count: 4,
+        count: 6,
       },
       {
         key: 'steps',
@@ -248,7 +248,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '步骤条',
         titleEn: 'Steps',
         desc: '流程步骤指示',
-        count: 6,
+        count: 11,
       },
       {
         key: 'sticky',
@@ -272,7 +272,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '标签页',
         titleEn: 'Tabs',
         desc: '可滚动标签页与内容联动',
-        count: 9,
+        count: 11,
       },
       {
         key: 'tooltip',
@@ -280,7 +280,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '文字提示',
         titleEn: 'Tooltip',
         desc: '轻量气泡说明',
-        count: 4,
+        count: 6,
       },
       {
         key: 'tour',
@@ -288,7 +288,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '漫游',
         titleEn: 'Tour',
         desc: '新手引导高亮',
-        count: 3,
+        count: 5,
       },
     ],
   },
@@ -303,7 +303,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日历选择器',
         titleEn: 'Calendar',
         desc: '日期区间选择弹层',
-        count: 8,
+        count: 13,
       },
       {
         key: 'calendar-view',
@@ -311,7 +311,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日历面板',
         titleEn: 'Calendar View',
         desc: '内嵌日历面板',
-        count: 4,
+        count: 9,
       },
       {
         key: 'captcha',
@@ -319,7 +319,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '拼图验证',
         titleEn: 'Captcha',
         desc: '拖动拼图对齐缺口',
-        count: 5,
+        count: 6,
       },
       {
         key: 'cascader',
@@ -327,7 +327,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '级联选择器',
         titleEn: 'Cascader',
         desc: '多级联动选择',
-        count: 7,
+        count: 9,
       },
       {
         key: 'checkbox',
@@ -335,7 +335,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '复选框',
         titleEn: 'Checkbox',
         desc: '多选控件',
-        count: 4,
+        count: 9,
       },
       {
         key: 'code-input',
@@ -343,7 +343,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '验证码输入框',
         titleEn: 'Code Input',
         desc: '验证码 / 密码方框输入',
-        count: 6,
+        count: 8,
       },
       {
         key: 'date-strip',
@@ -359,7 +359,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '时间选择器',
         titleEn: 'Datetime Picker',
         desc: '日期时间弹层选择',
-        count: 7,
+        count: 11,
       },
       {
         key: 'datetime-picker-view',
@@ -367,7 +367,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '时间选择器视图',
         titleEn: 'Datetime Picker View',
         desc: '内嵌时间滚轮',
-        count: 5,
+        count: 9,
       },
       {
         key: 'form',
@@ -375,7 +375,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '表单',
         titleEn: 'Form',
         desc: '校验与布局容器',
-        count: 16,
+        count: 23,
       },
       {
         key: 'input',
@@ -383,7 +383,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '输入框',
         titleEn: 'Input',
         desc: '单行文本输入',
-        count: 17,
+        count: 28,
       },
       {
         key: 'input-number',
@@ -391,7 +391,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '计数器',
         titleEn: 'Input Number',
         desc: '步进数值输入',
-        count: 5,
+        count: 13,
       },
       {
         key: 'keyboard',
@@ -399,7 +399,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '虚拟键盘',
         titleEn: 'Keyboard',
         desc: '自定义数字键盘',
-        count: 6,
+        count: 9,
       },
       {
         key: 'keyboard-panel',
@@ -422,7 +422,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '选择器',
         titleEn: 'Picker',
         desc: '弹层多列选择',
-        count: 4,
+        count: 7,
       },
       {
         key: 'picker-view',
@@ -430,7 +430,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '选择器视图',
         titleEn: 'Picker View',
         desc: '内嵌滚轮选择',
-        count: 4,
+        count: 7,
       },
       {
         key: 'plate-input',
@@ -438,7 +438,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '车牌输入框',
         titleEn: 'Plate Input',
         desc: '点击弹起车牌键盘录入',
-        count: 2,
+        count: 3,
       },
       {
         key: 'radio',
@@ -446,7 +446,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单选框',
         titleEn: 'Radio',
         desc: '单选控件',
-        count: 4,
+        count: 7,
       },
       {
         key: 'rate',
@@ -454,7 +454,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '评分',
         titleEn: 'Rate',
         desc: '星级评分',
-        count: 4,
+        count: 10,
       },
       {
         key: 'search',
@@ -462,7 +462,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '搜索框',
         titleEn: 'Search',
         desc: '搜索输入与联想',
-        count: 5,
+        count: 9,
       },
       {
         key: 'select-picker',
@@ -470,7 +470,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单复选选择器',
         titleEn: 'Select Picker',
         desc: '单选 / 多选弹层',
-        count: 4,
+        count: 10,
       },
       {
         key: 'signature',
@@ -478,7 +478,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '签名',
         titleEn: 'Signature',
         desc: '手写签名板',
-        count: 5,
+        count: 10,
       },
       {
         key: 'slide-verify',
@@ -486,7 +486,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滑动验证',
         titleEn: 'Slide Verify',
         desc: '滑块拼图验证',
-        count: 3,
+        count: 7,
       },
       {
         key: 'slider',
@@ -494,7 +494,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滑块',
         titleEn: 'Slider',
         desc: '拖拽取值滑块',
-        count: 3,
+        count: 8,
       },
       {
         key: 'sort-button',
@@ -502,7 +502,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '排序按钮',
         titleEn: 'Sort Button',
         desc: '升降序切换按钮',
-        count: 3,
+        count: 4,
       },
       {
         key: 'switch',
@@ -510,7 +510,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '开关',
         titleEn: 'Switch',
         desc: '布尔切换',
-        count: 5,
+        count: 9,
       },
       {
         key: 'textarea',
@@ -518,7 +518,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '文本域',
         titleEn: 'Textarea',
         desc: '多行文本输入',
-        count: 7,
+        count: 12,
       },
       {
         key: 'upload',
@@ -526,7 +526,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '上传',
         titleEn: 'Upload',
         desc: '文件 / 图片上传',
-        count: 7,
+        count: 10,
       },
     ],
   },
@@ -541,7 +541,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '动作面板',
         titleEn: 'Action Sheet',
         desc: '底部操作列表',
-        count: 5,
+        count: 7,
       },
       {
         key: 'circle',
@@ -549,7 +549,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '环形进度条',
         titleEn: 'Circle',
         desc: '环形进度展示',
-        count: 3,
+        count: 4,
       },
       {
         key: 'curtain',
@@ -557,7 +557,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '幕帘',
         titleEn: 'Curtain',
         desc: '运营弹幕层',
-        count: 5,
+        count: 6,
       },
       {
         key: 'dialog',
@@ -565,7 +565,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '弹框',
         titleEn: 'Dialog',
         desc: '模态对话框',
-        count: 5,
+        count: 6,
       },
       {
         key: 'empty',
@@ -612,7 +612,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '通知栏',
         titleEn: 'Notice Bar',
         desc: '滚动通知',
-        count: 5,
+        count: 7,
       },
       {
         key: 'notify',
@@ -636,7 +636,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '弹出层',
         titleEn: 'Popup',
         desc: '四向弹出容器',
-        count: 5,
+        count: 6,
       },
       {
         key: 'progress',
@@ -660,7 +660,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滑动操作',
         titleEn: 'Swipe Action',
         desc: '侧滑菜单',
-        count: 3,
+        count: 5,
       },
       {
         key: 'toast',
@@ -668,7 +668,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '轻提示',
         titleEn: 'Toast',
         desc: '轻量消息提示',
-        count: 3,
+        count: 5,
       },
     ],
   },
@@ -691,7 +691,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '倒计时',
         titleEn: 'Count Down',
         desc: '秒 / 时间戳倒计时',
-        count: 3,
+        count: 4,
       },
       {
         key: 'count-to',
@@ -699,7 +699,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '数字滚动',
         titleEn: 'Count To',
         desc: '数字滚动动画',
-        count: 3,
+        count: 4,
       },
       {
         key: 'fit-swiper',
@@ -715,7 +715,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图片预览',
         titleEn: 'Image Preview',
         desc: '图片放大预览',
-        count: 4,
+        count: 7,
       },
       {
         key: 'img',
@@ -723,7 +723,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图片',
         titleEn: 'Img',
         desc: '增强图片，多填充模式',
-        count: 4,
+        count: 6,
       },
       {
         key: 'img-cropper',
@@ -731,7 +731,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图片裁剪',
         titleEn: 'Img Cropper',
         desc: '裁剪几何交互',
-        count: 2,
+        count: 5,
       },
       {
         key: 'qr-code',
@@ -739,7 +739,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '二维码',
         titleEn: 'Qr Code',
         desc: '二维码生成与导出',
-        count: 4,
+        count: 6,
       },
       {
         key: 'rich-text',
@@ -747,7 +747,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '富文本',
         titleEn: 'Rich Text',
         desc: 'HTML 内容：图文、表格与媒体',
-        count: 6,
+        count: 8,
       },
       {
         key: 'swiper',
@@ -755,7 +755,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '轮播',
         titleEn: 'Swiper',
         desc: '内容轮播',
-        count: 10,
+        count: 11,
       },
       {
         key: 'table',
@@ -763,7 +763,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '表格',
         titleEn: 'Table',
         desc: '数据表格',
-        count: 3,
+        count: 8,
       },
       {
         key: 'video-preview',
@@ -771,7 +771,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '视频预览',
         titleEn: 'Video Preview',
         desc: '视频弹层播放',
-        count: 3,
+        count: 5,
       },
       {
         key: 'waterfall',
@@ -787,7 +787,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '水印',
         titleEn: 'Watermark',
         desc: '页面水印层',
-        count: 3,
+        count: 4,
       },
     ],
   },
@@ -802,7 +802,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '条形码',
         titleEn: 'Barcode',
         desc: 'EAN-13 条码渲染',
-        count: 4,
+        count: 5,
       },
       {
         key: 'dialer',
@@ -810,7 +810,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '大转盘',
         titleEn: 'Dialer',
         desc: '抽奖转盘，run 指定落点',
-        count: 4,
+        count: 6,
       },
       {
         key: 'liquid',
@@ -818,7 +818,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '水波进度球',
         titleEn: 'Liquid',
         desc: '水波动画的进度展示',
-        count: 4,
+        count: 6,
       },
       {
         key: 'lucky',
@@ -826,7 +826,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '抽奖九宫格',
         titleEn: 'Lucky',
         desc: 'play / stop 两段式抽奖',
-        count: 4,
+        count: 6,
       },
       {
         key: 'scratchcard',
@@ -834,7 +834,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '刮刮乐',
         titleEn: 'Scratchcard',
         desc: '刮层擦除与阈值回调',
-        count: 4,
+        count: 6,
       },
       {
         key: 'typing',
@@ -842,7 +842,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '输入中',
         titleEn: 'Typing',
         desc: '聊天输入中跳动圆点',
-        count: 4,
+        count: 6,
       },
     ],
   },
@@ -874,6 +874,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         titleEn: 'Paging',
         desc: '',
         count: 6,
+      },
+      {
+        key: 'slider-bar',
+        group: 'more',
+        title: 'slider-bar',
+        titleEn: 'Slider Bar',
+        desc: '',
+        count: 5,
       },
     ],
   },

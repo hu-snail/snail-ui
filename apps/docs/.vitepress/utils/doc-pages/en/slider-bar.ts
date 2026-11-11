@@ -6,7 +6,7 @@ export const sliderBarDocPageEn: SnDocPageData = {
   title: 'SliderBar',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'outline: false' }],
@@ -36,7 +36,48 @@ import { SliderBar } from '@snui/vue-web';
   <SliderBar />
 </template>`,
   },
-  demos: [],
+  demos: [
+    {
+      name: 'slider-bar-web-aurora',
+      title: 'Aurora gradient',
+      blurb: 'theme="aurora": purple-blue gradient fill, drifting star particles, round thumb.',
+    },
+    {
+      name: 'slider-bar-web-column',
+      title: 'Vertical (column)',
+      blurb: 'variant="column" — the read-out merges into the track top.',
+    },
+    {
+      name: 'slider-bar-web-range',
+      title: 'Range (dual handles)',
+      blurb: 'Price range with non-crossing handles and a custom formatValue read-out.',
+    },
+    {
+      name: 'slider-bar-web-states',
+      title: 'Disabled & reverse',
+      blurb: 'disabled blocks all interaction; reverse flips the axis.',
+    },
+    {
+      name: 'slider-bar-web-levels',
+      title: 'Levels',
+      blurb: 'levels maps the value onto discrete steps; ticks follow the range.',
+    },
+    {
+      name: 'slider-bar-web-icons',
+      title: 'Edge icons',
+      blurb: 'leading-icon / trailing-icon semantic glyphs at both ends.',
+    },
+    {
+      name: 'slider-bar-web-readout',
+      title: 'Read-out formats',
+      blurb: 'percent / value + valueSuffix / formatValue, plus tooltip and placement.',
+    },
+    {
+      name: 'slider-bar-web-shape',
+      title: 'Shape & thickness',
+      blurb: 'radius × thickness combos: square 4px, token default, full capsule, thin bar.',
+    },
+  ],
   props: {
     hint: [],
     rows: [

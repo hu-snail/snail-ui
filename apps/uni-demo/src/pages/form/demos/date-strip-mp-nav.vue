@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-date-strip — 导航按钮：show-nav 两侧翻页 + #prev / #next 自定义插槽 + pagechange。 */
+/** Demo: sn-date-strip — 导航按钮（show-nav）：两侧翻页 + #prev / #next 自定义插槽 + pagechange。 */
 import { ref } from 'vue';
 import SnDateStrip from '@snui/uni-src/components/sn-date-strip/sn-date-strip.vue';
 
@@ -24,7 +24,6 @@ const onPageChange = (e: { start: number; end: number }) => {
       :start-date="start"
       :count="7"
       show-nav
-      show-lunar
       custom-class="sn-demo__strip"
       @pagechange="onPageChange"
     >

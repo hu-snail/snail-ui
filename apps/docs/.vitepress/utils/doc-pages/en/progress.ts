@@ -10,7 +10,7 @@ export const progressDocPageEn: SnDocPageData = {
   title: 'Progress · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -51,8 +51,13 @@ import { Progress } from '@snui/vue-web';
     { name: 'progress-web-indicator', title: 'Indicator placement', blurb: 'Indicator placement' },
     {
       name: 'progress-web-processing',
-      title: 'Processing and the four statuses',
-      blurb: 'Processing and the four statuses',
+      title: 'Processing',
+      blurb: 'processing: animated stripes on the line, breathing arc on the circle.',
+    },
+    {
+      name: 'progress-web-icon',
+      title: 'Custom circle icon',
+      blurb: 'The #icon slot + SnIcon restyles the circle center.',
     },
     {
       name: 'progress-web-dynamic',

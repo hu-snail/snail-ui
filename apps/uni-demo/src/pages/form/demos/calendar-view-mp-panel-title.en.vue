@@ -1,0 +1,43 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar-view — panel title (showPanelTitle).
+ *
+ * `show-panel-title=false` drops the "2024 / 6" month caption so only the
+ * grid remains.
+ */
+import { ref } from 'vue';
+import SnCalendarView from '@snui/uni-src/components/sn-calendar-view/sn-calendar-view.vue';
+
+const min = new Date(2024, 5, 1).getTime();
+const max = new Date(2024, 5, 30).getTime();
+
+const bare = ref<number | number[] | null>(null);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCalendarView
+      v-model="bare"
+      :min-date="min"
+      :max-date="max"
+      :show-panel-title="false"
+      :panel-height="240"
+    />
+    <text class="sn-demo__meta">showPanelTitle=false: grid only, no "2024 / 6" caption</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-slide-verify — icon / successIcon / iconPrefix / cssIcon / iconSize / successIconSize.
+ * Demo: sn-slide-verify — icon glyphs (`icon` / `successIcon`).
  *
  * Without `icon` / `success-icon` the built-in SVG glyphs render; a name goes
  * through the iconfont convention (`icon-prefix` + `-` + name) and `css-icon`
@@ -38,17 +38,6 @@ const onFail = (): void => {
     <SnSlideVerify css-icon="demo-verify-css" :icon-size="32" @success="onSuccess" @fail="onFail" />
     <text class="sn-demo__meta"
       >cssIcon as a string: the class renders verbatim, with no iconPrefix</text
-    >
-
-    <SnSlideVerify
-      :tolerance="24"
-      custom-class="sn-demo__verify"
-      custom-style="padding: 8rpx; border-radius: var(--sn-mp-radius-md); background-color: var(--sn-mp-color-background-soft);"
-      @success="onSuccess"
-      @fail="onFail"
-    />
-    <text class="sn-demo__meta"
-      >tolerance=24 widens the right-edge slack; customClass / customStyle land on the root</text
     >
 
     <text class="sn-demo__meta">Status: {{ state }}</text>
@@ -93,9 +82,5 @@ const onFail = (): void => {
 }
 .sn-demo :deep(.demo-verify-css)::after {
   content: 'C';
-}
-/* custom-class lands on the sn-slide-verify root, so :deep pierces the component boundary. */
-.sn-demo :deep(.sn-demo__verify) {
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 </style>

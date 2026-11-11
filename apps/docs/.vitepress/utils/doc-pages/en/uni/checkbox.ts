@@ -72,17 +72,38 @@ import { Checkbox } from '@snui/uni';
     },
     {
       name: 'checkbox-mp-group-limits',
-      title:
-        'Limits & states (`min` / `max` / `disabled` / `readonly` / `indeterminate` / `toggleAll`)',
-      blurb:
-        'min/max limits; whole-group disabled / readonly; indeterminate; toggleAll select-all / clear-all.',
+      title: 'Count limits (min / max)',
+      blurb: 'min/max cap how many options may be checked.',
     },
     {
-      name: 'checkbox-mp-standalone-style',
-      title:
-        'Standalone usage & remaining props (`v-model` / `trueValue` / `falseValue` / `checkedColor` / `size` / `placement` / `maxWidth`)',
-      blurb:
-        'Standalone `v-model` with `trueValue` / `falseValue`; `checkedColor` / `uncheckedColor`; `size` large and `placement` right; `maxWidth` + `customLabelClass`; `customClass` / `customStyle`.',
+      name: 'checkbox-mp-group-state',
+      title: 'Group state & half-check',
+      blurb: 'Whole-group disabled / readonly; indeterminate half-check.',
+    },
+    {
+      name: 'checkbox-mp-toggle-all',
+      title: 'Select all / clear all (toggleAll)',
+      blurb: 'toggleAll via expose, select-all / clear-all.',
+    },
+    {
+      name: 'checkbox-mp-standalone',
+      title: 'Standalone usage & custom values',
+      blurb: 'Standalone `v-model` with `trueValue` / `falseValue`.',
+    },
+    {
+      name: 'checkbox-mp-colors',
+      title: 'Checked colors (checkedColor)',
+      blurb: 'checkedColor / uncheckedColor.',
+    },
+    {
+      name: 'checkbox-mp-placement',
+      title: 'Layout & label (placement / maxWidth)',
+      blurb: '`size` large and `placement` right; `maxWidth` + `customLabelClass`.',
+    },
+    {
+      name: 'checkbox-mp-custom-style',
+      title: 'Custom style',
+      blurb: 'customClass / customStyle land on the component nodes.',
     },
   ],
   props: {

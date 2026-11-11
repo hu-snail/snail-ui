@@ -1,0 +1,55 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker — sheet chrome: button labels / scrim / safe area / zIndex / custom* / displayFormatTabLabel. */
+import { ref } from 'vue';
+import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const chrome = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
+const openChrome = ref(false);
+
+/** Declared but unimplemented: single-value mode has no range tabs, so the hook never runs. */
+const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="Sheet chrome"
+        label="button labels, mask close disabled, zIndex, custom*"
+        :prefix-icon-data="Settings"
+        is-link
+        @click="openChrome = true"
+      />
+    </SnCellGroup>
+
+    <SnDatetimePicker
+      v-model="chrome"
+      v-model:visible="openChrome"
+      type="date"
+      title="Sheet chrome"
+      cancel-button-text="Never mind"
+      confirm-button-text="Use this day"
+      :close-on-click-modal="false"
+      :safe-area-inset-bottom="false"
+      :z-index="1200"
+      root-portal
+      custom-class="sn-demo__sheet"
+      custom-style="border-radius: var(--sn-mp-radius-xl);"
+      custom-view-class="sn-demo__roller"
+      :display-format-tab-label="tabLabel"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__sheet {
+  background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-demo__roller {
+  padding-bottom: 8rpx;
+}
+</style>

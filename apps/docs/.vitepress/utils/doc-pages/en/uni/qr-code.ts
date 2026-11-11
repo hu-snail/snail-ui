@@ -58,8 +58,13 @@ import { QrCode } from '@snui/uni';
     { name: 'qr-code-mp-basic', title: 'Basic usage', blurb: 'Default EC level H versus level M.' },
     {
       name: 'qr-code-mp-dot-type',
-      title: 'Module shapes and colors',
-      blurb: 'Four module shapes, custom dark / light colors and a vertical gradient.',
+      title: 'Module shapes (`dotType`)',
+      blurb: 'The four shapes square / dots / rounded / liquid; dot-scale shrinks the modules.',
+    },
+    {
+      name: 'qr-code-mp-color',
+      title: 'Custom colors (`colorDark` / `colorLight`)',
+      blurb: 'color-dark recolours the modules; color-light recolours the quiet zone.',
     },
     {
       name: 'qr-code-mp-export',
@@ -67,9 +72,16 @@ import { QrCode } from '@snui/uni';
       blurb: 'A code with a quiet zone plus exportImage resolving to a temp path.',
     },
     {
-      name: 'qr-code-mp-canvas',
-      title: 'Multi-color gradients, angles and canvasId',
-      blurb: 'A three-color gradient, a 45° gradient, a custom canvasId and root class / style.',
+      name: 'qr-code-mp-gradient',
+      title: 'Gradient codes (`enableGradient`)',
+      blurb:
+        'gradientColors with 2+ colours overrides gradientColor; gradientDirection takes diagonal / horizontal / vertical or an angle.',
+    },
+    {
+      name: 'qr-code-mp-canvas-id',
+      title: 'Canvas id (`canvasId`)',
+      blurb:
+        'canvasId pins the canvas id (default derived from the instance uid); plus customClass / customStyle root styling.',
     },
   ],
   props: {

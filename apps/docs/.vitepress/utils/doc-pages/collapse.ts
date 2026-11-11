@@ -15,7 +15,7 @@ export const collapseDocPage: SnDocPageData = {
   title: 'Collapse 折叠面板',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -59,7 +59,16 @@ import { Collapse } from '@snui/vue-web';
     { name: 'collapse-web-basic', title: '基础用法', blurb: '基础用法' },
     { name: 'collapse-web-accordion', title: '手风琴模式', blurb: '手风琴模式' },
     { name: 'collapse-web-bordered', title: '边框样式', blurb: '边框样式' },
-    { name: 'collapse-web-trigger', title: '触发区域', blurb: '触发区域' },
+    {
+      name: 'collapse-web-trigger',
+      title: '悬停展开（trigger）',
+      blurb: 'trigger="hover" 鼠标移入自动展开。',
+    },
+    {
+      name: 'collapse-web-display-directive',
+      title: '内容常驻（display-directive）',
+      blurb: 'displayDirective="show" DOM 常驻，仅 display 切换。',
+    },
   ],
   props: {
     hint: [],

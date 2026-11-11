@@ -11,7 +11,7 @@ export const textDocPage: SnDocPageData = {
   title: 'Text',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App 双端统一', tone: 'accent', icon: 'dual' },
+    { label: 'Web 端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '文本排版组件。六色 type、depth 色阶、行内样式修饰、code 底色。' }],

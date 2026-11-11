@@ -10,7 +10,7 @@ export const qrCodeDocPageEn: SnDocPageData = {
   title: 'QR Code · Web',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'Web & Uni-App parity', tone: 'accent', icon: 'dual' },
+    { label: 'Web', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -52,8 +52,13 @@ import { QrCode } from '@snui/vue-web';
     { name: 'qr-code-web-type', title: 'Render type', blurb: 'Render type' },
     {
       name: 'qr-code-web-shape',
-      title: 'Shape & multi-color (shape / colors)',
-      blurb: 'Shape & multi-color (shape / colors)',
+      title: 'Module shapes',
+      blurb: 'shape: square / dot / rounded.',
+    },
+    {
+      name: 'qr-code-web-colors',
+      title: 'Multi-color palette',
+      blurb: 'Color the modules with a colors palette.',
     },
   ],
   props: {

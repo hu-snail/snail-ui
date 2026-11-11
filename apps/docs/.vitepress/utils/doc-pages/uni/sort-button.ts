@@ -64,9 +64,14 @@ import { SortButton } from '@snui/uni';
       blurb: 'sn-sort-button 三态排序：1 升序 / 0 重置 / -1 降序；默认在升序与降序之间切换。',
     },
     {
-      name: 'sort-button-mp-reset-line',
-      title: '允许重置、降序优先与下划线（`allowReset` / `descFirst` / `line`）',
-      blurb: 'allowReset 把 0 纳入循环；descFirst 首次点击进入降序；line 加下划线。',
+      name: 'sort-button-mp-cycle',
+      title: '排序循环（`allowReset` / `descFirst`）',
+      blurb: 'allowReset 把 0 纳入循环；descFirst 首次点击进入降序。',
+    },
+    {
+      name: 'sort-button-mp-line',
+      title: '下划线（`line`）',
+      blurb: 'line 给按钮文字加下划线。',
     },
     {
       name: 'sort-button-mp-custom-style',

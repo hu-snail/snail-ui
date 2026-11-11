@@ -54,24 +54,52 @@ import { Rate } from '@snui/uni';
       blurb: 'Basic sn-rate: `num` sets the icon count, tapping an icon writes `v-model`.',
     },
     {
-      name: 'rate-mp-half-color',
-      title: 'Half stars, clearing & colors (`allowHalf` / `clearable` / `activeColor`)',
-      blurb:
-        '`allowHalf` selects half stars; `clearable` clears back to null on re-tap; `activeColor` accepts a per-icon array; readonly blocks taps.',
+      name: 'rate-mp-half',
+      title: 'Half stars (`allowHalf`)',
+      blurb: '`allowHalf` lets the value land on `.5` steps.',
     },
     {
-      name: 'rate-mp-icon-space',
-      title:
-        'Gap, icons & full-row spread (`space` / `icon` / `activeIcon` / `iconPrefix` / `block`)',
-      blurb:
-        '`space` sets the icon gap; `icon` / `activeIcon` resolve through the sn-icon registry; `iconPrefix` is parity only; `block` spreads the icons across the row.',
+      name: 'rate-mp-clearable',
+      title: 'Clearable (`clearable`)',
+      blurb: '`clearable` clears back to null on re-tap of the current score.',
     },
     {
-      name: 'rate-mp-css-icon-disabled',
-      title:
-        'Custom glyphs, disabled & root styling (`cssIcon` / `disabled` / `customClass` / `customStyle`)',
+      name: 'rate-mp-color',
+      title: 'Rating colors (`activeColor`)',
+      blurb: '`activeColor` accepts a per-icon array (red → orange → …).',
+    },
+    {
+      name: 'rate-mp-readonly',
+      title: 'Readonly (`readonly`)',
+      blurb: '`readonly` blocks taps; the score is display-only.',
+    },
+    {
+      name: 'rate-mp-space',
+      title: 'Gap & full-row spread (`space` / `size` / `block`)',
       blurb:
-        'A string `cssIcon` renders as a bare class and the boolean form applies both names; `disabled` blocks taps; `customClass` / `customStyle` land on the root.',
+        '`space` sets the icon gap (a number is an rpx design value ×2); `size` the glyph size; `block` spreads the icons across the row.',
+    },
+    {
+      name: 'rate-mp-icon',
+      title: 'Custom icons (`icon` / `activeIcon`)',
+      blurb:
+        '`icon` / `activeIcon` resolve through the sn-icon registry; `iconPrefix` is parity only; `color` / `activeColor` override the colors.',
+    },
+    {
+      name: 'rate-mp-css-icon',
+      title: 'CSS-class glyphs (`cssIcon`)',
+      blurb:
+        'A string `cssIcon` renders as a bare class and the boolean form applies both `icon` / `active-icon` names.',
+    },
+    {
+      name: 'rate-mp-disabled',
+      title: 'Disabled (`disabled`)',
+      blurb: '`disabled` dims the icons and ignores taps.',
+    },
+    {
+      name: 'rate-mp-custom-style',
+      title: 'Root styling (`customClass` / `customStyle`)',
+      blurb: '`customClass` / `customStyle` are appended to the root node.',
     },
   ],
   props: {

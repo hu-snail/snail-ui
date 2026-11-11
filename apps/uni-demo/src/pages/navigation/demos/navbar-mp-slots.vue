@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-navbar — 插槽与固定定位。 */
+/** Demo: sn-navbar — 左右插槽（#left / #right）。 */
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { Bell, Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
@@ -15,7 +15,6 @@ import { Bell, Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
         <SnIcon :icon="Bell" :size="36" />
       </template>
     </SnNavbar>
-    <SnNavbar title="固定 + 占位" fixed placeholder bordered left-arrow />
   </view>
 </template>
 

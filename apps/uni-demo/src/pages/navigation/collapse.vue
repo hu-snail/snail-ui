@@ -2,10 +2,13 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— collapse 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/collapse-mp-accordion.vue';
 import Demo1 from './demos/collapse-mp-basic.vue';
-import Demo2 from './demos/collapse-mp-card.vue';
-import Demo3 from './demos/collapse-mp-icon.vue';
-import Demo4 from './demos/collapse-mp-slots.vue';
-import Demo5 from './demos/collapse-mp-viewmore.vue';
+import Demo2 from './demos/collapse-mp-before-expend.vue';
+import Demo3 from './demos/collapse-mp-card.vue';
+import Demo4 from './demos/collapse-mp-disabled.vue';
+import Demo5 from './demos/collapse-mp-icon.vue';
+import Demo6 from './demos/collapse-mp-more-slot.vue';
+import Demo7 from './demos/collapse-mp-title-slot.vue';
+import Demo8 from './demos/collapse-mp-viewmore.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,7 +26,10 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('accordion', 'Accordion')" badge="accordion" />
+        <DemoModuleHead
+          :title="t('手风琴模式（accordion）', 'Accordion mode (`accordion`)')"
+          badge="accordion"
+        />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -35,27 +41,54 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead
+          :title="t('展开拦截（before-expend）', 'Expand guard (`before-expend`)')"
+          badge="before-expend"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <DemoModuleHead
+          :title="t('禁用面板（disabled）', 'Disabled panel (`disabled`)')"
+          badge="disabled"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('viewmore', 'Viewmore')" badge="viewmore" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('more 插槽', 'The `more` slot')" badge="more-slot" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('title 插槽与内容样式', '`title` slot & content styling')"
+          badge="title-slot"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('viewmore', 'Viewmore')" badge="viewmore" />
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>

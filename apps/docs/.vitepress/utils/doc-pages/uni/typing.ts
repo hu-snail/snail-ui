@@ -55,7 +55,24 @@ import { Typing } from '@snui/uni';
 </template>`,
   },
   demos: [
-    { name: 'typing-mp', title: '代码演示', blurb: '默认 / 自定义文案与圆点色 / 气泡场景。' },
+    { name: 'typing-mp-basic', title: '基础用法', blurb: '默认文案 + 聊天气泡占位场景。' },
+    {
+      name: 'typing-mp-states',
+      title: '状态与事件',
+      blurb: '会话模拟：发送后 peer 进入 typing 态，回复到达换上真实消息。',
+    },
+    { name: 'typing-mp-text', title: '文案开关（text）', blurb: 'text="" 只显示圆点。' },
+    {
+      name: 'typing-mp-dot-count',
+      title: '圆点数量（dotCount）',
+      blurb: 'dot-count 1 / 3 / 5（夹取到 1-5）。',
+    },
+    { name: 'typing-mp-speed', title: '脉动速度（speed）', blurb: '180ms 快 / 600ms 慢。' },
+    {
+      name: 'typing-mp-dot-color',
+      title: '圆点颜色（activeDotColor）',
+      blurb: 'active-dot-color 主题色。',
+    },
   ],
   props: {
     hint: [],

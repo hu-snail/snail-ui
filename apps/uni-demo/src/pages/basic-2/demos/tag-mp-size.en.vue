@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-tag (uni-end) — five size steps, plus the round pill and mark shapes. */
+/** Demo: sn-tag (uni-end) — the five size steps. */
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 
 /** Size steps from small to extra-large; `default` is the baseline. */
@@ -12,12 +12,6 @@ const sizes = ['small', 'default', 'large', 'extra-large'] as const;
       <SnTag v-for="size in sizes" :key="size" type="primary" :size="size">
         {{ size }}
       </SnTag>
-    </view>
-    <view class="sn-demo__row">
-      <SnTag type="primary">Square</SnTag>
-      <SnTag type="primary" round>Pill</SnTag>
-      <SnTag type="primary" mark>Mark</SnTag>
-      <SnTag type="primary" round mark>Pill + mark</SnTag>
     </view>
   </view>
 </template>

@@ -2,8 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— badge 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/badge-mp-basic.vue';
 import Demo1 from './demos/badge-mp-custom.vue';
-import Demo2 from './demos/badge-mp-shape.vue';
-import Demo3 from './demos/badge-mp-visibility.vue';
+import Demo2 from './demos/badge-mp-dot.vue';
+import Demo3 from './demos/badge-mp-offset.vue';
+import Demo4 from './demos/badge-mp-shape.vue';
+import Demo5 from './demos/badge-mp-visibility.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -28,15 +30,35 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
+        <DemoModuleHead :title="t('红点（is-dot）', 'Dot badge (`is-dot`)')" badge="dot" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('可见性', 'Visibility')" badge="visibility" />
+        <DemoModuleHead
+          :title="
+            t('偏移与颜色（top / right / bgColor）', 'Offset & color (`top` / `right` / `bgColor`)')
+          "
+          badge="offset"
+        />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('形状与描边（shape / border）', 'Shape & border (`shape` / `border`)')"
+          badge="shape"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('可见性', 'Visibility')" badge="visibility" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

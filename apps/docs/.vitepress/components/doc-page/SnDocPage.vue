@@ -14,7 +14,7 @@
  * 案例区已经承担了「真实可运行」的职责，再叠一个可调参数的舞台会让同一份
  * 契约出现两种表述。
  */
-import { computed, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { useData, useRoute, useRouter } from 'vitepress';
 import {
   ArrowLeft,
@@ -44,6 +44,7 @@ import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
 import { registerDemo, unregisterDemo, uniCompFromRoute } from '../../utils/demo-dock';
 import { readPageSource, writeClipboardText } from '../../utils/doc-source';
 import { uniDemoPageUrl } from '../../utils/uni-demo-base';
+import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../../utils/uni-demo-sync';
 import PhoneFrame from '../PhoneFrame.vue';
 import demoManifest from '../../../../uni-demo/src/demos-manifest.json';
 import type { DocFeature, DocSeg, DocQuickAction, DocTocItem, SnDocPageData } from './types';
@@ -313,6 +314,18 @@ function setDemoMode(name: string, mode: DemoMode): void {
 }
 
 /**
+ * 悬停预览：滑块随 hover 滑到所指档位（图标随之反白），离开后弹回真实
+ * 选中档。图标的反白跟着滑块走而不是跟着选中态走，否则滑块挪走的瞬间
+ * 原选中图标会白字落在白胶囊上消失。
+ */
+const hoveredTab = ref<{ name: string; side: DemoMode } | null>(null);
+
+function demoThumbTarget(name: string): DemoMode {
+  if (hoveredTab.value?.name === name) return hoveredTab.value.side;
+  return demoMode(name);
+}
+
+/**
  * demo 按奇偶分列（自管两列瀑布）：列是独立 flex 容器，卡片展开只推挤
  * 本列后续项 —— 无空高度。不经过 slot 传递，预览/源码状态走标准响应式。
  */
@@ -457,7 +470,10 @@ const uniComp = computed(() => uniCompFromRoute(route.path));
  */
 const dockPreviewUrl = computed<string>(() => {
   const entry = (demoManifest.components as Record<string, { page: string }>)[uniComp.value];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+  return uniDemoPageUrl(
+    entry?.page ?? 'pages/index/index',
+    uniDemoStateOf(isDark.value, lang.value),
+  );
 });
 
 /**
@@ -468,6 +484,31 @@ const narrowViewport = ref(false);
 let narrowMq: MediaQueryList | null = null;
 let onNarrowMqChange: ((e: MediaQueryListEvent) => void) | null = null;
 const showInlinePhone = computed(() => isUniDoc.value && narrowViewport.value);
+
+/**
+ * 窄屏文档流手机的主题/语言同步：URL query 带初始态，运行时切换经
+ * postMessage + ready 握手补发（协议见 utils/uni-demo-sync.ts）。
+ */
+const inlineFrameRef = ref<HTMLIFrameElement | null>(null);
+
+function syncInlineFrameState(): void {
+  postUniDemoState(inlineFrameRef, uniDemoStateOf(isDark.value, lang.value));
+}
+
+const unlistenInlineReady = onUniDemoReady(syncInlineFrameState);
+
+watch(
+  [isDark, lang, showInlinePhone],
+  ([, , show]) => {
+    if (!show) return;
+    syncInlineFrameState();
+  },
+  { flush: 'post' },
+);
+
+onBeforeUnmount(() => {
+  unlistenInlineReady();
+});
 
 /**
  * 本页目录（含子目录）。
@@ -721,7 +762,10 @@ onBeforeUnmount(() => {
                    卡片只承载预览 / 源码面板本体。 -->
               <div class="sn-docpage__demo-head">
                 <h3>{{ d.title }}</h3>
-                <p>{{ d.blurb }}</p>
+                <!-- 描述只在补充信息时出现：blurb 与标题同文（「基础用法 /
+                     基础用法」）是数据层的省写，渲染层去重，避免正文出现
+                     两行一模一样的话。 -->
+                <p v-if="d.blurb !== d.title">{{ d.blurb }}</p>
               </div>
               <div
                 class="sn-docpage__demo-card"
@@ -736,16 +780,18 @@ onBeforeUnmount(() => {
                 >
                   <span
                     class="sn-docpage__demo-thumb"
-                    :class="{ 'sn-docpage__demo-thumb--code': demoMode(d.name) === 'code' }"
+                    :class="{ 'sn-docpage__demo-thumb--code': demoThumbTarget(d.name) === 'code' }"
                     aria-hidden="true"
                   />
                   <button
                     type="button"
                     role="tab"
                     class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'preview' }"
+                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'preview' }"
                     :aria-selected="demoMode(d.name) === 'preview'"
                     :aria-label="UI.preview"
+                    @mouseenter="hoveredTab = { name: d.name, side: 'preview' }"
+                    @mouseleave="hoveredTab = null"
                     @click="setDemoMode(d.name, 'preview')"
                   >
                     <SnIcon :icon="Box" :size="13" />
@@ -754,9 +800,11 @@ onBeforeUnmount(() => {
                     type="button"
                     role="tab"
                     class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoMode(d.name) === 'code' }"
+                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'code' }"
                     :aria-selected="demoMode(d.name) === 'code'"
                     :aria-label="UI.source"
+                    @mouseenter="hoveredTab = { name: d.name, side: 'code' }"
+                    @mouseleave="hoveredTab = null"
                     @click="setDemoMode(d.name, 'code')"
                   >
                     <SnIcon :icon="Code2" :size="13" />
@@ -774,6 +822,7 @@ onBeforeUnmount(() => {
                     <div v-if="showInlinePhone" class="sn-docpage__phone">
                       <PhoneFrame :title="doc.title">
                         <iframe
+                          ref="inlineFrameRef"
                           class="sn-docpage__phone-frame"
                           :src="dockPreviewUrl"
                           :title="`uni preview: ${doc.title}`"
@@ -797,13 +846,16 @@ onBeforeUnmount(() => {
                         {{ sec.label }}
                       </button>
                     </div>
+                    <!-- 只留图标：按钮浮在切换胶囊正下方，文字版会被加宽后
+                         的胶囊压住；复制语义由图标 + aria-label 承载，
+                         复制成功反馈走 Copy→Check 图标切换。 -->
                     <button
                       type="button"
                       class="sn-docpage__mini"
+                      :aria-label="copiedKey === 'demo-' + d.name ? UI.copied : UI.copy"
                       @click="copyText('demo-' + d.name, demoSectionCode(d.name))"
                     >
                       <SnIcon :icon="copiedKey === 'demo-' + d.name ? Check : Copy" :size="13" />
-                      {{ copiedKey === 'demo-' + d.name ? UI.copied : UI.copy }}
                     </button>
                   </div>
                   <pre class="sn-code sn-docpage__demo-code" v-html="demoSectionHtml(d.name)" />
@@ -1769,7 +1821,8 @@ onBeforeUnmount(() => {
 .sn-docpage__demo-fall {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  /* 案例块之间的纵向呼吸：模块多时靠这段距离分块。 */
+  gap: 24px;
 }
 /* 案例容器不再是卡片：标题、描述、切换胶囊都是页面正文层，无背景；
  * 卡片饰面（圆角 / 底色 / 阴影）只属于预览面板本体。 */
@@ -1780,7 +1833,7 @@ onBeforeUnmount(() => {
 }
 .sn-docpage__demo-head h3 {
   margin: 0;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--sn-doc-text-1);
 }
@@ -1811,25 +1864,38 @@ onBeforeUnmount(() => {
   z-index: 3;
   display: inline-flex;
   flex: none;
-  padding: 3px;
+  /* 水平内边距 + 图标间隙把胶囊拉长，读作一个完整的开关件而不是两枚
+   * 紧贴的图标按钮；垂直内边距保持 3px（滑块 28px + 6 = 34px 高）。 */
+  padding: 3px 10px;
+  gap: 8px;
   border-radius: 999px;
+  background: var(--sn-doc-card);
+  /* 白胶囊浮在浅灰预览台上：不描边，只留一层很淡的投影做分离。 */
+  box-shadow: 0 2px 8px rgb(2 6 16 / 0.08);
+}
+.sn-docpage--dark .sn-docpage__demo-switch {
+  /* 深色模式：胶囊与预览台落在同一级 card-soft 色阶，投影是唯一分层
+   * 手段，比浅色略加重让胶囊浮出来。 */
   background: var(--sn-doc-card-soft);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.08);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.3);
 }
 .sn-docpage__demo-thumb {
   position: absolute;
   top: 3px;
   bottom: 3px;
-  left: 3px;
+  /* left 跟随胶囊水平内边距，滑块才能正好套住第一个图标。 */
+  left: 10px;
   width: 28px;
   border-radius: 999px;
-  background: var(--sn-doc-card);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.1);
+  /* 选中段 = 主题色滑块，图标反白（见 --on 的颜色对调）。 */
+  background: var(--sn-doc-accent);
+  box-shadow: 0 1px 3px rgb(2 6 16 / 0.2);
   transform: translateX(0);
   transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .sn-docpage__demo-thumb--code {
-  transform: translateX(28px);
+  /* 28px 滑块 + 8px 图标间隙。 */
+  transform: translateX(36px);
 }
 .sn-docpage__demo-tab {
   position: relative;
@@ -1846,22 +1912,21 @@ onBeforeUnmount(() => {
   cursor: pointer;
   transition: color 0.15s;
 }
-.sn-docpage__demo-tab:hover {
-  color: var(--sn-doc-text-1);
-}
+/* 悬停不再单独变色：滑块会滑到悬停档位，反白由 --on 跟随滑块位置。 */
 .sn-docpage__demo-tab--on {
-  color: var(--sn-doc-accent);
+  /* 滑块（真实选中或悬停预览）压着的档位，图标反白。 */
+  color: var(--sn-doc-text-on-accent);
 }
 .sn-docpage__demo-stage {
-  /* 浅灰底（#f5f5f5）：预览是「作品台」，纯白会和卡片外壳糊在一起，
-     浅灰给出边界又不抢组件自身的对比。深色模式回落主题表面色。
+  /* 浅灰底 #f8f8f8：预览是「作品台」，与手机 iframe 预览同底，比页面
+     纯白低半档，靠卡片投影分层；深色模式回落主题表面色。
      给一个最小高度，避免单行演示（一个按钮 / 一个开关）把卡片压成细条。 */
   min-height: 240px;
   padding: 20px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f5f5;
+  background: #f8f8f8;
 }
 .sn-docpage--dark .sn-docpage__demo-stage {
   background: var(--sn-doc-surface-lowest);
@@ -1882,6 +1947,9 @@ onBeforeUnmount(() => {
   border: 0;
   background: #f8f8f8;
 }
+.dark .sn-docpage__phone-frame {
+  background: #17171a;
+}
 .sn-docpage__demo-codebody {
   background: var(--sn-doc-code-bg);
 }
@@ -1890,8 +1958,9 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  /* 右侧留出浮动切换胶囊的宽度，复制按钮不被压住。 */
-  padding: 8px 84px 8px 12px;
+  /* 右侧留出浮动切换胶囊的整条宽度（84px 胶囊 + 10px 右距 + 6px 呼吸），
+     复制按钮不被压住。 */
+  padding: 8px 100px 8px 12px;
 }
 /* uni 案例没有切换胶囊，把为它预留的右侧空间收回。 */
 .sn-docpage__demo-card--uni .sn-docpage__codebar {
@@ -2436,7 +2505,7 @@ onBeforeUnmount(() => {
     padding: 16px 10px;
   }
   .sn-docpage__demo-codebody .sn-docpage__codebar {
-    padding: 8px 84px 8px 10px;
+    padding: 8px 100px 8px 10px;
   }
   .sn-docpage__demo-code {
     font-size: 12px;

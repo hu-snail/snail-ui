@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-switch — size: `size` sets the switch size (a number is treated as rpx). */
+import { ref } from 'vue';
+import SnSwitch from '@snui/uni-src/components/sn-switch/sn-switch.vue';
+
+const sized = ref(true);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">size (a number is treated as rpx)</text>
+    <SnSwitch v-model="sized" :size="140" />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

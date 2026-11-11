@@ -85,9 +85,14 @@ export const dynamicTagsDocPage: SnDocPageData = {
       blurb: 'Enter 提交可连续输入，Esc 取消，blur 提交。',
     },
     {
-      name: 'dynamic-tags-web-bounds',
-      title: 'max / closable',
-      blurb: 'max 到界隐藏添加；closable=false 隐藏删除。',
+      name: 'dynamic-tags-web-max',
+      title: '数量上限（max）',
+      blurb: 'max 到界隐藏添加。',
+    },
+    {
+      name: 'dynamic-tags-web-closable',
+      title: '可删除（closable）',
+      blurb: 'closable=false 隐藏删除。',
     },
     {
       name: 'dynamic-tags-web-slots',
@@ -95,9 +100,14 @@ export const dynamicTagsDocPage: SnDocPageData = {
       blurb: 'tag / trigger / empty 自定义。',
     },
     {
-      name: 'dynamic-tags-web-states',
-      title: '禁用 / 只读',
-      blurb: 'disabled 禁交互，readonly 不出添加按钮。',
+      name: 'dynamic-tags-web-disabled',
+      title: '禁用（disabled）',
+      blurb: '整组禁交互。',
+    },
+    {
+      name: 'dynamic-tags-web-readonly',
+      title: '只读（readonly）',
+      blurb: '不出添加按钮。',
     },
   ],
 

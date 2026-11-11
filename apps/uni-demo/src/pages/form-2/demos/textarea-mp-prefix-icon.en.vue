@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-textarea — prefix icon (registry name / CSS class) and placeholder styling. */
+/** Demo: sn-textarea — leading icon: `prefixIcon` resolves through the sn-icon registry; `iconPrefix` + `cssIcon` render a raw CSS class. */
 import { ref } from 'vue';
 import SnTextarea from '@snui/uni-src/components/sn-textarea/sn-textarea.vue';
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
@@ -9,7 +9,6 @@ registerSnIcons({ Edit });
 
 const registry = ref('');
 const cssClass = ref('');
-const styled = ref('');
 </script>
 
 <template>
@@ -23,14 +22,6 @@ const styled = ref('');
       icon-prefix="sn-demo__icon"
       css-icon
       placeholder="The leading icon is a CSS class"
-    />
-
-    <text class="sn-demo__title">placeholderStyle + placeholderClass</text>
-    <SnTextarea
-      v-model="styled"
-      placeholder-style="font-style: italic; color: var(--sn-mp-color-feedback-danger);"
-      placeholder-class="sn-demo__placeholder"
-      placeholder="Italic placeholder + a custom placeholder class"
     />
   </view>
 </template>
@@ -48,10 +39,5 @@ const styled = ref('');
   height: 32rpx;
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-action-primary);
-}
-
-.sn-demo__placeholder {
-  font-size: 26rpx;
-  color: var(--sn-mp-color-feedback-warning);
 }
 </style>

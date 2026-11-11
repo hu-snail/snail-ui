@@ -1,0 +1,33 @@
+<script setup lang="ts">
+/** Demo: sn-slider-bar — 基础用法：label + showValue 显示读数，format 控制读数格式。 */
+import { ref } from 'vue';
+import SnSliderBar from '@snui/uni-src/components/sn-slider-bar/sn-slider-bar.vue';
+
+const volume = ref(64);
+const progress = ref(35);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">默认胶囊（主题色填充）</text>
+    <SnSliderBar v-model="volume" label="音量" show-value />
+
+    <text class="sn-demo__title">读数格式 format="value"</text>
+    <SnSliderBar v-model="progress" :max="120" format="value" value-suffix="s" show-value />
+
+    <text class="sn-demo__meta">volume = {{ volume }} · progress = {{ progress }}s</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__meta {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

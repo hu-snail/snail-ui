@@ -58,9 +58,14 @@ import { Captcha } from '@snui/uni';
       blurb: 'Two-stage verification (slider chain)',
     },
     {
-      name: 'captcha-mp-custom',
-      title: 'Custom copy / size / tolerance',
-      blurb: 'Custom copy / size / tolerance',
+      name: 'captcha-mp-copy',
+      title: 'Custom copy (tips / successText)',
+      blurb: 'Custom copy (tips / successText)',
+    },
+    {
+      name: 'captcha-mp-size-tolerance',
+      title: 'Size & tolerance (width / height / tolerance)',
+      blurb: 'Size & tolerance (width / height / tolerance)',
     },
   ],
   props: {

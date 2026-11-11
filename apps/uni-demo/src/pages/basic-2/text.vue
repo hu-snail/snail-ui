@@ -4,6 +4,7 @@ import Demo0 from './demos/text-mp-basic.vue';
 import Demo1 from './demos/text-mp-custom.vue';
 import Demo2 from './demos/text-mp-lines.vue';
 import Demo3 from './demos/text-mp-mode.vue';
+import Demo4 from './demos/text-mp-typography.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -28,7 +29,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('lines', 'Lines')" badge="lines" />
+        <DemoModuleHead :title="t('多行截断（lines）', 'Line clamping (`lines`)')" badge="lines" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -37,6 +38,20 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('mode', 'Mode')" badge="mode" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '排版覆盖（size / lineHeight / color）',
+              'Typography overrides (`size` / `lineHeight` / `color`)',
+            )
+          "
+          badge="typography"
+        />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

@@ -62,8 +62,13 @@ import { Text } from '@snui/uni';
     },
     {
       name: 'text-mp-lines',
-      title: '多行截断与排版覆盖',
-      blurb: 'lines=1/2/3 多行截断；size / lineHeight / color 覆盖；prefix / suffix 前后缀。',
+      title: '多行截断（lines）',
+      blurb: 'lines=1/2/3 超出截断并显示省略号，保证卡片高度一致。',
+    },
+    {
+      name: 'text-mp-typography',
+      title: '排版覆盖（size / lineHeight / color）',
+      blurb: 'size 自定义字号；line-height 行高；color 文字颜色。',
     },
     {
       name: 'text-mp-custom',

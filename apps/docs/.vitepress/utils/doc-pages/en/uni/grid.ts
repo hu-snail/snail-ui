@@ -64,10 +64,16 @@ import { Grid } from '@snui/uni';
         'column=4 with gutter and square cells; direction=horizontal flows the content horizontally; reverse swaps icon and label.',
     },
     {
-      name: 'grid-mp-feedback',
-      title: 'Background colour, tap feedback and icon size',
+      name: 'grid-mp-clickable',
+      title: 'Tap feedback (`clickable`)',
       blurb:
-        'bg-color background; clickable + hover-class feedback; center=false top alignment; icon-size; custom-class / custom-style.',
+        'clickable makes cells tappable; hover-class customises the press feedback; the click event reports the cell.',
+    },
+    {
+      name: 'grid-mp-look',
+      title: 'Looks (`bg-color` / `center` / `icon-size`)',
+      blurb:
+        'bg-color background; center=false top alignment; icon-size for glyphs; custom-class / custom-style.',
     },
   ],
   props: {

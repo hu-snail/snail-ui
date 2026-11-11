@@ -5,10 +5,34 @@
  * The iframe points at the deployed uni-demo site's home directory (the
  * component index of the real uni runtime, ADR-0005). One browsing context,
  * shared dark-mode mirror, and no demo-code panel (a directory is content,
- * not a copyable example).
+ * not a copyable example). Theme / locale follow the docs site via the
+ * uni-demo-sync protocol (URL initial state + postMessage watch).
  */
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { useData } from 'vitepress';
 import PhoneFrame from './PhoneFrame.vue';
 import { uniDemoPageUrl } from '../utils/uni-demo-base';
+import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../utils/uni-demo-sync';
+
+const { isDark, lang } = useData();
+
+const frameRef = ref<HTMLIFrameElement | null>(null);
+
+const previewUrl = computed(() =>
+  uniDemoPageUrl('pages/index/index', uniDemoStateOf(isDark.value, lang.value)),
+);
+
+function syncFrameState(): void {
+  postUniDemoState(frameRef, uniDemoStateOf(isDark.value, lang.value));
+}
+
+const unlistenReady = onUniDemoReady(syncFrameState);
+
+watch([isDark, lang], syncFrameState);
+
+onBeforeUnmount(() => {
+  unlistenReady();
+});
 </script>
 
 <template>
@@ -16,8 +40,9 @@ import { uniDemoPageUrl } from '../utils/uni-demo-base';
     <ClientOnly>
       <PhoneFrame :height="760">
         <iframe
+          ref="frameRef"
           class="mp-home__frame"
-          :src="uniDemoPageUrl('pages/index/index')"
+          :src="previewUrl"
           title="uni component overview"
           loading="lazy"
         />
@@ -42,6 +67,10 @@ import { uniDemoPageUrl } from '../utils/uni-demo-base';
   height: 100%;
   border: 0;
   background: #f8f8f8;
+}
+
+.dark .mp-home__frame {
+  background: #17171a;
 }
 
 .mp-home__loading {

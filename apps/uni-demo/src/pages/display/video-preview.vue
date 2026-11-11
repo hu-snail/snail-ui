@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— video-preview 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/video-preview-mp-basic.vue';
-import Demo1 from './demos/video-preview-mp-config.vue';
+import Demo1 from './demos/video-preview-mp-close-position.vue';
 import Demo2 from './demos/video-preview-mp-fullscreen.vue';
+import Demo3 from './demos/video-preview-mp-layer.vue';
+import Demo4 from './demos/video-preview-mp-selector.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,15 +23,41 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
+        <DemoModuleHead
+          :title="t('关闭按钮位置（closePosition）', 'Close button position (`closePosition`)')"
+          badge="close-position"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('fullscreen', 'Fullscreen')" badge="fullscreen" />
+        <DemoModuleHead
+          :title="t('全屏模式（fullScreen）', 'Full-screen mode (`fullScreen`)')"
+          badge="fullscreen"
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('层级与样式（zIndex / customStyle）', 'Stacking & style (`zIndex` / `customStyle`)')
+          "
+          badge="layer"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('实例标识（selector）', 'Instance id (`selector`)')"
+          badge="selector"
+        />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

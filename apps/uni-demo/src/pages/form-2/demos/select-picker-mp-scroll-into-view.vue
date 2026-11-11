@@ -1,0 +1,53 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — 滚动定位：scrollIntoView 打开时把选中行滚进视野，customContentClass 定制内容区。 */
+import { ref } from 'vue';
+import SnSelectPicker from '@snui/uni-src/components/sn-select-picker/sn-select-picker.vue';
+
+const options = [
+  { value: 'apple', label: '苹果' },
+  { value: 'banana', label: '香蕉' },
+  { value: 'cherry', label: '樱桃' },
+];
+
+const scrolled = ref<Array<string | number | boolean>>(['cherry']);
+const open = ref(false);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">scrollIntoView + customContentClass</text>
+    <view class="sn-demo__button" @tap="open = true">滚动定位</view>
+    <SnSelectPicker
+      v-model="scrolled"
+      v-model:visible="open"
+      :columns="options"
+      :scroll-into-view="true"
+      custom-content-class="sn-demo__content"
+      title="滚动定位"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__content {
+  padding-top: 8rpx;
+}
+</style>

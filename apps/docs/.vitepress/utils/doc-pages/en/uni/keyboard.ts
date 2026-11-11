@@ -81,16 +81,29 @@ import { Keyboard } from '@snui/uni';
     },
     {
       name: 'keyboard-mp-labels',
-      title:
-        'Key labels & the delete key (`deleteText` / `closeText` / `showDeleteKey` / `randomKeyOrder` / `zIndex`)',
-      blurb: 'deleteText / closeText; showDeleteKey=false; randomKeyOrder; zIndex.',
+      title: 'Key labels (deleteText / closeText)',
+      blurb: 'deleteText / closeText; zIndex.',
+    },
+    {
+      name: 'keyboard-mp-delete-key',
+      title: 'Delete key toggle (showDeleteKey)',
+      blurb: 'showDeleteKey=false renders no delete key.',
+    },
+    {
+      name: 'keyboard-mp-random-order',
+      title: 'Shuffled keys (randomKeyOrder)',
+      blurb: 'randomKeyOrder shuffles the digit keys.',
     },
     {
       name: 'keyboard-mp-scrim',
-      title:
-        'Scrim & behaviour (`modal` / `hideOnClickOutside` / `lockScroll` / `closeButtonLoading` / `safeAreaInsetBottom` / `rootPortal` / `custom*`)',
+      title: 'Scrim & sheet behaviour',
       blurb:
-        'modal; hideOnClickOutside=false; lockScroll=false; closeButtonLoading; safeAreaInsetBottom; rootPortal; customClass / customStyle.',
+        'modal; hideOnClickOutside=false; lockScroll=false; safeAreaInsetBottom; rootPortal; customClass / customStyle.',
+    },
+    {
+      name: 'keyboard-mp-close-loading',
+      title: 'Close-button loading (closeButtonLoading)',
+      blurb: 'closeButtonLoading: spinner in the close key, with an optional close-text.',
     },
   ],
   props: {

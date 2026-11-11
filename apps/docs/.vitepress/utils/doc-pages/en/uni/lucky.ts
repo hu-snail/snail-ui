@@ -54,9 +54,34 @@ import { Lucky } from '@snui/uni';
   },
   demos: [
     {
-      name: 'lucky-mp',
-      title: 'Demos',
-      blurb: '3×3 grid, play/stop two-phase animation, custom prize slot.',
+      name: 'lucky-mp-basic',
+      title: 'Basic usage',
+      blurb: '3×3 grid with the play/stop two-phase animation.',
+    },
+    {
+      name: 'lucky-mp-states',
+      title: 'State & events',
+      blurb: 'start / end event log + manual play()/stop(index); re-entrant calls ignored.',
+    },
+    {
+      name: 'lucky-mp-grid',
+      title: 'Grid size',
+      blurb: '3×3 / 4×4; perimeter cells = 2(rows+cols) - 4.',
+    },
+    {
+      name: 'lucky-mp-cell',
+      title: 'Cell gap & height',
+      blurb: 'gutter="16rpx" + cell-height="150rpx".',
+    },
+    {
+      name: 'lucky-mp-speed',
+      title: 'Speed & highlight',
+      blurb: 'speed is the highlight step interval; prize color overrides the highlight.',
+    },
+    {
+      name: 'lucky-mp-button-slot',
+      title: 'Custom button',
+      blurb: 'The #button slot scope provides isPlaying.',
     },
   ],
   props: {

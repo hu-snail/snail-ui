@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-keyboard — scrim and stacking: modal / hideOnClickOutside / lockScroll / closeButtonLoading / safeAreaInsetBottom / rootPortal / custom*. */
+/** Demo: sn-keyboard — scrim and sheet behaviour: modal / hideOnClickOutside / lockScroll / safeAreaInsetBottom / rootPortal / custom*. */
 import { ref } from 'vue';
 import SnKeyboard from '@snui/uni-src/components/sn-keyboard/sn-keyboard.vue';
 
@@ -8,9 +8,6 @@ const openModal = ref(false);
 
 const sticky = ref('');
 const openSticky = ref(false);
-
-const busy = ref('');
-const openBusy = ref(false);
 </script>
 
 <template>
@@ -37,20 +34,6 @@ const openBusy = ref(false);
       title="Tap outside keeps it open"
       :hide-on-click-outside="false"
       :lock-scroll="false"
-    />
-
-    <text class="sn-demo__title"
-      >closeButtonLoading (spinner in the close button) + rootPortal</text
-    >
-    <view class="sn-demo__button" @tap="openBusy = true">Close button busy</view>
-    <SnKeyboard
-      v-model="busy"
-      v-model:visible="openBusy"
-      :maxlength="6"
-      title="Close button busy"
-      close-button-loading
-      close-text="Submitting"
-      root-portal
     />
   </view>
 </template>

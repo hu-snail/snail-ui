@@ -79,9 +79,14 @@ import { Curtain } from '@snui/uni';
       blurb: '点图片不关闭 / 点遮罩关闭 / 关闭后保留节点 + zIndex=150。',
     },
     {
-      name: 'curtain-mp-custom',
+      name: 'curtain-mp-custom-style',
       title: '自定义样式',
-      blurb: '关闭按钮内联样式 + 根节点内联样式 + 长按识别菜单。',
+      blurb: 'custom-close-style 写在关闭按钮上；custom-style 写在根节点上。',
+    },
+    {
+      name: 'curtain-mp-longpress',
+      title: '长按识别菜单（showMenuByLongpress）',
+      blurb: '透传给 image，仅微信小程序长按出识别菜单。',
     },
   ],
   props: {

@@ -54,9 +54,13 @@ import { Tag } from '@snui/uni';
     },
     {
       name: 'tag-mp-size',
-      title: 'Size and shape',
-      blurb:
-        'Sizes small / medium / large / extra-large; round pill; mark asymmetric-corner marker.',
+      title: 'Size (`size`)',
+      blurb: 'Sizes small / default / large / extra-large compared side by side.',
+    },
+    {
+      name: 'tag-mp-round-mark',
+      title: 'Round & mark shapes (`round` / `mark`)',
+      blurb: 'round pill; mark asymmetric-corner marker; both stack together.',
     },
     {
       name: 'tag-mp-variant',
@@ -77,15 +81,25 @@ import { Tag } from '@snui/uni';
     },
     {
       name: 'tag-mp-closable',
-      title: 'Closable / new tag',
-      blurb:
-        'closable removes filter chips (tap the dashed tag to restore all); dynamic adds tags through the inline input.',
+      title: 'Closable tags (`closable`)',
+      blurb: 'closable removes filter chips via @close; tap the dashed tag to restore all.',
     },
     {
-      name: 'tag-mp-color-custom',
-      title: 'Custom colours and root styling',
+      name: 'tag-mp-dynamic',
+      title: 'Dynamic tags (`dynamic`)',
+      blurb: 'dynamic opens an inline input; @confirm adds the tag to the list, closable in turn.',
+    },
+    {
+      name: 'tag-mp-color',
+      title: 'Custom colors (`bgColor` / `color`)',
       blurb:
-        'bgColor brand-colour takeover (fill and border change together); color overrides the label only; iconPrefix + cssIcon font-glyph classes; customClass and customStyle.',
+        'bgColor brand-colour takeover (fill and border change together); color overrides the label only; plus customClass / customStyle root styling.',
+    },
+    {
+      name: 'tag-mp-css-icon',
+      title: 'Font icons (`cssIcon`)',
+      blurb:
+        'iconPrefix + cssIcon build the font-glyph class; a string cssIcon is the prefix itself; geometric placeholders prove the class lands.',
     },
   ],
   props: {

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— notice-bar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/notice-bar-mp-basic.vue';
-import Demo1 from './demos/notice-bar-mp-custom.vue';
-import Demo2 from './demos/notice-bar-mp-marquee.vue';
-import Demo3 from './demos/notice-bar-mp-type.vue';
-import Demo4 from './demos/notice-bar-mp-vertical.vue';
+import Demo1 from './demos/notice-bar-mp-closable.vue';
+import Demo2 from './demos/notice-bar-mp-custom.vue';
+import Demo3 from './demos/notice-bar-mp-marquee.vue';
+import Demo4 from './demos/notice-bar-mp-prefix.vue';
+import Demo5 from './demos/notice-bar-mp-type.vue';
+import Demo6 from './demos/notice-bar-mp-vertical.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,27 +25,45 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead
+          :title="t('可关闭（closable）', 'Closable (`closable`)')"
+          badge="closable"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('marquee', 'Marquee')" badge="marquee" />
+        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead
+          :title="t('跑马灯参数（delay / speed）', 'Marquee params (`delay` / `speed`)')"
+          badge="marquee"
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
+        <DemoModuleHead :title="t('前缀图标（prefix）', 'Prefix icon (`prefix`)')" badge="prefix" />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('类型（type）', 'Types (`type`)')" badge="type" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('垂直模式', 'Vertical')" badge="vertical" />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— image-preview 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/image-preview-mp-basic.vue';
-import Demo1 from './demos/image-preview-mp-behavior.vue';
-import Demo2 from './demos/image-preview-mp-config.vue';
+import Demo1 from './demos/image-preview-mp-close-behavior.vue';
+import Demo2 from './demos/image-preview-mp-close-position.vue';
 import Demo3 from './demos/image-preview-mp-gestures.vue';
+import Demo4 from './demos/image-preview-mp-index.vue';
+import Demo5 from './demos/image-preview-mp-longpress.vue';
+import Demo6 from './demos/image-preview-mp-selector.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,13 +25,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('行为', 'Behavior')" badge="behavior" />
+        <DemoModuleHead
+          :title="t('关闭与循环行为', 'Close & loop behaviour')"
+          badge="close-behavior"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('配置', 'Configuration')" badge="config" />
+        <DemoModuleHead
+          :title="
+            t('关闭按钮位置（closeIconPosition）', 'Close button position (`closeIconPosition`)')
+          "
+          badge="close-position"
+        />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -37,6 +48,24 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('gestures', 'Gestures')" badge="gestures" />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('页码与底部插槽', 'Page counter & footer slot')" badge="index" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('长按菜单与事件', 'Long-press menu & event')" badge="longpress" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('selector 命中区', '`selector` hit areas')" badge="selector" />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

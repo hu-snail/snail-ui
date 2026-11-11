@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: SnSliderBar — level scenes (gain / fan speed / taste) + edge glyphs. */
+/** Demo: SnSliderBar — level scenes (gain / fan speed / taste); track ticks per level. */
 import { ref, computed } from 'vue';
 import { SnSliderBar } from '@snui/vue-web';
 
@@ -14,7 +14,6 @@ const SPEED = [
 
 const speed = ref(50);
 const taste = ref(33);
-const volume = ref(40);
 
 const TASTE = computed(() => [
   { value: -40, label: '苦涩' },
@@ -45,20 +44,8 @@ const TASTE = computed(() => [
       :max="40"
       :step="10"
       :levels="TASTE"
-      leading-icon="Minus"
-      trailing-icon="Plus"
       show-value
       aria-label="Sweetness"
-    />
-
-    <span class="demo-label">头尾图标 + 拖动到不同档位</span>
-    <SnSliderBar
-      v-model="volume"
-      leading-icon="Volume1"
-      trailing-icon="Volume2"
-      label="音量"
-      show-value
-      aria-label="Volume"
     />
 
     <span class="demo-log">
