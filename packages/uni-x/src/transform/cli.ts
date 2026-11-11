@@ -72,6 +72,25 @@ function transformComponents(): { uvueCount: number; tsCount: number } {
   return { uvueCount, tsCount };
 }
 
+function transformUtils(): number {
+  // Shared `src/utils/*.ts` helpers are imported by generated components via
+  // `../../utils/...` — they must ship inside dist or npm consumption breaks.
+  const uniUtilsDir = resolve(pkgRoot, '../../packages/uni/src/utils');
+  const utilsDir = join(distDir, 'utils');
+  mkdirSync(utilsDir, { recursive: true });
+  let count = 0;
+  for (const entry of readdirSync(uniUtilsDir, { withFileTypes: true })) {
+    if (!entry.isFile() || isSkipFile(entry.name) || !entry.name.endsWith('.ts')) continue;
+    const relPath = `utils-shared/${entry.name}`;
+    const source: string = readFileSync(join(uniUtilsDir, entry.name), 'utf8');
+    const issues: TransformIssue[] = [];
+    writeFileSync(join(utilsDir, entry.name), applyPatches(source, relPath, issues));
+    outcomes.push({ relPath, issues });
+    count++;
+  }
+  return count;
+}
+
 function emitTheme(): void {
   const parts: string[] = [
     '/*',
@@ -169,6 +188,7 @@ function main(): void {
   rmSync(distDir, { recursive: true, force: true });
   mkdirSync(componentsDir, { recursive: true });
   const counts = transformComponents();
+  counts.tsCount += transformUtils();
   emitTheme();
   emitReport(counts);
   const dropped: number = outcomes.reduce(
