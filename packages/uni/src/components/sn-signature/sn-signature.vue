@@ -313,12 +313,14 @@ function extendStroke(point: SignaturePoint): boolean {
   const last = current.value[current.value.length - 1];
   if (!shouldSample(last, point)) return false;
   const from = last;
-  current.value = [...current.value, point];
+  // In-place push: this runs per sampled move, and a spread copy per move is
+  // quadratic over a long stroke. ref-wrapped arrays track mutations.
+  current.value.push(point);
   if (from !== undefined) {
     // Append one bar incrementally — no recompute of the whole stroke.
     const bars = barsOf([from, point], props.lineWidth);
     const bar = bars[bars.length - 1];
-    if (bar !== undefined) liveBars.value = [...liveBars.value, bar];
+    if (bar !== undefined) liveBars.value.push(bar);
   }
   return true;
 }
@@ -482,15 +484,10 @@ function dotStyle(point: SignaturePoint): string {
 const undoLabel = computed(() => props.undoText || props.revokeText);
 const redoLabel = computed(() => props.redoText || props.restoreText);
 
-/** Freeze the history into a plain value so nothing reactive leaks out. */
-function historySnapshot(): SignaturePaths {
-  return strokes.value.map((stroke) => stroke.map((point) => ({ ...point })));
-}
-
 const canUndoLabel = computed(() => `${undoLabel.value} (${strokes.value.length})`);
 const canRedoLabel = computed(() => `${redoLabel.value} (${undone.value.length})`);
 const stepHint = computed(() => String(configuredStep.value));
-const historySnapshotHint = computed(() => String(historySnapshot().length));
+const historySnapshotHint = computed(() => String(strokes.value.length));
 </script>
 
 <template>
@@ -543,7 +540,7 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
         :aria-disabled="props.disabled ? 'true' : undefined"
         :tabindex="props.disabled ? -1 : 0"
         @tap="onClear"
-        >{{ props.clearText }}</view
+        ><text class="sn-signature__button-text">{{ props.clearText }}</text></view
       >
 
       <view
@@ -553,7 +550,7 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
         :aria-label="canUndoLabel"
         :aria-disabled="!canUndo ? 'true' : undefined"
         @tap="revoke"
-        >{{ undoLabel }}</view
+        ><text class="sn-signature__button-text">{{ undoLabel }}</text></view
       >
 
       <view
@@ -563,7 +560,7 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
         :aria-label="canRedoLabel"
         :aria-disabled="!canRedo ? 'true' : undefined"
         @tap="restore"
-        >{{ redoLabel }}</view
+        ><text class="sn-signature__button-text">{{ redoLabel }}</text></view
       >
 
       <view
@@ -575,7 +572,7 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
         role="button"
         :aria-label="props.confirmText"
         @tap="confirm"
-        >{{ props.confirmText }}</view
+        ><text class="sn-signature__button-text">{{ props.confirmText }}</text></view
       >
     </view>
 
@@ -661,6 +658,17 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
 
 .sn-signature__button--primary {
   background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+/* App-side text does not inherit container color (§116.2) — the label
+   carries the same colors explicitly. */
+.sn-signature__button-text {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-signature__button--primary .sn-signature__button-text {
   color: var(--sn-mp-color-text-on-primary);
   font-weight: var(--sn-mp-font-weight-semibold);
 }

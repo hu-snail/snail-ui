@@ -591,7 +591,12 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
 }
 
 .sn-checkbox--disabled.sn-checkbox--variant-card,
-.sn-checkbox--disabled/* ── AUI additive: label-first + inverted marker ─────────────────────────── */
+.sn-checkbox--disabled,
+.sn-checkbox--readonly {
+  cursor: not-allowed;
+}
+
+/* ── AUI additive: label-first + inverted marker ─────────────────────────── */
 
 .sn-checkbox--label-label-first {
   display: flex;

@@ -199,8 +199,12 @@ const selected = computed<SelectValue[]>(() =>
   props.visible ? draft.value : toArray(props.modelValue),
 );
 
+/** Set view of `selected` — the template calls `isSelected` several times per
+ * row, and `includes` on a long list makes that O(n·s) per render. */
+const selectedSet = computed<Set<SelectValue>>(() => new Set(selected.value));
+
 function isSelected(value: SelectValue): boolean {
-  return selected.value.includes(value);
+  return selectedSet.value.has(value);
 }
 
 function commit(values: SelectValue[]): void {
@@ -241,6 +245,14 @@ const filteredColumns = computed<SelectOption[]>(() => {
 });
 
 function onSearch(event: Event): void {
+  // uni input events carry the text on `detail.value` (target is a synthetic
+  // POJO on uni-h5 — see sn-input's readEventValue); native events put it on
+  // `target.value`.
+  const detail = (event as unknown as { detail?: { value?: unknown } }).detail;
+  if (detail && typeof detail.value === 'string') {
+    keyword.value = detail.value;
+    return;
+  }
   keyword.value = (event.target as HTMLInputElement).value;
 }
 
@@ -260,7 +272,7 @@ watch(
 );
 
 const selectedItems = computed<SelectOption[]>(() =>
-  props.columns.filter((option) => selected.value.includes(optionValue(option))),
+  props.columns.filter((option) => selectedSet.value.has(optionValue(option))),
 );
 
 async function onConfirm(): Promise<void> {

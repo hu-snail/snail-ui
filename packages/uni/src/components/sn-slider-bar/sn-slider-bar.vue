@@ -347,6 +347,11 @@ function onKnobTouch(index: number, e: UniTouchEvent): void {
   else emitValue(low, Math.max(next, low), false);
 }
 
+/** Release the knob's pressed state — `touchstart` alone left it enlarged forever. */
+function onKnobRelease(): void {
+  draggingIndex.value = null;
+}
+
 /* ── misc ───────────────────────────────────────────────────────────────── */
 
 const rootClass = computed(() => [
@@ -444,6 +449,8 @@ const knobLabels = computed(() =>
           :aria-valuemin="range && index === 1 ? pair[0] : min"
           :aria-valuemax="range && index === 0 ? pair[1] : max"
           @touchstart.stop="onKnobTouch(index, $event)"
+          @touchend.stop="onKnobRelease"
+          @touchcancel.stop="onKnobRelease"
         />
       </view>
 

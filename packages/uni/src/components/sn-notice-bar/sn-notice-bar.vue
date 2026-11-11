@@ -164,6 +164,12 @@ function startRotateTimer(): void {
   clearRotateTimer();
   if (!props.scrollable || props.direction !== 'vertical' || lines.value.length <= 1) return;
   rotateTimer = setInterval(() => {
+    // A closed bar unmounts via v-if but the interval would keep firing
+    // (and emitting `next`) until unmount — stop it at the source.
+    if (closed.value) {
+      clearRotateTimer();
+      return;
+    }
     activeIndex.value = (activeIndex.value + 1) % lines.value.length;
     emit('next', activeIndex.value);
   }, rotateIntervalMs.value);

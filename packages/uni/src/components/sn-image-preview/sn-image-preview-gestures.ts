@@ -76,7 +76,7 @@ export function shouldPage(dx: number, velocity: number, width: number): boolean
 }
 
 /** Two-finger distance from a touch list (px); 0 when fewer than 2 touches. */
-export function touchDistance(touches: Array<{ clientX: number; clientY: number }>): number {
+export function touchDistance(touches: ArrayLike<{ clientX: number; clientY: number }>): number {
   if (touches.length < 2) return 0;
   const a = touches[0];
   const b = touches[1];
@@ -88,7 +88,7 @@ export function touchDistance(touches: Array<{ clientX: number; clientY: number 
 
 /** Midpoint of the first two touches (pinch origin); `null` below two touches. */
 export function touchMidpoint(
-  touches: Array<{ clientX: number; clientY: number }>,
+  touches: ArrayLike<{ clientX: number; clientY: number }>,
 ): { x: number; y: number } | null {
   if (touches.length < 2) return null;
   const a = touches[0];

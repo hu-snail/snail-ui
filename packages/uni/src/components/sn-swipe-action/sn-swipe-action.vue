@@ -223,7 +223,11 @@ function measureSide(side: SwipeActionPosition): void {
   if (typeof queryFactory !== 'function') return;
   try {
     const query = queryFactory();
-    const selection = query.select?.(`.sn-swipe-action__actions--${side}`);
+    // Scope to this component instance: without `.in()` a mini-program page
+    // resolves the selector against the PAGE, so every row in a list measures
+    // the first row's action width.
+    const scoped = (query.in?.(getCurrentInstance()?.proxy) as typeof query | undefined) ?? query;
+    const selection = scoped.select?.(`.sn-swipe-action__actions--${side}`);
     const measured = selection?.boundingClientRect?.((rect) => {
       const width = rect?.width;
       if (typeof width === 'number' && width > 0) {

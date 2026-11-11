@@ -183,11 +183,20 @@ const panelRows = computed<SnActionSheetPanel[][]>(() => {
   return rows;
 });
 
+/** Resolved icon data per name — the template resolves the same row icon
+ * twice per render (the `v-else-if` guard and the `:icon` prop); this keeps
+ * the registry lookup + markRaw to one run per icon string. */
+const rowIconCache = new Map<string, IconData | null>();
+
 /** Registry icon data for a row / cell, or `null` when it is an image URL. */
 function resolveRowIcon(icon: string | undefined): IconData | null {
   if (!icon) return null;
+  const cached = rowIconCache.get(icon);
+  if (cached !== undefined) return cached;
   const data = resolveIconByName(icon);
-  return data ? markRaw(data) : null;
+  const resolved = data ? markRaw(data) : null;
+  rowIconCache.set(icon, resolved);
+  return resolved;
 }
 
 function rowIconIsImage(icon: string | undefined): boolean {
@@ -381,14 +390,11 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
 }
 
 .sn-action-sheet__panels {
-  color: var(--sn-mp-color-text-tertiary);
-}
-
-.sn-action-sheet__panels {
   display: flex;
   flex-direction: column;
   gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-4) 0;
+  color: var(--sn-mp-color-text-tertiary);
 }
 
 .sn-action-sheet__panel-row {

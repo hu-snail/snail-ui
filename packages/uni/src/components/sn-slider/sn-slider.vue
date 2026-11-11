@@ -156,6 +156,15 @@ const activeWidthPercent = computed(() => {
 /** Track length in px, measured on mount and on `initSlider()`. */
 const trackSize = ref(0);
 
+/**
+ * Track origin in client coordinates, captured once per drag. Touch events
+ * carry client positions, so every `valueFromEvent` needs the origin —
+ * re-reading `getBoundingClientRect()` per touchmove would force a layout
+ * at frame rate (the track cannot move relative to the viewport mid-drag;
+ * `trackSize` follows the same per-measurement caching).
+ */
+const trackOrigin = ref<number | null>(null);
+
 type TrackElement = {
   getBoundingClientRect?: () => {
     left: number;
@@ -172,6 +181,16 @@ function initSlider(): void {
   if (!el || typeof el.getBoundingClientRect !== 'function') return;
   const rect = el.getBoundingClientRect();
   trackSize.value = props.vertical ? rect.height : rect.width;
+  trackOrigin.value = props.vertical ? rect.top : rect.left;
+}
+
+/** Capture geometry once per gesture (also covers mount-invisible tracks). */
+function measureTrack(): void {
+  const el = trackRef.value;
+  if (!el || typeof el.getBoundingClientRect !== 'function') return;
+  const rect = el.getBoundingClientRect();
+  trackSize.value = props.vertical ? rect.height : rect.width;
+  trackOrigin.value = props.vertical ? rect.top : rect.left;
 }
 
 onMounted(initSlider);
@@ -179,6 +198,7 @@ onMounted(initSlider);
 /** Start a drag from the track itself (tap-to-jump keeps the closest knob). */
 function onTrackStart(event: Event): void {
   if (props.disabled || dragKnob.value !== null) return;
+  measureTrack();
   if (!props.range) {
     dragKnob.value = 1;
     emit('dragstart', { value: props.modelValue });
@@ -226,16 +246,12 @@ function positionOf(event: Event): number {
 
 /** Convert an absolute pointer position into a snapped value. */
 function valueFromEvent(event: Event): number {
-  const el = trackRef.value;
-  const rect =
-    el && typeof el.getBoundingClientRect === 'function' ? el.getBoundingClientRect() : null;
-  const size =
-    trackSize.value > 0 ? trackSize.value : rect ? (props.vertical ? rect.height : rect.width) : 0;
+  const size = trackSize.value;
   if (size <= 0) return pair.value[1];
   const position = positionOf(event);
-  // uni-app touch events carry client coordinates, so the rect origin has to
-  // be subtracted to get a position relative to the track.
-  const local = rect ? position - (props.vertical ? rect.top : rect.left) : position;
+  // uni-app touch events carry client coordinates, so the cached track origin
+  // has to be subtracted to get a position relative to the track.
+  const local = trackOrigin.value === null ? position : position - trackOrigin.value;
   const ratio = props.vertical ? 1 - local / size : local / size;
   return snap(clampValue(props.min + ratio * span.value));
 }
@@ -248,6 +264,7 @@ function emitValue(next: [number, number]): void {
 
 function onKnobStart(knob: 0 | 1, event: Event): void {
   if (props.disabled) return;
+  measureTrack();
   dragKnob.value = knob;
   emit('dragstart', { value: props.modelValue });
   void event;
@@ -293,6 +310,7 @@ function onTrackCancel(): void {
 /** Tapping the track jumps the closest knob to the tapped position. */
 function onTrackTap(event: Event): void {
   if (props.disabled) return;
+  measureTrack();
   const raw = valueFromEvent(event);
   if (props.range) {
     const current = pair.value;

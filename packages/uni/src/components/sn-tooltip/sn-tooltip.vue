@@ -268,10 +268,14 @@ function open(): void {
   if (!props.modelValue) void enter();
 }
 
-/** Hide the bubble and notify the consumer. */
+/** Hide the bubble and notify the consumer. Idempotent (outside-close contract). */
 function close(): void {
+  // Idempotent: a bubble opened uncontrolled (consumer ignoring the v-model
+  // event) has `props.modelValue === false` while still shown — decide from
+  // the actual shown state (popover parity).
+  const wasUp = props.modelValue || isShown.value || isMounted.value;
   emit('update:modelValue', false);
-  if (props.modelValue) leave();
+  if (wasUp) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -283,7 +287,10 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
-  if (props.modelValue) {
+  // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
+  // bubble (consumer ignoring the v-model event) must still close on the
+  // second trigger tap (popover parity).
+  if (isShown.value) {
     close();
     return;
   }

@@ -20,10 +20,10 @@ export interface SourcePatch {
 export const PATCHES: Record<string, SourcePatch[]> = {
   'sn-icon/sn-icon.vue': [
     {
-      anchor: `  return style;
+      anchor: `  return props.customStyle;
 });
 </script>`,
-      replacement: `  return style
+      replacement: `  return props.customStyle
 })
 
 /**
@@ -68,7 +68,7 @@ const iconDataUrl = computed<string | undefined>(() => {
       :viewBox="viewBox"
       :fill="isFillIcon ? color : 'none'"
       :stroke="isFillIcon ? 'none' : color"
-      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
+      :stroke-width="isFillIcon ? undefined : strokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"
@@ -99,99 +99,9 @@ const iconDataUrl = computed<string | undefined>(() => {
   // natively (messageStatusClass / iconStatusClass computeds), so the uni-x
   // output no longer needs any rewrite here.
 
-  'sn-loading/sn-loading.vue': [
-    {
-      anchor: `          class="sn-loading__spinner-bar"
-`,
-      replacement: `          class="sn-loading__spinner-bar"
-          :class="'sn-loading__spinner-bar--' + i"
-`,
-      note: 'nth-child delays → per-index modifier class',
-    },
-    {
-      anchor: '<view v-for="i in 3" :key="i" class="sn-loading__dot" />',
-      replacement: `<view v-for="i in 3" :key="i" class="sn-loading__dot" :class="'sn-loading__dot--' + i" />`,
-      note: 'nth-child delays → per-index modifier class',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(1) {
-  animation-delay: 0s;
-  opacity: 1;
-}`,
-      replacement: '.sn-loading__spinner-bar--1 { animation-delay: 0s; opacity: 1; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(2) {
-  animation-delay: 0.1s;
-  opacity: 0.875;
-}`,
-      replacement: '.sn-loading__spinner-bar--2 { animation-delay: 0.1s; opacity: 0.875; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(3) {
-  animation-delay: 0.2s;
-  opacity: 0.75;
-}`,
-      replacement: '.sn-loading__spinner-bar--3 { animation-delay: 0.2s; opacity: 0.75; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(4) {
-  animation-delay: 0.3s;
-  opacity: 0.625;
-}`,
-      replacement: '.sn-loading__spinner-bar--4 { animation-delay: 0.3s; opacity: 0.625; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(5) {
-  animation-delay: 0.4s;
-  opacity: 0.5;
-}`,
-      replacement: '.sn-loading__spinner-bar--5 { animation-delay: 0.4s; opacity: 0.5; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(6) {
-  animation-delay: 0.5s;
-  opacity: 0.375;
-}`,
-      replacement: '.sn-loading__spinner-bar--6 { animation-delay: 0.5s; opacity: 0.375; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(7) {
-  animation-delay: 0.6s;
-  opacity: 0.25;
-}`,
-      replacement: '.sn-loading__spinner-bar--7 { animation-delay: 0.6s; opacity: 0.25; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(8) {
-  animation-delay: 0.7s;
-  opacity: 0.125;
-}`,
-      replacement: '.sn-loading__spinner-bar--8 { animation-delay: 0.7s; opacity: 0.125; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__dot:nth-child(2) {
-  animation-delay: 0.15s;
-}`,
-      replacement: '.sn-loading__dot--2 { animation-delay: 0.15s; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__dot:nth-child(3) {
-  animation-delay: 0.3s;
-}`,
-      replacement: '.sn-loading__dot--3 { animation-delay: 0.3s; }',
-      note: 'nth-child rewritten',
-    },
-  ],
+  // sn-loading/sn-loading.vue: former :nth-child stagger patches are gone —
+  // the source emits per-index modifier classes (--1..--8 / --1..--3) natively.
+
 
   'sn-picker-view/sn-picker-view-drag.ts': [
     {

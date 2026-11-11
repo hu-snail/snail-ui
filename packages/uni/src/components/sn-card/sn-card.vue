@@ -84,7 +84,11 @@ defineSlots<{
     role="region"
   >
     <view v-if="$slots.title || title" :class="['sn-card__title', customTitleClass]">
-      <slot name="title">{{ title }}</slot>
+      <!-- App-side text does not inherit container typography (§116.2) — the
+           fallback rides its own <text>; slot content brings its own. -->
+      <slot name="title">
+        <text class="sn-card__title-text">{{ title }}</text>
+      </slot>
     </view>
     <view v-if="$slots.default" :class="['sn-card__content', customContentClass]">
       <slot />
@@ -107,7 +111,7 @@ defineSlots<{
   background: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-card-radius, 16rpx);
-  font-size: 28rpx;
+  font-size: var(--sn-mp-font-size-md);
   line-height: 1.5;
 }
 
@@ -118,10 +122,18 @@ defineSlots<{
 }
 
 .sn-card__title {
-  font-size: 32rpx;
+  font-size: var(--sn-mp-font-size-lg);
   font-weight: 600;
   color: var(--sn-mp-color-text-primary);
   margin-bottom: 16rpx;
+}
+
+/* Fallback title text — carries its own typography because App-side text
+   does not inherit from the container (§116.2). */
+.sn-card__title-text {
+  font-size: var(--sn-mp-font-size-lg);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
 }
 
 .sn-card__content {
@@ -137,13 +149,16 @@ defineSlots<{
 
 /* Doodle skin */
 .snui-skin-doodle .sn-card {
-  border: 4rpx solid #1a1a1a;
-  box-shadow: 6rpx 6rpx 0 #1a1a1a;
+  border: 4rpx solid var(--sn-mp-color-text-primary);
+  box-shadow: 6rpx 6rpx 0 var(--sn-mp-color-text-primary);
 }
 .snui-skin-doodle .sn-card__title {
   font-weight: 700;
 }
+.snui-skin-doodle .sn-card__title-text {
+  font-weight: 700;
+}
 .snui-skin-doodle .sn-card__footer {
-  border-top: 4rpx dashed #1a1a1a;
+  border-top: 4rpx dashed var(--sn-mp-color-text-primary);
 }
 </style>

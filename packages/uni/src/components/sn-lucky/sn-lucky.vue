@@ -86,6 +86,14 @@ const order = computed<{ row: number; col: number }[]>(() => {
 });
 
 const perimeterCount = computed(() => order.value.length);
+
+/** Perimeter index by `row:col` — the template resolves each cell's walk
+ * order several times per render, and a findIndex per call is O(perimeter). */
+const orderIndexByCell = computed<Map<string, number>>(() => {
+  const map = new Map<string, number>();
+  order.value.forEach((cell, index) => map.set(`${cell.row}:${cell.col}`, index));
+  return map;
+});
 const activeIndex = ref(-1);
 const playing = ref(false);
 let cycleTimer: ReturnType<typeof setInterval> | null = null;
@@ -165,7 +173,7 @@ const midRows = computed(() => rows.value - 2);
 
 /** 周长序号：格子坐标 → 0..P-1，不在周长上的返回 -1。 */
 function orderIndex(row: number, col: number): number {
-  return order.value.findIndex((cell) => cell.row === row && cell.col === col);
+  return orderIndexByCell.value.get(`${row}:${col}`) ?? -1;
 }
 
 function prizeAt(index: number): SnLuckyPrize | null {

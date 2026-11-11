@@ -187,27 +187,27 @@ const rootStyle = computed(() => {
 .sn-divider__text {
   padding: 0 24rpx;
   color: var(--sn-mp-color-text-secondary);
-  font-size: 28rpx;
+  font-size: var(--sn-mp-font-size-md);
   background: var(--sn-mp-color-background-surface);
 }
 
 /* Doodle skin. */
 .snui-skin-doodle .sn-divider--horizontal {
   border-top-width: 5rpx;
-  border-top-color: #1a1a1a;
+  border-top-color: var(--sn-mp-color-text-primary);
   border-top-style: dashed;
 }
 .snui-skin-doodle .sn-divider--vertical {
   border-left-width: 5rpx;
-  border-left-color: #1a1a1a;
+  border-left-color: var(--sn-mp-color-text-primary);
   border-left-style: dashed;
 }
 .snui-skin-doodle .sn-divider__text {
   padding: 4rpx 20rpx;
-  border: 4rpx solid #1a1a1a;
+  border: 4rpx solid var(--sn-mp-color-text-primary);
   border-radius: 20rpx 4rpx / 4rpx 20rpx;
   font-weight: 700;
   background: var(--sn-mp-color-background-surface);
-  box-shadow: 4rpx 4rpx 0 #1a1a1a;
+  box-shadow: 4rpx 4rpx 0 var(--sn-mp-color-text-primary);
 }
 </style>

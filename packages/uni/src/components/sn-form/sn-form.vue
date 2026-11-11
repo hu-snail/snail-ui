@@ -16,6 +16,7 @@
 import { computed, onBeforeUnmount, provide, reactive, ref } from 'vue';
 import {
   FORM_CONTEXT_KEY,
+  deepClone,
   type FormItemHandle,
   type FormItemState,
   type FormRules,
@@ -111,7 +112,10 @@ const ctx = reactive({
   // to be pinned to `false` here, which made the prop a no-op.
   statusIcon: props.statusIcon,
   labelPosition: props.labelPosition,
-  labelWidth: props.labelWidth,
+  /* `title-width` is wd-form's name for the label column width; folding it into
+   * `labelWidth` is what lets every descendant FormItem inherit it without a
+   * second inheritance channel. */
+  labelWidth: props.titleWidth ?? props.labelWidth,
   disabled: props.disabled,
   validateTrigger: props.validateTrigger,
   resetOnChange: props.resetOnChange,
@@ -127,29 +131,6 @@ const ctx = reactive({
   titleWidth: props.titleWidth,
   layout: props.layout,
 });
-
-ctx.model = props.model;
-ctx.rules = props.rules;
-ctx.showMessage = props.showMessage;
-ctx.labelPosition = props.labelPosition;
-/* `title-width` is wd-form's name for the label column width; folding it into
- * `labelWidth` is what lets every descendant FormItem inherit it without a
- * second inheritance channel. */
-ctx.labelWidth = props.titleWidth ?? props.labelWidth;
-ctx.disabled = props.disabled;
-ctx.validateTrigger = props.validateTrigger;
-ctx.resetOnChange = props.resetOnChange;
-ctx.errorType = props.errorType;
-ctx.size = props.size;
-ctx.valueAlign = props.valueAlign;
-ctx.asteriskPosition = props.asteriskPosition;
-ctx.hideAsterisk = props.hideAsterisk;
-ctx.ellipsis = props.ellipsis;
-ctx.border = props.border;
-ctx.center = props.center;
-ctx.schema = props.schema;
-ctx.titleWidth = props.titleWidth;
-ctx.layout = props.layout;
 
 provide(FORM_CONTEXT_KEY, ctx);
 
@@ -269,17 +250,6 @@ onBeforeUnmount(() => {
   registryOrder = [];
   initialValues.clear();
 });
-
-function deepClone<T>(value: T): T {
-  if (value === null || value === undefined) return value;
-  if (typeof value !== 'object') return value;
-  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
-  const out: Record<string, unknown> = {};
-  for (const k of Object.keys(value as Record<string, unknown>)) {
-    out[k] = deepClone((value as Record<string, unknown>)[k]);
-  }
-  return out as unknown as T;
-}
 </script>
 
 <template>

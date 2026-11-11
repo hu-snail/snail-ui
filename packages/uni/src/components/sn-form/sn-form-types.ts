@@ -99,3 +99,16 @@ export function setByPath(
   const last = parts[parts.length - 1]!;
   cur[last] = value;
 }
+
+/** Structured clone for plain model data — arrays and plain objects only
+ * (form values never carry Dates / Maps / class instances by contract). */
+export function deepClone<T>(value: T): T {
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
+  const out: Record<string, unknown> = {};
+  for (const k of Object.keys(value as Record<string, unknown>)) {
+    out[k] = deepClone((value as Record<string, unknown>)[k]);
+  }
+  return out as unknown as T;
+}

@@ -200,7 +200,8 @@ function toggleAll(checked: boolean, skipDisabled = false): void {
     commit(next);
     return;
   }
-  const kept = selection.value.filter((value) => !eligible.some((child) => child.name === value));
+  const eligibleNames = new Set(eligible.map((child) => child.name));
+  const kept = selection.value.filter((value) => !eligibleNames.has(value));
   const floor = props.min > 0 ? props.min : 0;
   if (kept.length >= floor) commit(kept);
 }

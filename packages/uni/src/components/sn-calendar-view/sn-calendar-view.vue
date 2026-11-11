@@ -302,7 +302,6 @@ function buildCells(block: MonthBlock): Cell[] {
   const cells: Cell[] = [];
   const min = minTimestamp.value;
   const max = maxTimestamp.value;
-  const today = now;
 
   const push = (date: number, day: number, filler: boolean): void => {
     const type = filler ? '' : stateOf(date);
@@ -334,11 +333,9 @@ function buildCells(block: MonthBlock): Cell[] {
   for (let day = 1; day <= total; day += 1) {
     const date = startOfDay(new Date(block.year, block.month - 1, day).getTime());
     push(date, day, false);
-    if (date === today) {
-      // Mark "today" so the CSS can ring it. `type` stays the selection state;
-      // the ring is a separate class driven by `date`.
-    }
   }
+  // "today" is ringed purely by `cellClass` comparing `cell.date === now`
+  // (a separate class driven by `date`) — no per-cell marking needed here.
   const remainder = cells.length % 7;
   if (remainder !== 0) {
     for (let i = remainder; i < 7; i += 1) push(0, 0, true);

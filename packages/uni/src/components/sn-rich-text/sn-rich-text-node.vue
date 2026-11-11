@@ -283,7 +283,6 @@ watch(
   () => mediaSrc.value,
   () => {
     audioState.playing = false;
-    audioState.playing = false;
   },
 );
 

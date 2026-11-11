@@ -526,7 +526,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 }
 
 .sn-radio--disabled.sn-radio--variant-card,
-.sn-radio--disabled.sn-radio--disabled,
+.sn-radio--disabled,
 .sn-radio--readonly {
   cursor: not-allowed;
 }

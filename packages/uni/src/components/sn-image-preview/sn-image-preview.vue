@@ -338,7 +338,7 @@ function pageDelta(delta: number): number {
 
 function handleTouchStart(event: TouchEvent): void {
   if (!visible.value || sessionImages.value.length === 0) return;
-  const touches = Array.from(event.touches ?? []);
+  const touches = event.touches ?? [];
   if (touches.length === 0) return;
   clearTimers();
   animating.value = false;
@@ -377,7 +377,7 @@ function handleTouchMove(event: TouchEvent): void {
   // Keep the page behind from scrolling while the layer is open (mirrors
   // sn-popup's scroll lock; the pipeline makes this an optional call).
   event.preventDefault();
-  const touches = Array.from(event.touches ?? []);
+  const touches = event.touches ?? [];
   if (touches.length === 0) return;
 
   if (touches.length >= 2) {
@@ -427,7 +427,7 @@ function handleTouchMove(event: TouchEvent): void {
 
 function handleTouchEnd(event: TouchEvent): void {
   if (!visible.value || sessionImages.value.length === 0) return;
-  const touches = Array.from(event.touches ?? []);
+  const touches = event.touches ?? [];
 
   // One finger lifted from a pinch → continue panning with the remaining one.
   if (touches.length >= 2) return;

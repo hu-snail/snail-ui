@@ -327,9 +327,6 @@ let f2DragEngaged = false;
  */
 let secondFloorArmed = false;
 
-/** Whether scroll-to-bottom loads the next page. */
-const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
-
 /**
  * Browser-only reveal-box height: fixed tall box the pull translates in.
  * `refresherMaxDistance` (0 = legacy `threshold × 3`) sets the hard clamp;
@@ -373,7 +370,7 @@ const isFooterFail = computed(() => !isLoading.value && loadMorePhase.value === 
 const showFooter = computed(() => {
   if (isLoading.value) return true;
   if (props.modelValue.length === 0) return loadMorePhase.value === 'fail';
-  if (!isLoadMoreEnabled.value) return false;
+  if (!props.loadMoreEnabled) return false;
   return true;
 });
 
@@ -533,7 +530,7 @@ function startRefresh(animate: boolean): void {
 
 /** Query the next page (scrolltolower / footer tap). */
 function startLoadMore(): void {
-  if (isLoading.value || noMore.value || !isLoadMoreEnabled.value || !hasLoaded.value) {
+  if (isLoading.value || noMore.value || !props.loadMoreEnabled || !hasLoaded.value) {
     return;
   }
   phase.value = 'loadMore';
@@ -688,7 +685,7 @@ function dampNativePull(rawDy: number): number {
   nativePullDis = dampRaw(rawDy);
   /* Never advertise a pull past the clamp (keeps thresholds honest). */
   nativePullDis = Math.min(nativePullDis, maxPull);
-  paintNativePull(Math.round(nativePullDis), maxPull);
+  paintNativePull(Math.round(nativePullDis));
   return nativePullDis;
 }
 
@@ -729,16 +726,24 @@ function nativeScrollRoot(): HTMLElement | null {
   return el instanceof HTMLElement ? el : null;
 }
 
+/** Cached refresher strip node — a `querySelector` per `refresherpulling`
+ * event (touchmove frequency) forces layout; the node only changes when the
+ * refresher remounts, which `resetNativePull` invalidates for. */
+let nativeStripEl: HTMLElement | null = null;
+
 /**
  * Rewrite the native refresher strip height on uni-h5. The strip node is
  * looked up defensively (`uni-scroll-view-refresher` is a uni-h5 internal
  * class); a miss silently skips the repaint and the native raw-distance
  * behaviour returns — the takeover is a pure visual enhancement.
  */
-function paintNativePull(pull: number, maxPull: number): void {
+function paintNativePull(pull: number): void {
   const root = nativeScrollRoot();
   if (root === null) return;
-  const strip = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  if (nativeStripEl === null || !root.contains(nativeStripEl)) {
+    nativeStripEl = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  }
+  const strip = nativeStripEl;
   if (!strip) return;
   /* The clamp rides `max-height`, NOT `height`: uni-h5's render pass
    * rewrites the strip `height` to the raw finger distance on every pulling
@@ -750,7 +755,6 @@ function paintNativePull(pull: number, maxPull: number): void {
    * damped pull. `resetNativePull` removes it when the gesture settles. */
   strip.style.setProperty('max-height', `${Math.round(pull)}px`, 'important');
   strip.style.setProperty('overflow', 'hidden', 'important');
-  void maxPull;
 }
 
 function onRefresherRefresh(): void {
@@ -801,8 +805,14 @@ function resetNativePull(): void {
   nativePullActive = false;
   if (!isUniH5Host) return;
   const root = nativeScrollRoot();
-  if (root === null) return;
-  const strip = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  if (root === null) {
+    nativeStripEl = null;
+    return;
+  }
+  if (nativeStripEl === null || !root.contains(nativeStripEl)) {
+    nativeStripEl = root.querySelector<HTMLElement>('.uni-scroll-view-refresher');
+  }
+  const strip = nativeStripEl;
   if (strip) {
     strip.style.removeProperty('max-height');
     strip.style.removeProperty('overflow');

@@ -306,6 +306,25 @@ describe('sn-input-number', () => {
       await vi.advanceTimersByTimeAsync(400);
       expect(w.emitted('update:modelValue')).toBeUndefined();
     });
+
+    it('does not add a trailing step when the tap fires after a long-press release', async () => {
+      // Regression: the repeat interval steps N times, then the release `@tap`
+      // stepped once more — every long press over-shot by exactly one.
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 0, max: 100, longPress: true });
+      await w.find('.sn-input-number__plus').trigger('touchstart');
+      await vi.advanceTimersByTimeAsync(400);
+      const settled = w.vm.modelValue as number;
+      const settledCount = w.emitted('update:modelValue')?.length ?? 0;
+      await w.find('.sn-input-number__plus').trigger('touchend');
+      await w.find('.sn-input-number__plus').trigger('tap');
+      expect(w.vm.modelValue).toBe(settled);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBe(settledCount);
+      // A fresh tap after a new press still steps exactly once.
+      await w.find('.sn-input-number__plus').trigger('touchstart');
+      await w.find('.sn-input-number__plus').trigger('tap');
+      expect(w.vm.modelValue).toBe(settled + 1);
+    });
   });
 
   /* ── Extended coverage: presentation props, a11y, coercion edges ── */

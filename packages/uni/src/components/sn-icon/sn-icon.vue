@@ -112,14 +112,6 @@ const viewBox = computed(() =>
 );
 
 /**
- * 生效描边宽度 — 传给内层 `<svg>`。uni-app rpx 在运行时按视口宽度解释，
- * 对 SVG 属性值同样适用（浏览器 / 原生渲染层映射为 px）。
- */
-const effectiveStrokeWidth = computed(() =>
-  props.strokeWidthAbsolute ? props.strokeWidth : props.strokeWidth,
-);
-
-/**
  * 本实例走哪条渲染路径。
  *
  * `name`（或字符串 `css-icon`）选择 iconfont 字形路径；SVG 数据（对象或
@@ -262,17 +254,23 @@ const remoteStyle = computed(() =>
 
 /** 两条路径共享的尺寸盒。数字保持 px 契约；无单位数字字符串（"48"）按 rpx
  * 归一——直接写进 CSS width 是非法值，浏览器忽略后 SVG 会按默认内在尺寸
- * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。 */
+ * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。
+ *
+ * 字符串 `customStyle` 不能塞进对象里的 `cssText` 键：patchStyle 最后才
+ * 处理它，会把同对象里先设置的 width/height/color 整体抹掉。改为数组
+ * 绑定让 Vue 逐项合并。 */
 const boxStyle = computed(() => {
   const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
   const style: Record<string, string> = { width: len, height: len };
   if (props.color !== 'currentColor') style.color = props.color;
-  if (typeof props.customStyle === 'string') {
-    if (props.customStyle !== '') style.cssText = props.customStyle;
-  } else {
-    Object.assign(style, props.customStyle);
-  }
   return style;
+});
+
+const customStyleBinding = computed(() => {
+  if (typeof props.customStyle === 'string') {
+    return props.customStyle !== '' ? props.customStyle : undefined;
+  }
+  return props.customStyle;
 });
 </script>
 
@@ -282,7 +280,7 @@ const boxStyle = computed(() => {
     :class="[customClass]"
     data-snui-component="icon"
     :aria-hidden="true"
-    :style="boxStyle"
+    :style="[boxStyle, customStyleBinding]"
   >
     <!--
       iconfont 字形路径（wot-ui 原生）：类名承载字形，样式表由宿主 app 提供。
@@ -313,7 +311,7 @@ const boxStyle = computed(() => {
       :viewBox="viewBox"
       :fill="isFillIcon ? color : 'none'"
       :stroke="isFillIcon ? 'none' : color"
-      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
+      :stroke-width="isFillIcon ? undefined : strokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"

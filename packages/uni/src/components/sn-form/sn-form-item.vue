@@ -15,6 +15,7 @@ import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import {
   FORM_CONTEXT_KEY,
   FORM_ITEM_STATE_KEY,
+  deepClone,
   type FormContext,
   type FormItemHandle,
   type FormItemState,
@@ -295,17 +296,6 @@ const gridStyle = computed(() => {
   const track = width === 'auto' ? 'auto' : typeof width === 'number' ? `${width}rpx` : width;
   return { gridTemplateColumns: `${track} 1fr` };
 });
-
-function deepClone<T>(value: T): T {
-  if (value === null || value === undefined) return value;
-  if (typeof value !== 'object') return value;
-  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
-  const out: Record<string, unknown> = {};
-  for (const k of Object.keys(value as Record<string, unknown>)) {
-    out[k] = deepClone((value as Record<string, unknown>)[k]);
-  }
-  return out as unknown as T;
-}
 </script>
 
 <template>

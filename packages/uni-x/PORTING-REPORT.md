@@ -9,9 +9,9 @@
 | --- | --- |
 | template-attr | 170 |
 | defineSlots-stripped | 69 |
-| unsupported-property | 31 |
-| patch | 25 |
-| template-bare-text | 15 |
+| unsupported-property | 32 |
+| patch | 13 |
+| template-bare-text | 12 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
 
@@ -85,7 +85,6 @@
 ### sn-card/sn-card.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- bare text wrapped in <text> — `template-bare-text` (line 8): 1 bare text node(s) wrapped in <text>
 
 ### sn-cascader/sn-cascader.uvue
 
@@ -113,6 +112,7 @@
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
 - unsupported property stripped — `unsupported-property` (line 13): cursor stripped
 - unsupported property stripped — `unsupported-property` (line 108): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 219): cursor stripped
 
 ### sn-circle/sn-circle.uvue
 
@@ -328,20 +328,8 @@
 
 ### sn-loading/sn-loading.uvue
 
-- patch applied — `patch`: nth-child delays → per-index modifier class
-- patch applied — `patch`: nth-child delays → per-index modifier class
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
-- patch applied — `patch`: nth-child rewritten
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- bare text wrapped in <text> — `template-bare-text` (line 42): 1 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 48): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
 ### sn-loadmore/sn-loadmore.uvue
@@ -399,7 +387,6 @@
 
 ### sn-picker-view/sn-picker-view.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 43): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
 - unsupported property stripped — `unsupported-property` (line 25): -webkit-user-select stripped
@@ -407,7 +394,7 @@
 
 ### sn-picker/sn-picker.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 21): 2 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 28): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
@@ -513,7 +500,6 @@
 ### sn-signature/sn-signature.uvue
 
 - script DOM guard — `script-guard`: 1 DOM event call(s) converted to optional calls
-- bare text wrapped in <text> — `template-bare-text` (line 51): 4 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
@@ -529,7 +515,7 @@
 
 ### sn-slider-bar/sn-slider-bar.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 67): 1 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 69): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 
 ### sn-slider/sn-slider.uvue

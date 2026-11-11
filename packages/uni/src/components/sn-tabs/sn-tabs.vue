@@ -504,8 +504,11 @@ const scrollIntoViewId = computed(() => {
   background-color: var(--sn-mp-color-background-surface);
 }
 
+/* The sticky prop keeps its class + inline `top` so hosts can pin the strip,
+   but `position: sticky` itself is unrepresentable on uni-app x App (§116.2)
+   — pinning there is the host's job (list-view + sticky-section), the same
+   degradation contract as sn-sticky. */
 .sn-tabs__nav--sticky {
-  position: sticky;
   z-index: 1;
 }
 

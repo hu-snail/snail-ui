@@ -244,21 +244,30 @@ function reset(): void {
   revealed.value = false;
   scratchedLength = 0;
   prevPoint = null;
+  canvasRect = null;
   if (realScratch.value && ctx !== null) {
     if (props.coverImg !== '') paintCoverImage();
     else paintCover();
   }
 }
 
+/** Canvas viewport offset, cached per stroke — a getBoundingClientRect per
+ * touchmove forces sync layout at frame rate; the canvas cannot move
+ * mid-stroke (invalidate in `onTouchEnd` / `reset`). */
+let canvasRect: { left: number; top: number } | null = null;
+
 function touchPoint(event: unknown): { x: number; y: number } | null {
   const touches = (event as { touches?: { clientX?: number; clientY?: number }[] })?.touches;
   const touch = touches?.[0];
   if (touch?.clientX === undefined || touch.clientY === undefined || box === null) return null;
   // 触摸坐标以画布为原点：减去 canvas 元素的视口偏移。
-  const rect = (
-    canvasEl.value as { getBoundingClientRect?: () => { left: number; top: number } } | null
-  )?.getBoundingClientRect?.();
-  return { x: touch.clientX - (rect?.left ?? 0), y: touch.clientY - (rect?.top ?? 0) };
+  if (canvasRect === null) {
+    const rect = (
+      canvasEl.value as { getBoundingClientRect?: () => { left: number; top: number } } | null
+    )?.getBoundingClientRect?.();
+    if (rect !== undefined) canvasRect = { left: rect.left, top: rect.top };
+  }
+  return { x: touch.clientX - (canvasRect?.left ?? 0), y: touch.clientY - (canvasRect?.top ?? 0) };
 }
 
 function scratchTo(point: { x: number; y: number }): void {
@@ -338,6 +347,7 @@ function onTouchMove(event: unknown): void {
 function onTouchEnd(): void {
   if (opened.value) return;
   prevPoint = null;
+  canvasRect = null;
   if (realScratch.value) finishIfReached();
 }
 

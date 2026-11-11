@@ -213,10 +213,12 @@ async function stepBy(direction: 1 | -1): Promise<void> {
 }
 
 function onMinus(): void {
+  if (consumePressTap()) return;
   void stepBy(-1);
 }
 
 function onPlus(): void {
+  if (consumePressTap()) return;
   void stepBy(1);
 }
 
@@ -268,6 +270,19 @@ function onFieldFocus(): void {
 /* ── Long press (AGENTS.md §41 — one timer, always cleared) ────────────── */
 
 let pressTimer: ReturnType<typeof setInterval> | null = null;
+/**
+ * Set once the repeat interval has stepped — the `@tap` that always follows
+ * a long-press release must not add one extra step (same trap as the
+ * `consumeTap` flag in sn-keyboard-keys).
+ */
+let pressTicked = false;
+
+/** Consume the trailing tap after a long-press repeat; true = swallow it. */
+function consumePressTap(): boolean {
+  if (!pressTicked) return false;
+  pressTicked = false;
+  return true;
+}
 
 function clearPressTimer(): void {
   if (pressTimer !== null) {
@@ -279,11 +294,13 @@ function clearPressTimer(): void {
 function onPressStart(direction: 1 | -1): void {
   if (!props.longPress) return;
   clearPressTimer();
+  pressTicked = false;
   pressTimer = setInterval(() => {
     if (!canStep(direction)) {
       clearPressTimer();
       return;
     }
+    pressTicked = true;
     void stepBy(direction);
   }, 120);
 }
