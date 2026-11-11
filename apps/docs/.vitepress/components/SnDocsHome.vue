@@ -16,7 +16,7 @@
 import { computed, ref } from 'vue';
 import { useData, useRouter } from 'vitepress';
 import { ArrowRight } from 'lucide-vue-next';
-import { SnButton, SnConfigProvider, SnIcon, SnWaterfall } from '@snui/vue-web';
+import { SnButton, SnConfigProvider, SnIcon, SnSegment, SnWaterfall } from '@snui/vue-web';
 import { snCssVars } from '@snui/tokens';
 import { allPacks, getPack } from '@snui/style-packs';
 import {
@@ -78,6 +78,11 @@ const router = useRouter();
 /** Hero 端切换：Web / Uni。决定双 CTA 的落点（uni 面向移动端文档）。 */
 type HomeEnd = 'web' | 'uni';
 const activeEnd = ref<HomeEnd>('web');
+/** 胶囊选项：内容即端名（中英文案一致）。 */
+const endOptions = [
+  { value: 'web' as const, label: 'Web' },
+  { value: 'uni' as const, label: 'Uni' },
+];
 /**
  * 场景案例筛选 —— 4 个胶囊（全部 / AI 原生 / 核心表单与数据 / 媒体与交互）。
  * 只过滤不重排：卡头编号由注册表派生（home-cases.ts `caseIndexLabels`），
@@ -232,29 +237,9 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
 
           <p class="sn-home__subtitle">{{ t.subtitle }}</p>
 
-          <!-- 端切换胶囊（设计稿：Web / Uni） -->
-          <div class="sn-home__tabs" role="tablist" :aria-label="t.tablistLabel">
-            <button
-              type="button"
-              role="tab"
-              class="sn-home__tab"
-              :class="{ 'sn-home__tab--active': activeEnd === 'web' }"
-              :aria-selected="activeEnd === 'web'"
-              @click="activeEnd = 'web'"
-            >
-              Web
-            </button>
-            <span class="sn-home__tab-divider" aria-hidden="true">/</span>
-            <button
-              type="button"
-              role="tab"
-              class="sn-home__tab"
-              :class="{ 'sn-home__tab--active': activeEnd === 'uni' }"
-              :aria-selected="activeEnd === 'uni'"
-              @click="activeEnd = 'uni'"
-            >
-              Uni
-            </button>
+          <!-- 端切换胶囊（设计稿：Web / Uni）—— 胶囊本体 = 组件库 SnSegment -->
+          <div class="sn-home__tabs" :aria-label="t.tablistLabel">
+            <SnSegment v-model="activeEnd" :options="endOptions" size="lg" />
           </div>
 
           <div class="sn-home__actions">
@@ -480,66 +465,10 @@ const layoutHref = computed(() => `${localePrefix.value}/ecosystem/plugins/admin
   color: rgb(226 232 244 / 0.72);
 }
 
-/* ── 端切换胶囊 ── */
+/* ── 端切换胶囊：外壳/滑块/交互由 SnSegment 承载，这里只管排版间距 ── */
 .sn-home__tabs {
   display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
   margin-bottom: 28px;
-  border: 1px solid rgb(15 23 42 / 0.12);
-  border-radius: 999px;
-  background: rgb(15 23 42 / 0.04);
-}
-.sn-home--dark .sn-home__tabs {
-  border-color: rgb(255 255 255 / 0.14);
-  background: rgb(255 255 255 / 0.06);
-}
-.sn-home__tab {
-  appearance: none;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 6px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  cursor: pointer;
-  background: transparent;
-  color: #475467;
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-}
-.sn-home__tab:hover {
-  color: #101828;
-}
-.sn-home__tab--active {
-  background: #101828;
-  border-color: #101828;
-  color: #ffffff;
-}
-.sn-home--dark .sn-home__tab {
-  color: rgb(226 232 244 / 0.62);
-}
-.sn-home--dark .sn-home__tab:hover {
-  color: #f2f5fb;
-}
-.sn-home--dark .sn-home__tab--active {
-  background: rgb(9 14 28 / 0.92);
-  border-color: rgb(255 255 255 / 0.2);
-  color: #ffffff;
-}
-.sn-home__tab:focus-visible {
-  outline: 2px solid var(--sn-web-color-action-primary);
-  outline-offset: 1px;
-}
-.sn-home__tab-divider {
-  color: rgb(16 24 40 / 0.3);
-  user-select: none;
-}
-.sn-home--dark .sn-home__tab-divider {
-  color: rgb(226 232 244 / 0.4);
 }
 
 /* ── Actions ── */

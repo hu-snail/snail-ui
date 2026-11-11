@@ -40,6 +40,13 @@ export { default as SnRadioButton } from './radio/SnRadioButton.vue';
 export { default as SnRadioGroup } from './radio/SnRadioGroup.vue';
 export type { SnRadioValue, SnRadioOption } from './radio/sn-radio-types';
 export { default as SnSwitch } from './switch/SnSwitch.vue';
+export { default as SnSegment } from './segment/SnSegment.vue';
+export type {
+  SnSegmentKey,
+  SnSegmentSize,
+  SnSegmentVariant,
+  SnSegmentOption,
+} from './segment/sn-segment-types';
 export { default as SnSlider } from './slider/SnSlider.vue';
 export { default as SnSliderBar } from './slider-bar/SnSliderBar.vue';
 export { default as SnRate } from './rate/SnRate.vue';
@@ -79,6 +86,7 @@ export type {
   SnTreeSelectLineStyle,
   SnTreeSelectOptionInput,
   SnTreeSelectNode,
+  SnTreeSelectSize,
 } from './tree-select/sn-tree-select-types';
 export { default as SnMention } from './mention/SnMention.vue';
 export type { SnMentionOption, SnMentionRawOption } from './mention/sn-mention-types';
@@ -216,6 +224,7 @@ export type {
   SnTreeLineMode,
   SnTreeLineStyle,
   SnTreeOption,
+  SnTreeSize,
   SnTreeRenderProps,
   SnTreeNode,
 } from './tree/sn-tree-types';

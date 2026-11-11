@@ -39,6 +39,8 @@ import {
   SnFloatingTocItem,
   SnFloatingTocTrigger,
   SnIcon,
+  SnSegment,
+  SnTag,
 } from '@snui/vue-web';
 import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
 import { registerDemo, unregisterDemo, uniCompFromRoute } from '../../utils/demo-dock';
@@ -47,7 +49,14 @@ import { uniDemoPageUrl } from '../../utils/uni-demo-base';
 import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../../utils/uni-demo-sync';
 import PhoneFrame from '../PhoneFrame.vue';
 import demoManifest from '../../../../uni-demo/src/demos-manifest.json';
-import type { DocFeature, DocSeg, DocQuickAction, DocTocItem, SnDocPageData } from './types';
+import type {
+  DocBadgeTone,
+  DocFeature,
+  DocSeg,
+  DocQuickAction,
+  DocTocItem,
+  SnDocPageData,
+} from './types';
 
 const props = defineProps<{ doc: SnDocPageData }>();
 
@@ -90,6 +99,17 @@ const FEATURE_ICONS: Record<NonNullable<DocFeature['icon']>, typeof Monitor> = {
   layers: Layers,
   a11y: Check,
   dual: Monitor,
+};
+
+/**
+ * 头部徽章统一由组件库的 SnTag 渲染（不再手写胶囊），把数据里的语义 tone
+ * 映射到 SnTag 的 type；配色 / 描边 / 圆角 / 深色适配全部交给组件库 token。
+ */
+const BADGE_TYPE: Record<DocBadgeTone, 'default' | 'primary' | 'success' | 'warning'> = {
+  ok: 'success',
+  accent: 'primary',
+  warn: 'warning',
+  plain: 'default',
 };
 
 const { isDark, lang } = useData();
@@ -313,17 +333,11 @@ function setDemoMode(name: string, mode: DemoMode): void {
   demoModes.value = { ...demoModes.value, [name]: mode };
 }
 
-/**
- * 悬停预览：滑块随 hover 滑到所指档位（图标随之反白），离开后弹回真实
- * 选中档。图标的反白跟着滑块走而不是跟着选中态走，否则滑块挪走的瞬间
- * 原选中图标会白字落在白胶囊上消失。
- */
-const hoveredTab = ref<{ name: string; side: DemoMode } | null>(null);
-
-function demoThumbTarget(name: string): DemoMode {
-  if (hoveredTab.value?.name === name) return hoveredTab.value.side;
-  return demoMode(name);
-}
+/** 预览 / 源码两档选项：图标即内容，可读名走 ariaLabel（图标项无 label）。 */
+const demoSwitchOptions = computed(() => [
+  { value: 'preview' as DemoMode, icon: Box, ariaLabel: UI.value.preview },
+  { value: 'code' as DemoMode, icon: Code2, ariaLabel: UI.value.source },
+]);
 
 /**
  * demo 按奇偶分列（自管两列瀑布）：列是独立 flex 容器，卡片展开只推挤
@@ -470,10 +484,7 @@ const uniComp = computed(() => uniCompFromRoute(route.path));
  */
 const dockPreviewUrl = computed<string>(() => {
   const entry = (demoManifest.components as Record<string, { page: string }>)[uniComp.value];
-  return uniDemoPageUrl(
-    entry?.page ?? 'pages/index/index',
-    uniDemoStateOf(isDark.value, lang.value),
-  );
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
 });
 
 /**
@@ -650,21 +661,25 @@ onBeforeUnmount(() => {
           <div class="sn-docpage__titlerow">
             <h1 class="sn-docpage__title">{{ doc.title }}</h1>
             <div class="sn-docpage__badges">
-              <span
+              <SnTag
                 v-for="badge in doc.badges"
                 :key="badge.label"
-                class="sn-docpage__badge"
-                :class="`sn-docpage__badge--${badge.tone}`"
+                class="sn-docpage__tag"
+                :type="BADGE_TYPE[badge.tone]"
+                size="small"
+                round
               >
-                <span
-                  v-if="badge.icon === 'stable'"
-                  class="sn-docpage__badge-dot"
-                  aria-hidden="true"
-                />
-                <SnIcon v-else-if="badge.icon === 'dual'" :icon="Monitor" :size="12" />
-                <SnIcon v-else-if="badge.icon === 'ai'" :icon="Cpu" :size="12" />
+                <template v-if="badge.icon" #icon>
+                  <span
+                    v-if="badge.icon === 'stable'"
+                    class="sn-docpage__badge-dot"
+                    aria-hidden="true"
+                  />
+                  <SnIcon v-else-if="badge.icon === 'dual'" :icon="Monitor" :size="12" />
+                  <SnIcon v-else-if="badge.icon === 'ai'" :icon="Cpu" :size="12" />
+                </template>
                 {{ badge.label }}
-              </span>
+              </SnTag>
             </div>
           </div>
 
@@ -771,44 +786,16 @@ onBeforeUnmount(() => {
                 class="sn-docpage__demo-card"
                 :class="{ 'sn-docpage__demo-card--uni': isUniDoc }"
               >
-                <!-- 切换胶囊浮在预览面板右上角；源码模式下浮在代码面板右上角。 -->
-                <div
-                  v-if="!isUniDoc"
-                  class="sn-docpage__demo-switch"
-                  role="tablist"
-                  :aria-label="UI.previewSource"
-                >
-                  <span
-                    class="sn-docpage__demo-thumb"
-                    :class="{ 'sn-docpage__demo-thumb--code': demoThumbTarget(d.name) === 'code' }"
-                    aria-hidden="true"
+                <!-- 切换胶囊浮在预览面板右上角；源码模式下浮在代码面板右上角。
+                     胶囊本体 = 组件库 SnSegment（滑动指示器动画），壳只管定位。 -->
+                <div v-if="!isUniDoc" class="sn-docpage__demo-switch">
+                  <SnSegment
+                    size="sm"
+                    :options="demoSwitchOptions"
+                    :model-value="demoMode(d.name)"
+                    :aria-label="UI.previewSource"
+                    @update:model-value="setDemoMode(d.name, $event as DemoMode)"
                   />
-                  <button
-                    type="button"
-                    role="tab"
-                    class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'preview' }"
-                    :aria-selected="demoMode(d.name) === 'preview'"
-                    :aria-label="UI.preview"
-                    @mouseenter="hoveredTab = { name: d.name, side: 'preview' }"
-                    @mouseleave="hoveredTab = null"
-                    @click="setDemoMode(d.name, 'preview')"
-                  >
-                    <SnIcon :icon="Box" :size="13" />
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    class="sn-docpage__demo-tab"
-                    :class="{ 'sn-docpage__demo-tab--on': demoThumbTarget(d.name) === 'code' }"
-                    :aria-selected="demoMode(d.name) === 'code'"
-                    :aria-label="UI.source"
-                    @mouseenter="hoveredTab = { name: d.name, side: 'code' }"
-                    @mouseleave="hoveredTab = null"
-                    @click="setDemoMode(d.name, 'code')"
-                  >
-                    <SnIcon :icon="Code2" :size="13" />
-                  </button>
                 </div>
                 <div v-if="demoMode(d.name) === 'preview'" class="sn-docpage__demo-stage">
                   <!-- ClientOnly：demo 是浏览器语料，常见 setup 期直接摸 window /
@@ -1131,12 +1118,11 @@ onBeforeUnmount(() => {
   --sn-doc-warn: var(--sn-web-color-feedback-warning, #f59e0b);
   --sn-doc-err: var(--sn-web-color-feedback-danger, #ef4444);
   --sn-doc-cyan: var(--sn-web-color-feedback-info, #06b6d4);
-  /* 代码面板跟随主题：浅色模式浅色终端，深色模式烟熏终端（见 .sn-docpage--dark） */
-  /* 代码面纯白：与预览台同一块底面，代码不该在浅色主题里再压一层灰。
-     层次交给 codebar 的细分割线与外框，而不是底色。深色主题仍走烟熏终端
-     （见 .dark 覆盖），那里的深底是代码可读性的一部分。 */
-  --sn-doc-code-bg: var(--vp-c-bg);
-  --sn-doc-code-bar: var(--vp-c-bg);
+  /* 代码面用「浅浅的」淡底 #f8f8f8：与 demo 预览台、手机 iframe、搜索框
+   * 完全同色，预览 / 源码切换时底面连续不跳档；深色模式烟熏终端
+   * （见 .sn-docpage--dark 覆盖），那里的深底是代码可读性的一部分。 */
+  --sn-doc-code-bg: #f8f8f8;
+  --sn-doc-code-bar: #f8f8f8;
   --sn-doc-code-border: var(--vp-c-divider);
   --sn-doc-code-text: var(--vp-c-text-1);
   --sn-doc-code-dim: var(--vp-c-text-3);
@@ -1200,21 +1186,15 @@ onBeforeUnmount(() => {
 }
 
 /* ═══ 头部 ═══ */
-/* 头卡：参考稿把标题区做成一张独立白卡（Level 1 表面 + 超轻投影），
- * 右上 / 左下各一团弥散光晕，标题与徽章在内层正常流里。这样页面第一屏
- * 就有明确的「一块内容」而不是漂浮在画布上的文字。 */
+/* 标题区直接落在页面画布上，不再是一张卡片：无圆角、无底色、无投影，
+ * 因此也不再需要 overflow 裁切光晕。左右内边距归零，标题 / 面包屑与
+ * 下方章节左边缘对齐；纵向留白保持原来的节奏。 */
 .sn-docpage__head {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 28px 30px 24px;
-  /* 画布改为纯白后，靠发丝边维持白卡的边界（原先靠灰底对比分层）。 */
-  border: 1px solid var(--sn-doc-border);
-  border-radius: var(--sn-doc-radius-card);
-  background: var(--sn-doc-surface-lowest);
-  box-shadow: var(--sn-doc-shadow);
-  overflow: hidden;
+  padding: 28px 0 24px;
 }
 
 .sn-docpage__features {
@@ -1282,32 +1262,11 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 8px;
 }
-.sn-docpage__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border: 1px solid var(--sn-doc-border);
-  border-radius: 999px;
-  font-size: 12px;
+/* 徽章改由 SnTag 渲染：size=small / round / type 已提供高度、胶囊圆角、
+   描边与配色（含深色适配，全部走 --sn-web-* token）。这里只保留参考稿
+   的等宽字感，不再自绘胶囊，避免和组件库出现两套 badge 视觉。 */
+.sn-docpage__tag {
   font-family: var(--vp-font-family-mono, ui-monospace, monospace);
-  color: var(--sn-doc-text-2);
-  background: var(--sn-doc-card);
-}
-.sn-docpage__badge--ok {
-  border-color: color-mix(in srgb, var(--sn-doc-ok) 35%, transparent);
-  color: color-mix(in srgb, var(--sn-doc-ok) 82%, var(--sn-doc-text-1));
-  background: color-mix(in srgb, var(--sn-doc-ok) 9%, transparent);
-}
-.sn-docpage__badge--accent {
-  border-color: color-mix(in srgb, var(--sn-doc-accent) 30%, transparent);
-  color: var(--sn-doc-accent);
-  background: var(--sn-doc-accent-soft);
-}
-.sn-docpage__badge--warn {
-  border-color: color-mix(in srgb, var(--sn-doc-warn) 40%, transparent);
-  color: color-mix(in srgb, var(--sn-doc-warn) 80%, var(--sn-doc-text-1));
-  background: color-mix(in srgb, var(--sn-doc-warn) 10%, transparent);
 }
 .sn-docpage__badge-dot {
   width: 6px;
@@ -1709,12 +1668,16 @@ onBeforeUnmount(() => {
 }
 
 /* ═══ 代码面板（跟随主题：浅色浅终端 / 深色烟熏终端） ═══ */
+/* 代码用法卡片去掉外框，与无框的头卡呼应；terminal 仍保留细边框
+ * （它是终端演示窗口，需要一圈轮廓）。 */
 .sn-docpage__terminal,
 .sn-docpage__codecard {
   overflow: hidden;
-  border: 1px solid var(--sn-doc-code-border);
   border-radius: 12px;
   background: var(--sn-doc-code-bg);
+}
+.sn-docpage__terminal {
+  border: 1px solid var(--sn-doc-code-border);
 }
 .sn-docpage__term-bar,
 .sn-docpage__codecard-bar {
@@ -1849,14 +1812,19 @@ onBeforeUnmount(() => {
   border-radius: 16px;
   background: var(--sn-doc-card);
   box-shadow: var(--sn-doc-shadow);
+  /* 右上切换胶囊 absolute(top:10) + 34px 高，占 10..44px。把这段高度
+   * 显式预留给胶囊（再加 12px 呼吸），预览内容区从它下方开始，铺满型
+   * 组件（Collapse / Slider 等）的右上角就不会被胶囊压住。 */
+  --sn-docpage-demo-switch-space: 56px;
 }
 
 /* 预览 / 源码切换胶囊（图标，参照 heroui 的 eye/code 双态）。
   * 滑块是唯一的运动物：cubic-bezier(0.34, 1.56, 0.64, 1) 的 back-out
   * 曲线让它带一次可见回弹（过冲约 10% 后落位）——与侧栏端切换胶囊
   * 同一套「确认感」语言。 */
-/* 胶囊浮在预览面板右上角：绝对定位脱离内容流，预览本体始终居中。
- * z-index 高于预览内容，源码模式下同样浮在代码面板右上角。 */
+/* 切换胶囊壳：绝对定位脱离内容流，预览本体始终居中；z-index 高于预览
+ * 内容，源码模式下同样浮在代码面板右上角。胶囊本体（外壳/滑块/深色态）
+ * 全部由 SnSegment 的 token 样式承载 —— 壳只管定位，不再自带配色。 */
 .sn-docpage__demo-switch {
   position: absolute;
   top: 10px;
@@ -1864,65 +1832,14 @@ onBeforeUnmount(() => {
   z-index: 3;
   display: inline-flex;
   flex: none;
-  /* 水平内边距 + 图标间隙把胶囊拉长，读作一个完整的开关件而不是两枚
-   * 紧贴的图标按钮；垂直内边距保持 3px（滑块 28px + 6 = 34px 高）。 */
-  padding: 3px 10px;
-  gap: 8px;
-  border-radius: 999px;
-  background: var(--sn-doc-card);
-  /* 白胶囊浮在浅灰预览台上：不描边，只留一层很淡的投影做分离。 */
-  box-shadow: 0 2px 8px rgb(2 6 16 / 0.08);
-}
-.sn-docpage--dark .sn-docpage__demo-switch {
-  /* 深色模式：胶囊与预览台落在同一级 card-soft 色阶，投影是唯一分层
-   * 手段，比浅色略加重让胶囊浮出来。 */
-  background: var(--sn-doc-card-soft);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.3);
-}
-.sn-docpage__demo-thumb {
-  position: absolute;
-  top: 3px;
-  bottom: 3px;
-  /* left 跟随胶囊水平内边距，滑块才能正好套住第一个图标。 */
-  left: 10px;
-  width: 28px;
-  border-radius: 999px;
-  /* 选中段 = 主题色滑块，图标反白（见 --on 的颜色对调）。 */
-  background: var(--sn-doc-accent);
-  box-shadow: 0 1px 3px rgb(2 6 16 / 0.2);
-  transform: translateX(0);
-  transition: transform 480ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.sn-docpage__demo-thumb--code {
-  /* 28px 滑块 + 8px 图标间隙。 */
-  transform: translateX(36px);
-}
-.sn-docpage__demo-tab {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--sn-doc-text-3);
-  cursor: pointer;
-  transition: color 0.15s;
-}
-/* 悬停不再单独变色：滑块会滑到悬停档位，反白由 --on 跟随滑块位置。 */
-.sn-docpage__demo-tab--on {
-  /* 滑块（真实选中或悬停预览）压着的档位，图标反白。 */
-  color: var(--sn-doc-text-on-accent);
 }
 .sn-docpage__demo-stage {
   /* 浅灰底 #f8f8f8：预览是「作品台」，与手机 iframe 预览同底，比页面
      纯白低半档，靠卡片投影分层；深色模式回落主题表面色。
      给一个最小高度，避免单行演示（一个按钮 / 一个开关）把卡片压成细条。 */
   min-height: 240px;
-  padding: 20px 16px;
+  /* 顶部让出切换胶囊的整条高度，四边留白同步放大。 */
+  padding: var(--sn-docpage-demo-switch-space) 24px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1962,7 +1879,10 @@ onBeforeUnmount(() => {
      复制按钮不被压住。 */
   padding: 8px 100px 8px 12px;
 }
-/* uni 案例没有切换胶囊，把为它预留的右侧空间收回。 */
+/* uni 案例没有切换胶囊：顶部预留与 codebar 右侧空间一并收回。 */
+.sn-docpage__demo-card--uni {
+  --sn-docpage-demo-switch-space: 20px;
+}
 .sn-docpage__demo-card--uni .sn-docpage__codebar {
   padding-right: 12px;
 }
@@ -2502,7 +2422,8 @@ onBeforeUnmount(() => {
   }
   .sn-docpage__demo-stage {
     min-height: 180px;
-    padding: 16px 10px;
+    /* 胶囊尺寸不随断点变化，顶部预留保持一致。 */
+    padding: var(--sn-docpage-demo-switch-space) 12px 16px;
   }
   .sn-docpage__demo-codebody .sn-docpage__codebar {
     padding: 8px 100px 8px 10px;
