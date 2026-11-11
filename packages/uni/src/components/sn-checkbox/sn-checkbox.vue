@@ -507,9 +507,13 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
 
 /* Card: the whole option becomes a selectable surface. */
 .sn-checkbox--variant-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
@@ -530,13 +534,27 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
   display: flex;
   flex-direction: column;
   min-width: 0;
+  gap: 4rpx;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
+.sn-checkbox--variant-card .sn-checkbox__label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+}
+
 /* Checked paint switches (only applied while checked). */
-.sn-checkbox--checked-border.sn-checkbox--variant-card,
-.sn-checkbox--checked-border.sn-checkbox--checked-fill.sn-checkbox--variant-card,
-.sn-checkbox--checked-fill/* Corner tick — themed circle with a white check glyph. */
+.sn-checkbox--checked-border.sn-checkbox--variant-card {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-checkbox--checked-fill.sn-checkbox--variant-card {
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
+/* Corner tick — a triangular fold flush with the card corner. */
 .sn-checkbox__tick {
   position: absolute;
   width: 48rpx;
@@ -546,29 +564,31 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
 }
 
 .sn-checkbox__tick--top-right {
-  top: -2rpx;
-  right: -2rpx;
-  border-top-right-radius: inherit;
+  top: 0;
+  right: 0;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-checkbox__tick--bottom-right {
-  right: -2rpx;
-  bottom: -2rpx;
-  border-bottom-right-radius: inherit;
+  right: 0;
+  bottom: 0;
   clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-checkbox--disabled.sn-checkbox--variant-card,
 .sn-checkbox--disabled/* ── AUI additive: label-first + inverted marker ─────────────────────────── */
 
-.sn-checkbox--label-first .sn-checkbox__main {
+.sn-checkbox--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-checkbox--label-label-first .sn-checkbox__main {
   flex-direction: row-reverse;
   justify-content: space-between;
   width: 100%;
 }
-.sn-checkbox--label-first .sn-checkbox__label-wrap,
-.sn-checkbox--label-first .sn-checkbox__card {
+.sn-checkbox--label-label-first .sn-checkbox__label-wrap,
+.sn-checkbox--label-label-first .sn-checkbox__card {
   flex: 1 1 auto;
 }
 

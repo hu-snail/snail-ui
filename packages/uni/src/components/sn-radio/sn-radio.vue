@@ -425,9 +425,13 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 
 /* Card: the whole option becomes a selectable surface. */
 .sn-radio--variant-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
@@ -448,13 +452,27 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   display: flex;
   flex-direction: column;
   min-width: 0;
+  gap: 4rpx;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
+.sn-radio--variant-card .sn-radio__label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
+}
+
 /* Checked paint switches (only applied while checked). */
-.sn-radio--checked-border.sn-radio--variant-card,
-.sn-radio--checked-border.sn-radio--checked-fill.sn-radio--variant-card,
-.sn-radio--checked-fill/* Corner tick — themed circle with a white check glyph. */
+.sn-radio--checked-border.sn-radio--variant-card {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-radio--checked-fill.sn-radio--variant-card {
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
+/* Corner tick — a triangular fold flush with the card corner. */
 .sn-radio__tick {
   position: absolute;
   width: 48rpx;
@@ -464,16 +482,14 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 }
 
 .sn-radio__tick--top-right {
-  top: -2rpx;
-  right: -2rpx;
-  border-top-right-radius: inherit;
+  top: 0;
+  right: 0;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-radio__tick--bottom-right {
-  right: -2rpx;
-  bottom: -2rpx;
-  border-bottom-right-radius: inherit;
+  right: 0;
+  bottom: 0;
   clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
@@ -503,14 +519,21 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 /* ── AUI additive: label-first + inverted marker ─────────────────────────── */
 
 /* label-first: keep DOM order (a11y unchanged), only re-order flex children. */
-.sn-radio--label-first .sn-radio__main {
+.sn-radio--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-radio--label-label-first .sn-radio__main {
   flex-direction: row-reverse;
   justify-content: space-between;
   width: 100%;
 }
-.sn-radio--label-first .sn-radio__label,
-.sn-radio--label-first .sn-radio__card {
+.sn-radio--label-label-first .sn-radio__label,
+.sn-radio--label-label-first .sn-radio__card {
+  display: block;
   flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
   text-align: left;
 }
 

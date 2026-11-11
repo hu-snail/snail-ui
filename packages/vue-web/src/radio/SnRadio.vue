@@ -460,12 +460,20 @@ function onBlur(event: FocusEvent): void {
 /* Card: the whole row becomes a selectable surface. */
 .sn-radio--variant-card {
   display: flex;
-  align-items: stretch;
+  /* `stretch` collapsed the card to its text height and let the absolutely
+   * positioned tick escape the padding box; `position: relative` is the tick's
+   * containing block, and `flex-start` keeps the body top-aligned. */
+  position: relative;
+  align-items: flex-start;
   gap: 0;
   padding: var(--sn-web-spacing-sm, 12px) var(--sn-web-spacing-md, 16px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: var(--sn-web-radius-md, 8px);
   background-color: var(--sn-web-color-background-surface);
+  /* Cards are block-level surfaces: without an explicit width the inline-flex
+   * default made them shrink to content and overflow their own padding. */
+  box-sizing: border-box;
+  min-width: 0;
   transition:
     border-color 0.18s ease-out,
     background-color 0.18s ease-out;
@@ -487,6 +495,22 @@ function onBlur(event: FocusEvent): void {
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
+  /* The slot renders block content (title / price / description); the base
+   * label rule is inline-flex + centre, which collapsed multi-line card copy
+   * onto one line. Card bodies stack and wrap instead. */
+  gap: 2px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Inside a card the label participates in the column flow, not as an inline
+ * chip — otherwise `align-items: center` squeezes every child to one row. */
+.sn-radio--variant-card .sn-radio__label {
+  display: block;
+  align-items: initial;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked — see classList). */
@@ -500,16 +524,27 @@ function onBlur(event: FocusEvent): void {
 
 /* Label-first: keep DOM order (native input + a11y unchanged) and only
  * re-order the flex children — the label leads, the marker trails. */
-.sn-radio--label-first .sn-radio__label {
+/* label-first needs the row to span its container — an inline-flex box
+ * shrink-to-fits, so `margin-left: auto` had nothing to push against and the
+ * marker stayed glued to the label. Widen the row and let the label absorb
+ * the free space. */
+.sn-radio--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-radio--label-label-first .sn-radio__label {
   order: 0;
+  display: block;
   flex: 1 1 auto;
   min-width: 0;
+  white-space: normal;
 }
-.sn-radio--label-first .sn-radio__dot {
+.sn-radio--label-label-first .sn-radio__dot {
   order: 1;
   margin-left: auto;
+  flex-shrink: 0;
 }
-.sn-radio--label-first .sn-radio__card {
+.sn-radio--label-label-first .sn-radio__card {
   order: 0;
   flex: 1 1 auto;
 }
@@ -532,8 +567,7 @@ function onBlur(event: FocusEvent): void {
   background-color: var(--sn-web-color-background-surface);
 }
 
-.sn-radio--checked-fill.sn-radio--variant-card,
-.sn-radio--checked-fill/* Corner tick — a triangular fold that hugs the card corner (like a ribbon
+/* Corner tick — a triangular fold that hugs the card corner (like a ribbon
  * notch). It is flush with the border, not a floating badge, so it never
  * overlaps the card copy and reads as part of the card silhouette. */
 .sn-radio__tick {
@@ -554,30 +588,34 @@ function onBlur(event: FocusEvent): void {
   transform: rotate(-45deg);
 }
 
-/* Top-right: triangle whose right angle sits in the card's top-right corner,
- * matching the card radius so the fill meets the border without a seam. */
+/* Top-right: the fold's right angle sits exactly in the card's top-right
+ * corner. `clip-path` cuts the triangle; the card's own `overflow: hidden`
+ * (below) trims the outer radius, so no separate radius is needed here —
+ * `border-radius` + `clip-path` on the same box does not compose. */
+.sn-radio--variant-card {
+  overflow: hidden;
+}
+
 .sn-radio__tick--top-right {
-  top: -1px;
-  right: -1px;
-  border-top-right-radius: inherit;
+  top: 0;
+  right: 0;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-radio__tick--top-right::after {
-  top: 4px;
-  right: 4px;
+  top: 5px;
+  right: 5px;
 }
 
 .sn-radio__tick--bottom-right {
-  right: -1px;
-  bottom: -1px;
-  border-bottom-right-radius: inherit;
+  right: 0;
+  bottom: 0;
   clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-radio__tick--bottom-right::after {
-  right: 4px;
-  bottom: 4px;
+  right: 5px;
+  bottom: 5px;
 }
 
 .sn-radio--disabled.sn-radio--variant-card {

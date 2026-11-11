@@ -575,12 +575,19 @@ function onChange(event: Event): void {
 /* Card: the whole row becomes a selectable surface. */
 .sn-checkbox--variant-card {
   display: flex;
-  align-items: stretch;
+  /* `position: relative` anchors the corner tick; `overflow: hidden` trims it
+   * to the card radius. `flex-start` keeps the body top-aligned instead of
+   * stretching a short card to the tallest sibling. */
+  position: relative;
+  align-items: flex-start;
   gap: 0;
   padding: var(--sn-web-spacing-sm, 12px) var(--sn-web-spacing-md, 16px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: var(--sn-web-radius-md, 8px);
   background-color: var(--sn-web-color-background-surface);
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
   transition:
     border-color 0.18s ease-out,
     background-color 0.18s ease-out;
@@ -601,6 +608,17 @@ function onChange(event: Event): void {
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
+  gap: 2px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Card copy stacks; the base label rule inherits inline layout. */
+.sn-checkbox--variant-card .sn-checkbox__label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked — see classList). */
@@ -633,27 +651,25 @@ function onChange(event: Event): void {
 }
 
 .sn-checkbox__tick--top-right {
-  top: -1px;
-  right: -1px;
-  border-top-right-radius: inherit;
+  top: 0;
+  right: 0;
   clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-checkbox__tick--top-right::after {
-  top: 4px;
-  right: 4px;
+  top: 5px;
+  right: 5px;
 }
 
 .sn-checkbox__tick--bottom-right {
-  right: -1px;
-  bottom: -1px;
-  border-bottom-right-radius: inherit;
+  right: 0;
+  bottom: 0;
   clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-checkbox__tick--bottom-right::after {
-  right: 4px;
-  bottom: 4px;
+  right: 5px;
+  bottom: 5px;
 }
 
 .sn-checkbox--disabled.sn-checkbox--variant-card {
@@ -663,16 +679,22 @@ function onChange(event: Event): void {
 
 /* Label-first: keep DOM order (native input + a11y unchanged) and only
  * re-order the flex children — the label leads, the box trails. */
-.sn-checkbox--label-first .sn-checkbox__label {
+.sn-checkbox--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-checkbox--label-label-first .sn-checkbox__label {
   order: 0;
+  display: block;
   flex: 1 1 auto;
   min-width: 0;
+  white-space: normal;
 }
-.sn-checkbox--label-first .sn-checkbox__box {
+.sn-checkbox--label-label-first .sn-checkbox__box {
   order: 1;
   margin-left: auto;
 }
-.sn-checkbox--label-first .sn-checkbox__card {
+.sn-checkbox--label-label-first .sn-checkbox__card {
   order: 0;
   flex: 1 1 auto;
 }
