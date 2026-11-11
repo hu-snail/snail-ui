@@ -562,3 +562,57 @@ describe('SnRadio inverted marker & label-first', () => {
     expect(radios[1].classes()).toContain('sn-radio--marker-base');
   });
 });
+
+/** AUI additive — card indicator layouts (left / right check / corner). */
+describe('SnRadio card indicator layouts', () => {
+  it('card + leading keeps an inline dot and centres it', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', variant: 'card', indicatorPlacement: 'leading' },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--indicator-leading');
+    expect(wrapper.find('.sn-radio__dot').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('card + trailing renders the dot as a check glyph', () => {
+    const wrapper = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        indicatorPlacement: 'trailing',
+      },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--indicator-trailing');
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('card + corner keeps top alignment and renders the fold only when checked', () => {
+    const checked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', variant: 'card' },
+    });
+    expect(checked.classes()).toContain('sn-radio--indicator-top-right');
+    expect(checked.find('.sn-radio__tick--top-right').exists()).toBe(true);
+
+    const unchecked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'b', variant: 'card' },
+    });
+    expect(unchecked.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('card + leading honours markerShape="inverted"', () => {
+    const wrapper = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        indicatorPlacement: 'leading',
+        markerShape: 'inverted',
+      },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--marker-inverted');
+    expect(wrapper.find('.sn-radio__dot').exists()).toBe(true);
+  });
+});

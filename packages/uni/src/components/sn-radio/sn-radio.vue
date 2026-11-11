@@ -448,6 +448,21 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   gap: var(--sn-mp-spacing-1);
 }
 
+/* Card + inline marker (left / right): the card becomes a row so the marker
+ * sits vertically centred beside the copy instead of above it. */
+.sn-radio--variant-card.sn-radio--indicator-leading,
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.sn-radio--variant-card.sn-radio--indicator-leading .sn-radio__card,
+.sn-radio--variant-card.sn-radio--indicator-trailing .sn-radio__card {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .sn-radio--variant-card .sn-radio__card {
   display: flex;
   flex-direction: column;

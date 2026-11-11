@@ -477,3 +477,31 @@ describe('SnCheckbox inverted marker & label-first', () => {
     expect(box.classes()).toContain('sn-checkbox--label-label-first');
   });
 });
+
+/** AUI additive — card indicator layouts. */
+describe('SnCheckbox card indicator layouts', () => {
+  it('card + leading centres the inline box', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'leading' },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-leading');
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(true);
+  });
+
+  it('card + trailing renders the inline box on the right', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'trailing' },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-trailing');
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__tick').exists()).toBe(false);
+  });
+
+  it('card + corner uses the fold instead of the inline box', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'bottom-right' },
+    });
+    expect(wrapper.find('.sn-checkbox__tick--bottom-right').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(false);
+  });
+});

@@ -573,6 +573,14 @@ function onChange(event: Event): void {
 /* ── AUI additive: card / icon variants + checked paint + corner tick ────── */
 
 /* Card: the whole row becomes a selectable surface. */
+/* Card + inline box (left / right): centre the box against the body and give
+ * it breathing room from the copy. Corner ticks keep top alignment. */
+.sn-checkbox--variant-card.sn-checkbox--indicator-leading,
+.sn-checkbox--variant-card.sn-checkbox--indicator-trailing {
+  align-items: center;
+  gap: 10px;
+}
+
 .sn-checkbox--variant-card {
   display: flex;
   /* `position: relative` anchors the corner tick; `overflow: hidden` trims it

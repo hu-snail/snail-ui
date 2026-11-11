@@ -301,9 +301,12 @@ function onBlur(event: FocusEvent): void {
       <slot name="label" :checked="isChecked" :disabled="isDisabled"> <slot />{{ label }} </slot>
     </span>
 
+    <!-- Trailing marker: a dot inline, but a check glyph inside a card — a
+     * trailing dot reads as a second radio and muddles the card affordance. -->
     <span
       v-if="showInlineMarker && effectiveIndicatorPlacement === 'trailing'"
       class="sn-radio__dot"
+      :class="{ 'sn-radio__dot--check': effectiveVariant === 'card' }"
       aria-hidden="true"
     />
 
@@ -379,8 +382,41 @@ function onBlur(event: FocusEvent): void {
   border-color: var(--sn-web-radio-border-color-active, var(--sn-web-color-action-primary));
 }
 
+/* Card + trailing marker renders a check glyph instead of an inner dot: two
+ * radio dots side by side (one leading, one trailing) would read as two
+ * controls. Declared AFTER the base `::after` rule above so it wins the
+ * cascade — the base rule paints a filled inner dot with `inset: 0`. */
+.sn-radio__dot--check::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 4px;
+  border-radius: 0;
+  background-color: transparent;
+  border-bottom: 2px solid var(--sn-web-color-text-on-primary, #fff);
+  border-left: 2px solid var(--sn-web-color-text-on-primary, #fff);
+  transform: translate(-50%, -60%) rotate(-45deg) scale(0);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Check glyph wins over the generic inner-dot scale: the generic rule below
+ * has fewer class selectors but comes later in the sheet, so this one needs
+ * the extra specificity plus a later position. */
 .sn-radio--checked .sn-radio__dot::after {
   transform: scale(0.45);
+}
+
+.sn-radio--checked .sn-radio__dot--check::after {
+  transform: translate(-50%, -60%) rotate(-45deg) scale(1);
+}
+
+/* The trailing check rides a filled plate — a white glyph on the bare surface
+ * ring would be invisible. */
+.sn-radio--checked .sn-radio__dot--check {
+  border-color: var(--sn-web-color-action-primary);
+  background-color: var(--sn-web-color-action-primary);
 }
 
 .sn-radio--disabled .sn-radio__dot {
@@ -460,9 +496,10 @@ function onBlur(event: FocusEvent): void {
 /* Card: the whole row becomes a selectable surface. */
 .sn-radio--variant-card {
   display: flex;
-  /* `stretch` collapsed the card to its text height and let the absolutely
-   * positioned tick escape the padding box; `position: relative` is the tick's
-   * containing block, and `flex-start` keeps the body top-aligned. */
+  /* `position: relative` is the corner tick's containing block. Alignment is
+   * chosen per indicator placement below: a corner tick needs top-aligned
+   * copy, while an inline leading / trailing marker must sit vertically
+   * centred against the card body. */
   position: relative;
   align-items: flex-start;
   gap: 0;
@@ -477,6 +514,18 @@ function onBlur(event: FocusEvent): void {
   transition:
     border-color 0.18s ease-out,
     background-color 0.18s ease-out;
+}
+
+/* Card + inline marker (left / right): centre the marker against the body and
+ * give it breathing room from the copy. */
+.sn-radio--variant-card.sn-radio--indicator-leading,
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  align-items: center;
+  gap: 10px;
+}
+
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  flex-direction: row;
 }
 
 /* Reserve the corner the tick occupies so it never overlaps the card copy
@@ -556,9 +605,14 @@ function onBlur(event: FocusEvent): void {
   border-color: var(--sn-web-color-action-primary);
   background-color: var(--sn-web-color-action-primary);
 }
-.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot::after {
+/* Inverted + trailing check: keep the solid plate but let the glyph keep its
+ * own transform — the dot rule above would squash it into a square. */
+.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot:not(.sn-radio__dot--check)::after {
   background-color: var(--sn-web-color-background-surface);
   transform: scale(0.42);
+}
+.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot--check::after {
+  transform: translate(-50%, -60%) rotate(-45deg) scale(1);
 }
 .sn-radio--marker-inverted.sn-radio--checked .sn-radio__label {
   color: var(--sn-web-color-action-primary);

@@ -89,6 +89,11 @@ import { Radio } from '@snui/vue-web';
       blurb:
         'markerShape="inverted" fills the plate with the theme colour and punches a white dot; labelPlacement="label-first" puts the label first.',
     },
+    {
+      name: 'radio-web-card-indicator',
+      title: 'Card indicator layouts',
+      blurb: 'Left (invertible) / right check glyph / top-right and bottom-right corner folds.',
+    },
   ],
   props: {
     hint: [],

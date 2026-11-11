@@ -89,6 +89,11 @@ import { Radio } from '@snui/vue-web';
       blurb:
         'markerShape="inverted" 选中为主题色实心 + 白点；labelPlacement="label-first" 标题在前、选择在后。',
     },
+    {
+      name: 'radio-web-card-indicator',
+      title: '卡片选中按钮形态',
+      blurb: '左侧垂直居中（支持反转）/ 右侧垂直居中打勾 / 右上右下贴边三角角标。',
+    },
   ],
   props: {
     hint: [],
