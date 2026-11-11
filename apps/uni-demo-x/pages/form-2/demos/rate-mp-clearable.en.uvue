@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-rate — clearable: re-tapping the current score clears back to null. */
+const clearable = ref<number | null>(4);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRate v-model="clearable" clearable />
+    <text class="sn-demo__meta">Clearable: {{ clearable ?? 'not rated' }} (re-tap to clear)</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

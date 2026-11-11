@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — English shadow of collapse-mp-accordion.
+ *
+ * accordion turns v-model into a string and keeps one panel open at a time.
+ */
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const open = ref('a');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCollapse v-model="open" accordion>
+      <SnCollapseItem name="a" title="FAQ">
+        <text class="sn-demo__body">Only one panel stays open at a time.</text>
+      </SnCollapseItem>
+      <SnCollapseItem name="b" title="Return policy">
+        <text class="sn-demo__body">7-day no-questions returns.</text>
+      </SnCollapseItem>
+    </SnCollapse>
+    <text class="sn-demo__meta">Currently open: {{ open || 'none' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+.sn-demo__body {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

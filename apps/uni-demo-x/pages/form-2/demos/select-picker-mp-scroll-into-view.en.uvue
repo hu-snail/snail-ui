@@ -1,0 +1,48 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — scroll into view: `scrollIntoView` scrolls the selected row into view on open; `customContentClass` restyles the content area. */
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'cherry', label: 'Cherry' },
+];
+
+const scrolled = ref<Array<string | number | boolean>>(['cherry']);
+const open = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">scrollIntoView + customContentClass</text>
+    <view class="sn-demo__button" @click="open = true"><text>Scroll into view</text></view>
+    <SnSelectPicker
+      v-model="scrolled"
+      v-model:visible="open"
+      :columns="options"
+      :scroll-into-view="true"
+      custom-content-class="sn-demo__content"
+      title="Scroll into view"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__content {
+  padding-top: 8rpx;
+}
+</style>

@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/** Demo: sn-upload — 选择器类型：accept 切换选择器（image / video / file）。 */
+import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
+
+const videoFiles = ref<UploadFileItem[]>([]);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnUpload v-model:file-list="videoFiles" accept="video" :limit="1" />
+    <text class="sn-demo__meta">accept="video"：选择器切到视频（image / video / file）</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

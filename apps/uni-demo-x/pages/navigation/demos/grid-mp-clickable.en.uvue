@@ -1,0 +1,39 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-grid — English shadow of grid-mp-clickable.
+ *
+ * - `clickable` makes every cell tappable and applies `hover-class` press feedback
+ * - `hover-class` names the class added while a cell is pressed (defaults to
+ *   `sn-grid-item__content--hover`)
+ */
+import SnGridItem from '@snui/uni-x/components/sn-grid/sn-grid-item.uvue';
+const tapped = ref('—');
+
+function onCellClick(payload: { url: string; linkType: string }): void {
+  tapped.value = payload.url === '' ? '(no url)' : payload.url;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnGrid :column="4" clickable hover-class="sn-demo__cell-press" @click="onCellClick">
+      <SnGridItem text="Scan" icon="camera" />
+      <SnGridItem text="Pay" icon="wallet" />
+      <SnGridItem text="Receive" icon="banknote" />
+      <SnGridItem text="More" icon="ellipsis" />
+    </SnGrid>
+
+    <text class="sn-demo__meta">Last tap: {{ tapped }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* sn-grid forwards hover-class to every cell; the class itself lives here. */
+</style>

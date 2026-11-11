@@ -1,0 +1,34 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker — confirm veto (beforeConfirm): a veto keeps the sheet open. */
+import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
+import { Clock } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
+const time = ref<string | number | undefined>('10:30');
+const open = ref(false);
+// Only times at or after 09:00 may be confirmed — demonstrates a beforeConfirm veto.
+const guard = (value: string | number) => String(value) >= '09:00';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="Confirm veto"
+        label="beforeConfirm (vetoes anything before 09:00)"
+        :prefix-icon-data="Clock"
+        placeholder="Select"
+        :value="time ? String(time) : ''"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
+    <SnDatetimePicker
+      v-model="time"
+      v-model:visible="open"
+      type="time"
+      title="Confirm veto"
+      confirm-button-text="Use it"
+      :before-confirm="guard"
+    />
+  </view>
+</template>

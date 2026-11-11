@@ -1,0 +1,16 @@
+{
+  "name": "@snui/uni-demo-x",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI uni-app x (vapor mode) demo app — generated from @snui/uni-demo scenario sources onto the @snui/uni-x .uvue artifacts (ADR-0004). HBuilderX project, not a CLI workspace build.",
+  "type": "module",
+  "scripts": {
+    "gen": "node scripts/gen-x.mjs",
+    "check": "node scripts/check-x.mjs"
+  },
+  "dependencies": {
+    "@snui/style-packs": "workspace:*",
+    "@snui/tokens": "workspace:*",
+    "@snui/uni-x": "workspace:*"
+  }
+}

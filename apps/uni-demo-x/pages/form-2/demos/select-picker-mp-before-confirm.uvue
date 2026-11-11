@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — 确认拦截：beforeConfirm 返回 false 时不写 v-model。 */
+const options = [
+  { value: 'apple', label: '苹果' },
+  { value: 'banana', label: '香蕉' },
+  { value: 'cherry', label: '樱桃' },
+];
+
+const guarded = ref<Array<string | number | boolean>>(['apple']);
+const open = ref(false);
+const lastGuard = ref('—');
+
+/** 至少选两项才允许确认。 */
+const atLeastTwo = (payload: {
+  value: string | number | boolean | Array<string | number | boolean>;
+}) => {
+  const list = Array.isArray(payload.value) ? payload.value : [payload.value];
+  lastGuard.value = list.length >= 2 ? '已允许' : '至少选两项';
+  return list.length >= 2;
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">beforeConfirm（至少选两项）</text>
+    <view class="sn-demo__button" @click="open = true"><text>确认拦截</text></view>
+    <text class="sn-demo__meta">守卫：{{ lastGuard }}</text>
+    <SnSelectPicker
+      v-model="guarded"
+      v-model:visible="open"
+      :columns="options"
+      title="至少选两项"
+      :before-confirm="atLeastTwo"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

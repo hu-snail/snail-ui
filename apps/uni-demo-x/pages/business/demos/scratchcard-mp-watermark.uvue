@@ -1,0 +1,80 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-scratchcard (uni-end) — 水印：watermark-text / watermark-size /
+ * watermark-color。
+ */
+const wmRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
+
+function resetAll(): void {
+  wmRef.value?.reset();
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">watermark 水印：文字 / 字号 / 颜色</text>
+    <SnScratchcard
+      ref="wmRef"
+      title="水印演示"
+      watermark-text="AUI DEMO"
+      :watermark-size="18"
+      watermark-color="rgba(255, 255, 255, 0.55)"
+      custom-style="width: 100%; height: 180rpx"
+    >
+      <view class="prize-slot">
+        <text class="prize-slot__text">斜排水印</text>
+      </view>
+    </SnScratchcard>
+
+    <view class="scratch-actions">
+      <view class="scratch-actions__btn" hover-class="scratch-actions__btn--down" @click="resetAll">
+        <text class="scratch-actions__btn-text">重置</text>
+      </view>
+    </view>
+  </view>
+</template>
+<style scoped>
+.prize-slot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.prize-slot__text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.scratch-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.scratch-actions__btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 14rpx 48rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.scratch-actions__btn--down {
+  opacity: 0.8;
+}
+
+.scratch-actions__btn-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

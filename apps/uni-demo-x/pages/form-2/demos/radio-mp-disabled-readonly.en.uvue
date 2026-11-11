@@ -1,0 +1,25 @@
+<script setup lang="ts">
+/** Demo: sn-radio — disabled & readonly: `disabled` locks the whole group, `readonly` makes it non-interactive. */
+import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+const blocked = ref<string | number | boolean | undefined>('a');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">disabled</text>
+    <SnRadioGroup v-model="blocked" disabled>
+      <SnRadio value="a"><text>Whole group disabled</text></SnRadio>
+    </SnRadioGroup>
+
+    <text class="sn-demo__title">readonly</text>
+    <SnRadioGroup v-model="blocked" readonly>
+      <SnRadio value="a"><text>Whole group read-only</text></SnRadio>
+    </SnRadioGroup>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

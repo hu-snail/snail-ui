@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (cell-list styling). */
+</script>
+<template>
+  <view class="sn-button-demo">
+    <SnButton cell="hover"><text>cell=hover (gray on press)</text></SnButton>
+    <SnButton cell="fill"><text>cell=fill (persistent gray)</text></SnButton>
+    <SnButton cell="menu"><text>cell=menu (transparent, no radius)</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-button-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  max-width: 600rpx;
+}
+</style>

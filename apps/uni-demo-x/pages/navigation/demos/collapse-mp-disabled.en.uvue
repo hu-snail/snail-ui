@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — English shadow of collapse-mp-disabled.
+ *
+ * A disabled panel keeps the neutral colour and never reacts to taps.
+ */
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const open = ref(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCollapse v-model="open">
+      <SnCollapseItem name="a" title="Expandable panel">
+        <text class="sn-demo__body">A normal panel — tap to expand / collapse.</text>
+      </SnCollapseItem>
+      <SnCollapseItem name="b" title="Unavailable" disabled>
+        <text class="sn-demo__body">This panel is disabled and ignores taps.</text>
+      </SnCollapseItem>
+    </SnCollapse>
+    <text class="sn-demo__meta">Currently open: {{ open.join(', ') || 'none' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+.sn-demo__body {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

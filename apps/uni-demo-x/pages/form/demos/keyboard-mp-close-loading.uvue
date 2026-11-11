@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/** Demo: sn-keyboard — 关闭键加载态（closeButtonLoading）：关闭键显示 spinner 并可换文案。 */
+const busy = ref('');
+const openBusy = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">closeButtonLoading（关闭键显示 spinner）</text>
+    <view class="sn-demo__button" @click="openBusy = true"><text>关闭键加载中</text></view>
+    <SnKeyboard
+      v-model="busy"
+      v-model:visible="openBusy"
+      :maxlength="6"
+      title="关闭键加载中"
+      close-button-loading
+      close-text="提交中"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+</style>

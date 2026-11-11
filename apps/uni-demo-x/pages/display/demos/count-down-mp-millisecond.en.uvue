@@ -1,0 +1,25 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-count-down (uni-end) — millisecond rendering (`millisecond`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
+ */
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCountDown :time="10000" millisecond format="ss.S" />
+    <text class="sn-count-down-demo__meta"
+      >With millisecond on, the ss.S format ticks the fraction digit in real time.</text
+    >
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-count-down-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+</style>

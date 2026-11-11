@@ -1,0 +1,8 @@
+<script setup lang="ts">
+/** Demo: sn-slide-verify — disabled: dragging is blocked. */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlideVerify disabled />
+  </view>
+</template>

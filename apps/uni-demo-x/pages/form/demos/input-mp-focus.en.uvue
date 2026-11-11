@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-input — autofocus (focus): focused on mount. */
+const focused = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="focused" focus placeholder="Focused on mount" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

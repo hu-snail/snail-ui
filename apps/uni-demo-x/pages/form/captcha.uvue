@@ -1,0 +1,90 @@
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— captcha 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/captcha-mp-basic.uvue';
+import Demo1 from './demos/captcha-mp-copy.uvue';
+import Demo2 from './demos/captcha-mp-interaction.uvue';
+import Demo3 from './demos/captcha-mp-popup.uvue';
+import Demo4 from './demos/captcha-mp-size-tolerance.uvue';
+import Demo5 from './demos/captcha-mp-verify.uvue';
+import DemoModuleHead from '../../components/DemoModuleHead.uvue';
+import DemoPageShell from '../../components/DemoPageShell.uvue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
+</script>
+<template>
+  <DemoPageShell :title-zh="'拼图验证'" :title-en="'Captcha'" :desc="'拖动拼图对齐缺口'" :bg="''">
+    <view class="page">
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo0 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('自定义文案（tips / successText）', 'Custom copy (tips / successText)')"
+          badge="copy"
+        />
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('交互', 'Interaction')" badge="interaction" />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('弹窗', 'Popup')" badge="popup" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t(
+              '尺寸与容差（width / height / tolerance）',
+              'Size & tolerance (width / height / tolerance)',
+            )
+          "
+          badge="size-tolerance"
+        />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('验证', 'Verification')" badge="verify" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+    </view>
+  </DemoPageShell>
+</template>
+<style scoped>
+.page {
+  padding: 24rpx 24rpx 48rpx;
+}
+
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+.module {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
+}
+
+.module__body {
+  padding: 0;
+}
+</style>

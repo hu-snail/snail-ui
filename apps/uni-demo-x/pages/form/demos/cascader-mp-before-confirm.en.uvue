@@ -1,0 +1,71 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-cascader — confirm veto (beforeConfirm).
+ *
+ * beforeConfirm only lets the Zhejiang branch through and the verdict is
+ * reported back through a sn-cell card row.
+ */
+const tree = [
+  {
+    value: 'zj',
+    text: 'Zhejiang',
+    children: [
+      { value: 'hz', text: 'Hangzhou' },
+      { value: 'nb', text: 'Ningbo' },
+    ],
+  },
+  { value: 'js', text: 'Jiangsu', children: [{ value: 'nj', text: 'Nanjing' }] },
+];
+
+const value = ref<string | number | Array<string | number>>([]);
+const open = ref(false);
+const lastGuard = ref('Pending');
+
+/** Only the Zhejiang branch may be confirmed. */
+const guard = (payload: { value: string | number | Array<string | number> }) => {
+  const first = Array.isArray(payload.value) ? payload.value[0] : payload.value;
+  const allowed = first === 'zj' || first === 'hz' || first === 'nb';
+  lastGuard.value = allowed ? 'Allowed' : 'Zhejiang only';
+  return allowed;
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >beforeConfirm vetoes the confirm, with its verdict reported by the guard card row.</text
+    >
+    <view class="sn-demo__cards">
+      <SnCell card title="Alert region" placeholder="Please select" is-link @click="open = true" />
+      <SnCell card title="Confirm guard" :value="lastGuard" />
+    </view>
+    <SnCascader
+      v-model="value"
+      v-model:visible="open"
+      :options="tree"
+      check-strictly
+      :before-confirm="guard"
+      title="Alert region"
+      confirm-text="Use it"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

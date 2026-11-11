@@ -1,0 +1,50 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-backtop — `icon-style`、`z-index` 与 `custom-class`。
+ *
+ * - `icon-style` 追加在图标内联样式之后（默认已 `rotate(-90deg)` 指向上方）
+ * - `z-index` 只在按钮可见时参与根节点定位样式
+ * - `custom-class` 落在根节点
+ *
+ * 预览专用：根节点是 `position: fixed`，`custom-class` 把它固定到这块 stage 内。
+ */
+const scrollTop = ref(200);
+const clicks = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__stage">
+      <text class="sn-demo__meta">scroll-top 固定 200（超过默认阈值，按钮常显）</text>
+
+      <SnBacktop
+        :scroll-top="scrollTop"
+        :z-index="30"
+        icon-style="color: var(--sn-mp-color-action-primary);"
+        text="顶部"
+        custom-class="sn-demo-contained"
+        @click="clicks += 1"
+      />
+    </view>
+
+    <text class="sn-demo__meta">点击次数：{{ clicks }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  height: 320rpx;
+  padding: var(--sn-mp-spacing-4);
+  overflow: hidden;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — pin the fixed button to the stage. */
+</style>

@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-count-down (uni-end) — 毫秒渲染（millisecond）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
+ */
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCountDown :time="10000" millisecond format="ss.S" />
+    <text class="sn-count-down-demo__meta">millisecond 打开后按 ss.S 渲染，小数位实时跳动。</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-count-down-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+</style>

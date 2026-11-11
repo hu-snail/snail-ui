@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — 禁用面板（item disabled）。
+ *
+ * 禁用的面板保持中性灰，点击无反应。
+ */
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const open = ref(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCollapse v-model="open">
+      <SnCollapseItem name="a" title="可展开面板">
+        <text class="sn-demo__body">普通面板，点击可展开 / 收起。</text>
+      </SnCollapseItem>
+      <SnCollapseItem name="b" title="暂不可用" disabled>
+        <text class="sn-demo__body">该面板已禁用，点击无反应。</text>
+      </SnCollapseItem>
+    </SnCollapse>
+    <text class="sn-demo__meta">当前展开：{{ open.join('、') || '无' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+.sn-demo__body {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

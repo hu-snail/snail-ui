@@ -1,0 +1,65 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar — cell formatting (formatter).
+ *
+ * One cell card carries the entry: the formatter rewrites topInfo /
+ * bottomInfo / disabled — the 1st of every month gets a "1st" tag and
+ * weekends are greyed out as "Off". Tapping opens the sheet.
+ */
+import { Filter } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const formatted = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const open = ref(false);
+
+/** formatter: tag the 1st of every month and grey out weekends. */
+const cellFormatter = (day: { date: number; text: string }) => {
+  const d = new Date(day.date);
+  if (d.getDate() === 1) return { topInfo: '1st' };
+  if (d.getDay() === 0 || d.getDay() === 6) return { disabled: true, bottomInfo: 'Off' };
+  return undefined;
+};
+
+function fmtDate(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const formattedText = computed(() => fmtDate(formatted.value));
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="Cell formatting">
+      <SnCell
+        title="formatter hook"
+        label="formatter rewrites topInfo / bottomInfo / disabled"
+        :value="formattedText"
+        placeholder="Not selected"
+        :prefix-icon-data="Filter"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
+    <SnCalendar
+      v-model="formatted"
+      v-model:visible="open"
+      type="date"
+      title="Formatted cells"
+      :min-date="min"
+      :max-date="max"
+      :formatter="cellFormatter"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+</style>

@@ -1,0 +1,39 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-signature — export params.
+ * fileType / quality / exportScale are declared for wd-signature parity. This build
+ * never rasterizes: the host applies the export trio inside the confirm callback,
+ * so these props do not change the pad behaviour.
+ */
+const strokes = ref(0);
+const onConfirm = (result: { paths: unknown[] }) => {
+  strokes.value = result.paths.length;
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title"
+      >fileType / quality / exportScale (used by the host when exporting)</text
+    >
+    <SnSignature
+      file-type="png"
+      :quality="0.92"
+      :export-scale="2"
+      confirm-text="Export PNG"
+      @confirm="onConfirm"
+    />
+    <text class="sn-demo__meta">Strokes: {{ strokes }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-toast (uni-end) — English shadow of toast-mp-z-index.
+ */
+const styled = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @click="styled = true"><text> z-index=300 + custom-style </text></SnButton>
+
+    <SnToast
+      v-model="styled"
+      msg="z-index and custom-style"
+      icon-name="info"
+      :z-index="300"
+      custom-style="padding: var(--sn-mp-spacing-5); border-radius: var(--sn-mp-radius-xl);"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-toast.sn-demo-contained {
+  position: absolute;
+}
+</style>

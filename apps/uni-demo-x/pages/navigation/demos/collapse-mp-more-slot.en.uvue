@@ -1,0 +1,60 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — English shadow of collapse-mp-more-slot.
+ *
+ * - in viewmore mode the `more` slot replaces the bottom expand / collapse area; its
+ *   scope is `{ expanded }`
+ * - `custom-more-slot-class` appends a class to that area
+ */
+import { ChevronDown } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const viewmore = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCollapse v-model="viewmore" viewmore :line-num="2" custom-more-slot-class="sn-demo__more">
+      <SnCollapseItem name="intro" title="About the framework">
+        <text class="sn-demo__body">
+          This block verifies the line-num clamp: two lines show before expanding, and only the
+          custom button below opens the rest. AUI treats the schema as the single source of truth
+          and separates Protocol, Runtime and Renderer.
+        </text>
+      </SnCollapseItem>
+      <template #more="{ expanded }">
+        <view class="sn-demo__more-inner">
+          <text class="sn-demo__more-text">{{ expanded ? 'Collapse all' : 'Expand all' }}</text>
+          <SnIcon
+            class="sn-demo__more-icon"
+            :icon="ChevronDown"
+            size="var(--sn-mp-icon-size-small)"
+          />
+        </view>
+      </template>
+    </SnCollapse>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__body {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__more-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sn-mp-spacing-1);
+}
+.sn-demo__more-text {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__more-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+/* custom-more-slot-class lands on the collapse footer area, so it needs :deep. */
+</style>

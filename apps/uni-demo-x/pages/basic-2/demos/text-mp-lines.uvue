@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-text (uni-end) — 多行截断。 */
+const longText =
+  '移动端列表里的说明文案常常超过一屏宽度。设置 lines 之后，超出的部分会被截断并显示省略号，保证每一行卡片高度一致。';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnText :text="longText" :lines="1" />
+    <SnText :text="longText" :lines="2" />
+    <SnText :text="longText" :lines="3" />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  max-width: 100%;
+}
+</style>

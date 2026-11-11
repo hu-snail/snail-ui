@@ -1,0 +1,24 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — checked colors (checkedColor / uncheckedColor). */
+const colored = ref<boolean>(true);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCheckbox
+      v-model="colored"
+      checked-color="var(--sn-mp-color-feedback-success)"
+      unchecked-color="var(--sn-mp-color-border-default)"
+    ><text>
+      checkedColor / uncheckedColor
+    </text></SnCheckbox>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+</style>

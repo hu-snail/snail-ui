@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-input-number — step snapping (stepStrictly): with step=3, values snap to 0/3/6/9… */
+const snapped = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">stepStrictly + step=3 (values snap to 0/3/6/9…)</text>
+    <SnInputNumber v-model="snapped" :min="0" :max="20" :step="3" step-strictly />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

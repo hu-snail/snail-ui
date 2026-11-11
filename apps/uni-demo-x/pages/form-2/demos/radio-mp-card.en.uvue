@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/** Demo: sn-radio — 卡片模式（variant="card" + card 插槽自定义内容）。 */
+import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+const plan = ref<string | number | boolean | undefined>('pro');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRadioGroup v-model="plan" variant="card">
+      <SnRadio value="basic">
+        <template #card="{ checked }">
+          <text class="plan__title">Basic</text>
+          <text class="plan__price">¥0</text>
+          <text class="plan__desc">Solo · 1 workspace</text>
+          <text v-if="checked" class="plan__hint">Selected</text>
+        </template>
+      </SnRadio>
+      <SnRadio value="pro">
+        <template #card>
+          <text class="plan__title">Pro</text>
+          <text class="plan__price">¥99</text>
+          <text class="plan__desc">Teams · 10 workspaces</text>
+        </template>
+      </SnRadio>
+      <SnRadio value="enterprise">
+        <template #card>
+          <text class="plan__title">Enterprise</text>
+          <text class="plan__price">On demand</text>
+          <text class="plan__desc">Self-hosted · priority support</text>
+        </template>
+      </SnRadio>
+    </SnRadioGroup>
+    <text class="sn-demo__meta">Selected: {{ plan }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.plan__title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+.plan__price {
+  margin-top: 8rpx;
+  font-size: 40rpx;
+  font-weight: var(--sn-mp-font-weight-bold);
+  color: var(--sn-mp-color-action-primary);
+}
+.plan__desc {
+  margin-top: 4rpx;
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+.plan__hint {
+  margin-top: 8rpx;
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-action-primary);
+}
+</style>

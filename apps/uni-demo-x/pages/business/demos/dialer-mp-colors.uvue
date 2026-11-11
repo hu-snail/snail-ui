@@ -1,0 +1,71 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialer (uni-end) — 扇区配色：prizeBgColors / borderColor /
+ * 单奖品 color 覆盖。
+ */
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
+
+const themePrizes: SnDialerPrize[] = [
+  { id: 'a', name: '奖品 A' },
+  { id: 'b', name: '奖品 B' },
+  { id: 'c', name: '奖品 C' },
+  { id: 'd', name: '奖品 D' },
+];
+
+const overridePrizes: SnDialerPrize[] = [
+  { id: 'top', name: '大奖', color: 'var(--sn-mp-color-feedback-warning-soft)' },
+  { id: 'normal', name: '普通奖' },
+];
+
+const themeRef = ref<InstanceType<typeof SnDialer> | null>(null);
+const overrideRef = ref<InstanceType<typeof SnDialer> | null>(null);
+
+function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: number): void {
+  dialer?.run(Math.floor(Math.random() * count));
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">自定义扇区配色 + 描边</text>
+    <view class="dialer-stage">
+      <SnDialer
+        ref="themeRef"
+        :prize-list="themePrizes"
+        :prize-bg-colors="[
+          'var(--sn-mp-color-action-primary-soft)',
+          'var(--sn-mp-color-background-surface)',
+        ]"
+        border-color="var(--sn-mp-color-action-primary)"
+        @click="spinToRandom(themeRef, themePrizes.length)"
+      />
+    </view>
+
+    <text class="sn-demo__title">单奖品 color 覆盖（优先于 prizeBgColors）</text>
+    <view class="dialer-stage">
+      <SnDialer
+        ref="overrideRef"
+        :prize-list="overridePrizes"
+        @click="spinToRandom(overrideRef, overridePrizes.length)"
+      />
+    </view>
+    <text class="sn-demo__meta">每个转盘点击指针即随机落定</text>
+  </view>
+</template>
+<style scoped>
+.dialer-stage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

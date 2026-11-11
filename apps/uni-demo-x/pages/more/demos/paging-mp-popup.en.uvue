@@ -1,0 +1,90 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-paging (uni-end) — pull-to-refresh + load-more inside a popup (EN).
+ *
+ * - sn-paging embedded in an sn-popup bottom sheet: the layer's own scroll
+ *   host runs the pull-to-refresh and scroll-to-bottom gestures, isolated
+ *   from the page behind
+ * - The sheet height is host-owned (640rpx); closing the popup destroys the
+ *   list and resets its state
+ */
+interface DemoRow {
+  id: number;
+  label: string;
+}
+
+const TOTAL = 30;
+const PAGE_SIZE = 10;
+const popupOpen = ref(false);
+const list = ref<DemoRow[]>([]);
+const paging = ref<InstanceType<typeof SnPaging> | null>(null);
+
+function query(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    const start = (pageNo - 1) * pageSize;
+    const rows: DemoRow[] = Array.from({ length: Math.min(pageSize, TOTAL - start) }, (_, i) => ({
+      id: start + i + 1,
+      label: `Popup item ${start + i + 1}`,
+    }));
+    paging.value?.completeByTotal(rows, TOTAL);
+  }, 400);
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @click="popupOpen = true"><text>Open sheet list</text></SnButton>
+    <SnPopup v-model="popupOpen" position="bottom" round closable custom-class="sn-demo-contained">
+      <view class="sheet">
+        <view class="sheet__head">
+          <text class="sheet__title">Paged list inside a sheet</text>
+        </view>
+        <view class="sheet__body">
+          <SnPaging ref="paging" v-model="list" :default-page-size="PAGE_SIZE" @query="query">
+            <view v-for="row in list" :key="row.id" class="paging-row">
+              <text class="paging-row__label">{{ row.label }}</text>
+            </view>
+          </SnPaging>
+        </view>
+      </view>
+    </SnPopup>
+  </view>
+</template>
+<style scoped>
+.sheet {
+  box-sizing: border-box;
+  height: 640rpx;
+  padding: var(--sn-mp-spacing-4) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet__head {
+  flex-shrink: 0;
+  padding: 0 var(--sn-mp-spacing-4) var(--sn-mp-spacing-3);
+}
+
+.sheet__title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-lg);
+  font-weight: 600;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.sheet__body {
+  flex: 1;
+  min-height: 0;
+}
+
+.paging-row {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-4);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.paging-row__label {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

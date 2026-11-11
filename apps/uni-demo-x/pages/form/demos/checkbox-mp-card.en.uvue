@@ -1,0 +1,52 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — 卡片模式（variant="card" + card 插槽）。 */
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const picked = ref<Array<string | number | boolean>>(['mail']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCheckboxGroup v-model="picked" variant="card">
+      <SnCheckbox name="mail">
+        <template #card="{ checked }">
+          <text class="opt__title">Email</text>
+          <text class="opt__desc">Daily digest · toggle anytime</text>
+          <text v-if="checked" class="opt__hint">On</text>
+        </template>
+      </SnCheckbox>
+      <SnCheckbox name="sms">
+        <template #card>
+          <text class="opt__title">SMS</text>
+          <text class="opt__desc">Critical alerts only</text>
+        </template>
+      </SnCheckbox>
+      <SnCheckbox name="push">
+        <template #card>
+          <text class="opt__title">Push</text>
+          <text class="opt__desc">Realtime to device</text>
+        </template>
+      </SnCheckbox>
+    </SnCheckboxGroup>
+    <text class="sn-demo__meta">Selected: {{ picked.join(', ') || '(none)' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.opt__title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+.opt__desc {
+  margin-top: 4rpx;
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+.opt__hint {
+  margin-top: 8rpx;
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-action-primary);
+}
+</style>

@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-input — cursor spacing (cursorSpacing): keeps the caret a fixed distance above the keyboard. */
+const spaced = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="spaced" :cursor-spacing="24" placeholder="24px cursor spacing" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

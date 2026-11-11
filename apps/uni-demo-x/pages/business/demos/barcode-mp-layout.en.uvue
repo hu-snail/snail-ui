@@ -1,0 +1,41 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-barcode (uni-end) — Layout direction: horizontal / vertical.
+ */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="barcode-row">
+      <view class="barcode-card">
+        <SnBarcode text="690123456789" :module-width="2" />
+        <text class="sn-demo__meta">Horizontal (default)</text>
+      </view>
+      <view class="barcode-card">
+        <SnBarcode text="690123456789" layout="vertical" :module-width="2" height="80rpx" />
+        <text class="sn-demo__meta">Vertical</text>
+      </view>
+    </view>
+  </view>
+</template>
+<style scoped>
+.barcode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.barcode-row {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sn-mp-spacing-3);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

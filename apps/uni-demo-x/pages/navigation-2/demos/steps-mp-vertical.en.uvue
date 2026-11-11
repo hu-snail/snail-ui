@@ -1,0 +1,26 @@
+<script setup lang="ts">
+/** Demo: sn-steps — English shadow of steps-mp-vertical. */
+import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSteps :active="1" vertical>
+      <SnStep title="Fill in details" description="10:00" />
+      <SnStep title="Under review" description="10:05" status="process" />
+      <SnStep title="Review done" description="10:10" />
+    </SnSteps>
+    <text class="sn-demo__meta">vertical stacks the steps top-down.</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

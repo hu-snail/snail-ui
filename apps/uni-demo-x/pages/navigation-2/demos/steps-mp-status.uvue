@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-steps — 显式状态（status）。
+ *
+ * `status` 显式覆盖由 `active` 推导出的状态（finished / process / error / wait）。
+ */
+import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSteps :active="1">
+      <SnStep title="审核通过" description="已通过" status="finished" />
+      <SnStep title="人工复核" description="进行中" status="process" />
+      <SnStep title="自动放行" description="已跳过" status="wait" />
+    </SnSteps>
+
+    <text class="sn-demo__meta">每个步骤用 status 显式覆盖由 active 推导的状态。</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

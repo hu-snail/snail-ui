@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — count limits (min / max). */
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const limited = ref<Array<string | number | boolean>>(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">min=1 / max=2</text>
+    <SnCheckboxGroup v-model="limited" :min="1" :max="2">
+      <SnCheckbox name="a"><text>Option A</text></SnCheckbox>
+      <SnCheckbox name="b"><text>Option B</text></SnCheckbox>
+      <SnCheckbox name="c"><text>Option C</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <text class="sn-demo__meta">{{ limited.length }} selected (max 2)</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

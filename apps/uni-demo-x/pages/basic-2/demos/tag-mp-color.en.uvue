@@ -1,0 +1,92 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tag (uni-end) — custom colours (`bgColor` / `color`).
+ *
+ * `bgColor` takes over fill and border together (brand-colour scenes);
+ * `color` overrides the label colour only. `customClass` / `customStyle`
+ * append root styling (no dedicated custom demo, shown here too).
+ */
+/** Brand fills: fill and border change together, labels stay white. */
+const brandFills = [
+  { label: 'Black card', bgColor: 'var(--sn-mp-color-purple)' },
+  { label: 'Pinned', bgColor: 'var(--sn-mp-color-feedback-info)' },
+];
+
+/** Colour-only tints: themed labels on the plain / light / text variants. */
+const tints = [
+  {
+    label: 'Quiet',
+    variant: 'plain',
+    color: 'var(--sn-mp-color-action-primary)',
+  },
+  {
+    label: 'Read',
+    variant: 'light',
+    color: 'var(--sn-mp-color-text-tertiary)',
+  },
+  {
+    label: 'Demoted',
+    variant: 'text',
+    color: 'var(--sn-mp-color-feedback-danger)',
+  },
+] as const;
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">bgColor takes over fill and border (brand colour)</text>
+    <view class="sn-demo__row">
+      <SnTag v-for="fill in brandFills" :key="fill.label" :bg-color="fill.bgColor"><text>
+        {{ fill.label }}
+      </text></SnTag>
+    </view>
+
+    <text class="sn-demo__meta">color overrides the label colour only</text>
+    <view class="sn-demo__row">
+      <SnTag
+        v-for="tint in tints"
+        :key="tint.label"
+        type="default"
+        :variant="tint.variant"
+        :color="tint.color"
+      ><text>
+        {{ tint.label }}
+      </text></SnTag>
+    </view>
+
+    <text class="sn-demo__meta">customClass / customStyle append root styling</text>
+    <view class="sn-demo__row">
+      <SnTag type="primary" custom-class="sn-demo-tag--root"><text>customClass</text></SnTag>
+      <SnTag
+        type="danger"
+        variant="light"
+        custom-style="padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-6); border-radius: var(--sn-mp-radius-full);"
+      ><text>
+        customStyle
+      </text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+}
+
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* customClass: always on the root node. */
+</style>

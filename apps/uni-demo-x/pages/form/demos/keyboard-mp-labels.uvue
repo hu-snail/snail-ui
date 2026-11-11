@@ -1,0 +1,45 @@
+<script setup lang="ts">
+/** Demo: sn-keyboard — 键位文案（deleteText / closeText）：自定义删除键与关闭键文案。 */
+const custom = ref('');
+const openCustom = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">deleteText + closeText（自定义删除键与关闭键文案）</text>
+    <view class="sn-demo__button" @click="openCustom = true"><text>自定义文案</text></view>
+    <text class="sn-demo__meta">当前值：{{ custom || '（空）' }}</text>
+    <SnKeyboard
+      v-model="custom"
+      v-model:visible="openCustom"
+      :maxlength="6"
+      title="自定义文案"
+      delete-text="退格"
+      close-text="收起"
+      :z-index="1050"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

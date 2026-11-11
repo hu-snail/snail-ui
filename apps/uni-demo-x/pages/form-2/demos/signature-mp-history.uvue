@@ -1,0 +1,8 @@
+<script setup lang="ts">
+/** Demo: sn-signature — 撤销与恢复：enableHistory 显示撤回 / 恢复按钮，画板自带历史栈。 */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSignature enable-history />
+  </view>
+</template>

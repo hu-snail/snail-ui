@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-count-to (uni-end) — 主题色（type 五值）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-count-to from its SFC source.
+ */
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCountTo type="default" :end-val="1200" />
+    <SnCountTo type="primary" :end-val="2400" />
+    <SnCountTo type="success" :end-val="3600" />
+    <SnCountTo type="warning" :end-val="4800" />
+    <SnCountTo type="error" :end-val="6000" />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

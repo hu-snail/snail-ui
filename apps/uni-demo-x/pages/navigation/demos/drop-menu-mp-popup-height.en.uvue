@@ -1,0 +1,41 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-drop-menu — English shadow of drop-menu-mp-popup-height.
+ *
+ * - `popup-height` caps the panel height (the panel defaults to at most 80vh)
+ * - `custom-popup-class` / `custom-popup-style` target the option panel
+ *
+ * Docs-preview only: `custom-class="sn-demo-contained"` keeps the panel's
+ * positioning context inside the demo.
+ */
+const styled = ref('');
+
+const styledOptions = [
+  { label: 'Beijing', value: 'bj', tip: 'Default city' },
+  { label: 'Shanghai', value: 'sh' },
+  { label: 'Guangzhou', value: 'gz' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnDropMenu
+      v-model="styled"
+      :options="styledOptions"
+      popup-height="240rpx"
+      custom-popup-class="sn-demo__panel"
+      custom-popup-style="padding: var(--sn-mp-spacing-2);"
+      title="City"
+      custom-class="sn-demo-contained"
+    />
+
+    <text class="sn-demo__meta">Selected: {{ styled || 'none' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — the panel is absolutely positioned inside the root. */
+/* custom-popup-class lands on the option panel. */
+</style>

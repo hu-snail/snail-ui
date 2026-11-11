@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-radio-group — 基础单选（单值 v-model）。 */
+import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+const picked = ref<string | number | boolean | undefined>('a');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRadioGroup v-model="picked">
+      <SnRadio value="a"><text>选项 A</text></SnRadio>
+      <SnRadio value="b"><text>选项 B</text></SnRadio>
+      <SnRadio value="c"><text>选项 C</text></SnRadio>
+    </SnRadioGroup>
+    <text class="sn-demo__meta">已选：{{ picked ?? '（未选）' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

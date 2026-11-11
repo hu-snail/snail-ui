@@ -1,0 +1,47 @@
+<script setup lang="ts">
+/** Demo: sn-tag (uni-end) — closable 筛选条件。 */
+/** 已选筛选条件：点关闭即移除，清空后点虚线标签整体恢复。 */
+const filters = ref(['数码', '户外', '美食', '影音']);
+
+function removeFilter(filter: string): void {
+  filters.value = filters.value.filter((item) => item !== filter);
+}
+
+function resetFilters(): void {
+  filters.value = ['数码', '户外', '美食', '影音'];
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <template v-if="filters.length > 0">
+        <SnTag
+          v-for="filter in filters"
+          :key="filter"
+          type="primary"
+          variant="light"
+          closable
+          @close="removeFilter(filter)"
+        ><text>
+          {{ filter }}
+        </text></SnTag>
+      </template>
+      <SnTag v-else variant="dashed" @click="resetFilters"><text>已清空，点此恢复</text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-5);
+  align-items: flex-start;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+}
+</style>

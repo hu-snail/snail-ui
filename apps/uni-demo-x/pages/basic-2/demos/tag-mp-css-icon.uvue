@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tag (uni-end) — 字体图标（cssIcon）。
+ *
+ * `cssIcon` 让字符串图标显式走字体路径（`iconPrefix` 拼前缀，字符串值
+ * 直接当前缀）；字形由宿主 iconfont 提供，demo 用几何形占位验证类名
+ * 挂载（禁伪元素，形状画在图标节点本体上）。
+ */
+/** 字体图标：iconPrefix + cssIcon 拼出 sn-demo-tag-icon-{name}。 */
+const glyphs = [{ icon: 'star' }, { icon: 'heart' }, { icon: 'check' }] as const;
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">cssIcon 字体图标（几何形为宿主字形占位）</text>
+    <view class="sn-demo__row">
+      <SnTag
+        v-for="glyph in glyphs"
+        :key="glyph.icon"
+        type="success"
+        variant="light"
+        :icon="glyph.icon"
+        icon-prefix="sn-demo-tag-icon"
+        css-icon
+      ><text>
+        {{ glyph.icon }}
+      </text></SnTag>
+      <SnTag type="warning" variant="plain" icon="diamond" css-icon="sn-demo-tag-gem"><text>
+        自定义前缀
+      </text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+}
+
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/*
+ * cssIcon 类名挂载占位：真实项目里字形来自宿主 iconfont 样式表；这里把
+ * 几何形直接画在图标节点本体（无伪元素），证明拼出的类确实落在了节点上。
+ */
+</style>

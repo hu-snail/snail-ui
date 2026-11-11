@@ -1,0 +1,34 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — roller geometry: itemHeight (52px rows) + visibleItemCount (5 visible). */
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const tall = ref<string | number>(new Date(2024, 5, 15).getTime());
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnDatetimePickerView
+      v-model="tall"
+      type="date"
+      :min-date="min"
+      :max-date="max"
+      :item-height="52"
+      :visible-item-count="5"
+    />
+    <text class="sn-demo__meta">itemHeight + visibleItemCount (52px rows, 5 visible)</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

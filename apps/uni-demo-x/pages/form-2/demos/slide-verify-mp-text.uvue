@@ -1,0 +1,8 @@
+<script setup lang="ts">
+/** Demo: sn-slide-verify — 文案：text / successText 覆盖内置提示与成功文案。 */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlideVerify text="按住滑块，拖到最右侧" success-text="验证完成" />
+  </view>
+</template>

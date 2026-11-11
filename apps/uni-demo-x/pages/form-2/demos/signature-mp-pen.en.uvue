@@ -1,0 +1,8 @@
+<script setup lang="ts">
+/** Demo: sn-signature — pen look: `penColor` overrides the stroke color and `lineWidth` sets the width. */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSignature :line-width="4" pen-color="var(--sn-mp-color-action-primary)" />
+  </view>
+</template>

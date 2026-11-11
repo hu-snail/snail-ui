@@ -1,0 +1,57 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-segmented — English shadow of segmented-mp-value-alias.
+ *
+ * `wd-segmented` names the model `value` and its event `update:value`. This
+ * component's own API is `modelValue` / `update:modelValue`, and it **also** emits
+ * `update:value` (same payload), so both spellings keep parent and child in sync.
+ * Group one uses the wot-ui style, group two this component's own style.
+ */
+const options = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+];
+
+/** Group one: the wot-ui-style `@update:value` (emitted for parity). */
+const wotValue = ref('day');
+/** Group two: this component's own `@update:model-value`. */
+const syncedValue = ref('week');
+
+function onWotUpdate(next: string | number): void {
+  wotValue.value = String(next);
+}
+
+function onSyncedUpdate(next: string | number): void {
+  syncedValue.value = String(next);
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">
+      wot-ui style `:value` + `@update:value` — parent stays in sync
+    </text>
+    <SnSegmented :value="wotValue" :options="options" @update:value="onWotUpdate" />
+    <text class="sn-demo__meta">Value in the parent: {{ wotValue }}</text>
+
+    <text class="sn-demo__meta">
+      This component's style `:value` + `@update:model-value` — parent stays in sync
+    </text>
+    <SnSegmented :value="syncedValue" :options="options" @update:model-value="onSyncedUpdate" />
+    <text class="sn-demo__meta">Value in the parent: {{ syncedValue }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -1,0 +1,24 @@
+<script setup lang="ts">
+/** Demo: sn-datetime-picker-view — time type write-back (`type="time"`): hour / minute columns only, writes an `HH:mm` string. */
+const time = ref<string | number>('10:30');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnDatetimePickerView v-model="time" type="time" :min-hour="8" :max-hour="18" />
+    <text class="sn-demo__meta">Selected: {{ time }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-slider — 主题：theme="capsule" 加粗轨道。 */
+const capsule = ref(60);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlider v-model="capsule" theme="capsule" />
+    <text class="sn-demo__meta">theme="capsule"：胶囊加粗轨道</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

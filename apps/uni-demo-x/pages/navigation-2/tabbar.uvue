@@ -1,0 +1,34 @@
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— tabbar 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/tabbar-mp-playground.uvue';
+import DemoPageShell from '../../components/DemoPageShell.uvue';
+</script>
+<template>
+  <DemoPageShell :title-zh="'标签栏'" :title-en="'Tabbar'" :desc="'底部标签栏'" :bg="''">
+    <view class="page">
+      <Demo0 />
+    </view>
+  </DemoPageShell>
+</template>
+<style scoped>
+.page {
+  padding: 24rpx 24rpx 48rpx;
+}
+
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+.module {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
+}
+
+.module__body {
+  padding: 0;
+}
+</style>

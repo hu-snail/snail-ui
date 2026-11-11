@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-toast (uni-end) — English shadow of toast-mp-icon-style.
+ */
+const iconSized = ref(false);
+const loadingSized = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton type="success" block @click="iconSized = true"><text> icon-size / icon-color </text></SnButton>
+    <SnButton block @click="loadingSized = true"><text> loading-size / loading-color </text></SnButton>
+
+    <SnToast
+      v-model="iconSized"
+      msg="Larger, recolored status glyph"
+      icon-name="success"
+      :icon-size="72"
+      icon-color="var(--sn-mp-color-feedback-success)"
+      custom-class="sn-demo-contained"
+    />
+
+    <SnToast
+      v-model="loadingSized"
+      msg="Larger, recolored spinner"
+      icon-name="loading"
+      :loading-size="64"
+      loading-color="var(--sn-mp-color-feedback-warning)"
+      direction="vertical"
+      :duration="2000"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-toast.sn-demo-contained {
+  position: absolute;
+}
+</style>

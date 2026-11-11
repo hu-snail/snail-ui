@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — English shadow of tabs-mp-line.
+ */
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+const normalActive = ref(0);
+const underlineActive = ref(1);
+const dotActive = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">line-theme="normal" (default short bar)</text>
+    <SnTabs v-model="normalActive">
+      <SnTab title="For you" :name="0"><text>For you content</text></SnTab>
+      <SnTab title="Following" :name="1"><text>Following content</text></SnTab>
+      <SnTab title="Trending" :name="2"><text>Trending content</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">line-theme="underline" + line-width=64 / line-height=6</text>
+    <SnTabs
+      v-model="underlineActive"
+      line-theme="underline"
+      :line-width="64"
+      :line-height="6"
+      animated
+    >
+      <SnTab title="Day" :name="0"><text>Daily stats</text></SnTab>
+      <SnTab title="Week" :name="1"><text>Weekly stats</text></SnTab>
+      <SnTab title="Month" :name="2"><text>Monthly stats</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label"
+      >line-theme="dot" + line-width="24rpx" (string forwarded verbatim)</text
+    >
+    <SnTabs v-model="dotActive" line-theme="dot" line-width="24rpx" line-height="24rpx">
+      <SnTab title="Day" :name="0"><text>Daily stats</text></SnTab>
+      <SnTab title="Week" :name="1"><text>Weekly stats</text></SnTab>
+      <SnTab title="Month" :name="2"><text>Monthly stats</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__meta">
+      Active tab: {{ normalActive }} / {{ underlineActive }} / {{ dotActive }}
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

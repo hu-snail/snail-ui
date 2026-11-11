@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-input — 光标与选区（cursor / selection-start / selection-end）：初始光标位置与预选区域。 */
+const preselect = ref('预选区域示例');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="preselect" :cursor="5" :selection-start="2" :selection-end="8" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

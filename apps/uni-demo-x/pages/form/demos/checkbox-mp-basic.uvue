@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox-group — 基础多选（数组 v-model）。 */
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const picked = ref<Array<string | number | boolean>>(['apple']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCheckboxGroup v-model="picked">
+      <SnCheckbox name="apple"><text>苹果</text></SnCheckbox>
+      <SnCheckbox name="banana"><text>香蕉</text></SnCheckbox>
+      <SnCheckbox name="cherry"><text>樱桃</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <text class="sn-demo__meta">已选：{{ picked.join('、') || '（空）' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/** Demo: sn-sort-button — 排序循环：allowReset 把 0 纳入循环；descFirst 首次点击进入降序。 */
+const a = ref<1 | 0 | -1>(0);
+const b = ref<1 | 0 | -1>(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSortButton v-model="a" title="销量" allow-reset />
+    <SnSortButton v-model="b" title="评分" desc-first allow-reset />
+    <text class="sn-demo__meta">销量：{{ a }} / 评分：{{ b }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

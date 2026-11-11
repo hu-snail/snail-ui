@@ -1,0 +1,32 @@
+<script setup lang="ts">
+/** Demo: sn-picker-view — roller geometry: itemHeight is the row height (px design units → rpx) and visible-item-count the number of visible rows. */
+/** Row height 32 / 5 visible rows: a tighter roller. */
+const dense = ref<Array<string | number>>(['Shanghai']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPickerView
+      v-model="dense"
+      :columns="[['Shanghai', 'Beijing', 'Guangzhou', 'Shenzhen', 'Hangzhou', 'Chengdu']]"
+      :item-height="32"
+      :visible-item-count="5"
+    />
+    <text class="sn-demo__meta"
+      >itemHeight=32 + visibleItemCount=5: shorter rows, fewer visible rows</text
+    >
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

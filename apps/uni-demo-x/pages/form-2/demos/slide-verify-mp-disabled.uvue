@@ -1,0 +1,8 @@
+<script setup lang="ts">
+/** Demo: sn-slide-verify — 禁用：disabled 拦掉拖动。 */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlideVerify disabled />
+  </view>
+</template>

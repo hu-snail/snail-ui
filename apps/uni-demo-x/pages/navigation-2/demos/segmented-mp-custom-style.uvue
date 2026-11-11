@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-segmented — 根节点样式（customClass / customStyle）。
+ *
+ * 两个 prop 都落在根节点：`customClass` 追加类名，`customStyle` 作为根节点
+ * inline style（会覆盖组件自己的背景 / 圆角）。
+ */
+const options = [
+  { value: 'day', label: '日' },
+  { value: 'week', label: '周' },
+  { value: 'month', label: '月' },
+];
+
+const styledValue = ref('month');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">customClass：根节点追加类名（虚线外框）</text>
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-class="sn-segmented-demo--framed"
+    />
+
+    <text class="sn-demo__meta"> customStyle：根节点 inline style（覆盖默认底色与圆角） </text>
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-style="background-color: var(--sn-mp-color-action-primary-soft); border-radius: var(--sn-mp-radius-lg);"
+    />
+
+    <text class="sn-demo__meta">两者叠加：customClass 加外框，customStyle 改底色</text>
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-class="sn-segmented-demo--framed"
+      custom-style="background-color: var(--sn-mp-color-background-subtle);"
+    />
+    <text class="sn-demo__meta">当前值：{{ styledValue }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+/* customClass 落在 sn-segmented 根节点上，需要 :deep 穿透。 */
+</style>

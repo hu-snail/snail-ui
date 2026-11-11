@@ -1,0 +1,71 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tour — English shadow of tour-mp-mask.
+ */
+const plainVisible = ref(false);
+const plainCurrent = ref(0);
+const plainSteps = [
+  { content: 'mask=false: no scrim, just the guide panel.' },
+  { content: 'Second step.' },
+];
+
+const tintedVisible = ref(false);
+const tintedCurrent = ref(0);
+const tintedSteps = [
+  { content: 'mask-color overrides the scrim background.' },
+  { content: 'Second step.' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__stage">
+      <text class="sn-demo__button" @click="plainVisible = true">Open maskless guide</text>
+      <text class="sn-demo__button" @click="tintedVisible = true">Open custom scrim guide</text>
+
+      <SnTour
+        v-model="plainVisible"
+        v-model:current="plainCurrent"
+        :steps="plainSteps"
+        :mask="false"
+        custom-class="sn-demo-contained"
+      />
+
+      <SnTour
+        v-model="tintedVisible"
+        v-model:current="tintedCurrent"
+        :steps="tintedSteps"
+        mask-color="var(--sn-mp-color-background-overlay)"
+        custom-class="sn-demo-contained"
+      />
+    </view>
+
+    <text class="sn-demo__meta">Step: {{ plainCurrent + 1 }} / {{ tintedCurrent + 1 }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  align-items: flex-start;
+  min-height: 480rpx;
+  padding: var(--sn-mp-spacing-4);
+  overflow: hidden;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+}
+.sn-demo__button {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-sm);
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — pin the fixed guide layer to the stage. */
+</style>

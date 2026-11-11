@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-input — 背景（bg）：surface / transparent / soft 三档底色。 */
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput placeholder='bg="surface"（默认，卡片底）' bg="surface" />
+    <SnInput placeholder='bg="transparent"（透出页面底色）' bg="transparent" border="none" />
+    <SnInput placeholder='bg="soft"（次级填充）' bg="soft" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

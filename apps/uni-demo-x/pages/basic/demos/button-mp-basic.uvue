@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-button (uni-end) — basic types.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ */
+</script>
+<template>
+  <view class="sn-demo">
+    <SnButton><text>默认</text></SnButton>
+    <SnButton type="primary"><text>主要</text></SnButton>
+    <SnButton type="success"><text>成功</text></SnButton>
+    <SnButton type="warning"><text>警告</text></SnButton>
+    <SnButton type="danger"><text>危险</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+</style>

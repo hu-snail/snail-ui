@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-button (uni-end) — 圆角按钮（`round`）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ */
+</script>
+<template>
+  <view class="sn-demo">
+    <SnButton round type="success"><text>圆角</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+</style>

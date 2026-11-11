@@ -1,0 +1,43 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-config-provider — scoped configuration.
+ *
+ * Shows the containment guarantee: the wrapper carries the skin class, and a
+ * sibling outside it stays untouched.
+ */
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnConfigProvider custom-class="sn-cfg-demo__box">
+      <view class="sn-cfg-demo__inner">
+        <SnTag type="primary"><text>包在 Provider 内</text></SnTag>
+        <SnButton type="primary" size="small"><text>同样继承</text></SnButton>
+      </view>
+    </SnConfigProvider>
+
+    <view class="sn-cfg-demo__inner sn-cfg-demo__inner--plain">
+      <SnTag type="primary"><text>Provider 之外</text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-cfg-demo__box {
+  display: block;
+  padding: 8px;
+  border: 1px dashed var(--sn-mp-color-border-default);
+  border-radius: 8px;
+}
+
+.sn-cfg-demo__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.sn-cfg-demo__inner--plain {
+  padding: 8px;
+  border: 1px dashed var(--sn-mp-color-border-subtle);
+  border-radius: 8px;
+}
+</style>

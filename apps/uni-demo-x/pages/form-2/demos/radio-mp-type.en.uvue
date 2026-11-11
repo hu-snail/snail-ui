@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/** Demo: sn-radio — the `type` shapes (circle / dot / square / button). */
+import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+const circle = ref<string | number | boolean | undefined>('a');
+const dot = ref<string | number | boolean | undefined>('a');
+const square = ref<string | number | boolean | undefined>('a');
+const button = ref<string | number | boolean | undefined>('a');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">type="circle" (default)</text>
+    <SnRadioGroup v-model="circle">
+      <SnRadio value="a"><text>Option A</text></SnRadio>
+      <SnRadio value="b"><text>Option B</text></SnRadio>
+    </SnRadioGroup>
+
+    <text class="sn-demo__title">type="dot"</text>
+    <SnRadioGroup v-model="dot" type="dot">
+      <SnRadio value="a"><text>Option A</text></SnRadio>
+      <SnRadio value="b"><text>Option B</text></SnRadio>
+    </SnRadioGroup>
+
+    <text class="sn-demo__title">type="square"</text>
+    <SnRadioGroup v-model="square" type="square">
+      <SnRadio value="a"><text>Option A</text></SnRadio>
+      <SnRadio value="b"><text>Option B</text></SnRadio>
+    </SnRadioGroup>
+
+    <text class="sn-demo__title">type="button" + direction="horizontal"</text>
+    <SnRadioGroup v-model="button" type="button" direction="horizontal">
+      <SnRadio value="a"><text>Option A</text></SnRadio>
+      <SnRadio value="b"><text>Option B</text></SnRadio>
+    </SnRadioGroup>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

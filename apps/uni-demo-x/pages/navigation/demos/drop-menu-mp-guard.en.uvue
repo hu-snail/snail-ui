@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-guard.
+ */
+const value = ref('');
+
+const options = [
+  { label: 'Any', value: 'all' },
+  { label: 'Under 50', value: 'lt50' },
+  { label: '50 - 200', value: 'mid' },
+];
+
+const blocked = ref(0);
+
+/** Block opening twice to show the guard working, then allow. */
+function beforeToggle(): boolean {
+  blocked.value += 1;
+  return blocked.value > 2;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-drop-menu-demo__spacer" />
+
+    <SnDropMenu
+      v-model="value"
+      :options="options"
+      direction="up"
+      title="Price range"
+      :before-toggle="beforeToggle"
+      custom-class="sn-demo-contained"
+    />
+
+    <text class="sn-drop-menu-demo__meta">
+      The first two taps are blocked by before-toggle ({{ Math.min(blocked, 2) }} blocked)
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-drop-menu-demo__spacer {
+  height: 320rpx;
+}
+.sn-drop-menu-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+/* Docs-preview only — the panel is absolutely positioned inside the root. */
+.sn-drop-menu.sn-demo-contained {
+  position: relative;
+}
+</style>

@@ -1,0 +1,43 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-table (uni-end) — cell ellipsis (`ellipsis`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-table from its SFC source.
+ */
+import SnTableColumn from '@snui/uni-x/components/sn-table/sn-table-column.uvue';
+interface Row {
+  name: string;
+  note: string;
+  status: string;
+}
+
+const rows: Row[] = [
+  {
+    name: 'Snail A',
+    note: 'A deliberately long note so the two-line ellipsis is visible.',
+    status: 'OK',
+  },
+  { name: 'Snail B', note: 'Short note', status: 'Error' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnTable :data="rows" ellipsis>
+      <SnTableColumn prop="name" label="Name" :width="140" />
+      <SnTableColumn prop="note" label="Note" :width="260" />
+      <SnTableColumn prop="status" label="Status" :width="120" align="center" />
+    </SnTable>
+    <text class="sn-demo__meta">`ellipsis` clamps long text to two lines with an ellipsis.</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+}
+</style>

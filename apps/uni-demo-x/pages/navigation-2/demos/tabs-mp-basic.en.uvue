@@ -1,0 +1,45 @@
+<script setup lang="ts">
+/** Demo: sn-tabs — basic tabs with v-model (index and name binding). */
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+/** Index binding: without `name`, the pane resolves against its mount order. */
+const indexActive = ref(0);
+
+/** Name binding: a string `name` makes `v-model` carry the name. */
+const nameActive = ref('unpaid');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">v-model bound to the index</text>
+    <SnTabs v-model="indexActive">
+      <SnTab title="All" :name="0"><text>All items</text></SnTab>
+      <SnTab title="Unpaid" :name="1"><text>Unpaid items</text></SnTab>
+      <SnTab title="Completed" :name="2"><text>Completed items</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">v-model bound to the name</text>
+    <SnTabs v-model="nameActive">
+      <SnTab title="All" name="all"><text>All items</text></SnTab>
+      <SnTab title="Unpaid" name="unpaid"><text>Unpaid items</text></SnTab>
+      <SnTab title="Completed" name="done"><text>Completed items</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__meta">Active tab: {{ indexActive }} / {{ nameActive }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

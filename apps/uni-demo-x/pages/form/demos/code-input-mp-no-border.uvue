@@ -1,0 +1,24 @@
+<script setup lang="ts">
+/** Demo: sn-code-input — border='none' 去掉格子全部边框（含下划线底线），纯背景色格子；常与 background 搭配。 */
+const bg = ref('12');
+const bare = ref('34');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCodeInput
+      v-model="bg"
+      :length="4"
+      border="none"
+      background="var(--sn-mp-color-background-sunken)"
+      info="无边框 + 背景"
+    />
+    <SnCodeInput v-model="bare" :length="4" border="none" shape="underline" info="无边框下划线" />
+    <text class="sn-demo__meta">border='none' 同时作用于 box / underline 两种形状</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

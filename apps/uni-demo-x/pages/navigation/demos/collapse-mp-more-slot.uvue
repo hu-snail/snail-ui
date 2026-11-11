@@ -1,0 +1,58 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — viewmore 模式下的 `more` 插槽与 `custom-more-slot-class`。
+ *
+ * - `more` 插槽在 viewmore 模式下替换底部展开 / 收起区域，作用域 `{ expanded }`
+ * - `custom-more-slot-class` 给该区域追加类名
+ */
+import { ChevronDown } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const viewmore = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCollapse v-model="viewmore" viewmore :line-num="2" custom-more-slot-class="sn-demo__more">
+      <SnCollapseItem name="intro" title="框架介绍">
+        <text class="sn-demo__body">
+          这一段用来验证 line-num 收起效果：展开前只显示两行，点击下方的自定义按钮才会完全展开。 AUI
+          以 Schema 为唯一事实来源，Protocol、Runtime、Renderer 三层分离。
+        </text>
+      </SnCollapseItem>
+      <template #more="{ expanded }">
+        <view class="sn-demo__more-inner">
+          <text class="sn-demo__more-text">{{ expanded ? '收起全部' : '展开全部' }}</text>
+          <SnIcon
+            class="sn-demo__more-icon"
+            :icon="ChevronDown"
+            size="var(--sn-mp-icon-size-small)"
+          />
+        </view>
+      </template>
+    </SnCollapse>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__body {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__more-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sn-mp-spacing-1);
+}
+.sn-demo__more-text {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+.sn-demo__more-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+/* custom-more-slot-class 落在 sn-collapse 的底部区域上，需要 :deep 穿透。 */
+</style>

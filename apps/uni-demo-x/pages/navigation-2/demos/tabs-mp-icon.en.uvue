@@ -1,0 +1,47 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — English shadow of tabs-mp-icon.
+ */
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import { Home, Search, Star, Heart } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
+const iconActive = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">icon takes built-in icon data (IconData)</text>
+    <SnTabs v-model="iconActive">
+      <SnTab title="Home" :name="0" :icon="Home"><text>Home content</text></SnTab>
+      <SnTab title="Search" :name="1" :icon="Search"><text>Search results</text></SnTab>
+      <SnTab title="Saved" :name="2" :icon="Star"><text>Saved items</text></SnTab>
+      <SnTab title="Liked" :name="3" :icon="Heart"><text>Liked songs</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">icon takes a built-in icon name (string)</text>
+    <SnTabs v-model="iconActive" type="tag" active-theme="pill">
+      <SnTab title="Home" :name="0" icon="house"><text>Home content</text></SnTab>
+      <SnTab title="Search" :name="1" icon="search"><text>Search results</text></SnTab>
+      <SnTab title="Saved" :name="2" icon="star"><text>Saved items</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__meta"
+      >Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text
+    >
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,77 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-lucky (uni-end) — 自定义抽奖按钮：#button 插槽。
+ */
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
+
+const prizes: SnLuckyPrize[] = [
+  { name: '一等奖' },
+  { name: '优惠券' },
+  { name: '积分' },
+  { name: '谢谢参与' },
+  { name: '红包' },
+  { name: '实物奖' },
+  { name: '再来一次' },
+  { name: '免单券' },
+];
+
+const slotRef = ref<InstanceType<typeof SnLucky> | null>(null);
+
+const settleTimers: ReturnType<typeof setTimeout>[] = [];
+
+function scheduleStop(lucky: InstanceType<typeof SnLucky> | null, count: number): void {
+  settleTimers.push(
+    setTimeout(() => {
+      lucky?.stop(Math.floor(Math.random() * count));
+    }, 1000),
+  );
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">#button 自定义抽奖按钮</text>
+    <SnLucky
+      ref="slotRef"
+      :prizes="prizes"
+      :speed="60"
+      @start="scheduleStop(slotRef, prizes.length)"
+    >
+      <template #button="{ isPlaying }">
+        <view class="lucky-button">
+          <text class="lucky-button__text">{{ isPlaying ? '旋转中' : '点我抽奖' }}</text>
+        </view>
+      </template>
+    </SnLucky>
+    <text class="sn-demo__meta">插槽作用域提供 isPlaying</text>
+  </view>
+</template>
+<style scoped>
+.lucky-button {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin: 0 var(--sn-mp-spacing-2);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+.lucky-button__text {
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>
