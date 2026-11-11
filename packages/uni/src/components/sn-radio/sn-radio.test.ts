@@ -430,3 +430,73 @@ describe('sn-radio', () => {
     expect(model.value).toBe('a');
   });
 });
+
+/** AUI additive surface — variant / indicator placement / checked paint. */
+describe('sn-radio additive variants', () => {
+  /** Minimal group host so a child can resolve group-level props. */
+  function mountInGroup(groupProps: Record<string, unknown>, radioProps: Record<string, unknown>) {
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnRadioGroup, { modelValue: 'a', ...groupProps }, () => [
+            h(SnRadio, { value: 'a', ...radioProps }, () => 'A'),
+          ]);
+      },
+    });
+    return mount(Host);
+  }
+
+  it('defaults to the legacy marker with no variant classes', () => {
+    const wrapper = mount(SnRadio, { props: { value: 'a' }, slots: { default: () => 'A' } });
+    expect(wrapper.classes()).toContain('sn-radio--variant-default');
+    expect(wrapper.classes()).toContain('sn-radio--indicator-leading');
+    expect(wrapper.find('.sn-radio__marker').exists()).toBe(true);
+  });
+
+  it('card variant shows the corner tick and paints border + fill', () => {
+    const wrapper = mountInGroup({ variant: 'card' }, {});
+    const radio = wrapper.find('.sn-radio');
+    expect(radio.classes()).toContain('sn-radio--variant-card');
+    expect(radio.classes()).toContain('sn-radio--checked-border');
+    expect(radio.classes()).toContain('sn-radio--checked-fill');
+    expect(radio.find('.sn-radio__marker').exists()).toBe(false);
+    expect(radio.find('.sn-radio__tick--top-right').exists()).toBe(true);
+  });
+
+  it('checkedStyle="border" omits the fill class', () => {
+    const wrapper = mountInGroup({ checkedStyle: 'border' }, { variant: 'card' });
+    const radio = wrapper.find('.sn-radio');
+    expect(radio.classes()).toContain('sn-radio--checked-border');
+    expect(radio.classes()).not.toContain('sn-radio--checked-fill');
+  });
+
+  it('indicatorPlacement="bottom-right" relocates the tick', () => {
+    const wrapper = mountInGroup({ indicatorPlacement: 'bottom-right' }, { variant: 'card' });
+    expect(wrapper.find('.sn-radio__tick--bottom-right').exists()).toBe(true);
+  });
+
+  it('indicatorPlacement="none" renders no marker and no tick', () => {
+    const wrapper = mountInGroup({ indicatorPlacement: 'none' }, { variant: 'card' });
+    expect(wrapper.find('.sn-radio__marker').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('legacy placement="right" maps to a trailing indicator', () => {
+    const wrapper = mountInGroup({ placement: 'right' }, {});
+    expect(wrapper.find('.sn-radio').classes()).toContain('sn-radio--indicator-trailing');
+  });
+
+  it('card variant wraps the default label when no card slot is given', () => {
+    const wrapper = mountInGroup({ variant: 'card' }, {});
+    expect(wrapper.find('.sn-radio__card').exists()).toBe(true);
+    // No `card` slot supplied → the default label renders inside the card body.
+    expect(wrapper.find('.sn-radio__card .sn-radio__label').exists()).toBe(true);
+  });
+
+  it('icon variant renders a tile and hides the label', () => {
+    const wrapper = mountInGroup({ variant: 'icon' }, {});
+    expect(wrapper.find('.sn-radio__tile').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(true);
+  });
+});

@@ -5,6 +5,7 @@
  * disabled suppression, button form, keyboard behavior via native radio.
  */
 import { describe, it, expect } from 'vitest';
+import { h } from 'vue';
 import { mount } from '@vue/test-utils';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -397,5 +398,185 @@ describe('SnRadioButton in-group segment merging', () => {
     const parent = segments[0].element.parentElement;
     expect(segments.every((s) => s.element.parentElement === parent)).toBe(true);
     expect(wrapper.findAll('.sn-radio-button--checked')).toHaveLength(1);
+  });
+});
+
+/**
+ * AUI additive surface — layout variants, indicator placement, checked paint
+ * (AGENTS.md §43: behaviour first, class contracts only where the visual is
+ * the behaviour).
+ */
+describe('SnRadio additive variants', () => {
+  it('defaults to the historical leading marker with no card classes', () => {
+    const wrapper = mount(SnRadio, { props: { checkedValue: 'a', label: 'A' } });
+    expect(wrapper.classes()).toContain('sn-radio--variant-default');
+    expect(wrapper.classes()).toContain('sn-radio--indicator-leading');
+    expect(wrapper.find('.sn-radio__dot').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('variant="card" puts the corner tick at top-right and drops the inline marker', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', label: 'A', variant: 'card' },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--variant-card');
+    expect(wrapper.classes()).toContain('sn-radio--indicator-top-right');
+    expect(wrapper.find('.sn-radio__dot').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tick--top-right').exists()).toBe(true);
+  });
+
+  it('card variant paints both border and fill when checked', () => {
+    const checked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', label: 'A', variant: 'card' },
+    });
+    expect(checked.classes()).toContain('sn-radio--checked-border');
+    expect(checked.classes()).toContain('sn-radio--checked-fill');
+
+    const unchecked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'b', label: 'A', variant: 'card' },
+    });
+    expect(unchecked.classes()).not.toContain('sn-radio--checked-border');
+    expect(unchecked.classes()).not.toContain('sn-radio--checked-fill');
+    expect(unchecked.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('checkedStyle selects border only / fill only', () => {
+    const borderOnly = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        checkedStyle: 'border',
+      },
+    });
+    expect(borderOnly.classes()).toContain('sn-radio--checked-border');
+    expect(borderOnly.classes()).not.toContain('sn-radio--checked-fill');
+
+    const fillOnly = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', variant: 'card', checkedStyle: 'fill' },
+    });
+    expect(fillOnly.classes()).toContain('sn-radio--checked-fill');
+    expect(fillOnly.classes()).not.toContain('sn-radio--checked-border');
+  });
+
+  it('indicatorPlacement="bottom-right" moves the tick to the bottom corner', () => {
+    const wrapper = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        indicatorPlacement: 'bottom-right',
+      },
+    });
+    expect(wrapper.find('.sn-radio__tick--bottom-right').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__tick--top-right').exists()).toBe(false);
+  });
+
+  it('indicatorPlacement="none" renders no marker and no tick', () => {
+    const wrapper = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        indicatorPlacement: 'none',
+      },
+    });
+    expect(wrapper.find('.sn-radio__dot').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+    expect(wrapper.classes()).toContain('sn-radio--checked-border');
+  });
+
+  it('indicatorPlacement="trailing" renders the inline marker after the label', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', label: 'A', indicatorPlacement: 'trailing' },
+    });
+    const html = wrapper.html();
+    const labelAt = html.indexOf('sn-radio__label');
+    const dotAt = html.indexOf('sn-radio__dot');
+    expect(labelAt).toBeGreaterThan(-1);
+    expect(dotAt).toBeGreaterThan(labelAt);
+  });
+
+  it('renders the #card slot content instead of the default label row', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', variant: 'card' },
+      slots: { card: '<strong class="my-card">Plan A</strong>' },
+    });
+    expect(wrapper.find('.my-card').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
+  });
+
+  it('icon variant renders a tile and hides the label row', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', label: 'A', variant: 'icon' },
+    });
+    expect(wrapper.find('.sn-radio__tile').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__label').exists()).toBe(false);
+    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(true);
+  });
+
+  it('icon variant renders the #icon slot glyph', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', variant: 'icon' },
+      slots: { icon: '<svg class="my-glyph" />' },
+    });
+    expect(wrapper.find('.my-glyph').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__tile-glyph').exists()).toBe(false);
+  });
+
+  it('group variant cascades to children and a child prop overrides it', () => {
+    const wrapper = mount(SnRadioGroup, {
+      props: { modelValue: 'a', variant: 'card' },
+      slots: {
+        default: () => [
+          h(SnRadio, { checkedValue: 'a', label: 'A' }),
+          h(SnRadio, { checkedValue: 'b', label: 'B', variant: 'default' }),
+        ],
+      },
+    });
+    const radios = wrapper.findAll('.sn-radio');
+    expect(radios[0].classes()).toContain('sn-radio--variant-card');
+    expect(radios[1].classes()).toContain('sn-radio--variant-default');
+  });
+});
+
+/** AUI additive — inverted marker + label-first ordering. */
+describe('SnRadio inverted marker & label-first', () => {
+  it('defaults to ring marker and marker-first label order', () => {
+    const wrapper = mount(SnRadio, { props: { checkedValue: 'a', label: 'A' } });
+    expect(wrapper.classes()).toContain('sn-radio--marker-ring');
+    expect(wrapper.classes()).toContain('sn-radio--label-marker-first');
+  });
+
+  it('markerShape="inverted" adds the inverted class on the marker', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', label: 'A', markerShape: 'inverted' },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--marker-inverted');
+  });
+
+  it('labelPlacement="label-first" re-orders without touching DOM order', () => {
+    const wrapper = mount(SnRadio, {
+      props: { checkedValue: 'a', label: 'A', labelPlacement: 'label-first' },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--label-label-first');
+    // The native input must stay first for a11y + keyboard.
+    expect(wrapper.element.firstElementChild?.tagName).toBe('INPUT');
+  });
+
+  it('group-level labelPlacement / markerShape cascade and child wins', () => {
+    const wrapper = mount(SnRadioGroup, {
+      props: { modelValue: 'a', labelPlacement: 'label-first', markerShape: 'inverted' },
+      slots: {
+        default: () => [
+          h(SnRadio, { checkedValue: 'a', label: 'A' }),
+          h(SnRadio, { checkedValue: 'b', label: 'B', markerShape: 'ring' }),
+        ],
+      },
+    });
+    const radios = wrapper.findAll('.sn-radio');
+    expect(radios[0].classes()).toContain('sn-radio--label-label-first');
+    expect(radios[0].classes()).toContain('sn-radio--marker-inverted');
+    expect(radios[1].classes()).toContain('sn-radio--marker-ring');
   });
 });

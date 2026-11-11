@@ -34,25 +34,30 @@ import SnCheckboxGroup from '@snui/uni-src/components/sn-checkbox/sn-checkbox-gr
 
 ## sn-checkbox Props
 
-| Name               | Type                                        | Default                       | Required | Description                                 |
-| ------------------ | ------------------------------------------- | ----------------------------- | -------- | ------------------------------------------- |
-| `modelValue`       | `string \| number \| boolean`               | `false`                       | no       | Standalone value; ignored inside a group.   |
-| `name`             | `string \| number \| boolean`               | `''`                          | no       | Identity inside `sn-checkbox-group`.        |
-| `type`             | `'circle' \| 'square' \| 'button' \| 'dot'` | inherits group (`'circle'`)   | no       | Shape preset.                               |
-| `checkedColor`     | `string`                                    | inherits group (`''`)         | no       | Checked color (CSS color, inline override). |
-| `uncheckedColor`   | `string`                                    | inherits group (`''`)         | no       | Unchecked color.                            |
-| `disabled`         | `boolean`                                   | inherits group (`false`)      | no       | Disables this option.                       |
-| `readonly`         | `boolean`                                   | inherits group (`false`)      | no       | Read-only.                                  |
-| `indeterminate`    | `boolean`                                   | `false`                       | no       | Half-checked (highest visual priority).     |
-| `trueValue`        | `string \| number \| boolean`               | `true`                        | no       | Standalone "checked" value.                 |
-| `falseValue`       | `string \| number \| boolean`               | `false`                       | no       | Standalone "unchecked" value.               |
-| `size`             | `'large' \| undefined`                      | inherits group                | no       | Size preset.                                |
-| `placement`        | `'left' \| 'right'`                         | inherits group (`'left'`)     | no       | Tick position.                              |
-| `direction`        | `'horizontal' \| 'vertical'`                | inherits group (`'vertical'`) | no       | Layout hint.                                |
-| `maxWidth`         | `string`                                    | `''`                          | no       | Max width of the label.                     |
-| `customLabelClass` | `string`                                    | `''`                          | no       | Class on the label text.                    |
-| `customClass`      | `string`                                    | `''`                          | no       | Class on the root node.                     |
-| `customStyle`      | `string`                                    | `''`                          | no       | Inline style on the root node.              |
+| Name                 | Type                                                                 | Default                                              | Required | Description                                                                     |
+| -------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| `modelValue`         | `string \| number \| boolean`                                        | `false`                                              | no       | Standalone value; ignored inside a group.                                       |
+| `name`               | `string \| number \| boolean`                                        | `''`                                                 | no       | Identity inside `sn-checkbox-group`.                                            |
+| `type`               | `'circle' \| 'square' \| 'button' \| 'dot'`                          | inherits group (`'circle'`)                          | no       | Shape preset.                                                                   |
+| `checkedColor`       | `string`                                                             | inherits group (`''`)                                | no       | Checked color (CSS color, inline override).                                     |
+| `uncheckedColor`     | `string`                                                             | inherits group (`''`)                                | no       | Unchecked color.                                                                |
+| `disabled`           | `boolean`                                                            | inherits group (`false`)                             | no       | Disables this option.                                                           |
+| `readonly`           | `boolean`                                                            | inherits group (`false`)                             | no       | Read-only.                                                                      |
+| `indeterminate`      | `boolean`                                                            | `false`                                              | no       | Half-checked (highest visual priority).                                         |
+| `trueValue`          | `string \| number \| boolean`                                        | `true`                                               | no       | Standalone "checked" value.                                                     |
+| `falseValue`         | `string \| number \| boolean`                                        | `false`                                              | no       | Standalone "unchecked" value.                                                   |
+| `size`               | `'large' \| undefined`                                               | inherits group                                       | no       | Size preset.                                                                    |
+| `placement`          | `'left' \| 'right'`                                                  | inherits group (`'left'`)                            | no       | Tick position.                                                                  |
+| `direction`          | `'horizontal' \| 'vertical'`                                         | inherits group (`'vertical'`)                        | no       | Layout hint.                                                                    |
+| `maxWidth`           | `string`                                                             | `''`                                                 | no       | Max width of the label.                                                         |
+| `variant`            | `'default' \| 'card' \| 'icon'`                                      | inherits group (`'default'`)                         | no       | **AUI additive.** Layout variant (card / icon tile).                            |
+| `indicatorPlacement` | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | derived from `placement` / variant                   | no       | **AUI additive.** Marker or corner-tick position.                               |
+| `checkedStyle`       | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | derived from variant (`'border-fill'` for card/icon) | no       | **AUI additive.** Checked paint.                                                |
+| `labelPlacement`     | `'marker-first' \| 'label-first'`                                    | inherits group                                       | no       | **AUI additive.** Label side; `label-first` pushes the marker to the far end.   |
+| `markerShape`        | `'ring' \| 'inverted'`                                               | inherits group                                       | no       | **AUI additive.** Inline marker shape (`inverted` = theme plate + punched dot). |
+| `customLabelClass`   | `string`                                                             | `''`                                                 | no       | Class on the label text.                                                        |
+| `customClass`        | `string`                                                             | `''`                                                 | no       | Class on the root node.                                                         |
+| `customStyle`        | `string`                                                             | `''`                                                 | no       | Inline style on the root node.                                                  |
 
 ## sn-checkbox Events
 
@@ -63,26 +68,30 @@ import SnCheckboxGroup from '@snui/uni-src/components/sn-checkbox/sn-checkbox-gr
 
 ## sn-checkbox Slots
 
-| Name      | Description                           |
-| --------- | ------------------------------------- |
-| `default` | Label text.                           |
-| `icon`    | Custom icon (scoped `{ isChecked }`). |
+| Name      | Scope                   | Description                                                                                                  |
+| --------- | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `default` | —                       | Label text.                                                                                                  |
+| `icon`    | `{ isChecked }`         | Custom icon (also the `variant="icon"` glyph).                                                               |
+| `card`    | `{ checked, disabled }` | **AUI additive.** Card body for `variant="card"`; replaces the default label, the corner tick still applies. |
 
 ## sn-checkbox-group Props
 
-| Name                              | Type                                        | Default      | Required | Description                                    |
-| --------------------------------- | ------------------------------------------- | ------------ | -------- | ---------------------------------------------- |
-| `modelValue`                      | `Array<string \| number \| boolean>`        | `[]`         | no       | Selected values.                               |
-| `type`                            | `'circle' \| 'square' \| 'button' \| 'dot'` | `'circle'`   | no       | Shape inherited by children.                   |
-| `checkedColor` / `uncheckedColor` | `string`                                    | `''`         | no       | Colors inherited by children.                  |
-| `disabled`                        | `boolean`                                   | `false`      | no       | Disables every child.                          |
-| `readonly`                        | `boolean`                                   | `false`      | no       | Makes every child read-only.                   |
-| `min`                             | `number`                                    | `0`          | no       | Minimum selection count (`0` = unconstrained). |
-| `max`                             | `number`                                    | `0`          | no       | Maximum selection count (`0` = unconstrained). |
-| `size`                            | `'large' \| undefined`                      | `undefined`  | no       | Size inherited by children.                    |
-| `placement`                       | `'left' \| 'right'`                         | `'left'`     | no       | Placement inherited by children.               |
-| `direction`                       | `'horizontal' \| 'vertical'`                | `'vertical'` | no       | Layout direction.                              |
-| `customClass` / `customStyle`     | `string`                                    | `''`         | no       | Root forwarding.                               |
+| Name                              | Type                                                                 | Default      | Required | Description                                               |
+| --------------------------------- | -------------------------------------------------------------------- | ------------ | -------- | --------------------------------------------------------- |
+| `modelValue`                      | `Array<string \| number \| boolean>`                                 | `[]`         | no       | Selected values.                                          |
+| `type`                            | `'circle' \| 'square' \| 'button' \| 'dot'`                          | `'circle'`   | no       | Shape inherited by children.                              |
+| `checkedColor` / `uncheckedColor` | `string`                                                             | `''`         | no       | Colors inherited by children.                             |
+| `disabled`                        | `boolean`                                                            | `false`      | no       | Disables every child.                                     |
+| `readonly`                        | `boolean`                                                            | `false`      | no       | Makes every child read-only.                              |
+| `min`                             | `number`                                                             | `0`          | no       | Minimum selection count (`0` = unconstrained).            |
+| `max`                             | `number`                                                             | `0`          | no       | Maximum selection count (`0` = unconstrained).            |
+| `size`                            | `'large' \| undefined`                                               | `undefined`  | no       | Size inherited by children.                               |
+| `placement`                       | `'left' \| 'right'`                                                  | `'left'`     | no       | Placement inherited by children.                          |
+| `direction`                       | `'horizontal' \| 'vertical'`                                         | `'vertical'` | no       | Layout direction.                                         |
+| `variant`                         | `'default' \| 'card' \| 'icon'`                                      | `undefined`  | no       | **AUI additive.** Layout inherited by children.           |
+| `indicatorPlacement`              | `'leading' \| 'trailing' \| 'top-right' \| 'bottom-right' \| 'none'` | `undefined`  | no       | **AUI additive.** Marker placement inherited by children. |
+| `checkedStyle`                    | `'default' \| 'border' \| 'fill' \| 'border-fill'`                   | `undefined`  | no       | **AUI additive.** Checked paint inherited by children.    |
+| `customClass` / `customStyle`     | `string`                                                             | `''`         | no       | Root forwarding.                                          |
 
 ## sn-checkbox-group Events
 

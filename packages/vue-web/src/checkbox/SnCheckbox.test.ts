@@ -15,6 +15,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { h } from 'vue';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import { readFileSync } from 'node:fs';
@@ -366,5 +367,122 @@ describe('SnCheckbox selected-state visuals', () => {
 
   it('honours prefers-reduced-motion', () => {
     expect(source).toContain('@media (prefers-reduced-motion: reduce)');
+  });
+});
+
+/** AUI additive surface — variants, indicator placement, checked paint. */
+describe('SnCheckbox additive variants', () => {
+  it('defaults to the historical leading box', () => {
+    const wrapper = mount(SnCheckbox, { props: { label: 'A' } });
+    expect(wrapper.classes()).toContain('sn-checkbox--variant-default');
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-leading');
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__tick').exists()).toBe(false);
+  });
+
+  it('card variant shows a top-right tick only while checked', () => {
+    const checked = mount(SnCheckbox, {
+      props: { modelValue: true, label: 'A', variant: 'card' },
+    });
+    expect(checked.classes()).toContain('sn-checkbox--variant-card');
+    expect(checked.find('.sn-checkbox__box').exists()).toBe(false);
+    expect(checked.find('.sn-checkbox__tick--top-right').exists()).toBe(true);
+    expect(checked.classes()).toContain('sn-checkbox--checked-border');
+    expect(checked.classes()).toContain('sn-checkbox--checked-fill');
+
+    const unchecked = mount(SnCheckbox, {
+      props: { modelValue: false, label: 'A', variant: 'card' },
+    });
+    expect(unchecked.find('.sn-checkbox__tick').exists()).toBe(false);
+    expect(unchecked.classes()).not.toContain('sn-checkbox--checked-border');
+  });
+
+  it('indicatorPlacement="bottom-right" relocates the tick', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'bottom-right' },
+    });
+    expect(wrapper.find('.sn-checkbox__tick--bottom-right').exists()).toBe(true);
+  });
+
+  it('indicatorPlacement="none" hides both box and tick', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'none' },
+    });
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(false);
+    expect(wrapper.find('.sn-checkbox__tick').exists()).toBe(false);
+  });
+
+  it('checkedStyle="border" paints the border without the fill', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', checkedStyle: 'border' },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--checked-border');
+    expect(wrapper.classes()).not.toContain('sn-checkbox--checked-fill');
+  });
+
+  it('renders the #card slot instead of the label row', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card' },
+      slots: { card: '<em class="my-card">Extra</em>' },
+    });
+    expect(wrapper.find('.my-card').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__label').exists()).toBe(false);
+  });
+
+  it('icon variant renders a tile with the #icon glyph', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'icon' },
+      slots: { icon: '<svg class="my-glyph" />' },
+    });
+    expect(wrapper.find('.sn-checkbox__tile').exists()).toBe(true);
+    expect(wrapper.find('.my-glyph').exists()).toBe(true);
+  });
+
+  it('group variant cascades and a child prop overrides it', () => {
+    const wrapper = mount(SnCheckboxGroup, {
+      props: { modelValue: ['a'], variant: 'card' },
+      slots: {
+        default: () => [
+          h(SnCheckbox, { value: 'a', label: 'A' }),
+          h(SnCheckbox, { value: 'b', label: 'B', variant: 'default' }),
+        ],
+      },
+    });
+    const boxes = wrapper.findAll('.sn-checkbox');
+    expect(boxes[0].classes()).toContain('sn-checkbox--variant-card');
+    expect(boxes[1].classes()).toContain('sn-checkbox--variant-default');
+  });
+});
+
+/** AUI additive — inverted marker + label-first ordering. */
+describe('SnCheckbox inverted marker & label-first', () => {
+  it('defaults to ring marker and marker-first order', () => {
+    const wrapper = mount(SnCheckbox, { props: { label: 'A' } });
+    expect(wrapper.classes()).toContain('sn-checkbox--marker-ring');
+    expect(wrapper.classes()).toContain('sn-checkbox--label-marker-first');
+  });
+
+  it('markerShape="inverted" + labelPlacement="label-first" apply both classes', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: {
+        modelValue: true,
+        label: 'A',
+        markerShape: 'inverted',
+        labelPlacement: 'label-first',
+      },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--marker-inverted');
+    expect(wrapper.classes()).toContain('sn-checkbox--label-label-first');
+    expect(wrapper.element.firstElementChild?.tagName).toBe('INPUT');
+  });
+
+  it('group-level values cascade to children', () => {
+    const wrapper = mount(SnCheckboxGroup, {
+      props: { modelValue: ['a'], markerShape: 'inverted', labelPlacement: 'label-first' },
+      slots: { default: () => [h(SnCheckbox, { value: 'a', label: 'A' })] },
+    });
+    const box = wrapper.find('.sn-checkbox');
+    expect(box.classes()).toContain('sn-checkbox--marker-inverted');
+    expect(box.classes()).toContain('sn-checkbox--label-label-first');
   });
 });

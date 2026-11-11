@@ -75,6 +75,17 @@ import { Checkbox } from '@snui/vue-web';
       title: 'Custom slots (`indicator` / `icon` / default)',
       blurb: 'indicator tag / card styles + custom tick via icon slot + default slot scope.',
     },
+    {
+      name: 'checkbox-web-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'checkbox-web-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
   ],
   props: {
     hint: [],
@@ -152,6 +163,36 @@ import { Checkbox } from '@snui/vue-web';
         default: "''",
         desc: 'Accessible name when no `label` / slot content is present.',
       },
+      {
+        name: `variant`,
+        type: `'default' | 'card' | 'icon'`,
+        default: `'default'`,
+        desc: `Card / icon layout; card uses the #card slot, icon renders a square tile. Inherited from the group.`,
+      },
+      {
+        name: `indicatorPlacement`,
+        type: `'leading' | 'trailing' | 'top-right' | 'bottom-right' | 'none'`,
+        default: `derived from variant`,
+        desc: `Marker position; card / icon default to a top-right tick, none relies on the card state alone.`,
+      },
+      {
+        name: `checkedStyle`,
+        type: `'default' | 'border' | 'fill' | 'border-fill'`,
+        default: `derived from variant`,
+        desc: `Checked border / soft fill; card / icon default to border-fill and only apply while checked.`,
+      },
+      {
+        name: `labelPlacement`,
+        type: `'marker-first' | 'label-first'`,
+        default: `'marker-first'`,
+        desc: `Label first, box last (label-first); implemented with flex order so DOM order and a11y are unchanged.`,
+      },
+      {
+        name: `markerShape`,
+        type: `'ring' | 'inverted'`,
+        default: `'ring'`,
+        desc: `Inline marker shape; inverted keeps the surface fill while the tick and border carry the theme colour.`,
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
         name: 'customStyle',
@@ -210,6 +251,11 @@ import { Checkbox } from '@snui/vue-web';
         name: 'indicator',
         props: '{ checked: boolean; indeterminate: boolean }',
         desc: 'Replaces the whole box for card / tag styles; scope exposes the state.',
+      },
+      {
+        name: `card`,
+        props: '{ checked: boolean; disabled: boolean }',
+        desc: 'Card body for variant="card"; replaces the default marker + label row, the corner tick still applies.',
       },
     ],
   },

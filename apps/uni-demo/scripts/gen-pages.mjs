@@ -492,6 +492,11 @@ const SCENARIO_LABEL_OVERRIDES = {
   'tour-panel-slot': '自定义面板与按钮',
   'tour-z-index': '层级与时长',
   'steps-custom-class': '根节点样式（customClass）',
+  'radio-card': '卡片模式（variant=card）',
+  'radio-icon': '图标模式（variant=icon）',
+  'radio-indicator': '指示器位置与选中态',
+  'checkbox-card': '卡片模式（variant=card）',
+  'checkbox-indicator': '指示器位置与选中态',
 };
 
 /**
@@ -1037,6 +1042,11 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'tour-panel-slot': 'Custom panel & buttons',
   'tour-z-index': 'Stacking & duration',
   'steps-custom-class': 'Root styling (customClass)',
+  'radio-card': 'Card variant',
+  'radio-icon': 'Icon variant',
+  'radio-indicator': 'Indicator placement & checked paint',
+  'checkbox-card': 'Card variant',
+  'checkbox-indicator': 'Indicator placement & checked paint',
 };
 
 function scenarioLabel(comp, scenario) {

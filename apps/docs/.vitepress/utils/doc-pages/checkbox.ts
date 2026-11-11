@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const checkboxDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Checkbox' }],
-  title: 'Checkbox',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Checkbox 多选框' }],
+  title: 'Checkbox 多选框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -84,6 +84,16 @@ import { Checkbox } from '@snui/vue-web';
       title: '自定义插槽（`indicator` / `icon` / 默认插槽）',
       blurb: 'indicator 标签 / 卡片形态 + icon 自定义对勾 + 默认插槽作用域。',
     },
+    {
+      name: 'checkbox-web-card',
+      title: '卡片模式（variant="card"）',
+      blurb: '整块可点选卡片，#card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
+    },
+    {
+      name: 'checkbox-web-indicator',
+      title: '指示器位置与选中态',
+      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+    },
   ],
   props: {
     hint: [],
@@ -140,6 +150,36 @@ import { Checkbox } from '@snui/vue-web';
         type: 'string',
         default: "''",
         desc: 'Accessible name when no `label` / slot content is present.',
+      },
+      {
+        name: `variant`,
+        type: `'default' | 'card' | 'icon'`,
+        default: `'default'`,
+        desc: `卡片 / 图标形态；card 用 #card 插槽自定义内容，icon 为方形图标砖。组级可下发。`,
+      },
+      {
+        name: `indicatorPlacement`,
+        type: `'leading' | 'trailing' | 'top-right' | 'bottom-right' | 'none'`,
+        default: `按 variant 推导`,
+        desc: `指示器位置；card / icon 默认右上角标，none 仅靠卡片态表达。`,
+      },
+      {
+        name: `checkedStyle`,
+        type: `'default' | 'border' | 'fill' | 'border-fill'`,
+        default: `按 variant 推导`,
+        desc: `选中态描边 / 浅底；card / icon 默认 border-fill，仅在选中时生效。`,
+      },
+      {
+        name: `labelPlacement`,
+        type: `'marker-first' | 'label-first'`,
+        default: `'marker-first'`,
+        desc: `标题在前、选择在后（label-first），flex order 实现，DOM 顺序与 a11y 不变。`,
+      },
+      {
+        name: `markerShape`,
+        type: `'ring' | 'inverted'`,
+        default: `'ring'`,
+        desc: `行内标记形态；inverted 为反转态（主题色描边 + 主题色勾，底色保持表面色）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
@@ -199,6 +239,11 @@ import { Checkbox } from '@snui/vue-web';
         name: 'indicator',
         props: '{ checked: boolean; indeterminate: boolean }',
         desc: '整体替换勾选框，用于卡片 / 标签形态，并接收状态以自绘选中视觉。',
+      },
+      {
+        name: `card`,
+        props: '{ checked: boolean; disabled: boolean }',
+        desc: '卡片内容（variant="card"）；替换默认标记 + 文字行，角标仍按 indicatorPlacement 叠加。',
       },
     ],
   },

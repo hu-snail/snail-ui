@@ -110,6 +110,16 @@ import { Checkbox } from '@snui/uni';
       title: '自定义样式',
       blurb: 'customClass / customStyle 落在组件节点上。',
     },
+    {
+      name: 'checkbox-mp-card',
+      title: '卡片模式（variant="card"）',
+      blurb: '整块可点选卡片，card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
+    },
+    {
+      name: 'checkbox-mp-indicator',
+      title: '指示器位置与选中态',
+      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+    },
   ],
   props: {
     hint: [],
@@ -186,8 +196,8 @@ import { Checkbox } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-search', link: '/components/uni/search' },
-    next: { text: 'sn-radio', link: '/components/uni/radio' },
+    prev: { text: 'Search', link: '/components/uni/search' },
+    next: { text: 'Radio', link: '/components/uni/radio' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

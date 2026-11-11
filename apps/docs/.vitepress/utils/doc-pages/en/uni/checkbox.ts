@@ -105,6 +105,17 @@ import { Checkbox } from '@snui/uni';
       title: 'Custom style',
       blurb: 'customClass / customStyle land on the component nodes.',
     },
+    {
+      name: 'checkbox-mp-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'checkbox-mp-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
   ],
   props: {
     hint: [],
@@ -221,8 +232,8 @@ import { Checkbox } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-search', link: '/en/components/uni/search' },
-    next: { text: 'sn-radio', link: '/en/components/uni/radio' },
+    prev: { text: 'Search', link: '/en/components/uni/search' },
+    next: { text: 'Radio', link: '/en/components/uni/radio' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

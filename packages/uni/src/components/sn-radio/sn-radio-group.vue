@@ -28,6 +28,11 @@
 import { computed, provide, toRef } from 'vue';
 import {
   SN_RADIO_GROUP_KEY,
+  type SnChoiceCheckedStyle,
+  type SnChoiceIndicatorPlacement,
+  type SnChoiceLabelPlacement,
+  type SnChoiceMarkerShape,
+  type SnChoiceVariant,
   type SnRadioDirection,
   type SnRadioModelValue,
   type SnRadioPlacement,
@@ -59,6 +64,16 @@ const props = withDefaults(
     direction?: SnRadioDirection;
     /** Allow tapping the selected radio again to clear the selection. */
     allowUncheck?: boolean;
+    /** Group-level layout variant inherited by children (AUI additive). */
+    variant?: SnChoiceVariant | undefined;
+    /** Group-level indicator placement inherited by children (AUI additive). */
+    indicatorPlacement?: SnChoiceIndicatorPlacement | undefined;
+    /** Group-level label side inherited by children (AUI additive). */
+    labelPlacement?: SnChoiceLabelPlacement | undefined;
+    /** Group-level marker shape inherited by children (AUI additive). */
+    markerShape?: SnChoiceMarkerShape | undefined;
+    /** Group-level checked paint inherited by children (AUI additive). */
+    checkedStyle?: SnChoiceCheckedStyle | undefined;
     /** Class on the root wrapper. */
     customClass?: string;
     /** Inline style on the root wrapper. */
@@ -74,6 +89,11 @@ const props = withDefaults(
     placement: 'left',
     direction: 'vertical',
     allowUncheck: false,
+    variant: undefined,
+    indicatorPlacement: undefined,
+    checkedStyle: undefined,
+    labelPlacement: undefined,
+    markerShape: undefined,
     customClass: '',
     customStyle: '',
   },
@@ -120,6 +140,11 @@ provide(SN_RADIO_GROUP_KEY, {
   groupUncheckedColor: toRef(props, 'uncheckedColor'),
   groupPlacement: toRef(props, 'placement'),
   groupDirection: toRef(props, 'direction'),
+  groupVariant: toRef(props, 'variant'),
+  groupIndicatorPlacement: toRef(props, 'indicatorPlacement'),
+  groupCheckedStyle: toRef(props, 'checkedStyle'),
+  groupLabelPlacement: toRef(props, 'labelPlacement'),
+  groupMarkerShape: toRef(props, 'markerShape'),
 });
 
 /** Public imperative API — host pages can drive the group from code (§14). */

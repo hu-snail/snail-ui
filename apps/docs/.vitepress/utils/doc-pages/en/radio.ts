@@ -67,6 +67,28 @@ import { Radio } from '@snui/vue-web';
       title: 'Readonly',
       blurb: 'readonly: visible but not editable.',
     },
+    {
+      name: 'radio-web-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'radio-web-icon',
+      title: 'Icon variant',
+      blurb: 'Square icon tiles with the #icon slot glyph; no label row.',
+    },
+    {
+      name: 'radio-web-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
+    {
+      name: 'radio-web-inverted',
+      title: 'Inverted marker & label-first',
+      blurb:
+        'markerShape="inverted" fills the plate with the theme colour and punches a white dot; labelPlacement="label-first" puts the label first.',
+    },
   ],
   props: {
     hint: [],
@@ -124,6 +146,36 @@ import { Radio } from '@snui/vue-web';
         type: 'string | undefined',
         default: '—',
         desc: 'Native ARIA label (overrides label for the accessible name).',
+      },
+      {
+        name: `variant`,
+        type: `'default' | 'card' | 'icon'`,
+        default: `'default'`,
+        desc: `Card / icon layout; card uses the #card slot, icon renders a square tile. Inherited from the group.`,
+      },
+      {
+        name: `indicatorPlacement`,
+        type: `'leading' | 'trailing' | 'top-right' | 'bottom-right' | 'none'`,
+        default: `derived from variant`,
+        desc: `Marker position; card / icon default to a top-right tick, none relies on the card state alone.`,
+      },
+      {
+        name: `checkedStyle`,
+        type: `'default' | 'border' | 'fill' | 'border-fill'`,
+        default: `derived from variant`,
+        desc: `Checked border / soft fill; card / icon default to border-fill and only apply while checked.`,
+      },
+      {
+        name: `labelPlacement`,
+        type: `'marker-first' | 'label-first'`,
+        default: `'marker-first'`,
+        desc: `Label first, marker last (label-first); implemented with flex order so DOM order and a11y are unchanged.`,
+      },
+      {
+        name: `markerShape`,
+        type: `'ring' | 'inverted'`,
+        default: `'ring'`,
+        desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot.`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
@@ -185,6 +237,16 @@ import { Radio } from '@snui/vue-web';
         name: 'label',
         props: '{ checked: boolean; disabled: boolean }',
         desc: 'Custom label content with `{ checked, disabled }` scope; replaces `label` text.',
+      },
+      {
+        name: `card`,
+        props: '{ checked: boolean; disabled: boolean }',
+        desc: 'Card body for variant="card"; replaces the default marker + label row, the corner tick still applies.',
+      },
+      {
+        name: `icon`,
+        props: '{ checked: boolean }',
+        desc: 'Glyph for variant="icon" tiles; falls back to a neutral placeholder square.',
       },
     ],
   },

@@ -99,6 +99,22 @@ import { Radio } from '@snui/uni';
       blurb:
         '`customLabelClass` lands on the label node; `customClass` / `customStyle` on the root.',
     },
+    {
+      name: 'radio-mp-card',
+      title: 'Card variant',
+      blurb:
+        'Whole card is selectable; card slot for custom content; selected = themed border + soft fill + top-right tick.',
+    },
+    {
+      name: 'radio-mp-icon',
+      title: 'Icon variant',
+      blurb: 'Square icon tiles with the icon slot glyph; no label row.',
+    },
+    {
+      name: 'radio-mp-indicator',
+      title: 'Indicator placement & checked paint',
+      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+    },
   ],
   props: {
     hint: [],
@@ -179,8 +195,8 @@ import { Radio } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-checkbox', link: '/en/components/uni/checkbox' },
-    next: { text: 'sn-switch', link: '/en/components/uni/switch' },
+    prev: { text: 'Checkbox', link: '/en/components/uni/checkbox' },
+    next: { text: 'Switch', link: '/en/components/uni/switch' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },
