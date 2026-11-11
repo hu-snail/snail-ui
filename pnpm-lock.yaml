@@ -212,6 +212,18 @@ importers:
         specifier: 5.2.8
         version: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
 
+  apps/uni-demo-x:
+    dependencies:
+      '@snui/style-packs':
+        specifier: workspace:*
+        version: link:../../packages/style-packs
+      '@snui/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+      '@snui/uni-x':
+        specifier: workspace:*
+        version: link:../../packages/uni-x
+
   apps/uni-templates:
     dependencies:
       '@dcloudio/uni-app':
