@@ -74,11 +74,6 @@ import { Radio } from '@snui/vue-web';
         'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
     },
     {
-      name: 'radio-web-icon',
-      title: 'Icon cards (card + icon body)',
-      blurb: 'A card variant carrying an icon body; the selected card shows a corner tick.',
-    },
-    {
       name: 'radio-web-indicator',
       title: 'Indicator placement & checked paint',
       blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
@@ -92,7 +87,7 @@ import { Radio } from '@snui/vue-web';
     {
       name: 'radio-web-card-indicator',
       title: 'Card indicator layouts',
-      blurb: 'Left (invertible) / right check glyph / top-right and bottom-right corner folds.',
+      blurb: 'Left (invertible) / right check glyph.',
     },
   ],
   props: {

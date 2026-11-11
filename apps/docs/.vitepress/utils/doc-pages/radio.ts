@@ -74,11 +74,6 @@ import { Radio } from '@snui/vue-web';
       blurb: '整块可点选卡片，#card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
     },
     {
-      name: 'radio-web-icon',
-      title: '图标卡片（card + 图标内容）',
-      blurb: 'card 变体承载图标内容，选中时右上角出现勾图标。',
-    },
-    {
       name: 'radio-web-indicator',
       title: '指示器位置与选中态',
       blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
@@ -92,7 +87,7 @@ import { Radio } from '@snui/vue-web';
     {
       name: 'radio-web-card-indicator',
       title: '卡片选中按钮形态',
-      blurb: '左侧垂直居中（支持反转）/ 右侧垂直居中打勾 / 右上右下贴边三角角标。',
+      blurb: '左侧垂直居中（支持反转）/ 右侧垂直居中打勾。',
     },
   ],
   props: {

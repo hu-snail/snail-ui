@@ -1,13 +1,11 @@
 <script setup lang="ts">
-/** Demo: SnRadio — 卡片选中按钮的三种形态（左 / 右 / 贴角）。 */
+/** Demo: SnRadio — 卡片选中按钮的行内形态（左 / 左反转 / 右勾）。 */
 import { ref } from 'vue';
 import { SnRadio, SnRadioGroup } from '@snui/vue-web';
 
 const left = ref('a');
 const leftInverted = ref('a');
 const right = ref('a');
-const corner = ref('a');
-const bottomCorner = ref('a');
 </script>
 
 <template>
@@ -41,47 +39,6 @@ const bottomCorner = ref('a');
         <SnRadio checked-value="b" label="第二项" />
       </SnRadioGroup>
     </section>
-
-    <section>
-      <h4>3. 右上贴边（indicatorPlacement="top-right"）</h4>
-      <SnRadioGroup v-model="corner" variant="card" class="demo-row">
-        <SnRadio checked-value="a">
-          <template #card>
-            <span class="c__title">基础版</span>
-            <span class="c__price">¥0</span>
-          </template>
-        </SnRadio>
-        <SnRadio checked-value="b">
-          <template #card>
-            <span class="c__title">专业版</span>
-            <span class="c__price">¥99</span>
-          </template>
-        </SnRadio>
-      </SnRadioGroup>
-    </section>
-
-    <section>
-      <h4>3b. 右下贴边（indicatorPlacement="bottom-right"）</h4>
-      <SnRadioGroup
-        v-model="bottomCorner"
-        variant="card"
-        indicator-placement="bottom-right"
-        class="demo-row"
-      >
-        <SnRadio checked-value="a">
-          <template #card>
-            <span class="c__title">基础版</span>
-            <span class="c__price">¥0</span>
-          </template>
-        </SnRadio>
-        <SnRadio checked-value="b">
-          <template #card>
-            <span class="c__title">专业版</span>
-            <span class="c__price">¥99</span>
-          </template>
-        </SnRadio>
-      </SnRadioGroup>
-    </section>
   </div>
 </template>
 
@@ -103,25 +60,5 @@ const bottomCorner = ref('a');
   flex-direction: column;
   gap: 10px;
   max-width: 360px;
-}
-.demo-col :deep(.demo-row) {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.demo-col :deep(.demo-row .sn-radio--variant-card) {
-  flex: 1 1 160px;
-  min-width: 160px;
-}
-.c__title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--sn-web-color-text-primary);
-}
-.c__price {
-  margin-top: 6px;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--sn-web-color-action-primary);
 }
 </style>
