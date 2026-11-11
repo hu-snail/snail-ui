@@ -517,6 +517,20 @@ const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar']);
 const MODULE_HEADLESS_PAGES = new Set(['tabbar']);
 
 /**
+ * 场景标题 → 模板属性安全字面量：生成页把标题嵌入
+ * `:title="t('zh', 'en')"`——外层是 HTML 双引号属性、内层是 JS 单引号
+ * 字符串。`"` 用 `&quot;`（Vue 先做 HTML 实体解码再解析表达式，落进 JS
+ * 字符串后无歧义），`'` 与反斜杠用 JS 转义；换行直接抹掉（标题单行）。
+ */
+function titleAttr(text) {
+  return text
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '&quot;')
+    .replace(/[\r\n]+/g, ' ');
+}
+
+/**
  * 组件内 demo 展示顺序：字母序会把「基础用法」夹在中间，列出的 demo 按
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
@@ -1189,7 +1203,7 @@ for (const sub of subpackages) {
         }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
         return `      <view class="module">
-        <DemoModuleHead :title="t('${scenarioLabel(comp.key, demo.scenario)}', '${scenarioLabelEn(comp.key, demo.scenario)}')"${badge} />
+        <DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge} />
         <view class="module__body">
           <Demo${i} />
         </view>
@@ -1209,7 +1223,7 @@ const { t } = useDemoUi();`
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'" :desc="'${comp.desc.replace(/'/g, "\\'")}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
+  <DemoPageShell :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
     <view class="page">
 ${modules}
     </view>

@@ -20,7 +20,17 @@ export const UNI_DEMO_BASE = typeof __UNI_DEMO_BASE__ === 'string' ? __UNI_DEMO_
  *
  * @param page 页面路径，形如 `pages/basic/button`（来自 demos-manifest.json）
  *   或 `pages/index/index`（首页目录）。
+ * @param state 初始主题/语言（可选）。hash 路由下 query 必须位于 `#` 之前；
+ *   uni-demo 启动时解析并应用（见 apps/uni-demo/src/state/demo-bridge.ts），
+ *   让每次 iframe 加载自带当前态，规避 postMessage 时序竞态。
  */
-export function uniDemoPageUrl(page: string): string {
-  return `${UNI_DEMO_BASE}#/${page}`;
+export function uniDemoPageUrl(
+  page: string,
+  state?: { theme?: 'dark' | 'light'; lang?: 'zh' | 'en' },
+): string {
+  const params: string[] = [];
+  if (state?.theme) params.push(`snuiTheme=${state.theme}`);
+  if (state?.lang) params.push(`snuiLang=${state.lang}`);
+  const query = params.length > 0 ? `?${params.join('&')}` : '';
+  return `${UNI_DEMO_BASE}${query}#/${page}`;
 }

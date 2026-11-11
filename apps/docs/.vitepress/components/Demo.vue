@@ -40,6 +40,7 @@ import {
 } from '../utils/demo-dock';
 import { dedent, loadDemoComponent, loadDemoSource, loadDemoUsage } from '../utils/demo-loader';
 import { uniDemoPageUrl } from '../utils/uni-demo-base';
+import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../utils/uni-demo-sync';
 import demoManifest from '../../../uni-demo/src/demos-manifest.json';
 import { useData, useRoute } from 'vitepress';
 
@@ -153,7 +154,7 @@ onBeforeUnmount(() => {
 // 双语机制(naive-ui 官网同构):英文站点优先加载 `demo-en/<name>.vue`
 // 影子文件(渲染 + 代码面板都用它);不存在时回退中文 demo。影子文件是
 // 普通源码,保持 demo「可复制即真实用法」的教学价值;md 页零改动。
-const { lang } = useData();
+const { isDark, lang } = useData();
 const isEn = computed(() => lang.value === 'en-US');
 
 /**
@@ -190,7 +191,22 @@ interface DemoManifestEntry {
 const mpPreviewUrl = computed(() => {
   const comp = uniCompFromRoute(route.path);
   const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
+});
+
+/** Theme / locale sync into the inline uni frame (uni-demo-sync protocol). */
+const frameRef = ref<HTMLIFrameElement | null>(null);
+
+function syncFrameState(): void {
+  postUniDemoState(frameRef, uniDemoStateOf(isDark.value, lang.value));
+}
+
+const unlistenReady = onUniDemoReady(syncFrameState);
+
+watch([isDark, lang], syncFrameState);
+
+onBeforeUnmount(() => {
+  unlistenReady();
 });
 
 // Async demo component, resolved through the shared loader so `DemoDock` and
@@ -390,6 +406,7 @@ watch(
       <ClientOnly>
         <PhoneFrame :height="720">
           <iframe
+            ref="frameRef"
             class="sn-demo__frame"
             :src="mpPreviewUrl"
             :title="`uni preview: ${name}`"
@@ -541,6 +558,10 @@ html.dark .sn-demo__card {
   height: 100%;
   border: 0;
   background: #f8f8f8;
+}
+
+.dark .sn-demo__frame {
+  background: #17171a;
 }
 
 .sn-demo__loading {

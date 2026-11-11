@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-slider-bar — 主题：theme="aurora" Aurora 渐变 + 星光。 */
+import { ref } from 'vue';
+import SnSliderBar from '@snui/uni-src/components/sn-slider-bar/sn-slider-bar.vue';
+
+const volume = ref(64);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">Aurora 渐变 + 星光</text>
+    <SnSliderBar v-model="volume" theme="aurora" label="亮度" show-value />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo__title {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

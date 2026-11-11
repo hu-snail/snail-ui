@@ -1,16 +1,16 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— calendar-view 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/calendar-view-mp-basic.vue'
-import Demo1 from './demos/calendar-view-mp-default-time.vue'
-import Demo2 from './demos/calendar-view-mp-first-day-of-week.vue'
-import Demo3 from './demos/calendar-view-mp-formatter.vue'
-import Demo4 from './demos/calendar-view-mp-panel-title.vue'
-import Demo5 from './demos/calendar-view-mp-range.vue'
-import Demo6 from './demos/calendar-view-mp-same-day.vue'
-import Demo7 from './demos/calendar-view-mp-switch-mode.vue'
-import Demo8 from './demos/calendar-view-mp-time-props.vue'
-import DemoModuleHead from '../../components/DemoModuleHead.vue'
-import DemoPageShell from '../../components/DemoPageShell.vue'
+import Demo0 from './demos/calendar-view-mp-basic.vue';
+import Demo1 from './demos/calendar-view-mp-default-time.vue';
+import Demo2 from './demos/calendar-view-mp-first-day-of-week.vue';
+import Demo3 from './demos/calendar-view-mp-formatter.vue';
+import Demo4 from './demos/calendar-view-mp-panel-title.vue';
+import Demo5 from './demos/calendar-view-mp-range.vue';
+import Demo6 from './demos/calendar-view-mp-same-day.vue';
+import Demo7 from './demos/calendar-view-mp-switch-mode.vue';
+import Demo8 from './demos/calendar-view-mp-time-props.vue';
+import DemoModuleHead from '../../components/DemoModuleHead.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
 // 场景标题双语（中/英切换见 DemoPageShell）。
@@ -27,7 +27,10 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('默认时分与即时写回', 'Default time & immediate write-back')" badge="default-time" />
+        <DemoModuleHead
+          :title="t('默认时分与即时写回', 'Default time & immediate write-back')"
+          badge="default-time"
+        />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -45,31 +48,51 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('面板标题（showPanelTitle）', 'Panel title (showPanelTitle)')" badge="panel-title" />
+        <DemoModuleHead
+          :title="t('面板标题（showPanelTitle）', 'Panel title (showPanelTitle)')"
+          badge="panel-title"
+        />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('区间选择（type="daterange"）', 'Range selection (type="daterange")')" badge="range" />
+        <DemoModuleHead
+          :title="
+            t(
+              '区间选择（type=&quot;daterange&quot;）',
+              'Range selection (type=&quot;daterange&quot;)',
+            )
+          "
+          badge="range"
+        />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('起止同一天（allowSameDay）', 'Same start & end day (allowSameDay)')" badge="same-day" />
+        <DemoModuleHead
+          :title="t('起止同一天（allowSameDay）', 'Same start & end day (allowSameDay)')"
+          badge="same-day"
+        />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('月 / 年切换（switchMode）', 'Month / year switching (switchMode)')" badge="switch-mode" />
+        <DemoModuleHead
+          :title="t('月 / 年切换（switchMode）', 'Month / year switching (switchMode)')"
+          badge="switch-mode"
+        />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('时间列声明参数', 'Declared time-column props')" badge="time-props" />
+        <DemoModuleHead
+          :title="t('时间列声明参数', 'Declared time-column props')"
+          badge="time-props"
+        />
         <view class="module__body">
           <Demo8 />
         </view>
@@ -95,7 +118,6 @@ const { t } = useDemoUi();
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
 }
-
 
 .module__body {
   padding: 0;

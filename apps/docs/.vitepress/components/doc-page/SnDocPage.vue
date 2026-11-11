@@ -14,7 +14,7 @@
  * 案例区已经承担了「真实可运行」的职责，再叠一个可调参数的舞台会让同一份
  * 契约出现两种表述。
  */
-import { computed, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { computed, markRaw, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import { useData, useRoute, useRouter } from 'vitepress';
 import {
   ArrowLeft,
@@ -44,6 +44,7 @@ import { loadDemoComponent, loadDemoSource } from '../../utils/demo-loader';
 import { registerDemo, unregisterDemo, uniCompFromRoute } from '../../utils/demo-dock';
 import { readPageSource, writeClipboardText } from '../../utils/doc-source';
 import { uniDemoPageUrl } from '../../utils/uni-demo-base';
+import { onUniDemoReady, postUniDemoState, uniDemoStateOf } from '../../utils/uni-demo-sync';
 import PhoneFrame from '../PhoneFrame.vue';
 import demoManifest from '../../../../uni-demo/src/demos-manifest.json';
 import type { DocFeature, DocSeg, DocQuickAction, DocTocItem, SnDocPageData } from './types';
@@ -469,7 +470,7 @@ const uniComp = computed(() => uniCompFromRoute(route.path));
  */
 const dockPreviewUrl = computed<string>(() => {
   const entry = (demoManifest.components as Record<string, { page: string }>)[uniComp.value];
-  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index', uniDemoStateOf(isDark.value, lang.value));
 });
 
 /**
@@ -480,6 +481,31 @@ const narrowViewport = ref(false);
 let narrowMq: MediaQueryList | null = null;
 let onNarrowMqChange: ((e: MediaQueryListEvent) => void) | null = null;
 const showInlinePhone = computed(() => isUniDoc.value && narrowViewport.value);
+
+/**
+ * 窄屏文档流手机的主题/语言同步：URL query 带初始态，运行时切换经
+ * postMessage + ready 握手补发（协议见 utils/uni-demo-sync.ts）。
+ */
+const inlineFrameRef = ref<HTMLIFrameElement | null>(null);
+
+function syncInlineFrameState(): void {
+  postUniDemoState(inlineFrameRef, uniDemoStateOf(isDark.value, lang.value));
+}
+
+const unlistenInlineReady = onUniDemoReady(syncInlineFrameState);
+
+watch(
+  [isDark, lang, showInlinePhone],
+  ([, , show]) => {
+    if (!show) return;
+    syncInlineFrameState();
+  },
+  { flush: 'post' },
+);
+
+onBeforeUnmount(() => {
+  unlistenInlineReady();
+});
 
 /**
  * 本页目录（含子目录）。
@@ -793,6 +819,7 @@ onBeforeUnmount(() => {
                     <div v-if="showInlinePhone" class="sn-docpage__phone">
                       <PhoneFrame :title="doc.title">
                         <iframe
+                          ref="inlineFrameRef"
                           class="sn-docpage__phone-frame"
                           :src="dockPreviewUrl"
                           :title="`uni preview: ${doc.title}`"
@@ -1916,6 +1943,9 @@ onBeforeUnmount(() => {
   width: 100%;
   border: 0;
   background: #f8f8f8;
+}
+.dark .sn-docpage__phone-frame {
+  background: #17171a;
 }
 .sn-docpage__demo-codebody {
   background: var(--sn-doc-code-bg);
