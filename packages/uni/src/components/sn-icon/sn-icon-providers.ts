@@ -17,7 +17,7 @@
  * 异步结果由组件 watch 驱动（见 sn-icon.vue），带 AbortSignal 与竞态保护。
  */
 
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 import { resolveIconByName } from './sn-icon-registry';
 import { SN_ICON_CATALOG } from './sn-icon-catalog';
 import { resolveIconifyIcon, configSnIconify, type SnIconifyOptions } from './sn-icon-iconify';

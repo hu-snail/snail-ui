@@ -43,30 +43,16 @@ import {
   SnIconSourceError,
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
+import type { IconData } from './sn-icon-types';
 
 defineOptions({ name: 'SnIcon' });
 
 /**
- * Lucide 兼容图标数据形态：默认 24x24 viewBox + 一至多条 SVG
- * `<path d="...">` 字符串。描边用 `currentColor` 渲染，`color` prop /
- * CSS `color` 会级联生效。类型契约的本体在这里定义（registry /
- * feedback / catalog 均从本文件 import）。
+ * 图标数据类型契约的本体在 `./sn-icon-types`（纯 ts 模块，uni-x 端的
+ * `.ts` 协同文件无法从 `.uvue` 导入类型）。这里 re-export 保持既有
+ * `from 'sn-icon.vue'` 导入路径兼容。
  */
-export interface IconData {
-  /** SVG viewBox。默认 '0 0 24 24'（lucide 标准网格）。 */
-  viewBox?: string;
-  /** 一至多条 SVG path data 字符串。 */
-  paths: string[];
-  /**
-   * 渲染模式：`stroke`（默认，lucide 形态 —— 路径是轮廓线，用 `stroke`
-   * 描出来）或 `fill`（实心字形 —— 路径是面，用 `fill` 填充）。
-   *
-   * Material Symbols / Material Icons 的 path 是**实心轮廓面**，按 stroke
-   * 渲染会变成双线空壳，因此这类图标集必须标 `'fill'`。`fill` 模式下
-   * `strokeWidth` 不参与渲染。
-   */
-  render?: 'stroke' | 'fill';
-}
+export type { IconData } from './sn-icon-types';
 
 const props = withDefaults(
   defineProps<{

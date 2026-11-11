@@ -17,7 +17,7 @@
  * a community fork of Feather Icons.
  */
 
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 
 const d = (paths: string[], viewBox?: string): IconData => ({
   viewBox: viewBox ?? '0 0 24 24',

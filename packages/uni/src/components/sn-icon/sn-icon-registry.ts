@@ -25,7 +25,7 @@
  * See: https://lucide.dev/icons
  */
 
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 
 /**
  * Module-level registry. Plain object so `Object.create(null)` keeps the

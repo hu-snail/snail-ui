@@ -15,7 +15,7 @@
  *
  * 扩展：优先用 `registerSnIcons()` 注册自定义 IconData（同名可覆盖目录）。
  */
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 
 /** 内置目录分类 key。 */
 export type SnIconCategory = keyof typeof SN_ICON_CATEGORY_LABELS;
