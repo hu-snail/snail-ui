@@ -168,8 +168,8 @@ watch(
         <p class="sn-theme-editor__desc">
           {{
             t(
-              '左侧调整主题配置，右侧组件实时跟随，整站同步生效。颜色、圆角、尺寸、间距、字体、表面与逐 token 覆盖都会即时作用于当前预览；Web 与 uni-app 两端共用一份配置，变量分别输出 --sn-web-* / --sn-mp-*。',
-              'Tune the theme on the left and the whole site follows — not just the preview. Colour, radius, size, spacing, typography, surface and per-token overrides apply immediately; Web and uni-app share one config and emit --sn-web-* / --sn-mp-* respectively.',
+              '左侧调整主题配置，右侧组件实时跟随，整站同步生效。颜色、圆角、尺寸、间距、字体、表面与逐 token 覆盖都会即时作用于当前预览；Web 与 uni-app x 两端共用一份配置，变量分别输出 --sn-web-* / --sn-mp-*。',
+              'Tune the theme on the left and the whole site follows — not just the preview. Colour, radius, size, spacing, typography, surface and per-token overrides apply immediately; Web and uni-app x share one config and emit --sn-web-* / --sn-mp-* respectively.',
             )
           }}
         </p>
@@ -227,7 +227,7 @@ watch(
             {{
               end === 'web'
                 ? t('Web 端预览', 'Web preview')
-                : t('uni-app 手机模拟', 'uni-app simulator')
+                : t('uni-app x 手机模拟', 'uni-app x simulator')
             }}
           </span>
           <span class="sn-theme-editor__stage-note">

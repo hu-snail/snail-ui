@@ -1,8 +1,8 @@
 # Component Overview (uni)
 
-A catalog of the uni-app end: 86 components across 6 categories.
+A catalog of the uni-app x end: 86 components across 6 categories.
 
-A catalog of the uni-app end: 86 components across 6 categories. The simulator below is an interactive directory — search, filter by category, and tap a component to open its standalone preview (all scenarios stacked), with in-frame back navigation.
+A catalog of the uni-app x end: 86 components across 6 categories. The simulator below is an interactive directory — search, filter by category, and tap a component to open its standalone preview (all scenarios stacked), with in-frame back navigation.
 
 <MpHome />
 

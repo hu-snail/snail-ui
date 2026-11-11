@@ -2,7 +2,7 @@
 /**
  * ThemeConfigPanel — 主题编辑器左侧配置栏。
  *
- * 布局对照 veanui 主题编辑器：视口分段（Web / uni-app） → 明暗模式 →
+ * 布局对照 veanui 主题编辑器：视口分段（Web / uni-app x） → 明暗模式 →
  * 调色板 / 主色 / 辅助色 / 强调色 / 碳色 → 反馈色 → 尺寸 / 间距 →
  * 字体（无衬线 / 衬线 / 等宽 / 标题）→ 圆角 / 边框透明度 / 表面风格 → 重置。
  *
@@ -72,7 +72,7 @@ const t = (zh: string, en: string): string => (props.english ? en : zh);
 
 const endOptions = computed<SnRadioOption[]>(() => [
   { label: 'Web', value: 'web' },
-  { label: 'uni-app', value: 'uni' },
+  { label: 'uni-app x', value: 'uni' },
 ]);
 
 const modeOptions = computed<SnRadioOption[]>(() => [

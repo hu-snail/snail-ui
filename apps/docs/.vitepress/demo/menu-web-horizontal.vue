@@ -9,7 +9,7 @@ import type { SnMenuOption } from '@snui/vue-web';
 const items: SnMenuOption[] = [
   { key: '/guide', label: '指南', href: '/guide/web/intro' },
   { key: '/components/web', label: '组件 · Web', href: '/components/web/button' },
-  { key: '/components/uni', label: '组件 · uni-app', href: '/components/uni/button' },
+  { key: '/components/uni', label: '组件 · uni-app x', href: '/components/uni/button' },
   { key: '/style-packs', label: '风格包', href: '/style-packs/overview' },
   { key: '/theme', label: '主题', href: '/theme/overview' },
 ];
