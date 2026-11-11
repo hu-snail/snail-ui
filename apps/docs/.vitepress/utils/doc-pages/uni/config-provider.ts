@@ -15,11 +15,11 @@ export const configProviderDocPage: SnDocPageData = {
   title: 'ConfigProvider 全局配置',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'uni-app 运行在无 ' },
+    { t: 'text', s: 'uni-app x 运行在无 ' },
     { t: 'code', s: 'document' },
     { t: 'text', s: '、无 ' },
     { t: 'code', s: ':root' },
@@ -53,7 +53,7 @@ export const configProviderDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'ConfigProvider 全局配置.vue',
     meta: 'Vue 3 · <script setup>',
@@ -136,8 +136,8 @@ import { ConfigProvider } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-resize', link: '/components/uni/resize' },
-    next: { text: 'sn-root-portal', link: '/components/uni/root-portal' },
+    prev: { text: 'Resize', link: '/components/uni/resize' },
+    next: { text: 'RootPortal', link: '/components/uni/root-portal' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

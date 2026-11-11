@@ -15,7 +15,7 @@ export const progressDocPage: SnDocPageData = {
   title: 'Progress 进度条',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,7 +43,7 @@ export const progressDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Progress 进度条.vue',
     meta: 'Vue 3 · <script setup>',
@@ -134,8 +134,8 @@ import { Progress } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-loading', link: '/components/uni/loading' },
-    next: { text: 'sn-circle', link: '/components/uni/circle' },
+    prev: { text: 'Loading', link: '/components/uni/loading' },
+    next: { text: 'Circle', link: '/components/uni/circle' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

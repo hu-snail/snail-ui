@@ -1,16 +1,16 @@
-/** Toast · uni-app (uni-app) — English page data. Props from sn-toast.vue; demos from the en page. */
+/** Toast · uni-app x (uni-app x) — English page data. Props from sn-toast.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const toastDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'Toast · uni-app' },
+    { text: 'Toast · uni-app x' },
   ],
-  title: 'Toast · uni-app',
+  title: 'Toast · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -39,10 +39,10 @@ export const toastDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Toast · uni-app.vue',
+    fileLabel: 'Toast · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -193,7 +193,7 @@ import { Toast } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Toast · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Toast · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Toast } from '@snui/uni';",
     chipCopy: "import { Toast } from '@snui/uni';",
     stats: [
@@ -203,8 +203,8 @@ import { Toast } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-circle', link: '/en/components/uni/circle' },
-    next: { text: 'sn-notify', link: '/en/components/uni/notify' },
+    prev: { text: 'Circle', link: '/en/components/uni/circle' },
+    next: { text: 'Notify', link: '/en/components/uni/notify' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -15,7 +15,7 @@ export const richTextDocPage: SnDocPageData = {
   title: 'RichText 富文本',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,7 +45,7 @@ export const richTextDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'RichText 富文本.vue',
     meta: 'Vue 3 · <script setup>',
@@ -146,8 +146,8 @@ import { RichText } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-table', link: '/components/uni/table' },
-    next: { text: 'sn-waterfall', link: '/components/uni/waterfall' },
+    prev: { text: 'Table', link: '/components/uni/table' },
+    next: { text: 'Waterfall', link: '/components/uni/waterfall' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

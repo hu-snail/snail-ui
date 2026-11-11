@@ -10,9 +10,9 @@ export const numberAnimationDocPage: SnDocPageData = {
   crumbs: [
     { text: '文档首页', link: '/' },
     { text: '反馈组件 Feedback' },
-    { text: 'NumberAnimation' },
+    { text: 'NumberAnimation 数字动画' },
   ],
-  title: 'NumberAnimation',
+  title: 'NumberAnimation 数字动画',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

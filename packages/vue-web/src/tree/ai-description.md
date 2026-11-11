@@ -39,6 +39,7 @@ import type {
 | `defaultExpandedKeys` | `SnTreeKey[]`              | `[]`         | no       | Uncontrolled initially expanded keys.                                           |
 | `expandedKeys`        | `SnTreeKey[] \| undefined` | `undefined`  | no       | Controlled expanded keys (`v-model:expanded-keys`); `undefined` = uncontrolled. |
 | `defaultExpandAll`    | `boolean`                  | `false`      | no       | Expand every non-leaf node initially.                                           |
+| `expandOnClick`       | `boolean`                  | `true`       | no       | Clicking a non-leaf label also expands / collapses its subtree; leaf rows are unaffected and selection still fires. ON by default (n-tree defaults off); pass `false` for switcher-only. |
 | `selectable`          | `boolean`                  | `true`       | no       | Allow selecting nodes by click.                                                 |
 | `selectedKeys`        | `SnTreeKey[] \| undefined` | `undefined`  | no       | Controlled selected keys (`v-model:selected-keys`).                             |
 | `defaultSelectedKeys` | `SnTreeKey[]`              | `[]`         | no       | Uncontrolled initially selected keys.                                           |
@@ -50,6 +51,7 @@ import type {
 | `cascade`             | `boolean`                  | `false`      | no       | Checkboxes cascade to children; parents show an indeterminate state.            |
 | `blockLine`           | `boolean`                  | `false`      | no       | Hover/selected background spans the whole node row.                             |
 | `indent`              | `number`                   | `24`         | no       | Per-level indent width (px).                                                    |
+| `size`                | `SnTreeSize`               | `'medium'`   | no       | Row-density preset (`mini` \| `tiny` \| `small` \| `medium` \| `large`): sets font-size + row height together on the SnSelect scale; `medium` = 14px / 24px baseline. `indent` stays independent. |
 | `showLine`            | `boolean`                  | `false`      | no       | Draw connector lines between parent and child rows.                             |
 | `lineMode`            | `SnTreeLineMode`           | `'branch'`   | no       | `'branch'` (L connectors) \| `'guide'` (vertical indent guides).                |
 | `lineStyle`           | `SnTreeLineStyle`          | `'solid'`    | no       | Connector stroke: `'solid'` \| `'dashed'` (AUI additive).                       |
@@ -188,7 +190,12 @@ Drag & drop types `SnTreeDropPosition`, `SnTreeAllowDropInfo`, `SnTreeAllowDrop`
   `vnode -> component -> vnode` cycle throws
   `TypeError: Converting circular structure to JSON` and blanks the whole tree.
 - Selection: content click only (the reference's `check-on-click` is not
-  implemented); switcher / checkbox clicks stop propagation.
+  implemented); switcher / checkbox clicks stop propagation. With
+  `expandOnClick`, a non-leaf content click also toggles the subtree through
+  the same path as the switcher (and still emits `update:selectedKeys`).
+- Selected label ink is the theme accent (`--sn-web-color-action-primary`,
+  overridable via `--sn-web-tree-node-selected-text-color`); the soft 10%
+  selected background is kept as the row affordance.
 - Cascade checking: checking a parent checks all non-disabled descendants;
   unchecking a child leaves the parent indeterminate. Emitted
   `checkedKeys` contain fully-checked nodes only (indeterminate parents
@@ -206,10 +213,12 @@ Drag & drop types `SnTreeDropPosition`, `SnTreeAllowDropInfo`, `SnTreeAllowDrop`
 | ----------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
 | Text primary / tertiary / disabled / on-primary | `--sn-web-color-text-*`            | Node text, switcher + empty color, disabled text, check mark        |
 | Background subtle                               | `--sn-web-color-background-subtle` | Row hover background                                                |
-| Action primary                                  | `--sn-web-color-action-primary`    | Checked checkbox, selected background tint (10% `color-mix`)        |
+| Action primary                                  | `--sn-web-color-action-primary`    | Checked checkbox, selected background tint (10% `color-mix`), selected label ink |
 | Border default                                  | `--sn-web-color-border-default`    | Checkbox frame + connector line fallback                            |
 | Tree line color                                 | `--sn-web-tree-line-color`         | Connector stroke (falls back to border default); set by `lineColor` |
 | Tree line radius                                | `--sn-web-tree-line-radius`        | Rounded elbow corner radius on both axes (`3px` fallback)           |
+| Selected label ink                              | `--sn-web-tree-node-selected-text-color` | Selected title color (falls back to action primary)            |
+| Row density                                     | `--sn-web-tree-font-size` / `--sn-web-tree-row-height` | Font size + row height owned by the `size` preset (medium = 14px / 24px) |
 
 ## Versioning
 

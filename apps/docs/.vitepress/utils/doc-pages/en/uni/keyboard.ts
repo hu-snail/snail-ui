@@ -1,16 +1,16 @@
-/** Keyboard · uni-app (uni-app) — English page data. Props from sn-keyboard.vue; demos from the en page. */
+/** Keyboard · uni-app x (uni-app x) — English page data. Props from sn-keyboard.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const keyboardDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Keyboard · uni-app' },
+    { text: 'Keyboard · uni-app x' },
   ],
-  title: 'Keyboard · uni-app',
+  title: 'Keyboard · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -42,10 +42,10 @@ export const keyboardDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Keyboard · uni-app.vue',
+    fileLabel: 'Keyboard · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -200,7 +200,7 @@ import { Keyboard } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Keyboard · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Keyboard · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Keyboard } from '@snui/uni';",
     chipCopy: "import { Keyboard } from '@snui/uni';",
     stats: [
@@ -210,8 +210,8 @@ import { Keyboard } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-code-input', link: '/en/components/uni/code-input' },
-    next: { text: 'sn-keyboard-panel', link: '/en/components/uni/keyboard-panel' },
+    prev: { text: 'CodeInput', link: '/en/components/uni/code-input' },
+    next: { text: 'KeyboardPanel', link: '/en/components/uni/keyboard-panel' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

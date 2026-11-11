@@ -15,7 +15,7 @@ export const imagePreviewDocPage: SnDocPageData = {
   title: 'ImagePreview 图片预览',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -46,7 +46,7 @@ export const imagePreviewDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'ImagePreview 图片预览.vue',
     meta: 'Vue 3 · <script setup>',
@@ -158,8 +158,8 @@ import { ImagePreview } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-watermark', link: '/components/uni/watermark' },
-    next: { text: 'sn-video-preview', link: '/components/uni/video-preview' },
+    prev: { text: 'Watermark', link: '/components/uni/watermark' },
+    next: { text: 'VideoPreview', link: '/components/uni/video-preview' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -1,16 +1,16 @@
-/** Upload · uni-app (uni-app) — English page data. Props from sn-upload.vue; demos from the en page. */
+/** Upload · uni-app x (uni-app x) — English page data. Props from sn-upload.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const uploadDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Upload · uni-app' },
+    { text: 'Upload · uni-app x' },
   ],
-  title: 'Upload · uni-app',
+  title: 'Upload · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -39,10 +39,10 @@ export const uploadDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Upload · uni-app.vue',
+    fileLabel: 'Upload · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -224,7 +224,7 @@ import { Upload } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Upload · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Upload · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Upload } from '@snui/uni';",
     chipCopy: "import { Upload } from '@snui/uni';",
     stats: [
@@ -234,8 +234,8 @@ import { Upload } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-datetime-picker-view', link: '/en/components/uni/datetime-picker-view' },
-    next: { text: 'sn-sort-button', link: '/en/components/uni/sort-button' },
+    prev: { text: 'DatetimePickerView', link: '/en/components/uni/datetime-picker-view' },
+    next: { text: 'SortButton', link: '/en/components/uni/sort-button' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

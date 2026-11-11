@@ -1,16 +1,16 @@
-/** Navbar · uni-app (uni-app) — English page data. Props from sn-navbar.vue; demos from the en page. */
+/** Navbar · uni-app x (uni-app x) — English page data. Props from sn-navbar.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const navbarDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Navigation Components' },
-    { text: 'Navbar · uni-app' },
+    { text: 'Navbar · uni-app x' },
   ],
-  title: 'Navbar · uni-app',
+  title: 'Navbar · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Title, side labels and the back arrow:' }],
@@ -31,10 +31,10 @@ export const navbarDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Navbar · uni-app.vue',
+    fileLabel: 'Navbar · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -120,7 +120,7 @@ import { Navbar } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Navbar · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Navbar · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Navbar } from '@snui/uni';",
     chipCopy: "import { Navbar } from '@snui/uni';",
     stats: [
@@ -130,8 +130,8 @@ import { Navbar } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
-    next: { text: 'sn-tabbar', link: '/en/components/uni/tabbar' },
+    prev: { text: 'AvatarGroup', link: '/en/components/uni/avatar-group' },
+    next: { text: 'Tabbar', link: '/en/components/uni/tabbar' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

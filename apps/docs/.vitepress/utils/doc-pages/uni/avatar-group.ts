@@ -15,7 +15,7 @@ export const avatarGroupDocPage: SnDocPageData = {
   title: 'AvatarGroup 头像组',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '如需显式 import：' }],
@@ -39,7 +39,7 @@ export const avatarGroupDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'AvatarGroup 头像组.vue',
     meta: 'Vue 3 · <script setup>',
@@ -111,8 +111,8 @@ import { AvatarGroup } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar', link: '/components/uni/avatar' },
-    next: { text: 'sn-navbar', link: '/components/uni/navbar' },
+    prev: { text: 'Avatar', link: '/components/uni/avatar' },
+    next: { text: 'Navbar', link: '/components/uni/navbar' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

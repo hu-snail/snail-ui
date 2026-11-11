@@ -15,7 +15,7 @@ export const transitionDocPage: SnDocPageData = {
   title: 'Transition 动画',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -48,7 +48,7 @@ export const transitionDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Transition 动画.vue',
     meta: 'Vue 3 · <script setup>',
@@ -186,8 +186,8 @@ import { Transition } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-fab', link: '/components/uni/fab' },
-    next: { text: 'sn-resize', link: '/components/uni/resize' },
+    prev: { text: 'Fab', link: '/components/uni/fab' },
+    next: { text: 'Resize', link: '/components/uni/resize' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

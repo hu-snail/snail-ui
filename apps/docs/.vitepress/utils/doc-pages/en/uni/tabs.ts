@@ -1,16 +1,16 @@
-/** Tabs · uni-app (uni-app) — English page data. Props from sn-tab.vue; demos from the en page. */
+/** Tabs · uni-app x (uni-app x) — English page data. Props from sn-tab.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const tabsDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Navigation Components' },
-    { text: 'Tabs · uni-app' },
+    { text: 'Tabs · uni-app x' },
   ],
-  title: 'Tabs · uni-app',
+  title: 'Tabs · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -55,10 +55,10 @@ export const tabsDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Tabs · uni-app.vue',
+    fileLabel: 'Tabs · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -174,7 +174,7 @@ import { Tabs } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Tabs · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Tabs · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Tabs } from '@snui/uni';",
     chipCopy: "import { Tabs } from '@snui/uni';",
     stats: [
@@ -184,8 +184,8 @@ import { Tabs } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-tabbar', link: '/en/components/uni/tabbar' },
-    next: { text: 'sn-segmented', link: '/en/components/uni/segmented' },
+    prev: { text: 'Tabbar', link: '/en/components/uni/tabbar' },
+    next: { text: 'Segmented', link: '/en/components/uni/segmented' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

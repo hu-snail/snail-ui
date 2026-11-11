@@ -11,7 +11,7 @@ export const imgDocPage: SnDocPageData = {
   title: 'Img 图片',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -50,7 +50,7 @@ export const imgDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Img 图片.vue',
     meta: 'Vue 3 · <script setup>',
@@ -179,8 +179,8 @@ import { Img } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-card', link: '/components/uni/card' },
-    next: { text: 'sn-swiper', link: '/components/uni/swiper' },
+    prev: { text: 'Card', link: '/components/uni/card' },
+    next: { text: 'Swiper', link: '/components/uni/swiper' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

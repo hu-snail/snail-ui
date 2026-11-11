@@ -15,7 +15,7 @@ export const swipeActionDocPage: SnDocPageData = {
   title: 'SwipeAction 滑动操作',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,7 +49,7 @@ export const swipeActionDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'SwipeAction 滑动操作.vue',
     meta: 'Vue 3 · <script setup>',
@@ -127,8 +127,8 @@ import { SwipeAction } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-curtain', link: '/components/uni/curtain' },
-    next: { text: 'sn-floating-panel', link: '/components/uni/floating-panel' },
+    prev: { text: 'Curtain', link: '/components/uni/curtain' },
+    next: { text: 'FloatingPanel', link: '/components/uni/floating-panel' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

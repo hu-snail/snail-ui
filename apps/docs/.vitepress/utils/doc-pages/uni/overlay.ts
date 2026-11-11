@@ -15,7 +15,7 @@ export const overlayDocPage: SnDocPageData = {
   title: 'Overlay 遮罩层',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -50,7 +50,7 @@ export const overlayDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Overlay 遮罩层.vue',
     meta: 'Vue 3 · <script setup>',
@@ -114,8 +114,8 @@ import { Overlay } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-popup', link: '/components/uni/popup' },
-    next: { text: 'sn-dialog', link: '/components/uni/dialog' },
+    prev: { text: 'Popup', link: '/components/uni/popup' },
+    next: { text: 'Dialog', link: '/components/uni/dialog' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

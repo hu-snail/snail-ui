@@ -59,6 +59,11 @@ import { Tree } from '@snui/vue-web';
     { name: 'tree-web-disabled', title: '禁用与状态', blurb: '禁用与状态' },
     { name: 'tree-web-prefix-suffix', title: '前缀与后缀', blurb: '前缀与后缀' },
     {
+      name: 'tree-web-size',
+      title: '尺寸（size）',
+      blurb: 'mini / small / medium / large 四档对照：字号与行高同步联动，indent 独立可调。',
+    },
+    {
       name: 'tree-web-block-line',
       title: '整行选中（block-line）',
       blurb: '整行选中（block-line）',
@@ -102,6 +107,12 @@ import { Tree } from '@snui/vue-web';
         desc: '展开的节点 key。',
       },
       { name: 'defaultExpandAll', type: 'boolean', default: 'false', desc: '初始展开全部非叶节点' },
+      {
+        name: 'expandOnClick',
+        type: 'boolean',
+        default: 'true',
+        desc: '点击非叶节点的标题也展开/折叠子级（叶子节点不受影响，选中行为照常）。默认开启，传 `false` 恢复「只能点箭头」的交互。',
+      },
       { name: 'selectable', type: 'boolean', default: 'true', desc: '点击节点是否可选中' },
       {
         name: 'selectedKeys',
@@ -143,6 +154,12 @@ import { Tree } from '@snui/vue-web';
       },
       { name: 'blockLine', type: 'boolean', default: 'false', desc: '悬停/选中背景铺满整行' },
       { name: 'indent', type: 'number', default: '24', desc: '每一级缩进宽度（px）' },
+      {
+        name: 'size',
+        type: "'mini' | 'tiny' | 'small' | 'medium' | 'large'",
+        default: "'medium'",
+        desc: '行密度档位：同时驱动字号与行高（与 SnSelect 同一套五档，medium 为 n-tree 基准 14px / 24px）；`indent` 独立不受影响。',
+      },
       {
         name: 'renderPrefix',
         type: 'SnTreeRenderSidePart | undefined',

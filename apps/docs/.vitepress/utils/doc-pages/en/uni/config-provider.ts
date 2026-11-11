@@ -1,20 +1,20 @@
-/** ConfigProvider · uni-app (Mobile) (uni-app) — English page data. Props from sn-config-provider.vue; demos from the en page. */
+/** ConfigProvider · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-config-provider.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const configProviderDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Basic Components' },
-    { text: 'ConfigProvider · uni-app (Mobile)' },
+    { text: 'ConfigProvider · uni-app x (Mobile)' },
   ],
-  title: 'ConfigProvider · uni-app (Mobile)',
+  title: 'ConfigProvider · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'uni-app runs on mini programs and native App targets that have no ' },
+    { t: 'text', s: 'uni-app x runs on mini programs and native App targets that have no ' },
     { t: 'code', s: 'document' },
     { t: 'text', s: ' and no ' },
     { t: 'code', s: ':root' },
@@ -46,10 +46,10 @@ export const configProviderDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'ConfigProvider · uni-app (Mobile).vue',
+    fileLabel: 'ConfigProvider · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -121,7 +121,7 @@ import { ConfigProvider } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'ConfigProvider · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'ConfigProvider · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { ConfigProvider } from '@snui/uni';",
     chipCopy: "import { ConfigProvider } from '@snui/uni';",
     stats: [
@@ -131,8 +131,8 @@ import { ConfigProvider } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-resize', link: '/en/components/uni/resize' },
-    next: { text: 'sn-root-portal', link: '/en/components/uni/root-portal' },
+    prev: { text: 'Resize', link: '/en/components/uni/resize' },
+    next: { text: 'RootPortal', link: '/en/components/uni/root-portal' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

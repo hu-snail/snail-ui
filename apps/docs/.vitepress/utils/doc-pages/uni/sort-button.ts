@@ -15,7 +15,7 @@ export const sortButtonDocPage: SnDocPageData = {
   title: 'SortButton 排序按钮',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -44,7 +44,7 @@ export const sortButtonDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'SortButton 排序按钮.vue',
     meta: 'Vue 3 · <script setup>',
@@ -110,8 +110,8 @@ import { SortButton } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-upload', link: '/components/uni/upload' },
-    next: { text: 'sn-signature', link: '/components/uni/signature' },
+    prev: { text: 'Upload', link: '/components/uni/upload' },
+    next: { text: 'Signature', link: '/components/uni/signature' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

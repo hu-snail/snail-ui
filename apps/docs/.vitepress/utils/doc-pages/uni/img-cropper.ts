@@ -15,7 +15,7 @@ export const imgCropperDocPage: SnDocPageData = {
   title: 'ImgCropper 图片裁剪',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,7 +49,7 @@ export const imgCropperDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'ImgCropper 图片裁剪.vue',
     meta: 'Vue 3 · <script setup>',
@@ -172,8 +172,8 @@ import { ImgCropper } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-video-preview', link: '/components/uni/video-preview' },
-    next: { text: 'sn-qr-code', link: '/components/uni/qr-code' },
+    prev: { text: 'VideoPreview', link: '/components/uni/video-preview' },
+    next: { text: 'QrCode', link: '/components/uni/qr-code' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

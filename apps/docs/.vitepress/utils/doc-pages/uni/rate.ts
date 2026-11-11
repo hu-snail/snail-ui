@@ -11,7 +11,7 @@ export const rateDocPage: SnDocPageData = {
   title: 'Rate 评分',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'sn-rate 基础评分：num 控制图标数量，tap 图标写回 v-model。' }],
@@ -35,7 +35,7 @@ export const rateDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Rate 评分.vue',
     meta: 'Vue 3 · <script setup>',
@@ -171,8 +171,8 @@ import { Rate } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-switch', link: '/components/uni/switch' },
-    next: { text: 'sn-slider', link: '/components/uni/slider' },
+    prev: { text: 'Switch', link: '/components/uni/switch' },
+    next: { text: 'Slider', link: '/components/uni/slider' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

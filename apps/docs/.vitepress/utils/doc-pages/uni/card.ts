@@ -1,5 +1,5 @@
 /**
- * Card · uni-app（移动端）（uni 端）组件详情页数据。
+ * Card · uni-app x（移动端）（uni 端）组件详情页数据。
  *
  * Props 与默认值取自 sn-card.vue 的 defineProps / withDefaults；
  * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
@@ -10,12 +10,12 @@ export const cardDocPage: SnDocPageData = {
   crumbs: [
     { text: '文档首页', link: '/' },
     { text: '展示组件 Display' },
-    { text: 'Card · uni-app（移动端）' },
+    { text: 'Card · uni-app x（移动端）' },
   ],
-  title: 'Card · uni-app（移动端）',
+  title: 'Card · uni-app x（移动端）',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [],
@@ -39,9 +39,9 @@ export const cardDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
-    fileLabel: 'Card · uni-app（移动端）.vue',
+    fileLabel: 'Card · uni-app x（移动端）.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -115,7 +115,7 @@ import { Card } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
-    copy: 'Card · uni-app（移动端） 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
+    copy: 'Card · uni-app x（移动端） 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
     chip: "import { Card } from '@snui/uni';",
     chipCopy: "import { Card } from '@snui/uni';",
     stats: [
@@ -125,8 +125,8 @@ import { Card } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar-group', link: '/components/uni/avatar-group' },
-    next: { text: 'sn-img', link: '/components/uni/img' },
+    prev: { text: 'AvatarGroup', link: '/components/uni/avatar-group' },
+    next: { text: 'Img', link: '/components/uni/img' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

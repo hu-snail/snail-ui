@@ -14,13 +14,13 @@ Peer dependencies:
 pnpm add vue@^3.5 zod
 ```
 
-## For multi-end apps (uni-app)
+## For multi-end apps (uni-app x)
 
 ```bash
 pnpm add @snui/uni @snui/runtime @snui/protocol
 ```
 
-Peer dependencies depend on which uni-app target — see the [@dcloudio/uni-ui](https://uniapp.dcloud.net.cn/) docs.
+Peer dependencies depend on which uni-app x target — see the [@dcloudio/uni-ui](https://uniapp.dcloud.net.cn/) docs.
 
 ## For tooling (Studio, AI Repair, Schema validation)
 
@@ -72,4 +72,4 @@ import type { UISchema, UINode, UIBinding, UIAction } from '@snui/protocol';
 ## Next
 
 - [Quick start (Web)](/en/guide/web/quick-start)
-- [Quick start (uni-app)](/en/guide/uni/quick-start)
+- [Quick start (uni-app x)](/en/guide/uni/quick-start)

@@ -15,7 +15,7 @@ export const slideVerifyDocPage: SnDocPageData = {
   title: 'SlideVerify 滑动验证',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -44,7 +44,7 @@ export const slideVerifyDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'SlideVerify 滑动验证.vue',
     meta: 'Vue 3 · <script setup>',
@@ -178,8 +178,8 @@ import { SlideVerify } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-signature', link: '/components/uni/signature' },
-    next: { text: 'sn-captcha', link: '/components/uni/captcha' },
+    prev: { text: 'Signature', link: '/components/uni/signature' },
+    next: { text: 'Captcha', link: '/components/uni/captcha' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

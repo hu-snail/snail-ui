@@ -1,4 +1,4 @@
-/** AvatarGroup (uni-app) — English page data. Props from sn-avatar-group.vue; demos from the en page. */
+/** AvatarGroup (uni-app x) — English page data. Props from sn-avatar-group.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const avatarGroupDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const avatarGroupDocPageEn: SnDocPageData = {
   title: 'AvatarGroup',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -40,7 +40,7 @@ export const avatarGroupDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'AvatarGroup.vue',
@@ -118,8 +118,8 @@ import { AvatarGroup } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar', link: '/en/components/uni/avatar' },
-    next: { text: 'sn-navbar', link: '/en/components/uni/navbar' },
+    prev: { text: 'Avatar', link: '/en/components/uni/avatar' },
+    next: { text: 'Navbar', link: '/en/components/uni/navbar' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

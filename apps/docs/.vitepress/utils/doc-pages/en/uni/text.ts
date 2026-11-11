@@ -1,16 +1,16 @@
-/** Text · uni-app (Mobile) (uni-app) — English page data. Props from sn-text.vue; demos from the en page. */
+/** Text · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-text.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const textDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Basic Components' },
-    { text: 'Text · uni-app (Mobile)' },
+    { text: 'Text · uni-app x (Mobile)' },
   ],
-  title: 'Text · uni-app (Mobile)',
+  title: 'Text · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Five semantic colours, bold, three decorations:' }],
@@ -31,10 +31,10 @@ export const textDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Text · uni-app (Mobile).vue',
+    fileLabel: 'Text · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -132,7 +132,7 @@ import { Text } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Text · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Text · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Text } from '@snui/uni';",
     chipCopy: "import { Text } from '@snui/uni';",
     stats: [
@@ -142,8 +142,8 @@ import { Text } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-icon', link: '/en/components/uni/icon' },
-    next: { text: 'sn-layout', link: '/en/components/uni/layout' },
+    prev: { text: 'Icon', link: '/en/components/uni/icon' },
+    next: { text: 'Layout', link: '/en/components/uni/layout' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -1,16 +1,16 @@
-/** Avatar · uni-app (Mobile) (uni-app) — English page data. Props from sn-avatar.vue; demos from the en page. */
+/** Avatar · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-avatar.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const avatarDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Basic Components' },
-    { text: 'Avatar · uni-app (Mobile)' },
+    { text: 'Avatar · uni-app x (Mobile)' },
   ],
-  title: 'Avatar · uni-app (Mobile)',
+  title: 'Avatar · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Three content layers plus a custom background:' }],
@@ -31,10 +31,10 @@ export const avatarDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Avatar · uni-app (Mobile).vue',
+    fileLabel: 'Avatar · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -141,7 +141,7 @@ import { Avatar } from '@snui/uni';
         name: 'mode',
         type: 'string',
         default: "'aspectFill'",
-        desc: '图片填充模式，同 uni-app image 组件的 mode。',
+        desc: '图片填充模式，同 uni-app x image 组件的 mode。',
       },
       {
         name: 'status',
@@ -156,7 +156,7 @@ import { Avatar } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Avatar · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Avatar · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Avatar } from '@snui/uni';",
     chipCopy: "import { Avatar } from '@snui/uni';",
     stats: [
@@ -166,8 +166,8 @@ import { Avatar } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-badge', link: '/en/components/uni/badge' },
-    next: { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
+    prev: { text: 'Badge', link: '/en/components/uni/badge' },
+    next: { text: 'AvatarGroup', link: '/en/components/uni/avatar-group' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

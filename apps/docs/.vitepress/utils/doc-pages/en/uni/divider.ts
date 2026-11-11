@@ -1,4 +1,4 @@
-/** Divider (uni-app) — English page data. Props from sn-divider.vue; demos from the en page. */
+/** Divider (uni-app x) — English page data. Props from sn-divider.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const dividerDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const dividerDocPageEn: SnDocPageData = {
   title: 'Divider',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Conforms to easycom — **no import needed in templates**:' }],
@@ -27,7 +27,7 @@ export const dividerDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'Divider.vue',
@@ -134,8 +134,8 @@ import { Divider } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-root-portal', link: '/en/components/uni/root-portal' },
-    next: { text: 'sn-gap', link: '/en/components/uni/gap' },
+    prev: { text: 'RootPortal', link: '/en/components/uni/root-portal' },
+    next: { text: 'Gap', link: '/en/components/uni/gap' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

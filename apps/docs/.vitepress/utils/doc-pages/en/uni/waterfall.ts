@@ -1,16 +1,16 @@
-/** Waterfall · uni-app (uni-app) — English page data. Props from sn-waterfall.vue; demos from the en page. */
+/** Waterfall · uni-app x (uni-app x) — English page data. Props from sn-waterfall.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const waterfallDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'Waterfall · uni-app' },
+    { text: 'Waterfall · uni-app x' },
   ],
-  title: 'Waterfall · uni-app',
+  title: 'Waterfall · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Guarantees:' }],
@@ -31,10 +31,10 @@ export const waterfallDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Waterfall · uni-app.vue',
+    fileLabel: 'Waterfall · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -110,7 +110,7 @@ import { Waterfall } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Waterfall · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Waterfall · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Waterfall } from '@snui/uni';",
     chipCopy: "import { Waterfall } from '@snui/uni';",
     stats: [
@@ -120,8 +120,8 @@ import { Waterfall } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-rich-text', link: '/en/components/uni/rich-text' },
-    next: { text: 'sn-liquid', link: '/en/components/uni/liquid' },
+    prev: { text: 'RichText', link: '/en/components/uni/rich-text' },
+    next: { text: 'Liquid', link: '/en/components/uni/liquid' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

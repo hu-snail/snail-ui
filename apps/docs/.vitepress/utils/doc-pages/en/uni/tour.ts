@@ -1,16 +1,16 @@
-/** Tour · uni-app (uni-app) — English page data. Props from sn-tour.vue; demos from the en page. */
+/** Tour · uni-app x (uni-app x) — English page data. Props from sn-tour.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const tourDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Navigation Components' },
-    { text: 'Tour · uni-app' },
+    { text: 'Tour · uni-app x' },
   ],
-  title: 'Tour · uni-app',
+  title: 'Tour · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -36,10 +36,10 @@ export const tourDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Tour · uni-app.vue',
+    fileLabel: 'Tour · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -142,7 +142,7 @@ import { Tour } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Tour · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Tour · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Tour } from '@snui/uni';",
     chipCopy: "import { Tour } from '@snui/uni';",
     stats: [
@@ -152,8 +152,8 @@ import { Tour } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-backtop', link: '/en/components/uni/backtop' },
-    next: { text: 'sn-steps', link: '/en/components/uni/steps' },
+    prev: { text: 'Backtop', link: '/en/components/uni/backtop' },
+    next: { text: 'Steps', link: '/en/components/uni/steps' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

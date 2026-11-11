@@ -1,16 +1,16 @@
-/** RichText · uni-app (Mobile) (uni-app) — English page data. Props from sn-rich-text.vue; demos from the en page. */
+/** RichText · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-rich-text.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const richTextDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'RichText · uni-app (Mobile)' },
+    { text: 'RichText · uni-app x (Mobile)' },
   ],
-  title: 'RichText · uni-app (Mobile)',
+  title: 'RichText · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -37,10 +37,10 @@ export const richTextDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'RichText · uni-app (Mobile).vue',
+    fileLabel: 'RichText · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -153,7 +153,7 @@ import { RichText } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'RichText · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'RichText · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { RichText } from '@snui/uni';",
     chipCopy: "import { RichText } from '@snui/uni';",
     stats: [
@@ -163,8 +163,8 @@ import { RichText } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-table', link: '/en/components/uni/table' },
-    next: { text: 'sn-waterfall', link: '/en/components/uni/waterfall' },
+    prev: { text: 'Table', link: '/en/components/uni/table' },
+    next: { text: 'Waterfall', link: '/en/components/uni/waterfall' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

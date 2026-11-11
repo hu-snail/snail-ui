@@ -1,16 +1,16 @@
-/** QRCode · uni-app (uni-app) — English page data. Props from sn-qr-code.vue; demos from the en page. */
+/** QRCode · uni-app x (uni-app x) — English page data. Props from sn-qr-code.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const qrCodeDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'QRCode · uni-app' },
+    { text: 'QRCode · uni-app x' },
   ],
-  title: 'QRCode · uni-app',
+  title: 'QRCode · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -40,10 +40,10 @@ export const qrCodeDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'QRCode · uni-app.vue',
+    fileLabel: 'QRCode · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -172,7 +172,7 @@ import { QrCode } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'QRCode · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'QRCode · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { QrCode } from '@snui/uni';",
     chipCopy: "import { QrCode } from '@snui/uni';",
     stats: [
@@ -182,8 +182,8 @@ import { QrCode } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-img-cropper', link: '/en/components/uni/img-cropper' },
-    next: { text: 'sn-table', link: '/en/components/uni/table' },
+    prev: { text: 'ImgCropper', link: '/en/components/uni/img-cropper' },
+    next: { text: 'Table', link: '/en/components/uni/table' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

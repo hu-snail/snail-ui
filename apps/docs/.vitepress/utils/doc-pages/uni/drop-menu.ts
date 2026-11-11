@@ -15,7 +15,7 @@ export const dropMenuDocPage: SnDocPageData = {
   title: 'DropMenu 下拉菜单',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -53,7 +53,7 @@ export const dropMenuDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'DropMenu 下拉菜单.vue',
     meta: 'Vue 3 · <script setup>',
@@ -229,8 +229,8 @@ import { DropMenu } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-grid', link: '/components/uni/grid' },
-    next: { text: 'sn-tooltip', link: '/components/uni/tooltip' },
+    prev: { text: 'Grid', link: '/components/uni/grid' },
+    next: { text: 'Tooltip', link: '/components/uni/tooltip' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

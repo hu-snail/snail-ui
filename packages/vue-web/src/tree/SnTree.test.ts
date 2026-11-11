@@ -66,6 +66,47 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       ]);
     });
 
+    it('expands all groups when data arrives AFTER setup (async sidebar data)', async () => {
+      const data = ref<SnTreeOption[]>([]);
+      const w = mount(
+        defineComponent({
+          components: { SnTree },
+          setup() {
+            return () => h(SnTree, { data: data.value, defaultExpandAll: true });
+          },
+        }),
+      );
+      expect(visibleLabels(w)).toEqual([]);
+      data.value = sampleData;
+      await nextTick();
+      expect(visibleLabels(w)).toEqual([
+        '节点 A',
+        '节点 AA',
+        '节点 AB',
+        '节点 B',
+        '节点 BA',
+        '节点 BAA',
+        '节点 C',
+      ]);
+    });
+
+    it('keeps a user collapse after default-expand-all data updates', async () => {
+      const data = ref<SnTreeOption[]>(sampleData);
+      const w = mount(
+        defineComponent({
+          components: { SnTree },
+          setup() {
+            return () => h(SnTree, { data: data.value, defaultExpandAll: true });
+          },
+        }),
+      );
+      await w.find('.sn-tree__switcher').trigger('click');
+      expect(visibleLabels(w)).not.toContain('节点 AA');
+      data.value = [...sampleData];
+      await nextTick();
+      expect(visibleLabels(w)).not.toContain('节点 AA');
+    });
+
     it('indents nodes per level with the indent prop', () => {
       const w = mountTree({ defaultExpandedKeys: ['a'] });
       const indents = w.findAll('.sn-tree__indent');
@@ -95,6 +136,20 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
     it('marks the root with block-line styling when block-line is set', () => {
       const w = mountTree({ blockLine: true });
       expect(w.find('.sn-tree').classes()).toContain('sn-tree--block-line');
+    });
+  });
+
+  describe('size', () => {
+    it('defaults to the medium density preset', () => {
+      const w = mountTree();
+      expect(w.find('.sn-tree').classes()).toContain('sn-tree--medium');
+    });
+
+    it('maps every size preset to its own root class', () => {
+      for (const size of ['mini', 'tiny', 'small', 'large']) {
+        const w = mountTree({ size });
+        expect(w.find('.sn-tree').classes()).toContain(`sn-tree--${size}`);
+      }
     });
   });
 
@@ -149,6 +204,80 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
       await w.findAll('.sn-tree__switcher')[0]?.trigger('click');
       await w.vm.$nextTick();
       expect(visibleLabels(w)).not.toContain('节点 AA');
+    });
+
+    it('expands a CONTROLLED tree from the label (the docs sidebar wiring)', async () => {
+      const w = mount(
+        defineComponent({
+          components: { SnTree },
+          setup() {
+            const expanded = ref<string[]>([]);
+            return () =>
+              h(SnTree, {
+                data: sampleData,
+                expandedKeys: expanded.value,
+                expandOnClick: true,
+                'onUpdate:expandedKeys': (keys: string[]) => {
+                  expanded.value = keys;
+                },
+              } as never);
+          },
+        }),
+      );
+
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+      await w.vm.$nextTick();
+      expect(visibleLabels(w)).toContain('节点 AA');
+    });
+
+    it('expands a group from its LABEL with expand-on-click (and still selects)', async () => {
+      const w = mountTree({ expandOnClick: true });
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+
+      const expanded = w.findComponent(SnTree).emitted('update:expandedKeys');
+      expect(expanded).toHaveLength(1);
+      expect(expanded?.[0]?.[0]).toEqual(['a']);
+      expect(expanded?.[0]?.[2]).toEqual({ node: sampleData[0], action: 'expand' });
+      expect(w.findComponent(SnTree).emitted('update:selectedKeys')).toHaveLength(1);
+
+      await w.vm.$nextTick();
+      expect(visibleLabels(w)).toContain('节点 AA');
+    });
+
+    it('collapses again on the second label click with expand-on-click', async () => {
+      const w = mountTree({ expandOnClick: true, defaultExpandedKeys: ['a'] });
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+
+      expect(w.findComponent(SnTree).emitted('update:expandedKeys')?.[0]?.[0]).toEqual([]);
+      await w.vm.$nextTick();
+      expect(visibleLabels(w)).not.toContain('节点 AA');
+    });
+
+    it('expands on label click by default (expand-on-click defaults to true)', async () => {
+      const w = mountTree();
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+      await w.vm.$nextTick();
+      expect(visibleLabels(w)).toContain('节点 AA');
+    });
+
+    it('keeps the switcher-only interaction with expand-on-click=false', async () => {
+      const w = mountTree({ expandOnClick: false });
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+      expect(w.findComponent(SnTree).emitted('update:expandedKeys')).toBeUndefined();
+      expect(visibleLabels(w)).not.toContain('节点 AA');
+    });
+
+    it('never expands from a leaf label with expand-on-click', async () => {
+      const w = mountTree({ expandOnClick: true });
+      await w.findAll('.sn-tree__node-content')[2]?.trigger('click');
+      expect(w.findComponent(SnTree).emitted('update:expandedKeys')).toBeUndefined();
+    });
+
+    it('expands from the label even when selection is disabled', async () => {
+      const w = mountTree({ expandOnClick: true, selectable: false });
+      await w.findAll('.sn-tree__node-content')[0]?.trigger('click');
+      expect(w.findComponent(SnTree).emitted('update:expandedKeys')?.[0]?.[0]).toEqual(['a']);
+      expect(w.findComponent(SnTree).emitted('update:selectedKeys')).toBeUndefined();
     });
 
     it('does not emit when clicking a leaf placeholder switcher', async () => {
@@ -216,7 +345,9 @@ describe('SnTree (AUI-WEB-DD-021)', () => {
     });
 
     it('toggles multiple selections when multiple is set', async () => {
-      const w = mountTree({ multiple: true });
+      // expand-on-click is off here so the row list stays index-stable; the
+      // expansion side of a label click is covered by the expansion suite.
+      const w = mountTree({ multiple: true, expandOnClick: false });
       const contents = w.findAll('.sn-tree__node-content');
       await contents[0]?.trigger('click');
       await contents[2]?.trigger('click');

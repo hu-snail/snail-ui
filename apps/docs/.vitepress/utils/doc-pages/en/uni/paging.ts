@@ -1,16 +1,16 @@
-/** sn-paging List Container (uni-app) — English page data. Props from sn-paging.vue; demos from the en page. */
+/** sn-paging List Container (uni-app x) — English page data. Props from sn-paging.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const pagingDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'sn-paging List Container' },
+    { text: 'Paging List Container' },
   ],
-  title: 'sn-paging List Container',
+  title: 'Paging List Container',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -35,7 +35,7 @@ export const pagingDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'sn-paging List Container.vue',
@@ -299,8 +299,8 @@ import { Paging } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-loadmore', link: '/en/components/uni/loadmore' },
-    next: { text: 'sn-curtain', link: '/en/components/uni/curtain' },
+    prev: { text: 'Loadmore', link: '/en/components/uni/loadmore' },
+    next: { text: 'Curtain', link: '/en/components/uni/curtain' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

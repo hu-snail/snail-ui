@@ -1,16 +1,16 @@
-/** Calendar · uni-app (uni-app) — English page data. Props from sn-calendar.vue; demos from the en page. */
+/** Calendar · uni-app x (uni-app x) — English page data. Props from sn-calendar.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const calendarDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Calendar · uni-app' },
+    { text: 'Calendar · uni-app x' },
   ],
-  title: 'Calendar · uni-app',
+  title: 'Calendar · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -37,10 +37,10 @@ export const calendarDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Calendar · uni-app.vue',
+    fileLabel: 'Calendar · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -259,7 +259,7 @@ import { Calendar } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Calendar · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Calendar · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Calendar } from '@snui/uni';",
     chipCopy: "import { Calendar } from '@snui/uni';",
     stats: [
@@ -269,8 +269,8 @@ import { Calendar } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-cascader', link: '/en/components/uni/cascader' },
-    next: { text: 'sn-calendar-view', link: '/en/components/uni/calendar-view' },
+    prev: { text: 'Cascader', link: '/en/components/uni/cascader' },
+    next: { text: 'CalendarView', link: '/en/components/uni/calendar-view' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -14,13 +14,13 @@ Peer 依赖：
 pnpm add vue@^3.5 zod
 ```
 
-## 多端应用（uni-app）
+## 多端应用（uni-app x）
 
 ```bash
 pnpm add @snui/uni @snui/runtime @snui/protocol
 ```
 
-Peer 依赖取决于 uni-app 编译目标，详见 [@dcloudio/uni-ui](https://uniapp.dcloud.net.cn/) 文档。
+Peer 依赖取决于 uni-app x 编译目标，详见 [@dcloudio/uni-ui](https://uniapp.dcloud.net.cn/) 文档。
 
 ## 工具链（Studio / AI Repair / Schema 校验）
 
@@ -72,4 +72,4 @@ import type { UISchema, UINode, UIBinding, UIAction } from '@snui/protocol';
 ## 下一步
 
 - [Web 快速开始](/guide/web/quick-start)
-- [uni-app 快速开始](/guide/uni/quick-start)
+- [uni-app x 快速开始](/guide/uni/quick-start)

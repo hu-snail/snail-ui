@@ -35,6 +35,45 @@ import ThemeEditor from '../components/theme-editor/ThemeEditor.vue';
 import Layout from './Layout.vue';
 
 /**
+ * 滚动条只在真正滚动时出现：给正在滚动的容器挂 `.sn-is-scrolling`，
+ * 静止 700ms 后移除（custom.css 里 thumb 默认全透明）。仅 hover 不滚动
+ * 不会触发，左侧菜单与内容区因此不再常驻一条细滚动条。
+ *
+ * scroll 事件不冒泡，必须在捕获阶段监听才能收到侧栏等后代容器；文档级
+ * 滚动的 target 是 document，统一映射到 documentElement 加 class。
+ */
+let scrollbarIdleInstalled = false;
+
+function installScrollbarIdle(): void {
+  if (typeof window === 'undefined' || scrollbarIdleInstalled) return;
+  scrollbarIdleInstalled = true;
+
+  const IDLE_MS = 700;
+  const timers = new WeakMap<Element, number>();
+
+  window.addEventListener(
+    'scroll',
+    (event: Event) => {
+      const target: EventTarget | null = event.target;
+      const el = target === document ? document.documentElement : target;
+      if (!(el instanceof Element)) return;
+
+      el.classList.add('sn-is-scrolling');
+      const pending = timers.get(el);
+      if (pending !== undefined) window.clearTimeout(pending);
+      timers.set(
+        el,
+        window.setTimeout(() => {
+          el.classList.remove('sn-is-scrolling');
+          timers.delete(el);
+        }, IDLE_MS),
+      );
+    },
+    true,
+  );
+}
+
+/**
  * Register all docs-site components as VitePress global components.
  * Per AUI-PRD-v3.1 + ADR-0002 + Spec-05 §5 + AUI-DOCS-016/018:
  *   - StyleSwitcher: global Style Pack switcher (按 end 过滤, AUI-DOCS-010)
@@ -62,6 +101,7 @@ export default {
   extends: DefaultTheme,
   Layout,
   enhanceApp({ app }: { app: { component: (name: string, c: unknown) => void } }) {
+    installScrollbarIdle();
     app.component('StyleSwitcher', StyleSwitcher);
     app.component('ThemeCopier', ThemeCopier);
     app.component('Demo', Demo);

@@ -1,16 +1,16 @@
-/** Watermark · uni-app (uni-app) — English page data. Props from sn-watermark.vue; demos from the en page. */
+/** Watermark · uni-app x (uni-app x) — English page data. Props from sn-watermark.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const watermarkDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'Watermark · uni-app' },
+    { text: 'Watermark · uni-app x' },
   ],
-  title: 'Watermark · uni-app',
+  title: 'Watermark · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'None.' }],
@@ -31,10 +31,10 @@ export const watermarkDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Watermark · uni-app.vue',
+    fileLabel: 'Watermark · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -136,7 +136,7 @@ import { Watermark } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Watermark · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Watermark · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Watermark } from '@snui/uni';",
     chipCopy: "import { Watermark } from '@snui/uni';",
     stats: [
@@ -146,8 +146,8 @@ import { Watermark } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-count-to', link: '/en/components/uni/count-to' },
-    next: { text: 'sn-image-preview', link: '/en/components/uni/image-preview' },
+    prev: { text: 'CountTo', link: '/en/components/uni/count-to' },
+    next: { text: 'ImagePreview', link: '/en/components/uni/image-preview' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

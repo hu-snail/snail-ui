@@ -1,4 +1,4 @@
-/** Button (uni-app) — English page data. Props from sn-button.vue; demos from the en page. */
+/** Button (uni-app x) — English page data. Props from sn-button.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const buttonDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const buttonDocPageEn: SnDocPageData = {
   title: 'Button',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Conforms to easycom — **no import needed in templates**:' }],
@@ -27,7 +27,7 @@ export const buttonDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'Button.vue',
@@ -202,13 +202,13 @@ import { Button } from '@snui/uni';
         name: 'hoverStartTime',
         type: 'number',
         default: '—',
-        desc: 'Hover start time (ms, uni-app MP).',
+        desc: 'Hover start time (ms, uni-app x MP).',
       },
       {
         name: 'hoverStayTime',
         type: 'number',
         default: '—',
-        desc: 'Hover stay time (ms, uni-app MP).',
+        desc: 'Hover stay time (ms, uni-app x MP).',
       },
       {
         name: 'formType',
@@ -275,7 +275,7 @@ import { Button } from '@snui/uni';
         name: 'hoverStopPropagation',
         type: 'boolean',
         default: '—',
-        desc: 'Prevent the press state from bubbling to ancestors (uni-app MP).',
+        desc: 'Prevent the press state from bubbling to ancestors (uni-app x MP).',
       },
       {
         name: 'lang',
@@ -341,7 +341,7 @@ import { Button } from '@snui/uni';
     ],
   },
   pager: {
-    next: { text: 'sn-icon', link: '/en/components/uni/icon' },
+    next: { text: 'Icon', link: '/en/components/uni/icon' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

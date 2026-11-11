@@ -1,16 +1,16 @@
-/** Card · uni-app (Mobile) (uni-app) — English page data. Props from sn-card.vue; demos from the en page. */
+/** Card · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-card.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const cardDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'Card · uni-app (Mobile)' },
+    { text: 'Card · uni-app x (Mobile)' },
   ],
-  title: 'Card · uni-app (Mobile)',
+  title: 'Card · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [],
@@ -31,10 +31,10 @@ export const cardDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Card · uni-app (Mobile).vue',
+    fileLabel: 'Card · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -109,7 +109,7 @@ import { Card } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Card · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Card · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Card } from '@snui/uni';",
     chipCopy: "import { Card } from '@snui/uni';",
     stats: [
@@ -119,8 +119,8 @@ import { Card } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
-    next: { text: 'sn-img', link: '/en/components/uni/img' },
+    prev: { text: 'AvatarGroup', link: '/en/components/uni/avatar-group' },
+    next: { text: 'Img', link: '/en/components/uni/img' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

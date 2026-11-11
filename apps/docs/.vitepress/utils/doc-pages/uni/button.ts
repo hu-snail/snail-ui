@@ -11,7 +11,7 @@ export const buttonDocPage: SnDocPageData = {
   title: 'Button 按钮',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '如需显式 import：' }],
@@ -35,7 +35,7 @@ export const buttonDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Button 按钮.vue',
     meta: 'Vue 3 · <script setup>',
@@ -272,7 +272,7 @@ import { Button } from '@snui/uni';
     ],
   },
   pager: {
-    next: { text: 'sn-icon', link: '/components/uni/icon' },
+    next: { text: 'Icon', link: '/components/uni/icon' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

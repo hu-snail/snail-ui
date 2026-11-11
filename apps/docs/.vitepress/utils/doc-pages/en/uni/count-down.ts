@@ -1,16 +1,16 @@
-/** CountDown · uni-app (uni-app) — English page data. Props from sn-count-down.vue; demos from the en page. */
+/** CountDown · uni-app x (uni-app x) — English page data. Props from sn-count-down.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const countDownDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'CountDown · uni-app' },
+    { text: 'CountDown · uni-app x' },
   ],
-  title: 'CountDown · uni-app',
+  title: 'CountDown · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,10 +45,10 @@ export const countDownDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'CountDown · uni-app.vue',
+    fileLabel: 'CountDown · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -121,7 +121,7 @@ import { CountDown } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'CountDown · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'CountDown · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { CountDown } from '@snui/uni';",
     chipCopy: "import { CountDown } from '@snui/uni';",
     stats: [
@@ -131,8 +131,8 @@ import { CountDown } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-fit-swiper', link: '/en/components/uni/fit-swiper' },
-    next: { text: 'sn-count-to', link: '/en/components/uni/count-to' },
+    prev: { text: 'FitSwiper', link: '/en/components/uni/fit-swiper' },
+    next: { text: 'CountTo', link: '/en/components/uni/count-to' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

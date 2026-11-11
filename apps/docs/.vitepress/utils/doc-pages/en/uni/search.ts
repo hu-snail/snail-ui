@@ -1,22 +1,22 @@
-/** Search · uni-app (uni-app) — English page data. Props from sn-search.vue; demos from the en page. */
+/** Search · uni-app x (uni-app x) — English page data. Props from sn-search.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const searchDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Search · uni-app' },
+    { text: 'Search · uni-app x' },
   ],
-  title: 'Search · uni-app',
+  title: 'Search · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
     {
       t: 'text',
-      s: 'Cross-end search field for uni-app (H5 / WeChat MP / App). easycom auto-registration (',
+      s: 'Cross-end search field for uni-app x (H5 / WeChat MP / App). easycom auto-registration (',
     },
     { t: 'code', s: 'components/sn-search/sn-search.vue' },
     { t: 'text', s: ' → ' },
@@ -47,10 +47,10 @@ export const searchDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Search · uni-app.vue',
+    fileLabel: 'Search · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -188,7 +188,7 @@ import { Search } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Search · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Search · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Search } from '@snui/uni';",
     chipCopy: "import { Search } from '@snui/uni';",
     stats: [
@@ -198,8 +198,8 @@ import { Search } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-input-number', link: '/en/components/uni/input-number' },
-    next: { text: 'sn-checkbox', link: '/en/components/uni/checkbox' },
+    prev: { text: 'InputNumber', link: '/en/components/uni/input-number' },
+    next: { text: 'Checkbox', link: '/en/components/uni/checkbox' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

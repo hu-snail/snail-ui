@@ -1,20 +1,20 @@
-/** Checkbox · uni-app (uni-app) — English page data. Props from sn-checkbox.vue; demos from the en page. */
+/** Checkbox · uni-app x (uni-app x) — English page data. Props from sn-checkbox.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const checkboxDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Checkbox · uni-app' },
+    { text: 'Checkbox · uni-app x' },
   ],
-  title: 'Checkbox · uni-app',
+  title: 'Checkbox · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'The checkbox pair for uni-app (H5 / WeChat MP / App): ' },
+    { t: 'text', s: 'The checkbox pair for uni-app x (H5 / WeChat MP / App): ' },
     { t: 'code', s: 'sn-checkbox-group' },
     { t: 'text', s: ' (parent, owns the array ' },
     { t: 'code', s: 'v-model' },
@@ -45,10 +45,10 @@ export const checkboxDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Checkbox · uni-app.vue',
+    fileLabel: 'Checkbox · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -222,7 +222,7 @@ import { Checkbox } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Checkbox · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Checkbox · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Checkbox } from '@snui/uni';",
     chipCopy: "import { Checkbox } from '@snui/uni';",
     stats: [

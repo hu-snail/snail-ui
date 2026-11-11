@@ -1,16 +1,16 @@
-/** PickerView · uni-app (uni-app) — English page data. Props from sn-picker-view.vue; demos from the en page. */
+/** PickerView · uni-app x (uni-app x) — English page data. Props from sn-picker-view.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const pickerViewDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'PickerView · uni-app' },
+    { text: 'PickerView · uni-app x' },
   ],
-  title: 'PickerView · uni-app',
+  title: 'PickerView · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -35,10 +35,10 @@ export const pickerViewDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'PickerView · uni-app.vue',
+    fileLabel: 'PickerView · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -160,7 +160,7 @@ import { PickerView } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'PickerView · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'PickerView · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { PickerView } from '@snui/uni';",
     chipCopy: "import { PickerView } from '@snui/uni';",
     stats: [
@@ -170,8 +170,8 @@ import { PickerView } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-picker', link: '/en/components/uni/picker' },
-    next: { text: 'sn-select-picker', link: '/en/components/uni/select-picker' },
+    prev: { text: 'Picker', link: '/en/components/uni/picker' },
+    next: { text: 'SelectPicker', link: '/en/components/uni/select-picker' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

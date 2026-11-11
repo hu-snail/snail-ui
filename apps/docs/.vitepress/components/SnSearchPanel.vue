@@ -7,7 +7,7 @@
  * Three rows in a flex column, so the results list can never scroll over the
  * capsule row or the key-hint footer:
  *
- *   head  — Web / uni-app / 全部 capsule, with a sliding thumb (the active
+ *   head  — Web / uni-app x / 全部 capsule, with a sliding thumb (the active
  *           segment's pill is one element that translates + resizes, so the
  *           switch reads as motion instead of a fill swap)
  *   body  — the only scrollable region (`overflow-y: auto`)
@@ -122,10 +122,10 @@ watch([() => props.query, () => lang.value], ([q]) => {
   });
 });
 
-/* ── 端胶囊（Web / uni-app / 全部） ──────────────────────────────────── */
+/* ── 端胶囊（Web / uni-app x / 全部） ──────────────────────────────────── */
 type EndFilter = 'all' | 'web' | 'uni';
 const END_KEYS: readonly EndFilter[] = ['all', 'web', 'uni'] as const;
-const LABELS: Record<EndFilter, string> = { all: '全部', web: 'Web 端', uni: 'uni-app' };
+const LABELS: Record<EndFilter, string> = { all: '全部', web: 'Web 端', uni: 'uni-app x' };
 
 const endFilter = ref<EndFilter>('all');
 const hasComponentHits = computed(() => hits.value.some((h) => h.doc.end !== 'other'));
@@ -367,7 +367,7 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
               :bordered="false"
               :type="hit.doc.end === 'web' ? 'primary' : 'success'"
             >
-              {{ hit.doc.end === 'web' ? 'Web' : 'uni-app' }}
+              {{ hit.doc.end === 'web' ? 'Web' : 'uni-app x' }}
             </SnTag>
             <SnTag size="small" round :bordered="false">{{ hit.doc.category }}</SnTag>
           </span>
@@ -415,10 +415,11 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
   overflow: hidden;
   overscroll-behavior: contain;
   border-radius: 18px;
-  /* 主题色渐变弥散 + 磨砂：结果要看得清，底色只留 10% 通透（不做全透），
-   * 主题色以两团径向光晕弥散在面板内；随主题换色（--vp-c-brand-*）自动跟随。 */
+  /* 底色走站点自定义搜索变量（浅色「浅浅的」#f8f8f8 / 深色
+   * --vp-c-bg-soft，见 custom.css），品牌色仍以两团径向光晕弥散在面板内；
+   * 随主题换色，和输入框保持同一档淡底。 */
   border: 1px solid color-mix(in srgb, var(--vp-c-brand-1) 20%, rgb(255 255 255 / 0.75));
-  background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent);
+  background-color: var(--sn-docs-search-bg, color-mix(in srgb, var(--vp-c-bg) 90%, transparent));
   background-image:
     radial-gradient(
       120% 90% at 100% 0%,
@@ -442,10 +443,11 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
   transform-origin: top left;
 }
 
-/* 深色：同构——品牌光晕提亮，底色仍保 88% 不透明（可读性优先）。 */
+/* 深色：同构——品牌光晕提亮；底色由 --sn-docs-search-bg 的 .dark 覆盖
+ * 提供（--vp-c-bg-soft），可读性优先。 */
 .sn-search-panel--dark {
   border-color: color-mix(in srgb, var(--vp-c-brand-1) 26%, rgb(255 255 255 / 0.12));
-  background-color: color-mix(in srgb, var(--vp-c-bg) 88%, transparent);
+  background-color: var(--sn-docs-search-bg, color-mix(in srgb, var(--vp-c-bg) 88%, transparent));
   background-image:
     radial-gradient(
       120% 90% at 100% 0%,
@@ -536,7 +538,8 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
 /* 列表滚动条：比全站更窄（6px 槽 / 2px 胶囊），贴着面板右侧的圆角内壁，
  * 不压住结果行标签。这里只写 WebKit 伪元素 —— 不给元素加标准属性
  * `scrollbar-width / scrollbar-color`，否则 Chrome 121+ 会忽略伪元素；
- * Firefox 靠 `html` 上继承来的 thin 设置即可。 */
+ * Firefox 靠 `*` 上的 thin 设置即可。与全站一致：胶囊默认透明，
+ * 只有列表真正滚动（.sn-is-scrolling）时才显形。 */
 .sn-search-panel__list::-webkit-scrollbar {
   width: 6px;
 }
@@ -546,13 +549,16 @@ function partsOf(hit: DocsSearchHit): SnippetPart[] {
 .sn-search-panel__list::-webkit-scrollbar-thumb {
   border: 1px solid transparent;
   border-radius: 999px;
-  background-color: color-mix(in srgb, var(--vp-c-text-2) 26%, transparent);
+  background-color: transparent;
   background-clip: content-box;
 }
-.sn-search-panel__list::-webkit-scrollbar-thumb:hover {
+.sn-search-panel__list.sn-is-scrolling::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--vp-c-text-2) 26%, transparent);
+}
+.sn-search-panel__list.sn-is-scrolling::-webkit-scrollbar-thumb:hover {
   background-color: color-mix(in srgb, var(--vp-c-brand-1) 50%, transparent);
 }
-.sn-search-panel--dark .sn-search-panel__list::-webkit-scrollbar-thumb {
+.sn-search-panel--dark .sn-search-panel__list.sn-is-scrolling::-webkit-scrollbar-thumb {
   background-color: color-mix(in srgb, var(--vp-c-text-2) 40%, transparent);
 }
 .sn-search-panel__item {

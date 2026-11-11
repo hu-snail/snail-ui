@@ -22,6 +22,8 @@ user picks a value.
 | disabled  | `boolean`                                                                         | `false`    | Blocks open entirely (click / hover / keyboard).                                                                                                |
 | size      | `'small' \| 'medium' \| 'large'`                                                  | `'medium'` | Row height + font preset (28/34/40px).                                                                                                          |
 | show      | `boolean \| undefined`                                                            | —          | Controlled mode when passed: the panel follows the prop and the component only emits `update:show`. Omit for uncontrolled.                      |
+| showArrow | `boolean`                                                                         | `true`     | Render the built-in SVG chevron-down trigger arrow, injected INSIDE the trigger element (rotates 180° while open). Always off for `trigger="contextMenu"`. |
+| icon      | `Component \| undefined`                                                          | —          | Custom trigger arrow component; replaces the built-in ChevronDownIcon. The `#icon` slot takes precedence over this prop.                    |
 
 ## Events
 
@@ -36,6 +38,7 @@ user picks a value.
 | Slot      | Scope       | Description                                                                                                                                                                                                                                                                                                   |
 | --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `default` | —           | Trigger content. Render a focusable element (e.g. a button) — its keydown bubbles to the wrapper.                                                                                                                                                                                                             |
+| `icon`    | `{ open }`  | Replaces the whole trigger-arrow node (built-in SVG / `icon` prop). `open` lets a custom glyph swap or rotate with the menu state. `showArrow={false}` removes the node entirely, including this slot. |
 | `content` | `{ close }` | Arco `#content` parity — fully custom panel body. When provided it REPLACES the `options` rendering (submenus included) and `close()` dismisses the menu. The option keyboard walk is disabled in this mode (Enter/Space open, Esc + outside-click close); the custom content owns its interactions and a11y. |
 
 ## Icons
@@ -43,6 +46,22 @@ user picks a value.
 `options[].icon` accepts any Vue component (SnMenu `icon` convention) and is
 clamped into a 16px row icon box. Rendering is identical under the click /
 hover / contextMenu triggers.
+
+The **trigger arrow** is a real SVG chevron-down (`ChevronDownIcon`), not a
+`▾` text glyph — AGENTS.md §113 forbids text/emoji glyphs as UI icons. It is
+decorative (`aria-hidden="true"`) and rotates 180° while open.
+
+It is **injected into the default slot's trigger element** (the arrow vnode is
+appended to that element's `default` slot children), so it renders *inside* the
+SnButton border next to the label. A sibling arrow would sit outside the
+button as a visually detached glyph. When the slot has no injectable element
+the arrow falls back to a sibling. Because the injected vnode is created by a
+child render function and does not carry this SFC's `data-v-*` scope id, the
+`.sn-dropdown__arrow*` rules ship in a non-scoped `<style>` block.
+
+Override it with the `icon` prop (any Vue component) or the `#icon` slot;
+disable it with `showArrow={false}`. Right-click (`contextMenu`) triggers
+never render an arrow because they have no visible trigger affordance.
 
 ## Submenu
 
@@ -96,6 +115,7 @@ All styling resolves through `--sn-web-dropdown-*` aliases with
 | `--sn-web-dropdown-option-bg-hover`            | `--sn-web-color-background-subtle`   | Hover/keyboard highlight |
 | `--sn-web-dropdown-option-icon-color`          | `--sn-web-color-text-secondary`      | Row icon tint            |
 | `--sn-web-dropdown-option-arrow-color`         | `--sn-web-color-text-tertiary`       | Submenu chevron          |
+| `--sn-web-dropdown-arrow-color`                | `--sn-web-color-text-tertiary`       | Trigger arrow tint       |
 | `--sn-web-dropdown-divider-color`              | `--sn-web-color-border-subtle`       | Separator fill           |
 | `--sn-web-dropdown-divider-margin`             | `5px 0`                              | Separator spacing        |
 

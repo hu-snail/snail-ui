@@ -1,22 +1,22 @@
-/** Input · uni-app (uni-app) — English page data. Props from sn-input.vue; demos from the en page. */
+/** Input · uni-app x (uni-app x) — English page data. Props from sn-input.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const inputDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Input · uni-app' },
+    { text: 'Input · uni-app x' },
   ],
-  title: 'Input · uni-app',
+  title: 'Input · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
     {
       t: 'text',
-      s: 'Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, tokens drive the surface.',
+      s: 'Cross-end controlled input for uni-app x (H5 / WeChat MP / App). Geometry in rpx, tokens drive the surface.',
     },
   ],
   quickActions: [
@@ -36,10 +36,10 @@ export const inputDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Input · uni-app.vue',
+    fileLabel: 'Input · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -200,7 +200,7 @@ import { Input } from '@snui/uni';
         name: 'placeholderClass',
         type: 'string',
         default: "''",
-        desc: 'Class applied to the placeholder pseudo-element (uni-app MP).',
+        desc: 'Class applied to the placeholder pseudo-element (uni-app x MP).',
       },
       {
         name: 'disabled',
@@ -389,7 +389,7 @@ import { Input } from '@snui/uni';
         name: 'alwaysEmbed',
         type: 'boolean',
         default: 'false',
-        desc: 'Keep the input mounted even when detached (uni-app MP opt-in).',
+        desc: 'Keep the input mounted even when detached (uni-app x MP opt-in).',
       },
       { name: 'cursor', type: 'number', default: '-1', desc: 'Initial caret position.' },
       {
@@ -415,7 +415,7 @@ import { Input } from '@snui/uni';
         name: 'ignoreCompositionEvent',
         type: 'boolean',
         default: 'true',
-        desc: 'Ignore IME composition events. `false` re-enables composition events and lets `input` fire mid-composition (uni-app MP native attribute).',
+        desc: 'Ignore IME composition events. `false` re-enables composition events and lets `input` fire mid-composition (uni-app x MP native attribute).',
       },
       {
         name: 'enableNative',
@@ -428,7 +428,7 @@ import { Input } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Input · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Input · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Input } from '@snui/uni';",
     chipCopy: "import { Input } from '@snui/uni';",
     stats: [
@@ -438,8 +438,8 @@ import { Input } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-form', link: '/en/components/uni/form' },
-    next: { text: 'sn-textarea', link: '/en/components/uni/textarea' },
+    prev: { text: 'Form', link: '/en/components/uni/form' },
+    next: { text: 'Textarea', link: '/en/components/uni/textarea' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

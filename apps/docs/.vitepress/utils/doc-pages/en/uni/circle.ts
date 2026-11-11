@@ -1,16 +1,16 @@
-/** Circle · uni-app (uni-app) — English page data. Props from sn-circle.vue; demos from the en page. */
+/** Circle · uni-app x (uni-app x) — English page data. Props from sn-circle.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const circleDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'Circle · uni-app' },
+    { text: 'Circle · uni-app x' },
   ],
-  title: 'Circle · uni-app',
+  title: 'Circle · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'None — the component is presentational.' }],
@@ -31,10 +31,10 @@ export const circleDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Circle · uni-app.vue',
+    fileLabel: 'Circle · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -142,7 +142,7 @@ import { Circle } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Circle · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Circle · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Circle } from '@snui/uni';",
     chipCopy: "import { Circle } from '@snui/uni';",
     stats: [
@@ -152,8 +152,8 @@ import { Circle } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-progress', link: '/en/components/uni/progress' },
-    next: { text: 'sn-toast', link: '/en/components/uni/toast' },
+    prev: { text: 'Progress', link: '/en/components/uni/progress' },
+    next: { text: 'Toast', link: '/en/components/uni/toast' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

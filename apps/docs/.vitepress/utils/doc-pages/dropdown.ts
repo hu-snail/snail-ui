@@ -7,8 +7,12 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const dropdownDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'Dropdown' }],
-  title: 'Dropdown',
+  crumbs: [
+    { text: '文档首页', link: '/' },
+    { text: '基础组件 Basic' },
+    { text: 'Dropdown 下拉菜单' },
+  ],
+  title: 'Dropdown 下拉菜单',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -44,7 +48,17 @@ import { Dropdown } from '@snui/vue-web';
 </template>`,
   },
   demos: [
-    { name: 'dropdown-web-basic', title: '基础用法', blurb: '点击触发 + options（含 divider）。' },
+    {
+      name: 'dropdown-web-basic',
+      title: '基础用法',
+      blurb: '点击触发 + options（含 divider）；SVG 箭头图标注入在触发器按钮内部。',
+    },
+    {
+      name: 'dropdown-web-arrow',
+      title: '触发器图标（箭头 / 自定义 / 插槽）',
+      blurb:
+        '箭头渲染在按钮边框内部（不是外侧的兄弟节点）；icon 传自定义图标组件，#icon 插槽接管整个图标节点并拿到 open，showArrow=false 隐藏。',
+    },
     { name: 'dropdown-web-hover', title: 'hover 触发', blurb: '300ms 关闭延迟，进面板取消。' },
     { name: 'dropdown-web-placement', title: '位置（placement）', blurb: '六档方位 + 翻转。' },
     {
@@ -97,6 +111,18 @@ import { Dropdown } from '@snui/vue-web';
         default: 'undefined',
         desc: '受控开关（v-model:show）',
       },
+      {
+        name: 'showArrow',
+        type: 'boolean',
+        default: 'true',
+        desc: '是否显示触发器箭头；箭头注入到默认插槽的触发元素内部（因此位于按钮边框内），内置 SVG chevron-down，打开时旋转 180°；`trigger=contextMenu` 时始终不显示，因为右键菜单没有可见触发区。',
+      },
+      {
+        name: 'icon',
+        type: 'Component | undefined',
+        default: 'undefined',
+        desc: '自定义触发器箭头图标组件（任意 Vue 组件，如 lucide 图标），缺省用内置 ChevronDownIcon；`#icon` 插槽优先级更高。',
+      },
     ],
   },
   events: {
@@ -137,7 +163,12 @@ import { Dropdown } from '@snui/vue-web';
       {
         name: 'default',
         props: '—',
-        desc: '触发器内容；请放置可聚焦元素（如按钮），其 keydown 会冒泡到该包装层。',
+        desc: '触发器内容；请放置可聚焦元素（如按钮），其 keydown 会冒泡到该包装层。箭头图标会注入到该元素的默认插槽内，与按钮文字同处一个边框里。',
+      },
+      {
+        name: 'icon',
+        props: '{ open: boolean }',
+        desc: '完全接管触发器箭头节点，覆盖 `icon` prop 与内置箭头；`open` 可用来切换图标或旋转。`showArrow=false` 时整个节点（含本插槽）不渲染。',
       },
       {
         name: 'content',

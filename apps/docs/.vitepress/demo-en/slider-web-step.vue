@@ -22,6 +22,9 @@ const showSteps = ref(true);
 
 <style scoped>
 .demo-col {
+  /* Stage is a centered flex container: without an explicit width this
+     column shrink-to-fits and the slider width:100% collapses. */
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 12px;

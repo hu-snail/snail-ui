@@ -1,16 +1,16 @@
-/** DateStrip · uni-app (uni-app) — English page data. Props from sn-date-strip.vue; demos from the en page. */
+/** DateStrip · uni-app x (uni-app x) — English page data. Props from sn-date-strip.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const dateStripDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'DateStrip · uni-app' },
+    { text: 'DateStrip · uni-app x' },
   ],
-  title: 'DateStrip · uni-app',
+  title: 'DateStrip · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -35,10 +35,10 @@ export const dateStripDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'DateStrip · uni-app.vue',
+    fileLabel: 'DateStrip · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -136,7 +136,7 @@ import { DateStrip } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'DateStrip · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'DateStrip · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { DateStrip } from '@snui/uni';",
     chipCopy: "import { DateStrip } from '@snui/uni';",
     stats: [
@@ -146,8 +146,8 @@ import { DateStrip } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-calendar-view', link: '/en/components/uni/calendar-view' },
-    next: { text: 'sn-datetime-picker', link: '/en/components/uni/datetime-picker' },
+    prev: { text: 'CalendarView', link: '/en/components/uni/calendar-view' },
+    next: { text: 'DatetimePicker', link: '/en/components/uni/datetime-picker' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

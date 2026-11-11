@@ -17,6 +17,17 @@ import type { Component, VNodeChild } from 'vue';
 /** Node identifier — mirrors naive-ui Tree `Key`. */
 export type SnTreeKey = string | number;
 
+/**
+ * Row-density preset (AUI additive — n-tree has no size prop).
+ *
+ * Uses the same five-step scale as SnSelect / SnTreeSelect so a tree can sit
+ * inside a dense toolbar without hand-tuning CSS: the preset drives font-size
+ * and the row height together (`medium` is the n-tree baseline: 14px / 24px,
+ * so the default rendering is unchanged). Indentation stays controlled by the
+ * independent `indent` prop.
+ */
+export type SnTreeSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
+
 /** Connector-line stroke style (AUI additive — `showLine` is the reference prop). */
 export type SnTreeLineStyle = 'solid' | 'dashed';
 

@@ -15,7 +15,7 @@ export const tabsDocPage: SnDocPageData = {
   title: 'Tabs 标签页',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,7 +49,7 @@ export const tabsDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Tabs 标签页.vue',
     meta: 'Vue 3 · <script setup>',
@@ -160,8 +160,8 @@ import { Tabs } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-tabbar', link: '/components/uni/tabbar' },
-    next: { text: 'sn-segmented', link: '/components/uni/segmented' },
+    prev: { text: 'Tabbar', link: '/components/uni/tabbar' },
+    next: { text: 'Segmented', link: '/components/uni/segmented' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -18,6 +18,6 @@ const options = [
 
 <template>
   <SnDropdown trigger="click" :options="options">
-    <SnButton>含子菜单 ▸</SnButton>
+    <SnButton>含子菜单</SnButton>
   </SnDropdown>
 </template>

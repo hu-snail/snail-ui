@@ -121,6 +121,16 @@ provide('sn-collapse-trigger', () => props.trigger);
   display: flex;
   flex-direction: column;
   gap: 4px;
+  /* A collapse group is a block-level container: its width comes from the
+   * parent, never from its own content. As a flex item (docs demo stages
+   * center their children), `width: auto` shrink-to-fits to the longest
+   * currently visible header/body — expanding a long item makes the whole
+   * group wider, collapsing it shrinks the group again. `min-width: 0`
+   * keeps long unbreakable body content from pushing the group past its
+   * parent. */
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Bordered mode — wrap each item in a card-like outline (mirrors

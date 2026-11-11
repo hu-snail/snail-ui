@@ -141,6 +141,12 @@ const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded();
 /* Web side: --sn-web-* aliases only. */
 
 .sn-collapse-item {
+  /* Keep every header aligned to the group width regardless of which item
+   * is expanded. `min-width: 0` + wrapping stop a long body from widening
+   * its own section (and therefore the whole group) in flex containers. */
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   border-radius: 6px;
   background: var(--sn-web-color-background-surface);
 }
@@ -177,6 +183,8 @@ const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded();
 
 .sn-collapse-item__body {
   padding: 0 12px 12px;
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--sn-web-color-text-primary);
 }
 
