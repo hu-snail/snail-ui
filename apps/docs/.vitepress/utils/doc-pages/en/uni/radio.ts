@@ -112,8 +112,9 @@ import { Radio } from '@snui/uni';
     },
     {
       name: 'radio-mp-indicator',
-      title: 'Indicator placement & checked paint',
-      blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
+      title: 'Indicator placement, checked paint & marker shape',
+      blurb:
+        'markerShape check glyph; indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
     },
   ],
   props: {

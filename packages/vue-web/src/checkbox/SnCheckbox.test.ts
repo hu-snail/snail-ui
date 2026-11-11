@@ -505,3 +505,22 @@ describe('SnCheckbox card indicator layouts', () => {
     expect(wrapper.find('.sn-checkbox__box').exists()).toBe(false);
   });
 });
+
+/** AUI additive — markerShape="check" is also available in the basic variant. */
+describe('SnCheckbox basic variant check marker', () => {
+  it('markerShape="check" flags the root and keeps the checkmark visible when checked', () => {
+    const checked = mount(SnCheckbox, {
+      props: { modelValue: true, markerShape: 'check' },
+    });
+    expect(checked.classes()).toContain('sn-checkbox--marker-check');
+    expect(checked.find('.sn-checkbox__checkmark').exists()).toBe(true);
+  });
+
+  it('markerShape="check" renders the box unchecked without a checkmark', () => {
+    const unchecked = mount(SnCheckbox, {
+      props: { modelValue: false, markerShape: 'check' },
+    });
+    expect(unchecked.classes()).toContain('sn-checkbox--marker-check');
+    expect(unchecked.classes()).not.toContain('sn-checkbox--checked');
+  });
+});

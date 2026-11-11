@@ -85,9 +85,9 @@ import { Radio } from '@snui/vue-web';
     },
     {
       name: 'radio-web-inverted',
-      title: 'Inverted marker & label-first',
+      title: 'Marker shapes & label-first',
       blurb:
-        'markerShape="inverted" fills the plate with the theme colour and punches a white dot; labelPlacement="label-first" puts the label first.',
+        'markerShape: inverted fills the plate with a white dot, check shows a check glyph when selected; labelPlacement="label-first" puts the label first.',
     },
     {
       name: 'radio-web-card-indicator',
@@ -178,9 +178,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'base' | 'inverted'`,
+        type: `'base' | 'inverted' | 'check'`,
         default: `'base'`,
-        desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot.`,
+        desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot, check shows a check glyph when selected (card + trailing also derive the check).`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {

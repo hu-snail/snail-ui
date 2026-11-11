@@ -191,9 +191,22 @@ const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(
   () => props.labelPlacement ?? groupInject?.labelPlacement.value ?? 'marker-first',
 );
 
-/** Effective inline marker shape (ring vs inverted fill). */
+/** Effective inline marker shape (base / inverted / check). */
 const effectiveMarkerShape = computed<SnChoiceMarkerShape>(
   () => props.markerShape ?? groupInject?.markerShape.value ?? 'base',
+);
+
+/**
+ * Whether the inline marker paints a check glyph. `markerShape="check"` is an
+ * explicit opt-in for the basic variant; card / trailing markers use a glyph
+ * by default because two adjacent radio dots read as two controls.
+ */
+const isCheckMarker = computed(
+  () =>
+    effectiveMarkerShape.value === 'check' ||
+    (effectiveMarkerShape.value !== 'inverted' &&
+      effectiveVariant.value === 'card' &&
+      effectiveIndicatorPlacement.value === 'trailing'),
 );
 
 /** Corner tick (absolute) vs inline marker. */
@@ -290,6 +303,7 @@ function onBlur(event: FocusEvent): void {
     <span
       v-if="showInlineMarker && effectiveIndicatorPlacement === 'leading'"
       class="sn-radio__dot"
+      :class="{ 'sn-radio__dot--check': isCheckMarker }"
       aria-hidden="true"
     />
 
@@ -306,7 +320,7 @@ function onBlur(event: FocusEvent): void {
     <span
       v-if="showInlineMarker && effectiveIndicatorPlacement === 'trailing'"
       class="sn-radio__dot"
-      :class="{ 'sn-radio__dot--check': effectiveVariant === 'card' }"
+      :class="{ 'sn-radio__dot--check': isCheckMarker }"
       aria-hidden="true"
     />
 

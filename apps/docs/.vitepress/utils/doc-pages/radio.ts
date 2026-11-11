@@ -85,9 +85,9 @@ import { Radio } from '@snui/vue-web';
     },
     {
       name: 'radio-web-inverted',
-      title: '反转选中态与标题在前',
+      title: '标记形态与标题在前',
       blurb:
-        'markerShape="inverted" 选中为主题色实心 + 白点；labelPlacement="label-first" 标题在前、选择在后。',
+        'markerShape：inverted 反转实心 + 白点、check 选中显示勾图标；labelPlacement="label-first" 标题在前、选择在后。',
     },
     {
       name: 'radio-web-card-indicator',
@@ -163,9 +163,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'base' | 'inverted'`,
+        type: `'base' | 'inverted' | 'check'`,
         default: `'base'`,
-        desc: `行内标记形态；inverted 为反转态（整盘主题色实心 + 白点）。`,
+        desc: `行内标记形态；inverted 为反转态（整盘主题色实心 + 白点），check 选中显示勾图标（card + trailing 也自动用勾）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {

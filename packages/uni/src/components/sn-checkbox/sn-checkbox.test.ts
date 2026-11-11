@@ -608,3 +608,13 @@ describe('sn-checkbox additive variants', () => {
     expect(wrapper.find('.sn-checkbox').classes()).toContain('sn-checkbox--indicator-trailing');
   });
 });
+
+/** AUI additive — markerShape="check" is also available in the basic variant.
+ * (The uni checkbox check glyph is already the default checked look.) */
+describe('sn-checkbox basic variant check marker', () => {
+  it('markerShape="check" flags the root and keeps the check glyph when checked', () => {
+    const wrapper = mount(SnCheckbox, { props: { modelValue: true, markerShape: 'check' } });
+    expect(wrapper.classes()).toContain('sn-checkbox--marker-check');
+    expect(wrapper.find('.sn-checkbox__icon').exists()).toBe(true);
+  });
+});

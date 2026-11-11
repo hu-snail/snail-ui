@@ -189,9 +189,9 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'base' | 'inverted'`,
+        type: `'base' | 'inverted' | 'check'`,
         default: `'base'`,
-        desc: `Inline marker shape; inverted keeps the surface fill while the tick and border carry the theme colour.`,
+        desc: `Inline marker shape; inverted keeps the surface fill while the tick and border carry the theme colour, check shows a check glyph when selected (visually identical to the base checkbox).`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {

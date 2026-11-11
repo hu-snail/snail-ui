@@ -61,7 +61,7 @@ export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
  *   - `inverted` — the whole plate fills with the theme colour and the inner
  *                  dot is punched out in the surface colour (反转态)
  */
-export type SnChoiceMarkerShape = 'base' | 'inverted';
+export type SnChoiceMarkerShape = 'base' | 'inverted' | 'check';
 
 /** One registered child, as seen by the group (`toggleAll` enumeration). */
 export interface SnCheckboxChild {

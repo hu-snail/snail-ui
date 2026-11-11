@@ -201,7 +201,16 @@ const showInlineMarker = computed(
     effectiveIndicatorPlacement.value === 'trailing',
 );
 
-/** Tick glyph for the `button` shape (never emoji, §113). */
+/** Check-glyph marker: explicit `check`, or card + trailing (right-centred check). */
+const isCheckMarker = computed(
+  () =>
+    effectiveMarkerShape.value === 'check' ||
+    (effectiveMarkerShape.value !== 'inverted' &&
+      effectiveVariant.value === 'card' &&
+      effectiveIndicatorPlacement.value === 'trailing'),
+);
+
+/** Tick glyph for the `button` / check marker shapes (never emoji, §113). */
 const checkIcon = markRaw(CheckIcon);
 
 /**
@@ -276,8 +285,12 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         :style="markerStyle"
         aria-hidden="true"
       >
-        <view v-if="isChecked" class="sn-radio__dot">
-          <SnIcon v-if="effectiveType === 'button'" :icon="checkIcon" :size="20" />
+        <view
+          v-if="isChecked"
+          class="sn-radio__dot"
+          :class="{ 'sn-radio__dot--check': isCheckMarker }"
+        >
+          <SnIcon v-if="effectiveType === 'button' || isCheckMarker" :icon="checkIcon" :size="20" />
         </view>
       </view>
 
@@ -296,8 +309,12 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         :style="markerStyle"
         aria-hidden="true"
       >
-        <view v-if="isChecked" class="sn-radio__dot">
-          <SnIcon v-if="effectiveType === 'button'" :icon="checkIcon" :size="20" />
+        <view
+          v-if="isChecked"
+          class="sn-radio__dot"
+          :class="{ 'sn-radio__dot--check': isCheckMarker }"
+        >
+          <SnIcon v-if="effectiveType === 'button' || isCheckMarker" :icon="checkIcon" :size="20" />
         </view>
       </view>
 
@@ -564,5 +581,15 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 .sn-radio--marker-inverted.sn-radio--checked .sn-radio__marker {
   border-color: var(--sn-mp-color-action-primary);
   background-color: var(--sn-mp-color-action-primary);
+}
+
+/* check: the checked plate carries a check glyph instead of the knob dot —
+ * same look as the web `markerShape="check"` and the card trailing layout.
+ * The plate itself is already filled by `.sn-radio__marker--checked`. */
+.sn-radio__dot--check {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  color: var(--sn-mp-color-control-knob);
 }
 </style>

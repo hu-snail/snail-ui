@@ -47,7 +47,7 @@ export type SnCheckboxLabelPlacement = 'marker-first' | 'label-first';
  * outlined box; `inverted` fills the box with the theme colour and punches
  * the tick out in the surface colour (反转态).
  */
-export type SnCheckboxMarkerShape = 'base' | 'inverted';
+export type SnCheckboxMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Shape accepted by `SnCheckboxGroup`'s `options` prop entries. */
 export interface SnCheckboxGroupOption {

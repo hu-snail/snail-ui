@@ -720,4 +720,19 @@ function onChange(event: Event): void {
 .sn-checkbox--marker-inverted.sn-checkbox--checked .sn-checkbox__label {
   color: var(--sn-web-color-action-primary);
 }
+
+/* `markerShape="check"` — explicit alias for the checkbox default (filled
+ * plate + white tick). Declared so the option is real rather than a silent
+ * no-op, and so a group-level `inverted` can be overridden per item. */
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__box {
+  border-color: var(--sn-web-color-action-primary);
+  background-color: var(--sn-web-color-action-primary);
+  box-shadow: none;
+}
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__checkmark {
+  border-color: var(--sn-web-color-text-on-primary, #fff);
+}
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__label {
+  color: inherit;
+}
 </style>

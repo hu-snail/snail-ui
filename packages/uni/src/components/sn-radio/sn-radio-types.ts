@@ -65,7 +65,7 @@ export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
  *   - `inverted` — the whole plate fills with the theme colour and the inner
  *                  dot is punched out in the surface colour (反转态)
  */
-export type SnChoiceMarkerShape = 'base' | 'inverted';
+export type SnChoiceMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Context injected by `SnRadioGroup` into child `SnRadio` instances. */
 export interface SnRadioGroupContext {

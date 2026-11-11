@@ -335,7 +335,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '复选框',
         titleEn: 'Checkbox',
         desc: '多选控件',
-        count: 9,
+        count: 11,
       },
       {
         key: 'code-input',
@@ -446,7 +446,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单选框',
         titleEn: 'Radio',
         desc: '单选控件',
-        count: 7,
+        count: 10,
       },
       {
         key: 'rate',

@@ -112,8 +112,8 @@ import { Radio } from '@snui/uni';
     },
     {
       name: 'radio-mp-indicator',
-      title: '指示器位置与选中态',
-      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+      title: '指示器位置、选中态与标记形态',
+      blurb: 'markerShape check 勾图标；indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
     },
   ],
   props: {

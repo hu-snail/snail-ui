@@ -177,9 +177,9 @@ import { Checkbox } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'base' | 'inverted'`,
+        type: `'base' | 'inverted' | 'check'`,
         default: `'base'`,
-        desc: `行内标记形态；inverted 为反转态（主题色描边 + 主题色勾，底色保持表面色）。`,
+        desc: `行内标记形态；inverted 为反转态（主题色描边 + 主题色勾，底色保持表面色），check 选中显示勾图标（基础形态默认即勾，二者视觉一致）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {

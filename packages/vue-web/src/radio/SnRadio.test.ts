@@ -616,3 +616,37 @@ describe('SnRadio card indicator layouts', () => {
     expect(wrapper.find('.sn-radio__dot').exists()).toBe(true);
   });
 });
+
+/** AUI additive — markerShape="check" is also available in the basic variant. */
+describe('SnRadio basic variant check marker', () => {
+  it('markerShape="check" renders the dot as a check glyph when checked', () => {
+    const checked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'a', markerShape: 'check' },
+    });
+    expect(checked.classes()).toContain('sn-radio--marker-check');
+    expect(checked.find('.sn-radio__dot--check').exists()).toBe(true);
+    expect(checked.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('markerShape="check" keeps the base ring unchecked', () => {
+    const unchecked = mount(SnRadio, {
+      props: { checkedValue: 'a', modelValue: 'b', markerShape: 'check' },
+    });
+    expect(unchecked.classes()).not.toContain('sn-radio--checked');
+    expect(unchecked.find('.sn-radio__dot').exists()).toBe(true);
+  });
+
+  it('markerShape="inverted" still takes precedence over the card trailing check', () => {
+    const wrapper = mount(SnRadio, {
+      props: {
+        checkedValue: 'a',
+        modelValue: 'a',
+        variant: 'card',
+        indicatorPlacement: 'trailing',
+        markerShape: 'inverted',
+      },
+    });
+    expect(wrapper.classes()).toContain('sn-radio--marker-inverted');
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(false);
+  });
+});

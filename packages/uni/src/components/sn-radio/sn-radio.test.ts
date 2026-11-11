@@ -493,3 +493,39 @@ describe('sn-radio additive variants', () => {
     expect(wrapper.find('.sn-radio__card .sn-radio__label').exists()).toBe(true);
   });
 });
+
+/** AUI additive — markerShape="check" is also available in the basic variant. */
+describe('sn-radio basic variant check marker', () => {
+  function mountInGroup(groupProps: Record<string, unknown>, radioProps: Record<string, unknown>) {
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnRadioGroup, { modelValue: 'a', ...groupProps }, () => [
+            h(SnRadio, { value: 'a', ...radioProps }, () => 'A'),
+          ]);
+      },
+    });
+    return mount(Host);
+  }
+
+  it('markerShape="check" renders the dot as a check glyph when checked', () => {
+    const wrapper = mountInGroup({}, { markerShape: 'check' });
+    const radio = wrapper.find('.sn-radio');
+    expect(radio.classes()).toContain('sn-radio--marker-check');
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(true);
+    expect(wrapper.find('.sn-radio__tick').exists()).toBe(false);
+  });
+
+  it('card + trailing derives the check glyph without markerShape="check"', () => {
+    const wrapper = mountInGroup({ variant: 'card', indicatorPlacement: 'trailing' }, {});
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(true);
+  });
+
+  it('markerShape="inverted" keeps the knob dot on card trailing', () => {
+    const wrapper = mountInGroup(
+      { variant: 'card', indicatorPlacement: 'trailing' },
+      { markerShape: 'inverted' },
+    );
+    expect(wrapper.find('.sn-radio__dot--check').exists()).toBe(false);
+  });
+});

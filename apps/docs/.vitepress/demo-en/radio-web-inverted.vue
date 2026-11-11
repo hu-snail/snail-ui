@@ -1,9 +1,10 @@
 <script setup lang="ts">
-/** Demo: SnRadio — inline forms: 反转选中态 + 标题在前（labelPlacement）。 */
+/** Demo: SnRadio — inline forms: 标记形态（inverted / check）+ 标题在前（labelPlacement）。 */
 import { ref } from 'vue';
 import { SnRadio, SnRadioGroup } from '@snui/vue-web';
 
 const inverted = ref('a');
+const check = ref('a');
 const labelFirst = ref('a');
 const invertedLabelFirst = ref('a');
 </script>
@@ -13,6 +14,14 @@ const invertedLabelFirst = ref('a');
     <section>
       <h4>markerShape="inverted"(checked = solid theme fill + white dot)</h4>
       <SnRadioGroup v-model="inverted" marker-shape="inverted">
+        <SnRadio checked-value="a" label="Option" />
+        <SnRadio checked-value="b" label="Option B" />
+      </SnRadioGroup>
+    </section>
+
+    <section>
+      <h4>markerShape="check"(checked = solid theme fill + white check glyph)</h4>
+      <SnRadioGroup v-model="check" marker-shape="check">
         <SnRadio checked-value="a" label="Option" />
         <SnRadio checked-value="b" label="Option B" />
       </SnRadioGroup>

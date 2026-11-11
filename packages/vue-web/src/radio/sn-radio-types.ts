@@ -60,7 +60,7 @@ export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
  *   - `inverted` — reversed fill: the plate takes the theme colour and the
  *                  inner dot / tick is punched out in the surface colour
  */
-export type SnChoiceMarkerShape = 'base' | 'inverted';
+export type SnChoiceMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Option shape for the group's `options` prop (naive-ui parity). */
 export interface SnRadioOption {
