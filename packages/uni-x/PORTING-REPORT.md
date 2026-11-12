@@ -12,7 +12,7 @@
 | import-rewrite | 83 |
 | defineSlots-stripped | 69 |
 | unsupported-property | 32 |
-| patch | 13 |
+| patch | 15 |
 | template-bare-text | 12 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
@@ -263,7 +263,7 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 5 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 6 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-fit-swiper/sn-fit-swiper.uvue
 
@@ -316,7 +316,9 @@
 
 ### sn-icon/sn-icon.uvue
 
-- patch applied — `patch`: IconData rendering moved to <image> + SVG data URL (no inline <svg> on App)
+- patch applied — `patch`: icon color resolution needs getCurrentInstance / nextTick / onMounted
+- patch applied — `patch`: IconData rendering moved to <image> + SVG data URL; stroke color resolved through computedStyle (currentColor / var() cannot cross the image boundary)
+- patch applied — `patch`: root node carries a per-instance class for the computedStyle query
 - patch applied — `patch`: remote (iconify / provider URL) branch retargeted to <image :src>
 - patch applied — `patch`: <svg> block replaced by <image :src="iconDataUrl">
 - patch applied — `patch`: svg sizing rule retargeted to the <image> element

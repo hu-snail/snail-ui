@@ -20,6 +20,11 @@ export interface SourcePatch {
 export const PATCHES: Record<string, SourcePatch[]> = {
   'sn-icon/sn-icon.vue': [
     {
+      anchor: `import { computed, onBeforeUnmount, ref, watch } from 'vue';`,
+      replacement: `import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';`,
+      note: 'icon color resolution needs getCurrentInstance / nextTick / onMounted',
+    },
+    {
       anchor: `  return props.customStyle;
 });
 </script>`,
@@ -28,19 +33,120 @@ export const PATCHES: Record<string, SourcePatch[]> = {
 
 /**
  * uni-app x App has no inline <svg> element: IconData renders through an
- * <image> with an SVG data URL instead. CSS currentColor cannot reach the
- * rasterized document, so the stroke falls back to a fixed ink color.
+ * <image> with an SVG data URL instead. The rasterized document is isolated
+ * from page CSS — a currentColor or var(--token) stroke cannot cross the
+ * image boundary (a literal var() is invalid inside an SVG document and
+ * falls back to black ink). So the effective color is resolved before the
+ * data URL is built:
  *
- * displayIcon covers every IconData source: object icon, string icon
- * resolved from the registry / built-in catalog, and async provider data.
+ *   - concrete colors (hex / rgb / hsl / a few keywords) bake verbatim;
+ *   - currentColor / var(--*) / anything else is applied to the wrapper
+ *     (boxStyle already sets inline color for non-currentColor values) and
+ *     read back from the native layout via SelectorQuery computedStyle
+ *     (uni-app x 4.25+) — skins, .dark flips and theme vars all resolve
+ *     through the real cascade this way. Duck-typed host shape follows
+ *     sn-fit-swiper (the established uni-x SelectorQuery pattern).
+ *
+ * Until a non-concrete color resolves, the glyph renders blank rather than
+ * a wrong-color glyph. Re-resolution rides on mount + color changes; a
+ * theme flip after mount re-tints on the next icon prop change (known
+ * limitation, tracked in PORTING-REPORT).
+ */
+const iconInstance = getCurrentInstance()
+const iconUid: number = iconInstance?.uid ?? 0
+const resolvedIconColor = ref('')
+let colorSeq = 0
+
+interface IconColorNode {
+  color?: string
+  computedStyle?: { color?: string } | null
+}
+interface IconFieldsOptions {
+  computedStyle?: string[]
+}
+interface IconColorQuery {
+  in(context?: unknown): IconColorQuery
+  select(selector: string): IconColorQuery
+  fields(
+    options: IconFieldsOptions,
+    callback: (nodes: Array<IconColorNode | null> | null) => void,
+  ): IconColorQuery
+  exec(): void
+}
+interface IconUniHost {
+  createSelectorQuery?: () => IconColorQuery
+}
+
+/** A color the SVG data URL can take verbatim — no cascade involvement. */
+function isConcreteIconColor(value: string): boolean {
+  return /^#[0-9a-fA-F]{3,8}$|^rgba?\\(|^hsla?\\(|^(transparent|white|black)$/.test(value)
+}
+
+/** Resolve the effective stroke color. One retry: the first query can
+ * outrun first layout on slow mounts, and a blank glyph is worse than a
+ * late one. */
+function resolveIconColor(retried = false): void {
+  const raw: string = props.color
+  if (isConcreteIconColor(raw)) {
+    resolvedIconColor.value = raw
+    return
+  }
+  const seq = ++colorSeq
+  const host = (globalThis as { uni?: IconUniHost }).uni
+  if (host?.createSelectorQuery === undefined || iconInstance === null) {
+    // No query layer (old runtime / detached instance): stay blank rather
+    // than paint the legacy fixed ink over whatever the context is.
+    resolvedIconColor.value = ''
+    return
+  }
+  nextTick(() => {
+    if (seq !== colorSeq) return
+    try {
+      host
+        .createSelectorQuery()
+        .in(iconInstance?.proxy)
+        .select(\`.sn-icon--u\${iconUid}\`)
+        .fields({ computedStyle: ['color'] }, (nodes) => {
+          if (seq !== colorSeq) return
+          const node = nodes !== null && nodes.length > 0 ? nodes[0] : null
+          const color: string = node?.color ?? node?.computedStyle?.color ?? ''
+          if (color !== '' && isConcreteIconColor(color)) {
+            resolvedIconColor.value = color
+          } else if (!retried) {
+            resolveIconColor(true)
+          } else {
+            console.warn(
+              '[sn-icon] ICON_COLOR_UNRESOLVED: computedStyle("color") returned no usable value.' +
+                ' The glyph renders blank instead of a wrong color.',
+            )
+            resolvedIconColor.value = ''
+          }
+        })
+        .exec()
+    } catch {
+      // A mis-shaped host must degrade to blank, never throw.
+      if (seq === colorSeq) resolvedIconColor.value = ''
+    }
+  })
+}
+
+onMounted(() => resolveIconColor())
+watch(
+  () => props.color,
+  () => resolveIconColor(),
+)
+
+/**
+ * IconData → SVG data URL for the App-side <image>. Material-style solid
+ * glyphs (render: 'fill') must be filled, not stroked: a stroke would trace
+ * the outline into a hollow double line.
  */
 const iconDataUrl = computed<string | undefined>(() => {
   const icon = displayIcon.value
   if (icon === null) return undefined
+  const stroke: string = resolvedIconColor.value
+  if (stroke === '') return undefined
   const vb: string = icon.viewBox ?? '0 0 24 24'
-  const stroke: string = props.color === 'currentColor' ? '#1a1a1a' : props.color
-  // Material-style solid glyphs (render: 'fill') must be filled, not stroked:
-  // a stroke would trace the outline into a hollow double line.
   const isFill: boolean = icon.render === 'fill'
   const body: string = icon.paths
     .map((d) =>
@@ -53,7 +159,16 @@ const iconDataUrl = computed<string | undefined>(() => {
   return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
 })
 </script>`,
-      note: 'IconData rendering moved to <image> + SVG data URL (no inline <svg> on App)',
+      note: 'IconData rendering moved to <image> + SVG data URL; stroke color resolved through computedStyle (currentColor / var() cannot cross the image boundary)',
+    },
+    {
+      anchor: `  <view
+    class="sn-icon"
+    :class="[customClass]"`,
+      replacement: `  <view
+    class="sn-icon"
+    :class="[customClass, \`sn-icon--u\${iconUid}\`]"`,
+      note: 'root node carries a per-instance class for the computedStyle query',
     },
     {
       anchor: `    <view v-else-if="remoteSrc" class="sn-icon__remote" :style="remoteStyle" />`,
