@@ -37,6 +37,19 @@
  * Nothing is observed or re-measured in the background, so no resource leaks
  * (§41).
  *
+ * ## Why the action areas carry a hidden transform when the row is closed
+ *
+ * The closed row used to rely on the content layer (opaque background +
+ * `z-index`) painting over the action areas. That premise does not hold on
+ * uni-app x App: native rounding / stacking leaves a 1–2px sliver of the
+ * action area leaking at the row edges with the row fully closed (device
+ * report). While nothing is exposed — no drag, no settle animation, no open
+ * side — the areas are therefore translated fully outside the root's
+ * `overflow: hidden` clip, which makes the closed state deterministic and
+ * independent of paint order on every end. The offset is a percentage of the
+ * area's own width so a failed / fallback measurement can never leave part of
+ * it inside the row.
+ *
  * ## Documented divergences from wd-swipe-action
  *
  *   - A row with neither the `left` nor the `right` slot cannot be swiped: the
@@ -404,8 +417,31 @@ const offset = computed(() => {
   return 0;
 });
 
-/** Content offset (`1 design px = 2rpx`). */
-const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`);
+/** Content offset in px. The measured open distance and the touch deltas are
+ * both px, so the value is applied as-is — the previous `* 2rpx` conversion
+ * assumed a 375px viewport and over-slid the row on wider screens (content
+ * clipped while the action area was already fully visible). */
+const contentStyle = computed(() => `transform: translateX(${offset.value}px)`);
+
+/**
+ * The action areas must sit inside the row while a gesture tracks, a settle
+ * transition runs, or a side is open — otherwise (the closed rest state) they
+ * are translated out of the root clip. See the header note for why the closed
+ * state may not rely on the content layer covering them.
+ */
+const isActionsExposed = computed(
+  () => isDragging.value || isAnimating.value || isOpen.value,
+);
+
+/** Left area parked outside the left edge; `undefined` restores its CSS spot. */
+const leftActionsStyle = computed(() =>
+  isActionsExposed.value ? undefined : 'transform: translateX(-100%)',
+);
+
+/** Right area parked outside the right edge; `undefined` restores its CSS spot. */
+const rightActionsStyle = computed(() =>
+  isActionsExposed.value ? undefined : 'transform: translateX(100%)',
+);
 </script>
 
 <template>
@@ -422,6 +458,7 @@ const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rp
       v-if="hasLeft"
       ref="leftActionsRef"
       class="sn-swipe-action__actions sn-swipe-action__actions--left"
+      :style="leftActionsStyle"
     >
       <slot name="left" />
     </view>
@@ -440,6 +477,7 @@ const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rp
       v-if="hasRight"
       ref="rightActionsRef"
       class="sn-swipe-action__actions sn-swipe-action__actions--right"
+      :style="rightActionsStyle"
     >
       <slot name="right" />
     </view>
@@ -488,7 +526,6 @@ const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rp
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
-  will-change: transform;
 }
 
 /* The transition only runs while settling — during a drag the row must follow
