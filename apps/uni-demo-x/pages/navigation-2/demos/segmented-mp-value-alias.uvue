@@ -9,6 +9,7 @@
  *
  * 迁移时两种写法任选；新代码建议用 `v-model`。
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const options = [
   { value: 'day', label: '日' },
   { value: 'week', label: '周' },

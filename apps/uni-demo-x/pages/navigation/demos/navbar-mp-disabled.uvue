@@ -4,6 +4,7 @@
  *
  * 禁用侧按钮点击无效（只 stopPropagation，不 emit `click-left` / `click-right`）。
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 const lastAction = ref('—');
 
 function report(label: string): void {

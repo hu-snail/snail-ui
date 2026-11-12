@@ -3,6 +3,7 @@
  * Demo: sn-picker — sheet behavior: closeOnClickModal scrim tap / zIndex stacking /
  * safeAreaInsetBottom / rootPortal teleport / customClass, customStyle sheet chrome.
  */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['Apple', 'Banana', 'Cherry', 'Watermelon', 'Grape'];
 
 const sheet = ref<Array<string | number>>(['Cherry']);

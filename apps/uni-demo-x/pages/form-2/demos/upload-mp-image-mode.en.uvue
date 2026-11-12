@@ -4,6 +4,7 @@
  * thumbnail's `<image mode>` (`aspectFit` shows the whole image, `aspectFill`
  * crops to fill, `widthFix` sizes by width).
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const photos = ref<UploadFileItem[]>([

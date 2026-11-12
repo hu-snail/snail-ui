@@ -3,6 +3,7 @@
  * Demo: sn-notice-bar (uni-end) — vertical one-line-at-a-time rotation.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notice-bar from its SFC source.
  */
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
 const lines = [
   '第一条公告：本周五有线下分享会',
   '第二条公告：新版 App 已上线',

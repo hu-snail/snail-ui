@@ -4,6 +4,8 @@
  *
  * 选项的 value / 文案 / 子级 / 提示字段名完全可配。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 /** 自定义字段名：id / name / items，靠 *-key 映射；行内提示用 tipKey。 */
 const tree = [
   {

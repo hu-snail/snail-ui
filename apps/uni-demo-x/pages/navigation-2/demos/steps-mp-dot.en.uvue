@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-steps — English shadow of steps-mp-dot. */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

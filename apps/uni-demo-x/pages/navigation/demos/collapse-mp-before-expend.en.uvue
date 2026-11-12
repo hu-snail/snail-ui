@@ -4,6 +4,7 @@
  *
  * `before-expend` runs before expanding (receives `name`); returning `false` vetoes it.
  */
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 const attempts = ref(0);

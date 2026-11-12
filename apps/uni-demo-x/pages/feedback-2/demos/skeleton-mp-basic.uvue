@@ -3,6 +3,7 @@
  * Demo: sn-skeleton (uni-end) — the four theme presets.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-skeleton from its SFC source.
  */
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

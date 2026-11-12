@@ -5,6 +5,7 @@
  * `immediate-change` commits continuously while dragging (not only on release),
  * so `change` can drive live updates.
  */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const seconds = ['10s', '30s', '1min', '5min'];
 const value = ref<Array<string | number>>(['30s']);
 const changes = ref(0);

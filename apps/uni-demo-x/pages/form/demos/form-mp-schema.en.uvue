@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — form schema: field name + label + required flag stored on the form context; validation still runs on rules. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const schemaForm = reactive({ name: '', phone: '' });

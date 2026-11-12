@@ -7,6 +7,7 @@
  * `--sn-code-input-*` 变量，`custom-style` 追加在其后，因此可以继续覆盖
  * 其它属性。
  */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const pin = ref('123');
 const framed = ref('4567');
 </script>

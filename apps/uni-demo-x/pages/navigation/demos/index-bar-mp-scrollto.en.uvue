@@ -12,6 +12,7 @@
  * In the preview `sn-demo--index` makes the demo full-bleed (see the PhoneFrame
  * full-bleed rules).
  */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
 const barRef = ref<InstanceType<typeof SnIndexBar> | null>(null);
 

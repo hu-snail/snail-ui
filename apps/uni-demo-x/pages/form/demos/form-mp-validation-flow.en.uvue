@@ -4,7 +4,10 @@
  * form-level rules, async rules are observable while pending, and the final
  * result is reported through the `@validate` error map.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 type FormRef = InstanceType<typeof SnForm>;

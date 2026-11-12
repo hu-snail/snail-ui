@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — field mapping: valueKey / labelKey / childrenKey point the component at custom field names. */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 /** Custom key names — id / name / sub, mapped through the *-key props. */
 const tree = [
   {

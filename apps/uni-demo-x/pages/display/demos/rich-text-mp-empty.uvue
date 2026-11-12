@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 空状态插槽。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
 const emptyContent = ref('<p><strong>周末来信</strong></p>');
 
 function clearContent(): void {

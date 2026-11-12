@@ -12,6 +12,7 @@
  * 预览环境没有 uni 运行时，点选择瓦片只会走 `chooseerror`，所以
  * beforeChoose / beforeUpload 的计数停在 0 —— 它们要真实选择器才会跑。
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const lockedUid = 1;

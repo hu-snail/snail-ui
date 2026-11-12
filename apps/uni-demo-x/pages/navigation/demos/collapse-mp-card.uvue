@@ -10,6 +10,7 @@
  * - 单个面板也可用 `card` 脱离卡片容器单独成卡
  */
 import { CreditCard, FileText, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 const single = ref([]);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — 主题：theme="capsule" 加粗轨道。 */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const capsule = ref(60);
 </script>
 <template>

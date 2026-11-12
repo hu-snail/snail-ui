@@ -4,6 +4,7 @@
  * 中央全尺寸圆角卡，两侧卡片经 previous/next-margin 露出并按 coverflow-scale 缩小，
  * 切换由 400ms ease-out transform 过渡；字幕为弥散阴影 scrim，非黑块。
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** 露出效果演示（picsum 按种子稳定取图）。 */
 const peekSlides = [
   { value: 'https://picsum.photos/seed/snui-peek-1/640/420', text: '北欧绿植美学空间' },

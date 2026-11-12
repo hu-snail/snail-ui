@@ -3,6 +3,7 @@
  * Demo: sn-watermark (uni-end) — image watermark (`image` / `imageWidth` / `imageHeight`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-watermark from its SFC source.
  */
+import SnWatermark from '@snui/uni-x/components/sn-watermark/sn-watermark.uvue';
 const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
 </script>
 <template>

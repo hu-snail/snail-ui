@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 输入合成（ignoreCompositionEvent）：ignoreCompositionEvent=false 时合成期间也触发 input。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const composing = ref('');
 </script>
 <template>

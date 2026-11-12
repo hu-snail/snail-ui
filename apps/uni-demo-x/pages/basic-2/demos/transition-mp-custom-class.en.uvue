@@ -17,6 +17,8 @@
  * `custom-class` stays on the root node; `custom-style` is appended to the root
  * inline style.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 const shown = ref(true);
 const phaseLog = ref<string[]>([]);
 

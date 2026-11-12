@@ -3,6 +3,8 @@
  * Demo: sn-skeleton (uni-end) — gradient / flashed shimmer + loading toggle.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-skeleton from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
 const loading = ref(true);
 </script>
 <template>

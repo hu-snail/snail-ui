@@ -2,6 +2,7 @@
 /**
  * Demo: sn-segmented — English shadow of segmented-mp-vibrate.
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const size = ref('md');
 const sizeOptions = [
   { value: 'sm', label: 'Small' },

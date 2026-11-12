@@ -7,10 +7,10 @@
  *        ↓  本脚本：@snui/uni-x 转换管线 + demo 专属 import 重写
  *   apps/uni-demo-x/{pages,components,state,templates}/**  （.uvue + TS，可重复生成）
  *
- * 组件消费走 easycom（pages.json 指向 @snui/uni-x/components/...），
- * 场景里的 `import SnXxx from '@snui/uni-src/...vue'` 会被整体删除；
- * 配对子组件（sn-tabbar-item 等，easycom 正则覆盖不到）与工具/类型/图标集
- * 导入重映射到 @snui/uni-x 显式路径。手写文件只有 manifest.json /
+ * 组件消费走显式 .uvue 导入（局部绑定 + 场景源 PascalCase 标签，uvue 编译器
+ * 原生路径；easycom 正则匹配不了 PascalCase 标签，web 编译实测 resolve 失败，
+ * pages.json 的 easycom 配置仅作 kebab 标签兜底）。工具/类型/图标集导入
+ * 重映射到 @snui/uni-x 显式路径。手写文件只有 manifest.json /
  * main.uts / package.json / README.md / 本脚本。
  *
  * 运行：pnpm -F @snui/uni-demo-x gen（需先 pnpm -F @snui/uni-x build）。
@@ -62,7 +62,6 @@ const VUE_AUTO_IMPORTS = new Set([
 const stats = {
   uvue: 0,
   ts: 0,
-  easycomDropped: 0,
   uniXRemapped: 0,
   typeImportsRemapped: 0,
   templatesMapped: 0,
@@ -81,8 +80,8 @@ function relFromOut(file) {
  */
 function rewriteImports(code, fromFile, outDir) {
   // 0. 组合导入（default + 纯 type 绑定，如 `import SnIcon, { type IconData } from
-  //    .../sn-icon.vue`）拆成两条源形态行 —— 值部分交给规则 1（easycom 删除 /
-  //    显式 .uvue），类型部分交给规则 2（types 实体重映射）。花括号里出现
+  //    .../sn-icon.vue`）拆成两条源形态行 —— 值部分交给规则 1（显式 .uvue 导入），
+  //    类型部分交给规则 2（types 实体重映射）。花括号里出现
   //    非 type 绑定时 fail loud：uni-x 端组件文件没有值命名导出。
   code = code.replace(
     /^import\s+(\w+)\s*,\s*\{([^}]*)\}\s*from\s+'(@snui\/(?:uni-src|uni)\/components\/sn-[a-z0-9-]+\/sn-[a-z0-9-]+)\.vue';\s*\n/gm,
@@ -101,15 +100,12 @@ function rewriteImports(code, fromFile, outDir) {
       );
     },
   );
-  // 1. sn-* 组件导入：目录名 == 组件名（easycom 可解析）→ 删除；
-  //    配对子组件（sn-tabbar-item 等，easycom 正则覆盖不到）→ 显式 .uvue 导入。
+  // 1. sn-* 组件导入 → 显式 .uvue 导入（局部绑定 + PascalCase 标签是 uvue
+  //    编译器原生路径）。不能删除走 easycom：场景标签是 PascalCase，easycom
+  //    正则 ^sn- 大小写敏感匹配不到（uni-demo-x web 编译实测 resolve 失败）。
   code = code.replace(
     /^import\s+(\w+)\s+from\s+'@snui\/(?:uni-src|uni)\/components\/(sn-[a-z0-9-]+)\/(sn-[a-z0-9-]+)\.vue';\s*\n/gm,
     (line, name, dir, file) => {
-      if (dir === file) {
-        stats.easycomDropped++;
-        return '';
-      }
       stats.uniXRemapped++;
       return `import ${name} from '@snui/uni-x/components/${dir}/${file}.uvue';\n`;
     },
@@ -259,8 +255,7 @@ function emitReport() {
     '| --- | --- |',
     `| .uvue 产出 | ${stats.uvue} |`,
     `| .ts 产出 | ${stats.ts} |`,
-    `| easycom 组件导入删除 | ${stats.easycomDropped} |`,
-    `| 显式 .uvue / 协同 ts 重映射 | ${stats.uniXRemapped} |`,
+    `| 组件/协同导入 → @snui/uni-x 显式路径 | ${stats.uniXRemapped} |`,
     `| 类型导入 → <comp>-types 实体 | ${stats.typeImportsRemapped} |`,
     `| 模板组件导入映射 | ${stats.templatesMapped} |`,
     '',
@@ -351,7 +346,7 @@ function main() {
   emitReport();
   console.log(
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
-      ` (easycom -${stats.easycomDropped}, remapped ${stats.uniXRemapped}, templates ${stats.templatesMapped})`,
+      ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped}, templates ${stats.templatesMapped})`,
   );
 }
 

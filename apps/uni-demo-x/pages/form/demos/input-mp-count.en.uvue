@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — character count (showCount): maxlength + count badge. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const counter = ref('hel');
 </script>
 <template>

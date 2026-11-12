@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-collapse — 查看更多模式（收起显示 2 行）。 */
 import { FileText } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const expanded = ref(false);
 const longText =

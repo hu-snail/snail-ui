@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — shape='box' 方框（默认）与 shape='underline' 下划线两种格子形状。 */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const box = ref('12');
 const line = ref('34');
 </script>

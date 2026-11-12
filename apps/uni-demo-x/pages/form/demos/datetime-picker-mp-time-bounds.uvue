@@ -1,5 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — 时分秒边界：minHour / maxHour / minMinute / maxMinute + useSecond / maxSecond。 */
+import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { Clock } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

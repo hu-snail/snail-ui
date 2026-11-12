@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — count limits (min / max). */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const limited = ref<Array<string | number | boolean>>(['a']);
 </script>

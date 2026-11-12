@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — close-button loading (closeButtonLoading): the close key spins and can be relabelled. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const busy = ref('');
 const openBusy = ref(false);
 </script>

@@ -4,6 +4,7 @@
  *
  * `first-day-of-week=1` 把周一挪到第一列。
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 5, 30).getTime();
 

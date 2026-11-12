@@ -3,6 +3,7 @@
  * Demo: sn-typing (uni-end) — Basic usage: default text and the chat-bubble
  * placeholder scenario.
  */
+import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

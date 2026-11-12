@@ -7,6 +7,7 @@
  * `<image>`，尺寸与图标档位 token 对齐。优先级：插槽 > iconUrl > 对象 /
  * 目录名 > cssIcon 字体图标。
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 import { Gift, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** 位图图标：与矢量图标共用同一组尺寸档位。 */

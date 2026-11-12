@@ -7,6 +7,8 @@
  * requirement. The demo pairs it with a scroll area below: while the guard is on,
  * dragging over the panel does not scroll that area.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 /** disable-touch-move instance. */
 const guardedShown = ref(false);
 

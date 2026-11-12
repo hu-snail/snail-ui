@@ -9,6 +9,7 @@
  * 文档预览里没有 uni 运行时，点选择瓦片只会发出 `chooseerror`；
  * 下面的用例重点是参数组合与满额后的形态。
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 /** 相册多选、最多 6 张：选择器一次可带回多张。 */

@@ -9,6 +9,7 @@
  *
  * 预览里 `sn-demo--index` 让 demo 铺满整屏（见 PhoneFrame 的 full-bleed 规则）。
  */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
 const barRef = ref<InstanceType<typeof SnIndexBar> | null>(null);
 

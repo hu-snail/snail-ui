@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — shuffled keys (randomKeyOrder): digit keys are shuffled. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const shuffled = ref('');
 const openShuffled = ref(false);
 </script>

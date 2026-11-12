@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — rounded (round): a pill-shaped primary stepper. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const rounded = ref(4);
 </script>
 <template>

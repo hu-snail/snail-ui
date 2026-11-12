@@ -4,6 +4,8 @@
  *
  * 懒加载根节点只有地区；展开非叶子节点时向宿主请求子级，isLeafKey 标记叶子。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 /** 懒加载根节点：isLeaf 决定是否还能下钻。 */
 const tree = [
   { value: 'zj', text: '浙江', isLeaf: false },

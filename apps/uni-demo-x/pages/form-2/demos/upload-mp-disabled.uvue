@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-upload — 禁用：disabled 锁掉选择与删除，仅展示列表。 */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const done = ref<UploadFileItem[]>([

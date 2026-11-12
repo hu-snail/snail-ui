@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-grid — 列数、间距、正方形与横向排列（图标走内置目录 kebab 名）。 */
+import SnGrid from '@snui/uni-x/components/sn-grid/sn-grid.uvue';
 import SnGridItem from '@snui/uni-x/components/sn-grid/sn-grid-item.uvue';
 </script>
 <template>

@@ -2,6 +2,7 @@
 /**
  * Demo: sn-scratchcard (uni-end) — Title styling: title-size / title-color.
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const titleRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 
 function resetAll(): void {

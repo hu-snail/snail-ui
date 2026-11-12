@@ -6,6 +6,7 @@
  * `modelValue`. So a component migrated from wot-ui keeps working unchanged, both
  * props are accepted, and `value` wins when they are passed together.
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const size = ref('md');
 const sizeOptions = [
   { value: 'sm', label: 'Small' },

@@ -4,6 +4,7 @@
  * (`customClass` / `customStyle`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-table from its SFC source.
  */
+import SnTable from '@snui/uni-x/components/sn-table/sn-table.uvue';
 import SnTableColumn from '@snui/uni-x/components/sn-table/sn-table-column.uvue';
 interface Row {
   name: string;

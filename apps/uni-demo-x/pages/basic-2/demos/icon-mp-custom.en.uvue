@@ -11,6 +11,7 @@
  * Because a string `customStyle` replaces the sizing box, the demo uses it for
  * `color` / `background-color`, and `customClass` for border and padding.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Star, Heart, Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 </script>
 <template>

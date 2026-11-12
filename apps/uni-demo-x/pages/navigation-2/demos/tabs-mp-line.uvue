@@ -5,6 +5,7 @@
  * - `line-theme` 切换底部条形态：normal 短条 / text 整块文字底 / underline 通栏下划线 / dot 圆点
  * - `line-width` / `line-height` 覆盖底部条尺寸（数字按 px，字符串原样转发）
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const normalActive = ref(0);
 const underlineActive = ref(1);

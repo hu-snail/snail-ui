@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-steps — basic step indicator. */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 const active = ref(1);
 </script>

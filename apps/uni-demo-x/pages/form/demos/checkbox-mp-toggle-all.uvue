@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 全选 / 全不选（toggleAll，通过 expose 调用）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const groupRef = ref<InstanceType<typeof SnCheckboxGroup> | null>(null);
 const all = ref<Array<string | number | boolean>>([]);

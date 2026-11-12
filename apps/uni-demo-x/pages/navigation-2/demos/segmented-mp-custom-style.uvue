@@ -5,6 +5,7 @@
  * 两个 prop 都落在根节点：`customClass` 追加类名，`customStyle` 作为根节点
  * inline style（会覆盖组件自己的背景 / 圆角）。
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const options = [
   { value: 'day', label: '日' },
   { value: 'week', label: '周' },

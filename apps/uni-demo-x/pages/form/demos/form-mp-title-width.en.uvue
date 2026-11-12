@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — label column width (titleWidth): shares one inheritance chain with labelWidth (titleWidth wins). */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const titleForm = reactive({ name: '', phone: '' });

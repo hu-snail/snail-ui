@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 确认键文案（confirmType）：软键盘右下角按钮文案。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const text = ref('');
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 确认键保持键盘（confirmHold）：点确认键不收起软键盘。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const held = ref('');
 </script>
 <template>

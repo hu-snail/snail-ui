@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — Basic sn-rate: `num` sets the icon count, tapping an icon writes `v-model`. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const score = ref<number | null>(3);
 </script>
 <template>

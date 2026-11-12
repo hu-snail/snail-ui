@@ -15,6 +15,7 @@
  *
  * 图标数据内联自 lucide（ISC，与 packages/uni sn-icon-set 同源约定）。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { ChevronLeft as ChevronLeftIcon } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { useDemoUi } from '../state/demo-ui';

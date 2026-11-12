@@ -3,6 +3,8 @@
  * Demo: sn-video-preview (uni-end) — 实例标识（selector）+ on-open / on-close 回调。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-video-preview from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnVideoPreview from '@snui/uni-x/components/sn-video-preview/sn-video-preview.uvue';
 const preview = ref<{
   open: (options: { src: string; poster?: string; title?: string }) => void;
   close: () => void;

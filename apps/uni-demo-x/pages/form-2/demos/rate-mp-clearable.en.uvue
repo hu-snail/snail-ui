@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — clearable: re-tapping the current score clears back to null. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const clearable = ref<number | null>(4);
 </script>
 <template>

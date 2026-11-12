@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-segmented — English shadow of segmented-mp-disabled. */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const picked = ref('a');
 const options = [
   { value: 'a', label: 'Selectable' },

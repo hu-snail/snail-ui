@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — 聚焦：focus 挂载即聚焦；focusWhenClear 清空按钮后重新聚焦（与 @clear 联动）。 */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const focused = ref('');
 const cleared = ref('snail');
 </script>

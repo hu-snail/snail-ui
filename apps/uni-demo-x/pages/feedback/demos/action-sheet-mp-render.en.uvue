@@ -2,6 +2,8 @@
 /**
  * Demo: sn-action-sheet (uni-end) — English shadow of action-sheet-mp-render.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnActionSheet from '@snui/uni-x/components/sn-action-sheet/sn-action-sheet.uvue';
 const eager = ref(false);
 const noSafeArea = ref(false);
 

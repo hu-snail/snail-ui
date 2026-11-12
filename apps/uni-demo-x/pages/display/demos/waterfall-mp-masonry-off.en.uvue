@@ -4,6 +4,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni components from their SFC
  * source. The same item list renders as a plain stack when masonry is off.
  */
+import SnWaterfall from '@snui/uni-x/components/sn-waterfall/sn-waterfall.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 interface Photo {
   id: string;
   title: string;

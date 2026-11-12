@@ -2,6 +2,7 @@
 /**
  * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-guard.
  */
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const value = ref('');
 
 const options = [

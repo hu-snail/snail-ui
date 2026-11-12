@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — range & marks: `range` returns a `[start, end]` pair; `marks` accepts a record. */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const pair = ref<number[]>([20, 60]);
 </script>
 <template>

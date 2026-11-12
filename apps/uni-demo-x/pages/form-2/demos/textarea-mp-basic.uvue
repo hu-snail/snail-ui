@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 基础用法（v-model + placeholder）。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const value = ref('');
 </script>
 <template>

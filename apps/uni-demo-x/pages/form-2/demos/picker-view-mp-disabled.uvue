@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — disabled 整列不可交互，滚轮冻结在当前值。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const fruits = ['苹果', '香蕉', '樱桃'];
 const locked = ref<Array<string | number>>(['香蕉']);
 </script>

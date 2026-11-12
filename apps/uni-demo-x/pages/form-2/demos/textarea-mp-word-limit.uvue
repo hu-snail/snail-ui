@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 字数统计：showWordLimit + maxlength 在右下角显示计数。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const limited = ref('snail-aui 的 uni 端文本域');
 </script>
 <template>

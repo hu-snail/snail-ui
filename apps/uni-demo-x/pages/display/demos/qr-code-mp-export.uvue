@@ -3,6 +3,8 @@
  * Demo: sn-qr-code (uni-end) — 尺寸 / 边距 / 导出。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
 const qrRef = ref<{ exportImage: () => Promise<string> } | null>(null);
 const exported = ref('—');
 

@@ -3,6 +3,7 @@
  * Demo: sn-card (uni-end) — custom-title-class / custom-content-class / custom-footer-class / custom-class / custom-style。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-card from its SFC source.
  */
+import SnCard from '@snui/uni-x/components/sn-card/sn-card.uvue';
 const rows = [
   { label: '标题区', value: 'custom-title-class' },
   { label: '内容区', value: 'custom-content-class' },

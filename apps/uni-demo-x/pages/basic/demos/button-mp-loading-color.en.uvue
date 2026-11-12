@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-button — spinner customization (`loadingColor` / `loadingSize`). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

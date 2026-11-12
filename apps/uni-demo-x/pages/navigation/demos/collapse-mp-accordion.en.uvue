@@ -4,6 +4,7 @@
  *
  * accordion turns v-model into a string and keeps one panel open at a time.
  */
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref('a');
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — rating colors: `activeColor` accepts a per-icon array. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const colored = ref<number | null>(3);
 </script>
 <template>

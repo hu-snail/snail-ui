@@ -4,7 +4,9 @@
  * left / right / top, `labelWidth` sets the label column for the side layouts
  * (the top layout ignores it).
  */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const rightForm = reactive({ email: '', password: '' });
 const leftForm = reactive({ email: '', password: '' });
 const topForm = reactive({ email: '', password: '' });

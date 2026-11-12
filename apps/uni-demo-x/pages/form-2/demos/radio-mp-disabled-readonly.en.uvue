@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — disabled & readonly: `disabled` locks the whole group, `readonly` makes it non-interactive. */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const blocked = ref<string | number | boolean | undefined>('a');
 </script>

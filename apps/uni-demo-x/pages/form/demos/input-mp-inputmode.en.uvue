@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — soft keyboard hint (inputmode): each inputmode summons the matching keyboard. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const phone = ref('');
 const search = ref('');
 </script>

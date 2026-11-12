@@ -10,6 +10,7 @@
  * `total` + `page-size` wins over `total-page`: 95 records at 10 per page
  * gives 10 pages.
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 /** 95 records at 10 per page → 10 pages, shared by all four variants. */
 const total = 95;
 const size = 10;

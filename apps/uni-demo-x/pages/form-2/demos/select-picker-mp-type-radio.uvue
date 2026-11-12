@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-select-picker — 单选模式：type="radio" 写回标量（不是数组）。 */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const options = [
   { value: 'apple', label: '苹果' },
   { value: 'banana', label: '香蕉' },

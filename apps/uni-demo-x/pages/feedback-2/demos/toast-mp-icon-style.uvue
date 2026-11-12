@@ -3,6 +3,8 @@
  * Demo: sn-toast (uni-end) — icon-size / icon-color / loading-size / loading-color.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-toast from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnToast from '@snui/uni-x/components/sn-toast/sn-toast.uvue';
 const iconSized = ref(false);
 const loadingSized = ref(false);
 </script>

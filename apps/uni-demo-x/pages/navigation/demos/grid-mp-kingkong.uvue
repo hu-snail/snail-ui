@@ -8,7 +8,9 @@
  *   上，宿主自行决定跳转（组件不持有路由）
  * - 无边框 + 白底，即经典金刚区画布
  */
+import SnGrid from '@snui/uni-x/components/sn-grid/sn-grid.uvue';
 import SnGridItem from '@snui/uni-x/components/sn-grid/sn-grid-item.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 /** 金刚区入口：图标（内置目录 kebab 名）+ 文案 + 主题色 token。 */
 const entries = [
   {

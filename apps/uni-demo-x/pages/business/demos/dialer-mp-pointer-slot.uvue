@@ -2,6 +2,7 @@
 /**
  * Demo: sn-dialer (uni-end) — 自定义指针：#pointer 插槽。
  */
+import SnDialer from '@snui/uni-x/components/sn-dialer/sn-dialer.uvue';
 import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizes: SnDialerPrize[] = [
   { id: 'a', name: '奖品 A' },

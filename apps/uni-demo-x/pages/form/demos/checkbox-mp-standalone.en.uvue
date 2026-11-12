@@ -4,6 +4,7 @@
  *
  * Standalone `v-model` (outside a group) and custom `trueValue` / `falseValue`.
  */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const standalone = ref<boolean>(true);
 const subscribed = ref<string>('yes');
 </script>

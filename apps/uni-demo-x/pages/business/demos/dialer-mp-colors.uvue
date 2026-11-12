@@ -3,6 +3,7 @@
  * Demo: sn-dialer (uni-end) — 扇区配色：prizeBgColors / borderColor /
  * 单奖品 color 覆盖。
  */
+import SnDialer from '@snui/uni-x/components/sn-dialer/sn-dialer.uvue';
 import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const themePrizes: SnDialerPrize[] = [
   { id: 'a', name: '奖品 A' },

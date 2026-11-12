@@ -3,6 +3,7 @@
  * Demo: sn-scratchcard (uni-end) — 封面色：coverColor（字面量：canvas
  * fillStyle 不解析 CSS 变量）。
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const greenRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const blueRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 

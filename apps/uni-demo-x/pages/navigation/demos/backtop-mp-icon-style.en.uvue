@@ -5,6 +5,7 @@
  * Docs-preview only: the root is `position: fixed`, so `custom-class` pins it inside
  * this stage.
  */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 const scrollTop = ref(200);
 const clicks = ref(0);
 </script>

@@ -6,6 +6,7 @@
  * `customClass` 落在根节点（配合 `:deep()` 追加样式），
  * `customStyle` 是内联 style，会覆盖组件自身的背景 / 圆角。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — word limit: showWordLimit (alias of showCount) + maxlength. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const nickname = ref('snail');
 const bio = ref('Short');
 </script>

@@ -2,6 +2,7 @@
 /**
  * Demo: sn-swipe-action (uni-end) — English shadow of swipe-action-mp-both-sides.
  */
+import SnSwipeAction from '@snui/uni-x/components/sn-swipe-action/sn-swipe-action.uvue';
 const both = ref<'left' | 'close' | 'right'>('close');
 </script>
 <template>

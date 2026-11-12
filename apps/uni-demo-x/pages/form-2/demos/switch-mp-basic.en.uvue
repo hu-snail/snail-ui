@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — basic toggle + the change event. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const enabled = ref(false);
 const lastChange = ref('—');
 </script>

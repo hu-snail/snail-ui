@@ -6,6 +6,7 @@
  * `prefix` / `suffix` override their props — so a slot can hold any cross-end
  * node, not just a string.
  */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

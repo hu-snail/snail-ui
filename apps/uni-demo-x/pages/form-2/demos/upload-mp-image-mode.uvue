@@ -3,6 +3,7 @@
  * Demo: sn-upload — 缩略图模式：imageMode 直接透传给缩略图的 `<image mode>`
  * （aspectFit 完整显示、aspectFill 裁切填满、widthFix 按宽定高）。
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const photos = ref<UploadFileItem[]>([

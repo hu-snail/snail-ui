@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sort-button — underline: `line` adds an underline to the label. */
+import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';
 const a = ref<1 | 0 | -1>(1);
 </script>
 <template>

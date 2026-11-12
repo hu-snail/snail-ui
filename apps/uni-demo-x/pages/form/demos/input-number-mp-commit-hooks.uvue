@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 取值规则与提交时机：stepStrictly / allowNull / placeholder / beforeChange / immediateChange / updateOnInit / adjustPosition / inputType。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const snapped = ref(0);
 const nullable = ref<string | number>('');
 const guarded = ref(5);

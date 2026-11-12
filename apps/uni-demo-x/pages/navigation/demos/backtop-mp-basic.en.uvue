@@ -6,6 +6,7 @@
  * scrolling); tapping the button scrolls it back through the scroll-top
  * binding. custom-class pins the fixed button inside the stage.
  */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 /** Live scroll distance of the scroll-view (px, reported by @scroll). */
 const scrollTop = ref(0);
 /** Written back into the scroll-view's scroll-top (programmatic scroll). */

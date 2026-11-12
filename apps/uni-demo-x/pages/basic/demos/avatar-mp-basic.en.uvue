@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-avatar (uni-end) — image / text / icon content layers. */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

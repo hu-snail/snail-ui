@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — five variants: emphasis ladder of one semantic hue. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** dark solid → light tint → plain border → dashed border → text only. */
 const variants = ['dark', 'light', 'plain', 'dashed', 'text'] as const;
 

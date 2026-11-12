@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sidebar — 徽标（badge / is-dot）。 */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 const active = ref('inbox');
 </script>

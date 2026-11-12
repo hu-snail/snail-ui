@@ -2,6 +2,7 @@
 /**
  * Demo: sn-pagination — English shadow of pagination-mp-hide-on-one-page.
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 const singlePage = ref(1);
 </script>
 <template>

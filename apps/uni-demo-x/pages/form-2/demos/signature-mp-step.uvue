@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — 撤回步长：step 一次撤回 2 笔（需配合 enableHistory）。 */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

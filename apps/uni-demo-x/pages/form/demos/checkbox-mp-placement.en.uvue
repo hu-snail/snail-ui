@@ -5,6 +5,7 @@
  * `size="large"`, `placement="right"` moves the box to the right of the label,
  * `maxWidth` truncates a long label + `customLabelClass` style hook.
  */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const placed = ref<boolean>(true);
 const long = ref<boolean>(true);
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 基础图文：标题 / 段落 / 强调 / 引用 / 列表。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
 const article = `
   <h1>周末出走 · 山野手记</h1>
   <p>沿着林间小路慢慢走，<strong>给生活留一点空白。</strong></p>

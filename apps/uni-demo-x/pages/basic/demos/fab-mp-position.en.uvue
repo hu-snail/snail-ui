@@ -16,6 +16,8 @@
  * The hint block sits bottom-right, clear of all four expansion zones. Copy
  * is kept in parity with fab-mp-position.vue.
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   Camera,
   Coffee,

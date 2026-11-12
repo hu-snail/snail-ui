@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-plate-input — 新能源车牌：maxlength=8 渲染 8 格。 */
+import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';
 const plate = ref('京AD12345');
 </script>
 <template>

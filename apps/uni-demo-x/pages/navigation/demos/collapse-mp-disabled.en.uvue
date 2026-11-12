@@ -4,6 +4,7 @@
  *
  * A disabled panel keeps the neutral colour and never reacts to taps.
  */
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 </script>

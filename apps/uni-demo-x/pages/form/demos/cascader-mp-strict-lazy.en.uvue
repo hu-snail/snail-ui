@@ -4,6 +4,8 @@
  * confirms, the confirm button submits the level you picked and the emitted
  * value is that level's value instead of a leaf value.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

@@ -6,6 +6,8 @@
  * 同一套 token），逐级下钻时层级切换仍走 tab；下：不传 card 的默认列表
  * 形态作对照。两处触发入口都用 sn-cell 卡片行。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

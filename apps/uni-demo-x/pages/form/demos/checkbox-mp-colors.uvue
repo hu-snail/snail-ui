@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 选中颜色（checkedColor / uncheckedColor）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const colored = ref<boolean>(true);
 </script>
 <template>

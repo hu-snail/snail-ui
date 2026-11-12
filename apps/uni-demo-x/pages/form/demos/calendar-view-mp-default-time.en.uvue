@@ -8,6 +8,7 @@
  * - `immediate-change`: change fires and the value is written as soon as a cell
  *   is tapped, no second confirmation
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 import type { CalendarDayItem } from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view-types';
 
 const min = new Date(2024, 5, 1).getTime();

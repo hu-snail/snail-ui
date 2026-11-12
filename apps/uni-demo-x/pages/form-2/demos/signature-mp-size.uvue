@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — 画板尺寸与底色：height（数字按 rpx 设计值）/ width / backgroundColor 覆盖画板底色 token。 */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -8,6 +8,8 @@
  * - Both switches take effect immediately: enable refresh only, load-more
  *   only, or turn both off at any time
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const rows = Array.from({ length: 40 }, (_, i) => `Row ${i + 1} · plain scroll content`);
 const refresherOn = ref(false);
 const loadMoreOn = ref(false);

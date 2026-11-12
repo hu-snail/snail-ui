@@ -3,6 +3,8 @@
  * Demo: sn-empty (uni-end) — image slot + bottom action slot.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-empty from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnEmpty from '@snui/uni-x/components/sn-empty/sn-empty.uvue';
 const retries = ref(0);
 
 function retry(): void {

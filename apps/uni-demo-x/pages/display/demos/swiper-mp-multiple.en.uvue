@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — display-multiple-items + peek margins + snap-to-edge.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   'https://picsum.photos/seed/snui-sw-m1/750/400',
   'https://picsum.photos/seed/snui-sw-m2/750/400',

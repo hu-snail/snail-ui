@@ -4,6 +4,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notify from its SFC source.
  * NOTE: only the component form ships this round — `useNotify()` is not implemented.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNotify from '@snui/uni-x/components/sn-notify/sn-notify.uvue';
 const primaryOpen = ref(false);
 const successOpen = ref(false);
 const warningOpen = ref(false);

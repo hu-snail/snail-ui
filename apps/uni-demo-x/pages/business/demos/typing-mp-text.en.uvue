@@ -2,6 +2,7 @@
 /**
  * Demo: sn-typing (uni-end) — Label toggle: `text`.
  */
+import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

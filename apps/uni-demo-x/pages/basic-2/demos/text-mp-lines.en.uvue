@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — multi-line clamp. */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 const longText =
   'Supporting copy inside a mobile list often runs wider than one screen. Setting lines truncates the overflow with an ellipsis so every card keeps the same height.';
 </script>

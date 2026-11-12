@@ -2,6 +2,7 @@
 /**
  * Demo: sn-barcode (uni-end) — Basic usage: 12-digit input with auto checksum.
  */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
 import type { SnBarcodeEncoded } from '@snui/uni-x/components/sn-barcode/sn-barcode-types';
 
 const displayText = ref('—');

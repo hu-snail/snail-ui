@@ -6,6 +6,8 @@
  * The entry point is a sn-cell card row (card + is-link): the title names the
  * field, the value shows the current selection, the whole row opens the sheet.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-steps — 垂直步骤条（vertical）。 */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

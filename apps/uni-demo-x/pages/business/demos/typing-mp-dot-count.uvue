@@ -2,6 +2,7 @@
 /**
  * Demo: sn-typing (uni-end) — 圆点数量：dot-count（夹取到 1-5）。
  */
+import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

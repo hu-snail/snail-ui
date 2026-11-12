@@ -7,6 +7,8 @@
  *   翻页失败则停在原列表、页脚可重试同一页
  * - reload() 不播放下拉动画，refresh() 会播放
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const TOTAL = 20;
 const PAGE_SIZE = 5;
 const list = ref<string[]>([]);

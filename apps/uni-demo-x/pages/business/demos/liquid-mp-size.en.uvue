@@ -2,6 +2,7 @@
 /**
  * Demo: sn-liquid (uni-end) — Size presets.
  */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

@@ -6,6 +6,7 @@
  * Provider），SVG 直接渲染，无需字体文件。图标大小默认随按钮尺寸自动适配
  * （small 28 / medium 32 / large 40），`icon-size` 可显式覆盖。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

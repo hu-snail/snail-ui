@@ -3,6 +3,7 @@
  * Demo: sn-empty (uni-end) — default glyph + tip.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-empty from its SFC source.
  */
+import SnEmpty from '@snui/uni-x/components/sn-empty/sn-empty.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — 按钮文案：confirmText / clearText / revokeText / restoreText，以及 undoText / redoText 覆盖。 */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 const onConfirm = (_result: unknown) => {
   // 宿主在这里拿笔画几何做导出 / 上传。
 };

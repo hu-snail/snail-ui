@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-grid — 基础宫格（图标走内置目录 kebab 名，零注册确定性渲染）。 */
+import SnGrid from '@snui/uni-x/components/sn-grid/sn-grid.uvue';
 import SnGridItem from '@snui/uni-x/components/sn-grid/sn-grid-item.uvue';
 </script>
 <template>

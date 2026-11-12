@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — 键位文案（deleteText / closeText）：自定义删除键与关闭键文案。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const custom = ref('');
 const openCustom = ref(false);
 </script>

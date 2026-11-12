@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 清空按钮（clearable）：有值即显示 × 一键清空。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const clearable = ref('点右侧 × 清空我');
 </script>
 <template>

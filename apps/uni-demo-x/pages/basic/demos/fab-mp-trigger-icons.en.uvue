@@ -13,6 +13,8 @@
  *
  * Copy is kept in parity with fab-mp-trigger-icons.vue.
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import {
   Bell,

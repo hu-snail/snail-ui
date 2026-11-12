@@ -6,6 +6,7 @@
  * center / end / space-between / space-around / space-evenly。
  * align 用不同高度的列才看得出来。
  */
+import SnLayout from '@snui/uni-x/components/sn-layout/sn-layout.uvue';
 import SnCol from '@snui/uni-x/components/sn-layout/sn-col.uvue';
 </script>
 <template>

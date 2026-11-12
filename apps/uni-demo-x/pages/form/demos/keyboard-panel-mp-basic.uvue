@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard-panel — 内嵌键盘面板视图：无弹层直接嵌在页面里，collapse 事件由宿主处理。 */
+import SnKeyboardPanel from '@snui/uni-x/components/sn-keyboard-panel/sn-keyboard-panel.uvue';
 const amount = ref('');
 const decimal = ref('');
 const plate = ref('');

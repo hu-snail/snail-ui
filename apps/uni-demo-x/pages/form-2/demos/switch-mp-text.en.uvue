@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — rail text: `activeText` / `inactiveText` render inside the rail. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const withText = ref(true);
 </script>
 <template>

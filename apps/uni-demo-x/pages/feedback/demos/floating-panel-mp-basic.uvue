@@ -3,6 +3,7 @@
  * Demo: sn-floating-panel (uni-end) — drag the handle to resize, snap to anchors.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-floating-panel from its SFC source.
  */
+import SnFloatingPanel from '@snui/uni-x/components/sn-floating-panel/sn-floating-panel.uvue';
 const height = ref(120);
 const settled = ref(120);
 

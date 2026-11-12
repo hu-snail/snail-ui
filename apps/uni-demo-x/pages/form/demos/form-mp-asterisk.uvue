@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — 必填星号（asteriskPosition / hideAsterisk）：星号挪到右侧或整体隐藏。 */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const asteriskForm = reactive({ email: '', nickname: '' });
 </script>
 <template>

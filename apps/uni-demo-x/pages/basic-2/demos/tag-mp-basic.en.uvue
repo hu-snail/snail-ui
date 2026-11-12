@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — ten semantic colours across task stages and topics. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Task stages: `default` still carries a scene (draft), the rest are semantic. */
 const stages = [
   { type: 'default', label: 'Draft' },

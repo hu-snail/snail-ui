@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — theme: `theme="capsule"` thickens the track. */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const capsule = ref(60);
 </script>
 <template>

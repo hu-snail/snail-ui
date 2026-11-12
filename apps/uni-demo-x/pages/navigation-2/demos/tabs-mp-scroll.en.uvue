@@ -12,7 +12,9 @@
  * - `color` / `inactive-color` override the active / inactive label colour inline
  * - `custom-class` / `custom-style` land on the root node
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const many = ['For you', 'Following', 'Trending', 'Video', 'Live', 'Local', 'Q&A', 'Columns'];
 const activeScroll = ref(0);
 const activeFixed = ref(0);

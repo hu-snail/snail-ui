@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 指示器位置与选中态（indicatorPlacement / checkedStyle / markerShape）。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const topRight = ref<string | number | boolean | undefined>('a');
 const bottomRight = ref<string | number | boolean | undefined>('a');

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 自动增高：autoHeight 随内容增高。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const grow = ref('这是一段会随内容增高的文本。');
 </script>
 <template>

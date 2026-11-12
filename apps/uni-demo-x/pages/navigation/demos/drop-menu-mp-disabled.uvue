@@ -6,6 +6,7 @@
  *
  * 预览专用：`custom-class="sn-demo-contained"` 让面板的定位上下文收在 demo 内。
  */
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const disabledValue = ref('a');
 
 const options = [

@@ -9,6 +9,7 @@
  * - `active-theme="fill"` soft rounded background on the active item
  * - `active-theme="pill"` solid pill background with inverted text
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const lineActive = ref(0);
 const cardActive = ref(1);

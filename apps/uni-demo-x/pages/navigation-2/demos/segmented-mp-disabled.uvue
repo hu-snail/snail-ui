@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-segmented — 禁用（disabled）：整控 + item 级。 */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const picked = ref('a');
 const options = [
   { value: 'a', label: '可选' },

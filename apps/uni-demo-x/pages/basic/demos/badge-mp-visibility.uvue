@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-badge (uni-end) — 显隐规则（0 / showZero / hidden）。 */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 const count = ref(0);
 </script>
 <template>

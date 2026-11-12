@@ -3,6 +3,7 @@
  * Demo: sn-barcode (uni-end) — 状态与事件：error 三类错误码 + rendered 回调。
  * 挂载即编码，非法输入在事件流里实时反馈。
  */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
 import type {
   SnBarcodeEncoded,
   SnBarcodeEncodeError,

@@ -5,6 +5,9 @@
  * Both key spellings land on the same CSS variable: the fully-qualified
  * `--sn-mp-*` form and the wot-style camelCase form.
  */
+import SnConfigProvider from '@snui/uni-x/components/sn-config-provider/sn-config-provider.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Fully-qualified CSS variable names. */
 const explicitVars = {
   '--sn-mp-color-action-primary': '#07c160',

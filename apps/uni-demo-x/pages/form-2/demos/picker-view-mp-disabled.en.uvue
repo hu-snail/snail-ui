@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — `disabled` freezes every column; dragging is ignored. */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const fruits = ['Apple', 'Banana', 'Cherry'];
 const locked = ref<Array<string | number>>(['Banana']);
 </script>

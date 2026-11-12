@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — 按钮文案：cancelButtonText / confirmButtonText 覆盖取消与确认按钮。 */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['苹果', '香蕉', '樱桃', '西瓜', '葡萄'];
 
 const fruit = ref<Array<string | number>>(['苹果']);

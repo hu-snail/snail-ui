@@ -8,6 +8,7 @@
  * - `swiper-height` 给内容区定高（数字按 px，字符串原样转发）；不传沿用平台默认
  * - 滑到禁用页签会弹回已提交的页签，不触发切换
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const swipeActive = ref(0);
 const easingActive = ref(0);

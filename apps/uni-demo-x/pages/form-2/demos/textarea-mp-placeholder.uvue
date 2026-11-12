@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 占位符样式：placeholderStyle 内联声明 + placeholderClass 类名，只作用于占位文本。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const styled = ref('');
 </script>
 <template>

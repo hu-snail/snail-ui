@@ -3,6 +3,7 @@
  * Demo: sn-notice-bar (uni-end) — warning / info / danger tints.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notice-bar from its SFC source.
  */
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

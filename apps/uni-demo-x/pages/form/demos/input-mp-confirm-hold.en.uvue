@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — keyboard stays up on confirm (confirmHold): the confirm key does not dismiss the keyboard. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const held = ref('');
 </script>
 <template>

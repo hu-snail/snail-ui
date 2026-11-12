@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — closable filter chips. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Selected filters: tap close to remove; tap the dashed tag to restore all. */
 const filters = ref(['Tech', 'Outdoor', 'Food', 'Movies']);
 

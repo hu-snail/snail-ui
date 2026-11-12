@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — 身份证键盘：extra-key="X"（末位校验码），maxlength 18 位。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const idNumber = ref('');
 const open = ref(false);
 </script>

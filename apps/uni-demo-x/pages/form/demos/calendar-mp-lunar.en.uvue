@@ -5,6 +5,8 @@
  * form and echoes the Gregorian + lunar pair of the confirmed value.
  */
 import { Calendar } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { formatLunar } from '@snui/uni-x/utils/sn-lunar';
 

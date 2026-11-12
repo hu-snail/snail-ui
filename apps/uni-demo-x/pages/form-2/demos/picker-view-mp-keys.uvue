@@ -5,6 +5,7 @@
  * `value-key` / `label-key` / `children-key` 让组件读取自定义字段名，
  * 不必把业务数据改成 `value` / `label` / `children`。
  */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 /** 业务字段名不是 value / label：用 valueKey / labelKey 指定。 */
 const cities = [
   { id: 'sh', name: '上海' },

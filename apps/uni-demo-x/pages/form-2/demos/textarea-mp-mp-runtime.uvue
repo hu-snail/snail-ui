@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 小程序原生 textarea 属性（光标 / 键盘 / 确认键 / 合成事件）。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const preset = ref('预选区域示例文本');
 const confirm = ref('');
 const composing = ref('');

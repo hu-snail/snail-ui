@@ -5,6 +5,8 @@
  * source. The container turns lazy loading on once; the nested images
  * inherit it, and one image explicitly opts out.
  */
+import SnWaterfall from '@snui/uni-x/components/sn-waterfall/sn-waterfall.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 interface Photo {
   id: string;
   title: string;

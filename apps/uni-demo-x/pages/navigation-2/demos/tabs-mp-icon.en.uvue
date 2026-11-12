@@ -2,6 +2,7 @@
 /**
  * Demo: sn-tabs — English shadow of tabs-mp-icon.
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 import { Home, Search, Star, Heart } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

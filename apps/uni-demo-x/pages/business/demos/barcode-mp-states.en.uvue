@@ -4,6 +4,7 @@
  * rendered callback. Encoding runs on mount, so invalid input reports
  * through the event stream immediately.
  */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
 import type {
   SnBarcodeEncoded,
   SnBarcodeEncodeError,

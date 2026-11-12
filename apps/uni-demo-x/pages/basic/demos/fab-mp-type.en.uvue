@@ -7,6 +7,8 @@
  *
  * Copy is kept in parity with fab-mp-type.vue.
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Coffee, Music, Zap } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** Mirrors the sn-fab `type` union; the component does not export the alias. */

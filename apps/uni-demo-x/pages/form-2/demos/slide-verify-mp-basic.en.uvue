@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — Drag-to-confirm: reaching the right edge (within `tolerance`) fires `success`; a short drag fires `fail` and snaps back. */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const status = ref('Pending');
 const onSuccess = () => {
   status.value = 'Passed';

@@ -3,6 +3,8 @@
  * Demo: sn-popup (uni-end) — lazy-render / safe-area-inset-bottom / root-portal.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popup from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopup from '@snui/uni-x/components/sn-popup/sn-popup.uvue';
 const eager = ref(false);
 const noSafeArea = ref(false);
 </script>

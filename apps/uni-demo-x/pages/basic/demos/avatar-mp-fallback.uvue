@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-avatar (uni-end) — 加载失败回退链 + error 事件。 */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

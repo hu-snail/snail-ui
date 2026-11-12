@@ -3,6 +3,7 @@
  * Demo: sn-select-picker — 弹层行为与样式：closeOnClickModal 点蒙层关闭 /
  * zIndex 层级 / safeAreaInsetBottom 安全区 / rootPortal 传送 / customClass、customStyle 外观。
  */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const options = [
   { value: 'apple', label: '苹果' },
   { value: 'banana', label: '香蕉' },

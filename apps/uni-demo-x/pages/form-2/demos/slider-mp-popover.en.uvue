@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — value bubble: `popoverVisible` takes `always` / `normal` / `never`. */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const bubble = ref(40);
 const never = ref(70);
 </script>

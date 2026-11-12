@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — video items degrade to an image + the video props.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /**
  * An item with `type: 'video'` degrades to an image on the uni end (see the
  * component header: `<video>` cannot be driven reliably from a cross-end

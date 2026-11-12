@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 右对齐（alignRight）：金额等数字字段右对齐。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const amount = ref('12500.00');
 </script>
 <template>

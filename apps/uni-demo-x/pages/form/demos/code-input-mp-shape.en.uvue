@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — `shape='box'` (default) vs `shape='underline'` cell shapes. */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const box = ref('12');
 const line = ref('34');
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — 小数点键盘：extra-key="." 落在底行左槽，用于金额输入。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const amount = ref('');
 const open = ref(false);
 </script>

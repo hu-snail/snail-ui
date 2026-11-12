@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard-panel — Embedded keypad view: rendered inline with no popup; the host handles the collapse event. */
+import SnKeyboardPanel from '@snui/uni-x/components/sn-keyboard-panel/sn-keyboard-panel.uvue';
 const amount = ref('');
 const decimal = ref('');
 const plate = ref('');

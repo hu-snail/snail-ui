@@ -5,6 +5,7 @@
  * `size="large"`、`placement="right"` 把勾选框挪到标签右侧、`maxWidth` 截断
  * 超长标签 + `customLabelClass` 样式注入。
  */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const placed = ref<boolean>(true);
 const long = ref<boolean>(true);
 </script>

@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — direction=vertical + adjust-height（支付宝小程序生效）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   { value: 'https://picsum.photos/seed/snui-sw-v1/750/400', text: '竖向第 1 屏' },
   { value: 'https://picsum.photos/seed/snui-sw-v2/750/400', text: '竖向第 2 屏' },

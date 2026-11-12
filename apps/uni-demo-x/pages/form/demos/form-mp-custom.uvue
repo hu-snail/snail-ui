@@ -5,7 +5,10 @@
  * label 插槽承载非纯文本的标签行；default 插槽里放的不是输入框，
  * 而是自定义的优先级点选控件；description 插槽提供自定义副文案。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const form = reactive({ amount: '', priority: '' });

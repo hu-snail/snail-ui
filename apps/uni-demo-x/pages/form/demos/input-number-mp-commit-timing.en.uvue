@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — commit timing and input attrs: immediateChange=false / updateOnInit / inputType="number" / adjustPosition=false. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const deferred = ref(5);
 const corrected = ref(0);
 </script>

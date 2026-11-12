@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-calendar-view — month / year switch (switchMode): `switchMode="month"` switches to one month with prev / next controls. */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 7, 31).getTime();
 const single = ref<number | number[] | null>(null);

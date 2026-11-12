@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — 间距与铺满：space 控制图标间距（数字按 rpx 设计值 ×2）、size 控制图标尺寸、block 均分整行宽度。 */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const wide = ref<number | null>(2);
 const block = ref<number | null>(4);
 </script>

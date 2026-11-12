@@ -4,6 +4,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-toast from its SFC source.
  * NOTE: only the component form ships this round — `useToast()` is not implemented.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnToast from '@snui/uni-x/components/sn-toast/sn-toast.uvue';
 const plainOpen = ref(false);
 const successOpen = ref(false);
 const verticalOpen = ref(false);

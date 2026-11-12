@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — dynamic 新增标签。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** dynamic 新增：确认后进入已添加列表，同样可关闭。 */
 const added = ref<string[]>([]);
 

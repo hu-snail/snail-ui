@@ -9,6 +9,8 @@
  *
  * 下面把外层画成虚线框、内层画成实心块，就能看出两层各自的边界。
  */
+import SnResize from '@snui/uni-x/components/sn-resize/sn-resize.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const rows = ref(1);
 const lastBox = ref('—');
 

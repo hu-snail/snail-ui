@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — 基础用法：十种语义色覆盖任务状态与内容分类。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** 任务状态：default 也能承场景（草稿），其余走语义色。 */
 const stages = [
   { type: 'default', label: '草稿' },

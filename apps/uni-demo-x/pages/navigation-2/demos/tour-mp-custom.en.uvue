@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tour — custom copy and mask-tap advance. */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
 const visible = ref(false);
 const current = ref(0);
 const steps = [

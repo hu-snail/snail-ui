@@ -4,6 +4,7 @@
  *
  * `fixed` 固定到顶部；`placeholder` 在原位置生成等高占位元素，内容不被遮挡。
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

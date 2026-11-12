@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — autofocus (focus): focused on mount. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const focused = ref('');
 </script>
 <template>

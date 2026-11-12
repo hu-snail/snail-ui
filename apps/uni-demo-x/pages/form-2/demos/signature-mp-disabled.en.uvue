@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — disabled: the pad is locked and drawing is ignored. */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

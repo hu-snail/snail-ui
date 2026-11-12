@@ -8,6 +8,9 @@
  *
  * Per AUI-DOCS-016 / §111: imports the real @snui/uni SFC sources.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCaptcha from '@snui/uni-x/components/sn-captcha/sn-captcha.uvue';
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 /** 第一段：滑块是否已通过。 */
 const sliderPassed = ref(false);
 /** 第二段：拼图验证是否通过。 */

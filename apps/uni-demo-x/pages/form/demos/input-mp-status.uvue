@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — status 校验状态：default / error / warning。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const form = reactive({ def: '默认状态', error: '校验失败', warning: '需要注意' });
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — 区间联动（boundaryMinDate / boundaryMaxDate）：结束日不得早于开始日。 */
+import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
 const start = ref<string | number>(new Date(2024, 5, 10).getTime());
 const end = ref<string | number>(new Date(2024, 5, 20).getTime());
 </script>

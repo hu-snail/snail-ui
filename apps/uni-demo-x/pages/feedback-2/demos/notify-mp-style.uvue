@@ -4,6 +4,8 @@
  * custom-style.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notify from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNotify from '@snui/uni-x/components/sn-notify/sn-notify.uvue';
 const customFill = ref(false);
 const navOffset = ref(false);
 const layered = ref(false);

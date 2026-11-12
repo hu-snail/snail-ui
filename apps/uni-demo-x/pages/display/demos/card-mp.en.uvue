@@ -9,6 +9,9 @@
  * glyph. The Check icon below is resolved through `<SnIcon>`.
  */
 
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCard from '@snui/uni-x/components/sn-card/sn-card.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Check } from 'lucide-vue-next';
 import { markRaw } from 'vue';
 const ok = ref(false);

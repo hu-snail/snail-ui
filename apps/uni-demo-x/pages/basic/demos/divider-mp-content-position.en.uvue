@@ -6,6 +6,7 @@
  * line always spans the full width, the text is what moves, and its background
  * punches the visible gap in the line.
  */
+import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

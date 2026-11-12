@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tour — 分步引导。 */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
 const visible = ref(false);
 const current = ref(0);
 const steps = [

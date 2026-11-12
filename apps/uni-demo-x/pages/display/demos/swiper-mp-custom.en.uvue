@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — radius plus the custom* class / style hooks.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: 'Slide 1 · custom classes' },
   {

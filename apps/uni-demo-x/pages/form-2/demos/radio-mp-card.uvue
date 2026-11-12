@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 卡片模式（variant="card" + card 插槽自定义内容）。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const plan = ref<string | number | boolean | undefined>('pro');
 </script>

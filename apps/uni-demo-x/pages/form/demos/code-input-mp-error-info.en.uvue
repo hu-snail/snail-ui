@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — error state (errorInfo): overrides info and paints the borders danger. */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const wrong = ref('12');
 </script>
 <template>

@@ -3,6 +3,7 @@
  * Demo: sn-typing (uni-end) — 状态与事件：会话模拟 —— 发送后 peer 进入
  * typing 态，回复到达卸载 typing 气泡换上真实消息。
  */
+import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
 interface ChatMessage {
   id: number;
   from: 'me' | 'peer';

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — border: all border values plus the bordered legacy boolean alias (radius has its own scenario). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 </script>
 <template>
   <view class="sn-input-demo">

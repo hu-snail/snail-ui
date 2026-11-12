@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — range linkage (boundaryMinDate / boundaryMaxDate): the end may not precede the start. */
+import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
 const start = ref<string | number>(new Date(2024, 5, 10).getTime());
 const end = ref<string | number>(new Date(2024, 5, 20).getTime());
 </script>

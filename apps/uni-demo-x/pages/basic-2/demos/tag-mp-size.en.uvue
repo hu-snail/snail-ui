@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — the five size steps. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Size steps from small to extra-large; `default` is the baseline. */
 const sizes = ['small', 'default', 'large', 'extra-large'] as const;
 </script>

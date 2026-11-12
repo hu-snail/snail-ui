@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — 字数上限：maxlength 限制可输入字符数（-1 不限制）。 */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const limited = ref('');
 </script>
 <template>

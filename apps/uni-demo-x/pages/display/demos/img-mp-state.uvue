@@ -3,6 +3,8 @@
  * Demo: sn-img (uni-end) — loading / error / custom slots.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 const okSrc = 'https://picsum.photos/seed/snui-img-b/400/300';
 const brokenSrc = 'https://invalid.example/not-found.png';
 const src = ref(okSrc);

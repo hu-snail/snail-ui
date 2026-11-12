@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — uncheck on re-tap: `allowUncheck` clears the selection back to undefined. */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const uncheckable = ref<string | number | boolean | undefined>('a');
 </script>

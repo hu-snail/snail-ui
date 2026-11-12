@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — independently disabling the field and each button: disableInput / disableMinus / disablePlus / withoutInput / inputWidth. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const noInput = ref(5);
 const noMinus = ref(5);
 const noPlus = ref(5);

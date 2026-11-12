@@ -6,6 +6,7 @@
  * - `offset-top` 逐层递增可实现多层吸顶：第二层用更大的偏移
  * - `z-index` 决定层级，数值大的盖在上面
  */
+import SnSticky from '@snui/uni-x/components/sn-sticky/sn-sticky.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--scroll">

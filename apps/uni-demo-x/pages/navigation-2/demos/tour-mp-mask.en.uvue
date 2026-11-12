@@ -2,6 +2,7 @@
 /**
  * Demo: sn-tour — English shadow of tour-mp-mask.
  */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
 const plainVisible = ref(false);
 const plainCurrent = ref(0);
 const plainSteps = [

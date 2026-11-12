@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 光标与选区（cursor / selection-start / selection-end）：初始光标位置与预选区域。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const preselect = ref('预选区域示例');
 </script>
 <template>

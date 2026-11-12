@@ -4,6 +4,7 @@
  * + 层级与根节点样式（zIndex / customClass / customStyle）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-watermark from its SFC source.
  */
+import SnWatermark from '@snui/uni-x/components/sn-watermark/sn-watermark.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

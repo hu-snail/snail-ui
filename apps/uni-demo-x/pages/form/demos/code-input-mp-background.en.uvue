@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — the `background` prop paints custom cell backgrounds (tokens or any CSS color). */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const token = ref('12');
 const plain = ref('34');
 </script>

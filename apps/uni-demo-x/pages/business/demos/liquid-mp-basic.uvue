@@ -3,6 +3,7 @@
  * Demo: sn-liquid (uni-end) — 基础用法：percent 驱动水位，v-model:current
  * 实时回读过渡值。
  */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
 const percent = ref(30);
 const current = ref(30);
 

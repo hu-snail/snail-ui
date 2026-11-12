@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-backtop — 圆形 / 方形 × 尺寸 × 内容形态。 */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 /** 常显：直接越过默认阈值 300。 */
 const scrollTop = ref(500);
 </script>

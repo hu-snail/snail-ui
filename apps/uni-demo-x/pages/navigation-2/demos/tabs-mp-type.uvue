@@ -9,6 +9,7 @@
  * - `active-theme="fill"` 选中项浅色圆角底
  * - `active-theme="pill"` 选中项实心胶囊底（文字反色）
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const lineActive = ref(0);
 const cardActive = ref(1);

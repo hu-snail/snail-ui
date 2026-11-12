@@ -5,6 +5,7 @@
  * `immediate-change` 让拖动过程中就持续 commit（不等松手），配合 `change`
  * 事件可以实时联动。
  */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const seconds = ['10 秒', '30 秒', '1 分钟', '5 分钟'];
 const value = ref<Array<string | number>>(['30 秒']);
 const changes = ref(0);

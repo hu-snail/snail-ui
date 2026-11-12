@@ -3,6 +3,7 @@
  * Demo: sn-select-picker — chip size & confirm: `selectSize` picks the chip size,
  * `showConfirm=false` hides the confirm button and `confirmButtonText` overrides its label.
  */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const cities = [
   { id: 'sh', name: 'Shanghai' },
   { id: 'bj', name: 'Beijing' },

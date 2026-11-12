@@ -5,6 +5,7 @@
  * and scaled by coverflow-scale; 400ms ease-out transform transition; captions
  * use a diffused shadow scrim, not a solid black bar.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** Peeking demo (picsum, stable per seed). */
 const peekSlides = [
   { value: 'https://picsum.photos/seed/snui-peek-1/640/420', text: 'Nordic green living' },

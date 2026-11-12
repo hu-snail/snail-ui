@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sidebar — side navigation driving the right-hand panel. */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 const active = ref(0);
 const labels = ['All', 'Unpaid', 'To ship', 'Completed'];

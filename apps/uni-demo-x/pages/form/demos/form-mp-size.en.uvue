@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — size: default medium vs size="small". */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const defaultForm = reactive({ email: '', nickname: '' });
 const smallForm = reactive({ email: '', nickname: '' });
 </script>

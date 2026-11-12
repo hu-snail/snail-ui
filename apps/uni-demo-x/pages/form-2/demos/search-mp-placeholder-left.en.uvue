@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — left-aligned placeholder: `placeholderLeft` keeps the placeholder text on the left. */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const query = ref('snail');
 </script>
 <template>

@@ -4,6 +4,7 @@
  *
  * `disabled` 阻止切换，点击只 emit `disabled`。
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const disabledActive = ref(0);
 const disabledHits = ref(0);

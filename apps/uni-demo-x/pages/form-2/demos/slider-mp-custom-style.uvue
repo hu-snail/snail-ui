@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — 根节点样式：customClass / customStyle 落在根节点上。 */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const styled = ref(45);
 </script>
 <template>

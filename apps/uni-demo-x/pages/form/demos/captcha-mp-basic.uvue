@@ -7,6 +7,8 @@
  *
  * Per AUI-DOCS-016 / §111: imports the real @snui/uni SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCaptcha from '@snui/uni-x/components/sn-captcha/sn-captcha.uvue';
 const show = ref(false);
 const passed = ref(false);
 const attempts = ref(0);

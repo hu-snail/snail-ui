@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — delete key toggle (showDeleteKey): showDeleteKey=false renders no delete key. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const noDelete = ref('');
 const openNoDelete = ref(false);
 </script>

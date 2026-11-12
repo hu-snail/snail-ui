@@ -5,6 +5,7 @@
  * 滚动距离来自 scroll-view 的 @scroll 事件（真实滚动），点击按钮通过
  * scroll-top 绑定真实滚回顶部；按钮用 custom-class 固定在舞台内。
  */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 /** scroll-view 实时滚动距离（px，@scroll 上报）。 */
 const scrollTop = ref(0);
 /** 写回 scroll-view 的 scroll-top（编程滚动）。 */

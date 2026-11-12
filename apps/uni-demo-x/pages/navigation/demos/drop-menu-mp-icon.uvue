@@ -15,6 +15,7 @@
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { Star, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 // IconData 内联样板（lucide 路径数据，ISC）。
 const FlameIcon: IconData = {
   viewBox: '0 0 24 24',

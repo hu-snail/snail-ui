@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 组状态与半选（disabled / readonly / indeterminate）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const readOnly = ref<Array<string | number | boolean>>(['a']);
 </script>

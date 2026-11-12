@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — track colors: `backgroundColor` / `activeBackgroundColor` override the track fill and the dragged-over tint. */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

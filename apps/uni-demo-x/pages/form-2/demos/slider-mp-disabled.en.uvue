@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — disabled: dragging is blocked. */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const locked = ref(50);
 </script>
 <template>

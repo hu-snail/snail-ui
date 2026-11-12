@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — composition input (ignoreCompositionEvent): with `false`, input fires mid-composition. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const composing = ref('');
 </script>
 <template>

@@ -6,6 +6,7 @@
  * （`icon-prefix` + `-` + 名字），`css-icon` 则把名字当裸类名。`icon-size` /
  * `success-icon-size` 单独控制两个字形盒子的尺寸（数字按 rpx）。
  */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const state = ref('待验证');
 const onSuccess = (): void => {
   state.value = '已通过';

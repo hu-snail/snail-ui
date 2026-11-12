@@ -10,6 +10,8 @@
  * Drawing the wrapper dashed and the inner node solid makes both boundaries
  * visible at a glance.
  */
+import SnResize from '@snui/uni-x/components/sn-resize/sn-resize.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const rows = ref(1);
 const lastBox = ref('—');
 

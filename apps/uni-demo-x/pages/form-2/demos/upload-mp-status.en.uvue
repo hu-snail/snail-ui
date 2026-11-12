@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-upload — file status rendering: the list renders progress and the failure state from `status` (success / fail). */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const files = ref<UploadFileItem[]>([

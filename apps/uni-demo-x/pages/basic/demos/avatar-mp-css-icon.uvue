@@ -3,6 +3,7 @@
  * Demo: sn-avatar (uni-end) — 字体图标（cssIcon / iconPrefix）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-avatar from its SFC source.
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — sn-code-input 方框密码框：length 控制格子数，mask 控制是否显示圆点，focused 与键盘显隐联动。 */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const pin = ref('123');
 const focused = ref(true);
 const mask = ref(true);

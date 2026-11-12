@@ -3,6 +3,7 @@
  * Demo: sn-floating-panel (uni-end) — custom-style / custom-class.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-floating-panel from its SFC source.
  */
+import SnFloatingPanel from '@snui/uni-x/components/sn-floating-panel/sn-floating-panel.uvue';
 const height = ref(160);
 const items = ['Nearby stores', 'Open 09:00 - 22:00', 'Parking available'];
 </script>

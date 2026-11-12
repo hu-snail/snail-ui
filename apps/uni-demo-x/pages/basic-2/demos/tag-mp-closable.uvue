@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — closable 筛选条件。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** 已选筛选条件：点关闭即移除，清空后点虚线标签整体恢复。 */
 const filters = ref(['数码', '户外', '美食', '影音']);
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — readonly & disabled: `readonly` is selectable but not editable; `disabled` locks the whole field. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const readonlyValue = ref('Read-only content: selectable but not editable.');
 </script>
 <template>

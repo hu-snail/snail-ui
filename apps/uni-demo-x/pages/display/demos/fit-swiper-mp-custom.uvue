@@ -6,6 +6,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-fit-swiper from its SFC
  * source. Per AGENTS.md §113, icons come from the SnIcon catalog.
  */
+import SnFitSwiper from '@snui/uni-x/components/sn-fit-swiper/sn-fit-swiper.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 interface KongItem {
   icon: string;
   label: string;

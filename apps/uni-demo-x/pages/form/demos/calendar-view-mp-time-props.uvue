@@ -6,6 +6,7 @@
  * 本构建面板内没有时间滚筒，这些 prop 只按参考实现声明，不会产生渲染效果，
  * 这里一并传入以证明它们不会报错；custom-class / custom-style 落在根节点上。
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 5, 30).getTime();
 

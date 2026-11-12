@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 紧凑行内形态（compact）：compact + border="bottom"（嵌进 Cell / FormItem 的行内形态）。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const inline = ref('');
 </script>
 <template>

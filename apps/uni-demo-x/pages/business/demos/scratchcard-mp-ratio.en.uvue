@@ -2,6 +2,7 @@
 /**
  * Demo: sn-scratchcard (uni-end) — Scratch threshold: `ratio` (0.3 vs 0.9).
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const easyRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const hardRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 

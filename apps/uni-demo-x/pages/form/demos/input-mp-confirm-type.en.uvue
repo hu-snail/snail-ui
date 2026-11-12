@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — confirm-type: the soft-keyboard confirm button label. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const text = ref('');
 </script>
 <template>

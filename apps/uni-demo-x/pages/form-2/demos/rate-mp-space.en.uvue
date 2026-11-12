@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — gap & full-row spread: `space` sets the gap (a number is an rpx design value ×2), `size` the glyph size and `block` stretches the icons across the row. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const wide = ref<number | null>(2);
 const block = ref<number | null>(4);
 </script>

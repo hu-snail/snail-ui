@@ -5,6 +5,7 @@
  * `formatter` receives each cell and may rewrite text / topInfo / bottomInfo /
  * disabled; this one captions weekends with an "OFF" mark.
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 import type { CalendarDayItem } from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view-types';
 
 const min = new Date(2024, 5, 1).getTime();

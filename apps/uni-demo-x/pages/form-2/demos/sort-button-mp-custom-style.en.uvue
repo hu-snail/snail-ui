@@ -6,6 +6,7 @@
  * `custom-style` is the root inline style; together they can override padding,
  * fill and radius.
  */
+import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';
 const price = ref<1 | 0 | -1>(0);
 const sales = ref<1 | 0 | -1>(1);
 </script>

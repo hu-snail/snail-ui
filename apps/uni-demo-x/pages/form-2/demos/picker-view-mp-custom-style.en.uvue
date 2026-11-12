@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — root styling: custom-class / custom-style land on the root and restyle the roller frame. */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const trailing = ref<Array<string | number>>(['Beijing']);
 </script>
 <template>

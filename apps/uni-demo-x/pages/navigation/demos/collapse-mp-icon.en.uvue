@@ -14,6 +14,7 @@
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { Bell, Gift, MapPin, Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 // IconData sample (lucide path data, ISC).
 const MoonIcon: IconData = {

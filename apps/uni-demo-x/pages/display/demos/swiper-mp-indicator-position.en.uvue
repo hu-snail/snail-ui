@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — indicator-position anchors + minShowNum threshold.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   'https://picsum.photos/seed/snui-sw-i1/750/400',
   'https://picsum.photos/seed/snui-sw-i2/750/400',

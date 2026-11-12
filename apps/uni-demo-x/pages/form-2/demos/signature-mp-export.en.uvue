@@ -5,6 +5,7 @@
  * never rasterizes: the host applies the export trio inside the confirm callback,
  * so these props do not change the pad behaviour.
  */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 const strokes = ref(0);
 const onConfirm = (result: { paths: unknown[] }) => {
   strokes.value = result.paths.length;

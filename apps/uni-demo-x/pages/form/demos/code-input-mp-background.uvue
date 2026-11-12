@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — background 属性给格子自定义背景色（token 或任意 CSS 色均可）。 */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const token = ref('12');
 const plain = ref('34');
 </script>

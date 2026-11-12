@@ -5,6 +5,8 @@
  * 树里把「江苏」整枝与「舟山」叶子标为 disabled；逐级下钻到被禁用的分支时
  * 不会展开下一级，被禁用的叶子点了也不会确认。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — commit veto (beforeChange): even numbers only. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const guarded = ref(5);
 const lastGuard = ref('—');
 

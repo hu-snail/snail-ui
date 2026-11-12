@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — 删除键开关（showDeleteKey）：showDeleteKey=false 不渲染删除键。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const noDelete = ref('');
 const openNoDelete = ref(false);
 </script>

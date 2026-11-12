@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — Basic sn-input-number: min / max bounds, step and precision. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const qty = ref(3);
 </script>
 <template>

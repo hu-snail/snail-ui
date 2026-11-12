@@ -4,6 +4,7 @@
  * round, reset() starts a new one; two cards report state independently with
  * an open event log.
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const cardARef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const cardBRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const openedA = ref(false);

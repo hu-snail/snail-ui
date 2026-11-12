@@ -3,6 +3,8 @@
  * Demo: sn-curtain (uni-end) — a promo curtain with the default inset close button.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-curtain from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCurtain from '@snui/uni-x/components/sn-curtain/sn-curtain.uvue';
 const show = ref(false);
 
 /** Inline SVG placeholder so the demo needs no external network asset. */

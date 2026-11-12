@@ -7,6 +7,7 @@
  * and `customStyle` is an inline style that overrides the component's own
  * background / radius.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

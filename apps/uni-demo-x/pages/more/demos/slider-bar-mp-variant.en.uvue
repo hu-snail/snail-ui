@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 竖排：variant="column" 轨道竖起来。 */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
 const dimmer = ref(21);
 </script>
 <template>

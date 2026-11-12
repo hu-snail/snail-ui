@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — status / error / warning (uni-end). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const form = reactive({ def: 'Default', error: 'Invalid input', warning: 'Heads up' });
 </script>
 <template>

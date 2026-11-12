@@ -5,6 +5,8 @@
  * beforeConfirm only lets the Zhejiang branch through and the verdict is
  * reported back through a sn-cell card row.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

@@ -3,6 +3,8 @@
  * Demo: sn-notice-bar (uni-end) — closable + the close event.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notice-bar from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
 const closableKey = ref(0);
 </script>
 <template>

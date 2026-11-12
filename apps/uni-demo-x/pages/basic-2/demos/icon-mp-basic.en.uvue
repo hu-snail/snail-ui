@@ -7,6 +7,7 @@
  * those five icons end up in the production bundle — the other 18
  * in the shortcut set are tree-shaken.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   ChevronRight,
   Heart,

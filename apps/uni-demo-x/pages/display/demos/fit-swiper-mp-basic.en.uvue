@@ -2,6 +2,8 @@
 /**
  * Demo: sn-fit-swiper (uni-end) — English shadow of fit-swiper-mp-basic.
  */
+import SnFitSwiper from '@snui/uni-x/components/sn-fit-swiper/sn-fit-swiper.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 interface KongItem {
   icon: string;
   label: string;

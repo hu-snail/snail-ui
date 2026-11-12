@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — long-press repeat (longPress): holding a button keeps stepping. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const value = ref(0);
 </script>
 <template>

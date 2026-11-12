@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form-item — tappable rows (clickable / isLink): the whole row is tappable and shows the arrow. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const data = reactive({ city: '', summary: '' });
 const clickTimes = ref(0);
 

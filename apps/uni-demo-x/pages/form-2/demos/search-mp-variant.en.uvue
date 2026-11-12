@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — the three variants (plain / filled / light). */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const plain = ref('');
 const filled = ref('');
 const light = ref('');

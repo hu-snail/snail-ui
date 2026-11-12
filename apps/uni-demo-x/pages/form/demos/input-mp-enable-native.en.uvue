@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — native input (enableNative): with `false`, Alipay MP renders the simulated widget. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const alipay = ref('');
 </script>
 <template>

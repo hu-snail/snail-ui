@@ -8,6 +8,7 @@
  * delayed Promise, no network request at all. With `auto-upload=false` picking
  * does not transfer; the exposed `submit()` starts it.
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const uploader = ref<InstanceType<typeof SnUpload> | null>(null);

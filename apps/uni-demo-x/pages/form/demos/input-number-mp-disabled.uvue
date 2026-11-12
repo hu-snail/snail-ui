@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 禁用（disabled）：禁用后拦掉全部交互。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const value = ref(5);
 </script>
 <template>

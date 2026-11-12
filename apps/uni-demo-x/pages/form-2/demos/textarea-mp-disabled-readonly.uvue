@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 只读与禁用：readonly 可选中不可编辑；disabled 整体锁掉。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const readonlyValue = ref('只读内容，可以选中但不能编辑。');
 </script>
 <template>

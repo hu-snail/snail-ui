@@ -3,7 +3,9 @@
  * Demo: sn-form — label 位置与列宽：labelPosition 取 left / right / top，
  * labelWidth 控制左侧或右侧布局的标签列宽（top 布局不使用列宽）。
  */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const rightForm = reactive({ email: '', password: '' });
 const leftForm = reactive({ email: '', password: '' });
 const topForm = reactive({ email: '', password: '' });

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — 尺寸：size 控制开关尺寸（数字按 rpx 处理）。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const sized = ref(true);
 </script>
 <template>

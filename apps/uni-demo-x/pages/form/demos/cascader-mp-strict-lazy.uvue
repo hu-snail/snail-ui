@@ -3,6 +3,8 @@
  * Demo: sn-cascader — 任意级可选：checkStrictly 打开后点分支不自动确认，
  * 由确认按钮提交所选层级；确认后返回该层级的值（而不是叶子值）。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

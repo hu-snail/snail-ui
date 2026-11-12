@@ -10,6 +10,7 @@
  * uni-only attributes that a native `<input>` ignores, so the styles below also
  * use `::placeholder` to keep the effect visible.
  */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const inline = ref('');
 const classed = ref('');
 </script>

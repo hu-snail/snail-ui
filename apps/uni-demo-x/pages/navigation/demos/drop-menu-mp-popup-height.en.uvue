@@ -8,6 +8,7 @@
  * Docs-preview only: `custom-class="sn-demo-contained"` keeps the panel's
  * positioning context inside the demo.
  */
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const styled = ref('');
 
 const styledOptions = [

@@ -5,7 +5,10 @@
  * showMessage=false 隐藏消息行；errorType=none 静默。隐藏或静默只影响展示，
  * validate() 的返回值始终如实反映校验结果。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { Ref } from 'vue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 

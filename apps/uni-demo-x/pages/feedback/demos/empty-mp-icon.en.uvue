@@ -3,6 +3,7 @@
  * Demo: sn-empty (uni-end) — icon sources (registry / CSS icon / image URL).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-empty from its SFC source.
  */
+import SnEmpty from '@snui/uni-x/components/sn-empty/sn-empty.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Home, Search, Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

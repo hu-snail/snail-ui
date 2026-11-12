@@ -1,5 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-input — prefix / suffix / clear-icon / count 插槽。 */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import { ChevronRight, Search, X } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const search = ref('');

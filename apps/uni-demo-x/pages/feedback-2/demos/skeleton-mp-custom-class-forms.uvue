@@ -11,6 +11,7 @@
  *
  * 三者在根节点上的效果一致；对象形态适合「按状态切换」的场景（下面用开关演示）。
  */
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
 /** 布尔映射形态：条件为 true 的键才会挂上。 */
 const dense = ref(false);
 const outlined = ref(true);

@@ -12,6 +12,8 @@
  * 布局：up→右下、down→左上、left→右中、right→左中；提示块固定在左下，
  * 与四个展开区错开。文案与 fab-mp-direction.en.vue 对等。
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   Camera,
   Edit,

@@ -7,6 +7,7 @@
  * root and are handy for a visible background that proves the gap occupies
  * space.
  */
+import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

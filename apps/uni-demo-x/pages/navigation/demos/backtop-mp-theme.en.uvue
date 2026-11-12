@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-backtop — semantic themes; icon and label flip to on-primary. */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 const themes = ['default', 'primary', 'success', 'warning', 'danger', 'info'] as const;
 
 /** Always visible: past the default 300 threshold. */

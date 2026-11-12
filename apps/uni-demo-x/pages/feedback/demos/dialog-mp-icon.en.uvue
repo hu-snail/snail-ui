@@ -2,6 +2,8 @@
 /**
  * Demo: sn-dialog (uni-end) — English shadow of dialog-mp-icon.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnDialog from '@snui/uni-x/components/sn-dialog/sn-dialog.uvue';
 const successOpen = ref(false);
 const warningOpen = ref(false);
 </script>

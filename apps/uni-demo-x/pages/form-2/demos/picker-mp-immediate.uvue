@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — 滚动即写回：immediateChange 让滚动过程持续写回 v-model，不等确认。 */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['苹果', '香蕉', '樱桃', '西瓜', '葡萄'];
 
 const instant = ref<Array<string | number>>(['香蕉']);

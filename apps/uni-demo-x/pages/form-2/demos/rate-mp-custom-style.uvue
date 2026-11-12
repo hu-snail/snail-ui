@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — 根节点样式：custom-class / custom-style 追加在根节点上。 */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const styled = ref<number | null>(4);
 </script>
 <template>

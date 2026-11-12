@@ -3,6 +3,7 @@
  * Demo: sn-scratchcard (uni-end) — 状态与事件：open 每轮只触发一次，reset()
  * 进入新一轮；两张卡独立状态反馈 + open 事件日志。
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const cardARef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const cardBRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const openedA = ref(false);

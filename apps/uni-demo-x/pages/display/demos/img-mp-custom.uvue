@@ -3,6 +3,7 @@
  * Demo: sn-img (uni-end) — custom-class / custom-style / custom-image。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 const demo = 'https://picsum.photos/seed/snui-img-custom/600/400';
 </script>
 <template>

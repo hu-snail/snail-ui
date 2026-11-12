@@ -3,6 +3,8 @@
  * Demo: sn-count-down (uni-end) — auto-start=false with a manual start + custom-class / custom-style.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCountDown from '@snui/uni-x/components/sn-count-down/sn-count-down.uvue';
 const manual = ref<InstanceType<typeof SnCountDown> | null>(null);
 const started = ref(0);
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — Four themes (default / outline / outline-split / primary), plus round, disabled and long-press repeat. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const a = ref(1);
 const b = ref(2);
 const c = ref(3);

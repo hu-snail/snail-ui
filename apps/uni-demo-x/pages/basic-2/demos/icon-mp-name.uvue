@@ -7,6 +7,7 @@
  * `{classPrefix}-{name}`，宿主 app 的 iconfont 样式表就是对着这个类名
  * 定义字形。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

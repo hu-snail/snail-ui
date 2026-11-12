@@ -4,6 +4,7 @@
  *
  * 独立 `v-model`（不经 group）、`trueValue` / `falseValue` 自定义取值。
  */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const standalone = ref<boolean>(true);
 const subscribed = ref<string>('yes');
 </script>

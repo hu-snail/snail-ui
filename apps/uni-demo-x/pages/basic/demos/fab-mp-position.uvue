@@ -12,6 +12,8 @@
  *
  * 提示块固定在右下，与四个展开区错开。文案与 fab-mp-position.en.vue 对等。
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   Camera,
   Coffee,

@@ -3,6 +3,7 @@
  * Demo: sn-lucky (uni-end) — 基础用法：内置按钮 play() 起转，宿主延迟
  * stop(随机索引) 落定。
  */
+import SnLucky from '@snui/uni-x/components/sn-lucky/sn-lucky.uvue';
 import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: '一等奖' },

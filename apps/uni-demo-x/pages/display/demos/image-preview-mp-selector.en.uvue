@@ -3,6 +3,9 @@
  * Demo: sn-image-preview (uni-end) — `selector` hit areas.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-image-preview from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImagePreview from '@snui/uni-x/components/sn-image-preview/sn-image-preview.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 const preview = ref<{
   open: (options?: { images?: string[]; startPosition?: number }) => void;
   close: () => void;

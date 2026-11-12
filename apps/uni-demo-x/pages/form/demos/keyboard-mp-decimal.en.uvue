@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — decimal keyboard: `extra-key="."` takes the bottom-left slot, for amounts. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const amount = ref('');
 const open = ref(false);
 </script>

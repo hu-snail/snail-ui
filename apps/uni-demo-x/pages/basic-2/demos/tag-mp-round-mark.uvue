@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — round 胶囊 / mark 标记形态。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

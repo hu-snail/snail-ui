@@ -12,6 +12,7 @@
  * All three act on the root node; the object form fits "switch by state" cases
  * (see the toggles below).
  */
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
 /** Boolean-map form: only keys that are true get applied. */
 const dense = ref(false);
 const outlined = ref(true);

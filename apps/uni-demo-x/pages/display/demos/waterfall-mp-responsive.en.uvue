@@ -5,6 +5,8 @@
  * source. 160rpx ≈ 80px minimum column width: a phone-width container lands
  * on 2–4 columns and follows the live width.
  */
+import SnWaterfall from '@snui/uni-x/components/sn-waterfall/sn-waterfall.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 interface Photo {
   id: string;
   width: number;

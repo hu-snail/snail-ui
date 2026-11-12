@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — type 形状（circle / dot / square / button）。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const circle = ref<string | number | boolean | undefined>('a');
 const dot = ref<string | number | boolean | undefined>('a');

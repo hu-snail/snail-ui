@@ -3,6 +3,8 @@
  * Demo: sn-avatar (uni-end) — badge avatars composed from sn-badge.
  * Grid layout: avatar on top, label below.
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
 </script>
 <template>

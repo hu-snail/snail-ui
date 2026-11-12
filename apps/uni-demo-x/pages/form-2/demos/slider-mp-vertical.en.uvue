@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — vertical: `vertical` stands the track up (400rpx tall by default). */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const upright = ref(60);
 const second = ref(40);
 </script>

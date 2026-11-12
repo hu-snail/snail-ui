@@ -2,6 +2,7 @@
 /**
  * Demo: sn-swipe-action (uni-end) — English shadow of swipe-action-mp-before-close.
  */
+import SnSwipeAction from '@snui/uni-x/components/sn-swipe-action/sn-swipe-action.uvue';
 const guarded = ref<'left' | 'close' | 'right'>('close');
 const guardHits = ref(0);
 

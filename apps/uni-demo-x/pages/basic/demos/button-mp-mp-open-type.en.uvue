@@ -24,6 +24,7 @@
  * the real platform API. The demo prints the forwarded values instead of
  * reading the DOM.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 /** Customer-service session config for open-type=contact (miniprogram side). */
 const contactConfig = ref({
   sessionFrom: 'snui-demo-session',

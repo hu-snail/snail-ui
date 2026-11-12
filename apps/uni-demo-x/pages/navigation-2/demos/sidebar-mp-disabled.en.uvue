@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sidebar — English shadow of sidebar-mp-disabled. */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 const active = ref('inbox');
 </script>

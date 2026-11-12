@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — 尺寸档位。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** 尺寸档位自 小 到 超大，default 为基准档。 */
 const sizes = ['small', 'default', 'large', 'extra-large'] as const;
 </script>

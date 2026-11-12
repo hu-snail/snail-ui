@@ -7,6 +7,8 @@
  * - item 的 `border=false` 去掉下边框
  */
 import { Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 </script>

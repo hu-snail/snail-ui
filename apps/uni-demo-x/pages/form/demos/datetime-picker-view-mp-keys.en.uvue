@@ -6,6 +6,7 @@
  * props: a config written against the reference surface type-checks unchanged
  * and carries no visual effect.
  */
+import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
 

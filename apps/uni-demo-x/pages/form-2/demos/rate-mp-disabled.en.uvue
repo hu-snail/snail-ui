@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — disabled: dimmed icons, taps ignored. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const locked = ref<number | null>(3);
 </script>
 <template>

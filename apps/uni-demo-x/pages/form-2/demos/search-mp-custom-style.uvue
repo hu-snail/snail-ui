@@ -5,6 +5,7 @@
  * `custom-input-class` 把类名追加到内部原生输入节点上（不是根节点）；
  * `custom-class` / `custom-style` 落在根包装节点上，用来改外框。
  */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const inputClass = ref('snail');
 const wrapper = ref('snail');
 </script>

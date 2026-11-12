@@ -6,6 +6,7 @@
  * 直接当前缀）；字形由宿主 iconfont 提供，demo 用几何形占位验证类名
  * 挂载（禁伪元素，形状画在图标节点本体上）。
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** 字体图标：iconPrefix + cssIcon 拼出 sn-demo-tag-icon-{name}。 */
 const glyphs = [{ icon: 'star' }, { icon: 'heart' }, { icon: 'check' }] as const;
 </script>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form-item — cell dividers and truncation: `border` divider / `ellipsis` for long labels. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const data = reactive({ email: '', nickname: '' });
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — 滚筒几何：itemHeight 行高 / visibleItemCount 可见行数，customViewClass 微调滚筒。 */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['苹果', '香蕉', '樱桃', '西瓜', '葡萄'];
 
 const tall = ref<Array<string | number>>(['苹果']);

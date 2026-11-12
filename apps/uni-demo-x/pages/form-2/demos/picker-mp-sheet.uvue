@@ -3,6 +3,7 @@
  * Demo: sn-picker — 弹层行为：closeOnClickModal 关闭点蒙层关闭 / zIndex 层级 /
  * safeAreaInsetBottom 安全区 / rootPortal 传送 / customClass、customStyle 弹层外观。
  */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['苹果', '香蕉', '樱桃', '西瓜', '葡萄'];
 
 const sheet = ref<Array<string | number>>(['樱桃']);

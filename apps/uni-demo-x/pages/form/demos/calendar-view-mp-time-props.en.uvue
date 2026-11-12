@@ -7,6 +7,7 @@
  * parity only and have no visual effect; they are passed here to show they
  * are accepted. custom-class / custom-style land on the root node.
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 5, 30).getTime();
 

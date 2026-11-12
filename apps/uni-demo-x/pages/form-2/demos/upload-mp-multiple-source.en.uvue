@@ -12,6 +12,7 @@
  * `chooseerror`; these cases focus on the parameter combinations and the
  * at-limit shape.
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 /** Album multi-select, up to 6 images. */

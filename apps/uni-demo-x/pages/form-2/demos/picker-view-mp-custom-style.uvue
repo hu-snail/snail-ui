@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — 根节点样式：custom-class / custom-style 落在根节点上改滚轮外框。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const trailing = ref<Array<string | number>>(['北京']);
 </script>
 <template>

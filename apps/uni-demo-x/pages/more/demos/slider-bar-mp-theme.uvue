@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 主题：theme="aurora" Aurora 渐变 + 星光。 */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
 const volume = ref(64);
 </script>
 <template>

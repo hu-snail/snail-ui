@@ -3,6 +3,7 @@
  * Demo: sn-select-picker — sheet behavior & styling: closeOnClickModal scrim tap /
  * zIndex stacking / safeAreaInsetBottom / rootPortal teleport / customClass, customStyle chrome.
  */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const options = [
   { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' },

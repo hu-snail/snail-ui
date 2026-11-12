@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox-group — 基础多选（数组 v-model）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const picked = ref<Array<string | number | boolean>>(['apple']);
 </script>

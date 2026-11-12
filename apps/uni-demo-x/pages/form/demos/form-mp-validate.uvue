@@ -3,7 +3,10 @@
  * Demo: sn-form — 编程式校验 API：validate() / validateField() /
  * clearValidate()，以及 @validate 事件回传的错误表。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 type FormRef = InstanceType<typeof SnForm>;

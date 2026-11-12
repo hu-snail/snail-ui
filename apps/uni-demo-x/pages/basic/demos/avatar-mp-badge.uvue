@@ -3,6 +3,8 @@
  * Demo: sn-avatar (uni-end) — 微标头像（sn-badge 组合）。
  * 网格布局：头像在上，标签在下。
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
 </script>
 <template>

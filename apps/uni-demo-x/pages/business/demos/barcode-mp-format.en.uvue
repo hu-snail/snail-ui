@@ -2,6 +2,7 @@
 /**
  * Demo: sn-barcode (uni-end) — Barcode formats: the `format` values.
  */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

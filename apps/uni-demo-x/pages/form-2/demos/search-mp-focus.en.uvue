@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — focus: `focus` focuses the field on mount; `focusWhenClear` refocuses after the clear button. */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const focused = ref('');
 const cleared = ref('snail');
 </script>

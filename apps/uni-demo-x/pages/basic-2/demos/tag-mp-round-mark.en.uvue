@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — the round pill and mark shapes. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

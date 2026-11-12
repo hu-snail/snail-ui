@@ -7,6 +7,7 @@
  * `border-style` (no pseudo-element). `dot` steps render no connector at all,
  * so `connector` has no effect in that mode.
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

@@ -11,6 +11,7 @@
  * `right`. The demo uses customClass for a dashed frame on the wrapper and
  * customStyle for padding and alignment.
  */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 const items = [
   { value: 3, label: 'three' },
   { value: 12, label: 'twelve' },

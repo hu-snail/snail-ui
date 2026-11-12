@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — placeholder styling: `placeholderStyle` (inline declarations) + `placeholderClass` (a class) affect only the placeholder text. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const styled = ref('');
 </script>
 <template>

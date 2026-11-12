@@ -9,6 +9,7 @@
  * On the 750 design canvas 1rpx is 0.5px, which is the standard mobile
  * one-physical-pixel hairline — it avoids a 2px edge on high-DPI screens.
  */
+import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
 const hairline = ref(true);
 </script>
 <template>

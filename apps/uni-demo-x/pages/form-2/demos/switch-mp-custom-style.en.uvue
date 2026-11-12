@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — root styling: customClass / customStyle land on the root node. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const b = ref(false);
 </script>
 <template>

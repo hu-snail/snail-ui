@@ -2,6 +2,8 @@
 /**
  * Demo: sn-notice-bar (uni-end) — English shadow of notice-bar-mp-closable.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
 const closableKey = ref(0);
 </script>
 <template>

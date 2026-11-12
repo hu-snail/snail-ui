@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — tolerance: `tolerance` widens the right-edge slack (px). */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const state = ref('Not verified');
 const onSuccess = (): void => {
   state.value = 'Verified';

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — 滚筒几何：itemHeight 每行高度（px 设计值 → rpx）/ visibleItemCount 可见行数。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 /** 行高 32 / 可见 5 行：滚轮更紧凑。 */
 const dense = ref<Array<string | number>>(['上海']);
 </script>

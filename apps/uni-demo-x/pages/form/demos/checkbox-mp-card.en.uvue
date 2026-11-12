@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 卡片模式（variant="card" + card 插槽）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const picked = ref<Array<string | number | boolean>>(['mail']);
 </script>

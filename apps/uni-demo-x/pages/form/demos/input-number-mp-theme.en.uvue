@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — theme: default / outline / outline-split / primary. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const a = ref(1);
 const b = ref(2);
 const c = ref(3);

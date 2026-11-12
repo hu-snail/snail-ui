@@ -4,6 +4,7 @@
  */
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Bell } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
 registerSnIcons({ Bell });
 </script>
 <template>

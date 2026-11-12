@@ -5,6 +5,7 @@
  * `css-icon="demo-star"` renders the glyph as a bare CSS class (no prefix);
  * the boolean `css-icon` form applies both `icon` and `active-icon` classes.
  */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const css = ref<number | null>(3);
 const cssBool = ref<number | null>(2);
 </script>

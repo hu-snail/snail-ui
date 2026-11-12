@@ -5,6 +5,7 @@
  * `formatter` 拿到单元格数据后可以改写 text / topInfo / bottomInfo / disabled，
  * 这里在周末格底部加「休」角标。
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 import type { CalendarDayItem } from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view-types';
 
 const min = new Date(2024, 5, 1).getTime();

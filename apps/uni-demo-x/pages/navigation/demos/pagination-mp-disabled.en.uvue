@@ -9,6 +9,7 @@
  *   button on the last page, each with its own disabled styling
  * - `show-icon` keeps the built-in chevrons, which dim with their label
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 const frozenPage = ref(3);
 /** Sitting on page 1 → the previous button hits its boundary disable. */
 const firstPage = ref(1);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — clearable: a × on the right clears the value in one tap. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const clearable = ref('Tap the × on the right to clear this text');
 </script>
 <template>

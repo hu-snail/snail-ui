@@ -8,6 +8,7 @@
  * 浏览器预览里 `placeholder-style` / `placeholder-class` 是 uni 专有属性，
  * 原生 `<input>` 不识别，因此下面的样式同时用 `::placeholder` 兜住可见效果。
  */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const inline = ref('');
 const classed = ref('');
 </script>

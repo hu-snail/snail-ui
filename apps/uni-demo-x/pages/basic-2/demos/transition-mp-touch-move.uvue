@@ -6,6 +6,8 @@
  * 页面跟着滚动 —— 移动端弹层常用。文档站用一段可滚动区域演示：开启拦截时下方
  * 滚动区不会跟着拖动。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 /** disable-touch-move 的实例。 */
 const guardedShown = ref(false);
 

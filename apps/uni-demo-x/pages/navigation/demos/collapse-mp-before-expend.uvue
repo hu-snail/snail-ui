@@ -4,6 +4,7 @@
  *
  * `before-expend` 在展开前调用（收 `name`），返回 `false` 阻止展开。
  */
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 const attempts = ref(0);

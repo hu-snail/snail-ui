@@ -1,5 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-navbar — English shadow of navbar-mp-slots. */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Bell, Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 </script>
 <template>

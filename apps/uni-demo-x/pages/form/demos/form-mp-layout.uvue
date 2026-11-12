@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — 排布（layout / center）：layout="vertical" 标签叠在控件上方；center 让控件列垂直居中。 */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const verticalForm = reactive({ name: '', phone: '' });

@@ -9,6 +9,7 @@
  * Precedence: the flat `loading-color` / `loading-size` props win; the
  * `loading-props` fields are the fallback.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 };
 </script>
 <template>

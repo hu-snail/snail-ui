@@ -7,6 +7,7 @@
  * The icon size auto-fits the button preset (small 28 / medium 32 / large 40);
  * `icon-size` overrides it explicitly.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

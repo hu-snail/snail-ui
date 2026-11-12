@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — type 形状（circle / square / button / dot）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const circle = ref<Array<string | number | boolean>>(['a']);
 const square = ref<Array<string | number | boolean>>(['a']);

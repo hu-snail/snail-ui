@@ -8,7 +8,9 @@
  *   首次切到该页签时发出
  * - 面板高度由宿主给（`paging-frame` 固定高），sn-paging 需要确定的滚动盒
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
 interface DemoRow {
   id: number;
   label: string;

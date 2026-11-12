@@ -3,6 +3,8 @@
  * Demo: sn-loadmore (uni-end) — the three states + retry.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-loadmore from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnLoadmore from '@snui/uni-x/components/sn-loadmore/sn-loadmore.uvue';
 type State = '' | 'loading' | 'finished' | 'error';
 const state = ref<State>('loading');
 const retries = ref(0);

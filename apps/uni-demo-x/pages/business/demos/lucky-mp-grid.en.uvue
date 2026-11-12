@@ -2,6 +2,7 @@
 /**
  * Demo: sn-lucky (uni-end) — Grid size: rows / cols.
  */
+import SnLucky from '@snui/uni-x/components/sn-lucky/sn-lucky.uvue';
 import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const grid3Prizes: SnLuckyPrize[] = [
   { name: 'Grand prize' },

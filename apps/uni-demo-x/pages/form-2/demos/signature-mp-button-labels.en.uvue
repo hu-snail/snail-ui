@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — button labels: confirmText / clearText / revokeText / restoreText, plus the undoText / redoText overrides. */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 const onConfirm = (_result: unknown) => {
   // The host exports / uploads the stroke geometry here.
 };

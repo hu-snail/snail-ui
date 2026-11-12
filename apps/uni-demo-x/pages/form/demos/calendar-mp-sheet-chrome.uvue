@@ -6,6 +6,8 @@
  * 置清空动作，叠加遮罩关闭 / 底部安全区 / 层级 / 自定义类名与样式转发。
  */
 import { Info } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();

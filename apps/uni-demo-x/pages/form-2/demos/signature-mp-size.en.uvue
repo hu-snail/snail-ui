@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-signature — pad size & background: `height` (a number is an rpx design value), `width` and `backgroundColor` override the pad background token. */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

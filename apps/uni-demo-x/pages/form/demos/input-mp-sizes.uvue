@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — size 三档尺寸 (uni-end)。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const form = reactive({ small: '', medium: '', large: '' });
 </script>
 <template>

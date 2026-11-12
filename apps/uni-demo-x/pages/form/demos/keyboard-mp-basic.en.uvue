@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — Default numeric keypad: bottom row [collapse][0][⌫], `maxlength` caps the value; pair it with a read-only field. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const amount = ref('');
 const open = ref(false);
 </script>

@@ -14,6 +14,8 @@
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
  * the phone screen (the real runtime keeps `position: fixed`).
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Camera, Edit, Image } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const active = ref(false);

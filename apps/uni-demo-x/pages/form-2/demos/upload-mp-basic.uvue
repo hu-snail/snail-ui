@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-upload — sn-upload 基础上传：v-model:file-list 持有列表，limit 限数量，maxSize 限体积（超出触发 oversize）。 */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const files = ref<UploadFileItem[]>([]);

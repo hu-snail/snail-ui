@@ -5,6 +5,7 @@
  * - `safe-area-inset-top` 把状态栏高度补成 padding-top
  * - `z-index` 只在 `fixed` 时生效
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

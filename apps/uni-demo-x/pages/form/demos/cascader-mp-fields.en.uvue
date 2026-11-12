@@ -4,6 +4,8 @@
  *
  * The value / label / children / tip keys of every option are configurable.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 /** Custom key names — id / name / items, mapped through the *-key props; tips come from tipKey. */
 const tree = [
   {

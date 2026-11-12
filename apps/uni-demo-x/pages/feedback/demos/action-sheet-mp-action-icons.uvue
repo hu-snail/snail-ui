@@ -4,6 +4,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-action-sheet from its SFC
  * source. Per AGENTS.md §113, icons come from the SnIcon catalog.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnActionSheet from '@snui/uni-x/components/sn-action-sheet/sn-action-sheet.uvue';
 const open = ref(false);
 const picked = ref('—');
 

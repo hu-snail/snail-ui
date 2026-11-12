@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 提交拦截（beforeChange）：只接受偶数。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const guarded = ref(5);
 const lastGuard = ref('—');
 

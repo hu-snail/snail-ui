@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focused` drives the caret (pair it with the keyboard visibility). */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const pin = ref('123');
 const focused = ref(true);
 const mask = ref(true);

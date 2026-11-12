@@ -5,6 +5,7 @@
  * `contentPosition` 只在水平方向且有文字时生效：线的宽度始终撑满，
  * 位置变化的是文字，文字背景色把线遮出一段空隙。
  */
+import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

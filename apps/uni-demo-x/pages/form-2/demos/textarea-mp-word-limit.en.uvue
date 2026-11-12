@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — word limit: `showWordLimit` + `maxlength` render the counter. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const limited = ref('A multi-line note from snail-aui');
 </script>
 <template>

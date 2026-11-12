@@ -11,7 +11,9 @@
  * Every icon goes through SnIcon with the built-in icon set (AGENTS.md §113:
  * UI icons must never be emoji).
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Check, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 </script>
 <template>

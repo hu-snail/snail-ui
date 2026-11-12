@@ -4,6 +4,8 @@
  * no content drag, hidden scrollbar, safe-area inset.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-floating-panel from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnFloatingPanel from '@snui/uni-x/components/sn-floating-panel/sn-floating-panel.uvue';
 const height = ref(200);
 const contentDraggable = ref(false);
 

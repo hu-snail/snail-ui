@@ -4,6 +4,7 @@
  * custom-spinner-class.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-loading from its SFC source.
  */
+import SnLoading from '@snui/uni-x/components/sn-loading/sn-loading.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

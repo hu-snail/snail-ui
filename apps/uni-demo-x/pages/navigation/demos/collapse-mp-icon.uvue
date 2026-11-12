@@ -13,6 +13,7 @@
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { Bell, Gift, MapPin, Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 // IconData 内联样板（lucide 路径数据，ISC）。
 const MoonIcon: IconData = {

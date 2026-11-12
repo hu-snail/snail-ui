@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — 关闭键加载态（closeButtonLoading）：关闭键显示 spinner 并可换文案。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const busy = ref('');
 const openBusy = ref(false);
 </script>

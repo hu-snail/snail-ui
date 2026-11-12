@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — border='none' 去掉格子全部边框（含下划线底线），纯背景色格子；常与 background 搭配。 */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const bg = ref('12');
 const bare = ref('34');
 </script>

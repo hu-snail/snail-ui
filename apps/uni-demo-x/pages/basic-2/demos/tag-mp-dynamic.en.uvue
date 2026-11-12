@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — dynamic "new tag" input. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Dynamic add: confirmed values join the list, each closable in turn. */
 const added = ref<string[]>([]);
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — leading icon: `prefixIcon` resolves through the sn-icon registry; `iconPrefix` + `cssIcon` render a raw CSS class. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Edit } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

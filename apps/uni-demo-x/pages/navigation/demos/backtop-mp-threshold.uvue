@@ -6,6 +6,7 @@
  *
  * 预览专用：根节点是 `position: fixed`，`custom-class` 把它固定到这块 stage 内。
  */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 const scrollTop = ref(0);
 const clicks = ref(0);
 </script>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-radio — Icon cards (card variant with an icon body; the selected card gets a corner tick)。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Sun, Moon, Cloud, Zap } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const picked = ref<string | number | boolean | undefined>('sun');

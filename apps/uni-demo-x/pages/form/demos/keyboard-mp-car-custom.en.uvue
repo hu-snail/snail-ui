@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — `mode="car"` shows the plate keypad and `autoSwitchLang` flips to letters after the province; `mode="custom"` adds a large action column and `extraKey` appends a key. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const plate = ref('');
 const open = ref(false);
 const custom = ref('');

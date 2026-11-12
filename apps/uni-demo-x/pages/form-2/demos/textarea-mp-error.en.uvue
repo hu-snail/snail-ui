@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — error state: `error` marks the value as invalid (form-driven). */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const errored = ref('Invalid content');
 </script>
 <template>

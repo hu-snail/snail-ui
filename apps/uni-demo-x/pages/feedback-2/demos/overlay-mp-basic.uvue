@@ -3,6 +3,8 @@
  * Demo: sn-overlay (uni-end) — basic scrim with a toggle.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-overlay from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnOverlay from '@snui/uni-x/components/sn-overlay/sn-overlay.uvue';
 const show = ref(false);
 const taps = ref(0);
 

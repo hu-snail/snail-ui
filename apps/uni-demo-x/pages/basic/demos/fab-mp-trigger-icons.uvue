@@ -11,6 +11,8 @@
  *
  * 文案与 fab-mp-trigger-icons.en.vue 对等。
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import {
   Bell,

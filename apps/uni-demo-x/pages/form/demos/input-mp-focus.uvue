@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 自动聚焦（focus）：挂载即聚焦。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const focused = ref('');
 </script>
 <template>

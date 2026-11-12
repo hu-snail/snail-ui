@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — `cascade` turns `columns` into a tree and confirm returns the path; a `beforeConfirm` that returns false keeps the sheet open and leaves `v-model` untouched. */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const tree = [
   {
     value: 'zj',

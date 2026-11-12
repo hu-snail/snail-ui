@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-avatar (uni-end) — 形状：round 圆形 / square 方形。 */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

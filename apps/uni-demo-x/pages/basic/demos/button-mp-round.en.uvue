@@ -3,6 +3,7 @@
  * Demo: sn-button (uni-end) — round button (`round`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">

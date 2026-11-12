@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — 可清空：clearable 再次点击当前分数清空为 null。 */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const clearable = ref<number | null>(4);
 </script>
 <template>

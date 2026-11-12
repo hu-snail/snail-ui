@@ -5,6 +5,8 @@
  * Search + category filter + grid cards for the whole built-in catalog;
  * tapping a card copies its name. Data source: sn-icon-catalog.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 import {
   SN_ICON_CATALOG,
   SN_ICON_CATEGORY_LABELS,

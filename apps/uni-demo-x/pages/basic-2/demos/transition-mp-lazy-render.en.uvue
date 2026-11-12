@@ -7,6 +7,8 @@
  * content renders the first time `show` turns true — one subtree build saved on
  * first paint — and stays rendered afterwards.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 /** lazy-render=true instance: nothing renders on first paint. */
 const lazyShown = ref(false);
 const lazyEntered = ref(false);

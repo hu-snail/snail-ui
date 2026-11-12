@@ -3,6 +3,7 @@
  * Demo: sn-scratchcard (uni-end) — Cover color: `coverColor` (literal value:
  * canvas fillStyle does not resolve CSS variables).
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const greenRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const blueRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 

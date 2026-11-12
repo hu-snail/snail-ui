@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — 排版覆盖（size / lineHeight / color）。 */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

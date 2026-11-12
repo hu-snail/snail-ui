@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 按钮与输入框的独立开关：disableInput / disableMinus / disablePlus / withoutInput / inputWidth。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const noInput = ref(5);
 const noMinus = ref(5);
 const noPlus = ref(5);

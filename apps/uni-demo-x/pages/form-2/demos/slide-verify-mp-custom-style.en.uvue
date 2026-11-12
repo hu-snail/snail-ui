@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — root styling: customClass / customStyle land on the root node. */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const state = ref('Not verified');
 const onSuccess = (): void => {
   state.value = 'Verified';

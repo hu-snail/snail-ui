@@ -9,7 +9,11 @@
  *          搜索过滤 + 索引栏通讯录 + 底部字母统计条；点联系人进入资料页
  *          （v-show 叠层，返回后列表滚动位置保留）。
  */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 import {
   ChevronRight,
   Mail,

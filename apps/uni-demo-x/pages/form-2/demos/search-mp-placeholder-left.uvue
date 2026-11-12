@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — 占位符左对齐：placeholderLeft 让占位文本靠左。 */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const query = ref('snail');
 </script>
 <template>

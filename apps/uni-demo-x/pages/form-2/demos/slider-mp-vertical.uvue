@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — 竖排：vertical 把轨道竖起来（默认高度 400rpx）。 */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const upright = ref(60);
 const second = ref(40);
 </script>

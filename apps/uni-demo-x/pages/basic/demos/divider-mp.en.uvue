@@ -8,6 +8,7 @@
  * usage by importing from the component's SFC source path.
  */
 
+import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
 const show = ref(true);
 function toggle(): void {
   show.value = !show.value;

@@ -5,6 +5,8 @@
  * Tapping "add" grows the content, which the observer picks up on the next
  * poll and reports through `resize`.
  */
+import SnResize from '@snui/uni-x/components/sn-resize/sn-resize.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const rows = ref(2);
 const box = ref('—');
 

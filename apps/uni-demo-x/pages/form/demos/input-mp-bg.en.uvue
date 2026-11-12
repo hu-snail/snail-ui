@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — background (bg): surface / transparent / soft variants. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 </script>
 <template>
   <view class="sn-input-demo">

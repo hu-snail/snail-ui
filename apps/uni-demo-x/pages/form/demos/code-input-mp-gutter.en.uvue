@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — cell gap (gutter): default gutter=8 (16rpx gap), gutter=0 restores the flush layout. */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const spaced = ref('1234');
 const flush = ref('1234');
 </script>

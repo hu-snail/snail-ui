@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 自定义样式（customClass / customStyle）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 const styled = ref<boolean>(false);
 </script>
 <template>

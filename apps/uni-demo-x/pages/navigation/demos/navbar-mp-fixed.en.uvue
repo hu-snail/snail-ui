@@ -2,6 +2,7 @@
 /**
  * Demo: sn-navbar — English shadow of navbar-mp-fixed.
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

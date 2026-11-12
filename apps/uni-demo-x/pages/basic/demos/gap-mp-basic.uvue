@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-gap (uni-end) — 默认高度 / 自定义高度 / 背景色。 */
+import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

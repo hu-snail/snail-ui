@@ -7,6 +7,7 @@
  * corner (darker flap) / ticket side notches. The `round` prop equals
  * `shape="round"`; when both are given, `shape` wins.
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Six shapes with labels that fit each form. */
 const shapes = [
   { shape: 'square', type: 'default', label: 'Pinned', name: 'square' },

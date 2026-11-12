@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-cell — layout forms (wrapping titles / column alignment / vertical / group styles). */
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 紧凑模式：compact 无边框、无背景，用于表单行内。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const grow = ref('这是一段会随内容增高的文本。');
 </script>
 <template>

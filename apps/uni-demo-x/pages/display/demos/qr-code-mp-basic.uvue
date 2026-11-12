@@ -3,6 +3,7 @@
  * Demo: sn-qr-code (uni-end) — 基础二维码：文本、尺寸、纠错级别。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
  */
+import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

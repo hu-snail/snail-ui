@@ -5,6 +5,8 @@
  * lineTheme / lineHeight / lineWidth control the active-column indicator (a
  * number is an rpx design value — 1 design value = 2rpx).
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

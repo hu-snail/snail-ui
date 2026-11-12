@@ -4,6 +4,7 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-drop-menu from its SFC source.
  */
 import { ArrowDown, ArrowUp, Star, ThumbsUp } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const sort = ref('default');
 
 const options = [

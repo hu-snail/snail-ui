@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；mode="custom" 右侧加大号操作列，extraKey 追加额外键。 */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const plate = ref('');
 const open = ref(false);
 const custom = ref('');

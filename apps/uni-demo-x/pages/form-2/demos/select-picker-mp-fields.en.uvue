@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-select-picker — field mapping: valueKey / labelKey point the component at custom field names. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 /** Options use id / name; valueKey / labelKey map them. */
 const cities = [
   { id: 'sh', name: 'Shanghai' },

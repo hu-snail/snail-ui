@@ -6,6 +6,10 @@
  * component inside it resolves the dark `--sn-mp-color-*` aliases while the
  * light sibling keeps the page-level values.
  */
+import SnConfigProvider from '@snui/uni-x/components/sn-config-provider/sn-config-provider.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const darkOn = ref(true);
 const lightOn = ref(false);
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — marker placement: `placement="right"` moves the check marker to the right side. */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const placed = ref<string | number | boolean | undefined>('a');
 </script>

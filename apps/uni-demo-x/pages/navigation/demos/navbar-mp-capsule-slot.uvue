@@ -6,6 +6,8 @@
  * - `#title` 自定义标题
  * - `custom-class` / `custom-style` 落在根节点
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { MoreHorizontal } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const lastAction = ref('—');

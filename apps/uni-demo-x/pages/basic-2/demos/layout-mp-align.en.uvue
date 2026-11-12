@@ -7,6 +7,7 @@
  * space-between / space-around / space-evenly. The cross axis needs columns of
  * different heights to show itself.
  */
+import SnLayout from '@snui/uni-x/components/sn-layout/sn-layout.uvue';
 import SnCol from '@snui/uni-x/components/sn-layout/sn-col.uvue';
 </script>
 <template>

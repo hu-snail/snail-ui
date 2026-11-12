@@ -4,6 +4,7 @@
  *
  * `hide-if-one-page` 在总页数为 1 时整个组件不渲染（`v-if` 直接挡掉根节点）。
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 const singlePage = ref(1);
 </script>
 <template>

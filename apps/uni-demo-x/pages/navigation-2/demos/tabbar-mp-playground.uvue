@@ -8,6 +8,7 @@
  *   - 徽标：第二项数字徽标 / 第三项点状徽标
  *   - 激活色：主色 / 橙 / 绿 三选
  */
+import SnTabbar from '@snui/uni-x/components/sn-tabbar/sn-tabbar.uvue';
 import SnTabbarItem from '@snui/uni-x/components/sn-tabbar/sn-tabbar-item.uvue';
 type Mode = 'default' | 'glass' | 'elevate';
 type Tone = 'primary' | 'orange' | 'green';

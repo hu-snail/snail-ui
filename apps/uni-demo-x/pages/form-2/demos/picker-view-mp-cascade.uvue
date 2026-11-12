@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — cascade 模式下 columns 传树形结构，组件按已选路径推导后续列。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const tree = [
   {
     value: 'zj',

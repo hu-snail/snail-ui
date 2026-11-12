@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — readonly: taps are blocked, the score is display-only. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const readonly = ref<number | null>(4);
 </script>
 <template>

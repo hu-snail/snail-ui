@@ -3,6 +3,8 @@
  * Demo: sn-transition (uni-end) — keep node (`destroy` = false).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-transition from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 const keepAlive = ref(true);
 </script>
 <template>

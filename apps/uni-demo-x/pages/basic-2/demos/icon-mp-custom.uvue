@@ -11,6 +11,7 @@
  * 因为 `customStyle` 字符串会覆盖尺寸盒子，这里刻意用它改 `color` 与
  * `background-color`，再用 `customClass` 加边框 / 内边距。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Star, Heart, Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 </script>
 <template>

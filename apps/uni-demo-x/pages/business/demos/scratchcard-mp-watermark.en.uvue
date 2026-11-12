@@ -3,6 +3,7 @@
  * Demo: sn-scratchcard (uni-end) — Watermark: watermark-text / watermark-size /
  * watermark-color.
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const wmRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 
 function resetAll(): void {

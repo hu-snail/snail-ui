@@ -12,7 +12,11 @@
  *          scroll position when going back.
  * safe-area-inset-bottom: the bottom bar container opts into safe-area padding.
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   ArrowRight,
   Bookmark,

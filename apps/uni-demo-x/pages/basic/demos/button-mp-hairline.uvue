@@ -5,6 +5,7 @@
  * `hairline` 只对 `type="default"` 生效（其它类型本来就有语义色描边），
  * 默认 true，置 false 后边框变透明；可与 loading 态叠加。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const busy = ref(false);
 
 function toggleBusy(): void {

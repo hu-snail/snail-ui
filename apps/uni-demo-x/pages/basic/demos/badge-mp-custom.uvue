@@ -10,6 +10,7 @@
  * 角标本身的底色 / 位置仍由 `type` / `bgColor` / `top` / `right` 控制。
  * 这里用 customClass 给包裹容器加虚线框，用 customStyle 加内边距与对齐。
  */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 const items = [
   { value: 3, label: 'three' },
   { value: 12, label: 'twelve' },

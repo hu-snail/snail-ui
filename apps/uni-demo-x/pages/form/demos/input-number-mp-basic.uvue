@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — sn-input-number 基础计数器：min / max 边界、step 步进、precision 精度。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const qty = ref(3);
 </script>
 <template>

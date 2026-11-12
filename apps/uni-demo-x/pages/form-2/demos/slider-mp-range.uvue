@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider — 区间与刻度：range 双滑块返回 [start, end]；marks 支持对象形式。 */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
 const pair = ref<number[]>([20, 60]);
 </script>
 <template>

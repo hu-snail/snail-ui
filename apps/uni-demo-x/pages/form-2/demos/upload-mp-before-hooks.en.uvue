@@ -16,6 +16,7 @@
  * `chooseerror`; the beforeChoose / beforeUpload counters stay at 0 because
  * they need a real picker.
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const lockedUid = 1;

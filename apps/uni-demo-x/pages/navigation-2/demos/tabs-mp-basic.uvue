@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tabs — 基础页签 + v-model（索引与名称两种绑定方式）。 */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 /** 索引绑定：`name` 省略时按注册顺序取下标。 */
 const indexActive = ref(0);

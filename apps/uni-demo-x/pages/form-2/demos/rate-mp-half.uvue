@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — 半星：allowHalf 允许半星评分，v-model 出现 .5。 */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const half = ref<number | null>(2.5);
 </script>
 <template>

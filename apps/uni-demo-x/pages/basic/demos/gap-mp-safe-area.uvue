@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-gap (uni-end) — 底部安全区适配。 */
+import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

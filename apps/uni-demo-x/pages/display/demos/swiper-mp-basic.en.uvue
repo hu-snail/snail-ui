@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — autoplay carousel with captions.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const current = ref(0);
 
 const list = [

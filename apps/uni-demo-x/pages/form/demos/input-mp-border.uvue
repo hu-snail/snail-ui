@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 边框（border）：border 四种取值 + bordered 旧布尔别名（圆角见 radius 场景）。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 </script>
 <template>
   <view class="sn-input-demo">

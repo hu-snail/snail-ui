@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — clear button details (clearTrigger / focusWhenClear). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const always = ref('Always show ×');
 const onFocus = ref('');
 const refocus = ref('Refocus on clear (or not)');

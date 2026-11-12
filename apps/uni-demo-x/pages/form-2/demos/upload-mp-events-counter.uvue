@@ -6,6 +6,7 @@
  * `progress` 目前只是保留事件（组件用 `percent` 渲染遮罩，不逐字节上报）。
  * `show-limit-num=false` 关掉计数，`accept="media"` / `"all"` 是选择器开关。
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const files = ref<UploadFileItem[]>([

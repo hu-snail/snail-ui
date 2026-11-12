@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 可反选：allowUncheck 再点一次取消选中，v-model 回到 undefined。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const uncheckable = ref<string | number | boolean | undefined>('a');
 </script>

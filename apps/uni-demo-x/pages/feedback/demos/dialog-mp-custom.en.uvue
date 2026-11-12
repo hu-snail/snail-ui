@@ -3,6 +3,8 @@
  * Demo: sn-dialog (uni-end) — selector / root-portal / custom-style.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-dialog from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnDialog from '@snui/uni-x/components/sn-dialog/sn-dialog.uvue';
 const open = ref(false);
 </script>
 <template>

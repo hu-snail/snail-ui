@@ -2,6 +2,7 @@
 /**
  * Demo: sn-circle (uni-end) — English shadow of circle-mp-custom-style.
  */
+import SnCircle from '@snui/uni-x/components/sn-circle/sn-circle.uvue';
 const percent = ref(60);
 </script>
 <template>

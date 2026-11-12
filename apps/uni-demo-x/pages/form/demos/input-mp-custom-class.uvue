@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — customClass / customStyle / customInputClass 三个挂载点。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const value = ref('根节点类名 + 内联样式 + 内层 input 类名');
 </script>
 <template>

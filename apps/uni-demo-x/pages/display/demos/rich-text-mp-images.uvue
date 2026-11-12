@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 图片：占位、预览、original-src、失败回退。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
 const images = `
   <p>普通图片点击可预览，缩略图用 <code>original-src</code> 指定高清地址。</p>
   <img src="https://picsum.photos/id/1015/640/360" original-src="https://picsum.photos/id/1015/1280/720" alt="山湖风景" />

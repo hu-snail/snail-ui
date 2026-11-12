@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — caret and selection (cursor / selection-start / selection-end): initial caret and preselected region. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const preselect = ref('Preselected region example');
 </script>
 <template>

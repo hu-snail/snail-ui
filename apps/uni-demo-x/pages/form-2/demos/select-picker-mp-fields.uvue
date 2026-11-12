@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-select-picker — 字段映射：valueKey / labelKey 让组件读取自定义字段名。 */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 /** 用 id / name 当字段名，靠 valueKey / labelKey 映射。 */
 const cities = [
   { id: 'sh', name: '上海' },

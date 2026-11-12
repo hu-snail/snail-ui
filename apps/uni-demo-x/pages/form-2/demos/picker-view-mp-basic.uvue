@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — sn-picker-view 单列滚轮：columns 传字符串数组，tap 某一行即可选中。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const fruits = ['苹果', '香蕉', '樱桃', '葡萄'];
 const value = ref<Array<string | number>>(['苹果']);
 </script>

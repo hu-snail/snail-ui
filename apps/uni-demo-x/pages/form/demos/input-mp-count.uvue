@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 字数计数（showCount）：maxlength + 计数角标。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const counter = ref('hel');
 </script>
 <template>

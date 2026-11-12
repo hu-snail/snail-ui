@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rate — root styling: custom-class + custom-style are appended to the root node. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const styled = ref<number | null>(4);
 </script>
 <template>

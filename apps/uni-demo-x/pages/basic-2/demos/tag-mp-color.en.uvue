@@ -6,6 +6,7 @@
  * `color` overrides the label colour only. `customClass` / `customStyle`
  * append root styling (no dedicated custom demo, shown here too).
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Brand fills: fill and border change together, labels stay white. */
 const brandFills = [
   { label: 'Black card', bgColor: 'var(--sn-mp-color-purple)' },

@@ -11,7 +11,11 @@
  *          tapping a contact opens the profile page (v-show layering keeps
  *          the list scroll position when going back).
  */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 import {
   ChevronRight,
   Mail,

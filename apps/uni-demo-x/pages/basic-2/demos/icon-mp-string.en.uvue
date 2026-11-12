@@ -5,6 +5,8 @@
  * `<SnIcon icon="name" />` resolves registry (registerSnIcons) first, then
  * the built-in catalog. Registering the same name overrides the catalog.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 // Override the built-in `star`: registry wins over the catalog.

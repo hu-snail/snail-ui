@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio-group — 基础单选（单值 v-model）。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const picked = ref<string | number | boolean | undefined>('a');
 </script>

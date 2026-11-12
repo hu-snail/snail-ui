@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-select-picker — scroll into view: `scrollIntoView` scrolls the selected row into view on open; `customContentClass` restyles the content area. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const options = [
   { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' },

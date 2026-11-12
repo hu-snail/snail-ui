@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-date-strip — 自定义日期范围：type=range，首点定起点、再点定终点，越界自动交换。 */
+import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';
 const start = new Date(2024, 5, 26).getTime();
 const range = ref<number | number[] | null>([new Date(2024, 5, 27).getTime()]);
 </script>

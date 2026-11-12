@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — 五种变体：同一语义色下的视觉强度梯度。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** dark 实心 → light 浅底 → plain 描边 → dashed 虚线 → text 纯文字。 */
 const variants = ['dark', 'light', 'plain', 'dashed', 'text'] as const;
 

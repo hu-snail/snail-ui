@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 软键盘提示（inputmode）：inputmode 唤起对应软键盘。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const phone = ref('');
 const search = ref('');
 </script>

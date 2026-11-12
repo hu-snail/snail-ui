@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-date-strip — 自定义日期文案：formatter 在日号下方注入价格文案。 */
+import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';
 import type { DateStripDayItem } from '@snui/uni-x/components/sn-date-strip/sn-date-strip-types';
 
 const start = new Date(2024, 5, 26).getTime();

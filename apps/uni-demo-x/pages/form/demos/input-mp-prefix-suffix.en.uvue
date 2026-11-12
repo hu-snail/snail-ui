@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — prefixIcon / suffixIcon name mode + cssIcon class mode. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { ChevronRight, Search, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

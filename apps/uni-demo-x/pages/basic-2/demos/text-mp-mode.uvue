@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — mode 处理：phone / name / price / date。 */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

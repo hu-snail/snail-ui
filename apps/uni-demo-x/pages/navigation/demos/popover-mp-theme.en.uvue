@@ -7,6 +7,9 @@
  * dark border) — arrow and border follow the theme with no extra styling;
  * the light pane keeps the page-level values.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnConfigProvider from '@snui/uni-x/components/sn-config-provider/sn-config-provider.uvue';
+import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
 const darkOpen = ref(false);
 const lightOpen = ref(false);
 </script>

@@ -6,6 +6,8 @@
  * normally be cut off. Wrapped in `sn-root-portal`, the badge stays visible
  * because the layer is fixed to the viewport.
  */
+import SnRootPortal from '@snui/uni-x/components/sn-root-portal/sn-root-portal.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const visible = ref(true);
 </script>
 <template>

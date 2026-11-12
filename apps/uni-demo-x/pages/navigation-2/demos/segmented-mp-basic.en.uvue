@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-segmented — basic segmented control with v-model. */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const period = ref('week');
 const options = ['day', 'week', 'month'];
 </script>

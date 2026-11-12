@@ -3,6 +3,7 @@
  * Demo: sn-liquid (uni-end) — States and edges: 0 / 100 / out-of-range
  * clamping / duration=0 instant vs slow / custom center slot.
  */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
 const percent = ref(50);
 const current = ref(50);
 

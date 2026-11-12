@@ -5,6 +5,8 @@
  * closeOnClickModal / safeAreaInsetBottom / zIndex / rootPortal /
  * customClass / customStyle 控制弹层行为与外观。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

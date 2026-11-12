@@ -5,6 +5,8 @@
  * beforeConfirm 只放行浙江分支，结果用一个 sn-cell 卡片行回报
  * （守卫：待确认 / 已允许 / 只支持浙江）。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

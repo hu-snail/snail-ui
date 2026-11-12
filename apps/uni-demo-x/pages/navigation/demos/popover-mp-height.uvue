@@ -9,6 +9,8 @@
  * - glyph boxes follow `--sn-popover-menu-icon-size`, so a bigger icon grows
  *   the row instead of overflowing it — override per instance via `custom-style`
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
 import { FileText } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const normalOpen = ref(false);

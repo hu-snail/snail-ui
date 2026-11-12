@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — With `cascade`, `columns` is a tree and the following columns are derived from the path. */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const tree = [
   {
     value: 'zj',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-backtop — theme 语义主题，图标与文字自动反转为 on-primary。 */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 const themes = ['default', 'primary', 'success', 'warning', 'danger', 'info'] as const;
 
 /** 常显：直接越过默认阈值 300。 */

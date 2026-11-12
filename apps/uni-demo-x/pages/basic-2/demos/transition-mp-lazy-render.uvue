@@ -6,6 +6,8 @@
  * 用 `display: none` 隐藏。置 true 后，插槽内容要等到第一次 `show=true` 才真正
  * 渲染（首屏省一次子树构建），之后即使收起也保持已渲染。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
 /** lazy-render=true 的实例：首屏不渲染插槽。 */
 const lazyShown = ref(false);
 const lazyEntered = ref(false);

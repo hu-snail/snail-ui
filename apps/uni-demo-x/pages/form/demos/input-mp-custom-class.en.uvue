@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — customClass / customStyle / customInputClass mount points. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const value = ref('Root class + inline style + native input class');
 </script>
 <template>

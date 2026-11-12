@@ -3,7 +3,9 @@
  * Demo: sn-form-item — label 内联图标：iconName 走 sn-icon 注册表，
  * iconData 直接传入冻结的 SVG 数据，iconSize 控制图标尺寸。
  */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Bell, Settings, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

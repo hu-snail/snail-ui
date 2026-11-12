@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — 加载态：loading 在旋钮内显示 spinner，loadingProps 配置 spinner。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const a = ref(true);
 </script>
 <template>

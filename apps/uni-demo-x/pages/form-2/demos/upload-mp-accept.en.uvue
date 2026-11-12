@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-upload — picker type: `accept` switches the picker (image / video / file). */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const videoFiles = ref<UploadFileItem[]>([]);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — Single-column roller: pass a string array as `columns` and tap a row to select it. */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const fruits = ['Apple', 'Banana', 'Cherry', 'Grape'];
 const value = ref<Array<string | number>>(['Apple']);
 </script>

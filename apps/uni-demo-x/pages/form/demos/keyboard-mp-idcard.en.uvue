@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — ID-number keyboard: `extra-key="X"` (the checksum digit), maxlength 18. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const idNumber = ref('');
 const open = ref(false);
 </script>

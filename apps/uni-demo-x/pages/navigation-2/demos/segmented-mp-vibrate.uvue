@@ -4,6 +4,7 @@
  *
  * 切换时调用 `uni.vibrateShort`，H5 / 部分宿主没有振动马达时静默跳过，不影响点击。
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const size = ref('md');
 const sizeOptions = [
   { value: 'sm', label: '小' },

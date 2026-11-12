@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — every supported `type` variant (uni-end). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const form = reactive({
   text: '',
   email: 'ada@aui.dev',

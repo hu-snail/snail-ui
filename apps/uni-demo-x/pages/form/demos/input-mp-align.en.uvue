@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — right alignment (alignRight) for numeric / amount fields. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const amount = ref('12500.00');
 </script>
 <template>

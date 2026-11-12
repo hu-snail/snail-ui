@@ -3,6 +3,7 @@
  * Demo: sn-upload — 三层样式挂载点：customEvokeClass 落在选择瓦片上，
  * customPreviewClass 落在每个文件瓦片上，customClass / customStyle 落在根节点上。
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const photos = ref<UploadFileItem[]>([

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-index-bar — 自定义分组内容与 change 联动。 */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
 const active = ref('A');
 const groups = [

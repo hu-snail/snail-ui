@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — icon glyphs: activeActionIcon / inactiveActionIcon (knob) and activeIcon / inactiveIcon (rail). */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Check, Eye, Heart, X } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

@@ -6,6 +6,7 @@
  * 因为设备宽度不同而错位。custom-class / custom-style 落在根节点，
  * 用来加内联的可见背景，便于确认间隔真的占位。
  */
+import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

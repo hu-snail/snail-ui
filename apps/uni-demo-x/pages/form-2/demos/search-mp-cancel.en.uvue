@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — cancel button: `cancelTxt` overrides the label and the `cancel` event reports the payload; `hideCancel` removes the button. */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const query = ref('snail');
 const lastCancel = ref('—');
 </script>

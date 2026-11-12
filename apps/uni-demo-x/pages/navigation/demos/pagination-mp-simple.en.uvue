@@ -7,6 +7,7 @@
  * than jumping. `show-icon` makes both step buttons render the built-in
  * ChevronLeft / ChevronRight arrows.
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 const page = ref(3);
 </script>
 <template>

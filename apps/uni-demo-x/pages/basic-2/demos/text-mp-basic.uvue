@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — 主题类型 + 粗体 + 装饰线。 */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -4,6 +4,7 @@
  *
  * `status` 显式覆盖由 `active` 推导出的状态（finished / process / error / wait）。
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

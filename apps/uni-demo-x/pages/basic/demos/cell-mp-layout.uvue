@@ -6,6 +6,7 @@
  * title-width 固定标题列、layout=vertical 把内容换到标题下方、
  * insert / border=false 两种分组外观对比。
  */
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 </script>
 <template>

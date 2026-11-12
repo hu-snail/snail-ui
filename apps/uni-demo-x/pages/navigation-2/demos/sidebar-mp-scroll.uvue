@@ -11,6 +11,7 @@
  * - 点条目走 `before-change`（只拦用户点击，滚动联动不经过它）把 `scroll-into-view`
  *   指向目标区块，实现「点左侧 → 右内容滚过去」
  */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 /** 内容区区块：`id` 同时是侧边栏项的 anchor 与 scroll-into-view 的目标。 */
 const sections = [

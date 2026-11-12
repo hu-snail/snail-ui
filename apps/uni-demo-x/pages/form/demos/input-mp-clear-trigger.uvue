@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 清空按钮细节（clearTrigger / focusWhenClear）。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const always = ref('始终显示 ×');
 const onFocus = ref('');
 const refocus = ref('清空后回焦 / 不回焦');

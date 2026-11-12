@@ -5,6 +5,8 @@
  * 触发入口用 sn-cell 卡片行（card + is-link）：标题是字段名，右侧显示已选
  * 文案（未选时走 placeholder），整行可点。
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

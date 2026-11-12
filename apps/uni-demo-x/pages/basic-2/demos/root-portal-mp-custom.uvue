@@ -11,6 +11,8 @@
  * 整块手机屏幕；为了在手机壳内演示，demo 用 customClass 把它改成
  * `position: absolute`（仅预览需要，业务代码不要这么写）。
  */
+import SnRootPortal from '@snui/uni-x/components/sn-root-portal/sn-root-portal.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const visible = ref(true);
 </script>
 <template>

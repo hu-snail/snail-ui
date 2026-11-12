@@ -2,6 +2,7 @@
 /**
  * Demo: sn-barcode (uni-end) — 基础用法：12 位输入自动补算校验位。
  */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
 import type { SnBarcodeEncoded } from '@snui/uni-x/components/sn-barcode/sn-barcode-types';
 
 const displayText = ref('—');

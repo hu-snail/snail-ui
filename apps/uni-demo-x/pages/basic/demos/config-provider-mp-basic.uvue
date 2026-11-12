@@ -5,6 +5,9 @@
  * Shows the containment guarantee: the wrapper carries the skin class, and a
  * sibling outside it stays untouched.
  */
+import SnConfigProvider from '@snui/uni-x/components/sn-config-provider/sn-config-provider.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

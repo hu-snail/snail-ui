@@ -7,6 +7,7 @@
  *
  * 文案与 fab-mp-disabled.en.vue 对等。
  */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
 </script>
 <template>
   <view class="sn-demo sn-fab-demo__stage">

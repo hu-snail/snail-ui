@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-checkbox — 指示器位置与选中态（indicatorPlacement / checkedStyle）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
 const topRight = ref<Array<string | number | boolean>>(['a']);
 const bottomRight = ref<Array<string | number | boolean>>(['a']);

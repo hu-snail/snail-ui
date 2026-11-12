@@ -8,6 +8,7 @@
  * 优先级：扁平的 `loading-color` / `loading-size` 先赢；没设时才回落到
  * `loading-props.color` / `loading-props.size`。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 };
 </script>
 <template>

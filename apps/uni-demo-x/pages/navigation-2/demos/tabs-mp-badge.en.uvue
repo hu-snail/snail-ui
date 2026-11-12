@@ -9,7 +9,9 @@
  *   - `showZero` renders `0` too (0 is suppressed by default)
  *   - `hidden` hides the marker but keeps the content
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const active = ref(0);
 const unread = ref(12);
 const showZero = ref(false);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (Cell 列表化样式). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-button-demo">

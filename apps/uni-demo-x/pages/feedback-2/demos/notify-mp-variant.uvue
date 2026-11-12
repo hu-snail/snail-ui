@@ -3,6 +3,8 @@
  * Demo: sn-notify (uni-end) — floating variant, closable, bottom anchor.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notify from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNotify from '@snui/uni-x/components/sn-notify/sn-notify.uvue';
 const floatingOpen = ref(false);
 const closableOpen = ref(false);
 const bottomOpen = ref(false);

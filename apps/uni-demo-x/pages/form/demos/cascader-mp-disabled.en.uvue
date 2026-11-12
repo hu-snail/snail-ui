@@ -7,6 +7,8 @@
  * drilling into a disabled branch does not open the next level and a disabled
  * leaf never confirms.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const tree = [
   {
     value: 'zj',

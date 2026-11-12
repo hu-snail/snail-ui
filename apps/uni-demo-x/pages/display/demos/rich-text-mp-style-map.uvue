@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 样式映射（tagStyle / classStyles）。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
 const styled = `
   <p class="eyebrow">YOU ARE INVITED</p>
   <h2>一起，去见山</h2>

@@ -3,8 +3,13 @@
  * Demo: sn-form — 字段类型组合：文本 / 数字 / 密码 / 多行 / 嵌套路径 /
  * 多选 / 开关，一个表单里跑完整校验。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
 import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 import type { SnCheckboxValue } from '@snui/uni-x/components/sn-checkbox/sn-checkbox-types';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 

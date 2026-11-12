@@ -3,6 +3,7 @@
  * Demo: sn-avatar (uni-end) — 在线 / 离线状态（additive）。
  * 网格布局：头像在上，标签在下。
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
 </script>
 <template>

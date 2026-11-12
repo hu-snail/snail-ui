@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — cascade 让 columns 变成树，确认时返回完整路径；beforeConfirm 返回 false 时弹层不关闭、v-model 不写。 */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const tree = [
   {
     value: 'zj',

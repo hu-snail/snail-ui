@@ -1,6 +1,9 @@
 <script setup lang="ts">
 /** Demo: sn-form — 基础用法：model + v-model + 提交时校验。 */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const form = reactive({ name: '', email: '', phone: '' });

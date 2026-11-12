@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-collapse — view-more mode (clamped to 2 lines). */
 import { FileText } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const expanded = ref(false);
 const longText =

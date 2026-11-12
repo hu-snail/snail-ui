@@ -16,6 +16,8 @@
  * Usage:
  *   <sn-ai-chat :messages="messages" :run="runTurn" @update:messages="onMessages" />
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { SendIcon, StopIcon } from '../shared/icons';
 import {
   applyStreamDelta,

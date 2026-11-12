@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — switch colors: `activeColor` / `inactiveColor` override the on / off rail colors. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const colored = ref(true);
 </script>
 <template>

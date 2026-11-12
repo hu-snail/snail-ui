@@ -2,6 +2,7 @@
 /**
  * Demo: sn-navbar — English shadow of navbar-mp-disabled.
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 const lastAction = ref('—');
 
 function report(label: string): void {

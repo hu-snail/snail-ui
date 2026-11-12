@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — 根节点样式：customClass / customStyle 挂根节点。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const b = ref(false);
 </script>
 <template>

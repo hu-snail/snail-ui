@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — 容差：tolerance 放宽右边缘容差（px）。 */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const state = ref('待验证');
 const onSuccess = (): void => {
   state.value = '已通过';

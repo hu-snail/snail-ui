@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 自定义类名与样式：customLabelClass 落在标签节点，customClass / customStyle 落在根节点。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const labeled = ref<string | number | boolean | undefined>('a');
 const styled = ref<string | number | boolean | undefined>('b');

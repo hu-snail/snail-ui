@@ -3,6 +3,7 @@
  * Demo: sn-radio — checked colors: `checkedColor` / `uncheckedColor` flow down
  * from the group, and a per-option `checkedColor` overrides the group value.
  */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const colored = ref<string | number | boolean | undefined>('a');
 const overridden = ref<string | number | boolean | undefined>('a');

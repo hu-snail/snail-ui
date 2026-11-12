@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — required asterisk (asteriskPosition / hideAsterisk): move it right or hide it entirely. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const asteriskForm = reactive({ email: '', nickname: '' });
 </script>
 <template>

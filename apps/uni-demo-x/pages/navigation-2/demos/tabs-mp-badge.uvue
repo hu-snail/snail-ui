@@ -9,7 +9,9 @@
  *   - `showZero` 让 `0` 也渲染出来（默认 0 不显示角标）
  *   - `hidden` 隐藏角标但保留内容
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const active = ref(0);
 const unread = ref(12);
 const showZero = ref(false);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — basic usage + the search event. */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const query = ref('');
 const lastSearch = ref('—');
 </script>

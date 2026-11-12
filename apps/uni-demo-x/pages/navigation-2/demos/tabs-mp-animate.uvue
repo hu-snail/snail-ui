@@ -5,6 +5,7 @@
  * - `animated` 开启底部条过渡，同时把 `scroll-with-animation` 打开（选中项平滑滚进可视区）
  * - `duration` 控制过渡时长（ms），swiper 模式下同时是内容区滑动时长
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const animatedActive = ref(0);
 </script>

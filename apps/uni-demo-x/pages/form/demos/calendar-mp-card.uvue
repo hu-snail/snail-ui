@@ -7,6 +7,8 @@
  * 回显三种模式已确认的值。
  */
 import { Calendar, Check, Filter } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
 

@@ -5,6 +5,7 @@
  * - `icon` 接 IconData 数据或已注册 / 内置图标名，尺寸走 `--sn-mp-icon-size-small`
  * - `icon-image` 接图片地址（URL / base64），优先级高于 `icon`
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 import { Home, Search, Star, Heart } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

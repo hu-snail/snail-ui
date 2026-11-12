@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 区间：range 双 knob，中间填充。 */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
 const price = ref<number[]>([120, 480]);
 </script>
 <template>

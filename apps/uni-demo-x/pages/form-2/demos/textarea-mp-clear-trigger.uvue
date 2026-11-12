@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — clearTrigger 控制 × 显示时机，focusWhenClear 控制清空后是否回焦。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const always = ref('始终显示 × 的文本');
 const onFocus = ref('聚焦时才显示 × 的文本');
 const keepFocus = ref('清空后自动回到聚焦状态');

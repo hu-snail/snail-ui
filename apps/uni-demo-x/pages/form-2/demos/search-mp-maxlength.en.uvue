@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-search — character cap: `maxlength` limits the typeable characters (`-1` = unlimited). */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const limited = ref('');
 </script>
 <template>

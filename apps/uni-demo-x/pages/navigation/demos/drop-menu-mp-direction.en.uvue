@@ -16,6 +16,7 @@
  * positioning context inside the demo.
  */
 import { ArrowDown, Clock, Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const downValue = ref('default');
 const upValue = ref('default');
 

@@ -4,6 +4,7 @@
  * is registered below); `icon-prefix` is informational parity and `color` /
  * `active-color` override the inactive and active colors.
  */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Heart } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

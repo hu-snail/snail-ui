@@ -2,6 +2,7 @@
 /**
  * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-keys.
  */
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
 const value = ref('');
 
 /** Renamed fields: label-key="name" / value-key="id". */

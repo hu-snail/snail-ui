@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — compact: no border, no background — for inline form rows. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const grow = ref('This textarea grows with its content.');
 </script>
 <template>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — 标签列宽（titleWidth）：与 labelWidth 共用一条继承链（titleWidth 优先）。 */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const titleForm = reactive({ name: '', phone: '' });

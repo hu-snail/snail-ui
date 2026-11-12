@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-navbar — basic bars: title plus left / right actions. */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

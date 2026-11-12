@@ -5,6 +5,7 @@
  * `custom-class` 追加在根节点上（和 `sn-sort-button` 并列），`custom-style`
  * 是根节点的内联样式；两者都可以覆盖内边距 / 底色 / 圆角。
  */
+import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';
 const price = ref<1 | 0 | -1>(0);
 const sales = ref<1 | 0 | -1>(1);
 </script>

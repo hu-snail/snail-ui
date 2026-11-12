@@ -4,6 +4,7 @@
  * pressure / maxWidth / minWidth / minSpeed are pressure-parity props (the speed →
  * width simulation is not implemented); `lineWidth` sets the stroke width directly.
  */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

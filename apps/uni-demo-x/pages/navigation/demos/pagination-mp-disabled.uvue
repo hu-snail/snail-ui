@@ -7,6 +7,7 @@
  * - 边界禁用：第 1 页时上一页按钮、最后一页时下一页按钮自带禁用样式
  * - `show-icon` 保留内置箭头，禁用时图标随文字一起变灰
  */
+import SnPagination from '@snui/uni-x/components/sn-pagination/sn-pagination.uvue';
 const frozenPage = ref(3);
 /** 落在第 1 页 → 上一页按钮进入边界禁用。 */
 const firstPage = ref(1);

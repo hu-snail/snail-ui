@@ -6,6 +6,7 @@
  * a coloured border). It defaults to true; false makes the border transparent.
  * It stacks with the loading state.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const busy = ref(false);
 
 function toggleBusy(): void {

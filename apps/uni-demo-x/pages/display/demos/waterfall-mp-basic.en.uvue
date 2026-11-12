@@ -4,6 +4,8 @@
  * Per AUI-DOCS-016: imports the real @snui/uni components from their SFC
  * source. Photos are fixed-ratio seeds so the pack is reproducible.
  */
+import SnWaterfall from '@snui/uni-x/components/sn-waterfall/sn-waterfall.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 interface Photo {
   id: string;
   title: string;

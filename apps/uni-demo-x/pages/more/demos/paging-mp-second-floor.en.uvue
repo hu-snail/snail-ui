@@ -10,6 +10,8 @@
  * - The pull area and the floor share a dark theme (loading/theme capsules
  *   live on the basic-usage demo)
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   Bell,
   Calendar,

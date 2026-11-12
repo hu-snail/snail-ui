@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 可清空：clearable 在右侧显示 × 一键清空。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const clearable = ref('点右侧 × 清空这段文字');
 </script>
 <template>

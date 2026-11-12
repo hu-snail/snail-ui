@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-badge (uni-end) — 偏移与自定义底色（top / right / bgColor）。 */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 </script>
 <template>
   <view class="sn-demo">

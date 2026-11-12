@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slide-verify — 文案：text / successText 覆盖内置提示与成功文案。 */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

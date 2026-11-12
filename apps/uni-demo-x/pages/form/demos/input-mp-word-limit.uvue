@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 字数统计：showWordLimit（showCount 的别名）配合 maxlength。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const nickname = ref('snail');
 const bio = ref('短');
 </script>

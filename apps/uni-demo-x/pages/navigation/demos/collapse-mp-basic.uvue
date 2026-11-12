@@ -6,6 +6,7 @@
  * 箭头与标题图标共享同一个 `--sn-mp-icon-size-*` 尺寸 token。
  */
 import { CreditCard, FileText, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref(['a']);
 </script>

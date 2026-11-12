@@ -8,6 +8,7 @@
  * placeholders on the icon node to prove the generated classes land (no
  * pseudo-elements).
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** Iconfont glyphs: iconPrefix + cssIcon build sn-demo-tag-icon-{name}. */
 const glyphs = [{ icon: 'star' }, { icon: 'heart' }, { icon: 'check' }] as const;
 </script>

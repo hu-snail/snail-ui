@@ -6,6 +6,8 @@
  * - sn-segmented capsules switch refresherLoadingType (spinner shape) and
  *   refresherBackground / refresherTextColor / refresherIconColor live
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 import type { LoadingType } from '@snui/uni-x/components/sn-loading/sn-loading-types';
 
 interface DemoRow {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-segmented — 主题（theme）。 */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const theme = ref('outline');
 const options = [
   { value: 'card', label: '卡片' },

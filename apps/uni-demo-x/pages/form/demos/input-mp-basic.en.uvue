@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — basic v-model binding (uni-end). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const value = ref('hello');
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — 时间列边界与秒列：minMinute / maxMinute / useSecond / minSecond / maxSecond。 */
+import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
 const quarter = ref<string | number>('10:30');
 const withSeconds = ref<string | number>('10:30:15');
 </script>

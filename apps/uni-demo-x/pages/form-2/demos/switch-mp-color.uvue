@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — 开关配色：activeColor / inactiveColor 覆盖开与关的轨道颜色。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const colored = ref(true);
 </script>
 <template>

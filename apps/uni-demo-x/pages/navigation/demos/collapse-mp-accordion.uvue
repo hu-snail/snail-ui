@@ -4,6 +4,7 @@
  *
  * accordion 打开后 v-model 变为字符串，同时只展开一项。
  */
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
 import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
 const open = ref('a');
 </script>

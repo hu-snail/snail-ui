@@ -5,6 +5,8 @@
  * `<SnIcon icon="name" />` 依次查 registry（registerSnIcons）→ 内置目录。
  * 同名注册可覆盖目录条目 —— 品牌定制不改组件。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 // 覆盖内置 `star`：registry 优先级高于目录。

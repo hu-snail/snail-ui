@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker-view — roller geometry: itemHeight is the row height (px design units → rpx) and visible-item-count the number of visible rows. */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 /** Row height 32 / 5 visible rows: a tighter roller. */
 const dense = ref<Array<string | number>>(['Shanghai']);
 </script>

@@ -8,6 +8,7 @@
  * 预览专用：真实运行时的根节点是 `position: fixed`，会盖住整页；
  * `custom-class` 落到根节点，把预览里的引导层固定到这块 stage 内。
  */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
 const plainVisible = ref(false);
 const plainCurrent = ref(0);
 const plainSteps = [{ content: 'mask=false：没有蒙层，只有引导面板。' }, { content: '第二步。' }];

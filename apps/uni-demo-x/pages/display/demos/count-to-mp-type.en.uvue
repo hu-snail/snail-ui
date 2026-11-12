@@ -3,6 +3,7 @@
  * Demo: sn-count-to (uni-end) — type colors (the five `type` values).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-to from its SFC source.
  */
+import SnCountTo from '@snui/uni-x/components/sn-count-to/sn-count-to.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

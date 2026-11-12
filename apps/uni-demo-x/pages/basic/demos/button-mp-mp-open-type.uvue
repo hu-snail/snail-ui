@@ -21,6 +21,7 @@
  * 平台行为；小程序运行时读到同一个属性才真正走平台 API。下面用代码 + 说明展示
  * 传了什么值，不需要读 DOM。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 /** open-type=contact 的客服会话配置（小程序侧生效）。 */
 const contactConfig = ref({
   sessionFrom: 'snui-demo-session',

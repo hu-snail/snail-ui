@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 键盘保持与页面上推（holdKeyboard / adjustPosition / always-embed）。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const held = ref('');
 </script>
 <template>

@@ -3,8 +3,8 @@
  *
  * 1. manifest.json 为 uni-app x 蒸汽模式形态（`uni-app-x.vapor: true`）。
  * 2. pages.json 的每个页面（主包 + subPackage）都有对应 .uvue 文件。
- * 3. 生成树中每个 `<sn-*>` 标签都能被 easycom 正则解析到
- *    `@snui/uni-x/dist/components/…` 实体（组件产物已生成）。
+ * 3. 生成树中每个 `<sn-*>` 标签都能被显式 .uvue 导入或 easycom 正则
+ *    解析到 `@snui/uni-x/dist/components/…` 实体（组件产物已生成）。
  * 4. 无 `.vue` 页面残留、无 `@snui/uni-src` 引用、无 demo-bridge 引用。
  *
  * 运行：pnpm -F @snui/uni-demo-x check
@@ -19,7 +19,7 @@ const appRoot = resolve(here, '..');
 const uniXDist = resolve(appRoot, '../../packages/uni-x/dist');
 
 const problems = [];
-const notes = { pages: 0, uvue: 0, tags: new Set(), resolved: 0 };
+const notes = { pages: 0, uvue: 0, tags: new Set(), resolved: 0, explicit: 0 };
 
 function walk(dir, cb) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -96,7 +96,10 @@ for (const dir of tagScanDirs) {
     for (const m of tpl.matchAll(/<((?:sn-)[a-z0-9-]+|(?:Sn)[A-Za-z0-9]+)[\s/>]/g)) {
       const tag = toKebab(m[1]);
       notes.tags.add(tag);
-      if (explicitImports.has(tag)) continue;
+      if (explicitImports.has(tag)) {
+        notes.explicit++;
+        continue;
+      }
       const entity = join(uniXDist, 'components', tag, `${tag}.uvue`);
       if (!existsSync(entity)) {
         if (!unresolved.has(tag)) unresolved.set(tag, file);
@@ -153,5 +156,6 @@ if (problems.length > 0) {
 }
 console.log(
   `[check-x] OK — ${notes.pages} pages / ${notes.uvue} .uvue / ` +
-    `${notes.resolved}/${notes.tags.size} easycom tags resolved (vapor manifest)`,
+    `${notes.explicit}+${notes.resolved}/${notes.tags.size} tags resolved ` +
+    `(explicit import + easycom fallback, vapor manifest)`,
 );

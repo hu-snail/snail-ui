@@ -3,6 +3,7 @@
  * Demo: sn-count-down (uni-end) — millisecond rendering (`millisecond`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
  */
+import SnCountDown from '@snui/uni-x/components/sn-count-down/sn-count-down.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

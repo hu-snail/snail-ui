@@ -2,6 +2,8 @@
 /**
  * Demo: sn-tooltip (uni-end) — English shadow of tooltip-mp-disabled.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTooltip from '@snui/uni-x/components/sn-tooltip/sn-tooltip.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

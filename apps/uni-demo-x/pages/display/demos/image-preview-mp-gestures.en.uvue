@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-image-preview (uni-end) — WeChat-grade gestures: pinch / double-tap / drag-down dismiss. */
+import SnImagePreview from '@snui/uni-x/components/sn-image-preview/sn-image-preview.uvue';
 const images = [
   'https://picsum.photos/id/1015/800/1200',
   'https://picsum.photos/id/1035/800/1000',

@@ -6,6 +6,7 @@
  * 虚线 / 点线由真实元素 + `border-style` 绘制，不使用伪元素。
  * `dot` 点状步骤条不渲染连接线，`connector` 在该模式下无效果。
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

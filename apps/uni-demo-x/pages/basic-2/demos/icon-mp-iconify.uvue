@@ -6,6 +6,8 @@
  * 卸载中断）。首次渲染需要网络；失败降级为空渲染 + 结构化警告。
  * 无网环境 / 强离线 app 用 `configSnIcons({ iconify: false })` 关闭。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 /** 展示的第三方图标目标（collection:name）。 */
 const targets = [
   { target: 'mdi:home', label: 'mdi:home', color: '#0052d9' },

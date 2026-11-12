@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — clear button (clearable): shows × once a value is set. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const clearable = ref('Click × to clear me');
 </script>
 <template>

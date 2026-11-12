@@ -8,6 +8,9 @@
  * - The sheet height is host-owned (640rpx); closing the popup destroys the
  *   list and resets its state
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopup from '@snui/uni-x/components/sn-popup/sn-popup.uvue';
 interface DemoRow {
   id: number;
   label: string;

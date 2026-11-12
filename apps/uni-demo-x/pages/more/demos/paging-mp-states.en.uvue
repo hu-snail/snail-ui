@@ -9,6 +9,8 @@
  *   retries the same page
  * - reload() skips the pull-down animation; refresh() plays it
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const TOTAL = 20;
 const PAGE_SIZE = 5;
 const list = ref<string[]>([]);

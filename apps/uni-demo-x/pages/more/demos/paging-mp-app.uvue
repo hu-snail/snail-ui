@@ -10,7 +10,11 @@
  *          v-show 叠层切换，返回后一级列表滚动位置保留。
  * safe-area-inset-bottom：底部栏容器开启安全区适配。
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import {
   ArrowRight,
   Bookmark,

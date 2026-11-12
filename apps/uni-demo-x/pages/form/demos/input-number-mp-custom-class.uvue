@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — customClass / customStyle 挂载点。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const a = ref(2);
 const b = ref(4);
 </script>

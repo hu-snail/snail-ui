@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 步进吸附（stepStrictly）：step=3 时值吸附到 0/3/6/9…。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const snapped = ref(0);
 </script>
 <template>

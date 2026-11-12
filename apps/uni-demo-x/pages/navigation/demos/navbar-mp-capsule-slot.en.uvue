@@ -2,6 +2,8 @@
 /**
  * Demo: sn-navbar — English shadow of navbar-mp-capsule-slot.
  */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { MoreHorizontal } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const lastAction = ref('—');

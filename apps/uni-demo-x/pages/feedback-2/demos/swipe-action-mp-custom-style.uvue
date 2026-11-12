@@ -3,6 +3,7 @@
  * Demo: sn-swipe-action (uni-end) — custom-class / custom-style.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
+import SnSwipeAction from '@snui/uni-x/components/sn-swipe-action/sn-swipe-action.uvue';
 const enabled = ref<'left' | 'close' | 'right'>('close');
 </script>
 <template>

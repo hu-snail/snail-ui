@@ -5,6 +5,7 @@
  * `value-key` / `label-key` / `children-key` let the component read custom field
  * names, so business data need not be reshaped into `value` / `label` / `children`.
  */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 /** Field names are not value / label: valueKey / labelKey point at the real ones. */
 const cities = [
   { id: 'sh', name: 'Shanghai' },

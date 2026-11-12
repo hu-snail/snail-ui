@@ -5,6 +5,7 @@
  * `allow-same-day`: in range mode the start and end may be the same day
  * (tap one day twice → `[d, d]`).
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 5, 30).getTime();
 

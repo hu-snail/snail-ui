@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — clearTrigger controls when × shows; focusWhenClear controls re-focus after clear. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const always = ref('The × is always visible here');
 const onFocus = ref('The × only appears while focused');
 const keepFocus = ref('The field re-focuses after clearing');

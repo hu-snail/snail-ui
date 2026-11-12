@@ -9,6 +9,7 @@
  * `--sn-mp-icon-size-*`; `iconColor` overrides the stroke colour (the default
  * `currentColor` follows the step state).
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 import { Home, ShoppingCart, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

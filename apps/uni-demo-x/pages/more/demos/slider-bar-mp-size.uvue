@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 尺寸：size="small" / size="large"。 */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
 const volume = ref(64);
 </script>
 <template>

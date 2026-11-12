@@ -7,6 +7,8 @@
  * network; failures degrade to an empty render + structured warning.
  * Disable with `configSnIcons({ iconify: false })` for offline apps.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 /** Third-party targets shown (collection:name). */
 const targets = [
   { target: 'mdi:home', label: 'mdi:home', color: '#0052d9' },

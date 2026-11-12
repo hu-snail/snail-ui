@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — keyboard hold and page push (holdKeyboard / adjustPosition / always-embed). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const held = ref('');
 </script>
 <template>

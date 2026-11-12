@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — immediate change (immediateChange): emits change on every roll. */
+import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
 const instant = ref<string | number>(new Date(2024, 5, 15).getTime());
 const changes = ref(0);
 </script>

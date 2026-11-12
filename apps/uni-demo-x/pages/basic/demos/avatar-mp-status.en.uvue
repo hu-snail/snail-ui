@@ -3,6 +3,7 @@
  * Demo: sn-avatar (uni-end) — presence status (additive).
  * Grid layout: avatar on top, label below.
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
 </script>
 <template>

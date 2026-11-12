@@ -19,6 +19,7 @@
  * Usage:
  *   <sn-ai-message :message="message" @retry="onRetry" />
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import {
   CheckIcon,

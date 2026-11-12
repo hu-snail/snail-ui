@@ -3,6 +3,7 @@
  * Demo: sn-qr-code (uni-end) — 自定义颜色（colorDark / colorLight）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
  */
+import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

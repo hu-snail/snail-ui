@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-plate-input — tap the boxes to raise the shared car keyboard (province → letters auto-switch, hold-to-repeat delete). */
+import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';
 const plate = ref('');
 </script>
 <template>

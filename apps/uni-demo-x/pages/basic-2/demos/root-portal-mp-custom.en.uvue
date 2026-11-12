@@ -12,6 +12,8 @@
  * demo uses customClass to make it `position: absolute` — do not do this in
  * application code.
  */
+import SnRootPortal from '@snui/uni-x/components/sn-root-portal/sn-root-portal.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const visible = ref(true);
 </script>
 <template>

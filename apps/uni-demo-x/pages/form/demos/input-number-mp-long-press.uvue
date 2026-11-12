@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 长按连加（longPress）：按住按钮连续加减。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const value = ref(0);
 </script>
 <template>

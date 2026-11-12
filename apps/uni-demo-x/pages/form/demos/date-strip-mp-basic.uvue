@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-date-strip — 基础用法：单选，点选即写 v-model。 */
+import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';
 const start = new Date(2024, 5, 26).getTime();
 const date = ref<number | number[] | null>(new Date(2024, 5, 28).getTime());
 </script>

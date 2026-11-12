@@ -9,6 +9,7 @@
  * icon-size tiers. Precedence: slot > iconUrl > object / catalog name >
  * cssIcon font glyph.
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 import { Gift, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** Bitmap icons share the same size tiers as vector icons. */

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 基础用法：label + showValue 显示读数，format 控制读数格式。 */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
 const volume = ref(64);
 const progress = ref(35);
 </script>

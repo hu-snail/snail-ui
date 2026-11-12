@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — the customClass / customStyle / customTextareaClass mount points. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const value = ref('Root class + inline style + inner textarea class');
 </script>
 <template>

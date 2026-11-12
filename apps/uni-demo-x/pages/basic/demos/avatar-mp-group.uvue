@@ -3,6 +3,8 @@
  * Demo: sn-avatar-group (uni-end) — 按场景行卡布局：左标签 + 右头像组。
  * 场景：基础叠层 / 截断计数 / 自定义折叠文本 / 竖向排列。
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+import SnAvatarGroup from '@snui/uni-x/components/sn-avatar-group/sn-avatar-group.uvue';
 /** 5 个演示头像（picsum 按种子稳定取图）。 */
 const users = [1, 2, 3, 4, 5].map((n) => `https://picsum.photos/seed/snui-avatar-${n}/96/96`);
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-avatar (uni-end) — 图片 / 文字 / 图标 三种内容层。 */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

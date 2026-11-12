@@ -3,6 +3,7 @@
  * Demo: sn-liquid (uni-end) — Basic usage: percent drives the water level,
  * v-model:current reads back the transitioning value live.
  */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
 const percent = ref(30);
 const current = ref(30);
 

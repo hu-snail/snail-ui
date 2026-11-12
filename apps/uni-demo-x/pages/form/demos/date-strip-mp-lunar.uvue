@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-date-strip — 农历显示：show-lunar 在日号下方铺农历角标，初一显示月名。 */
+import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';
 const start = new Date(2025, 6, 25).getTime();
 const date = ref<number | number[] | null>(new Date(2025, 6, 28).getTime());
 </script>

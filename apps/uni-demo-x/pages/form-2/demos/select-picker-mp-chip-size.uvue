@@ -3,6 +3,7 @@
  * Demo: sn-select-picker — chip 尺寸与确认：selectSize 控制 chip 尺寸档位，
  * showConfirm=false 隐藏确认按钮，confirmButtonText 覆盖确认文案。
  */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const cities = [
   { id: 'sh', name: '上海' },
   { id: 'bj', name: '北京' },

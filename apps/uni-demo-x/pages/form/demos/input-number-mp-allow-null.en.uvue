@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — nullable input (allowNull): the field may stay empty; placeholder covers it. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const nullable = ref<string | number>('');
 </script>
 <template>

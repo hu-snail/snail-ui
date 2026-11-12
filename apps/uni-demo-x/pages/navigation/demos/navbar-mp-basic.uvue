@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-navbar — 基础导航栏：标题 + 左右按钮。 */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

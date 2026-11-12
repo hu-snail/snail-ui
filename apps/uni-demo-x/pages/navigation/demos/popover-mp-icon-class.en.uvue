@@ -2,6 +2,8 @@
 /**
  * Demo: sn-popover — English shadow of popover-mp-icon-class.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
 const menuOpen = ref(false);
 const picked = ref('—');
 

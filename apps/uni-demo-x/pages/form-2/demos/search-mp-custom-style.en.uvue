@@ -6,6 +6,7 @@
  * `custom-class` / `custom-style` land on the root wrapper and restyle the
  * outer frame.
  */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 const inputClass = ref('snail');
 const wrapper = ref('snail');
 </script>

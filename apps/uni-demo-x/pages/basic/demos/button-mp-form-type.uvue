@@ -1,6 +1,9 @@
 <script setup lang="ts">
 /** Demo: sn-button — formType 'submit' | 'reset' (MP 表单提交). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const form = reactive({ email: '' });
 const submitted = ref('');
 

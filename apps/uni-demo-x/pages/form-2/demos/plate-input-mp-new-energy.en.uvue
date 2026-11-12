@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-plate-input — `maxlength=8` renders eight boxes for new-energy plates. */
+import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';
 const plate = ref('京AD12345');
 </script>
 <template>

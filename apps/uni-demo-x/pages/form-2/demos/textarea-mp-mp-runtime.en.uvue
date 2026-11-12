@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — native textarea attributes (caret / keyboard / confirm key / composition). */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const preset = ref('Pre-selected sample text');
 const confirm = ref('');
 const composing = ref('');

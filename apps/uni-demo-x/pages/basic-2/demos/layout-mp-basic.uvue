@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-layout — 24 栅格基础布局。 */
+import SnLayout from '@snui/uni-x/components/sn-layout/sn-layout.uvue';
 import SnCol from '@snui/uni-x/components/sn-layout/sn-col.uvue';
 </script>
 <template>

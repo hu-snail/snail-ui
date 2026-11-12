@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — scrim and sheet behaviour: modal / hideOnClickOutside / lockScroll / safeAreaInsetBottom / rootPortal / custom*. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const modalValue = ref('');
 const openModal = ref(false);
 

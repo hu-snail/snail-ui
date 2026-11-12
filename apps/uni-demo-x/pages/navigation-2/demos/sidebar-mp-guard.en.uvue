@@ -9,6 +9,7 @@
  * - `max` on `sn-sidebar-item` caps the badge (above it renders `{max}+`)
  * - `custom-class` / `custom-style` land on the root node
  */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 const active = ref(0);
 const blocked = ref(0);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — step snapping (stepStrictly): with step=3, values snap to 0/3/6/9… */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const snapped = ref(0);
 </script>
 <template>

@@ -5,6 +5,7 @@
  * - `space` 覆盖指示器之间的默认间距（横向按 `width`，纵向按 `padding-bottom`）
  * - `align-center` 仅横向生效，让步骤条整体居中
  */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

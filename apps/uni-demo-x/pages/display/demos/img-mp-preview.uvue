@@ -3,6 +3,7 @@
  * Demo: sn-img (uni-end) — tap-to-preview (`enablePreview`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 /** 缩略图地址与点击预览时打开的大图地址不同：previewSrc 覆盖 src。 */
 const thumb = 'https://picsum.photos/seed/snui-img-thumb/300/300';
 const full = 'https://picsum.photos/seed/snui-img-full/1400/1400';

@@ -7,6 +7,7 @@
  * `background` write the `--sn-code-input-*` variables first;
  * `custom-style` is appended after and can override everything else.
  */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const pin = ref('123');
 const framed = ref('4567');
 </script>

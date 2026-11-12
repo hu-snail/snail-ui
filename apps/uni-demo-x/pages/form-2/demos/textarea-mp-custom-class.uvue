@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — customClass / customStyle / customTextareaClass 三个挂载点。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const value = ref('根节点类名 + 内联样式 + 内层 textarea 类名');
 </script>
 <template>

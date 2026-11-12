@@ -3,6 +3,7 @@
  * Demo: sn-rate — 自定义图标：icon / activeIcon 是注册表名字（这里先注册 Heart），
  * iconPrefix 仅为对齐用的信息字段，color / activeColor 覆盖未选中与选中颜色。
  */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import { Heart } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

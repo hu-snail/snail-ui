@@ -2,6 +2,8 @@
 /**
  * Demo: sn-curtain (uni-end) — English shadow of curtain-mp-longpress.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCurtain from '@snui/uni-x/components/sn-curtain/sn-curtain.uvue';
 /** Build an inline SVG poster so the demo needs no network asset. */
 function poster(label: string): string {
   return (

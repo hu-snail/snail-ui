@@ -12,6 +12,8 @@
  * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble's
  * positioning context inside the demo.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTooltip from '@snui/uni-x/components/sn-tooltip/sn-tooltip.uvue';
 const rowsOpen = ref(false);
 const slotOpen = ref(false);
 

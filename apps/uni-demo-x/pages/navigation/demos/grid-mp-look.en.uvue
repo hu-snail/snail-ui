@@ -7,6 +7,7 @@
  * - `icon-size` sets the icon size (numbers are px, strings forwarded verbatim)
  * - `custom-class` / `custom-style` land on the root node
  */
+import SnGrid from '@snui/uni-x/components/sn-grid/sn-grid.uvue';
 import SnGridItem from '@snui/uni-x/components/sn-grid/sn-grid-item.uvue';
 </script>
 <template>

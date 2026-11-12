@@ -8,6 +8,7 @@
  * - `swiper-height` fixes the content height (numbers are px, strings are forwarded verbatim); omit it to keep the platform default
  * - Swiping onto a disabled pane snaps back to the committed one and does not switch
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const swipeActive = ref(0);
 const easingActive = ref(0);

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — value alignment (valueAlign): valueAlign="right" right-aligns numeric fields. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const alignForm = reactive({ amount: '', quantity: '' });
 </script>
 <template>

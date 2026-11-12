@@ -5,6 +5,7 @@
  * Both props land on the root node: `customClass` appends a class, `customStyle`
  * becomes the root inline style (replacing the component's own fill / radius).
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const options = [
   { value: 'day', label: 'Day' },
   { value: 'week', label: 'Week' },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sidebar — 侧边导航 + 右侧内容联动。 */
+import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';
 import SnSidebarItem from '@snui/uni-x/components/sn-sidebar/sn-sidebar-item.uvue';
 const active = ref(0);
 const labels = ['全部', '待付款', '待发货', '已完成'];

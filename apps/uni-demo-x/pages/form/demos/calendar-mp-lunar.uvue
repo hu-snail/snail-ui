@@ -4,6 +4,8 @@
  * 初一显示月名。入口行用 cell 卡片形态，右侧回显公历 + 农历对照。
  */
 import { Calendar } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { formatLunar } from '@snui/uni-x/utils/sn-lunar';
 

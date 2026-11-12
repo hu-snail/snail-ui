@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — v-model 双向绑定 (uni-end)。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const value = ref('hello');
 </script>
 <template>

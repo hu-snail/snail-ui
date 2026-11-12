@@ -4,6 +4,7 @@
  * after sending, the peer enters the typing state, and the typing bubble is
  * swapped for the real message when the reply arrives.
  */
+import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
 interface ChatMessage {
   id: number;
   from: 'me' | 'peer';

@@ -7,6 +7,7 @@
  * treats the name as a bare class. `icon-size` / `success-icon-size` size the
  * two glyph boxes independently (a number is rpx).
  */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
 const state = ref('Not verified');
 const onSuccess = (): void => {
   state.value = 'Verified';

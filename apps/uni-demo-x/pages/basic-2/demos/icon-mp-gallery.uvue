@@ -5,6 +5,8 @@
  * 搜索 + 分类筛选 + 网格卡片展示全部内置图标；卡片点击复制图标名。
  * 数据单源：sn-icon-catalog（分类 / 中文标签 / 搜索关键词）。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
 import {
   SN_ICON_CATALOG,
   SN_ICON_CATEGORY_LABELS,

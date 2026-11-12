@@ -6,6 +6,7 @@
  * 前缀），适合已有自己命名的 CSS 图标（背景图 / 伪元素 / 字体子集）。
  * 文档站没有图标资源，所以下面的类用 demo 自带 CSS 画出占位图形。
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

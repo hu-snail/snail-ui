@@ -6,6 +6,8 @@
  * - sn-segmented 胶囊实时切换 refresherLoadingType（加载圈形态）与
  *   refresherBackground / refresherTextColor / refresherIconColor（下拉区配色）
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 import type { LoadingType } from '@snui/uni-x/components/sn-loading/sn-loading-types';
 
 interface DemoRow {

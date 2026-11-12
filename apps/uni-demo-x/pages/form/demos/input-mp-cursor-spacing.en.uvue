@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — cursor spacing (cursorSpacing): keeps the caret a fixed distance above the keyboard. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const spaced = ref('');
 </script>
 <template>

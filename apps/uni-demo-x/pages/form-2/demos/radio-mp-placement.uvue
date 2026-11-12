@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 标记位置：placement="right" 把选中标记放到右侧。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const placed = ref<string | number | boolean | undefined>('a');
 </script>

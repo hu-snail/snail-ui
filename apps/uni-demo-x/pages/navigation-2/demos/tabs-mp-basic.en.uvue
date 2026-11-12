@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-tabs — basic tabs with v-model (index and name binding). */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 /** Index binding: without `name`, the pane resolves against its mount order. */
 const indexActive = ref(0);

@@ -4,6 +4,7 @@
  * picker tile, `custom-preview-class` on each file tile and `custom-class` /
  * `custom-style` on the root — three independent layers that never override each other.
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const photos = ref<UploadFileItem[]>([

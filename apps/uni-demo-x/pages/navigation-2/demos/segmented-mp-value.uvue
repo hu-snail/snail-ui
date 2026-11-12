@@ -8,6 +8,7 @@
  * 事件名保持本组件的 `update:modelValue`；下面用 `:value` + `@update:model-value`
  * 的组合，等价于 `v-model` 的展开写法（事件名差异见 segmented-mp-value-alias）。
  */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
 const size = ref('md');
 const sizeOptions = [
   { value: 'sm', label: '小' },

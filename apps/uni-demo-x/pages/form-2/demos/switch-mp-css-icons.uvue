@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-switch — CSS 类图标模式：activeActionCssIcon / inactiveActionCssIcon / activeCssIcon / inactiveCssIcon + classPrefix。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const knobCss = ref(true);
 const railCss = ref(false);
 </script>

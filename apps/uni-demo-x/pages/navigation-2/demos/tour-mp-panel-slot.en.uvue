@@ -2,6 +2,7 @@
 /**
  * Demo: sn-tour — English shadow of tour-mp-panel-slot.
  */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
 const customVisible = ref(false);
 const customCurrent = ref(0);
 const customSteps = [

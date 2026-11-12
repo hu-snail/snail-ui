@@ -4,6 +4,7 @@
  * (`customClass` / `customStyle`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-avatar from its SFC source.
  */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 const demo = 'https://picsum.photos/seed/snui-avatar-mode/600/400';
 </script>
 <template>

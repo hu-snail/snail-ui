@@ -2,6 +2,7 @@
 /**
  * Demo: sn-tabs — English shadow of tabs-mp-sticky.
  */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
 import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
 const stickyActive = ref(0);
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-avatar (uni-end) — 尺寸预设 + 自定义数值 / 百分比尺寸。 */
+import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

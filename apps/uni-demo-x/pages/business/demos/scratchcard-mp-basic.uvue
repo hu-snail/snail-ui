@@ -3,6 +3,7 @@
  * Demo: sn-scratchcard (uni-end) — 基础用法：刮开达阈值触发 open，reset()
  * 重绘封面可再刮。
  */
+import SnScratchcard from '@snui/uni-x/components/sn-scratchcard/sn-scratchcard.uvue';
 const scratchRef = ref<InstanceType<typeof SnScratchcard> | null>(null);
 const opened = ref(false);
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — 错误态（errorInfo）：覆盖 info 并把边框切成危险色。 */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const wrong = ref('12');
 </script>
 <template>

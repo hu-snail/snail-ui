@@ -4,6 +4,7 @@
  *
  * `show-panel-title=false` 收起「2024 年 6 月」月份标题，面板只剩网格。
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 5, 30).getTime();
 

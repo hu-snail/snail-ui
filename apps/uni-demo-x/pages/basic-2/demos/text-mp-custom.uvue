@@ -5,6 +5,7 @@
  * props 覆盖不到的部分由插槽承担：`default` 覆盖 `text`，`prefix` / `suffix`
  * 覆盖对应 prop，因此插槽里可以放任意跨端节点，而不只是一段字符串。
  */
+import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

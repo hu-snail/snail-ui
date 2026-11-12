@@ -3,6 +3,8 @@
  * Demo: sn-count-down (uni-end) — controls (start / pause / reset).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-down from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCountDown from '@snui/uni-x/components/sn-count-down/sn-count-down.uvue';
 const ref1 = ref<InstanceType<typeof SnCountDown> | null>(null);
 const finished = ref(0);
 </script>

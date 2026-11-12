@@ -3,6 +3,7 @@
  * Demo: sn-liquid (uni-end) — 状态与边界：0 / 100 / 超界夹取 / duration=0
  * 立即到位 / 自定义球心插槽。
  */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
 const percent = ref(50);
 const current = ref(50);
 

@@ -5,8 +5,10 @@
  * Show how to author your own IconData (copy the SVG paths from
  * https://lucide.dev/icons) and use sn-icon inside a button slot.
  */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { Plus, X } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 // Custom icon — author once, use anywhere.
 const CustomFlag: IconData = {
   viewBox: '0 0 24 24',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — custom class names & styles: customLabelClass lands on the label node, customClass / customStyle on the root. */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const labeled = ref<string | number | boolean | undefined>('a');
 const styled = ref<string | number | boolean | undefined>('b');

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-picker — roller geometry: itemHeight row height / visibleItemCount visible rows, customViewClass tweaks the roller. */
+import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';
 const fruits = ['Apple', 'Banana', 'Cherry', 'Watermelon', 'Grape'];
 
 const tall = ref<Array<string | number>>(['Apple']);

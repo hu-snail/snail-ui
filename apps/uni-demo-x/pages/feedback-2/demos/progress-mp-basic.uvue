@@ -3,6 +3,7 @@
  * Demo: sn-progress (uni-end) — basic percentage + hideText.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-progress from its SFC source.
  */
+import SnProgress from '@snui/uni-x/components/sn-progress/sn-progress.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

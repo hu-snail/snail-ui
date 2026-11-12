@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — 视频项的降级渲染 + 视频类 props（仅对齐参考 API）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /**
  * `type: 'video'` 的项在 uni 端退化成渲染图片（见组件文件头：`<video>` 无法在跨端
  * 轮播里可靠驱动）。组件的 `src` 解析优先取 `valueKey` 字段（默认 `value`），因此这里

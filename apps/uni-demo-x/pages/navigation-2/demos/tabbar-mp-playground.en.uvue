@@ -8,6 +8,7 @@
  *   - switches: bordered, safeAreaInsetBottom, placeholder, badges
  *   - active tone: primary / orange / green
  */
+import SnTabbar from '@snui/uni-x/components/sn-tabbar/sn-tabbar.uvue';
 import SnTabbarItem from '@snui/uni-x/components/sn-tabbar/sn-tabbar-item.uvue';
 type Mode = 'default' | 'glass' | 'elevate';
 type Tone = 'primary' | 'orange' | 'green';

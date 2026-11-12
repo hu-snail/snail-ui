@@ -3,6 +3,8 @@
  * Demo: sn-count-to (uni-end) — controls (`auto-start` + start / pause / reset).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-count-to from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnCountTo from '@snui/uni-x/components/sn-count-to/sn-count-to.uvue';
 const controlled = ref<InstanceType<typeof SnCountTo> | null>(null);
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-badge (uni-end) — shapes and border (`shape` / `border`). */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 </script>
 <template>
   <view class="sn-demo">

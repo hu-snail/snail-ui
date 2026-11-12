@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-plate-input — 禁用态：disabled 时点击不再弹键盘。 */
+import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

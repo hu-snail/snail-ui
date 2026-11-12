@@ -9,6 +9,7 @@
  *
  * Per AUI-DOCS-016 / §111: imports the real @snui/uni SFC source.
  */
+import SnCaptcha from '@snui/uni-x/components/sn-captcha/sn-captcha.uvue';
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
   'https://picsum.photos/seed/snui-captcha-inline-a/600/400',

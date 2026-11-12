@@ -3,6 +3,7 @@
  * Demo: sn-swiper (uni-end) — radius 与 custom* 类名 / 样式插槽。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: '第一张 · 自定义类名' },
   { value: 'https://picsum.photos/seed/snui-sw-c2/750/400', text: '第二张 · 自定义文案样式' },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — placeholder styling (placeholderClass / placeholderStyle). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const styled = ref('');
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-index-bar — 字母索引 + 右侧快速跳转。 */
+import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';
 import SnIndexAnchor from '@snui/uni-x/components/sn-index-bar/sn-index-anchor.uvue';
 const groups = [
   { index: 'A', names: ['Alice', 'Amy'] },

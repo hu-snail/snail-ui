@@ -6,6 +6,8 @@
  *   纯滚动容器：长内容自由滑动，不请求、不显示页脚
  * - 两个开关实时生效：可随时只开下拉刷新、只开上拉加载或全关
  */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
 const rows = Array.from({ length: 40 }, (_, i) => `第 ${i + 1} 行 · 纯滑动内容`);
 const refresherOn = ref(false);
 const loadMoreOn = ref(false);

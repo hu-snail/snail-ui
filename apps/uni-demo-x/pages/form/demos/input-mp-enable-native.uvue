@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — 原生输入（enableNative）：enableNative=false 时支付宝小程序用模拟输入框。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const alipay = ref('');
 </script>
 <template>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-form — 表单 schema：字段名 + 标签 + 是否必填，随表单存入上下文；实际校验仍由 rules 执行。 */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const schemaForm = reactive({ name: '', phone: '' });

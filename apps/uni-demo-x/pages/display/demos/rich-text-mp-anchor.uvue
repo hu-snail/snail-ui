@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 锚点目录（enableAnchor + getHeadings / scrollToAnchor）。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
 import type {
   RichTextHeading,
   RichTextInstance,

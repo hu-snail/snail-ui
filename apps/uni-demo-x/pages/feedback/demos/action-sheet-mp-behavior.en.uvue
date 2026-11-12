@@ -4,6 +4,8 @@
  * duration / z-index.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-action-sheet from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnActionSheet from '@snui/uni-x/components/sn-action-sheet/sn-action-sheet.uvue';
 const stayOpen = ref(false);
 const noScrimClose = ref(false);
 const slow = ref(false);

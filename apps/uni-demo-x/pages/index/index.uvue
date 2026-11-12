@@ -4,6 +4,7 @@
 // 版式：搜索框 + 分类 chips + 双列图标卡（图标卡见 home-icons.ts）。
 // 分类按分组标签合并（basic / basic-2 同为「基础组件」），点 chip 切换分组；
 // 搜索时跨全部分组平铺结果。
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
 import { Search as SearchIcon, X as CloseIcon } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';

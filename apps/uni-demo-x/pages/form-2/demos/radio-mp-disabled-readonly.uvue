@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-radio — 禁用与只读：disabled 整组禁用 / readonly 整组只读。 */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const blocked = ref<string | number | boolean | undefined>('a');
 </script>

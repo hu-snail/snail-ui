@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-code-input — plain display (mask): `mask=false` shows the characters instead of dots. */
+import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
 const plain = ref('1234');
 </script>
 <template>

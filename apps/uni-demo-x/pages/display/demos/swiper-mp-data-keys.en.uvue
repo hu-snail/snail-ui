@@ -3,6 +3,8 @@
  * Demo: sn-swiper (uni-end) — data field mapping (`valueKey` / `textKey`) + controlled current + events.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** Custom field names: the URL lives in `url`, the caption in `title`. */
 const list = [
   { url: 'https://picsum.photos/seed/snui-sw-d1/750/400', title: 'Custom fields 1' },

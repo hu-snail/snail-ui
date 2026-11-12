@@ -5,6 +5,7 @@
  * `css-icon="demo-star"` 把图标名当成裸 CSS 类名渲染（不加前缀），
  * `css-icon` 布尔形式则同时挂 `icon` 与 `active-icon` 两个类名。
  */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
 const css = ref<number | null>(3);
 const cssBool = ref<number | null>(2);
 </script>

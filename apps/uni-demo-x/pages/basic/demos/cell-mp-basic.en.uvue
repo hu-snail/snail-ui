@@ -1,6 +1,8 @@
 <script setup lang="ts">
 /** Demo: sn-cell — information display forms (contact / settings page rows). */
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">

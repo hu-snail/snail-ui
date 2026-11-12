@@ -3,6 +3,8 @@
  * Demo: sn-swiper (uni-end) — 数据字段映射（valueKey / textKey）+ 受控 current + 事件。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swiper from its SFC source.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** 自定义字段名：图片地址在 `url`，标题在 `title`。 */
 const list = [
   { url: 'https://picsum.photos/seed/snui-sw-d1/750/400', title: '自定义字段 1' },

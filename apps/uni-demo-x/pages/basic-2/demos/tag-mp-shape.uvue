@@ -7,6 +7,7 @@
  * ticket 两侧票券缺口。`round` prop 等价于 shape="round"，两者同传时
  * shape 优先。
  */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 /** 六种形态 × 贴合形态的业务文案。 */
 const shapes = [
   { shape: 'square', type: 'default', label: '置顶', name: 'square' },

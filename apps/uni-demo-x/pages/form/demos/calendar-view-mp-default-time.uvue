@@ -5,6 +5,7 @@
  * - `default-time`：单选写回的时间戳会带上这里的时分秒（默认 `00:00:00`）
  * - `immediate-change`：点中即触发 change 并写回（不等二次确认）
  */
+import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';
 import type { CalendarDayItem } from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view-types';
 
 const min = new Date(2024, 5, 1).getTime();

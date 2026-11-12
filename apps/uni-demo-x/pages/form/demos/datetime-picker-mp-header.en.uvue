@@ -8,6 +8,8 @@
  * confirm is never pushed inwards. The "Custom labels" row shows that
  * cancelButtonText / confirmButtonText swap the wording only, not the layout.
  */
+import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { Calendar } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 

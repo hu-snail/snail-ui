@@ -3,6 +3,7 @@
  * Demo: sn-radio — 选中色：checkedColor / uncheckedColor 组级下发，
  * 单项 checkedColor 覆盖组级样式。
  */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
 import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
 const colored = ref<string | number | boolean | undefined>('a');
 const overridden = ref<string | number | boolean | undefined>('a');

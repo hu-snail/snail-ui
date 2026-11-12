@@ -8,6 +8,7 @@
  * and never reports byte-level progress. `show-limit-num=false` hides the
  * counter; `accept="media"` / `"all"` switch the picker.
  */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
 import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
 
 const files = ref<UploadFileItem[]>([

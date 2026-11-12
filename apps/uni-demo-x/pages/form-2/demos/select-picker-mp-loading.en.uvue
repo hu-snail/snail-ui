@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-select-picker — loading state: `loading` shows the option list as loading and `loadingColor` recolors the spinner. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
 const options = [
   { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' },

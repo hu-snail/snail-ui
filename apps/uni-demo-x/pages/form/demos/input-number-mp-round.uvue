@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input-number — 圆角（round）：primary 主题叠加 round 圆角胶囊。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
 const rounded = ref(4);
 </script>
 <template>

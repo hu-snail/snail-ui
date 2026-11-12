@@ -2,6 +2,8 @@
 /**
  * Demo: sn-toast (uni-end) — English shadow of toast-mp-z-index.
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnToast from '@snui/uni-x/components/sn-toast/sn-toast.uvue';
 const styled = ref(false);
 </script>
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-textarea — 错误态：error 由表单驱动标记内容不合规。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
 const errored = ref('不合规的内容');
 </script>
 <template>

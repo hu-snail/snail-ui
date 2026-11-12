@@ -5,7 +5,9 @@
  * 点击反馈真实可触发：开关行切换 value、按钮行只响应按钮本身
  * （行不可点击，避免冒泡双触发）、箭头行记录动作到反馈区。
  */
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 const notificationsOn = ref(true);
 const lastAction = ref('尚未操作');
 

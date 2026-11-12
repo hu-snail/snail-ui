@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-keyboard — key labels (deleteText / closeText): custom delete / close labels. */
+import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';
 const custom = ref('');
 const openCustom = ref(false);
 </script>

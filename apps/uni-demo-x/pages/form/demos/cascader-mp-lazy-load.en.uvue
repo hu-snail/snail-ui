@@ -5,6 +5,8 @@
  * The lazy root only carries regions; expanding a non-leaf node asks the host
  * for children, and isLeafKey marks the leaves.
  */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
 /** Lazy root nodes: isLeaf decides whether a node can drill down further. */
 const tree = [
   { value: 'zj', text: 'Zhejiang', isLeaf: false },

@@ -3,6 +3,7 @@
  * Demo: sn-skeleton (uni-end) — custom rowCol layouts.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-skeleton from its SFC source.
  */
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
 const cardRows = [
   [
     { type: 'circle' as const, size: 96 },

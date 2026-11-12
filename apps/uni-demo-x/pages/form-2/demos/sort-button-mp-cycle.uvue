@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-sort-button — 排序循环：allowReset 把 0 纳入循环；descFirst 首次点击进入降序。 */
+import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';
 const a = ref<1 | 0 | -1>(0);
 const b = ref<1 | 0 | -1>(0);
 </script>

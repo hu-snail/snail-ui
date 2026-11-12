@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-steps — 错误状态（status="error"）。 */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
 import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>

@@ -8,6 +8,7 @@
  * 1rpx 在 750 设计稿下是 0.5px，正好是移动端「一像素细线」的标准做法 ——
  * 高 DPI 屏上不会出现 2px 的粗边。
  */
+import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
 const hairline = ref(true);
 </script>
 <template>

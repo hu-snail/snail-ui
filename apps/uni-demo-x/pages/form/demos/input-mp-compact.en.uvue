@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — compact inline form (compact): `compact` + `border="bottom"` (an inline row inside Cell / FormItem). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 const inline = ref('');
 </script>
 <template>

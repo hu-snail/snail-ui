@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-backtop — circle / square × size × content form. */
+import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';
 /** Always visible: past the default 300 threshold. */
 const scrollTop = ref(500);
 </script>

@@ -5,7 +5,10 @@
  * 提交型：按钮调用 formRef.submit()，表单先跑校验，再经 @submit 回报结果。
  * 重置型：按钮调用 formRef.resetFields()，字段值回到挂载时的初始快照。
  */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
 import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
 import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
 
 const submitForm = reactive({ email: '', contact: '' });
