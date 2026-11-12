@@ -34,6 +34,14 @@
   --vp-nav-height: 56px;
   --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent);
   --vp-sidebar-bg-color: var(--vp-c-bg);
+  /* 360px 而不是默认 272px：最长菜单名（uni 端「DatetimePickerView 时间
+   * 选择器视图」实测需 217px 文本宽）在 272px 下折两行、320px 下仍缺 32px
+   * —— 侧栏自身 64px padding + 树 16px padding + 行内 10px padding 加上
+   * 缩进/展开图标，留给文字的空间只有「侧栏宽 − 135px」。360px 留出 225px，
+   * 恰好容下最长中文名且不再紧贴右缘。
+   * 加宽走这一个变量 —— VPSidebar 宽度、正文让位、浮动元素定位引用的
+   * 都是同一个 --vp-sidebar-width，一处改全站生效。 */
+  --vp-sidebar-width: 360px;
 
   /* Code surfaces use the soft neutral plane in both modes (never pure black). */
   --vp-code-block-bg: var(--vp-c-bg-soft);
