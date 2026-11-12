@@ -12,6 +12,12 @@ import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import SnTabbar from './sn-tabbar.vue';
 import SnTabbarItem from './sn-tabbar-item.vue';
+// Raw SFC sources for CSS-level regression guards (vitest 的 import.meta.url
+// 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
+// file"；?raw 走 Vite 资产管线，两端一致)。happy-dom 不解析 rpx token 样式，
+// App 端裁剪类回归只能断言源码里的规则本体。
+import tabbarSource from './sn-tabbar.vue?raw';
+import tabbarItemSource from './sn-tabbar-item.vue?raw';
 
 /** Harness that mounts a bar with N items so provide/inject is exercised. */
 function mountBar(props: Record<string, unknown> = {}, itemCount = 3) {
@@ -196,6 +202,24 @@ describe('sn-tabbar', () => {
       const wrapper = mountBar({ customClass: 'my-bar', customStyle: 'margin: 6px;' });
       expect(wrapper.find('.sn-tabbar').classes()).toContain('my-bar');
       expect(wrapper.find('.sn-tabbar').attributes('style')).toContain('margin: 6px');
+    });
+  });
+
+  describe('uni-app x App overflow visibility (source level)', () => {
+    // 凸起圆钮带 -52rpx 负 margin 上浮出栏顶、角标负偏移悬挂在图标盒外。
+    // uni-app x App 端 overflow 默认 hidden（W3C 是 visible）：溢出路径上的
+    // 每层 view（bar → item → inner → icon）都要显式 visible，否则凸起上半
+    // 截 / 角标被裁。Web / 小程序端 visible 本就是默认值，声明无害。
+    it('keeps the bar overflow-visible so the elevated button can protrude above it', () => {
+      const style = tabbarSource.slice(tabbarSource.indexOf('<style'));
+      expect(style).toMatch(/\.sn-tabbar \{[^}]*overflow:\s*visible/);
+    });
+
+    it('keeps the item and its icon wrappers overflow-visible for the fab and badge overhangs', () => {
+      const style = tabbarItemSource.slice(tabbarItemSource.indexOf('<style'));
+      expect(style).toMatch(/\.sn-tabbar-item \{[^}]*overflow:\s*visible/);
+      expect(style).toMatch(/\.sn-tabbar-item__inner \{[^}]*overflow:\s*visible/);
+      expect(style).toMatch(/\.sn-tabbar-item__icon \{[^}]*overflow:\s*visible/);
     });
   });
 

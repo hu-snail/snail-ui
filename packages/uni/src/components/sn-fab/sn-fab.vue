@@ -660,6 +660,11 @@ function clampDragOffset(): void {
    * （见下 --open 规则），弹出的动作项会被按钮盖住一角。 */
   gap: var(--sn-mp-spacing-4);
   box-sizing: border-box;
+  /* uni-app x App 端 overflow 默认 hidden（W3C 是 visible）：fan 模式的动作项
+   * 绝对定位飞出 96rpx 的触发按钮盒，root 不显式放开会被整圈裁掉——真机
+   * 表现为触发按钮状态能翻转、动作项永远不出现。Web / 小程序端 visible 本
+   * 就是默认值，此声明无害。 */
+  overflow: visible;
 }
 
 /* ── Trigger ──────────────────────────────────────────────────────────── */
@@ -781,6 +786,9 @@ function clampDragOffset(): void {
   height: 0;
   opacity: 1;
   visibility: visible;
+  /* 0×0 锚点容器：动作项沿弧线全部落在容器盒之外，App 端 overflow 默认
+   * hidden，不显式 visible 会在容器边界处被裁光。 */
+  overflow: visible;
 }
 
 .sn-fab__fan-item {

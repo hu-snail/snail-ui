@@ -174,6 +174,11 @@ const markerStyle = computed(() => {
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
+  /* 角标绝对定位骑在包裹内容右上角（translate ±50%），一半在 root 盒外。
+   * uni-app x App 端 overflow 默认 hidden（W3C 是 visible），不显式放开时
+   * 角标只剩盒内的一小块被裁色块、文字不可见——真机实测。Web / 小程序端
+   * visible 本就是默认值，此声明无害。 */
+  overflow: visible;
 }
 
 .sn-badge__marker {
@@ -192,6 +197,9 @@ const markerStyle = computed(() => {
   font-weight: var(--sn-mp-font-weight-medium);
   line-height: 1;
   color: var(--sn-mp-color-text-on-primary);
+  /* nowrap 只在 Web / 小程序端生效（uni-app x App 不支持 white-space，声明
+   * 被丢弃）：App 端 marker 绝对定位 auto 宽收缩贴合内容，数字 / 短词没有
+   * 断行机会，丢弃无副作用；Web 端 shrink-to-fit 的 min-content 下限靠它兜底。 */
   white-space: nowrap;
   /* Default anchor: sit on the top-right corner of the wrapped content. */
   transform: translateY(-50%) translateX(50%);
@@ -252,9 +260,13 @@ const markerStyle = computed(() => {
 }
 
 .sn-badge__text {
-  color: inherit;
-  font-size: inherit;
-  line-height: inherit;
+  /* uni-app x App 端样式不级联（仅 color / font-size 原生继承，继承关键字
+   * 也不可靠），文字必须显式拿到 marker 的字号 / 行高 / 颜色，否则回落到
+   * 引擎默认值——真机上角标数字会变成默认字色默认字号，看不见内容。三个
+   * 值与 marker 规则保持一致，调整 marker 时需同步这里。 */
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: 1;
+  color: var(--sn-mp-color-text-on-primary);
 }
 
 /* ── Doodle skin ───────────────────────────────────────────────────────── */

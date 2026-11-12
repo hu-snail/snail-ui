@@ -237,6 +237,11 @@ const rootClass = computed(() => [
   padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-1);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
+  /* 凸起圆钮带负 margin 上浮出本盒、角标负偏移悬挂在图标盒外：uni-app x
+   * App 端 overflow 默认 hidden，溢出路径上的每个 view（本节点 → __inner →
+   * __icon）都要显式 visible，否则凸起上半截 / 角标被裁。Web / 小程序端
+   * visible 本就是默认值，无害。 */
+  overflow: visible;
 }
 
 /* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
@@ -259,6 +264,9 @@ const rootClass = computed(() => [
   justify-content: center;
   gap: var(--sn-mp-spacing-1);
   min-width: 0;
+  /* 角标上沿超出图标盒即超出本盒：App 端 overflow 默认 hidden（见根节点
+   * 注释），溢出路径上的每层 view 都要显式放开。 */
+  overflow: visible;
 }
 
 .sn-tabbar-item__icon {
@@ -267,6 +275,9 @@ const rootClass = computed(() => [
   align-items: center;
   justify-content: center;
   color: inherit;
+  /* 角标以负 top / right 悬挂在图标盒外：App 端 overflow 默认 hidden，
+   * 本节点是角标的定位包含块，必须显式 visible 才不裁角。 */
+  overflow: visible;
 }
 
 .sn-tabbar-item__css-icon {

@@ -436,6 +436,20 @@ describe('sn-fab', () => {
       expect(line.find('.sn-fab__menu').classes()).not.toContain('sn-fab__menu--fan');
     });
 
+    it('keeps the root and the fan anchor overflow-visible so arc items escape the clip', () => {
+      // uni-app x App defaults `overflow` to hidden (W3C default is visible):
+      // fan items are absolutely positioned OUTSIDE the 96rpx trigger box and
+      // the 0x0 anchor container, so without an explicit `overflow: visible`
+      // on both the App clips the whole arc — on a real device the trigger
+      // still flips state but no action item ever appears. Web / MP already
+      // default to visible, so the declaration is a no-op there. happy-dom
+      // cannot compute rpx token styles, hence the source-level assertion
+      // (same pattern as the open-state transform guard above).
+      const style = fabSource.slice(fabSource.indexOf('<style'));
+      expect(style).toMatch(/\.sn-fab \{[^}]*overflow:\s*visible/);
+      expect(style).toMatch(/\.sn-fab__menu--fan \{[^}]*overflow:\s*visible/);
+    });
+
     it('dims a disabled item inline only while open', () => {
       const closed = mount(SnFab, {
         props: { mode: 'fan', actions: [{ icon: Star, disabled: true }] },

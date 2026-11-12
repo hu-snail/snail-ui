@@ -11,6 +11,11 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnBadge from './sn-badge.vue';
+// Raw SFC source for CSS-level regression guards (vitest 的 import.meta.url
+// 不是 file: 协议，readFileSync(new URL(...)) 会抛 "The URL must be of scheme
+// file"；?raw 走 Vite 资产管线，两端一致)。happy-dom 不解析 rpx token 样式，
+// App 端裁剪类回归只能断言源码里的规则本体。
+import badgeSource from './sn-badge.vue?raw';
 
 describe('sn-badge', () => {
   describe('value rendering', () => {
@@ -154,6 +159,29 @@ describe('sn-badge', () => {
       });
       expect(w.classes()).toContain('my-badge');
       expect(w.attributes('style')).toContain('margin: 4px');
+    });
+  });
+
+  describe('uni-app x App overflow visibility (source level)', () => {
+    it('keeps the root overflow-visible so the marker can ride outside its box', () => {
+      // 角标绝对定位骑在包裹内容右上角（translate ±50%），一半在 root 盒外。
+      // uni-app x App 端 overflow 默认 hidden（W3C 是 visible），不显式放开时
+      // 真机上只剩一小块被裁的色块、文字不可见。Web / 小程序端 visible 本就
+      // 是默认值，声明无害。
+      const style = badgeSource.slice(badgeSource.indexOf('<style'));
+      expect(style).toMatch(/\.sn-badge \{[^}]*overflow:\s*visible/);
+    });
+
+    it('states the marker text font and colour explicitly instead of relying on inherit', () => {
+      // App 端样式不级联（仅 color / font-size 原生继承，inherit 关键字亦不可
+      // 靠）：文字必须显式拿到 marker 的字号 / 行高 / 颜色，否则回落引擎默认
+      // 值。回归守卫——不许再出现 inherit 依赖。
+      const style = badgeSource.slice(badgeSource.indexOf('<style'));
+      const rule = /\.sn-badge__text \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(rule).toContain('font-size: var(--sn-mp-font-size-xs)');
+      expect(rule).toContain('line-height: 1');
+      expect(rule).toContain('color: var(--sn-mp-color-text-on-primary)');
+      expect(rule).not.toContain('inherit');
     });
   });
 });
