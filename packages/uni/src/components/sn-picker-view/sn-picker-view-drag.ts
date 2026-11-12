@@ -105,10 +105,12 @@ interface TouchPointLike {
   pageY?: number;
 }
 
-/** Loose shape of the events the roller receives. */
+/** Loose shape of the events the roller receives. Touch lists may be real
+ * arrays (classic uni-app) or array-likes (uni-app x event objects: they
+ * carry `length` + indices but no Array.prototype methods). */
 interface TouchEventLike {
-  touches?: TouchPointLike[] | null;
-  changedTouches?: TouchPointLike[] | null;
+  touches?: ArrayLike<TouchPointLike> | null;
+  changedTouches?: ArrayLike<TouchPointLike> | null;
   detail?: { y?: number } | null;
   currentTarget?: unknown;
   target?: unknown;
@@ -174,12 +176,19 @@ export interface RollerDragApi {
   bindMouseGestures(root: HTMLElement): () => void;
 }
 
-/** First non-empty touch list — `touchend` only populates `changedTouches`. */
+/** First non-empty touch list — `touchend` only populates `changedTouches`.
+ * uni-app x event objects may hand back array-likes (no Array.prototype
+ * methods), so the list is normalized before callers use `find`. */
 function readTouchList(event: Event): TouchPointLike[] {
   const detail = event as unknown as TouchEventLike;
-  if (detail.touches && detail.touches.length > 0) return detail.touches;
-  if (detail.changedTouches && detail.changedTouches.length > 0) return detail.changedTouches;
-  return [];
+  const raw =
+    detail.touches && detail.touches.length > 0
+      ? detail.touches
+      : detail.changedTouches && detail.changedTouches.length > 0
+        ? detail.changedTouches
+        : null;
+  if (!raw) return [];
+  return Array.isArray(raw) ? raw : Array.from(raw);
 }
 
 /** Vertical finger position, or `null` when the event carries none. */
