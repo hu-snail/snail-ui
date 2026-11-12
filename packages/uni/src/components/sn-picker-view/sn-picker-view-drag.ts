@@ -188,7 +188,18 @@ function readTouchList(event: Event): TouchPointLike[] {
         ? detail.changedTouches
         : null;
   if (!raw) return [];
-  return Array.isArray(raw) ? raw : Array.from(raw);
+  // Index-copy instead of `Array.isArray(raw) ? raw : Array.from(raw)`: the
+  // normalization must not trust page globals. A host that patches
+  // `Array.isArray` (UTS shims, debug bridges) can vouch for a bare array-like,
+  // and a broken `Array.from` passes it through — `list.find` throws again.
+  // Copying by index is correct for every real touch-list shape (Array,
+  // DOM TouchList, UTS array-like) and always yields an array this module owns.
+  const list: TouchPointLike[] = [];
+  for (let i = 0; i < raw.length; i += 1) {
+    const point = (raw as unknown as Record<number, TouchPointLike>)[i];
+    if (point) list.push(point);
+  }
+  return list;
 }
 
 /** Vertical finger position, or `null` when the event carries none. */

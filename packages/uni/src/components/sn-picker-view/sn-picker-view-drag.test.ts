@@ -121,6 +121,30 @@ describe('sn-picker-view-drag', () => {
       );
       expect(commits).toEqual([[0, 1]]);
     });
+
+    it('normalizes by index-copy when page globals lie about arrays', () => {
+      // Hostile host: `Array.isArray` vouches for a bare array-like and
+      // `Array.from` is a passthrough. The engine must not trust either —
+      // the normalized list has to be a genuine array the module owns.
+      const arrayLike = { 0: { clientY: 300, identifier: 5 }, length: 1 };
+      const originalIsArray = Array.isArray;
+      const originalFrom = Array.from;
+      Array.isArray = () => true;
+      Array.from = (<T,>(source: ArrayLike<T>) => source) as typeof Array.from;
+      try {
+        const { api, commits } = mountEngine();
+        api.onTouchStart({ touches: arrayLike } as unknown as Event, 0);
+        api.onTouchMove({ touches: { 0: { clientY: 256, identifier: 5 }, length: 1 } } as unknown as Event, 0);
+        api.onTouchEnd(
+          { touches: [], changedTouches: { 0: { clientY: 256, identifier: 5 }, length: 1 } } as unknown as Event,
+          0,
+        );
+        expect(commits).toEqual([[0, 1]]);
+      } finally {
+        Array.isArray = originalIsArray;
+        Array.from = originalFrom;
+      }
+    });
   });
 
   describe('momentum', () => {
