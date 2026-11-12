@@ -28,11 +28,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       placement="bottom-start"
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
-      trigger="manual"
     >
-      <SnButton block @click="menuOpen = !menuOpen"
-        ><text>Menu mode + the legacy iconClass field</text></SnButton
-      >
+      <SnButton block><text>Menu mode + the legacy iconClass field</text></SnButton>
     </SnPopover>
 
     <text class="sn-demo__meta">Picked: {{ picked }}</text>

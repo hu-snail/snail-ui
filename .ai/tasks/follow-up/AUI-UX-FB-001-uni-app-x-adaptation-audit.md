@@ -110,3 +110,26 @@ CDP `getComputedStyle`：picker indicator `border-top: 3px solid rgb(9,9,11)`（
 - **fan 扇形**：inline transform 完整、收起态矩阵正常应用；展开态 computed 冻结在过渡起点是**后台 tab rAF 冻结**（内置浏览器失焦）——前台表现待用户复验；App 端仍受 transform 版本门槛约束。
 - **暗色主题**：demo-ui 暗色下弹层 panel 正确渲染 #18181b 深底白字——暗色渲染链路正常。
 - **rpx 视口放大**：indicator 3px = 4rpx × 视口系数 0.75（1125px 宽视口）——官方预期行为，DevTools 手机模拟归位。
+
+## 八、第四轮更正：popover / tooltip 真机仍打不开的根因（manual trigger 修复不完整）
+
+第二轮的修复（`trigger: 'slot' | 'manual'`，demo 切 manual + 页面自绑 @click）**没有修好真机**：
+manual 模式依赖「页面给插槽里的 SnButton 绑 @click」这条链路，而它在 App 端同样不通——
+事件监听绑在**插槽内容**（页面编译单元）上的组件 emit、以及插槽内容 tap 向宿主组件视图的
+原生冒泡，在 App 端都到不了对方编译单元。当时「picker demo 佐证页面直绑 emit 有效」的引用
+有误：picker demo 的 `@click` 绑在**页面自己的 `<view>`**（非组件、非插槽）上，不是 emit 链路。
+
+真机有效的事件路径只有两条：
+1. **组件内部视图的 tap**（fab 的 `@tap.stop="toggle"` 实测可开）；
+2. **页面级普通元素 tap + v-model 进组件**（picker：`<view @click="open = true">` + `v-model:visible` 实测可开）。
+
+**修复（源码级，两端共用）**：sn-popover / sn-tooltip 模板在 trigger 包裹层内新增
+`<!-- #ifdef APP -->` 透明 catcher（组件自有节点，盖在触发器盒上，`@tap.stop="onTriggerTap"`）——
+tap 直接落在组件自己的节点上（路径 1），不再依赖任何跨编译单元事件。hover-class 给出按压反馈
+（App 端被 catcher 盖住的插槽内容收不到 touch）。web / MP 编译期剥除该节点（uni 端行为零变化）。
+26 个 demo 场景回退到默认 slot 模式（撤销第二轮的 manual 适配）；`trigger="manual"` prop 保留，
+语义收窄为「触发点在插槽外/编程式开关」场景。
+
+App 端关闭路径：trigger 再点一次、气泡内关闭按钮；页面根 closeOutside 在 App 端不触发
+（tap 不出编译单元），outside-close 通道在 App 上是 inert 的——drop-menu / fab / swipe-action /
+toast 同样注册在该队列，App 端 outside-close 失效是**全队列问题**，留待后续任务统一处理。

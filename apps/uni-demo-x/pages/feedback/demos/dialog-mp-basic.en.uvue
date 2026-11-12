@@ -67,9 +67,15 @@ const lastAction = ref('—');
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only: the dialog root is `position: fixed`, which would cover the
- * whole docs page instead of the phone screen. Not needed in a real app. */
+/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
+ * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
+ * the direct parent's content box (css/position) and the page class still
+ * reaches the component root (style-isolation) — the rule would pin the
+ * fullscreen fixed layer into the demo card and clip it (App overflow
+ * defaults to hidden). */
+/* #ifdef H5 || WEB */
 .sn-dialog.sn-demo-contained {
   position: absolute;
 }
+/* #endif */
 </style>

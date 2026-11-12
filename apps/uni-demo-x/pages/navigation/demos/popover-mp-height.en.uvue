@@ -40,9 +40,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       placement="bottom-start"
       :show-close="true"
       custom-class="sn-demo-contained"
-      trigger="manual"
     >
-      <SnButton block @click="normalOpen = !normalOpen"><text>Long text · normal mode</text></SnButton>
+      <SnButton block><text>Long text · normal mode</text></SnButton>
     </SnPopover>
 
     <SnPopover
@@ -53,9 +52,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       custom-style="--sn-popover-menu-icon-size: 44rpx"
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
-      trigger="manual"
     >
-      <SnButton block @click="menuOpen = !menuOpen"><text>Long menu label · bigger glyph</text></SnButton>
+      <SnButton block><text>Long menu label · bigger glyph</text></SnButton>
     </SnPopover>
 
     <view class="sn-popover-demo__space" />
