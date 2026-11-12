@@ -43,6 +43,7 @@ const open2 = ref(false);
   background-color: var(--sn-mp-color-action-primary);
   color: var(--sn-mp-color-text-on-primary);
   font-size: 28rpx;
+  flex-direction: row;
 }
 
 .sn-demo__meta {

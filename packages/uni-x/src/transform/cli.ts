@@ -128,6 +128,7 @@ const KIND_LABELS: Record<IssueKind, string> = {
   'template-attr': 'template attribute rewritten',
   'script-guard': 'script DOM guard',
   'import-rewrite': 'import specifier rewritten for .uvue dist',
+  'flex-direction-row': 'flex-direction: row injected (uni-app x column default)',
   'defineSlots-stripped': 'defineSlots stripped',
   'defineSlots-manual': 'defineSlots needs manual review',
   patch: 'patch applied',

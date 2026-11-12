@@ -73,6 +73,7 @@ const visible = ref(true);
 .sn-demo__actions {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 /* custom-class lands on the fixed layer. Preview only: pin it to the host so it
  * does not cover the whole phone screen; real code keeps the default fixed. */

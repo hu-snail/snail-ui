@@ -256,6 +256,7 @@ function onRetry(): void {
   justify-content: center;
   border-radius: var(--sn-mp-radius-xl);
   background-color: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
 }
 
 .sn-ai-message__avatar-text {

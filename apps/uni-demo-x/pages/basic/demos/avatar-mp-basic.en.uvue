@@ -24,5 +24,6 @@ onBeforeUnmount(() => clearSnIcons());
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
+  flex-direction: row;
 }
 </style>

@@ -166,6 +166,7 @@ const modeLabel: Record<Mode, string> = { default: '标准', glass: '毛玻璃',
   padding: 8rpx;
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
 }
 .sn-tabbar-demo__capsule-item {
   flex: 1 1 0;
@@ -192,6 +193,7 @@ const modeLabel: Record<Mode, string> = { default: '标准', glass: '毛玻璃',
   align-items: center;
   justify-content: space-between;
   padding: 22rpx 28rpx;
+  flex-direction: row;
 }
 .sn-tabbar-demo__switch-label {
   font-size: var(--sn-mp-font-size-md);
@@ -226,6 +228,7 @@ const modeLabel: Record<Mode, string> = { default: '标准', glass: '毛玻璃',
 .sn-tabbar-demo__tones {
   display: flex;
   gap: 16rpx;
+  flex-direction: row;
 }
 .sn-tabbar-demo__tone {
   display: flex;
@@ -236,6 +239,7 @@ const modeLabel: Record<Mode, string> = { default: '标准', glass: '毛玻璃',
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-secondary);
+  flex-direction: row;
 }
 .sn-tabbar-demo__tone--active {
   border-color: var(--sn-mp-color-action-primary);

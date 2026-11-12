@@ -49,6 +49,7 @@ const badgeShot = 'https://picsum.photos/seed/snui-tag-shot/48/48';
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
   align-items: center;
+  flex-direction: row;
 }
 
 .sn-demo__meta {

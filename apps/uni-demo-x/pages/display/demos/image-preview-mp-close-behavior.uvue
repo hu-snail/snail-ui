@@ -51,6 +51,7 @@ const images = ['/demo/snui-photo-2.jpg', '/demo/snui-photo-3.jpg'];
 .sn-demo__footer {
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

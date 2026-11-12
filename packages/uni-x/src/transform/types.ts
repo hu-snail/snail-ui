@@ -11,6 +11,7 @@ export type IssueKind =
   | 'template-attr'
   | 'script-guard'
   | 'import-rewrite'
+  | 'flex-direction-row'
   | 'defineSlots-stripped'
   | 'defineSlots-manual'
   | 'patch';

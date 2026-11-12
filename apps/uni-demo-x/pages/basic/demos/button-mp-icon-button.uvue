@@ -55,6 +55,7 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo__label {
   color: var(--sn-mp-color-text-secondary);

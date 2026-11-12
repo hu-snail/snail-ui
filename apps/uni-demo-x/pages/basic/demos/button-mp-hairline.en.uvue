@@ -47,6 +47,7 @@ function toggleBusy(): void {
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

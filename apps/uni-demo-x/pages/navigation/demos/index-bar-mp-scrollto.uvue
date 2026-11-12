@@ -69,6 +69,7 @@ function jumpTo(index: string): void {
   gap: var(--sn-mp-spacing-2);
   padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+  flex-direction: row;
 }
 .sn-demo__chip {
   padding: 0 var(--sn-mp-spacing-2);

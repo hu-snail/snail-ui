@@ -97,6 +97,7 @@ const activeTitle = computed(() => {
   background-color: var(--sn-mp-color-background-elevated);
   border-radius: 16rpx;
   padding: 24rpx 8rpx 8rpx;
+  flex-direction: row;
 }
 
 .kong__cell {
@@ -116,6 +117,7 @@ const activeTitle = computed(() => {
   width: 88rpx;
   height: 88rpx;
   border-radius: 28rpx;
+  flex-direction: row;
 }
 
 .kong__tile--1 {

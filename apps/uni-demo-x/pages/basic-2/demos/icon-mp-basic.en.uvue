@@ -32,5 +32,6 @@ import {
   gap: 32rpx;
   align-items: center;
   font-size: 32rpx;
+  flex-direction: row;
 }
 </style>

@@ -53,6 +53,7 @@ const clicks = ref(0);
   display: flex;
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-2);
+  flex-direction: row;
 }
 .sn-demo__button {
   padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);

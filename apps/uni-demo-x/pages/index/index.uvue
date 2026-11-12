@@ -229,6 +229,7 @@ function open(comp: HomeComp): void {
   background: var(--demo-chip-bg);
   color: var(--demo-text-3);
   flex-shrink: 0;
+  flex-direction: row;
 }
 
 /* ── 分类 chips ───────────────────────────────────────────────────────── */
@@ -258,6 +259,7 @@ function open(comp: HomeComp): void {
   color: var(--demo-text);
   flex-shrink: 0;
   transition: opacity 0.15s ease;
+  flex-direction: row;
 }
 
 .home__chip-text {
@@ -333,6 +335,7 @@ function open(comp: HomeComp): void {
   border-radius: 22rpx;
   background: var(--demo-icon-bg);
   color: var(--demo-icon-fg);
+  flex-direction: row;
 }
 
 .home__count {
@@ -367,6 +370,7 @@ function open(comp: HomeComp): void {
   padding: 96rpx 0;
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 
 .home__empty-text {
@@ -378,6 +382,7 @@ function open(comp: HomeComp): void {
   padding: 24rpx 0 60rpx;
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 
 .home__foot-text {

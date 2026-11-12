@@ -48,6 +48,7 @@ const viewmore = ref(false);
   align-items: center;
   justify-content: center;
   gap: var(--sn-mp-spacing-1);
+  flex-direction: row;
 }
 .sn-demo__more-text {
   color: var(--sn-mp-color-action-primary);

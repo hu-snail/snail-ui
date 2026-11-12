@@ -21,6 +21,7 @@ const current = computed(() => labels[active.value] ?? '');
   display: flex;
   width: 100%;
   min-height: 200px;
+  flex-direction: row;
 }
 .sn-demo__side {
   flex: 0 0 100px;

@@ -33,5 +33,6 @@ const controlled = ref<InstanceType<typeof SnCountTo> | null>(null);
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 </style>

@@ -76,6 +76,7 @@ registerSnIcons({ star: BrandStar });
   flex-wrap: wrap;
   gap: 32rpx;
   align-items: center;
+  flex-direction: row;
 }
 
 .item {

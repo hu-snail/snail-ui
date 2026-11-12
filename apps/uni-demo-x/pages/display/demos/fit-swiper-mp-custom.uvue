@@ -73,6 +73,7 @@ function itemsOf(page: unknown): KongItem[] {
   background-color: var(--sn-mp-color-background-elevated);
   border-radius: 16rpx;
   padding: 24rpx 8rpx 8rpx;
+  flex-direction: row;
 }
 
 .kong__cell {
@@ -92,6 +93,7 @@ function itemsOf(page: unknown): KongItem[] {
   width: 88rpx;
   height: 88rpx;
   border-radius: 28rpx;
+  flex-direction: row;
 }
 
 .kong__tile--1 {
@@ -132,6 +134,7 @@ function itemsOf(page: unknown): KongItem[] {
   padding: 8rpx 24rpx;
   border-radius: 999rpx;
   background-color: var(--sn-mp-color-action-primary);
+  flex-direction: row;
 }
 
 .pager__text {

@@ -49,6 +49,7 @@ function onConfirm() {
 .sn-demo__row {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

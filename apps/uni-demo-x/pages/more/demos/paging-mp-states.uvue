@@ -95,6 +95,7 @@ function load(next: number): void {
   box-sizing: border-box;
   width: 100%;
   padding: var(--sn-mp-spacing-10) var(--sn-mp-spacing-4);
+  flex-direction: row;
 }
 
 .paging-empty__text {

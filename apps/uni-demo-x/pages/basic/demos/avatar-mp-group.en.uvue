@@ -67,6 +67,7 @@ const users = [1, 2, 3, 4, 5].map((n) => `https://picsum.photos/seed/snui-avatar
   padding: 24rpx;
   border-radius: var(--sn-mp-radius-lg);
   background-color: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
 }
 
 .grp-meta {

@@ -266,6 +266,7 @@ watch(
   align-items: center;
   flex: 0 0 132rpx;
   min-width: 0;
+  flex-direction: row;
 }
 
 .demo-shell__topbar-slot--end {
@@ -282,6 +283,7 @@ watch(
   border-radius: var(--sn-mp-radius-full);
   color: var(--demo-title);
   transition: background-color 120ms ease;
+  flex-direction: row;
 }
 
 .demo-shell__back--pressed {

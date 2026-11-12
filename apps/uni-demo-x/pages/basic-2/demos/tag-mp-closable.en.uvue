@@ -44,5 +44,6 @@ function resetFilters(): void {
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
   align-items: center;
+  flex-direction: row;
 }
 </style>

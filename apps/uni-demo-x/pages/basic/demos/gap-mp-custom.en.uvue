@@ -41,6 +41,7 @@ import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-xs);
+  flex-direction: row;
 }
 /* custom-class lands on the sn-gap root, so it needs :deep. */
 </style>

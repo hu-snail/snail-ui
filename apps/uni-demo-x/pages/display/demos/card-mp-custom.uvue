@@ -62,6 +62,7 @@ const rows = [
   justify-content: space-between;
   gap: var(--sn-mp-spacing-2);
   padding: var(--sn-mp-spacing-1) 0;
+  flex-direction: row;
 }
 .sn-card-demo__label {
   color: var(--sn-mp-color-text-secondary);

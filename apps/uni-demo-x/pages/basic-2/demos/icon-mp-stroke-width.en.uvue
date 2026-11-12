@@ -19,5 +19,6 @@ import { Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
   gap: 32rpx;
   align-items: center;
   color: #f59e0b;
+  flex-direction: row;
 }
 </style>

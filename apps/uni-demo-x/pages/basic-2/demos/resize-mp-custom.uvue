@@ -58,5 +58,6 @@ function onResize(rect: { width: number; height: number }): void {
 .sn-demo__actions {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 </style>

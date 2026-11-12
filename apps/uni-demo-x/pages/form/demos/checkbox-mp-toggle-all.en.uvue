@@ -27,6 +27,7 @@ const all = ref<Array<string | number | boolean>>([]);
 .sn-demo__actions {
   display: flex;
   gap: 24rpx;
+  flex-direction: row;
 }
 .sn-demo__action {
   font-size: 26rpx;

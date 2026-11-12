@@ -89,6 +89,7 @@ function log(label: string): void {
   height: 140rpx;
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-mp-color-background-soft);
+  flex-direction: row;
 }
 .sn-demo-stage__text {
   font-size: var(--sn-mp-font-size-sm);

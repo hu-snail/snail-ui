@@ -36,5 +36,6 @@ const cssClass = ref('');
   height: 32rpx;
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-action-primary);
+  flex-direction: row;
 }
 </style>

@@ -63,6 +63,7 @@ function jumpTo(index: number): void {
   display: flex;
   width: 100%;
   min-height: 400rpx;
+  flex-direction: row;
 }
 .sn-demo__panel {
   display: flex;
@@ -83,6 +84,7 @@ function jumpTo(index: number): void {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-2);
+  flex-direction: row;
 }
 .sn-demo__button {
   padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);

@@ -27,6 +27,7 @@ import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: 13px;
+  flex-direction: row;
 }
 .sn-demo-note {
   color: var(--sn-mp-color-text-secondary);

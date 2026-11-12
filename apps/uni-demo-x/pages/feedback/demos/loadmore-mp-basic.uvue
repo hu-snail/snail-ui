@@ -36,6 +36,7 @@ function reload(): void {
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-loadmore-demo__meta {
   font-size: 24rpx;

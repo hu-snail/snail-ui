@@ -53,6 +53,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
   align-items: center;
   gap: 8rpx;
   width: 100%;
+  flex-direction: row;
 }
 .sn-demo__row--tall {
   min-height: 96rpx;

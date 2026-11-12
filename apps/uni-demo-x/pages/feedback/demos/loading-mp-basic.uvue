@@ -33,6 +33,7 @@ import SnLoading from '@snui/uni-x/components/sn-loading/sn-loading.uvue';
   flex-wrap: wrap;
   gap: 32rpx;
   align-items: flex-end;
+  flex-direction: row;
 }
 .sn-loading-demo__cell {
   display: flex;

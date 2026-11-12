@@ -81,6 +81,7 @@ function setOpen(placement: Placement, value: boolean): void {
 .sn-popover-demo__cell {
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 .sn-popover-demo__meta {
   font-size: 24rpx;

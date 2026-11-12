@@ -36,6 +36,7 @@ import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  flex-direction: row;
 }
 
 .sn-cfg-demo__inner--plain {

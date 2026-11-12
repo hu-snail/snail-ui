@@ -26,5 +26,6 @@ const demo = 'https://picsum.photos/seed/snui-img-a/400/300';
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: center;
+  flex-direction: row;
 }
 </style>

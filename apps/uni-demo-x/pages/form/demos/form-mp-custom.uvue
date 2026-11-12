@@ -112,6 +112,7 @@ async function handleSubmit(): Promise<void> {
   border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
+  flex-direction: row;
 }
 
 .sn-demo__chip--active {

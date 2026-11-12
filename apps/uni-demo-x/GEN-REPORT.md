@@ -1139,13 +1139,19 @@
 ## 管线转换问题（CSS 规则删除等，需真机验证视觉）
 
 - App.vue: [tag-only-selector] tag-only selector "page"
+- App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 5 @tap binding(s) renamed to @click
 - components/DemoPageShell.vue: [pseudo-class] pseudo-class in ".demo-shell__btn:active"
+- components/DemoPageShell.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/avatar.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
 - pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
@@ -1154,6 +1160,7 @@
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-star)::after"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-cart)::after"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-css-cart)::after"
+- pages/basic/demos/avatar-mp-css-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
@@ -1162,109 +1169,188 @@
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-star)::after"
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-cart)::after"
 - pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-css-cart)::after"
+- pages/basic/demos/avatar-mp-css-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-fallback.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-fallback.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-group.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-group.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-mode.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-avatar-demo__root)"
+- pages/basic/demos/avatar-mp-mode.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-mode.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-avatar-demo__root)"
+- pages/basic/demos/avatar-mp-mode.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-shape.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-shape.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-status.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-mp-status.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-basic.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-basic.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-basic.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-basic.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-custom.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-badge-demo--framed)"
+- pages/basic/demos/badge-mp-custom.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-custom.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-badge-demo--framed)"
+- pages/basic/demos/badge-mp-custom.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-dot.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-dot.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-dot.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-dot.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-offset.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-offset.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-offset.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-offset.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-shape.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-shape.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-shape.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/badge-mp-shape.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-visibility.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-visibility.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/badge-mp-visibility.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/badge-mp-visibility.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-visibility.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/badge-mp-visibility.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-basic.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-basic.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-block.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-block.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-cell.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-cell.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.en.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
+- pages/basic/demos/button-mp-color-override.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-color-override.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
+- pages/basic/demos/button-mp-color-override.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-form-type.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-form-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-form-type.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-form-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-hairline.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/button-mp-hairline.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-hairline.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/button-mp-hairline.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-hover.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-hover.en.vue: [pseudo-class] pseudo-class in ":deep(.my-press)"
+- pages/basic/demos/button-mp-hover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-hover.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-hover.vue: [pseudo-class] pseudo-class in ":deep(.my-press)"
+- pages/basic/demos/button-mp-hover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-loading-color.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-loading-color.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-loading-props.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading-props.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-loading-props.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading-props.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-mp-open-type.en.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-mp-open-type.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic/demos/button-mp-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-mp-open-type.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-mp-open-type.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic/demos/button-mp-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-open-type.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-open-type.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-round.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-round.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-size.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-size.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-state.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-state.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-variant.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-variant.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/cell-mp-link.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/cell-mp-link.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/config-provider-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/config-provider-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/config-provider-mp-dark.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-dark.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/config-provider-mp-dark.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-dark.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/config-provider-mp-vars.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-vars.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/config-provider-mp-vars.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/config-provider-mp-vars.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp-content-position.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp-content-position.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp-hairline.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp-hairline.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/divider-mp-hairline.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp-hairline.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp-hairline.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic/demos/divider-mp-hairline.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp-vertical.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tall-divider)"
+- pages/basic/demos/divider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp-vertical.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tall-divider)"
+- pages/basic/demos/divider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp.en.vue: [unsupported-property] cursor stripped
+- pages/basic/demos/divider-mp.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/divider-mp.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic/demos/divider-mp.vue: [unsupported-property] cursor stripped
+- pages/basic/demos/divider-mp.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/basic/demos/fab-mp-basic.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/basic/demos/fab-mp-direction.en.vue: [template-attr] 8 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-direction.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-direction.vue: [template-attr] 8 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-direction.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-drag.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-drag.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-drag.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-drag.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-position.en.vue: [template-attr] 8 @tap binding(s) renamed to @click
 - pages/basic/demos/fab-mp-position.vue: [template-attr] 8 @tap binding(s) renamed to @click
 - pages/basic/demos/fab-mp-trigger-icons.en.vue: [template-attr] 6 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-trigger-icons.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-trigger-icons.vue: [template-attr] 6 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-trigger-icons.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-type.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/fab-mp-type.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/basic/demos/fab-mp-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-basic.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/gap-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-basic.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/gap-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-custom.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/gap-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__gap)"
 - pages/basic/demos/gap-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__gap--wide)"
+- pages/basic/demos/gap-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-custom.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/gap-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__gap)"
 - pages/basic/demos/gap-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__gap--wide)"
+- pages/basic/demos/gap-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-safe-area.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/gap-mp-safe-area.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/gap-mp-safe-area.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/gap-mp-safe-area.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/divider.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/basic/fab.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/basic/gap.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/demos/icon-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-cart)"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-bell)"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-check)"
@@ -1273,6 +1359,7 @@
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-icon-check)::after"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.search)::after"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.search)"
+- pages/basic-2/demos/icon-mp-css.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-cart)"
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-bell)"
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-check)"
@@ -1281,14 +1368,21 @@
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-icon-check)::after"
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.search)::after"
 - pages/basic-2/demos/icon-mp-css.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.search)"
+- pages/basic-2/demos/icon-mp-css.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo--framed)"
+- pages/basic-2/demos/icon-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo--framed)"
+- pages/basic-2/demos/icon-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-iconify.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-iconify.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-iconify.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-iconify.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-home)"
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-search)"
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-user)"
@@ -1299,6 +1393,7 @@
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-user)::after"
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.wd-icon-home)::after"
 - pages/basic-2/demos/icon-mp-name.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.wd-icon-search)::after"
+- pages/basic-2/demos/icon-mp-name.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-home)"
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-search)"
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-user)"
@@ -1309,10 +1404,19 @@
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-user)::after"
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.wd-icon-home)::after"
 - pages/basic-2/demos/icon-mp-name.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.wd-icon-search)::after"
+- pages/basic-2/demos/icon-mp-name.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-registry.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-registry.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-registry.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-registry.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-string.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-string.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-string.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/icon-mp-string.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-stroke-width.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-stroke-width.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/layout-mp-align.en.vue: [template-bare-text] 14 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/layout-mp-align.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__row-card)"
 - pages/basic-2/demos/layout-mp-align.vue: [template-bare-text] 14 bare text node(s) wrapped in <text>
@@ -1323,34 +1427,48 @@
 - pages/basic-2/demos/layout-mp-gutter.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/resize-mp-basic.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/resize-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/resize-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/resize-mp-basic.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/resize-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/resize-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/resize-mp-custom.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/resize-mp-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/basic-2/demos/resize-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__wrapper)"
 - pages/basic-2/demos/resize-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__measured)"
+- pages/basic-2/demos/resize-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/resize-mp-custom.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/resize-mp-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/basic-2/demos/resize-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__wrapper)"
 - pages/basic-2/demos/resize-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__measured)"
+- pages/basic-2/demos/resize-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/root-portal-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/root-portal-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/root-portal-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/root-portal-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/root-portal-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/root-portal-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/root-portal-mp-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/root-portal-mp-custom.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/root-portal-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__layer)"
+- pages/basic-2/demos/root-portal-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/root-portal-mp-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/root-portal-mp-custom.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/root-portal-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__layer)"
+- pages/basic-2/demos/root-portal-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-closable.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-closable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-closable.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-closable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-color.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/tag-mp-color.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag--root)"
+- pages/basic-2/demos/tag-mp-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-color.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/tag-mp-color.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag--root)"
+- pages/basic-2/demos/tag-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-star)"
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-heart)"
@@ -1360,6 +1478,7 @@
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-heart)"
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-check)"
 - pages/basic-2/demos/tag-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-gem-diamond)"
+- pages/basic-2/demos/tag-mp-css-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-css-icon.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/tag-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-star)"
 - pages/basic-2/demos/tag-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-heart)"
@@ -1369,30 +1488,49 @@
 - pages/basic-2/demos/tag-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-heart)"
 - pages/basic-2/demos/tag-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-icon-check)"
 - pages/basic-2/demos/tag-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-tag-gem-diamond)"
+- pages/basic-2/demos/tag-mp-css-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-dynamic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-dynamic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-dynamic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-dynamic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-icon.en.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-icon.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-round-mark.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-round-mark.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-round-mark.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-round-mark.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-shape.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-shape.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-shape.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-shape.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-size.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-size.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-variant.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/tag-mp-variant.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic-2/demos/tag-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/text-mp-custom.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/text-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__highlight)"
 - pages/basic-2/demos/text-mp-custom.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/text-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__highlight)"
+- pages/basic-2/demos/text-mp-mode.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/text-mp-mode.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-basic.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-basic.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-combined.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-combined.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-combined.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-combined.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-combined.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-combined.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--root)"
@@ -1402,6 +1540,7 @@
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave)"
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave-active)"
 - pages/basic-2/demos/transition-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave-to)"
+- pages/basic-2/demos/transition-mp-custom-class.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-custom-class.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-custom-class.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/transition-mp-custom-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--root)"
@@ -1411,22 +1550,31 @@
 - pages/basic-2/demos/transition-mp-custom-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave)"
 - pages/basic-2/demos/transition-mp-custom-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave-active)"
 - pages/basic-2/demos/transition-mp-custom-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-stage--leave-to)"
+- pages/basic-2/demos/transition-mp-custom-class.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-destroy.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-destroy.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-destroy.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-destroy.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-destroy.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-destroy.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-duration.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-duration.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-duration.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-duration.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-duration.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-duration.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-lazy-render.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-lazy-render.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-lazy-render.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-lazy-render.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-lazy-render.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-lazy-render.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-touch-move.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-touch-move.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-touch-move.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/demos/transition-mp-touch-move.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/icon.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/layout.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/resize.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
@@ -1471,46 +1619,64 @@
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__footer)"
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__rect)"
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__rect-content)"
+- pages/display/demos/card-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__root)"
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__title)"
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__content)"
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__footer)"
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__rect)"
 - pages/display/demos/card-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__rect-content)"
+- pages/display/demos/card-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/card-mp.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/card-mp.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/count-down-mp-autostart.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/count-down-mp-autostart.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/display/demos/count-down-mp-autostart.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-count-down-demo__custom)"
+- pages/display/demos/count-down-mp-autostart.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-down-mp-autostart.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/count-down-mp-autostart.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/display/demos/count-down-mp-autostart.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-count-down-demo__custom)"
+- pages/display/demos/count-down-mp-autostart.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-down-mp-control.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/count-down-mp-control.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/count-down-mp-control.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-down-mp-control.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/count-down-mp-control.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/count-down-mp-control.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-to-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/count-to-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/count-to-mp-control.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-control.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/count-to-mp-control.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-to-mp-control.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-control.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/count-to-mp-control.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/count-to-mp-easing.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-easing.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/count-to-mp-easing.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-count-to-demo__custom)"
 - pages/display/demos/count-to-mp-easing.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/count-to-mp-easing.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/count-to-mp-easing.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-count-to-demo__custom)"
+- pages/display/demos/fit-swiper-mp-basic.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/fit-swiper-mp-basic.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/fit-swiper-mp-custom.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/fit-swiper-mp-custom.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/fit-swiper-mp-indicator.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/fit-swiper-mp-indicator.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-close-behavior.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-close-behavior.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-close-behavior.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-close-behavior.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-close-behavior.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-close-behavior.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-close-position.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-close-position.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/image-preview-mp-close-position.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1525,24 +1691,32 @@
 - pages/display/demos/image-preview-mp-longpress.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/image-preview-mp-selector.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-selector.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-selector.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/image-preview-mp-selector.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/image-preview-mp-selector.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/image-preview-mp-selector.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-export-props.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-export-props.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-export-props.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-export-props.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-export-props.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-export-props.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-frame.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-frame.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/img-cropper-mp-frame.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-frame.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/img-cropper-mp-max-scale.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-max-scale.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-max-scale.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-max-scale.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-max-scale.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-max-scale.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-ratio.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-ratio.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-ratio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-ratio.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-ratio.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/img-cropper-mp-ratio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-cropper-mp-rotate.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/img-cropper-mp-rotate.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/img-cropper-mp-rotate.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1551,20 +1725,38 @@
 - pages/display/demos/img-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__image)"
 - pages/display/demos/img-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__zoom)"
 - pages/display/demos/img-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__fade)"
+- pages/display/demos/img-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__root)"
 - pages/display/demos/img-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__image)"
 - pages/display/demos/img-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__zoom)"
 - pages/display/demos/img-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-img-demo__fade)"
+- pages/display/demos/img-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-mode.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-mode.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-preview.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-preview.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-shape.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/img-mp-shape.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-mp-state.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/img-mp-state.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/img-mp-state.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/img-mp-state.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/display/demos/img-mp-state.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/display/demos/img-mp-state.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-canvas-id.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
 - pages/display/demos/qr-code-mp-canvas-id.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
+- pages/display/demos/qr-code-mp-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-dot-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-dot-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-export.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/qr-code-mp-export.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/qr-code-mp-export.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/display/demos/qr-code-mp-export.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/display/demos/qr-code-mp-gradient.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-gradient.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/swiper-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-swiper-demo__root)"
 - pages/display/demos/swiper-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-swiper-demo__indicator)"
 - pages/display/demos/swiper-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-swiper-demo__item)"
@@ -1577,12 +1769,16 @@
 - pages/display/demos/swiper-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-swiper-demo__text)"
 - pages/display/demos/swiper-mp-data-keys.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/swiper-mp-data-keys.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/swiper-mp-data-keys.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/swiper-mp-data-keys.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/display/demos/swiper-mp-data-keys.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/display/demos/swiper-mp-data-keys.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/swiper-mp-playback.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/display/demos/swiper-mp-playback.en.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/display/demos/swiper-mp-playback.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/swiper-mp-playback.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/display/demos/swiper-mp-playback.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/display/demos/swiper-mp-playback.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/table-mp-border-stripe.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-table-demo__root)"
 - pages/display/demos/table-mp-border-stripe.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-table-demo__root)"
 - pages/display/demos/table-mp-cell-slot.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1655,14 +1851,20 @@
 - pages/feedback/demos/action-sheet-mp-render.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/feedback/demos/circle-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback/demos/circle-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback/demos/circle-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/circle-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback/demos/circle-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback/demos/circle-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback/demos/circle-mp-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback/demos/circle-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/circle-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__ring)"
 - pages/feedback/demos/circle-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__ring)"
 - pages/feedback/demos/circle-mp-speed.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/circle-mp-speed.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/feedback/demos/circle-mp-speed.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/circle-mp-speed.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/circle-mp-speed.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/feedback/demos/circle-mp-speed.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/curtain-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/curtain-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback/demos/curtain-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1714,21 +1916,27 @@
 - pages/feedback/demos/empty-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__empty)"
 - pages/feedback/demos/empty-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__empty)"
 - pages/feedback/demos/empty-mp-slots.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/feedback/demos/empty-mp-slots.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/empty-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/feedback/demos/empty-mp-slots.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/floating-panel-mp-config.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback/demos/floating-panel-mp-config.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/feedback/demos/floating-panel-mp-config.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback/demos/floating-panel-mp-config.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/feedback/demos/floating-panel-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__panel)"
 - pages/feedback/demos/floating-panel-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__panel)"
+- pages/feedback/demos/loading-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback/demos/loading-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/loading-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__block)"
 - pages/feedback/demos/loading-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__spinner)"
 - pages/feedback/demos/loading-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__block)"
 - pages/feedback/demos/loading-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__spinner)"
 - pages/feedback/demos/loadmore-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback/demos/loadmore-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback/demos/loadmore-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/loadmore-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback/demos/loadmore-mp-basic.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback/demos/loadmore-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/loadmore-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__loadmore)"
 - pages/feedback/demos/loadmore-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__loadmore)"
 - pages/feedback/dialog.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
@@ -1769,7 +1977,9 @@
 - pages/feedback-2/demos/popup-mp-custom-style.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/popup-mp-custom-style.vue: [template-attr] 4 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/popup-mp-position.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/popup-mp-position.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/popup-mp-position.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/popup-mp-position.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/popup-mp-render.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/popup-mp-render.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/popup-mp-render.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
@@ -1791,17 +2001,29 @@
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__wide)"
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__dense)"
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__outlined)"
+- pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__block)"
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__wide)"
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__dense)"
 - pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-skeleton-demo__outlined)"
+- pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/skeleton-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/skeleton-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/swipe-action-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-before-close.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-before-close.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-both-sides.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
+- pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
+- pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-disabled.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -1816,8 +2038,10 @@
 - pages/feedback-2/demos/toast-mp-icon-style.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-icon.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-icon.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/toast-mp-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/toast-mp-icon.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-icon.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/toast-mp-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/toast-mp-z-index.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-z-index.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-z-index.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1845,24 +2069,36 @@
 - pages/form/demos/calendar-view-mp-time-props.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__calendar)"
 - pages/form/demos/captcha-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-copy.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-copy.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-copy.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-copy.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-copy.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-copy.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-interaction.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-interaction.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-interaction.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-interaction.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-interaction.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-interaction.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-popup.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-popup.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-popup.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-popup.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-popup.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-popup.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-size-tolerance.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-size-tolerance.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-size-tolerance.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/captcha-mp-size-tolerance.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/captcha-mp-size-tolerance.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/captcha-mp-size-tolerance.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form/demos/captcha-mp-verify.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form/demos/captcha-mp-verify.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/checkbox-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-colors.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1885,14 +2121,18 @@
 - pages/form/demos/checkbox-mp-standalone.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-toggle-all.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-toggle-all.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/checkbox-mp-toggle-all.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/checkbox-mp-toggle-all.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-toggle-all.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/checkbox-mp-toggle-all.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/checkbox-mp-type.en.vue: [template-bare-text] 8 bare text node(s) wrapped in <text>
 - pages/form/demos/checkbox-mp-type.vue: [template-bare-text] 8 bare text node(s) wrapped in <text>
 - pages/form/demos/code-input-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/code-input-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/code-input-mp-basic.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/code-input-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/code-input-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/code-input-mp-basic.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/code-input-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin)"
 - pages/form/demos/code-input-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin--tall)"
 - pages/form/demos/code-input-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin)"
@@ -1901,8 +2141,10 @@
 - pages/form/demos/form-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-custom.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/form-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/form-mp-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-custom.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/form-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/form-mp-disabled.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-disabled.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-fields.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
@@ -1929,40 +2171,58 @@
 - pages/form/demos/input-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-car-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-car-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-car-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-car-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-car-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-car-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-close-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-close-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-close-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-close-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-close-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-close-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-decimal.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-decimal.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-decimal.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-decimal.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-decimal.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-decimal.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-delete-key.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-delete-key.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-delete-key.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-delete-key.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-delete-key.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-delete-key.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-idcard.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-idcard.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-idcard.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-idcard.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-idcard.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-idcard.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-labels.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-labels.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-labels.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-labels.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-labels.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-labels.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-random-order.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-random-order.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-random-order.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-random-order.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-random-order.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-random-order.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-scrim.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-scrim.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/demos/keyboard-mp-scrim.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/form.vue: [import-rewrite] 25 relative .vue import(s) rewritten to .uvue
 - pages/form/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
 - pages/form/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
@@ -1970,32 +2230,46 @@
 - pages/form/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-button-text.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-button-text.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-button-text.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-button-text.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-button-text.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-button-text.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-cascade-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-cascade-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-cascade-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-cascade-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-cascade-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-cascade-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-immediate.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-immediate.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-immediate.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-immediate.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-immediate.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-immediate.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-rows.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-rows.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-rows.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-rows.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-rows.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-rows.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-view-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
 - pages/form-2/demos/picker-view-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
 - pages/form-2/demos/radio-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2038,44 +2312,64 @@
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
 - pages/form-2/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-before-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-checked-color.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-checked-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-checked-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-chip-size.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-chip-size.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-chip-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-filterable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-filterable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-filterable.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-filterable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/select-picker-mp-type-radio.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/select-picker-mp-type-radio.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/select-picker-mp-type-radio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/slide-verify-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
 - pages/form-2/demos/slide-verify-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
 - pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
@@ -2092,8 +2386,16 @@
 - pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
 - pages/form-2/demos/slider-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
 - pages/form-2/demos/slider-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
+- pages/form-2/demos/slider-mp-popover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/slider-mp-popover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/slider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/slider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/sort-button-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
 - pages/form-2/demos/sort-button-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
+- pages/form-2/demos/switch-mp-css-icons.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/switch-mp-css-icons.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/textarea-mp-prefix-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/textarea-mp-prefix-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
 - pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
 - pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
@@ -2101,7 +2403,9 @@
 - pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
 - pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
 - pages/form-2/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/picker-view.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/form-2/picker.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
@@ -2120,40 +2424,59 @@
 - pages/index/index.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__card:active"
+- pages/index/index.vue: [flex-direction-row] 5 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/ai-chat.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
 - pages/more/ai-message-list.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
 - pages/more/demos/paging-mp-app.en.vue: [template-attr] 6 @tap binding(s) renamed to @click
 - pages/more/demos/paging-mp-app.en.vue: [pseudo-class] pseudo-class in ".pgc__expand:active"
 - pages/more/demos/paging-mp-app.en.vue: [pseudo-class] pseudo-class in ".pgd__op:active"
+- pages/more/demos/paging-mp-app.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-app.vue: [template-attr] 6 @tap binding(s) renamed to @click
 - pages/more/demos/paging-mp-app.vue: [pseudo-class] pseudo-class in ".pgc__expand:active"
 - pages/more/demos/paging-mp-app.vue: [pseudo-class] pseudo-class in ".pgd__op:active"
+- pages/more/demos/paging-mp-app.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-popup.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/more/demos/paging-mp-popup.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/more/demos/paging-mp-second-floor.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/paging-mp-second-floor.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-states.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/more/demos/paging-mp-states.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-states.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/more/demos/paging-mp-states.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/paging.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/more/slider-bar.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/backtop.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/collapse.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/navigation/demos/backtop-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
+- pages/navigation/demos/backtop-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/backtop-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-basic.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
+- pages/navigation/demos/backtop-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/backtop-mp-icon-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-contained)"
 - pages/navigation/demos/backtop-mp-icon-style.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-contained)"
 - pages/navigation/demos/backtop-mp-shape.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
 - pages/navigation/demos/backtop-mp-shape.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
 - pages/navigation/demos/backtop-mp-theme.en.vue: [pseudo-class] pseudo-class in ".sn-demo__cell-stage :deep(.sn-backtop.sn-demo-pinned)"
+- pages/navigation/demos/backtop-mp-theme.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/backtop-mp-theme.vue: [pseudo-class] pseudo-class in ".sn-demo__cell-stage :deep(.sn-backtop.sn-demo-pinned)"
+- pages/navigation/demos/backtop-mp-theme.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/backtop-mp-threshold.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-threshold.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-contained)"
+- pages/navigation/demos/backtop-mp-threshold.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/backtop-mp-threshold.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-threshold.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-contained)"
+- pages/navigation/demos/backtop-mp-threshold.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/collapse-mp-more-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__more)"
+- pages/navigation/demos/collapse-mp-more-slot.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/collapse-mp-more-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__more)"
+- pages/navigation/demos/collapse-mp-more-slot.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/collapse-mp-title-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__body)"
+- pages/navigation/demos/collapse-mp-title-slot.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/collapse-mp-title-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__body)"
+- pages/navigation/demos/collapse-mp-title-slot.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/drop-menu-mp-direction.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-drop-menu.sn-demo-contained)"
 - pages/navigation/demos/drop-menu-mp-direction.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-drop-menu.sn-demo-contained)"
 - pages/navigation/demos/drop-menu-mp-disabled.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-drop-menu.sn-demo-contained)"
@@ -2172,6 +2495,8 @@
 - pages/navigation/demos/drop-menu-mp-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-drop-menu.sn-demo-contained)"
 - pages/navigation/demos/grid-mp-clickable.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__cell-press)"
 - pages/navigation/demos/grid-mp-clickable.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__cell-press)"
+- pages/navigation/demos/grid-mp-kingkong.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/grid-mp-kingkong.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/grid-mp-look.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__grid)"
 - pages/navigation/demos/grid-mp-look.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__grid)"
 - pages/navigation/demos/index-bar-mp-contacts.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
@@ -2179,19 +2504,27 @@
 - pages/navigation/demos/index-bar-mp-contacts.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/navigation/demos/index-bar-mp-contacts.en.vue: [pseudo-class] pseudo-class in ".icx :deep(.icx__bar)"
 - pages/navigation/demos/index-bar-mp-contacts.en.vue: [pseudo-class] pseudo-class in ".icd__row:last-child"
+- pages/navigation/demos/index-bar-mp-contacts.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/index-bar-mp-contacts.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/navigation/demos/index-bar-mp-contacts.vue: [pseudo-class] pseudo-class in ".sn-demo__expand:active"
 - pages/navigation/demos/index-bar-mp-contacts.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/navigation/demos/index-bar-mp-contacts.vue: [pseudo-class] pseudo-class in ".icx :deep(.icx__bar)"
 - pages/navigation/demos/index-bar-mp-contacts.vue: [pseudo-class] pseudo-class in ".icd__row:last-child"
+- pages/navigation/demos/index-bar-mp-contacts.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/index-bar-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/index-bar-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/index-bar-mp-scrollto.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/index-bar-mp-scrollto.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
+- pages/navigation/demos/index-bar-mp-scrollto.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/index-bar-mp-scrollto.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/index-bar-mp-scrollto.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
+- pages/navigation/demos/index-bar-mp-scrollto.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/navbar-mp-capsule-slot.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/navbar-mp-capsule-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
+- pages/navigation/demos/navbar-mp-capsule-slot.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
+- pages/navigation/demos/navbar-mp-capsule-slot.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/pagination-mp-slots.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/pagination-mp-slots.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/popover-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2217,7 +2550,9 @@
 - pages/navigation/demos/popover-mp-menu.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-menu.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
@@ -2228,14 +2563,30 @@
 - pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
+- pages/navigation-2/demos/sidebar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-disabled.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-disabled.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sidebar-mp-guard.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/sidebar-mp-guard.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__side)"
+- pages/navigation-2/demos/sidebar-mp-guard.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sidebar-mp-guard.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/sidebar-mp-guard.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__side)"
+- pages/navigation-2/demos/sidebar-mp-guard.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-scroll.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/sidebar-mp-scroll.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation-2/demos/steps-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation-2/demos/steps-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
 - pages/navigation-2/demos/steps-mp-custom-class.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
+- pages/navigation-2/demos/steps-mp-node.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/steps-mp-node.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sticky-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/sticky-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/sticky-mp-layers.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2246,12 +2597,16 @@
 - pages/navigation-2/demos/sticky-mp-layers.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__layer-b)"
 - pages/navigation-2/demos/tabbar-mp-playground.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabbar-mp-playground.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/navigation-2/demos/tabbar-mp-playground.en.vue: [flex-direction-row] 4 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tabbar-mp-playground.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabbar-mp-playground.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/navigation-2/demos/tabbar-mp-playground.vue: [flex-direction-row] 4 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tabs-mp-animate.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabs-mp-animate.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabs-mp-badge.en.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tabs-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tabs-mp-badge.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tabs-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tabs-mp-basic.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabs-mp-basic.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tabs-mp-disabled.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2281,7 +2636,9 @@
 - pages/navigation-2/demos/tooltip-mp-disabled.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tooltip-mp-disabled.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tooltip-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tooltip-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tooltip-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tooltip-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tour-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-custom.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2292,8 +2649,10 @@
 - pages/navigation-2/demos/tour-mp-mask.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
 - pages/navigation-2/demos/tour-mp-panel-slot.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-panel-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
+- pages/navigation-2/demos/tour-mp-panel-slot.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tour-mp-panel-slot.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-panel-slot.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
+- pages/navigation-2/demos/tour-mp-panel-slot.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tour-mp-z-index.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-z-index.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
 - pages/navigation-2/demos/tour-mp-z-index.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2307,6 +2666,8 @@
 - pages/navigation-2/tooltip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tour.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-chat.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
+- templates/uni/sn-ai-chat.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - templates/uni/sn-ai-message.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - templates/uni/sn-ai-message.vue: [template-attr] 1 data-* attribute(s) stripped
+- templates/uni/sn-ai-message.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 

@@ -67,6 +67,7 @@ function showLoading(kind: (typeof loadingKinds)[number]): void {
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-toast-demo__meta {
   font-size: 24rpx;

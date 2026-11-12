@@ -141,6 +141,7 @@ function onFail(payload: { file: UploadFileItem; error: unknown }): void {
   align-items: center;
   border-radius: var(--sn-mp-button-radius);
   background-color: var(--sn-mp-color-action-primary);
+  flex-direction: row;
 }
 .sn-demo__action-text {
   color: var(--sn-mp-color-text-on-primary);

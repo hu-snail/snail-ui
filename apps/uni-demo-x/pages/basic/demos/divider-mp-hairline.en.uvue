@@ -55,6 +55,7 @@ const hairline = ref(true);
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo__word {
   color: var(--sn-mp-color-text-primary);
@@ -71,6 +72,7 @@ const hairline = ref(true);
   padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-action-primary);
+  flex-direction: row;
 }
 .sn-demo__switch-label {
   color: var(--sn-mp-color-text-on-primary);

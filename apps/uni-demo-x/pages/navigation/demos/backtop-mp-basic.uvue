@@ -82,6 +82,7 @@ function toBottom(): void {
 .sn-demo__actions {
   display: flex;
   gap: var(--sn-mp-spacing-2);
+  flex-direction: row;
 }
 .sn-demo__button {
   padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);

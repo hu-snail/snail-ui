@@ -29,5 +29,6 @@ const dimmer = ref(21);
   display: flex;
   gap: 24rpx;
   height: 260rpx;
+  flex-direction: row;
 }
 </style>

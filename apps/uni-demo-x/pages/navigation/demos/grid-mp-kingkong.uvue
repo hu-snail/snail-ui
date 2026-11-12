@@ -111,5 +111,6 @@ function onEntryTap(entry: { text: string }): void {
   border-radius: var(--sn-mp-radius-xl);
   background-color: var(--sn-demo-kk-bg);
   color: var(--sn-demo-kk-fg);
+  flex-direction: row;
 }
 </style>

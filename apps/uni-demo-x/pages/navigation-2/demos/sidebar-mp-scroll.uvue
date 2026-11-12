@@ -136,6 +136,7 @@ async function beforeChange(value: number | string): Promise<boolean> {
   overflow: hidden;
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
+  flex-direction: row;
 }
 /* class 落在 sn-sidebar 根节点上（fallthrough），无需 :deep。 */
 .sn-demo__nav {

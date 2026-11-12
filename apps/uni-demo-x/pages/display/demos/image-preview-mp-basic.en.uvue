@@ -62,6 +62,7 @@ function openAt(index: number) {
 .sn-demo__thumbs {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-demo__thumb {
   overflow: hidden;

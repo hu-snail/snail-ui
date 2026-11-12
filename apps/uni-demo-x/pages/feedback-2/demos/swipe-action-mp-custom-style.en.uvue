@@ -51,6 +51,7 @@ const enabled = ref<'left' | 'close' | 'right'>('close');
   justify-content: center;
   width: 160rpx;
   background-color: var(--sn-mp-color-feedback-danger);
+  flex-direction: row;
 }
 .sn-demo__action-text {
   color: var(--sn-mp-color-text-on-primary);

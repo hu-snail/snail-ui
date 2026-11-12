@@ -74,6 +74,28 @@ describe('transformCss (component mode)', () => {
     expect(r.issues).toHaveLength(0);
   });
 
+  it('should inject flex-direction: row into flex containers relying on the W3C default', () => {
+    const css =
+      '.row {\n  display: flex;\n  gap: 8px;\n}\n.inline {\n  display: inline-flex;\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('.row {\n  display: flex;\n  gap: 8px;\n  flex-direction: row;');
+    expect(r.css).toContain('.inline {\n  display: inline-flex;\n  flex-direction: row;');
+    expect(r.issues.some((i) => i.kind === 'flex-direction-row')).toBe(true);
+  });
+
+  it('should not inject flex-direction when it is already declared', () => {
+    const css = '.col {\n  display: flex;\n  flex-direction: column;\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).not.toContain('flex-direction: row');
+    expect(r.issues.some((i) => i.kind === 'flex-direction-row')).toBe(false);
+  });
+
+  it('should not inject flex-direction into non-flex rules', () => {
+    const r = transformCss('.a {\n  display: block;\n  color: red;\n}\n', 'component', FILE);
+    expect(r.css).not.toContain('flex-direction');
+    expect(r.issues).toHaveLength(0);
+  });
+
   it('should strip unsupported properties and report them', () => {
     const r = transformCss('.a {\n  cursor: pointer;\n  color: red;\n}\n', 'component', FILE);
     expect(r.css).not.toContain('cursor');

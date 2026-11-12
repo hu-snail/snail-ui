@@ -369,6 +369,7 @@ function exitFull(): void {
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-soft);
   border: 1px solid var(--sn-mp-color-border-subtle);
+  flex-direction: row;
 }
 
 .pgc__chip--active {
@@ -527,6 +528,7 @@ function exitFull(): void {
   padding: var(--sn-mp-spacing-3);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
   background-color: var(--sn-mp-color-background-surface);
+  flex-direction: row;
 }
 
 .pgx__bottombar-text {

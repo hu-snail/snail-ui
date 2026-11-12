@@ -30,6 +30,7 @@ import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: flex-start;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

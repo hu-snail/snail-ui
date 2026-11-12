@@ -52,6 +52,7 @@ function report(label: string): void {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
 }
 .sn-demo__title-text {
   font-size: var(--sn-mp-font-size-lg);
@@ -67,6 +68,7 @@ function report(label: string): void {
   border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-full);
   color: var(--sn-mp-color-text-secondary);
+  flex-direction: row;
 }
 /* custom-class 落在根节点上。 */
 </style>

@@ -28,5 +28,6 @@ import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
+  flex-direction: row;
 }
 </style>

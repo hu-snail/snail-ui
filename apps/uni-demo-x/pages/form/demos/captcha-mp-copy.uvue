@@ -63,6 +63,7 @@ const SOURCE = 'https://picsum.photos/seed/snui-captcha-copy/640/320';
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: row;
 }
 
 .sn-demo__panel-title {

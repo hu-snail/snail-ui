@@ -312,6 +312,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   padding: var(--sn-mp-spacing-12) 0;
+  flex-direction: row;
 }
 
 .sn-ai-chat__loading-text, .sn-ai-chat__empty-text {

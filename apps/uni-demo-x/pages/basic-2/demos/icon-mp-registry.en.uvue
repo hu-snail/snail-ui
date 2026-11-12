@@ -45,5 +45,6 @@ const CustomFlag: IconData = {
   flex-wrap: wrap;
   gap: 24rpx;
   align-items: center;
+  flex-direction: row;
 }
 </style>

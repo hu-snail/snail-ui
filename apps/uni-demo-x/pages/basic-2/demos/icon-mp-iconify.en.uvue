@@ -59,6 +59,7 @@ function reload(): void {
   flex-wrap: wrap;
   gap: 32rpx;
   align-items: center;
+  flex-direction: row;
 }
 
 .item {
@@ -77,6 +78,7 @@ function reload(): void {
   height: 88rpx;
   border-radius: var(--sn-mp-radius-md);
   background: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
 }
 
 .item__name {

@@ -403,6 +403,35 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
     });
     decl.remove();
   }
+
+  // uni-app x resets flex-direction to `column` on every platform (W3C
+  // default is row — uni-app-x/css reset table). Flex containers relying on
+  // the W3C default stack vertically on App AND web, so a rule declaring a
+  // flex display without an explicit direction gets `flex-direction: row`
+  // injected to preserve W3C-authored geometry.
+  let flexRows = 0;
+  root.walkRules((rule) => {
+    if (insideKeyframes(rule)) return;
+    let hasFlexDisplay = false;
+    let hasDirection = false;
+    rule.walkDecls((decl) => {
+      const prop = decl.prop.toLowerCase();
+      const value = decl.value.toLowerCase();
+      if (prop === 'display' && /flex/.test(value)) hasFlexDisplay = true;
+      if (prop === 'flex-direction') hasDirection = true;
+    });
+    if (hasFlexDisplay && !hasDirection) {
+      rule.append({ prop: 'flex-direction', value: 'row' });
+      flexRows++;
+    }
+  });
+  if (flexRows > 0) {
+    issues.push({
+      file,
+      kind: 'flex-direction-row',
+      detail: `${flexRows} flex container(s) given explicit flex-direction: row (uni-app x column default)`,
+    });
+  }
 }
 
 function transformTokens(root: postcss.Root, file: string, issues: TransformIssue[]): void {

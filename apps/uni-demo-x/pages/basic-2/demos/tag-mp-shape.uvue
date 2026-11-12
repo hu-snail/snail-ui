@@ -31,6 +31,7 @@ const shapes = [
   display: flex;
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-6) var(--sn-mp-spacing-5);
+  flex-direction: row;
 }
 
 .shape-cell {

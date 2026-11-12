@@ -37,6 +37,7 @@ const src = ref(okSrc);
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-img-demo__error {
   font-size: 22rpx;

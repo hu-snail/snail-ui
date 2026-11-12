@@ -33,6 +33,7 @@ const never = ref(70);
   align-items: flex-start;
   gap: 48rpx;
   padding: 8rpx 0;
+  flex-direction: row;
 }
 .sn-demo__col {
   display: flex;

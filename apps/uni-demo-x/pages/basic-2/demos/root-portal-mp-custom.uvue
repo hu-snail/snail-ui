@@ -72,6 +72,7 @@ const visible = ref(true);
 .sn-demo__actions {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 /* custom-class 落在固定层上。仅文档预览：把它约束在宿主容器里，避免盖住
  * 整个手机屏幕；真实业务里应保持组件默认的 position: fixed。 */

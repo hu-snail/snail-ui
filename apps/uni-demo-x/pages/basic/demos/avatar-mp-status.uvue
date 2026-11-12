@@ -51,6 +51,7 @@ const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
   display: flex;
   flex-wrap: wrap;
   gap: 24rpx 16rpx;
+  flex-direction: row;
 }
 .st-cell {
   display: flex;

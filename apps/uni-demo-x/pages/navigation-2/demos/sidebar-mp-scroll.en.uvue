@@ -139,6 +139,7 @@ async function beforeChange(value: number | string): Promise<boolean> {
   overflow: hidden;
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
+  flex-direction: row;
 }
 /* The class falls through onto the sn-sidebar root, so no :deep needed. */
 .sn-demo__nav {

@@ -64,6 +64,7 @@ const lastEvent = ref('—');
 .sn-demo__thumbs {
   display: flex;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-demo__thumb {
   overflow: hidden;
@@ -73,10 +74,12 @@ const lastEvent = ref('—');
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-demo__footer {
   display: flex;
   justify-content: center;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

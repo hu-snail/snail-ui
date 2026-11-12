@@ -39,6 +39,7 @@ const scrollTop = ref(500);
   display: flex;
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-3);
+  flex-direction: row;
 }
 .sn-demo__cell {
   display: flex;

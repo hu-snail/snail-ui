@@ -45,6 +45,7 @@ function log(label: string): void {
   height: 120rpx;
   border-radius: 16rpx;
   background-color: var(--sn-mp-color-background-soft);
+  flex-direction: row;
 }
 .sn-transition-demo__text {
   font-size: 26rpx;

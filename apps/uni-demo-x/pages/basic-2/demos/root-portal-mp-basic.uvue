@@ -59,5 +59,6 @@ const visible = ref(true);
 .sn-root-portal-demo__actions {
   display: flex;
   gap: 8px;
+  flex-direction: row;
 }
 </style>

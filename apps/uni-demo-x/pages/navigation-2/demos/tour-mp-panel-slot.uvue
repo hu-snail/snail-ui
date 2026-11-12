@@ -94,6 +94,7 @@ const customSteps = [
   display: flex;
   justify-content: flex-end;
   gap: var(--sn-mp-spacing-3);
+  flex-direction: row;
 }
 .sn-demo__meta {
   font-size: 24rpx;

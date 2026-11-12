@@ -53,6 +53,7 @@ const removed = ref(false);
   justify-content: center;
   width: 160rpx;
   background: var(--sn-mp-color-feedback-danger);
+  flex-direction: row;
 }
 .sn-swipe-demo__action-text {
   font-size: 28rpx;

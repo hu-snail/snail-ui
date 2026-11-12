@@ -58,6 +58,7 @@ const started = ref(0);
   flex-wrap: wrap;
   align-items: center;
   gap: 8rpx;
+  flex-direction: row;
 }
 .sn-count-down-demo__label {
   color: var(--sn-mp-color-text-secondary);

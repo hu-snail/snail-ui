@@ -31,6 +31,7 @@ const finished = ref(0);
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+  flex-direction: row;
 }
 .sn-count-down-demo__meta {
   font-size: 24rpx;

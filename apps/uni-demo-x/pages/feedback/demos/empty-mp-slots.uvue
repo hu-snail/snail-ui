@@ -45,6 +45,7 @@ function retry(): void {
   height: 160rpx;
   border: 4rpx dashed var(--sn-mp-color-border-default);
   border-radius: 80rpx;
+  flex-direction: row;
 }
 .sn-empty-demo__glyph-text {
   font-size: 56rpx;

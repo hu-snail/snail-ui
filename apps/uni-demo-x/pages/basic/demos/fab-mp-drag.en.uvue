@@ -92,6 +92,7 @@ function pick(label: string): void {
   background-color: var(--sn-mp-color-background-elevated);
   box-shadow: var(--sn-mp-shadow-sm);
   color: var(--sn-mp-color-text-secondary);
+  flex-direction: row;
 }
 
 /* Docs-preview only — pin the fixed layer to the phone screen. */

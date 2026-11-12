@@ -139,6 +139,7 @@ function copyName(name: string): void {
   background: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
+  flex-direction: row;
 }
 
 .chips__item--active {
@@ -196,6 +197,7 @@ function copyName(name: string): void {
   border-radius: var(--sn-mp-radius-md);
   background: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-primary);
+  flex-direction: row;
 }
 
 .cell__name {
@@ -211,6 +213,7 @@ function copyName(name: string): void {
   display: flex;
   justify-content: center;
   padding: var(--sn-mp-spacing-10) 0;
+  flex-direction: row;
 }
 
 .empty__text {

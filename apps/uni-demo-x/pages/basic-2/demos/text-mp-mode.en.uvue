@@ -41,6 +41,7 @@ import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-direction: row;
 }
 .sn-demo-label {
   width: 96px;

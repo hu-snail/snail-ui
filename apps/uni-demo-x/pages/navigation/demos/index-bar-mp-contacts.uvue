@@ -528,6 +528,7 @@ function exitFull(): void {
   align-items: center;
   justify-content: center;
   height: 100%;
+  flex-direction: row;
 }
 
 .sn-demo__empty-text {

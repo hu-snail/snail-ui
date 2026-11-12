@@ -40,6 +40,7 @@ function show(position: Anchor): void {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  flex-direction: row;
 }
 .sn-popup-demo__body {
   display: flex;

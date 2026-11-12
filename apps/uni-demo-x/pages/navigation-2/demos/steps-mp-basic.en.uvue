@@ -27,6 +27,7 @@ const active = ref(1);
 .sn-demo__actions {
   display: flex;
   gap: 8px;
+  flex-direction: row;
 }
 .sn-demo__button {
   padding: 6px 12px;

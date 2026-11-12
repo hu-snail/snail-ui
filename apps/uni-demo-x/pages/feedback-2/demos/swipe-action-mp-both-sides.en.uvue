@@ -53,6 +53,7 @@ const both = ref<'left' | 'close' | 'right'>('close');
   justify-content: center;
   width: 160rpx;
   background: var(--sn-mp-color-feedback-danger);
+  flex-direction: row;
 }
 .sn-swipe-demo__action--left {
   background: var(--sn-mp-color-action-primary);

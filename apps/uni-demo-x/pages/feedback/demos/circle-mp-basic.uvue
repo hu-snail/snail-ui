@@ -39,5 +39,6 @@ const percent = ref(30);
   flex-wrap: wrap;
   gap: 24rpx;
   align-items: center;
+  flex-direction: row;
 }
 </style>

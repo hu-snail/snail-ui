@@ -18,6 +18,7 @@ import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
   flex-wrap: wrap;
   gap: 24px;
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo-host {
   display: flex;
@@ -29,5 +30,6 @@ import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
   background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
   font-size: 12px;
+  flex-direction: row;
 }
 </style>

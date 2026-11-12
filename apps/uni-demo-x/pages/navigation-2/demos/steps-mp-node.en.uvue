@@ -83,6 +83,7 @@ import { Check, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
   border-radius: var(--sn-mp-radius-full);
   color: var(--sn-mp-color-action-primary);
   background-color: var(--sn-mp-color-action-primary-soft);
+  flex-direction: row;
 }
 
 .sn-demo__node--current {

@@ -83,6 +83,7 @@ const items = [
   flex-wrap: wrap;
   gap: 32rpx;
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);
@@ -99,6 +100,7 @@ const items = [
   background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
+  flex-direction: row;
 }
 /* customClass 落在 sn-badge 根节点（包裹容器）上。 */
 </style>

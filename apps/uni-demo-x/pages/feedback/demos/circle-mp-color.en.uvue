@@ -43,5 +43,6 @@ import SnCircle from '@snui/uni-x/components/sn-circle/sn-circle.uvue';
   flex-wrap: wrap;
   gap: 24rpx;
   align-items: center;
+  flex-direction: row;
 }
 </style>

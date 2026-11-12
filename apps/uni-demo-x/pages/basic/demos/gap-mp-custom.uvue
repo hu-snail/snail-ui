@@ -40,6 +40,7 @@ import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-xs);
+  flex-direction: row;
 }
 /* custom-class 落在 sn-gap 根节点上，需要 :deep 穿透。 */
 </style>

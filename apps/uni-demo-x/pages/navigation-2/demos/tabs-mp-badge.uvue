@@ -69,6 +69,7 @@ const hidden = ref(false);
   flex-wrap: wrap;
   gap: var(--sn-mp-spacing-3);
   align-items: center;
+  flex-direction: row;
 }
 .sn-demo__meta {
   font-size: 24rpx;
