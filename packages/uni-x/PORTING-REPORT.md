@@ -12,7 +12,7 @@
 | import-rewrite | 83 |
 | defineSlots-stripped | 69 |
 | unsupported-property | 32 |
-| patch | 15 |
+| patch | 20 |
 | template-bare-text | 12 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
@@ -145,8 +145,13 @@
 
 ### sn-circle/sn-circle.uvue
 
+- patch applied — `patch`: ring color resolution + SVG data URL state need getCurrentInstance / nextTick / onMounted / ref / watch
+- patch applied — `patch`: ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning
+- patch applied — `patch`: track/arc views replaced by <image :src="ringDataUrl"> + two color probes
+- patch applied — `patch`: mask / conic-gradient / scaleX flip styles removed; ring image + probe styles added
+- patch applied — `patch`: doodle skin retargeted to the ring image
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- bare text wrapped in <text> — `template-bare-text` (line 22): 1 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 24): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
@@ -517,7 +522,7 @@
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 type import(s) redirected to sn-icon-types
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 5 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
@@ -801,7 +806,7 @@
 
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 

@@ -246,6 +246,417 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
   ],
 
+  // sn-circle/sn-circle.vue: conic-gradient + CSS mask have no App-side
+  // equivalent (App background-image takes linear-gradient only, mask is
+  // unsupported) — the ring rasterizes through <image> + SVG data URL. Ring
+  // colors resolve through probe computedStyle following the sn-icon
+  // strategy (that resolver is the source of truth; keep the inlined copies
+  // in sync).
+
+  'sn-circle/sn-circle.vue': [
+    {
+      anchor: `import { computed } from 'vue';`,
+      replacement: `import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from 'vue';`,
+      note: 'ring color resolution + SVG data URL state need getCurrentInstance / nextTick / onMounted / ref / watch',
+    },
+    {
+      anchor: `/** Sweep + fill color as custom properties consumed by the stylesheet. */
+const arcStyle = computed(() => {
+  const parts = [\`--sn-circle-sweep: \${sweepDeg.value}deg\`];
+  if (gradientStops.value !== null) {
+    parts.push(\`--sn-circle-stops: \${gradientStops.value}\`);
+  } else {
+    const solid =
+      typeof props.color === 'string' && props.color !== ''
+        ? props.color
+        : 'var(--sn-mp-color-action-primary)';
+    parts.push(\`--sn-circle-color: \${solid}\`);
+  }
+  return parts.join('; ');
+});
+
+const trackStyle = computed(() =>
+  props.layerColor ? \`--sn-circle-layer: \${props.layerColor}\` : undefined,
+);
+
+const fillStyle = computed(() => (props.fill ? \`background-color: \${props.fill}\` : undefined));
+</script>`,
+      replacement: `/**
+ * uni-app x App: conic-gradient and CSS mask are unsupported (App
+ * background-image takes linear-gradient only), so the ring — track band +
+ * progress arc — rasterizes through an <image> with an SVG data URL built
+ * here. Geometry lives in a 100×100 viewBox: the stroke width scales from
+ * the size/strokeWidth ratio, the progress arc is a dash on a circle (dash
+ * length = circumference × percentage), and the arc starts at 12 o'clock
+ * via rotate(-90). Percent → arc-length math runs here in JS; the SVG
+ * document never computes.
+ *
+ * The SVG document is isolated from page CSS — a var(--token) or
+ * currentColor stroke cannot cross the image boundary (a literal var() is
+ * invalid inside the document and falls back to black ink). Raw colors are
+ * carried as inline text color on two zero-size probe nodes and read back
+ * through SelectorQuery computedStyle — the same strategy as the sn-icon
+ * patch, whose resolver is the source of truth for this inline copy (keep
+ * the two in sync; per-file copies, patches are standalone rewrites):
+ * concrete colors (hex / rgb / hsl / a few keywords) bake verbatim without
+ * a query; everything else resolves through the real cascade (skins, .dark
+ * flips and theme vars included). Result-shape note mirrors sn-icon:
+ * uni-app x hands the fields callback the NodeInfo itself (ret.color),
+ * classic-style hosts an array — both probed, plus a stringified fallback.
+ *
+ * Availability policy: both colors start at light-theme ink constants so
+ * the ring is NEVER blank (a resolution failure must not erase the
+ * component — same blank-first-paint regression sn-icon hit). Gradient-map
+ * \`color\` degrades to its last stop as a solid (SVG has no conic sweep).
+ * The H5/MP sweep is a CSS background-image transition; an <image> source
+ * cannot transition on App, so progress changes jump here — \`speed\` keeps
+ * API parity but no JS animation loop is introduced.
+ */
+const PROGRESS_INK_FALLBACK = '#1677ff'
+const TRACK_INK_FALLBACK = '#f4f4f5'
+const circleInstance = getCurrentInstance()
+const circleUid: number = circleInstance?.uid ?? 0
+const resolvedProgressColor = ref(PROGRESS_INK_FALLBACK)
+const resolvedTrackColor = ref(TRACK_INK_FALLBACK)
+let circleColorSeq = 0
+
+interface CircleColorNode {
+  color?: string
+}
+interface CircleFieldsOptions {
+  computedStyle?: string[]
+}
+interface CircleColorQuery {
+  in(context?: unknown): CircleColorQuery
+  select(selector: string): CircleColorQuery
+  fields(options: CircleFieldsOptions, callback: (ret: unknown) => void): CircleColorQuery
+  exec(): void
+}
+interface CircleUniHost {
+  createSelectorQuery?: () => CircleColorQuery
+}
+
+/** Raw progress color: the solid string, the last stop of a gradient map
+ * (App degrades the map — SVG has no conic sweep), or the primary token. */
+const progressRawColor = computed<string>(() => {
+  if (typeof props.color === 'string') {
+    return props.color !== '' ? props.color : 'var(--sn-mp-color-action-primary)'
+  }
+  const entries = Object.entries(props.color)
+  const last = entries.length > 0 ? entries[entries.length - 1] : null
+  return last !== null ? (last[1] ?? '') : 'var(--sn-mp-color-action-primary)'
+})
+
+/** Raw track color: \`layerColor\` or the subtle-background token. */
+const trackRawColor = computed<string>(() =>
+  props.layerColor !== '' ? props.layerColor : 'var(--sn-mp-color-background-subtle)',
+)
+
+/** Probe inline styles — only non-concrete colors need the cascade. */
+const progressProbeStyle = computed(() =>
+  isConcreteCircleColor(progressRawColor.value) ? undefined : \`color: \${progressRawColor.value}\`,
+)
+const trackProbeStyle = computed(() =>
+  isConcreteCircleColor(trackRawColor.value) ? undefined : \`color: \${trackRawColor.value}\`,
+)
+
+const fillStyle = computed(() => (props.fill ? \`background-color: \${props.fill}\` : undefined))
+
+/** A color the SVG data URL can take verbatim — no cascade involvement.
+ * Same predicate as sn-icon's isConcreteIconColor (keep in sync). */
+function isConcreteCircleColor(value: string): boolean {
+  return /^#[0-9a-fA-F]{3,8}$|^rgba?\\(|^hsla?\\(|^(transparent|white|black)$/.test(value)
+}
+
+/** Extract a concrete color from whichever result shape the runtime
+ * delivered (NodeInfo / array wrapper / stringified UTSJSONObject).
+ * Mirrors sn-icon's readResolvedColor (keep in sync). */
+function readResolvedCircleColor(value: unknown): string {
+  if (value !== null && value !== undefined && typeof value === 'object') {
+    const direct = (value as CircleColorNode).color
+    if (typeof direct === 'string' && direct !== '' && isConcreteCircleColor(direct)) {
+      return direct
+    }
+  }
+  let json = ''
+  try {
+    json = JSON.stringify(value)
+  } catch {
+    json = ''
+  }
+  const m = /"color"\\s*:\\s*"([^"]+)"/.exec(json)
+  if (m !== null) {
+    const viaJson: string = m[1] ?? ''
+    if (viaJson !== '' && isConcreteCircleColor(viaJson)) return viaJson
+  }
+  return ''
+}
+
+/** Two decimals without toFixed (narrow UTS number API surface). */
+function r2(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
+/** Resolve both ring colors. One delayed retry: the first query can outrun
+ * first layout on slow mounts (mirrors sn-icon's resolver). */
+function resolveCircleColors(retried = false): void {
+  const progressRaw: string = progressRawColor.value
+  const trackRaw: string = trackRawColor.value
+  if (isConcreteCircleColor(progressRaw) && isConcreteCircleColor(trackRaw)) {
+    resolvedProgressColor.value = progressRaw
+    resolvedTrackColor.value = trackRaw
+    return
+  }
+  const seq = ++circleColorSeq
+  const host = (globalThis as { uni?: CircleUniHost }).uni
+  if (host?.createSelectorQuery === undefined || circleInstance === null) {
+    // No query layer (old runtime / detached instance): keep the ink colors.
+    resolvedProgressColor.value = isConcreteCircleColor(progressRaw) ? progressRaw : PROGRESS_INK_FALLBACK
+    resolvedTrackColor.value = isConcreteCircleColor(trackRaw) ? trackRaw : TRACK_INK_FALLBACK
+    return
+  }
+  let retryScheduled = false
+  const scheduleRetry = (): void => {
+    if (retried || retryScheduled) return
+    retryScheduled = true
+    setTimeout(() => {
+      if (seq === circleColorSeq) resolveCircleColors(true)
+    }, 50)
+  }
+  nextTick(() => {
+    if (seq !== circleColorSeq) return
+    try {
+      host
+        .createSelectorQuery()
+        .in(circleInstance?.proxy)
+        .select(\`.sn-circle__probe-p\${circleUid}\`)
+        .fields({ computedStyle: ['color'] }, (ret) => {
+          if (seq !== circleColorSeq) return
+          let color = ''
+          if (Array.isArray(ret)) {
+            const arr = ret as Array<unknown>
+            color = readResolvedCircleColor(arr.length > 0 ? arr[0] : null)
+          } else {
+            color = readResolvedCircleColor(ret)
+          }
+          if (color !== '') {
+            resolvedProgressColor.value = color
+          } else if (isConcreteCircleColor(progressRaw)) {
+            resolvedProgressColor.value = progressRaw
+          } else if (retried) {
+            console.warn(
+              '[sn-circle] RING_COLOR_UNRESOLVED: computedStyle("color") returned no usable value.' +
+                ' Keeping the ink color so the ring stays visible.',
+            )
+            resolvedProgressColor.value = PROGRESS_INK_FALLBACK
+          } else {
+            scheduleRetry()
+          }
+        })
+        .select(\`.sn-circle__probe-t\${circleUid}\`)
+        .fields({ computedStyle: ['color'] }, (ret) => {
+          if (seq !== circleColorSeq) return
+          let color = ''
+          if (Array.isArray(ret)) {
+            const arr = ret as Array<unknown>
+            color = readResolvedCircleColor(arr.length > 0 ? arr[0] : null)
+          } else {
+            color = readResolvedCircleColor(ret)
+          }
+          if (color !== '') {
+            resolvedTrackColor.value = color
+          } else if (isConcreteCircleColor(trackRaw)) {
+            resolvedTrackColor.value = trackRaw
+          } else if (retried) {
+            resolvedTrackColor.value = TRACK_INK_FALLBACK
+          } else {
+            scheduleRetry()
+          }
+        })
+        .exec()
+    } catch {
+      // A mis-shaped host must degrade to the ink colors, never throw or blank.
+      if (seq === circleColorSeq) {
+        resolvedProgressColor.value = isConcreteCircleColor(progressRaw) ? progressRaw : PROGRESS_INK_FALLBACK
+        resolvedTrackColor.value = isConcreteCircleColor(trackRaw) ? trackRaw : TRACK_INK_FALLBACK
+      }
+    }
+  })
+}
+
+onMounted(() => resolveCircleColors())
+watch(
+  () => progressRawColor.value,
+  () => resolveCircleColors(),
+)
+watch(
+  () => trackRawColor.value,
+  () => resolveCircleColors(),
+)
+
+/**
+ * Ring SVG data URL: 100×100 viewBox — track circle + progress dash arc.
+ * The progress circle starts at 12 o'clock via rotate(-90) (an SVG circle
+ * dash begins at 3 o'clock, clockwise); counter-clockwise mirrors it across
+ * the vertical axis. strokeLinecap is a real stroke attribute on this path
+ * (the "parity only" note upstream applies to the conic H5/MP sweep). 0%
+ * renders track only; 100% drops the dasharray. The stroke-width ratio
+ * falls back to the 18/120 design default when size/strokeWidth carry
+ * units that cannot be compared.
+ */
+const ringDataUrl = computed<string | undefined>(() => {
+  const track: string = resolvedTrackColor.value
+  const stroke: string = resolvedProgressColor.value
+  if (track === '' || stroke === '') return undefined
+
+  const sizeM = /^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([a-zA-Z%]*)/.exec(ringSize.value)
+  const widthM = /^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([a-zA-Z%]*)/.exec(ringWidth.value)
+  let ratio: number = 0.15
+  if (sizeM !== null && widthM !== null) {
+    const sizeVal: number = Number(sizeM[1] ?? '0')
+    const widthVal: number = Number(widthM[1] ?? '0')
+    const sizeUnit: string = sizeM[2] ?? ''
+    const widthUnit: string = widthM[2] ?? ''
+    if (sizeVal > 0 && widthVal > 0 && sizeUnit === widthUnit) {
+      ratio = widthVal / sizeVal
+    }
+  }
+  const sw: number = Math.min(50, Math.max(0.5, ratio * 100))
+  const radius: number = (100 - sw) / 2
+  const circumference: number = 2 * Math.PI * radius
+  const arc: number = (sweepDeg.value / 360) * circumference
+  const dash: string = arc >= circumference ? '' : \` stroke-dasharray="\${r2(arc)} \${r2(circumference)}"\`
+  const progressTransform: string = props.clockwise
+    ? 'rotate(-90 50 50)'
+    : 'translate(100 0) scale(-1 1) rotate(-90 50 50)'
+  const progressCircle: string =
+    sweepDeg.value <= 0
+      ? ''
+      : \`<circle cx="50" cy="50" r="\${r2(radius)}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}"\${dash} transform="\${progressTransform}"/>\`
+  const svg: string =
+    \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\` +
+    \`<circle cx="50" cy="50" r="\${r2(radius)}" fill="none" stroke="\${track}" stroke-width="\${r2(sw)}"/>\` +
+    progressCircle +
+    \`</svg>\`
+  return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
+})
+</script>`,
+      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
+    },
+    {
+      anchor: `    <!-- Track: full ring in the layer color, masked down to a stroke band. -->
+    <view class="sn-circle__track" :style="trackStyle" aria-hidden="true" />
+
+    <!-- Progress arc: conic sweep, masked with the same band. -->
+    <view class="sn-circle__arc" :style="arcStyle" aria-hidden="true" />`,
+      replacement: `    <!-- uni-app x App: conic-gradient / CSS mask are unsupported — the ring
+         (track band + progress arc) rasterizes through <image> + SVG data URL.
+         The zero-size probes carry the raw colors into the cascade so the
+         script can read them back via computedStyle. -->
+    <image class="sn-circle__ring-img" :src="ringDataUrl" mode="aspectFit" />
+    <view :class="[\`sn-circle__probe sn-circle__probe-p\${circleUid}\`]" :style="progressProbeStyle" aria-hidden="true" />
+    <view :class="[\`sn-circle__probe sn-circle__probe-t\${circleUid}\`]" :style="trackProbeStyle" aria-hidden="true" />`,
+      note: 'track/arc views replaced by <image :src="ringDataUrl"> + two color probes',
+    },
+    {
+      anchor: `.sn-circle__track,
+.sn-circle__arc,
+.sn-circle__fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
+/* Band mask: keep only an annular ring of \`--sn-circle-width\`. */
+.sn-circle__track,
+.sn-circle__arc {
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--sn-circle-width)),
+    currentColor calc(100% - var(--sn-circle-width))
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--sn-circle-width)),
+    currentColor calc(100% - var(--sn-circle-width))
+  );
+}
+
+/* Track ring: the tinted surface, dark-mode aware; \`layerColor\` overrides it. */
+.sn-circle__track {
+  background-color: var(--sn-circle-layer, var(--sn-mp-color-background-subtle));
+}
+
+/* Progress arc: colored up to the sweep angle, transparent past it. */
+.sn-circle__arc {
+  background-image: conic-gradient(
+    from 0deg,
+    var(--sn-circle-color) var(--sn-circle-sweep),
+    transparent var(--sn-circle-sweep)
+  );
+  transition-property: background-image;
+  transition-duration: var(--sn-circle-duration);
+  transition-timing-function: linear;
+}
+
+/* Gradient map: the stop list replaces the two-stop sweep. */
+.sn-circle--gradient .sn-circle__arc {
+  background-image: conic-gradient(from 0deg, var(--sn-circle-stops));
+}
+
+/* Counter-clockwise: mirror the sweep so it grows the other way. */
+.sn-circle--counter-clockwise .sn-circle__arc {
+  transform: scaleX(-1);
+}`,
+      replacement: `.sn-circle__ring-img,
+.sn-circle__fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
+/* uni-app x App: CSS mask is unsupported — the annular band is carved in
+ * the SVG geometry instead (stroked circles with fill="none"). The
+ * zero-size probes stay out of layout; their text color feeds the ring
+ * color query. */
+.sn-circle__probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Track + progress colors are resolved through the probe computedStyle
+ * query and baked into the SVG data URL (a var() cannot cross the image
+ * boundary). The App-side progress arc cannot transition like the CSS
+ * background-image sweep — progress changes jump; \`speed\` stays API
+ * parity (H5/MP only). Direction, linecap and the gradient-map fallback
+ * are baked into the SVG arc (see ringDataUrl in the script block). */`,
+      note: 'mask / conic-gradient / scaleX flip styles removed; ring image + probe styles added',
+    },
+    {
+      anchor: `/* Doodle skin — hand-drawn look: drop the band mask, keep a soft plate. */
+.snui-skin-doodle .sn-circle__track,
+.snui-skin-doodle .sn-circle__arc {
+  -webkit-mask: none;
+  mask: none;
+  opacity: 0.6;
+}`,
+      replacement: `/* Doodle skin — hand-drawn look: soften the ring image. */
+.snui-skin-doodle .sn-circle__ring-img {
+  opacity: 0.6;
+}`,
+      note: 'doodle skin retargeted to the ring image',
+    },
+  ],
+
   // sn-form/sn-form-item.vue: former [data-status] attribute-selector patches
   // are gone — the source now binds `--error/--warning` modifier classes
   // natively (messageStatusClass / iconStatusClass computeds), so the uni-x
