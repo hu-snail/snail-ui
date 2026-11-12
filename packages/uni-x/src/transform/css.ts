@@ -63,6 +63,59 @@ function skipParens(s: string, openIdx: number): number {
   return s.length;
 }
 
+/** Top-level whitespace split that skips parens (a `var(--a, b)` value stays
+ * one part). */
+function splitTopLevel(value: string): string[] {
+  const parts: string[] = [];
+  let start = 0;
+  for (let i = 0; i < value.length; i++) {
+    const c: string = value.charAt(i);
+    if (c === '(') i = skipParens(value, i);
+    else if (/\s/.test(c)) {
+      if (i > start) parts.push(value.slice(start, i));
+      start = i + 1;
+    }
+  }
+  if (start < value.length) parts.push(value.slice(start));
+  return parts;
+}
+
+const BORDER_STYLE_WORDS = new Set([
+  'none',
+  'hidden',
+  'solid',
+  'dashed',
+  'dotted',
+  'double',
+  'groove',
+  'ridge',
+  'inset',
+  'outset',
+]);
+
+/** Split border shorthands into the longhands the flattener needs — skin
+ * rules override `border-top-width` / `border-top-color` individually, and
+ * the injected var() fallbacks must know the base shorthand's own values. */
+function expandBorderShorthand(prop: string, value: string): Array<[string, string]> {
+  const m: RegExpMatchArray | null = prop.match(/^border-(top|right|bottom|left)$/);
+  if (!m) return [[prop, value]];
+  const side: string = m[1]!;
+  const width: string[] = [];
+  const style: string[] = [];
+  const color: string[] = [];
+  for (const part of splitTopLevel(value)) {
+    if (BORDER_STYLE_WORDS.has(part)) style.push(part);
+    else if (width.length === 0 && /^(0|[-0-9.]+(?:rpx|px|rem|em|%)|thin|medium|thick)$/.test(part))
+      width.push(part);
+    else color.push(part);
+  }
+  return [
+    [`border-${side}-width`, width.join(' ') || 'medium'],
+    [`border-${side}-style`, style.join(' ') || 'none'],
+    [`border-${side}-color`, color.join(' ') || 'currentColor'],
+  ];
+}
+
 function parseCompound(input: string): ParsedCompound {
   const out: ParsedCompound = {
     tag: null,
@@ -268,7 +321,11 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
       baseEntries.set(key, entry);
     }
     rule.walkDecls((decl) => {
-      if (!decl.prop.startsWith('--')) entry!.decls.set(decl.prop, decl);
+      if (!decl.prop.startsWith('--')) {
+        for (const [prop, value] of expandBorderShorthand(decl.prop, decl.value)) {
+          entry!.decls.set(prop, postcss.decl({ prop, value }));
+        }
+      }
     });
   });
 
@@ -290,7 +347,29 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
       // Keep the original value as the var() fallback: outside the container
       // context the declaration resolves to the original base value.
       const original: string = baseDecl.value;
-      baseDecl.value = `var(${varName}, ${original})`;
+      const injected: string = `var(${varName}, ${original})`;
+      if (baseDecl.parent === undefined) {
+        // Shorthand-derived synthetic entry (expandBorderShorthand): there is
+        // no real node to rewrite, so append the longhand with its fallback
+        // onto the target rule — with the skin inactive the var() resolves
+        // to the base value instead of the longhand's *initial* (3px medium
+        // + currentColor), which used to shatter the 1px base line.
+        entry.decls.set(prop, postcss.decl({ prop, value: injected }));
+        root.walkRules((r) => {
+          if (insideKeyframes(r)) return;
+          const parts: ComplexPart[] = splitComplex(r.selector);
+          if (
+            parts.length === 1 &&
+            parseCompound(parts[0]!.compoundStr).classes.join('.') === targetClass
+          ) {
+            r.append({ prop, value: injected });
+            return false;
+          }
+          return undefined;
+        });
+        return;
+      }
+      baseDecl.value = injected;
       return;
     }
     // Base rule exists but never declared this prop: append a fallback-less

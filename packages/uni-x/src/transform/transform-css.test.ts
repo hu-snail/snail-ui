@@ -47,6 +47,31 @@ describe('transformCss (component mode)', () => {
     ).toBe(false);
   });
 
+  it('should keep shorthand-derived longhand fallbacks when a skin rule overrides border parts', () => {
+    // Bug (real-world, picker indicator): the base rule declares only the
+    // `border-top` shorthand; the skin rule overrides width/color longhands,
+    // so the flattened injection appended fallback-less var()s — with the
+    // skin inactive those vars are unset and CSS drops the longhands back to
+    // their *initial* values (3px medium + currentColor), shattering the
+    // 1px subtle line into a heavy black one. The injection must carry the
+    // shorthand-derived values as fallbacks instead.
+    const css =
+      '.sk .t {\n' +
+      '  border-top-width: 4rpx;\n' +
+      '  border-top-color: var(--sn-mp-color-text-primary);\n' +
+      '}\n' +
+      '.t {\n' +
+      '  border-top: 2rpx solid var(--sn-mp-color-border-subtle);\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain(
+      'border-top-width: var(--snx-t-border-top-width, 2rpx);',
+    );
+    expect(r.css).toContain(
+      'border-top-color: var(--snx-t-border-top-color, var(--sn-mp-color-border-subtle));',
+    );
+  });
+
   it('should merge multiple container rules onto one target var name', () => {
     const css = '.a .b {\n  color: red;\n}\n.c .b {\n  color: green;\n}\n.b {\n  color: blue;\n}\n';
     const r = transformCss(css, 'component', FILE);

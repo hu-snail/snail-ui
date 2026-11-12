@@ -123,6 +123,7 @@ async function handleSubmit(): Promise<void> {
 
 .sn-demo__chip-text {
   font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
   color: var(--snx-sn-demo__chip-text-color, var(--sn-mp-color-text-secondary));
 }
 

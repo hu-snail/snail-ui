@@ -375,9 +375,10 @@ function exitFull(): void {
 }
 
 .pgc__chip-text {
-  color: var(--snx-pgc__chip-text-color, var(--sn-mp-color-text-secondary));
+  color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--snx-pgc__chip-text-color, var(--sn-mp-color-text-secondary));
   font-weight: var(--snx-pgc__chip-text-font-weight);
 }
 
@@ -606,9 +607,10 @@ function exitFull(): void {
 }
 
 .pgd__op-text {
-  color: var(--snx-pgd__op-text-color, var(--sn-mp-color-text-tertiary));
+  color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--snx-pgd__op-text-color, var(--sn-mp-color-text-tertiary));
 }
 
 .pgd__op--active {

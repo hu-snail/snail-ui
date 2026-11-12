@@ -91,3 +91,22 @@ Top：sn-rich-text(7) sn-button(5) sn-cell(5) sn-form(5) sn-tag(5)
 - 事件传播模型：`@tap.stop` / `.stop` 修饰符全平台支持；`@tap`→`@click` 管线改写正确；页面直绑 emit 链路两端一致。**「默认 slot 内容触发组件行为」是 App 端唯一事件断点**（trigger-slot 组件全量检索：popover / tooltip 受影响，fab trigger 为组件内元素不受影响）。
 - transform：官方 10 函数（rotate/scale/translate 系）；translate 百分比支持；matrix 不支持。App 端版本门槛见 #2。
 - CSS 变量：App 端跨编译单元可达（`--sn-mp-color-action-primary` 实测生效）；暗色块（`.sn-theme-dark`）由 sn-config-provider / 宿主挂载——demo 工程页面根目前**静态挂浅色 `.sn-theme-root`**（DemoPageShell），暗色主题切换（demo-ui toggleTheme / uni.onThemeChange）在 App 端的挂载链路待验证（关联 #3/#5）。
+
+## 七、CDP 实锤（第三轮）：产物链验证方法论 + 黑粗线根因
+
+**方法论突破**：HBuilderX web 运行 = vite dev（内存 serve，`localhost:5173`）+ 内置浏览器（CDP 调试端口 9777）。直接 curl `http://localhost:5173/@fs/<绝对路径>/sn-popover.uvue` 可拿到**运行时编译产物**（grep 验证新逻辑/水印）；CDP `Runtime.evaluate` / `CSS.getMatchedStylesForNode` 可远程实测 DOM。产物链验证水印法：往 dist 注释埋标记 → 编译 → grep 缓存 sourcemap。
+
+**结论**：产物链 **100% 通**（vite dev 实时编译最新 dist，运行时组件含全部修复）——此前「没生效」均非链路问题。
+
+### 黑粗线根因（实锤 + 已修复）
+
+CDP `getComputedStyle`：picker indicator `border-top: 3px solid rgb(9,9,11)`（medium + currentColor）而变量在元素上解析正常（#f4f4f5）。**编译后 CSS**：皮肤 flatten 在目标类上追加了 `border-top-width/color: var(--snx-…)`（**无 fallback**）——皮肤容器 class 未激活时 var() 走 initial（width=medium 3px、color=currentColor 黑），**打碎了基础 shorthand 的 1px 细灰线**。影响全部「皮肤声明 prop 而基础规则只有 shorthand」的注入点。
+
+**修复**：`transformCss` Pass 0 收集时 `expandBorderShorthand` 把 border 简写拆成 longhand 存入基础表；flatten 注入带基础值 fallback（`var(--snx-…, 2rpx)` / `var(--snx-…, var(--sn-mp-color-border-subtle))`），合成条目（无真实节点）改为挂载式注入到目标类规则。dist 已验证。
+
+### CDP 探测的其余定性
+
+- **tooltip/popover 弹出**：桌面端 CDP 模拟点击实测**正常弹出**（`popAfterClick: true`）——manual trigger 修复生效。
+- **fan 扇形**：inline transform 完整、收起态矩阵正常应用；展开态 computed 冻结在过渡起点是**后台 tab rAF 冻结**（内置浏览器失焦）——前台表现待用户复验；App 端仍受 transform 版本门槛约束。
+- **暗色主题**：demo-ui 暗色下弹层 panel 正确渲染 #18181b 深底白字——暗色渲染链路正常。
+- **rpx 视口放大**：indicator 3px = 4rpx × 视口系数 0.75（1125px 宽视口）——官方预期行为，DevTools 手机模拟归位。

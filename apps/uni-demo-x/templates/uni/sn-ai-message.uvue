@@ -389,9 +389,10 @@ function onRetry(): void {
 }
 
 .sn-ai-message__text {
-  color: var(--snx-sn-ai-message__text-color, var(--sn-mp-color-text-primary));
+  color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md, 28rpx);
   line-height: var(--sn-mp-font-line-height-loose, 1.8);
+  color: var(--snx-sn-ai-message__text-color, var(--sn-mp-color-text-primary));
 }
 
 .sn-ai-message__caret {

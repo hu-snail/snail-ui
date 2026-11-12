@@ -265,8 +265,9 @@ function open(comp: HomeComp): void {
 .home__chip-text {
   font-size: 24rpx;
   line-height: 1;
-  font-weight: var(--snx-home__chip-text-font-weight, 500);
+  font-weight: 500;
   color: var(--snx-home__chip-text-color);
+  font-weight: var(--snx-home__chip-text-font-weight, 500);
 }
 
 .home__chip--active {
