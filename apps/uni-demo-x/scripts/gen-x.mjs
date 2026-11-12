@@ -348,6 +348,11 @@ function main() {
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
       ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped}, templates ${stats.templatesMapped})`,
   );
+  // 防跳步：组件消费的是 @snui/uni-x/dist 产物——改过 packages/uni 源码而
+  // 未重建 dist 时，HBuilderX 编译拿到的仍是旧组件（demo 场景与 dist 脱节）。
+  console.log(
+    '[gen-x] hint: 若改过 @snui/uni 组件源码，请先 pnpm -F @snui/uni-x build 再用 HBuilderX 编译。',
+  );
 }
 
 main();
