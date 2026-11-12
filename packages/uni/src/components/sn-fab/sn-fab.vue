@@ -53,6 +53,10 @@ import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set';
+import type { SnFabAction, SnFabGap } from './sn-fab-types';
+
+// 类型契约本体在 ./sn-fab-types（纯 ts 模块，uni-x 端的稳定导入目标）。
+export type { SnFabAction, SnFabGap } from './sn-fab-types';
 
 defineOptions({ name: 'SnFab' });
 
@@ -115,33 +119,6 @@ type FabMode = 'line' | 'fan';
  * counter-rotated to stay upright.
  */
 type FabMotion = 'bloom' | 'fan';
-
-/**
- * Fan-mode action item (additive, AUI-OPT-19 — wd-fab has no structured
- * action model; the default slot stays the line-mode contract).
- */
-export interface SnFabAction {
-  /** Icon: built-in registry name or an inline IconData object. */
-  icon: string | IconData;
-  /** Optional label — turns the item into an icon+text pill. */
-  text?: string;
-  /** Icon tint (CSS color; prefer `var(--sn-mp-color-*)` tokens). */
-  color?: string;
-  /** Disabled item: dimmed, taps blocked. */
-  disabled?: boolean;
-}
-
-/** Per-edge gap. Mirrors `wd-fab` `gap`. */
-export interface SnFabGap {
-  /** Distance from the top edge. */
-  top?: number;
-  /** Distance from the right edge. */
-  right?: number;
-  /** Distance from the bottom edge. */
-  bottom?: number;
-  /** Distance from the left edge. */
-  left?: number;
-}
 
 const DEFAULT_GAP: Required<SnFabGap> = { top: 16, right: 16, bottom: 16, left: 16 };
 

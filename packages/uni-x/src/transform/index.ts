@@ -8,7 +8,7 @@
 
 import { transformCss } from './css.ts';
 import { applyPatches } from './patches.ts';
-import { transformScript } from './script.ts';
+import { transformImportSpecifiers, transformScript } from './script.ts';
 import { parseSfc } from './sfc.ts';
 import { transformTemplate } from './template.ts';
 import type { CssTransformResult, TextTransformResult, TransformIssue } from './types.ts';
@@ -21,7 +21,9 @@ export interface UvueTransformResult {
 export function transformVueToUvue(source: string, relPath: string): UvueTransformResult {
   const issues: TransformIssue[] = [];
   const patched: string = applyPatches(source, relPath, issues);
-  const sfc = parseSfc(patched);
+  const imports = transformImportSpecifiers(patched, relPath);
+  issues.push(...imports.issues);
+  const sfc = parseSfc(imports.code);
   if (sfc.stray !== '') {
     issues.push({
       file: relPath,
@@ -52,7 +54,7 @@ export function transformVueToUvue(source: string, relPath: string): UvueTransfo
 
 export { transformCss } from './css.ts';
 export { applyPatches, PATCHES } from './patches.ts';
-export { transformScript } from './script.ts';
+export { transformImportSpecifiers, transformScript } from './script.ts';
 export { parseSfc } from './sfc.ts';
 export { transformTemplate } from './template.ts';
 export type {

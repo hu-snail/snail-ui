@@ -4,10 +4,11 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1433 |
-| .ts 产出 | 22 |
-| easycom 组件导入删除 | 1779 |
+| .uvue 产出 | 1426 |
+| .ts 产出 | 12 |
+| easycom 组件导入删除 | 1781 |
 | 显式 .uvue / 协同 ts 重映射 | 260 |
+| 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 
 ## App.uvue 专属改写
@@ -1135,29 +1136,17 @@
 - ../../packages/templates/src/uni/sn-ai-chat.vue: watch
 - ../../packages/templates/src/uni/sn-ai-message.vue: computed
 - ../../packages/templates/src/uni/sn-ai-message.vue: ref
-- ../../packages/templates/src/web/SnAiAssistant.vue: computed
-- ../../packages/templates/src/web/SnAiAssistant.vue: ref
-- ../../packages/templates/src/web/SnAiMessage.vue: computed
-- ../../packages/templates/src/web/SnAiMessageList.vue: computed
-- ../../packages/templates/src/web/SnAiMessageList.vue: nextTick
-- ../../packages/templates/src/web/SnAiMessageList.vue: onBeforeUnmount
-- ../../packages/templates/src/web/SnAiMessageList.vue: onMounted
-- ../../packages/templates/src/web/SnAiMessageList.vue: ref
-- ../../packages/templates/src/web/SnAiMessageList.vue: watch
-- ../../packages/templates/src/web/SnAiPrompt.vue: computed
-- ../../packages/templates/src/web/SnAiPrompt.vue: ref
-- ../../packages/templates/src/web/SnAiThinking.vue: computed
-- ../../packages/templates/src/web/SnModelConfig.vue: computed
-- ../../packages/templates/src/web/use-ai-turn-queue.ts: computed
-- ../../packages/templates/src/web/use-ai-turn-queue.ts: onBeforeUnmount
-- ../../packages/templates/src/web/use-ai-turn-queue.ts: ref
-- ../../packages/templates/src/web/use-ai-turn-queue.ts: watch
 
 ## 管线转换问题（CSS 规则删除等，需真机验证视觉）
 
 - App.vue: [tag-only-selector] tag-only selector "page"
 - components/DemoPageShell.vue: [template-attr] 5 @tap binding(s) renamed to @click
 - components/DemoPageShell.vue: [pseudo-class] pseudo-class in ".demo-shell__btn:active"
+- pages/basic/avatar.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
+- pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
@@ -1274,6 +1263,9 @@
 - pages/basic/demos/gap-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__gap--wide)"
 - pages/basic/demos/gap-mp-safe-area.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/gap-mp-safe-area.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/divider.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/basic/fab.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/basic/gap.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-cart)"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-bell)"
 - pages/basic-2/demos/icon-mp-css.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-icon-check)"
@@ -1436,6 +1428,14 @@
 - pages/basic-2/demos/transition-mp-touch-move.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/basic-2/icon.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/layout.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/resize.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/root-portal.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/tag.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/text.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/transition.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/business/barcode.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/business/demos/dialer-mp-states.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/business/demos/dialer-mp-states.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/business/demos/liquid-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
@@ -1458,6 +1458,14 @@
 - pages/business/demos/scratchcard-mp-watermark.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/business/demos/typing-mp-states.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/business/demos/typing-mp-states.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/business/dialer.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/business/liquid.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/business/lucky.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/business/scratchcard.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/business/typing.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/display/card.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
+- pages/display/count-down.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/display/count-to.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__root)"
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__title)"
 - pages/display/demos/card-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-card-demo__content)"
@@ -1602,6 +1610,20 @@
 - pages/display/demos/video-preview-mp-selector.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/display/demos/watermark-mp-font.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-watermark-demo__custom)"
 - pages/display/demos/watermark-mp-font.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-watermark-demo__custom)"
+- pages/display/fit-swiper.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/display/image-preview.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/display/img-cropper.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/display/img.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/display/qr-code.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/display/rich-text.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/display/swiper.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/display/table.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/display/video-preview.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/display/waterfall.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/display/watermark.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/feedback/action-sheet.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/feedback/circle.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/feedback/curtain.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback/demos/action-sheet-mp-action-icons.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/action-sheet-mp-action-icons.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback/demos/action-sheet-mp-action-icons.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1710,6 +1732,11 @@
 - pages/feedback/demos/loadmore-mp-basic.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback/demos/loadmore-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__loadmore)"
 - pages/feedback/demos/loadmore-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__loadmore)"
+- pages/feedback/dialog.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/feedback/empty.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/feedback/floating-panel.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/feedback/loading.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/feedback/loadmore.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/demos/notice-bar-mp-closable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/notice-bar-mp-closable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/notice-bar-mp-closable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -1796,6 +1823,23 @@
 - pages/feedback-2/demos/toast-mp-z-index.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-z-index.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-z-index.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/feedback-2/notice-bar.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/notify.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/overlay.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/popup.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/progress.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/skeleton.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/swipe-action.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/toast.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/form/calendar-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form/calendar.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form/captcha.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/form/cascader.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form/checkbox.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/form/code-input.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form/date-strip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/form/demos/calendar-mp-sheet-chrome.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-mp-sheet-chrome.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-view-mp-time-props.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__calendar)"
@@ -1920,6 +1964,11 @@
 - pages/form/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/form/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/form/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form/form.vue: [import-rewrite] 25 relative .vue import(s) rewritten to .uvue
+- pages/form/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
+- pages/form/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
+- pages/form/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2054,9 +2103,26 @@
 - pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
 - pages/form-2/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/picker-view.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/form-2/radio.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-2/rate.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-2/search.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/select-picker.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-2/signature.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-2/slide-verify.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-2/slider.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form-2/sort-button.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/form-2/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
+- pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__card:active"
+- pages/more/ai-chat.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
+- pages/more/ai-message-list.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
 - pages/more/demos/paging-mp-app.en.vue: [template-attr] 6 @tap binding(s) renamed to @click
 - pages/more/demos/paging-mp-app.en.vue: [pseudo-class] pseudo-class in ".pgc__expand:active"
 - pages/more/demos/paging-mp-app.en.vue: [pseudo-class] pseudo-class in ".pgd__op:active"
@@ -2067,6 +2133,10 @@
 - pages/more/demos/paging-mp-popup.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/more/demos/paging-mp-states.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/more/demos/paging-mp-states.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/more/paging.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/more/slider-bar.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/navigation/backtop.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/navigation/collapse.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/navigation/demos/backtop-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
 - pages/navigation/demos/backtop-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2151,6 +2221,12 @@
 - pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/navigation/grid.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/navigation/navbar.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/sidebar-mp-guard.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
@@ -2223,50 +2299,15 @@
 - pages/navigation-2/demos/tour-mp-z-index.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
 - pages/navigation-2/demos/tour-mp-z-index.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-z-index.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-tour.sn-demo-contained)"
+- pages/navigation-2/segmented.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/sidebar.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/steps.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/sticky.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tabbar.vue: [import-rewrite] 2 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tabs.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tooltip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tour.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- templates/uni/sn-ai-chat.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-message.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - templates/uni/sn-ai-message.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiAssistant.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- templates/web/SnAiAssistant.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiChat.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- templates/web/SnAiChat.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiMessage.vue: [template-bare-text] 18 bare text node(s) wrapped in <text>
-- templates/web/SnAiMessage.vue: [template-attr] 2 data-* attribute(s) stripped
-- templates/web/SnAiMessage.vue: [pseudo-class] pseudo-class in ".sn-ai-message__error-retry:hover"
-- templates/web/SnAiMessage.vue: [pseudo-class] pseudo-class in ".sn-ai-message__action:hover"
-- templates/web/SnAiMessage.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiMessage.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiMessageList.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- templates/web/SnAiMessageList.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiMessageList.vue: [pseudo-class] pseudo-class in ".sn-ai-message-list__jump:hover"
-- templates/web/SnAiMessageList.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [script-guard] 2 DOM event call(s) converted to optional calls
-- templates/web/SnAiPrompt.vue: [template-bare-text] 13 bare text node(s) wrapped in <text>
-- templates/web/SnAiPrompt.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__queue-remove:hover"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__box:focus-within"
-- templates/web/SnAiPrompt.vue: [pseudo-element] pseudo-element in ".sn-ai-prompt__input::placeholder"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__chip-remove:hover"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__tool:hover:not(:disabled)"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__tool:disabled"
-- templates/web/SnAiPrompt.vue: [tag-only-selector] tag-only selector ".sn-ai-prompt__tool--wide span"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__attach-item:hover"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__primary:hover:not(:disabled)"
-- templates/web/SnAiPrompt.vue: [pseudo-class] pseudo-class in ".sn-ai-prompt__primary:disabled"
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] outline stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiPrompt.vue: [unsupported-property] cursor stripped
-- templates/web/SnAiThinking.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- templates/web/SnAiThinking.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnAiThinking.vue: [pseudo-class] pseudo-class in ".sn-ai-thinking__header:hover"
-- templates/web/SnAiThinking.vue: [unsupported-property] cursor stripped
-- templates/web/SnModelConfig.vue: [template-bare-text] 32 bare text node(s) wrapped in <text>
-- templates/web/SnModelConfig.vue: [template-attr] 1 data-* attribute(s) stripped
-- templates/web/SnModelConfig.vue: [pseudo-class] pseudo-class in ".sn-model-config__vendor:hover"
-- templates/web/SnModelConfig.vue: [pseudo-class] pseudo-class in ".sn-model-config__model:hover"
-- templates/web/SnModelConfig.vue: [unsupported-property] cursor stripped
-- templates/web/SnModelConfig.vue: [unsupported-property] cursor stripped
 

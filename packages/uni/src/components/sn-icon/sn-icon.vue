@@ -49,7 +49,7 @@ defineOptions({ name: 'SnIcon' });
 
 /**
  * 图标数据类型契约的本体在 `./sn-icon-types`（纯 ts 模块，uni-x 端的
- * `.ts` 协同文件无法从 `.uvue` 导入类型）。这里 re-export 保持既有
+ * 稳定导入目标——.uvue 产物不承载类型导出）。这里 re-export 保持既有
  * `from 'sn-icon.vue'` 导入路径兼容。
  */
 export type { IconData } from './sn-icon-types';

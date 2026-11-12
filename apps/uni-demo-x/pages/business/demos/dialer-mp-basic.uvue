@@ -3,8 +3,7 @@
  * Demo: sn-dialer (uni-end) — 基础用法：点击 GO → 宿主决定索引 → run(index)
  * → done 反馈。
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizeList: SnDialerPrize[] = [
   { id: 'p1', name: '一等奖' },
   { id: 'p2', name: '优惠券' },

@@ -10,6 +10,7 @@ export type IssueKind =
   | 'template-bare-text'
   | 'template-attr'
   | 'script-guard'
+  | 'import-rewrite'
   | 'defineSlots-stripped'
   | 'defineSlots-manual'
   | 'patch';

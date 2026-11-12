@@ -5,7 +5,7 @@
  * Show how to author your own IconData (copy the SVG paths from
  * https://lucide.dev/icons) and use sn-icon inside a button slot.
  */
-import SnIcon, { type IconData } from '@snui/uni-x/components/sn-icon/sn-icon.vue';
+import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import { Plus, X } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 // Custom icon — author once, use anywhere.
 const CustomFlag: IconData = {

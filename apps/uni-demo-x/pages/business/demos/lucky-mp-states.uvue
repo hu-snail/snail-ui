@@ -3,8 +3,7 @@
  * Demo: sn-lucky (uni-end) — 状态与事件：start / end 事件日志 + 手动
  * play()/stop(index) 控制；旋转中重复 play、未旋转时 stop 均被忽略。
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: '一等奖' },
   { name: '优惠券' },

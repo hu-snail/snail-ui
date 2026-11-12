@@ -4,8 +4,7 @@
  * request → run(index) → done flow; pointer taps during a spin are ignored
  * (built-in re-entry guard).
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizeList: SnDialerPrize[] = [
   { id: 'p1', name: 'Grand Prize' },
   { id: 'p2', name: 'Coupon' },

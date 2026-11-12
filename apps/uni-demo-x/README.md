@@ -7,7 +7,7 @@ snui 组件库的 **uni-app x** demo：由 `apps/uni-demo`（uni-app 场景源�
 > **生成物勿手改**：`pages/`、`components/`、`state/`、`templates/`、`pages.json`、
 > `App.uvue` 全部由 `scripts/gen-x.mjs` 产出（幂等，可随时重新生成）；
 > `GEN-REPORT.md` 记录每次生成的改写统计与管线丢弃项。
-> 手写文件只有：`manifest.json`、`main.uts`、`package.json`、`scripts/`、本 README。
+> 手写文件只有：`manifest.json`、`index.html`、`main.uts`、`package.json`、`scripts/`、本 README。
 
 ## 与 apps/uni-demo 的关系
 
@@ -27,9 +27,9 @@ pnpm -F @snui/uni-demo-x gen     # 2. 生成 demo 工程（pages/components/stat
 pnpm -F @snui/uni-demo-x check   # 3. 结构校验：manifest/pages/easycom/导入解析
 ```
 
-`check` 的覆盖面：`uni-app-x.vapor` manifest 形态、100 个页面实体存在、
-113 个 `sn-*` 标签可被 easycom / 显式导入解析、相对导入真实存在、
-无 `.vue` / `@snui/uni-src` / demo-bridge 残留。
+`check` 的覆盖面：`uni-app-x.vapor` manifest 形态、index.html web 入口、
+100 个页面实体存在、113 个 `sn-*` 标签可被 easycom / 显式导入解析、
+相对导入真实存在、无 `.vue` / `@snui/uni-src` / demo-bridge / `.vue` 导入残留。
 
 ## HBuilderX 运行
 

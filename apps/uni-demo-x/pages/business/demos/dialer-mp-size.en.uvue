@@ -2,8 +2,7 @@
 /**
  * Demo: sn-dialer (uni-end) — Size presets.
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizes: SnDialerPrize[] = [
   { id: 'a', name: 'Prize A' },
   { id: 'b', name: 'Prize B' },

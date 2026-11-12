@@ -87,6 +87,8 @@ uni-app x App 端 CSS 是子集，转换管线已自动处理：
 - 文本节点自动包裹 `<text>`；文字样式不继承
 - `@tap` 统一为 `@click`；`data-*` 属性被剥离（uni-x 产物）
 - `cursor` / `user-select` 等无原生等价的属性被剥离
+- 组件间导入说明符自动改写：`.vue` → `.uvue`；类型导入指向 `<comp>-types` 纯 ts
+  实体（sn-icon / sn-fab / sn-dialer / sn-lucky 的类型契约本体在 ts 模块）
 
 ## 真机验证清单（未验证事项）
 

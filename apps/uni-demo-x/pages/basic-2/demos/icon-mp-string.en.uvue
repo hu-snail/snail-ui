@@ -7,7 +7,6 @@
  */
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
-
 // Override the built-in `star`: registry wins over the catalog.
 const BrandStar: IconData = {
   viewBox: '0 0 24 24',

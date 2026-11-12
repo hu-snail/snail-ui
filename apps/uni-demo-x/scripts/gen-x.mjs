@@ -32,6 +32,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const appRoot = resolve(here, '..');
 const srcRoot = resolve(appRoot, '../uni-demo/src');
 const templatesRoot = resolve(appRoot, '../../packages/templates/src');
+const uniXDist = resolve(appRoot, '../../packages/uni-x/dist');
 const outRoot = appRoot;
 
 /** uni-app x 组合式 API 自动导入名单（uvue 无需 import from 'vue'）。 */
@@ -63,6 +64,7 @@ const stats = {
   ts: 0,
   easycomDropped: 0,
   uniXRemapped: 0,
+  typeImportsRemapped: 0,
   templatesMapped: 0,
   vueImportStrips: [],
   appSpecific: [],
@@ -78,6 +80,27 @@ function relFromOut(file) {
  * 用于把 `@snui/templates-src/<spec>` 换算成模板产物的相对路径。
  */
 function rewriteImports(code, fromFile, outDir) {
+  // 0. 组合导入（default + 纯 type 绑定，如 `import SnIcon, { type IconData } from
+  //    .../sn-icon.vue`）拆成两条源形态行 —— 值部分交给规则 1（easycom 删除 /
+  //    显式 .uvue），类型部分交给规则 2（types 实体重映射）。花括号里出现
+  //    非 type 绑定时 fail loud：uni-x 端组件文件没有值命名导出。
+  code = code.replace(
+    /^import\s+(\w+)\s*,\s*\{([^}]*)\}\s*from\s+'(@snui\/(?:uni-src|uni)\/components\/sn-[a-z0-9-]+\/sn-[a-z0-9-]+)\.vue';\s*\n/gm,
+    (line, name, bindings, spec) => {
+      const parts = bindings.split(',').map((n) => n.trim()).filter(Boolean);
+      const nonType = parts.filter((n) => !n.startsWith('type '));
+      if (nonType.length > 0) {
+        throw new Error(
+          `[gen-x] ${relFromOut(fromFile)}: 组合导入含非 type 绑定（${nonType.join(', ')}）—— ` +
+            `uni-x 端 .uvue 组件无值命名导出，请在场景源拆分该导入`,
+        );
+      }
+      return (
+        `import ${name} from '${spec}.vue';\n` +
+        `import type { ${parts.map((n) => n.replace(/^type\s+/, '')).join(', ')} } from '${spec}.vue';\n`
+      );
+    },
+  );
   // 1. sn-* 组件导入：目录名 == 组件名（easycom 可解析）→ 删除；
   //    配对子组件（sn-tabbar-item 等，easycom 正则覆盖不到）→ 显式 .uvue 导入。
   code = code.replace(
@@ -91,10 +114,21 @@ function rewriteImports(code, fromFile, outDir) {
       return `import ${name} from '@snui/uni-x/components/${dir}/${file}.uvue';\n`;
     },
   );
-  // 2. 从 .vue 导入的类型（IconData）→ sn-icon-types（uni-x 端无 .vue 实体）。
+  // 2. 从 .vue 导入的类型 → <comp>-types 纯 ts 实体（uni-x 端无 .vue 实体可挂
+  //    类型；实体清单由 uni 源码侧保证：sn-icon / sn-fab / sn-dialer / sn-lucky）。
   code = code.replace(
-    /^(import\s+type\s*\{[^}]*\}\s*from\s*)'@snui\/(?:uni-src|uni)\/components\/sn-icon\/sn-icon\.vue';/gm,
-    `$1'@snui/uni-x/components/sn-icon/sn-icon-types';`,
+    /^(import\s+type\s*\{[^}]*\}\s*from\s*)'@snui\/(?:uni-src|uni)\/components\/(sn-[a-z0-9-]+)\/sn-[a-z0-9-]+\.vue';\s*\n?/gm,
+    (line, head, comp) => {
+      const typesEntity = join(uniXDist, 'components', comp, `${comp}-types.ts`);
+      if (!existsSync(typesEntity)) {
+        throw new Error(
+          `[gen-x] ${relFromOut(fromFile)}: 从 ${comp}.vue 导入类型，但 dist 缺少 ` +
+            `${comp}-types.ts 实体 —— 请把该类型契约拆到纯 ts 模块（sn-icon-types 模式）`,
+        );
+      }
+      stats.typeImportsRemapped++;
+      return `${head}'@snui/uni-x/components/${comp}/${comp}-types';\n`;
+    },
   );
   // 3. 场景引用的模板组件 → 本工程 templates/ 产物（相对路径换算）。
   code = code.replace(
@@ -227,6 +261,7 @@ function emitReport() {
     `| .ts 产出 | ${stats.ts} |`,
     `| easycom 组件导入删除 | ${stats.easycomDropped} |`,
     `| 显式 .uvue / 协同 ts 重映射 | ${stats.uniXRemapped} |`,
+    `| 类型导入 → <comp>-types 实体 | ${stats.typeImportsRemapped} |`,
     `| 模板组件导入映射 | ${stats.templatesMapped} |`,
     '',
     '## App.uvue 专属改写',
@@ -295,8 +330,10 @@ function main() {
     else stats.ts++;
   }
 
-  // 场景引用的模板组件：镜像 packages/templates/src 的 uni/ + shared/ 子树。
-  for (const srcPath of collect(templatesRoot)) {
+  // 场景引用的模板组件：镜像 packages/templates/src 的 uni/ + shared/ 子树
+  // （web/ 子树消费 @snui/vue-web 独有组件，对 uni-app x 工程不适用）。
+  const templateSubtrees = ['uni', 'shared'].flatMap((sub) => collect(join(templatesRoot, sub)));
+  for (const srcPath of templateSubtrees) {
     const relSpec = relative(templatesRoot, srcPath);
     const isVue = srcPath.endsWith('.vue');
     const outPath = join(outRoot, 'templates', relSpec.replace(/\.vue$/, '.uvue'));

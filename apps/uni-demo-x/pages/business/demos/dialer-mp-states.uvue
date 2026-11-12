@@ -3,8 +3,7 @@
  * Demo: sn-dialer (uni-end) — 状态与事件：click → 模拟请求 → run(index) →
  * done 的完整流程反馈；旋转期间指针点击被忽略（组件内置防重入）。
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizeList: SnDialerPrize[] = [
   { id: 'p1', name: '一等奖' },
   { id: 'p2', name: '优惠券' },

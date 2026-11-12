@@ -2,8 +2,7 @@
 /**
  * Demo: sn-lucky (uni-end) — Cell gap & height: gutter / cellHeight.
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: 'Grand prize' },
   { name: 'Coupon' },

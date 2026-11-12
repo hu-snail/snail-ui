@@ -11,6 +11,44 @@
 
 import type { TextTransformResult, TransformIssue } from './types.ts';
 
+/**
+ * Import specifiers: @snui/uni sources reference sibling components as
+ * `.vue` (correct for the classic uni-app build), but the dist tree ships
+ * `.uvue` entities — unrewritten specifiers fail resolution the moment a
+ * real compiler sees them (first caught by the uni-demo-x web compile).
+ * Type-only imports point at the pure-ts `<comp>-types` entity instead of
+ * the .uvue: type contracts live outside SFCs on uni-app x (sn-icon-types
+ * pattern; SnFabAction / SnDialerPrize follow it too).
+ */
+export function transformImportSpecifiers(src: string, file: string): TextTransformResult {
+  const issues: TransformIssue[] = [];
+  let code = src;
+  const typeImports = code.match(
+    /^import\s+type\s*\{[^}]*\}\s*from\s*'(\.{1,2}\/[^']*sn-icon\/sn-icon)\.vue';/gm,
+  )?.length;
+  if (typeImports) {
+    code = code.replace(
+      /^(import\s+type\s*\{[^}]*\}\s*from\s+')(\.{1,2}\/[^']*sn-icon\/sn-icon)\.vue(';)/gm,
+      '$1$2-types$3',
+    );
+    issues.push({
+      file,
+      kind: 'import-rewrite',
+      detail: `${typeImports} type import(s) redirected to sn-icon-types`,
+    });
+  }
+  const valueImports = code.match(/from\s+'(\.{1,2}\/[^']*)\.vue'/g)?.length ?? 0;
+  if (valueImports > 0) {
+    code = code.replace(/(from\s+')(\.{1,2}\/[^']*)\.vue(')/g, '$1$2.uvue$3');
+    issues.push({
+      file,
+      kind: 'import-rewrite',
+      detail: `${valueImports} relative .vue import(s) rewritten to .uvue`,
+    });
+  }
+  return { code, issues };
+}
+
 export function transformScript(src: string, file: string): TextTransformResult {
   const issues: TransformIssue[] = [];
   let code = src;

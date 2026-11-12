@@ -12,7 +12,7 @@
  * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
  * the phone screen (the real runtime keeps `position: fixed`).
  */
-import type { SnFabAction } from '@snui/uni-x/components/sn-fab/sn-fab.vue';
+import type { SnFabAction } from '@snui/uni-x/components/sn-fab/sn-fab-types';
 import {
   Camera,
   Edit,

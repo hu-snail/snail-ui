@@ -40,6 +40,20 @@ if (xNode && xNode['vapor-default-script-lang'] !== 'ts') {
   problems.push('manifest.json 建议声明 `vapor-default-script-lang: "ts"`');
 }
 
+/* 1b. index.html —— web 端编译入口（官方模板形态：入口为无扩展名 `/main`） */
+const indexHtml = join(appRoot, 'index.html');
+if (!existsSync(indexHtml)) {
+  problems.push('index.html 缺失 —— uni-app x web 端编译需要它（HBuilderX 运行到 web）');
+} else {
+  const indexCode = readFileSync(indexHtml, 'utf8');
+  if (!indexCode.includes('src="/main"')) {
+    problems.push('index.html 缺少 `<script type="module" src="/main">` 入口（官方模板形态）');
+  }
+  if (indexCode.includes('src="/src/main')) {
+    problems.push('index.html 引用 CLI 工程入口 /src/main —— 应为 HBuilderX 根目录形态 /main');
+  }
+}
+
 /* 2. pages.json 页面实体 */
 const pagesJson = JSON.parse(readFileSync(join(appRoot, 'pages.json'), 'utf8'));
 if (!pagesJson.easycom?.custom?.['^sn-(.*)']) {
@@ -63,9 +77,12 @@ for (const sp of pagesJson.subPackages ?? []) {
 function toKebab(name) {
   return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 }
-const generatedDirs = ['pages', 'components'].map((d) => join(appRoot, d));
+const generatedDirs = ['pages', 'components', 'templates', 'state'].map((d) => join(appRoot, d));
+// easycom tag 解析只对 demo 页面面（pages/components）负责：templates 树是
+// 显式导入世界（局部 import + kebab→Pascal 归一），不适用 easycom 实体校验。
+const tagScanDirs = ['pages', 'components'].map((d) => join(appRoot, d));
 const unresolved = new Map();
-for (const dir of generatedDirs) {
+for (const dir of tagScanDirs) {
   if (!existsSync(dir)) continue;
   walk(dir, (file) => {
     if (!file.endsWith('.uvue')) return;
@@ -113,15 +130,20 @@ for (const dir of generatedDirs) {
   });
 }
 
-/* 5. 残留检查 */
+/* 5. 残留检查（生成树 + 根级 App.uvue —— web 编译对 .vue 导入严格解析） */
+const residueFiles = [];
 for (const dir of generatedDirs) {
   if (!existsSync(dir)) continue;
-  walk(dir, (file) => {
-    const code = readFileSync(file, 'utf8');
-    if (file.endsWith('.vue')) problems.push(`生成树残留 .vue: ${file}`);
-    if (code.includes('@snui/uni-src')) problems.push(`@snui/uni-src 残留: ${file}`);
-    if (code.includes('demo-bridge')) problems.push(`demo-bridge 残留: ${file}`);
-  });
+  walk(dir, (file) => residueFiles.push(file));
+}
+if (existsSync(join(appRoot, 'App.uvue'))) residueFiles.push(join(appRoot, 'App.uvue'));
+for (const file of residueFiles) {
+  const code = readFileSync(file, 'utf8');
+  if (file.endsWith('.vue')) problems.push(`生成树残留 .vue: ${file}`);
+  if (code.includes('@snui/uni-src')) problems.push(`@snui/uni-src 残留: ${file}`);
+  if (code.includes('demo-bridge')) problems.push(`demo-bridge 残留: ${file}`);
+  const vueImport = code.match(/from\s+'[^']*\.vue'/);
+  if (vueImport) problems.push(`.vue 导入残留: ${relative(appRoot, file)}: ${vueImport[0]}`);
 }
 
 if (problems.length > 0) {

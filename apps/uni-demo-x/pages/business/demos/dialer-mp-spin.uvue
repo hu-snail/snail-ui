@@ -2,8 +2,7 @@
 /**
  * Demo: sn-dialer (uni-end) — 旋转参数：turns 圈数 / duration 时长。
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizes: SnDialerPrize[] = [
   { id: 'a', name: '奖品 A' },
   { id: 'b', name: '奖品 B' },

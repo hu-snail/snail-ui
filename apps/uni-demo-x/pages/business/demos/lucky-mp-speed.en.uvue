@@ -2,8 +2,7 @@
 /**
  * Demo: sn-lucky (uni-end) — Speed & highlight: `speed` / prize color override.
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const coloredPrizes: SnLuckyPrize[] = [
   { name: 'Jackpot', color: 'var(--sn-mp-color-feedback-warning-soft)' },
   { name: 'Coupon' },

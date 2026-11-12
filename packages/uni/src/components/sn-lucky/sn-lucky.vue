@@ -15,17 +15,12 @@
  */
 
 import { computed, onBeforeUnmount, ref } from 'vue';
+import type { SnLuckyPrize } from './sn-lucky-types';
 
 defineOptions({ name: 'SnLucky' });
 
-export interface SnLuckyPrize {
-  /** 奖品名。 */
-  name: string;
-  /** 奖品图（可选）。 */
-  img?: string;
-  /** 激活时格子背景色（可选）。 */
-  color?: string;
-}
+// 类型契约本体在 ./sn-lucky-types（纯 ts 模块，uni-x 端的稳定导入目标）。
+export type { SnLuckyPrize } from './sn-lucky-types';
 
 const props = withDefaults(
   defineProps<{

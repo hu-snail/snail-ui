@@ -3,8 +3,7 @@
  * Demo: sn-dialer (uni-end) — Basic usage: tap GO, host decides the index,
  * run(index) spins and done reports the result.
  */
-import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer.vue';
-
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
 const prizeList: SnDialerPrize[] = [
   { id: 'p1', name: 'Grand Prize' },
   { id: 'p2', name: 'Coupon' },

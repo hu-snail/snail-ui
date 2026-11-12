@@ -4,8 +4,7 @@
  * manual play()/stop(index) control. Repeated play while spinning and stop
  * while idle are both ignored.
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: 'Grand Prize' },
   { name: 'Coupon' },

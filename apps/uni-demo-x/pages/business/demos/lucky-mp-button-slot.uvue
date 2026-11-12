@@ -2,8 +2,7 @@
 /**
  * Demo: sn-lucky (uni-end) — 自定义抽奖按钮：#button 插槽。
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: '一等奖' },
   { name: '优惠券' },

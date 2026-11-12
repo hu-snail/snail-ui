@@ -3,8 +3,7 @@
  * Demo: sn-lucky (uni-end) — Basic usage: the built-in button starts play(),
  * the host stops at a random index after a short delay.
  */
-import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky.vue';
-
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
 const prizes: SnLuckyPrize[] = [
   { name: 'Grand Prize' },
   { name: 'Coupon' },

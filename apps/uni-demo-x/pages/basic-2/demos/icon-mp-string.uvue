@@ -7,7 +7,6 @@
  */
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
-
 // 覆盖内置 `star`：registry 优先级高于目录。
 const BrandStar: IconData = {
   viewBox: '0 0 24 24',

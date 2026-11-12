@@ -127,6 +127,7 @@ const KIND_LABELS: Record<IssueKind, string> = {
   'template-bare-text': 'bare text wrapped in <text>',
   'template-attr': 'template attribute rewritten',
   'script-guard': 'script DOM guard',
+  'import-rewrite': 'import specifier rewritten for .uvue dist',
   'defineSlots-stripped': 'defineSlots stripped',
   'defineSlots-manual': 'defineSlots needs manual review',
   patch: 'patch applied',
