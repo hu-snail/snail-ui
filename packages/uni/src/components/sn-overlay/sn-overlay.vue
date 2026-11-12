@@ -236,6 +236,15 @@ function onTouchMove(event: Event): void {
   right: 0;
   bottom: 0;
   left: 0;
+  /* uni-app x App: do not rely on four-edge inset stretching — the official
+   * position example's four-direction fixed element carries an explicit
+   * width/height, and so does the device-verified sn-tabbar--fixed. For a
+   * fixed element the containing block is the visible page on every target,
+   * so `width/height: 100%` is the same fullscreen box on web / miniprogram
+   * (width+height simply win over the opposing insets) and gives App an
+   * explicit size. The insets stay as harmless redundancy. */
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -31,9 +31,8 @@ const rows = [
       placement="bottom"
       :offset="[0, 8]"
       custom-class="sn-demo-contained"
-      trigger="manual"
     >
-      <SnButton block @click="rowsOpen = !rowsOpen">多行提示（数组 content）</SnButton>
+      <SnButton block>多行提示（数组 content）</SnButton>
     </SnTooltip>
 
     <SnTooltip
@@ -41,9 +40,8 @@ const rows = [
       placement="top"
       :offset="{ x: 0, y: 10 }"
       custom-class="sn-demo-contained"
-      trigger="manual"
     >
-      <SnButton block @click="slotOpen = !slotOpen">插槽内容</SnButton>
+      <SnButton block>插槽内容</SnButton>
       <template #content>
         <view class="sn-demo__bubble">
           <text class="sn-demo__bubble-title">自定义气泡</text>

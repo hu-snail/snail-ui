@@ -17,10 +17,9 @@ const noArrow = ref(false);
       content="没有箭头的气泡"
       :visible-arrow="false"
       placement="top"
-      trigger="manual"
       @update:model-value="noArrow = $event"
     >
-      <SnButton block @click="noArrow = !noArrow">无箭头（visible-arrow=false）</SnButton>
+      <SnButton block>无箭头（visible-arrow=false）</SnButton>
     </SnTooltip>
   </view>
 </template>

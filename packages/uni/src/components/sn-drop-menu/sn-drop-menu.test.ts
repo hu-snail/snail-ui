@@ -429,7 +429,11 @@ describe('sn-drop-menu', () => {
      * dark rectangle parked mid-page in any real scrolling layout (reproduced
      * in the demo H5 build). happy-dom discards stylesheets, so the geometry
      * invariant is pinned on the source text like sn-pagination's cascade
-     * guard: the scrim must be a fixed full-viewport layer. */
+     * guard: the scrim must be a fixed full-viewport layer. uni-app x App
+     * additionally cannot rely on four-edge inset stretching (and a page
+     * pinning class overriding `position` to `absolute` would anchor the
+     * scrim to the direct parent), so the rule must also carry an explicit
+     * width/height. */
     it('pins the scrim as a full-viewport fixed layer (source invariant)', () => {
       const source = readFileSync(resolve(import.meta.dirname, 'sn-drop-menu.vue'), 'utf8');
       const rule = source.indexOf('.sn-drop-menu__modal {');
@@ -437,7 +441,19 @@ describe('sn-drop-menu', () => {
       expect(source.slice(rule)).toMatch(
         /\.sn-drop-menu__modal \{[^}]*position: fixed;[^}]*top: 0;[^}]*bottom: 0;[^}]*left: 0;/,
       );
+      expect(source.slice(rule)).toMatch(
+        /\.sn-drop-menu__modal \{[^}]*width: 100%;[^}]*height: 100%;/,
+      );
       expect(source).not.toMatch(/\.sn-drop-menu__modal \{[^}]*position: absolute/);
+    });
+
+    /* The panel stretches to the root via left/right insets on web; uni-app x
+     * App needs the width stated explicitly (same hardening as the scrim). */
+    it('sizes the option panel to the root width (source invariant)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-drop-menu.vue'), 'utf8');
+      const rule = source.indexOf('.sn-drop-menu__popup {');
+      expect(rule).toBeGreaterThan(-1);
+      expect(source.slice(rule)).toMatch(/\.sn-drop-menu__popup \{[^}]*width: 100%;/);
     });
 
     it('keeps the menu open on a scrim tap when closeOnClickModal is false', async () => {

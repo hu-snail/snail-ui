@@ -45,9 +45,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       placement="bottom-end"
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
-      trigger="manual"
     >
-      <SnButton type="primary" block @click="open = !open">更多操作</SnButton>
+      <SnButton type="primary" block>更多操作</SnButton>
     </SnPopover>
 
     <text class="sn-demo__meta">已选择：{{ picked }}</text>

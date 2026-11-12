@@ -45,6 +45,20 @@
  * dispatcher. Pages that never bind the handler simply never outside-close;
  * `closeOnClickOutside: false` unregisters the close while mounted.
  *
+ * On uni-app x App the page-root dispatcher never sees page taps either
+ * (taps stay inside their compilation unit), so the App close paths are the
+ * trigger re-tap and the bubble's own close button.
+ *
+ * ## App trigger catcher (uni-app x App)
+ *
+ * Taps on slot content never cross into this component's compilation unit on
+ * App — the wrapper's `@tap` never fires from the page's trigger element, and
+ * page-bound listeners on slotted components never fire either. The template
+ * therefore ships an `#ifdef APP` transparent catcher over the trigger box
+ * (a node this component owns) that receives the tap and runs the same
+ * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
+ * `trigger` prop note for when `manual` is actually needed.
+ *
  * ## Auto height (AUI-OPT-07)
  *
  * The bubble sizes to its content and never clips it: the pop is `height: auto`
@@ -186,10 +200,13 @@ const props = withDefaults(
     modelValue?: boolean;
     /**
      * How the trigger reacts. `slot` (default) binds the tap on the trigger
-     * wrapper itself. `manual` leaves toggling to the page via v-model — the
-     * uni-app x App-side event model does not propagate taps across the slot
-     * boundary (page-scoped trigger content never reaches this component's
-     * wrapper), so remote trigger content must toggle the bubble itself.
+     * wrapper itself — on uni-app x App an App-only catcher node (see the
+     * template note) receives the tap because slot-content taps never reach
+     * this component's own views there. `manual` leaves toggling to the page
+     * via v-model: use it when the tap target lives outside the default slot
+     * (a remote button, imperative open/close), not as an App workaround —
+     * event listeners the page binds on components inside the slot never fire
+     * on App either, so a manual-mode slotted trigger is inert there too.
      */
     trigger?: 'slot' | 'manual';
     /** Bubble body: a string in `normal` mode, a list in `menu` mode. */
@@ -481,6 +498,23 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       @tap.stop="onTriggerTap"
     >
       <slot />
+      <!-- #ifdef APP -->
+      <!-- uni-app x App: a tap on the trigger's slot content (the page's
+           compilation unit) never reaches this component's own views — not as
+           a native bubble, not as a component emit — so the wrapper's @tap
+           alone can never fire there. This App-only transparent catcher is a
+           node this component owns that sits on top of the trigger box, so the
+           tap lands on it directly (the same component-internal tap path every
+           other App-working trigger uses). Web / MP strip it: there the slot
+           content taps reach the wrapper by native bubbling, and the catcher
+           would only steal the trigger's press feedback. -->
+      <view
+        class="sn-popover__trigger-catcher"
+        hover-class="sn-popover__trigger-catcher--pressed"
+        aria-hidden="true"
+        @tap.stop="onTriggerTap"
+      />
+      <!-- #endif -->
     </view>
 
     <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
@@ -559,8 +593,26 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 }
 
 .sn-popover__trigger {
+  position: relative;
   display: block;
 }
+
+/* #ifdef APP */
+/* App trigger catcher (see the template note): a transparent shield over the
+ * trigger box. `position: relative` on the wrapper above is its containing
+ * block. The pressed leg restores the touch feedback the covered slot content
+ * can no longer receive on App. */
+.sn-popover__trigger-catcher {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.sn-popover__trigger-catcher--pressed {
+  background-color: var(--sn-mp-color-background-soft);
+}
+/* #endif */
 
 /* ── Bubble ────────────────────────────────────────────────────────────── */
 

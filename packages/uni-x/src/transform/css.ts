@@ -95,11 +95,18 @@ const BORDER_STYLE_WORDS = new Set([
 
 /** Split border shorthands into the longhands the flattener needs — skin
  * rules override `border-top-width` / `border-top-color` individually, and
- * the injected var() fallbacks must know the base shorthand's own values. */
+ * the injected var() fallbacks must know the base shorthand's own values.
+ * The plain `border` shorthand expands too: a base like
+ * `border: 2rpx solid transparent` must yield longhand base entries, or the
+ * flatten of a skin's `border-width` override cannot find a base value and
+ * falls back to the property initial (uni-app x 4.0+: 3px `medium`) — the
+ * heavy-black-frame regression. Unparseable values (e.g. a bare var()) stay
+ * whole: per-CSS a shorthand carrying var() must resolve every longhand from
+ * that one reference, and baking width/style defaults would falsify it. */
 function expandBorderShorthand(prop: string, value: string): Array<[string, string]> {
-  const m: RegExpMatchArray | null = prop.match(/^border-(top|right|bottom|left)$/);
+  const m: RegExpMatchArray | null = prop.match(/^border(?:-(top|right|bottom|left))?$/);
   if (!m) return [[prop, value]];
-  const side: string = m[1]!;
+  const side: string = m[1] === undefined ? '' : `-${m[1]}`;
   const width: string[] = [];
   const style: string[] = [];
   const color: string[] = [];
@@ -110,9 +117,9 @@ function expandBorderShorthand(prop: string, value: string): Array<[string, stri
     else color.push(part);
   }
   return [
-    [`border-${side}-width`, width.join(' ') || 'medium'],
-    [`border-${side}-style`, style.join(' ') || 'none'],
-    [`border-${side}-color`, color.join(' ') || 'currentColor'],
+    [`border${side}-width`, width.join(' ') || 'medium'],
+    [`border${side}-style`, style.join(' ') || 'none'],
+    [`border${side}-color`, color.join(' ') || 'currentColor'],
   ];
 }
 
@@ -297,6 +304,22 @@ interface BaseEntry {
   decls: Map<string, postcss.Declaration>;
 }
 
+/**
+ * "Container context absent" must mean "as if this rule never existed". For
+ * border longhands that is NOT the unset default on uni-app x: since 4.0 the
+ * App engine aligns border-width with W3C, whose initial value is `medium`
+ * (3px), and border-color's initial is `currentColor` — so a fallback-less
+ * var() paints a 3px solid ink frame the moment any surviving declaration
+ * provides `border-style: solid` (real-device regression, picker indicator).
+ * An explicit no-border fallback keeps the absent state inert on any engine.
+ */
+function borderLonghandFallback(prop: string): string | null {
+  if (/^border(?:-(?:top|right|bottom|left))?-width$/.test(prop)) return '0';
+  if (/^border(?:-(?:top|right|bottom|left))?-style$/.test(prop)) return 'none';
+  if (/^border(?:-(?:top|right|bottom|left))?-color$/.test(prop)) return 'transparent';
+  return null;
+}
+
 function transformComponent(root: postcss.Root, file: string, issues: TransformIssue[]): void {
   // Pass 0 — collect base declarations per single-class selector (last wins).
   const baseEntries = new Map<string, BaseEntry>();
@@ -339,7 +362,11 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
         syntheticRules.set(targetClass, rule);
         root.append(rule);
       }
-      rule.append({ prop, value: `var(${varName})` });
+      const borderFallback: string | null = borderLonghandFallback(prop);
+      rule.append({
+        prop,
+        value: borderFallback === null ? `var(${varName})` : `var(${varName}, ${borderFallback})`,
+      });
       return;
     }
     const baseDecl = entry.decls.get(prop);
@@ -372,10 +399,15 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
       baseDecl.value = injected;
       return;
     }
-    // Base rule exists but never declared this prop: append a fallback-less
-    // var() declaration so the container context can still reach the element
-    // (undefined var ⇒ unset, which matches the "rule was the only styling" case).
-    const fallbackLess: string = `var(${varName})`;
+    // Base rule exists but never declared this prop: append the var() so the
+    // container context can still reach the element ("rule was the only
+    // styling" case). Border longhands additionally carry an explicit
+    // no-border fallback — an unset var() would otherwise resolve to the
+    // initial `medium` width / `currentColor` (see borderLonghandFallback),
+    // not to "no border".
+    const borderFallback: string | null = borderLonghandFallback(prop);
+    const fallbackLess: string =
+      borderFallback === null ? `var(${varName})` : `var(${varName}, ${borderFallback})`;
     entry.decls.set(prop, postcss.decl({ prop, value: fallbackLess }));
     root.walkRules((r) => {
       if (insideKeyframes(r)) return;
@@ -450,12 +482,17 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
             pushContainerDecl(op.containerSelector, d.prop, d.value);
             continue;
           }
-          const varName = `--snx-${op.targetClass}-${d.prop}`;
-          pushContainerDecl(op.containerSelector, varName, d.value);
-          const injectKey = `${op.targetClass}.${d.prop}`;
-          if (!injected.has(injectKey)) {
-            injected.add(injectKey);
-            ensureBaseDecl(op.targetClass, d.prop, varName);
+          // Border shorthands split into longhands so each part gets its own
+          // var() slot and its own base-value fallback (same contract as the
+          // base-collection pass below).
+          for (const [prop, value] of expandBorderShorthand(d.prop, d.value)) {
+            const varName = `--snx-${op.targetClass}-${prop}`;
+            pushContainerDecl(op.containerSelector, varName, value);
+            const injectKey = `${op.targetClass}.${prop}`;
+            if (!injected.has(injectKey)) {
+              injected.add(injectKey);
+              ensureBaseDecl(op.targetClass, prop, varName);
+            }
           }
         }
       }

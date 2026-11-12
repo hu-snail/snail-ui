@@ -17,6 +17,8 @@
  * the long-press menu is a WeChat-native behaviour with no DOM counterpart.
  */
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { afterEach, describe, it, expect, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnCurtain from './sn-curtain.vue';
@@ -394,5 +396,39 @@ describe('sn-curtain', () => {
     const w = mount(SnCurtain, { props: { modelValue: true, rootPortal: true } });
     expect(w.find('.sn-curtain__image').exists()).toBe(true);
     expect(w.element.parentElement).not.toBeNull();
+  });
+});
+
+/**
+ * The curtain must stay a fullscreen fixed layer. happy-dom discards
+ * stylesheets, so the geometry contract is pinned on the source text (same
+ * pattern as sn-drop-menu's scrim invariant): uni-app x App cannot rely on
+ * four-edge inset stretching, so the rule must also carry an explicit
+ * width/height — a page-level pinning class overriding `position` to
+ * `absolute` would otherwise anchor the layer to the direct parent and clip
+ * it inside the host's box (regression: curtain demo banner rendered inline
+ * in the demo card on uni-app x App).
+ */
+describe('sn-curtain stylesheet (fullscreen invariant)', () => {
+  const readStyleRule = (selector: string): string => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-curtain.vue'), 'utf8');
+    const start = source.indexOf(`${selector} {`);
+    expect(start).toBeGreaterThan(-1);
+    return source.slice(start, source.indexOf('}', start));
+  };
+
+  it('pins the root as a fixed fullscreen layer with explicit size (source invariant)', () => {
+    const body = readStyleRule('.sn-curtain');
+    expect(body).toContain('position: fixed;');
+    expect(body).toContain('top: 0;');
+    expect(body).toContain('width: 100%;');
+    expect(body).toContain('height: 100%;');
+  });
+
+  it('sizes the scrim to its fullscreen root (source invariant)', () => {
+    const body = readStyleRule('.sn-curtain__modal');
+    expect(body).toContain('position: absolute;');
+    expect(body).toContain('width: 100%;');
+    expect(body).toContain('height: 100%;');
   });
 });

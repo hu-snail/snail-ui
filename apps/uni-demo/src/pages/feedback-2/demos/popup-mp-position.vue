@@ -58,8 +58,15 @@ function show(position: Anchor): void {
   font-size: 28rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only: keep the fixed-position popup inside the phone screen. */
+/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
+ * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
+ * the direct parent's content box (css/position) and the page class still
+ * reaches the component root (style-isolation) — the rule would pin the
+ * fullscreen fixed layer into the demo card and clip it (App overflow
+ * defaults to hidden). */
+/* #ifdef H5 || WEB */
 .sn-popup.sn-demo-contained {
   position: absolute;
 }
+/* #endif */
 </style>

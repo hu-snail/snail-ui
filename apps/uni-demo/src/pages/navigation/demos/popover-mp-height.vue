@@ -41,9 +41,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       placement="bottom-start"
       :show-close="true"
       custom-class="sn-demo-contained"
-      trigger="manual"
     >
-      <SnButton block @click="normalOpen = !normalOpen">长文案 · normal 模式</SnButton>
+      <SnButton block>长文案 · normal 模式</SnButton>
     </SnPopover>
 
     <SnPopover
@@ -54,9 +53,8 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       custom-style="--sn-popover-menu-icon-size: 44rpx"
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
-      trigger="manual"
     >
-      <SnButton block @click="menuOpen = !menuOpen">长菜单项 · 放大图标</SnButton>
+      <SnButton block>长菜单项 · 放大图标</SnButton>
     </SnPopover>
 
     <view class="sn-popover-demo__space" />

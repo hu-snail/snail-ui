@@ -18,10 +18,9 @@ const withClose = ref(false);
       :show-close="true"
       :offset="{ x: 0, y: 6 }"
       placement="top"
-      trigger="manual"
       @update:model-value="withClose = $event"
     >
-      <SnButton block @click="withClose = !withClose">带关闭按钮 + offset</SnButton>
+      <SnButton block>带关闭按钮 + offset</SnButton>
     </SnTooltip>
   </view>
 </template>

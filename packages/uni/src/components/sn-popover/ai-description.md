@@ -10,13 +10,15 @@ Tap-triggered bubble with two modes: `normal` (plain text / custom content) and
 `menu` (a tappable option list). Used for contextual actions ("more" menus) and
 inline rich hints on mobile / miniprogram.
 
-Outside taps close the bubble through a transparent full-viewport mask
-(`closeOnClickOutside`, default `true`) that captures the tap itself, so no
-page-root wiring is required; the page-root `useQueue` / `closeOutside`
-channel stays available as a second path. The bubble is auto-height: it grows
-with its content instead of clipping it. The bubble defaults to the elevated
-surface — white in the light theme — with the page text color; recolor via
-`--sn-popover-bg` / `--sn-popover-color`.
+Outside taps close the bubble through the page-root `useQueue` / `closeOutside`
+channel (`closeOnClickOutside`, default `true`) without swallowing the tap —
+the same gesture still reaches whatever control sits under it. The trigger and
+the bubble bind `@tap.stop`, so opening a bubble never immediately closes it.
+On uni-app x App the page-root dispatcher never sees page taps, so the App
+close paths are the trigger re-tap and the bubble's own close button. The
+bubble is auto-height: it grows with its content instead of clipping it. The
+bubble defaults to the elevated surface — white in the light theme — with the
+page text color; recolor via `--sn-popover-bg` / `--sn-popover-color`.
 
 ## Reference Library
 
@@ -43,6 +45,7 @@ import { SnPopover } from '@snui/uni';
 | Name                  | Type                               | Default    | Required | Description                                                                        |
 | --------------------- | ---------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------- |
 | `modelValue`          | `boolean`                          | `false`    | no       | Whether the bubble is shown (`v-model`).                                           |
+| `trigger`             | `'slot' \| 'manual'`               | `'slot'`   | no       | `slot` (default) toggles from the trigger tap (an App-only catcher node receives it on uni-app x App). `manual` leaves toggling to the page via v-model — for remote tap targets only; slotted components with page-bound listeners are inert on App. |
 | `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | no       | A string in `normal` mode, a row list in `menu` mode.                              |
 | `mode`                | `'normal' \| 'menu'`               | `'normal'` | no       | Bubble display mode.                                                               |
 | `placement`           | 12-direction `PlacementType`       | `'bottom'` | no       | Bubble anchor.                                                                     |
@@ -50,7 +53,7 @@ import { SnPopover } from '@snui/uni';
 | `visibleArrow`        | `boolean`                          | `true`     | no       | Render the arrow.                                                                  |
 | `disabled`            | `boolean`                          | `false`    | no       | Disables the trigger.                                                              |
 | `showClose`           | `boolean`                          | `false`    | no       | Render a close button inside the bubble.                                           |
-| `closeOnClickOutside` | `boolean`                          | `true`     | no       | Close on an outside tap — a transparent mask takes the tap (additive, AUI-OPT-07). |
+| `closeOnClickOutside` | `boolean`                          | `true`     | no       | Close on an outside tap through the page-root `closeOutside` channel (additive, AUI-OPT-07). |
 | `customClass`         | `string`                           | `''`       | no       | Custom class for the root node.                                                    |
 | `customStyle`         | `string`                           | `''`       | no       | Custom inline style for the root node.                                             |
 | `customArrow`         | `string`                           | `''`       | no       | Extra class on the arrow node.                                                     |
@@ -112,17 +115,23 @@ import { SnPopover } from '@snui/uni';
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
-- The outside-close mask is `aria-hidden="true"` and takes no screen-reader focus
+- The App trigger catcher is `aria-hidden="true"` and takes no screen-reader focus
 - Interaction uses `@tap`; no hover trigger (miniprogram has none)
 
 ## Documented Divergences
 
-- No `trigger` prop: there is no hover on miniprogram, so the trigger is always tapped.
-- Click-outside close: a transparent full-viewport mask (`closeOnClickOutside`,
-  default `true`, additive AUI-OPT-07) captures the outside tap itself. The
-  wot-ui `useQueue` / `closeOutside` page-root channel is kept as a second path.
-  Trade-off: the mask covers sibling triggers, so two-bubble switching costs two
-  taps; pass `closeOnClickOutside="false"` for one-gesture switching.
+- No hover trigger: there is no hover on miniprogram, so the trigger is always
+  tapped. The `trigger` prop switches between slot-internal toggling and
+  page-driven v-model toggling — it is not a hover/click selector.
+- Click-outside close (additive AUI-OPT-07): the page-root
+  `useQueue` / `closeOutside` channel closes the bubble without swallowing the
+  tap (the transparent full-viewport mask was removed). The trigger and the
+  bubble bind `@tap.stop`, so sibling triggers switch bubbles in one gesture;
+  pass `closeOnClickOutside="false"` to unregister while mounted.
+- App trigger catcher (uni-app x App): taps on slot content never reach the
+  component's own views there — an `#ifdef APP` transparent catcher over the
+  trigger box receives the tap and runs the same toggle. Web / MP strip the
+  node; there the wrapper's `@tap` fires by native bubbling.
 - Auto height (additive AUI-OPT-07): the pop is `height: auto`, menu labels
   wrap, and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,

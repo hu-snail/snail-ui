@@ -53,17 +53,11 @@ function setOpen(placement: Placement, value: boolean): void {
           <SnPopover
             v-if="placement"
             :model-value="openPlacement === placement"
-            trigger="manual"
             :content="`${placement} hint text`"
             :placement="placement"
             @update:model-value="setOpen(placement, $event)"
           >
-            <SnButton
-              type="primary"
-              size="small"
-              @click="setOpen(placement, openPlacement !== placement)"
-              >{{ placement }}</SnButton
-            >
+            <SnButton type="primary" size="small">{{ placement }}</SnButton>
           </SnPopover>
         </view>
       </template>

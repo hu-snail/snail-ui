@@ -707,6 +707,11 @@ const popupStyle = computed(() => {
   right: 0;
   bottom: 0;
   left: 0;
+  /* uni-app x App: explicit fullscreen size — do not rely on four-edge inset
+   * stretching (the device-verified sn-tabbar--fixed also carries an explicit
+   * width); width/height 100% is the same fullscreen box on web / miniprogram. */
+  width: 100%;
+  height: 100%;
   background-color: var(--sn-mp-color-background-overlay);
   opacity: 0;
   transition: opacity var(--sn-drop-menu-duration) ease;
@@ -722,6 +727,10 @@ const popupStyle = computed(() => {
   position: absolute;
   left: 0;
   right: 0;
+  /* uni-app x App: `width: 100%` states the left/right stretch explicitly —
+   * App-side absolute insets cannot be relied on to size the panel (same
+   * hardening as the scrim above); identical result on web / miniprogram. */
+  width: 100%;
   z-index: 1;
   display: flex;
   flex-direction: column;
