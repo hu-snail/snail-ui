@@ -4,7 +4,7 @@
 
 推荐路径：组件消费 `@snui/uni-x` 生成的 `.uvue` 产物（由 `@snui/uni` 单源码
 确定性转换，见 [uni-app x（蒸汽模式）支持](/guide/uni/uni-app-x)）。经典
-uni-app（H5 / 小程序 / App-vue）接入方式保留在本页下半部分。
+uni-app（H5 / 小程序 / App-vue）是兼容目标，接入方式保留在本页下半部分。
 
 ## uni-app x 接入（蒸汽模式）
 
@@ -73,7 +73,7 @@ const onSubmit = () => {
 脚本可复现）。状态与真机验证清单见
 [uni-app x（蒸汽模式）支持](/guide/uni/uni-app-x)。
 
-## 经典 uni-app x 接入（H5 / 小程序 / App-vue）
+## 经典 uni-app 接入（兼容目标：H5 / 小程序 / App-vue）
 
 ### 安装
 

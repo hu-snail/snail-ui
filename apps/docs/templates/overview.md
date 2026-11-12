@@ -17,15 +17,15 @@
 
 模板目前只有「AI 套件」这一个分类：它按使用粒度分成一个伞形模板和四个可单独使用的子模板。
 
-| 模板                                   | 组件                              | 平台          | 解决什么问题                                                 |
-| -------------------------------------- | --------------------------------- | ------------- | ------------------------------------------------------------ |
-| [AI 助手](/templates/ai/assistant)     | `SnAiAssistant`                   | Web           | 一页装下整套 AI 套件：对话 + 页头的模型配置抽屉，开箱即用    |
-| [AI 对话页](/templates/ai/chat)        | `SnAiChat`                        | Web / uni-app | 完整的对话界面，含排队调度与中断控制。Web 端不带模型配置抽屉 |
-| [AI 输入框](/templates/ai/prompt)      | `SnAiPrompt`                      | Web           | 功能完整的输入区：附件、选择器、思考程度、排队               |
-| [消息列表](/templates/ai/message-list) | `SnAiMessageList` / `SnAiMessage` | Web / uni-app | 转录展示：思考折叠、流式输出、工具行、错误重试               |
-| [模型配置](/templates/ai/model-config) | `SnModelConfig`                   | Web           | 厂商与模型管理，以及生成参数调节                             |
+| 模板                                   | 组件                              | 平台            | 解决什么问题                                                 |
+| -------------------------------------- | --------------------------------- | --------------- | ------------------------------------------------------------ |
+| [AI 助手](/templates/ai/assistant)     | `SnAiAssistant`                   | Web             | 一页装下整套 AI 套件：对话 + 页头的模型配置抽屉，开箱即用    |
+| [AI 对话页](/templates/ai/chat)        | `SnAiChat`                        | Web / uni-app x | 完整的对话界面，含排队调度与中断控制。Web 端不带模型配置抽屉 |
+| [AI 输入框](/templates/ai/prompt)      | `SnAiPrompt`                      | Web             | 功能完整的输入区：附件、选择器、思考程度、排队               |
+| [消息列表](/templates/ai/message-list) | `SnAiMessageList` / `SnAiMessage` | Web / uni-app x | 转录展示：思考折叠、流式输出、工具行、错误重试               |
+| [模型配置](/templates/ai/model-config) | `SnModelConfig`                   | Web             | 厂商与模型管理，以及生成参数调节                             |
 
-Web 与 uni-app 的差异不再单独分页说明，而是写在每个模板页的「端差异」一节里，用平台标签标出各自的可用范围。
+Web 与 uni-app x 的差异不再单独分页说明，而是写在每个模板页的「端差异」一节里，用平台标签标出各自的可用范围。
 
 ## 布局
 
@@ -111,4 +111,4 @@ import { SnAiAssistant, SnAiPrompt } from '@snui/templates/web';
 <SnAiAssistant title="文档助手" theme="default" :run="run" show-header />
 ```
 
-`theme` 映射到风格包体系（`default` / `dark` / `ios` / `doodle` / `sticky-note`）；更细的调整通过覆盖 `--sn-web-*`（Web）/ `--sn-mp-*`（uni-app）token 完成，各页的「主题与 token 定制」一节给出了具体例子。
+`theme` 映射到风格包体系（`default` / `dark` / `ios` / `doodle` / `sticky-note`）；更细的调整通过覆盖 `--sn-web-*`（Web）/ `--sn-mp-*`（uni-app x）token 完成，各页的「主题与 token 定制」一节给出了具体例子。

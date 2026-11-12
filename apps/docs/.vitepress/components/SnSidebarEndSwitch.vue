@@ -22,7 +22,7 @@ const isEn = computed(() => route.path.startsWith('/en'));
 
 const endOptions = computed(() => [
   { value: 'web' as const, label: isEn.value ? 'Web' : 'Web 端' },
-  { value: 'uni' as const, label: isEn.value ? 'uni-app' : 'uni-app 端' },
+  { value: 'uni' as const, label: isEn.value ? 'uni-app x' : 'uni-app x 端' },
 ]);
 
 function go(end: End): void {

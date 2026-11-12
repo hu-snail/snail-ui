@@ -12,10 +12,10 @@ AI Skill (`snail-ui.skill.md`) is a structured behavior contract, **not** API do
 
 When AI receives a task, it must first determine the target end:
 
-| Keywords                                                       | Target end |
-| -------------------------------------------------------------- | ---------- |
-| PC / desktop / web / browser / Vue 3                           | `web`      |
-| mobile / miniprogram / wechat / alipay / H5 / uni-app / uniapp | `mp`       |
+| Keywords                                                                   | Target end |
+| -------------------------------------------------------------------------- | ---------- |
+| PC / desktop / web / browser / Vue 3                                       | `web`      |
+| mobile / miniprogram / wechat / alipay / H5 / uni-app x / uni-app / uniapp | `mp`       |
 
 If ambiguous, ask "Is this for Web (PC) or uni (mobile)?". **Never default to Web.**
 

@@ -4,9 +4,9 @@ Wire snui into a uni-app x project (App side, vapor mode) in 5 minutes.
 
 Recommended path: consume the `.uvue` artifacts of `@snui/uni-x`, generated
 deterministically from the single `@snui/uni` source (see
-[uni-app x (Vapor Mode) support](/en/guide/uni/uni-app-x)). The classic
-uni-app (H5 / mini-programs / App-vue) setup is kept in the second half of
-this page.
+[uni-app x (Vapor Mode) support](/en/guide/uni/uni-app-x)). Classic
+uni-app (H5 / mini-programs / App-vue) is the compatibility target; its setup
+is kept in the second half of this page.
 
 ## uni-app x setup (vapor mode)
 
@@ -78,7 +78,7 @@ demo pages, reproducible via its `gen` / `check` scripts). Status and the
 device verification checklist:
 [uni-app x (Vapor Mode) support](/en/guide/uni/uni-app-x).
 
-## Classic uni-app x setup (H5 / mini-programs / App-vue)
+## Classic uni-app setup (compatibility target: H5 / mini-programs / App-vue)
 
 ### Install
 
