@@ -30,13 +30,25 @@ describe('sn-icon color patches (uni-app x)', () => {
   const result = transformVueToUvue(source, 'sn-icon/sn-icon.vue');
 
   it('resolves the stroke color through the cascade instead of a fixed ink', () => {
-    // Regression: `currentColor` used to bake as `#1a1a1a` and var(--token)
-    // strokes were emitted verbatim (invalid inside an SVG image document) —
-    // icons on colored buttons rendered black on uni-app x.
-    expect(result.code).not.toContain(`'#1a1a1a'`);
+    // Regression: `currentColor` used to bake as a fixed `#1a1a1a` and
+    // var(--token) strokes were emitted verbatim (invalid inside an SVG
+    // image document) — icons on colored buttons rendered black on
+    // uni-app x. The bake must go through the resolved-color state, with
+    // the ink constant only as the availability fallback.
+    expect(result.code).not.toContain(`? '#1a1a1a'`);
     expect(result.code).toContain('resolvedIconColor');
+    expect(result.code).toContain('ICON_INK_FALLBACK');
     expect(result.code).toContain("computedStyle: ['color']");
     expect(result.code).toContain('isConcreteIconColor');
+  });
+
+  it('probes both fields-callback result shapes', () => {
+    // uni-app x delivers the NodeInfo itself (ret.color); classic-style
+    // hosts deliver a one-element array. Regression: reading nodes[0] only
+    // resolved nothing on App and blanked every icon.
+    expect(result.code).toContain('Array.isArray(ret)');
+    expect(result.code).toContain('readResolvedColor');
+    expect(result.code).toContain('JSON.stringify');
   });
 
   it('renders IconData through <image> with a per-instance query class', () => {

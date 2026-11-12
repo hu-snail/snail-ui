@@ -47,19 +47,27 @@ export const PATCHES: Record<string, SourcePatch[]> = {
  *     through the real cascade this way. Duck-typed host shape follows
  *     sn-fit-swiper (the established uni-x SelectorQuery pattern).
  *
- * Until a non-concrete color resolves, the glyph renders blank rather than
- * a wrong-color glyph. Re-resolution rides on mount + color changes; a
- * theme flip after mount re-tints on the next icon prop change (known
- * limitation, tracked in PORTING-REPORT).
+ * Result-shape note: uni-app x hands the fields callback the NodeInfo
+ * itself (ret.color), while classic-style hosts hand an array
+ * ([nodeInfo].color) — both shapes are probed, plus a stringified
+ * fallback that survives UTSJSONObject / Map result wrappers.
+ *
+ * Availability policy: resolvedIconColor starts at the legacy ink color
+ * so the glyph is NEVER blank (a resolution failure must not erase icons —
+ * regression: blank-first-paint policy rendered every icon invisible on
+ * runtimes where the callback shape differed). When the cascade resolves,
+ * the data URL upgrades to the true color. Re-resolution rides on mount +
+ * color changes; a theme flip after mount re-tints on the next icon prop
+ * change (known limitation, tracked in PORTING-REPORT).
  */
+const ICON_INK_FALLBACK = '#1a1a1a'
 const iconInstance = getCurrentInstance()
 const iconUid: number = iconInstance?.uid ?? 0
-const resolvedIconColor = ref('')
+const resolvedIconColor = ref(ICON_INK_FALLBACK)
 let colorSeq = 0
 
 interface IconColorNode {
   color?: string
-  computedStyle?: { color?: string } | null
 }
 interface IconFieldsOptions {
   computedStyle?: string[]
@@ -67,10 +75,7 @@ interface IconFieldsOptions {
 interface IconColorQuery {
   in(context?: unknown): IconColorQuery
   select(selector: string): IconColorQuery
-  fields(
-    options: IconFieldsOptions,
-    callback: (nodes: Array<IconColorNode | null> | null) => void,
-  ): IconColorQuery
+  fields(options: IconFieldsOptions, callback: (ret: unknown) => void): IconColorQuery
   exec(): void
 }
 interface IconUniHost {
@@ -82,9 +87,33 @@ function isConcreteIconColor(value: string): boolean {
   return /^#[0-9a-fA-F]{3,8}$|^rgba?\\(|^hsla?\\(|^(transparent|white|black)$/.test(value)
 }
 
-/** Resolve the effective stroke color. One retry: the first query can
- * outrun first layout on slow mounts, and a blank glyph is worse than a
- * late one. */
+/** Extract a concrete color from whichever result shape the runtime
+ * delivered: a direct .color property when the value is object-backed,
+ * otherwise a "color":"…" probe on the stringified result (works across
+ * NodeInfo / UTSJSONObject / array wrappers). */
+function readResolvedColor(value: unknown): string {
+  if (value !== null && value !== undefined && typeof value === 'object') {
+    const direct = (value as IconColorNode).color
+    if (typeof direct === 'string' && direct !== '' && isConcreteIconColor(direct)) {
+      return direct
+    }
+  }
+  let json = ''
+  try {
+    json = JSON.stringify(value)
+  } catch {
+    json = ''
+  }
+  const m = /"color"\\s*:\\s*"([^"]+)"/.exec(json)
+  if (m !== null) {
+    const viaJson: string = m[1] ?? ''
+    if (viaJson !== '' && isConcreteIconColor(viaJson)) return viaJson
+  }
+  return ''
+}
+
+/** Resolve the effective stroke color. One delayed retry: the first query
+ * can outrun first layout on slow mounts. */
 function resolveIconColor(retried = false): void {
   const raw: string = props.color
   if (isConcreteIconColor(raw)) {
@@ -94,9 +123,8 @@ function resolveIconColor(retried = false): void {
   const seq = ++colorSeq
   const host = (globalThis as { uni?: IconUniHost }).uni
   if (host?.createSelectorQuery === undefined || iconInstance === null) {
-    // No query layer (old runtime / detached instance): stay blank rather
-    // than paint the legacy fixed ink over whatever the context is.
-    resolvedIconColor.value = ''
+    // No query layer (old runtime / detached instance): keep the ink color.
+    resolvedIconColor.value = ICON_INK_FALLBACK
     return
   }
   nextTick(() => {
@@ -106,26 +134,35 @@ function resolveIconColor(retried = false): void {
         .createSelectorQuery()
         .in(iconInstance?.proxy)
         .select(\`.sn-icon--u\${iconUid}\`)
-        .fields({ computedStyle: ['color'] }, (nodes) => {
+        .fields({ computedStyle: ['color'] }, (ret) => {
           if (seq !== colorSeq) return
-          const node = nodes !== null && nodes.length > 0 ? nodes[0] : null
-          const color: string = node?.color ?? node?.computedStyle?.color ?? ''
-          if (color !== '' && isConcreteIconColor(color)) {
+          // uni-app x delivers the NodeInfo directly; classic-style hosts
+          // deliver a one-element array. Probe both.
+          let color = ''
+          if (Array.isArray(ret)) {
+            const arr = ret as Array<unknown>
+            color = readResolvedColor(arr.length > 0 ? arr[0] : null)
+          } else {
+            color = readResolvedColor(ret)
+          }
+          if (color !== '') {
             resolvedIconColor.value = color
           } else if (!retried) {
-            resolveIconColor(true)
+            setTimeout(() => {
+              if (seq === colorSeq) resolveIconColor(true)
+            }, 50)
           } else {
             console.warn(
               '[sn-icon] ICON_COLOR_UNRESOLVED: computedStyle("color") returned no usable value.' +
-                ' The glyph renders blank instead of a wrong color.',
+                ' Keeping the ink color so the glyph stays visible.',
             )
-            resolvedIconColor.value = ''
+            resolvedIconColor.value = ICON_INK_FALLBACK
           }
         })
         .exec()
     } catch {
-      // A mis-shaped host must degrade to blank, never throw.
-      if (seq === colorSeq) resolvedIconColor.value = ''
+      // A mis-shaped host must degrade to the ink color, never throw or blank.
+      if (seq === colorSeq) resolvedIconColor.value = ICON_INK_FALLBACK
     }
   })
 }

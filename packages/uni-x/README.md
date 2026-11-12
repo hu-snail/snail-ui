@@ -57,5 +57,5 @@ sn-picker-view-drag / sn-config-provider。
 **真机验证未执行**（无 HBuilderX 环境）：hover-class、SVG data URL、`:style`
 变量注入、gap、keyframes、fixed+安全区、宏支持面、sn-icon computedStyle
 取色（currentColor / var() 不能跨 `<image>` 边界，非具体色值经 SelectorQuery
-读回级联色——App 4.25+，主题热切换后图标要等下一次属性变更才重着色）——
-清单见文档站指南页。
+读回级联色——App 4.25+；解析失败或旧运行时回退 ink 色保证图标可见，
+主题热切换后图标要等下一次属性变更才重着色）——清单见文档站指南页。
