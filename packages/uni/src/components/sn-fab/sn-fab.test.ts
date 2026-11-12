@@ -392,25 +392,60 @@ describe('sn-fab', () => {
       const closed = mount(SnFab, {
         props: { mode: 'fan', actions: fanActions },
       });
-      const closedStyle = closed.findAll('.sn-fab__fan-item')[1]?.attributes('style') ?? '';
+      const closedItem = closed.findAll('.sn-fab__fan-item')[1];
+      const closedStyle = closedItem?.attributes('style') ?? '';
       expect(closedStyle).toContain('translate(0px, 0px) scale(0.4)');
-      expect(closedStyle).toContain('opacity: 0');
-      expect(closedStyle).toContain('visibility: hidden');
       expect(closedStyle).toContain('transition-delay: 0ms');
+      // Visibility lives in the mutually exclusive state classes, not inline:
+      // uni-app x App resolves inline styles and class cascades through
+      // different paths, and the class pair keeps the final state reachable
+      // even when inline values are dropped (regression: open fans rendered
+      // nothing on App).
+      expect(closedItem?.classes()).toContain('sn-fab__fan-item--hidden');
+      expect(closedItem?.classes()).not.toContain('sn-fab__fan-item--shown');
 
       const open = mount(SnFab, {
         props: { mode: 'fan', active: true, actions: fanActions },
       });
-      const styles = open
-        .findAll('.sn-fab__fan-item')
-        .map((item) => item.attributes('style') ?? '');
+      const openItems = open.findAll('.sn-fab__fan-item');
+      const styles = openItems.map((item) => item.attributes('style') ?? '');
       expect(styles[1]).toContain('transition-delay: 40ms');
       expect(styles[2]).toContain('transition-delay: 80ms');
       expect(styles[2]).toContain('scale(1)');
-      expect(styles[2]).toContain('opacity: 1');
-      // visibility must flip inline — the class keeps the items hidden and
-      // nothing else overrides it (regression: open fans rendered nothing).
-      expect(styles[2]).toContain('visibility: visible');
+      for (const item of openItems) {
+        expect(item.classes()).toContain('sn-fab__fan-item--shown');
+        expect(item.classes()).not.toContain('sn-fab__fan-item--hidden');
+      }
+    });
+
+    it('keeps the fan container free of the line-mode hidden base', () => {
+      // App-side cascade safety: `.sn-fab__menu` pins opacity 0 / visibility
+      // hidden; if fan mode carried that base, a container the App resolves
+      // as still-hidden takes the whole fan subtree with it (styles don't
+      // inherit there, and hidden parents hide children that re-declare
+      // visibility). Regression: the fan never expanded on uni-app x.
+      const fan = mount(SnFab, { props: { mode: 'fan', actions: fanActions } });
+      const container = fan.find('.sn-fab__menu--fan');
+      expect(container.exists()).toBe(true);
+      expect(container.classes()).not.toContain('sn-fab__menu');
+      expect(container.classes()).not.toContain('sn-fab__menu--open');
+
+      // Line mode keeps the base + open pair.
+      const line = mount(SnFab, { props: { active: true } });
+      expect(line.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--open');
+      expect(line.find('.sn-fab__menu').classes()).not.toContain('sn-fab__menu--fan');
+    });
+
+    it('dims a disabled item inline only while open', () => {
+      const closed = mount(SnFab, {
+        props: { mode: 'fan', actions: [{ icon: Star, disabled: true }] },
+      });
+      expect(closed.find('.sn-fab__fan-item').attributes('style')).not.toContain('opacity');
+
+      const open = mount(SnFab, {
+        props: { mode: 'fan', active: true, actions: [{ icon: Star, disabled: true }] },
+      });
+      expect(open.find('.sn-fab__fan-item').attributes('style')).toContain('opacity: 0.5');
     });
 
     it('tints an item through the action color', () => {
@@ -607,7 +642,8 @@ describe('sn-fab', () => {
       await host.find('.sn-fab__trigger').trigger('tap');
       const style = host.find('.sn-fab__fan-item').attributes('style') ?? '';
       expect(style).toContain('scale(1)');
-      expect(style).toContain('opacity: 1');
+      // Visibility rides the state classes now (uni-x App cascade safety).
+      expect(host.find('.sn-fab__fan-item').classes()).toContain('sn-fab__fan-item--shown');
     });
 
     it('still closes when tapping the page root outside the fab', async () => {

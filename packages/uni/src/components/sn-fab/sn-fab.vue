@@ -365,7 +365,14 @@ const fanAngles = computed<number[]>(() => {
 const fanCenter = computed(() => FAN_GEOMETRY[props.position].center);
 
 /**
- * Inline style per fan item: geometry, stagger and open/closed state.
+ * Inline style per fan item: geometry, stagger and tint.
+ *
+ * Visibility lives in the `--shown` / `--hidden` state classes (see
+ * `fanItemClass`), NOT here — uni-app x resolves inline style strings and
+ * class cascades through different code paths, and the App-side fan must
+ * reach its final visible state even when the inline `transform` /
+ * `transition-delay` values are dropped by the runtime. Inline keeps only
+ * what is per-item and animated.
  *
  * - `bloom`: straight flight from the trigger centre to the arc point
  *   (translate x/y interpolate linearly).
@@ -379,8 +386,10 @@ const fanCenter = computed(() => FAN_GEOMETRY[props.position].center);
 function fanItemStyle(action: SnFabAction, index: number): string {
   const open = props.active;
   const scale = open ? 1 : 0.4;
-  const opacity = open ? (action.disabled ? 0.5 : 1) : 0;
   const delay = open ? index * FAN_STAGGER_MS : 0;
+  // Disabled dimming rides inline (inline outranks any class on every end),
+  // but only while open — closed items must keep the `--hidden` class value.
+  const dim = open && action.disabled ? ' opacity: 0.5;' : '';
   const color = action.color === undefined ? '' : ` color: ${action.color};`;
 
   let transform: string;
@@ -395,11 +404,7 @@ function fanItemStyle(action: SnFabAction, index: number): string {
     transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale})`;
   }
 
-  return (
-    `transform: ${transform}; ` +
-    `opacity: ${opacity}; visibility: ${open ? 'visible' : 'hidden'}; ` +
-    `transition-delay: ${delay}ms;${color}`
-  );
+  return `transform: ${transform}; transition-delay: ${delay}ms;${dim}${color}`;
 }
 
 /** Fan motion only: counter-rotate the content against the rib angle. */
@@ -411,12 +416,18 @@ function fanBodyStyle(index: number): string {
   return `transform: rotate(${-angle}deg); transition-delay: ${delay}ms;`;
 }
 
-/** Icon-only items render as bubbles; labelled items as icon+text pills. */
+/** Icon-only items render as bubbles; labelled items as icon+text pills.
+ * The `--shown` / `--hidden` pair carries the open/closed visibility as two
+ * mutually exclusive classes (uni-app x App: styles don't cascade between
+ * same-name rules the way web assumes, and inline `visibility` on an
+ * absolutely-positioned child proved unreliable — an alternate-class toggle
+ * makes the final state survive every cascade implementation). */
 function fanItemClass(action: SnFabAction): string[] {
   return [
     'sn-fab__fan-item',
     action.text === undefined ? 'sn-fab__fan-item--icon' : 'sn-fab__fan-item--pill',
     ...(props.fanMotion === 'fan' ? ['sn-fab__fan-item--sweep'] : []),
+    props.active ? 'sn-fab__fan-item--shown' : 'sn-fab__fan-item--hidden',
   ];
 }
 
@@ -505,9 +516,14 @@ const triggerClass = computed(() => [
 
 const menuClass = computed(() =>
   isFan.value
-    ? // Fan items position themselves; the container is a 0×0 anchor point
-      // and must not inherit the line-mode direction offset / open fade.
-      ['sn-fab__menu', 'sn-fab__menu--fan']
+    ? // Fan items position themselves; the container is a 0×0 anchor point.
+      // It must NOT carry the line-mode `.sn-fab__menu` base — that class
+      // pins `opacity: 0` / `visibility: hidden`, and uni-app x App does not
+      // guarantee the later `--fan` override wins (single-class cascade,
+      // no compound selectors): a container stuck hidden takes the whole
+      // fan subtree with it (styles don't inherit, and a hidden parent
+      // hides its children even when they re-declare visibility).
+      ['sn-fab__menu--fan']
     : [
         'sn-fab__menu',
         `sn-fab__menu--${resolvedDirection.value}`,
@@ -753,13 +769,14 @@ function clampDragOffset(): void {
 /* The container is a 0×0 anchor point at the trigger centre; items are
  * absolutely positioned and fly out along the arc via inline transforms
  * (per-item geometry + stagger are computed in JS — WXSS has no trig).
- * Declared after the line-mode rules so it wins the closed-state
- * opacity/visibility of the shared `.sn-fab__menu` base. */
+ * Standalone by design: fan mode does NOT bind `.sn-fab__menu`, so this
+ * rule carries the complete visible state with nothing to out-cascade —
+ * see menuClass for the App-side reasoning. */
 .sn-fab__menu--fan {
   position: absolute;
   left: 50%;
   top: 50%;
-  display: block;
+  display: flex;
   width: 0;
   height: 0;
   opacity: 1;
@@ -777,15 +794,24 @@ function clampDragOffset(): void {
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-elevated);
   box-shadow: var(--sn-mp-shadow-sm);
-  opacity: 0;
-  visibility: hidden;
   /* Back-out overshoot = the silky bloom; the geometry and the per-item
-   * stagger delay arrive via inline style (fanItemStyle). */
+   * stagger delay arrive via inline style (fanItemStyle). Transitionable
+   * properties only — `visibility` is not reliably transitionable on
+   * uni-app x App and flips instantly with the state class. */
   transition:
     transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.2s ease,
-    visibility 0s linear;
-  will-change: transform;
+    opacity 0.2s ease;
+}
+
+/* Open/closed state as mutually exclusive classes — never two competing
+ * same-name declarations (uni-app x App cascade safety, see fanItemClass). */
+.sn-fab__fan-item--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+.sn-fab__fan-item--shown {
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Fan motion pivots each rib around the trigger centre — the item's own
