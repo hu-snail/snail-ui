@@ -38,6 +38,12 @@ pnpm -F @snui/uni-demo-x check   # 3. 结构校验：manifest/pages/easycom/导�
    （uni-app x 识别标记见 `manifest.json` 的 `"uni-app-x"` 节点，vapor 已开启）。
 3. 运行到 Android / iOS / web（web 运行同理走 HBuilderX 内置编译）。
 
+web 端 rpx 官方行为：按**屏幕宽度**等比换算（750rpx = 屏宽），桌面宽视口下
+组件整体等比放大（[官方文档](https://doc.dcloud.net.cn/uni-app-x/css/common/length.html)）。
+demo 场景布局用 px、组件内部用 rpx，宽屏下两者失配会出现装饰元素放大盖字等
+视觉异常——**web 预览请用浏览器 DevTools 手机模拟（如 375px 视口）**，
+App 端不受影响（真机屏宽即 750rpx 基准）。
+
 注意：
 
 - pnpm 的 `node_modules` 符号链接在 HBuilderX 下偶有解析问题；若组件找不到，

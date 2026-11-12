@@ -51,4 +51,28 @@ describe('transformVueToUvue imports', () => {
     expect(r.code).toContain("from '../sn-icon/sn-icon-types'");
     expect(r.code).not.toContain(".vue'");
   });
+
+  it('should rewrite kebab sub-component tags to PascalCase binding names', () => {
+    const src =
+      '<script setup lang="ts">\n' +
+      "import SnRichTextNode from './sn-rich-text-node.vue';\n" +
+      '</script>\n\n<template>\n' +
+      '  <sn-rich-text-node :node="node" />\n' +
+      '</template>\n';
+    const r = transformVueToUvue(src, 'sn-rich-text/sn-rich-text.vue');
+    expect(r.code).toContain('<SnRichTextNode :node="node" />');
+    expect(r.code).not.toContain('<sn-rich-text-node');
+  });
+
+  it('should rewrite closing tags and leave unimported tags untouched', () => {
+    const src =
+      '<script setup lang="ts">\n' +
+      "import SnCheckbox from '../sn-checkbox/sn-checkbox.vue';\n" +
+      '</script>\n\n<template>\n' +
+      '  <sn-checkbox-group>\n    <sn-checkbox />\n  </sn-checkbox-group>\n' +
+      '</template>\n';
+    const r = transformVueToUvue(src, 'x.vue');
+    expect(r.code).toContain('<SnCheckbox />');
+    expect(r.code).toContain('<sn-checkbox-group>'); // 无显式导入 → 保持 kebab（easycom 兜底）
+  });
 });

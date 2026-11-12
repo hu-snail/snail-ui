@@ -46,7 +46,37 @@ export function transformImportSpecifiers(src: string, file: string): TextTransf
       detail: `${valueImports} relative .vue import(s) rewritten to .uvue`,
     });
   }
-  return { code, issues };
+  return { code: rewriteKebabTags(code, file), issues };
+}
+
+/**
+ * Kebab sub-component tags backed by an explicit import are rewritten to the
+ * PascalCase binding name: the local binding resolves the tag directly, and
+ * the easycom regex (`^sn-`, case-sensitive) cannot hijack PascalCase tags.
+ * Left in kebab, a dist component's inner tag gets rewritten by the consumer
+ * compiler to `@snui/uni-x/components/<c>/<c>.uvue` — a path that only
+ * exists for top-level easycom entities (first broken by sn-rich-text-node,
+ * whose entity lives inside its parent's directory). Tags without a local
+ * import are left alone (easycom fallback still applies).
+ */
+function rewriteKebabTags(code: string, file: string): string {
+  const bindings = new Map<string, string>();
+  for (const m of code.matchAll(
+    /import\s+(Sn[A-Za-z0-9]+)\s+from\s+'(?:\.\.?\/|@snui\/)[^']*\.(?:uvue|vue)';/g,
+  )) {
+    const binding: string = m[1]!;
+    bindings.set(binding.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase(), binding);
+  }
+  if (bindings.size === 0) return code;
+  const tplStart: number = code.indexOf('<template>');
+  const tplEnd: number = code.lastIndexOf('</template>');
+  if (tplStart === -1 || tplEnd === -1) return code;
+  let tpl = code.slice(tplStart, tplEnd);
+  for (const [kebab, pascal] of bindings) {
+    tpl = tpl.replaceAll(new RegExp(`<${kebab}(?=[\\s/>])`, 'g'), `<${pascal}`);
+    tpl = tpl.replaceAll(`</${kebab}>`, `</${pascal}>`);
+  }
+  return code.slice(0, tplStart) + tpl + code.slice(tplEnd);
 }
 
 export function transformScript(src: string, file: string): TextTransformResult {
