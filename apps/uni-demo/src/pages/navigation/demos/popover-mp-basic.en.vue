@@ -19,8 +19,9 @@ const open = ref(false);
       placement="bottom"
       :show-close="true"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton type="primary" block>Show the bubble</SnButton>
+      <SnButton type="primary" block @click="open = !open">Show the bubble</SnButton>
     </SnPopover>
 
     <view class="sn-popover-demo__space" />

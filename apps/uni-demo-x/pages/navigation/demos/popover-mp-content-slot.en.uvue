@@ -8,8 +8,14 @@ const slotOpen = ref(false);
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover v-model="slotOpen" mode="normal" placement="top" custom-class="sn-demo-contained">
-      <SnButton block><text>normal mode + content slot</text></SnButton>
+    <SnPopover
+      v-model="slotOpen"
+      mode="normal"
+      placement="top"
+      custom-class="sn-demo-contained"
+      trigger="manual"
+    >
+      <SnButton block @click="slotOpen = !slotOpen"><text>normal mode + content slot</text></SnButton>
       <template #content>
         <view class="sn-demo__body">
           <text class="sn-demo__title">Custom bubble body</text>

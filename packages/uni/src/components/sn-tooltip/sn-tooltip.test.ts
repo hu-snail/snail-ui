@@ -195,6 +195,19 @@ describe('sn-tooltip', () => {
       expect(w.find('.sn-tooltip__trigger').attributes('aria-disabled')).toBe('true');
     });
 
+    it('trigger="manual" leaves toggling to the page (App-side slot boundary)', async () => {
+      // The App-side event model does not propagate taps across the slot
+      // boundary, so in manual mode the trigger tap must be inert and the
+      // page toggles via v-model.
+      const w = mount(SnTooltip, { props: { modelValue: false, trigger: 'manual' } });
+      await w.find('.sn-tooltip__trigger').trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(false);
+      await w.setProps({ modelValue: true });
+      await w.vm.$nextTick();
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
+    });
+
     it('does not open when a disabled tooltip is driven by v-model', async () => {
       const w = mount(SnTooltip, { props: { modelValue: false, disabled: true } });
       await w.setProps({ modelValue: true });

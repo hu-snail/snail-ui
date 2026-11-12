@@ -17,8 +17,9 @@ const open = ref(false);
       content="Tapping outside does not close it — tap the trigger again"
       placement="bottom"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton type="primary" block>Tap for the hint</SnButton>
+      <SnButton type="primary" block @click="open = !open">Tap for the hint</SnButton>
     </SnTooltip>
 
     <view class="sn-tooltip-demo__space" />

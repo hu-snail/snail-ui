@@ -16,9 +16,10 @@ const noArrow = ref(false);
       content="A bubble without an arrow"
       :visible-arrow="false"
       placement="top"
+      trigger="manual"
       @update:model-value="noArrow = $event"
     >
-      <SnButton block>No arrow (visible-arrow=false)</SnButton>
+      <SnButton block @click="noArrow = !noArrow">No arrow (visible-arrow=false)</SnButton>
     </SnTooltip>
   </view>
 </template>

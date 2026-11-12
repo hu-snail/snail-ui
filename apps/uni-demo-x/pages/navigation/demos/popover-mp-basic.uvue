@@ -16,8 +16,9 @@ const open = ref(false);
       placement="bottom"
       :show-close="true"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton type="primary" block><text>点击查看气泡</text></SnButton>
+      <SnButton type="primary" block @click="open = !open"><text>点击查看气泡</text></SnButton>
     </SnPopover>
 
     <view class="sn-popover-demo__space" />

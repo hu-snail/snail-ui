@@ -201,6 +201,20 @@ describe('sn-popover', () => {
       expect(w.find('.sn-popover__trigger').attributes('aria-disabled')).toBe('true');
     });
 
+    it('trigger="manual" leaves toggling to the page (App-side slot boundary)', async () => {
+      // The App-side event model does not propagate taps across the slot
+      // boundary, so in manual mode the trigger tap must be inert and the
+      // page toggles via v-model.
+      const w = mount(SnPopover, { props: { modelValue: false, trigger: 'manual' } });
+      await w.find('.sn-popover__trigger').trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.find('.sn-popover__pop').exists()).toBe(false);
+      // The page toggles through v-model instead.
+      await w.setProps({ modelValue: true });
+      await flushPromises();
+      expect(w.find('.sn-popover__pop').exists()).toBe(true);
+    });
+
     it('emits menuclick with the item and index', async () => {
       const w = mount(SnPopover, { props: { modelValue: true, mode: 'menu', content: menu } });
       await w.findAll('.sn-popover__menu-item')[1]!.trigger('tap');

@@ -17,8 +17,9 @@ const open = ref(false);
       content="点击气泡外部任意位置即可关闭（页面根 closeOutside 通道）；再点一次触发器也可收起。"
       placement="bottom"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton type="primary" block>点我看提示</SnButton>
+      <SnButton type="primary" block @click="open = !open">点我看提示</SnButton>
     </SnTooltip>
 
     <view class="sn-tooltip-demo__space" />

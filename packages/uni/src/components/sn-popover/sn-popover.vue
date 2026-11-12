@@ -184,6 +184,14 @@ const props = withDefaults(
   defineProps<{
     /** Whether the bubble is shown (v-model). */
     modelValue?: boolean;
+    /**
+     * How the trigger reacts. `slot` (default) binds the tap on the trigger
+     * wrapper itself. `manual` leaves toggling to the page via v-model — the
+     * uni-app x App-side event model does not propagate taps across the slot
+     * boundary (page-scoped trigger content never reaches this component's
+     * wrapper), so remote trigger content must toggle the bubble itself.
+     */
+    trigger?: 'slot' | 'manual';
     /** Bubble body: a string in `normal` mode, a list in `menu` mode. */
     content?: string | SnPopoverMenuItem[];
     /** Bubble display mode. */
@@ -221,6 +229,7 @@ const props = withDefaults(
   }>(),
   {
     modelValue: false,
+    trigger: 'slot',
     content: '',
     mode: 'normal',
     placement: 'bottom',
@@ -370,6 +379,7 @@ onBeforeUnmount(() => {
 });
 
 function onTriggerTap(): void {
+  if (props.trigger === 'manual') return;
   if (props.disabled) return;
   // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
   // bubble (consumer ignoring the v-model event) must still close on the

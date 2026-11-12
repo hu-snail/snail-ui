@@ -34,8 +34,9 @@ const rows = [
       placement="bottom"
       :offset="[0, 8]"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton block>Multi-line hint (array content)</SnButton>
+      <SnButton block @click="rowsOpen = !rowsOpen">Multi-line hint (array content)</SnButton>
     </SnTooltip>
 
     <SnTooltip
@@ -43,8 +44,9 @@ const rows = [
       placement="top"
       :offset="{ x: 0, y: 10 }"
       custom-class="sn-demo-contained"
+      trigger="manual"
     >
-      <SnButton block>Slot content</SnButton>
+      <SnButton block @click="slotOpen = !slotOpen">Slot content</SnButton>
       <template #content>
         <view class="sn-demo__bubble">
           <text class="sn-demo__bubble-title">Custom bubble</text>

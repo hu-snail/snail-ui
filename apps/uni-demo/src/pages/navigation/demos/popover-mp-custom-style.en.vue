@@ -21,8 +21,11 @@ const styledOpen = ref(false);
       custom-pop="sn-demo__pop"
       custom-class="sn-demo-contained"
       custom-style="display: block;"
+      trigger="manual"
     >
-      <SnButton block>custom-arrow / custom-pop / offset</SnButton>
+      <SnButton block @click="styledOpen = !styledOpen"
+        >custom-arrow / custom-pop / offset</SnButton
+      >
     </SnPopover>
   </view>
 </template>

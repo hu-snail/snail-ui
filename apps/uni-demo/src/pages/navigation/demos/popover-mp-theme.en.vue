@@ -27,8 +27,9 @@ const lightOpen = ref(false);
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
+        trigger="manual"
       >
-        <SnButton type="primary" block>Show bubble</SnButton>
+        <SnButton type="primary" block @click="darkOpen = !darkOpen">Show bubble</SnButton>
       </SnPopover>
       <view class="sn-popover-theme__space" />
     </SnConfigProvider>
@@ -42,8 +43,9 @@ const lightOpen = ref(false);
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
+        trigger="manual"
       >
-        <SnButton type="primary" block>Show bubble</SnButton>
+        <SnButton type="primary" block @click="lightOpen = !lightOpen">Show bubble</SnButton>
       </SnPopover>
       <view class="sn-popover-theme__space" />
     </SnConfigProvider>

@@ -29,8 +29,9 @@ const lightOpen = ref(false);
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
+        trigger="manual"
       >
-        <SnButton type="primary" block>显示气泡</SnButton>
+        <SnButton type="primary" block @click="darkOpen = !darkOpen">显示气泡</SnButton>
       </SnPopover>
       <view class="sn-popover-theme__space" />
     </SnConfigProvider>
@@ -44,8 +45,9 @@ const lightOpen = ref(false);
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
+        trigger="manual"
       >
-        <SnButton type="primary" block>显示气泡</SnButton>
+        <SnButton type="primary" block @click="lightOpen = !lightOpen">显示气泡</SnButton>
       </SnPopover>
       <view class="sn-popover-theme__space" />
     </SnConfigProvider>

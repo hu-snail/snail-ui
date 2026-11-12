@@ -63,3 +63,31 @@ Top：sn-rich-text(7) sn-button(5) sn-cell(5) sn-form(5) sn-tag(5)
 
 - **web 端 rpx 按屏宽等比换算**（750rpx = 屏宽）：桌面宽视口下组件等比放大为官方预期行为；demo 场景布局 px 与组件 rpx 在宽屏下失配。**web 预览请用 DevTools 手机模拟（375px）**，与 uni-demo 手机框口径一致。
 - App 真机不受影响（屏宽即基准）。
+
+## 六、App 端实测发现（第二轮，真机/模拟器截图驱动）
+
+### 已修复
+
+| # | 实测缺陷 | 根因 | 修复 |
+|---|---------|------|------|
+| 1 | 气泡 popover / 文字提示 tooltip 点击触发器无反应 | **uni-app x App 端事件传播不跨编译单元**：默认 slot 的触发内容（页面编译单元，如 SnButton）点击进不了组件编译单元的 trigger 包裹层（web 端靠 DOM 冒泡所以正常）。picker demo 佐证：页面直绑 emit 的点击链路在 App 端有效 | sn-popover / sn-tooltip 新增 **`trigger: 'slot' \| 'manual'`** prop（additive，默认 slot 不变）；manual 模式触发绑定 no-op，页面自绑 @click 切 v-model。26 个 demo 场景源全部适配（`@snui/uni` 102 项测试含新用例） |
+
+### 已知边界（能力限制，非 bug）
+
+| # | 实测缺陷 | 定性 |
+|---|---------|------|
+| 2 | sn-fab 扇形（fan）点击展开后 item 堆在锚点不散开 | 官方文档：transform 全系函数 App 端要求 **Vapor 5.21+/iOS 5.11+**（Android(Vapor) 5.21）。fan 布局核心依赖 `rotate+translateX+scale` 组合——低版本 App 编译目标下 transform 不生效，item 停在 `left/top: 50%` 锚点（与截图吻合）。line 模式不依赖 transform，不受影响。需在 HBuilderX 升级后复验 |
+
+### 待复验（本轮未定论）
+
+| # | 实测缺陷 | 现象与初步定性 |
+|---|---------|--------------|
+| 3 | picker 滚轮选中行分割线颜色发黑、视觉偏粗 | dist 规则 `border-top/bottom: 2rpx solid var(--sn-mp-color-border-subtle)` 完好；变量链完整（theme 产物浅色 #f4f4f5 系）。实测黑色 ≈ 暗色值 `#27272a`（tokens 暗色块）命中浅色弹层——疑似暗色变量作用域在 App 端与弹层挂载链路交叉。待用浅色主题复验 + HBuilderX 编译产物检查 |
+| 4 | 图标（collapse 箭头等）颜色全黑 | **P1 继承缺陷的实证**：sn-icon 默认 `currentColor`（依赖父元素 color 继承），App 端样式不继承 → 回退默认黑。随 §二 P1「文字样式下沉」一并修复（消费方显式设色） |
+| 5 | code-input 格子边框黑粗 | 与 #3 同源（`var()` 链在暗色作用域交叉），随复验一并确认 |
+
+### 全面检索结论（本轮新增静态扫描）
+
+- 事件传播模型：`@tap.stop` / `.stop` 修饰符全平台支持；`@tap`→`@click` 管线改写正确；页面直绑 emit 链路两端一致。**「默认 slot 内容触发组件行为」是 App 端唯一事件断点**（trigger-slot 组件全量检索：popover / tooltip 受影响，fab trigger 为组件内元素不受影响）。
+- transform：官方 10 函数（rotate/scale/translate 系）；translate 百分比支持；matrix 不支持。App 端版本门槛见 #2。
+- CSS 变量：App 端跨编译单元可达（`--sn-mp-color-action-primary` 实测生效）；暗色块（`.sn-theme-dark`）由 sn-config-provider / 宿主挂载——demo 工程页面根目前**静态挂浅色 `.sn-theme-root`**（DemoPageShell），暗色主题切换（demo-ui toggleTheme / uni.onThemeChange）在 App 端的挂载链路待验证（关联 #3/#5）。
