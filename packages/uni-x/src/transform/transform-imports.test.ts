@@ -75,4 +75,17 @@ describe('transformVueToUvue imports', () => {
     expect(r.code).toContain('<SnCheckbox />');
     expect(r.code).toContain('<sn-checkbox-group>'); // 无显式导入 → 保持 kebab（easycom 兜底）
   });
+
+  it('should self-import a recursive component whose template uses its own tag', () => {
+    const src =
+      '<script setup lang="ts">\n' +
+      "import type { RichNode } from './sn-rich-text-types';\n" +
+      '</script>\n\n<template>\n' +
+      '  <view>\n    <sn-rich-text-node v-else :node="node" />\n  </view>\n' +
+      '</template>\n';
+    const r = transformVueToUvue(src, 'sn-rich-text/sn-rich-text-node.vue');
+    expect(r.code).toContain("import SnRichTextNode from './sn-rich-text-node.uvue';");
+    expect(r.code).toContain('<SnRichTextNode v-else :node="node" />');
+    expect(r.code).not.toContain('<sn-rich-text-node');
+  });
 });

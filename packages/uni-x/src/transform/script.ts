@@ -46,7 +46,32 @@ export function transformImportSpecifiers(src: string, file: string): TextTransf
       detail: `${valueImports} relative .vue import(s) rewritten to .uvue`,
     });
   }
-  return { code: rewriteKebabTags(code, file), issues };
+  return { code: rewriteKebabTags(injectSelfImport(code, file)), issues };
+}
+
+/**
+ * Recursive components (template uses its own file-name tag, e.g.
+ * sn-rich-text-node rendering child nodes) rely on Vue's implicit
+ * self-reference — which the consumer compiler's easycom pass hijacks into a
+ * `@snui/uni-x/components/<c>/<c>.uvue` import whose top-level layout doesn't
+ * exist for nested entities. Injecting an explicit self-import turns the tag
+ * into a resolvable local binding (rewriteKebabTags then PascalCases it).
+ */
+function injectSelfImport(code: string, relPath: string): string {
+  const fileName = relPath.split('/').pop()?.replace(/\.u?vue$/, '');
+  if (!fileName || !fileName.startsWith('sn-')) return code;
+  if (!new RegExp(`<${fileName}[\\s/>]`).test(code.slice(code.indexOf('<template>')))) {
+    return code;
+  }
+  const pascal = fileName
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+  if (new RegExp(`import\\s+${pascal}\\s+from`).test(code)) return code;
+  const firstImport = code.match(/^import\s/m);
+  if (!firstImport || firstImport.index === undefined) return code;
+  const selfImport = `import ${pascal} from './${fileName}.uvue';\n`;
+  return code.slice(0, firstImport.index) + selfImport + code.slice(firstImport.index);
 }
 
 /**
@@ -59,7 +84,7 @@ export function transformImportSpecifiers(src: string, file: string): TextTransf
  * whose entity lives inside its parent's directory). Tags without a local
  * import are left alone (easycom fallback still applies).
  */
-function rewriteKebabTags(code: string, file: string): string {
+function rewriteKebabTags(code: string): string {
   const bindings = new Map<string, string>();
   for (const m of code.matchAll(
     /import\s+(Sn[A-Za-z0-9]+)\s+from\s+'(?:\.\.?\/|@snui\/)[^']*\.(?:uvue|vue)';/g,
