@@ -4,15 +4,16 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1431 |
+| .uvue 产出 | 1437 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2048 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2060 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
-| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 145 |
+| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
 
 ## App.uvue 专属改写
 
+- static: mirrored 2 asset(s) from apps/uni-demo/src/static
 - App: @dcloudio/uni-app lifecycle import dropped (uvue auto-imports)
 - App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme
 - App: demo-bridge import dropped (docs-iframe only, ADR-0005)
@@ -1140,22 +1141,6 @@
 
 ## docs 预览钉住规则剥离（docs iframe 预览专用；App 端 fixed 全屏层不得钉进演示卡片）
 
-- pages/basic/demos/fab-mp-basic.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-basic.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-direction.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-direction.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-disabled.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-disabled.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-drag.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-drag.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-expandable.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-expandable.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-position.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-position.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-trigger-icons.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-trigger-icons.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-type.en.vue: .sn-fab.sn-demo-contained
-- pages/basic/demos/fab-mp-type.vue: .sn-fab.sn-demo-contained
 - pages/display/demos/image-preview-mp-basic.en.vue: .sn-image-preview.sn-demo-contained
 - pages/display/demos/image-preview-mp-basic.vue: .sn-image-preview.sn-demo-contained
 - pages/display/demos/image-preview-mp-close-behavior.en.vue: .sn-image-preview.sn-demo-contained
@@ -1291,16 +1276,12 @@
 - App.vue: [tag-only-selector] tag-only selector "page"
 - App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/basic/avatar-group.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
+- pages/basic/avatar-group.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/basic/avatar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
 - pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
-- pages/basic/demos/avatar-group-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-group-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-group-mp-shape.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-group-mp-shape.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"

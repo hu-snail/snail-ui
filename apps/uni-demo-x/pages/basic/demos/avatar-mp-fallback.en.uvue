@@ -19,7 +19,7 @@ function onError(): void {
       <SnAvatar src="/static/not-exists.png" alt="Failed" @error="onError" />
       <SnAvatar src="/static/not-exists.png" text="Text fallback" @error="onError" />
       <SnAvatar src="/static/not-exists.png" icon="User" @error="onError" />
-      <SnAvatar src="https://picsum.photos/seed/snui-b/120" alt="Loaded" />
+      <SnAvatar src="/static/avatar-user.png" alt="Loaded" />
     </view>
     <text v-if="lastError" class="sn-demo-note">{{ lastError }}</text>
   </view>

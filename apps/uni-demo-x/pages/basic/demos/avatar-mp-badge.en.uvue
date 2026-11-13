@@ -5,7 +5,7 @@
  */
 import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
 import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
-const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
+const photo = '/static/avatar-user.png';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

@@ -1,18 +1,32 @@
 <script setup lang="ts">
-/** Demo: sn-avatar (uni-end) — size presets and custom numeric / percentage sizes. */
+/**
+ * Demo: sn-avatar (uni-end) — size presets and custom numeric / unit-string
+ * passthrough. Text avatars use white ink on semantic color backgrounds
+ * (same as the basic demo); a percentage size resolves against the flex
+ * row's width (and its height cannot resolve on a content-sized parent),
+ * so the demo shows the rpx passthrough instead of that pathological case.
+ */
 import SnAvatar from '@snui/uni-x/components/sn-avatar/sn-avatar.uvue';
+const ink = 'var(--sn-mp-color-text-on-primary)';
+const palette = [
+  'var(--sn-mp-color-action-primary)',
+  'var(--sn-mp-color-feedback-success)',
+  'var(--sn-mp-color-feedback-info)',
+  'var(--sn-mp-color-feedback-warning)',
+  'var(--sn-mp-color-purple)',
+];
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-demo-row">
-      <SnAvatar text="S" size="small" />
-      <SnAvatar text="N" size="normal" />
-      <SnAvatar text="M" size="medium" />
-      <SnAvatar text="L" size="large" />
+      <SnAvatar text="S" size="small" :bg-color="palette[0]" :color="ink" />
+      <SnAvatar text="N" size="normal" :bg-color="palette[1]" :color="ink" />
+      <SnAvatar text="M" size="medium" :bg-color="palette[2]" :color="ink" />
+      <SnAvatar text="L" size="large" :bg-color="palette[3]" :color="ink" />
     </view>
     <view class="sn-demo-row">
-      <SnAvatar text="56" :size="56" />
-      <SnAvatar text="20%" size="20%" />
+      <SnAvatar text="56" :size="56" :bg-color="palette[4]" :color="ink" />
+      <SnAvatar text="88" size="88rpx" :bg-color="palette[0]" :color="ink" />
     </view>
   </view>
 </template>
