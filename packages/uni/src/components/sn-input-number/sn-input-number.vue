@@ -472,6 +472,14 @@ if (props.updateOnInit) {
   user-select: none;
 }
 
+/* Fill and glyph color live on each segment rule, NOT on the shared
+ * __action rule: the uni-app x CSS transform rewrites descendant overrides
+ * (`--primary .sn-input-number__minus { background-color: … }`) into a
+ * fallback-less `var(--snx-…)` on the segment rule. A property that exists
+ * only on __action therefore renders transparent on App / uni-app x web
+ * (white +/- next to a gray field). Declaring the base value per segment is
+ * what makes the transform emit `var(--snx-…, <base>)` — and it is also how
+ * wot-ui v2 paints `sub` / `add` individually. */
 .sn-input-number__action {
   position: relative;
   display: inline-flex;
@@ -481,17 +489,19 @@ if (props.updateOnInit) {
   height: 56rpx;
   flex: 0 0 auto;
   box-sizing: border-box;
-  background-color: var(--sn-mp-color-background-soft);
-  color: var(--sn-mp-color-text-secondary);
   -webkit-tap-highlight-color: transparent;
 }
 
 .sn-input-number__minus {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
   border-top-left-radius: var(--sn-mp-radius-sm);
   border-bottom-left-radius: var(--sn-mp-radius-sm);
 }
 
 .sn-input-number__plus {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
   border-top-right-radius: var(--sn-mp-radius-sm);
   border-bottom-right-radius: var(--sn-mp-radius-sm);
 }
@@ -609,11 +619,17 @@ if (props.updateOnInit) {
 
 /* ── Doodle skin ────────────────────────────────────────────────────────── */
 
-/* Hand-drawn outline instead of the flat fill. */
+/* Hand-drawn outline instead of the flat fill. Backgrounds are restated per
+ * segment (same uni-app x fallback rule as the base fills above). */
 .snui-skin-doodle .sn-input-number__action,
 .snui-skin-doodle .sn-input-number__inner {
   border-top: 4rpx solid var(--sn-mp-color-text-primary);
   border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__minus,
+.snui-skin-doodle .sn-input-number__plus,
+.snui-skin-doodle .sn-input-number__inner {
   background-color: var(--sn-mp-color-background-elevated);
 }
 

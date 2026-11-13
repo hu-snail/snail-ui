@@ -6,6 +6,8 @@
  * the long-press timer teardown. No rpx numbers in assertions.
  */
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnInputNumber from './sn-input-number.vue';
@@ -583,6 +585,25 @@ describe('sn-input-number', () => {
       await Promise.resolve();
       expect(w.emitted('update:modelValue')).toBeUndefined();
       expect(w.props('modelValue')).toBe('');
+    });
+  });
+
+  describe('uni-app x style contract', () => {
+    // The uni-app x CSS transform rewrites descendant overrides into a
+    // fallback-less `var(--snx-…)` consumed by the segment rule. A fill or
+    // glyph color that only exists on the shared `__action` rule therefore
+    // renders transparent on App / uni-app x web — white +/- buttons next to
+    // a gray field (AUI-UNI-FB-018). Each segment must own its base values so
+    // the transform can emit `var(--snx-…, <base>)`.
+    it('declares the fill and glyph color on each segment rule', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-input-number.vue'), 'utf8');
+      for (const segment of ['sn-input-number__minus', 'sn-input-number__plus']) {
+        const start = source.indexOf(`\n.${segment} {`);
+        expect(start, `${segment} base rule must exist`).toBeGreaterThan(-1);
+        const rule = source.slice(start, source.indexOf('}', start));
+        expect(rule).toContain('background-color: var(--sn-mp-color-background-soft)');
+        expect(rule).toContain('color: var(--sn-mp-color-text-secondary)');
+      }
     });
   });
 });

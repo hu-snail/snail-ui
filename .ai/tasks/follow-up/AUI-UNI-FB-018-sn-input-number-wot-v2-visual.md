@@ -28,6 +28,14 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
 4. **`stepStrictly` 语义错误（行为级）。** 旧实现把网格锚在 `min` 上
    （`min + round((v - min) / step) * step`），min=3 / step=2 时产出的 3、5、15 全都不是
    step 的倍数；参考实现锚在 0，再做严格边界修正（`ceil(min / step)` 与 `floor(max / step)`）。
+5. **uni-app x 端 +/- 白底（fallback-less var，第二轮用户反馈）。** 填充与图标色原来声明在共享的
+   `__action` 规则上；uni-x 转换把 `--primary .sn-input-number__minus { background-color: … }`
+   这类后代覆写改写成挂在**段规则**上的 `var(--snx-…)`。`__minus` / `__plus` 自身没声明过
+   `background-color` / `color`，转换器拿不到基础值 → 产出**无 fallback** 的
+   `var(--snx-sn-input-number__minus-background-color)`；App / x-web 默认主题下该 var 未定义，
+   声明在 computed-value time 失效 → 透明 → 白卡片透出白底按钮，而 `__inner`（基础值声明在
+   自己规则里，转换器带上了 fallback）保持灰底。用户截图像素实测：minus #ffffff /
+   field #f4f4f5 / plus #ffffff。
 
 ## 修法
 
@@ -42,13 +50,14 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
 | 图标        | `SnIcon` 12px（`size="24rpx"`）——旧的 `:size="24"` 是 24px，比参考大一倍                                    |
 | doodle      | 皮肤改为给 segment 画 4rpx 手绘描边（旧规则挂在 root 上，结构变更后失效）                                   |
 | stepStrictly | `normalize` 改为「0 锚点吸附 → `[min,max]` 严格边界取最近合法倍数」；`canStep` 用归一化后的候选值比较，网格边缘按钮置灰 |
+| 段级填充    | `background-color` / `color` 从共享 `__action` 下沉到 `__minus` / `__plus` 各自规则（wot v2 的 sub/add 也是各自上色），转换器据此产出带 fallback 的 `var(--snx-…, <base>)`；doodle 皮肤的背景覆写同步改为按段声明 |
 
 伪元素方案被否决：uni-app x 的 CSS 转换会删除 `::before/::after`，加号/减号会整片空白，
 因此 glyph 继续用 `SnIcon`、分隔线用真实节点。
 
 ## Regression Test
 
-`sn-input-number.test.ts` 新增 5 条：
+`sn-input-number.test.ts` 新增 6 条：
 
 - `wraps the field in its own inner segment` — field 必须在 `__inner` 内
 - `separates the three segments with real divider nodes` — 两个 action 各携带一条 divider
@@ -56,18 +65,27 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
 - `anchors the strict grid at zero and lands inside [min, max]` — min=3 / step=2：1 → 4、17 → 14
 - `never emits a strict-step value that is not a multiple of step` — 5 必须被修正为偶数
 - `disables stepping past the strict grid bounds` — 4 的减号、14 的加号置灰
+- `declares the fill and glyph color on each segment rule`（uni-app x style contract）—
+  `__minus` / `__plus` 规则必须自带 `background-color: var(--sn-mp-color-background-soft)` 与
+  `color: var(--sn-mp-color-text-secondary)`，否则 uni-x 转换产出无 fallback 的
+  `var(--snx-…)`，App / x-web 上 +/- 渲染成透明（白底）
 
-组件 63 条用例全绿；全量回归 113 文件 / 3848 用例。
+组件 64 条用例全绿；全量回归 113 文件 / 3851 用例。
 
 ## 验证
 
 - `pnpm -F @snui/uni typecheck / lint / build`：PASS
-- `pnpm -F @snui/uni test`：113 files / 3848 tests PASS
-- `pnpm -F @snui/uni-x build && pnpm -F @snui/uni-x test`：66 tests PASS，0 rule dropped
-- `pnpm -F @snui/uni-demo-x gen && check`：100 pages / 1422 .uvue OK
-- H5 实测（375×812）：minus 28×28 + inner 52×28（padding 8px）+ plus 28×28 = 108×28，
+- `pnpm -F @snui/uni test`：113 files / 3851 tests PASS
+- `pnpm -F @snui/uni-x build && pnpm -F @snui/uni-x test`：66 tests PASS，0 rule dropped；
+  产物 grep 确认 `__minus` / `__plus` 的 bg / color 均带 `var(--snx-…, <base>)` fallback
+- `pnpm -F @snui/uni-demo-x gen && check`：100 pages / 1424 .uvue OK
+- `packages/uni/dist/styles/index.css` 实测：`__minus[data-v]` / `__plus[data-v]` 规则各自携带
+  灰底 + 次级图标色（H5 / MP 级联等价，视觉不变）
+- H5 首轮实测（375×812）：minus 28×28 + inner 52×28（padding 8px）+ plus 28×28 = 108×28，
   divider 1px 反色 / outline-split 18px，primary 加号 `#1677ff` 实心。截图面（IAB
-  screenshot surface）本机不可用，视觉以 computed style + 几何尺寸核对，未做像素截图。
+  screenshot surface）本机不可用，视觉以 computed style + 几何尺寸核对，未做像素截图；
+  第二轮（段级填充下沉）浏览器像素复检 NOT RUN——surface 仍不可用，以 dist CSS 与
+  uvue 产物 grep 为准。
 
 ## 教训
 
@@ -79,3 +97,8 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
   且边界修正要取区间内最近的合法倍数。改语义时 `canStep` 也要跟着用归一化候选值判断。
 - **uni 组件的装饰线 / 图形不要用伪元素。** uni-app x 转换会删伪元素，必须用真节点或
   `SnIcon`，否则多端产物静默缺图。
+- **uni-x 的 var 上下文转换：被后代规则覆写的属性必须在段规则里有基础声明。** 转换器把
+  `--theme .segment { prop }` 改写成段规则上的 `var(--snx-…)`，基础值只从段规则自身拿——
+  属性只声明在共享类上时产出无 fallback 的 var，App / x-web 上直接失效（透明 / 继承）。
+  排查手法：grep dist uvue 里 `var(--snx-` 后面缺 `,` 的行。同类隐患可能存在于其它
+  组件，登记为后续全面 sweep（follow-up）。
