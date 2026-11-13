@@ -5,7 +5,7 @@
  *
  * 结构：sn-paging 根容器（#top 固定导航行与 Tab，#bottom 购买栏，默认插槽
  * 为整页详情内容；详情页无分页，故 auto / load-more / refresher 全关）。
- * 微信小程序端导航行按胶囊几何让位（common/capsule）。
+ * 微信小程序端导航行按胶囊几何让位（@snui/uni-src/utils/capsule）。
  */
 import { computed, ref } from 'vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
@@ -23,7 +23,7 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 import SnTab from '@snui/uni-src/components/sn-tabs/sn-tab.vue';
 import SnTabs from '@snui/uni-src/components/sn-tabs/sn-tabs.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
-import { getCapsuleMetrics } from '../common/capsule';
+import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 import { DescriptionIcon } from '../common/material-icons';
 import { BadgeCheckIcon, HeadsetIcon, StoreIcon } from '../common/icons';
 import {

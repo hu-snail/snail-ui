@@ -2,7 +2,7 @@
 /**
  * sn-icon — uni 端图标组件（AUI-MP-002，rewrite）。
  *
- * ## 四条渲染路径（优先级从上到下）
+ * ## 三条渲染路径（优先级从上到下）
  *
  * 1. **iconfont 字形**（`name` + `classPrefix` / `cssIcon`）— wot-ui 兼容
  *    API：渲染 `<view class="{classPrefix}-{name}">`，字形由宿主加载的
@@ -12,8 +12,10 @@
  *    `<view class="sn-icon__remote">` + `background-image` data URL。
  *    请求由 `sn-icon-iconify.ts` 承担（缓存 / 超时 / AbortSignal），
  *    组件侧只负责竞态保护与失败降级（结构化警告 + 空渲染）。
- * 3. **inline SVG**（`IconData` 对象，或 string `icon` 同步命中
- *    registry / 内置目录）— H5 直接渲染 `<svg>`，`currentColor` 生效。
+ * 3. **IconData**（对象，或 string `icon` 同步命中 registry / 内置目录）—
+ *    H5 渲染 inline `<svg>`，`currentColor` 生效；小程序没有 `<svg>` 元素
+ *    （unknown tag 渲染为空），改走 `<image>` + SVG data URL（颜色经
+ *    computedStyle 解析后烘焙进 data URL，见 `sn-icon-mp.ts`）。
  *
  * ## string icon API（本版新增）
  *
@@ -43,6 +45,7 @@ import {
   SnIconSourceError,
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
+import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
 import type { IconData } from './sn-icon-types';
 
 defineOptions({ name: 'SnIcon' });
@@ -247,6 +250,23 @@ onBeforeUnmount(() => {
 /** 展示用 IconData：同步解析优先，其次异步 Provider 产出的数据对象。 */
 const displayIcon = computed<IconData | null>(() => syncIcon.value ?? asyncIcon.value);
 
+/**
+ * MP 渲染路径的描边色：具体色值（hex / rgb / hsl …）直接使用；`currentColor`
+ * / `var(--*)` 由 computedStyle 从真实级联解析（data URL 是独立 SVG 文档，
+ * 拿不到宿主 CSS）。H5 不消费该值（inline `<svg>` 走 currentColor）。
+ */
+const mpIconColor = useMpIconColor(() => props.color);
+const strokeColor = computed<string>(() =>
+  isConcreteIconColor(props.color) ? props.color : mpIconColor.value,
+);
+
+/** MP `<image>` 的 src：IconData 光栅化为 SVG data URL。 */
+const iconDataUrl = computed<string | undefined>(() => {
+  const icon = displayIcon.value;
+  if (icon === null) return undefined;
+  return buildIconDataUrl(icon, strokeColor.value, props.strokeWidth);
+});
+
 /** 渲染模式：图标数据声明 `render: 'fill'` 时按实心字形填充（Material 类图标）。 */
 const isFillIcon = computed<boolean>(() => displayIcon.value?.render === 'fill');
 
@@ -299,17 +319,15 @@ const customStyleBinding = computed(() => {
     <view v-else-if="remoteSrc" class="sn-icon__remote" :style="remoteStyle" />
 
     <!--
-      inline `<svg>` 路径（IconData）。适用于：
-        - H5（浏览器）: 直接 DOM，与 web 端一致，currentColor 生效。
-        - 微信小程序 : SVG 经 `<image>` 语义渲染（不是所有平台像素级一致，
-                       需要像素级时把 path 转 base64 `<image src="data:...">`）。
-        - App (uni-app x): 经转换补丁换为 `<image>` + SVG data URL。
-
-      保持标记最小 — 不加可能干扰跨端编译器的装饰属性。`xmlns` 对 SVG
-      独立文档必需，嵌套时无害。
+      IconData 路径：H5 渲染 inline `<svg>`（currentColor 生效）；小程序没有
+      `<svg>` 元素（编译后是 unknown tag，渲染为空），改走 `<image>` + SVG
+      data URL（颜色已在 `iconDataUrl` 里烘焙）。两条分支由条件编译二选一，
+      `v-else-if` 链在各自产物里保持连续。
     -->
+    <!-- #ifndef MP -->
     <svg
       v-else-if="displayIcon"
+      class="sn-icon__svg"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
       :fill="isFillIcon ? color : 'none'"
@@ -321,6 +339,16 @@ const customStyleBinding = computed(() => {
     >
       <path v-for="(d, i) in displayIcon.paths" :key="i" :d="d" />
     </svg>
+    <!-- #endif -->
+    <!-- #ifdef MP -->
+    <image
+      v-else-if="displayIcon"
+      class="sn-icon__svg"
+      :src="iconDataUrl"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -338,7 +366,7 @@ const customStyleBinding = computed(() => {
   color: inherit;
 }
 
-.sn-icon svg {
+.sn-icon__svg {
   display: block;
   width: 100%;
   height: 100%;
