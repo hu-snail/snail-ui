@@ -9,7 +9,14 @@
  * - Color aliases reference `--aui-*` unchanged.
  */
 
-:root {
+/**
+ * `:root` does not exist in WXSS — mini-programs drop the rule silently, so
+ * every `--sn-mp-*` alias resolved to nothing and components lost their paint.
+ * `page` is the MP root element; custom properties declared there inherit into
+ * custom components. Both selectors are emitted so H5 keeps `:root`.
+ */
+:root,
+page {
   /* Component sizes — rpx (1px = 2rpx on 750 design canvas) */
   --sn-mp-button-height-tiny: 48rpx;
   --sn-mp-button-height-small: 64rpx;

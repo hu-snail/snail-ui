@@ -16,7 +16,15 @@
  * Keep this file in sync with src/component.ts when adding a family.
  */
 
-:root {
+/**
+ * `page` is the mini-program root element (WXSS has no `:root` — a `:root`
+ * block is silently dropped there, so every `--aui-*` consumer lost its
+ * variables and components rendered with layout but no paint). Both selectors
+ * are emitted: `:root` serves web / H5, `page` serves uni-app MP where
+ * custom properties on `page` inherit into every custom component.
+ */
+:root,
+page {
   /* Primitive — color (blue ramp) */
   --aui-color-blue-50: #eff6ff;
   --aui-color-blue-100: #dbeafe;

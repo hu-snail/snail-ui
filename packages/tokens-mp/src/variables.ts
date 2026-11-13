@@ -191,7 +191,9 @@ export const snMpAliasMap: ReadonlyArray<readonly [string, string]> = [
 
 export function renderSnMpStyles(): string {
   const body = snMpAliasMap.map(([a, v]) => `  ${a}: ${v};`).join('\n');
-  return `:root {\n${body}\n}\n`;
+  // `:root` is not a valid WXSS selector (mini-programs drop the rule), while
+  // `page` is the MP root element. Emit both so H5 / App keep working.
+  return `:root,\npage {\n${body}\n}\n`;
 }
 
 export function listSnMpAliases(): ReadonlyArray<string> {

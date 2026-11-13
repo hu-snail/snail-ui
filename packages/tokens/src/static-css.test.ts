@@ -108,6 +108,13 @@ describe('@snui/tokens — static stylesheet emission', () => {
     expect(dangling, 'referenced but never declared in styles/index.css').toEqual([]);
   });
 
+  it('declares the light cascade on `page` as well as `:root`', () => {
+    // Regression: WXSS has no `:root` (mini-programs drop the rule), so every
+    // --aui-* consumer on MP rendered with layout but no paint. The MP root
+    // element is `page`.
+    expect(bare).toMatch(/:root,\s*page\s*\{/);
+  });
+
   it('derives focus rings and action-soft tints from the active primary', () => {
     // Regression: these slots used to be frozen blue literals. Swapping the
     // primary then left a blue halo around form controls (red border + blue
