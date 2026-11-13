@@ -242,18 +242,23 @@ const fillStyle = computed(() => (props.fill ? `background-color: ${props.fill}`
   border-radius: 50%;
 }
 
-/* Band mask: keep only an annular ring of `--sn-circle-width`. */
+/* Band mask: keep only an annular ring of `--sn-circle-width`.
+ *
+ * The colour stops carry a ~1px transition band (not a hard stop): a hard
+ * stop is a binary edge the rasterizer cannot antialias, so the inner band
+ * edge stair-stepped visibly at small sizes ("gear" look on real screens).
+ * A short gradient ramp renders as a smooth edge on every engine. */
 .sn-circle__track,
 .sn-circle__arc {
   -webkit-mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - var(--sn-circle-width)),
-    currentColor calc(100% - var(--sn-circle-width))
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
   );
   mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - var(--sn-circle-width)),
-    currentColor calc(100% - var(--sn-circle-width))
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
   );
 }
 

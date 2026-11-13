@@ -537,28 +537,18 @@ watch(
  * HBuilderX 5.33 alpha), and the first precomputed M/A arc path still lost
  * most arcs on the real device. M/L paths carry no transform, no dasharray
  * and no arc-command curve math, which is the rendering surface every SVG
- * engine implements. Chords cap at CHORD_MAX_DEG° (inner-radius chord error
- * < 0.16% of r at 6° — visually indistinguishable from a true arc) so 360°
- * costs ≤ CHORD segments; the SVG document never computes.
- *
- * Direction enters the coordinate math (clockwise advances +sweep from 12
- * o'clock, counter-clockwise −sweep) instead of flags/transforms, so the
- * path IS the geometry. strokeLinecap is a real stroke attribute on the
- * path (the "parity only" note upstream applies to the conic H5/MP sweep).
- * Boundaries: 0% renders track only (a zero-length path would still dot
- * under round caps); 100% strokes a plain transform-free circle — a closed
- * circle is the exact shape the device already renders for the track, and a
- * 60-chord loop would duplicate the first point (degenerate under some
- * rasterizers). The stroke-width ratio falls back to the 18/120 design
- * default when size/strokeWidth carry units that cannot be compared.
+ * engine implements. The arc itself uses the SVG arc command (A) — exact
+ * circular geometry at any stroke width, so the band stays perfectly smooth
+ * (a polyline of chords visibly faceted the thick stroke). Direction enters
+ * the sweep-flag, the large-arc-flag splits sweeps past 180°, and the start
+ * point is precomputed at 12 o'clock — the document carries no transform.
+ * strokeLinecap is a real stroke attribute on the path (the "parity only"
+ * note upstream applies to the conic H5/MP sweep). Boundaries: 0% renders
+ * track only (a zero-length path would still dot under round caps); 100%
+ * strokes a plain closed circle — an arc loop is degenerate (start == end).
+ * The stroke-width ratio falls back to the 18/120 design default when
+ * size/strokeWidth carry units that cannot be compared.
  */
-const CHORD_MAX_DEG = 6
-
-/** Percent → number of polyline segments (at least one; 6° chords max). */
-function arcSegments(sweep: number): number {
-  const n = Math.ceil(sweep / CHORD_MAX_DEG)
-  return n < 1 ? 1 : n
-}
 const ringDataUrl = computed<string | undefined>(() => {
   const track: string = resolvedTrackColor.value
   const stroke: string = resolvedProgressColor.value
@@ -581,35 +571,35 @@ const ringDataUrl = computed<string | undefined>(() => {
   const sweep: number = sweepDeg.value
   let progressShape: string = ''
   if (sweep > 0 && sweep < 360) {
-    // Polyline arc: pure M/L chords, direction baked into the coordinate math
-    // (clockwise advances +sweep, counter-clockwise −sweep) — no arc command,
-    // no transform, no dasharray (the App decoder mis-renders all three).
-    const startAngle: number = -Math.PI / 2
-    const sign: number = props.clockwise ? 1 : -1
-    const segments: number = arcSegments(sweep)
-    const stepRad: number = ((sweep / segments) * Math.PI) / 180
-    const parts: string[] = []
-    for (let i = 0; i <= segments; i++) {
-      const a: number = startAngle + sign * stepRad * i
-      parts.push(\`\${r2(50 + r * Math.cos(a))} \${r2(50 + r * Math.sin(a))}\`)
-    }
-    const arcPath: string = \`M \${parts.join(' L ')}\`
-    progressShape = \`<path d="\${arcPath}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}" stroke-linejoin="round"/>\`
+    // Exact circular arc via the SVG A command — the band stays perfectly
+    // smooth at any stroke width (chord polylines visibly faceted the thick
+    // stroke). Start at 12 o'clock; direction rides the sweep-flag.
+    const startY: number = r2(50 - r)
+    const sweepRad: number = (sweep * Math.PI) / 180
+    const endAngle: number = props.clockwise ? -Math.PI / 2 + sweepRad : -Math.PI / 2 - sweepRad
+    const endX: number = r2(50 + r * Math.cos(endAngle))
+    const endY: number = r2(50 + r * Math.sin(endAngle))
+    const largeArc: number = sweep > 180 ? 1 : 0
+    const sweepFlag: number = props.clockwise ? 1 : 0
+    const arcPath: string = \`M 50 \${startY} A \${r} \${r} 0 \${largeArc} \${sweepFlag} \${endX} \${endY}\`
+    progressShape = \`<path d="\${arcPath}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}"/>\`
   } else if (sweep >= 360) {
-    // 100%: a polyline loop would duplicate its first point (degenerate under
-    // some rasterizers), so the full ring strokes as a plain closed circle —
-    // the exact transform-free shape the device already renders for the track.
+    // 100%: an arc loop is degenerate (start point == end point), so the full
+    // ring strokes as a plain closed circle — exact and transform-free.
     progressShape = \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}"/>\`
   }
   const svg: string =
-    \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\` +
+    // Explicit width/height give the decoder a deterministic intrinsic box;
+    // without them some engines rasterize at a default 300×150 and the
+    // displayed <image> ends up a scaled bitmap instead of a crisp vector.
+    \`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">\` +
     \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${track}" stroke-width="\${r2(sw)}"/>\` +
     progressShape +
     \`</svg>\`
   return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
 })
 </script>`,
-      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; progress arc is a polyline path (pure M/L chords ≤6°) — the App image SVG decoder mis-renders transform / dasharray / M-A arc commands; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
+      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; progress arc is an exact A-command arc (smooth at any stroke width; the chord polyline faceted the band) with a deterministic 100×100 intrinsic size; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
     },
     {
       anchor: `    <!-- Track: full ring in the layer color, masked down to a stroke band. -->
@@ -638,18 +628,23 @@ const ringDataUrl = computed<string | undefined>(() => {
   border-radius: 50%;
 }
 
-/* Band mask: keep only an annular ring of \`--sn-circle-width\`. */
+/* Band mask: keep only an annular ring of \`--sn-circle-width\`.
+ *
+ * The colour stops carry a ~1px transition band (not a hard stop): a hard
+ * stop is a binary edge the rasterizer cannot antialias, so the inner band
+ * edge stair-stepped visibly at small sizes ("gear" look on real screens).
+ * A short gradient ramp renders as a smooth edge on every engine. */
 .sn-circle__track,
 .sn-circle__arc {
   -webkit-mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - var(--sn-circle-width)),
-    currentColor calc(100% - var(--sn-circle-width))
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
   );
   mask: radial-gradient(
     farthest-side,
-    transparent calc(100% - var(--sn-circle-width)),
-    currentColor calc(100% - var(--sn-circle-width))
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
   );
 }
 

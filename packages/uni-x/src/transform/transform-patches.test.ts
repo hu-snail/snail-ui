@@ -109,21 +109,17 @@ describe('sn-circle ring patches (uni-app x)', () => {
     expect(styleBlock).toContain('.sn-circle__probe');
   });
 
-  it('builds the progress arc as a polyline path — pure M/L commands, numbers only in the SVG document', () => {
-    // Device regressions (HBuilderX 5.33 alpha): the App image SVG decoder
-    // mis-rendered first the rotate(-90)+dasharray circle and then the
-    // precomputed M/A arc path — arcs vanished or drew fragments. The arc is
-    // therefore a polyline of short chords (≤6°), carrying direction inside
-    // the coordinate math: M/L paths carry no transform, no dasharray, and
-    // no arc-command curve math — the rendering surface every SVG engine
-    // implements.
-    expect(result.code).toContain('CHORD_MAX_DEG = 6');
-    expect(result.code).toContain('function arcSegments(sweep: number): number');
-    expect(result.code).toContain('const sign: number = props.clockwise ? 1 : -1');
-    expect(result.code).toContain('const stepRad: number = ((sweep / segments) * Math.PI) / 180');
-    expect(result.code).toContain("M ${parts.join(' L ')}");
-    expect(result.code).toContain('Math.cos(a)');
-    expect(result.code).toContain('Math.sin(a)');
+  it('builds the progress arc as an exact SVG arc path — smooth at any stroke width', () => {
+    // Accuracy regression: a chord polyline visibly faceted the thick band
+    // ("gear" edges). The A command is exact circular geometry, so the band
+    // stays smooth; direction rides the sweep-flag and the start point is
+    // precomputed at 12 o'clock (no in-document transform / dasharray).
+    expect(result.code).toContain('const startY: number = r2(50 - r)');
+    expect(result.code).toContain('const largeArc: number = sweep > 180 ? 1 : 0');
+    expect(result.code).toContain('const sweepFlag: number = props.clockwise ? 1 : 0');
+    expect(result.code).toContain('A ${r} ${r} 0 ${largeArc} ${sweepFlag} ${endX} ${endY}');
+    expect(result.code).toContain('Math.cos(endAngle)');
+    expect(result.code).toContain('Math.sin(endAngle)');
     expect(result.code).toContain('data:image/svg+xml;utf8,${encodeURIComponent(svg)}');
     // The decoder-hostile attributes must stay gone. Assertions are
     // markup-shaped (`attribute="`) so prose comments may still document
@@ -131,14 +127,14 @@ describe('sn-circle ring patches (uni-app x)', () => {
     expect(result.code).not.toContain('stroke-dasharray="');
     expect(result.code).not.toContain('transform="');
     expect(result.code).not.toContain('scale(-1 1)');
-    expect(result.code).not.toContain('sweepFlag');
-    expect(result.code).not.toContain('largeArc');
+    // No chord polyline fallback: it re-facets the band.
+    expect(result.code).not.toContain('CHORD_MAX_DEG');
+    expect(result.code).not.toContain("parts.join(' L ')");
   });
 
-  it('starts the polyline at 12 oclock from precomputed coordinates', () => {
-    // startAngle = -90° is the top of the circle — baked into the angle
-    // constant, no rotate and no arc-start flags.
-    expect(result.code).toContain('const startAngle: number = -Math.PI / 2');
+  it('starts the arc at 12 o’clock from precomputed coordinates', () => {
+    // (50, 50 - r) is the top of the circle — baked as numbers, no rotate.
+    expect(result.code).toContain('const startY: number = r2(50 - r)');
   });
 
   it('omits the progress path at 0% and strokes a plain full circle at 100%', () => {
