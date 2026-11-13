@@ -80,8 +80,4 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
-.sn-popover.sn-demo-contained {
-  position: relative;
-}
 </style>

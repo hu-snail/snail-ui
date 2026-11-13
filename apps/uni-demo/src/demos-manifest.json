@@ -2873,18 +2873,23 @@
           "hasEn": true
         },
         {
+          "name": "circle-mp-size",
+          "title": "尺寸",
+          "hasEn": true
+        },
+        {
           "name": "circle-mp-color",
           "title": "颜色",
           "hasEn": true
         },
         {
-          "name": "circle-mp-custom-style",
-          "title": "根节点样式",
+          "name": "circle-mp-speed",
+          "title": "动画速度（speed）",
           "hasEn": true
         },
         {
-          "name": "circle-mp-speed",
-          "title": "动画速度（speed）",
+          "name": "circle-mp-custom-style",
+          "title": "根节点样式",
           "hasEn": true
         }
       ]

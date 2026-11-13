@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— circle 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/circle-mp-basic.uvue';
-import Demo1 from './demos/circle-mp-color.uvue';
-import Demo2 from './demos/circle-mp-custom-style.uvue';
+import Demo1 from './demos/circle-mp-size.uvue';
+import Demo2 from './demos/circle-mp-color.uvue';
 import Demo3 from './demos/circle-mp-speed.uvue';
+import Demo4 from './demos/circle-mp-custom-style.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,13 +22,13 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('颜色', 'Color')" badge="color" />
+        <DemoModuleHead :title="t('尺寸', 'Size')" badge="size" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
+        <DemoModuleHead :title="t('颜色', 'Color')" badge="color" />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -39,6 +40,12 @@ const { t } = useDemoUi();
         />
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

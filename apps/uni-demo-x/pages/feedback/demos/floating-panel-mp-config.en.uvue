@@ -75,8 +75,4 @@ function shrink(): void {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the fixed-position panel inside the phone screen. */
-.sn-floating-panel.sn-demo-contained {
-  position: absolute;
-}
 </style>

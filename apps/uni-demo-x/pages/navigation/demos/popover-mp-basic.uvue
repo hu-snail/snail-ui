@@ -43,12 +43,6 @@ const open = ref(false);
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — relative keeps the demo flow intact while the bubble
- * stays anchored to the component root; the spacer below leaves room for the
- * bottom-placed bubble instead of letting it cover the copy. */
-.sn-popover.sn-demo-contained {
-  position: relative;
-}
 .sn-popover-demo__space {
   height: 180rpx;
 }

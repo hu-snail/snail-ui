@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Demo: sn-circle (uni-end) — progress values and sizes.
+ * Demo: sn-circle (uni-end) — progress values.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-circle from its SFC source.
  */
 import { ref } from 'vue';
@@ -17,12 +17,6 @@ const percent = ref(30);
       <SnCircle :model-value="30" :size="120" />
       <SnCircle :model-value="70" :size="120" />
       <SnCircle :model-value="100" :size="120" />
-    </view>
-
-    <view class="sn-circle-demo__row">
-      <SnCircle :model-value="percent" :size="80" :stroke-width="10" />
-      <SnCircle :model-value="percent" :size="140" :stroke-width="22" />
-      <SnCircle :model-value="percent" :size="180" text="Done" />
     </view>
 
     <view class="sn-circle-demo__row">

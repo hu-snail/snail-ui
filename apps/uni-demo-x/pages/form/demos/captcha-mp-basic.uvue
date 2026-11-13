@@ -114,9 +114,4 @@ function onFail(): void {
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
 }
-
-/* Docs-preview only — keep the fixed-position popup inside the phone screen. */
-.sn-captcha.sn-demo-contained {
-  position: absolute;
-}
 </style>

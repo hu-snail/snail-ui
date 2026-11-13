@@ -61,8 +61,4 @@ const layered = ref(false);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-notify.sn-demo-contained {
-  position: absolute;
-}
 </style>

@@ -40,8 +40,4 @@ const loadingSized = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-toast.sn-demo-contained {
-  position: absolute;
-}
 </style>

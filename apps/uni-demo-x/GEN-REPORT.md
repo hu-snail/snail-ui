@@ -4,11 +4,12 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1426 |
+| .uvue 产出 | 1428 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2041 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2043 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
+| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 145 |
 
 ## App.uvue 专属改写
 
@@ -1136,6 +1137,154 @@
 - ../../packages/templates/src/uni/sn-ai-message.vue: computed
 - ../../packages/templates/src/uni/sn-ai-message.vue: ref
 
+## docs 预览钉住规则剥离（docs iframe 预览专用；App 端 fixed 全屏层不得钉进演示卡片）
+
+- pages/basic/demos/fab-mp-basic.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-basic.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-direction.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-direction.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-disabled.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-disabled.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-drag.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-drag.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-expandable.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-expandable.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-position.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-position.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-trigger-icons.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-trigger-icons.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-type.en.vue: .sn-fab.sn-demo-contained
+- pages/basic/demos/fab-mp-type.vue: .sn-fab.sn-demo-contained
+- pages/display/demos/image-preview-mp-basic.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-basic.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-close-behavior.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-close-behavior.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-close-position.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-close-position.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-index.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-index.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-longpress.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-longpress.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-selector.en.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/image-preview-mp-selector.vue: .sn-image-preview.sn-demo-contained
+- pages/display/demos/img-cropper-mp-export-props.en.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-export-props.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-frame.en.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-frame.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-max-scale.en.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-max-scale.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-ratio.en.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-ratio.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-rotate.en.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/img-cropper-mp-rotate.vue: .sn-img-cropper.sn-demo-contained
+- pages/display/demos/video-preview-mp-basic.en.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-basic.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-close-position.en.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-close-position.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-fullscreen.en.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-fullscreen.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-layer.en.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-layer.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-selector.en.vue: .sn-video-preview.sn-demo-contained
+- pages/display/demos/video-preview-mp-selector.vue: .sn-video-preview.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-action-icons.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-action-icons.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-basic.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-basic.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-behavior.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-behavior.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-custom-style.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-custom-style.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-header.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-header.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-panels.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-panels.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-render.en.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/action-sheet-mp-render.vue: .sn-action-sheet.sn-demo-contained
+- pages/feedback/demos/curtain-mp-basic.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-basic.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-behavior.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-behavior.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-close-position.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-close-position.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-custom-style.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-custom-style.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-image-tap.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-image-tap.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-longpress.en.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/curtain-mp-longpress.vue: .sn-curtain.sn-demo-contained
+- pages/feedback/demos/dialog-mp-actions.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-actions.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-basic.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-basic.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-custom.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-custom.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-icon.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-icon.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-theme.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-theme.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-vertical.en.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/dialog-mp-vertical.vue: .sn-dialog.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-basic.en.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-basic.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-config.en.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-config.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-custom.en.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback/demos/floating-panel-mp-custom.vue: .sn-floating-panel.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-basic.en.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-basic.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-style.en.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-style.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-variant.en.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/notify-mp-variant.vue: .sn-notify.sn-demo-contained
+- pages/feedback-2/demos/overlay-mp-basic.en.vue: .sn-overlay.sn-demo-contained
+- pages/feedback-2/demos/overlay-mp-basic.vue: .sn-overlay.sn-demo-contained
+- pages/feedback-2/demos/overlay-mp-config.en.vue: .sn-overlay.sn-demo-contained
+- pages/feedback-2/demos/overlay-mp-config.vue: .sn-overlay.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-basic.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-basic.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-config.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-config.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-custom-style.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-custom-style.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-position.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-position.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-render.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-render.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-scroll.en.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/popup-mp-scroll.vue: .sn-popup.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-basic.en.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-basic.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-cover.en.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-cover.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-icon-style.en.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-icon-style.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-icon.en.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-icon.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-z-index.en.vue: .sn-toast.sn-demo-contained
+- pages/feedback-2/demos/toast-mp-z-index.vue: .sn-toast.sn-demo-contained
+- pages/form/demos/captcha-mp-basic.en.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-basic.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-copy.en.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-copy.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-popup.en.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-size-tolerance.en.vue: .sn-captcha.sn-demo-contained
+- pages/form/demos/captcha-mp-size-tolerance.vue: .sn-captcha.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-basic.en.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-basic.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-guard.en.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-guard.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-keys.en.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/drop-menu-mp-keys.vue: .sn-drop-menu.sn-demo-contained
+- pages/navigation/demos/popover-mp-basic.en.vue: .sn-popover.sn-demo-contained
+- pages/navigation/demos/popover-mp-basic.vue: .sn-popover.sn-demo-contained
+- pages/navigation/demos/popover-mp-height.en.vue: .sn-popover.sn-demo-contained
+- pages/navigation/demos/popover-mp-height.vue: .sn-popover.sn-demo-contained
+- pages/navigation/demos/popover-mp-menu.en.vue: .sn-popover.sn-demo-contained
+- pages/navigation/demos/popover-mp-menu.vue: .sn-popover.sn-demo-contained
+- pages/navigation-2/demos/tooltip-mp-basic.en.vue: .sn-tooltip.sn-demo-contained
+- pages/navigation-2/demos/tooltip-mp-basic.vue: .sn-tooltip.sn-demo-contained
+
 ## 管线转换问题（CSS 规则删除等，需真机验证视觉）
 
 - App.vue: [tag-only-selector] tag-only selector "page"
@@ -1817,7 +1966,7 @@
 - pages/display/waterfall.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/display/watermark.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/feedback/action-sheet.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
-- pages/feedback/circle.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/feedback/circle.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/feedback/curtain.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback/demos/action-sheet-mp-action-icons.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/action-sheet-mp-action-icons.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -1859,6 +2008,8 @@
 - pages/feedback/demos/circle-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/circle-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__ring)"
 - pages/feedback/demos/circle-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__ring)"
+- pages/feedback/demos/circle-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback/demos/circle-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback/demos/circle-mp-speed.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback/demos/circle-mp-speed.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback/demos/circle-mp-speed.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)

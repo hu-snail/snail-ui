@@ -549,7 +549,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '环形进度条',
         titleEn: 'Circle',
         desc: '环形进度展示',
-        count: 4,
+        count: 5,
       },
       {
         key: 'curtain',

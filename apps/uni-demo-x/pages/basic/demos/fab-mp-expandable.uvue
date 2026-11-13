@@ -67,9 +67,4 @@ function onClick(): void {
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-secondary);
 }
-
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>
