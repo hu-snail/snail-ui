@@ -158,7 +158,12 @@ const rootStyle = computed(() => {
 </script>
 
 <template>
-  <view v-if="fixed && placeholder" class="sn-navbar__placeholder" aria-hidden="true" />
+  <view
+    v-if="fixed && placeholder"
+    class="sn-navbar__placeholder"
+    :class="{ 'sn-navbar__placeholder--safe-area': safeAreaInsetTop }"
+    aria-hidden="true"
+  />
   <view
     data-snui-component="navbar"
     :class="rootClass"
@@ -242,6 +247,16 @@ const rootStyle = computed(() => {
 .sn-navbar__placeholder {
   width: 100%;
   height: 88rpx;
+}
+
+/* safe-area 开启时占位元素镜像导航栏自身的盒子（88rpx + 状态栏 padding）：
+ * 导航栏在 safe-area 下是 `height: auto; min-height: 88rpx; padding-top`
+ * 占位元素若仍固定 88rpx，MP 真机（状态栏为实际高度）首屏内容会被压进
+ * 导航栏下方。 */
+.sn-navbar__placeholder--safe-area {
+  height: auto;
+  min-height: 88rpx;
+  padding-top: var(--status-bar-height, 44rpx);
 }
 
 .sn-navbar__side {
