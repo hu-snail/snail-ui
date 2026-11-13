@@ -126,9 +126,9 @@ describe('sn-avatar', () => {
   });
 
   describe('colors and passthrough', () => {
-    it('forwards bgColor and color as inline overrides', () => {
+    it('forwards bgColor and color as inline overrides on the painted body', () => {
       const w = mount(SnAvatar, { props: { text: 'A', bgColor: '#123456', color: '#abcdef' } });
-      const style = w.attributes('style') ?? '';
+      const style = w.find('.sn-avatar__body').attributes('style') ?? '';
       expect(style).toContain('background-color: #123456');
       expect(style).toContain('color: #abcdef');
     });
@@ -258,40 +258,42 @@ describe('sn-avatar', () => {
   });
 
   /*
-   * The dot must render fully inside the avatar circle: uni-app x App clips
-   * children to the rounded root (view overflow defaults to hidden there, and
-   * `overflow: visible` is unreliable for absolutely positioned children —
-   * the live-verified conclusion the sn-badge corner pin recorded), so a
-   * corner-straddling dot renders as a shaved crescent. Guards assert the CSS
-   * contract in source text (see the ?raw import note at the top).
+   * Two-box structure: the wrapper (root) only positions — the painted
+   * circle is the `__body` child. uni-app x App clips children to a rounded
+   * root no matter what (`overflow: visible` is unreliable for absolutely
+   * positioned children — the live-verified sn-badge conclusion), so a dot
+   * anchored in a rounded root renders as a shaved crescent there. Keeping
+   * the dot in the unrounded wrapper's corner lets it straddle the circle
+   * edge on every end while never leaving the wrapper's box.
    */
-  describe('presence dot in-circle pin', () => {
+  describe('two-box structure (wrapper vs painted body)', () => {
     const style = avatarSource.slice(avatarSource.indexOf('<style'));
 
-    it('anchors the dot inside the box instead of straddling the corner', () => {
-      const rule = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
-      expect(rule).toContain('right: 10rpx');
-      expect(rule).toContain('bottom: 10rpx');
-      expect(rule).not.toMatch(/right:\s*0\b/);
-      expect(rule).not.toMatch(/bottom:\s*0\b/);
+    it('wraps the content layers in the painted body', () => {
+      const w = mount(SnAvatar, { props: { text: 'AU', status: 'online' } });
+      const body = w.find('.sn-avatar__body');
+      expect(body.exists()).toBe(true);
+      expect(body.find('.sn-avatar__text').exists()).toBe(true);
+      // The dot must be a sibling of the body — inside it, the body's rounded
+      // clip would shave the corner-straddling half on uni-app x App.
+      expect(body.find('.sn-avatar__status').exists()).toBe(false);
+      expect(w.find('.sn-avatar > .sn-avatar__status').exists()).toBe(true);
     });
 
-    it('re-pins the inset per size preset so the dot hugs the circle edge', () => {
-      // 0.146 × (diameter − dot) circle geometry, rounded up per preset.
-      const insets: Array<['small' | 'normal' | 'medium' | 'large', string]> = [
-        ['small', '5rpx'],
-        ['normal', '8rpx'],
-        ['medium', '11rpx'],
-        ['large', '13rpx'],
-      ];
-      for (const [preset, inset] of insets) {
-        const rule = new RegExp(
-          `\\.sn-avatar--size-${preset} \\.sn-avatar__status \\{([^}]*)\\}`,
-        ).exec(style)?.[1];
-        expect(rule, `${preset} preset pins the dot`).toBeDefined();
-        expect(rule).toContain(`right: ${inset}`);
-        expect(rule).toContain(`bottom: ${inset}`);
-      }
+    it('keeps the paint (background / radius) on the body, not the wrapper', () => {
+      const wrapperRule = /^\.sn-avatar \{([^}]*)\}/m.exec(style)?.[1] ?? '';
+      const bodyRule = /\.sn-avatar__body \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(bodyRule).toContain('border-radius');
+      expect(bodyRule).toContain('background-color');
+      expect(bodyRule).toContain('box-shadow');
+      expect(wrapperRule).not.toMatch(/border-radius\s*:/);
+      expect(wrapperRule).not.toMatch(/background-color\s*:/);
+    });
+
+    it('anchors the dot at the wrapper corner so it straddles the circle edge', () => {
+      const rule = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(rule).toContain('right: 0');
+      expect(rule).toContain('bottom: 0');
     });
   });
 });
