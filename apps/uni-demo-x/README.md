@@ -46,8 +46,12 @@ App 端不受影响（真机屏宽即 750rpx 基准）。
 
 注意：
 
-- pnpm 的 `node_modules` 符号链接在 HBuilderX 下偶有解析问题；若组件找不到，
-  可 `pnpm -F @snui/uni-x pack` 后把 tarball 解到本工程 `node_modules/@snui/uni-x`。
+- pnpm 的 `node_modules` 符号链接在 HBuilderX 的 web 编译（vite）下会让
+  `@snui/uni-x` 的 exports 子路径与包内相对导入解析失败
+  （`vite:import-analysis: Failed to resolve import ...`）。**web 运行前必须把
+  组件产物物化为真目录**：`pnpm -F @snui/uni-demo-x sync-uni-x`（等价于
+  `pnpm -F @snui/uni-x pack` 后把 tarball 解到本工程 `node_modules/@snui/uni-x`）。
+  每次重建 `@snui/uni-x` dist 后都要重跑；App / 真机运行不受影响，可不执行。
 - uni-app x 暂无 CLI（[官方答复](https://ask.dcloud.net.cn/question/208871)），
   本工程无法在 vite/turbo 里编译验证——结构校验之外的真实编译以 HBuilderX 为准。
 
