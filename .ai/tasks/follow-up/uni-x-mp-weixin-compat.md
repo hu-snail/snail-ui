@@ -68,3 +68,14 @@
   前者是工具自身 worker（隐私授权链路）内部的错误，清理后重开项目观察；后者与
   100 个 demo 页面冷启动 + 工具压力相关，不是组件库代码路径。
 
+
+## HBuilderX uts2js 缓存：运行时删缓存会自我锁死
+
+- 现场：`[plugin:uts] ENOENT: .../.uts2js/cache/uts_<hash>/code/cache_/<hash>` 循环出现，
+  `unpackage/dist/dev/mp-weixin` 被清空后无法重建（编译在 main.uts 阶段中止）。
+- 根因：HBuilderX **运行中**删除了 `unpackage/cache/.mp-weixin/.uts2js`。编译器的差量索引
+  驻留在进程内存里，索引仍指向已删除的缓存条目 → 每次编译读缓存即 ENOENT，且失败后不会
+  回退到全量编译。磁盘上的 `.uts2js` 只剩目录骨架（0 个真实文件）。
+- 正确姿势：**先完全退出 HBuilderX（Cmd+Q）**，再删 `unpackage/cache`（必要时连同
+  `unpackage/dist/cache`），然后重开项目全量编译。运行中删缓存 = 制造不一致状态。
+- 反模式：在 IDE 编译进程存活时手动清缓存目录；清完直接点"重新编译"而不是重启 IDE。
