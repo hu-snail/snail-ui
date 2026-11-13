@@ -56,7 +56,7 @@ import { AvatarGroup } from '@snui/uni';
   },
   demos: [
     {
-      name: 'avatar-mp-group',
+      name: 'avatar-group-mp-basic',
       title: 'Basic usage',
       blurb:
         'Max-count collapse, custom collapse text (collapse-avatar), cascading direction, vertical stacking and uniform size / shape.',

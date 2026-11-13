@@ -40,6 +40,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-tag', title: '标签', desc: '多色标记与可关闭标签' },
       { name: 'sn-badge', title: '徽标', desc: '角标 / 红点提示' },
       { name: 'sn-avatar', title: '头像', desc: '圆形 / 方形头像与徽标组合' },
+      { name: 'sn-avatar-group', title: '头像组', desc: '头像叠层展示与折叠计数' },
     ],
   },
   {

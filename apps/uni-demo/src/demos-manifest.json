@@ -28,11 +28,6 @@
           "hasEn": true
         },
         {
-          "name": "avatar-mp-group",
-          "title": "头像组",
-          "hasEn": true
-        },
-        {
           "name": "avatar-mp-mode",
           "title": "图片裁切（mode）",
           "hasEn": true
@@ -50,6 +45,19 @@
         {
           "name": "avatar-mp-status",
           "title": "在线状态（status）",
+          "hasEn": true
+        }
+      ]
+    },
+    "avatar-group": {
+      "group": "basic",
+      "title": "头像组",
+      "desc": "头像叠层展示与折叠计数",
+      "page": "pages/basic/avatar-group",
+      "demos": [
+        {
+          "name": "avatar-group-mp-basic",
+          "title": "基础用法",
           "hasEn": true
         }
       ]
@@ -323,10 +331,10 @@
       ]
     },
     "gap": {
-      "group": "basic",
+      "group": "basic-2",
       "title": "间隔槽",
       "desc": "固定高度的占位间隔",
-      "page": "pages/basic/gap",
+      "page": "pages/basic-2/gap",
       "demos": [
         {
           "name": "gap-mp-basic",

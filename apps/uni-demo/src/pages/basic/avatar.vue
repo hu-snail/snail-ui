@@ -4,11 +4,10 @@ import Demo0 from './demos/avatar-mp-badge.vue';
 import Demo1 from './demos/avatar-mp-basic.vue';
 import Demo2 from './demos/avatar-mp-css-icon.vue';
 import Demo3 from './demos/avatar-mp-fallback.vue';
-import Demo4 from './demos/avatar-mp-group.vue';
-import Demo5 from './demos/avatar-mp-mode.vue';
-import Demo6 from './demos/avatar-mp-shape.vue';
-import Demo7 from './demos/avatar-mp-size.vue';
-import Demo8 from './demos/avatar-mp-status.vue';
+import Demo4 from './demos/avatar-mp-mode.vue';
+import Demo5 from './demos/avatar-mp-shape.vue';
+import Demo6 from './demos/avatar-mp-size.vue';
+import Demo7 from './demos/avatar-mp-status.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -56,27 +55,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('头像组', 'Group')" badge="group" />
+        <DemoModuleHead :title="t('图片裁切（mode）', 'Image fit (`mode`)')" badge="mode" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图片裁切（mode）', 'Image fit (`mode`)')" badge="mode" />
+        <DemoModuleHead :title="t('形状（shape）', 'Shape (`shape`)')" badge="shape" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('形状（shape）', 'Shape (`shape`)')" badge="shape" />
-        <view class="module__body">
-          <Demo6 />
-        </view>
-      </view>
-      <view class="module">
         <DemoModuleHead :title="t('尺寸（size）', 'Size (`size`)')" badge="size" />
         <view class="module__body">
-          <Demo7 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -85,7 +78,7 @@ const { t } = useDemoUi();
           badge="status"
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo7 />
         </view>
       </view>
     </view>

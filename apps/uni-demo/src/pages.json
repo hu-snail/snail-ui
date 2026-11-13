@@ -20,6 +20,13 @@
           }
         },
         {
+          "path": "avatar-group",
+          "style": {
+            "navigationBarTitleText": "头像组",
+            "navigationStyle": "custom"
+          }
+        },
+        {
           "path": "badge",
           "style": {
             "navigationBarTitleText": "徽标",
@@ -60,19 +67,19 @@
             "navigationBarTitleText": "悬浮按钮",
             "navigationStyle": "custom"
           }
-        },
-        {
-          "path": "gap",
-          "style": {
-            "navigationBarTitleText": "间隔槽",
-            "navigationStyle": "custom"
-          }
         }
       ]
     },
     {
       "root": "pages/basic-2",
       "pages": [
+        {
+          "path": "gap",
+          "style": {
+            "navigationBarTitleText": "间隔槽",
+            "navigationStyle": "custom"
+          }
+        },
         {
           "path": "icon",
           "style": {

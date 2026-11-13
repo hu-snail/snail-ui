@@ -54,7 +54,7 @@ import { AvatarGroup } from '@snui/uni';
   },
   demos: [
     {
-      name: 'avatar-mp-group',
+      name: 'avatar-group-mp-basic',
       title: '基础用法',
       blurb:
         '最大数量折叠（max-count）、自定义折叠文本（collapse-avatar）、叠层方向（cascading）、垂直堆叠（vertical）与统一尺寸 / 形状。',
