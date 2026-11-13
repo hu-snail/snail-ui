@@ -554,12 +554,18 @@ function transformTokens(root: postcss.Root, file: string, issues: TransformIssu
   root.walkRules((rule) => {
     const rewritten: string[] = [];
     for (const sel of rule.selectors) {
-      if (sel === ':root') {
-        rewritten.push('.sn-theme-root');
+      if (sel === ':root' || sel === 'page') {
+        // Two hooks, two runtimes: `page` carries the vars through
+        // WeChat's custom-component style isolation (app.wxss selectors
+        // never match nodes inside a component, but inherited custom
+        // properties still flow down from the page node); `.sn-theme-root`
+        // is the App-side hook (uni-app x App has no :root, and the class
+        // sits on sn-config-provider / page shell roots).
+        rewritten.push('page', '.sn-theme-root');
         continue;
       }
-      if (sel === 'page' || sel.startsWith('page.')) {
-        rewritten.push(`.sn-theme-root${sel.slice('page'.length)}`);
+      if (sel.startsWith('page.')) {
+        rewritten.push(sel, `.sn-theme-root${sel.slice('page'.length)}`);
         continue;
       }
       rewritten.push(sel);
@@ -569,7 +575,7 @@ function transformTokens(root: postcss.Root, file: string, issues: TransformIssu
   issues.push({
     file,
     kind: 'patch',
-    detail: 'token selectors rewritten to class-only (.sn-theme-root)',
+    detail: 'token selectors rewritten to page + class-only (.sn-theme-root) hooks',
   });
 }
 

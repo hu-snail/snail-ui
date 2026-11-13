@@ -189,12 +189,15 @@ describe('transformCss (component mode)', () => {
 });
 
 describe('transformCss (tokens mode)', () => {
-  it('should rewrite :root and page selectors to class-only hooks', () => {
+  it('should rewrite :root and page selectors to page + class-only hooks', () => {
+    // `page` must survive: WeChat app.wxss selectors never match inside custom
+    // components, so the vars only reach them through inheritance from the
+    // page node. `.sn-theme-root` stays for the App class hook (ADR-0004).
     const css = ':root {\n  --x: 1;\n}\npage.sn-theme-dark, .sn-theme-dark {\n  --x: 2;\n}\n';
     const r = transformCss(css, 'tokens', FILE);
-    expect(r.css).toContain('.sn-theme-root {\n  --x: 1;\n}');
-    expect(r.css).toContain('.sn-theme-root.sn-theme-dark');
+    expect(r.css).toContain('page, .sn-theme-root {\n  --x: 1;\n}');
+    expect(r.css).toContain('page.sn-theme-dark, .sn-theme-root.sn-theme-dark');
+    expect(r.css).toContain('.sn-theme-dark');
     expect(r.css).not.toContain(':root');
-    expect(r.css).not.toContain('page');
   });
 });
