@@ -52,6 +52,11 @@ import { Avatar } from '@snui/vue-web';
         'status online/offline dot + status-position (top-right / bottom-right); badge-icon corner badge (membership crown).',
     },
     {
+      name: 'avatar-web-text-modes',
+      title: 'Text truncation modes',
+      blurb: 'text-mode: full / surname / last-two / masked (surname + `*`).',
+    },
+    {
       name: 'avatar-web-fallback',
       title: 'Fallback',
       blurb: 'Load error → fallbackText / icon; resets when src changes.',
@@ -102,6 +107,12 @@ import { Avatar } from '@snui/vue-web';
         type: 'string | undefined',
         default: 'undefined',
         desc: 'Text thumbnail shown when there is no image.',
+      },
+      {
+        name: 'textMode',
+        type: "'full' | 'surname' | 'last-two' | 'masked'",
+        default: "'full'",
+        desc: 'Automatic truncation of the text thumbnail (additive): full / surname / last-two / masked (surname + `*`); code-point based, so emoji and rare CJK glyphs stay intact.',
       },
       {
         name: 'icon',

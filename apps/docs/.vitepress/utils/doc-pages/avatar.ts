@@ -51,6 +51,11 @@ import { Avatar } from '@snui/vue-web';
         'status 在线/离线状态点 + status-position 右上/右下；badge-icon 角标徽章（会员等级）。',
     },
     {
+      name: 'avatar-web-text-modes',
+      title: '文字头像自动截取',
+      blurb: 'text-mode：full 原样 / surname 姓 / last-two 后两位 / masked 加密 *。',
+    },
+    {
       name: 'avatar-web-fallback',
       title: '失败回退',
       blurb: '加载失败 → fallbackText / icon；换 src 自动复位。',
@@ -91,6 +96,12 @@ import { Avatar } from '@snui/vue-web';
         type: 'string | undefined',
         default: 'undefined',
         desc: '无图/失败时文字缩略',
+      },
+      {
+        name: 'textMode',
+        type: "'full' | 'surname' | 'last-two' | 'masked'",
+        default: "'full'",
+        desc: '文字缩略自动截取（additive）：full 原样 / surname 只留姓 / last-two 后两位 / masked 保留姓、其余打码 *；按码点截取，emoji 与生僻字不会截断。',
       },
       { name: 'icon', type: 'string | undefined', default: 'undefined', desc: 'SnIcon 注册名' },
       {

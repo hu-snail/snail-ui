@@ -31,6 +31,7 @@ import SnAvatar from '@snui/vue-web/src/avatar/SnAvatar.vue';
 | `round`                       | `boolean`                                                  | `false`    | no       | Pill-shaped corners.                                     |
 | `circle`                      | `boolean`                                                  | `false`    | no       | Circular. Wins over `round`.                             |
 | `fallbackText`                | `string`                                                   | —          | no       | Text thumbnail when there is no image.                   |
+| `textMode`                    | `'full' \| 'surname' \| 'last-two' \| 'masked'`             | `'full'`   | no       | Text truncation mode (additive).                         |
 | `icon`                        | `string`                                                   | —          | no       | SnIcon registry name for the placeholder glyph.          |
 | `status`                      | `'online' \| 'offline' \| ''`                              | `''`       | no       | Presence corner dot (additive).                          |
 | `statusPosition`              | `'top-right' \| 'bottom-right'`                            | `'bottom-right'` | no | Corner for the presence dot (additive).                  |
@@ -87,6 +88,10 @@ Mirrors the uni-end `sn-avatar` additive contract (AGENTS.md §112.3a):
   glyph, surface ring) holding a registered SnIcon, e.g. `Crown` for a
   membership level.
 - `badgePosition` — `top-right` (default) / `bottom-right`.
+- `textMode` — truncation of `fallbackText`: `full` (as-is), `surname`
+  (first glyph, 姓), `last-two` (last two glyphs), `masked` (first glyph +
+  one `*` per hidden glyph; single-glyph names stay readable). Code-point
+  splitting keeps emoji / surrogate pairs intact.
 - `color` set → the fallback text / glyph switches to the inverse text colour,
   so coloured thumbnails stay readable.
 

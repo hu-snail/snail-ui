@@ -72,6 +72,16 @@ const props = withDefaults(
     circle?: boolean;
     /** Text thumbnail shown when there is no image. */
     fallbackText?: string | undefined;
+    /**
+     * Truncation mode for `fallbackText` (additive):
+     *   - 'full'     — render as-is (default);
+     *   - 'surname'  — keep the first glyph（姓）;
+     *   - 'last-two' — keep the last two glyphs（名字后两位）;
+     *   - 'masked'   — keep the first glyph and mask the rest with `*`
+     *                  (single-glyph names stay untouched).
+     * Splitting is code-point based, so surrogate pairs stay intact.
+     */
+    textMode?: 'full' | 'surname' | 'last-two' | 'masked';
     /** SnIcon registry name for the placeholder glyph. */
     icon?: string | undefined;
     /**
@@ -101,6 +111,7 @@ const props = withDefaults(
     round: false,
     circle: false,
     fallbackText: undefined,
+    textMode: 'full',
     icon: undefined,
     status: '',
     statusPosition: 'bottom-right',
@@ -189,6 +200,24 @@ const ariaLabel = computed<string | undefined>(() =>
 
 /** A coloured thumbnail (explicit `color`) speaks with inverse text. */
 const colored = computed<boolean>(() => props.color !== undefined);
+
+/* ─────────── Additive: fallbackText truncation mode ─────────── */
+
+/**
+ * Fallback text after `textMode` truncation. Splits by code point so emoji /
+ * CJK extension-B surrogates are never cut in half.
+ */
+const displayText = computed<string>(() => {
+  const text = props.fallbackText ?? '';
+  if (props.textMode === 'full') return text;
+  const glyphs = Array.from(text);
+  if (glyphs.length === 0) return text;
+  if (props.textMode === 'surname') return glyphs[0] ?? '';
+  if (props.textMode === 'last-two') return glyphs.slice(-2).join('');
+  // 'masked': keep the first glyph, one `*` per hidden glyph. A single-glyph
+  // name has nothing to hide and stays readable.
+  return (glyphs[0] ?? '') + '*'.repeat(glyphs.length - 1);
+});
 </script>
 
 <template>
@@ -218,7 +247,7 @@ const colored = computed<boolean>(() => props.color !== undefined);
     />
     <template v-else>
       <slot>
-        <span v-if="fallbackText" class="sn-avatar__text">{{ fallbackText }}</span>
+        <span v-if="fallbackText" class="sn-avatar__text">{{ displayText }}</span>
         <span v-else class="sn-avatar__icon" aria-hidden="true">
           <slot name="icon">
             <SnIcon v-if="icon" :name="icon" />

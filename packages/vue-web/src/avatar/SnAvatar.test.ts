@@ -156,6 +156,59 @@ describe('SnAvatar (AUI-WEB-DS-001)', () => {
     const colored = mount(SnAvatar, { props: { fallbackText: '张', color: '#2080f0' } });
     expect(colored.classes()).toContain('sn-avatar--colored');
   });
+
+  describe('textMode truncation', () => {
+    it('renders the full text by default', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张三丰');
+    });
+
+    it('keeps only the surname with textMode="surname"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '欧阳娜娜', textMode: 'surname' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('欧');
+    });
+
+    it('keeps the last two glyphs with textMode="last-two"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰', textMode: 'last-two' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('三丰');
+    });
+
+    it('falls back to the whole text when it is shorter than two glyphs', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张', textMode: 'last-two' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张');
+    });
+
+    it('masks everything after the surname with textMode="masked"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰', textMode: 'masked' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张**');
+    });
+
+    it('leaves a single-glyph name readable when masked', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张', textMode: 'masked' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张');
+    });
+
+    it('splits by code point so surrogate pairs stay intact', () => {
+      const name = 'A𠮷B'; // 𠮷 is a CJK extension-B surrogate pair
+      const surname = mount(SnAvatar, { props: { fallbackText: name, textMode: 'surname' } });
+      expect(surname.find('.sn-avatar__text').text()).toBe('A');
+
+      const lastTwo = mount(SnAvatar, { props: { fallbackText: name, textMode: 'last-two' } });
+      expect(lastTwo.find('.sn-avatar__text').text()).toBe('𠮷B');
+
+      const masked = mount(SnAvatar, { props: { fallbackText: name, textMode: 'masked' } });
+      expect(masked.find('.sn-avatar__text').text()).toBe('A**');
+    });
+
+    it('keeps the default slot ahead of the truncated text', () => {
+      const w = mount(SnAvatar, {
+        props: { fallbackText: '张三丰', textMode: 'masked' },
+        slots: { default: '自定义' },
+      });
+      expect(w.text()).toBe('自定义');
+      expect(w.find('.sn-avatar__text').exists()).toBe(false);
+    });
+  });
 });
 
 interface IOController {
