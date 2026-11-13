@@ -49,4 +49,14 @@ describe('sn-icon-set', () => {
     expect(iconSet.ChevronRight.paths).toEqual(['m9 18 6-6-6-6']);
     expect(iconSet.ArrowLeft.paths).toEqual(['M19 12H5', 'm12 19-7-7 7-7']);
   });
+
+  it('ships the weather icons imported by the radio card demo', () => {
+    // Regression: radio-mp-icon imports { Sun, Moon, Cloud, Zap }; a missing
+    // named export fails the uni-app x (uts) build at compile time.
+    for (const name of ['Sun', 'Moon', 'Cloud', 'Zap'] as const) {
+      const icon = iconSet[name];
+      expect(icon.paths.length, `${name} must declare paths`).toBeGreaterThan(0);
+      expect(icon.viewBox).toBe('0 0 24 24');
+    }
+  });
 });

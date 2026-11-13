@@ -246,8 +246,24 @@ export const Sparkles = d([
   'M5 18H3',
 ]);
 
+/* Weather icons consumed by the radio card demo (sun / moon / cloud / zap). */
+
+export const Sun = d([
+  'M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8',
+  'M12 2v2',
+  'M12 20v2',
+  'm4.93 4.93 1.41 1.41',
+  'm17.66 17.66 1.41 1.41',
+  'M2 12h2',
+  'M20 12h2',
+  'm6.34 17.66-1.41 1.41',
+  'm19.07 4.93-1.41 1.41',
+]);
+export const Moon = d(['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z']);
+export const Cloud = d(['M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z']);
+
 /**
- * ~55 icons total. Keep every export a standalone frozen binding so
+ * ~65 icons total. Keep every export a standalone frozen binding so
  * tree-shaking still drops unused ones; grow this set only for icons
  * that official components / demos actually consume, and keep each
  * path set sourced from lucide (ISC). */
