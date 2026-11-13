@@ -22,6 +22,7 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-color-text-tertiary', '--aui-color-text-tertiary'],
   ['--sn-web-color-text-disabled', '--aui-color-text-disabled'],
   ['--sn-web-color-text-on-primary', '--aui-color-text-on-primary'],
+  ['--sn-web-color-text-inverse', '--aui-color-text-inverse'],
   ['--sn-web-color-background-surface', '--aui-color-background-surface'],
   ['--sn-web-color-background-subtle', '--aui-color-background-subtle'],
   ['--sn-web-color-background-overlay', '--aui-color-background-overlay'],
