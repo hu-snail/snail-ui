@@ -11,7 +11,7 @@
  *
  * Run: pnpm -F @snui/uni-demo-x sync-uni-x
  */
-import { cpSync, existsSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -37,4 +37,22 @@ rmSync(pkgDir, { force: true, recursive: true });
 for (const dir of fileDirs) cpSync(join(srcRoot, dir), join(pkgDir, dir), { recursive: true });
 for (const file of fileRootFiles) cpSync(join(srcRoot, file), join(pkgDir, file));
 
-console.log('[sync-uni-x] materialized real-dir copy at apps/uni-demo-x/node_modules/@snui/uni-x');
+// `uni-x build` wipes dist before rewriting it. A copy taken mid-build leaves a
+// partial tree behind and HBuilderX then fails with "Could not resolve
+// '@snui/uni-x/components/...'" on every page — fail loudly instead of
+// reporting a successful sync of an incomplete copy.
+const countComponents = (root) =>
+  readdirSync(join(root, 'dist', 'components')).filter((name) => !name.startsWith('._')).length;
+const expected = countComponents(srcRoot);
+const copied = countComponents(pkgDir);
+if (copied !== expected) {
+  console.error(
+    `[sync-uni-x] incomplete copy: ${copied}/${expected} components. ` +
+      'The uni-x build was probably still running — rerun this script after it finishes.',
+  );
+  process.exit(1);
+}
+
+console.log(
+  `[sync-uni-x] materialized real-dir copy at apps/uni-demo-x/node_modules/@snui/uni-x (${copied} components)`,
+);
