@@ -19,7 +19,9 @@ export const iconDocPage: SnDocPageData = {
     { t: 'code', s: 'lucide-vue-next' },
     { t: 'text', s: '。两条使用路径都支持：直接传组件（推荐，可被 tree-shake），或先 ' },
     { t: 'code', s: 'registerSnIcons()' },
-    { t: 'text', s: ' 注册再用字符串名查找（适合后端下发菜单配置）。' },
+    { t: 'text', s: ' 注册再用字符串名查找（适合后端下发菜单配置）。图标集全部名录见 ' },
+    { t: 'link', s: 'lucide.dev/icons', href: 'https://lucide.dev/icons' },
+    { t: 'text', s: '。' },
   ],
   quickActions: [
     {

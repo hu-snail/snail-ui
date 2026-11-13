@@ -686,6 +686,14 @@ onBeforeUnmount(() => {
           <p class="sn-docpage__desc">
             <template v-for="(seg, i) in segs(doc.description)" :key="i">
               <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+              <a
+                v-else-if="seg.t === 'link'"
+                class="sn-docpage__link"
+                :href="seg.href"
+                target="_blank"
+                rel="noreferrer"
+                >{{ seg.s }}</a
+              >
               <template v-else>{{ seg.s }}</template>
             </template>
           </p>
@@ -739,6 +747,14 @@ onBeforeUnmount(() => {
           <p class="sn-docpage__hint">
             <template v-for="(seg, i) in segs(doc.usage.hint)" :key="i">
               <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+              <a
+                v-else-if="seg.t === 'link'"
+                class="sn-docpage__link"
+                :href="seg.href"
+                target="_blank"
+                rel="noreferrer"
+                >{{ seg.s }}</a
+              >
               <template v-else>{{ seg.s }}</template>
             </template>
           </p>
@@ -869,6 +885,14 @@ onBeforeUnmount(() => {
           <p v-if="doc.props.hint.length" class="sn-docpage__hint">
             <template v-for="(seg, i) in segs(doc.props.hint)" :key="i">
               <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+              <a
+                v-else-if="seg.t === 'link'"
+                class="sn-docpage__link"
+                :href="seg.href"
+                target="_blank"
+                rel="noreferrer"
+                >{{ seg.s }}</a
+              >
               <template v-else>{{ seg.s }}</template>
             </template>
           </p>
@@ -900,6 +924,14 @@ onBeforeUnmount(() => {
             <p v-if="doc.events.hint.length" class="sn-docpage__hint">
               <template v-for="(seg, i) in segs(doc.events.hint)" :key="i">
                 <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+                <a
+                  v-else-if="seg.t === 'link'"
+                  class="sn-docpage__link"
+                  :href="seg.href"
+                  target="_blank"
+                  rel="noreferrer"
+                  >{{ seg.s }}</a
+                >
                 <template v-else>{{ seg.s }}</template>
               </template>
             </p>
@@ -930,6 +962,14 @@ onBeforeUnmount(() => {
             <p v-if="doc.slots.hint.length" class="sn-docpage__hint">
               <template v-for="(seg, i) in segs(doc.slots.hint)" :key="i">
                 <code v-if="seg.t === 'code'" class="sn-docpage__ic">{{ seg.s }}</code>
+                <a
+                  v-else-if="seg.t === 'link'"
+                  class="sn-docpage__link"
+                  :href="seg.href"
+                  target="_blank"
+                  rel="noreferrer"
+                  >{{ seg.s }}</a
+                >
                 <template v-else>{{ seg.s }}</template>
               </template>
             </p>
@@ -1290,6 +1330,17 @@ onBeforeUnmount(() => {
   font-family: var(--vp-font-family-mono, ui-monospace, monospace);
   font-size: 12.5px;
   color: var(--sn-doc-accent);
+}
+
+.sn-docpage__link {
+  color: var(--sn-doc-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--sn-doc-accent) 45%, transparent);
+}
+.sn-docpage__link:hover {
+  color: var(--sn-doc-accent-hover);
+  text-decoration-color: var(--sn-doc-accent-hover);
 }
 
 .sn-docpage__actions {

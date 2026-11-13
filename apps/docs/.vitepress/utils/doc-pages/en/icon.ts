@@ -12,8 +12,20 @@ export const iconDocPageEn: SnDocPageData = {
   description: [
     {
       t: 'text',
-      s: 'Wrapper component for [lucide-vue-next](https://lucide.dev/guide/packages/lucide-vue-next). **Tree-shakeable by design**: named imports of individual icons let the bundler drop unused ones, so the production bundle contains only the icons you actually referenc',
+      s: 'Wrapper component for ',
     },
+    { t: 'code', s: 'lucide-vue-next' },
+    {
+      t: 'text',
+      s: '. **Tree-shakeable by design**: named imports of individual icons let the bundler drop unused ones, so the production bundle contains only the icons you actually reference. Two usage paths are supported: pass the icon component directly (recommended, tree-shakeable), or register them via ',
+    },
+    { t: 'code', s: 'registerSnIcons()' },
+    {
+      t: 'text',
+      s: ' and look icons up by string name (fits backend-driven menu configs). The full icon set is listed at ',
+    },
+    { t: 'link', s: 'lucide.dev/icons', href: 'https://lucide.dev/icons' },
+    { t: 'text', s: '.' },
   ],
   quickActions: [
     {
