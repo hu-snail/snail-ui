@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1429 |
+| .uvue 产出 | 1431 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2044 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2048 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 145 |
@@ -1291,7 +1291,7 @@
 - App.vue: [tag-only-selector] tag-only selector "page"
 - App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/basic/avatar-group.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
+- pages/basic/avatar-group.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
 - pages/basic/avatar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
@@ -1299,6 +1299,8 @@
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic/demos/avatar-group-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-group-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-group-mp-shape.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/avatar-group-mp-shape.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
