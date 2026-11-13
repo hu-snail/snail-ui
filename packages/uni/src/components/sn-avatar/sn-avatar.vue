@@ -43,12 +43,13 @@
  *
  * ## Additive: presence status (AUI 追加，wd-avatar 没有此能力)
  *
- * `status` paints an online / offline presence dot on the bottom-right corner.
- * wd-avatar has no presence concept, so this is an AUI addition registered in
- * AGENTS.md §112.3a — the reference prop surface stays 1:1 (`status` is only
- * additive; nothing existing changed meaning). The dot is decorative in the
- * DOM but announced through the root `aria-label`, so a text avatar reads as
- * "AU online" instead of dropping the state silently.
+ * `status` paints an online / offline presence dot on the bottom-right corner,
+ * pinned fully INSIDE the avatar circle (see `.sn-avatar__status` for why it
+ * cannot straddle the edge). wd-avatar has no presence concept, so this is an
+ * AUI addition registered in AGENTS.md §112.3a — the reference prop surface
+ * stays 1:1 (`status` is only additive; nothing existing changed meaning).
+ * The dot is decorative in the DOM but announced through the root `aria-label`,
+ * so a text avatar reads as "AU online" instead of dropping the state silently.
  *
  * Not responsible for:
  *   - 头像叠层 / 折叠计数 — 用 sn-avatar-group
@@ -300,10 +301,13 @@ function onImageError(event: Event): void {
   justify-content: center;
   position: relative;
   flex: 0 0 auto;
-  /* No `overflow: hidden` here on purpose: the root hosts the absolutely
-     positioned presence dot on the corner, and clipping the root would shave
-     the dot off. The round shape is instead carried by the image itself
-     (`border-radius: inherit` below), which clips the photo to the circle. */
+  /* Nothing here depends on the root's overflow behaviour: uni-app x App
+     clips children to a rounded root no matter what (view overflow defaults
+     to hidden, and `overflow: visible` is unreliable for absolutely
+     positioned children — the live-verified sn-badge conclusion), while the
+     webview ends don't clip at all. So the photo carries its own radius
+     (`border-radius: inherit` below) and the presence dot pins itself fully
+     inside the box instead of straddling the corner. */
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
@@ -345,14 +349,19 @@ function onImageError(event: Event): void {
 
 /* ── Presence dot (additive) ───────────────────────────────────────────── */
 
-/* Anchored on the bottom-right corner like the reference badge layout. The
-   root no longer clips (the image carries its own radius), so the dot is
-   never shaved by the avatar's border; the surface-coloured ring keeps it
-   legible on top of a photo. */
+/* Pinned fully inside the bottom-right of the circle (sn-badge corner-pin
+   rule, AGENTS.md): uni-app x App clips children to the rounded root — view
+   overflow defaults to hidden there, and `overflow: visible` on the root is
+   unreliable for absolutely positioned children — so a corner-straddling dot
+   renders as a shaved crescent (device regression). Inside the box nothing
+   depends on clipping; the surface-coloured ring keeps the dot legible on top
+   of a photo. Base inset serves non-preset sizes; every preset re-pins its
+   own inset below so the dot hugs the edge at any diameter (a box-corner dot
+   stays within a circle of diameter D only when inset ≥ 0.146 × (D − dot)). */
 .sn-avatar__status {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 10rpx;
+  bottom: 10rpx;
   box-sizing: border-box;
   width: 20rpx;
   height: 20rpx;
@@ -369,19 +378,32 @@ function onImageError(event: Event): void {
   background-color: var(--sn-mp-color-text-tertiary);
 }
 
-/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head. */
+/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head.
+   Each preset also re-pins the corner inset from the 0.146 × (D − dot) circle
+   geometry so the dot keeps hugging the edge at every diameter. */
 .sn-avatar--size-small .sn-avatar__status {
+  right: 5rpx;
+  bottom: 5rpx;
   width: 16rpx;
   height: 16rpx;
   border-width: 3rpx;
 }
 
+.sn-avatar--size-normal .sn-avatar__status {
+  right: 8rpx;
+  bottom: 8rpx;
+}
+
 .sn-avatar--size-medium .sn-avatar__status {
+  right: 11rpx;
+  bottom: 11rpx;
   width: 24rpx;
   height: 24rpx;
 }
 
 .sn-avatar--size-large .sn-avatar__status {
+  right: 13rpx;
+  bottom: 13rpx;
   width: 28rpx;
   height: 28rpx;
 }

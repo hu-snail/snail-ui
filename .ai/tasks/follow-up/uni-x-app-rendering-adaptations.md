@@ -1,4 +1,4 @@
-# uni-app x App 端渲染适配批量修复（badge / fab fan / 弹出层 / circle / swipe-action）
+# uni-app x App 端渲染适配批量修复（badge / fab fan / 弹出层 / circle / swipe-action / avatar 状态点）
 
 > 来源：真机验收反馈（HBuilderX 5.33 alpha，vapor 模式）。四个并行子任务（A overflow / B 弹出层 / C circle / D swipe-action）+ sn-icon computedStyle 双形态修复。
 
@@ -14,6 +14,7 @@
 5. **App 端 background-image 仅支持 linear-gradient**（conic-gradient/mask/url/data-URL 全不支持）：sn-circle 的 conic+mask 环形方案在 App 全灭（症状：饼形色块）。修复：uni-x 管线补丁把环改为 `<image>` + SVG data URL（stroke-dasharray 弧长 JS 内算好；12 点起笔 rotate(-90)；逆时针垂直轴镜像；linecap 真实生效；0% 省略圆、100% 满环）。颜色解析复用 sn-icon 的 computedStyle 回读模式，兜底 token 实值永不空白。
 6. **App 端层叠边缘合成取整**：sn-swipe-action 闭合态靠内容层 z-index 遮盖动作区，App 端漏 1–2px 缝隙。修复：闭合且非拖拽/动画时动作区 inline `translateX(±100%)` 移出 root `overflow: hidden` 边界，不依赖层叠。附带修复：`contentStyle` 偏移量 `×2` 转 rpx 的 375px 视口假设改为直接 px（测量/触摸坐标本就是 px；顺带修复 docs 预览滑动位移从未生效——rpx-transform 只处理 CSS 声明不处理运行时字符串）。
 7. **uni-app x `fields` 回调传 NodeInfo 对象本身**（经典 uni-app 传数组）：sn-icon 首版取色按数组读 `nodes[0]` 在 App 端永远读不到 → 全部图标空白。修复：对象/数组双形态探测 + JSON.stringify 正则兜底；ink 色首帧可见、解析成功升级级联色、失败回退 ink 永不空白。
+8. **App 端圆角根节点裁剪 absolute 子元素，`overflow: visible` 也压不住**（sn-badge 贴内钉住改造的延续实测）：sn-avatar 的 `status` 状态点骑在右下角（`right: 0; bottom: 0`），App 端被圆角根裁成月牙（真机截图只剩弧内一小条）。修复：状态点改为贴内渲染——基准 inset 10rpx，各尺寸预设按圆内几何 `i ≥ 0.146 × (D − 点径)` 重钉（small 5 / normal 8 / medium 11 / large 13 rpx），uni-x 管线自动展平为 `--snx-sn-avatar__status-*` 变量（0 规则丢弃）。回归测试断言源码 CSS 无骑角锚点（sn-avatar.test.ts presence dot in-circle pin 块）。
 
 ## 教训（Memory 要点）
 

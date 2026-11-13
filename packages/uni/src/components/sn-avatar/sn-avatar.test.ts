@@ -12,6 +12,9 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnAvatar from './sn-avatar.vue';
+// Raw SFC source for CSS-level regression guards (happy-dom drops rpx
+// lengths, so stylesheet values are only assertable in source text).
+import avatarSource from './sn-avatar.vue?raw';
 import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
 import { User } from '../sn-icon/sn-icon-set';
 
@@ -251,6 +254,44 @@ describe('sn-avatar', () => {
       await w.setProps({ status: '' });
       expect(w.find('.sn-avatar__status').exists()).toBe(false);
       expect(w.classes().some((c) => c.startsWith('sn-avatar--status-'))).toBe(false);
+    });
+  });
+
+  /*
+   * The dot must render fully inside the avatar circle: uni-app x App clips
+   * children to the rounded root (view overflow defaults to hidden there, and
+   * `overflow: visible` is unreliable for absolutely positioned children —
+   * the live-verified conclusion the sn-badge corner pin recorded), so a
+   * corner-straddling dot renders as a shaved crescent. Guards assert the CSS
+   * contract in source text (see the ?raw import note at the top).
+   */
+  describe('presence dot in-circle pin', () => {
+    const style = avatarSource.slice(avatarSource.indexOf('<style'));
+
+    it('anchors the dot inside the box instead of straddling the corner', () => {
+      const rule = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(rule).toContain('right: 10rpx');
+      expect(rule).toContain('bottom: 10rpx');
+      expect(rule).not.toMatch(/right:\s*0\b/);
+      expect(rule).not.toMatch(/bottom:\s*0\b/);
+    });
+
+    it('re-pins the inset per size preset so the dot hugs the circle edge', () => {
+      // 0.146 × (diameter − dot) circle geometry, rounded up per preset.
+      const insets: Array<['small' | 'normal' | 'medium' | 'large', string]> = [
+        ['small', '5rpx'],
+        ['normal', '8rpx'],
+        ['medium', '11rpx'],
+        ['large', '13rpx'],
+      ];
+      for (const [preset, inset] of insets) {
+        const rule = new RegExp(
+          `\\.sn-avatar--size-${preset} \\.sn-avatar__status \\{([^}]*)\\}`,
+        ).exec(style)?.[1];
+        expect(rule, `${preset} preset pins the dot`).toBeDefined();
+        expect(rule).toContain(`right: ${inset}`);
+        expect(rule).toContain(`bottom: ${inset}`);
+      }
     });
   });
 });
