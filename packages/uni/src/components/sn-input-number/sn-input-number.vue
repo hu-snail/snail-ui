@@ -176,29 +176,54 @@ function round(value: number): number {
   return Math.round(value * factor) / factor;
 }
 
-/** Clamp + snap + round. Pure — used by `commit` and `updateOnInit`. */
-function normalize(raw: number): number {
-  let next = raw;
-  if (next < props.min) next = props.min;
-  if (next > props.max) next = props.max;
-  if (props.stepStrictly && props.step > 0) {
-    const steps = Math.round((next - props.min) / props.step);
-    next = props.min + steps * props.step;
-    if (next > props.max) next -= props.step;
-    if (next < props.min) next = props.min;
-  }
-  return round(next);
+/** Decimal places of a positive step (`0.1` → 1), used for float-safe maths. */
+function stepPrecisionOf(step: number): number {
+  const text = String(step);
+  const dot = text.indexOf('.');
+  return dot === -1 ? 0 : text.length - dot - 1;
 }
 
-/** Can the value move by `direction`? */
+/**
+ * Snap onto the `step` grid anchored at zero — the wd-input-number contract
+ * (`step: 2` → …, 4, 6, 8, …), NOT `min + k * step`. Anchoring at `min` would
+ * emit values that are not multiples of `step` (min 3 / step 2 → 5).
+ */
+function snapToStep(value: number, step: number): number {
+  const factor = 10 ** stepPrecisionOf(step);
+  return (Math.round(value / step) * factor * step) / factor;
+}
+
+/** Smallest / largest step multiple that still sits inside `[min, max]`. */
+function strictBound(value: number, step: number): number {
+  const factor = 10 ** stepPrecisionOf(step);
+  if (value < props.min) {
+    const minSteps = Math.ceil((props.min * factor) / (step * factor));
+    const candidate = (minSteps * step * factor) / factor;
+    if (candidate <= props.max) return candidate;
+  }
+  const maxSteps = Math.floor((props.max * factor) / (step * factor));
+  return (maxSteps * step * factor) / factor;
+}
+
+/** Clamp + snap + round. Pure — used by `commit`, `canStep` and `updateOnInit`. */
+function normalize(raw: number): number {
+  if (!props.stepStrictly || props.step <= 0) {
+    return round(Math.min(Math.max(raw, props.min), props.max));
+  }
+  const snapped = snapToStep(raw, props.step);
+  const inRange = snapped >= props.min && snapped <= props.max;
+  return round(inRange ? snapped : strictBound(snapped, props.step));
+}
+
+/** Can the value move by `direction`? Strict mode compares normalized targets. */
 function canStep(direction: 1 | -1): boolean {
   if (props.disabled) return false;
   if (direction === 1 && props.disablePlus) return false;
   if (direction === -1 && props.disableMinus) return false;
   const current = numericValue.value;
   if (!Number.isFinite(current)) return true;
-  if (direction === 1) return current < props.max;
-  return current > props.min;
+  const candidate = normalize(current + direction * props.step);
+  return direction === 1 ? candidate > current : candidate < current;
 }
 
 async function commit(next: number | string): Promise<boolean> {

@@ -25,32 +25,39 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
    v2 的 outline 是三段共用一个外框（action 四边描边 + inner 上下描边、隐藏 divider）；
    outline-split 只保留 18px 高的短分隔线；primary 是「减号 primary 描边 + 加号 primary 实心」，
    禁用态走 `opacity: .4` 而非统一降透明度。
+4. **`stepStrictly` 语义错误（行为级）。** 旧实现把网格锚在 `min` 上
+   （`min + round((v - min) / step) * step`），min=3 / step=2 时产出的 3、5、15 全都不是
+   step 的倍数；参考实现锚在 0，再做严格边界修正（`ceil(min / step)` 与 `floor(max / step)`）。
 
 ## 修法
 
-| 项       | 修法                                                                                                        |
-| -------- | ----------------------------------------------------------------------------------------------------------- |
-| root     | 透明、无 padding/border；`display: inline-flex` + `line-height: 1`，只负责布局                              |
-| segment  | action / inner 各自带 `background-soft` 与外侧 4px 圆角（`--sn-mp-radius-sm`）                              |
-| 分隔线   | action 内新增真实 `<view class="__action-divider">`（1px 反色缝；outline-split 改 18px 短灰线）             |
-| 输入区   | 新增 `__inner` 包裹 input：`padding: 0 var(--sn-mp-spacing-3)`（8px），input 36px / 14px / 500             |
-| 主题     | outline = 外框 + inner 上下描边、隐藏 divider；primary = 减号描边 + 加号实心；round = 外角全圆                 |
-| 禁用     | 默认主题 glyph 走 `text-disabled`；primary 主题 action `opacity: .4`（文档不再整控件降透明度）                |
-| 图标     | `SnIcon` 12px（`size="24rpx"`）——旧的 `:size="24"` 是 24px，比参考大一倍                                    |
-| doodle   | 皮肤改为给 segment 画 4rpx 手绘描边（旧规则挂在 root 上，结构变更后失效）                                   |
+| 项          | 修法                                                                                                        |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| root        | 透明、无 padding/border；`display: inline-flex` + `line-height: 1`，只负责布局                              |
+| segment     | action / inner 各自带 `background-soft` 与外侧 4px 圆角（`--sn-mp-radius-sm`）                              |
+| 分隔线      | action 内新增真实 `<view class="__action-divider">`（1px 反色缝；outline-split 改 18px 短灰线）             |
+| 输入区      | 新增 `__inner` 包裹 input：`padding: 0 var(--sn-mp-spacing-3)`（8px），input 36px / 14px / 500             |
+| 主题        | outline = 外框 + inner 上下描边、隐藏 divider；primary = 减号描边 + 加号实心；round = 外角全圆                 |
+| 禁用        | 默认主题 glyph 走 `text-disabled`；primary 主题 action `opacity: .4`（文档不再整控件降透明度）                |
+| 图标        | `SnIcon` 12px（`size="24rpx"`）——旧的 `:size="24"` 是 24px，比参考大一倍                                    |
+| doodle      | 皮肤改为给 segment 画 4rpx 手绘描边（旧规则挂在 root 上，结构变更后失效）                                   |
+| stepStrictly | `normalize` 改为「0 锚点吸附 → `[min,max]` 严格边界取最近合法倍数」；`canStep` 用归一化后的候选值比较，网格边缘按钮置灰 |
 
 伪元素方案被否决：uni-app x 的 CSS 转换会删除 `::before/::after`，加号/减号会整片空白，
 因此 glyph 继续用 `SnIcon`、分隔线用真实节点。
 
 ## Regression Test
 
-`sn-input-number.test.ts` 新增 2 条结构契约：
+`sn-input-number.test.ts` 新增 5 条：
 
 - `wraps the field in its own inner segment` — field 必须在 `__inner` 内
 - `separates the three segments with real divider nodes` — 两个 action 各携带一条 divider
   （uvue 转换会丢弃伪元素，分隔线不能退回 CSS 绘制）
+- `anchors the strict grid at zero and lands inside [min, max]` — min=3 / step=2：1 → 4、17 → 14
+- `never emits a strict-step value that is not a multiple of step` — 5 必须被修正为偶数
+- `disables stepping past the strict grid bounds` — 4 的减号、14 的加号置灰
 
-原有 60 条行为测试全绿（113 文件 / 3848 用例）。
+组件 63 条用例全绿；全量回归 113 文件 / 3848 用例。
 
 ## 验证
 
@@ -68,5 +75,7 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
   任何 stretch 父级里放大成整条 track；填充必须归属到视觉 segment。
 - **参考库的主题名相同不代表实现相同。** 必须读参考的样式源码（v2 `index.scss`）而不是
   按名字自创视觉；`outline-split` 的语义是「短分隔线」而非「每个按钮加边框」。
+- **「步进倍数」必须以 0 为锚点**；`min + k*step` 在 min 不是 step 倍数时会产出非倍数，
+  且边界修正要取区间内最近的合法倍数。改语义时 `canStep` 也要跟着用归一化候选值判断。
 - **uni 组件的装饰线 / 图形不要用伪元素。** uni-app x 转换会删伪元素，必须用真节点或
   `SnIcon`，否则多端产物静默缺图。

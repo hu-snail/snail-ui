@@ -424,6 +424,41 @@ describe('sn-input-number', () => {
       expect(lastValue(w)).toBe(4);
     });
 
+    it('anchors the strict grid at zero and lands inside [min, max]', () => {
+      // wd-input-number contract: step 2 → multiples of 2, then strict bounds.
+      const below = mountNumber({
+        modelValue: 1,
+        min: 3,
+        max: 15,
+        step: 2,
+        stepStrictly: true,
+      });
+      expect(lastValue(below)).toBe(4); // smallest multiple of 2 that is >= 3
+
+      const above = mountNumber({
+        modelValue: 17,
+        min: 3,
+        max: 15,
+        step: 2,
+        stepStrictly: true,
+      });
+      expect(lastValue(above)).toBe(14); // largest multiple of 2 that is <= 15
+    });
+
+    it('never emits a strict-step value that is not a multiple of step', () => {
+      // min 3 / step 2: the old min-anchored grid produced 3 and 5.
+      const w = mountNumber({ modelValue: 5, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect((lastValue(w) as number) % 2).toBe(0);
+    });
+
+    it('disables stepping past the strict grid bounds', () => {
+      const low = mountNumber({ modelValue: 4, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect(low.find('.sn-input-number__minus').attributes('aria-disabled')).toBe('true');
+
+      const high = mountNumber({ modelValue: 14, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect(high.find('.sn-input-number__plus').attributes('aria-disabled')).toBe('true');
+    });
+
     it('honours a string precision prop', async () => {
       const w = mountNumber({ modelValue: 1.234, precision: '2' });
       await w.find('.sn-input-number__plus').trigger('tap');

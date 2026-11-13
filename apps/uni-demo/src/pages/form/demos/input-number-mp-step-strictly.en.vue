@@ -1,15 +1,20 @@
 <script setup lang="ts">
-/** Demo: sn-input-number — step snapping (stepStrictly): with step=3, values snap to 0/3/6/9… */
+/** Demo: sn-input-number — step snapping (stepStrictly): with step=3 values snap to 0/3/6/9…; bounds correct to the nearest legal multiple. */
 import { ref } from 'vue';
 import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
 
 const snapped = ref(0);
+const bounded = ref(1);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title">stepStrictly + step=3 (values snap to 0/3/6/9…)</text>
     <SnInputNumber v-model="snapped" :min="0" :max="20" :step="3" step-strictly />
+
+    <text class="sn-demo__title">stepStrictly + step=2 + min=3 + max=15 (1 → 4, 17 → 14)</text>
+    <SnInputNumber v-model="bounded" :min="3" :max="15" :step="2" step-strictly />
+    <text class="sn-demo__meta">Corrected: {{ bounded }}</text>
   </view>
 </template>
 
@@ -18,5 +23,10 @@ const snapped = ref(0);
   font-size: 26rpx;
   font-weight: 600;
   color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>
