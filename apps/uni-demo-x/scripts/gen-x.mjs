@@ -340,10 +340,36 @@ function main() {
     else stats.ts++;
   }
 
+  // 场景引用的本地素材：src/static/** 镜像到本工程根 static/（uni-app 静态
+  // 目录约定）。collect 只扫 pages/components/state/templates，static 需要
+  // 单独镜像；每次生成全量重建（rm + copy），AppleDouble 由 cleanAppleDouble
+  // 兜底清理。
+  const staticSrc = join(srcRoot, 'static');
+  if (existsSync(staticSrc)) {
+    rmSync(join(outRoot, 'static'), { recursive: true, force: true });
+    mkdirSync(join(outRoot, 'static'), { recursive: true });
+    let mirrored = 0;
+    const walkStatic = (dir) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (entry.name.startsWith('._')) continue;
+        const full = join(dir, entry.name);
+        if (entry.isDirectory()) walkStatic(full);
+        else {
+          const target = join(outRoot, 'static', relative(staticSrc, full));
+          mkdirSync(dirname(target), { recursive: true });
+          writeFileSync(target, readFileSync(full));
+          mirrored++;
+        }
+      }
+    };
+    walkStatic(staticSrc);
+    stats.appSpecific.push(`static: mirrored ${mirrored} asset(s) from apps/uni-demo/src/static`);
+  }
+
   emitApp();
   emitPagesJson();
-  cleanAppleDouble();
   emitReport();
+  cleanAppleDouble();
   console.log(
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
       ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped}, templates ${stats.templatesMapped})`,

@@ -290,10 +290,25 @@ describe('sn-avatar', () => {
       expect(wrapperRule).not.toMatch(/background-color\s*:/);
     });
 
-    it('anchors the dot at the wrapper corner so it straddles the circle edge', () => {
-      const rule = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
-      expect(rule).toContain('right: 0');
-      expect(rule).toContain('bottom: 0');
+    it('anchors the dot on the arc (half in, half out) per preset', () => {
+      // Dot center on the circle arc along the diagonal: offset ≈ 0.146 × D − dot/2.
+      const base = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(base).toContain('right: 1rpx');
+      expect(base).toContain('bottom: 1rpx');
+      const anchors: Array<['small' | 'normal' | 'medium' | 'large', string]> = [
+        ['small', '0'],
+        ['normal', '1rpx'],
+        ['medium', '2rpx'],
+        ['large', '2rpx'],
+      ];
+      for (const [preset, inset] of anchors) {
+        const rule = new RegExp(
+          `\\.sn-avatar--size-${preset} \\.sn-avatar__status \\{([^}]*)\\}`,
+        ).exec(style)?.[1];
+        expect(rule, `${preset} preset anchors the dot`).toBeDefined();
+        expect(rule).toContain(`right: ${inset}`);
+        expect(rule).toContain(`bottom: ${inset}`);
+      }
     });
   });
 });

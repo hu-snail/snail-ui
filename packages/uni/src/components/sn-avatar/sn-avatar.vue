@@ -384,15 +384,16 @@ function onImageError(event: Event): void {
 
 /* ── Presence dot (additive) ───────────────────────────────────────────── */
 
-/* Anchored at the wrapper's bottom-right corner: the dot pokes past the
-   circle's arc into the wrapper's empty corner (the straddle look the
-   reference end renders) while staying fully inside the wrapper's box —
-   nothing depends on overflow behaviour anywhere, and the surface-coloured
-   ring keeps the dot legible on top of a photo. */
+/* Half in, half out: the dot's CENTER sits on the circle's arc along the
+   bottom-right diagonal — offset = 0.146 × diameter − dot/2 per preset (the
+   arc crosses the diagonal at 0.854 × diameter from the top-left). Anchored
+   in the unrounded wrapper's corner region, it never leaves the wrapper's
+   box, so no end shaves it; the surface-coloured ring keeps the dot legible
+   on top of a photo. */
 .sn-avatar__status {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 1rpx;
+  bottom: 1rpx;
   box-sizing: border-box;
   width: 20rpx;
   height: 20rpx;
@@ -409,19 +410,32 @@ function onImageError(event: Event): void {
   background-color: var(--sn-mp-color-text-tertiary);
 }
 
-/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head. */
+/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head —
+   and each preset re-anchors the arc crossing from the 0.146 × D − dot/2
+   geometry (small's arcs cross at its corner, hence the 0 inset). */
 .sn-avatar--size-small .sn-avatar__status {
+  right: 0;
+  bottom: 0;
   width: 16rpx;
   height: 16rpx;
   border-width: 3rpx;
 }
 
+.sn-avatar--size-normal .sn-avatar__status {
+  right: 1rpx;
+  bottom: 1rpx;
+}
+
 .sn-avatar--size-medium .sn-avatar__status {
+  right: 2rpx;
+  bottom: 2rpx;
   width: 24rpx;
   height: 24rpx;
 }
 
 .sn-avatar--size-large .sn-avatar__status {
+  right: 2rpx;
+  bottom: 2rpx;
   width: 28rpx;
   height: 28rpx;
 }

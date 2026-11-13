@@ -14,8 +14,9 @@
 5. **App 端 background-image 仅支持 linear-gradient**（conic-gradient/mask/url/data-URL 全不支持）：sn-circle 的 conic+mask 环形方案在 App 全灭（症状：饼形色块）。修复：uni-x 管线补丁把环改为 `<image>` + SVG data URL（stroke-dasharray 弧长 JS 内算好；12 点起笔 rotate(-90)；逆时针垂直轴镜像；linecap 真实生效；0% 省略圆、100% 满环）。颜色解析复用 sn-icon 的 computedStyle 回读模式，兜底 token 实值永不空白。
 6. **App 端层叠边缘合成取整**：sn-swipe-action 闭合态靠内容层 z-index 遮盖动作区，App 端漏 1–2px 缝隙。修复：闭合且非拖拽/动画时动作区 inline `translateX(±100%)` 移出 root `overflow: hidden` 边界，不依赖层叠。附带修复：`contentStyle` 偏移量 `×2` 转 rpx 的 375px 视口假设改为直接 px（测量/触摸坐标本就是 px；顺带修复 docs 预览滑动位移从未生效——rpx-transform 只处理 CSS 声明不处理运行时字符串）。
 7. **uni-app x `fields` 回调传 NodeInfo 对象本身**（经典 uni-app 传数组）：sn-icon 首版取色按数组读 `nodes[0]` 在 App 端永远读不到 → 全部图标空白。修复：对象/数组双形态探测 + JSON.stringify 正则兜底；ink 色首帧可见、解析成功升级级联色、失败回退 ink 永不空白。
-8. **App 端圆角根节点裁剪 absolute 子元素，`overflow: visible` 也压不住**（sn-badge 贴内钉住改造的延续实测）：sn-avatar 的 `status` 状态点骑在右下角（`right: 0; bottom: 0`），App 端被圆角根裁成月牙（真机截图只剩弧内一小条）。修复（终版）：组件拆成**双层结构**——根节点是纯定位盒（尺寸 / 叠层 margin / role，不圆角不裁剪），绘制的圆形是 `__body` 子节点（背景 / 形状 / 分隔环 / 裁剪都在它身上），状态点锚在**未圆角的 wrapper 盒角**：越过圆弧但永不离开 wrapper 盒，全端统一骑边渲染，不依赖任何 overflow 行为。首版「按 0.146×(D−点径) 贴内 inset」因与 uniapp 端骑角视觉不统一被否，已回退。回归测试断言 DOM 结构（点是 body 的兄弟节点）+ 源码 CSS（绘制属性在 body、wrapper 无 background/border-radius、点锚 corner）。
+8. **App 端圆角根节点裁剪 absolute 子元素，`overflow: visible` 也压不住**（sn-badge 贴内钉住改造的延续实测）：sn-avatar 的 `status` 状态点骑在右下角（`right: 0; bottom: 0`），App 端被圆角根裁成月牙（真机截图只剩弧内一小条）。修复（终版）：组件拆成**双层结构**——根节点是纯定位盒（尺寸 / 叠层 margin / role，不圆角不裁剪），绘制的圆形是 `__body` 子节点（背景 / 形状 / 分隔环 / 裁剪都在它身上），状态点锚在**未圆角的 wrapper 盒内、圆点中心落在圆弧上**（inset ≈ 0.146 × D − 点径/2，各尺寸预设重钉：small 0 / normal 1 / medium 2 / large 2 rpx）——「一半在内一半在外」的骑弧渲染，且永不离开 wrapper 盒，不依赖任何 overflow 行为。历次被否方案：v1 贴内 inset（与 uniapp 端骑角视觉不统一）、v2 盒角锚（点悬在盒角、与圆弧有缝）。回归测试断言 DOM 结构（点是 body 的兄弟节点）+ 源码 CSS（绘制属性在 body、wrapper 无 background/border-radius、各预设骑弧 inset）。
 9. **sn-avatar-group 裁剪窗口少算一个 overlap**：窗口宽 `visible × step` 只覆盖成员的步进和，第一（row/column 模式自拉）成员的外弧被窗口削边、最后一个可见成员的远弧也差一个 overlap——白底空头像时代不可见，渐变底色成员后显形（真机：成员被削边 / 竖向窗口过矮）。修复：窗口长度改 `(visible − 1) × step + diameter`（成员全弧跨度），窗口按补偿侧 `margin −overlap + padding +overlap` 拉过根节点的补偿 padding（`box-sizing: border-box` 防止 padding 撑宽），最后一个可见成员远弧恰好压窗口远边、其后成员的缝隙由后绘的折叠气泡盖住。`left-up`（row-reverse）模式成员不自带拉力、窗口几何另有差异，削边为预存在问题、本任务不扩 scope（follow-up）。
+   **附带教训（demo 授权）**：头像组成员尺寸必须与组件的 rpx 步长同单位——demo 曾用 px（`:size="32"`），重叠 margin 是 rpx，非 375 视口下重叠比例漂移（宽视口成员被盖得只剩细条），且裁剪窗口的 rpx 几何与 px 成员错位。组内 demo 统一 `size="64rpx"`。
 
 ## 教训（Memory 要点）
 
@@ -33,6 +34,12 @@
 - sn-circle 渐变 color 在 App 退化为末 stop 实色；speed 过渡 App 端跳变（显式降级，已注释）。
 - App 端关系选择器（`.a .b`）在 Vapor 模式不受支持（官方文档）——组件内大量后代选择器若启用 Vapor 需去依赖重构。
 - fan pill 文字 `white-space: nowrap` 在 App 被丢弃，CJK 长标签可能逐字换行，需真机确认。
+
+## 后续返工：badge 骑跨改 headroom 双盒（2026-11-14）
+
+压角钉内方案真机验收被否（角标要「一半在里面一半在外面」的骑跨视觉，钉内读作「在角里」）。终版结构：root 纯定位盒**零 padding**（App 端 absolute 在父元素「内容区域」锚定、web 锚定 padding box——root 带 padding 两端落点分叉），新增 `__host` 包裹层以 margin 预留突出量（数值 marker 32rpx ⇒ 16rpx 余量；红点 16rpx ⇒ 8rpx），marker 锚 root 外角、无 transform：一半压内容角、一半留余量，永不离开 root 盒。代价：root 比内容高 / 宽半个 marker（居中行内内容下沉余量一半，如 sn-tabs 徽标标题文本低 ~4px，视觉可接受）。
+
+同批：gen-x 的 `.sn-demo-contained` 钉住规则剥离加保留名单——`.sn-fab` 钉住规则在 x 产物保留（fab 非全屏层，demo 舞台即其锚定容器；App 端 absolute 锚定直接父元素=舞台），修复 fab demo 在 App 端全部 `position: fixed` 到页面根、多场景按钮堆在屏幕四角的错乱。
 
 ## Commit
 
