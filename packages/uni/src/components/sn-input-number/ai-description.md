@@ -47,9 +47,17 @@ import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-num
 | `immediateChange`                               | `boolean`                                                | `true`                    | Commit while typing; `false` commits on blur.   |
 | `updateOnInit`                                  | `boolean`                                                | `true`                    | Emit a corrected value on mount.                |
 | `inputType`                                     | `'number' \| 'digit'`                                    | `'digit'`                 | Native keyboard type.                           |
-| `theme`                                         | `'default' \| 'outline' \| 'outline-split' \| 'primary'` | `'default'`               | Visual theme.                                   |
+| `theme`                                         | `'default' \| 'outline' \| 'outline-split' \| 'primary' \| 'circle'` | `'default'`               | Visual theme (`circle` = AUI-additive gray pill with circular buttons). |
 | `round`                                         | `boolean`                                                | `false`                   | Fully rounded action buttons.                   |
 | `customClass` / `customStyle`                   | `string`                                                 | `''`                      | Root forwarding.                                |
+| `buttonColor` (AUI additive)                    | `string`                                                 | `undefined`               | Action-button fill (CSS color / `var(--sn-mp-color-*)`); overrides every theme fill, glyph flips to on-primary. |
+
+## Behavior Notes
+
+- `longPress` pauses as soon as the held finger travels more than 8px from its
+  start point (`touchmove`) — touch events keep firing on the press-start
+  element after the finger leaves it, so without this the repeat counts on
+  while the user drags elsewhere. A paused press restarts with a new touch.
 
 ## Events
 
@@ -64,14 +72,14 @@ import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-num
 
 | Token                                                          | Purpose                                      |
 | -------------------------------------------------------------- | -------------------------------------------- |
-| `--sn-mp-color-background-soft`                                | Segment fill (minus / field / plus)          |
-| `--sn-mp-color-background-elevated`                            | `default` theme divider gap                  |
+| `--sn-mp-color-background-soft`                                | Segment fill (minus / field / plus), `circle` track |
+| `--sn-mp-color-background-elevated`                            | `default` theme divider gap, `circle` button fill |
 | `--sn-mp-color-text-primary`                                   | Field value                                  |
 | `--sn-mp-color-text-secondary` / `--sn-mp-color-text-disabled` | Glyph colors (normal / at bounds, disabled)  |
-| `--sn-mp-color-action-primary`                                 | `primary` plus fill + minus outline          |
-| `--sn-mp-color-text-on-primary`                                | `primary` plus glyph                         |
+| `--sn-mp-color-action-primary`                                 | `primary` plus fill + minus outline; `buttonColor` recommendation |
+| `--sn-mp-color-text-on-primary`                                | `primary` plus glyph; `buttonColor` glyph    |
 | `--sn-mp-color-border-default`                                 | `outline` border + `outline-split` divider   |
-| `--sn-mp-radius-sm` / `--sn-mp-radius-full`                    | Segment corners / `round` pill corners       |
+| `--sn-mp-radius-sm` / `--sn-mp-radius-full`                    | Segment corners / `round` + `circle` pill corners |
 | `--sn-mp-spacing-3`                                            | Field segment horizontal padding             |
 | `--sn-mp-font-size-md` / `--sn-mp-font-weight-medium`          | Field typography                             |
 

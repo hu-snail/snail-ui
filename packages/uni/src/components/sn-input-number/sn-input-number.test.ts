@@ -79,6 +79,22 @@ describe('sn-input-number', () => {
     it('applies the theme class', () => {
       expect(mountNumber({ theme: 'outline' }).classes()).toContain('sn-input-number--outline');
       expect(mountNumber({ theme: 'primary' }).classes()).toContain('sn-input-number--primary');
+      expect(mountNumber({ theme: 'circle' }).classes()).toContain('sn-input-number--circle');
+    });
+
+    it('paints both action buttons with buttonColor and on-primary glyphs', () => {
+      const w = mountNumber({ buttonColor: '#1c64fd' });
+      for (const button of ['.sn-input-number__minus', '.sn-input-number__plus']) {
+        const style = w.find(button).attributes('style') ?? '';
+        expect(style).toContain('background-color: #1c64fd');
+        expect(style).toContain('color: var(--sn-mp-color-text-on-primary)');
+      }
+    });
+
+    it('leaves the action buttons unstyled without buttonColor', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__minus').attributes('style')).toBeUndefined();
+      expect(w.find('.sn-input-number__plus').attributes('style')).toBeUndefined();
     });
 
     it('applies the round class', () => {
@@ -344,6 +360,37 @@ describe('sn-input-number', () => {
       await w.find('.sn-input-number__plus').trigger('tap');
       expect(w.vm.modelValue).toBe(settled + 1);
     });
+
+    it('pauses the repeat when the held finger moves off the button', async () => {
+      // Regression: touch events keep firing on the press-start element after
+      // the finger leaves it, so without the move check the stepper counted
+      // on while the user was dragging elsewhere (AUI-UNI-FB-018).
+      vi.useFakeTimers();
+      const w = mountNumber({ modelValue: 0, max: 100, longPress: true });
+      const plus = w.find('.sn-input-number__plus');
+      await plus.trigger('touchstart', { touches: [{ clientX: 20, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      const stepped = w.emitted('update:modelValue')?.length ?? 0;
+      expect(stepped).toBeGreaterThan(0);
+      // 40px of travel — far past the 8px cancel threshold.
+      await plus.trigger('touchmove', { touches: [{ clientX: 60, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(400);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBe(stepped);
+    });
+
+    it('keeps repeating through sub-threshold hold jitter', async () => {
+      vi.useFakeTimers();
+      const w = mountNumber({ modelValue: 0, max: 100, longPress: true });
+      const plus = w.find('.sn-input-number__plus');
+      await plus.trigger('touchstart', { touches: [{ clientX: 20, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      const stepped = w.emitted('update:modelValue')?.length ?? 0;
+      expect(stepped).toBeGreaterThan(0);
+      // ~3px of jitter stays inside the 8px threshold.
+      await plus.trigger('touchmove', { touches: [{ clientX: 22, clientY: 23 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBeGreaterThan(stepped);
+    });
   });
 
   /* ── Extended coverage: presentation props, a11y, coercion edges ── */
@@ -590,12 +637,12 @@ describe('sn-input-number', () => {
 
   describe('uni-app x style contract', () => {
     // The uni-app x CSS transform rewrites descendant overrides into a
-    // fallback-less `var(--snx-…)` consumed by the segment rule. A fill or
-    // glyph color that only exists on the shared `__action` rule therefore
-    // renders transparent on App / uni-app x web — white +/- buttons next to
-    // a gray field (AUI-UNI-FB-018). Each segment must own its base values so
-    // the transform can emit `var(--snx-…, <base>)`.
-    it('declares the fill and glyph color on each segment rule', () => {
+    // fallback-less `var(--snx-…)` consumed by the segment rule. A fill,
+    // glyph color, or corner radius that only exists on another rule
+    // therefore renders transparent / square on App / uni-app x web — white
+    // +/- buttons next to a gray field (AUI-UNI-FB-018). Each segment must
+    // own its base values so the transform can emit `var(--snx-…, <base>)`.
+    it('declares the fill, glyph color and corner radius on each segment rule', () => {
       const source = readFileSync(resolve(import.meta.dirname, 'sn-input-number.vue'), 'utf8');
       for (const segment of ['sn-input-number__minus', 'sn-input-number__plus']) {
         const start = source.indexOf(`\n.${segment} {`);
@@ -603,6 +650,9 @@ describe('sn-input-number', () => {
         const rule = source.slice(start, source.indexOf('}', start));
         expect(rule).toContain('background-color: var(--sn-mp-color-background-soft)');
         expect(rule).toContain('color: var(--sn-mp-color-text-secondary)');
+        // Themes override the border-radius shorthand, so the base must be
+        // declared as the shorthand too — not per-corner longhands.
+        expect(rule).toContain('border-radius:');
       }
     });
   });

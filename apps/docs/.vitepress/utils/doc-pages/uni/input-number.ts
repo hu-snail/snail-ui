@@ -63,7 +63,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-theme',
       title: '主题（theme）',
-      blurb: 'default / primary / outline-split / outline 四种主题。',
+      blurb: 'default / primary / outline-split / outline + circle 圆形按钮胶囊（buttonColor 支持主题色圆钮）。',
     },
     {
       name: 'input-number-mp-round',
@@ -154,8 +154,14 @@ import { InputNumber } from '@snui/uni';
         default: "'digit'",
         desc: 'Native keyboard type for the field.',
       },
-      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme.' },
+      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme. `circle` 为 AUI 追加：灰色胶囊轨道 + 两端圆形按钮。' },
       { name: 'round', type: 'boolean', default: 'false', desc: '圆角样式' },
+      {
+        name: 'buttonColor',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: 'AUI 追加：两侧按钮填充色（CSS 色 / `var(--sn-mp-color-*)`），覆盖主题填充，glyph 自动切换 on-primary。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

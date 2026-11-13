@@ -36,56 +36,68 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
    声明在 computed-value time 失效 → 透明 → 白卡片透出白底按钮，而 `__inner`（基础值声明在
    自己规则里，转换器带上了 fallback）保持灰底。用户截图像素实测：minus #ffffff /
    field #f4f4f5 / plus #ffffff。
+6. **长按连加移开不停止（第三轮用户反馈）。** touch 事件在手指移出后仍派发给**起始元素**，
+   组件只监听 touchstart/touchend/touchcancel → 手指拖着离开按钮后 interval 继续计数。
+   修法：`onPressMove` 记录按下起点，touchmove 位移平方超过 8px²（`PRESS_CANCEL_DISTANCE_PX`）
+   即清定时器；轻微抖动（<8px）不中断。暂停后需重新按下才继续（可预测优先，§85）。
+7. **custom-class / customStyle 宽度露馅（第三轮用户反馈）。** root 作为 flex item 被
+   `align-items: stretch` 的父容器拉满整行（`inline-flex` 在 flex item 上块化），带边框/背景的
+   自定义类渲染成全宽空壳。修法：root `align-self: flex-start`（默认收缩贴内容）；`__inner`
+   改 `flex: 1 1 auto`（用户显式给宽度时中段优雅填满，自然宽度下 basis auto 取 field 尺寸不变）。
+8. **圆形按钮风格缺失（第三轮需求）。** 追加 `theme: 'circle'`（灰胶囊轨道 + 两端白色圆钮，
+   field 透出轨道色、分隔线隐藏）与 `buttonColor` prop（两侧按钮填充色，glyph 自动 on-primary，
+   对齐 naive-ui color 语义），登记 AGENTS.md §112.3a。
+9. **circle/round 圆角在 x 端会掉（衍生陷阱）。** 圆角基础值原来以 longhand 声明，而
+   circle / round 主题覆写 `border-radius` **shorthand** → 转换器对 shorthand 产出无 fallback
+   var → App / x-web 默认主题下圆角失效。修法：基础圆角与全部主题覆写统一走 shorthand
+   （`border-radius: <outer> 0 0 <outer>`），转换器据基础 shorthand 产出 fallback。
 
 ## 修法
 
-| 项          | 修法                                                                                                        |
-| ----------- | ----------------------------------------------------------------------------------------------------------- |
-| root        | 透明、无 padding/border；`display: inline-flex` + `line-height: 1`，只负责布局                              |
-| segment     | action / inner 各自带 `background-soft` 与外侧 4px 圆角（`--sn-mp-radius-sm`）                              |
-| 分隔线      | action 内新增真实 `<view class="__action-divider">`（1px 反色缝；outline-split 改 18px 短灰线）             |
-| 输入区      | 新增 `__inner` 包裹 input：`padding: 0 var(--sn-mp-spacing-3)`（8px），input 36px / 14px / 500             |
-| 主题        | outline = 外框 + inner 上下描边、隐藏 divider；primary = 减号描边 + 加号实心；round = 外角全圆                 |
-| 禁用        | 默认主题 glyph 走 `text-disabled`；primary 主题 action `opacity: .4`（文档不再整控件降透明度）                |
-| 图标        | `SnIcon` 12px（`size="24rpx"`）——旧的 `:size="24"` 是 24px，比参考大一倍                                    |
-| doodle      | 皮肤改为给 segment 画 4rpx 手绘描边（旧规则挂在 root 上，结构变更后失效）                                   |
+| 修法 | 说明 |
+| ---- | ---- |
+| root     | 透明、无 padding/border；`display: inline-flex` + `align-self: flex-start`（flex item 不被 stretch 拉满）+ `line-height: 1`，只负责布局 |
+| segment     | action / inner 各自带 `background-soft` 与外侧 4px 圆角（`border-radius` shorthand） |
+| 分隔线      | action 内新增真实 `<view class="__action-divider">`（1px 反色缝；outline-split 改 18px 短灰线；基础 `display: block` 供主题 `none` 覆写的 var fallback） |
+| 输入区      | 新增 `__inner` 包裹 input：`padding: 0 var(--sn-mp-spacing-3)`（8px），input 36px / 14px / 500，`flex: 1 1 auto`（显式拉伸时中段填满） |
+| 主题        | outline = 外框 + inner 上下描边、隐藏 divider；primary = 减号描边 + 加号实心；`circle`（追加）= 灰胶囊轨道 + 白色圆钮；round = 外角全圆 |
+| 禁用        | 默认主题 glyph 走 `text-disabled`；primary 主题 action `opacity: .4` |
+| 图标        | `SnIcon` 12px（`size="24rpx"`）——旧的 `:size="24"` 是 24px，比参考大一倍 |
+| doodle      | 皮肤改为给 segment 画 4rpx 手绘描边（按段声明背景，同 fallback 契约） |
 | stepStrictly | `normalize` 改为「0 锚点吸附 → `[min,max]` 严格边界取最近合法倍数」；`canStep` 用归一化后的候选值比较，网格边缘按钮置灰 |
-| 段级填充    | `background-color` / `color` 从共享 `__action` 下沉到 `__minus` / `__plus` 各自规则（wot v2 的 sub/add 也是各自上色），转换器据此产出带 fallback 的 `var(--snx-…, <base>)`；doodle 皮肤的背景覆写同步改为按段声明 |
+| 段级填充    | `background-color` / `color` / `border-radius` 在 `__minus` / `__plus` 各自规则声明（wot v2 的 sub/add 也是各自上色），转换器据此产出带 fallback 的 `var(--snx-…, <base>)` |
+| 长按移开    | `onPressMove`：按住期间 touchmove 位移 >8px 清定时器暂停连加，重新按下才继续 |
+| 圆形风格    | `theme: 'circle'` + `buttonColor`（追加，AGENTS.md §112.3a）；`buttonColor` 为内联样式，优先级高于全部主题按钮填充 |
 
 伪元素方案被否决：uni-app x 的 CSS 转换会删除 `::before/::after`，加号/减号会整片空白，
 因此 glyph 继续用 `SnIcon`、分隔线用真实节点。
 
 ## Regression Test
 
-`sn-input-number.test.ts` 新增 6 条：
+`sn-input-number.test.ts` 共 68 条，其中本轮新增 / 扩展：
 
-- `wraps the field in its own inner segment` — field 必须在 `__inner` 内
-- `separates the three segments with real divider nodes` — 两个 action 各携带一条 divider
-  （uvue 转换会丢弃伪元素，分隔线不能退回 CSS 绘制）
-- `anchors the strict grid at zero and lands inside [min, max]` — min=3 / step=2：1 → 4、17 → 14
-- `never emits a strict-step value that is not a multiple of step` — 5 必须被修正为偶数
-- `disables stepping past the strict grid bounds` — 4 的减号、14 的加号置灰
-- `declares the fill and glyph color on each segment rule`（uni-app x style contract）—
-  `__minus` / `__plus` 规则必须自带 `background-color: var(--sn-mp-color-background-soft)` 与
-  `color: var(--sn-mp-color-text-secondary)`，否则 uni-x 转换产出无 fallback 的
-  `var(--snx-…)`，App / x-web 上 +/- 渲染成透明（白底）
+- `pauses the repeat when the held finger moves off the button` — touchmove 位移 40px 后
+  repeat 停止（回归 #6）
+- `keeps repeating through sub-threshold hold jitter` — ~3px 抖动不中断
+- `paints both action buttons with buttonColor and on-primary glyphs` / `leaves the action
+  buttons unstyled without buttonColor` — buttonColor 契约（#8）
+- `applies the theme class` 扩展 circle（#8）
+- `declares the fill, glyph color and corner radius on each segment rule`（uni-app x style
+  contract）— `__minus` / `__plus` 必须自带 `background-color` / `color` / `border-radius`
+  shorthand 基础声明，否则 uni-x 转换产出无 fallback 的 `var(--snx-…)`（回归 #5 / #9）
 
-组件 64 条用例全绿；全量回归 113 文件 / 3851 用例。
+此前批次：inner 包裹、真实 divider 节点、0 锚点吸附、非倍数不落值、严格边界置灰。
 
 ## 验证
 
 - `pnpm -F @snui/uni typecheck / lint / build`：PASS
-- `pnpm -F @snui/uni test`：113 files / 3851 tests PASS
+- `pnpm -F @snui/uni test`：113 files 全绿（本批前 3851；本轮组件 68 条）
 - `pnpm -F @snui/uni-x build && pnpm -F @snui/uni-x test`：66 tests PASS，0 rule dropped；
-  产物 grep 确认 `__minus` / `__plus` 的 bg / color 均带 `var(--snx-…, <base>)` fallback
-- `pnpm -F @snui/uni-demo-x gen && check`：100 pages / 1424 .uvue OK
-- `packages/uni/dist/styles/index.css` 实测：`__minus[data-v]` / `__plus[data-v]` 规则各自携带
-  灰底 + 次级图标色（H5 / MP 级联等价，视觉不变）
-- H5 首轮实测（375×812）：minus 28×28 + inner 52×28（padding 8px）+ plus 28×28 = 108×28，
-  divider 1px 反色 / outline-split 18px，primary 加号 `#1677ff` 实心。截图面（IAB
-  screenshot surface）本机不可用，视觉以 computed style + 几何尺寸核对，未做像素截图；
-  第二轮（段级填充下沉）浏览器像素复检 NOT RUN——surface 仍不可用，以 dist CSS 与
-  uvue 产物 grep 为准。
+  产物 grep 确认：段 bg/color/radius 均带 `var(--snx-…, <base>)` fallback，divider
+  `display: var(…, block)`，circle 主题 / `:style="actionStyle"` / `@touchmove` 完整保留
+- `pnpm -F @snui/uni-demo-x gen && check`：101 pages / 1425 .uvue OK
+- `packages/uni/dist/styles/index.css` 实测：两段规则自带灰底 + 圆角 shorthand，circle 规则在册
+- 浏览器像素复检：NOT RUN（browser surface 本机不可用），以 dist CSS + uvue 产物 grep 为准
 
 ## 教训
 
@@ -102,3 +114,13 @@ uni-demo `/pages/form/input-number`（文档站手机预览 iframe 同一页）�
   属性只声明在共享类上时产出无 fallback 的 var，App / x-web 上直接失效（透明 / 继承）。
   排查手法：grep dist uvue 里 `var(--snx-` 后面缺 `,` 的行。同类隐患可能存在于其它
   组件，登记为后续全面 sweep（follow-up）。
+- **shorthand / longhand 也要对齐。** 转换器按「被覆写的属性形态」产 var：主题覆写
+  `border-radius` shorthand 时，基础值必须同为 shorthand——longhand 基础救不了 shorthand
+  覆写（第二轮的 radius 缺 fallback 即此）。多端组件里凡是主题会覆写的属性，基础规则用
+  同一形态声明。
+- **touch 事件跟随起始元素。** 长按类交互若只在 touchstart/touchend 里管理定时器，手指移出
+  后 interval 会继续跑——必须监听 touchmove 做位移阈值暂停（uni H5 / MP / App 同此行为）。
+- **flex item 上的 inline-flex 会被块化拉伸。** 组件根节点若交给 `align-items: stretch` 的
+  父容器，带边框/背景的自定义类直接渲染成全宽空壳；根节点 `align-self: flex-start` 是
+  组件级默认的正确落点，显式宽度（customStyle width）仍可拉伸，配合内段 `flex: 1 1 auto`
+  优雅填满。

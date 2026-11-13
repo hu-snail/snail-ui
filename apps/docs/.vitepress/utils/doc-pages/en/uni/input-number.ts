@@ -54,7 +54,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-theme',
       title: 'Theme (theme)',
-      blurb: 'Four themes: default / primary / outline-split / outline.',
+      blurb: 'default / primary / outline-split / outline + circle pill with circular buttons (buttonColor for themable circles).',
     },
     {
       name: 'input-number-mp-round',
@@ -201,8 +201,19 @@ import { InputNumber } from '@snui/uni';
         default: "'digit'",
         desc: 'Native keyboard type for the field.',
       },
-      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme.' },
+      {
+        name: 'theme',
+        type: 'InputNumberTheme',
+        default: "'default'",
+        desc: 'Visual theme. `circle` is AUI-additive: gray pill track with circular end buttons.',
+      },
       { name: 'round', type: 'boolean', default: 'false', desc: 'Fully rounded action buttons.' },
+      {
+        name: 'buttonColor',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: 'AUI-additive: action-button fill (CSS color / `var(--sn-mp-color-*)`); overrides theme fills, glyph flips to on-primary.',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',

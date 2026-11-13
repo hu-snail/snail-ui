@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-input-number — theme: default / primary / outline-split / outline (wot-ui v2 order). */
+/** Demo: sn-input-number — theme: default / primary / outline-split / outline (wot-ui v2 order) + circle pill with circular buttons (AUI additive, buttonColor for themable circles). */
 import { ref } from 'vue';
 import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
 
@@ -7,6 +7,8 @@ const a = ref(1);
 const b = ref(2);
 const c = ref(3);
 const d = ref(4);
+const e = ref(5);
+const f = ref(6);
 </script>
 
 <template>
@@ -15,6 +17,12 @@ const d = ref(4);
     <SnInputNumber v-model="b" theme="primary" />
     <SnInputNumber v-model="c" theme="outline-split" />
     <SnInputNumber v-model="d" theme="outline" />
+    <SnInputNumber v-model="e" theme="circle" />
+    <SnInputNumber
+      v-model="f"
+      theme="circle"
+      button-color="var(--sn-mp-color-action-primary)"
+    />
   </view>
 </template>
 

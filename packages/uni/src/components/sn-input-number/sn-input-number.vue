@@ -23,6 +23,10 @@
  *   - `outline`       soft fill, outer hairline border, no dividers
  *   - `outline-split` soft fill, short hairline dividers, no outer border
  *   - `primary`       minus = primary hairline outline, plus = primary fill
+ *   - `circle`        gray pill track, white circular end buttons (additive)
+ *
+ * `buttonColor` (additive) overrides the action fill on any theme and flips
+ * the glyph to the on-primary color.
  *
  * Glyphs are `SnIcon` (not `::before` / `::after`): the uni-app x CSS
  * transform drops pseudo-elements, so drawing the +/- bars in CSS would leave
@@ -31,8 +35,10 @@
  * ## Timers (AGENTS.md §41)
  *
  * `longPress` runs one `setInterval` while a button is held. It is cleared on
- * `touchend` / `touchcancel`, on unmount and before every new press, so a
- * half-pressed button can never outlive the component.
+ * `touchend` / `touchcancel`, on unmount, before every new press, and — via
+ * `touchmove` — as soon as the held finger travels away from its start point
+ * (touch events keep firing on the press-start element after the finger
+ * leaves it, so without the move check the stepper would keep counting).
  *
  * ## Value model
  *
@@ -61,8 +67,8 @@ import { Minus as MinusIcon, Plus as PlusIcon } from '../sn-icon/sn-icon-set';
 
 defineOptions({ name: 'SnInputNumber' });
 
-/** wot-ui `InputNumberTheme`. */
-type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary';
+/** wot-ui `InputNumberTheme` + the AUI-additive `circle` (AGENTS.md §112.3a). */
+type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary' | 'circle';
 
 const props = withDefaults(
   defineProps<{
@@ -119,6 +125,16 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the root node. */
     customStyle?: string;
+
+    /* ── AUI additive (AGENTS.md §112.3a) ────────────────────────────────── */
+
+    /**
+     * Action-button fill — any CSS color or `var(--sn-mp-color-*)` token.
+     * Overrides every theme's button fill; the glyph flips to the on-primary
+     * color (naive-ui `color` semantics — intended for saturated hues such as
+     * `var(--sn-mp-color-action-primary)`).
+     */
+    buttonColor?: string | undefined;
   }>(),
   {
     modelValue: 0,
@@ -145,6 +161,7 @@ const props = withDefaults(
     round: false,
     customClass: '',
     customStyle: '',
+    buttonColor: undefined,
   },
 );
 
@@ -317,6 +334,26 @@ let pressTimer: ReturnType<typeof setInterval> | null = null;
  * `consumeTap` flag in sn-keyboard-keys).
  */
 let pressTicked = false;
+/** Viewport point where the held press began — origin for the move-away check. */
+let pressOrigin: { x: number; y: number } | null = null;
+
+/**
+ * Finger travel (px) that reads as "moved off the button" — the repeat pauses
+ * (touch events keep firing on the press-start element after the finger
+ * leaves it, so without this the stepper keeps counting). The 28px button
+ * leaves ≤14px of slack from a center touch; 8px sits well above hold jitter
+ * (~1–2px) while catching every real exit. A paused press restarts only with
+ * a new touch — deliberate (predictable over clever, AGENTS.md §85).
+ */
+const PRESS_CANCEL_DISTANCE_PX = 8;
+
+/** Minimal touch shape shared by uni's H5 / MP / App event payloads. */
+interface PressTouch {
+  clientX: number;
+  clientY: number;
+}
+/** `ArrayLike` — uni's `TouchList` is index-based, not a real array. */
+type PressTouchEvent = { touches?: ArrayLike<PressTouch> };
 
 /** Consume the trailing tap after a long-press repeat; true = swallow it. */
 function consumePressTap(): boolean {
@@ -332,8 +369,10 @@ function clearPressTimer(): void {
   }
 }
 
-function onPressStart(direction: 1 | -1): void {
+function onPressStart(direction: 1 | -1, event?: PressTouchEvent): void {
   if (!props.longPress) return;
+  const touch = event?.touches?.[0];
+  pressOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
   clearPressTimer();
   pressTicked = false;
   pressTimer = setInterval(() => {
@@ -344,6 +383,18 @@ function onPressStart(direction: 1 | -1): void {
     pressTicked = true;
     void stepBy(direction);
   }, 120);
+}
+
+/** Pause the repeat once the held finger travels away from its start point. */
+function onPressMove(event?: PressTouchEvent): void {
+  if (pressTimer === null) return;
+  const touch = event?.touches?.[0];
+  if (!touch || !pressOrigin) return;
+  const dx = touch.clientX - pressOrigin.x;
+  const dy = touch.clientY - pressOrigin.y;
+  if (dx * dx + dy * dy > PRESS_CANCEL_DISTANCE_PX * PRESS_CANCEL_DISTANCE_PX) {
+    clearPressTimer();
+  }
 }
 
 function onPressEnd(): void {
@@ -366,6 +417,12 @@ const rootClass = computed(() => [
 ]);
 
 const rootStyle = computed(() => props.customStyle || undefined);
+
+/** Per-button inline fill — `buttonColor` overrides every theme's fill. */
+const actionStyle = computed(() => {
+  if (!props.buttonColor) return undefined;
+  return `background-color: ${props.buttonColor}; color: var(--sn-mp-color-text-on-primary);`;
+});
 
 const fieldWidthStyle = computed(() => {
   if (props.inputWidth === undefined || props.inputWidth === '') return undefined;
@@ -405,12 +462,14 @@ if (props.updateOnInit) {
         'sn-input-number__minus',
         { 'sn-input-number__action--disabled': minusDisabled },
       ]"
+      :style="actionStyle"
       role="button"
       aria-label="decrease"
       :aria-disabled="minusDisabled ? 'true' : undefined"
       :tabindex="minusDisabled ? -1 : 0"
       @tap="onMinus"
-      @touchstart="onPressStart(-1)"
+      @touchstart="onPressStart(-1, $event)"
+      @touchmove="onPressMove"
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
@@ -440,12 +499,14 @@ if (props.updateOnInit) {
         'sn-input-number__plus',
         { 'sn-input-number__action--disabled': plusDisabled },
       ]"
+      :style="actionStyle"
       role="button"
       aria-label="increase"
       :aria-disabled="plusDisabled ? 'true' : undefined"
       :tabindex="plusDisabled ? -1 : 0"
       @tap="onPlus"
-      @touchstart="onPressStart(1)"
+      @touchstart="onPressStart(1, $event)"
+      @touchmove="onPressMove"
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
@@ -467,6 +528,13 @@ if (props.updateOnInit) {
 .sn-input-number {
   display: inline-flex;
   align-items: center;
+  /* As a flex item the root would otherwise be blockified and stretched by
+   * `align-items: stretch` parents — bordered / tinted customClass /
+   * customStyle roots then render a full-width empty shell around the
+   * left-packed segments. Shrink to the segments instead; an explicit width
+   * (customStyle / customClass) still stretches, and the inner segment then
+   * absorbs the extra space. */
+  align-self: flex-start;
   font-family: inherit;
   line-height: 1;
   user-select: none;
@@ -495,25 +563,31 @@ if (props.updateOnInit) {
 .sn-input-number__minus {
   background-color: var(--sn-mp-color-background-soft);
   color: var(--sn-mp-color-text-secondary);
-  border-top-left-radius: var(--sn-mp-radius-sm);
-  border-bottom-left-radius: var(--sn-mp-radius-sm);
+  /* Corner radii ride the border-radius shorthand only: the uni-app x
+   * transform emits a fallback for an overridden property solely from the
+   * base declaration of that same property, and `circle` / `round` override
+   * the shorthand. Longhand bases would leave the shorthand var
+   * fallback-less and drop the corners on App / x-web. */
+  border-radius: var(--sn-mp-radius-sm) 0 0 var(--sn-mp-radius-sm);
 }
 
 .sn-input-number__plus {
   background-color: var(--sn-mp-color-background-soft);
   color: var(--sn-mp-color-text-secondary);
-  border-top-right-radius: var(--sn-mp-radius-sm);
-  border-bottom-right-radius: var(--sn-mp-radius-sm);
+  border-radius: 0 var(--sn-mp-radius-sm) var(--sn-mp-radius-sm) 0;
 }
 
 /* Inner divider: the 1px reverse-fill gap (default) / short hairline
  * (outline-split) between segments. Rendered as a real node — uvue drops
- * pseudo-elements. */
+ * pseudo-elements. `display: block` is the base value the uni-app x
+ * transform needs to emit a fallback for the themes' `display: none`
+ * overrides (an undeclared property produces a fallback-less var). */
 .sn-input-number__action-divider {
   position: absolute;
   top: 50%;
   width: 2rpx;
   height: 100%;
+  display: block;
   transform: translateY(-50%);
   background-color: var(--sn-mp-color-background-elevated);
 }
@@ -530,7 +604,10 @@ if (props.updateOnInit) {
   position: relative;
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
+  /* Grow only when the root itself is stretched (explicit width) — the
+   * natural inline-flex width resolves from the field, so nothing changes
+   * in the compact default. */
+  flex: 1 1 auto;
   box-sizing: border-box;
   height: 56rpx;
   padding: 0 var(--sn-mp-spacing-3);
@@ -594,6 +671,26 @@ if (props.updateOnInit) {
   color: var(--sn-mp-color-text-on-primary);
 }
 
+/* circle (AUI additive): a gray pill track with white circular buttons at
+ * both ends — the field sits directly on the track, no dividers. */
+.sn-input-number--circle {
+  background-color: var(--sn-mp-color-background-soft);
+  border-radius: var(--sn-mp-radius-full);
+}
+
+.sn-input-number--circle .sn-input-number__minus,
+.sn-input-number--circle .sn-input-number__plus {
+  background-color: var(--sn-mp-color-background-elevated);
+  border-radius: var(--sn-mp-radius-full);
+}
+.sn-input-number--circle .sn-input-number__inner {
+  background-color: transparent;
+}
+
+.sn-input-number--circle .sn-input-number__action-divider {
+  display: none;
+}
+
 /* ── Disabled ───────────────────────────────────────────────────────────── */
 
 .sn-input-number__action--disabled {
@@ -608,13 +705,11 @@ if (props.updateOnInit) {
 /* ── Round ──────────────────────────────────────────────────────────────── */
 
 .sn-input-number--round .sn-input-number__minus {
-  border-top-left-radius: var(--sn-mp-radius-full);
-  border-bottom-left-radius: var(--sn-mp-radius-full);
+  border-radius: var(--sn-mp-radius-full) 0 0 var(--sn-mp-radius-full);
 }
 
 .sn-input-number--round .sn-input-number__plus {
-  border-top-right-radius: var(--sn-mp-radius-full);
-  border-bottom-right-radius: var(--sn-mp-radius-full);
+  border-radius: 0 var(--sn-mp-radius-full) var(--sn-mp-radius-full) 0;
 }
 
 /* ── Doodle skin ────────────────────────────────────────────────────────── */
