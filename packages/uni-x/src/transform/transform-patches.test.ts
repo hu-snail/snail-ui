@@ -23,38 +23,43 @@ describe('sn-qr-code canvas patches (uni-app x)', () => {
 describe('sn-icon color patches (uni-app x)', () => {
   // Run the real upstream source through the full pipeline — any upstream
   // drift against the anchors fails here at test time, not at build time.
+  // The App-side rasterization (stroke-color resolution + SVG data URL) lives
+  // IN the source now (sn-icon-mp.ts, shared with the MP branch), so the
+  // patch set is template retargeting only.
   const source = readFileSync(
     join(import.meta.dirname, '../../../uni/src/components/sn-icon/sn-icon.vue'),
     'utf8',
   );
   const result = transformVueToUvue(source, 'sn-icon/sn-icon.vue');
+  const mpModule = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-icon/sn-icon-mp.ts'),
+    'utf8',
+  );
 
-  it('resolves the stroke color through the cascade instead of a fixed ink', () => {
+  it('renders IconData through <image> fed by the in-source data-URL module', () => {
+    // App has no inline <svg> element; the uvue must consume the shared
+    // sn-icon-mp module and must not keep a real <svg> element (markup-shaped
+    // assertion: prose comments may still document the retired approach).
+    expect(result.code).toContain('<image v-else-if="displayIcon"');
+    expect(result.code).toContain(':src="iconDataUrl"');
+    expect(result.code).toContain("from './sn-icon-mp'");
+    expect(result.code).not.toContain('xmlns=');
+  });
+
+  it('resolves the stroke color through the cascade in the shared module', () => {
     // Regression: `currentColor` used to bake as a fixed `#1a1a1a` and
     // var(--token) strokes were emitted verbatim (invalid inside an SVG
-    // image document) — icons on colored buttons rendered black on
-    // uni-app x. The bake must go through the resolved-color state, with
-    // the ink constant only as the availability fallback.
-    expect(result.code).not.toContain(`? '#1a1a1a'`);
-    expect(result.code).toContain('resolvedIconColor');
-    expect(result.code).toContain('ICON_INK_FALLBACK');
-    expect(result.code).toContain("computedStyle: ['color']");
-    expect(result.code).toContain('isConcreteIconColor');
-  });
-
-  it('probes both fields-callback result shapes', () => {
-    // uni-app x delivers the NodeInfo itself (ret.color); classic-style
-    // hosts deliver a one-element array. Regression: reading nodes[0] only
-    // resolved nothing on App and blanked every icon.
-    expect(result.code).toContain('Array.isArray(ret)');
-    expect(result.code).toContain('readResolvedColor');
-    expect(result.code).toContain('JSON.stringify');
-  });
-
-  it('renders IconData through <image> with a per-instance query class', () => {
-    expect(result.code).toContain('<image v-else-if="displayIcon"');
-    expect(result.code).toContain('sn-icon--u${iconUid}');
-    expect(result.code).toContain('createSelectorQuery');
+    // image document) — icons on colored buttons rendered black on uni-app x.
+    // The resolver is sn-icon-mp.ts (single source of truth for MP + App):
+    // concrete colors bake verbatim, everything else reads back through
+    // computedStyle with the ink constant as the never-blank fallback, and
+    // both fields-callback result shapes are probed (uni-app x delivers the
+    // NodeInfo itself; classic-style hosts deliver a one-element array).
+    expect(mpModule).toContain('ICON_INK_FALLBACK');
+    expect(mpModule).toContain("computedStyle: ['color']");
+    expect(mpModule).toContain('readResolvedIconColor');
+    expect(mpModule).toContain('JSON.stringify');
+    expect(result.code).toContain('useMpIconColor');
   });
 
   it('keeps every sn-icon anchor applied', () => {
