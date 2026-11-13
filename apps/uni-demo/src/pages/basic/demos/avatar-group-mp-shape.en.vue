@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /**
- * Demo: sn-avatar-group (uni-end) — shape: round (default) / square.
- * The group's `shape` uniformly overrides the members' own shape (the
- * wd-avatar-group "unify member shapes" contract); members reuse the
- * gradient text avatars from the basic demo.
+ * Demo: sn-avatar-group (uni-end) — shape: round (default) / square. The
+ * group's `shape` uniformly overrides the members' own shape (the
+ * wd-avatar-group "unify member shapes" contract); member sizes are rpx,
+ * see the basic demo note. Labels sit above each stack.
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
@@ -19,17 +19,14 @@ const members = [
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <!-- Round: default shape -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Round stack (default)</text>
-      </view>
+    <view class="grp-scene">
+      <text class="grp-label">Round stack (default)</text>
       <SnAvatarGroup cascading="right-up">
         <SnAvatar
           v-for="member in members"
           :key="member.text"
           :text="member.text"
-          :size="32"
+          size="64rpx"
           :bg-color="member.base"
           color="var(--sn-mp-color-text-on-primary)"
           :custom-style="`background-image: ${member.gradient}`"
@@ -37,17 +34,14 @@ const members = [
       </SnAvatarGroup>
     </view>
 
-    <!-- Square: unified via the group -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Square stack (shape="square")</text>
-      </view>
+    <view class="grp-scene">
+      <text class="grp-label">Square stack (shape="square")</text>
       <SnAvatarGroup shape="square" cascading="right-up">
         <SnAvatar
           v-for="member in members"
           :key="member.text"
           :text="member.text"
-          :size="32"
+          size="64rpx"
           :bg-color="member.base"
           color="var(--sn-mp-color-text-on-primary)"
           :custom-style="`background-image: ${member.gradient}`"
@@ -61,31 +55,19 @@ const members = [
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-}
-
-/* Scenario row card: label left, group right (same as the basic demo). */
-.grp-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   gap: 24rpx;
-  padding: 24rpx;
-  border-radius: var(--sn-mp-radius-lg);
-  background-color: var(--sn-mp-color-background-subtle);
 }
 
-.grp-meta {
+/* Scenario block: label above, stack below. */
+.grp-scene {
   display: flex;
   flex-direction: column;
-  gap: 4rpx;
-  min-width: 0;
+  gap: 12rpx;
 }
 
-.grp-title {
-  color: var(--sn-mp-color-text-primary);
-  font-size: 26rpx;
-  font-weight: var(--sn-mp-font-weight-semibold);
+.grp-label {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
   line-height: var(--sn-mp-font-line-height-normal);
 }
 </style>

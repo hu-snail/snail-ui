@@ -56,8 +56,22 @@ import { AvatarGroup } from '@snui/uni';
     {
       name: 'avatar-group-mp-basic',
       title: '基础用法',
-      blurb:
-        '最大数量折叠（max-count）、自定义折叠文本（collapse-avatar）、叠层方向（cascading）与垂直堆叠（vertical）。',
+      blurb: '基础叠层：不设 max-count，全部显示；cascading 控制叠层方向。',
+    },
+    {
+      name: 'avatar-group-mp-max-count',
+      title: '截断计数（max-count）',
+      blurb: 'max-count=3 → 2 个头像 + 折叠气泡；max-count 计槽位，气泡占最后一槽。',
+    },
+    {
+      name: 'avatar-group-mp-collapse',
+      title: '自定义折叠文本（collapse-avatar）',
+      blurb: 'collapse-avatar="+12" 替换派生的 +N，max-count 语义不变。',
+    },
+    {
+      name: 'avatar-group-mp-vertical',
+      title: '竖向排列（vertical）',
+      blurb: 'vertical 忽略 cascading，叠层方向转为自上而下。',
     },
     {
       name: 'avatar-group-mp-shape',

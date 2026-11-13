@@ -1,14 +1,10 @@
 <script setup lang="ts">
 /**
- * Demo: sn-avatar-group (uni-end) — scenario row cards: label left, group right.
- * Scenarios: basic stack / max-count / custom collapse text / vertical.
- *
- * Members use gradient-filled text avatars instead of network images: on a
- * weak / offline connection (common on first device runs) failed images
- * degrade into near-invisible empty circles, while gradient + surname text
- * keeps the full visual under any network state. bgColor is the solid
- * fallback when gradients are unavailable (same color as the gradient's deep
- * stop); the gradient values are demo decoration, not tokens.
+ * Demo: sn-avatar-group (uni-end) — basic stack: no max-count, everything
+ * visible. Member sizes are rpx (same unit system as the component's rpx
+ * overlap step, so the overlap ratio stays constant on every viewport —
+ * mixing px makes wide viewports cover members down to thin slivers).
+ * Gradient text members keep the full visual under weak network / offline.
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
@@ -19,115 +15,28 @@ const members = [
   { text: '李', base: '#2563EB', gradient: 'linear-gradient(135deg, #3B82F6, #2563EB)' },
   { text: '陈', base: '#059669', gradient: 'linear-gradient(135deg, #10B981, #059669)' },
   { text: '王', base: '#D97706', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
-  { text: '赵', base: '#DB2777', gradient: 'linear-gradient(135deg, #EC4899, #DB2777)' },
 ];
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <!-- Basic stack: no max-count, everything visible -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Basic stack</text>
-      </view>
-      <SnAvatarGroup cascading="right-up">
-        <SnAvatar
-          v-for="member in members.slice(0, 3)"
-          :key="member.text"
-          :text="member.text"
-          :size="32"
-          :bg-color="member.base"
-          color="var(--sn-mp-color-text-on-primary)"
-          :custom-style="`background-image: ${member.gradient}`"
-        />
-      </SnAvatarGroup>
-    </view>
-
-    <!-- Max count: max-count=3 → 2 avatars + bubble -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Overflow limit</text>
-      </view>
-      <SnAvatarGroup :max-count="3" cascading="right-up">
-        <SnAvatar
-          v-for="member in members"
-          :key="member.text"
-          :text="member.text"
-          :size="32"
-          :bg-color="member.base"
-          color="var(--sn-mp-color-text-on-primary)"
-          :custom-style="`background-image: ${member.gradient}`"
-        />
-      </SnAvatarGroup>
-    </view>
-
-    <!-- Custom collapse text -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Custom collapse</text>
-      </view>
-      <SnAvatarGroup :max-count="3" collapse-avatar="+12" cascading="right-up">
-        <SnAvatar
-          v-for="member in members"
-          :key="member.text"
-          :text="member.text"
-          :size="32"
-          :bg-color="member.base"
-          color="var(--sn-mp-color-text-on-primary)"
-          :custom-style="`background-image: ${member.gradient}`"
-        />
-      </SnAvatarGroup>
-    </view>
-
-    <!-- Vertical -->
-    <view class="grp-row">
-      <view class="grp-meta">
-        <text class="grp-title">Vertical</text>
-      </view>
-      <SnAvatarGroup vertical :max-count="3">
-        <SnAvatar
-          v-for="member in members"
-          :key="member.text"
-          :text="member.text"
-          :size="32"
-          :bg-color="member.base"
-          color="var(--sn-mp-color-text-on-primary)"
-          :custom-style="`background-image: ${member.gradient}`"
-        />
-      </SnAvatarGroup>
-    </view>
+  <view class="sn-demo">
+    <SnAvatarGroup cascading="right-up">
+      <SnAvatar
+        v-for="member in members"
+        :key="member.text"
+        :text="member.text"
+        size="64rpx"
+        :bg-color="member.base"
+        color="var(--sn-mp-color-text-on-primary)"
+        :custom-style="`background-image: ${member.gradient}`"
+      />
+    </SnAvatarGroup>
   </view>
 </template>
 
 <style scoped>
-.sn-demo--stack {
+.sn-demo {
   display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-/* Scenario row card: label left, group right. */
-.grp-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24rpx;
-  padding: 24rpx;
-  border-radius: var(--sn-mp-radius-lg);
-  background-color: var(--sn-mp-color-background-subtle);
-}
-
-.grp-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-  min-width: 0;
-}
-
-.grp-title {
-  color: var(--sn-mp-color-text-primary);
-  font-size: 26rpx;
-  font-weight: var(--sn-mp-font-weight-semibold);
-  line-height: var(--sn-mp-font-line-height-normal);
+  flex-direction: row;
 }
 </style>

@@ -21,6 +21,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -66,6 +67,7 @@ const stats = {
   typeImportsRemapped: 0,
   templatesMapped: 0,
   vueImportStrips: [],
+  demoPinStrips: [],
   appSpecific: [],
   issues: [],
 };
@@ -175,9 +177,187 @@ function toTs(srcPath, outDir) {
   return rewriteImports(readFileSync(srcPath, 'utf8'), srcPath, outDir);
 }
 
+/** docs 预览钉住规则的类名主体：`.sn-<comp>.sn-demo-contained` 等。 */
+const DEMO_CONTAINED_RE = /\.sn-demo-contained(?![\w-])/;
+
+/**
+ * 钉住规则在 x 产物里保留的组件。fab 是悬浮按钮：`position` 预设描述的是
+ * 容器内锚点而非全屏层，App 端 absolute 锚定直接父元素（官方 css/position
+ * 文档），钉进 demo 舞台正是 demo 想表达的行为——不钉的话 fixed 会按页面根
+ * 绝对布局，一页多个场景的按钮全部堆到屏幕四角（真机反馈的「布局错乱」）。
+ * 其余 fixed 全屏层（popup / dialog / calendar …）必须保持页面根绝对布局，
+ * 钉住会把全屏层压回卡片坐标裁剪——继续剥离。
+ */
+const DEMO_PIN_KEEP_RES = [/\.sn-fab(?![\w-])/];
+
+/**
+ * 剥离 demo 场景产物 <style> 里的 docs 预览钉住规则（`.sn-demo-contained`
+ * 为主体、且不在 DEMO_PIN_KEEP_RES 保留名单内的规则块）。
+ *
+ * Why: 钉住规则（`.sn-<comp>.sn-demo-contained { position: absolute }`）
+ * 只服务 docs iframe 预览——把 fixed 全屏层钉进演示卡片；uni-app x App 端
+ * fixed 的官方语义是「脱离父节点、按页面根绝对布局」，该规则会把全屏层压回
+ * 卡片坐标裁剪。上一轮在场景源用 style 内 `/* #ifdef H5 || WEB *\/` 编译期
+ * gate 区分，但真机（HBuilderX 5.33 alpha，vapor）实测 style 内条件编译不可
+ * 靠，钉住规则原样进入产物。故把「App 端不要钉住」的区分下沉到生成期：这里
+ * 按规则块（花括号平衡、注释感知）确定性剥离，零编译器依赖；apps/uni-demo
+ * 场景源不动（docs 预览仍需要钉住规则）。
+ */
+function stripDemoContainedPins(code, issueTag) {
+  return code.replace(/(<style[^>]*>)([\s\S]*?)(<\/style>)/g, (_m, open, css, close) => {
+    return `${open}${stripPinRules(css, issueTag)}${close}`;
+  });
+}
+
+/** 对一段 <style> 内容做规则块级剥离（stats.demoPinStrips 记账）。 */
+function stripPinRules(css, issueTag) {
+  let out = '';
+  let i = 0;
+  while (i < css.length) {
+    const open = findOpenBrace(css, i);
+    if (open === -1) {
+      out += css.slice(i);
+      break;
+    }
+    const close = matchCloseBrace(css, open);
+    if (close === -1) {
+      // 花括号不平衡：保底整段保留，不冒险改写产物。
+      out += css.slice(i);
+      break;
+    }
+    const head = css.slice(i, open);
+    const body = css.slice(open + 1, close);
+    const headBare = head.replace(/\/\*[\s\S]*?\*\//g, '');
+    if (/^\s*@/.test(headBare.trimStart())) {
+      const semi = lastStatementSemi(head);
+      if (semi !== -1) {
+        // 无块 at 语句（@import / @charset …）：原样保留，从 ';' 后重扫，
+        // 避免把语句当成下一条规则的 selector head 一起误删。
+        out += head.slice(0, semi + 1);
+        i += semi + 1;
+        continue;
+      }
+      // 块级 at-rule（@media / @keyframes …）：递归处理其内部规则。
+      out += head + '{' + stripPinRules(body, issueTag) + '}';
+      i = close + 1;
+      continue;
+    }
+    const selectors = splitSelectorList(headBare);
+    const kept = selectors.filter(
+      (s) => !DEMO_CONTAINED_RE.test(s) || DEMO_PIN_KEEP_RES.some((re) => re.test(s)),
+    );
+    if (kept.length === 0) {
+      // 整块剥离：selector 前的紧邻注释（docs 预览说明）随 head 一并去掉。
+      for (const s of selectors) stats.demoPinStrips.push(`${issueTag}: ${s.trim()}`);
+      i = close + 1;
+      continue;
+    }
+    if (kept.length < selectors.length) {
+      // 混合 selector 列表：只去掉钉住 selector，块本体保留。
+      out += kept.join(',') + '{' + body + '}';
+      i = close + 1;
+      continue;
+    }
+    out += head + '{' + body + '}';
+    i = close + 1;
+  }
+  return out;
+}
+
+/** 从 from 起找第一个不在注释内的 '{'；找不到返回 -1。 */
+function findOpenBrace(css, from) {
+  for (let i = from; i < css.length; i++) {
+    if (css.startsWith('/*', i)) {
+      const end = css.indexOf('*/', i + 2);
+      if (end === -1) return -1;
+      i = end + 1;
+    } else if (css[i] === '{') {
+      return i;
+    }
+  }
+  return -1;
+}
+
+/** 给定 '{' 索引，返回配对 '}' 的索引（注释感知）；未配对返回 -1。 */
+function matchCloseBrace(css, open) {
+  let depth = 1;
+  for (let i = open + 1; i < css.length; i++) {
+    if (css.startsWith('/*', i)) {
+      const end = css.indexOf('*/', i + 2);
+      if (end === -1) return -1;
+      i = end + 1;
+    } else if (css[i] === '{') {
+      depth++;
+    } else if (css[i] === '}') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
+/** head 内最后一个不在注释/字符串里的 ';'（无块 at 语句边界）；无则 -1。
+ *  head 由 findOpenBrace 保证不含块外 '{'，故 ';' 只能属于无块 at 语句。 */
+function lastStatementSemi(head) {
+  let quote = '';
+  let found = -1;
+  for (let i = 0; i < head.length; i++) {
+    if (head.startsWith('/*', i)) {
+      const end = head.indexOf('*/', i + 2);
+      if (end === -1) return -1;
+      i = end + 1;
+      continue;
+    }
+    const ch = head[i];
+    if (quote) {
+      if (ch === quote && head[i - 1] !== '\\') quote = '';
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+    } else if (ch === ';') {
+      found = i;
+    }
+  }
+  return found;
+}
+
+/** 按不在注释与括号内的顶层逗号拆 selector 列表（保留各段空白）。 */
+function splitSelectorList(selector) {
+  const parts = [];
+  let depth = 0;
+  let part = '';
+  for (let i = 0; i < selector.length; i++) {
+    const ch = selector[i];
+    if (selector.startsWith('/*', i)) {
+      const end = selector.indexOf('*/', i + 2);
+      const span = end === -1 ? selector.slice(i) : selector.slice(i, end + 2);
+      part += span;
+      i += span.length - 1;
+    } else if (ch === '(' || ch === '[') {
+      depth++;
+      part += ch;
+    } else if (ch === ')' || ch === ']') {
+      depth--;
+      part += ch;
+    } else if (ch === ',' && depth === 0) {
+      parts.push(part);
+      part = '';
+    } else {
+      part += ch;
+    }
+  }
+  parts.push(part);
+  return parts;
+}
+
 function writeFileEnsured(outPath, content) {
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, content);
+  // Atomic write: HBuilderX watches this tree and recompiles on every change.
+  // A plain writeFileSync exposes a partially written file to the watcher
+  // (on this exFAT volume that surfaces as "Could not resolve ..." on the
+  // entry files). tmp + rename makes the swap invisible mid-write.
+  const tmp = `${outPath}.tmp-${process.pid}`;
+  writeFileSync(tmp, content);
+  renameSync(tmp, outPath);
 }
 
 /** 递归收集目录内全部 .vue / .ts（跳过测试、AppleDouble 与排除名单）。 */
@@ -209,7 +389,7 @@ function emitPagesJson() {
     },
     ...source,
   };
-  writeFileSync(join(outRoot, 'pages.json'), `${JSON.stringify(out, null, 2)}\n`);
+  writeFileEnsured(join(outRoot, 'pages.json'), `${JSON.stringify(out, null, 2)}\n`);
 }
 
 /** App.vue → App.uvue：生命周期去掉 @dcloudio 导入、主题 css 移入 style、
@@ -233,7 +413,7 @@ function emitApp() {
     .replace(/^<style>/m, "<style>\n/* 主题变量层（uni-app x App 端无 :root，变量挂在 .sn-theme-root ——\n   DemoPageShell 根节点携带该 class；本块由 gen-x.mjs 生成，勿手改）。 */\n@import '@snui/uni-x/theme/index.css';");
   code = `<!-- 由 scripts/gen-x.mjs 从 apps/uni-demo/src/App.vue 生成，勿手改。 -->\n${code}`;
   code = rewriteImports(code, src, outRoot);
-  writeFileSync(join(outRoot, 'App.uvue'), code);
+  writeFileEnsured(join(outRoot, 'App.uvue'), code);
   stats.uvue++;
 }
 
@@ -258,6 +438,7 @@ function emitReport() {
     `| 组件/协同导入 → @snui/uni-x 显式路径 | ${stats.uniXRemapped} |`,
     `| 类型导入 → <comp>-types 实体 | ${stats.typeImportsRemapped} |`,
     `| 模板组件导入映射 | ${stats.templatesMapped} |`,
+    `| docs 预览钉住规则剥离（.sn-demo-contained 主体） | ${stats.demoPinStrips.length} |`,
     '',
     '## App.uvue 专属改写',
     '',
@@ -267,6 +448,14 @@ function emitReport() {
   const strips = [...new Set(stats.vueImportStrips)];
   if (strips.length > 0) {
     lines.push('## vue 导入剥离（uvue 自动导入）', '', ...strips.map((n) => `- ${n}`), '');
+  }
+  if (stats.demoPinStrips.length > 0) {
+    lines.push(
+      '## docs 预览钉住规则剥离（docs iframe 预览专用；App 端 fixed 全屏层不得钉进演示卡片）',
+      '',
+      ...stats.demoPinStrips.map((n) => `- ${n}`),
+      '',
+    );
   }
   if (stats.issues.length > 0) {
     lines.push(
@@ -290,7 +479,14 @@ function cleanAppleDouble() {
       else if (entry.name.startsWith('._')) rmSync(full, { force: true });
     }
   };
-  for (const dir of ['pages', 'components', 'state', 'templates']) walk(join(outRoot, dir));
+  for (const dir of ['pages', 'components', 'state', 'templates', 'scripts']) {
+    walk(join(outRoot, dir));
+  }
+  // Root-level companions (._App.uvue / ._pages.json / ._GEN-REPORT.md …) live
+  // outside those subtrees and would otherwise stay in the HBuilderX tree.
+  for (const entry of readdirSync(outRoot)) {
+    if (entry.startsWith('._')) rmSync(join(outRoot, entry), { force: true });
+  }
 }
 
 function main() {
@@ -301,8 +497,9 @@ function main() {
   for (const dir of ['pages', 'components', 'state', 'templates']) {
     rmSync(join(outRoot, dir), { recursive: true, force: true });
   }
-  rmSync(join(outRoot, 'App.uvue'), { force: true });
-  rmSync(join(outRoot, 'pages.json'), { force: true });
+  // App.uvue / pages.json are always rewritten at the end of the run — do NOT
+  // delete them up front: HBuilderX's watcher reads them between steps and a
+  // missing entry file fails the whole compile ("ENOENT ... pages.json").
 
   // 场景与聚合页：pages/**；共享壳与状态；排除 docs-iframe 桥。
   const bridgeFile = join(srcRoot, 'state/demo-bridge.ts');
@@ -312,15 +509,22 @@ function main() {
   ]);
   for (const srcPath of collect(srcRoot, [bridgeFile])) {
     const isVue = srcPath.endsWith('.vue');
-    const outPath = join(outRoot, relative(srcRoot, srcPath)).replace(/\.vue$/, '.uvue');
+    const relSrc = relative(srcRoot, srcPath);
+    const outPath = join(outRoot, relSrc).replace(/\.vue$/, '.uvue');
     if (shellFiles.has(srcPath)) {
       emitShell(srcPath, outPath);
       continue;
     }
     const code = isVue
-      ? toUvue(srcPath, dirname(outPath), relative(srcRoot, srcPath))
+      ? toUvue(srcPath, dirname(outPath), relSrc)
       : toTs(srcPath, dirname(outPath));
-    writeFileEnsured(outPath, code);
+    // demo 场景产物剥离 docs 预览钉住规则（why 见 stripDemoContainedPins）。
+    // 只作用于 demos/ 下的场景产物；聚合页 / 壳 / 模板产物不受影响。
+    const finalCode =
+      isVue && relSrc.split(/[/\\]/).includes('demos')
+        ? stripDemoContainedPins(code, relSrc)
+        : code;
+    writeFileEnsured(outPath, finalCode);
     if (isVue) stats.uvue++;
     else stats.ts++;
   }
@@ -369,10 +573,12 @@ function main() {
   emitApp();
   emitPagesJson();
   emitReport();
+  // After every writer has run — GEN-REPORT.md gets its own companion too.
   cleanAppleDouble();
   console.log(
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
-      ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped}, templates ${stats.templatesMapped})`,
+      ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped},` +
+      ` templates ${stats.templatesMapped}, pin strips ${stats.demoPinStrips.length})`,
   );
   // 防跳步：组件消费的是 @snui/uni-x/dist 产物——改过 packages/uni 源码而
   // 未重建 dist 时，HBuilderX 编译拿到的仍是旧组件（demo 场景与 dist 脱节）。

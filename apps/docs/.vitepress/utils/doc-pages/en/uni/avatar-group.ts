@@ -58,8 +58,23 @@ import { AvatarGroup } from '@snui/uni';
     {
       name: 'avatar-group-mp-basic',
       title: 'Basic usage',
+      blurb: 'Basic stack: no max-count, everything visible; cascading sets the direction.',
+    },
+    {
+      name: 'avatar-group-mp-max-count',
+      title: 'Overflow limit (`max-count`)',
       blurb:
-        'Max-count collapse, custom collapse text (collapse-avatar), cascading direction and vertical stacking.',
+        'max-count=3 → 2 avatars + a bubble; max-count counts slots and the bubble owns the last one.',
+    },
+    {
+      name: 'avatar-group-mp-collapse',
+      title: 'Custom collapse text (`collapse-avatar`)',
+      blurb: 'collapse-avatar="+12" replaces the derived +N; max-count semantics unchanged.',
+    },
+    {
+      name: 'avatar-group-mp-vertical',
+      title: 'Vertical stacking (`vertical`)',
+      blurb: '`vertical` ignores `cascading` and stacks top-down.',
     },
     {
       name: 'avatar-group-mp-shape',
