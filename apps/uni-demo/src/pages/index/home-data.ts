@@ -35,7 +35,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '头像组',
         titleEn: 'Avatar Group',
         desc: '头像叠层展示与折叠计数',
-        count: 1,
+        count: 2,
       },
       {
         key: 'badge',

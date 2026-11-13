@@ -59,6 +59,11 @@
           "name": "avatar-group-mp-basic",
           "title": "基础用法",
           "hasEn": true
+        },
+        {
+          "name": "avatar-group-mp-shape",
+          "title": "形状",
+          "hasEn": true
         }
       ]
     },

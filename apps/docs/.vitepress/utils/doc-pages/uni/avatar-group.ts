@@ -57,7 +57,12 @@ import { AvatarGroup } from '@snui/uni';
       name: 'avatar-group-mp-basic',
       title: '基础用法',
       blurb:
-        '最大数量折叠（max-count）、自定义折叠文本（collapse-avatar）、叠层方向（cascading）、垂直堆叠（vertical）与统一尺寸 / 形状。',
+        '最大数量折叠（max-count）、自定义折叠文本（collapse-avatar）、叠层方向（cascading）与垂直堆叠（vertical）。',
+    },
+    {
+      name: 'avatar-group-mp-shape',
+      title: '形状（shape）',
+      blurb: '组内统一形状：round 圆形 / square 方形，组的 shape 覆盖成员自身设置。',
     },
   ],
   props: {

@@ -59,7 +59,13 @@ import { AvatarGroup } from '@snui/uni';
       name: 'avatar-group-mp-basic',
       title: 'Basic usage',
       blurb:
-        'Max-count collapse, custom collapse text (collapse-avatar), cascading direction, vertical stacking and uniform size / shape.',
+        'Max-count collapse, custom collapse text (collapse-avatar), cascading direction and vertical stacking.',
+    },
+    {
+      name: 'avatar-group-mp-shape',
+      title: 'Shape (`shape`)',
+      blurb:
+        'Uniform member shape: round (default) and square — the group wins over member props.',
     },
   ],
   props: {

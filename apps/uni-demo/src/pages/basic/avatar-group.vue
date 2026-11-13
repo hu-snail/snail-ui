@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— avatar-group 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/avatar-group-mp-basic.vue';
+import Demo1 from './demos/avatar-group-mp-shape.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -21,6 +22,12 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo0 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
+        <view class="module__body">
+          <Demo1 />
         </view>
       </view>
     </view>
