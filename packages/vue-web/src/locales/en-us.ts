@@ -135,6 +135,10 @@ export const enUS: SnLocale = {
   AvatarGroup: {
     rest: '{count} more avatars',
   },
+  Avatar: {
+    online: 'online',
+    offline: 'offline',
+  },
   Popconfirm: {
     negativeText: 'Cancel',
     positiveText: 'Confirm',

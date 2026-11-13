@@ -32,6 +32,10 @@ import SnAvatar from '@snui/vue-web/src/avatar/SnAvatar.vue';
 | `circle`                      | `boolean`                                                  | `false`    | no       | Circular. Wins over `round`.                             |
 | `fallbackText`                | `string`                                                   | —          | no       | Text thumbnail when there is no image.                   |
 | `icon`                        | `string`                                                   | —          | no       | SnIcon registry name for the placeholder glyph.          |
+| `status`                      | `'online' \| 'offline' \| ''`                              | `''`       | no       | Presence corner dot (additive).                          |
+| `statusPosition`              | `'top-right' \| 'bottom-right'`                            | `'bottom-right'` | no | Corner for the presence dot (additive).                  |
+| `badgeIcon`                   | `string`                                                   | —          | no       | Corner badge glyph, SnIcon registry name (additive).     |
+| `badgePosition`               | `'top-right' \| 'bottom-right'`                            | `'top-right'` | no    | Corner for the badge (additive).                         |
 | `lazy`                        | `boolean`                                                  | `false`    | no       | Lazy loading. On its own: native `loading="lazy"`.       |
 | `intersectionObserverOptions` | `{ root?, rootMargin?, threshold? }`                       | —          | no       | With `lazy`, gates the `src` on an IntersectionObserver. |
 
@@ -71,6 +75,21 @@ A new `src` resets a previous load error.
   observing it would deadlock.
 - `imgProps` / `fallbackSrc` network options are still not implemented.
 
+## Additive capabilities (not in n-avatar)
+
+Mirrors the uni-end `sn-avatar` additive contract (AGENTS.md §112.3a):
+
+- `status` — presence dot on a corner: `online` → success green, `offline` →
+  tertiary gray, both with a surface-coloured separating ring. Decorative
+  (`aria-hidden`); the state rides on the root `aria-label` (locale-driven).
+- `statusPosition` — `top-right` / `bottom-right` (default bottom-right).
+- `badgeIcon` — round badge on a corner (default warning/gold surface, inverse
+  glyph, surface ring) holding a registered SnIcon, e.g. `Crown` for a
+  membership level.
+- `badgePosition` — `top-right` (default) / `bottom-right`.
+- `color` set → the fallback text / glyph switches to the inverse text colour,
+  so coloured thumbnails stay readable.
+
 ## Tokens Consumed (end: web)
 
 | Token             | CSS Variable                       | Purpose                     |
@@ -82,6 +101,8 @@ A new `src` resets a previous load error.
 
 - The builtin glyph and SnIcon glyph are `aria-hidden`.
 - `fallbackText` renders as real text and is read by screen readers.
+- With `status`, the root `aria-label` announces the presence state (localized);
+  the dot itself is decorative. The badge is decorative too.
 
 ## Versioning
 

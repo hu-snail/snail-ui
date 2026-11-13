@@ -40,7 +40,17 @@ import { Avatar } from '@snui/vue-web';
   },
   demos: [
     { name: 'avatar-web-basic', title: 'Basic', blurb: 'Image src + sizes.' },
-    { name: 'avatar-web-shapes', title: 'Shapes & color', blurb: 'round / circle / color.' },
+    {
+      name: 'avatar-web-shapes',
+      title: 'Shapes & color',
+      blurb: 'round / circle / color; colored thumbnails switch to inverse text.',
+    },
+    {
+      name: 'avatar-web-status',
+      title: 'Presence & badge',
+      blurb:
+        'status online/offline dot + status-position (top-right / bottom-right); badge-icon corner badge (membership crown).',
+    },
     {
       name: 'avatar-web-fallback',
       title: 'Fallback',
@@ -98,6 +108,30 @@ import { Avatar } from '@snui/vue-web';
         type: 'string | undefined',
         default: 'undefined',
         desc: 'SnIcon registry name for the placeholder glyph.',
+      },
+      {
+        name: 'status',
+        type: "'online' | 'offline' | ''",
+        default: "''",
+        desc: "Presence corner dot (additive): online green / offline gray with a surface ring; the state rides on aria-label.",
+      },
+      {
+        name: 'statusPosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'bottom-right'",
+        desc: 'Corner for the presence dot (additive).',
+      },
+      {
+        name: 'badgeIcon',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: 'Corner badge glyph (additive, SnIcon registry name) — e.g. Crown for a membership level; defaults to the gold (warning) disc.',
+      },
+      {
+        name: 'badgePosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'top-right'",
+        desc: 'Corner for the badge (additive).',
       },
       {
         name: 'lazy',

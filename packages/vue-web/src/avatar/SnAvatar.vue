@@ -20,6 +20,21 @@
  *     enters the viewport. While gated, the fallback content is rendered.
  *   - `imgProps` / `fallbackSrc` network options are still not implemented.
  *
+ * ## Additive: presence status + corner badge (AUI 追加，n-avatar 没有此能力)
+ *
+ * Mirrors the uni-end `sn-avatar` additive contract (AGENTS.md §112.3a):
+ *   - `status` paints an online / offline presence dot ('online' → success
+ *     green, 'offline' → tertiary gray) with a surface-coloured separating
+ *     ring; `statusPosition` moves it between the corners (default
+ *     bottom-right). The dot is decorative (`aria-hidden`) — the state rides
+ *     on the root `aria-label` so screen readers announce it.
+ *   - `badgeIcon` paints a small round badge on a corner (default top-right,
+ *     `badgePosition` overrides) holding a registered SnIcon glyph — e.g. a
+ *     crown for a membership level. Badge defaults to the warning (gold)
+ *     surface; also decorative.
+ *   - When `color` is set, the fallback text / icon switches to the inverse
+ *     text colour: coloured thumbnails stay readable instead of dark-on-dark.
+ *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
  *
@@ -32,10 +47,14 @@
 import { computed, ref, watch } from 'vue';
 import type { CSSProperties } from 'vue';
 import SnIcon from '../icon/SnIcon.vue';
+import { useLocale } from '../locales/use-locale';
 import { useLazyVisibility } from '../_internal/lazy-visibility';
 import type { LazyVisibilityOptions } from '../_internal/lazy-visibility';
 
 defineOptions({ name: 'SnAvatar' });
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
@@ -55,6 +74,20 @@ const props = withDefaults(
     fallbackText?: string | undefined;
     /** SnIcon registry name for the placeholder glyph. */
     icon?: string | undefined;
+    /**
+     * Presence state painted as a corner dot (additive). `''` clears it.
+     * Mirrors the uni-end `sn-avatar` `status` contract.
+     */
+    status?: 'online' | 'offline' | '';
+    /** Corner for the presence dot (additive). Default bottom-right. */
+    statusPosition?: 'top-right' | 'bottom-right';
+    /**
+     * SnIcon registry name painted as a round corner badge (additive) —
+     * e.g. `Crown` for a membership level.
+     */
+    badgeIcon?: string | undefined;
+    /** Corner for the badge (additive). Default top-right. */
+    badgePosition?: 'top-right' | 'bottom-right';
     /** Load on viewport entry. Same contract as SnImage `lazy`. */
     lazy?: boolean;
     /** IntersectionObserver config for lazy loading (see SnImage). */
@@ -69,6 +102,10 @@ const props = withDefaults(
     circle: false,
     fallbackText: undefined,
     icon: undefined,
+    status: '',
+    statusPosition: 'bottom-right',
+    badgeIcon: undefined,
+    badgePosition: 'top-right',
     lazy: false,
     intersectionObserverOptions: undefined,
   },
@@ -136,6 +173,22 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
   }
   return style;
 });
+
+/* ─────────── Additive: presence status + corner badge ─────────── */
+
+/** Whether a presence dot is painted (additive `status`). */
+const hasStatus = computed<boolean>(() => props.status !== '');
+
+/**
+ * Spoken state for screen readers (AGENTS.md §52 — the dot itself is
+ * decorative `aria-hidden`, so the state rides on the root label).
+ */
+const ariaLabel = computed<string | undefined>(() =>
+  hasStatus.value ? locale.value.Avatar[props.status as 'online' | 'offline'] : undefined,
+);
+
+/** A coloured thumbnail (explicit `color`) speaks with inverse text. */
+const colored = computed<boolean>(() => props.color !== undefined);
 </script>
 
 <template>
@@ -147,7 +200,12 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
       typeof size === 'number' ? '' : `sn-avatar--${size}`,
       circle ? 'sn-avatar--circle' : '',
       round ? 'sn-avatar--round' : '',
+      colored ? 'sn-avatar--colored' : '',
+      hasStatus ? `sn-avatar--status-${status}` : '',
+      hasStatus && statusPosition === 'top-right' ? 'sn-avatar--status-top' : '',
+      badgeIcon !== undefined && badgePosition === 'bottom-right' ? 'sn-avatar--badge-bottom' : '',
     ]"
+    :aria-label="ariaLabel"
     :style="rootStyle"
   >
     <img
@@ -181,6 +239,12 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
         </span>
       </slot>
     </template>
+    <!-- Presence dot (additive): decorative, the state rides on aria-label. -->
+    <span v-if="hasStatus" class="sn-avatar__status" aria-hidden="true" />
+    <!-- Corner badge (additive): decorative glyph, e.g. a membership crown. -->
+    <span v-if="badgeIcon !== undefined" class="sn-avatar__badge" aria-hidden="true">
+      <SnIcon :name="badgeIcon" />
+    </span>
   </div>
 </template>
 
@@ -193,7 +257,6 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   box-sizing: border-box;
   border-radius: 3px;
   font-size: 14px;
@@ -201,6 +264,23 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
   background: var(--sn-web-color-background-subtle);
   white-space: nowrap;
   vertical-align: middle;
+  /* The root cannot clip: it hosts the corner status dot / badge, which the
+   * border radius would shave off. The image clips itself instead. */
+}
+
+.sn-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The photo clips itself to the shape (the root cannot clip — it hosts the
+   * corner overlays, see the root rule above). */
+  border-radius: inherit;
+}
+
+/* Coloured thumbnails speak in inverse text: dark glyphs on a saturated
+ * background are unreadable. */
+.sn-avatar--colored {
+  color: var(--sn-web-color-text-inverse);
 }
 
 /* Named scale (reference heights: 28 / 34 / 40 px). */
@@ -228,12 +308,6 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
   border-radius: 50%;
 }
 
-.sn-avatar__img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 /* The glyph box is half the avatar; SnIcon's 1em wrapper must grow to it. */
 .sn-avatar__icon {
   display: flex;
@@ -248,5 +322,89 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
 .sn-avatar__icon :deep(.sn-icon svg) {
   width: 100%;
   height: 100%;
+}
+
+/* The root no longer clips, so long thumbnails must ellipsize themselves. */
+.sn-avatar__text {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Additive: presence status + corner badge ──────────────────────────── */
+
+/* Anchored on the bottom-right corner like the uni-end badge layout; the
+ * surface-coloured ring keeps it legible on top of a photo. */
+.sn-avatar__status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--sn-web-color-background-surface);
+  border-radius: 50%;
+  background-color: var(--sn-web-color-text-tertiary);
+}
+
+.sn-avatar--status-top .sn-avatar__status {
+  top: 0;
+  bottom: auto;
+}
+
+/* Presence colours: online green; offline keeps the tertiary gray default. */
+.sn-avatar--status-online .sn-avatar__status {
+  background-color: var(--sn-web-color-feedback-success);
+}
+
+/* The dot scales with the preset — a fixed dot covers half of a small head.
+ * Numeric sizes keep the medium geometry. */
+.sn-avatar--small .sn-avatar__status {
+  width: 8px;
+  height: 8px;
+  border-width: 1.5px;
+}
+
+.sn-avatar--large .sn-avatar__status {
+  width: 14px;
+  height: 14px;
+}
+
+/* Badge: round gold disc holding the glyph (e.g. membership crown). */
+.sn-avatar__badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--sn-web-color-background-surface);
+  border-radius: 50%;
+  background-color: var(--sn-web-color-feedback-warning);
+  color: var(--sn-web-color-text-inverse);
+}
+
+.sn-avatar--badge-bottom .sn-avatar__badge {
+  top: auto;
+  bottom: 0;
+}
+
+.sn-avatar__badge :deep(.sn-icon),
+.sn-avatar__badge :deep(.sn-icon svg) {
+  width: 62%;
+  height: 62%;
+}
+
+.sn-avatar--small .sn-avatar__badge {
+  width: 12px;
+  height: 12px;
+}
+
+.sn-avatar--large .sn-avatar__badge {
+  width: 18px;
+  height: 18px;
 }
 </style>

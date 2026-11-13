@@ -48,6 +48,11 @@ import { AvatarGroup } from '@snui/vue-web';
   demos: [
     { name: 'avatar-group-web-basic', title: '基础头像组', blurb: '默认收紧叠放。' },
     { name: 'avatar-group-web-max', title: '数量上限与展开回调', blurb: '数量上限与展开回调' },
+    {
+      name: 'avatar-group-web-square',
+      title: '方形 / 圆角 / 圆形组',
+      blurb: 'circle / round 让「+N」摘要与堆叠头像保持同形状。',
+    },
     { name: 'avatar-group-web-shrink', title: '尺寸渐变与收紧叠放', blurb: '尺寸渐变与收紧叠放' },
     { name: 'avatar-group-web-image', title: '图片头像', blurb: '图片头像' },
   ],
@@ -71,6 +76,18 @@ import { AvatarGroup } from '@snui/vue-web';
         type: "'tightening' | 'shrink'",
         default: "'tightening'",
         desc: "Layout for the stack: 'tightening' overlaps avatars with a negative margin, 'shrink' scales each following avatar down slightly.",
+      },
+      {
+        name: 'circle',
+        type: 'boolean',
+        default: 'false',
+        desc: '圆形摘要头像（additive）——堆叠为圆形头像时让「+N」同形状。',
+      },
+      {
+        name: 'round',
+        type: 'boolean',
+        default: 'false',
+        desc: '圆角摘要头像（additive）——见 `circle`。',
       },
     ],
   },

@@ -49,6 +49,22 @@ describe('SnAvatarGroup (AUI-WEB-DD-026)', () => {
       const restAvatar = w.find('.sn-avatar-group__rest-avatar');
       expect(restAvatar.classes()).toContain('sn-avatar--large');
     });
+
+    it('shapes the summary avatar like the stack via circle / round', () => {
+      // Circular stack closes with a circular "+k".
+      const circle = mountGroup({ maxOptions: 2, circle: true }, fiveAvatars());
+      expect(circle.find('.sn-avatar-group__rest-avatar').classes()).toContain('sn-avatar--circle');
+
+      // Pill stack closes with a pill "+k".
+      const round = mountGroup({ maxOptions: 2, round: true }, fiveAvatars());
+      expect(round.find('.sn-avatar-group__rest-avatar').classes()).toContain('sn-avatar--round');
+
+      // Square (default) stack closes with a square "+k".
+      const square = mountGroup({ maxOptions: 2 }, fiveAvatars());
+      const rest = square.find('.sn-avatar-group__rest-avatar');
+      expect(rest.classes()).not.toContain('sn-avatar--circle');
+      expect(rest.classes()).not.toContain('sn-avatar--round');
+    });
   });
 
   describe('maxOptions', () => {

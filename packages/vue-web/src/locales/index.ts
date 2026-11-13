@@ -27,6 +27,7 @@ export type {
   SnBackTopLocale,
   SnDrawerLocale,
   SnAvatarGroupLocale,
+  SnAvatarLocale,
   SnPopconfirmLocale,
 } from './zh-cn';
 export { zhCN } from './zh-cn';

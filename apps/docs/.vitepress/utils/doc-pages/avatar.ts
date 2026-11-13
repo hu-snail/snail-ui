@@ -43,7 +43,13 @@ import { Avatar } from '@snui/vue-web';
   },
   demos: [
     { name: 'avatar-web-basic', title: '基础用法', blurb: 'src 图片 + 尺寸。' },
-    { name: 'avatar-web-shapes', title: '形状与颜色', blurb: 'round / circle / color。' },
+    { name: 'avatar-web-shapes', title: '形状与颜色', blurb: 'round / circle / color，彩底自动反白。' },
+    {
+      name: 'avatar-web-status',
+      title: '状态点与角标',
+      blurb:
+        'status 在线/离线状态点 + status-position 右上/右下；badge-icon 角标徽章（会员等级）。',
+    },
     {
       name: 'avatar-web-fallback',
       title: '失败回退',
@@ -87,6 +93,30 @@ import { Avatar } from '@snui/vue-web';
         desc: '无图/失败时文字缩略',
       },
       { name: 'icon', type: 'string | undefined', default: 'undefined', desc: 'SnIcon 注册名' },
+      {
+        name: 'status',
+        type: "'online' | 'offline' | ''",
+        default: "''",
+        desc: '在线状态角点（additive）：online 绿点 / offline 灰点，surface 色描环；状态写入 aria-label。',
+      },
+      {
+        name: 'statusPosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'bottom-right'",
+        desc: '状态点位置（additive）。',
+      },
+      {
+        name: 'badgeIcon',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: '角标徽章图标（additive，SnIcon 注册名），如 Crown 表示会员等级；默认 warning 金色圆徽。',
+      },
+      {
+        name: 'badgePosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'top-right'",
+        desc: '徽章位置（additive）。',
+      },
       {
         name: 'lazy',
         type: 'boolean',

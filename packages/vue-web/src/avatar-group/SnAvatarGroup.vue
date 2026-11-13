@@ -15,6 +15,9 @@
  *   - `size` styles the overflow summary avatar; child avatars come from
  *     the slot and keep their own size (the reference injects the group
  *     size into child n-avatars, which would require modifying SnAvatar).
+ *   - `circle` / `round` (additive) shape the overflow summary avatar so
+ *     `+k` matches the stack it closes — a circular group closes with a
+ *     circular `+k`, a square one with a square `+k`.
  *   - Overflow rule: with `max: n` the group renders n − 1 avatars and a
  *     `+k` summary (k = total − n + 1), matching the reference.
  *   - No config-provider / RTL integration (web-end v3 has no provider
@@ -61,11 +64,20 @@ const props = withDefaults(
      * margin, 'shrink' scales each following avatar down slightly.
      */
     sizeBehavior?: 'tightening' | 'shrink';
+    /**
+     * Circular summary avatar (additive) — set it when the stack is circular
+     * so the `+k` summary keeps the same shape as the avatars it closes.
+     */
+    circle?: boolean;
+    /** Pill-shaped summary avatar (additive) — see `circle`. */
+    round?: boolean;
   }>(),
   {
     maxOptions: undefined,
     size: 'medium',
     sizeBehavior: 'tightening',
+    circle: false,
+    round: false,
   },
 );
 
@@ -180,7 +192,11 @@ const restIsClickable = computed(() => onExpand.value !== undefined);
         "
         @click="handleExpand"
       >
-        <SnAvatar :size="size ?? 'medium'" class="sn-avatar-group__rest-avatar"
+        <SnAvatar
+          :size="size ?? 'medium'"
+          :circle="circle ?? false"
+          :round="round ?? false"
+          class="sn-avatar-group__rest-avatar"
           >+{{ restCount }}</SnAvatar
         >
       </component>

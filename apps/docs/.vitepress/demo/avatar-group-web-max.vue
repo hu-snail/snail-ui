@@ -54,7 +54,7 @@ function reset(): void {
           + 「+{{ restCount }}」汇总</span
         >）
       </h4>
-      <SnAvatarGroup :max-options="{ max, onExpand: handleExpand }">
+      <SnAvatarGroup :max-options="{ max, onExpand: handleExpand }" circle>
         <SnAvatar
           v-for="member in members"
           :key="member.id"
@@ -67,7 +67,7 @@ function reset(): void {
 
     <section class="avatar-max-demo__block">
       <h4>仅数字形式（无点击回调，摘要保持静态）</h4>
-      <SnAvatarGroup :max-options="3">
+      <SnAvatarGroup :max-options="3" circle>
         <SnAvatar
           v-for="member in members.slice(0, 6)"
           :key="member.id"

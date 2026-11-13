@@ -56,6 +56,11 @@ import { AvatarGroup } from '@snui/vue-web';
       blurb: 'Overflow cap and expand callback',
     },
     {
+      name: 'avatar-group-web-square',
+      title: 'Square / pill / circular stacks',
+      blurb: 'circle / round keep the "+N" summary in the same shape as the stack.',
+    },
+    {
       name: 'avatar-group-web-shrink',
       title: 'Shrink behavior vs tightening',
       blurb: 'Shrink behavior vs tightening',
@@ -82,6 +87,18 @@ import { AvatarGroup } from '@snui/vue-web';
         type: "'tightening' | 'shrink'",
         default: "'tightening'",
         desc: "Layout for the stack: 'tightening' overlaps avatars with a negative margin, 'shrink' scales each following avatar down slightly.",
+      },
+      {
+        name: 'circle',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Circular summary avatar (additive) — set it when the stack is circular so the `+k` summary keeps the same shape.',
+      },
+      {
+        name: 'round',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Pill-shaped summary avatar (additive) — see `circle`.',
       },
     ],
   },
