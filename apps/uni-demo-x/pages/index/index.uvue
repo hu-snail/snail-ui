@@ -1,18 +1,24 @@
 <script setup lang="ts">
 // 首页 —— 组件目录（手写页面；目录数据由 scripts/gen-pages.mjs 生成到
 // home-data.ts，含中英双字段）。
-// 版式：搜索框 + 分类 chips + 双列图标卡（图标卡见 home-icons.ts）。
+// 版式：页面根节点 sn-paging —— 品牌区（标题 + 风格包/语言/主题按钮）+ 搜索框
+// + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏），双列图标卡
+// 在默认插槽滚动（目录为静态数据，禁用下拉刷新与加载更多；图标卡见
+// home-icons.ts）。
 // 分类按分组标签合并（basic / basic-2 同为「基础组件」），点 chip 切换分组；
 // 搜索时跨全部分组平铺结果。
 import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
 import { Search as SearchIcon, X as CloseIcon } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
 import { HOME_GROUPS } from './home-data';
 import type { DemoHomeComp } from './home-data';
 import { homeIcon } from './home-icons';
 
-const { lang, t } = useDemoUi();
+const { lang, isDark, stylePack, stylePackLabel, t, toggleLang, toggleTheme, chooseStylePack } =
+  useDemoUi();
 
 interface HomeComp extends DemoHomeComp {
   /** 当前语言下的组件名。 */
@@ -90,6 +96,71 @@ const sectionTitle = computed(() =>
   isSearching.value ? t('搜索结果', 'Search results') : (activeCategory.value?.label ?? ''),
 );
 
+/* ── #top 品牌条与切换按钮（此前由 DemoPageShell brand 模式承担，随 sn-paging
+ * #top 迁入首页 —— 固定头部必须位于分页容器内部才能不随列表滚动） ── */
+
+// lucide.dev — ISC license（ Redistribution 说明见 sn-icon-set.ts 头注）
+const GlobeIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: [
+    'M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20',
+    'M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20',
+    'M2 12h20',
+  ],
+};
+const SunIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: [
+    'M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8',
+    'M12 2v2',
+    'M12 20v2',
+    'm4.93 4.93 1.41 1.41',
+    'm17.66 17.66 1.41 1.41',
+    'M2 12h2',
+    'M20 12h2',
+    'm6.34 17.66-1.41 1.41',
+    'm19.07 4.93-1.41 1.41',
+  ],
+};
+const MoonIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: ['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'],
+};
+// 风格包按钮（调色板）。色点是 `h.01` + round linecap：sn-icon 只渲染 path，
+// 不做 circle 元素。
+const PaletteIcon: IconData = {
+  viewBox: '0 0 24 24',
+  paths: [
+    'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z',
+    'M13.5 6.5h.01',
+    'M17.5 10.5h.01',
+    'M8.5 7.5h.01',
+    'M6.5 12.5h.01',
+  ],
+};
+
+const langLabel = computed(() => t('切换语言', 'Switch language'));
+const themeLabel = computed(() =>
+  isDark.value ? t('切换到浅色', 'Switch to light') : t('切换到深色', 'Switch to dark'),
+);
+
+/* ── sn-paging 数据流：目录是静态数据，查询即时以当前可见全集应答 ── */
+
+/** sn-paging v-model 列表（query 应答 + 搜索/切类的直接同步共同驱动）。 */
+const list = ref<HomeComp[]>([]);
+const paging = ref<InstanceType<typeof SnPaging> | null>(null);
+
+/** 静态目录：auto 首查即时应答并显式判停（无分页；刷新/翻页均已禁用）。 */
+function onQuery(_pageNo: number, _pageSize: number): void {
+  paging.value?.completeByNoMore(visibleComps.value, true);
+}
+
+// 搜索 / 切分类不走 query 状态机（逐键 reload 会闪 loading）：列表直接同步；
+// no-more / 空态语义由首次 query 应答建立，空列表由 #empty 呈现无结果态。
+watch(visibleComps, (comps) => {
+  list.value = comps;
+});
+
 function scenesText(count: number): string {
   return t(`${count} 个场景`, `${count} demos`);
 }
@@ -107,87 +178,193 @@ function open(comp: HomeComp): void {
 }
 </script>
 <template>
-  <DemoPageShell brand :title-zh="'snui 组件演示'" :title-en="'snui Components'">
+  <DemoPageShell>
     <view class="home">
-      <!-- 搜索框 -->
-      <view class="home__search">
-        <SnIcon class="home__search-icon" :icon="SearchIcon" :size="16" />
-        <input
-          v-model="keyword"
-          class="home__search-input"
-          type="text"
-          confirm-type="search"
-          :placeholder="t('搜索组件…', 'Search components…')"
-          placeholder-style="color: var(--demo-text-3)"
-        />
-        <view
-          v-if="keyword !== ''"
-          class="home__search-clear"
-          :aria-label="t('清除搜索', 'Clear search')"
-          @click="keyword = ''"
-        >
-          <SnIcon :icon="CloseIcon" :size="12" />
-        </view>
-      </view>
-
-      <!-- 分类 chips（搜索时隐藏，结果跨分组） -->
-      <scroll-view v-if="!isSearching" class="home__chips" scroll-x :show-scrollbar="false">
-        <view class="home__chips-inner">
-          <view
-            v-for="(category, index) in categories"
-            :key="category.id"
-            class="home__chip"
-            :class="{ 'home__chip--active': index === activeIndex }"
-            @click="pickCategory(index)"
-          >
-            <text class="home__chip-text">{{ category.label }}</text>
-          </view>
-        </view>
-      </scroll-view>
-
-      <!-- 分组标题 / 结果数 -->
-      <view class="home__section">
-        <text class="home__section-title">{{ sectionTitle }}</text>
-        <text v-if="isSearching" class="home__section-meta">{{
-          resultCountText(results.length)
-        }}</text>
-      </view>
-
-      <!-- 双列卡片 -->
-      <view class="home__grid">
-        <view
-          v-for="comp in visibleComps"
-          :key="`${comp.group}-${comp.key}`"
-          class="home__card"
-          @click="open(comp)"
-        >
-          <view class="home__card-head">
-            <view class="home__badge">
-              <SnIcon :icon="homeIcon(comp.key, comp.group)" :size="20" />
+      <SnPaging
+        ref="paging"
+        v-model="list"
+        :refresher-enabled="false"
+        :load-more-enabled="false"
+        @query="onQuery"
+      >
+        <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动 -->
+        <template #top>
+          <view class="home__top">
+            <view class="home__bar">
+              <view class="home__brand">
+                <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
+                <text class="home__brand-sub">
+                  {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
+                </text>
+              </view>
+              <view class="home__actions">
+                <view
+                  class="home__btn"
+                  role="button"
+                  :aria-label="t('切换风格', 'Switch style pack')"
+                  @click="chooseStylePack"
+                >
+                  <SnIcon :icon="PaletteIcon" :size="16" />
+                  <text v-if="stylePack !== 'default'" class="home__btn-text">
+                    {{ stylePackLabel }}
+                  </text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="langLabel" @click="toggleLang">
+                  <SnIcon :icon="GlobeIcon" :size="16" />
+                  <text class="home__btn-text">{{ lang === 'zh' ? 'EN' : '中' }}</text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="themeLabel" @click="toggleTheme">
+                  <SnIcon :icon="isDark ? SunIcon : MoonIcon" :size="16" />
+                </view>
+              </view>
             </view>
-            <text class="home__count">{{ scenesText(comp.count) }}</text>
+
+            <!-- 搜索框 -->
+            <view class="home__search">
+              <SnIcon class="home__search-icon" :icon="SearchIcon" :size="16" />
+              <input
+                v-model="keyword"
+                class="home__search-input"
+                type="text"
+                confirm-type="search"
+                :placeholder="t('搜索组件…', 'Search components…')"
+                placeholder-style="color: var(--demo-text-3)"
+              />
+              <view
+                v-if="keyword !== ''"
+                class="home__search-clear"
+                :aria-label="t('清除搜索', 'Clear search')"
+                @click="keyword = ''"
+              >
+                <SnIcon :icon="CloseIcon" :size="12" />
+              </view>
+            </view>
+
+            <!-- 分类 chips（搜索时隐藏，结果跨分组） -->
+            <scroll-view v-if="!isSearching" class="home__chips" scroll-x :show-scrollbar="false">
+              <view class="home__chips-inner">
+                <view
+                  v-for="(category, index) in categories"
+                  :key="category.id"
+                  class="home__chip"
+                  :class="{ 'home__chip--active': index === activeIndex }"
+                  @click="pickCategory(index)"
+                >
+                  <text class="home__chip-text">{{ category.label }}</text>
+                </view>
+              </view>
+            </scroll-view>
           </view>
-          <text class="home__title">{{ comp.name }}</text>
-          <text v-if="lang !== 'en' && comp.desc !== ''" class="home__desc">{{ comp.desc }}</text>
+        </template>
+
+        <view class="home__list">
+          <!-- 分组标题 / 结果数 -->
+          <view class="home__section">
+            <text class="home__section-title">{{ sectionTitle }}</text>
+            <text v-if="isSearching" class="home__section-meta">{{
+              resultCountText(results.length)
+            }}</text>
+          </view>
+
+          <!-- 双列卡片 -->
+          <view class="home__grid">
+            <view
+              v-for="comp in list"
+              :key="`${comp.group}-${comp.key}`"
+              class="home__card"
+              @click="open(comp)"
+            >
+              <view class="home__card-head">
+                <view class="home__badge">
+                  <SnIcon :icon="homeIcon(comp.key, comp.group)" :size="20" />
+                </view>
+                <text class="home__count">{{ scenesText(comp.count) }}</text>
+              </view>
+              <text class="home__title">{{ comp.name }}</text>
+              <text v-if="lang !== 'en' && comp.desc !== ''" class="home__desc">{{
+                comp.desc
+              }}</text>
+            </view>
+          </view>
+
+          <view class="home__foot">
+            <text class="home__foot-text">
+              {{ t('snui · uni-app 端组件演示', 'snui · uni-app component demos') }}
+            </text>
+          </view>
         </view>
-      </view>
 
-      <view v-if="visibleComps.length === 0" class="home__empty">
-        <text class="home__empty-text">{{ t('没有匹配的组件', 'No matching components') }}</text>
-      </view>
-
-      <view class="home__foot">
-        <text class="home__foot-text">
-          {{ t('snui · uni-app 端组件演示', 'snui · uni-app component demos') }}
-        </text>
-      </view>
+        <!-- 空列表（搜索无结果）：sn-paging 空态插槽 -->
+        <template #empty>
+          <text class="home__empty-text">{{ t('没有匹配的组件', 'No matching components') }}</text>
+        </template>
+      </SnPaging>
     </view>
   </DemoPageShell>
 </template>
 <style scoped>
 .home {
-  padding: 8rpx 24rpx 0;
+  height: 100vh;
   animation: demo-fade-in 0.7s ease both;
+}
+
+/* ── #top 固定区：状态栏通栏 + 品牌条 + 搜索 + chips（不随列表滚动） ──── */
+.home__top {
+  padding: var(--status-bar-height, 0px) 24rpx 0;
+}
+
+.home__bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  /* 页面左右 24rpx 之上再补 8rpx：与旧版全幅壳（32rpx）的品牌位对齐 */
+  padding: 32rpx 8rpx 8rpx;
+}
+
+.home__brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.home__brand-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: var(--demo-title);
+}
+
+.home__brand-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: var(--demo-text-3);
+}
+
+.home__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.home__btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+  height: 64rpx;
+  padding: 0 22rpx;
+  border-radius: 32rpx;
+  background: var(--demo-btn-bg);
+  border: 1px solid var(--demo-btn-border);
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
+  color: var(--demo-title);
+  transition: opacity 0.15s ease;
+}
+
+.home__btn-text {
+  font-size: 24rpx;
+  font-weight: 600;
 }
 
 /* ── 搜索框 ───────────────────────────────────────────────────────────── */
@@ -278,7 +455,11 @@ function open(comp: HomeComp): void {
   --snx-home__chip-text-font-weight: 600;
 }
 
-/* ── 分组标题 ─────────────────────────────────────────────────────────── */
+/* ── 滚动列表（分组标题 / 卡片 / 页脚） ───────────────────────────────── */
+.home__list {
+  padding: 0 24rpx;
+}
+
 .home__section {
   display: flex;
   flex-direction: row;
@@ -367,13 +548,7 @@ function open(comp: HomeComp): void {
 }
 
 /* ── 空态 / 页脚 ──────────────────────────────────────────────────────── */
-.home__empty {
-  padding: 96rpx 0;
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-}
-
+/* 空态文案由 sn-paging #empty 呈现（外壳承担内边距与居中）。 */
 .home__empty-text {
   font-size: 26rpx;
   color: var(--demo-text-3);
