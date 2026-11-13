@@ -43,8 +43,9 @@ export interface SnIconResolveContext {
   color: string;
   /** 请求边长（px；string 尺寸取整数部分，非法回退 24）。 */
   size: number;
-  /** 组件卸载 / 图标变更时触发，异步 Provider 应中断请求。 */
-  signal?: AbortSignal;
+  /** 组件卸载 / 图标变更时触发，异步 Provider 应中断请求；运行时无
+   * AbortController（微信小程序）时为 undefined。 */
+  signal?: AbortSignal | undefined;
 }
 
 /**

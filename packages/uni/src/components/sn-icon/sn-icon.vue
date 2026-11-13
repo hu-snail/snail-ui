@@ -180,13 +180,16 @@ function warnUnresolved(code: string, value: string, cause?: unknown): void {
 async function loadRemote(value: string): Promise<void> {
   const seq = ++loadSeq;
   abortCtrl?.abort();
-  const ctrl = new AbortController();
+  // WeChat MP runtime ships no AbortController (AGENTS.md §84): fall back to
+  // the sequence guard alone — a stale result is still discarded on settle.
+  const ctrl: AbortController | null =
+    typeof AbortController === 'undefined' ? null : new AbortController();
   abortCtrl = ctrl;
   try {
     const result = resolveSnIconStringAsync(value, {
       color: props.color,
       size: numericSize.value,
-      signal: ctrl.signal,
+      signal: ctrl?.signal,
     });
     if (result === null) {
       if (seq === loadSeq) {
@@ -197,7 +200,7 @@ async function loadRemote(value: string): Promise<void> {
       return;
     }
     const settled = await Promise.resolve(result);
-    if (seq !== loadSeq || ctrl.signal.aborted) return;
+    if (seq !== loadSeq || ctrl?.signal.aborted === true) return;
     if (typeof settled === 'string') {
       remoteSrc.value = settled;
       asyncIcon.value = null;
@@ -206,7 +209,7 @@ async function loadRemote(value: string): Promise<void> {
       remoteSrc.value = null;
     }
   } catch (err: unknown) {
-    if (seq !== loadSeq || ctrl.signal.aborted) return;
+    if (seq !== loadSeq || ctrl?.signal.aborted === true) return;
     remoteSrc.value = null;
     asyncIcon.value = null;
     warnUnresolved(err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED', value, err);

@@ -37,9 +37,10 @@ export interface SnIconifyOptions {
   timeout?: number;
   /**
    * 注入自定义请求函数（返回 SVG 文档文本）。签名收到合并了外部
-   * AbortSignal 的 signal，组件卸载 / 图标变更时会被 abort。
+   * AbortSignal 的 signal，组件卸载 / 图标变更时会被 abort。运行时无
+   * AbortController（微信小程序）时 signal 为 undefined。
    */
-  request?: (url: string, timeoutMs: number, signal: AbortSignal) => Promise<string>;
+  request?: (url: string, timeoutMs: number, signal?: AbortSignal) => Promise<string>;
 }
 
 const DEFAULT_API_BASE = 'https://api.iconify.design';
@@ -47,7 +48,7 @@ const DEFAULT_TIMEOUT_MS = 15000;
 
 let apiBase = DEFAULT_API_BASE;
 let timeoutMs = DEFAULT_TIMEOUT_MS;
-let requestFn: (url: string, timeoutMs: number, signal: AbortSignal) => Promise<string> =
+let requestFn: (url: string, timeoutMs: number, signal?: AbortSignal) => Promise<string> =
   defaultRequest;
 
 /** 配置 Iconify 服务（幂等；未给出的字段保持原值）。 */
@@ -59,7 +60,7 @@ export function configSnIconify(options: SnIconifyOptions = {}): void {
 
 /** 当前配置快照（测试断言用）。 */
 export function getSnIconifyConfig(): Required<Omit<SnIconifyOptions, 'request'>> & {
-  request: (url: string, timeoutMs: number, signal: AbortSignal) => Promise<string>;
+  request: (url: string, timeoutMs: number, signal?: AbortSignal) => Promise<string>;
 } {
   return { apiBase, timeout: timeoutMs, request: requestFn };
 }
@@ -95,14 +96,14 @@ const ICONIFY_ID_RE = /^[a-z0-9-]+$/i;
  * 默认请求实现：fetch 优先（H5 / App / 测试），回落 uni.request（MP）。
  * `external` signal（组件生命周期）与超时信号竞争，任一触发即中断。
  */
-function defaultRequest(url: string, ms: number, external: AbortSignal): Promise<string> {
+function defaultRequest(url: string, ms: number, external?: AbortSignal): Promise<string> {
   const g = globalThis as Record<string, unknown>;
 
   if (typeof g.fetch === 'function') {
     const timeoutCtrl = new AbortController();
     const timer = setTimeout(() => timeoutCtrl.abort(), ms);
     const onExternalAbort = () => timeoutCtrl.abort();
-    external.addEventListener('abort', onExternalAbort, { once: true });
+    external?.addEventListener('abort', onExternalAbort, { once: true });
     return (g.fetch as typeof fetch)(url, { signal: timeoutCtrl.signal, method: 'GET' })
       .then(async (res) => {
         if (!res.ok) {
@@ -115,7 +116,7 @@ function defaultRequest(url: string, ms: number, external: AbortSignal): Promise
       })
       .finally(() => {
         clearTimeout(timer);
-        external.removeEventListener('abort', onExternalAbort);
+        external?.removeEventListener('abort', onExternalAbort);
       });
   }
 
@@ -162,11 +163,11 @@ function defaultRequest(url: string, ms: number, external: AbortSignal): Promise
         task?.abort?.();
         reject(new SnIconSourceError('ICON_FETCH_FAILED', `Iconify request aborted for ${url}`));
       };
-      if (external.aborted) {
+      if (external?.aborted === true) {
         onExternalAbort();
         return;
       }
-      external.addEventListener('abort', onExternalAbort, { once: true });
+      external?.addEventListener('abort', onExternalAbort, { once: true });
     });
   }
 
@@ -213,7 +214,7 @@ export function resolveIconifyIcon(target: string, ctx: SnIconResolveContext): P
   const url = buildIconifySvgUrl(collection, name, ctx);
   const cached = cache.get(url);
   if (cached) return cached;
-  const pending = requestFn(url, timeoutMs, ctx.signal ?? new AbortController().signal)
+  const pending = requestFn(url, timeoutMs, ctx.signal)
     .then((svg) => {
       if (!svg.includes('<svg')) {
         throw new SnIconSourceError(

@@ -71,6 +71,7 @@ import { Fragment } from 'vue';
 import SnAvatar from '../sn-avatar/sn-avatar.vue';
 import { SN_AVATAR_GROUP } from '../sn-avatar/avatar-group-context';
 import { resolveGeometry } from './sn-avatar-group-geometry';
+import { resolveSlotNodes } from './sn-avatar-group-slots';
 
 defineOptions({ name: 'SnAvatarGroup' });
 
@@ -174,7 +175,7 @@ function countAvatarNodes(nodes: unknown): number {
   return total;
 }
 
-const totalCount = computed<number>(() => countAvatarNodes(slots.default?.() ?? []));
+const totalCount = computed<number>(() => countAvatarNodes(resolveSlotNodes(slots.default)));
 
 /** Stack geometry (arithmetic lives in the pure geometry module). */
 const geometry = computed(() =>

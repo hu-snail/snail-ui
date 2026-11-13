@@ -241,7 +241,7 @@ describe('sn-icon remote provider path (iconify / custom)', () => {
   const svgDoc =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3"/></svg>';
 
-  function injectRequest(doc: string, calls: Array<{ url: string; signal: AbortSignal }> = []) {
+  function injectRequest(doc: string, calls: Array<{ url: string; signal: AbortSignal | undefined }> = []) {
     configSnIconify({
       request: async (url, _timeout, signal) => {
         calls.push({ url, signal });
@@ -266,7 +266,7 @@ describe('sn-icon remote provider path (iconify / custom)', () => {
   });
 
   it('bakes an explicit color into the provider request', async () => {
-    const calls: Array<{ url: string; signal: AbortSignal }> = [];
+    const calls: Array<{ url: string; signal: AbortSignal | undefined }> = [];
     injectRequest(svgDoc, calls);
     mount(SnIcon, { props: { icon: 'mdi:home', color: '#00ff00' } });
     await flushPromises();
@@ -281,12 +281,28 @@ describe('sn-icon remote provider path (iconify / custom)', () => {
   });
 
   it('aborts the in-flight request on unmount', async () => {
-    const calls: Array<{ url: string; signal: AbortSignal }> = [];
+    const calls: Array<{ url: string; signal: AbortSignal | undefined }> = [];
     injectRequest(svgDoc, calls);
     const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
     await flushPromises();
     wrapper.unmount();
-    expect(calls[0]?.signal.aborted).toBe(true);
+    expect(calls[0]?.signal?.aborted).toBe(true);
+  });
+
+  it('still resolves the icon when the runtime has no AbortController', async () => {
+    // Regression: WeChat MP has no global AbortController — `new AbortController()`
+    // threw at mount (watch immediate) and broke every page using a remote icon.
+    injectRequest(svgDoc);
+    vi.stubGlobal('AbortController', undefined);
+    try {
+      const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
+      await flushPromises();
+      const remote = wrapper.find('.sn-icon__remote');
+      expect(remote.exists()).toBe(true);
+      expect(remote.attributes('style')).toContain('data:image/svg+xml');
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('renders nothing and warns with the error code when the fetch fails', async () => {
