@@ -1,5 +1,9 @@
 <script setup lang="ts">
-/** Demo: sn-avatar (uni-end) — 图片 / 文字 / 图标 三种内容层。 */
+/**
+ * Demo: sn-avatar (uni-end) — 图片 / 文字 / 图标 三种内容层。
+ * 文字头像统一白字彩底（语义色背景 + text-on-primary 前景），横向 flex 行
+ * 排列——uni-app x App 端 flex 默认 column，方向必须显式声明。
+ */
 import { onBeforeUnmount } from 'vue';
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
@@ -12,11 +16,27 @@ onBeforeUnmount(() => clearSnIcons());
 
 <template>
   <view class="sn-demo">
-    <SnAvatar text="AU" />
-    <SnAvatar text="王" />
+    <SnAvatar
+      text="AU"
+      bg-color="var(--sn-mp-color-action-primary)"
+      color="var(--sn-mp-color-text-on-primary)"
+    />
+    <SnAvatar
+      text="王"
+      bg-color="var(--sn-mp-color-feedback-warning)"
+      color="var(--sn-mp-color-text-on-primary)"
+    />
     <SnAvatar icon="User" />
-    <SnAvatar text="JD" bg-color="var(--sn-mp-color-action-primary)" />
-    <SnAvatar text="SN" bg-color="var(--sn-mp-color-feedback-success)" />
+    <SnAvatar
+      text="JD"
+      bg-color="var(--sn-mp-color-feedback-info)"
+      color="var(--sn-mp-color-text-on-primary)"
+    />
+    <SnAvatar
+      text="SN"
+      bg-color="var(--sn-mp-color-feedback-success)"
+      color="var(--sn-mp-color-text-on-primary)"
+    />
     <SnAvatar src="https://picsum.photos/seed/snui-a/120" alt="A" />
   </view>
 </template>
@@ -24,6 +44,7 @@ onBeforeUnmount(() => clearSnIcons());
 <style scoped>
 .sn-demo {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;

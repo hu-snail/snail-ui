@@ -1301,8 +1301,6 @@
 - pages/basic/demos/avatar-group-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
 - pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
