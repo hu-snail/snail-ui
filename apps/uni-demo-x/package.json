@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "gen": "node scripts/gen-x.mjs",
-    "check": "node scripts/check-x.mjs"
+    "check": "node scripts/check-x.mjs",
+    "sync-uni-x": "node scripts/sync-uni-x.mjs"
   },
   "dependencies": {
     "@snui/style-packs": "workspace:*",

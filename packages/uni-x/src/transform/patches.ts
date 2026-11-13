@@ -257,7 +257,40 @@ const iconDataUrl = computed<string | undefined>(() => {
     {
       anchor: `import { computed } from 'vue';`,
       replacement: `import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from 'vue';`,
-      note: 'ring color resolution + SVG data URL state need getCurrentInstance / nextTick / onMounted / ref / watch',
+      note: 'ring color resolution + canvas state need getCurrentInstance / nextTick / onMounted / ref / watch',
+    },
+    {
+      // Root sizing must be inline, not var()-derived: on the vapor path the
+      // root's `width: var(--sn-circle-size)` rule did not resolve (verified
+      // live: computed root 0×0 while --sn-circle-size was valid), and a 0×0
+      // root clips the absolutely-positioned ring into fragments. Inline
+      // width/height is the one sizing channel every uni target honours
+      // (same conclusion as the sn-badge corner pin).
+      anchor: `const rootStyle = computed(() => {
+  const parts = [
+    \`--sn-circle-size: \${ringSize.value}\`,
+    \`--sn-circle-width: \${ringWidth.value}\`,
+    \`--sn-circle-duration: \${transitionMs.value}ms\`,
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});`,
+      replacement: `const rootStyle = computed(() => {
+  const parts = [
+    // Inline geometry (see the patch note): the CSS var alone did not give
+    // the root a box on the uni ends (verified live: 0×0 root while the var
+    // was valid), and a 0×0 root lets the ring image fall back to its
+    // intrinsic SVG size — the ring then draws oversized and off-position.
+    \`width: \${ringSize.value}\`,
+    \`height: \${ringSize.value}\`,
+    \`--sn-circle-size: \${ringSize.value}\`,
+    \`--sn-circle-width: \${ringWidth.value}\`,
+    \`--sn-circle-duration: \${transitionMs.value}ms\`,
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});`,
+      note: 'root gets inline width/height (the ring image sizes off it)',
     },
     {
       anchor: `/** Sweep + fill color as custom properties consumed by the stylesheet. */
@@ -650,9 +683,9 @@ const ringDataUrl = computed<string | undefined>(() => {
 .sn-circle__fill {
   position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
 
