@@ -46,3 +46,25 @@
   MP 上需要 `@media (prefers-color-scheme: dark)` + `page` 层产物，或宿主把 dark
   变量写进各页面 wxss。当前 MP 只保证浅色主题下组件样式生效。
 - `[data-theme='dark']` 属性选择器 WXSS 不支持：仅该规则在 MP 被忽略，无副作用。
+
+## 编译产物"文件翻倍" — exFAT AppleDouble（环境问题，非遗留代码问题）
+
+- 现场：`unpackage/dist/dev/mp-weixin` 里 1538 个 js 有 769 个是 `._avatar.js`
+  这类文件；微信开发者工具文件树里 `pages/**/demos/._*` 与真实页面交错，看起来
+  像"组件源码混进 pages"。
+- 根因：仓库位于 **exFAT 卷**（`diskutil info` → File System Personality: exFAT）。
+  macOS 对 exFAT 上写入的每个文件生成 `._同名` 伴生文件（存 xattr /
+  `com.apple.provenance`）。`pages/` 下的 demo 页面按设计一页一场景（pages.json
+  100 个页面），每个真实文件在 dist 里都多出一个二进制伴生文件 → 文件数翻倍。
+- 验证：`._avatar.js` 开头是 `Mac OS X        ATTR`（AppleDouble 头），不是 JS；
+  `git ls-files | grep '/\._'` = 0（全部未被跟踪，`.gitignore` 已含 `._*`）。
+- 处置：
+  - 已删除 dist 与源码树中的 `._*`（dist 769 → 0，源码 3643 → 0）。
+  - 新增根脚本 `pnpm clean:appledouble`，构建后需要时再跑。
+  - 根治在系统层（需重启生效）：
+    `defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true`
+    （exFAT 移动卷）/ `DSDontWriteNetworkStores`（网络卷）。
+- 微信开发者工具若仍报 `WAWorker.js ... reading 'bg'` / `navigateTo:fail timeout`：
+  前者是工具自身 worker（隐私授权链路）内部的错误，清理后重开项目观察；后者与
+  100 个 demo 页面冷启动 + 工具压力相关，不是组件库代码路径。
+
