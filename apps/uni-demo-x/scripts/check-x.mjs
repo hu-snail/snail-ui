@@ -6,6 +6,10 @@
  * 3. 生成树中每个 `<sn-*>` 标签都能被显式 .uvue 导入或 easycom 正则
  *    解析到 `@snui/uni-x/dist/components/…` 实体（组件产物已生成）。
  * 4. 无 `.vue` 页面残留、无 `@snui/uni-src` 引用、无 demo-bridge 引用。
+ * 5. 与 uni-demo 的同步契约：首页分组（home-data 的分组 key / 标签序列）和
+ *    pages.json 分组（subPackage root + 页面清单）必须与 uni-demo 逐项一致
+ *    —— x 端是 uni-demo 的生成镜像，uni-demo 增删分组（如展示 / 业务 /
+ *    更多）后未重新 gen-x 时在这里直接失败，而不是上线后少一栏分类。
  *
  * 运行：pnpm -F @snui/uni-demo-x check
  */
@@ -133,7 +137,50 @@ for (const dir of generatedDirs) {
   });
 }
 
-/* 5. 残留检查（生成树 + 根级 App.uvue —— web 编译对 .vue 导入严格解析） */
+/* 5. 与 uni-demo 的同步契约：首页分组 + pages.json 分组逐项对齐。
+ *    home-data 的分组块是 `    key:`（4 空格缩进，组件 comp 是 8 空格），
+ *    以此区分分组条目与组件条目；顺序也参与比较——首页 chips 按该顺序渲染。 */
+const uniDemoRoot = resolve(appRoot, '../uni-demo');
+const homeGroupRe = /^ {4}key: '([a-z0-9-]+)',\n {4}label: '([^']*)',\n {4}labelEn: '([^']*)',/gm;
+function homeGroupsOf(file) {
+  const source = readFileSync(file, 'utf8');
+  return [...source.matchAll(homeGroupRe)].map((m) => `${m[1]}|${m[2]}|${m[3]}`);
+}
+const sourceHomeGroups = homeGroupsOf(join(uniDemoRoot, 'src/pages/index/home-data.ts'));
+const targetHomeGroups = homeGroupsOf(join(appRoot, 'pages/index/home-data.ts'));
+notes.groups = targetHomeGroups.length;
+if (sourceHomeGroups.length === 0) {
+  problems.push('uni-demo home-data.ts 解析不到分组 —— 解析器与生成格式脱节，需同步更新');
+} else if (sourceHomeGroups.join('\n') !== targetHomeGroups.join('\n')) {
+  const sourceOnly = sourceHomeGroups.filter((g) => !targetHomeGroups.includes(g));
+  const targetOnly = targetHomeGroups.filter((g) => !sourceHomeGroups.includes(g));
+  problems.push(
+    'home-data 分组与 uni-demo 不一致 —— 先重跑 `pnpm -F @snui/uni-demo-x gen`；' +
+      `仅 uni-demo 有: [${sourceOnly.join('; ')}] 仅 x 有: [${targetOnly.join('; ')}]`,
+  );
+}
+
+function subpackageShape(pagesJson) {
+  return (pagesJson.subPackages ?? []).map((sp) => ({
+    root: sp.root,
+    pages: sp.pages.map((p) => p.path).join(','),
+  }));
+}
+const sourceShape = JSON.stringify(subpackageShape(JSON.parse(readFileSync(join(uniDemoRoot, 'src/pages.json'), 'utf8'))));
+const targetShape = JSON.stringify(subpackageShape(pagesJson));
+if (sourceShape !== targetShape) {
+  const sourceRoots = JSON.parse(sourceShape).map((s) => s.root);
+  const targetRoots = JSON.parse(targetShape).map((s) => s.root);
+  const rootDiff =
+    sourceRoots.filter((r) => !targetRoots.includes(r)).join(',') ||
+    targetRoots.filter((r) => !sourceRoots.includes(r)).join(',');
+  problems.push(
+    `pages.json 分组与 uni-demo 不一致（root: ${rootDiff || '页面清单有差异'}）` +
+      ' —— 先重跑 `pnpm -F @snui/uni-demo-x gen`',
+  );
+}
+
+/* 6. 残留检查（生成树 + 根级 App.uvue —— web 编译对 .vue 导入严格解析） */
 const residueFiles = [];
 for (const dir of generatedDirs) {
   if (!existsSync(dir)) continue;
@@ -156,6 +203,7 @@ if (problems.length > 0) {
 }
 console.log(
   `[check-x] OK — ${notes.pages} pages / ${notes.uvue} .uvue / ` +
-    `${notes.explicit}+${notes.resolved}/${notes.tags.size} tags resolved ` +
+    `${notes.explicit}+${notes.resolved}/${notes.tags.size} tags resolved, ` +
+    `${notes.groups} home groups in sync with uni-demo ` +
     `(explicit import + easycom fallback, vapor manifest)`,
 );
