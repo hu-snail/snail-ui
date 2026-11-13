@@ -37,9 +37,4 @@ const clip = {
   color: var(--sn-mp-color-text-tertiary);
   font-size: 24rpx;
 }
-/* Docs-preview only: the layer root is `position: fixed`, which would cover the
- * whole docs page instead of the phone screen. Not needed in a real app. */
-.sn-video-preview.sn-demo-contained {
-  position: absolute;
-}
 </style>

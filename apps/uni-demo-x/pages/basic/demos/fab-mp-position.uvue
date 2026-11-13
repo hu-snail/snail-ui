@@ -221,9 +221,4 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-primary);
 }
-
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

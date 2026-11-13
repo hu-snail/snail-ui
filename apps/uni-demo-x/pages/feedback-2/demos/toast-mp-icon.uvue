@@ -73,8 +73,4 @@ function showLoading(kind: (typeof loadingKinds)[number]): void {
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-toast.sn-demo-contained {
-  position: absolute;
-}
 </style>

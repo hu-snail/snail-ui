@@ -54,9 +54,4 @@ const items = ['Nearby stores', 'Open 09:00 - 22:00', 'Parking available'];
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }
-/* custom-class lands on the sn-floating-panel root node (alongside sn-demo-contained). */
-/* Docs-preview only — keep the fixed-position panel inside the phone screen. */
-.sn-floating-panel.sn-demo-contained {
-  position: absolute;
-}
 </style>

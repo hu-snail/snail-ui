@@ -86,9 +86,4 @@ const lastEvent = ref('—');
   font-size: 24rpx;
   line-height: var(--sn-mp-font-line-height-normal);
 }
-/* Docs-preview only: the viewer root is `position: fixed`, which would cover the
- * whole docs page instead of the phone screen. Not needed in a real app. */
-.sn-image-preview.sn-demo-contained {
-  position: absolute;
-}
 </style>

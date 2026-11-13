@@ -93,9 +93,4 @@ const SOURCE = 'https://picsum.photos/seed/snui-captcha-copy/640/320';
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-
-/* Docs-preview only — keep the fixed-position popup inside the phone screen. */
-.sn-captcha.sn-demo-contained {
-  position: absolute;
-}
 </style>

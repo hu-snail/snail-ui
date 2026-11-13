@@ -59,8 +59,4 @@ const items = ['Nearby stores', 'Open 09:00 - 22:00', 'Parking available', 'Clic
   font-size: 26rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the fixed-position panel inside the phone screen. */
-.sn-floating-panel.sn-demo-contained {
-  position: absolute;
-}
 </style>

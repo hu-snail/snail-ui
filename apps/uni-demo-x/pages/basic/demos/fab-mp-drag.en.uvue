@@ -94,9 +94,4 @@ function pick(label: string): void {
   color: var(--sn-mp-color-text-secondary);
   flex-direction: row;
 }
-
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

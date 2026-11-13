@@ -55,9 +55,4 @@ function onConfirm() {
   color: var(--sn-mp-color-text-tertiary);
   font-size: 24rpx;
 }
-/* Docs-preview only: the cropper root is `position: fixed`, which would cover the
- * whole docs page instead of the phone screen. Not needed in a real app. */
-.sn-img-cropper.sn-demo-contained {
-  position: absolute;
-}
 </style>

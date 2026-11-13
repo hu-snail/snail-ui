@@ -50,8 +50,4 @@ const dangerOpen = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-notify.sn-demo-contained {
-  position: absolute;
-}
 </style>

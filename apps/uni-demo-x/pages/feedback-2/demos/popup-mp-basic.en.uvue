@@ -43,21 +43,4 @@ const centerOpen = ref(false);
   font-size: 28rpx;
   color: var(--vp-c-text-2);
 }
-/*
- * Docs-preview only: the popup root is `position: fixed` (correct for the real
- * uni-app runtime), which would cover the whole docs page instead of the phone
- * screen. `custom-class` lands on the component root, so the preview pins it to
- * the phone screen's containing block. Not needed in a real app.
- */
-/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
- * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
- * the direct parent's content box (css/position) and the page class still
- * reaches the component root (style-isolation) — the rule would pin the
- * fullscreen fixed layer into the demo card and clip it (App overflow
- * defaults to hidden). */
-/* #ifdef H5 || WEB */
-.sn-popup.sn-demo-contained {
-  position: absolute;
-}
-/* #endif */
 </style>
