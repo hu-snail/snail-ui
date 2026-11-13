@@ -514,10 +514,25 @@ const PAGE_BG_OVERRIDES = {
 
 /**
  * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
- * 下拉菜单的面板是组件自身坐标系内的 absolute 层、遮罩是 fixed 全屏层——
- * 白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接浮在页面画布上。
+ * - drop-menu / tabbar：组件的面板是自身坐标系内的 absolute 层、遮罩是
+ *   fixed 全屏层——白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接
+ *   浮在页面画布上。
+ * - cell：单元格分组自带 surface 背景，那就是组件的真实形态——白卡底与
+ *   组件背景双重叠加，去底后分组按真实页面渲染直接浮在画布上。
+ * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
+ * （保持 drop-menu / tabbar 既有产物不变）。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar']);
+const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell']);
+
+/** 透明变体在生成页里的按页注释主体（去掉卡底之后的 Why）。 */
+const MODULE_BARE_COMMENTS = {
+  default: `组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担`,
+  cell: `单元格分组自带 surface 背景，即组件的真实形态；白卡底会与
+ * 组件背景双重叠加。去掉卡底与描边，分组直接浮在页面画布上，层级由
+ * 分组自身的圆角 / 描边 / 分隔线承担`,
+};
 
 /**
  * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
@@ -1276,9 +1291,7 @@ ${modules}
 ${
   !isHeadless && MODULE_BARE_PAGES.has(comp.key)
     ? `
-/* ${comp.key}：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
- * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
- * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
 .module {
   background: transparent;
   border: none;
