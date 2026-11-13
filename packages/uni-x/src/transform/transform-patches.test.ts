@@ -64,12 +64,17 @@ describe('sn-icon color patches (uni-app x)', () => {
 });
 
 describe('sn-circle ring patches (uni-app x)', () => {
-  // Regression: the ring was a conic-gradient on a CSS-masked view — both
+  // Regression 1: the ring was a conic-gradient on a CSS-masked view — both
   // properties are unsupported on uni-app x App, so the component rendered
   // as a solid pie wedge over a full grey disc. The App-side ring must be a
-  // stroked-circle SVG rasterized through <image>. Run the real upstream
-  // source through the full pipeline — any upstream drift against the
-  // anchors fails here at test time, not at build time.
+  // stroked-circle SVG rasterized through <image>.
+  // Regression 2 (device, HBuilderX 5.33 alpha): the App image SVG decoder
+  // mis-renders arcs carrying in-document transforms — the rotate(-90) +
+  // dasharray progress circle drew broken fragments and lost tracks on
+  // multi-instance pages. The progress arc must be a precomputed M/A path:
+  // numbers only, no transform attribute, no dasharray in the SVG document.
+  // Run the real upstream source through the full pipeline — any upstream
+  // drift against the anchors fails here at test time, not at build time.
   const source = readFileSync(
     join(import.meta.dirname, '../../../uni/src/components/sn-circle/sn-circle.vue'),
     'utf8',
@@ -104,21 +109,56 @@ describe('sn-circle ring patches (uni-app x)', () => {
     expect(styleBlock).toContain('.sn-circle__probe');
   });
 
-  it('computes the dash arc in JS from the viewBox geometry', () => {
-    // Percent → arc-length math must run before assembly; the SVG document
-    // only receives numbers.
-    expect(result.code).toContain('const circumference: number = 2 * Math.PI * radius');
-    expect(result.code).toContain('stroke-dasharray="${r2(arc)} ${r2(circumference)}"');
+  it('builds the progress arc as a polyline path — pure M/L commands, numbers only in the SVG document', () => {
+    // Device regressions (HBuilderX 5.33 alpha): the App image SVG decoder
+    // mis-rendered first the rotate(-90)+dasharray circle and then the
+    // precomputed M/A arc path — arcs vanished or drew fragments. The arc is
+    // therefore a polyline of short chords (≤6°), carrying direction inside
+    // the coordinate math: M/L paths carry no transform, no dasharray, and
+    // no arc-command curve math — the rendering surface every SVG engine
+    // implements.
+    expect(result.code).toContain('CHORD_MAX_DEG = 6');
+    expect(result.code).toContain('function arcSegments(sweep: number): number');
+    expect(result.code).toContain('const sign: number = props.clockwise ? 1 : -1');
+    expect(result.code).toContain('const stepRad: number = ((sweep / segments) * Math.PI) / 180');
+    expect(result.code).toContain("M ${parts.join(' L ')}");
+    expect(result.code).toContain('Math.cos(a)');
+    expect(result.code).toContain('Math.sin(a)');
     expect(result.code).toContain('data:image/svg+xml;utf8,${encodeURIComponent(svg)}');
+    // The decoder-hostile attributes must stay gone. Assertions are
+    // markup-shaped (`attribute="`) so prose comments may still document
+    // the retired approaches.
+    expect(result.code).not.toContain('stroke-dasharray="');
+    expect(result.code).not.toContain('transform="');
+    expect(result.code).not.toContain('scale(-1 1)');
+    expect(result.code).not.toContain('sweepFlag');
+    expect(result.code).not.toContain('largeArc');
   });
 
-  it('starts the arc at 12 o’clock and mirrors it for counter-clockwise', () => {
-    expect(result.code).toContain("props.clockwise\n    ? 'rotate(-90 50 50)'");
-    expect(result.code).toContain('translate(100 0) scale(-1 1) rotate(-90 50 50)');
+  it('starts the polyline at 12 oclock from precomputed coordinates', () => {
+    // startAngle = -90° is the top of the circle — baked into the angle
+    // constant, no rotate and no arc-start flags.
+    expect(result.code).toContain('const startAngle: number = -Math.PI / 2');
+  });
+
+  it('omits the progress path at 0% and strokes a plain full circle at 100%', () => {
+    // 0%: a zero-length path would still dot under round caps — track only.
+    expect(result.code).toContain('if (sweep > 0 && sweep < 360)');
+    // 100%: a single-arc path is degenerate (start point == end point), so
+    // the full ring strokes as a plain transform-free closed circle — the
+    // exact shape the device already renders for the track.
+    expect(result.code).toContain('else if (sweep >= 360)');
+    expect(result.code).toContain('<circle cx="50" cy="50" r="${r}" fill="none" stroke="${stroke}"');
+  });
+
+  it('keeps the device-verified transform-free track circle', () => {
+    // The track (plain circle, no transform, no dasharray) renders
+    // correctly on device — untouched by the arc rework.
+    expect(result.code).toContain('<circle cx="50" cy="50" r="${r}" fill="none" stroke="${track}"');
   });
 
   it('encodes strokeLinecap as a real stroke attribute', () => {
-    // The conic sweep had no caps (API parity only); the SVG arc does.
+    // The conic sweep had no caps (API parity only); the SVG arc path does.
     expect(result.code).toContain('stroke-linecap="${props.strokeLinecap}"');
   });
 

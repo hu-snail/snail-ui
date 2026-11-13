@@ -146,7 +146,7 @@
 ### sn-circle/sn-circle.uvue
 
 - patch applied — `patch`: ring color resolution + SVG data URL state need getCurrentInstance / nextTick / onMounted / ref / watch
-- patch applied — `patch`: ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning
+- patch applied — `patch`: ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; progress arc is a polyline path (pure M/L chords ≤6°) — the App image SVG decoder mis-renders transform / dasharray / M-A arc commands; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning
 - patch applied — `patch`: track/arc views replaced by <image :src="ringDataUrl"> + two color probes
 - patch applied — `patch`: mask / conic-gradient / scaleX flip styles removed; ring image + probe styles added
 - patch applied — `patch`: doodle skin retargeted to the ring image

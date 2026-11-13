@@ -286,10 +286,10 @@ const fillStyle = computed(() => (props.fill ? \`background-color: \${props.fill
  * background-image takes linear-gradient only), so the ring — track band +
  * progress arc — rasterizes through an <image> with an SVG data URL built
  * here. Geometry lives in a 100×100 viewBox: the stroke width scales from
- * the size/strokeWidth ratio, the progress arc is a dash on a circle (dash
- * length = circumference × percentage), and the arc starts at 12 o'clock
- * via rotate(-90). Percent → arc-length math runs here in JS; the SVG
- * document never computes.
+ * the size/strokeWidth ratio, and the progress arc is a precomputed SVG
+ * arc path (percent → endpoint-angle math runs here in JS; no in-document
+ * transform attribute and no dasharray — the App image SVG decoder
+ * mis-renders them, see ringDataUrl). The SVG document never computes.
  *
  * The SVG document is isolated from page CSS — a var(--token) or
  * currentColor stroke cannot cross the image boundary (a literal var() is
@@ -495,15 +495,37 @@ watch(
 )
 
 /**
- * Ring SVG data URL: 100×100 viewBox — track circle + progress dash arc.
- * The progress circle starts at 12 o'clock via rotate(-90) (an SVG circle
- * dash begins at 3 o'clock, clockwise); counter-clockwise mirrors it across
- * the vertical axis. strokeLinecap is a real stroke attribute on this path
- * (the "parity only" note upstream applies to the conic H5/MP sweep). 0%
- * renders track only; 100% drops the dasharray. The stroke-width ratio
- * falls back to the 18/120 design default when size/strokeWidth carry
- * units that cannot be compared.
+ * Ring SVG data URL: 100×100 viewBox — track circle + progress arc.
+ *
+ * The progress arc is a polyline path (pure M/L commands) approximating the
+ * arc in short straight chords: the App image SVG decoder mis-renders every
+ * in-document geometry feature we tried beyond plain strokes — the original
+ * rotate(-90)+dasharray circle drew broken fragments (device regression,
+ * HBuilderX 5.33 alpha), and the first precomputed M/A arc path still lost
+ * most arcs on the real device. M/L paths carry no transform, no dasharray
+ * and no arc-command curve math, which is the rendering surface every SVG
+ * engine implements. Chords cap at CHORD_MAX_DEG° (inner-radius chord error
+ * < 0.16% of r at 6° — visually indistinguishable from a true arc) so 360°
+ * costs ≤ CHORD segments; the SVG document never computes.
+ *
+ * Direction enters the coordinate math (clockwise advances +sweep from 12
+ * o'clock, counter-clockwise −sweep) instead of flags/transforms, so the
+ * path IS the geometry. strokeLinecap is a real stroke attribute on the
+ * path (the "parity only" note upstream applies to the conic H5/MP sweep).
+ * Boundaries: 0% renders track only (a zero-length path would still dot
+ * under round caps); 100% strokes a plain transform-free circle — a closed
+ * circle is the exact shape the device already renders for the track, and a
+ * 60-chord loop would duplicate the first point (degenerate under some
+ * rasterizers). The stroke-width ratio falls back to the 18/120 design
+ * default when size/strokeWidth carry units that cannot be compared.
  */
+const CHORD_MAX_DEG = 6
+
+/** Percent → number of polyline segments (at least one; 6° chords max). */
+function arcSegments(sweep: number): number {
+  const n = Math.ceil(sweep / CHORD_MAX_DEG)
+  return n < 1 ? 1 : n
+}
 const ringDataUrl = computed<string | undefined>(() => {
   const track: string = resolvedTrackColor.value
   const stroke: string = resolvedProgressColor.value
@@ -522,26 +544,39 @@ const ringDataUrl = computed<string | undefined>(() => {
     }
   }
   const sw: number = Math.min(50, Math.max(0.5, ratio * 100))
-  const radius: number = (100 - sw) / 2
-  const circumference: number = 2 * Math.PI * radius
-  const arc: number = (sweepDeg.value / 360) * circumference
-  const dash: string = arc >= circumference ? '' : \` stroke-dasharray="\${r2(arc)} \${r2(circumference)}"\`
-  const progressTransform: string = props.clockwise
-    ? 'rotate(-90 50 50)'
-    : 'translate(100 0) scale(-1 1) rotate(-90 50 50)'
-  const progressCircle: string =
-    sweepDeg.value <= 0
-      ? ''
-      : \`<circle cx="50" cy="50" r="\${r2(radius)}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}"\${dash} transform="\${progressTransform}"/>\`
+  const r: number = r2((100 - sw) / 2)
+  const sweep: number = sweepDeg.value
+  let progressShape: string = ''
+  if (sweep > 0 && sweep < 360) {
+    // Polyline arc: pure M/L chords, direction baked into the coordinate math
+    // (clockwise advances +sweep, counter-clockwise −sweep) — no arc command,
+    // no transform, no dasharray (the App decoder mis-renders all three).
+    const startAngle: number = -Math.PI / 2
+    const sign: number = props.clockwise ? 1 : -1
+    const segments: number = arcSegments(sweep)
+    const stepRad: number = ((sweep / segments) * Math.PI) / 180
+    const parts: string[] = []
+    for (let i = 0; i <= segments; i++) {
+      const a: number = startAngle + sign * stepRad * i
+      parts.push(\`\${r2(50 + r * Math.cos(a))} \${r2(50 + r * Math.sin(a))}\`)
+    }
+    const arcPath: string = \`M \${parts.join(' L ')}\`
+    progressShape = \`<path d="\${arcPath}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}" stroke-linejoin="round"/>\`
+  } else if (sweep >= 360) {
+    // 100%: a polyline loop would duplicate its first point (degenerate under
+    // some rasterizers), so the full ring strokes as a plain closed circle —
+    // the exact transform-free shape the device already renders for the track.
+    progressShape = \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}"/>\`
+  }
   const svg: string =
     \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">\` +
-    \`<circle cx="50" cy="50" r="\${r2(radius)}" fill="none" stroke="\${track}" stroke-width="\${r2(sw)}"/>\` +
-    progressCircle +
+    \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${track}" stroke-width="\${r2(sw)}"/>\` +
+    progressShape +
     \`</svg>\`
   return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
 })
 </script>`,
-      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
+      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; progress arc is a polyline path (pure M/L chords ≤6°) — the App image SVG decoder mis-renders transform / dasharray / M-A arc commands; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
     },
     {
       anchor: `    <!-- Track: full ring in the layer color, masked down to a stroke band. -->
