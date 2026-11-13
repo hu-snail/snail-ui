@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-input-number — theme: default / outline / outline-split / primary. */
+/** Demo: sn-input-number — theme: default / primary / outline-split / outline (wot-ui v2 order). */
 import { ref } from 'vue';
 import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-number.vue';
 
@@ -12,9 +12,9 @@ const d = ref(4);
 <template>
   <view class="sn-demo sn-demo--column">
     <SnInputNumber v-model="a" theme="default" />
-    <SnInputNumber v-model="b" theme="outline" />
+    <SnInputNumber v-model="b" theme="primary" />
     <SnInputNumber v-model="c" theme="outline-split" />
-    <SnInputNumber v-model="d" theme="primary" />
+    <SnInputNumber v-model="d" theme="outline" />
   </view>
 </template>
 

@@ -2,7 +2,7 @@
 /**
  * sn-input-number (uni-end) — numeric stepper with an editable field.
  *
- * Reference library: wot-ui `wd-input-number`
+ * Reference library: wot-ui `wd-input-number` (v2)
  *   (https://wot-ui.cn/component/input-number.html)
  * Per AGENTS.md §112, the prop surface below mirrors wd-input-number 1:1.
  * Anything new added here MUST also be added to the reference list in
@@ -11,6 +11,28 @@
  * File path follows uni-app easycom convention:
  *   components/sn-input-number/sn-input-number.vue
  * → auto-registered as `<sn-input-number>` in any .vue that uses it.
+ *
+ * ## Visual contract (wd-input-number v2)
+ *
+ * Three segments joined edge to edge — minus / field / plus — each carrying
+ * its own fill and corner radius; the root is transparent and layout-only, so
+ * a stretched flex parent can never turn the control into a full-width track.
+ * Segment fills live on the segments (not the root) for the same reason.
+ *
+ *   - `default`       soft fill, 1px reverse-fill dividers between segments
+ *   - `outline`       soft fill, outer hairline border, no dividers
+ *   - `outline-split` soft fill, short hairline dividers, no outer border
+ *   - `primary`       minus = primary hairline outline, plus = primary fill
+ *
+ * Glyphs are `SnIcon` (not `::before` / `::after`): the uni-app x CSS
+ * transform drops pseudo-elements, so drawing the +/- bars in CSS would leave
+ * the uvue build with blank buttons.
+ *
+ * ## Timers (AGENTS.md §41)
+ *
+ * `longPress` runs one `setInterval` while a button is held. It is cleared on
+ * `touchend` / `touchcancel`, on unmount and before every new press, so a
+ * half-pressed button can never outlive the component.
  *
  * ## Value model
  *
@@ -25,12 +47,6 @@
  * `allowNull` lets the field hold `''` (an explicit "empty" state) — the
  * numeric bounds are skipped in that case, which is exactly wd-input-number's
  * `allow-null` contract.
- *
- * ## Timers (AGENTS.md §41)
- *
- * `longPress` runs one `setInterval` while a button is held. It is cleared on
- * `touchend` / `touchcancel`, on unmount and before every new press, so a
- * half-pressed button can never outlive the component.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -373,24 +389,25 @@ if (props.updateOnInit) {
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
-      <SnIcon :icon="MinusIcon" :size="24" />
+      <view class="sn-input-number__action-divider" aria-hidden="true" />
+      <SnIcon :icon="MinusIcon" size="24rpx" />
     </view>
 
-    <input
-      v-if="!withoutInput"
-      class="sn-input-number__field"
-      :style="fieldWidthStyle"
-      :type="inputType"
-      :value="displayValue"
-      :placeholder="placeholder"
-      :disabled="fieldDisabled"
-      :aria-label="placeholder || 'number input'"
-      :adjust-position="adjustPosition"
-      @input="onInput"
-      @focus="onFieldFocus"
-      @blur="onFieldBlur"
-    />
-    <view v-else class="sn-input-number__divider" aria-hidden="true" />
+    <view v-if="!withoutInput" class="sn-input-number__inner">
+      <input
+        class="sn-input-number__field"
+        :style="fieldWidthStyle"
+        :type="inputType"
+        :value="displayValue"
+        :placeholder="placeholder"
+        :disabled="fieldDisabled"
+        :aria-label="placeholder || 'number input'"
+        :adjust-position="adjustPosition"
+        @input="onInput"
+        @focus="onFieldFocus"
+        @blur="onFieldBlur"
+      />
+    </view>
 
     <view
       :class="[
@@ -407,81 +424,134 @@ if (props.updateOnInit) {
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
-      <SnIcon :icon="PlusIcon" :size="24" />
+      <view class="sn-input-number__action-divider" aria-hidden="true" />
+      <SnIcon :icon="PlusIcon" size="24rpx" />
     </view>
   </view>
 </template>
 
 <style scoped>
-/* uni side: --sn-mp-* aliases only (rpx units). */
+/* uni side: --sn-mp-* aliases only (rpx units).
+ *
+ * Layout mirrors wot-ui v2 `wd-input-number`: 28px action / 36px field /
+ * 28px action at the 750rpx design width → 56 / 72 / 56rpx. The root is
+ * transparent and carries no padding; fills and hairline radii live on the
+ * three segments, so the control keeps its intrinsic width inside a flex
+ * parent that stretches its children. */
 
 .sn-input-number {
   display: inline-flex;
   align-items: center;
-  box-sizing: border-box;
-  padding: var(--sn-mp-spacing-1);
-  border: 2rpx solid transparent;
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-soft);
-  color: var(--sn-mp-color-text-primary);
   font-family: inherit;
+  line-height: 1;
+  user-select: none;
 }
 
 .sn-input-number__action {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 56rpx;
   height: 56rpx;
   flex: 0 0 auto;
-  border-radius: var(--sn-mp-radius-sm);
-  background-color: var(--sn-mp-color-background-elevated);
+  box-sizing: border-box;
+  background-color: var(--sn-mp-color-background-soft);
   color: var(--sn-mp-color-text-secondary);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.sn-input-number__action--disabled {
-  color: var(--sn-mp-color-text-disabled);
+.sn-input-number__minus {
+  border-top-left-radius: var(--sn-mp-radius-sm);
+  border-bottom-left-radius: var(--sn-mp-radius-sm);
+}
+
+.sn-input-number__plus {
+  border-top-right-radius: var(--sn-mp-radius-sm);
+  border-bottom-right-radius: var(--sn-mp-radius-sm);
+}
+
+/* Inner divider: the 1px reverse-fill gap (default) / short hairline
+ * (outline-split) between segments. Rendered as a real node — uvue drops
+ * pseudo-elements. */
+.sn-input-number__action-divider {
+  position: absolute;
+  top: 50%;
+  width: 2rpx;
+  height: 100%;
+  transform: translateY(-50%);
+  background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-input-number__minus .sn-input-number__action-divider {
+  right: 0;
+}
+
+.sn-input-number__plus .sn-input-number__action-divider {
+  left: 0;
+}
+
+.sn-input-number__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  height: 56rpx;
+  padding: 0 var(--sn-mp-spacing-3);
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 .sn-input-number__field {
   width: 72rpx;
   height: 56rpx;
-  flex: 0 0 auto;
   box-sizing: border-box;
   border: none;
   background: transparent;
-  color: inherit;
+  color: var(--sn-mp-color-text-primary);
   font: inherit;
   font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
   text-align: center;
   line-height: 56rpx;
 }
 
-.sn-input-number__divider {
-  width: 2rpx;
-  height: 32rpx;
-  margin: 0 var(--sn-mp-spacing-2);
-  background-color: var(--sn-mp-color-border-subtle);
-}
-
 /* ── Themes ─────────────────────────────────────────────────────────────── */
 
-.sn-input-number--outline {
-  background-color: transparent;
-  border-color: var(--sn-mp-color-border-default);
-}
-
+/* outline: one continuous hairline box around the three segments. */
 .sn-input-number--outline .sn-input-number__action {
-  background-color: transparent;
-}
-
-.sn-input-number--outline-split .sn-input-number__action {
-  background-color: transparent;
   border: 2rpx solid var(--sn-mp-color-border-default);
 }
 
-.sn-input-number--primary {
+.sn-input-number--outline .sn-input-number__inner {
+  border-top: 2rpx solid var(--sn-mp-color-border-default);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-default);
+}
+
+.sn-input-number--outline .sn-input-number__action-divider {
+  display: none;
+}
+
+/* without-input: adjacent actions share one hairline instead of doubled. */
+.sn-input-number--without-input.sn-input-number--outline .sn-input-number__plus {
+  border-left: none;
+}
+
+/* outline-split: short hairline dividers, no outer box. */
+.sn-input-number--outline-split .sn-input-number__action-divider {
+  height: 36rpx;
+  background-color: var(--sn-mp-color-border-default);
+}
+
+/* primary: outlined minus + filled plus. */
+.sn-input-number--primary .sn-input-number__action-divider {
+  display: none;
+}
+
+.sn-input-number--primary .sn-input-number__minus {
   background-color: transparent;
+  border: 2rpx solid currentColor;
+  color: var(--sn-mp-color-action-primary);
 }
 
 .sn-input-number--primary .sn-input-number__plus {
@@ -489,32 +559,48 @@ if (props.updateOnInit) {
   color: var(--sn-mp-color-text-on-primary);
 }
 
-.sn-input-number--primary .sn-input-number__minus {
-  background-color: var(--sn-mp-color-action-primary-soft);
-  color: var(--sn-mp-color-action-primary);
+/* ── Disabled ───────────────────────────────────────────────────────────── */
+
+.sn-input-number__action--disabled {
+  color: var(--sn-mp-color-text-disabled);
 }
 
-.sn-input-number--round {
-  border-radius: var(--sn-mp-radius-full);
+/* Primary keeps its hue and dims instead (wot-ui `disabled-opacity`). */
+.sn-input-number--primary .sn-input-number__action--disabled {
+  opacity: 0.4;
 }
 
-.sn-input-number--round .sn-input-number__action {
-  border-radius: var(--sn-mp-radius-full);
+/* ── Round ──────────────────────────────────────────────────────────────── */
+
+.sn-input-number--round .sn-input-number__minus {
+  border-top-left-radius: var(--sn-mp-radius-full);
+  border-bottom-left-radius: var(--sn-mp-radius-full);
 }
 
-.sn-input-number--disabled {
-  opacity: 0.6;
+.sn-input-number--round .sn-input-number__plus {
+  border-top-right-radius: var(--sn-mp-radius-full);
+  border-bottom-right-radius: var(--sn-mp-radius-full);
 }
 
-/* Doodle skin — hand-drawn outline instead of the flat fill. */
-.snui-skin-doodle .sn-input-number {
-  border-width: 4rpx;
-  border-color: var(--sn-mp-color-text-primary);
-  border-radius: var(--sn-mp-radius-sm);
+/* ── Doodle skin ────────────────────────────────────────────────────────── */
+
+/* Hand-drawn outline instead of the flat fill. */
+.snui-skin-doodle .sn-input-number__action,
+.snui-skin-doodle .sn-input-number__inner {
+  border-top: 4rpx solid var(--sn-mp-color-text-primary);
+  border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
   background-color: var(--sn-mp-color-background-elevated);
 }
 
-.snui-skin-doodle .sn-input-number__action {
-  border-radius: var(--sn-mp-radius-xs);
+.snui-skin-doodle .sn-input-number__minus {
+  border-left: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__plus {
+  border-right: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__action-divider {
+  background-color: var(--sn-mp-color-text-primary);
 }
 </style>

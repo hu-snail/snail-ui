@@ -63,7 +63,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-theme',
       title: '主题（theme）',
-      blurb: 'default / outline / outline-split / primary 四种主题。',
+      blurb: 'default / primary / outline-split / outline 四种主题。',
     },
     {
       name: 'input-number-mp-round',

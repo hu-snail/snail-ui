@@ -62,15 +62,18 @@ import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-num
 
 ## Tokens Consumed (end: mp)
 
-| Token                                                     | Purpose                     |
-| --------------------------------------------------------- | --------------------------- |
-| `--sn-mp-color-background-soft`                           | Stepper surface             |
-| `--sn-mp-color-background-elevated`                       | Action-button plate         |
-| `--sn-mp-color-text-primary` / `-secondary` / `-disabled` | Value + button glyphs       |
-| `--sn-mp-color-action-primary` / `-soft`                  | `primary` theme fills       |
-| `--sn-mp-color-text-on-primary`                           | `primary` plus-button glyph |
-| `--sn-mp-color-border-default` / `-subtle`                | `outline` border / divider  |
-| `--sn-mp-radius-md` / `-sm` / `-full`                     | Corner presets              |
+| Token                                                          | Purpose                                      |
+| -------------------------------------------------------------- | -------------------------------------------- |
+| `--sn-mp-color-background-soft`                                | Segment fill (minus / field / plus)          |
+| `--sn-mp-color-background-elevated`                            | `default` theme divider gap                  |
+| `--sn-mp-color-text-primary`                                   | Field value                                  |
+| `--sn-mp-color-text-secondary` / `--sn-mp-color-text-disabled` | Glyph colors (normal / at bounds, disabled)  |
+| `--sn-mp-color-action-primary`                                 | `primary` plus fill + minus outline          |
+| `--sn-mp-color-text-on-primary`                                | `primary` plus glyph                         |
+| `--sn-mp-color-border-default`                                 | `outline` border + `outline-split` divider   |
+| `--sn-mp-radius-sm` / `--sn-mp-radius-full`                    | Segment corners / `round` pill corners       |
+| `--sn-mp-spacing-3`                                            | Field segment horizontal padding             |
+| `--sn-mp-font-size-md` / `--sn-mp-font-weight-medium`          | Field typography                             |
 
 ## Accessibility
 

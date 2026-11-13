@@ -54,7 +54,24 @@ describe('sn-input-number', () => {
     it('hides the field when withoutInput is set', () => {
       const w = mountNumber({ withoutInput: true });
       expect(w.find('.sn-input-number__field').exists()).toBe(false);
+      expect(w.find('.sn-input-number__inner').exists()).toBe(false);
       expect(w.classes()).toContain('sn-input-number--without-input');
+    });
+
+    it('wraps the field in its own inner segment', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__inner .sn-input-number__field').exists()).toBe(true);
+    });
+
+    it('separates the three segments with real divider nodes', () => {
+      // Pseudo-elements are dropped by the uni-app x CSS transform, so the
+      // hairline gaps must stay real nodes in the uni source.
+      const w = mountNumber();
+      expect(w.findAll('.sn-input-number__action-divider')).toHaveLength(2);
+      expect(w.find('.sn-input-number__minus .sn-input-number__action-divider').exists()).toBe(
+        true,
+      );
+      expect(w.find('.sn-input-number__plus .sn-input-number__action-divider').exists()).toBe(true);
     });
 
     it('applies the theme class', () => {
