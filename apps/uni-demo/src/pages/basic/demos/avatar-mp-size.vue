@@ -1,19 +1,33 @@
 <script setup lang="ts">
-/** Demo: sn-avatar (uni-end) — 尺寸预设 + 自定义数值 / 百分比尺寸。 */
+/**
+ * Demo: sn-avatar (uni-end) — 尺寸预设 + 自定义数值 / 单位字符串透传。
+ * 文字头像白字彩底（与基础用法一致）；百分比尺寸在 flex 行内会以容器宽
+ * 解析出超宽盒（高度百分比在内容撑高的父级上无法解析），demo 不展示该
+ * 病态用法，单位透传以 rpx 为例。
+ */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
+
+const ink = 'var(--sn-mp-color-text-on-primary)';
+const palette = [
+  'var(--sn-mp-color-action-primary)',
+  'var(--sn-mp-color-feedback-success)',
+  'var(--sn-mp-color-feedback-info)',
+  'var(--sn-mp-color-feedback-warning)',
+  'var(--sn-mp-color-purple)',
+];
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-demo-row">
-      <SnAvatar text="S" size="small" />
-      <SnAvatar text="N" size="normal" />
-      <SnAvatar text="M" size="medium" />
-      <SnAvatar text="L" size="large" />
+      <SnAvatar text="S" size="small" :bg-color="palette[0]" :color="ink" />
+      <SnAvatar text="N" size="normal" :bg-color="palette[1]" :color="ink" />
+      <SnAvatar text="M" size="medium" :bg-color="palette[2]" :color="ink" />
+      <SnAvatar text="L" size="large" :bg-color="palette[3]" :color="ink" />
     </view>
     <view class="sn-demo-row">
-      <SnAvatar text="56" :size="56" />
-      <SnAvatar text="20%" size="20%" />
+      <SnAvatar text="56" :size="56" :bg-color="palette[4]" :color="ink" />
+      <SnAvatar text="88" size="88rpx" :bg-color="palette[0]" :color="ink" />
     </view>
   </view>
 </template>

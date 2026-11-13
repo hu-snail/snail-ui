@@ -5,7 +5,7 @@
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 
-const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
+const photo = '/static/avatar-user.png';
 </script>
 
 <template>

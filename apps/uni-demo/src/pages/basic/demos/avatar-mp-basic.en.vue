@@ -37,7 +37,7 @@ onBeforeUnmount(() => clearSnIcons());
       bg-color="var(--sn-mp-color-feedback-success)"
       color="var(--sn-mp-color-text-on-primary)"
     />
-    <SnAvatar src="https://picsum.photos/seed/snui-a/120" alt="A" />
+    <SnAvatar src="/static/avatar-user.png" alt="A" />
   </view>
 </template>
 
