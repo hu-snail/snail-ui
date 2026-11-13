@@ -372,7 +372,7 @@
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 15): user-select stripped
+- unsupported property stripped — `unsupported-property` (line 22): user-select stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-input/sn-input.uvue

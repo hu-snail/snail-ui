@@ -215,8 +215,10 @@ describe('sn-avatar-group geometry', () => {
     expect(g.visible).toBe(2);
     expect(g.hidden).toBe(3);
     expect(g.clipping).toBe(true);
-    // 2 visible steps of (72 − 25) = 94rpx window, one diameter deep.
-    expect(g.length).toBe(94);
+    // One visible step (72 − 25 = 47) plus one full diameter: the window
+    // spans the members' full arcs — a bare `visible × step` ended one
+    // overlap short and shaved the outer arcs (colored-avatars regression).
+    expect(g.length).toBe(119);
     expect(g.diameter).toBe(72);
     expect(g.paddingSide).toBe('right');
   });

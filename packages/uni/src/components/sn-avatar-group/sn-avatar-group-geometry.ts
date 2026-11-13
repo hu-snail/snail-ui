@@ -13,8 +13,11 @@
  *     so member `k` starts at `k × (diameter − overlap)`;
  *   - `maxCount` counts SLOTS, and the collapse bubble takes the last slot, so
  *     an overflowing group renders `maxCount − 1` avatars;
- *   - the clip window is exactly as long as the visible members occupy, and
- *     clips the rest.
+ *   - the clip window spans the visible members' full arcs — from the first
+ *     member's outer edge to the last visible member's far edge — and clips
+ *     the rest. The first member's pull would otherwise shave its outer arc
+ *     against the window edge, and the window would end one `overlap` short
+ *     (visible once member avatars stopped being blank circles).
  */
 
 /** Named size presets → rpx diameter (mirrors sn-avatar's presets). */
@@ -88,8 +91,15 @@ export function resolveGeometry(options: {
   const hidden = Math.max(options.total - visible, 0);
   const overlap = diameter === null ? null : Math.round(diameter * OVERLAP_RATIO);
   const clipping = overflow && overlap !== null;
+  // (visible − 1) steps plus one full diameter: exactly the first member's
+  // outer edge through the last visible member's far edge. A bare
+  // `visible × step` would end one `overlap` short and shave the last
+  // visible member's far arc while the first member's pulled edge slipped
+  // out of the window (the colored-avatars regression).
   const length =
-    clipping && diameter !== null && overlap !== null ? visible * (diameter - overlap) : 0;
+    clipping && diameter !== null && overlap !== null && visible > 0
+      ? (visible - 1) * (diameter - overlap) + diameter
+      : 0;
   const paddingSide: SnAvatarGroupGeometry['paddingSide'] = options.vertical
     ? 'top'
     : options.cascading === 'left-up'
