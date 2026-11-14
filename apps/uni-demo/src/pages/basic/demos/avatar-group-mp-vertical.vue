@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — 竖向排列：vertical 忽略 cascading，
- * 叠层方向转为自上而下。成员尺寸用 rpx，见基础用法说明。
+ * 叠层方向转为自上而下。组内统一尺寸 size="64rpx"，见基础用法说明。
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
@@ -18,12 +18,11 @@ const members = [
 
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup vertical :max-count="3">
+    <SnAvatarGroup vertical :max-count="3" size="64rpx">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"

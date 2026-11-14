@@ -1,7 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— avatar-group 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/avatar-group-mp-basic.vue';
-import Demo1 from './demos/avatar-group-mp-shape.vue';
+import Demo1 from './demos/avatar-group-mp-collapse.vue';
+import Demo2 from './demos/avatar-group-mp-max-count.vue';
+import Demo3 from './demos/avatar-group-mp-shape.vue';
+import Demo4 from './demos/avatar-group-mp-vertical.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -25,9 +28,38 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
+        <DemoModuleHead
+          :title="
+            t('自定义折叠文本（collapse-avatar）', 'Custom collapse text (`collapse-avatar`)')
+          "
+          badge="collapse"
+        />
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('截断计数（max-count）', 'Overflow limit (`max-count`)')"
+          badge="max-count"
+        />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('形状（shape）', 'Shape (`shape`)')" badge="shape" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('竖向排列（vertical）', 'Vertical stacking (`vertical`)')"
+          badge="vertical"
+        />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

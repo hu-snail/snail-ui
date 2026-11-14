@@ -17,12 +17,11 @@ const members = [
 </script>
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup :max-count="3" collapse-avatar="+12" cascading="right-up">
+    <SnAvatarGroup :max-count="3" collapse-avatar="+12" size="64rpx" cascading="right-up">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"

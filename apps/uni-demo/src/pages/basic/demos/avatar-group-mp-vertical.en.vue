@@ -19,12 +19,11 @@ const members = [
 
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup vertical :max-count="3">
+    <SnAvatarGroup vertical :max-count="3" size="64rpx">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"

@@ -20,12 +20,11 @@ const members = [
   <view class="sn-demo sn-demo--stack">
     <view class="grp-scene">
       <text class="grp-label">圆形叠层（默认）</text>
-      <SnAvatarGroup cascading="right-up">
+      <SnAvatarGroup size="64rpx" cascading="right-up">
         <SnAvatar
           v-for="member in members"
           :key="member.text"
           :text="member.text"
-          size="64rpx"
           :bg-color="member.base"
           color="var(--sn-mp-color-text-on-primary)"
           :custom-style="`background-image: ${member.gradient}`"
@@ -35,12 +34,11 @@ const members = [
 
     <view class="grp-scene">
       <text class="grp-label">方形叠层（shape="square"）</text>
-      <SnAvatarGroup shape="square" cascading="right-up">
+      <SnAvatarGroup shape="square" size="64rpx" cascading="right-up">
         <SnAvatar
           v-for="member in members"
           :key="member.text"
           :text="member.text"
-          size="64rpx"
           :bg-color="member.base"
           color="var(--sn-mp-color-text-on-primary)"
           :custom-style="`background-image: ${member.gradient}`"

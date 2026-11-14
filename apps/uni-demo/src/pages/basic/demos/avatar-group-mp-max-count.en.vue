@@ -2,7 +2,7 @@
 /**
  * Demo: sn-avatar-group (uni-end) — overflow limit: max-count=3 → 2 avatars
  * + a bubble (max-count counts slots; the bubble owns the last one).
- * Member sizes are rpx, see the basic demo note.
+ * The group's size is 64rpx (rpx unit), see the basic demo note.
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
@@ -19,12 +19,11 @@ const members = [
 
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup :max-count="3" cascading="right-up">
+    <SnAvatarGroup :max-count="3" size="64rpx" cascading="right-up">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"

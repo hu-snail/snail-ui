@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — 基础叠层：不设 max-count，全部显示。
- * 成员尺寸用 rpx（与组件内部的 rpx 叠层步长同一单位体系，任意视口下重叠
+ * 组内统一尺寸 size="64rpx"（与组件的 rpx 叠层步长同一单位体系，任意视口下重叠
  * 比例恒定——混用 px 会在宽视口把成员盖得只剩细条）。渐变底色 + 姓氏文字：
  * 不依赖网络图片，弱网 / 离线也保持完整视觉。
  */
@@ -19,12 +19,11 @@ const members = [
 
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup cascading="right-up">
+    <SnAvatarGroup size="64rpx" cascading="right-up">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"

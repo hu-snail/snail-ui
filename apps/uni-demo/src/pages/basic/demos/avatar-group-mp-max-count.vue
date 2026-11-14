@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — 截断计数：max-count=3 → 2 个头像 + +3
- * （max-count 计槽位，折叠气泡占最后一槽）。成员尺寸用 rpx，见基础用法说明。
+ * （max-count 计槽位，折叠气泡占最后一槽）。组内统一尺寸 size="64rpx"，见基础用法说明。
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
@@ -18,12 +18,11 @@ const members = [
 
 <template>
   <view class="sn-demo">
-    <SnAvatarGroup :max-count="3" cascading="right-up">
+    <SnAvatarGroup :max-count="3" size="64rpx" cascading="right-up">
       <SnAvatar
         v-for="member in members"
         :key="member.text"
         :text="member.text"
-        size="64rpx"
         :bg-color="member.base"
         color="var(--sn-mp-color-text-on-primary)"
         :custom-style="`background-image: ${member.gradient}`"
