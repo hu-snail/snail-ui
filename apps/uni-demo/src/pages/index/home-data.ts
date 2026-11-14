@@ -27,7 +27,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '头像',
         titleEn: 'Avatar',
         desc: '圆形 / 方形头像与徽标组合',
-        count: 8,
+        count: 7,
       },
       {
         key: 'avatar-group',

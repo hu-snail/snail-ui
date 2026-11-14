@@ -67,12 +67,6 @@ import { Avatar } from '@snui/uni';
       blurb: 'Image fails → alt text → text → icon, with an error event.',
     },
     {
-      name: 'avatar-mp-css-icon',
-      title: 'Font icons (`cssIcon` / `iconPrefix`)',
-      blurb:
-        'cssIcon + iconPrefix build the font-icon class; a string cssIcon is the prefix itself; placeholder glyphs prove the class landed on the glyph node.',
-    },
-    {
       name: 'avatar-mp-mode',
       title: 'Image fit (`mode`)',
       blurb:

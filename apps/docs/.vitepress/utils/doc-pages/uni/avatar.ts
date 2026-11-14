@@ -70,12 +70,6 @@ import { Avatar } from '@snui/uni';
       blurb: '图片失败 → alt 文本 → 文字 → 图标，同时触发 error 事件。',
     },
     {
-      name: 'avatar-mp-css-icon',
-      title: '字体图标（cssIcon / iconPrefix）',
-      blurb:
-        'cssIcon + iconPrefix 拼出字体图标类；cssIcon 传字符串则直接作前缀；占位字形证明 class 落在字形节点。',
-    },
-    {
       name: 'avatar-mp-mode',
       title: '图片裁切（mode）',
       blurb:

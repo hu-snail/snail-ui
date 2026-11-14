@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1437 |
+| .uvue 产出 | 1435 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2060 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2058 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -1277,31 +1277,13 @@
 - App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic/avatar-group.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/basic/avatar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/basic/avatar.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
 - pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-badge.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-css-cart)"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-user)::after"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-star)::after"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-cart)::after"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-css-cart)::after"
-- pages/basic/demos/avatar-mp-css-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-user)"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-star)"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-icon-cart)"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo-css-cart)"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-user)::after"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-star)::after"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-icon-cart)::after"
-- pages/basic/demos/avatar-mp-css-icon.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo-css-cart)::after"
-- pages/basic/demos/avatar-mp-css-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-fallback.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-fallback.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/avatar-mp-mode.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-avatar-demo__root)"
