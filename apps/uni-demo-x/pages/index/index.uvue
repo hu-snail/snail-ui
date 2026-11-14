@@ -5,16 +5,16 @@
 // + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏），双列图标卡
 // 在默认插槽滚动（目录为静态数据，禁用下拉刷新与加载更多；图标卡见
 // home-icons.ts）。
-// 微信小程序：状态栏与胶囊几何由 getCapsuleMetrics() 给出（`--status-bar-height`
-// 在 WXSS 中不存在）——顶部留真实状态栏高度，有胶囊时操作区换行到第二行，
-// 避免与右上角胶囊重叠。
+// 微信小程序：`--status-bar-height` 在 WXSS 中不存在，顶部用 sn-navbar
+// （fixed + placeholder + safe-area-inset-top）占出状态栏 + 导航带，品牌区
+// 从胶囊下方开始；H5 / App 不渲染占位，保持原紧凑头部。
 // 分类按分组标签合并（basic / basic-2 同为「基础组件」），点 chip 切换分组；
 // 搜索时跨全部分组平铺结果。
 import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
 import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
 import { Search as SearchIcon, X as CloseIcon } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-x/components/sn-icon/sn-icon-types';
-import { getCapsuleMetrics } from '@snui/uni-x/utils/capsule';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
 import { HOME_GROUPS } from './home-data';
@@ -23,11 +23,6 @@ import { homeIcon } from './home-icons';
 
 const { lang, isDark, stylePack, stylePackLabel, t, toggleLang, toggleTheme, chooseStylePack } =
   useDemoUi();
-
-/** 状态栏 / 胶囊几何（H5 全为 0，保持原版式）。 */
-const capsule = getCapsuleMetrics();
-/** #top 状态栏留白：MP 用真实 px（WXSS 没有 `--status-bar-height`）。 */
-const topStyle = { paddingTop: `${capsule.statusBarHeight}px` };
 
 interface HomeComp extends DemoHomeComp {
   /** 当前语言下的组件名。 */
@@ -198,8 +193,18 @@ function open(comp: HomeComp): void {
       >
         <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动 -->
         <template #top>
-          <view class="home__top" :style="topStyle">
-            <view class="home__bar" :class="{ 'home__bar--capsule': capsule.hasCapsule }">
+          <view class="home__top">
+            <!-- 小程序：sn-navbar 占位（状态栏 + 胶囊导航带），品牌区从胶囊下方开始。
+                 H5 / App 不占位，保留原来的紧凑头部。 -->
+            <!-- #ifdef MP -->
+            <SnNavbar
+              fixed
+              placeholder
+              safe-area-inset-top
+              custom-style="background-color: transparent;"
+            />
+            <!-- #endif -->
+            <view class="home__bar">
               <view class="home__brand">
                 <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
                 <text class="home__brand-sub">
@@ -317,30 +322,30 @@ function open(comp: HomeComp): void {
   animation: demo-fade-in 0.7s ease both;
 }
 
-/* ── #top 固定区：状态栏通栏（px 由胶囊几何注入）+ 品牌条 + 搜索 + chips ── */
+/* ── #top 固定区：状态栏通栏 + 品牌条 + 搜索 + chips（不随列表滚动） ──── */
 .home__top {
   padding: 0 24rpx 0;
 }
 
+/* H5 / App 的紧凑头部：状态栏高度走运行时变量；MP 由 sn-navbar 占位。 */
+/* #ifndef MP */
+.home__top {
+  padding-top: var(--status-bar-height, 0px);
+}
+/* #endif */
+
 .home__bar {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  box-sizing: border-box;
-  row-gap: 12rpx;
   /* 页面左右 24rpx 之上再补 8rpx：与旧版全幅壳（32rpx）的品牌位对齐 */
   padding: 32rpx 8rpx 8rpx;
 }
 
-/* 微信小程序胶囊占据导航行右上角：品牌独占第一行，操作区换行到胶囊下方
- * （第二行可回到页面右边缘，不被胶囊宽度截断）。 */
-
 .home__brand {
   display: flex;
   flex-direction: column;
-  flex: var(--snx-home__brand-flex);
 }
 
 .home__brand-title {
@@ -360,8 +365,6 @@ function open(comp: HomeComp): void {
   flex-direction: row;
   align-items: center;
   gap: 16rpx;
-  /* 换行后贴右（与 space-between 的单行行为一致）。 */
-  margin-left: auto;
 }
 
 .home__btn {
@@ -582,9 +585,5 @@ function open(comp: HomeComp): void {
 .home__foot-text {
   font-size: 22rpx;
   color: var(--demo-text-3);
-}
-
-.home__bar--capsule {
-  --snx-home__brand-flex: 1 0 100%;
 }
 </style>

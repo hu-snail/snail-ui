@@ -22,5 +22,8 @@
     "router": {
       "mode": "hash"
     }
+  },
+  "mp-weixin": {
+    "appid": "wx3e8bdee17984d60a"
   }
 }
