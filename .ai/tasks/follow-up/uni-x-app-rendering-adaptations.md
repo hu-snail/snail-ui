@@ -16,7 +16,8 @@
 7. **uni-app x `fields` 回调传 NodeInfo 对象本身**（经典 uni-app 传数组）：sn-icon 首版取色按数组读 `nodes[0]` 在 App 端永远读不到 → 全部图标空白。修复：对象/数组双形态探测 + JSON.stringify 正则兜底；ink 色首帧可见、解析成功升级级联色、失败回退 ink 永不空白。
 8. **App 端圆角根节点裁剪 absolute 子元素，`overflow: visible` 也压不住**（sn-badge 贴内钉住改造的延续实测）：sn-avatar 的 `status` 状态点骑在右下角（`right: 0; bottom: 0`），App 端被圆角根裁成月牙（真机截图只剩弧内一小条）。修复（终版）：组件拆成**双层结构**——根节点是纯定位盒（尺寸 / 叠层 margin / role，不圆角不裁剪），绘制的圆形是 `__body` 子节点（背景 / 形状 / 分隔环 / 裁剪都在它身上），状态点锚在**未圆角的 wrapper 盒内、圆点中心落在圆弧上**（inset ≈ 0.146 × D − 点径/2，各尺寸预设重钉：small 0 / normal 1 / medium 2 / large 2 rpx）——「一半在内一半在外」的骑弧渲染，且永不离开 wrapper 盒，不依赖任何 overflow 行为。历次被否方案：v1 贴内 inset（与 uniapp 端骑角视觉不统一）、v2 盒角锚（点悬在盒角、与圆弧有缝）。回归测试断言 DOM 结构（点是 body 的兄弟节点）+ 源码 CSS（绘制属性在 body、wrapper 无 background/border-radius、各预设骑弧 inset）。
 9. **sn-avatar-group 裁剪窗口少算一个 overlap**：窗口宽 `visible × step` 只覆盖成员的步进和，第一（row/column 模式自拉）成员的外弧被窗口削边、最后一个可见成员的远弧也差一个 overlap——白底空头像时代不可见，渐变底色成员后显形（真机：成员被削边 / 竖向窗口过矮）。修复：窗口长度改 `(visible − 1) × step + diameter`（成员全弧跨度），窗口按补偿侧 `margin −overlap + padding +overlap` 拉过根节点的补偿 padding（`box-sizing: border-box` 防止 padding 撑宽），最后一个可见成员远弧恰好压窗口远边、其后成员的缝隙由后绘的折叠气泡盖住。`left-up`（row-reverse）模式成员不自带拉力、窗口几何另有差异，削边为预存在问题、本任务不扩 scope（follow-up）。
-   **附带教训（demo 授权）**：头像组成员尺寸必须与组件的 rpx 步长同单位——demo 曾用 px（`:size="32"`），重叠 margin 是 rpx，非 375 视口下重叠比例漂移（宽视口成员被盖得只剩细条），且裁剪窗口的 rpx 几何与 px 成员错位。组内 demo 统一 `size="64rpx"`。
+   **附带教训（demo 授权）**：头像组成员尺寸必须与组件的 rpx 步长同单位——demo 曾用 px（`:size="32"`），重叠 margin 是 rpx，非 375 视口下重叠比例漂移（宽视口成员被盖得只剩细条），且裁剪窗口的 rpx 几何与 px 成员错位。组内 demo 统一 `size="64rpx"`（挂在组上——组的 size 默认值会经 provide/inject 覆盖成员尺寸，成员级的尺寸声明是死代码）。
+10. **圆形宿主的 badge 默认锚点视觉脱离**：sn-badge 的骑角锚点对齐内容的**盒**角（marker 中心 = 内容盒角，headroom = marker/2），对矩形图标是标准骑角，对**圆形**头像则盒角在圆弧之外——实测角标中心距圆心 27px vs 半径 20px，仅边缘擦到圆弧 ~2px，视觉上完全脱离（真机截图）。组件无法得知宿主是否圆形，修复落在组合层：demo 用契约内的 `top`/`right` 偏移（8rpx，= 0.146×D − marker/2 的骑弧几何实测值）把角标中心压回圆弧——一半在内一半在外。圆形宿主 + sn-badge 的组合都应带这对偏移（sn-avatar 的 status 状态点是组件内置骑弧，无需偏移）。
 
 ## 教训（Memory 要点）
 
