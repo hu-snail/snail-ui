@@ -31,12 +31,13 @@ demo 自己的 `--demo-*` 恰好写在 `page` 上，所以页面骨架看起来�
 `.sn-icon svg` 标签选择器也被 WXSS 拒绝。
 
 **修复**：`sn-icon` 新增 `sn-icon-mp.ts`：
+
 - MP 分支用 `<image mode="aspectFit" :src="iconDataUrl">`，把 IconData 光栅化为
   `data:image/svg+xml;base64,...`（微信无 `btoa`，内置 ASCII base64；base64 比
   `;utf8,` + `encodeURIComponent` 在真机上更稳）。
 - data URL 是独立 SVG 文档，`currentColor` / `var()` 无法穿透：挂载后用
   `createSelectorQuery().in(proxy).select('.sn-icon').fields({ computedStyle:
-  ['color'] })` 读真实级联色并烘焙；失败保留 `#1a1a1a` ink（绝不空白），
+['color'] })` 读真实级联色并烘焙；失败保留 `#1a1a1a` ink（绝不空白），
   一次 50ms 重试 + 竞态序号 + 卸载清 timer。
 - H5 分支保持 inline `<svg>`；两条分支用 `#ifndef MP` / `#ifdef MP` 条件编译
   二选一，`v-else-if` 链在各自产物里连续。
@@ -47,23 +48,40 @@ demo 自己的 `--demo-*` 恰好写在 `page` 上，所以页面骨架看起来�
 WXML 安全字符、颜色 reader 的 NodeInfo / 数组 / JSON 三种形态；MP 产物
 `sn-icon.wxml` 已人工核对为 `<image>` 且无 `<svg>`。
 
-## 根因 3：首页 `#top` 只认 `--status-bar-height` + 操作区不让位胶囊
+## 根因 3：首页 `#top` 只认 `--status-bar-height`，胶囊导航带没有占位
 
-**现场**：小程序总览页标题贴状态栏，风格包/语言/主题按钮被右上角胶囊压住。
+**现场**：小程序总览页标题贴状态栏（被刘海裁切），风格包/语言/主题按钮被右上角
+胶囊压住。
 
 **根因**：`--status-bar-height` 只在 H5/App 有值，WXSS 中缺失（fallback 0）；
-首页也没有为胶囊宽度预留右侧空间。
+首页手工画头部，没有像详情页那样用 `sn-navbar` 占出状态栏 + 导航带。
 
-**修复**：新增共享 `packages/uni/src/utils/capsule.ts`（`getSystemInfoSync` +
-`getMenuButtonBoundingClientRect`，MP-WEIXIN 才读胶囊；H5/App 归零）：
-- 首页 `#top` 用真实 `statusBarHeight` px 做顶部留白；
-- 检测到胶囊时品牌独占首行（`flex: 1 0 100%`），操作区换行到胶囊下方的第二行，
-  右对齐到页面边缘；H5 不换行、版式不变。
+**第一版修复失败的原因（重要）**：`getCapsuleMetrics()` 最初用
+`globalThis.uni?.getSystemInfoSync / getMenuButtonBoundingClientRect` 动态取 API。
+uni-app 编译器只对**静态** `uni.*` 调用做 API 打包分析；动态属性查找被 tree-shake，
+MP 运行时拿到 `undefined` → `statusBarHeight = 0`、`hasCapsule = false`，顶部仍是
+0 留白、操作区也不换行。这正是 `src/uni-env.d.ts` 头注已经写明的约束。
+
+**最终修复**：
+
+- `packages/uni/src/utils/capsule.ts` 改为条件编译块内**静态**调用
+  `uni.getSystemInfoSync()` / `uni.getMenuButtonBoundingClientRect()`；
+  `uni-env.d.ts` 补齐两个 API 的 ambient 声明（静态声明才会被打进 MP 产物）。
+- `sn-navbar` 的 `safeAreaInsetTop` 在 MP 上用实测状态栏 px 覆盖
+  `--status-bar-height` 的 44rpx fallback：本体 `padding-top + min-height:
+calc(status + 88rpx)`，占位元素 `padding-top` 同步，侧槽
+  `--sn-navbar-safe-top` 对齐；胶囊存在时本体 `padding-right =
+capsulePadRight`，右槽通过 `--sn-navbar-capsule-pad` 左移。
+- 首页 `#top` 里放 `<!-- #ifdef MP --> <SnNavbar fixed placeholder
+  safe-area-inset-top custom-style="background-color: transparent;" />
+  <!-- #endif -->`：MP 用 sn-navbar 占出状态栏 + 导航带，品牌区从胶囊下方开始；
+  H5/App 不渲染占位，保留原紧凑头部（`.home__top` 的
+  `var(--status-bar-height, 0px)` 只在 `#ifndef MP` 生效）。
 - `apps/uni-templates` 三个模板页改 import 同一 util，删除重复的
   `src/common/capsule.ts`。
 
 **回归**：`packages/uni/src/utils/capsule.test.ts` 覆盖无系统信息、正常胶囊、
-低置胶囊（行高变高）、畸形 rect、缓存。
+低置胶囊（行高变高）、畸形 rect、缓存；`sn-navbar.test.ts` 37 项通过。
 
 ## 教训
 

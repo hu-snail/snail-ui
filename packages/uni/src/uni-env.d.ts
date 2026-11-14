@@ -32,6 +32,20 @@ interface UniSelectorQuery {
   };
 }
 
+/** Window info slice of `uni.getSystemInfoSync()`. */
+interface UniWindowInfo {
+  statusBarHeight?: number;
+  windowWidth?: number;
+}
+
+/** Capsule (menu button) rect returned by the WeChat-only API. */
+interface UniMenuButtonRect {
+  width?: number;
+  height?: number;
+  top?: number;
+  left?: number;
+}
+
 declare const uni: {
   previewImage?: (options: { urls: string[]; current?: string }) => unknown;
   /**
@@ -39,4 +53,13 @@ declare const uni: {
    * its capsule track). Declared statically so the uni-app compiler bundles it.
    */
   createSelectorQuery: () => UniSelectorQuery;
+  /**
+   * Custom-navigation geometry (sn-navbar / overview header). Declared
+   * statically so the uni-app compiler bundles the API — a dynamic
+   * `globalThis.uni?.getSystemInfoSync` lookup is tree-shaken away and leaves
+   * statusBarHeight at 0 on MP.
+   */
+  getSystemInfoSync: () => UniWindowInfo;
+  /** WeChat capsule rect — present on MP-WEIXIN only. */
+  getMenuButtonBoundingClientRect: () => UniMenuButtonRect;
 };

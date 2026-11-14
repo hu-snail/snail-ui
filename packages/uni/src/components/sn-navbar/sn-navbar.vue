@@ -36,6 +36,7 @@
 import { computed, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { ArrowLeft } from '../sn-icon/sn-icon-set';
+import { getCapsuleMetrics } from '../../utils/capsule';
 
 defineOptions({ name: 'SnNavbar' });
 
@@ -111,6 +112,9 @@ defineSlots<{
 
 const slots = useSlots();
 
+/** Launch-stable MP status-bar / capsule metrics (zeros on H5 / App). */
+const capsule = getCapsuleMetrics();
+
 /** Left zone renders only when it actually carries something. */
 const hasLeft = computed(() => props.leftArrow || props.leftText !== '' || !!slots.left);
 /** Right zone renders only when it actually carries something. */
@@ -152,9 +156,35 @@ const rootClass = computed(() => [
 const rootStyle = computed(() => {
   const parts: string[] = [];
   if (props.fixed) parts.push(`z-index: ${props.zIndex}`);
+  // MP: `--status-bar-height` does not exist in WXSS, so the safe-area variant
+  // would fall back to 44rpx (half the real inset). Use the measured status
+  // bar in px and let min-height keep the 88rpx nav row (box-sizing: border-box).
+  if (props.safeAreaInsetTop && capsule.statusBarHeight > 0) {
+    parts.push(`padding-top: ${capsule.statusBarHeight}px`);
+    parts.push(`min-height: calc(${capsule.statusBarHeight}px + 88rpx)`);
+    // Absolute side slots span the padding box — feed them the same inset.
+    parts.push(`--sn-navbar-safe-top: ${capsule.statusBarHeight}px`);
+  }
+  // Clear the WeChat capsule: the content box (centered title) shrinks and the
+  // right slot's anchor moves left via --sn-navbar-capsule-pad.
+  if (props.safeAreaInsetTop && capsule.hasCapsule) {
+    parts.push(`padding-right: ${capsule.capsulePadRight}px`);
+    parts.push(`--sn-navbar-capsule-pad: ${capsule.capsulePadRight}px`);
+  }
   if (props.customStyle) parts.push(props.customStyle);
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
+
+/**
+ * MP placeholder must mirror the bar's box: content-box min-height 88rpx plus
+ * the measured status-bar padding. H5 / App keep the CSS `--status-bar-height`
+ * path (the measured value is 0 there).
+ */
+const placeholderStyle = computed(() =>
+  props.safeAreaInsetTop && capsule.statusBarHeight > 0
+    ? { paddingTop: `${capsule.statusBarHeight}px` }
+    : undefined,
+);
 </script>
 
 <template>
@@ -162,6 +192,7 @@ const rootStyle = computed(() => {
     v-if="fixed && placeholder"
     class="sn-navbar__placeholder"
     :class="{ 'sn-navbar__placeholder--safe-area': safeAreaInsetTop }"
+    :style="placeholderStyle"
     aria-hidden="true"
   />
   <view
@@ -273,7 +304,7 @@ const rootStyle = computed(() => {
 }
 
 .sn-navbar--safe-area .sn-navbar__side {
-  padding-top: var(--status-bar-height, 44rpx);
+  padding-top: var(--sn-navbar-safe-top, var(--status-bar-height, 44rpx));
 }
 
 .sn-navbar__left {
@@ -283,6 +314,12 @@ const rootStyle = computed(() => {
 .sn-navbar__right {
   right: 0;
   justify-content: flex-end;
+}
+
+/* MP capsule-safe inset: `right` is set inline on the bar via the custom
+ * property (absolute children ignore the root's padding-right). */
+.sn-navbar--safe-area .sn-navbar__right {
+  right: var(--sn-navbar-capsule-pad, 0);
 }
 
 /* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
