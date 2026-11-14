@@ -1,0 +1,49 @@
+<script setup lang="ts">
+/** Demo: sn-tag (uni-end) — closable filter chips. */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
+/** Selected filters: tap close to remove; tap the dashed tag to restore all. */
+const filters = ref(['Tech', 'Outdoor', 'Food', 'Movies']);
+
+function removeFilter(filter: string): void {
+  filters.value = filters.value.filter((item) => item !== filter);
+}
+
+function resetFilters(): void {
+  filters.value = ['Tech', 'Outdoor', 'Food', 'Movies'];
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <template v-if="filters.length > 0">
+        <SnTag
+          v-for="filter in filters"
+          :key="filter"
+          type="primary"
+          variant="light"
+          closable
+          @close="removeFilter(filter)"
+        ><text>
+          {{ filter }}
+        </text></SnTag>
+      </template>
+      <SnTag v-else variant="dashed" @click="resetFilters"><text>Cleared, tap to restore</text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-5);
+  align-items: flex-start;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+  flex-direction: row;
+}
+</style>

@@ -11,11 +11,11 @@ export const radioDocPage: SnDocPageData = {
   title: 'Radio 单选框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '跨 uni-app 多端的单选组件对：' },
+    { t: 'text', s: '跨 uni-app x 多端的单选组件对：' },
     { t: 'code', s: 'sn-radio-group' },
     { t: 'text', s: '（父，持有单值 ' },
     { t: 'code', s: 'v-model' },
@@ -51,7 +51,7 @@ export const radioDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Radio 单选框.vue',
     meta: 'Vue 3 · <script setup>',
@@ -112,8 +112,8 @@ import { Radio } from '@snui/uni';
     },
     {
       name: 'radio-mp-indicator',
-      title: '指示器位置与选中态',
-      blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
+      title: '指示器位置、选中态与标记形态',
+      blurb: 'markerShape check 勾图标；indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
     },
   ],
   props: {

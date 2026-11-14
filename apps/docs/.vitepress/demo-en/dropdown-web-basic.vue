@@ -11,6 +11,6 @@ const options = [
 
 <template>
   <SnDropdown trigger="click" :options="options" @select="(key) => console.log(key)">
-    <SnButton>Open menu ▾</SnButton>
+    <SnButton>Open menu</SnButton>
   </SnDropdown>
 </template>

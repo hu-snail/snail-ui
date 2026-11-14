@@ -7,11 +7,11 @@
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const iconDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'sn-icon 图标' }],
-  title: 'sn-icon 图标',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'Icon 图标' }],
+  title: 'Icon 图标',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -52,7 +52,7 @@ export const iconDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'sn-icon 图标.vue',
     meta: 'Vue 3 · <script setup>',
@@ -163,8 +163,8 @@ import { Icon } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-button', link: '/components/uni/button' },
-    next: { text: 'sn-text', link: '/components/uni/text' },
+    prev: { text: 'Button', link: '/components/uni/button' },
+    next: { text: 'Text', link: '/components/uni/text' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

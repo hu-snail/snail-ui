@@ -1,0 +1,30 @@
+<script setup lang="ts">
+/** Demo: sn-segmented — English shadow of segmented-mp-disabled. */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
+const picked = ref('a');
+const options = [
+  { value: 'a', label: 'Selectable' },
+  { value: 'b', label: 'Disabled item', disabled: true },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSegmented v-model="picked" :options="options" />
+    <SnSegmented :options="options" disabled />
+    <text class="sn-demo__meta">
+      First row: item-level disabled blocks one option; second row: control-level disabled.
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

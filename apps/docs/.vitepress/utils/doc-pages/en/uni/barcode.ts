@@ -1,4 +1,4 @@
-/** Barcode (uni-app) — English page data. Props from sn-barcode.vue; demos from the en page. */
+/** Barcode (uni-app x) — English page data. Props from sn-barcode.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const barcodeDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const barcodeDocPageEn: SnDocPageData = {
   title: 'Barcode',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -34,7 +34,7 @@ export const barcodeDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'Barcode.vue',
@@ -153,8 +153,8 @@ import { Barcode } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-liquid', link: '/en/components/uni/liquid' },
-    next: { text: 'sn-dialer', link: '/en/components/uni/dialer' },
+    prev: { text: 'Liquid', link: '/en/components/uni/liquid' },
+    next: { text: 'Dialer', link: '/en/components/uni/dialer' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

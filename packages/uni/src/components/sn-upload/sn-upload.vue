@@ -236,6 +236,10 @@ const list = ref<UploadFileItem[]>(props.fileList.map((file) => ({ ...file })));
 watch(
   () => props.fileList,
   (value) => {
+    // The commit round-trip hands us back our own array (same ref as
+    // `list.value`) — re-cloning it on every progress tick would re-render
+    // every tile. Mutations are already visible through the shared ref.
+    if (value === list.value) return;
     list.value = value.map((file) => ({ ...file }));
   },
   { deep: true },

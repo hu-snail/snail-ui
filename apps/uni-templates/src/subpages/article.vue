@@ -6,7 +6,7 @@
  *
  * 结构：sn-paging 根容器（#top 固定导航行，#bottom 评论栏，默认插槽为
  * 整篇图文；文章无分页，故 auto / load-more / refresher 全关）。
- * 微信小程序端导航行按胶囊几何让位（common/capsule）。
+ * 微信小程序端导航行按胶囊几何让位（@snui/uni-src/utils/capsule）。
  */
 import { computed, ref } from 'vue';
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
@@ -21,7 +21,7 @@ import SnSegmented from '@snui/uni-src/components/sn-segmented/sn-segmented.vue'
 import SnRichText from '@snui/uni-src/components/sn-rich-text/sn-rich-text.vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import SnVideoPreview from '@snui/uni-src/components/sn-video-preview/sn-video-preview.vue';
-import { getCapsuleMetrics } from '../common/capsule';
+import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 import { MaximizeIcon, PenLineIcon, ThumbsDownIcon, Volume2Icon } from '../common/icons';
 import {
   ChevronLeft,

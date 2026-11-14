@@ -1,16 +1,16 @@
-/** CodeInput · uni-app (uni-app) — English page data. Props from sn-code-input.vue; demos from the en page. */
+/** CodeInput · uni-app x (uni-app x) — English page data. Props from sn-code-input.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const codeInputDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'CodeInput · uni-app' },
+    { text: 'CodeInput · uni-app x' },
   ],
-  title: 'CodeInput · uni-app',
+  title: 'CodeInput · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,10 +43,10 @@ export const codeInputDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'CodeInput · uni-app.vue',
+    fileLabel: 'CodeInput · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -157,7 +157,7 @@ import { CodeInput } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'CodeInput · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'CodeInput · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { CodeInput } from '@snui/uni';",
     chipCopy: "import { CodeInput } from '@snui/uni';",
     stats: [
@@ -167,8 +167,8 @@ import { CodeInput } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-textarea', link: '/en/components/uni/textarea' },
-    next: { text: 'sn-keyboard', link: '/en/components/uni/keyboard' },
+    prev: { text: 'Textarea', link: '/en/components/uni/textarea' },
+    next: { text: 'Keyboard', link: '/en/components/uni/keyboard' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -1,0 +1,52 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-image-preview (uni-end) — long-press menu & event (`showMenuByLongpress` / `@long-press`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-image-preview from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImagePreview from '@snui/uni-x/components/sn-image-preview/sn-image-preview.uvue';
+const preview = ref<{
+  open: (options?: { images?: string[]; startPosition?: number }) => void;
+  close: () => void;
+  setActive: (index: number) => void;
+} | null>(null);
+
+const images = ['https://picsum.photos/seed/snui-lp-a/900/1300'];
+
+const lastEvent = ref('—');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton size="small" @click="preview?.open()"><text>Open, then long-press the image</text></SnButton>
+    <text class="sn-demo__meta">Latest event: {{ lastEvent }}</text>
+
+    <SnImagePreview
+      ref="preview"
+      :images="images"
+      show-menu-by-longpress
+      custom-class="sn-demo-contained"
+      @long-press="
+        (payload: { image: string }) => (lastEvent = `long-press → ${payload.image.slice(-12)}`)
+      "
+    />
+
+    <text class="sn-demo__meta">
+      show-menu-by-longpress opens the recognise-miniprogram-QR menu on long press (WeChat only);
+      the component also emits `long-press` so the host can track it.
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

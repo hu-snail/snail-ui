@@ -267,6 +267,14 @@ export interface SnAvatarGroupLocale {
   rest: string;
 }
 
+/** Localized strings for SnAvatar. */
+export interface SnAvatarLocale {
+  /** Presence `status="online"` — appended to the root `aria-label`. */
+  online: string;
+  /** Presence `status="offline"` — appended to the root `aria-label`. */
+  offline: string;
+}
+
 /** Localized strings for SnPopconfirm. */
 export interface SnPopconfirmLocale {
   /** Default cancel button label (prop `negative-text` overrides). */
@@ -361,6 +369,8 @@ export interface SnLocale {
   Drawer: SnDrawerLocale;
   /** SnAvatarGroup strings. */
   AvatarGroup: SnAvatarGroupLocale;
+  /** SnAvatar strings. */
+  Avatar: SnAvatarLocale;
   /** SnPopconfirm strings. */
   Popconfirm: SnPopconfirmLocale;
   /** SnVideoPlayer strings. */
@@ -495,6 +505,10 @@ export const zhCN: SnLocale = {
   },
   AvatarGroup: {
     rest: '还有 {count} 个头像',
+  },
+  Avatar: {
+    online: '在线',
+    offline: '离线',
   },
   Popconfirm: {
     negativeText: '取消',

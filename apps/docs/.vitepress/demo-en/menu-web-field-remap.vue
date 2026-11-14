@@ -23,7 +23,7 @@ const apiTree: ApiNavNode[] = [
     title: 'Components',
     items: [
       { uid: 'web', title: 'Web', link: '/components/web' },
-      { uid: 'uni', title: 'uni-app', link: '/components/uni' },
+      { uid: 'uni', title: 'uni-app x', link: '/components/uni' },
     ],
   },
   { uid: 'styles', title: 'Style Packs', link: '/style-packs' },

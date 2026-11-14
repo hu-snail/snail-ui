@@ -1,0 +1,29 @@
+<script setup lang="ts">
+/** Demo: sn-search — 聚焦：focus 挂载即聚焦；focusWhenClear 清空按钮后重新聚焦（与 @clear 联动）。 */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
+const focused = ref('');
+const cleared = ref('snail');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSearch v-model="focused" focus placeholder="挂载即聚焦" />
+    <text class="sn-demo__meta">focus：挂载时聚焦内部输入框</text>
+
+    <SnSearch v-model="cleared" focus-when-clear placeholder="清空后重新聚焦" />
+    <text class="sn-demo__meta">focusWhenClear：清空按钮后重新聚焦（与 @clear 联动）</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

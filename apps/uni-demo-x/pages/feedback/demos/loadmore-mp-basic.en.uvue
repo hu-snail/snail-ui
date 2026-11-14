@@ -1,0 +1,45 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-loadmore (uni-end) — the three states + retry.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-loadmore from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnLoadmore from '@snui/uni-x/components/sn-loadmore/sn-loadmore.uvue';
+type State = '' | 'loading' | 'finished' | 'error';
+const state = ref<State>('loading');
+const retries = ref(0);
+
+function reload(): void {
+  retries.value += 1;
+  state.value = 'loading';
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-loadmore-demo__row">
+      <SnButton size="small" @click="state = 'loading'"><text>loading</text></SnButton>
+      <SnButton size="small" @click="state = 'finished'"><text>finished</text></SnButton>
+      <SnButton size="small" @click="state = 'error'"><text>error</text></SnButton>
+    </view>
+
+    <SnLoadmore :state="state" @reload="reload" />
+    <text class="sn-loadmore-demo__meta">Retried {{ retries }} time(s)</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-loadmore-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-loadmore-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+</style>

@@ -1,0 +1,118 @@
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— drop-menu 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/drop-menu-mp-basic.uvue';
+import Demo1 from './demos/drop-menu-mp-direction.uvue';
+import Demo2 from './demos/drop-menu-mp-disabled.uvue';
+import Demo3 from './demos/drop-menu-mp-guard.uvue';
+import Demo4 from './demos/drop-menu-mp-icon.uvue';
+import Demo5 from './demos/drop-menu-mp-keys.uvue';
+import Demo6 from './demos/drop-menu-mp-modal.uvue';
+import Demo7 from './demos/drop-menu-mp-popup-height.uvue';
+import Demo8 from './demos/drop-menu-mp-slot.uvue';
+import DemoModuleHead from '../../components/DemoModuleHead.uvue';
+import DemoPageShell from '../../components/DemoPageShell.uvue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
+</script>
+<template>
+  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'" :desc="'顶部下拉筛选'" :bg="''">
+    <view class="page">
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo0 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" />
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('开关拦截（beforeToggle）', 'Toggle guard (`beforeToggle`)')"
+          badge="guard"
+        />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('字段重命名（labelKey / valueKey）', 'Field keys (`labelKey` / `valueKey`)')"
+          badge="keys"
+        />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('蒙层行为（modal）', 'Scrim behavior (`modal`)')" badge="modal" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="t('面板高度与样式', 'Panel height & styling')"
+          badge="popup-height"
+        />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('自定义面板插槽', 'Custom panel slot')" badge="slot" />
+        <view class="module__body">
+          <Demo8 />
+        </view>
+      </view>
+    </view>
+  </DemoPageShell>
+</template>
+<style scoped>
+.page {
+  padding: 24rpx 24rpx 48rpx;
+}
+
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+.module {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
+}
+
+/* drop-menu：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.module__body {
+  padding: 0;
+}
+</style>

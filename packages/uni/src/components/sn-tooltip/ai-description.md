@@ -39,6 +39,7 @@ import { SnTooltip } from '@snui/uni';
 | Name           | Type                                                                                                                                                                 | Default    | Required | Description                                                                                                      |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
 | `modelValue`   | `boolean`                                                                                                                                                            | `false`    | no       | Whether the bubble is shown (`v-model`).                                                                         |
+| `trigger`      | `'slot' \| 'manual'`                                                                                                                                                 | `'slot'`   | no       | `slot` (default) toggles from the trigger tap (an App-only catcher node receives it on uni-app x App). `manual` leaves toggling to the page via v-model — for remote tap targets only; slotted components with page-bound listeners are inert on App. |
 | `content`      | `string \| Array<Record<string, unknown> \| string>`                                                                                                                 | `''`       | no       | Bubble text; an array renders one line per entry (`label` / `text` / `content` / `name` key, or a plain string). |
 | `placement`    | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | no       | Bubble anchor.                                                                                                   |
 | `offset`       | `number \| number[] \| { x?, y? }`                                                                                                                                   | `0`        | no       | Gap between trigger and bubble, in design px. Published as `--sn-tooltip-offset-x` / `-y`.                       |
@@ -96,10 +97,17 @@ import { SnTooltip } from '@snui/uni';
 ## Documented Divergences
 
 - No hover trigger: miniprogram / touch devices have no `hover`, so the trigger
-  is tapped to toggle.
+  is tapped to toggle. The `trigger` prop switches between slot-internal
+  toggling and page-driven v-model toggling — it is not a hover/click selector.
 - Click-outside close: wot-ui `useQueue` / `closeOutside` parity — the page
   root binds the tap dispatcher; the component registers an idempotent close.
   No mask is rendered (a mask swallowed taps and broke one-gesture switching).
+  On uni-app x App the page-root dispatcher never sees page taps, so the App
+  close paths are the trigger re-tap and the bubble's own close button.
+- App trigger catcher (uni-app x App): taps on slot content never reach the
+  component's own views there — an `#ifdef APP` transparent catcher over the
+  trigger box receives the tap and runs the same toggle. Web / MP strip the
+  node; there the wrapper's `@tap` fires by native bubbling.
 - `root-portal` is declared but not implemented (no portal host on miniprogram).
 - `updatePosition()` is a no-op: the bubble is placed by CSS, nothing is measured.
 

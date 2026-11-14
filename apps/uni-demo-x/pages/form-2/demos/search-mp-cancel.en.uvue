@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-search — cancel button: `cancelTxt` overrides the label and the `cancel` event reports the payload; `hideCancel` removes the button. */
+import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';
+const query = ref('snail');
+const lastCancel = ref('—');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">cancelTxt + the cancel event</text>
+    <SnSearch v-model="query" cancel-txt="Clear search" @cancel="lastCancel = $event" />
+    <text class="sn-demo__meta">cancel payload: {{ lastCancel }}</text>
+
+    <text class="sn-demo__title">hideCancel</text>
+    <SnSearch v-model="query" hide-cancel placeholder="No cancel text" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

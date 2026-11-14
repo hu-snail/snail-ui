@@ -1,0 +1,26 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-icon (uni-end) — size variants.
+ */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+</script>
+<template>
+  <view class="sn-demo">
+    <SnIcon :icon="Star" :size="14" />
+    <SnIcon :icon="Star" :size="18" />
+    <SnIcon :icon="Star" :size="24" />
+    <SnIcon :icon="Star" :size="32" />
+    <SnIcon :icon="Star" :size="48" />
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32rpx;
+  align-items: center;
+  color: #f59e0b;
+  flex-direction: row;
+}
+</style>

@@ -17,15 +17,15 @@ Templates reuse the library's primitives throughout; they never re-implement but
 
 Templates currently have a single category, the **AI Suite**: it is split into one umbrella template and four sub-templates that can be used on their own.
 
-| Template                                      | Component                         | Platform      | What it solves                                                                                             |
-| --------------------------------------------- | --------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------- |
-| [AI assistant](/en/templates/ai/assistant)    | `SnAiAssistant`                   | Web           | The whole AI suite on one page: conversation plus a model-config drawer in the header                      |
-| [AI chat page](/en/templates/ai/chat)         | `SnAiChat`                        | Web / uni-app | A complete conversation UI with queue scheduling and abort control. The web end has no model-config drawer |
-| [AI prompt](/en/templates/ai/prompt)          | `SnAiPrompt`                      | Web           | A full composer: attachments, selectors, reasoning tier, queue                                             |
-| [Message list](/en/templates/ai/message-list) | `SnAiMessageList` / `SnAiMessage` | Web / uni-app | Transcript display: reasoning collapse, streaming, tool rows, retry                                        |
-| [Model config](/en/templates/ai/model-config) | `SnModelConfig`                   | Web           | Vendor and model management plus generation parameters                                                     |
+| Template                                      | Component                         | Platform        | What it solves                                                                                             |
+| --------------------------------------------- | --------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------- |
+| [AI assistant](/en/templates/ai/assistant)    | `SnAiAssistant`                   | Web             | The whole AI suite on one page: conversation plus a model-config drawer in the header                      |
+| [AI chat page](/en/templates/ai/chat)         | `SnAiChat`                        | Web / uni-app x | A complete conversation UI with queue scheduling and abort control. The web end has no model-config drawer |
+| [AI prompt](/en/templates/ai/prompt)          | `SnAiPrompt`                      | Web             | A full composer: attachments, selectors, reasoning tier, queue                                             |
+| [Message list](/en/templates/ai/message-list) | `SnAiMessageList` / `SnAiMessage` | Web / uni-app x | Transcript display: reasoning collapse, streaming, tool rows, retry                                        |
+| [Model config](/en/templates/ai/model-config) | `SnModelConfig`                   | Web             | Vendor and model management plus generation parameters                                                     |
 
-Web and uni-app differences are no longer separate pages: each template page documents them in its "End differences" section, with platform tags marking the available range.
+Web and uni-app x differences are no longer separate pages: each template page documents them in its "End differences" section, with platform tags marking the available range.
 
 ## Layout
 
@@ -113,4 +113,4 @@ Like components, templates accept props, so one template can produce different l
 <SnAiAssistant title="Doc assistant" theme="default" :run="run" show-header />
 ```
 
-`theme` maps onto the style pack system (`default` / `dark` / `ios` / `doodle` / `sticky-note`); finer adjustments come from overriding `--sn-web-*` (Web) / `--sn-mp-*` (uni-app) tokens, with concrete examples in each page's "Theme and token customisation" section.
+`theme` maps onto the style pack system (`default` / `dark` / `ios` / `doodle` / `sticky-note`); finer adjustments come from overriding `--sn-web-*` (Web) / `--sn-mp-*` (uni-app x) tokens, with concrete examples in each page's "Theme and token customisation" section.

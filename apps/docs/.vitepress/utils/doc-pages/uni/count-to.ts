@@ -15,7 +15,7 @@ export const countToDocPage: SnDocPageData = {
   title: 'CountTo 数字滚动',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -47,7 +47,7 @@ export const countToDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'CountTo 数字滚动.vue',
     meta: 'Vue 3 · <script setup>',
@@ -134,8 +134,8 @@ import { CountTo } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-count-down', link: '/components/uni/count-down' },
-    next: { text: 'sn-watermark', link: '/components/uni/watermark' },
+    prev: { text: 'CountDown', link: '/components/uni/count-down' },
+    next: { text: 'Watermark', link: '/components/uni/watermark' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

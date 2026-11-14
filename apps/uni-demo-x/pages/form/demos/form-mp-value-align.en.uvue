@@ -1,0 +1,58 @@
+<script setup lang="ts">
+/** Demo: sn-form — value alignment (valueAlign): valueAlign="right" right-aligns numeric fields. */
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
+import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const alignForm = reactive({ amount: '', quantity: '' });
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__panel">
+      <text class="sn-demo__title">valueAlign="right" (numeric fields)</text>
+      <SnForm :model="alignForm" value-align="right">
+        <SnFormItem prop="amount" label="Amount" required>
+          <SnInput
+            v-model="alignForm.amount"
+            type="digit"
+            align-right
+            placeholder="Enter an amount"
+            clearable
+          />
+        </SnFormItem>
+        <SnFormItem prop="quantity" label="Quantity" required>
+          <SnInput
+            v-model="alignForm.quantity"
+            type="digit"
+            align-right
+            placeholder="Enter a quantity"
+            clearable
+          />
+        </SnFormItem>
+      </SnForm>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
+}
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.sn-demo__title {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+</style>

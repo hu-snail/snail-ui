@@ -1,8 +1,8 @@
 # AI Chat Page AiChat / sn-ai-chat
 
-A complete AI conversation page. On the web it is assembled from the message-list template (the transcript), the composer template (the input area) and the turn engine it shares with the assistant (queue scheduling and abort). Install it, pass in a "run one turn" function (`run`), and it works. The web and uni-app ends share one message / stream contract.
+A complete AI conversation page. On the web it is assembled from the message-list template (the transcript), the composer template (the input area) and the turn engine it shares with the assistant (queue scheduling and abort). Install it, pass in a "run one turn" function (`run`), and it works. The web and uni-app x ends share one message / stream contract.
 
-> Platform: `Web` (`SnAiChat` from `@snui/templates/web/chat`) / `uni-app` (`SnAiChat` from `@snui/templates/uni/chat`)
+> Platform: `Web` (`SnAiChat` from `@snui/templates/web/chat`) / `uni-app x` (`SnAiChat` from `@snui/templates/uni/chat`)
 
 ## When to use
 
@@ -27,13 +27,15 @@ import '@snui/templates/styles';
 import '@snui/templates/styles/web-chat.css';
 ```
 
-The uni-app end is the same, only the entry changes:
+The uni-app x end is the same, only the entry changes:
 
 ```ts
 import { SnAiChat } from '@snui/templates/uni/chat';
 import '@snui/templates/styles';
 import '@snui/templates/styles/uni-chat.css';
 ```
+
+`@snui/templates/uni/*` is the classic uni-app (H5 / mini-programs / App-vue) artifact; the `.uvue` build that uni-app x (vapor mode) consumes is generated from this same source by the uni-x pipeline — see `apps/uni-demo-x/templates` in the repo.
 
 The per-template stylesheets (all under `@snui/templates/styles/`):
 
@@ -180,7 +182,7 @@ Queued, thinking, streaming, done, failed and stopped are laid out side by side 
 
 <Demo name="ai-chat-web-states" description="Waiting line, streaming caret, tool row, error card and stop notice side by side." />
 
-### uni-app messages and reasoning output
+### uni-app x messages and reasoning output
 
 The uni end shares the message contract with the web end while the layout follows mobile sizing: a static transcript showing reasoning collapse, the streaming caret, an error card and the stop notice.
 
@@ -266,7 +268,7 @@ The uni end has no `theme` prop: the `--sn-mp-*` alias layer comes from `@snui/t
 
 Both ends share the message, stream-delta and error shapes; only layout and composer capability differ:
 
-| Aspect    | Web (`SnAiChat`)                                                                                                    | uni-app (`SnAiChat`)                                                                              |
+| Aspect    | Web (`SnAiChat`)                                                                                                    | uni-app x (`SnAiChat`)                                                                            |
 | --------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Elements  | Standard `<div>` / `<header>` / `<footer>` tags                                                                     | Cross-end `<view>` / `<text>` / `<scroll-view scroll-y>` elements                                 |
 | Units     | `--sn-web-*` tokens in px                                                                                           | `--sn-mp-*` tokens, sized in rpx so they scale across devices                                     |

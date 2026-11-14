@@ -107,6 +107,9 @@ const inputId = `sn-input-${++snInputFieldUid}`;
  */
 const nativeClass = computed(() => [
   'sn-input__native',
+  // tag selectors are unrepresentable on uni-app x App (§116.2) — the
+  // textarea-only styling rides this modifier class instead.
+  props.isTextarea ? 'sn-input__native--textarea' : '',
   props.placeholderClass,
   props.customInputClass,
 ]);

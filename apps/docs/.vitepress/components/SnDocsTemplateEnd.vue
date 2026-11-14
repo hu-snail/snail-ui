@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * SnDocsTemplateEnd — the web / uni-app capsule at the top of the 模板 sidebar.
+ * SnDocsTemplateEnd — the web / uni-app x capsule at the top of the 模板 sidebar.
  *
  * Every template is one page that covers both ends internally, but not every
  * template ships on both: the assistant, the composer and the model-config page
@@ -24,13 +24,13 @@ const route = useRoute();
 
 const options: SnRadioOption[] = [
   { label: 'Web', value: 'web' },
-  { label: 'uni-app', value: 'uni' },
+  { label: 'uni-app x', value: 'uni' },
 ];
 
 const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'));
 
 /**
- * True while reading a web-only page with the uni-app filter on — its sidebar
+ * True while reading a web-only page with the uni-app x filter on — its sidebar
  * entry is hidden, so say why instead of leaving the reader with a menu that
  * does not contain the page in front of them.
  */

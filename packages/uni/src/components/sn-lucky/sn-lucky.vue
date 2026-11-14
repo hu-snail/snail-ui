@@ -15,17 +15,12 @@
  */
 
 import { computed, onBeforeUnmount, ref } from 'vue';
+import type { SnLuckyPrize } from './sn-lucky-types';
 
 defineOptions({ name: 'SnLucky' });
 
-export interface SnLuckyPrize {
-  /** 奖品名。 */
-  name: string;
-  /** 奖品图（可选）。 */
-  img?: string;
-  /** 激活时格子背景色（可选）。 */
-  color?: string;
-}
+// 类型契约本体在 ./sn-lucky-types（纯 ts 模块，uni-x 端的稳定导入目标）。
+export type { SnLuckyPrize } from './sn-lucky-types';
 
 const props = withDefaults(
   defineProps<{
@@ -86,6 +81,14 @@ const order = computed<{ row: number; col: number }[]>(() => {
 });
 
 const perimeterCount = computed(() => order.value.length);
+
+/** Perimeter index by `row:col` — the template resolves each cell's walk
+ * order several times per render, and a findIndex per call is O(perimeter). */
+const orderIndexByCell = computed<Map<string, number>>(() => {
+  const map = new Map<string, number>();
+  order.value.forEach((cell, index) => map.set(`${cell.row}:${cell.col}`, index));
+  return map;
+});
 const activeIndex = ref(-1);
 const playing = ref(false);
 let cycleTimer: ReturnType<typeof setInterval> | null = null;
@@ -165,7 +168,7 @@ const midRows = computed(() => rows.value - 2);
 
 /** 周长序号：格子坐标 → 0..P-1，不在周长上的返回 -1。 */
 function orderIndex(row: number, col: number): number {
-  return order.value.findIndex((cell) => cell.row === row && cell.col === col);
+  return orderIndexByCell.value.get(`${row}:${col}`) ?? -1;
 }
 
 function prizeAt(index: number): SnLuckyPrize | null {

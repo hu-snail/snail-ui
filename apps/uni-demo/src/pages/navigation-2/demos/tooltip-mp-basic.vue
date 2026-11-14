@@ -37,12 +37,17 @@ const open = ref(false);
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* Docs-preview only — relative keeps the demo flow intact while the bubble
- * stays anchored to the component root; the spacer below leaves room for the
- * bottom-placed bubble. */
+/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
+ * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
+ * the direct parent's content box (css/position) and the page class still
+ * reaches the component root (style-isolation) — the rule would pin the
+ * fullscreen fixed layer into the demo card and clip it (App overflow
+ * defaults to hidden). */
+/* #ifdef H5 || WEB */
 .sn-tooltip.sn-demo-contained {
   position: relative;
 }
+/* #endif */
 .sn-tooltip-demo__space {
   height: 180rpx;
 }

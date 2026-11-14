@@ -17,7 +17,7 @@
  * 异步结果由组件 watch 驱动（见 sn-icon.vue），带 AbortSignal 与竞态保护。
  */
 
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 import { resolveIconByName } from './sn-icon-registry';
 import { SN_ICON_CATALOG } from './sn-icon-catalog';
 import { resolveIconifyIcon, configSnIconify, type SnIconifyOptions } from './sn-icon-iconify';
@@ -43,8 +43,9 @@ export interface SnIconResolveContext {
   color: string;
   /** 请求边长（px；string 尺寸取整数部分，非法回退 24）。 */
   size: number;
-  /** 组件卸载 / 图标变更时触发，异步 Provider 应中断请求。 */
-  signal?: AbortSignal;
+  /** 组件卸载 / 图标变更时触发，异步 Provider 应中断请求；运行时无
+   * AbortController（微信小程序）时为 undefined。 */
+  signal?: AbortSignal | undefined;
 }
 
 /**

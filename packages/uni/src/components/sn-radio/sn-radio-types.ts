@@ -32,7 +32,7 @@ export type SnRadioDirection = 'horizontal' | 'vertical';
  * shape): `default` inline marker + label, `card` selectable card (custom
  * content via the `card` slot), `icon` square icon tile.
  */
-export type SnChoiceVariant = 'default' | 'card' | 'icon';
+export type SnChoiceVariant = 'default' | 'card';
 
 /**
  * Where the marker / corner tick sits (AUI additive).
@@ -65,7 +65,7 @@ export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
  *   - `inverted` — the whole plate fills with the theme colour and the inner
  *                  dot is punched out in the surface colour (反转态)
  */
-export type SnChoiceMarkerShape = 'ring' | 'inverted';
+export type SnChoiceMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Context injected by `SnRadioGroup` into child `SnRadio` instances. */
 export interface SnRadioGroupContext {

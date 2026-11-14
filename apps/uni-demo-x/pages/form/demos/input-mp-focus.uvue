@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-input — 自动聚焦（focus）：挂载即聚焦。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const focused = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="focused" focus placeholder="挂载即聚焦" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

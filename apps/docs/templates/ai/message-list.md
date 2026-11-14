@@ -1,8 +1,8 @@
 # 消息列表 AiMessageList / sn-ai-message
 
-对话转录的展示模块：消息气泡、思考过程折叠、流式输出、工具调用行、附件行、错误提示与重试。Web 端同时提供列表容器与单条渲染器，uni-app 端提供单条渲染器，两端共用同一份消息结构。
+对话转录的展示模块：消息气泡、思考过程折叠、流式输出、工具调用行、附件行、错误提示与重试。Web 端同时提供列表容器与单条渲染器，uni-app x 端提供单条渲染器，两端共用同一份消息结构。
 
-> 平台：`Web`（`SnAiMessageList` + 单条 `SnAiMessage`，来自 `@snui/templates/web/message-list`） / `uni-app`（单条 `SnAiMessage`，来自 `@snui/templates/uni/message-list`）
+> 平台：`Web`（`SnAiMessageList` + 单条 `SnAiMessage`，来自 `@snui/templates/web/message-list`） / `uni-app x`（单条 `SnAiMessage`，来自 `@snui/templates/uni/message-list`）
 
 ## 何时使用
 
@@ -10,7 +10,7 @@
 - 需要「思考过程」在生成时展开、生成结束后自动收起
 - 需要在流式输出时自动跟随最新内容，但用户向上翻阅时不要被拉回底部
 - 需要把单条消息渲染到列表之外：引用某条回复、在卡片里做预览、做导出预览
-- 需要在 uni-app 里复用同一份消息结构（本页同时覆盖两端）
+- 需要在 uni-app x 里复用同一份消息结构（本页同时覆盖两端）
 
 ## 安装与按需加载
 
@@ -27,13 +27,15 @@ import '@snui/templates/styles';
 import '@snui/templates/styles/web-message-list.css';
 ```
 
-uni-app 端同理：
+uni-app x 端同理：
 
 ```ts
 import { SnAiMessage } from '@snui/templates/uni/message-list';
 import '@snui/templates/styles';
 import '@snui/templates/styles/uni-message-list.css';
 ```
+
+`@snui/templates/uni/*` 是经典 uni-app（H5 / 小程序 / App-vue）产物；uni-app x（蒸汽模式）消费的 `.uvue` 由同一套 uni-x 管线从这份源码生成，仓库内示例见 `apps/uni-demo-x/templates`。
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
@@ -222,7 +224,7 @@ const quotedText = computed(() => {
 
 <Demo name="ai-message-list-web-basic" description="思考折叠 + 工具行 + 附件行 + 流式光标的组合。" />
 
-### uni-app 端单条消息
+### uni-app x 端单条消息
 
 uni 端提供的是单条渲染器，展示思考折叠、工具行、附件行、流式光标与错误重试在移动端的渲染。
 
@@ -354,7 +356,7 @@ uni 端覆盖 `--sn-mp-*`（尺寸 token 是 rpx）：
 
 两端内容块与状态语义完全一致，差异在结构与能力：
 
-| 方面       | Web（`SnAiMessageList` / `SnAiMessage`）                          | uni-app（`SnAiMessage`）                                  |
+| 方面       | Web（`SnAiMessageList` / `SnAiMessage`）                          | uni-app x（`SnAiMessage`）                                |
 | ---------- | ----------------------------------------------------------------- | --------------------------------------------------------- |
 | 提供的东西 | 列表容器 + 单条渲染器 + 思考块，各自可单独使用                    | 只有单条渲染器，列表由页面自己 `v-for`                    |
 | 元素       | `<div>` / `<ul>` / `<li>` 等标准标签                              | `<view>` / `<text>` 等跨端元素                            |
@@ -394,5 +396,5 @@ uni 端覆盖 `--sn-mp-*`（尺寸 token 是 rpx）：
 **Q：`retry` 之后列表会自动替换那条消息吗？**
 不会。组件只报告用户点了重试，是否替换、如何重跑由宿主机决定（完整示例里演示了一种写法）。
 
-**Q：能在 uni-app 里也用列表容器吗？**
+**Q：能在 uni-app x 里也用列表容器吗？**
 不能，uni 端只提供单条渲染器 `SnAiMessage`；直接引 `@snui/templates/uni/chat` 即可获得带 `<scroll-view>` 的完整转录区。

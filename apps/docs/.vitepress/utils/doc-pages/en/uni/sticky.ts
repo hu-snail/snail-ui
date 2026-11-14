@@ -1,16 +1,16 @@
-/** Sticky · uni-app (uni-app) — English page data. Props from sn-sticky.vue; demos from the en page. */
+/** Sticky · uni-app x (uni-app x) — English page data. Props from sn-sticky.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const stickyDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Navigation Components' },
-    { text: 'Sticky · uni-app' },
+    { text: 'Sticky · uni-app x' },
   ],
-  title: 'Sticky · uni-app',
+  title: 'Sticky · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -38,10 +38,10 @@ export const stickyDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Sticky · uni-app.vue',
+    fileLabel: 'Sticky · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -83,7 +83,7 @@ import { Sticky } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Sticky · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Sticky · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Sticky } from '@snui/uni';",
     chipCopy: "import { Sticky } from '@snui/uni';",
     stats: [
@@ -93,8 +93,8 @@ import { Sticky } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-collapse', link: '/en/components/uni/collapse' },
-    next: { text: 'sn-grid', link: '/en/components/uni/grid' },
+    prev: { text: 'Collapse', link: '/en/components/uni/collapse' },
+    next: { text: 'Grid', link: '/en/components/uni/grid' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

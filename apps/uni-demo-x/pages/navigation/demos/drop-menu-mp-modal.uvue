@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-drop-menu — 蒙层行为：modal / close-on-click-modal / duration。
+ *
+ * - `modal=false` 不渲染蒙层（列表页里想保留页面可交互时用）
+ * - `close-on-click-modal=false` 让蒙层只做视觉遮罩，点击不关闭
+ * - `duration` 控制展开 / 收起动画时长
+ *
+ * 预览专用：`custom-class="sn-demo-contained"` 让面板的定位上下文收在 demo 内。
+ */
+import SnDropMenu from '@snui/uni-x/components/sn-drop-menu/sn-drop-menu.uvue';
+const noModal = ref('default');
+const noCloseOnTap = ref('');
+
+const sortOptions = [
+  { label: '综合排序', value: 'default' },
+  { label: '价格从低到高', value: 'price-asc' },
+  { label: '价格从高到低', value: 'price-desc' },
+];
+
+const cityOptions = [
+  { label: '北京', value: 'bj' },
+  { label: '上海', value: 'sh' },
+  { label: '广州', value: 'gz' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">modal=false + duration=400</text>
+    <SnDropMenu
+      v-model="noModal"
+      :options="sortOptions"
+      :modal="false"
+      :duration="400"
+      title="排序"
+      custom-class="sn-demo-contained"
+    />
+
+    <text class="sn-demo__label">close-on-click-modal=false（点蒙层不关闭）</text>
+    <SnDropMenu
+      v-model="noCloseOnTap"
+      :options="cityOptions"
+      :close-on-click-modal="false"
+      title="城市"
+      custom-class="sn-demo-contained"
+    />
+
+    <text class="sn-demo__meta">选中：{{ noModal }} / {{ noCloseOnTap || '未选' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — the panel is absolutely positioned inside the root. */
+</style>

@@ -1,0 +1,78 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — nav form (`type`) and active emphasis (`active-theme`).
+ *
+ * - `type="line"` underline look (default): the active item leans on the bottom bar plus bolder text
+ * - `type="card"` card segment: the strip sits in a subtle container and the active item lifts to the panel surface
+ * - `type="tag"` standalone pills: every tab carries its own outline, the active one is emphasised by `active-theme`
+ * - `active-theme="text"` text emphasis only (bottom bar included)
+ * - `active-theme="fill"` soft rounded background on the active item
+ * - `active-theme="pill"` solid pill background with inverted text
+ */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+const lineActive = ref(0);
+const cardActive = ref(1);
+const tagActive = ref(2);
+const fillActive = ref(0);
+const pillActive = ref(1);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">type="line" (default) + active-theme="text"</text>
+    <SnTabs v-model="lineActive">
+      <SnTab title="All" :name="0"><text>All orders</text></SnTab>
+      <SnTab title="Unpaid" :name="1"><text>Unpaid orders</text></SnTab>
+      <SnTab title="Completed" :name="2"><text>Completed orders</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">type="card" card segment</text>
+    <SnTabs v-model="cardActive" type="card">
+      <SnTab title="Day" :name="0"><text>Daily stats</text></SnTab>
+      <SnTab title="Week" :name="1"><text>Weekly stats</text></SnTab>
+      <SnTab title="Month" :name="2"><text>Monthly stats</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">type="tag" + active-theme="pill"</text>
+    <SnTabs v-model="tagActive" type="tag" active-theme="pill">
+      <SnTab title="For you" :name="0"><text>For you content</text></SnTab>
+      <SnTab title="Following" :name="1"><text>Following content</text></SnTab>
+      <SnTab title="Trending" :name="2"><text>Trending content</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">type="line" + active-theme="fill"</text>
+    <SnTabs v-model="fillActive" active-theme="fill">
+      <SnTab title="All" :name="0"><text>All messages</text></SnTab>
+      <SnTab title="Unread" :name="1"><text>Unread messages</text></SnTab>
+      <SnTab title="Read" :name="2"><text>Read messages</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">type="tag" + active-theme="fill"</text>
+    <SnTabs v-model="pillActive" type="tag" active-theme="fill">
+      <SnTab title="Beijing" :name="0"><text>Beijing weather</text></SnTab>
+      <SnTab title="Shanghai" :name="1"><text>Shanghai weather</text></SnTab>
+      <SnTab title="Guangzhou" :name="2"><text>Guangzhou weather</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__meta">
+      Active tab: {{ lineActive }} / {{ cardActive }} / {{ tagActive }} / {{ fillActive }} /
+      {{ pillActive }}
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

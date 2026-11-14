@@ -1,0 +1,50 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-video-preview (uni-end) — stacking & style (`zIndex` / `customStyle`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-video-preview from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnVideoPreview from '@snui/uni-x/components/sn-video-preview/sn-video-preview.uvue';
+const preview = ref<{
+  open: (options: { src: string; poster?: string; title?: string }) => void;
+  close: () => void;
+} | null>(null);
+
+const clip = {
+  src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+  poster: 'https://picsum.photos/seed/snui-video-cfg/750/420',
+  title: 'Custom stacking and style',
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton size="small" type="primary" @click="preview?.open(clip)"><text>Open (z-index 1500)</text></SnButton>
+    <SnButton size="small" @click="preview?.close()"><text>Close</text></SnButton>
+
+    <SnVideoPreview
+      ref="preview"
+      :z-index="1500"
+      custom-class="sn-demo-contained"
+      custom-style="border-radius: 16rpx"
+    />
+
+    <text class="sn-demo__meta">
+      z-index is forwarded to the inner sn-popup; customStyle is appended to the layer root's inline
+      style (a radius here).
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

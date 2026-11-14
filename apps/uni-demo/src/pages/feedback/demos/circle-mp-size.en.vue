@@ -1,0 +1,42 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-circle (uni-end) — sizes and stroke widths.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-circle from its SFC source.
+ */
+import SnCircle from '@snui/uni-src/components/sn-circle/sn-circle.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-circle-demo__row">
+      <SnCircle :model-value="45" :size="80" :stroke-width="10" />
+      <SnCircle :model-value="45" :size="120" :stroke-width="15" />
+      <SnCircle :model-value="45" :size="140" :stroke-width="22" />
+      <SnCircle :model-value="100" :size="180" text="Done" />
+    </view>
+
+    <text class="sn-circle-demo__meta">
+      `size` sets the ring diameter and `strokeWidth` the band thickness; keep
+      in-ring text short — long copy belongs below the ring.
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.sn-circle-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  align-items: center;
+}
+.sn-circle-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

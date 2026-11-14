@@ -15,7 +15,7 @@ export const cascaderDocPage: SnDocPageData = {
   title: 'Cascader 级联选择器',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,7 +43,7 @@ export const cascaderDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Cascader 级联选择器.vue',
     meta: 'Vue 3 · <script setup>',
@@ -204,8 +204,8 @@ import { Cascader } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-select-picker', link: '/components/uni/select-picker' },
-    next: { text: 'sn-calendar', link: '/components/uni/calendar' },
+    prev: { text: 'SelectPicker', link: '/components/uni/select-picker' },
+    next: { text: 'Calendar', link: '/components/uni/calendar' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

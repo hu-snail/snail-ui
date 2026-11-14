@@ -1,0 +1,28 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-notice-bar (uni-end) — closable + the close event.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-notice-bar from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
+const closableKey = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNoticeBar
+      :key="closableKey"
+      type="info"
+      text="closable：点右侧 × 关闭本条通知"
+      closable
+      @close="closableKey += 1"
+    />
+    <SnButton size="small" @click="closableKey += 1"><text>恢复已关闭的通知</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

@@ -27,7 +27,15 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '头像',
         titleEn: 'Avatar',
         desc: '圆形 / 方形头像与徽标组合',
-        count: 9,
+        count: 7,
+      },
+      {
+        key: 'avatar-group',
+        group: 'basic',
+        title: '头像组',
+        titleEn: 'Avatar Group',
+        desc: '头像叠层展示与折叠计数',
+        count: 5,
       },
       {
         key: 'badge',
@@ -77,14 +85,6 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         desc: '可拖拽的悬浮操作按钮',
         count: 9,
       },
-      {
-        key: 'gap',
-        group: 'basic',
-        title: '间隔槽',
-        titleEn: 'Gap',
-        desc: '固定高度的占位间隔',
-        count: 3,
-      },
     ],
   },
   {
@@ -92,6 +92,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
     label: '基础组件',
     labelEn: 'Basic Components',
     comps: [
+      {
+        key: 'gap',
+        group: 'basic-2',
+        title: '间隔槽',
+        titleEn: 'Gap',
+        desc: '固定高度的占位间隔',
+        count: 3,
+      },
       {
         key: 'icon',
         group: 'basic-2',
@@ -335,7 +343,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '复选框',
         titleEn: 'Checkbox',
         desc: '多选控件',
-        count: 9,
+        count: 11,
       },
       {
         key: 'code-input',
@@ -446,7 +454,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单选框',
         titleEn: 'Radio',
         desc: '单选控件',
-        count: 7,
+        count: 10,
       },
       {
         key: 'rate',
@@ -549,7 +557,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '环形进度条',
         titleEn: 'Circle',
         desc: '环形进度展示',
-        count: 4,
+        count: 5,
       },
       {
         key: 'curtain',

@@ -66,6 +66,12 @@ import { TreeSelect } from '@snui/vue-web';
     },
     { name: 'tree-select-web-line', title: 'Connector Lines', blurb: 'Connector Lines' },
     { name: 'tree-select-web-guide', title: 'Connector Lines', blurb: 'Connector Lines' },
+    {
+      name: 'tree-select-web-size',
+      title: 'Size',
+      blurb:
+        'mini / small / medium / large trigger heights and font sizes side by side (same scale as SnSelect).',
+    },
   ],
   props: {
     hint: [],
@@ -99,6 +105,12 @@ import { TreeSelect } from '@snui/vue-web';
         type: 'boolean',
         default: 'false',
         desc: 'Expand every parent on first render (non-controlled expansion).',
+      },
+      {
+        name: 'expandOnClick',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Clicking a branch label expands / collapses it without committing a value or closing the panel; leaves still select on click. Pass `false` to restore "click a branch = select it".',
       },
       {
         name: 'placeholder',

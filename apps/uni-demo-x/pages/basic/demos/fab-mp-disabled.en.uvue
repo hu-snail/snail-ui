@@ -1,0 +1,63 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-fab (uni-end) — disabled.
+ *
+ * `disabled` blocks every interaction, trigger at half opacity (bottom-left,
+ * built-in plus icon sized with --sn-mp-icon-size-large).
+ *
+ * Copy is kept in parity with fab-mp-disabled.vue.
+ */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-fab-demo__stage">
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">Disabled</text>
+      <text class="sn-fab-demo__hint-text">
+        Bottom-left: disabled blocks every interaction, trigger at half opacity (built-in plus
+        icon).
+      </text>
+    </view>
+
+    <SnFab
+      position="left-bottom"
+      disabled
+      :gap="{ bottom: 16, left: 16 }"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-fab-demo__stage {
+  position: relative;
+  width: 100%;
+  height: 560rpx;
+  overflow: hidden;
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+  max-width: 60%;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-fab.sn-demo-contained {
+  position: absolute;
+}
+</style>

@@ -73,6 +73,7 @@ const topActions: SnFabAction[] = [
       position="bottom-center"
       :actions="centerActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
 
@@ -83,6 +84,7 @@ const topActions: SnFabAction[] = [
       position="right-bottom"
       :actions="cornerActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="() => pick('bottom-right')"
     />
 
@@ -93,6 +95,7 @@ const topActions: SnFabAction[] = [
       position="left-top"
       :actions="topActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="() => pick('top-left')"
     />
   </view>
@@ -130,8 +133,6 @@ const topActions: SnFabAction[] = [
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
+/* Docs-preview pinning rides inline (custom-style) — compound selectors
+ * (.sn-fab.sn-demo-contained) are dropped by uni-app x App. */
 </style>

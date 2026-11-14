@@ -4,7 +4,8 @@
  * Behaviour only (AGENTS.md §46): the total / totalPage resolution order, the
  * clamped page window with ellipses, the boundary guards and the v-model
  * contract. No rpx numbers in assertions — happy-dom discards lengths it
- * cannot parse.
+ * cannot parse. Cascade invariants happy-dom cannot execute are pinned on the
+ * source text (variant regression tests below).
  */
 
 import { describe, it, expect } from 'vitest';
@@ -313,6 +314,37 @@ describe('sn-pagination', () => {
       });
       expect(wrapper.classes()).toContain('my-pager');
       expect(wrapper.attributes('style')).toContain('margin: 4px');
+    });
+  });
+
+  describe('dashed variant (cross-end regression)', () => {
+    /**
+     * Real-device bug: `.sn-pagination__page` has no base border, so the old
+     * style/colour-only dashed override let the border width fall to the engine
+     * initial (`medium`, 3px) on H5 and uni-app x alike, while strip spacing
+     * rode on flex gap (unsupported on App) — 3px dashed strokes 2px apart
+     * fused into one jagged strip. happy-dom discards stylesheets, so both
+     * invariants are pinned on the source text, as in the base-variant
+     * active-fill test above.
+     */
+    it('draws dashed page boxes with a full explicit-width border', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-pagination.vue'), 'utf8');
+      const dashed = source.indexOf('.sn-pagination--dashed .sn-pagination__button');
+      expect(dashed).toBeGreaterThan(-1);
+      const rule = source.slice(dashed, source.indexOf('}', dashed));
+      expect(rule).toContain('border: 2rpx dashed var(--sn-mp-color-action-primary)');
+      /* No width-less longhand override: that is what reverted the stroke to
+       * the 3px engine-initial `medium` on both ends. */
+      expect(rule).not.toContain('border-style');
+      expect(rule).not.toContain('border-color');
+    });
+
+    it('spaces the page strip with per-item margins instead of flex gap', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-pagination.vue'), 'utf8');
+      const pages = source.indexOf('.sn-pagination__pages {');
+      expect(source.slice(pages, source.indexOf('}', pages))).not.toMatch(/\bgap:/);
+      expect(source).toMatch(/\.sn-pagination__page \{[^}]*margin: 0 var\(--sn-mp-spacing-1\)/);
+      expect(source).toMatch(/\.sn-pagination__ellipsis \{[^}]*margin: 0 var\(--sn-mp-spacing-1\)/);
     });
   });
 

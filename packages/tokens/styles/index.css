@@ -16,7 +16,15 @@
  * Keep this file in sync with src/component.ts when adding a family.
  */
 
-:root {
+/**
+ * `page` is the mini-program root element (WXSS has no `:root` — a `:root`
+ * block is silently dropped there, so every `--aui-*` consumer lost its
+ * variables and components rendered with layout but no paint). Both selectors
+ * are emitted: `:root` serves web / H5, `page` serves uni-app MP where
+ * custom properties on `page` inherit into every custom component.
+ */
+:root,
+page {
   /* Primitive — color (blue ramp) */
   --aui-color-blue-50: #eff6ff;
   --aui-color-blue-100: #dbeafe;
@@ -116,6 +124,10 @@
   --aui-color-text-tertiary: var(--aui-color-neutral-400);
   --aui-color-text-disabled: var(--aui-color-neutral-300);
   --aui-color-text-on-primary: #fff;
+  /* Glyphs on saturated chips (colored avatars, badges). Theme-invariant
+   * near-white — the DEFAULT_SEMANTIC_TOKENS text block already declares
+   * `inverse` as gray-50, this static layer just never materialized it. */
+  --aui-color-text-inverse: var(--aui-color-neutral-50);
 
   --aui-color-background-surface: #ffffff;
   --aui-color-background-subtle: var(--aui-color-neutral-100);

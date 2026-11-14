@@ -258,18 +258,25 @@ function commit(columnIndex: number, rowIndex: number): void {
 
   // Cascade: a parent change invalidates every deeper selection, so the
   // emitted path stops right after the changed column and is re-derived.
+  // Resolve ONCE — with `immediateChange` this runs per touchmove, and a
+  // second resolve inside buildPayload would re-normalize every option again.
   const base = props.cascade
     ? effectiveValues.value.slice(0, columnIndex + 1)
     : effectiveValues.value.slice();
   base[columnIndex] = target.value;
-  const trimmed = base.slice(0, resolveColumns(base).length);
+  const columns = resolveColumns(base);
+  const trimmed = base.slice(0, columns.length);
 
   emit('update:modelValue', trimmed);
-  emit('change', buildPayload(trimmed, columnIndex));
+  emit('change', buildPayload(trimmed, columnIndex, columns));
 }
 
-function buildPayload(values: PickerValue[], columnIndex: number): PickerViewChangePayload {
-  const columns = resolveColumns(values);
+function buildPayload(
+  values: PickerValue[],
+  columnIndex: number,
+  preResolved?: NormalizedPickerOption[][],
+): PickerViewChangePayload {
+  const columns = preResolved ?? resolveColumns(values);
   const selectedOptions: Array<PickerOption | PickerValue> = [];
   const selectedLabels: string[] = [];
   const selectedIndexes: number[] = [];
@@ -428,7 +435,6 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
           ><text>{{ option.label }}</text></view
-        >
         >
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />

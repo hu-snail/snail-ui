@@ -1,0 +1,56 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-config-provider — dark mode containment.
+ *
+ * Two subtrees side by side: the dark one carries `.sn-theme-dark`, so every
+ * component inside it resolves the dark `--sn-mp-color-*` aliases while the
+ * light sibling keeps the page-level values.
+ */
+import SnConfigProvider from '@snui/uni-x/components/sn-config-provider/sn-config-provider.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
+const darkOn = ref(true);
+const lightOn = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnConfigProvider theme="dark" custom-class="sn-cfg-dark__pane">
+      <view class="sn-cfg-dark__label"><text>theme="dark"</text></view>
+      <view class="sn-cfg-dark__row">
+        <SnTag type="primary"><text>标签</text></SnTag>
+        <SnSwitch v-model="darkOn" />
+      </view>
+    </SnConfigProvider>
+
+    <SnConfigProvider theme="light" custom-class="sn-cfg-dark__pane">
+      <view class="sn-cfg-dark__label"><text>theme="light"</text></view>
+      <view class="sn-cfg-dark__row">
+        <SnTag type="primary"><text>标签</text></SnTag>
+        <SnSwitch v-model="lightOn" />
+      </view>
+    </SnConfigProvider>
+  </view>
+</template>
+<style scoped>
+.sn-cfg-dark__pane {
+  display: block;
+  padding: 10px;
+  border: 1px solid var(--sn-mp-color-border-default);
+  border-radius: 8px;
+  background: var(--sn-mp-color-background-surface);
+}
+
+.sn-cfg-dark__label {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-cfg-dark__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+}
+</style>

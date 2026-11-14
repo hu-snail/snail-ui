@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const timeDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '反馈组件 Feedback' }, { text: 'Time' }],
-  title: 'Time',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '反馈组件 Feedback' }, { text: 'Time 时间' }],
+  title: 'Time 时间',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

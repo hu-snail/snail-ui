@@ -1,0 +1,34 @@
+<script setup lang="ts">
+/** Demo: sn-keyboard-panel — Embedded keypad view: rendered inline with no popup; the host handles the collapse event. */
+import SnKeyboardPanel from '@snui/uni-x/components/sn-keyboard-panel/sn-keyboard-panel.uvue';
+const amount = ref('');
+const decimal = ref('');
+const plate = ref('');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">Default panel (the glyph key emits collapse)</text>
+    <text class="sn-demo__meta">Value: {{ amount || '(empty)' }}</text>
+    <SnKeyboardPanel v-model="amount" :maxlength="6" title="Amount" />
+
+    <text class="sn-demo__title">Decimal panel (extraKey=.)</text>
+    <text class="sn-demo__meta">Amount: {{ decimal || '(empty)' }}</text>
+    <SnKeyboardPanel v-model="decimal" :maxlength="8" extra-key="." />
+
+    <text class="sn-demo__title">Plate panel (mode=car + autoSwitchLang)</text>
+    <text class="sn-demo__meta">Plate: {{ plate || '(empty)' }}</text>
+    <SnKeyboardPanel v-model="plate" mode="car" auto-switch-lang :maxlength="8" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--demo-text);
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

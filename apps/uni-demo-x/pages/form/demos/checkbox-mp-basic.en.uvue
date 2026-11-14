@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox-group — basic multi-select (array v-model). */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const picked = ref<Array<string | number | boolean>>(['apple']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCheckboxGroup v-model="picked">
+      <SnCheckbox name="apple"><text>Apple</text></SnCheckbox>
+      <SnCheckbox name="banana"><text>Banana</text></SnCheckbox>
+      <SnCheckbox name="cherry"><text>Cherry</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <text class="sn-demo__meta">Selected: {{ picked.join(', ') || '(none)' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

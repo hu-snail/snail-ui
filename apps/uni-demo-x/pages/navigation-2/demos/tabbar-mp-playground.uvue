@@ -1,0 +1,257 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabbar — 固定屏幕底部 + 设置项切换（整页交互）。
+ *
+ * 栏真实 fixed 在视口底部（placeholder 撑起内容流），页面其余全部是设置项：
+ *   - 形态胶囊：标准 / 毛玻璃 / 凸起（glass + elevate 联动）
+ *   - 开关：顶部边框 bordered、底部安全区 safeAreaInsetBottom、占位 placeholder
+ *   - 徽标：第二项数字徽标 / 第三项点状徽标
+ *   - 激活色：主色 / 橙 / 绿 三选
+ */
+import SnTabbar from '@snui/uni-x/components/sn-tabbar/sn-tabbar.uvue';
+import SnTabbarItem from '@snui/uni-x/components/sn-tabbar/sn-tabbar-item.uvue';
+type Mode = 'default' | 'glass' | 'elevate';
+type Tone = 'primary' | 'orange' | 'green';
+
+const mode = ref<Mode>('glass');
+const bordered = ref(true);
+const safeArea = ref(true);
+const placeholder = ref(true);
+const showBadge = ref(true);
+const tone = ref<Tone>('primary');
+
+const active = ref(0);
+
+const isGlass = computed(() => mode.value === 'glass');
+const elevate = computed(() => (mode.value === 'elevate' ? { index: 2, icon: 'plus' } : null));
+
+const toneMap: Record<Tone, { active: string; inactive: string }> = {
+  primary: { active: '', inactive: '' },
+  orange: { active: '#ff8f1f', inactive: '#a1a1aa' },
+  green: { active: '#10b981', inactive: '#a1a1aa' },
+};
+const activeColor = computed(() => toneMap[tone.value].active);
+const inactiveColor = computed(() => toneMap[tone.value].inactive);
+
+const modeLabel: Record<Mode, string> = { default: '标准', glass: '毛玻璃', elevate: '凸起' };
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <!-- ── 形态 ─────────────────────────────────────────────── -->
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">形态</text>
+      <view class="sn-tabbar-demo__capsule">
+        <view
+          v-for="m in ['default', 'glass', 'elevate'] as Mode[]"
+          :key="m"
+          class="sn-tabbar-demo__capsule-item"
+          :class="{ 'sn-tabbar-demo__capsule-item--active': mode === m }"
+          role="tab"
+          :aria-selected="mode === m"
+          @click="mode = m"
+        ><text>
+          {{ modeLabel[m] }}
+        </text></view>
+      </view>
+    </view>
+
+    <!-- ── 开关 ─────────────────────────────────────────────── -->
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">选项</text>
+      <view class="sn-tabbar-demo__switches">
+        <view
+          v-for="s in [
+            { key: 'bordered', label: '顶部边框', value: bordered },
+            { key: 'safeArea', label: '底部安全区', value: safeArea },
+            { key: 'placeholder', label: '占位元素', value: placeholder },
+            { key: 'badge', label: '徽标', value: showBadge },
+          ]"
+          :key="s.key"
+          class="sn-tabbar-demo__switch"
+          role="switch"
+          :aria-checked="s.value"
+          @click="
+            s.key === 'bordered'
+              ? (bordered = !bordered)
+              : s.key === 'safeArea'
+                ? (safeArea = !safeArea)
+                : s.key === 'placeholder'
+                  ? (placeholder = !placeholder)
+                  : (showBadge = !showBadge)
+          "
+        >
+          <text class="sn-tabbar-demo__switch-label">{{ s.label }}</text>
+          <view class="sn-tabbar-demo__track" :class="{ 'sn-tabbar-demo__track--on': s.value }">
+            <view class="sn-tabbar-demo__knob" :class="{ 'sn-tabbar-demo__knob--on': s.value }" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── 激活色 ───────────────────────────────────────────── -->
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">激活色</text>
+      <view class="sn-tabbar-demo__tones">
+        <view
+          v-for="toneOpt in ['primary', 'orange', 'green'] as Tone[]"
+          :key="toneOpt"
+          class="sn-tabbar-demo__tone"
+          :class="{ 'sn-tabbar-demo__tone--active': tone === toneOpt }"
+          role="radio"
+          :aria-checked="tone === toneOpt"
+          @click="tone = toneOpt"
+        >
+          <view
+            class="sn-tabbar-demo__swatch"
+            :style="{
+              background:
+                toneOpt === 'primary'
+                  ? 'var(--sn-mp-color-action-primary)'
+                  : toneOpt === 'orange'
+                    ? '#ff8f1f'
+                    : '#10b981',
+            }"
+          />
+          <text>{{ toneOpt === 'primary' ? '主色' : toneOpt === 'orange' ? '橙' : '绿' }}</text>
+        </view>
+      </view>
+    </view>
+
+    <text class="sn-demo__meta">
+      当前：{{ modeLabel[mode] }} ／ 选中索引 {{ active }}（栏 fixed 在屏幕底部，设置项实时生效）
+    </text>
+
+    <!-- ── 固定在屏幕底部的标签栏 ────────────────────────────── -->
+    <SnTabbar
+      v-model="active"
+      fixed
+      :glass="isGlass"
+      :elevate="elevate"
+      :bordered="bordered"
+      :safe-area-inset-bottom="safeArea"
+      :placeholder="placeholder"
+      :active-color="activeColor"
+      :inactive-color="inactiveColor"
+      :z-index="40"
+    >
+      <SnTabbarItem title="首页" icon="house" />
+      <SnTabbarItem title="发现" icon="search" :value="showBadge ? 12 : undefined" />
+      <SnTabbarItem title="发布" icon="plus" :is-dot="showBadge && mode !== 'elevate'" />
+      <SnTabbarItem title="消息" icon="bell" />
+      <SnTabbarItem title="我的" icon="user" />
+    </SnTabbar>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  /* 固定栏 + 占位元素撑起内容流；留出底部呼吸空间。 */
+  padding-bottom: 40rpx;
+}
+.sn-tabbar-demo__group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-tabbar-demo__label {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+/* 形态胶囊 */
+.sn-tabbar-demo__capsule {
+  display: flex;
+  gap: 8rpx;
+  padding: 8rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
+}
+.sn-tabbar-demo__capsule-item {
+  flex: 1 1 0;
+  padding: 14rpx 0;
+  border-radius: var(--sn-mp-radius-full);
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+  text-align: center;
+}
+.sn-tabbar-demo__capsule-item--active {
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+}
+/* 开关行 */
+.sn-tabbar-demo__switches {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-elevated);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+.sn-tabbar-demo__switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 28rpx;
+  flex-direction: row;
+}
+.sn-tabbar-demo__switch-label {
+  font-size: var(--sn-mp-font-size-md);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-tabbar-demo__track {
+  position: relative;
+  width: 88rpx;
+  height: 48rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-subtle);
+  transition: background-color 150ms ease;
+}
+.sn-tabbar-demo__track--on {
+  background-color: var(--sn-mp-color-action-primary);
+}
+.sn-tabbar-demo__knob {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: #ffffff;
+  box-shadow: var(--sn-mp-shadow-xs);
+  transition: transform 150ms ease;
+}
+.sn-tabbar-demo__knob--on {
+  transform: translateX(40rpx);
+}
+/* 激活色 */
+.sn-tabbar-demo__tones {
+  display: flex;
+  gap: 16rpx;
+  flex-direction: row;
+}
+.sn-tabbar-demo__tone {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 24rpx;
+  border-radius: var(--sn-mp-radius-full);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+  flex-direction: row;
+}
+.sn-tabbar-demo__tone--active {
+  border-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-tabbar-demo__swatch {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: var(--sn-mp-radius-full);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

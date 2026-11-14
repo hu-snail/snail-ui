@@ -57,7 +57,9 @@ const showCorner = ref(false);
 .sn-curtain-demo__close {
   box-shadow: var(--sn-mp-shadow-md);
 }
-/* Docs-preview only — keep the fixed-position curtain inside the phone screen. */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-curtain.sn-demo-contained {
   position: absolute;
 }

@@ -1,5 +1,5 @@
 /**
- * Input · uni-app（多端）（uni 端）组件详情页数据。
+ * Input · uni-app x（多端）（uni 端）组件详情页数据。
  *
  * Props 与默认值取自 sn-input.vue 的 defineProps / withDefaults；
  * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
@@ -10,18 +10,18 @@ export const inputDocPage: SnDocPageData = {
   crumbs: [
     { text: '文档首页', link: '/' },
     { text: '录入组件 Form' },
-    { text: 'Input · uni-app（多端）' },
+    { text: 'Input · uni-app x（多端）' },
   ],
-  title: 'Input · uni-app（多端）',
+  title: 'Input · uni-app x（多端）',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
     {
       t: 'text',
-      s: '跨 uni-app 多端的受控输入控件。rpx 几何，token 别名层驱动样式；H5 / 微信小程序 / App 全端共用一套 API。',
+      s: '跨 uni-app x 多端的受控输入控件。rpx 几何，token 别名层驱动样式；H5 / 微信小程序 / App 全端共用一套 API。',
     },
   ],
   quickActions: [
@@ -44,9 +44,9 @@ export const inputDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
-    fileLabel: 'Input · uni-app（多端）.vue',
+    fileLabel: 'Input · uni-app x（多端）.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -211,7 +211,7 @@ import { Input } from '@snui/uni';
         name: 'placeholderClass',
         type: 'string',
         default: "''",
-        desc: 'Class applied to the placeholder pseudo-element (uni-app MP).',
+        desc: 'Class applied to the placeholder pseudo-element (uni-app x MP).',
       },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用。' },
       { name: 'readonly', type: 'boolean', default: 'false', desc: '只读。' },
@@ -384,7 +384,7 @@ import { Input } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · 已内置',
     heading: '为 LLM 提供语义化组件契约',
-    copy: 'Input · uni-app（多端） 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
+    copy: 'Input · uni-app x（多端） 携带 AI-Friendly 描述，由 @snui/cli 的 generateDocs() 与 generateLlmsTxt() 消费生成机器可读文档。',
     chip: "import { Input } from '@snui/uni';",
     chipCopy: "import { Input } from '@snui/uni';",
     stats: [
@@ -394,8 +394,8 @@ import { Input } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-form', link: '/components/uni/form' },
-    next: { text: 'sn-textarea', link: '/components/uni/textarea' },
+    prev: { text: 'Form', link: '/components/uni/form' },
+    next: { text: 'Textarea', link: '/components/uni/textarea' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

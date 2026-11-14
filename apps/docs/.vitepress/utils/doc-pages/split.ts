@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const splitDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Split' }],
-  title: 'Split',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Split 分栏' }],
+  title: 'Split 分栏',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

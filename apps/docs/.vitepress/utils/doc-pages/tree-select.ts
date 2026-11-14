@@ -93,7 +93,7 @@ export const treeSelectDocPage: SnDocPageData = {
     {
       name: 'tree-select-web-basic',
       title: '基础用法',
-      blurb: '树面板单选，父/叶均可选。',
+      blurb: '树面板单选：分支点击展开/折叠，叶子点击选中。',
     },
     {
       name: 'tree-select-web-multiple',
@@ -130,6 +130,11 @@ export const treeSelectDocPage: SnDocPageData = {
       title: '缩进引导线（line-mode）',
       blurb: 'line-mode="guide" 的缩进引导线：只画贯穿子树的竖线、不画横向分叉；实线 / 虚线对照。',
     },
+    {
+      name: 'tree-select-web-size',
+      title: '尺寸（size）',
+      blurb: 'mini / small / medium / large 四档触发器高度与字号对照（与 SnSelect 同一套档位）。',
+    },
   ],
 
   props: {
@@ -160,6 +165,12 @@ export const treeSelectDocPage: SnDocPageData = {
       },
       { name: 'options', type: 'SnTreeSelectOptionInput[]', default: '[]', desc: '树形选项' },
       { name: 'defaultExpandAll', type: 'boolean', default: 'false', desc: '初始全展开' },
+      {
+        name: 'expandOnClick',
+        type: 'boolean',
+        default: 'true',
+        desc: '点击分支标题即展开/折叠（不提交值、不关闭面板）；叶子仍为点击选中。传 `false` 恢复「点分支=选中」的旧行为。',
+      },
       { name: 'placeholder', type: 'string', default: "'Please select'", desc: '占位文案。' },
       { name: 'clearable', type: 'boolean', default: 'false', desc: '清空按钮' },
       { name: 'filterable', type: 'boolean', default: 'false', desc: 'label 匹配 + 展开祖先' },

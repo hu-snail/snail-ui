@@ -360,6 +360,15 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   right: 0;
   bottom: 0;
   left: 0;
+  /* uni-app x App: do not rely on four-edge inset stretching — the official
+   * position example's four-direction fixed element carries an explicit
+   * width/height, and so does the device-verified sn-tabbar--fixed. For a
+   * fixed element the containing block is the visible page on every target,
+   * so `width/height: 100%` is the same fullscreen box on web / miniprogram
+   * (width+height simply win over the opposing insets) and gives App an
+   * explicit size. The insets stay as harmless redundancy. */
+  width: 100%;
+  height: 100%;
   display: flex;
   box-sizing: border-box;
 }
@@ -395,6 +404,10 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   right: 0;
   bottom: 0;
   left: 0;
+  /* uni-app x App: explicit size so the scrim fills the fullscreen root
+   * without relying on absolute inset stretching (see .sn-popup). */
+  width: 100%;
+  height: 100%;
   /* Scrim token — dark-mode aware, no light fallback (§112 / CONTRIBUTING §6). */
   background-color: var(--sn-mp-color-background-overlay);
   animation: sn-popup-fade var(--sn-popup-duration) ease both;

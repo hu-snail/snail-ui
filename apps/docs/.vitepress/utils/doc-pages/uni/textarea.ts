@@ -11,11 +11,11 @@ export const textareaDocPage: SnDocPageData = {
   title: 'Textarea 文本域',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '跨 uni-app 多端的多行文本输入控件。easycom 自动注册（' },
+    { t: 'text', s: '跨 uni-app x 多端的多行文本输入控件。easycom 自动注册（' },
     { t: 'code', s: 'components/sn-textarea/sn-textarea.vue' },
     { t: 'text', s: ' → ' },
     { t: 'code', s: '<sn-textarea>' },
@@ -45,7 +45,7 @@ export const textareaDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Textarea 文本域.vue',
     meta: 'Vue 3 · <script setup>',
@@ -142,7 +142,7 @@ import { Textarea } from '@snui/uni';
         name: 'placeholderClass',
         type: 'string',
         default: "''",
-        desc: 'Class applied to the placeholder pseudo-element (uni-app MP).',
+        desc: 'Class applied to the placeholder pseudo-element (uni-app x MP).',
       },
       {
         name: 'disabled',
@@ -291,8 +291,8 @@ import { Textarea } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-input', link: '/components/uni/input' },
-    next: { text: 'sn-code-input', link: '/components/uni/code-input' },
+    prev: { text: 'Input', link: '/components/uni/input' },
+    next: { text: 'CodeInput', link: '/components/uni/code-input' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -1,16 +1,16 @@
-/** SwipeAction · uni-app (uni-app) — English page data. Props from sn-swipe-action.vue; demos from the en page. */
+/** SwipeAction · uni-app x (uni-app x) — English page data. Props from sn-swipe-action.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const swipeActionDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'SwipeAction · uni-app' },
+    { text: 'SwipeAction · uni-app x' },
   ],
-  title: 'SwipeAction · uni-app',
+  title: 'SwipeAction · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -41,10 +41,10 @@ export const swipeActionDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'SwipeAction · uni-app.vue',
+    fileLabel: 'SwipeAction · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -120,7 +120,7 @@ import { SwipeAction } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'SwipeAction · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'SwipeAction · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { SwipeAction } from '@snui/uni';",
     chipCopy: "import { SwipeAction } from '@snui/uni';",
     stats: [
@@ -130,8 +130,8 @@ import { SwipeAction } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-curtain', link: '/en/components/uni/curtain' },
-    next: { text: 'sn-floating-panel', link: '/en/components/uni/floating-panel' },
+    prev: { text: 'Curtain', link: '/en/components/uni/curtain' },
+    next: { text: 'FloatingPanel', link: '/en/components/uni/floating-panel' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

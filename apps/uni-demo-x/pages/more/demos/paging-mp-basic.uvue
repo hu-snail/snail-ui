@@ -1,0 +1,141 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-paging (uni-end) — 基础用法 + 加载动画/下拉区配色胶囊切换。
+ *
+ * - v-model + @query + completeByTotal 基础协议：末页不足一页自动判停
+ * - sn-segmented 胶囊实时切换 refresherLoadingType（加载圈形态）与
+ *   refresherBackground / refresherTextColor / refresherIconColor（下拉区配色）
+ */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
+import type { LoadingType } from '@snui/uni-x/components/sn-loading/sn-loading-types';
+
+interface DemoRow {
+  id: number;
+  label: string;
+}
+
+type ThemeName = 'default' | 'sky' | 'deep' | 'rose';
+
+const TOTAL = 35;
+const PAGE_SIZE = 10;
+const list = ref<DemoRow[]>([]);
+const paging = ref<InstanceType<typeof SnPaging> | null>(null);
+
+const loadingType = ref<LoadingType>('circular');
+const themeName = ref<ThemeName>('default');
+
+const loadingTypeOptions = [
+  { label: '圆环', value: 'circular' },
+  { label: '放射', value: 'spinner' },
+  { label: '圆点', value: 'dots' },
+  { label: '波浪', value: 'wave' },
+];
+
+/** 下拉区配色预设：背景 / 文案 / 图标三件套一起换，保证对比度。 */
+const PULL_THEMES: Record<ThemeName, { bg: string; text: string; icon: string }> = {
+  default: { bg: '', text: '', icon: '' },
+  sky: { bg: '#e0f2fe', text: '#0c4a6e', icon: '#0284c7' },
+  deep: { bg: '#0b1220', text: '#e2e8f0', icon: '#38bdf8' },
+  rose: { bg: '#fff1f2', text: '#881337', icon: '#e11d48' },
+};
+const themeOptions = [
+  { label: '默认', value: 'default' },
+  { label: '淡蓝', value: 'sky' },
+  { label: '深空', value: 'deep' },
+  { label: '玫红', value: 'rose' },
+];
+const theme = computed(() => PULL_THEMES[themeName.value]);
+
+function query(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    const start = (pageNo - 1) * pageSize;
+    const rows: DemoRow[] = Array.from({ length: Math.min(pageSize, TOTAL - start) }, (_, i) => ({
+      id: start + i + 1,
+      label: `列表条目 ${String(start + i + 1).padStart(2, '0')}`,
+    }));
+    paging.value?.completeByTotal(rows, TOTAL);
+  }, 600);
+}
+
+function onLoadingTypeChange(value: string | number): void {
+  loadingType.value = value as LoadingType;
+}
+
+function onThemeChange(value: string | number): void {
+  themeName.value = value as ThemeName;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="paging-controls">
+      <SnSegmented
+        :model-value="loadingType"
+        :options="loadingTypeOptions"
+        @update:model-value="onLoadingTypeChange"
+      />
+      <SnSegmented
+        :model-value="themeName"
+        :options="themeOptions"
+        @update:model-value="onThemeChange"
+      />
+    </view>
+    <view class="paging-frame">
+      <SnPaging
+        ref="paging"
+        v-model="list"
+        :default-page-size="PAGE_SIZE"
+        :refresher-background="theme.bg"
+        :refresher-text-color="theme.text"
+        :refresher-icon-color="theme.icon"
+        :refresher-loading-type="loadingType"
+        @query="query"
+      >
+        <view v-for="row in list" :key="row.id" class="paging-row">
+          <text class="paging-row__label">{{ row.label }}</text>
+          <text class="paging-row__index">{{ row.id }} / {{ TOTAL }}</text>
+        </view>
+      </SnPaging>
+    </view>
+    <text class="sn-demo__meta">下拉刷新、滚到底自动翻页；末页不足 10 条自动判停</text>
+  </view>
+</template>
+<style scoped>
+.paging-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+}
+
+.paging-frame {
+  box-sizing: border-box;
+  height: 560rpx;
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-md);
+  overflow: hidden;
+}
+
+.paging-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-4);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.paging-row__label {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.paging-row__index {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

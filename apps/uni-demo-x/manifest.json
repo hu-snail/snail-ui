@@ -1,0 +1,29 @@
+{
+  "name": "snui-uni-demo-x",
+  "appid": "",
+  "description": "snui 组件库 uni-app x（蒸汽模式）演示工程 —— 由 apps/uni-demo 场景源经 @snui/uni-x 转换产出（ADR-0004）",
+  "versionName": "1.0.0",
+  "versionCode": "1",
+  "locale": "zh-Hans",
+  "uni-app-x": {
+    "vapor": true,
+    "styleIsolationVersion": "2",
+    "vapor-default-script-lang": "ts"
+  },
+  "app": {
+    "defaultAppTheme": "light",
+    "distribute": {
+      "android": {
+        "minSdkVersion": 21
+      }
+    }
+  },
+  "web": {
+    "router": {
+      "mode": "hash"
+    }
+  },
+  "mp-weixin": {
+    "appid": "wx3e8bdee17984d60a"
+  }
+}

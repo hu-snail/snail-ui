@@ -1,0 +1,98 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-image-preview (uni-end) — `selector` hit areas.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-image-preview from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImagePreview from '@snui/uni-x/components/sn-image-preview/sn-image-preview.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
+const preview = ref<{
+  open: (options?: { images?: string[]; startPosition?: number }) => void;
+  close: () => void;
+  setActive: (index: number) => void;
+} | null>(null);
+
+const images = [
+  'https://picsum.photos/seed/snui-beh-a/900/1300',
+  'https://picsum.photos/seed/snui-beh-b/900/1300',
+  'https://picsum.photos/seed/snui-beh-c/900/1300',
+];
+
+const lastEvent = ref('—');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">
+      selector mode: every thumbnail below carries the `sn-demo__thumb` class, and
+      `selector=".sn-demo__thumb"` asks uni.createSelectorQuery for their boxes on open() and lays
+      transparent hit zones over them. Where the host lacks that capability (docs preview / unit
+      tests) no zone is created and open() still works — use the buttons then.
+    </text>
+
+    <view class="sn-demo__thumbs">
+      <view v-for="image in images" :key="image" class="sn-demo__thumb">
+        <SnImg :src="image" :width="150" :height="150" mode="aspectFill" radius="8" />
+      </view>
+    </view>
+
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="preview?.open({ startPosition: 0 })"
+        ><text>Open from the first</text></SnButton
+      >
+      <SnButton size="small" @click="preview?.open({ startPosition: 2 })"
+        ><text>Open from the third</text></SnButton
+      >
+    </view>
+    <text class="sn-demo__meta">Latest event: {{ lastEvent }}</text>
+
+    <SnImagePreview
+      ref="preview"
+      selector=".sn-demo__thumb"
+      :images="images"
+      :start-position="1"
+      custom-class="sn-demo-contained"
+      @open="lastEvent = 'open'"
+      @close="lastEvent = 'close'"
+    >
+      <template #default>
+        <view class="sn-demo__footer">
+          <SnButton size="small" @click="preview?.close()"><text>Close</text></SnButton>
+        </view>
+      </template>
+    </SnImagePreview>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__thumbs {
+  display: flex;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-demo__thumb {
+  overflow: hidden;
+  border-radius: 8rpx;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-demo__footer {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

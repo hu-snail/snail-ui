@@ -1,8 +1,8 @@
 # Message List AiMessageList / sn-ai-message
 
-The transcript module: message bubbles, collapsible reasoning, streaming output, tool-call rows, attachment rows, error cards and retry. The web end ships a list container plus a single-row renderer, the uni-app end ships the single-row renderer, and both ends share one message structure.
+The transcript module: message bubbles, collapsible reasoning, streaming output, tool-call rows, attachment rows, error cards and retry. The web end ships a list container plus a single-row renderer, the uni-app x end ships the single-row renderer, and both ends share one message structure.
 
-> Platform: `Web` (`SnAiMessageList` + the single-row `SnAiMessage` from `@snui/templates/web/message-list`) / `uni-app` (the single-row `SnAiMessage` from `@snui/templates/uni/message-list`)
+> Platform: `Web` (`SnAiMessageList` + the single-row `SnAiMessage` from `@snui/templates/web/message-list`) / `uni-app x` (the single-row `SnAiMessage` from `@snui/templates/uni/message-list`)
 
 ## When to use
 
@@ -10,7 +10,7 @@ The transcript module: message bubbles, collapsible reasoning, streaming output,
 - Reasoning should expand while generating and collapse once the answer starts
 - Output should follow the newest content while streaming, but must not yank the view back once the reader scrolls up
 - You need one message rendered outside a list: a quoted reply, a preview card, an export preview
-- You need the same message structure in uni-app (this page covers both ends)
+- You need the same message structure in uni-app x (this page covers both ends)
 
 ## Install and on-demand loading
 
@@ -27,13 +27,15 @@ import '@snui/templates/styles';
 import '@snui/templates/styles/web-message-list.css';
 ```
 
-The uni-app end is the same:
+The uni-app x end is the same:
 
 ```ts
 import { SnAiMessage } from '@snui/templates/uni/message-list';
 import '@snui/templates/styles';
 import '@snui/templates/styles/uni-message-list.css';
 ```
+
+`@snui/templates/uni/*` is the classic uni-app (H5 / mini-programs / App-vue) artifact; the `.uvue` build that uni-app x (vapor mode) consumes is generated from this same source by the uni-x pipeline — see `apps/uni-demo-x/templates` in the repo.
 
 The per-template stylesheets (all under `@snui/templates/styles/`):
 
@@ -222,7 +224,7 @@ Only the message list is mounted — no composer — showing reasoning collapse,
 
 <Demo name="ai-message-list-web-basic" description="Reasoning collapse + tool row + attachment row + streaming caret." />
 
-### uni-app single message
+### uni-app x single message
 
 The uni end ships the single-row renderer, showing reasoning collapse, a tool row, an attachment row, the streaming caret and error retry at mobile sizing.
 
@@ -354,7 +356,7 @@ The uni end overrides `--sn-mp-*` (its size tokens are rpx):
 
 Content blocks and statuses mean exactly the same on both ends; the structure and capabilities differ:
 
-| Aspect      | Web (`SnAiMessageList` / `SnAiMessage`)                                                   | uni-app (`SnAiMessage`)                                              |
+| Aspect      | Web (`SnAiMessageList` / `SnAiMessage`)                                                   | uni-app x (`SnAiMessage`)                                            |
 | ----------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | What ships  | List container + single-row renderer + reasoning block, each usable alone                 | Single-row renderer only; the page builds the list with `v-for`      |
 | Elements    | Standard `<div>` / `<ul>` / `<li>` tags                                                   | Cross-end `<view>` / `<text>` elements                               |
@@ -394,5 +396,5 @@ No. The partial output is kept and a "已停止生成" notice is appended.
 **Q: Does the list replace the message when `retry` fires?**
 No. The component only reports that the reader asked to retry; whether and how to re-run is the host's decision (the full example shows one approach).
 
-**Q: Can I use the list container in uni-app too?**
+**Q: Can I use the list container in uni-app x too?**
 No — the uni end ships only the single-row renderer `SnAiMessage`. Import `@snui/templates/uni/chat` to get a full transcript with a `<scroll-view>`.

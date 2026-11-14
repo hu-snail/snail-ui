@@ -1,0 +1,32 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialog (uni-end) — button theme="text".
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-dialog from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnDialog from '@snui/uni-x/components/sn-dialog/sn-dialog.uvue';
+const textThemeOpen = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @click="textThemeOpen = true"><text>文本按钮（theme=&quot;text&quot;）</text></SnButton>
+
+    <SnDialog
+      v-model="textThemeOpen"
+      type="confirm"
+      theme="text"
+      title="退出登录"
+      msg="退出后需要重新登录才能继续使用。"
+      confirm-button-text="退出"
+      cancel-button-text="取消"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

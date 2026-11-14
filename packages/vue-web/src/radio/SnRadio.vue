@@ -127,8 +127,6 @@ defineSlots<{
    * `indicatorPlacement`.
    */
   card?(props: { checked: boolean; disabled: boolean }): unknown;
-  /** Icon glyph for `variant="icon"` (and optional inline icon). */
-  icon?(props: { checked: boolean }): unknown;
 }>();
 
 /** Group context, if mounted inside SnRadioGroup. */
@@ -193,9 +191,22 @@ const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(
   () => props.labelPlacement ?? groupInject?.labelPlacement.value ?? 'marker-first',
 );
 
-/** Effective inline marker shape (ring vs inverted fill). */
+/** Effective inline marker shape (base / inverted / check). */
 const effectiveMarkerShape = computed<SnChoiceMarkerShape>(
-  () => props.markerShape ?? groupInject?.markerShape.value ?? 'ring',
+  () => props.markerShape ?? groupInject?.markerShape.value ?? 'base',
+);
+
+/**
+ * Whether the inline marker paints a check glyph. `markerShape="check"` is an
+ * explicit opt-in for the basic variant; card / trailing markers use a glyph
+ * by default because two adjacent radio dots read as two controls.
+ */
+const isCheckMarker = computed(
+  () =>
+    effectiveMarkerShape.value === 'check' ||
+    (effectiveMarkerShape.value !== 'inverted' &&
+      effectiveVariant.value === 'card' &&
+      effectiveIndicatorPlacement.value === 'trailing'),
 );
 
 /** Corner tick (absolute) vs inline marker. */
@@ -292,6 +303,7 @@ function onBlur(event: FocusEvent): void {
     <span
       v-if="showInlineMarker && effectiveIndicatorPlacement === 'leading'"
       class="sn-radio__dot"
+      :class="{ 'sn-radio__dot--check': isCheckMarker }"
       aria-hidden="true"
     />
 
@@ -299,21 +311,16 @@ function onBlur(event: FocusEvent): void {
     <span v-if="effectiveVariant === 'card' && $slots.card" class="sn-radio__card">
       <slot name="card" :checked="isChecked" :disabled="isDisabled" />
     </span>
-    <span v-else-if="effectiveVariant === 'icon'" class="sn-radio__tile">
-      <slot name="icon" :checked="isChecked">
-        <span class="sn-radio__tile-glyph" aria-hidden="true" />
-      </slot>
-    </span>
-    <span
-      v-if="effectiveVariant !== 'icon' && ($slots.label || $slots.default || label)"
-      class="sn-radio__label"
-    >
+    <span v-if="$slots.label || $slots.default || label" class="sn-radio__label">
       <slot name="label" :checked="isChecked" :disabled="isDisabled"> <slot />{{ label }} </slot>
     </span>
 
+    <!-- Trailing marker: a dot inline, but a check glyph inside a card — a
+     * trailing dot reads as a second radio and muddles the card affordance. -->
     <span
       v-if="showInlineMarker && effectiveIndicatorPlacement === 'trailing'"
       class="sn-radio__dot"
+      :class="{ 'sn-radio__dot--check': isCheckMarker }"
       aria-hidden="true"
     />
 
@@ -389,8 +396,41 @@ function onBlur(event: FocusEvent): void {
   border-color: var(--sn-web-radio-border-color-active, var(--sn-web-color-action-primary));
 }
 
+/* Card + trailing marker renders a check glyph instead of an inner dot: two
+ * radio dots side by side (one leading, one trailing) would read as two
+ * controls. Declared AFTER the base `::after` rule above so it wins the
+ * cascade — the base rule paints a filled inner dot with `inset: 0`. */
+.sn-radio__dot--check::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 4px;
+  border-radius: 0;
+  background-color: transparent;
+  border-bottom: 2px solid var(--sn-web-color-text-on-primary, #fff);
+  border-left: 2px solid var(--sn-web-color-text-on-primary, #fff);
+  transform: translate(-50%, -60%) rotate(-45deg) scale(0);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Check glyph wins over the generic inner-dot scale: the generic rule below
+ * has fewer class selectors but comes later in the sheet, so this one needs
+ * the extra specificity plus a later position. */
 .sn-radio--checked .sn-radio__dot::after {
   transform: scale(0.45);
+}
+
+.sn-radio--checked .sn-radio__dot--check::after {
+  transform: translate(-50%, -60%) rotate(-45deg) scale(1);
+}
+
+/* The trailing check rides a filled plate — a white glyph on the bare surface
+ * ring would be invisible. */
+.sn-radio--checked .sn-radio__dot--check {
+  border-color: var(--sn-web-color-action-primary);
+  background-color: var(--sn-web-color-action-primary);
 }
 
 .sn-radio--disabled .sn-radio__dot {
@@ -470,28 +510,47 @@ function onBlur(event: FocusEvent): void {
 /* Card: the whole row becomes a selectable surface. */
 .sn-radio--variant-card {
   display: flex;
-  align-items: stretch;
+  /* `position: relative` is the corner tick's containing block. Alignment is
+   * chosen per indicator placement below: a corner tick needs top-aligned
+   * copy, while an inline leading / trailing marker must sit vertically
+   * centred against the card body. */
+  position: relative;
+  align-items: flex-start;
   gap: 0;
   padding: var(--sn-web-spacing-sm, 12px) var(--sn-web-spacing-md, 16px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: var(--sn-web-radius-md, 8px);
   background-color: var(--sn-web-color-background-surface);
+  /* Cards are block-level surfaces: without an explicit width the inline-flex
+   * default made them shrink to content and overflow their own padding. */
+  box-sizing: border-box;
+  min-width: 0;
   transition:
     border-color 0.18s ease-out,
     background-color 0.18s ease-out;
 }
 
-/* Reserve the corner the tick occupies so it never overlaps the card copy
- * (12px tick + 6px inset + 8px breathing room). */
-.sn-radio--variant-card.sn-radio--indicator-top-right,
-.sn-radio--variant-icon.sn-radio--indicator-top-right {
-  padding-top: calc(var(--sn-web-spacing-sm, 12px) + 14px);
-  padding-right: calc(var(--sn-web-spacing-md, 16px) + 14px);
+/* Card + inline marker (left / right): centre the marker against the body and
+ * give it breathing room from the copy. */
+.sn-radio--variant-card.sn-radio--indicator-leading,
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  align-items: center;
+  gap: 10px;
 }
-.sn-radio--variant-card.sn-radio--indicator-bottom-right,
-.sn-radio--variant-icon.sn-radio--indicator-bottom-right {
-  padding-right: calc(var(--sn-web-spacing-md, 16px) + 14px);
-  padding-bottom: calc(var(--sn-web-spacing-sm, 12px) + 14px);
+
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  flex-direction: row;
+}
+
+/* Reserve the corner the tick occupies so it never overlaps the card copy
+ * (24px fold + 8px breathing room). */
+.sn-radio--variant-card.sn-radio--indicator-top-right {
+  padding-top: calc(var(--sn-web-spacing-sm, 12px) + 16px);
+  padding-right: calc(var(--sn-web-spacing-md, 16px) + 16px);
+}
+.sn-radio--variant-card.sn-radio--indicator-bottom-right {
+  padding-right: calc(var(--sn-web-spacing-md, 16px) + 16px);
+  padding-bottom: calc(var(--sn-web-spacing-sm, 12px) + 16px);
 }
 
 .sn-radio--variant-card .sn-radio__card {
@@ -499,65 +558,56 @@ function onBlur(event: FocusEvent): void {
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
+  /* The slot renders block content (title / price / description); the base
+   * label rule is inline-flex + centre, which collapsed multi-line card copy
+   * onto one line. Card bodies stack and wrap instead. */
+  gap: 2px;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
-.sn-radio--variant-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  padding: 0;
-  border: 1px solid var(--sn-web-color-border-subtle);
-  border-radius: var(--sn-web-radius-md, 8px);
-  background-color: var(--sn-web-color-background-surface);
-  transition:
-    border-color 0.18s ease-out,
-    background-color 0.18s ease-out;
-}
-
-.sn-radio--variant-icon .sn-radio__tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sn-web-color-text-secondary);
-}
-
-.sn-radio--variant-icon.sn-radio--checked .sn-radio__tile {
-  color: var(--sn-web-color-action-primary);
-}
-
-/* Fallback glyph when no #icon slot is supplied — a neutral rounded square
- * so the tile never collapses to an empty box. */
-.sn-radio__tile-glyph {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--sn-web-radius-sm, 4px);
-  background-color: currentColor;
-  opacity: 0.55;
+/* Inside a card the label participates in the column flow, not as an inline
+ * chip — otherwise `align-items: center` squeezes every child to one row. */
+.sn-radio--variant-card .sn-radio__label {
+  display: block;
+  align-items: initial;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked — see classList). */
-.sn-radio--checked-border.sn-radio--variant-card,
-.sn-radio--checked-border.sn-radio--variant-icon {
+.sn-radio--checked-border.sn-radio--variant-card {
   border-color: var(--sn-web-color-action-primary);
+}
+
+.sn-radio--checked-fill.sn-radio--variant-card {
+  background-color: var(--sn-web-color-action-primary-soft);
 }
 
 /* Label-first: keep DOM order (native input + a11y unchanged) and only
  * re-order the flex children — the label leads, the marker trails. */
-.sn-radio--label-first .sn-radio__label {
+/* label-first needs the row to span its container — an inline-flex box
+ * shrink-to-fits, so `margin-left: auto` had nothing to push against and the
+ * marker stayed glued to the label. Widen the row and let the label absorb
+ * the free space. */
+.sn-radio--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-radio--label-label-first .sn-radio__label {
   order: 0;
+  display: block;
   flex: 1 1 auto;
   min-width: 0;
+  white-space: normal;
 }
-.sn-radio--label-first .sn-radio__dot {
+.sn-radio--label-label-first .sn-radio__dot {
   order: 1;
   margin-left: auto;
+  flex-shrink: 0;
 }
-.sn-radio--label-first .sn-radio__card {
+.sn-radio--label-label-first .sn-radio__card {
   order: 0;
   flex: 1 1 auto;
 }
@@ -569,9 +619,14 @@ function onBlur(event: FocusEvent): void {
   border-color: var(--sn-web-color-action-primary);
   background-color: var(--sn-web-color-action-primary);
 }
-.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot::after {
+/* Inverted + trailing check: keep the solid plate but let the glyph keep its
+ * own transform — the dot rule above would squash it into a square. */
+.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot:not(.sn-radio__dot--check)::after {
   background-color: var(--sn-web-color-background-surface);
   transform: scale(0.42);
+}
+.sn-radio--marker-inverted.sn-radio--checked .sn-radio__dot--check::after {
+  transform: translate(-50%, -60%) rotate(-45deg) scale(1);
 }
 .sn-radio--marker-inverted.sn-radio--checked .sn-radio__label {
   color: var(--sn-web-color-action-primary);
@@ -580,47 +635,58 @@ function onBlur(event: FocusEvent): void {
   background-color: var(--sn-web-color-background-surface);
 }
 
-.sn-radio--checked-fill.sn-radio--variant-card,
-.sn-radio--checked-fill.sn-radio--variant-icon {
-  background-color: var(--sn-web-color-action-primary-soft);
-}
-
-/* Corner tick — a themed circle with a white check, absolutely placed. */
+/* Corner tick — a triangular fold that hugs the card corner (like a ribbon
+ * notch). It is flush with the border, not a floating badge, so it never
+ * overlaps the card copy and reads as part of the card silhouette. */
 .sn-radio__tick {
   position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
+  width: 24px;
+  height: 24px;
   background-color: var(--sn-web-color-action-primary);
-  box-shadow: 0 0 0 2px var(--sn-web-color-background-surface);
   pointer-events: none;
 }
 
 .sn-radio__tick::after {
   content: '';
+  position: absolute;
   width: 7px;
   height: 4px;
-  margin-top: -2px;
   border-bottom: 2px solid var(--sn-web-color-text-on-primary, #fff);
   border-left: 2px solid var(--sn-web-color-text-on-primary, #fff);
   transform: rotate(-45deg);
 }
 
+/* Top-right: the fold's right angle sits exactly in the card's top-right
+ * corner. `clip-path` cuts the triangle; the card's own `overflow: hidden`
+ * (below) trims the outer radius, so no separate radius is needed here —
+ * `border-radius` + `clip-path` on the same box does not compose. */
+.sn-radio--variant-card {
+  overflow: hidden;
+}
+
 .sn-radio__tick--top-right {
-  top: 6px;
-  right: 6px;
+  top: 0;
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.sn-radio__tick--top-right::after {
+  top: 5px;
+  right: 5px;
 }
 
 .sn-radio__tick--bottom-right {
-  right: 6px;
-  bottom: 6px;
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
-.sn-radio--disabled.sn-radio--variant-card,
-.sn-radio--disabled.sn-radio--variant-icon {
+.sn-radio__tick--bottom-right::after {
+  right: 5px;
+  bottom: 5px;
+}
+
+.sn-radio--disabled.sn-radio--variant-card {
   cursor: not-allowed;
   opacity: 0.6;
 }

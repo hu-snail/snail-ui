@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const cardDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Card' }],
-  title: 'Card',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Card 卡片' }],
+  title: 'Card 卡片',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

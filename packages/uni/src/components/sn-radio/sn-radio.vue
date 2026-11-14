@@ -191,7 +191,7 @@ const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(() =>
 
 /** Effective inline marker shape (ring vs inverted fill). */
 const effectiveMarkerShape = computed<SnChoiceMarkerShape>(() =>
-  resolve(props.markerShape, group?.groupMarkerShape.value, 'ring'),
+  resolve(props.markerShape, group?.groupMarkerShape.value, 'base'),
 );
 
 /** Whether the inline marker renders at all. */
@@ -201,7 +201,16 @@ const showInlineMarker = computed(
     effectiveIndicatorPlacement.value === 'trailing',
 );
 
-/** Tick glyph for the `button` shape (never emoji, §113). */
+/** Check-glyph marker: explicit `check`, or card + trailing (right-centred check). */
+const isCheckMarker = computed(
+  () =>
+    effectiveMarkerShape.value === 'check' ||
+    (effectiveMarkerShape.value !== 'inverted' &&
+      effectiveVariant.value === 'card' &&
+      effectiveIndicatorPlacement.value === 'trailing'),
+);
+
+/** Tick glyph for the `button` / check marker shapes (never emoji, §113). */
 const checkIcon = markRaw(CheckIcon);
 
 /**
@@ -276,20 +285,19 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         :style="markerStyle"
         aria-hidden="true"
       >
-        <view v-if="isChecked" class="sn-radio__dot">
-          <SnIcon v-if="effectiveType === 'button'" :icon="checkIcon" :size="20" />
+        <view
+          v-if="isChecked"
+          class="sn-radio__dot"
+          :class="{ 'sn-radio__dot--check': isCheckMarker }"
+        >
+          <SnIcon v-if="effectiveType === 'button' || isCheckMarker" :icon="checkIcon" :size="20" />
         </view>
       </view>
 
-      <!-- Card body: custom content wins; icon tile renders the glyph only. -->
+      <!-- Card body: custom content wins; otherwise the historical label row. -->
       <view v-if="effectiveVariant === 'card'" class="sn-radio__card">
         <slot name="card" :checked="isChecked" :disabled="isDisabled">
           <text :class="['sn-radio__label', customLabelClass]"><slot /></text>
-        </slot>
-      </view>
-      <view v-else-if="effectiveVariant === 'icon'" class="sn-radio__tile">
-        <slot name="icon" :checked="isChecked">
-          <view class="sn-radio__tile-glyph" aria-hidden="true" />
         </slot>
       </view>
       <text v-else :class="['sn-radio__label', customLabelClass]"><slot /></text>
@@ -301,8 +309,12 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         :style="markerStyle"
         aria-hidden="true"
       >
-        <view v-if="isChecked" class="sn-radio__dot">
-          <SnIcon v-if="effectiveType === 'button'" :icon="checkIcon" :size="20" />
+        <view
+          v-if="isChecked"
+          class="sn-radio__dot"
+          :class="{ 'sn-radio__dot--check': isCheckMarker }"
+        >
+          <SnIcon v-if="effectiveType === 'button' || isCheckMarker" :icon="checkIcon" :size="20" />
         </view>
       </view>
 
@@ -430,9 +442,13 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 
 /* Card: the whole option becomes a selectable surface. */
 .sn-radio--variant-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
@@ -449,98 +465,67 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   gap: var(--sn-mp-spacing-1);
 }
 
+/* Card + inline marker (left / right): the card becomes a row so the marker
+ * sits vertically centred beside the copy instead of above it. */
+.sn-radio--variant-card.sn-radio--indicator-leading,
+.sn-radio--variant-card.sn-radio--indicator-trailing {
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.sn-radio--variant-card.sn-radio--indicator-leading .sn-radio__card,
+.sn-radio--variant-card.sn-radio--indicator-trailing .sn-radio__card {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .sn-radio--variant-card .sn-radio__card {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  gap: 4rpx;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
-.sn-radio--variant-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 112rpx;
-  height: 112rpx;
-  padding: 0;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-surface);
-  transition:
-    border-color 0.18s ease-out,
-    background-color 0.18s ease-out;
-}
-
-.sn-radio--variant-icon .sn-radio__main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.sn-radio--variant-icon .sn-radio__tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-radio--variant-icon.sn-radio--checked .sn-radio__tile {
-  color: var(--sn-mp-color-action-primary);
-}
-
-/* Fallback glyph when no `icon` slot is supplied. */
-.sn-radio__tile-glyph {
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: var(--sn-mp-radius-xs);
-  background-color: currentColor;
-  opacity: 0.55;
+.sn-radio--variant-card .sn-radio__label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked). */
-.sn-radio--checked-border.sn-radio--variant-card,
-.sn-radio--checked-border.sn-radio--variant-icon {
+.sn-radio--checked-border.sn-radio--variant-card {
   border-color: var(--sn-mp-color-action-primary);
 }
 
-.sn-radio--checked-fill.sn-radio--variant-card,
-.sn-radio--checked-fill.sn-radio--variant-icon {
+.sn-radio--checked-fill.sn-radio--variant-card {
   background-color: var(--sn-mp-color-action-primary-soft);
 }
 
-/* Corner tick — themed circle with a white check glyph. */
+/* Corner tick — a triangular fold flush with the card corner. */
 .sn-radio__tick {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 50%;
+  width: 48rpx;
+  height: 48rpx;
   background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  box-shadow: 0 0 0 4rpx var(--sn-mp-color-background-surface);
+  pointer-events: none;
 }
 
 .sn-radio__tick--top-right {
-  top: 8rpx;
-  right: 8rpx;
+  top: 0;
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-radio__tick--bottom-right {
-  right: 8rpx;
-  bottom: 8rpx;
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-radio--disabled.sn-radio--variant-card,
-.sn-radio--disabled.sn-radio--variant-icon {
-  opacity: 0.6;
-}
-
 .sn-radio--disabled,
 .sn-radio--readonly {
   cursor: not-allowed;
@@ -566,14 +551,21 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 /* ── AUI additive: label-first + inverted marker ─────────────────────────── */
 
 /* label-first: keep DOM order (a11y unchanged), only re-order flex children. */
-.sn-radio--label-first .sn-radio__main {
+.sn-radio--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-radio--label-label-first .sn-radio__main {
   flex-direction: row-reverse;
   justify-content: space-between;
   width: 100%;
 }
-.sn-radio--label-first .sn-radio__label,
-.sn-radio--label-first .sn-radio__card {
+.sn-radio--label-label-first .sn-radio__label,
+.sn-radio--label-label-first .sn-radio__card {
+  display: block;
   flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
   text-align: left;
 }
 
@@ -589,5 +581,15 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 .sn-radio--marker-inverted.sn-radio--checked .sn-radio__marker {
   border-color: var(--sn-mp-color-action-primary);
   background-color: var(--sn-mp-color-action-primary);
+}
+
+/* check: the checked plate carries a check glyph instead of the knob dot —
+ * same look as the web `markerShape="check"` and the card trailing layout.
+ * The plate itself is already filled by `.sn-radio__marker--checked`. */
+.sn-radio__dot--check {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  color: var(--sn-mp-color-control-knob);
 }
 </style>

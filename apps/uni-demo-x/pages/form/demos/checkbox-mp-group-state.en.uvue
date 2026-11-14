@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — group state and half-check (disabled / readonly / indeterminate). */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const readOnly = ref<Array<string | number | boolean>>(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">disabled / readonly</text>
+    <SnCheckboxGroup v-model="readOnly" disabled>
+      <SnCheckbox name="a"><text>Whole group disabled</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <SnCheckboxGroup v-model="readOnly" readonly>
+      <SnCheckbox name="a"><text>Whole group read-only</text></SnCheckbox>
+    </SnCheckboxGroup>
+
+    <text class="sn-demo__title">indeterminate (half-checked)</text>
+    <SnCheckbox :model-value="false" indeterminate><text>Half-checked state</text></SnCheckbox>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

@@ -9,6 +9,11 @@
  *   - tapping the open content area closes it and emits `click`
  *   - slot presence decides which sides can open
  *   - the settle timer is cleared on unmount (§41)
+ *   - while closed the action areas sit translated outside the root clip
+ *     (deterministic closed state — no reliance on the content covering them);
+ *     they come back inside while dragging, animating, or open
+ *   - content offsets are applied in px (the unit measurements and touch
+ *     deltas use); `rpx` would be dropped by browsers and mis-scaled elsewhere
  *
  * No `rpx` values in assertions — happy-dom drops lengths it cannot parse.
  */
@@ -246,6 +251,76 @@ describe('sn-swipe-action', () => {
       const w = mount(SnSwipeAction, { slots });
       await swipe(w, -120);
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
+    });
+  });
+
+  describe('closed-state action hiding', () => {
+    it('keeps the right action area translated out of the row while closed', () => {
+      const w = mount(SnSwipeAction, { slots });
+      expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
+        'transform: translateX(100%)',
+      );
+    });
+
+    it('keeps the left action area translated out of the row while closed', () => {
+      const w = mount(SnSwipeAction, { slots: { default: 'x', left: '<view>收藏</view>' } });
+      expect(w.find('.sn-swipe-action__actions--left').attributes('style') ?? '').toContain(
+        'transform: translateX(-100%)',
+      );
+    });
+
+    it('brings the action areas back inside while the row is open', () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
+      expect(w.find('.sn-swipe-action__content').attributes('style')).toContain('translateX');
+    });
+
+    it('keeps the action area inside while a drag is in flight', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 160, clientY: 100 }] });
+      expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
+    });
+
+    it('keeps the action area inside while the settle animation runs', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnSwipeAction, { slots });
+        await swipe(w, -120);
+        expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('hides the action area again once the close settle animation finished', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnSwipeAction, { slots });
+        await swipe(w, -120);
+        vi.advanceTimersByTime(200);
+        await swipe(w, 60);
+        // Still animating closed — the area must stay inside to be covered.
+        expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
+        vi.advanceTimersByTime(200);
+        await w.vm.$nextTick();
+        expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
+          'transform: translateX(100%)',
+        );
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('applies content offsets in px, never rpx', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      const closed = w.find('.sn-swipe-action__content').attributes('style') ?? '';
+      expect(closed).toContain('transform: translateX(0px)');
+      await swipe(w, -120);
+      const open = w.find('.sn-swipe-action__content').attributes('style') ?? '';
+      expect(open).toContain('px');
+      expect(open).not.toContain('rpx');
     });
   });
 

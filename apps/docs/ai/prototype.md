@@ -207,7 +207,7 @@ AI 产出后必须自检：
 [ ] 无内联 style 中写颜色值
 [ ] Token 别名层匹配端：Web 端不允许出现 --sn-mp-*；uni 端不允许出现 --sn-web-*
 [ ] Props 与 get_component_meta({ end }) 返回完全一致
-[ ] 代码通过 vue-tsc --noEmit（Web 端用 vue-tsc；uni 端用 uni-app vue-tsc）
+[ ] 代码通过 vue-tsc --noEmit（Web 端与 uni-app 端用 vue-tsc；uni-app x 端无 CLI，由 HBuilderX 编译校验）
 [ ] 交互状态完整（loading / disabled / error / empty）
 [ ] 无 eval() / new Function() / document.write()
 [ ] 无直接操作 DOM（只用 Vue 响应式）

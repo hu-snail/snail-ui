@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-count-to (uni-end) — type colors (the five `type` values).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-count-to from its SFC source.
+ */
+import SnCountTo from '@snui/uni-x/components/sn-count-to/sn-count-to.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCountTo type="default" :end-val="1200" />
+    <SnCountTo type="primary" :end-val="2400" />
+    <SnCountTo type="success" :end-val="3600" />
+    <SnCountTo type="warning" :end-val="4800" />
+    <SnCountTo type="error" :end-val="6000" />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

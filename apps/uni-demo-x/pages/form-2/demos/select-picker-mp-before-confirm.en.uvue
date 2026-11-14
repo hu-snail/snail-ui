@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — confirm guard: a `beforeConfirm` returning false leaves the model untouched. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'cherry', label: 'Cherry' },
+];
+
+const guarded = ref<Array<string | number | boolean>>(['apple']);
+const open = ref(false);
+const lastGuard = ref('—');
+
+/** At least two picks are required to confirm. */
+const atLeastTwo = (payload: {
+  value: string | number | boolean | Array<string | number | boolean>;
+}) => {
+  const list = Array.isArray(payload.value) ? payload.value : [payload.value];
+  lastGuard.value = list.length >= 2 ? 'Allowed' : 'Pick at least two';
+  return list.length >= 2;
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">beforeConfirm (at least two)</text>
+    <view class="sn-demo__button" @click="open = true"><text>Confirm guard</text></view>
+    <text class="sn-demo__meta">Guard: {{ lastGuard }}</text>
+    <SnSelectPicker
+      v-model="guarded"
+      v-model:visible="open"
+      :columns="options"
+      title="At least two"
+      :before-confirm="atLeastTwo"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+  flex-direction: row;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

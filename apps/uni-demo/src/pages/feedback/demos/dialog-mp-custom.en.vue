@@ -46,8 +46,9 @@ const open = ref(false);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-/* Docs-preview only: the dialog root is `position: fixed`, which would cover the
- * whole docs page instead of the phone screen. Not needed in a real app. */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-dialog.sn-demo-contained {
   position: absolute;
 }

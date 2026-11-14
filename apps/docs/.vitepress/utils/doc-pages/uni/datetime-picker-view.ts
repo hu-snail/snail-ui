@@ -15,7 +15,7 @@ export const datetimePickerViewDocPage: SnDocPageData = {
   title: 'DatetimePickerView 日期时间选择器视图',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -44,7 +44,7 @@ export const datetimePickerViewDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'DatetimePickerView 日期时间选择器视图.vue',
     meta: 'Vue 3 · <script setup>',
@@ -194,8 +194,8 @@ import { DatetimePickerView } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-datetime-picker', link: '/components/uni/datetime-picker' },
-    next: { text: 'sn-upload', link: '/components/uni/upload' },
+    prev: { text: 'DatetimePicker', link: '/components/uni/datetime-picker' },
+    next: { text: 'Upload', link: '/components/uni/upload' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

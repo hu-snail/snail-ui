@@ -1,0 +1,39 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-navbar — 禁用侧按钮（left-disabled / right-disabled）。
+ *
+ * 禁用侧按钮点击无效（只 stopPropagation，不 emit `click-left` / `click-right`）。
+ */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+const lastAction = ref('—');
+
+function report(label: string): void {
+  lastAction.value = label;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNavbar
+      title="左右都禁用"
+      left-text="返回"
+      right-text="更多"
+      left-disabled
+      right-disabled
+      @click-left="report('左侧（已禁用）')"
+      @click-right="report('右侧（已禁用）')"
+    />
+
+    <text class="sn-demo__meta">最近一次点击：{{ lastAction }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

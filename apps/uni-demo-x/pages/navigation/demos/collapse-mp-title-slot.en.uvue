@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-collapse — English shadow of collapse-mp-title-slot.
+ *
+ * - the `title` slot scope is `{ expanded, disabled, isFirst }`
+ * - `custom-body-class` targets the content container
+ * - item `border=false` drops the bottom rule
+ */
+import { Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import SnCollapse from '@snui/uni-x/components/sn-collapse/sn-collapse.uvue';
+import SnCollapseItem from '@snui/uni-x/components/sn-collapse/sn-collapse-item.uvue';
+const open = ref(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnCollapse v-model="open">
+      <SnCollapseItem name="a" title="Shipping" custom-body-class="sn-demo__body">
+        <template #title="{ expanded }">
+          <view class="sn-demo__title">
+            <SnIcon
+              class="sn-demo__title-icon"
+              :icon="Truck"
+              size="var(--sn-mp-icon-size-medium)"
+            />
+            <text class="sn-demo__title-text"
+              >Shipping (title slot · {{ expanded ? 'open' : 'closed' }})</text
+            >
+          </view>
+        </template>
+        <text class="sn-demo__body">SF Express, delivery in 2 days.</text>
+      </SnCollapseItem>
+      <SnCollapseItem name="b" title="Borderless panel" :border="false">
+        <text class="sn-demo__body">border=false drops this item's bottom rule.</text>
+      </SnCollapseItem>
+    </SnCollapse>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__title {
+  display: flex;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  flex-direction: row;
+}
+.sn-demo__title-icon {
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__title-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+}
+/* custom-body-class lands on the item's content container. */
+</style>

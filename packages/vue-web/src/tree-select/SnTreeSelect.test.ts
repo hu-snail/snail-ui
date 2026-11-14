@@ -182,7 +182,9 @@ describe('SnTreeSelect', () => {
   });
 
   it('selects a parent node and commits only the parent value', async () => {
-    const w = mountTree();
+    // expand-on-click is off so a branch click still commits (the default
+    // drill-down behaviour is covered by the expansion suite).
+    const w = mountTree({ expandOnClick: false });
     await openMenu(w);
     rowByValue('fruits')?.click();
     // Parent selection commits the parent key alone — no cascade to children.
@@ -212,6 +214,36 @@ describe('SnTreeSelect', () => {
     const w = mountTree();
     await openMenu(w);
     expect(visibleValues()).toEqual(['fruits', 'veggies', 'milk']);
+  });
+
+  it('expands a branch from its LABEL click (expand-on-click is on by default)', async () => {
+    const w = mountTree();
+    await openMenu(w);
+    rowByValue('fruits')?.click();
+    await nextTick();
+
+    expect(visibleValues()).toEqual(['fruits', 'apple', 'banana', 'veggies', 'milk']);
+    // A branch click drills down: it must not commit a value nor close the menu.
+    expect(w.emitted('update:modelValue')).toBeUndefined();
+    expect(document.body.querySelector('.sn-tree-select-menu')).not.toBeNull();
+  });
+
+  it('collapses a branch on its second label click', async () => {
+    const w = mountTree();
+    await openMenu(w);
+    rowByValue('fruits')?.click();
+    await nextTick();
+    rowByValue('fruits')?.click();
+    await nextTick();
+
+    expect(visibleValues()).toEqual(['fruits', 'veggies', 'milk']);
+  });
+
+  it('still selects leaf rows by click with expand-on-click on', async () => {
+    const w = mountTree({ defaultExpandAll: true });
+    await openMenu(w);
+    rowByValue('apple')?.click();
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual(['apple']);
   });
 
   it('expands and collapses a subtree via the switcher', async () => {
@@ -254,7 +286,13 @@ describe('SnTreeSelect', () => {
   });
 
   it('toggles values independently in multiple mode without cascade', async () => {
-    const { wrapper, value } = mountVModel([], { multiple: true, defaultExpandAll: true });
+    // Parent membership is a "row click = select" concern, so expand-on-click
+    // is off here (its drill-down default is covered in the expansion suite).
+    const { wrapper, value } = mountVModel([], {
+      multiple: true,
+      defaultExpandAll: true,
+      expandOnClick: false,
+    });
     await wrapper.find('.sn-tree-select__selection').trigger('click');
     await nextTick();
     rowByValue('fruits')?.click();
@@ -291,7 +329,7 @@ describe('SnTreeSelect', () => {
   });
 
   it('treats checkable as an alias of multiple', async () => {
-    const { wrapper, value } = mountVModel([], { checkable: true });
+    const { wrapper, value } = mountVModel([], { checkable: true, expandOnClick: false });
     await wrapper.find('.sn-tree-select__selection').trigger('click');
     await nextTick();
     rowByValue('fruits')?.click();

@@ -2528,7 +2528,9 @@ watch(
 
 .sn-date-picker-month-pane__header {
   display: flex;
-  gap: 4px;
+  /* 年块 / 月块各自成模块：12px 间距让两块灰芯片读作两个独立标题，
+     而不是连成一条（4px 时几乎贴死）。 */
+  gap: 12px;
   margin-bottom: 6px;
 }
 
@@ -2544,7 +2546,8 @@ watch(
 
 .sn-date-picker-month-pane__body {
   display: flex;
-  gap: 4px;
+  /* 与表头同节奏：年份列 / 月份列之间 12px，滚动列各自成为独立模块。 */
+  gap: 12px;
   height: 180px;
   overflow: hidden;
 }

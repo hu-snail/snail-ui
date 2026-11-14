@@ -1,0 +1,82 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-lucky (uni-end) — Grid size: rows / cols.
+ */
+import SnLucky from '@snui/uni-x/components/sn-lucky/sn-lucky.uvue';
+import type { SnLuckyPrize } from '@snui/uni-x/components/sn-lucky/sn-lucky-types';
+const grid3Prizes: SnLuckyPrize[] = [
+  { name: 'Grand prize' },
+  { name: 'Coupon' },
+  { name: 'Points' },
+  { name: 'Thanks' },
+  { name: 'Red packet' },
+  { name: 'Physical prize' },
+  { name: 'One more go' },
+  { name: 'Free-order coupon' },
+];
+
+const grid4Prizes: SnLuckyPrize[] = [
+  { name: 'Grand prize' },
+  { name: 'Coupon' },
+  { name: 'Points' },
+  { name: 'Thanks' },
+  { name: 'Red packet' },
+  { name: 'Physical prize' },
+  { name: 'One more go' },
+  { name: 'Free-order coupon' },
+  { name: 'Cart coupon' },
+  { name: 'Discount coupon' },
+  { name: 'Newcomer gift' },
+  { name: 'Merch blind box' },
+];
+
+const grid3Ref = ref<InstanceType<typeof SnLucky> | null>(null);
+const grid4Ref = ref<InstanceType<typeof SnLucky> | null>(null);
+
+const settleTimers: ReturnType<typeof setTimeout>[] = [];
+
+/** The host decides the result async after start: a unified 1s-delayed stop. */
+function scheduleStop(lucky: InstanceType<typeof SnLucky> | null, count: number): void {
+  settleTimers.push(
+    setTimeout(() => {
+      lucky?.stop(Math.floor(Math.random() * count));
+    }, 1000),
+  );
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">rows=3 cols=3 (8 perimeter cells)</text>
+    <SnLucky
+      ref="grid3Ref"
+      :prizes="grid3Prizes"
+      :rows="3"
+      :cols="3"
+      :speed="50"
+      @start="scheduleStop(grid3Ref, grid3Prizes.length)"
+    />
+
+    <text class="sn-demo__title">rows=4 cols=4 (12 perimeter cells)</text>
+    <SnLucky
+      ref="grid4Ref"
+      :prizes="grid4Prizes"
+      :rows="4"
+      :cols="4"
+      :speed="50"
+      @start="scheduleStop(grid4Ref, grid4Prizes.length)"
+    />
+    <text class="sn-demo__meta">Perimeter cells = 2(rows+cols) - 4</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

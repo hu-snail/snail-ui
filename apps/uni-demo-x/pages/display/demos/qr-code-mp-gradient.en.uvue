@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-qr-code (uni-end) — gradient codes (`enableGradient` / `gradientColors` / `gradientDirection`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
+ */
+import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnQrCode
+        text="https://snui.dev/gradient"
+        :size="150"
+        :margin="10"
+        enable-gradient
+        :gradient-colors="['midnightblue', 'teal', 'mediumseagreen']"
+        gradient-direction="diagonal"
+      />
+      <SnQrCode
+        text="https://snui.dev/angle"
+        :size="150"
+        :margin="10"
+        enable-gradient
+        gradient-color="purple"
+        :gradient-direction="45"
+      />
+      <SnQrCode
+        text="https://snui.dev/horizontal"
+        :size="150"
+        :margin="10"
+        enable-gradient
+        gradient-color="crimson"
+        gradient-direction="horizontal"
+      />
+    </view>
+    <text class="sn-demo__meta">
+      gradientColors with 2+ colours overrides gradientColor; gradientDirection takes diagonal /
+      horizontal / vertical, or a plain angle in degrees (the third one is 45°).
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  align-items: flex-start;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

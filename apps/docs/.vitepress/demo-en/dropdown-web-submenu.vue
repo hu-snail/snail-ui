@@ -18,6 +18,6 @@ const options = [
 
 <template>
   <SnDropdown trigger="click" :options="options">
-    <SnButton>With submenu ▸</SnButton>
+    <SnButton>With submenu</SnButton>
   </SnDropdown>
 </template>

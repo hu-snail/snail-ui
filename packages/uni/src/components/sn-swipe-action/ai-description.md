@@ -87,6 +87,11 @@ import { SnSwipeAction } from '@snui/uni';
   can never stick half-open.
 - The open distance equals the real action-area width, measured once per gesture
   through `uni.createSelectorQuery()` → the DOM node → a fallback constant.
+- While the row is closed (no drag, no settle animation, no open side) the action
+  areas are translated fully outside the root's `overflow: hidden` clip
+  (`translateX(±100%)`), so the closed state never relies on the content layer
+  painting over them (uni-app x App edge-leak fix). Content offsets are applied
+  in px — the unit every measurement and touch delta already uses.
 
 ## Accessibility
 

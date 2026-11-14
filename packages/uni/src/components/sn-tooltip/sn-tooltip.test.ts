@@ -14,6 +14,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnTooltip from './sn-tooltip.vue';
 import { closeOutside } from '../../utils/outside-close';
@@ -195,6 +197,19 @@ describe('sn-tooltip', () => {
       expect(w.find('.sn-tooltip__trigger').attributes('aria-disabled')).toBe('true');
     });
 
+    it('trigger="manual" leaves toggling to the page (App-side slot boundary)', async () => {
+      // The App-side event model does not propagate taps across the slot
+      // boundary, so in manual mode the trigger tap must be inert and the
+      // page toggles via v-model.
+      const w = mount(SnTooltip, { props: { modelValue: false, trigger: 'manual' } });
+      await w.find('.sn-tooltip__trigger').trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(false);
+      await w.setProps({ modelValue: true });
+      await w.vm.$nextTick();
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
+    });
+
     it('does not open when a disabled tooltip is driven by v-model', async () => {
       const w = mount(SnTooltip, { props: { modelValue: false, disabled: true } });
       await w.setProps({ modelValue: true });
@@ -353,5 +368,80 @@ describe('sn-tooltip (outside-tap switching via the queue)', () => {
     expect(b.emitted('close')).toHaveLength(1);
     a.unmount();
     b.unmount();
+  });
+});
+
+describe('sn-tooltip (App trigger catcher, uni-app x)', () => {
+  // On uni-app x App a tap on the trigger's slot content never reaches this
+  // component's own views, so an `#ifdef APP` catcher owned by the component
+  // sits on top of the trigger box and drives the same toggle. The gate is a
+  // textual preprocessor — vitest renders the node, real MP / H5 builds strip
+  // it (asserted on the source below).
+  it('opens and closes the bubble through the catcher tap', async () => {
+    const w = mount(SnTooltip, { props: { modelValue: false, content: '提示' } });
+    const catcher = w.find('.sn-tooltip__trigger-catcher');
+    expect(catcher.exists()).toBe(true);
+    await catcher.trigger('tap');
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([true]);
+    await flushPromises();
+    expect(w.classes()).toContain('sn-tooltip--shown');
+    expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
+    await catcher.trigger('tap');
+    expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
+    expect(w.emitted('close')).toHaveLength(1);
+  });
+
+  it('stays inert in manual mode and while disabled', async () => {
+    const manual = mount(SnTooltip, { props: { modelValue: false, trigger: 'manual' } });
+    await manual.find('.sn-tooltip__trigger-catcher').trigger('tap');
+    expect(manual.emitted('update:modelValue')).toBeUndefined();
+    const disabled = mount(SnTooltip, { props: { modelValue: false, disabled: true } });
+    await disabled.find('.sn-tooltip__trigger-catcher').trigger('tap');
+    expect(disabled.emitted('update:modelValue')).toBeUndefined();
+    expect(disabled.find('.sn-tooltip__pop').exists()).toBe(false);
+  });
+
+  it('keeps the catcher out of the accessibility tree', () => {
+    const w = mount(SnTooltip);
+    expect(w.find('.sn-tooltip__trigger-catcher').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('ships the catcher behind #ifdef APP so MP / H5 builds strip it', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+    const templateStart = source.indexOf('<!-- #ifdef APP -->');
+    const templateEnd = source.indexOf('<!-- #endif -->', templateStart);
+    expect(templateStart, 'the catcher must be gated for App only').toBeGreaterThan(-1);
+    expect(templateEnd).toBeGreaterThan(templateStart);
+    const gated = source.slice(templateStart, templateEnd);
+    expect(gated).toContain('sn-tooltip__trigger-catcher');
+    expect(gated).toContain('@tap.stop="onTriggerTap"');
+    expect(gated).toContain('hover-class="sn-tooltip__trigger-catcher--pressed"');
+    // The template's closing marker must sit inside the trigger wrapper.
+    expect(source.slice(templateStart, templateEnd)).toContain('<view');
+    // Nothing catcher-shaped may leak outside the two gates (template + CSS).
+    const styleStart = source.indexOf('/* #ifdef APP */');
+    const styleEnd = source.indexOf('/* #endif */', styleStart) + '/* #endif */'.length;
+    const ungated =
+      source.slice(0, templateStart) +
+      source.slice(templateEnd + '<!-- #endif -->'.length, styleStart) +
+      source.slice(styleEnd);
+    expect(ungated).not.toContain('trigger-catcher');
+  });
+
+  it('anchors the catcher to a relative trigger wrapper in the stylesheet', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+    const triggerRule = source.slice(
+      source.indexOf('.sn-tooltip__trigger {'),
+      source.indexOf('}', source.indexOf('.sn-tooltip__trigger {')),
+    );
+    expect(triggerRule).toContain('position: relative');
+    const cssStart = source.indexOf('/* #ifdef APP */', source.indexOf('<style'));
+    const cssEnd = source.indexOf('/* #endif */', cssStart);
+    expect(cssStart).toBeGreaterThan(-1);
+    expect(cssEnd).toBeGreaterThan(cssStart);
+    const css = source.slice(cssStart, cssEnd);
+    expect(css).toContain('.sn-tooltip__trigger-catcher {');
+    expect(css).toContain('position: absolute');
+    expect(css).toContain('var(--sn-mp-color-background-soft)');
   });
 });

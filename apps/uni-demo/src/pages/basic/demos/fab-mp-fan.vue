@@ -9,8 +9,10 @@
  *   - 动作项全部为图标气泡（结构化 actions，color 走语义 token），
  *     点选后自动收起并记录反馈。文案与 fab-mp-fan.en.vue 对等。
  *
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
- * the phone screen (the real runtime keeps `position: fixed`).
+ * Docs preview: `custom-style="position: absolute"` pins the fixed layer to
+ * the phone screen — inline style instead of a `.sn-fab.sn-demo-contained`
+ * compound selector, which uni-app x App drops (single-class selectors only;
+ * class rules from the page scope don't reach a child component's root).
  */
 import { ref } from 'vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
@@ -71,6 +73,7 @@ const topActions: SnFabAction[] = [
       position="bottom-center"
       :actions="centerActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
 
@@ -81,6 +84,7 @@ const topActions: SnFabAction[] = [
       position="right-bottom"
       :actions="cornerActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="() => pick('右下角')"
     />
 
@@ -91,6 +95,7 @@ const topActions: SnFabAction[] = [
       position="left-top"
       :actions="topActions"
       custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @action="() => pick('左上角')"
     />
   </view>
@@ -128,8 +133,6 @@ const topActions: SnFabAction[] = [
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
+/* Docs-preview pinning rides inline (custom-style) — compound selectors
+ * (.sn-fab.sn-demo-contained) are dropped by uni-app x App. */
 </style>

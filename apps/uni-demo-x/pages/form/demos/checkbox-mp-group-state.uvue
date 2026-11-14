@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — 组状态与半选（disabled / readonly / indeterminate）。 */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const readOnly = ref<Array<string | number | boolean>>(['a']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">disabled / readonly</text>
+    <SnCheckboxGroup v-model="readOnly" disabled>
+      <SnCheckbox name="a"><text>整组禁用</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <SnCheckboxGroup v-model="readOnly" readonly>
+      <SnCheckbox name="a"><text>整组只读</text></SnCheckbox>
+    </SnCheckboxGroup>
+
+    <text class="sn-demo__title">indeterminate（半选）</text>
+    <SnCheckbox :model-value="false" indeterminate><text>半选状态</text></SnCheckbox>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

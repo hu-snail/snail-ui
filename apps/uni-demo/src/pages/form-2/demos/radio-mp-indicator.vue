@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-radio — 指示器位置与选中态（indicatorPlacement / checkedStyle）。 */
+/** Demo: sn-radio — 指示器位置与选中态（indicatorPlacement / checkedStyle / markerShape）。 */
 import { ref } from 'vue';
 import SnRadio from '@snui/uni-src/components/sn-radio/sn-radio.vue';
 import SnRadioGroup from '@snui/uni-src/components/sn-radio/sn-radio-group.vue';
@@ -9,10 +9,17 @@ const bottomRight = ref<string | number | boolean | undefined>('a');
 const none = ref<string | number | boolean | undefined>('a');
 const borderOnly = ref<string | number | boolean | undefined>('a');
 const fillOnly = ref<string | number | boolean | undefined>('a');
+const check = ref<string | number | boolean | undefined>('a');
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">markerShape="check"（选中 = 主题色实心 + 白勾）</text>
+    <SnRadioGroup v-model="check" marker-shape="check">
+      <SnRadio value="a">方案 A</SnRadio>
+      <SnRadio value="b">方案 B</SnRadio>
+    </SnRadioGroup>
+
     <text class="sn-demo__title">indicatorPlacement="top-right"（card 默认）</text>
     <SnRadioGroup v-model="topRight" variant="card" indicator-placement="top-right">
       <SnRadio value="a">方案 A</SnRadio>

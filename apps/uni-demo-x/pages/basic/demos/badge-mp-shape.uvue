@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/** Demo: sn-badge (uni-end) — 形状与描边（shape / border）。 */
+import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';
+</script>
+<template>
+  <view class="sn-demo">
+    <SnBadge :value="12" shape="square">
+      <view class="sn-demo-host"><text>方形</text></view>
+    </SnBadge>
+    <SnBadge :value="12" shape="bubble">
+      <view class="sn-demo-host"><text>气泡</text></view>
+    </SnBadge>
+    <SnBadge :value="12" border>
+      <view class="sn-demo-host"><text>描边</text></view>
+    </SnBadge>
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo-host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: var(--sn-mp-color-background-subtle);
+  color: var(--sn-mp-color-text-secondary);
+  font-size: 12px;
+  flex-direction: row;
+}
+</style>

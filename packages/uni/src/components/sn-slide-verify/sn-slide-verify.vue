@@ -308,9 +308,9 @@ function settleDrag(): void {
     return;
   }
   offset.value = 0;
-  state.value = 'fail';
   emit('fail');
-  // Snap back to idle so the gesture can be retried without a prop change.
+  // Snap straight back to idle so the gesture can be retried without a prop
+  // change — a transient 'fail' assignment never paints (Vue batches).
   state.value = 'idle';
 }
 

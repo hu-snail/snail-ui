@@ -6,7 +6,8 @@
  *   (https://www.naiveui.com/zh-CN/light/components/tree)
  * Per AGENTS.md §112, props + semantics mirror n-tree 1:1 (scoped subset):
  *   data / key-field / label-field / children-field / default-expanded-keys /
- *   expanded-keys (v-model:expanded-keys) / default-expand-all / selectable /
+ *   expanded-keys (v-model:expanded-keys) / default-expand-all /
+ *   expand-on-click / selectable /
  *   selected-keys (v-model:selected-keys) / default-selected-keys / multiple /
  *   cancelable / checkable / checked-keys (v-model:checked-keys) /
  *   default-checked-keys / cascade / block-line / indent / render-prefix /
@@ -15,7 +16,9 @@
  *   `line-corner` ('square' | 'rounded') selects the elbow shape and
  *   `line-color` overrides the stroke color (resolved by the shared flat-row
  *   layout in `_internal/tree-line-layout.ts`); `line-mode` picks the L-shaped
- *   branches or indent guides.
+ *   branches or indent guides; `size` ('mini' | 'tiny' | 'small' | 'medium' |
+ *   'large') is a row-density preset on the SnSelect scale (font-size + row
+ *   height, `medium` = baseline; `indent` stays independent).
  *   TreeOption fields: key / label / children / disabled / isLeaf / icon /
  *   prefix / suffix / checkboxDisabled. Events emit
  *   `(keys, options, { node, action })` payloads like n-tree's `on-update:*`;
@@ -26,7 +29,7 @@
  *   - The task-scoped subset only. Deferred (future markers, not in the
  *     API tables): virtual-scroll, keyboard
  *     navigation, check-strategy (fixed to `all`), on-load async children,
- *     accordion, block-node, ellipsis, expand-on-click, filter/pattern,
+ *     accordion, block-node, ellipsis, filter/pattern,
  *     node-props, render-label, render-switcher-icon,
  *     checkbox-placement, override-default-node-click-behavior,
  *     scrollbar-props, controlled indeterminate-keys, watch-props, and the
@@ -38,6 +41,10 @@
  *     failing.
  *   - Disabled nodes block every interaction (naive-ui still allows expanding
  *     a disabled node's switcher).
+ *   - `expand-on-click` defaults to TRUE (naive-ui defaults to false): the
+ *     group title doubles as an expand affordance, so users do not have to
+ *     aim at the small switcher. `:expand-on-click="false"` restores the
+ *     reference behaviour.
  *   - The empty state is a plain text row (customizable via the `empty`
  *     slot), not the `n-empty` sub-component.
  *
@@ -50,7 +57,7 @@
  *   <SnTree :data="data" multiple v-model:selected-keys="selected" />
  */
 
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useLocale } from '../locales/use-locale';
 import { resolveTreeLineLayout } from '../_internal/tree-line-layout';
 import { resolveTreeIcon, SnTreePart } from '../_internal/tree-node-parts';
@@ -71,6 +78,7 @@ import type {
   SnTreeOption,
   SnTreeRenderSidePart,
   SnTreeSelectAction,
+  SnTreeSize,
   SnTreeNode,
 } from './sn-tree-types';
 
@@ -95,6 +103,16 @@ const props = withDefaults(
     expandedKeys?: SnTreeKey[] | undefined;
     /** Expand every non-leaf node initially. Mirrors n-tree `default-expand-all`. */
     defaultExpandAll?: boolean;
+    /**
+     * Clicking a non-leaf node's LABEL toggles its subtree, in addition to the
+     * normal selection behaviour. Leaf rows are unaffected.
+     *
+     * ON by default: aiming at the tiny switcher is a poor hit target, so the
+     * whole group title doubles as an expand affordance. (naive-ui's
+     * `expand-on-click` defaults to false; this is a deliberate divergence.)
+     * Pass `false` to restore "switcher only".
+     */
+    expandOnClick?: boolean;
     /** Allow selecting nodes by click. Mirrors n-tree `selectable`. */
     selectable?: boolean;
     /** Controlled selected keys — `undefined` keeps it uncontrolled. Mirrors n-tree `selected-keys`. */
@@ -117,6 +135,13 @@ const props = withDefaults(
     blockLine?: boolean;
     /** Per-level indent width in px. Mirrors n-tree `indent`. */
     indent?: number;
+    /**
+     * Row-density preset (AUI additive — n-tree has none). Drives font-size +
+     * row height together on the SnSelect five-step scale; `medium` is the
+     * n-tree baseline (14px / 24px) so the default rendering is unchanged.
+     * `indent` stays independent.
+     */
+    size?: SnTreeSize;
     /** Node prefix render fn. Mirrors n-tree `render-prefix`. */
     renderPrefix?: SnTreeRenderSidePart | undefined;
     /** Node suffix render fn. Mirrors n-tree `render-suffix`. */
@@ -144,6 +169,7 @@ const props = withDefaults(
     defaultExpandedKeys: () => [],
     expandedKeys: undefined,
     defaultExpandAll: false,
+    expandOnClick: true,
     selectable: true,
     selectedKeys: undefined,
     defaultSelectedKeys: () => [],
@@ -155,6 +181,7 @@ const props = withDefaults(
     cascade: false,
     blockLine: false,
     indent: 24,
+    size: 'medium',
     renderPrefix: undefined,
     renderSuffix: undefined,
     showLine: false,
@@ -288,6 +315,24 @@ function allNonLeafKeys(): SnTreeKey[] {
 const uncontrolledExpandedKeys = ref<Set<SnTreeKey>>(
   props.defaultExpandAll ? new Set(allNonLeafKeys()) : new Set(props.defaultExpandedKeys),
 );
+
+/**
+ * `defaultExpandAll` is an INITIAL state, but `data` often arrives after setup
+ * (a sidebar driven by async route data, a fetch-backed tree, …). If the tree
+ * mounts with an empty `data`, `allNonLeafKeys()` above yields `[]` and every
+ * group stays collapsed forever. Re-apply the full key set whenever `data`
+ * changes until the user toggles a switcher — after that their collapse must
+ * stick. Controlled `expandedKeys` always wins, so it is skipped here.
+ * Mirrors SnMenu's `defaultExpandAll && !hasUserToggled` watcher.
+ */
+let expandAllUserToggled = false;
+watch(normalized, () => {
+  if (!props.defaultExpandAll || expandAllUserToggled || props.expandedKeys !== undefined) return;
+  const keys = allNonLeafKeys();
+  if (keys.length === 0) return;
+  uncontrolledExpandedKeys.value = new Set(keys);
+});
+
 const uncontrolledSelectedKeys = ref<Set<SnTreeKey>>(new Set(props.defaultSelectedKeys));
 const uncontrolledCheckedKeys = ref<Set<SnTreeKey>>(
   expandForCascade(new Set(props.defaultCheckedKeys)),
@@ -444,6 +489,8 @@ const rows = computed<SnTreeRow[]>(() => {
 function handleSwitcherClick(row: SnTreeRow): void {
   const node = row.node;
   if (!row.nonLeaf || node.disabled) return;
+  // A real user toggle ends the `defaultExpandAll` seeding window.
+  expandAllUserToggled = true;
   const wasExpanded = expandedSet.value.has(node.key);
   const next = new Set(expandedSet.value);
   const action: SnTreeExpandAction = wasExpanded ? 'collapse' : 'expand';
@@ -457,9 +504,14 @@ function handleSwitcherClick(row: SnTreeRow): void {
 }
 
 function handleNodeClick(row: SnTreeRow): void {
-  if (!props.selectable) return;
   const node = row.node;
   if (node.disabled) return;
+  // `expand-on-click`: a group header is also a hit target for expanding its
+  // subtree, so readers no longer have to aim at the tiny switcher. Selection
+  // still runs afterwards (controlled `selected-keys` consumers simply ignore
+  // the emitted keys, as the docs sidebar does).
+  if (props.expandOnClick && row.nonLeaf) handleSwitcherClick(row);
+  if (!props.selectable) return;
   const wasSelected = selectedSet.value.has(node.key);
   const next = new Set(selectedSet.value);
   let action: SnTreeSelectAction;
@@ -640,13 +692,16 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   <div
     data-snui-component="tree"
     class="sn-tree"
-    :class="{
-      'sn-tree--block-line': blockLine,
-      'sn-tree--show-line': showLine,
-      'sn-tree--line-guide': showLine && lineMode === 'guide',
-      'sn-tree--line-dashed': showLine && lineStyle === 'dashed',
-      'sn-tree--line-rounded': showLine && lineMode === 'branch' && lineCorner === 'rounded',
-    }"
+    :class="[
+      `sn-tree--${size}`,
+      {
+        'sn-tree--block-line': blockLine,
+        'sn-tree--show-line': showLine,
+        'sn-tree--line-guide': showLine && lineMode === 'guide',
+        'sn-tree--line-dashed': showLine && lineStyle === 'dashed',
+        'sn-tree--line-rounded': showLine && lineMode === 'branch' && lineCorner === 'rounded',
+      },
+    ]"
     :style="lineVars"
     role="tree"
   >
@@ -782,12 +837,43 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 
 /* Metrics mirror n-tree: 14px text, 24px node content, 3px row padding,
  * 2px node radius (borderRadiusSmall), 24px default indent, hover ≈ 4.7%
- * ink / pressed ≈ 7% ink (naive hoverColor / pressedColor). */
+ * ink / pressed ≈ 7% ink (naive hoverColor / pressedColor).
+ *
+ * The two density vars below are the single source for row sizing, so the
+ * `size` preset only has to override them (see the block after this one).
+ * `medium` restates the baseline, which keeps the default rendering identical
+ * to the pre-`size` component. */
 .sn-tree {
-  font-size: 14px;
+  --sn-web-tree-font-size: 14px;
+  --sn-web-tree-row-height: 24px;
+  font-size: var(--sn-web-tree-font-size);
   line-height: 1.5;
   color: var(--sn-web-color-text-primary);
   outline: none;
+}
+
+/* Sizes — same five-step ramp as SnSelect / SnTreeSelect (mini → large).
+ * `indent` is deliberately independent: a dense tree usually also wants a
+ * smaller `:indent`, but that stays an explicit prop. */
+.sn-tree--mini {
+  --sn-web-tree-font-size: 11px;
+  --sn-web-tree-row-height: 18px;
+}
+.sn-tree--tiny {
+  --sn-web-tree-font-size: 12px;
+  --sn-web-tree-row-height: 20px;
+}
+.sn-tree--small {
+  --sn-web-tree-font-size: 13px;
+  --sn-web-tree-row-height: 22px;
+}
+.sn-tree--medium {
+  --sn-web-tree-font-size: 14px;
+  --sn-web-tree-row-height: 24px;
+}
+.sn-tree--large {
+  --sn-web-tree-font-size: 15px;
+  --sn-web-tree-row-height: 30px;
 }
 
 .sn-tree__node-wrapper {
@@ -897,7 +983,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  height: 24px;
+  height: var(--sn-web-tree-row-height, 24px);
   color: var(--sn-web-color-text-tertiary);
   cursor: pointer;
   user-select: none;
@@ -912,10 +998,12 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   visibility: hidden;
 }
 
+/* 1em keeps the chevron proportional to the row text at every size preset
+ * (14px at the medium baseline, exactly the previous fixed value). */
 .sn-tree__switcher-icon {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 1em;
+  height: 1em;
 }
 
 /* ---------- Checkbox (visuals mirror n-checkbox) ---------- */
@@ -925,15 +1013,17 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  height: 24px;
+  height: var(--sn-web-tree-row-height, 24px);
   cursor: pointer;
   user-select: none;
 }
 
+/* Same `1em` rule as the switcher: the box scales with the size preset, and
+ * the SVG stroke (viewBox units) scales with it. */
 .sn-tree__checkbox-box {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 1em;
+  height: 1em;
 }
 
 .sn-tree__checkbox-frame {
@@ -992,7 +1082,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   display: inline-flex;
   align-items: center;
   min-width: 0;
-  min-height: 24px;
+  min-height: var(--sn-web-tree-row-height, 24px);
   box-sizing: border-box;
   padding: 0 6px 0 4px;
   /* 与 .sn-tree__node 同一个圆角变量：选中 / 悬停底色的圆角只有一处来源。 */
@@ -1035,6 +1125,15 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 .sn-tree__node-text {
   flex-grow: 1;
   max-width: 100%;
+}
+
+/* A selected label takes the theme accent. The soft selected background above
+   stays as the row affordance; only the title's ink changes. Overridable via
+   `--sn-web-tree-node-selected-text-color`. Works for both block-line and the
+   default (content-scoped) selected background, since the row always carries
+   `sn-tree__node--selected`. */
+.sn-tree__node--selected .sn-tree__node-text {
+  color: var(--sn-web-tree-node-selected-text-color, var(--sn-web-color-action-primary));
 }
 
 .sn-tree__node-suffix {

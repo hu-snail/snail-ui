@@ -1,0 +1,40 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-avatar-group (uni-end) — 基础叠层：不设 max-count，全部显示。
+ * 组内统一尺寸 size="64rpx"（与组件的 rpx 叠层步长同一单位体系，任意视口下重叠
+ * 比例恒定——混用 px 会在宽视口把成员盖得只剩细条）。渐变底色 + 姓氏文字：
+ * 不依赖网络图片，弱网 / 离线也保持完整视觉。
+ */
+import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
+import SnAvatarGroup from '@snui/uni-src/components/sn-avatar-group/sn-avatar-group.vue';
+
+/** 演示成员：姓氏 + 渐变底色（深端色值兼作纯色兜底）。 */
+const members = [
+  { text: '张', base: '#6366F1', gradient: 'linear-gradient(135deg, #8B5CF6, #6366F1)' },
+  { text: '李', base: '#2563EB', gradient: 'linear-gradient(135deg, #3B82F6, #2563EB)' },
+  { text: '陈', base: '#059669', gradient: 'linear-gradient(135deg, #10B981, #059669)' },
+  { text: '王', base: '#D97706', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+];
+</script>
+
+<template>
+  <view class="sn-demo">
+    <SnAvatarGroup size="64rpx" cascading="right-up">
+      <SnAvatar
+        v-for="member in members"
+        :key="member.text"
+        :text="member.text"
+        :bg-color="member.base"
+        color="var(--sn-mp-color-text-on-primary)"
+        :custom-style="`background-image: ${member.gradient}`"
+      />
+    </SnAvatarGroup>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: row;
+}
+</style>

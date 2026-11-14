@@ -15,7 +15,7 @@ export const navbarDocPage: SnDocPageData = {
   title: 'Navbar 导航栏',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '标题、左右文案与返回箭头：' }],
@@ -39,7 +39,7 @@ export const navbarDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Navbar 导航栏.vue',
     meta: 'Vue 3 · <script setup>',
@@ -125,8 +125,8 @@ import { Navbar } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar-group', link: '/components/uni/avatar-group' },
-    next: { text: 'sn-tabbar', link: '/components/uni/tabbar' },
+    prev: { text: 'AvatarGroup', link: '/components/uni/avatar-group' },
+    next: { text: 'Tabbar', link: '/components/uni/tabbar' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

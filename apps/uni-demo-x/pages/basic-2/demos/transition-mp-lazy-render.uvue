@@ -1,0 +1,101 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-transition (uni-end) — 懒渲染（`lazyRender`）。
+ *
+ * `lazy-render` 默认 false：组件挂载时就渲染默认插槽，只是 `destroy` 为 true 时
+ * 用 `display: none` 隐藏。置 true 后，插槽内容要等到第一次 `show=true` 才真正
+ * 渲染（首屏省一次子树构建），之后即使收起也保持已渲染。
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTransition from '@snui/uni-x/components/sn-transition/sn-transition.uvue';
+/** lazy-render=true 的实例：首屏不渲染插槽。 */
+const lazyShown = ref(false);
+const lazyEntered = ref(false);
+
+/** lazy-render=false 的对照实例。 */
+const eagerShown = ref(false);
+
+function toggleLazy(): void {
+  lazyShown.value = !lazyShown.value;
+}
+
+function toggleEager(): void {
+  eagerShown.value = !eagerShown.value;
+}
+
+function markEntered(): void {
+  lazyEntered.value = true;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">
+      lazy-render=true：插槽第一次 show 之前不渲染，之后一直保留（下方状态从「未渲染」变
+      「已渲染」）
+    </text>
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="toggleLazy"><text>
+        {{ lazyShown ? '收起' : '展开' }}
+      </text></SnButton>
+      <text class="sn-demo__state"> 插槽状态：{{ lazyEntered ? '已渲染' : '未渲染' }} </text>
+    </view>
+    <SnTransition :show="lazyShown" name="fade" lazy-render @after-enter="markEntered">
+      <view class="sn-demo-box">
+        <text class="sn-demo-box__text">lazy-render=true</text>
+      </view>
+    </SnTransition>
+
+    <text class="sn-demo__meta">
+      lazy-render=false（默认）：挂载即渲染插槽，收起时靠 destroy 的 display: none 隐藏
+    </text>
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="toggleEager"><text>
+        {{ eagerShown ? '收起' : '展开' }}
+      </text></SnButton>
+    </view>
+    <SnTransition :show="eagerShown" name="fade">
+      <view class="sn-demo-box">
+        <text class="sn-demo-box__text">lazy-render=false</text>
+      </view>
+    </SnTransition>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+.sn-demo__state {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  height: 120rpx;
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-soft);
+}
+.sn-demo-box__text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-primary);
+}
+</style>

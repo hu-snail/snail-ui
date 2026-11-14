@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-button (uni-end) — three sizes (no tiny on mobile).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+</script>
+<template>
+  <view class="sn-demo">
+    <SnButton size="small"><text>small</text></SnButton>
+    <SnButton size="medium"><text>medium</text></SnButton>
+    <SnButton size="large"><text>large</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  flex-direction: row;
+}
+</style>

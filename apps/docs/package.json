@@ -2,7 +2,7 @@
   "name": "@snui/docs",
   "version": "0.1.0",
   "private": true,
-  "description": "snail-aui documentation site (VitePress). Multi-end: web / uni-app + Style Switcher.",
+  "description": "snail-aui documentation site (VitePress). Multi-end: web / uni-app x + Style Switcher.",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev . --port 4317",

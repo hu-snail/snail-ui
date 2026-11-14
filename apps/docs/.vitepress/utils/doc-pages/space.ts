@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const spaceDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Space' }],
-  title: 'Space',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '布局组件 Layout' }, { text: 'Space 间距' }],
+  title: 'Space 间距',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

@@ -1,0 +1,34 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover — English shadow of popover-mp-custom-style.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
+const styledOpen = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPopover
+      v-model="styledOpen"
+      mode="normal"
+      content="A bubble with outlined arrow and body"
+      placement="bottom-start"
+      :offset="{ x: 0, y: 4 }"
+      custom-arrow="sn-demo__arrow"
+      custom-pop="sn-demo__pop"
+      custom-class="sn-demo-contained"
+      custom-style="display: block;"
+    >
+      <SnButton block><text>custom-arrow / custom-pop / offset</text></SnButton>
+    </SnPopover>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+/* custom-pop / custom-arrow land on the bubble and arrow nodes. */
+</style>

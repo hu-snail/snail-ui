@@ -22,6 +22,8 @@
  * never double-fires.
  */
 
+import { shouldSample } from './sn-signature-strokes';
+
 /** Handlers the SFC feeds in — the same shape as its touch handlers. */
 export interface MouseDrawingHandlers {
   /** Pen down at a pad-relative point. */
@@ -52,14 +54,20 @@ export function bindMouseDrawing(pad: HTMLElement, handlers: MouseDrawingHandler
   let lastTouchAt = 0;
   let lastX = 0;
   let lastY = 0;
+  // Pad rect cached per gesture — a getBoundingClientRect per mousemove
+  // forces sync layout at frame rate; the pad cannot move mid-stroke.
+  let padRect: { left: number; top: number } | null = null;
 
   const onTouch = (): void => {
     lastTouchAt = Date.now();
   };
 
   const toPoint = (event: MouseEvent): { x: number; y: number } => {
-    const rect = pad.getBoundingClientRect();
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    if (padRect === null) {
+      const rect = pad.getBoundingClientRect();
+      padRect = { left: rect.left, top: rect.top };
+    }
+    return { x: event.clientX - padRect.left, y: event.clientY - padRect.top };
   };
 
   const onPointerDown = (event: MouseEvent): void => {
@@ -79,9 +87,7 @@ export function bindMouseDrawing(pad: HTMLElement, handlers: MouseDrawingHandler
     if (!penDown) return;
     const point = toPoint(event);
     // Sample filter mirrors the touch path — sub-2px travel is noise.
-    const dx = point.x - lastX;
-    const dy = point.y - lastY;
-    if (Math.sqrt(dx * dx + dy * dy) < 2) return;
+    if (!shouldSample({ x: lastX, y: lastY }, point)) return;
     lastX = point.x;
     lastY = point.y;
     handlers.extend(point);
@@ -91,12 +97,14 @@ export function bindMouseDrawing(pad: HTMLElement, handlers: MouseDrawingHandler
   const onPointerUp = (): void => {
     if (!penDown) return;
     penDown = false;
+    padRect = null;
     handlers.end();
   };
 
   const onLeaveWindow = (): void => {
     if (!penDown) return;
     penDown = false;
+    padRect = null;
     handlers.end();
   };
 

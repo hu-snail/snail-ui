@@ -45,7 +45,7 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 | `mode`        | `string`                      | `'aspectFill'` | no       | uni-app `<image>` fill mode, forwarded verbatim.                                     |
 | `status`      | `'online' \| 'offline' \| ''` | `''`           | no       | AUI-additive presence dot (§112.3a); announced through `aria-label`.                 |
 | `customClass` | `string`                      | `''`           | no       | Extra class on the root node.                                                        |
-| `customStyle` | `string`                      | `''`           | no       | Inline style appended to the root node.                                              |
+| `customStyle` | `string`                      | `''`           | no       | Inline style appended to the painted circle (`__body`) — background / border / shadow paint the avatar; the root is a transparent positioning box. |
 
 ## Size presets
 

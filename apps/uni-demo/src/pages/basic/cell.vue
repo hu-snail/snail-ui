@@ -80,6 +80,15 @@ const { t } = useDemoUi();
   box-shadow: var(--demo-card-shadow);
 }
 
+/* cell：场景模块透明变体——单元格分组自带 surface 背景，即组件的真实形态；白卡底会与
+ * 组件背景双重叠加。去掉卡底与描边，分组直接浮在页面画布上，层级由
+ * 分组自身的圆角 / 描边 / 分隔线承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .module__body {
   padding: 0;
 }

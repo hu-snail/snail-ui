@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-rate — 只读：readonly 拦掉点击，仅展示评分。 */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
+const readonly = ref<number | null>(4);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRate v-model="readonly" readonly />
+    <text class="sn-demo__meta">readonly：只读展示 {{ readonly }} 分，点击无效</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

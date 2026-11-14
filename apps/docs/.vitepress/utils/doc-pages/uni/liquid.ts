@@ -15,7 +15,7 @@ export const liquidDocPage: SnDocPageData = {
   title: 'Liquid 水波进度球',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,7 +45,7 @@ export const liquidDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Liquid 水波进度球.vue',
     meta: 'Vue 3 · <script setup>',
@@ -132,8 +132,8 @@ import { Liquid } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-waterfall', link: '/components/uni/waterfall' },
-    next: { text: 'sn-barcode', link: '/components/uni/barcode' },
+    prev: { text: 'Waterfall', link: '/components/uni/waterfall' },
+    next: { text: 'Barcode', link: '/components/uni/barcode' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

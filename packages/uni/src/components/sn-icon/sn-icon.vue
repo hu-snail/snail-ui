@@ -2,7 +2,7 @@
 /**
  * sn-icon — uni 端图标组件（AUI-MP-002，rewrite）。
  *
- * ## 四条渲染路径（优先级从上到下）
+ * ## 三条渲染路径（优先级从上到下）
  *
  * 1. **iconfont 字形**（`name` + `classPrefix` / `cssIcon`）— wot-ui 兼容
  *    API：渲染 `<view class="{classPrefix}-{name}">`，字形由宿主加载的
@@ -12,8 +12,10 @@
  *    `<view class="sn-icon__remote">` + `background-image` data URL。
  *    请求由 `sn-icon-iconify.ts` 承担（缓存 / 超时 / AbortSignal），
  *    组件侧只负责竞态保护与失败降级（结构化警告 + 空渲染）。
- * 3. **inline SVG**（`IconData` 对象，或 string `icon` 同步命中
- *    registry / 内置目录）— H5 直接渲染 `<svg>`，`currentColor` 生效。
+ * 3. **IconData**（对象，或 string `icon` 同步命中 registry / 内置目录）—
+ *    H5 渲染 inline `<svg>`，`currentColor` 生效；小程序没有 `<svg>` 元素
+ *    （unknown tag 渲染为空），改走 `<image>` + SVG data URL（颜色经
+ *    computedStyle 解析后烘焙进 data URL，见 `sn-icon-mp.ts`）。
  *
  * ## string icon API（本版新增）
  *
@@ -43,30 +45,17 @@ import {
   SnIconSourceError,
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
+import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
+import type { IconData } from './sn-icon-types';
 
 defineOptions({ name: 'SnIcon' });
 
 /**
- * Lucide 兼容图标数据形态：默认 24x24 viewBox + 一至多条 SVG
- * `<path d="...">` 字符串。描边用 `currentColor` 渲染，`color` prop /
- * CSS `color` 会级联生效。类型契约的本体在这里定义（registry /
- * feedback / catalog 均从本文件 import）。
+ * 图标数据类型契约的本体在 `./sn-icon-types`（纯 ts 模块，uni-x 端的
+ * 稳定导入目标——.uvue 产物不承载类型导出）。这里 re-export 保持既有
+ * `from 'sn-icon.vue'` 导入路径兼容。
  */
-export interface IconData {
-  /** SVG viewBox。默认 '0 0 24 24'（lucide 标准网格）。 */
-  viewBox?: string;
-  /** 一至多条 SVG path data 字符串。 */
-  paths: string[];
-  /**
-   * 渲染模式：`stroke`（默认，lucide 形态 —— 路径是轮廓线，用 `stroke`
-   * 描出来）或 `fill`（实心字形 —— 路径是面，用 `fill` 填充）。
-   *
-   * Material Symbols / Material Icons 的 path 是**实心轮廓面**，按 stroke
-   * 渲染会变成双线空壳，因此这类图标集必须标 `'fill'`。`fill` 模式下
-   * `strokeWidth` 不参与渲染。
-   */
-  render?: 'stroke' | 'fill';
-}
+export type { IconData } from './sn-icon-types';
 
 const props = withDefaults(
   defineProps<{
@@ -123,14 +112,6 @@ const props = withDefaults(
 /** 最终 SVG viewBox：用图标自带值，缺省 lucide 的 24x24 网格。 */
 const viewBox = computed(() =>
   props.icon && typeof props.icon !== 'string' ? (props.icon.viewBox ?? '0 0 24 24') : '0 0 24 24',
-);
-
-/**
- * 生效描边宽度 — 传给内层 `<svg>`。uni-app rpx 在运行时按视口宽度解释，
- * 对 SVG 属性值同样适用（浏览器 / 原生渲染层映射为 px）。
- */
-const effectiveStrokeWidth = computed(() =>
-  props.strokeWidthAbsolute ? props.strokeWidth : props.strokeWidth,
 );
 
 /**
@@ -202,13 +183,16 @@ function warnUnresolved(code: string, value: string, cause?: unknown): void {
 async function loadRemote(value: string): Promise<void> {
   const seq = ++loadSeq;
   abortCtrl?.abort();
-  const ctrl = new AbortController();
+  // WeChat MP runtime ships no AbortController (AGENTS.md §84): fall back to
+  // the sequence guard alone — a stale result is still discarded on settle.
+  const ctrl: AbortController | null =
+    typeof AbortController === 'undefined' ? null : new AbortController();
   abortCtrl = ctrl;
   try {
     const result = resolveSnIconStringAsync(value, {
       color: props.color,
       size: numericSize.value,
-      signal: ctrl.signal,
+      signal: ctrl?.signal,
     });
     if (result === null) {
       if (seq === loadSeq) {
@@ -219,7 +203,7 @@ async function loadRemote(value: string): Promise<void> {
       return;
     }
     const settled = await Promise.resolve(result);
-    if (seq !== loadSeq || ctrl.signal.aborted) return;
+    if (seq !== loadSeq || ctrl?.signal.aborted === true) return;
     if (typeof settled === 'string') {
       remoteSrc.value = settled;
       asyncIcon.value = null;
@@ -228,7 +212,7 @@ async function loadRemote(value: string): Promise<void> {
       remoteSrc.value = null;
     }
   } catch (err: unknown) {
-    if (seq !== loadSeq || ctrl.signal.aborted) return;
+    if (seq !== loadSeq || ctrl?.signal.aborted === true) return;
     remoteSrc.value = null;
     asyncIcon.value = null;
     warnUnresolved(err instanceof SnIconSourceError ? err.code : 'ICON_FETCH_FAILED', value, err);
@@ -266,6 +250,23 @@ onBeforeUnmount(() => {
 /** 展示用 IconData：同步解析优先，其次异步 Provider 产出的数据对象。 */
 const displayIcon = computed<IconData | null>(() => syncIcon.value ?? asyncIcon.value);
 
+/**
+ * MP 渲染路径的描边色：具体色值（hex / rgb / hsl …）直接使用；`currentColor`
+ * / `var(--*)` 由 computedStyle 从真实级联解析（data URL 是独立 SVG 文档，
+ * 拿不到宿主 CSS）。H5 不消费该值（inline `<svg>` 走 currentColor）。
+ */
+const mpIconColor = useMpIconColor(() => props.color);
+const strokeColor = computed<string>(() =>
+  isConcreteIconColor(props.color) ? props.color : mpIconColor.value,
+);
+
+/** MP `<image>` 的 src：IconData 光栅化为 SVG data URL。 */
+const iconDataUrl = computed<string | undefined>(() => {
+  const icon = displayIcon.value;
+  if (icon === null) return undefined;
+  return buildIconDataUrl(icon, strokeColor.value, props.strokeWidth);
+});
+
 /** 渲染模式：图标数据声明 `render: 'fill'` 时按实心字形填充（Material 类图标）。 */
 const isFillIcon = computed<boolean>(() => displayIcon.value?.render === 'fill');
 
@@ -276,17 +277,23 @@ const remoteStyle = computed(() =>
 
 /** 两条路径共享的尺寸盒。数字保持 px 契约；无单位数字字符串（"48"）按 rpx
  * 归一——直接写进 CSS width 是非法值，浏览器忽略后 SVG 会按默认内在尺寸
- * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。 */
+ * 撑到 ~300px（"巨大加载圈" bug）；带单位字符串原样透传。
+ *
+ * 字符串 `customStyle` 不能塞进对象里的 `cssText` 键：patchStyle 最后才
+ * 处理它，会把同对象里先设置的 width/height/color 整体抹掉。改为数组
+ * 绑定让 Vue 逐项合并。 */
 const boxStyle = computed(() => {
   const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
   const style: Record<string, string> = { width: len, height: len };
   if (props.color !== 'currentColor') style.color = props.color;
-  if (typeof props.customStyle === 'string') {
-    if (props.customStyle !== '') style.cssText = props.customStyle;
-  } else {
-    Object.assign(style, props.customStyle);
-  }
   return style;
+});
+
+const customStyleBinding = computed(() => {
+  if (typeof props.customStyle === 'string') {
+    return props.customStyle !== '' ? props.customStyle : undefined;
+  }
+  return props.customStyle;
 });
 </script>
 
@@ -296,7 +303,7 @@ const boxStyle = computed(() => {
     :class="[customClass]"
     data-snui-component="icon"
     :aria-hidden="true"
-    :style="boxStyle"
+    :style="[boxStyle, customStyleBinding]"
   >
     <!--
       iconfont 字形路径（wot-ui 原生）：类名承载字形，样式表由宿主 app 提供。
@@ -312,28 +319,36 @@ const boxStyle = computed(() => {
     <view v-else-if="remoteSrc" class="sn-icon__remote" :style="remoteStyle" />
 
     <!--
-      inline `<svg>` 路径（IconData）。适用于：
-        - H5（浏览器）: 直接 DOM，与 web 端一致，currentColor 生效。
-        - 微信小程序 : SVG 经 `<image>` 语义渲染（不是所有平台像素级一致，
-                       需要像素级时把 path 转 base64 `<image src="data:...">`）。
-        - App (uni-app x): 经转换补丁换为 `<image>` + SVG data URL。
-
-      保持标记最小 — 不加可能干扰跨端编译器的装饰属性。`xmlns` 对 SVG
-      独立文档必需，嵌套时无害。
+      IconData 路径：H5 渲染 inline `<svg>`（currentColor 生效）；小程序没有
+      `<svg>` 元素（编译后是 unknown tag，渲染为空），改走 `<image>` + SVG
+      data URL（颜色已在 `iconDataUrl` 里烘焙）。两条分支由条件编译二选一，
+      `v-else-if` 链在各自产物里保持连续。
     -->
+    <!-- #ifndef MP -->
     <svg
       v-else-if="displayIcon"
+      class="sn-icon__svg"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
       :fill="isFillIcon ? color : 'none'"
       :stroke="isFillIcon ? 'none' : color"
-      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
+      :stroke-width="isFillIcon ? undefined : strokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"
     >
       <path v-for="(d, i) in displayIcon.paths" :key="i" :d="d" />
     </svg>
+    <!-- #endif -->
+    <!-- #ifdef MP -->
+    <image
+      v-else-if="displayIcon"
+      class="sn-icon__svg"
+      :src="iconDataUrl"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
+    <!-- #endif -->
   </view>
 </template>
 
@@ -351,7 +366,7 @@ const boxStyle = computed(() => {
   color: inherit;
 }
 
-.sn-icon svg {
+.sn-icon__svg {
   display: block;
   width: 100%;
   height: 100%;

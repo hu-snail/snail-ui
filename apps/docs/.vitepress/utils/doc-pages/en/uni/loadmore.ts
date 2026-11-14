@@ -1,16 +1,16 @@
-/** LoadMore · uni-app (uni-app) — English page data. Props from sn-loadmore.vue; demos from the en page. */
+/** LoadMore · uni-app x (uni-app x) — English page data. Props from sn-loadmore.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const loadmoreDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'LoadMore · uni-app' },
+    { text: 'LoadMore · uni-app x' },
   ],
-  title: 'LoadMore · uni-app',
+  title: 'LoadMore · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -41,10 +41,10 @@ export const loadmoreDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'LoadMore · uni-app.vue',
+    fileLabel: 'LoadMore · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -123,7 +123,7 @@ import { Loadmore } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'LoadMore · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'LoadMore · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Loadmore } from '@snui/uni';",
     chipCopy: "import { Loadmore } from '@snui/uni';",
     stats: [
@@ -133,8 +133,8 @@ import { Loadmore } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-skeleton', link: '/en/components/uni/skeleton' },
-    next: { text: 'sn-paging', link: '/en/components/uni/paging' },
+    prev: { text: 'Skeleton', link: '/en/components/uni/skeleton' },
+    next: { text: 'Paging', link: '/en/components/uni/paging' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

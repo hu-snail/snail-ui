@@ -1,0 +1,30 @@
+<script setup lang="ts">
+/** Demo: sn-tag (uni-end) — round 胶囊 / mark 标记形态。 */
+import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnTag type="primary"><text>直角</text></SnTag>
+      <SnTag type="primary" round><text>胶囊</text></SnTag>
+      <SnTag type="primary" mark><text>标记</text></SnTag>
+      <SnTag type="primary" round mark><text>胶囊 + 标记</text></SnTag>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-5);
+  align-items: flex-start;
+}
+
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
+  align-items: center;
+  flex-direction: row;
+}
+</style>

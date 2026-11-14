@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, ref, nextTick } from 'vue';
@@ -251,5 +253,37 @@ describe('SnCollapse (AUI-WEB-LAYOUT-005)', () => {
     const w = mount(WrapperWithArrow);
     const header = w.find('.sn-collapse-item__header');
     expect(header.classes()).toContain('sn-collapse-item__header--arrow-right');
+  });
+});
+
+/**
+ * Width contract: jsdom doesn't do layout, so assert the scoped CSS rules
+ * directly (same approach as SnDescriptions / SnAvatarGroup tests). Without
+ * `width: 100%`, the group is a shrink-to-fit flex item inside centered
+ * demo stages: expanding a long item widens the panel, collapsing it makes
+ * the panel narrower again.
+ */
+function readScopedStyle(file: string): string {
+  const source = readFileSync(fileURLToPath(new URL(file, import.meta.url)), 'utf8');
+  return (/<style scoped>([\s\S]*?)<\/style>/.exec(source)?.[1] ?? '').replace(
+    /\/\*[\s\S]*?\*\//g,
+    '',
+  );
+}
+
+describe('SnCollapse width contract (AUI-WEB-LAYOUT-005)', () => {
+  const groupStyle = readScopedStyle('./SnCollapse.vue');
+  const itemStyle = readScopedStyle('./SnCollapseItem.vue');
+
+  it('pins the group width to its parent so expand/collapse cannot resize it', () => {
+    expect(groupStyle).toMatch(/\.sn-collapse \{[\s\S]*?width: 100%;/);
+    expect(groupStyle).toMatch(/\.sn-collapse \{[\s\S]*?min-width: 0;/);
+    expect(groupStyle).toMatch(/\.sn-collapse \{[\s\S]*?box-sizing: border-box;/);
+  });
+
+  it('keeps items and body content inside the group width', () => {
+    expect(itemStyle).toMatch(/\.sn-collapse-item \{[\s\S]*?width: 100%;/);
+    expect(itemStyle).toMatch(/\.sn-collapse-item \{[\s\S]*?min-width: 0;/);
+    expect(itemStyle).toMatch(/\.sn-collapse-item__body \{[\s\S]*?overflow-wrap: anywhere;/);
   });
 });

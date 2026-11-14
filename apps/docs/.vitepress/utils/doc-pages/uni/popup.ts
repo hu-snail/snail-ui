@@ -15,7 +15,7 @@ export const popupDocPage: SnDocPageData = {
   title: 'Popup 弹出层',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -52,7 +52,7 @@ export const popupDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Popup 弹出层.vue',
     meta: 'Vue 3 · <script setup>',
@@ -151,8 +151,8 @@ import { Popup } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-captcha', link: '/components/uni/captcha' },
-    next: { text: 'sn-overlay', link: '/components/uni/overlay' },
+    prev: { text: 'Captcha', link: '/components/uni/captcha' },
+    next: { text: 'Overlay', link: '/components/uni/overlay' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

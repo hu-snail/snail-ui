@@ -36,7 +36,7 @@ import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue';
 | `leftArrow`        | `boolean` | `false` | no       | Render the back arrow on the left.           |
 | `bordered`         | `boolean` | `false` | no       | Hairline bottom border.                      |
 | `fixed`            | `boolean` | `false` | no       | Pin the bar to the top of the viewport.      |
-| `placeholder`      | `boolean` | `false` | no       | Reserve the bar height in flow when `fixed`. |
+| `placeholder`      | `boolean` | `false` | no       | Reserve the bar height in flow when `fixed` (mirrors the safe-area box when `safeAreaInsetTop`). |
 | `zIndex`           | `number`  | `10`    | no       | Stacking level (only written when `fixed`).  |
 | `safeAreaInsetTop` | `boolean` | `false` | no       | Add status-bar height as top padding.        |
 | `leftDisabled`     | `boolean` | `false` | no       | Dim the left zone and block its events.      |

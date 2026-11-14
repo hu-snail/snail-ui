@@ -1,12 +1,12 @@
-/** Fab · uni-app (uni-app) — English page data. Props from sn-fab.vue; demos from the en page. */
+/** Fab · uni-app x (uni-app x) — English page data. Props from sn-fab.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const fabDocPageEn: SnDocPageData = {
-  crumbs: [{ text: 'Docs', link: '/en/' }, { text: 'Basic Components' }, { text: 'Fab · uni-app' }],
-  title: 'Fab · uni-app',
+  crumbs: [{ text: 'Docs', link: '/en/' }, { text: 'Basic Components' }, { text: 'Fab · uni-app x' }],
+  title: 'Fab · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -38,10 +38,10 @@ export const fabDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Fab · uni-app.vue',
+    fileLabel: 'Fab · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -214,7 +214,7 @@ import { Fab } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Fab · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Fab · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Fab } from '@snui/uni';",
     chipCopy: "import { Fab } from '@snui/uni';",
     stats: [
@@ -224,8 +224,8 @@ import { Fab } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-cell', link: '/en/components/uni/cell' },
-    next: { text: 'sn-transition', link: '/en/components/uni/transition' },
+    prev: { text: 'Cell', link: '/en/components/uni/cell' },
+    next: { text: 'Transition', link: '/en/components/uni/transition' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

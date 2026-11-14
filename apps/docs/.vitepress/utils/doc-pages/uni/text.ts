@@ -11,7 +11,7 @@ export const textDocPage: SnDocPageData = {
   title: 'Text 文本',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '五种语义色、粗体、三种装饰线：' }],
@@ -35,7 +35,7 @@ export const textDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Text 文本.vue',
     meta: 'Vue 3 · <script setup>',
@@ -145,8 +145,8 @@ import { Text } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-icon', link: '/components/uni/icon' },
-    next: { text: 'sn-layout', link: '/components/uni/layout' },
+    prev: { text: 'Icon', link: '/components/uni/icon' },
+    next: { text: 'Layout', link: '/components/uni/layout' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -263,7 +263,7 @@ const effectiveLabelPlacement = computed<SnChoiceLabelPlacement>(() =>
 
 /** Effective inline marker shape (ring vs inverted fill). */
 const effectiveMarkerShape = computed<SnChoiceMarkerShape>(() =>
-  resolve(props.markerShape, group?.groupMarkerShape.value, 'ring'),
+  resolve(props.markerShape, group?.groupMarkerShape.value, 'base'),
 );
 
 /** Whether the inline marker renders at all. */
@@ -342,11 +342,6 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
             </text>
             <slot name="icon" :is-checked="isChecked" />
           </view>
-        </slot>
-      </view>
-      <view v-else-if="effectiveVariant === 'icon'" class="sn-checkbox__tile">
-        <slot name="icon" :is-checked="isChecked">
-          <view class="sn-checkbox__tile-glyph" aria-hidden="true" />
         </slot>
       </view>
       <view v-else class="sn-checkbox__label-wrap">
@@ -512,9 +507,13 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
 
 /* Card: the whole option becomes a selectable surface. */
 .sn-checkbox--variant-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-width: 0;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
@@ -531,107 +530,85 @@ const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth }
   gap: var(--sn-mp-spacing-1);
 }
 
+/* Card + inline marker (left / right): the card becomes a row so the marker
+ * sits vertically centred beside the copy instead of above it. */
+.sn-checkbox--variant-card.sn-checkbox--indicator-leading,
+.sn-checkbox--variant-card.sn-checkbox--indicator-trailing {
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.sn-checkbox--variant-card.sn-checkbox--indicator-leading .sn-checkbox__card,
+.sn-checkbox--variant-card.sn-checkbox--indicator-trailing .sn-checkbox__card {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .sn-checkbox--variant-card .sn-checkbox__card {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  gap: 4rpx;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
-.sn-checkbox--variant-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 112rpx;
-  height: 112rpx;
-  padding: 0;
-  border: 2rpx solid var(--sn-mp-color-border-subtle);
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-surface);
-  transition:
-    border-color 0.18s ease-out,
-    background-color 0.18s ease-out;
-}
-
-.sn-checkbox--variant-icon .sn-checkbox__main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.sn-checkbox--variant-icon .sn-checkbox__tile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-checkbox--variant-icon.sn-checkbox--checked .sn-checkbox__tile {
-  color: var(--sn-mp-color-action-primary);
-}
-
-/* Fallback glyph when no `icon` slot is supplied. */
-.sn-checkbox__tile-glyph {
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: var(--sn-mp-radius-xs);
-  background-color: currentColor;
-  opacity: 0.55;
+.sn-checkbox--variant-card .sn-checkbox__label {
+  display: block;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked). */
-.sn-checkbox--checked-border.sn-checkbox--variant-card,
-.sn-checkbox--checked-border.sn-checkbox--variant-icon {
+.sn-checkbox--checked-border.sn-checkbox--variant-card {
   border-color: var(--sn-mp-color-action-primary);
 }
 
-.sn-checkbox--checked-fill.sn-checkbox--variant-card,
-.sn-checkbox--checked-fill.sn-checkbox--variant-icon {
+.sn-checkbox--checked-fill.sn-checkbox--variant-card {
   background-color: var(--sn-mp-color-action-primary-soft);
 }
 
-/* Corner tick — themed circle with a white check glyph. */
+/* Corner tick — a triangular fold flush with the card corner. */
 .sn-checkbox__tick {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
-  border-radius: 50%;
+  width: 48rpx;
+  height: 48rpx;
   background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  box-shadow: 0 0 0 4rpx var(--sn-mp-color-background-surface);
+  pointer-events: none;
 }
 
 .sn-checkbox__tick--top-right {
-  top: 8rpx;
-  right: 8rpx;
+  top: 0;
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
 }
 
 .sn-checkbox__tick--bottom-right {
-  right: 8rpx;
-  bottom: 8rpx;
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
 .sn-checkbox--disabled.sn-checkbox--variant-card,
-.sn-checkbox--disabled.sn-checkbox--variant-icon {
-  opacity: 0.6;
+.sn-checkbox--disabled,
+.sn-checkbox--readonly {
+  cursor: not-allowed;
 }
 
 /* ── AUI additive: label-first + inverted marker ─────────────────────────── */
 
-.sn-checkbox--label-first .sn-checkbox__main {
+.sn-checkbox--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-checkbox--label-label-first .sn-checkbox__main {
   flex-direction: row-reverse;
   justify-content: space-between;
   width: 100%;
 }
-.sn-checkbox--label-first .sn-checkbox__label-wrap,
-.sn-checkbox--label-first .sn-checkbox__card {
+.sn-checkbox--label-label-first .sn-checkbox__label-wrap,
+.sn-checkbox--label-label-first .sn-checkbox__card {
   flex: 1 1 auto;
 }
 

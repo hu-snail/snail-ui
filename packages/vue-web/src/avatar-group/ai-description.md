@@ -28,6 +28,8 @@ import SnAvatarGroup from '@snui/vue-web/src/avatar-group/SnAvatarGroup.vue';
 | `maxOptions`   | `{ max: number; onExpand?: () => void } \| number` | `undefined`    | no       | Overflow control. With `max: n` the group shows `n − 1` avatars plus a `+k` summary (`k = total − n + 1`). Clicking the summary calls `onExpand`. |
 | `size`         | `number \| 'small' \| 'medium' \| 'large'`         | `'medium'`     | no       | Size of the overflow summary avatar.                                                                                                              |
 | `sizeBehavior` | `'tightening' \| 'shrink'`                         | `'tightening'` | no       | `tightening` overlaps avatars (−10px margin); `shrink` scales each following avatar down slightly.                                                |
+| `circle`       | `boolean`                                          | `false`        | no       | Circular summary avatar (additive) — keeps `+k` in the same shape as a circular stack.                                                            |
+| `round`        | `boolean`                                          | `false`        | no       | Pill-shaped summary avatar (additive) — see `circle`.                                                                                             |
 
 ## Events
 
@@ -47,6 +49,8 @@ None (the expand callback arrives through `maxOptions.onExpand`).
 - `size` styles the overflow summary avatar; child avatars come from the
   slot and keep their own size (the reference injects the group size
   into child n-avatars, which would require modifying SnAvatar).
+- `circle` / `round` (additive) shape the overflow summary avatar so the
+  `+k` summary matches the stack it closes.
 - Each avatar is wrapped in a `span.sn-avatar-group__item` for layout;
   target `.sn-avatar` inside it for custom styling.
 - In the `tightening` stack the separating ring is drawn on the avatar

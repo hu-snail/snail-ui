@@ -15,6 +15,7 @@ import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import {
   FORM_CONTEXT_KEY,
   FORM_ITEM_STATE_KEY,
+  deepClone,
   type FormContext,
   type FormItemHandle,
   type FormItemState,
@@ -240,6 +241,15 @@ const statusGlyph = computed<string>(() => {
   return '';
 });
 
+/** Status tint rides a modifier class — attribute selectors cannot survive
+ * the uni-app x App CSS subset (§116.2). */
+const messageStatusClass = computed(() =>
+  status.value === 'default' ? '' : `sn-form-item__message--${status.value}`,
+);
+const iconStatusClass = computed(() =>
+  status.value === 'default' ? '' : `sn-form-item__status-icon--${status.value}`,
+);
+
 /** Resolved icon data (uni). */
 const resolvedIconData = computed<IconData | null>(() => {
   const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
@@ -286,17 +296,6 @@ const gridStyle = computed(() => {
   const track = width === 'auto' ? 'auto' : typeof width === 'number' ? `${width}rpx` : width;
   return { gridTemplateColumns: `${track} 1fr` };
 });
-
-function deepClone<T>(value: T): T {
-  if (value === null || value === undefined) return value;
-  if (typeof value !== 'object') return value;
-  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
-  const out: Record<string, unknown> = {};
-  for (const k of Object.keys(value as Record<string, unknown>)) {
-    out[k] = deepClone((value as Record<string, unknown>)[k]);
-  }
-  return out as unknown as T;
-}
 </script>
 
 <template>
@@ -337,6 +336,7 @@ function deepClone<T>(value: T): T {
       <view
         v-if="showMsg"
         class="sn-form-item__message"
+        :class="messageStatusClass"
         :data-status="status"
         :aria-live="status === 'error' ? 'assertive' : 'polite'"
       >
@@ -347,6 +347,7 @@ function deepClone<T>(value: T): T {
         <text
           v-if="showStatusIcon && statusGlyph !== ''"
           class="sn-form-item__status-icon"
+          :class="iconStatusClass"
           :data-status="status"
           aria-hidden="true"
           >{{ statusGlyph }}</text
@@ -534,19 +535,21 @@ function deepClone<T>(value: T): T {
   color: var(--sn-mp-color-text-on-primary);
   background: var(--sn-mp-color-text-tertiary);
 }
-.sn-form-item__status-icon[data-status='error'] {
+/* Status tints ride modifier classes (uni-app x App has no attribute
+   selectors, §116.2); `success` has no validator path but stays for parity. */
+.sn-form-item__status-icon--error {
   background: var(--sn-mp-color-feedback-danger);
 }
-.sn-form-item__status-icon[data-status='warning'] {
+.sn-form-item__status-icon--warning {
   background: var(--sn-mp-color-feedback-warning);
 }
-.sn-form-item__status-icon[data-status='success'] {
+.sn-form-item__status-icon--success {
   background: var(--sn-mp-color-feedback-success);
 }
-.sn-form-item__message[data-status='error'] {
+.sn-form-item__message--error {
   color: var(--sn-mp-color-feedback-danger);
 }
-.sn-form-item__message[data-status='warning'] {
+.sn-form-item__message--warning {
   color: var(--sn-mp-color-feedback-warning);
 }
 

@@ -3,7 +3,7 @@
  * 模板：商城首页 —— 黄色沉浸头 + 金刚区 + 神券/秒杀营销区 + 频道胶囊 + 双列瀑布流。
  *
  * 结构：sn-paging 根容器（#top 固定「状态栏 + 导航行」，#bottom 底部标签栏，
- * 默认插槽滚动内容）。微信小程序端导航行按胶囊几何让位（common/capsule）：
+ * 默认插槽滚动内容）。微信小程序端导航行按胶囊几何让位（@snui/uni-src/utils/capsule）：
  * 行高取胶囊居中带反推值，右侧留出胶囊宽度，右上角头像仅在无胶囊端渲染。
  */
 import { computed, onUnmounted, ref } from 'vue';
@@ -47,7 +47,7 @@ import {
   ShoppingCart,
   Star,
 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import { getCapsuleMetrics } from '../common/capsule';
+import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 
 /* ── 胶囊几何（H5 无胶囊：行高 44px、右侧不预留、头像正常渲染） ───────── */
 const capsule = getCapsuleMetrics();

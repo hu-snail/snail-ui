@@ -870,7 +870,7 @@ const wrapperStyle = computed(() => {
 /* Placeholder styling rides `placeholder-style` (native attribute), not
  * `::placeholder` — pseudo-elements do not exist on App (§116.2). */
 
-textarea.sn-input__native {
+.sn-input__native--textarea {
   resize: vertical;
   padding: 8rpx 0;
 }

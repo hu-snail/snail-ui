@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tooltip (uni-end) — 关闭按钮与偏移（show-close / offset）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-tooltip from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTooltip from '@snui/uni-x/components/sn-tooltip/sn-tooltip.uvue';
+const withClose = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnTooltip
+      :model-value="withClose"
+      content="带关闭按钮，点击 × 直接收起"
+      :show-close="true"
+      :offset="{ x: 0, y: 6 }"
+      placement="top"
+      @update:model-value="withClose = $event"
+    >
+      <SnButton block><text>带关闭按钮 + offset</text></SnButton>
+    </SnTooltip>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding-top: 40rpx;
+}
+</style>

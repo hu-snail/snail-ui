@@ -124,10 +124,10 @@ const rootStyle = computed(() => {
   return parts.join('; ');
 });
 
-const waterStyle = computed(
-  () =>
-    `height: ${current.value}%; transition: height ${props.duration}ms cubic-bezier(0.33, 1, 0.68, 1)`,
-);
+// Height is eased by the JS ticker above (single easing source) — a CSS
+// transition here would double-ease and desync the `{{ current }}%` readout
+// from the water level, and rebuild the style at ticker rate.
+const waterStyle = computed(() => `height: ${current.value}%`);
 
 /** 波浪块几何：宽度 / 高度 2×size，顶缘探出水面约 0.2×size 并绕中心旋转。 */
 const frontWaveStyle = computed(() => {

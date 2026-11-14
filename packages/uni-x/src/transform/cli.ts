@@ -72,14 +72,36 @@ function transformComponents(): { uvueCount: number; tsCount: number } {
   return { uvueCount, tsCount };
 }
 
+function transformUtils(): number {
+  // Shared `src/utils/*.ts` helpers are imported by generated components via
+  // `../../utils/...` — they must ship inside dist or npm consumption breaks.
+  const uniUtilsDir = resolve(pkgRoot, '../../packages/uni/src/utils');
+  const utilsDir = join(distDir, 'utils');
+  mkdirSync(utilsDir, { recursive: true });
+  let count = 0;
+  for (const entry of readdirSync(uniUtilsDir, { withFileTypes: true })) {
+    if (!entry.isFile() || isSkipFile(entry.name) || !entry.name.endsWith('.ts')) continue;
+    const relPath = `utils-shared/${entry.name}`;
+    const source: string = readFileSync(join(uniUtilsDir, entry.name), 'utf8');
+    const issues: TransformIssue[] = [];
+    writeFileSync(join(utilsDir, entry.name), applyPatches(source, relPath, issues));
+    outcomes.push({ relPath, issues });
+    count++;
+  }
+  return count;
+}
+
 function emitTheme(): void {
   const parts: string[] = [
     '/*',
     ' * @snui/uni-x theme — class-only token layer for uni-app x App (ADR-0004).',
     ' *',
     ' * Generated from @snui/tokens + @snui/tokens-mp. `:root` / `page` selectors',
-    ' * are rewritten to `.sn-theme-root` (sn-config-provider adds it to its root',
-    ' * node; non-provider hosts must put the class on their page root view).',
+    ' * are emitted on both hooks: `page` (WeChat MP — app.wxss selectors cannot',
+    ' * match inside custom components, but custom properties inherit from the',
+    ' * page node) and `.sn-theme-root` (uni-app x App — sn-config-provider adds',
+    ' * it to its root node; non-provider hosts must put the class on their page',
+    ' * root view).',
     ' * Import from App.uvue:  @import "@snui/uni-x/theme/index.css";',
     ' */',
     '',
@@ -108,6 +130,8 @@ const KIND_LABELS: Record<IssueKind, string> = {
   'template-bare-text': 'bare text wrapped in <text>',
   'template-attr': 'template attribute rewritten',
   'script-guard': 'script DOM guard',
+  'import-rewrite': 'import specifier rewritten for .uvue dist',
+  'flex-direction-row': 'flex-direction: row injected (uni-app x column default)',
   'defineSlots-stripped': 'defineSlots stripped',
   'defineSlots-manual': 'defineSlots needs manual review',
   patch: 'patch applied',
@@ -169,6 +193,7 @@ function main(): void {
   rmSync(distDir, { recursive: true, force: true });
   mkdirSync(componentsDir, { recursive: true });
   const counts = transformComponents();
+  counts.tsCount += transformUtils();
   emitTheme();
   emitReport(counts);
   const dropped: number = outcomes.reduce(

@@ -155,6 +155,21 @@ describe('sn-navbar', () => {
       expect(wrapper.find('.sn-navbar__placeholder').attributes('aria-hidden')).toBe('true');
     });
 
+    it('mirrors the safe-area box on the placeholder when safeAreaInsetTop is on', () => {
+      const wrapper = mount(
+        SnNavbar,
+        { props: { fixed: true, placeholder: true, safeAreaInsetTop: true } },
+      );
+      expect(wrapper.find('.sn-navbar__placeholder').classes()).toContain(
+        'sn-navbar__placeholder--safe-area',
+      );
+      expect(
+        mount(SnNavbar, { props: { fixed: true, placeholder: true } })
+          .find('.sn-navbar__placeholder')
+          .classes(),
+      ).not.toContain('sn-navbar__placeholder--safe-area');
+    });
+
     it('adds the safe-area class', () => {
       const wrapper = mount(SnNavbar, { props: { safeAreaInsetTop: true } });
       expect(wrapper.find('.sn-navbar').classes()).toContain('sn-navbar--safe-area');

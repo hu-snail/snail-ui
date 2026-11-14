@@ -341,12 +341,15 @@ const SCENARIO_LABEL_OVERRIDES = {
   'upload-status': '文件状态渲染（`status`）',
   'upload-image-mode': '缩略图模式（`imageMode`）',
   'upload-custom-style': '三层样式挂载点',
-  'avatar-css-icon': '字体图标（cssIcon / iconPrefix）',
   'avatar-mode': '图片裁切（mode）',
   'avatar-size': '尺寸（size）',
   'avatar-shape': '形状（shape）',
   'avatar-status': '在线状态（status）',
   'avatar-badge': '微标头像（badge 组合）',
+  'avatar-group-max-count': '截断计数（max-count）',
+  'avatar-group-collapse': '自定义折叠文本（collapse-avatar）',
+  'avatar-group-vertical': '竖向排列（vertical）',
+  'avatar-group-shape': '形状（shape）',
   'badge-dot': '红点（is-dot）',
   'badge-shape': '形状与描边（shape / border）',
   'badge-offset': '偏移与颜色（top / right / bgColor）',
@@ -510,10 +513,25 @@ const PAGE_BG_OVERRIDES = {
 
 /**
  * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
- * 下拉菜单的面板是组件自身坐标系内的 absolute 层、遮罩是 fixed 全屏层——
- * 白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接浮在页面画布上。
+ * - drop-menu / tabbar：组件的面板是自身坐标系内的 absolute 层、遮罩是
+ *   fixed 全屏层——白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接
+ *   浮在页面画布上。
+ * - cell：单元格分组自带 surface 背景，那就是组件的真实形态——白卡底与
+ *   组件背景双重叠加，去底后分组按真实页面渲染直接浮在画布上。
+ * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
+ * （保持 drop-menu / tabbar 既有产物不变）。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar']);
+const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell']);
+
+/** 透明变体在生成页里的按页注释主体（去掉卡底之后的 Why）。 */
+const MODULE_BARE_COMMENTS = {
+  default: `组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担`,
+  cell: `单元格分组自带 surface 背景，即组件的真实形态；白卡底会与
+ * 组件背景双重叠加。去掉卡底与描边，分组直接浮在页面画布上，层级由
+ * 分组自身的圆角 / 描边 / 分隔线承担`,
+};
 
 /**
  * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
@@ -583,6 +601,11 @@ const DEMO_ORDER = {
   'code-input-mp-no-border': 4,
   'code-input-mp-error-gutter': 5,
   'code-input-mp-custom-style': 6,
+  'circle-mp-basic': 1,
+  'circle-mp-size': 2,
+  'circle-mp-color': 3,
+  'circle-mp-speed': 4,
+  'circle-mp-custom-style': 5,
   'plate-input-mp-basic': 1,
   'plate-input-mp-new-energy': 2,
   'waterfall-mp-basic': 1,
@@ -891,12 +914,15 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'upload-status': 'File status rendering (`status`)',
   'upload-image-mode': 'Thumbnail mode (`imageMode`)',
   'upload-custom-style': 'Three styling mount points',
-  'avatar-css-icon': 'Font icons (`cssIcon` / `iconPrefix`)',
   'avatar-mode': 'Image fit (`mode`)',
   'avatar-size': 'Size (`size`)',
   'avatar-shape': 'Shape (`shape`)',
   'avatar-status': 'Presence status (`status`)',
   'avatar-badge': 'Badge avatars (badge composition)',
+  'avatar-group-max-count': 'Overflow limit (`max-count`)',
+  'avatar-group-collapse': 'Custom collapse text (`collapse-avatar`)',
+  'avatar-group-vertical': 'Vertical stacking (`vertical`)',
+  'avatar-group-shape': 'Shape (`shape`)',
   'badge-dot': 'Dot badge (`is-dot`)',
   'badge-shape': 'Shape & border (`shape` / `border`)',
   'badge-offset': 'Offset & color (`top` / `right` / `bgColor`)',
@@ -1263,9 +1289,7 @@ ${modules}
 ${
   !isHeadless && MODULE_BARE_PAGES.has(comp.key)
     ? `
-/* ${comp.key}：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
- * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
- * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
 .module {
   background: transparent;
   border: none;

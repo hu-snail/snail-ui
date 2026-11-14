@@ -263,7 +263,7 @@ const panelStyle = computed(() => {
 
 <template>
   <view
-    v-if="modelValue"
+    v-if="innerVisible"
     data-snui-component="tour"
     :class="rootClass"
     :style="rootStyle"

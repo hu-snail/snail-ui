@@ -1,0 +1,677 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-paging (uni-end) — 应用案例：整页信息流 App（紧凑预览 + 全屏场景）。
+ *
+ * 紧凑预览：胶囊频道切换 + 迷你信息流（SnPaging 完整下拉刷新 / 触底翻页），
+ *          点「整页演示」或任意条目进入全屏场景。
+ * 全屏场景：position: fixed 覆盖层 = 整个页面的应用 demo——
+ *          一级页：SnNavbar + SnTabs 三频道 + 信息流 + #bottom 底部栏；
+ *          二级页：文章详情（正文 + 点赞收藏操作行）+ 独立 sn-paging 评论分页，
+ *          v-show 叠层切换，返回后一级列表滚动位置保留。
+ * safe-area-inset-bottom：底部栏容器开启安全区适配。
+ */
+import SnPaging from '@snui/uni-x/components/sn-paging/sn-paging.uvue';
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import {
+  ArrowRight,
+  Bookmark,
+  MessageCircle,
+  Share2,
+  ThumbsUp,
+} from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
+interface FeedRow {
+  id: string;
+  title: string;
+  excerpt: string;
+}
+
+interface ReplyRow {
+  id: string;
+  author: string;
+  text: string;
+}
+
+/** 全屏覆盖层要盖住演示壳的所有内容（含毛玻璃头部 z-40）。 */
+const FULLSCREEN_Z = '1200';
+
+const channels = [
+  { name: '推荐', tag: 'hot' },
+  { name: '关注', tag: 'follow' },
+  { name: '热榜', tag: 'rank' },
+];
+const PAGE_SIZE = 8;
+/** 详情页评论总数（分页判停用）。 */
+const REPLY_TOTAL = 23;
+
+/** compact → 全屏信息流 → 文章详情。 */
+const screen = ref<'compact' | 'app' | 'detail'>('compact');
+const activeChannel = ref(0);
+const currentPost = ref('');
+const isLiked = ref(false);
+const isFavorited = ref(false);
+
+/** 紧凑预览与全屏信息流是两个独立 SnPaging 实例，各自持有列表。 */
+const miniFeed = ref<FeedRow[]>([]);
+const feed = ref<FeedRow[]>([]);
+const replies = ref<ReplyRow[]>([]);
+const miniPaging = ref<InstanceType<typeof SnPaging> | null>(null);
+const appPaging = ref<InstanceType<typeof SnPaging> | null>(null);
+const detailPaging = ref<InstanceType<typeof SnPaging> | null>(null);
+
+function channelTotal(tag: string): number {
+  if (tag === 'rank') return 12;
+  if (tag === 'follow') return 8;
+  return 30;
+}
+
+function buildFeedRows(
+  tag: string,
+  channelName: string,
+  pageNo: number,
+  pageSize: number,
+): FeedRow[] {
+  const total = channelTotal(tag);
+  const start = (pageNo - 1) * pageSize;
+  return Array.from({ length: Math.max(0, Math.min(pageSize, total - start)) }, (_, i) => {
+    const n = start + i + 1;
+    return {
+      id: `${tag}-${n}`,
+      title: `${channelName} · 信息流条目 ${n}`,
+      excerpt: `这是第 ${n} 条摘要：sn-paging 负责刷新与翻页，条目渲染交给宿主。`,
+    };
+  });
+}
+
+function queryMiniFeed(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    // 在响应时点读当前频道：切频道后到达的旧响应也不会串台。
+    const channel = channels[activeChannel.value] ?? channels[0];
+    miniPaging.value?.completeByTotal(
+      buildFeedRows(channel.tag, channel.name, pageNo, pageSize),
+      channelTotal(channel.tag),
+    );
+  }, 450);
+}
+
+function queryFeed(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    const channel = channels[activeChannel.value] ?? channels[0];
+    appPaging.value?.completeByTotal(
+      buildFeedRows(channel.tag, channel.name, pageNo, pageSize),
+      channelTotal(channel.tag),
+    );
+  }, 500);
+}
+
+const REPLY_AUTHORS = ['林夕', 'Kevin', '阿甘', 'Momo', '小鹿', '陈默'];
+const REPLY_TEXTS = [
+  '正好在找分页容器的方案，收藏了。',
+  '下拉手感比之前的实现顺滑很多。',
+  '二楼那个进场动画细节拉满。',
+  '问一下：触底加载支持自定义阈值吗？',
+  '已经在我们小程序里试过了，很稳。',
+  '评论区也是 sn-paging，套娃好评。',
+];
+
+function queryReplies(pageNo: number, pageSize: number): void {
+  setTimeout(() => {
+    const start = (pageNo - 1) * pageSize;
+    const rows = Array.from(
+      { length: Math.max(0, Math.min(pageSize, REPLY_TOTAL - start)) },
+      (_, i) => {
+        const n = start + i + 1;
+        return {
+          id: `r-${n}`,
+          author: REPLY_AUTHORS[n % REPLY_AUTHORS.length] ?? '访客',
+          text: `${REPLY_TEXTS[n % REPLY_TEXTS.length] ?? '好文。'}（${n}/${REPLY_TOTAL}）`,
+        };
+      },
+    );
+    detailPaging.value?.completeByTotal(rows, REPLY_TOTAL);
+  }, 450);
+}
+
+function switchChannel(index: number): void {
+  activeChannel.value = index;
+  appPaging.value?.reload();
+}
+
+function enterFull(): void {
+  screen.value = 'app';
+}
+
+function openDetail(row: FeedRow): void {
+  currentPost.value = row.title;
+  isLiked.value = false;
+  isFavorited.value = false;
+  screen.value = 'detail';
+  // 评论列表是独立分页实例：每次进入详情都从第一页拉取（auto=false，按需加载）。
+  detailPaging.value?.reload();
+}
+
+function backToFeed(): void {
+  screen.value = 'app';
+}
+
+function exitFull(): void {
+  screen.value = 'compact';
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <!-- ── 紧凑预览：迷你信息流 + 整页演示入口 ─────────────────────────── -->
+    <view class="pgc">
+      <view class="pgc__head">
+        <view class="pgc__chips">
+          <view
+            v-for="(channel, index) in channels"
+            :key="channel.tag"
+            class="pgc__chip"
+            :class="{ 'pgc__chip--active': index === activeChannel }"
+            @click="switchChannel(index)"
+          >
+            <text class="pgc__chip-text">{{ channel.name }}</text>
+          </view>
+        </view>
+        <view class="pgc__expand" role="button" aria-label="进入整页演示" @click="enterFull">
+          <text class="pgc__expand-text">整页演示</text>
+          <SnIcon :icon="ArrowRight" :size="12" />
+        </view>
+      </view>
+
+      <view class="pgc__viewport">
+        <SnPaging
+          ref="miniPaging"
+          v-model="miniFeed"
+          :default-page-size="PAGE_SIZE"
+          @query="queryMiniFeed"
+        >
+          <view v-for="row in miniFeed" :key="row.id" class="pgc__row" @click="enterFull">
+            <text class="pgc__row-title">{{ row.title }}</text>
+            <text class="pgc__row-excerpt">{{ row.excerpt }}</text>
+          </view>
+        </SnPaging>
+      </view>
+
+      <text class="pgx-meta">
+        迷你预览同样是完整 sn-paging：下拉刷新 / 触底翻页可用；点「整页演示」进入全屏应用场景。
+      </text>
+    </view>
+
+    <!-- ── 全屏覆盖层：整个页面的应用场景（信息流 App） ─────────────────── -->
+    <view v-if="screen !== 'compact'" class="pgx" :style="{ zIndex: FULLSCREEN_Z }">
+      <!-- 一级页：频道信息流。v-show 保实例，从详情页返回不丢滚动位置。 -->
+      <view v-show="screen === 'app'" class="pgx__page">
+        <SnPaging
+          ref="appPaging"
+          v-model="feed"
+          :default-page-size="PAGE_SIZE"
+          safe-area-inset-bottom
+          @query="queryFeed"
+        >
+          <template #top>
+            <SnNavbar
+              title="近期文章"
+              left-arrow
+              left-text="演示"
+              safe-area-inset-top
+              bordered
+              @back="exitFull"
+            />
+            <SnTabs :model-value="activeChannel" @change="switchChannel($event.index)">
+              <SnTab v-for="channel in channels" :key="channel.tag" :title="channel.name" />
+            </SnTabs>
+          </template>
+
+          <view v-for="row in feed" :key="row.id" class="pgx__card" @click="openDetail(row)">
+            <text class="pgx__card-title">{{ row.title }}</text>
+            <text class="pgx__card-excerpt">{{ row.excerpt }}</text>
+            <view class="pgx__card-foot">
+              <text class="pgx__card-hint">阅读全文</text>
+              <SnIcon :icon="ArrowRight" :size="12" class="pgx__card-arrow" />
+            </view>
+          </view>
+
+          <template #bottom>
+            <view class="pgx__bottombar">
+              <text class="pgx__bottombar-text">#bottom 固定操作栏 · 已适配安全区</text>
+            </view>
+          </template>
+        </SnPaging>
+      </view>
+
+      <!-- 二级页：文章详情 + 独立的评论分页实例 -->
+      <view v-show="screen === 'detail'" class="pgx__page">
+        <SnPaging
+          ref="detailPaging"
+          v-model="replies"
+          :auto="false"
+          :default-page-size="PAGE_SIZE"
+          safe-area-inset-bottom
+          @query="queryReplies"
+        >
+          <template #top>
+            <SnNavbar
+              :title="currentPost"
+              left-arrow
+              left-text="返回"
+              safe-area-inset-top
+              bordered
+              @back="backToFeed"
+            />
+          </template>
+
+          <!-- 文章卡：正文区（非分页数据，随列表一起滚动） -->
+          <view class="pgd">
+            <text class="pgd__title">{{ currentPost }}</text>
+            <view class="pgd__byline">
+              <text class="pgd__author">snui 团队</text>
+              <text class="pgd__dot">·</text>
+              <text class="pgd__date">今天 09:30</text>
+            </view>
+            <view class="pgd__hero" />
+            <text class="pgd__para">
+              sn-paging 把下拉刷新、触底翻页、空态与失败重试收敛在一个容器里：宿主只关心 @query
+              里发请求、complete* 汇报结果，聚合列表经 v-model 推回。
+            </text>
+            <text class="pgd__para">
+              本页的评论区就是一个独立的 sn-paging 实例——一级页与二级页各自维护分页状态，
+              互不干扰；返回时一级列表的滚动位置原样保留。
+            </text>
+            <view class="pgd__ops">
+              <view
+                class="pgd__op"
+                :class="{ 'pgd__op--active': isLiked }"
+                role="button"
+                @click="isLiked = !isLiked"
+              >
+                <SnIcon :icon="ThumbsUp" :size="14" />
+                <text class="pgd__op-text">{{ isLiked ? '已赞 128' : '点赞 127' }}</text>
+              </view>
+              <view class="pgd__op">
+                <SnIcon :icon="MessageCircle" :size="14" />
+                <text class="pgd__op-text">评论 {{ REPLY_TOTAL }}</text>
+              </view>
+              <view
+                class="pgd__op"
+                :class="{ 'pgd__op--active': isFavorited }"
+                role="button"
+                @click="isFavorited = !isFavorited"
+              >
+                <SnIcon :icon="Bookmark" :size="14" />
+                <text class="pgd__op-text">{{ isFavorited ? '已收藏' : '收藏' }}</text>
+              </view>
+              <view class="pgd__op">
+                <SnIcon :icon="Share2" :size="14" />
+                <text class="pgd__op-text">分享</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 评论头 -->
+          <view class="pgd__replies-head">
+            <text class="pgd__replies-title">评论（{{ REPLY_TOTAL }}）</text>
+          </view>
+          <view v-for="row in replies" :key="row.id" class="pgd__reply">
+            <text class="pgd__reply-author">{{ row.author }}</text>
+            <text class="pgd__reply-text">{{ row.text }}</text>
+          </view>
+
+          <template #bottom>
+            <view class="pgd__commentbar">
+              <text class="pgd__commentbar-text">说点什么…</text>
+              <SnIcon :icon="Send" :size="14" class="pgd__commentbar-icon" />
+            </view>
+          </template>
+        </SnPaging>
+      </view>
+    </view>
+  </view>
+</template>
+<style scoped>
+/* ── 紧凑预览 ─────────────────────────────────────────────────────────── */
+.pgc {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.pgc__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.pgc__chips {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.pgc__chip {
+  display: flex;
+  align-items: center;
+  height: 52rpx;
+  padding: 0 22rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+  flex-direction: row;
+}
+
+.pgc__chip--active {
+  background-color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+  --snx-pgc__chip-text-color: var(--sn-mp-color-text-on-primary);
+  --snx-pgc__chip-text-font-weight: var(--sn-mp-font-weight-medium);
+}
+
+.pgc__chip-text {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--snx-pgc__chip-text-color, var(--sn-mp-color-text-secondary));
+  font-weight: var(--snx-pgc__chip-text-font-weight);
+}
+
+.pgc__expand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-default);
+}
+
+.pgc__expand-text {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+  font-weight: var(--sn-mp-font-weight-medium);
+}
+
+.pgc__viewport {
+  box-sizing: border-box;
+  height: 520rpx;
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-md);
+  overflow: hidden;
+}
+
+.pgc__row {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.pgc__row-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgc__row-excerpt {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* 底部说明文字（demo 自带样式，无全局依赖）。 */
+.pgx-meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* ── 全屏覆盖层：整个页面的应用场景 ──────────────────────────────────── */
+/* position: fixed 直接锚定视口——docs 预览 iframe 内即为手机屏；
+ * 不放在 .module 等设 overflow 的卡片里也不会被裁切（fixed 脱离卡片坐标系，
+ * 前提是祖先不带 transform / backdrop-filter，App.vue 已按此约定设计）。 */
+.pgx {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--sn-mp-color-background-subtle);
+  animation: pgx-in 0.24s ease both;
+}
+
+@keyframes pgx-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* v-show 叠层的页面画布：absolute 铺满覆盖层，内部交给 SnPaging(100%)。 */
+.pgx__page {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 信息流卡片：与紧凑预览的行不同，全屏下用留白卡片更接近真实 App。 */
+.pgx__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3) 0;
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgx__card-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgx__card-excerpt {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgx__card-foot {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.pgx__card-hint {
+  color: var(--sn-mp-color-action-primary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgx__card-arrow {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.pgx__bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+  flex-direction: row;
+}
+
+.pgx__bottombar-text {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* ── 文章详情页 ───────────────────────────────────────────────────────── */
+.pgd {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-xl);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  line-height: 1.4;
+}
+
+.pgd__byline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.pgd__author {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__dot {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+
+.pgd__date {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+/* 头图占位：token 渐变色块，不引外部图片资源。 */
+.pgd__hero {
+  height: 240rpx;
+  border-radius: var(--sn-mp-radius-md);
+  background: linear-gradient(135deg, var(--sn-mp-color-action-primary), var(--sn-mp-color-purple));
+  opacity: 0.85;
+}
+
+.pgd__para {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: 1.7;
+}
+
+.pgd__ops {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 32rpx;
+  padding-top: var(--sn-mp-spacing-2);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__op {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.pgd__op-text {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--snx-pgd__op-text-color, var(--sn-mp-color-text-tertiary));
+}
+
+.pgd__op--active {
+  color: var(--sn-mp-color-action-primary);
+  --snx-pgd__op-text-color: var(--sn-mp-color-action-primary);
+}
+
+.pgd__replies-head {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+}
+
+.pgd__replies-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__reply {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin: 0 var(--sn-mp-spacing-3) var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+  border: 1px solid var(--sn-mp-color-border-subtle);
+}
+
+.pgd__reply-author {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__reply-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: 1.6;
+}
+
+.pgd__commentbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.pgd__commentbar-text {
+  color: var(--sn-mp-color-input-placeholder);
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
+.pgd__commentbar-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+</style>

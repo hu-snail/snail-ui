@@ -205,7 +205,7 @@ AI self-check after output:
 [ ] No inline-style color values
 [ ] Token alias matches end: Web no --sn-mp-*; uni no --sn-web-*
 [ ] Props match get_component_meta({ end }) exactly
-[ ] vue-tsc --noEmit passes (vue-tsc for Web, uni-app vue-tsc for uni)
+[ ] vue-tsc --noEmit passes (vue-tsc for Web and uni-app; uni-app x has no CLI — HBuilderX compiles it)
 [ ] Interaction states complete (loading / disabled / error / empty)
 [ ] No eval() / new Function() / document.write()
 [ ] No direct DOM manipulation (use Vue reactivity)

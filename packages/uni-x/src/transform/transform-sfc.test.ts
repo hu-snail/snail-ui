@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { parseSfc } from './sfc.ts';
 import { transformScript } from './script.ts';
 import { transformVueToUvue } from './index.ts';
@@ -93,4 +95,57 @@ describe('transformVueToUvue', () => {
     expect(applyPatches('plain source', 'unknown/unknown.vue', issues)).toBe('plain source');
     expect(issues).toHaveLength(0);
   });
+});
+
+/**
+ * Regression guard (§103): sn-popover / sn-tooltip used to never open on
+ * uni-app x App because taps on their slot content (the page's compilation
+ * unit) never reach the component's own views there. The open path now rides
+ * an `#ifdef APP` catcher node the component owns — the transform must carry
+ * that gate, the catcher and its renamed click binding into the .uvue
+ * verbatim, and keep the catcher's CSS out of the flattener's hands.
+ */
+describe('transformVueToUvue — App trigger open path (popover / tooltip)', () => {
+  const uniComponents = resolve(__dirname, '../../../uni/src/components');
+
+  const gatedBlockOf = (out: string, startMark: string, endMark: string): string => {
+    const start = out.indexOf(startMark);
+    const end = out.indexOf(endMark, start);
+    expect(start, `${startMark} must survive the transform`).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    return out.slice(start, end);
+  };
+
+  for (const component of ['sn-popover', 'sn-tooltip'] as const) {
+    it(`should keep the ${component} App catcher and its click binding in the .uvue`, () => {
+      const src = readFileSync(join(uniComponents, component, `${component}.vue`), 'utf8');
+      const out = transformVueToUvue(src, `components/${component}/${component}.uvue`).code;
+
+      // Template gate: the catcher stays App-only and stays bound to the same
+      // toggle handler (uni-app x has no @tap, so the rename must land inside
+      // the gate).
+      const templateGate = gatedBlockOf(out, '<!-- #ifdef APP -->', '<!-- #endif -->');
+      expect(templateGate).toContain(`${component}__trigger-catcher`);
+      expect(templateGate).toContain('@click.stop="onTriggerTap"');
+      expect(templateGate).toContain('hover-class=');
+
+      // The catcher must not leak outside the App gates — the component
+      // carries TWO gates (template catcher + style shield), so both are
+      // stripped before the leak check (the style block lives after the
+      // template one; stripping back-to-front keeps the slice indexes valid).
+      const styleStart = out.indexOf('/* #ifdef APP */');
+      const styleEnd = out.indexOf('/* #endif */') + '/* #endif */'.length;
+      expect(styleStart).toBeGreaterThan(-1);
+      const afterStyle = out.slice(0, styleStart) + out.slice(styleEnd);
+      const tplStart = afterStyle.indexOf('<!-- #ifdef APP -->');
+      const tplEnd = afterStyle.indexOf('<!-- #endif -->') + '<!-- #endif -->'.length;
+      const withoutGate = afterStyle.slice(0, tplStart) + afterStyle.slice(tplEnd);
+      expect(withoutGate).not.toContain(`${component}__trigger-catcher`);
+
+      // Style gate: the catcher's absolute shield rule survives with its gate.
+      const styleGate = gatedBlockOf(out, '/* #ifdef APP */', '/* #endif */');
+      expect(styleGate).toContain(`.${component}__trigger-catcher {`);
+      expect(styleGate).toContain('position: absolute');
+    });
+  }
 });

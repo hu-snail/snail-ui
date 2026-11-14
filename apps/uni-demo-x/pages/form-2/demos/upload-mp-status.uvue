@@ -1,0 +1,28 @@
+<script setup lang="ts">
+/** Demo: sn-upload — 文件状态渲染：status 列表形态按 success / fail 渲染进度与失败态。 */
+import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';
+import type { UploadFileItem } from '@snui/uni-x/components/sn-upload/sn-upload-types';
+
+const files = ref<UploadFileItem[]>([
+  {
+    uid: 1,
+    url: 'https://picsum.photos/seed/a/200',
+    name: 'a.png',
+    status: 'success',
+    percent: 100,
+  },
+  { uid: 2, url: 'https://picsum.photos/seed/b/200', name: 'b.png', status: 'fail' },
+]);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnUpload :file-list="files" :auto-upload="false" />
+    <text class="sn-demo__meta">status="success" 显示完成态；status="fail" 显示失败态</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

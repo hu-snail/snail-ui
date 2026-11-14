@@ -55,7 +55,9 @@ const actions = [{ name: '分享给朋友' }, { name: '保存到相册' }, { nam
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-action-sheet.sn-demo-contained {
   position: absolute;
 }

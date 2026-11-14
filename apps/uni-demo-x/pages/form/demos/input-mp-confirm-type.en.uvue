@@ -1,0 +1,19 @@
+<script setup lang="ts">
+/** Demo: sn-input — confirm-type: the soft-keyboard confirm button label. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const text = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="text" confirm-type="search" placeholder="search button" />
+    <SnInput v-model="text" confirm-type="send" placeholder="send button" />
+    <SnInput v-model="text" confirm-type="go" placeholder="go button" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

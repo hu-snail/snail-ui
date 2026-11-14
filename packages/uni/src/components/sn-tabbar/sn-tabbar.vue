@@ -208,6 +208,10 @@ const rootStyle = computed(() => {
   width: 100%;
   height: 100rpx;
   background-color: var(--sn-tabbar-bar-bg);
+  /* 凸起中心项（--elevated 形态）的圆钮带 -52rpx 负 margin 上浮出栏顶。
+   * uni-app x App 端 overflow 默认 hidden（W3C 是 visible），不显式放开会裁掉
+   * 凸出的上半截。Web / 小程序端 visible 本就是默认值，此声明无害。 */
+  overflow: visible;
 }
 
 .sn-tabbar--fixed {

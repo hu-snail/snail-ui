@@ -87,4 +87,4 @@ CSS 变量自动切换。无需额外配置。
 
 - 组件文档：[`Button`](/components/web/button)
 - 主题定制：[`theme`](/theme/overview)
-- 快速接入 uni-app：[`uni-app 快速开始`](/guide/uni/quick-start)
+- 快速接入 uni-app x：[`uni-app x 快速开始`](/guide/uni/quick-start)

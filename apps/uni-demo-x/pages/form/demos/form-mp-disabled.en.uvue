@@ -1,0 +1,82 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-form — form-wide disabled: the flag cascades into every FormItem,
+ * the fields turn read-only and the submit button is disabled too, while the
+ * field values stay unchanged.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
+import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+import type { FormRule } from '@snui/uni-x/components/sn-form/sn-form-types';
+
+const form = reactive({ email: 'mia@example.com', password: 'secret123', city: 'Hangzhou' });
+const disabled = ref(true);
+const submitted = ref('');
+
+const rules: Record<string, FormRule[]> = {
+  email: [{ type: 'email', message: 'Invalid email address' }],
+};
+
+function toggle(): void {
+  disabled.value = !disabled.value;
+}
+
+function handleSubmit(): void {
+  submitted.value = JSON.stringify(form);
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton :type="disabled ? 'primary' : 'default'" block @click="toggle"><text>
+      {{ disabled ? 'Enable the form' : 'Disable the form' }}
+    </text></SnButton>
+
+    <SnForm
+      :model="form"
+      :rules="rules"
+      :disabled="disabled"
+      label-position="left"
+      label-width="200"
+    >
+      <SnFormItem prop="email" label="Email" required>
+        <SnInput v-model="form.email" type="email" placeholder="Enter an email" clearable />
+      </SnFormItem>
+      <SnFormItem prop="password" label="Password">
+        <SnInput
+          v-model="form.password"
+          type="password"
+          placeholder="Enter a password"
+          show-password
+        />
+      </SnFormItem>
+      <SnFormItem prop="city" label="City">
+        <SnInput v-model="form.city" placeholder="Enter your city" clearable />
+      </SnFormItem>
+      <SnButton type="primary" block :disabled="disabled" @click="handleSubmit"><text>Submit</text></SnButton>
+    </SnForm>
+
+    <text class="sn-demo__meta">
+      {{
+        disabled
+          ? 'Form disabled: fields are read-only, the submit button is inert'
+          : 'Form enabled'
+      }}
+      | Result: {{ submitted || 'not submitted yet' }}
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
+}
+
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

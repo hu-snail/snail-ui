@@ -1,6 +1,6 @@
 # 介绍
 
-snail-aui v3.1 是面向 **Vue 3（Web 端，PC 桌面）** + **uni-app（移动端，触屏）** 的 AI-Native UI 框架生态。
+snail-aui v3.1 是面向 **Vue 3（Web 端，PC 桌面）** + **uni-app x（移动端，触屏）** 的 AI-Native UI 框架生态。
 
 **最关键的设计原则：端独立**。
 
@@ -74,7 +74,7 @@ SnButton / SnTable    sn-button / sn-list / sn-pull-refresh
 ## 下一步
 
 - [Web 端快速开始](/guide/web/quick-start)
-- [uni-app 端快速开始](/guide/uni/quick-start)
+- [uni-app x 端快速开始](/guide/uni/quick-start)
 - [架构](/guide/web/architecture)
 - [主题与 Token](/theme/overview)
 - [风格包](/style-packs/overview)

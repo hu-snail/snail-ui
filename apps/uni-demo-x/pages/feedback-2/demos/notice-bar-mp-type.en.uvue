@@ -1,0 +1,20 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-notice-bar (uni-end) — English shadow of notice-bar-mp-type.
+ */
+import SnNoticeBar from '@snui/uni-x/components/sn-notice-bar/sn-notice-bar.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNoticeBar type="warning" text="warning: the default type, amber tint" />
+    <SnNoticeBar type="info" text="info: neutral information, grey tint" />
+    <SnNoticeBar type="danger" text="danger: a hazard notice, red tint" />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

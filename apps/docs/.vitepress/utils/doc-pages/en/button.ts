@@ -87,7 +87,8 @@ import { Button } from '@snui/vue-web';
     {
       name: 'button-web-color',
       title: 'Custom color',
-      blurb: 'color prop sets custom CSS color → `--sn-button-color` token override.',
+      blurb:
+        'color prop sets custom CSS color → `--sn-button-color` token override; gradients layer via background-image.',
     },
     {
       name: 'button-web-tag',

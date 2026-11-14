@@ -1,0 +1,83 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar — sheet chrome and footer slot.
+ *
+ * One cell card carries the entry: show-confirm = false drops the confirm
+ * button and the confirm-left slot holds a clear action, on top of the
+ * modal / safe-area / stacking / custom class and style forwarding.
+ */
+import { Info } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
+import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const noConfirm = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const open = ref(false);
+
+function fmtStamp(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const noConfirmText = computed(() => fmtStamp(noConfirm.value));
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="Sheet chrome &amp; footer slot">
+      <SnCell
+        title="No confirm button + footer slot"
+        label="show-confirm=false · confirm-left slot holds a clear action · close-on-click-modal=false"
+        :value="noConfirmText"
+        placeholder="Not selected"
+        :prefix-icon-data="Info"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
+    <SnCalendar
+      v-model="noConfirm"
+      v-model:visible="open"
+      type="date"
+      title="No confirm button"
+      :min-date="min"
+      :max-date="max"
+      :show-confirm="false"
+      :close-on-click-modal="false"
+      :safe-area-inset-bottom="false"
+      :z-index="1100"
+      root-portal
+      custom-class="sn-demo__sheet"
+      custom-style="border-radius: var(--sn-mp-radius-xl);"
+    >
+      <template #confirm-left>
+        <view class="sn-demo__reset" role="button" aria-label="Clear" @click="noConfirm = null">
+          <text>Clear</text>
+        </view>
+      </template>
+    </SnCalendar>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__sheet {
+  background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-demo__reset {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+}
+</style>

@@ -11,7 +11,7 @@ export const gapDocPage: SnDocPageData = {
   title: 'Gap 间隔槽',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '默认 14px，可传数字（按 px）或带单位的字符串：' }],
@@ -35,7 +35,7 @@ export const gapDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Gap 间隔槽.vue',
     meta: 'Vue 3 · <script setup>',
@@ -99,8 +99,8 @@ import { Gap } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-divider', link: '/components/uni/divider' },
-    next: { text: 'sn-tag', link: '/components/uni/tag' },
+    prev: { text: 'Divider', link: '/components/uni/divider' },
+    next: { text: 'Tag', link: '/components/uni/tag' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

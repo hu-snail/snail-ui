@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-rich-text (uni-end) — 样式映射（tagStyle / classStyles）。 */
+import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
+const styled = `
+  <p class="eyebrow">YOU ARE INVITED</p>
+  <h2>一起，去见山</h2>
+  <p>把一整个下午<br>交给阳光、草地和好朋友。</p>
+  <p class="ql-align-center">居中的邀请语</p>
+`;
+
+const tagStyle = { p: 'text-align:center;line-height:1.9;', h2: 'text-align:center;' };
+const classStyles = {
+  eyebrow: 'font-size:12px;letter-spacing:3px;color:var(--sn-mp-color-feedback-success);',
+};
+</script>
+<template>
+  <view class="sn-demo">
+    <SnRichText :content="styled" :tag-style="tagStyle" :class-styles="classStyles" />
+  </view>
+</template>
+<style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+</style>

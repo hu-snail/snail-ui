@@ -279,12 +279,16 @@ interface ParsedTag {
   length: number;
 }
 
-const TAG_OPEN_RE = /^<([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/;
+const TAG_OPEN_RE = /<([a-zA-Z][a-zA-Z0-9-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/y;
 const ATTR_RE = /([a-zA-Z_][\w:.-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
 
 /** Parse one open tag at the string head; null when there is no tag there. */
-function parseOpenTag(src: string): ParsedTag | null {
-  const match = TAG_OPEN_RE.exec(src);
+function parseOpenTag(content: string, from: number): ParsedTag | null {
+  // Sticky exec against the ORIGINAL string: slicing `content.slice(from)`
+  // per open tag allocates a copy of the remaining document (O(k·n) bytes
+  // churn on tag-heavy input) just for the regex anchor.
+  TAG_OPEN_RE.lastIndex = from;
+  const match = TAG_OPEN_RE.exec(content);
   if (match === null) return null;
   const raw: string = match[0];
   const name: string = match[1]!.toLowerCase();
@@ -409,7 +413,7 @@ export function parseRichText(content: string, options: RichTextParseOptions): R
       continue;
     }
 
-    const tag = parseOpenTag(content.slice(i));
+    const tag = parseOpenTag(content, i);
     if (tag === null) {
       // Lone '<' — literal text.
       appendText(currentChildren(), '<');

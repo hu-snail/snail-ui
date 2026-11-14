@@ -1,7 +1,13 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-dropdown', { 'sn-dropdown--disabled': disabled }]"
+    :class="[
+      'sn-dropdown',
+      {
+        'sn-dropdown--disabled': disabled,
+        'sn-dropdown--with-arrow': resolvedShowArrow,
+      },
+    ]"
     :data-snui-component="'dropdown'"
     :data-size="size"
     aria-haspopup="menu"
@@ -14,7 +20,11 @@
     @mouseenter="onTriggerMouseEnter"
     @mouseleave="onTriggerMouseLeave"
   >
-    <slot />
+    <!-- The trigger slot owns the visual affordance (usually an SnButton), so
+         the arrow is INJECTED into it rather than laid out beside it — a
+         sibling arrow would sit outside the button's border. See
+         TriggerWithArrow below. -->
+    <TriggerWithArrow />
 
     <!-- Main menu panel -->
     <Teleport to="body">
@@ -178,9 +188,15 @@
  *   - no render-fn props (renderIcon / renderLabel): rows customize through
  *     `options[].icon` (any Vue component) and the whole panel body can be
  *     taken over with the Arco-parity `#content` scoped slot (receives
- *     close(); options are ignored while it is provided). No arrow, no
- *     focus trap: the trigger slot is expected to render a focusable
- *     element and its keydown bubbles to this wrapper
+ *     close(); options are ignored while it is provided). No focus trap:
+ *     the trigger slot is expected to render a focusable element and its
+ *     keydown bubbles to this wrapper
+ *   - trigger arrow (AUI additive): a real SVG chevron-down replaces the
+ *     `▾` text glyph consumers used to type into their buttons. It is
+ *     INJECTED INTO the default slot's trigger element (so it sits inside
+ *     the button's border), never laid out beside it. `showArrow` toggles
+ *     it (auto-off for `contextMenu`), `icon` swaps the component, and the
+ *     `#icon` scoped slot (`{ open }`) replaces the node entirely
  *
  * Positioning: Teleport to body + fixed coordinates against the trigger
  * rect (same strategy as SnSelect — no full popper), scroll/resize follow
@@ -188,10 +204,22 @@
  * same way. Per AGENTS.md §41/§42 every timer, listener and follower is
  * torn down on close + unmount.
  */
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
+import {
+  cloneVNode,
+  computed,
+  defineComponent,
+  h,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useSlots,
+  watch,
+} from 'vue';
+import type { Component, VNode } from 'vue';
 import SnIcon from '../icon/SnIcon.vue';
 import { useOverlayFollow } from '../_internal/use-overlay-follow';
-import { ChevronRightIcon } from './sn-dropdown-icons';
+import { ChevronDownIcon, ChevronRightIcon } from './sn-dropdown-icons';
 import {
   normalizeDropdownOptions,
   type SnDropdownItemNode,
@@ -226,6 +254,17 @@ const props = withDefaults(
      * for uncontrolled behavior.
      */
     show?: boolean | undefined;
+    /**
+     * Render the built-in chevron-down trigger arrow. `contextMenu` has no
+     * visible trigger affordance, so it never shows the arrow even when true.
+     */
+    showArrow?: boolean;
+    /**
+     * Custom trigger arrow — any Vue component (e.g. a lucide icon).
+     * Falls back to the built-in ChevronDownIcon. The `#icon` slot wins over
+     * this prop when both are supplied.
+     */
+    icon?: Component | undefined;
   }>(),
   {
     options: () => [],
@@ -234,6 +273,8 @@ const props = withDefaults(
     disabled: false,
     size: 'medium',
     show: undefined,
+    showArrow: true,
+    icon: undefined,
   },
 );
 
@@ -253,6 +294,12 @@ defineSlots<{
    */
   default?(): unknown;
   /**
+   * Trigger arrow override. Replaces the `icon` prop / built-in chevron-down
+   * and receives `open` so a custom glyph can rotate or swap on menu state.
+   * `showArrow={false}` removes the whole arrow node, including this slot.
+   */
+  icon?(slotProps: { open: boolean }): unknown;
+  /**
    * Arco `#content` parity — fully custom panel body (icon rows, rich
    * rows, footers). When provided it REPLACES the `options` rendering
    * entirely (submenu included) and receives `close()` so custom rows can
@@ -266,6 +313,115 @@ defineSlots<{
 /* ─────────── Option normalization (§27: pure + deterministic) ─────────── */
 
 const slots = useSlots();
+
+/**
+ * A contextMenu opens at the pointer — there is no visible trigger to hang
+ * an arrow on, so `showArrow` is ignored for that trigger by design.
+ */
+const resolvedShowArrow = computed(() => props.showArrow && props.trigger !== 'contextMenu');
+
+/** Built-in SVG arrow unless the consumer passes a custom icon component. */
+const resolvedIcon = computed<Component>(() => props.icon ?? ChevronDownIcon);
+
+/* ─────────── Trigger + in-trigger arrow (§113: SVG, never a glyph) ─────── */
+
+/**
+ * The arrow is its own component so it subscribes to `isVisible` directly.
+ * That matters because the trigger (e.g. an SnButton with static slots) is
+ * not required to re-render when the panel opens — otherwise the `--open`
+ * rotation and the `#icon` slot's `open` value would go stale.
+ *
+ * Decorative (`aria-hidden`); the root owns the menu a11y. `#icon` takes
+ * precedence over the `icon` prop.
+ */
+const TriggerArrow = defineComponent({
+  name: 'SnDropdownTriggerArrow',
+  render() {
+    return h(
+      'span',
+      {
+        class: ['sn-dropdown__arrow', { 'sn-dropdown__arrow--open': isVisible.value }],
+        'aria-hidden': 'true',
+      },
+      slots.icon ? slots.icon({ open: isVisible.value }) : [h(resolvedIcon.value)],
+    );
+  },
+});
+
+function triggerArrow(): VNode {
+  return h(TriggerArrow);
+}
+
+/**
+ * Append the arrow to a trigger vnode's default slot WITHOUT re-creating the
+ * consumer's element: `cloneVNode` preserves key / ref / patchFlag, and we
+ * replace `children` with a slot record whose `default` re-invokes the
+ * original slot and then the arrow. Dropping the compiler's `_` (STABLE)
+ * marker keeps `updateSlots` active, so a consumer's dynamic trigger label
+ * still refreshes; the arrow's own state is handled by TriggerArrow.
+ *
+ * For a plain element host (a raw `<button>` rather than a component) the
+ * slot record does not apply, so a fresh `h()` vnode carries the extra child.
+ */
+function withArrow(host: VNode): VNode {
+  const isComponent = typeof host.type === 'object' || typeof host.type === 'function';
+  if (!isComponent) {
+    const kids = host.children;
+    // Slot-record children (a plain object) cannot take an appended sibling —
+    // treat them as un-injectable, same as the empty case.
+    const children = Array.isArray(kids)
+      ? kids
+      : kids == null || typeof kids === 'object'
+        ? []
+        : [kids];
+    const elementProps = {
+      ...(host.props ?? {}),
+      ...(host.key != null ? { key: host.key } : {}),
+    };
+    return h(host.type as string, elementProps, [...children, triggerArrow()]) as VNode;
+  }
+  const original = (host.children ?? {}) as Record<string, unknown>;
+  const originalDefault = original.default as (() => VNode[]) | undefined;
+  const nextSlots: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(original)) {
+    if (key !== '_' && typeof value === 'function') nextSlots[key] = value;
+  }
+  nextSlots.default = () => [...(originalDefault ? originalDefault() : []), triggerArrow()];
+  const cloned = cloneVNode(host);
+  cloned.children = nextSlots;
+  // 32 = ShapeFlags.SLOT_CHILDREN (not publicly exported by Vue). A trigger
+  // rendered with no children (e.g. `<SnButton />`) lacks that bit; without
+  // it Vue would treat the slot record as a single plain vnode child.
+  cloned.shapeFlag |= 32;
+  // -2 = PatchFlags.BAIL: the injected slot is dynamic, so opt out of the
+  // compiled "stable slots" fast path. Otherwise an SnButton with a static
+  // label would never pick up a changed slot record on parent re-renders.
+  cloned.patchFlag = -2;
+  return cloned;
+}
+
+/**
+ * Render the default slot with the arrow INSIDE the first trigger element.
+ * A sibling arrow would sit outside the button's border (visually detached),
+ * which is exactly what consumers complained about. When the slot is empty
+ * or contains only text/comment nodes there is nothing to inject into, so
+ * the arrow falls back to being a sibling of the slot content.
+ */
+const TriggerWithArrow = defineComponent({
+  name: 'SnDropdownTriggerContent',
+  render() {
+    const nodes = slots.default?.() ?? [];
+    if (!resolvedShowArrow.value) return nodes;
+    // Text / Comment / Fragment / Static are symbols — not injectable hosts.
+    const index = nodes.findIndex((node) => typeof node.type !== 'symbol');
+    if (index < 0) return [...nodes, triggerArrow()];
+    const host = nodes[index];
+    if (!host) return [...nodes, triggerArrow()];
+    const injected = [...nodes];
+    injected[index] = withArrow(host);
+    return injected;
+  },
+});
 
 /**
  * Arco `#content` parity — when the consumer provides the content slot it
@@ -826,13 +982,51 @@ watch(isVisible, (open) => {
 <style scoped>
 .sn-dropdown {
   display: inline-flex;
+  align-items: center;
   box-sizing: border-box;
   font-family: inherit;
   line-height: 1;
 }
 
+.sn-dropdown--with-arrow {
+  gap: 6px;
+}
+
 .sn-dropdown--disabled {
   cursor: not-allowed;
+}
+</style>
+
+<!-- The arrow is injected INTO the consumer's trigger (an SnButton, a link,
+     ...), so its vnode is created by TriggerWithArrow's render fn and does not
+     carry this SFC's `data-v-*` scope id. These rules therefore live in a
+     plain (non-scoped) block — the class names are namespaced, so a global
+     selector is safe. A scoped rule would silently stop matching. -->
+<style>
+.sn-dropdown__arrow {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  /* Inside the trigger's content span there is no flex gap of its own. */
+  margin-left: 6px;
+  color: var(--sn-web-dropdown-arrow-color, var(--sn-web-color-text-tertiary));
+  transition: transform 0.18s ease-out;
+}
+
+.sn-dropdown__arrow svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+/* Fallback: with no trigger element to inject into, the arrow is a sibling
+   of the slot content and the wrapper's own flex gap supplies the spacing. */
+.sn-dropdown > .sn-dropdown__arrow {
+  margin-left: 0;
+}
+
+.sn-dropdown__arrow--open {
+  transform: rotate(180deg);
 }
 </style>
 

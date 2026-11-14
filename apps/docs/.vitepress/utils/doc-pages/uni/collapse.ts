@@ -15,7 +15,7 @@ export const collapseDocPage: SnDocPageData = {
   title: 'Collapse 折叠面板',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -45,7 +45,7 @@ export const collapseDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Collapse 折叠面板.vue',
     meta: 'Vue 3 · <script setup>',
@@ -162,8 +162,8 @@ import { Collapse } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-steps', link: '/components/uni/steps' },
-    next: { text: 'sn-sticky', link: '/components/uni/sticky' },
+    prev: { text: 'Steps', link: '/components/uni/steps' },
+    next: { text: 'Sticky', link: '/components/uni/sticky' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

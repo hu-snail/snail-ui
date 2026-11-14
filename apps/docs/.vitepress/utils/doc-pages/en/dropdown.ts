@@ -49,7 +49,14 @@ import { Dropdown } from '@snui/vue-web';
     {
       name: 'dropdown-web-basic',
       title: 'Basic',
-      blurb: 'Click trigger + options (with divider).',
+      blurb:
+        'Click trigger + options (with divider); the SVG arrow is injected inside the trigger button.',
+    },
+    {
+      name: 'dropdown-web-arrow',
+      title: 'Trigger icon (arrow / custom / slot)',
+      blurb:
+        'The arrow renders INSIDE the button border (not as an outside sibling); `icon` swaps the icon component, `#icon` replaces the whole node and receives `open`, `showArrow=false` hides it.',
     },
     {
       name: 'dropdown-web-hover',
@@ -107,6 +114,18 @@ import { Dropdown } from '@snui/vue-web';
         default: 'undefined',
         desc: 'Controlled show state. When passed, the panel only follows it and `update:show` is emitted instead of flipping internal state; omit for uncontrolled behavior.',
       },
+      {
+        name: 'showArrow',
+        type: 'boolean',
+        default: 'true',
+        desc: "Render the built-in SVG chevron-down trigger arrow. It is injected INTO the default slot's trigger element (inside the button border) and rotates 180° while open. Always hidden for `trigger=contextMenu`, which has no visible trigger affordance.",
+      },
+      {
+        name: 'icon',
+        type: 'Component | undefined',
+        default: 'undefined',
+        desc: 'Custom trigger arrow — any Vue component (e.g. a lucide icon). Falls back to the built-in ChevronDownIcon; the `#icon` slot takes precedence.',
+      },
     ],
   },
   events: {
@@ -147,7 +166,12 @@ import { Dropdown } from '@snui/vue-web';
       {
         name: 'default',
         props: '—',
-        desc: 'Trigger content; use a focusable element so keyboard users can reach the menu.',
+        desc: "Trigger content; use a focusable element so keyboard users can reach the menu. The arrow is injected into this element's default slot, sharing the button border with the label.",
+      },
+      {
+        name: 'icon',
+        props: '{ open: boolean }',
+        desc: 'Replaces the whole trigger-arrow node (takes precedence over the `icon` prop and the built-in arrow); `open` lets a custom glyph swap or rotate. `showArrow=false` removes the node entirely.',
       },
       {
         name: 'content',

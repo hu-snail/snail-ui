@@ -1,4 +1,4 @@
-/** Liquid (uni-app) — English page data. Props from sn-liquid.vue; demos from the en page. */
+/** Liquid (uni-app x) — English page data. Props from sn-liquid.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const liquidDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const liquidDocPageEn: SnDocPageData = {
   title: 'Liquid',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -36,7 +36,7 @@ export const liquidDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'Liquid.vue',
@@ -134,8 +134,8 @@ import { Liquid } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-waterfall', link: '/en/components/uni/waterfall' },
-    next: { text: 'sn-barcode', link: '/en/components/uni/barcode' },
+    prev: { text: 'Waterfall', link: '/en/components/uni/waterfall' },
+    next: { text: 'Barcode', link: '/en/components/uni/barcode' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

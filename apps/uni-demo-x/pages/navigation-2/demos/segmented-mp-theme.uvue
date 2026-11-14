@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-segmented — 主题（theme）。 */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
+const theme = ref('outline');
+const options = [
+  { value: 'card', label: '卡片' },
+  { value: 'outline', label: '轮廓' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSegmented v-model="theme" :options="options" theme="outline" />
+    <text class="sn-demo__meta">theme=outline 轮廓风格；对象选项自定义 label。</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

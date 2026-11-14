@@ -1,4 +1,4 @@
-/** FitSwiper Adaptive Carousel (uni-app) — English page data. Props from sn-fit-swiper.vue; demos from the en page. */
+/** FitSwiper Adaptive Carousel (uni-app x) — English page data. Props from sn-fit-swiper.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const fitSwiperDocPageEn: SnDocPageData = {
@@ -10,7 +10,7 @@ export const fitSwiperDocPageEn: SnDocPageData = {
   title: 'FitSwiper Adaptive Carousel',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -35,7 +35,7 @@ export const fitSwiperDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'FitSwiper Adaptive Carousel.vue',
@@ -172,8 +172,8 @@ import { FitSwiper } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-swiper', link: '/en/components/uni/swiper' },
-    next: { text: 'sn-count-down', link: '/en/components/uni/count-down' },
+    prev: { text: 'Swiper', link: '/en/components/uni/swiper' },
+    next: { text: 'CountDown', link: '/en/components/uni/count-down' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

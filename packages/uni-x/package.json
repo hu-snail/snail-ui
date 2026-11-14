@@ -9,6 +9,7 @@
   ],
   "exports": {
     "./components/*": "./dist/components/*",
+    "./utils/*": "./dist/utils/*",
     "./theme/index.css": "./dist/theme/index.css",
     "./package.json": "./package.json"
   },

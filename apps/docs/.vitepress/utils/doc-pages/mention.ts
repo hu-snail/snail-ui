@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const mentionDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Mention' }],
-  title: 'Mention',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'Mention 提及' }],
+  title: 'Mention 提及',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

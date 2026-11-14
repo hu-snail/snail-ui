@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-signature — stroke params.
+ * pressure / maxWidth / minWidth / minSpeed are pressure-parity props (the speed →
+ * width simulation is not implemented); `lineWidth` sets the stroke width directly.
+ */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">pressure / maxWidth / minWidth / minSpeed + lineWidth</text>
+    <SnSignature :pressure="true" :max-width="8" :min-width="2" :min-speed="0.5" :line-width="3" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

@@ -1,0 +1,256 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabbar — fixed to the viewport bottom + live settings (full page).
+ *
+ * The bar is really fixed at the viewport bottom (placeholder keeps the
+ * content flow clear); everything else on the page is a setting:
+ *   - mode capsule: standard / glass / elevate (glass + elevate linked)
+ *   - switches: bordered, safeAreaInsetBottom, placeholder, badges
+ *   - active tone: primary / orange / green
+ */
+import SnTabbar from '@snui/uni-x/components/sn-tabbar/sn-tabbar.uvue';
+import SnTabbarItem from '@snui/uni-x/components/sn-tabbar/sn-tabbar-item.uvue';
+type Mode = 'default' | 'glass' | 'elevate';
+type Tone = 'primary' | 'orange' | 'green';
+
+const mode = ref<Mode>('glass');
+const bordered = ref(true);
+const safeArea = ref(true);
+const placeholder = ref(true);
+const showBadge = ref(true);
+const tone = ref<Tone>('primary');
+
+const active = ref(0);
+
+const isGlass = computed(() => mode.value === 'glass');
+const elevate = computed(() => (mode.value === 'elevate' ? { index: 2, icon: 'plus' } : null));
+
+const toneMap: Record<Tone, { active: string; inactive: string }> = {
+  primary: { active: '', inactive: '' },
+  orange: { active: '#ff8f1f', inactive: '#a1a1aa' },
+  green: { active: '#10b981', inactive: '#a1a1aa' },
+};
+const activeColor = computed(() => toneMap[tone.value].active);
+const inactiveColor = computed(() => toneMap[tone.value].inactive);
+
+const modeLabel: Record<Mode, string> = {
+  default: 'Standard',
+  glass: 'Glass',
+  elevate: 'Elevate',
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">Mode</text>
+      <view class="sn-tabbar-demo__capsule">
+        <view
+          v-for="m in ['default', 'glass', 'elevate'] as Mode[]"
+          :key="m"
+          class="sn-tabbar-demo__capsule-item"
+          :class="{ 'sn-tabbar-demo__capsule-item--active': mode === m }"
+          role="tab"
+          :aria-selected="mode === m"
+          @click="mode = m"
+        ><text>
+          {{ modeLabel[m] }}
+        </text></view>
+      </view>
+    </view>
+
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">Options</text>
+      <view class="sn-tabbar-demo__switches">
+        <view
+          v-for="s in [
+            { key: 'bordered', label: 'Top border', value: bordered },
+            { key: 'safeArea', label: 'Safe area', value: safeArea },
+            { key: 'placeholder', label: 'Placeholder', value: placeholder },
+            { key: 'badge', label: 'Badges', value: showBadge },
+          ]"
+          :key="s.key"
+          class="sn-tabbar-demo__switch"
+          role="switch"
+          :aria-checked="s.value"
+          @click="
+            s.key === 'bordered'
+              ? (bordered = !bordered)
+              : s.key === 'safeArea'
+                ? (safeArea = !safeArea)
+                : s.key === 'placeholder'
+                  ? (placeholder = !placeholder)
+                  : (showBadge = !showBadge)
+          "
+        >
+          <text class="sn-tabbar-demo__switch-label">{{ s.label }}</text>
+          <view class="sn-tabbar-demo__track" :class="{ 'sn-tabbar-demo__track--on': s.value }">
+            <view class="sn-tabbar-demo__knob" :class="{ 'sn-tabbar-demo__knob--on': s.value }" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="sn-tabbar-demo__group">
+      <text class="sn-tabbar-demo__label">Active tone</text>
+      <view class="sn-tabbar-demo__tones">
+        <view
+          v-for="toneOpt in ['primary', 'orange', 'green'] as Tone[]"
+          :key="toneOpt"
+          class="sn-tabbar-demo__tone"
+          :class="{ 'sn-tabbar-demo__tone--active': tone === toneOpt }"
+          role="radio"
+          :aria-checked="tone === toneOpt"
+          @click="tone = toneOpt"
+        >
+          <view
+            class="sn-tabbar-demo__swatch"
+            :style="{
+              background:
+                toneOpt === 'primary'
+                  ? 'var(--sn-mp-color-action-primary)'
+                  : toneOpt === 'orange'
+                    ? '#ff8f1f'
+                    : '#10b981',
+            }"
+          />
+          <text>{{
+            toneOpt === 'primary' ? 'Primary' : toneOpt === 'orange' ? 'Orange' : 'Green'
+          }}</text>
+        </view>
+      </view>
+    </view>
+
+    <text class="sn-demo__meta">
+      Mode: {{ modeLabel[mode] }} / selected index {{ active }} (the bar is fixed at the viewport
+      bottom; settings apply live)
+    </text>
+
+    <SnTabbar
+      v-model="active"
+      fixed
+      :glass="isGlass"
+      :elevate="elevate"
+      :bordered="bordered"
+      :safe-area-inset-bottom="safeArea"
+      :placeholder="placeholder"
+      :active-color="activeColor"
+      :inactive-color="inactiveColor"
+      :z-index="40"
+    >
+      <SnTabbarItem title="Home" icon="house" />
+      <SnTabbarItem title="Explore" icon="search" :value="showBadge ? 12 : undefined" />
+      <SnTabbarItem title="Create" icon="plus" :is-dot="showBadge && mode !== 'elevate'" />
+      <SnTabbarItem title="Inbox" icon="bell" />
+      <SnTabbarItem title="Me" icon="user" />
+    </SnTabbar>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding-bottom: 40rpx;
+}
+.sn-tabbar-demo__group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-tabbar-demo__label {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-tabbar-demo__capsule {
+  display: flex;
+  gap: 8rpx;
+  padding: 8rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-subtle);
+  flex-direction: row;
+}
+.sn-tabbar-demo__capsule-item {
+  flex: 1 1 0;
+  padding: 14rpx 0;
+  border-radius: var(--sn-mp-radius-full);
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+  text-align: center;
+}
+.sn-tabbar-demo__capsule-item--active {
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+}
+.sn-tabbar-demo__switches {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-elevated);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+.sn-tabbar-demo__switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 28rpx;
+  flex-direction: row;
+}
+.sn-tabbar-demo__switch-label {
+  font-size: var(--sn-mp-font-size-md);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-tabbar-demo__track {
+  position: relative;
+  width: 88rpx;
+  height: 48rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-subtle);
+  transition: background-color 150ms ease;
+}
+.sn-tabbar-demo__track--on {
+  background-color: var(--sn-mp-color-action-primary);
+}
+.sn-tabbar-demo__knob {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: #ffffff;
+  box-shadow: var(--sn-mp-shadow-xs);
+  transition: transform 150ms ease;
+}
+.sn-tabbar-demo__knob--on {
+  transform: translateX(40rpx);
+}
+.sn-tabbar-demo__tones {
+  display: flex;
+  gap: 16rpx;
+  flex-direction: row;
+}
+.sn-tabbar-demo__tone {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 14rpx 24rpx;
+  border-radius: var(--sn-mp-radius-full);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+  flex-direction: row;
+}
+.sn-tabbar-demo__tone--active {
+  border-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-tabbar-demo__swatch {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: var(--sn-mp-radius-full);
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

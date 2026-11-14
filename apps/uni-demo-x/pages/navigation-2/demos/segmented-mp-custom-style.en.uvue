@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-segmented — English shadow of segmented-mp-custom-style.
+ *
+ * Both props land on the root node: `customClass` appends a class, `customStyle`
+ * becomes the root inline style (replacing the component's own fill / radius).
+ */
+import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
+const options = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+];
+
+const styledValue = ref('month');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__meta">customClass: appends a root class (dashed frame)</text>
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-class="sn-segmented-demo--framed"
+    />
+
+    <text class="sn-demo__meta">
+      customStyle: root inline style (replacing the default fill and radius)
+    </text>
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-style="background-color: var(--sn-mp-color-action-primary-soft); border-radius: var(--sn-mp-radius-lg);"
+    />
+
+    <text class="sn-demo__meta"
+      >Both together: customClass adds the frame, customStyle changes the fill</text
+    >
+    <SnSegmented
+      v-model="styledValue"
+      :options="options"
+      custom-class="sn-segmented-demo--framed"
+      custom-style="background-color: var(--sn-mp-color-background-subtle);"
+    />
+    <text class="sn-demo__meta">Current value: {{ styledValue }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+/* customClass lands on the sn-segmented root node, so it needs :deep. */
+</style>

@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-slider — theme: `theme="capsule"` thickens the track. */
+import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';
+const capsule = ref(60);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlider v-model="capsule" theme="capsule" />
+    <text class="sn-demo__meta">theme="capsule": the capsule thickens the track</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

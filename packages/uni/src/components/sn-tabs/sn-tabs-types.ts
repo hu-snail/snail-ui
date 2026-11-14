@@ -7,7 +7,7 @@
  */
 
 import type { ComputedRef, InjectionKey, Ref } from 'vue';
-import type { IconData } from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon-types';
 
 /** Value shared by the container's selection and each pane's `name`. */
 export type SnTabsValue = number | string;

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h } from 'vue';
-import { Search } from 'lucide-vue-next';
+import { Search, Crown } from 'lucide-vue-next';
 import SnAvatar from './SnAvatar.vue';
 import { registerSnIcons } from '../icon/sn-icon-registry';
 import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions';
@@ -105,6 +105,109 @@ describe('SnAvatar (AUI-WEB-DS-001)', () => {
   it('applies the color override via inline style', () => {
     const w = mount(SnAvatar, { props: { color: '#ff5722' } });
     expect(w.attributes('style')).toContain('background');
+  });
+
+  it('paints the presence dot for online and offline status', () => {
+    const online = mount(SnAvatar, { props: { status: 'online' } });
+    expect(online.find('.sn-avatar__status').exists()).toBe(true);
+    expect(online.classes()).toContain('sn-avatar--status-online');
+
+    const offline = mount(SnAvatar, { props: { status: 'offline' } });
+    expect(offline.find('.sn-avatar__status').exists()).toBe(true);
+    expect(offline.classes()).toContain('sn-avatar--status-offline');
+  });
+
+  it('omits the dot when status is cleared', () => {
+    const w = mount(SnAvatar, { props: { status: '' } });
+    expect(w.find('.sn-avatar__status').exists()).toBe(false);
+    expect(w.classes()).not.toContain('sn-avatar--status-online');
+  });
+
+  it('announces the presence state on the root aria-label', () => {
+    const w = mount(SnAvatar, { props: { status: 'online' } });
+    expect(w.attributes('aria-label')).toBe('在线');
+  });
+
+  it('moves the dot to the top-right corner via statusPosition', () => {
+    const w = mount(SnAvatar, { props: { status: 'online', statusPosition: 'top-right' } });
+    expect(w.classes()).toContain('sn-avatar--status-top');
+    // The class is additive — the value class stays for the colour rule.
+    expect(w.classes()).toContain('sn-avatar--status-online');
+  });
+
+  it('renders the corner badge with a registered icon', () => {
+    registerSnIcons({ Crown });
+    const w = mount(SnAvatar, { props: { badgeIcon: 'Crown' } });
+    const badge = w.find('.sn-avatar__badge');
+    expect(badge.exists()).toBe(true);
+    expectIconRendered(badge, '.sn-icon');
+    expectNoMissingIcons(w, 'SnAvatar badgeIcon');
+  });
+
+  it('moves the badge to the bottom-right corner via badgePosition', () => {
+    const w = mount(SnAvatar, { props: { badgeIcon: 'Crown', badgePosition: 'bottom-right' } });
+    expect(w.classes()).toContain('sn-avatar--badge-bottom');
+  });
+
+  it('switches the thumbnail to inverse text when a color is set', () => {
+    const plain = mount(SnAvatar, { props: { fallbackText: '张' } });
+    expect(plain.classes()).not.toContain('sn-avatar--colored');
+
+    const colored = mount(SnAvatar, { props: { fallbackText: '张', color: '#2080f0' } });
+    expect(colored.classes()).toContain('sn-avatar--colored');
+  });
+
+  describe('textMode truncation', () => {
+    it('renders the full text by default', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张三丰');
+    });
+
+    it('keeps only the surname with textMode="surname"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '欧阳娜娜', textMode: 'surname' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('欧');
+    });
+
+    it('keeps the last two glyphs with textMode="last-two"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰', textMode: 'last-two' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('三丰');
+    });
+
+    it('falls back to the whole text when it is shorter than two glyphs', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张', textMode: 'last-two' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张');
+    });
+
+    it('masks everything after the surname with textMode="masked"', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张三丰', textMode: 'masked' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张**');
+    });
+
+    it('leaves a single-glyph name readable when masked', () => {
+      const w = mount(SnAvatar, { props: { fallbackText: '张', textMode: 'masked' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('张');
+    });
+
+    it('splits by code point so surrogate pairs stay intact', () => {
+      const name = 'A𠮷B'; // 𠮷 is a CJK extension-B surrogate pair
+      const surname = mount(SnAvatar, { props: { fallbackText: name, textMode: 'surname' } });
+      expect(surname.find('.sn-avatar__text').text()).toBe('A');
+
+      const lastTwo = mount(SnAvatar, { props: { fallbackText: name, textMode: 'last-two' } });
+      expect(lastTwo.find('.sn-avatar__text').text()).toBe('𠮷B');
+
+      const masked = mount(SnAvatar, { props: { fallbackText: name, textMode: 'masked' } });
+      expect(masked.find('.sn-avatar__text').text()).toBe('A**');
+    });
+
+    it('keeps the default slot ahead of the truncated text', () => {
+      const w = mount(SnAvatar, {
+        props: { fallbackText: '张三丰', textMode: 'masked' },
+        slots: { default: '自定义' },
+      });
+      expect(w.text()).toBe('自定义');
+      expect(w.find('.sn-avatar__text').exists()).toBe(false);
+    });
   });
 });
 

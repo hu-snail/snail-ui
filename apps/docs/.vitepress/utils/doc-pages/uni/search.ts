@@ -11,11 +11,11 @@ export const searchDocPage: SnDocPageData = {
   title: 'Search 搜索框',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '跨 uni-app 多端的搜索输入框。easycom 自动注册（' },
+    { t: 'text', s: '跨 uni-app x 多端的搜索输入框。easycom 自动注册（' },
     { t: 'code', s: 'components/sn-search/sn-search.vue' },
     { t: 'text', s: ' → ' },
     { t: 'code', s: '<sn-search>' },
@@ -47,7 +47,7 @@ export const searchDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Search 搜索框.vue',
     meta: 'Vue 3 · <script setup>',
@@ -182,8 +182,8 @@ import { Search } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-input-number', link: '/components/uni/input-number' },
-    next: { text: 'sn-checkbox', link: '/components/uni/checkbox' },
+    prev: { text: 'InputNumber', link: '/components/uni/input-number' },
+    next: { text: 'Checkbox', link: '/components/uni/checkbox' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

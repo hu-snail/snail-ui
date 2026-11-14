@@ -23,9 +23,11 @@ export type SnRadioStatus = 'default' | 'error' | 'warning';
  * Layout variant (AUI additive — orthogonal to uni's marker `type`):
  *   - `default` — inline marker + label (existing behaviour)
  *   - `card`    — the whole row is a selectable card; custom content via `#card`
- *   - `icon`    — square icon tile, centred glyph only (icon-grid pickers)
+ *
+ * The former `icon` variant is gone: icon pickers are expressed as a card
+ * whose content happens to be an icon (see `markerShape` for the check mark).
  */
-export type SnChoiceVariant = 'default' | 'card' | 'icon';
+export type SnChoiceVariant = 'default' | 'card';
 
 /**
  * Where the marker (or corner tick) sits.
@@ -53,12 +55,12 @@ export type SnChoiceCheckedStyle = 'default' | 'border' | 'fill' | 'border-fill'
 export type SnChoiceLabelPlacement = 'marker-first' | 'label-first';
 
 /**
- * Marker shape for the inline form (AUI additive).
- *   - `ring`     — outlined circle with a small inner dot (historical)
- *   - `inverted` — the whole circle fills with the theme colour and the inner
- *                  dot is punched out in the surface colour (反转态)
+ * Marker shape (AUI additive).
+ *   - `base`     — the standard outlined ring / box
+ *   - `inverted` — reversed fill: the plate takes the theme colour and the
+ *                  inner dot / tick is punched out in the surface colour
  */
-export type SnChoiceMarkerShape = 'ring' | 'inverted';
+export type SnChoiceMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Option shape for the group's `options` prop (naive-ui parity). */
 export interface SnRadioOption {

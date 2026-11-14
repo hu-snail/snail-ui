@@ -15,7 +15,7 @@ export const barcodeDocPage: SnDocPageData = {
   title: 'Barcode 条形码',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,7 +43,7 @@ export const barcodeDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Barcode 条形码.vue',
     meta: 'Vue 3 · <script setup>',
@@ -161,8 +161,8 @@ import { Barcode } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-liquid', link: '/components/uni/liquid' },
-    next: { text: 'sn-dialer', link: '/components/uni/dialer' },
+    prev: { text: 'Liquid', link: '/components/uni/liquid' },
+    next: { text: 'Dialer', link: '/components/uni/dialer' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

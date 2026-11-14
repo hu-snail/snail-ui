@@ -74,20 +74,20 @@ import { Radio } from '@snui/vue-web';
       blurb: '整块可点选卡片，#card 插槽自定义内容，选中为主题色描边 + 浅底 + 右上角标。',
     },
     {
-      name: 'radio-web-icon',
-      title: '图标模式（variant="icon"）',
-      blurb: '方形图标砖网格，#icon 插槽放字形，无文字行。',
-    },
-    {
       name: 'radio-web-indicator',
       title: '指示器位置与选中态',
       blurb: 'indicatorPlacement top-right / bottom-right / none；checkedStyle border / fill。',
     },
     {
       name: 'radio-web-inverted',
-      title: '反转选中态与标题在前',
+      title: '标记形态与标题在前',
       blurb:
-        'markerShape="inverted" 选中为主题色实心 + 白点；labelPlacement="label-first" 标题在前、选择在后。',
+        'markerShape：inverted 反转实心 + 白点、check 选中显示勾图标；labelPlacement="label-first" 标题在前、选择在后。',
+    },
+    {
+      name: 'radio-web-card-indicator',
+      title: '卡片选中按钮形态',
+      blurb: '左侧垂直居中（支持反转）/ 右侧垂直居中打勾。',
     },
   ],
   props: {
@@ -134,9 +134,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
-        desc: `卡片 / 图标形态；card 用 #card 插槽自定义内容，icon 为方形图标砖。组级可下发。`,
+        desc: `卡片形态；card 用 #card 插槽自定义内容（可放图标 + 文案）。组级可下发。`,
       },
       {
         name: `indicatorPlacement`,
@@ -158,9 +158,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
-        desc: `行内标记形态；inverted 为反转态（整盘主题色实心 + 白点）。`,
+        type: `'base' | 'inverted' | 'check'`,
+        default: `'base'`,
+        desc: `行内标记形态；inverted 为反转态（整盘主题色实心 + 白点），check 选中显示勾图标（card + trailing 也自动用勾）。`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
@@ -219,11 +219,6 @@ import { Radio } from '@snui/vue-web';
         name: `card`,
         props: '{ checked: boolean; disabled: boolean }',
         desc: '卡片内容（variant="card"）；替换默认标记 + 文字行，角标仍按 indicatorPlacement 叠加。',
-      },
-      {
-        name: `icon`,
-        props: '{ checked: boolean }',
-        desc: '图标砖字形（variant="icon"）；缺省渲染中性占位方块。',
       },
     ],
   },

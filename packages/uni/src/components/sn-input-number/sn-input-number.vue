@@ -2,7 +2,7 @@
 /**
  * sn-input-number (uni-end) — numeric stepper with an editable field.
  *
- * Reference library: wot-ui `wd-input-number`
+ * Reference library: wot-ui `wd-input-number` (v2)
  *   (https://wot-ui.cn/component/input-number.html)
  * Per AGENTS.md §112, the prop surface below mirrors wd-input-number 1:1.
  * Anything new added here MUST also be added to the reference list in
@@ -11,6 +11,34 @@
  * File path follows uni-app easycom convention:
  *   components/sn-input-number/sn-input-number.vue
  * → auto-registered as `<sn-input-number>` in any .vue that uses it.
+ *
+ * ## Visual contract (wd-input-number v2)
+ *
+ * Three segments joined edge to edge — minus / field / plus — each carrying
+ * its own fill and corner radius; the root is transparent and layout-only, so
+ * a stretched flex parent can never turn the control into a full-width track.
+ * Segment fills live on the segments (not the root) for the same reason.
+ *
+ *   - `default`       soft fill, 1px reverse-fill dividers between segments
+ *   - `outline`       soft fill, outer hairline border, no dividers
+ *   - `outline-split` soft fill, short hairline dividers, no outer border
+ *   - `primary`       minus = primary hairline outline, plus = primary fill
+ *   - `circle`        gray pill track, white circular end buttons (additive)
+ *
+ * `buttonColor` (additive) overrides the action fill on any theme and flips
+ * the glyph to the on-primary color.
+ *
+ * Glyphs are `SnIcon` (not `::before` / `::after`): the uni-app x CSS
+ * transform drops pseudo-elements, so drawing the +/- bars in CSS would leave
+ * the uvue build with blank buttons.
+ *
+ * ## Timers (AGENTS.md §41)
+ *
+ * `longPress` runs one `setInterval` while a button is held. It is cleared on
+ * `touchend` / `touchcancel`, on unmount, before every new press, and — via
+ * `touchmove` — as soon as the held finger travels away from its start point
+ * (touch events keep firing on the press-start element after the finger
+ * leaves it, so without the move check the stepper would keep counting).
  *
  * ## Value model
  *
@@ -26,12 +54,6 @@
  * numeric bounds are skipped in that case, which is exactly wd-input-number's
  * `allow-null` contract.
  *
- * ## Timers (AGENTS.md §41)
- *
- * `longPress` runs one `setInterval` while a button is held. It is cleared on
- * `touchend` / `touchcancel`, on unmount and before every new press, so a
- * half-pressed button can never outlive the component.
- *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -45,8 +67,8 @@ import { Minus as MinusIcon, Plus as PlusIcon } from '../sn-icon/sn-icon-set';
 
 defineOptions({ name: 'SnInputNumber' });
 
-/** wot-ui `InputNumberTheme`. */
-type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary';
+/** wot-ui `InputNumberTheme` + the AUI-additive `circle` (AGENTS.md §112.3a). */
+type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary' | 'circle';
 
 const props = withDefaults(
   defineProps<{
@@ -103,6 +125,16 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the root node. */
     customStyle?: string;
+
+    /* ── AUI additive (AGENTS.md §112.3a) ────────────────────────────────── */
+
+    /**
+     * Action-button fill — any CSS color or `var(--sn-mp-color-*)` token.
+     * Overrides every theme's button fill; the glyph flips to the on-primary
+     * color (naive-ui `color` semantics — intended for saturated hues such as
+     * `var(--sn-mp-color-action-primary)`).
+     */
+    buttonColor?: string | undefined;
   }>(),
   {
     modelValue: 0,
@@ -129,6 +161,7 @@ const props = withDefaults(
     round: false,
     customClass: '',
     customStyle: '',
+    buttonColor: undefined,
   },
 );
 
@@ -160,29 +193,54 @@ function round(value: number): number {
   return Math.round(value * factor) / factor;
 }
 
-/** Clamp + snap + round. Pure — used by `commit` and `updateOnInit`. */
-function normalize(raw: number): number {
-  let next = raw;
-  if (next < props.min) next = props.min;
-  if (next > props.max) next = props.max;
-  if (props.stepStrictly && props.step > 0) {
-    const steps = Math.round((next - props.min) / props.step);
-    next = props.min + steps * props.step;
-    if (next > props.max) next -= props.step;
-    if (next < props.min) next = props.min;
-  }
-  return round(next);
+/** Decimal places of a positive step (`0.1` → 1), used for float-safe maths. */
+function stepPrecisionOf(step: number): number {
+  const text = String(step);
+  const dot = text.indexOf('.');
+  return dot === -1 ? 0 : text.length - dot - 1;
 }
 
-/** Can the value move by `direction`? */
+/**
+ * Snap onto the `step` grid anchored at zero — the wd-input-number contract
+ * (`step: 2` → …, 4, 6, 8, …), NOT `min + k * step`. Anchoring at `min` would
+ * emit values that are not multiples of `step` (min 3 / step 2 → 5).
+ */
+function snapToStep(value: number, step: number): number {
+  const factor = 10 ** stepPrecisionOf(step);
+  return (Math.round(value / step) * factor * step) / factor;
+}
+
+/** Smallest / largest step multiple that still sits inside `[min, max]`. */
+function strictBound(value: number, step: number): number {
+  const factor = 10 ** stepPrecisionOf(step);
+  if (value < props.min) {
+    const minSteps = Math.ceil((props.min * factor) / (step * factor));
+    const candidate = (minSteps * step * factor) / factor;
+    if (candidate <= props.max) return candidate;
+  }
+  const maxSteps = Math.floor((props.max * factor) / (step * factor));
+  return (maxSteps * step * factor) / factor;
+}
+
+/** Clamp + snap + round. Pure — used by `commit`, `canStep` and `updateOnInit`. */
+function normalize(raw: number): number {
+  if (!props.stepStrictly || props.step <= 0) {
+    return round(Math.min(Math.max(raw, props.min), props.max));
+  }
+  const snapped = snapToStep(raw, props.step);
+  const inRange = snapped >= props.min && snapped <= props.max;
+  return round(inRange ? snapped : strictBound(snapped, props.step));
+}
+
+/** Can the value move by `direction`? Strict mode compares normalized targets. */
 function canStep(direction: 1 | -1): boolean {
   if (props.disabled) return false;
   if (direction === 1 && props.disablePlus) return false;
   if (direction === -1 && props.disableMinus) return false;
   const current = numericValue.value;
   if (!Number.isFinite(current)) return true;
-  if (direction === 1) return current < props.max;
-  return current > props.min;
+  const candidate = normalize(current + direction * props.step);
+  return direction === 1 ? candidate > current : candidate < current;
 }
 
 async function commit(next: number | string): Promise<boolean> {
@@ -213,10 +271,12 @@ async function stepBy(direction: 1 | -1): Promise<void> {
 }
 
 function onMinus(): void {
+  if (consumePressTap()) return;
   void stepBy(-1);
 }
 
 function onPlus(): void {
+  if (consumePressTap()) return;
   void stepBy(1);
 }
 
@@ -268,6 +328,39 @@ function onFieldFocus(): void {
 /* ── Long press (AGENTS.md §41 — one timer, always cleared) ────────────── */
 
 let pressTimer: ReturnType<typeof setInterval> | null = null;
+/**
+ * Set once the repeat interval has stepped — the `@tap` that always follows
+ * a long-press release must not add one extra step (same trap as the
+ * `consumeTap` flag in sn-keyboard-keys).
+ */
+let pressTicked = false;
+/** Viewport point where the held press began — origin for the move-away check. */
+let pressOrigin: { x: number; y: number } | null = null;
+
+/**
+ * Finger travel (px) that reads as "moved off the button" — the repeat pauses
+ * (touch events keep firing on the press-start element after the finger
+ * leaves it, so without this the stepper keeps counting). The 28px button
+ * leaves ≤14px of slack from a center touch; 8px sits well above hold jitter
+ * (~1–2px) while catching every real exit. A paused press restarts only with
+ * a new touch — deliberate (predictable over clever, AGENTS.md §85).
+ */
+const PRESS_CANCEL_DISTANCE_PX = 8;
+
+/** Minimal touch shape shared by uni's H5 / MP / App event payloads. */
+interface PressTouch {
+  clientX: number;
+  clientY: number;
+}
+/** `ArrayLike` — uni's `TouchList` is index-based, not a real array. */
+type PressTouchEvent = { touches?: ArrayLike<PressTouch> };
+
+/** Consume the trailing tap after a long-press repeat; true = swallow it. */
+function consumePressTap(): boolean {
+  if (!pressTicked) return false;
+  pressTicked = false;
+  return true;
+}
 
 function clearPressTimer(): void {
   if (pressTimer !== null) {
@@ -276,16 +369,32 @@ function clearPressTimer(): void {
   }
 }
 
-function onPressStart(direction: 1 | -1): void {
+function onPressStart(direction: 1 | -1, event?: PressTouchEvent): void {
   if (!props.longPress) return;
+  const touch = event?.touches?.[0];
+  pressOrigin = touch ? { x: touch.clientX, y: touch.clientY } : null;
   clearPressTimer();
+  pressTicked = false;
   pressTimer = setInterval(() => {
     if (!canStep(direction)) {
       clearPressTimer();
       return;
     }
+    pressTicked = true;
     void stepBy(direction);
   }, 120);
+}
+
+/** Pause the repeat once the held finger travels away from its start point. */
+function onPressMove(event?: PressTouchEvent): void {
+  if (pressTimer === null) return;
+  const touch = event?.touches?.[0];
+  if (!touch || !pressOrigin) return;
+  const dx = touch.clientX - pressOrigin.x;
+  const dy = touch.clientY - pressOrigin.y;
+  if (dx * dx + dy * dy > PRESS_CANCEL_DISTANCE_PX * PRESS_CANCEL_DISTANCE_PX) {
+    clearPressTimer();
+  }
 }
 
 function onPressEnd(): void {
@@ -308,6 +417,12 @@ const rootClass = computed(() => [
 ]);
 
 const rootStyle = computed(() => props.customStyle || undefined);
+
+/** Per-button inline fill — `buttonColor` overrides every theme's fill. */
+const actionStyle = computed(() => {
+  if (!props.buttonColor) return undefined;
+  return `background-color: ${props.buttonColor}; color: var(--sn-mp-color-text-on-primary);`;
+});
 
 const fieldWidthStyle = computed(() => {
   if (props.inputWidth === undefined || props.inputWidth === '') return undefined;
@@ -347,33 +462,36 @@ if (props.updateOnInit) {
         'sn-input-number__minus',
         { 'sn-input-number__action--disabled': minusDisabled },
       ]"
+      :style="actionStyle"
       role="button"
       aria-label="decrease"
       :aria-disabled="minusDisabled ? 'true' : undefined"
       :tabindex="minusDisabled ? -1 : 0"
       @tap="onMinus"
-      @touchstart="onPressStart(-1)"
+      @touchstart="onPressStart(-1, $event)"
+      @touchmove="onPressMove"
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
-      <SnIcon :icon="MinusIcon" :size="24" />
+      <view class="sn-input-number__action-divider" aria-hidden="true" />
+      <SnIcon :icon="MinusIcon" size="24rpx" />
     </view>
 
-    <input
-      v-if="!withoutInput"
-      class="sn-input-number__field"
-      :style="fieldWidthStyle"
-      :type="inputType"
-      :value="displayValue"
-      :placeholder="placeholder"
-      :disabled="fieldDisabled"
-      :aria-label="placeholder || 'number input'"
-      :adjust-position="adjustPosition"
-      @input="onInput"
-      @focus="onFieldFocus"
-      @blur="onFieldBlur"
-    />
-    <view v-else class="sn-input-number__divider" aria-hidden="true" />
+    <view v-if="!withoutInput" class="sn-input-number__inner">
+      <input
+        class="sn-input-number__field"
+        :style="fieldWidthStyle"
+        :type="inputType"
+        :value="displayValue"
+        :placeholder="placeholder"
+        :disabled="fieldDisabled"
+        :aria-label="placeholder || 'number input'"
+        :adjust-position="adjustPosition"
+        @input="onInput"
+        @focus="onFieldFocus"
+        @blur="onFieldBlur"
+      />
+    </view>
 
     <view
       :class="[
@@ -381,90 +499,171 @@ if (props.updateOnInit) {
         'sn-input-number__plus',
         { 'sn-input-number__action--disabled': plusDisabled },
       ]"
+      :style="actionStyle"
       role="button"
       aria-label="increase"
       :aria-disabled="plusDisabled ? 'true' : undefined"
       :tabindex="plusDisabled ? -1 : 0"
       @tap="onPlus"
-      @touchstart="onPressStart(1)"
+      @touchstart="onPressStart(1, $event)"
+      @touchmove="onPressMove"
       @touchend="onPressEnd"
       @touchcancel="onPressEnd"
     >
-      <SnIcon :icon="PlusIcon" :size="24" />
+      <view class="sn-input-number__action-divider" aria-hidden="true" />
+      <SnIcon :icon="PlusIcon" size="24rpx" />
     </view>
   </view>
 </template>
 
 <style scoped>
-/* uni side: --sn-mp-* aliases only (rpx units). */
+/* uni side: --sn-mp-* aliases only (rpx units).
+ *
+ * Layout mirrors wot-ui v2 `wd-input-number`: 28px action / 36px field /
+ * 28px action at the 750rpx design width → 56 / 72 / 56rpx. The root is
+ * transparent and carries no padding; fills and hairline radii live on the
+ * three segments, so the control keeps its intrinsic width inside a flex
+ * parent that stretches its children. */
 
 .sn-input-number {
   display: inline-flex;
   align-items: center;
-  box-sizing: border-box;
-  padding: var(--sn-mp-spacing-1);
-  border: 2rpx solid transparent;
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-soft);
-  color: var(--sn-mp-color-text-primary);
+  /* As a flex item the root would otherwise be blockified and stretched by
+   * `align-items: stretch` parents — bordered / tinted customClass /
+   * customStyle roots then render a full-width empty shell around the
+   * left-packed segments. Shrink to the segments instead; an explicit width
+   * (customStyle / customClass) still stretches, and the inner segment then
+   * absorbs the extra space. */
+  align-self: flex-start;
   font-family: inherit;
+  line-height: 1;
+  user-select: none;
 }
 
+/* Fill and glyph color live on each segment rule, NOT on the shared
+ * __action rule: the uni-app x CSS transform rewrites descendant overrides
+ * (`--primary .sn-input-number__minus { background-color: … }`) into a
+ * fallback-less `var(--snx-…)` on the segment rule. A property that exists
+ * only on __action therefore renders transparent on App / uni-app x web
+ * (white +/- next to a gray field). Declaring the base value per segment is
+ * what makes the transform emit `var(--snx-…, <base>)` — and it is also how
+ * wot-ui v2 paints `sub` / `add` individually. */
 .sn-input-number__action {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 56rpx;
   height: 56rpx;
   flex: 0 0 auto;
-  border-radius: var(--sn-mp-radius-sm);
-  background-color: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.sn-input-number__action--disabled {
-  color: var(--sn-mp-color-text-disabled);
+.sn-input-number__minus {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
+  /* Corner radii ride the border-radius shorthand only: the uni-app x
+   * transform emits a fallback for an overridden property solely from the
+   * base declaration of that same property, and `circle` / `round` override
+   * the shorthand. Longhand bases would leave the shorthand var
+   * fallback-less and drop the corners on App / x-web. */
+  border-radius: var(--sn-mp-radius-sm) 0 0 var(--sn-mp-radius-sm);
+}
+
+.sn-input-number__plus {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
+  border-radius: 0 var(--sn-mp-radius-sm) var(--sn-mp-radius-sm) 0;
+}
+
+/* Inner divider: the 1px reverse-fill gap (default) / short hairline
+ * (outline-split) between segments. Rendered as a real node — uvue drops
+ * pseudo-elements. `display: block` is the base value the uni-app x
+ * transform needs to emit a fallback for the themes' `display: none`
+ * overrides (an undeclared property produces a fallback-less var). */
+.sn-input-number__action-divider {
+  position: absolute;
+  top: 50%;
+  width: 2rpx;
+  height: 100%;
+  display: block;
+  transform: translateY(-50%);
+  background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-input-number__minus .sn-input-number__action-divider {
+  right: 0;
+}
+
+.sn-input-number__plus .sn-input-number__action-divider {
+  left: 0;
+}
+
+.sn-input-number__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Grow only when the root itself is stretched (explicit width) — the
+   * natural inline-flex width resolves from the field, so nothing changes
+   * in the compact default. */
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  height: 56rpx;
+  padding: 0 var(--sn-mp-spacing-3);
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 .sn-input-number__field {
   width: 72rpx;
   height: 56rpx;
-  flex: 0 0 auto;
   box-sizing: border-box;
   border: none;
   background: transparent;
-  color: inherit;
+  color: var(--sn-mp-color-text-primary);
   font: inherit;
   font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
   text-align: center;
   line-height: 56rpx;
 }
 
-.sn-input-number__divider {
-  width: 2rpx;
-  height: 32rpx;
-  margin: 0 var(--sn-mp-spacing-2);
-  background-color: var(--sn-mp-color-border-subtle);
-}
-
 /* ── Themes ─────────────────────────────────────────────────────────────── */
 
-.sn-input-number--outline {
-  background-color: transparent;
-  border-color: var(--sn-mp-color-border-default);
-}
-
+/* outline: one continuous hairline box around the three segments. */
 .sn-input-number--outline .sn-input-number__action {
-  background-color: transparent;
-}
-
-.sn-input-number--outline-split .sn-input-number__action {
-  background-color: transparent;
   border: 2rpx solid var(--sn-mp-color-border-default);
 }
 
-.sn-input-number--primary {
+.sn-input-number--outline .sn-input-number__inner {
+  border-top: 2rpx solid var(--sn-mp-color-border-default);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-default);
+}
+
+.sn-input-number--outline .sn-input-number__action-divider {
+  display: none;
+}
+
+/* without-input: adjacent actions share one hairline instead of doubled. */
+.sn-input-number--without-input.sn-input-number--outline .sn-input-number__plus {
+  border-left: none;
+}
+
+/* outline-split: short hairline dividers, no outer box. */
+.sn-input-number--outline-split .sn-input-number__action-divider {
+  height: 36rpx;
+  background-color: var(--sn-mp-color-border-default);
+}
+
+/* primary: outlined minus + filled plus. */
+.sn-input-number--primary .sn-input-number__action-divider {
+  display: none;
+}
+
+.sn-input-number--primary .sn-input-number__minus {
   background-color: transparent;
+  border: 2rpx solid currentColor;
+  color: var(--sn-mp-color-action-primary);
 }
 
 .sn-input-number--primary .sn-input-number__plus {
@@ -472,32 +671,72 @@ if (props.updateOnInit) {
   color: var(--sn-mp-color-text-on-primary);
 }
 
-.sn-input-number--primary .sn-input-number__minus {
-  background-color: var(--sn-mp-color-action-primary-soft);
-  color: var(--sn-mp-color-action-primary);
-}
-
-.sn-input-number--round {
+/* circle (AUI additive): a gray pill track with white circular buttons at
+ * both ends — the field sits directly on the track, no dividers. */
+.sn-input-number--circle {
+  background-color: var(--sn-mp-color-background-soft);
   border-radius: var(--sn-mp-radius-full);
 }
 
-.sn-input-number--round .sn-input-number__action {
+.sn-input-number--circle .sn-input-number__minus,
+.sn-input-number--circle .sn-input-number__plus {
+  background-color: var(--sn-mp-color-background-elevated);
   border-radius: var(--sn-mp-radius-full);
 }
-
-.sn-input-number--disabled {
-  opacity: 0.6;
+.sn-input-number--circle .sn-input-number__inner {
+  background-color: transparent;
 }
 
-/* Doodle skin — hand-drawn outline instead of the flat fill. */
-.snui-skin-doodle .sn-input-number {
-  border-width: 4rpx;
-  border-color: var(--sn-mp-color-text-primary);
-  border-radius: var(--sn-mp-radius-sm);
+.sn-input-number--circle .sn-input-number__action-divider {
+  display: none;
+}
+
+/* ── Disabled ───────────────────────────────────────────────────────────── */
+
+.sn-input-number__action--disabled {
+  color: var(--sn-mp-color-text-disabled);
+}
+
+/* Primary keeps its hue and dims instead (wot-ui `disabled-opacity`). */
+.sn-input-number--primary .sn-input-number__action--disabled {
+  opacity: 0.4;
+}
+
+/* ── Round ──────────────────────────────────────────────────────────────── */
+
+.sn-input-number--round .sn-input-number__minus {
+  border-radius: var(--sn-mp-radius-full) 0 0 var(--sn-mp-radius-full);
+}
+
+.sn-input-number--round .sn-input-number__plus {
+  border-radius: 0 var(--sn-mp-radius-full) var(--sn-mp-radius-full) 0;
+}
+
+/* ── Doodle skin ────────────────────────────────────────────────────────── */
+
+/* Hand-drawn outline instead of the flat fill. Backgrounds are restated per
+ * segment (same uni-app x fallback rule as the base fills above). */
+.snui-skin-doodle .sn-input-number__action,
+.snui-skin-doodle .sn-input-number__inner {
+  border-top: 4rpx solid var(--sn-mp-color-text-primary);
+  border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__minus,
+.snui-skin-doodle .sn-input-number__plus,
+.snui-skin-doodle .sn-input-number__inner {
   background-color: var(--sn-mp-color-background-elevated);
 }
 
-.snui-skin-doodle .sn-input-number__action {
-  border-radius: var(--sn-mp-radius-xs);
+.snui-skin-doodle .sn-input-number__minus {
+  border-left: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__plus {
+  border-right: 4rpx solid var(--sn-mp-color-text-primary);
+}
+
+.snui-skin-doodle .sn-input-number__action-divider {
+  background-color: var(--sn-mp-color-text-primary);
 }
 </style>

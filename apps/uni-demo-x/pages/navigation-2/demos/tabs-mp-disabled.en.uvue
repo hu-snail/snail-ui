@@ -1,0 +1,36 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — English shadow of tabs-mp-disabled.
+ */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+const disabledActive = ref(0);
+const disabledHits = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnTabs v-model="disabledActive" @disabled="disabledHits += 1">
+      <SnTab title="For you" :name="0"><text>For you content</text></SnTab>
+      <SnTab title="Following" :name="1"><text>Following content</text></SnTab>
+      <SnTab title="Disabled" :name="2" disabled
+        ><text>Not tappable — a tap only emits the disabled event</text></SnTab
+      >
+    </SnTabs>
+
+    <text class="sn-demo__meta">
+      The disabled event fired {{ disabledHits }} time(s); active tab: {{ disabledActive }}
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  align-items: stretch;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

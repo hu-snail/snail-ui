@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/** Demo: sn-button — open-type (WeChat mini program MP-only attrs). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+</script>
+<template>
+  <view class="sn-button-demo">
+    <SnButton type="primary" open-type="share"><text>open-type=share</text></SnButton>
+    <SnButton open-type="feedback"><text>open-type=feedback</text></SnButton>
+    <SnButton open-type="launchApp"><text>open-type=launchApp</text></SnButton>
+    <SnButton type="success" open-type="contact"><text>open-type=contact</text></SnButton>
+    <SnButton type="warning" open-type="chooseAvatar"><text>open-type=chooseAvatar</text></SnButton>
+    <SnButton open-type="getUserInfo"><text>open-type=getUserInfo</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-button-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+</style>

@@ -1,0 +1,84 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-img-cropper (uni-end) — 导出声明参数（exportScale / quality / fileType）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-img-cropper from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImgCropper from '@snui/uni-x/components/sn-img-cropper/sn-img-cropper.uvue';
+const visible = ref(false);
+const result = ref('—');
+const exportScale = ref(2);
+const quality = ref(0.85);
+const fileType = ref<'png' | 'jpg'>('png');
+
+const imgSrc = '/demo/snui-crop-wide.jpg';
+
+function open(next: 'png' | 'jpg') {
+  fileType.value = next;
+  visible.value = true;
+}
+
+function onConfirm(payload: {
+  scale: number;
+  source: { x: number; y: number; width: number; height: number };
+}) {
+  const scaleOut = payload.scale * exportScale.value;
+  result.value = `源矩形 ${payload.source.width}×${payload.source.height} → 导出 ${Math.round(payload.source.width * scaleOut)}×${Math.round(payload.source.height * scaleOut)} · ${fileType.value} · quality ${quality.value}`;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="open('png')"><text>按 PNG 裁剪</text></SnButton>
+      <SnButton size="small" @click="open('jpg')"><text>按 JPG 裁剪</text></SnButton>
+    </view>
+
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="exportScale = exportScale === 2 ? 3 : 2"><text>
+        export-scale = {{ exportScale }}
+      </text></SnButton>
+      <SnButton size="small" @click="quality = quality === 0.85 ? 0.5 : 0.85"><text>
+        quality = {{ quality }}
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">结果：{{ result }}</text>
+
+    <SnImgCropper
+      v-model="visible"
+      :img-src="imgSrc"
+      :export-scale="exportScale"
+      :quality="quality"
+      :file-type="fileType"
+      custom-class="sn-demo-contained"
+      @confirm="onConfirm"
+      @cancel="result = '已取消'"
+    />
+
+    <text class="sn-demo__meta">
+      export-scale / quality / file-type 只对齐参考 API：本组件不做栅格化，宿主按 confirm
+      报回的几何自行导出，这里把三者代入演示。
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+  word-break: break-all;
+}
+</style>

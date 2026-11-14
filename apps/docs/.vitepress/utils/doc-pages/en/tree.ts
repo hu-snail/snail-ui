@@ -50,6 +50,12 @@ import { Tree } from '@snui/vue-web';
     },
     { name: 'tree-web-disabled', title: 'Disabled', blurb: 'Disabled' },
     { name: 'tree-web-prefix-suffix', title: 'Prefix & Suffix', blurb: 'Prefix & Suffix' },
+    {
+      name: 'tree-web-size',
+      title: 'Size',
+      blurb:
+        'mini / small / medium / large side by side: font-size and row height move together, while `indent` stays independent.',
+    },
     { name: 'tree-web-block-line', title: 'Block Line', blurb: 'Block Line' },
     { name: 'tree-web-line', title: 'Connector Lines', blurb: 'Connector Lines' },
     { name: 'tree-web-guide', title: 'Connector Lines', blurb: 'Connector Lines' },
@@ -99,6 +105,12 @@ import { Tree } from '@snui/vue-web';
         type: 'boolean',
         default: 'false',
         desc: 'Expand every non-leaf node initially. Mirrors n-tree `default-expand-all`.',
+      },
+      {
+        name: 'expandOnClick',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Clicking a non-leaf node label also expands / collapses its subtree; leaf rows are unaffected and selection still fires. ON by default (n-tree defaults to off); pass `false` to restore the switcher-only interaction.',
       },
       {
         name: 'selectable',
@@ -165,6 +177,12 @@ import { Tree } from '@snui/vue-web';
         type: 'number',
         default: '24',
         desc: 'Per-level indent width in px. Mirrors n-tree `indent`.',
+      },
+      {
+        name: 'size',
+        type: "'mini' | 'tiny' | 'small' | 'medium' | 'large'",
+        default: "'medium'",
+        desc: 'Row-density preset: drives font-size and row height together on the SnSelect five-step scale (medium is the n-tree baseline, 14px / 24px). `indent` stays independent.',
       },
       {
         name: 'renderPrefix',

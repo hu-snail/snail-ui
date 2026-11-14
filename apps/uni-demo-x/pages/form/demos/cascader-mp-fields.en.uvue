@@ -1,0 +1,87 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-cascader — field mapping: valueKey / textKey / childrenKey / tipKey.
+ *
+ * The value / label / children / tip keys of every option are configurable.
+ */
+import SnCascader from '@snui/uni-x/components/sn-cascader/sn-cascader.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
+/** Custom key names — id / name / items, mapped through the *-key props; tips come from tipKey. */
+const tree = [
+  {
+    id: 'zj',
+    name: 'Zhejiang',
+    items: [
+      { id: 'hz', name: 'Hangzhou', tips: 'Capital' },
+      { id: 'nb', name: 'Ningbo', tips: 'Port' },
+    ],
+  },
+  {
+    id: 'js',
+    name: 'Jiangsu',
+    items: [{ id: 'nj', name: 'Nanjing', tips: 'Capital' }],
+  },
+];
+
+/** Leaf value → display text, demo-only. */
+const TEXT: Record<string, string> = {
+  zj: 'Zhejiang',
+  hz: 'Hangzhou',
+  nb: 'Ningbo',
+  js: 'Jiangsu',
+  nj: 'Nanjing',
+};
+
+const value = ref<string | number>('hz');
+const open = ref(false);
+const selectedText = computed(() => TEXT[String(value.value)] ?? '');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
+    >
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="Home city"
+        placeholder="Please select"
+        :value="selectedText"
+        is-link
+        @click="open = true"
+      />
+    </view>
+    <SnCascader
+      v-model="value"
+      v-model:visible="open"
+      :options="tree"
+      value-key="id"
+      text-key="name"
+      children-key="items"
+      tip-key="tips"
+      title="Pick a city"
+      check-strictly
+      confirm-text="Use it"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

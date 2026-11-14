@@ -1,0 +1,62 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-fab (uni-end) — 禁用（`disabled`）。
+ *
+ * `disabled` 拦截一切交互，触发按钮半透明（左下，内置 plus 图标，
+ * 尺寸走 --sn-mp-icon-size-large）。
+ *
+ * 文案与 fab-mp-disabled.en.vue 对等。
+ */
+import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-fab-demo__stage">
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">禁用</text>
+      <text class="sn-fab-demo__hint-text">
+        左下：disabled 拦截一切交互，触发按钮半透明（内置 plus 图标）。
+      </text>
+    </view>
+
+    <SnFab
+      position="left-bottom"
+      disabled
+      :gap="{ bottom: 16, left: 16 }"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-fab-demo__stage {
+  position: relative;
+  width: 100%;
+  height: 560rpx;
+  overflow: hidden;
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+  max-width: 60%;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+/* Docs-preview only — pin the fixed layer to the phone screen. */
+.sn-fab.sn-demo-contained {
+  position: absolute;
+}
+</style>

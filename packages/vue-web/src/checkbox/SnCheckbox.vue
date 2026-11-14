@@ -228,7 +228,7 @@ const effectiveLabelPlacement = computed<SnCheckboxLabelPlacement>(
 
 /** Effective inline marker shape (ring vs inverted fill). */
 const effectiveMarkerShape = computed<SnCheckboxMarkerShape>(
-  () => props.markerShape ?? checkboxGroup?.groupMarkerShape.value ?? 'ring',
+  () => props.markerShape ?? checkboxGroup?.groupMarkerShape.value ?? 'base',
 );
 
 /** Corner tick (absolute) vs inline box. */
@@ -345,19 +345,11 @@ function onChange(event: Event): void {
       </span>
     </template>
 
-    <!-- Card body: custom content wins; icon tile renders the glyph only. -->
+    <!-- Card body: custom content wins; otherwise the historical label row. -->
     <span v-if="effectiveVariant === 'card' && $slots.card" class="sn-checkbox__card">
       <slot name="card" :checked="isChecked" :disabled="isDisabled" />
     </span>
-    <span v-else-if="effectiveVariant === 'icon'" class="sn-checkbox__tile">
-      <slot name="icon" :checked="isChecked">
-        <span class="sn-checkbox__tile-glyph" aria-hidden="true" />
-      </slot>
-    </span>
-    <span
-      v-if="effectiveVariant !== 'icon' && (label || $slots.default)"
-      class="sn-checkbox__label"
-    >
+    <span v-if="label || $slots.default" class="sn-checkbox__label">
       <slot :checked="isChecked" :disabled="isDisabled" :indeterminate="isIndeterminate">{{
         label
       }}</slot>
@@ -581,29 +573,42 @@ function onChange(event: Event): void {
 /* ── AUI additive: card / icon variants + checked paint + corner tick ────── */
 
 /* Card: the whole row becomes a selectable surface. */
+/* Card + inline box (left / right): centre the box against the body and give
+ * it breathing room from the copy. Corner ticks keep top alignment. */
+.sn-checkbox--variant-card.sn-checkbox--indicator-leading,
+.sn-checkbox--variant-card.sn-checkbox--indicator-trailing {
+  align-items: center;
+  gap: 10px;
+}
+
 .sn-checkbox--variant-card {
   display: flex;
-  align-items: stretch;
+  /* `position: relative` anchors the corner tick; `overflow: hidden` trims it
+   * to the card radius. `flex-start` keeps the body top-aligned instead of
+   * stretching a short card to the tallest sibling. */
+  position: relative;
+  align-items: flex-start;
   gap: 0;
   padding: var(--sn-web-spacing-sm, 12px) var(--sn-web-spacing-md, 16px);
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: var(--sn-web-radius-md, 8px);
   background-color: var(--sn-web-color-background-surface);
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
   transition:
     border-color 0.18s ease-out,
     background-color 0.18s ease-out;
 }
 
 /* Reserve the corner the tick occupies so it never overlaps the card copy. */
-.sn-checkbox--variant-card.sn-checkbox--indicator-top-right,
-.sn-checkbox--variant-icon.sn-checkbox--indicator-top-right {
-  padding-top: calc(var(--sn-web-spacing-sm, 12px) + 14px);
-  padding-right: calc(var(--sn-web-spacing-md, 16px) + 14px);
+.sn-checkbox--variant-card.sn-checkbox--indicator-top-right {
+  padding-top: calc(var(--sn-web-spacing-sm, 12px) + 16px);
+  padding-right: calc(var(--sn-web-spacing-md, 16px) + 16px);
 }
-.sn-checkbox--variant-card.sn-checkbox--indicator-bottom-right,
-.sn-checkbox--variant-icon.sn-checkbox--indicator-bottom-right {
-  padding-right: calc(var(--sn-web-spacing-md, 16px) + 14px);
-  padding-bottom: calc(var(--sn-web-spacing-sm, 12px) + 14px);
+.sn-checkbox--variant-card.sn-checkbox--indicator-bottom-right {
+  padding-right: calc(var(--sn-web-spacing-md, 16px) + 16px);
+  padding-bottom: calc(var(--sn-web-spacing-sm, 12px) + 16px);
 }
 
 .sn-checkbox--variant-card .sn-checkbox__card {
@@ -611,108 +616,93 @@ function onChange(event: Event): void {
   flex: 1 1 auto;
   min-width: 0;
   flex-direction: column;
+  gap: 2px;
+  white-space: normal;
+  word-break: break-word;
 }
 
-/* Icon tile: square, centred glyph, no label row. */
-.sn-checkbox--variant-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  padding: 0;
-  border: 1px solid var(--sn-web-color-border-subtle);
-  border-radius: var(--sn-web-radius-md, 8px);
-  background-color: var(--sn-web-color-background-surface);
-  transition:
-    border-color 0.18s ease-out,
-    background-color 0.18s ease-out;
-}
-
-.sn-checkbox--variant-icon .sn-checkbox__tile {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: var(--sn-web-color-text-secondary);
-}
-
-.sn-checkbox--variant-icon.sn-checkbox--checked .sn-checkbox__tile {
-  color: var(--sn-web-color-action-primary);
-}
-
-.sn-checkbox__tile-glyph {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--sn-web-radius-sm, 4px);
-  background-color: currentColor;
-  opacity: 0.55;
+/* Card copy stacks; the base label rule inherits inline layout. */
+.sn-checkbox--variant-card .sn-checkbox__label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: normal;
 }
 
 /* Checked paint switches (only applied while checked — see classList). */
-.sn-checkbox--checked-border.sn-checkbox--variant-card,
-.sn-checkbox--checked-border.sn-checkbox--variant-icon {
+.sn-checkbox--checked-border.sn-checkbox--variant-card {
   border-color: var(--sn-web-color-action-primary);
 }
 
-.sn-checkbox--checked-fill.sn-checkbox--variant-card,
-.sn-checkbox--checked-fill.sn-checkbox--variant-icon {
+.sn-checkbox--checked-fill.sn-checkbox--variant-card {
   background-color: var(--sn-web-color-action-primary-soft);
 }
 
-/* Corner tick — a themed circle with a white check, absolutely placed. */
+/* Corner tick — a triangular fold flush with the card corner (ribbon notch),
+ * not a floating badge, so it never overlaps the card copy. */
 .sn-checkbox__tick {
   position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
+  width: 24px;
+  height: 24px;
   background-color: var(--sn-web-color-action-primary);
-  box-shadow: 0 0 0 2px var(--sn-web-color-background-surface);
   pointer-events: none;
 }
 
 .sn-checkbox__tick::after {
   content: '';
+  position: absolute;
   width: 7px;
   height: 4px;
-  margin-top: -2px;
   border-bottom: 2px solid var(--sn-web-color-text-on-primary, #fff);
   border-left: 2px solid var(--sn-web-color-text-on-primary, #fff);
   transform: rotate(-45deg);
 }
 
 .sn-checkbox__tick--top-right {
-  top: 6px;
-  right: 6px;
+  top: 0;
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.sn-checkbox__tick--top-right::after {
+  top: 5px;
+  right: 5px;
 }
 
 .sn-checkbox__tick--bottom-right {
-  right: 6px;
-  bottom: 6px;
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(100% 100%, 100% 0, 0 100%);
 }
 
-.sn-checkbox--disabled.sn-checkbox--variant-card,
-.sn-checkbox--disabled.sn-checkbox--variant-icon {
+.sn-checkbox__tick--bottom-right::after {
+  right: 5px;
+  bottom: 5px;
+}
+
+.sn-checkbox--disabled.sn-checkbox--variant-card {
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 /* Label-first: keep DOM order (native input + a11y unchanged) and only
  * re-order the flex children — the label leads, the box trails. */
-.sn-checkbox--label-first .sn-checkbox__label {
+.sn-checkbox--label-label-first {
+  display: flex;
+  width: 100%;
+}
+.sn-checkbox--label-label-first .sn-checkbox__label {
   order: 0;
+  display: block;
   flex: 1 1 auto;
   min-width: 0;
+  white-space: normal;
 }
-.sn-checkbox--label-first .sn-checkbox__box {
+.sn-checkbox--label-label-first .sn-checkbox__box {
   order: 1;
   margin-left: auto;
 }
-.sn-checkbox--label-first .sn-checkbox__card {
+.sn-checkbox--label-label-first .sn-checkbox__card {
   order: 0;
   flex: 1 1 auto;
 }
@@ -729,5 +719,20 @@ function onChange(event: Event): void {
 }
 .sn-checkbox--marker-inverted.sn-checkbox--checked .sn-checkbox__label {
   color: var(--sn-web-color-action-primary);
+}
+
+/* `markerShape="check"` — explicit alias for the checkbox default (filled
+ * plate + white tick). Declared so the option is real rather than a silent
+ * no-op, and so a group-level `inverted` can be overridden per item. */
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__box {
+  border-color: var(--sn-web-color-action-primary);
+  background-color: var(--sn-web-color-action-primary);
+  box-shadow: none;
+}
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__checkmark {
+  border-color: var(--sn-web-color-text-on-primary, #fff);
+}
+.sn-checkbox--marker-check.sn-checkbox--checked .sn-checkbox__label {
+  color: inherit;
 }
 </style>

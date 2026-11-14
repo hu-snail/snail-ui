@@ -1,6 +1,6 @@
 # Introduction
 
-snail-aui v3.1 is an AI-Native UI framework ecosystem for **Vue 3 (Web, PC desktop)** + **uni-app (mobile, touch)**.
+snail-aui v3.1 is an AI-Native UI framework ecosystem for **Vue 3 (Web, PC desktop)** + **uni-app x (mobile, touch)**.
 
 **The key design principle is: end-aware**.
 
@@ -74,7 +74,7 @@ Shared cross-end (end-agnostic):
 ## Where to next
 
 - [Web quick start](/en/guide/web/quick-start)
-- [uni-app quick start](/en/guide/uni/quick-start)
+- [uni-app x quick start](/en/guide/uni/quick-start)
 - [Architecture](/en/guide/web/architecture)
 - [Theme & Tokens](/en/theme/overview)
 - [Style Packs](/en/style-packs/overview)

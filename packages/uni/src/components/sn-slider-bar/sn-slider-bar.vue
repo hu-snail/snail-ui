@@ -347,6 +347,11 @@ function onKnobTouch(index: number, e: UniTouchEvent): void {
   else emitValue(low, Math.max(next, low), false);
 }
 
+/** Release the knob's pressed state — `touchstart` alone left it enlarged forever. */
+function onKnobRelease(): void {
+  draggingIndex.value = null;
+}
+
 /* ── misc ───────────────────────────────────────────────────────────────── */
 
 const rootClass = computed(() => [
@@ -356,6 +361,7 @@ const rootClass = computed(() => [
     'sn-slider-bar--aurora': isAurora.value,
     'sn-slider-bar--animated': isAurora.value && props.animated,
     'sn-slider-bar--empty': isEmpty.value,
+    'sn-slider-bar--filled': !isEmpty.value,
     'sn-slider-bar--disabled': props.disabled,
     'sn-slider-bar--readonly': props.readonly,
     'sn-slider-bar--column': isColumn.value,
@@ -443,6 +449,8 @@ const knobLabels = computed(() =>
           :aria-valuemin="range && index === 1 ? pair[0] : min"
           :aria-valuemax="range && index === 0 ? pair[1] : max"
           @touchstart.stop="onKnobTouch(index, $event)"
+          @touchend.stop="onKnobRelease"
+          @touchcancel.stop="onKnobRelease"
         />
       </view>
 
@@ -654,15 +662,11 @@ const knobLabels = computed(() =>
   transition: color 0.18s ease;
 }
 
-.sn-slider-bar:not(.sn-slider-bar--empty) .sn-slider-bar__label,
-.sn-slider-bar:not(.sn-slider-bar--empty) .sn-slider-bar__suffix,
-.sn-slider-bar:not(.sn-slider-bar--empty) .sn-slider-bar__glyph {
-  color: var(--sn-bar-inner-color, #ffffff);
-}
-
-.sn-slider-bar--aurora:not(.sn-slider-bar--empty) .sn-slider-bar__label,
-.sn-slider-bar--aurora:not(.sn-slider-bar--empty) .sn-slider-bar__suffix,
-.sn-slider-bar--aurora:not(.sn-slider-bar--empty) .sn-slider-bar__glyph {
+/* Filled state rides a class (uni-app x App has no :not pseudo, §116.2).
+   The old aurora variant duplicated these declarations verbatim and is gone. */
+.sn-slider-bar--filled .sn-slider-bar__label,
+.sn-slider-bar--filled .sn-slider-bar__suffix,
+.sn-slider-bar--filled .sn-slider-bar__glyph {
   color: var(--sn-bar-inner-color, #ffffff);
 }
 

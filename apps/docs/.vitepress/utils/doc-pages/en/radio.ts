@@ -74,20 +74,20 @@ import { Radio } from '@snui/vue-web';
         'Whole card is selectable; #card slot for custom content; selected = themed border + soft fill + top-right tick.',
     },
     {
-      name: 'radio-web-icon',
-      title: 'Icon variant',
-      blurb: 'Square icon tiles with the #icon slot glyph; no label row.',
-    },
-    {
       name: 'radio-web-indicator',
       title: 'Indicator placement & checked paint',
       blurb: 'indicatorPlacement top-right / bottom-right / none; checkedStyle border / fill.',
     },
     {
       name: 'radio-web-inverted',
-      title: 'Inverted marker & label-first',
+      title: 'Marker shapes & label-first',
       blurb:
-        'markerShape="inverted" fills the plate with the theme colour and punches a white dot; labelPlacement="label-first" puts the label first.',
+        'markerShape: inverted fills the plate with a white dot, check shows a check glyph when selected; labelPlacement="label-first" puts the label first.',
+    },
+    {
+      name: 'radio-web-card-indicator',
+      title: 'Card indicator layouts',
+      blurb: 'Left (invertible) / right check glyph.',
     },
   ],
   props: {
@@ -149,9 +149,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `variant`,
-        type: `'default' | 'card' | 'icon'`,
+        type: `'default' | 'card'`,
         default: `'default'`,
-        desc: `Card / icon layout; card uses the #card slot, icon renders a square tile. Inherited from the group.`,
+        desc: `Card layout; #card slot for custom content (icon + copy). Inherited from the group.`,
       },
       {
         name: `indicatorPlacement`,
@@ -173,9 +173,9 @@ import { Radio } from '@snui/vue-web';
       },
       {
         name: `markerShape`,
-        type: `'ring' | 'inverted'`,
-        default: `'ring'`,
-        desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot.`,
+        type: `'base' | 'inverted' | 'check'`,
+        default: `'base'`,
+        desc: `Inline marker shape; inverted fills the plate with the theme colour and punches a white dot, check shows a check glyph when selected (card + trailing also derive the check).`,
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root wrapper.' },
       {
@@ -242,11 +242,6 @@ import { Radio } from '@snui/vue-web';
         name: `card`,
         props: '{ checked: boolean; disabled: boolean }',
         desc: 'Card body for variant="card"; replaces the default marker + label row, the corner tick still applies.',
-      },
-      {
-        name: `icon`,
-        props: '{ checked: boolean }',
-        desc: 'Glyph for variant="icon" tiles; falls back to a neutral placeholder square.',
       },
     ],
   },

@@ -1,0 +1,185 @@
+<script setup lang="ts">
+/**
+ * DemoPageShell —— 演示工程页面壳：中性浅灰画布 + 主题变量挂载 +
+ * 导航栏（ADR-0005 演示工程全局 UI）。
+ *
+ * - 背景：纵向浅灰渐变画布（`--demo-page-canvas`，组件规范视觉稿；
+ *   深色为暗色渐变），场景卡片浮在其上；`--demo-page-bg` 作回退色。
+ * - 主题：根节点挂 `demo-shell--dark` 切换 CSS 变量（见 App.vue 全局段）；
+ *   同步导航栏颜色（尽力而为）。
+ * - 语言：中/英切换，文案与导航栏标题联动；组件中文名/描述暂无英文数据，
+ *   英文模式下组件名用 key 的 Title Case（gen-pages 生成 titleEn）。
+ * - 顶部导航（`blend`，pages.json `navigationStyle: custom`）：渲染 sn-navbar
+ *   —— fixed 固定顶部、透明磨砂背景、safe-area 占位、页内返回键；`titleZh`
+ *   为空的页面（首页在 sn-paging #top 内自绘头部）不渲染导航栏。
+ *   切换按钮（风格包 / 语言 / 深浅色）只属于总览页头部，在首页自身维护。
+ */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+import { useDemoUi } from '../state/demo-ui';
+// wot-ui useQueue 对齐:页面根节点监听冒泡,点任意空白处关闭所有弹窗
+// (tooltip / popover / drop-menu / toast / swipe-action / fab)。
+import { useQueue } from '@snui/uni-x/utils/outside-close';
+
+const props = withDefaults(
+  defineProps<{
+    /** 导航栏标题（中文，组件页传入；空串表示页面自绘头部，不渲染导航栏）。 */
+    titleZh?: string;
+    /** 导航栏标题（英文）。 */
+    titleEn?: string;
+    /** 组件一句话描述（导航栏标题副行，仅中文模式显示；desc 是中文单源）。 */
+    desc?: string;
+    /**
+     * 顶部导航形态（可配置）：
+     * - `blend`（默认）：通栏 —— pages.json 声明 `navigationStyle: custom`，
+     *   画布渐变直接铺到状态栏，顶部渲染 sn-navbar（fixed + 透明磨砂）。
+     * - `native`：uni 原生导航栏（底色经 applyNavBar 对齐画布顶色）。
+     */
+    navStyle?: 'native' | 'blend';
+    /**
+     * 画布底色覆盖（如输入框页用纯白对比深浅组件底色）。空串 = 默认中性灰；
+     * 深色主题下仍按字面值生效（由调用方决定是否覆盖）。
+     */
+    bg?: string;
+  }>(),
+  { titleZh: '', titleEn: '', desc: '', navStyle: 'blend', bg: '' },
+);
+
+const { lang, isDark, stylePackVars, t, applyNavBar, setNavTitle } = useDemoUi();
+
+const { closeOutside } = useQueue();
+
+/**
+ * 画布样式：bg 覆盖只在浅色主题生效（深色维持暗色画布，白色画布在深色下
+ * 不可读）；风格包变量始终透传，二者叠加。
+ */
+const shellStyle = computed(() => {
+  if (!props.bg || isDark.value) return stylePackVars;
+  return [stylePackVars, { background: props.bg }];
+});
+
+/**
+ * 通栏头部的返回键：有历史栈时回上一页，直接打开内页（无历史）时回首页。
+ * 该 uni H5 运行时不挂全局 `uni` 路由 API（`window.uni` 为空壳，工程内
+ * `uni.*` 调用均静默降级），H5 走 hash 路由的历史栈兜底。
+ */
+function goBack(): void {
+  const api = globalThis.uni as
+    | {
+        navigateBack?: (options?: { fail?: () => void }) => void;
+        reLaunch?: (options: { url: string }) => void;
+      }
+    | undefined;
+  if (typeof api?.navigateBack === 'function') {
+    api.navigateBack({
+      fail: () => api.reLaunch?.({ url: '/pages/index/index' }),
+    });
+    return;
+  }
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  window.location.hash = '#/pages/index/index';
+}
+
+const isBlend = computed(() => props.navStyle === 'blend');
+/** blend 导航栏只在组件页（传入标题）渲染；首页等自绘头部页不渲染。 */
+const showTopbar = computed(() => isBlend.value && props.titleZh !== '');
+const headerTitle = computed(() =>
+  lang.value === 'en' && props.titleEn !== '' ? props.titleEn : props.titleZh,
+);
+
+function syncNavBar(): void {
+  applyNavBar();
+  if (props.titleZh !== '') {
+    setNavTitle(lang.value === 'en' && props.titleEn !== '' ? props.titleEn : props.titleZh);
+  }
+}
+
+onMounted(() => {
+  syncNavBar();
+});
+
+watch(
+  () => lang.value,
+  () => syncNavBar(),
+);
+</script>
+<template>
+  <view
+    class="sn-theme-root demo-shell"
+    @click="closeOutside"
+    :class="{ 'demo-shell--dark': isDark, dark: isDark }"
+    :style="shellStyle"
+  >
+    <!-- 透明背景/磨砂走 custom-style 内联：组件自身底色是 surface，inline
+     * 声明优先级更高；blur 只作用于导航栏自身（fixed 弹层 demo 的
+     * containing block 语义不变，见 App.vue demo-glass 注）。 -->
+    <SnNavbar
+      v-if="showTopbar"
+      :title="headerTitle"
+      left-arrow
+      fixed
+      placeholder
+      safe-area-inset-top
+      custom-style="background-color: transparent; backdrop-filter: blur(24rpx); -webkit-backdrop-filter: blur(24rpx);"
+      @back="goBack"
+    >
+      <template v-if="desc !== '' && lang === 'zh'" #title>
+        <view class="demo-shell__navtitle">
+          <text class="demo-shell__navtitle-text">{{ headerTitle }}</text>
+          <text class="demo-shell__navtitle-sub">{{ desc }}</text>
+        </view>
+      </template>
+    </SnNavbar>
+
+    <view class="demo-shell__body">
+      <slot />
+    </view>
+  </view>
+</template>
+<style scoped>
+.demo-shell {
+  position: relative;
+  min-height: 100vh;
+  /* 组件规范视觉稿画布：纵向浅灰渐变（slate-50 → slate-200），分区卡片
+   * 浮在其上；--demo-page-bg 作无渐变环境的回退色。 */
+  background: var(--demo-page-canvas, var(--demo-page-bg));
+  color: var(--demo-title);
+}
+
+/* ── blend 导航栏：sn-navbar fixed + 透明磨砂；标题副行（desc）走 #title
+ * 插槽，插槽内容归属本组件作用域。 ───────────────────────────────────── */
+
+.demo-shell__navtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.demo-shell__navtitle-text {
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 32rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--demo-title);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.demo-shell__navtitle-sub {
+  margin-top: 2rpx;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 20rpx;
+  color: var(--demo-text-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。 */
+.demo-shell__body {
+  position: relative;
+}
+</style>

@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const avatarDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'Avatar' }],
-  title: 'Avatar',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '基础组件 Basic' }, { text: 'Avatar 头像' }],
+  title: 'Avatar 头像',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -43,7 +43,18 @@ import { Avatar } from '@snui/vue-web';
   },
   demos: [
     { name: 'avatar-web-basic', title: '基础用法', blurb: 'src 图片 + 尺寸。' },
-    { name: 'avatar-web-shapes', title: '形状与颜色', blurb: 'round / circle / color。' },
+    { name: 'avatar-web-shapes', title: '形状与颜色', blurb: 'round / circle / color，彩底自动反白。' },
+    {
+      name: 'avatar-web-status',
+      title: '状态点与角标',
+      blurb:
+        'status 在线/离线状态点 + status-position 右上/右下；badge-icon 角标徽章（会员等级）。',
+    },
+    {
+      name: 'avatar-web-text-modes',
+      title: '文字头像自动截取',
+      blurb: 'text-mode：full 原样 / surname 姓 / last-two 后两位 / masked 加密 *。',
+    },
     {
       name: 'avatar-web-fallback',
       title: '失败回退',
@@ -86,7 +97,37 @@ import { Avatar } from '@snui/vue-web';
         default: 'undefined',
         desc: '无图/失败时文字缩略',
       },
+      {
+        name: 'textMode',
+        type: "'full' | 'surname' | 'last-two' | 'masked'",
+        default: "'full'",
+        desc: '文字缩略自动截取（additive）：full 原样 / surname 只留姓 / last-two 后两位 / masked 保留姓、其余打码 *；按码点截取，emoji 与生僻字不会截断。',
+      },
       { name: 'icon', type: 'string | undefined', default: 'undefined', desc: 'SnIcon 注册名' },
+      {
+        name: 'status',
+        type: "'online' | 'offline' | ''",
+        default: "''",
+        desc: '在线状态角点（additive）：online 绿点 / offline 灰点，surface 色描环；状态写入 aria-label。',
+      },
+      {
+        name: 'statusPosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'bottom-right'",
+        desc: '状态点位置（additive）。',
+      },
+      {
+        name: 'badgeIcon',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: '角标徽章图标（additive，SnIcon 注册名），如 Crown 表示会员等级；默认 warning 金色圆徽。',
+      },
+      {
+        name: 'badgePosition',
+        type: "'top-right' | 'bottom-right'",
+        default: "'top-right'",
+        desc: '徽章位置（additive）。',
+      },
       {
         name: 'lazy',
         type: 'boolean',

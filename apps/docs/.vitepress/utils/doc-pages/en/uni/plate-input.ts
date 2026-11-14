@@ -1,16 +1,16 @@
-/** PlateInput · uni-app (uni-app) — English page data. Props from sn-plate-input.vue; demos from the en page. */
+/** PlateInput · uni-app x (uni-app x) — English page data. Props from sn-plate-input.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const plateInputDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'PlateInput · uni-app' },
+    { text: 'PlateInput · uni-app x' },
   ],
-  title: 'PlateInput · uni-app',
+  title: 'PlateInput · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -36,10 +36,10 @@ export const plateInputDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'PlateInput · uni-app.vue',
+    fileLabel: 'PlateInput · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -108,7 +108,7 @@ import { PlateInput } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'PlateInput · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'PlateInput · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { PlateInput } from '@snui/uni';",
     chipCopy: "import { PlateInput } from '@snui/uni';",
     stats: [
@@ -118,8 +118,8 @@ import { PlateInput } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-keyboard-panel', link: '/en/components/uni/keyboard-panel' },
-    next: { text: 'sn-input-number', link: '/en/components/uni/input-number' },
+    prev: { text: 'KeyboardPanel', link: '/en/components/uni/keyboard-panel' },
+    next: { text: 'InputNumber', link: '/en/components/uni/input-number' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

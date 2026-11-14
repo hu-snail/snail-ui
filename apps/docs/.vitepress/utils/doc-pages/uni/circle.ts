@@ -15,7 +15,7 @@ export const circleDocPage: SnDocPageData = {
   title: 'Circle 环形进度条',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '无。`` 是纯展示组件，不发事件。' }],
@@ -39,7 +39,7 @@ export const circleDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Circle 环形进度条.vue',
     meta: 'Vue 3 · <script setup>',
@@ -139,8 +139,8 @@ import { Circle } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-progress', link: '/components/uni/progress' },
-    next: { text: 'sn-toast', link: '/components/uni/toast' },
+    prev: { text: 'Progress', link: '/components/uni/progress' },
+    next: { text: 'Toast', link: '/components/uni/toast' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

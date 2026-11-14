@@ -9,6 +9,10 @@
  * and height scale, and the result dropdown is the same `SnSearchPanel` the
  * home search uses (one search implementation, two shells).
  *
+ * `type="text"` is deliberate: `type="search"` makes WebKit draw its own
+ * cancel button next to SnInput's `clearable` button (two × icons). The home
+ * page's SnNavSearch already uses a plain text input for the same reason.
+ *
  * Keyboard: ↑/↓ walk the results, Enter opens the active one, Escape clears and
  * blurs — the same map as the hero search, so muscle memory carries over.
  */
@@ -59,7 +63,7 @@ function onPanelClose(): void {
       size="small"
       radius="pill"
       border="none"
-      type="search"
+      type="text"
       :placeholder="'搜索文档'"
       :aria-label="'搜索文档'"
       clearable
@@ -84,6 +88,11 @@ function onPanelClose(): void {
 
 .sn-docs-search__field {
   width: 100%;
+  /* 站点级自定义底色（浅色「浅浅的」#f8f8f8 / 深色 --vp-c-bg-soft，
+     见 custom.css）：文档画布是纯白，输入框只需比白低半档即可辨认，
+     太深的灰底会抢视觉。走 SnInput 的 --sn-web-input-bg 钩子，
+     不覆盖组件内部样式，深色模式由变量自动切换。 */
+  --sn-web-input-bg: var(--sn-docs-search-bg);
 }
 
 .sn-docs-search__icon {

@@ -1,0 +1,58 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-img-cropper (uni-end) — 缩放上限（maxScale）。
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-img-cropper from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImgCropper from '@snui/uni-x/components/sn-img-cropper/sn-img-cropper.uvue';
+const visible = ref(false);
+const maxScale = ref(2);
+const result = ref('—');
+
+const imgSrc = '/demo/snui-crop-wide.jpg';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="visible = true"><text>打开裁剪</text></SnButton>
+      <SnButton size="small" @click="maxScale = 2"><text>max-scale = 2</text></SnButton>
+      <SnButton size="small" @click="maxScale = 6"><text>max-scale = 6</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">结果：{{ result }}</text>
+
+    <SnImgCropper
+      v-model="visible"
+      :img-src="imgSrc"
+      :max-scale="maxScale"
+      custom-class="sn-demo-contained"
+      @confirm="result = `缩放上限 ${maxScale} 已生效`"
+      @cancel="result = '已取消'"
+    />
+
+    <text class="sn-demo__meta">
+      max-scale 限制双指缩放上限（最小 0.5）：切到 6 后双指能放得更大，切回 2 立刻收紧。
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+  word-break: break-all;
+}
+</style>

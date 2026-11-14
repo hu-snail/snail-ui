@@ -1,0 +1,51 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — 选中色：checkedColor 覆盖选中行的勾选色。 */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
+const options = [
+  { value: 'apple', label: '苹果' },
+  { value: 'banana', label: '香蕉' },
+  { value: 'cherry', label: '樱桃' },
+];
+
+const colored = ref<Array<string | number | boolean>>(['apple']);
+const open = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">checkedColor</text>
+    <view class="sn-demo__button" @click="open = true"><text>自定义选中色</text></view>
+    <text class="sn-demo__meta">已选：{{ colored.join(' / ') || '（未选择）' }}</text>
+    <SnSelectPicker
+      v-model="colored"
+      v-model:visible="open"
+      :columns="options"
+      checked-color="var(--sn-mp-color-feedback-success)"
+      title="选中色"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+  flex-direction: row;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

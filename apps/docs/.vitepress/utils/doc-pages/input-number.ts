@@ -136,6 +136,11 @@ export const inputNumberDocPage: SnDocPageData = {
       blurb: '步进按钮底色与悬停底色（悬停板在 both 位置绘制）。',
     },
     {
+      name: 'input-number-web-button-hover',
+      title: '悬停底色（both）',
+      blurb: '默认步进按钮不带底色，鼠标移入才浮出浅灰板（buttonHoverBackground）。',
+    },
+    {
       name: 'input-number-web-disabled',
       title: '禁用（disabled）',
       blurb: '输入 / 按钮 / 清空全部不可交互。',

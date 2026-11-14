@@ -15,7 +15,7 @@ export const countDownDocPage: SnDocPageData = {
   title: 'CountDown 倒计时',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -51,7 +51,7 @@ export const countDownDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'CountDown 倒计时.vue',
     meta: 'Vue 3 · <script setup>',
@@ -131,8 +131,8 @@ import { CountDown } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-fit-swiper', link: '/components/uni/fit-swiper' },
-    next: { text: 'sn-count-to', link: '/components/uni/count-to' },
+    prev: { text: 'FitSwiper', link: '/components/uni/fit-swiper' },
+    next: { text: 'CountTo', link: '/components/uni/count-to' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -17,7 +17,7 @@
  * themselves, which makes "select the node whose key is the current path" the
  * whole of the active-item logic.
  */
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useData, useRoute, useRouter } from 'vitepress';
 import { useSidebar } from 'vitepress/theme';
 import type { DefaultTheme } from 'vitepress/theme';
@@ -61,6 +61,51 @@ function normalise(path: string): string {
 
 const selectedKeys = computed<SnTreeKey[]>(() => [normalise(route.path)]);
 
+/**
+ * Every node that owns children = the "expand all" key set. Nested groups
+ * are included (the sidebar config is flat today, but nested sections would
+ * otherwise stay collapsed).
+ */
+function expandableKeys(options: SnTreeOption[]): SnTreeKey[] {
+  const keys: SnTreeKey[] = [];
+  for (const option of options) {
+    if (!option.children?.length) continue;
+    if (option.key !== undefined) keys.push(option.key);
+    keys.push(...expandableKeys(option.children));
+  }
+  return keys;
+}
+
+const allGroupKeys = computed<SnTreeKey[]>(() => expandableKeys(data.value));
+
+/**
+ * Requirement: the left menu is fully expanded by default.
+ *
+ * `default-expand-all` alone is not enough here — VitePress's `useSidebar()`
+ * data can resolve after this component's setup, and the tree's uncontrolled
+ * initial state is captured once. Controlling `expanded-keys` and seeding it
+ * from the *actual* data (with `immediate: true`) makes it deterministic even
+ * when the sidebar arrives late. Seeding is keyed by the group-key signature,
+ * so a section/locale switch re-expands its groups while a plain route change
+ * (or a manual collapse) is left alone; `@update` keeps the set in sync.
+ */
+const expandedKeys = ref<SnTreeKey[]>([]);
+let seededSignature = '';
+watch(
+  allGroupKeys,
+  (keys) => {
+    if (keys.length === 0) return;
+    // Re-seed when the *set* of groups changes (e.g. web ↔ uni, zh ↔ en),
+    // but not on a plain route change inside the same section: that would
+    // undo a group the reader just collapsed.
+    const signature = keys.map(String).sort().join('\u0000');
+    if (signature === seededSignature) return;
+    expandedKeys.value = keys;
+    seededSignature = signature;
+  },
+  { immediate: true },
+);
+
 function onSelect(keys: SnTreeKey[]): void {
   const key = keys[0];
   if (typeof key !== 'string' || key.startsWith('group:')) return;
@@ -75,11 +120,12 @@ function onSelect(keys: SnTreeKey[]): void {
     <SnTree
       :data="data"
       :selected-keys="selectedKeys"
+      v-model:expanded-keys="expandedKeys"
+      expand-on-click
       block-line
       show-line
       line-mode="branch"
       line-corner="rounded"
-      default-expand-all
       :indent="18"
       @update:selected-keys="onSelect"
     />

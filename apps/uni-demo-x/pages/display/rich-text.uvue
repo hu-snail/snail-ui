@@ -1,0 +1,106 @@
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— rich-text 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/rich-text-mp-anchor.uvue';
+import Demo1 from './demos/rich-text-mp-basic.uvue';
+import Demo2 from './demos/rich-text-mp-empty.uvue';
+import Demo3 from './demos/rich-text-mp-images.uvue';
+import Demo4 from './demos/rich-text-mp-links.uvue';
+import Demo5 from './demos/rich-text-mp-media.uvue';
+import Demo6 from './demos/rich-text-mp-style-map.uvue';
+import Demo7 from './demos/rich-text-mp-table.uvue';
+import DemoModuleHead from '../../components/DemoModuleHead.uvue';
+import DemoPageShell from '../../components/DemoPageShell.uvue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
+</script>
+<template>
+  <DemoPageShell
+    :title-zh="'富文本'"
+    :title-en="'Rich Text'"
+    :desc="'HTML 内容：图文、表格与媒体'"
+    :bg="''"
+  >
+    <view class="page">
+      <view class="module">
+        <DemoModuleHead
+          :title="t('锚点目录（enableAnchor）', 'Heading anchors (`enableAnchor`)')"
+          badge="anchor"
+        />
+        <view class="module__body">
+          <Demo0 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('空状态插槽', 'Empty state slot')" badge="empty" />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('images', 'Images')" badge="images" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('links', 'Links')" badge="links" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('media', 'Media')" badge="media" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          :title="
+            t('样式映射（tagStyle / classStyles）', 'Style maps (`tagStyle` / `classStyles`)')
+          "
+          badge="style-map"
+        />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('table', 'Table')" badge="table" />
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+    </view>
+  </DemoPageShell>
+</template>
+<style scoped>
+.page {
+  padding: 24rpx 24rpx 48rpx;
+}
+
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+.module {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
+}
+
+.module__body {
+  padding: 0;
+}
+</style>

@@ -1,0 +1,36 @@
+<script setup lang="ts">
+/** Demo: sn-checkbox — select all / clear all (toggleAll, via expose). */
+import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';
+import SnCheckboxGroup from '@snui/uni-x/components/sn-checkbox/sn-checkbox-group.uvue';
+const groupRef = ref<InstanceType<typeof SnCheckboxGroup> | null>(null);
+const all = ref<Array<string | number | boolean>>([]);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">toggleAll (via expose)</text>
+    <SnCheckboxGroup ref="groupRef" v-model="all">
+      <SnCheckbox name="a"><text>Option A</text></SnCheckbox>
+      <SnCheckbox name="b"><text>Option B</text></SnCheckbox>
+    </SnCheckboxGroup>
+    <view class="sn-demo__actions">
+      <text class="sn-demo__action" @click="groupRef?.toggleAll(true)">Select all</text>
+      <text class="sn-demo__action" @click="groupRef?.toggleAll(false)">Clear all</text>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__actions {
+  display: flex;
+  gap: 24rpx;
+  flex-direction: row;
+}
+.sn-demo__action {
+  font-size: 26rpx;
+  color: var(--sn-mp-color-action-primary);
+}
+</style>

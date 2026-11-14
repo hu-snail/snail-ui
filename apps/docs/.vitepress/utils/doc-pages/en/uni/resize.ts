@@ -1,16 +1,16 @@
-/** Resize · uni-app (Mobile) (uni-app) — English page data. Props from sn-resize.vue; demos from the en page. */
+/** Resize · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-resize.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const resizeDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Basic Components' },
-    { text: 'Resize · uni-app (Mobile)' },
+    { text: 'Resize · uni-app x (Mobile)' },
   ],
-  title: 'Resize · uni-app (Mobile)',
+  title: 'Resize · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -38,10 +38,10 @@ export const resizeDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Resize · uni-app (Mobile).vue',
+    fileLabel: 'Resize · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -77,7 +77,7 @@ import { Resize } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Resize · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Resize · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Resize } from '@snui/uni';",
     chipCopy: "import { Resize } from '@snui/uni';",
     stats: [
@@ -87,8 +87,8 @@ import { Resize } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-transition', link: '/en/components/uni/transition' },
-    next: { text: 'sn-config-provider', link: '/en/components/uni/config-provider' },
+    prev: { text: 'Transition', link: '/en/components/uni/transition' },
+    next: { text: 'ConfigProvider', link: '/en/components/uni/config-provider' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

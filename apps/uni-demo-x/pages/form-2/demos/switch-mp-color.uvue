@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-switch — 开关配色：activeColor / inactiveColor 覆盖开与关的轨道颜色。 */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
+const colored = ref(true);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">activeColor / inactiveColor</text>
+    <SnSwitch
+      v-model="colored"
+      active-color="rgb(16, 185, 129)"
+      inactive-color="rgb(161, 161, 170)"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

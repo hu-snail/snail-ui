@@ -235,7 +235,6 @@ const viewClass = computed(() => props.customViewClass);
           @tap="onCancel"
           ><text>{{ props.cancelButtonText }}</text></view
         >
-        >
         <text v-if="props.title" class="sn-picker__title">{{ props.title }}</text>
         <view
           class="sn-picker__action sn-picker__confirm"

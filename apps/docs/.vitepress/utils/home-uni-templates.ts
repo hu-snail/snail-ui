@@ -67,7 +67,7 @@ const zhDict: UniTplDict = {
   openH5: '打开 H5',
   badgeH5: 'H5 已发布',
   badgeMp: '微信小程序',
-  iframeTitle: 'uni-app 模板实时预览',
+  iframeTitle: 'uni-app x 模板实时预览',
 };
 
 const enDict: UniTplDict = {
@@ -97,7 +97,7 @@ const enDict: UniTplDict = {
   openH5: 'Open H5',
   badgeH5: 'H5 live',
   badgeMp: 'WeChat Mini Program',
-  iframeTitle: 'uni-app template live preview',
+  iframeTitle: 'uni-app x template live preview',
 };
 
 const dicts: Record<UniTemplateLocale, UniTplDict> = { zh: zhDict, en: enDict };

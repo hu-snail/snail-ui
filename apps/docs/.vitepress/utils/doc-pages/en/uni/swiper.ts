@@ -1,16 +1,16 @@
-/** Swiper · uni-app (uni-app) — English page data. Props from sn-swiper.vue; demos from the en page. */
+/** Swiper · uni-app x (uni-app x) — English page data. Props from sn-swiper.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const swiperDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Display Components' },
-    { text: 'Swiper · uni-app' },
+    { text: 'Swiper · uni-app x' },
   ],
-  title: 'Swiper · uni-app',
+  title: 'Swiper · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -49,10 +49,10 @@ export const swiperDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Swiper · uni-app.vue',
+    fileLabel: 'Swiper · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -346,7 +346,7 @@ import { Swiper } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Swiper · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Swiper · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Swiper } from '@snui/uni';",
     chipCopy: "import { Swiper } from '@snui/uni';",
     stats: [
@@ -356,8 +356,8 @@ import { Swiper } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-img', link: '/en/components/uni/img' },
-    next: { text: 'sn-fit-swiper', link: '/en/components/uni/fit-swiper' },
+    prev: { text: 'Img', link: '/en/components/uni/img' },
+    next: { text: 'FitSwiper', link: '/en/components/uni/fit-swiper' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

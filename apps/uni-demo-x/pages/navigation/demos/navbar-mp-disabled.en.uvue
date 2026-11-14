@@ -1,0 +1,37 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-navbar — English shadow of navbar-mp-disabled.
+ */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+const lastAction = ref('—');
+
+function report(label: string): void {
+  lastAction.value = label;
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNavbar
+      title="Both sides disabled"
+      left-text="Back"
+      right-text="More"
+      left-disabled
+      right-disabled
+      @click-left="report('left (disabled)')"
+      @click-right="report('right (disabled)')"
+    />
+
+    <text class="sn-demo__meta">Last tap: {{ lastAction }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

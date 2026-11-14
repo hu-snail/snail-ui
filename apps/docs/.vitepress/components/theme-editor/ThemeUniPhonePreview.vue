@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * ThemeUniPhonePreview — 主题编辑器的 uni-app 端手机模拟预览。
+ * ThemeUniPhonePreview — 主题编辑器的 uni-app x 端手机模拟预览。
  *
  * ## 尺寸：真实手机比例
  *
@@ -227,7 +227,7 @@ const cells = computed(() => [
           />
         </SnCellGroup>
 
-        <SnDivider>{{ t('uni-app 端预览', 'uni-app end preview') }}</SnDivider>
+        <SnDivider>{{ t('uni-app x 端预览', 'uni-app x end preview') }}</SnDivider>
         <SnGap :height="12" />
       </div>
 

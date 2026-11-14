@@ -12,6 +12,9 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnAvatar from './sn-avatar.vue';
+// Raw SFC source for CSS-level regression guards (happy-dom drops rpx
+// lengths, so stylesheet values are only assertable in source text).
+import avatarSource from './sn-avatar.vue?raw';
 import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
 import { User } from '../sn-icon/sn-icon-set';
 
@@ -123,19 +126,20 @@ describe('sn-avatar', () => {
   });
 
   describe('colors and passthrough', () => {
-    it('forwards bgColor and color as inline overrides', () => {
+    it('forwards bgColor and color as inline overrides on the painted body', () => {
       const w = mount(SnAvatar, { props: { text: 'A', bgColor: '#123456', color: '#abcdef' } });
-      const style = w.attributes('style') ?? '';
+      const style = w.find('.sn-avatar__body').attributes('style') ?? '';
       expect(style).toContain('background-color: #123456');
       expect(style).toContain('color: #abcdef');
     });
 
-    it('forwards customClass and customStyle to the root node', () => {
+    it('forwards customClass to the root and customStyle to the painted body', () => {
       const w = mount(SnAvatar, {
         props: { text: 'A', customClass: 'my-avatar', customStyle: 'margin: 4px' },
       });
       expect(w.classes()).toContain('my-avatar');
-      expect(w.attributes('style')).toContain('margin: 4px');
+      expect(w.find('.sn-avatar__body').attributes('style')).toContain('margin: 4px');
+      expect(w.attributes('style')).not.toContain('margin: 4px');
     });
   });
 
@@ -251,6 +255,61 @@ describe('sn-avatar', () => {
       await w.setProps({ status: '' });
       expect(w.find('.sn-avatar__status').exists()).toBe(false);
       expect(w.classes().some((c) => c.startsWith('sn-avatar--status-'))).toBe(false);
+    });
+  });
+
+  /*
+   * Two-box structure: the wrapper (root) only positions — the painted
+   * circle is the `__body` child. uni-app x App clips children to a rounded
+   * root no matter what (`overflow: visible` is unreliable for absolutely
+   * positioned children — the live-verified sn-badge conclusion), so a dot
+   * anchored in a rounded root renders as a shaved crescent there. Keeping
+   * the dot in the unrounded wrapper's corner lets it straddle the circle
+   * edge on every end while never leaving the wrapper's box.
+   */
+  describe('two-box structure (wrapper vs painted body)', () => {
+    const style = avatarSource.slice(avatarSource.indexOf('<style'));
+
+    it('wraps the content layers in the painted body', () => {
+      const w = mount(SnAvatar, { props: { text: 'AU', status: 'online' } });
+      const body = w.find('.sn-avatar__body');
+      expect(body.exists()).toBe(true);
+      expect(body.find('.sn-avatar__text').exists()).toBe(true);
+      // The dot must be a sibling of the body — inside it, the body's rounded
+      // clip would shave the corner-straddling half on uni-app x App.
+      expect(body.find('.sn-avatar__status').exists()).toBe(false);
+      expect(w.find('.sn-avatar > .sn-avatar__status').exists()).toBe(true);
+    });
+
+    it('keeps the paint (background / radius) on the body, not the wrapper', () => {
+      const wrapperRule = /^\.sn-avatar \{([^}]*)\}/m.exec(style)?.[1] ?? '';
+      const bodyRule = /\.sn-avatar__body \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(bodyRule).toContain('border-radius');
+      expect(bodyRule).toContain('background-color');
+      expect(bodyRule).toContain('box-shadow');
+      expect(wrapperRule).not.toMatch(/border-radius\s*:/);
+      expect(wrapperRule).not.toMatch(/background-color\s*:/);
+    });
+
+    it('anchors the dot on the arc (half in, half out) per preset', () => {
+      // Dot center on the circle arc along the diagonal: offset ≈ 0.146 × D − dot/2.
+      const base = /\.sn-avatar__status \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(base).toContain('right: 1rpx');
+      expect(base).toContain('bottom: 1rpx');
+      const anchors: Array<['small' | 'normal' | 'medium' | 'large', string]> = [
+        ['small', '0'],
+        ['normal', '1rpx'],
+        ['medium', '2rpx'],
+        ['large', '2rpx'],
+      ];
+      for (const [preset, inset] of anchors) {
+        const rule = new RegExp(
+          `\\.sn-avatar--size-${preset} \\.sn-avatar__status \\{([^}]*)\\}`,
+        ).exec(style)?.[1];
+        expect(rule, `${preset} preset anchors the dot`).toBeDefined();
+        expect(rule).toContain(`right: ${inset}`);
+        expect(rule).toContain(`bottom: ${inset}`);
+      }
     });
   });
 });

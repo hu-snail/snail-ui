@@ -1,0 +1,98 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tour — English shadow of tour-mp-panel-slot.
+ */
+import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';
+const customVisible = ref(false);
+const customCurrent = ref(0);
+const customSteps = [
+  { content: 'This step renders its actions through the footer slot.' },
+  { content: 'Last step — the custom button becomes "Got it".' },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__stage">
+      <text class="sn-demo__button" @click="customVisible = true">Open custom panel guide</text>
+
+      <SnTour
+        v-model="customVisible"
+        v-model:current="customCurrent"
+        :steps="customSteps"
+        :show-tour-buttons="false"
+        custom-class="sn-demo-contained"
+      >
+        <template #default="{ step, current, total }">
+          <view class="sn-demo__panel">
+            <text class="sn-demo__panel-title">Step {{ current + 1 }} / {{ total }}</text>
+            <text class="sn-demo__panel-text">{{ step?.content }}</text>
+          </view>
+        </template>
+        <template #footer="{ current, total }">
+          <view class="sn-demo__footer">
+            <text class="sn-demo__button" @click="customVisible = false">Skip</text>
+            <text
+              class="sn-demo__button sn-demo__button--primary"
+              @click="customVisible = current + 1 >= total ? false : (customCurrent = current + 1)"
+            >
+              {{ current + 1 >= total ? 'Got it' : 'Continue' }}
+            </text>
+          </view>
+        </template>
+      </SnTour>
+    </view>
+
+    <text class="sn-demo__meta">Step: {{ customCurrent + 1 }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  align-items: flex-start;
+  min-height: 480rpx;
+  padding: var(--sn-mp-spacing-4);
+  overflow: hidden;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+}
+.sn-demo__button {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-sm);
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-demo__button--primary {
+  border-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-action-primary);
+}
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+}
+.sn-demo__panel-title {
+  font-size: 28rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-demo__panel-text {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sn-mp-spacing-3);
+  flex-direction: row;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+/* Docs-preview only — pin the fixed guide layer to the stage. */
+</style>

@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-switch — root styling: customClass / customStyle land on the root node. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
+const b = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">customClass</text>
+    <SnSwitch v-model="b" custom-class="sn-demo__switch" />
+
+    <text class="sn-demo__title">customStyle</text>
+    <SnSwitch v-model="b" custom-style="padding: 4rpx; border-radius: var(--sn-mp-radius-full);" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__switch {
+  padding: 4rpx;
+  border: 1rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-full);
+}
+</style>

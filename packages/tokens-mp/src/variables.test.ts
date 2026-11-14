@@ -112,6 +112,13 @@ describe('@snui/tokens-mp rpx conversion', () => {
     }
   });
 
+  it('declares the aliases on `page` so WXSS components receive them', async () => {
+    // Regression: `:root` alone matches nothing in a mini-program, so every
+    // --sn-mp-* consumer lost its colors / radii / spacing on MP.
+    const css = await readFile(stylesheetPath, 'utf-8');
+    expect(css).toMatch(/:root,\s*page\s*\{/);
+  });
+
   it('declares a dark block that overrides every color alias it defines', async () => {
     // The dark block is hand-written CSS (the JS map only emits `:root`), so
     // nothing else guards it against drifting from the alias layer. Every
@@ -158,9 +165,10 @@ describe('@snui/tokens-mp rpx conversion', () => {
     }
   });
 
-  it('renders `:root { ... }` block with all aliases', () => {
+  it('renders `:root, page { ... }` block with all aliases', () => {
     const css = renderSnMpStyles();
-    expect(css.startsWith(':root {')).toBe(true);
+    // `page` is required for WeChat WXSS (no `:root`); `:root` keeps H5/App.
+    expect(css.startsWith(':root,\npage {')).toBe(true);
     for (const [alias] of snMpAliasMap) {
       expect(css).toContain(`${alias}:`);
     }

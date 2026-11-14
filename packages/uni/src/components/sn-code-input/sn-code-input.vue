@@ -231,6 +231,10 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
             'sn-code-input__box--filled': index - 1 < chars.length,
             'sn-code-input__box--active': focused && caretIndex === index - 1,
             'sn-code-input__box--error': errorInfo !== '',
+            // shape/border mirrored onto the cell so skin rules stay
+            // two-segment (uni-app x App has no 3-level selectors, §116.2)
+            'sn-code-input__box--underline': props.shape === 'underline',
+            'sn-code-input__box--border-none': props.border === 'none',
           },
         ]"
         :aria-label="`digit ${index}`"
@@ -374,16 +378,18 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
   border-radius: var(--sn-mp-radius-xs);
 }
 
-/* Doodle underline — the hand-drawn look keeps the bottom rule only. */
-.snui-skin-doodle .sn-code-input--underline .sn-code-input__box {
+/* Doodle underline — the hand-drawn look keeps the bottom rule only. The
+   shape rides the mirrored `__box--underline` class so the rule stays
+   two-segment (uni-app x App has no 3-level selectors, §116.2). */
+.snui-skin-doodle .sn-code-input__box--underline {
   border: none;
   border-bottom: 4rpx solid var(--sn-mp-color-text-primary);
   border-radius: 0;
 }
 
-/* Doodle + border-none — the hand-drawn outline yields to the prop. */
-.sn-code-input--border-none .snui-skin-doodle .sn-code-input__box,
-.snui-skin-doodle .sn-code-input--border-none .sn-code-input__box {
+/* Doodle + border-none — the hand-drawn outline yields to the prop
+   (mirrored `__box--border-none` class, same two-segment reasoning). */
+.snui-skin-doodle .sn-code-input__box--border-none {
   border: none;
 }
 </style>

@@ -10,6 +10,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h, nextTick } from 'vue';
+import SnButton from '../button/SnButton.vue';
 import SnDropdown from './SnDropdown.vue';
 import type { SnDropdownOption } from './sn-dropdown-types';
 
@@ -39,9 +40,10 @@ const MarkerIcon = () => h('svg', { viewBox: '0 0 24 24' }, [h('path', { d: 'M4 
 const mounted: Array<{ unmount: () => void }> = [];
 
 /** Mount helper — click trigger by default (hover tests opt in). */
-function mountDropdown(props: Record<string, unknown> = {}) {
+function mountDropdown(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   const w = mount(SnDropdown, {
     props: { options: ACTIONS, trigger: 'click', ...props },
+    slots,
     attachTo: document.body,
   });
   mounted.push(w);
@@ -597,5 +599,86 @@ describe('SnDropdown', () => {
     await openByContextMenu(w);
     const iconHost = rowByKey('edit')?.querySelector('.sn-dropdown-option__icon');
     expect(iconHost?.querySelector('svg')).not.toBeNull();
+  });
+});
+
+/** Built-in trigger arrow + the `icon` prop / `#icon` slot override surface. */
+describe('SnDropdown trigger arrow', () => {
+  const CustomArrow = () => h('svg', { 'data-test': 'custom-arrow', viewBox: '0 0 24 24' });
+
+  it('renders a built-in SVG chevron-down (not a text glyph) by default', () => {
+    const w = mountDropdown();
+    const arrow = w.find('.sn-dropdown__arrow');
+    expect(arrow.exists()).toBe(true);
+    expect(arrow.attributes('aria-hidden')).toBe('true');
+    expect(arrow.find('path').attributes('d')).toBe('m6 9 6 6 6-6');
+    expect(w.find('.sn-dropdown').classes()).toContain('sn-dropdown--with-arrow');
+  });
+
+  it('marks the arrow open while the panel is visible', async () => {
+    const w = mountDropdown();
+    await openByClick(w);
+    expect(w.find('.sn-dropdown__arrow').classes()).toContain('sn-dropdown__arrow--open');
+  });
+
+  it('hides the arrow with showArrow=false', () => {
+    const w = mountDropdown({ showArrow: false });
+    expect(w.find('.sn-dropdown__arrow').exists()).toBe(false);
+    expect(w.find('.sn-dropdown').classes()).not.toContain('sn-dropdown--with-arrow');
+  });
+
+  it('never renders an arrow for a contextMenu trigger', () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    expect(w.find('.sn-dropdown__arrow').exists()).toBe(false);
+  });
+
+  it('uses a custom icon component passed through the icon prop', () => {
+    const w = mountDropdown({ icon: CustomArrow });
+    expect(w.find('[data-test="custom-arrow"]').exists()).toBe(true);
+    expect(w.find('.sn-dropdown__arrow').find('path').exists()).toBe(false);
+  });
+
+  it('lets the #icon slot replace the arrow and receive the open state', async () => {
+    const w = mountDropdown(
+      { icon: CustomArrow },
+      {
+        icon: ({ open }: { open: boolean }) =>
+          h('span', { class: 'slot-arrow' }, open ? 'open' : 'closed'),
+      },
+    );
+    expect(w.find('.slot-arrow').text()).toBe('closed');
+    expect(w.find('[data-test="custom-arrow"]').exists()).toBe(false);
+    await openByClick(w);
+    expect(w.find('.slot-arrow').text()).toBe('open');
+  });
+
+  it('removes the slot node as well when showArrow=false', () => {
+    const w = mountDropdown(
+      { showArrow: false },
+      { icon: () => h('span', { class: 'slot-arrow' }, 'x') },
+    );
+    expect(w.find('.slot-arrow').exists()).toBe(false);
+  });
+
+  it('injects the arrow INSIDE the slotted button instead of beside it', () => {
+    const w = mountDropdown({}, { default: () => h(SnButton, null, { default: () => 'Open' }) });
+    const trigger = w.find('.sn-button');
+    expect(trigger.exists()).toBe(true);
+    expect(trigger.find('.sn-dropdown__arrow').exists()).toBe(true);
+    // The arrow must NOT be a direct child of the dropdown wrapper.
+    expect(w.find('.sn-dropdown > .sn-dropdown__arrow').exists()).toBe(false);
+    expect(trigger.find('.sn-button__content .sn-dropdown__arrow').exists()).toBe(true);
+  });
+
+  it('keeps the injected arrow reactive to the open state', async () => {
+    const w = mountDropdown({}, { default: () => h(SnButton, null, { default: () => 'Open' }) });
+    expect(w.find('.sn-button .sn-dropdown__arrow--open').exists()).toBe(false);
+    await openByClick(w);
+    expect(w.find('.sn-button .sn-dropdown__arrow--open').exists()).toBe(true);
+  });
+
+  it('injects into a trigger that has no slot children of its own', () => {
+    const w = mountDropdown({}, { default: () => h(SnButton) });
+    expect(w.find('.sn-button .sn-dropdown__arrow').exists()).toBe(true);
   });
 });

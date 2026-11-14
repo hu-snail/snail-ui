@@ -1,0 +1,31 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialog (uni-end) — English shadow of dialog-mp-theme.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnDialog from '@snui/uni-x/components/sn-dialog/sn-dialog.uvue';
+const textThemeOpen = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @click="textThemeOpen = true"><text>Text buttons (theme=&quot;text&quot;)</text></SnButton>
+
+    <SnDialog
+      v-model="textThemeOpen"
+      type="confirm"
+      theme="text"
+      title="Sign out"
+      msg="You will need to sign in again to keep using the app."
+      confirm-button-text="Sign out"
+      cancel-button-text="Cancel"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

@@ -429,15 +429,6 @@ describe('SnCheckbox additive variants', () => {
     expect(wrapper.find('.sn-checkbox__label').exists()).toBe(false);
   });
 
-  it('icon variant renders a tile with the #icon glyph', () => {
-    const wrapper = mount(SnCheckbox, {
-      props: { modelValue: true, variant: 'icon' },
-      slots: { icon: '<svg class="my-glyph" />' },
-    });
-    expect(wrapper.find('.sn-checkbox__tile').exists()).toBe(true);
-    expect(wrapper.find('.my-glyph').exists()).toBe(true);
-  });
-
   it('group variant cascades and a child prop overrides it', () => {
     const wrapper = mount(SnCheckboxGroup, {
       props: { modelValue: ['a'], variant: 'card' },
@@ -458,7 +449,7 @@ describe('SnCheckbox additive variants', () => {
 describe('SnCheckbox inverted marker & label-first', () => {
   it('defaults to ring marker and marker-first order', () => {
     const wrapper = mount(SnCheckbox, { props: { label: 'A' } });
-    expect(wrapper.classes()).toContain('sn-checkbox--marker-ring');
+    expect(wrapper.classes()).toContain('sn-checkbox--marker-base');
     expect(wrapper.classes()).toContain('sn-checkbox--label-marker-first');
   });
 
@@ -484,5 +475,52 @@ describe('SnCheckbox inverted marker & label-first', () => {
     const box = wrapper.find('.sn-checkbox');
     expect(box.classes()).toContain('sn-checkbox--marker-inverted');
     expect(box.classes()).toContain('sn-checkbox--label-label-first');
+  });
+});
+
+/** AUI additive — card indicator layouts. */
+describe('SnCheckbox card indicator layouts', () => {
+  it('card + leading centres the inline box', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'leading' },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-leading');
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(true);
+  });
+
+  it('card + trailing renders the inline box on the right', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'trailing' },
+    });
+    expect(wrapper.classes()).toContain('sn-checkbox--indicator-trailing');
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__tick').exists()).toBe(false);
+  });
+
+  it('card + corner uses the fold instead of the inline box', () => {
+    const wrapper = mount(SnCheckbox, {
+      props: { modelValue: true, variant: 'card', indicatorPlacement: 'bottom-right' },
+    });
+    expect(wrapper.find('.sn-checkbox__tick--bottom-right').exists()).toBe(true);
+    expect(wrapper.find('.sn-checkbox__box').exists()).toBe(false);
+  });
+});
+
+/** AUI additive — markerShape="check" is also available in the basic variant. */
+describe('SnCheckbox basic variant check marker', () => {
+  it('markerShape="check" flags the root and keeps the checkmark visible when checked', () => {
+    const checked = mount(SnCheckbox, {
+      props: { modelValue: true, markerShape: 'check' },
+    });
+    expect(checked.classes()).toContain('sn-checkbox--marker-check');
+    expect(checked.find('.sn-checkbox__checkmark').exists()).toBe(true);
+  });
+
+  it('markerShape="check" renders the box unchecked without a checkmark', () => {
+    const unchecked = mount(SnCheckbox, {
+      props: { modelValue: false, markerShape: 'check' },
+    });
+    expect(unchecked.classes()).toContain('sn-checkbox--marker-check');
+    expect(unchecked.classes()).not.toContain('sn-checkbox--checked');
   });
 });

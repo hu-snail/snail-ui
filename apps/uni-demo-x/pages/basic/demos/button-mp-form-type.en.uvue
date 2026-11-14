@@ -1,0 +1,48 @@
+<script setup lang="ts">
+/** Demo: sn-button — formType 'submit' | 'reset' (MP form submission). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';
+import SnFormItem from '@snui/uni-x/components/sn-form/sn-form-item.uvue';
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const form = reactive({ email: '' });
+const submitted = ref('');
+
+function onSubmit(): void {
+  submitted.value = JSON.stringify(form);
+}
+function onReset(): void {
+  form.email = '';
+  submitted.value = '(reset)';
+}
+</script>
+<template>
+  <view class="sn-form-demo">
+    <SnForm :model="form" label-position="left" label-width="120">
+      <SnFormItem prop="email" label="Email">
+        <SnInput v-model="form.email" placeholder="you@example.com" />
+      </SnFormItem>
+      <view class="sn-form-demo__actions">
+        <SnButton type="primary" form-type="submit" @click="onSubmit"><text>formType=submit</text></SnButton>
+        <SnButton form-type="reset" @click="onReset"><text>formType=reset</text></SnButton>
+      </view>
+      <view class="sn-form-demo__result"><text>submitted: {{ submitted || '—' }}</text></view>
+    </SnForm>
+  </view>
+</template>
+<style scoped>
+.sn-form-demo {
+  max-width: 700rpx;
+}
+.sn-form-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 16rpx;
+  flex-direction: row;
+}
+.sn-form-demo__result {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
+}
+</style>

@@ -1,0 +1,29 @@
+<script setup lang="ts">
+/** Demo: sn-rate — gap & full-row spread: `space` sets the gap (a number is an rpx design value ×2), `size` the glyph size and `block` stretches the icons across the row. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
+const wide = ref<number | null>(2);
+const block = ref<number | null>(4);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnRate v-model="wide" :space="16" :size="40" />
+    <text class="sn-demo__meta">space=16 (rpx ×2 gap) + size=40</text>
+
+    <SnRate v-model="block" block />
+    <text class="sn-demo__meta">block: the icons share the full row width</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

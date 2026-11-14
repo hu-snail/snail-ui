@@ -1,0 +1,35 @@
+<script setup lang="ts">
+/** Demo: sn-input — prefixIcon / suffixIcon name mode + cssIcon class mode. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
+import { ChevronRight, Search, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
+registerSnIcons({ ChevronRight, Search, User });
+
+const q = ref('');
+const handle = ref('');
+const url = ref('');
+const cssClick = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="q" placeholder="Search" prefix-icon="Search" clearable />
+    <SnInput v-model="handle" placeholder="Username" prefix-icon="User" />
+    <SnInput v-model="url" placeholder="https://" suffix-icon="ChevronRight" />
+    <SnInput
+      v-model="cssClick"
+      placeholder="cssIcon: class as icon (sized by --sn-input-icon-size)"
+      :prefix-icon="'my-icon-glossary'"
+      css-icon
+    />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+/* css-icon mode: the class lands on the icon spot, sized to the input
+ * icon token. */
+</style>

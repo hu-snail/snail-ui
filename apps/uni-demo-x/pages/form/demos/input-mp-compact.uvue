@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-input — 紧凑行内形态（compact）：compact + border="bottom"（嵌进 Cell / FormItem 的行内形态）。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const inline = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="inline" compact border="bottom" placeholder="行内搜索" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

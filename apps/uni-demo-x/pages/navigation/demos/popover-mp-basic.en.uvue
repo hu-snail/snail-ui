@@ -1,0 +1,49 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover (uni-end) — normal mode with plain text content.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
+const open = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnPopover
+      v-model="open"
+      mode="normal"
+      content="3 tasks are left today — start with the two overdue ones."
+      placement="bottom"
+      :show-close="true"
+      custom-class="sn-demo-contained"
+    >
+      <SnButton type="primary" block><text>Show the bubble</text></SnButton>
+    </SnPopover>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">State: {{ open ? 'open' : 'closed' }}</text>
+    <text class="sn-demo__hint"
+      >Tap anywhere outside the bubble to close it via the page-root closeOutside channel — the same
+      gesture still reaches other controls; the trigger toggles it too.</text
+    >
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__space {
+  height: 180rpx;
+}
+</style>

@@ -11,7 +11,7 @@ export const avatarDocPage: SnDocPageData = {
   title: 'Avatar 头像',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: '三种内容层与自定义底色：' }],
@@ -35,7 +35,7 @@ export const avatarDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Avatar 头像.vue',
     meta: 'Vue 3 · <script setup>',
@@ -68,12 +68,6 @@ import { Avatar } from '@snui/uni';
       name: 'avatar-mp-fallback',
       title: '加载失败回退',
       blurb: '图片失败 → alt 文本 → 文字 → 图标，同时触发 error 事件。',
-    },
-    {
-      name: 'avatar-mp-css-icon',
-      title: '字体图标（cssIcon / iconPrefix）',
-      blurb:
-        'cssIcon + iconPrefix 拼出字体图标类；cssIcon 传字符串则直接作前缀；占位字形证明 class 落在字形节点。',
     },
     {
       name: 'avatar-mp-mode',
@@ -144,7 +138,7 @@ import { Avatar } from '@snui/uni';
         name: 'mode',
         type: 'string',
         default: "'aspectFill'",
-        desc: '图片填充模式，同 uni-app image 组件的 mode。',
+        desc: '图片填充模式，同 uni-app x image 组件的 mode。',
       },
       {
         name: 'status',
@@ -169,8 +163,8 @@ import { Avatar } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-badge', link: '/components/uni/badge' },
-    next: { text: 'sn-avatar-group', link: '/components/uni/avatar-group' },
+    prev: { text: 'Badge', link: '/components/uni/badge' },
+    next: { text: 'AvatarGroup', link: '/components/uni/avatar-group' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

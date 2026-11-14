@@ -35,6 +35,7 @@ import SnRadio from './radio/SnRadio.vue';
 import SnRadioButton from './radio/SnRadioButton.vue';
 import SnRadioGroup from './radio/SnRadioGroup.vue';
 import SnSwitch from './switch/SnSwitch.vue';
+import SnSegment from './segment/SnSegment.vue';
 import SnSlider from './slider/SnSlider.vue';
 import SnSliderBar from './slider-bar/SnSliderBar.vue';
 import SnRate from './rate/SnRate.vue';
@@ -173,6 +174,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnRadioButton', component: SnRadioButton },
   { name: 'SnRadioGroup', component: SnRadioGroup },
   { name: 'SnSwitch', component: SnSwitch },
+  { name: 'SnSegment', component: SnSegment },
   { name: 'SnSlider', component: SnSlider },
   { name: 'SnSliderBar', component: SnSliderBar },
   { name: 'SnRate', component: SnRate },

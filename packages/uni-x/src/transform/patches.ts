@@ -18,221 +18,522 @@ export interface SourcePatch {
 }
 
 export const PATCHES: Record<string, SourcePatch[]> = {
+  // sn-icon: the App-side IconData rasterization (computedStyle stroke-color
+  // resolution + SVG data URL) moved INTO the source (sn-icon-mp.ts, shared
+  // with the MP branch), so the script-injection / per-instance-class patches
+  // are gone. What remains is template retargeting only: App has no inline
+  // <svg> element and native backgrounds cannot carry remote SVG data URLs.
   'sn-icon/sn-icon.vue': [
-    {
-      anchor: `  return style;
-});
-</script>`,
-      replacement: `  return style
-})
-
-/**
- * uni-app x App has no inline <svg> element: IconData renders through an
- * <image> with an SVG data URL instead. CSS currentColor cannot reach the
- * rasterized document, so the stroke falls back to a fixed ink color.
- *
- * displayIcon covers every IconData source: object icon, string icon
- * resolved from the registry / built-in catalog, and async provider data.
- */
-const iconDataUrl = computed<string | undefined>(() => {
-  const icon = displayIcon.value
-  if (icon === null) return undefined
-  const vb: string = icon.viewBox ?? '0 0 24 24'
-  const stroke: string = props.color === 'currentColor' ? '#1a1a1a' : props.color
-  // Material-style solid glyphs (render: 'fill') must be filled, not stroked:
-  // a stroke would trace the outline into a hollow double line.
-  const isFill: boolean = icon.render === 'fill'
-  const body: string = icon.paths
-    .map((d) =>
-      isFill
-        ? \`<path d="\${d}" fill="\${stroke}"/>\`
-        : \`<path d="\${d}" fill="none" stroke="\${stroke}" stroke-width="\${props.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>\`,
-    )
-    .join('')
-  const svg: string = \`<svg xmlns="http://www.w3.org/2000/svg" viewBox="\${vb}">\${body}</svg>\`
-  return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
-})
-</script>`,
-      note: 'IconData rendering moved to <image> + SVG data URL (no inline <svg> on App)',
-    },
     {
       anchor: `    <view v-else-if="remoteSrc" class="sn-icon__remote" :style="remoteStyle" />`,
       replacement: `    <!-- uni-app x App: background-image + SVG data URL is unreliable on native — use <image>. -->
-    <image v-else-if="remoteSrc" class="sn-icon__svg-img" :src="remoteSrc" mode="aspectFit" />`,
+    <image v-else-if="remoteSrc" class="sn-icon__svg" :src="remoteSrc" mode="aspectFit" />`,
       note: 'remote (iconify / provider URL) branch retargeted to <image :src>',
     },
     {
       anchor: `    <svg
       v-else-if="displayIcon"
+      class="sn-icon__svg"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
       :fill="isFillIcon ? color : 'none'"
       :stroke="isFillIcon ? 'none' : color"
-      :stroke-width="isFillIcon ? undefined : effectiveStrokeWidth"
+      :stroke-width="isFillIcon ? undefined : strokeWidth"
       stroke-linecap="round"
       stroke-linejoin="round"
       focusable="false"
     >
       <path v-for="(d, i) in displayIcon.paths" :key="i" :d="d" />
     </svg>`,
-      replacement: `    <!-- uni-app x App: inline <svg> is not a built-in element — rasterize via <image>. -->
-    <image v-else-if="displayIcon" class="sn-icon__svg-img" :src="iconDataUrl" mode="aspectFit" />`,
+      replacement: `    <!-- uni-app x App: inline <svg> is not a built-in element — rasterize via <image>
+         (iconDataUrl / stroke color come from the in-source sn-icon-mp module). -->
+    <image v-else-if="displayIcon" class="sn-icon__svg" :src="iconDataUrl" mode="aspectFit" />`,
       note: '<svg> block replaced by <image :src="iconDataUrl">',
     },
+  ],
+
+  // sn-circle/sn-circle.vue: conic-gradient + CSS mask have no App-side
+  // equivalent (App background-image takes linear-gradient only, mask is
+  // unsupported) — the ring rasterizes through <image> + SVG data URL. Ring
+  // colors resolve through probe computedStyle following the sn-icon
+  // strategy (that resolver is the source of truth; keep the inlined copies
+  // in sync).
+
+  'sn-circle/sn-circle.vue': [
     {
-      anchor: `.sn-icon svg {
-  display: block;
+      anchor: `import { computed } from 'vue';`,
+      replacement: `import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from 'vue';`,
+      note: 'ring color resolution + canvas state need getCurrentInstance / nextTick / onMounted / ref / watch',
+    },
+    {
+      // Root sizing must be inline, not var()-derived: on the vapor path the
+      // root's `width: var(--sn-circle-size)` rule did not resolve (verified
+      // live: computed root 0×0 while --sn-circle-size was valid), and a 0×0
+      // root clips the absolutely-positioned ring into fragments. Inline
+      // width/height is the one sizing channel every uni target honours
+      // (same conclusion as the sn-badge corner pin).
+      anchor: `const rootStyle = computed(() => {
+  const parts = [
+    \`--sn-circle-size: \${ringSize.value}\`,
+    \`--sn-circle-width: \${ringWidth.value}\`,
+    \`--sn-circle-duration: \${transitionMs.value}ms\`,
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});`,
+      replacement: `const rootStyle = computed(() => {
+  const parts = [
+    // Inline geometry (see the patch note): the CSS var alone did not give
+    // the root a box on the uni ends (verified live: 0×0 root while the var
+    // was valid), and a 0×0 root lets the ring image fall back to its
+    // intrinsic SVG size — the ring then draws oversized and off-position.
+    \`width: \${ringSize.value}\`,
+    \`height: \${ringSize.value}\`,
+    \`--sn-circle-size: \${ringSize.value}\`,
+    \`--sn-circle-width: \${ringWidth.value}\`,
+    \`--sn-circle-duration: \${transitionMs.value}ms\`,
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});`,
+      note: 'root gets inline width/height (the ring image sizes off it)',
+    },
+    {
+      anchor: `/** Sweep + fill color as custom properties consumed by the stylesheet. */
+const arcStyle = computed(() => {
+  const parts = [\`--sn-circle-sweep: \${sweepDeg.value}deg\`];
+  if (gradientStops.value !== null) {
+    parts.push(\`--sn-circle-stops: \${gradientStops.value}\`);
+  } else {
+    const solid =
+      typeof props.color === 'string' && props.color !== ''
+        ? props.color
+        : 'var(--sn-mp-color-action-primary)';
+    parts.push(\`--sn-circle-color: \${solid}\`);
+  }
+  return parts.join('; ');
+});
+
+const trackStyle = computed(() =>
+  props.layerColor ? \`--sn-circle-layer: \${props.layerColor}\` : undefined,
+);
+
+const fillStyle = computed(() => (props.fill ? \`background-color: \${props.fill}\` : undefined));
+</script>`,
+      replacement: `/**
+ * uni-app x App: conic-gradient and CSS mask are unsupported (App
+ * background-image takes linear-gradient only), so the ring — track band +
+ * progress arc — rasterizes through an <image> with an SVG data URL built
+ * here. Geometry lives in a 100×100 viewBox: the stroke width scales from
+ * the size/strokeWidth ratio, and the progress arc is a precomputed SVG
+ * arc path (percent → endpoint-angle math runs here in JS; no in-document
+ * transform attribute and no dasharray — the App image SVG decoder
+ * mis-renders them, see ringDataUrl). The SVG document never computes.
+ *
+ * The SVG document is isolated from page CSS — a var(--token) or
+ * currentColor stroke cannot cross the image boundary (a literal var() is
+ * invalid inside the document and falls back to black ink). Raw colors are
+ * carried as inline text color on two zero-size probe nodes and read back
+ * through SelectorQuery computedStyle — the same strategy as the sn-icon
+ * patch, whose resolver is the source of truth for this inline copy (keep
+ * the two in sync; per-file copies, patches are standalone rewrites):
+ * concrete colors (hex / rgb / hsl / a few keywords) bake verbatim without
+ * a query; everything else resolves through the real cascade (skins, .dark
+ * flips and theme vars included). Result-shape note mirrors sn-icon:
+ * uni-app x hands the fields callback the NodeInfo itself (ret.color),
+ * classic-style hosts an array — both probed, plus a stringified fallback.
+ *
+ * Availability policy: both colors start at light-theme ink constants so
+ * the ring is NEVER blank (a resolution failure must not erase the
+ * component — same blank-first-paint regression sn-icon hit). Gradient-map
+ * \`color\` degrades to its last stop as a solid (SVG has no conic sweep).
+ * The H5/MP sweep is a CSS background-image transition; an <image> source
+ * cannot transition on App, so progress changes jump here — \`speed\` keeps
+ * API parity but no JS animation loop is introduced.
+ */
+const PROGRESS_INK_FALLBACK = '#1677ff'
+const TRACK_INK_FALLBACK = '#f4f4f5'
+const circleInstance = getCurrentInstance()
+const circleUid: number = circleInstance?.uid ?? 0
+const resolvedProgressColor = ref(PROGRESS_INK_FALLBACK)
+const resolvedTrackColor = ref(TRACK_INK_FALLBACK)
+let circleColorSeq = 0
+
+interface CircleColorNode {
+  color?: string
+}
+interface CircleFieldsOptions {
+  computedStyle?: string[]
+}
+interface CircleColorQuery {
+  in(context?: unknown): CircleColorQuery
+  select(selector: string): CircleColorQuery
+  fields(options: CircleFieldsOptions, callback: (ret: unknown) => void): CircleColorQuery
+  exec(): void
+}
+interface CircleUniHost {
+  createSelectorQuery?: () => CircleColorQuery
+}
+
+/** Raw progress color: the solid string, the last stop of a gradient map
+ * (App degrades the map — SVG has no conic sweep), or the primary token. */
+const progressRawColor = computed<string>(() => {
+  if (typeof props.color === 'string') {
+    return props.color !== '' ? props.color : 'var(--sn-mp-color-action-primary)'
+  }
+  const entries = Object.entries(props.color)
+  const last = entries.length > 0 ? entries[entries.length - 1] : null
+  return last !== null ? (last[1] ?? '') : 'var(--sn-mp-color-action-primary)'
+})
+
+/** Raw track color: \`layerColor\` or the subtle-background token. */
+const trackRawColor = computed<string>(() =>
+  props.layerColor !== '' ? props.layerColor : 'var(--sn-mp-color-background-subtle)',
+)
+
+/** Probe inline styles — only non-concrete colors need the cascade. */
+const progressProbeStyle = computed(() =>
+  isConcreteCircleColor(progressRawColor.value) ? undefined : \`color: \${progressRawColor.value}\`,
+)
+const trackProbeStyle = computed(() =>
+  isConcreteCircleColor(trackRawColor.value) ? undefined : \`color: \${trackRawColor.value}\`,
+)
+
+const fillStyle = computed(() => (props.fill ? \`background-color: \${props.fill}\` : undefined))
+
+/** A color the SVG data URL can take verbatim — no cascade involvement.
+ * Same predicate as sn-icon's isConcreteIconColor (keep in sync). */
+function isConcreteCircleColor(value: string): boolean {
+  return /^#[0-9a-fA-F]{3,8}$|^rgba?\\(|^hsla?\\(|^(transparent|white|black)$/.test(value)
+}
+
+/** Extract a concrete color from whichever result shape the runtime
+ * delivered (NodeInfo / array wrapper / stringified UTSJSONObject).
+ * Mirrors sn-icon's readResolvedColor (keep in sync). */
+function readResolvedCircleColor(value: unknown): string {
+  if (value !== null && value !== undefined && typeof value === 'object') {
+    const direct = (value as CircleColorNode).color
+    if (typeof direct === 'string' && direct !== '' && isConcreteCircleColor(direct)) {
+      return direct
+    }
+  }
+  let json = ''
+  try {
+    json = JSON.stringify(value)
+  } catch {
+    json = ''
+  }
+  const m = /"color"\\s*:\\s*"([^"]+)"/.exec(json)
+  if (m !== null) {
+    const viaJson: string = m[1] ?? ''
+    if (viaJson !== '' && isConcreteCircleColor(viaJson)) return viaJson
+  }
+  return ''
+}
+
+/** Two decimals without toFixed (narrow UTS number API surface). */
+function r2(value: number): number {
+  return Math.round(value * 100) / 100
+}
+
+/** Resolve both ring colors. One delayed retry: the first query can outrun
+ * first layout on slow mounts (mirrors sn-icon's resolver). */
+function resolveCircleColors(retried = false): void {
+  const progressRaw: string = progressRawColor.value
+  const trackRaw: string = trackRawColor.value
+  if (isConcreteCircleColor(progressRaw) && isConcreteCircleColor(trackRaw)) {
+    resolvedProgressColor.value = progressRaw
+    resolvedTrackColor.value = trackRaw
+    return
+  }
+  const seq = ++circleColorSeq
+  const host = (globalThis as { uni?: CircleUniHost }).uni
+  if (host?.createSelectorQuery === undefined || circleInstance === null) {
+    // No query layer (old runtime / detached instance): keep the ink colors.
+    resolvedProgressColor.value = isConcreteCircleColor(progressRaw) ? progressRaw : PROGRESS_INK_FALLBACK
+    resolvedTrackColor.value = isConcreteCircleColor(trackRaw) ? trackRaw : TRACK_INK_FALLBACK
+    return
+  }
+  let retryScheduled = false
+  const scheduleRetry = (): void => {
+    if (retried || retryScheduled) return
+    retryScheduled = true
+    setTimeout(() => {
+      if (seq === circleColorSeq) resolveCircleColors(true)
+    }, 50)
+  }
+  nextTick(() => {
+    if (seq !== circleColorSeq) return
+    try {
+      host
+        .createSelectorQuery()
+        .in(circleInstance?.proxy)
+        .select(\`.sn-circle__probe-p\${circleUid}\`)
+        .fields({ computedStyle: ['color'] }, (ret) => {
+          if (seq !== circleColorSeq) return
+          let color = ''
+          if (Array.isArray(ret)) {
+            const arr = ret as Array<unknown>
+            color = readResolvedCircleColor(arr.length > 0 ? arr[0] : null)
+          } else {
+            color = readResolvedCircleColor(ret)
+          }
+          if (color !== '') {
+            resolvedProgressColor.value = color
+          } else if (isConcreteCircleColor(progressRaw)) {
+            resolvedProgressColor.value = progressRaw
+          } else if (retried) {
+            console.warn(
+              '[sn-circle] RING_COLOR_UNRESOLVED: computedStyle("color") returned no usable value.' +
+                ' Keeping the ink color so the ring stays visible.',
+            )
+            resolvedProgressColor.value = PROGRESS_INK_FALLBACK
+          } else {
+            scheduleRetry()
+          }
+        })
+        .select(\`.sn-circle__probe-t\${circleUid}\`)
+        .fields({ computedStyle: ['color'] }, (ret) => {
+          if (seq !== circleColorSeq) return
+          let color = ''
+          if (Array.isArray(ret)) {
+            const arr = ret as Array<unknown>
+            color = readResolvedCircleColor(arr.length > 0 ? arr[0] : null)
+          } else {
+            color = readResolvedCircleColor(ret)
+          }
+          if (color !== '') {
+            resolvedTrackColor.value = color
+          } else if (isConcreteCircleColor(trackRaw)) {
+            resolvedTrackColor.value = trackRaw
+          } else if (retried) {
+            resolvedTrackColor.value = TRACK_INK_FALLBACK
+          } else {
+            scheduleRetry()
+          }
+        })
+        .exec()
+    } catch {
+      // A mis-shaped host must degrade to the ink colors, never throw or blank.
+      if (seq === circleColorSeq) {
+        resolvedProgressColor.value = isConcreteCircleColor(progressRaw) ? progressRaw : PROGRESS_INK_FALLBACK
+        resolvedTrackColor.value = isConcreteCircleColor(trackRaw) ? trackRaw : TRACK_INK_FALLBACK
+      }
+    }
+  })
+}
+
+onMounted(() => resolveCircleColors())
+watch(
+  () => progressRawColor.value,
+  () => resolveCircleColors(),
+)
+watch(
+  () => trackRawColor.value,
+  () => resolveCircleColors(),
+)
+
+/**
+ * Ring SVG data URL: 100×100 viewBox — track circle + progress arc.
+ *
+ * The progress arc is a polyline path (pure M/L commands) approximating the
+ * arc in short straight chords: the App image SVG decoder mis-renders every
+ * in-document geometry feature we tried beyond plain strokes — the original
+ * rotate(-90)+dasharray circle drew broken fragments (device regression,
+ * HBuilderX 5.33 alpha), and the first precomputed M/A arc path still lost
+ * most arcs on the real device. M/L paths carry no transform, no dasharray
+ * and no arc-command curve math, which is the rendering surface every SVG
+ * engine implements. The arc itself uses the SVG arc command (A) — exact
+ * circular geometry at any stroke width, so the band stays perfectly smooth
+ * (a polyline of chords visibly faceted the thick stroke). Direction enters
+ * the sweep-flag, the large-arc-flag splits sweeps past 180°, and the start
+ * point is precomputed at 12 o'clock — the document carries no transform.
+ * strokeLinecap is a real stroke attribute on the path (the "parity only"
+ * note upstream applies to the conic H5/MP sweep). Boundaries: 0% renders
+ * track only (a zero-length path would still dot under round caps); 100%
+ * strokes a plain closed circle — an arc loop is degenerate (start == end).
+ * The stroke-width ratio falls back to the 18/120 design default when
+ * size/strokeWidth carry units that cannot be compared.
+ */
+const ringDataUrl = computed<string | undefined>(() => {
+  const track: string = resolvedTrackColor.value
+  const stroke: string = resolvedProgressColor.value
+  if (track === '' || stroke === '') return undefined
+
+  const sizeM = /^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([a-zA-Z%]*)/.exec(ringSize.value)
+  const widthM = /^\\s*(-?\\d+(?:\\.\\d+)?)\\s*([a-zA-Z%]*)/.exec(ringWidth.value)
+  let ratio: number = 0.15
+  if (sizeM !== null && widthM !== null) {
+    const sizeVal: number = Number(sizeM[1] ?? '0')
+    const widthVal: number = Number(widthM[1] ?? '0')
+    const sizeUnit: string = sizeM[2] ?? ''
+    const widthUnit: string = widthM[2] ?? ''
+    if (sizeVal > 0 && widthVal > 0 && sizeUnit === widthUnit) {
+      ratio = widthVal / sizeVal
+    }
+  }
+  const sw: number = Math.min(50, Math.max(0.5, ratio * 100))
+  const r: number = r2((100 - sw) / 2)
+  const sweep: number = sweepDeg.value
+  let progressShape: string = ''
+  if (sweep > 0 && sweep < 360) {
+    // Exact circular arc via the SVG A command — the band stays perfectly
+    // smooth at any stroke width (chord polylines visibly faceted the thick
+    // stroke). Start at 12 o'clock; direction rides the sweep-flag.
+    const startY: number = r2(50 - r)
+    const sweepRad: number = (sweep * Math.PI) / 180
+    const endAngle: number = props.clockwise ? -Math.PI / 2 + sweepRad : -Math.PI / 2 - sweepRad
+    const endX: number = r2(50 + r * Math.cos(endAngle))
+    const endY: number = r2(50 + r * Math.sin(endAngle))
+    const largeArc: number = sweep > 180 ? 1 : 0
+    const sweepFlag: number = props.clockwise ? 1 : 0
+    const arcPath: string = \`M 50 \${startY} A \${r} \${r} 0 \${largeArc} \${sweepFlag} \${endX} \${endY}\`
+    progressShape = \`<path d="\${arcPath}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}" stroke-linecap="\${props.strokeLinecap}"/>\`
+  } else if (sweep >= 360) {
+    // 100%: an arc loop is degenerate (start point == end point), so the full
+    // ring strokes as a plain closed circle — exact and transform-free.
+    progressShape = \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${stroke}" stroke-width="\${r2(sw)}"/>\`
+  }
+  const svg: string =
+    // Explicit width/height give the decoder a deterministic intrinsic box;
+    // without them some engines rasterize at a default 300×150 and the
+    // displayed <image> ends up a scaled bitmap instead of a crisp vector.
+    \`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">\` +
+    \`<circle cx="50" cy="50" r="\${r}" fill="none" stroke="\${track}" stroke-width="\${r2(sw)}"/>\` +
+    progressShape +
+    \`</svg>\`
+  return \`data:image/svg+xml;utf8,\${encodeURIComponent(svg)}\`
+})
+</script>`,
+      note: 'ring (track + progress arc) rasterized to <image> + SVG data URL: conic-gradient / mask are App-unsupported; progress arc is an exact A-command arc (smooth at any stroke width; the chord polyline faceted the band) with a deterministic 100×100 intrinsic size; colors resolved via probe computedStyle; gradient map degrades to last stop; App-side progress jumps instead of transitioning',
+    },
+    {
+      anchor: `    <!-- Track: full ring in the layer color, masked down to a stroke band. -->
+    <view class="sn-circle__track" :style="trackStyle" aria-hidden="true" />
+
+    <!-- Progress arc: conic sweep, masked with the same band. -->
+    <view class="sn-circle__arc" :style="arcStyle" aria-hidden="true" />`,
+      replacement: `    <!-- uni-app x App: conic-gradient / CSS mask are unsupported — the ring
+         (track band + progress arc) rasterizes through <image> + SVG data URL.
+         The zero-size probes carry the raw colors into the cascade so the
+         script can read them back via computedStyle. -->
+    <image class="sn-circle__ring-img" :src="ringDataUrl" mode="aspectFit" />
+    <view :class="[\`sn-circle__probe sn-circle__probe-p\${circleUid}\`]" :style="progressProbeStyle" aria-hidden="true" />
+    <view :class="[\`sn-circle__probe sn-circle__probe-t\${circleUid}\`]" :style="trackProbeStyle" aria-hidden="true" />`,
+      note: 'track/arc views replaced by <image :src="ringDataUrl"> + two color probes',
+    },
+    {
+      anchor: `.sn-circle__track,
+.sn-circle__arc,
+.sn-circle__fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
+/* Band mask: keep only an annular ring of \`--sn-circle-width\`.
+ *
+ * The colour stops carry a ~1px transition band (not a hard stop): a hard
+ * stop is a binary edge the rasterizer cannot antialias, so the inner band
+ * edge stair-stepped visibly at small sizes ("gear" look on real screens).
+ * A short gradient ramp renders as a smooth edge on every engine. */
+.sn-circle__track,
+.sn-circle__arc {
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - var(--sn-circle-width) - 0.75px),
+    currentColor calc(100% - var(--sn-circle-width) + 0.25px)
+  );
+}
+
+/* Track ring: the tinted surface, dark-mode aware; \`layerColor\` overrides it. */
+.sn-circle__track {
+  background-color: var(--sn-circle-layer, var(--sn-mp-color-background-subtle));
+}
+
+/* Progress arc: colored up to the sweep angle, transparent past it. */
+.sn-circle__arc {
+  background-image: conic-gradient(
+    from 0deg,
+    var(--sn-circle-color) var(--sn-circle-sweep),
+    transparent var(--sn-circle-sweep)
+  );
+  transition-property: background-image;
+  transition-duration: var(--sn-circle-duration);
+  transition-timing-function: linear;
+}
+
+/* Gradient map: the stop list replaces the two-stop sweep. */
+.sn-circle--gradient .sn-circle__arc {
+  background-image: conic-gradient(from 0deg, var(--sn-circle-stops));
+}
+
+/* Counter-clockwise: mirror the sweep so it grows the other way. */
+.sn-circle--counter-clockwise .sn-circle__arc {
+  transform: scaleX(-1);
+}`,
+      replacement: `.sn-circle__ring-img,
+.sn-circle__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+}
+
+/* uni-app x App: CSS mask is unsupported — the annular band is carved in
+ * the SVG geometry instead (stroked circles with fill="none"). The
+ * zero-size probes stay out of layout; their text color feeds the ring
+ * color query. */
+.sn-circle__probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Track + progress colors are resolved through the probe computedStyle
+ * query and baked into the SVG data URL (a var() cannot cross the image
+ * boundary). The App-side progress arc cannot transition like the CSS
+ * background-image sweep — progress changes jump; \`speed\` stays API
+ * parity (H5/MP only). Direction, linecap and the gradient-map fallback
+ * are baked into the SVG arc (see ringDataUrl in the script block). */`,
+      note: 'mask / conic-gradient / scaleX flip styles removed; ring image + probe styles added',
+    },
+    {
+      anchor: `/* Doodle skin — hand-drawn look: drop the band mask, keep a soft plate. */
+.snui-skin-doodle .sn-circle__track,
+.snui-skin-doodle .sn-circle__arc {
+  -webkit-mask: none;
+  mask: none;
+  opacity: 0.6;
 }`,
-      replacement: `.sn-icon__svg-img {
-  display: block;
-  width: 100%;
-  height: 100%;
+      replacement: `/* Doodle skin — hand-drawn look: soften the ring image. */
+.snui-skin-doodle .sn-circle__ring-img {
+  opacity: 0.6;
 }`,
-      note: 'svg sizing rule retargeted to the <image> element',
+      note: 'doodle skin retargeted to the ring image',
     },
   ],
 
-  'sn-form/sn-form-item.vue': [
-    {
-      anchor: `        class="sn-form-item__message"
-        :data-status="status"
-`,
-      replacement: `        class="sn-form-item__message"
-        :class="'sn-form-item__message--' + status"
-`,
-      note: 'message [data-status] attribute selector → status modifier class',
-    },
-    {
-      anchor: `          class="sn-form-item__status-icon"
-          :data-status="status"
-`,
-      replacement: `          class="sn-form-item__status-icon"
-          :class="'sn-form-item__status-icon--' + status"
-`,
-      note: 'status-icon [data-status] attribute selector → status modifier class',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='error'] {",
-      replacement: '.sn-form-item__status-icon--error {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='warning'] {",
-      replacement: '.sn-form-item__status-icon--warning {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__status-icon[data-status='success'] {",
-      replacement: '.sn-form-item__status-icon--success {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__message[data-status='error'] {",
-      replacement: '.sn-form-item__message--error {',
-      note: 'attribute selector rewritten',
-    },
-    {
-      anchor: ".sn-form-item__message[data-status='warning'] {",
-      replacement: '.sn-form-item__message--warning {',
-      note: 'attribute selector rewritten',
-    },
-  ],
+  // sn-form/sn-form-item.vue: former [data-status] attribute-selector patches
+  // are gone — the source now binds `--error/--warning` modifier classes
+  // natively (messageStatusClass / iconStatusClass computeds), so the uni-x
+  // output no longer needs any rewrite here.
 
-  'sn-loading/sn-loading.vue': [
-    {
-      anchor: `          class="sn-loading__spinner-bar"
-`,
-      replacement: `          class="sn-loading__spinner-bar"
-          :class="'sn-loading__spinner-bar--' + i"
-`,
-      note: 'nth-child delays → per-index modifier class',
-    },
-    {
-      anchor: '<view v-for="i in 3" :key="i" class="sn-loading__dot" />',
-      replacement: `<view v-for="i in 3" :key="i" class="sn-loading__dot" :class="'sn-loading__dot--' + i" />`,
-      note: 'nth-child delays → per-index modifier class',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(1) {
-  animation-delay: 0s;
-  opacity: 1;
-}`,
-      replacement: '.sn-loading__spinner-bar--1 { animation-delay: 0s; opacity: 1; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(2) {
-  animation-delay: 0.1s;
-  opacity: 0.875;
-}`,
-      replacement: '.sn-loading__spinner-bar--2 { animation-delay: 0.1s; opacity: 0.875; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(3) {
-  animation-delay: 0.2s;
-  opacity: 0.75;
-}`,
-      replacement: '.sn-loading__spinner-bar--3 { animation-delay: 0.2s; opacity: 0.75; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(4) {
-  animation-delay: 0.3s;
-  opacity: 0.625;
-}`,
-      replacement: '.sn-loading__spinner-bar--4 { animation-delay: 0.3s; opacity: 0.625; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(5) {
-  animation-delay: 0.4s;
-  opacity: 0.5;
-}`,
-      replacement: '.sn-loading__spinner-bar--5 { animation-delay: 0.4s; opacity: 0.5; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(6) {
-  animation-delay: 0.5s;
-  opacity: 0.375;
-}`,
-      replacement: '.sn-loading__spinner-bar--6 { animation-delay: 0.5s; opacity: 0.375; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(7) {
-  animation-delay: 0.6s;
-  opacity: 0.25;
-}`,
-      replacement: '.sn-loading__spinner-bar--7 { animation-delay: 0.6s; opacity: 0.25; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__spinner-bar:nth-child(8) {
-  animation-delay: 0.7s;
-  opacity: 0.125;
-}`,
-      replacement: '.sn-loading__spinner-bar--8 { animation-delay: 0.7s; opacity: 0.125; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__dot:nth-child(2) {
-  animation-delay: 0.15s;
-}`,
-      replacement: '.sn-loading__dot--2 { animation-delay: 0.15s; }',
-      note: 'nth-child rewritten',
-    },
-    {
-      anchor: `.sn-loading__dot:nth-child(3) {
-  animation-delay: 0.3s;
-}`,
-      replacement: '.sn-loading__dot--3 { animation-delay: 0.3s; }',
-      note: 'nth-child rewritten',
-    },
-  ],
+  // sn-loading/sn-loading.vue: former :nth-child stagger patches are gone —
+  // the source emits per-index modifier classes (--1..--8 / --1..--3) natively.
+
 
   'sn-picker-view/sn-picker-view-drag.ts': [
     {

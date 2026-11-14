@@ -1,0 +1,16 @@
+<script setup lang="ts">
+/** Demo: sn-plate-input — 禁用态：disabled 时点击不再弹键盘。 */
+import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPlateInput model-value="京A12345" disabled title="禁用态" />
+    <text class="sn-demo__meta">disabled：点击不再弹键盘，输入被冻结</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

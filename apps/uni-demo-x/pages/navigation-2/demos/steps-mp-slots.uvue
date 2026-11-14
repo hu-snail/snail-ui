@@ -1,0 +1,48 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-steps — 内容插槽（#icon / #title / #description）。
+ *
+ * `icon` / `title` / `description` 插槽可完全替换对应区域。
+ */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
+import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSteps :active="0" vertical space="24rpx">
+      <SnStep>
+        <template #icon>
+          <SnIcon :icon="Star" :size="'var(--sn-mp-icon-size-small)'" class="sn-demo__slot-icon" />
+        </template>
+        <template #title>
+          <text class="sn-demo__title">自定义标题</text>
+        </template>
+        <template #description>
+          <text class="sn-demo__desc">description 插槽可以放任意结构</text>
+        </template>
+      </SnStep>
+      <SnStep title="普通步骤" description="默认渲染" />
+    </SnSteps>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+}
+.sn-demo__slot-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-demo__desc {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

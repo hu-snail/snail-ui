@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const datePickerDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'DatePicker' }],
-  title: 'DatePicker',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'DatePicker 日期选择' }],
+  title: 'DatePicker 日期选择',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },
@@ -77,7 +77,7 @@ import { DatePicker } from '@snui/vue-web';
     {
       name: 'date-picker-web-input-position',
       title: '输入栏位置（input-position）',
-      blurb: "input-position='bottom' 把输入框栏放到月历下方。",
+      blurb: '默认输入框栏在月历上方，bottom 置于月历下方（时间弹层向上打开）。',
     },
     {
       name: 'date-picker-web-month-range',

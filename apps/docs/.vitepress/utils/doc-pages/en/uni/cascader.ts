@@ -1,16 +1,16 @@
-/** Cascader · uni-app (uni-app) — English page data. Props from sn-cascader.vue; demos from the en page. */
+/** Cascader · uni-app x (uni-app x) — English page data. Props from sn-cascader.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const cascaderDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Cascader · uni-app' },
+    { text: 'Cascader · uni-app x' },
   ],
-  title: 'Cascader · uni-app',
+  title: 'Cascader · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -38,10 +38,10 @@ export const cascaderDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Cascader · uni-app.vue',
+    fileLabel: 'Cascader · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -209,7 +209,7 @@ import { Cascader } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Cascader · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Cascader · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Cascader } from '@snui/uni';",
     chipCopy: "import { Cascader } from '@snui/uni';",
     stats: [
@@ -219,8 +219,8 @@ import { Cascader } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-select-picker', link: '/en/components/uni/select-picker' },
-    next: { text: 'sn-calendar', link: '/en/components/uni/calendar' },
+    prev: { text: 'SelectPicker', link: '/en/components/uni/select-picker' },
+    next: { text: 'Calendar', link: '/en/components/uni/calendar' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

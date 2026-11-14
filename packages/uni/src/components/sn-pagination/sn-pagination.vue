@@ -356,12 +356,14 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   opacity: 0.6;
 }
 
+/* Strip spacing rides on per-item margins, not flex gap: App (uni-app x) does
+ * not reliably honour gap, which let the dashed variant's borders fuse into one
+ * jagged strip. Margins keep an identical rhythm on H5 / MP. */
 .sn-pagination__pages {
   display: flex;
   flex: 1 1 auto;
   align-items: center;
   justify-content: center;
-  gap: var(--sn-mp-spacing-1);
   min-width: 0;
 }
 
@@ -373,6 +375,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   min-width: 52rpx;
   height: 52rpx;
   padding: 0 var(--sn-mp-spacing-1);
+  margin: 0 var(--sn-mp-spacing-1);
   border-radius: var(--sn-mp-radius-sm);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
@@ -390,6 +393,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
 }
 
 .sn-pagination__ellipsis {
+  margin: 0 var(--sn-mp-spacing-1);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-sm);
 }
@@ -430,10 +434,14 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   border-color: var(--sn-mp-color-action-primary);
 }
 
+/* Dashed draws its own full border: `.sn-pagination__page` has no base border,
+ * so a style/colour-only override let the width fall to the engine initial
+ * (`medium`, 3px) on H5 and App alike. The explicit 2rpx stroke matches the
+ * stepper button and gives the uni-x flattener a width slot whose fallback is
+ * "no border" outside the dashed context. */
 .sn-pagination--dashed .sn-pagination__button,
 .sn-pagination--dashed .sn-pagination__page {
-  border-style: dashed;
-  border-color: var(--sn-mp-color-action-primary);
+  border: 2rpx dashed var(--sn-mp-color-action-primary);
 }
 
 /* Doodle skin — heavier active page. */

@@ -1,16 +1,16 @@
-/** SlideVerify · uni-app (uni-app) — English page data. Props from sn-slide-verify.vue; demos from the en page. */
+/** SlideVerify · uni-app x (uni-app x) — English page data. Props from sn-slide-verify.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const slideVerifyDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'SlideVerify · uni-app' },
+    { text: 'SlideVerify · uni-app x' },
   ],
-  title: 'SlideVerify · uni-app',
+  title: 'SlideVerify · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -39,10 +39,10 @@ export const slideVerifyDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'SlideVerify · uni-app.vue',
+    fileLabel: 'SlideVerify · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -170,7 +170,7 @@ import { SlideVerify } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'SlideVerify · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'SlideVerify · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { SlideVerify } from '@snui/uni';",
     chipCopy: "import { SlideVerify } from '@snui/uni';",
     stats: [
@@ -180,8 +180,8 @@ import { SlideVerify } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-signature', link: '/en/components/uni/signature' },
-    next: { text: 'sn-captcha', link: '/en/components/uni/captcha' },
+    prev: { text: 'Signature', link: '/en/components/uni/signature' },
+    next: { text: 'Captcha', link: '/en/components/uni/captcha' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -16,7 +16,7 @@
  */
 
 import { markRaw } from 'vue';
-import type { IconData } from './sn-icon.vue';
+import type { IconData } from './sn-icon-types';
 
 /** Success mark — a circle with a tick. */
 export const FeedbackSuccess: IconData = markRaw({

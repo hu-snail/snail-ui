@@ -21,6 +21,33 @@
  * `--sn-mp-*` aliases (rpx units). The `end: mp` marker in ai-description.md
  * is consumed by `@snui/cli` and MCP tools for per-end filtering.
  *
+ * ## Two-box structure: root positioning box + `__host` headroom (why not a
+ * riding transform, and why not a plain in-box pin)
+ *
+ * The reference look is the riding corner: half the marker on the wrapped
+ * content, half off it (`transform: translateY(-50%) translateX(50%)`). That
+ * anchor is not renderable deterministically on uni ends — the out-of-box half
+ * depends on every ancestor's overflow and stacking: uni-app H5 hosts buried
+ * the riding half under the demo module header (elementFromPoint verified) and
+ * uni-app x App clips absolutely-positioned children of rounded roots no
+ * matter what (`overflow: visible` unreliable — live-verified, same conclusion
+ * as the sn-avatar `__body` split). A plain in-box pin (`top: 0; right: 0` on
+ * a tight root) renders everywhere but reads as "inside the corner", which is
+ * not the riding look the product asked for.
+ *
+ * The renderable middle ground: the root is a plain positioning box (no
+ * padding — App-side absolute anchors in the parent's CONTENT area per the
+ * official css/position doc while web anchors to the padding box, so any root
+ * padding would fork the anchor point across ends) and the wrapped content
+ * sits in a `__host` child whose top / right margins reserve the marker's
+ * protrusion (half the marker height). The marker anchors at the root's
+ * outer corner with no transform: it overlaps the content corner by half and
+ * spends the other half inside the root box's reserved headroom, so nothing
+ * ever leaves the root box and no end depends on overflow or stacking.
+ * Trade-off: the root is half a marker taller / wider than the content —
+ * layout space is bought for deterministic rendering. `top` / `right` props
+ * keep their semantics (nudge down / left from the riding corner).
+ *
  * File path follows uni-app easycom convention:
  *   components/sn-badge/sn-badge.vue
  * → auto-registered as `<sn-badge>` in any .vue that uses it.
@@ -140,6 +167,12 @@ const markerClass = computed(() => [
   props.border ? 'sn-badge__marker--border' : '',
 ]);
 
+/**
+ * Marker inline overrides: user `bgColor` / `top` / `right` only. Positioning
+ * itself is class-owned (`top: 0; right: 0`, no transform) so every end
+ * anchors the marker at the root's outer corner — the straddle geometry comes
+ * from the `__host` headroom, see the header note.
+ */
 const markerStyle = computed(() => {
   const parts: string[] = [];
   if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
@@ -153,7 +186,12 @@ const markerStyle = computed(() => {
 
 <template>
   <view data-snui-component="badge" :class="rootClass" :style="rootStyle">
-    <slot />
+    <!-- Headroom host: reserves the marker's protrusion inside the root box
+         (margins, not root padding — root must stay padding-free so App-side
+         content-area anchoring and web padding-box anchoring coincide). -->
+    <view class="sn-badge__host">
+      <slot />
+    </view>
     <view
       v-if="isVisible"
       :class="markerClass"
@@ -172,8 +210,22 @@ const markerStyle = computed(() => {
 .sn-badge {
   position: relative;
   display: inline-flex;
-  align-items: center;
   vertical-align: middle;
+  /* root 是纯定位盒：不设 padding / border / 圆角。App 端 absolute「在父元素
+   * 的内容区域中进行绝对布局」（官方 css/position 文档），web 端锚定 padding
+   * box——root 自身零 padding 时两者重合，marker 的 top:0/right:0 全端都落
+   * 在 root 外角，几何无分叉。骑跨突出量由 __host 的 margin 预留（见下）。 */
+  overflow: visible;
+}
+
+/* 头部余量：把包裹内容从 root 外角向下 / 向左让出 marker 的突出量（marker
+ * 高度的一半）。marker 锚在 root 外角（top:0 / right:0、无 transform）后，
+ * 一半压在内容盒角上、一半留在这段余量里——骑跨视觉不依赖任何 overflow
+ * 行为（App 端圆角根对 absolute 子元素的裁剪压不住，sn-avatar __body 拆分
+ * 的同款实测结论），也没有 transform 骑角在 H5 被后绘模块盖住的层叠问题。 */
+.sn-badge__host {
+  margin-top: 16rpx;
+  margin-right: 16rpx;
 }
 
 .sn-badge__marker {
@@ -192,18 +244,28 @@ const markerStyle = computed(() => {
   font-weight: var(--sn-mp-font-weight-medium);
   line-height: 1;
   color: var(--sn-mp-color-text-on-primary);
+  /* nowrap 只在 Web / 小程序端生效（uni-app x App 不支持 white-space，声明
+   * 被丢弃）：App 端 marker 绝对定位 auto 宽收缩贴合内容，数字 / 短词没有
+   * 断行机会，丢弃无副作用；Web 端 shrink-to-fit 的 min-content 下限靠它兜底。 */
   white-space: nowrap;
-  /* Default anchor: sit on the top-right corner of the wrapped content. */
-  transform: translateY(-50%) translateX(50%);
+  /* 锚 root 外角、无 transform：骑跨量由 __host 的 margin 预留（32rpx marker
+   * ⇒ 16rpx 余量），marker 永不离开 root 盒。加 transform 会把一半重新推出
+   * 盒外，回到 overflow / 层叠不可测的老路——别加。 */
 }
 
-/* Dot: a small round marker, no label. */
+/* Dot: a small round marker, no label. 余量同步减半（16rpx 点 ⇒ 8rpx），
+ * 点心仍落在内容角点上。 */
 .sn-badge--dot .sn-badge__marker {
   min-width: 16rpx;
   width: 16rpx;
   height: 16rpx;
   padding: 0;
   border-radius: var(--sn-mp-radius-full);
+}
+
+.sn-badge--dot .sn-badge__host {
+  margin-top: 8rpx;
+  margin-right: 8rpx;
 }
 
 /* ── Shapes ────────────────────────────────────────────────────────────── */
@@ -252,9 +314,13 @@ const markerStyle = computed(() => {
 }
 
 .sn-badge__text {
-  color: inherit;
-  font-size: inherit;
-  line-height: inherit;
+  /* uni-app x App 端样式不级联（仅 color / font-size 原生继承，继承关键字
+   * 也不可靠），文字必须显式拿到 marker 的字号 / 行高 / 颜色，否则回落到
+   * 引擎默认值——真机上角标数字会变成默认字色默认字号，看不见内容。三个
+   * 值与 marker 规则保持一致，调整 marker 时需同步这里。 */
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: 1;
+  color: var(--sn-mp-color-text-on-primary);
 }
 
 /* ── Doodle skin ───────────────────────────────────────────────────────── */

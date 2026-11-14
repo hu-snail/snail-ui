@@ -38,11 +38,14 @@
  *
  * Every member avatar pulls itself left (or up) by the overlap, so member `k`
  * starts at `k × (diameter − overlap)`. To hide the avatars past the limit the
- * clip window is sized to exactly `visibleCount` steps and clips the rest
- * (`overflow: hidden`) — the same result `max-count` promises, without
- * re-rendering the slot's vnodes (which the MP compiler cannot express; see
- * the note in sn-table). The root pads by one overlap so the first avatar
- * still starts at the group's left edge.
+ * clip window spans the visible members' full arcs (`(visible − 1) × step +
+ * diameter`) and clips the rest (`overflow: hidden`) — the same result
+ * `max-count` promises, without re-rendering the slot's vnodes (which the MP
+ * compiler cannot express; see the note in sn-table). The root pads by one
+ * overlap so the first avatar still starts at the group's edge, and the window
+ * pulls itself over that padding by the same amount (`margin/padding` pair on
+ * the compensation side) — otherwise the padding zone would sit outside the
+ * window and shave the first member's outer arc.
  *
  * Sizes that cannot be resolved to `rpx` (`'20%'`, `'auto'`, …) cannot be
  * measured, so `max-count` is skipped for them: every avatar stays visible and
@@ -71,6 +74,7 @@ import { Fragment } from 'vue';
 import SnAvatar from '../sn-avatar/sn-avatar.vue';
 import { SN_AVATAR_GROUP } from '../sn-avatar/avatar-group-context';
 import { resolveGeometry } from './sn-avatar-group-geometry';
+import { resolveSlotNodes } from './sn-avatar-group-slots';
 
 defineOptions({ name: 'SnAvatarGroup' });
 
@@ -174,7 +178,7 @@ function countAvatarNodes(nodes: unknown): number {
   return total;
 }
 
-const totalCount = computed<number>(() => countAvatarNodes(slots.default?.() ?? []));
+const totalCount = computed<number>(() => countAvatarNodes(resolveSlotNodes(slots.default)));
 
 /** Stack geometry (arithmetic lives in the pure geometry module). */
 const geometry = computed(() =>
@@ -215,17 +219,24 @@ const rootStyle = computed(() => {
 });
 
 /**
- * Clip window: exactly as long as the visible members occupy, one diameter
- * deep. Members past the window are clipped instead of re-rendered (header).
+ * Clip window: the visible members' full arcs, one diameter deep. Members
+ * past the window are clipped instead of re-rendered (header). The window
+ * pulls itself over the root's compensation padding by one overlap and pads
+ * its content back in — member 1's pulled edge lands exactly on the window's
+ * outer edge, so the whole first arc stays visible; `box-sizing: border-box`
+ * keeps `length` as the outer size (the padding must not widen the window).
+ * The last visible member's far arc ends exactly on the far window edge, and
+ * the bubble paints over the next member's sliver (see the geometry module).
  */
 const clipStyle = computed(() => {
-  const { clipping, diameter, length, vertical } = geometry.value;
-  if (!clipping || diameter === null) return undefined;
+  const { clipping, diameter, length, overlap, vertical, paddingSide } = geometry.value;
+  if (!clipping || diameter === null || overlap === null) return undefined;
   const long = `${length}rpx`;
   const deep = `${diameter}rpx`;
+  const pull = `margin-${paddingSide}: -${overlap}rpx; padding-${paddingSide}: ${overlap}rpx; box-sizing: border-box;`;
   return vertical
-    ? `width: ${deep}; height: ${long}; overflow: hidden`
-    : `width: ${long}; height: ${deep}; overflow: hidden`;
+    ? `${pull} width: ${deep}; height: ${long}; overflow: hidden`
+    : `${pull} width: ${long}; height: ${deep}; overflow: hidden`;
 });
 </script>
 
@@ -271,6 +282,7 @@ const clipStyle = computed(() => {
 .sn-avatar-group__clip {
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   /* The clip window (clipping state) relies on this staying a single line. */
   flex-wrap: nowrap;
 }

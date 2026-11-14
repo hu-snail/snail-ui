@@ -1,0 +1,21 @@
+<script setup lang="ts">
+/** Demo: sn-button — hover-class / hover-start-time / hover-stay-time. */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+</script>
+<template>
+  <view class="sn-button-demo">
+    <SnButton type="primary"><text>Default (hover-class=sn-button--feedback)</text></SnButton>
+    <SnButton type="success" hover-class="my-press"><text>Custom hover-class</text></SnButton>
+    <SnButton type="warning" :hover-start-time="500"><text>Triggers after pressing 500ms</text></SnButton>
+    <SnButton :hover-stay-time="500"><text>Reverts 500ms after release</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-button-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+</style>

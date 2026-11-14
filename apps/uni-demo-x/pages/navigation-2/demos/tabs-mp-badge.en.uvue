@@ -1,0 +1,86 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — badges (`badge-props`).
+ *
+ * `badge-props` is forwarded to `sn-badge` (same prop name and shape as wd-tab):
+ *   - `value` number / string; a number above `max` shows `{max}+`
+ *   - `isDot` draws a dot instead of a value
+ *   - `type` semantic colour: primary / success / warning / danger / info (danger red by default)
+ *   - `showZero` renders `0` too (0 is suppressed by default)
+ *   - `hidden` hides the marker but keeps the content
+ */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+const active = ref(0);
+const unread = ref(12);
+const showZero = ref(false);
+const hidden = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Numeric badges and semantic colours</text>
+    <SnTabs v-model="active">
+      <SnTab title="Messages" :name="0" :badge-props="{ value: unread }"><text>Message list</text></SnTab>
+      <SnTab title="Todos" :name="1" :badge-props="{ value: 128, max: 99, type: 'primary' }"><text>
+        Todo items
+      </text></SnTab>
+      <SnTab title="Reminders" :name="2" :badge-props="{ value: 5, type: 'warning' }"><text>
+        Reminder list
+      </text></SnTab>
+      <SnTab title="Errors" :name="3" :badge-props="{ value: 2, type: 'danger' }"><text>
+        Error log
+      </text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__label">Dot badge / zero value / hidden</text>
+    <SnTabs v-model="active" type="tag" active-theme="fill">
+      <SnTab title="Feed" :name="0" :badge-props="{ isDot: true, type: 'success' }"><text>
+        Activity feed
+      </text></SnTab>
+      <SnTab title="Drafts" :name="1" :badge-props="{ value: 0, showZero: showZero, type: 'info' }"><text>
+        Draft box
+      </text></SnTab>
+      <SnTab title="Archive" :name="2" :badge-props="{ value: 9, hidden: hidden }"><text>
+        Archive records
+      </text></SnTab>
+    </SnTabs>
+
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="unread = unread === 12 ? 120 : 12"><text>
+        Unread: {{ unread }}
+      </text></SnButton>
+      <SnButton size="small" @click="showZero = !showZero"><text>
+        showZero: {{ showZero ? 'on' : 'off' }}
+      </text></SnButton>
+      <SnButton size="small" @click="hidden = !hidden"><text>
+        hidden: {{ hidden ? 'on' : 'off' }}
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">Active tab: {{ active }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  align-items: stretch;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sn-mp-spacing-3);
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

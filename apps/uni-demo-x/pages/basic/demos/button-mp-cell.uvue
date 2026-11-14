@@ -1,0 +1,19 @@
+<script setup lang="ts">
+/** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (Cell 列表化样式). */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+</script>
+<template>
+  <view class="sn-button-demo">
+    <SnButton cell="hover"><text>cell=hover (按下灰底)</text></SnButton>
+    <SnButton cell="fill"><text>cell=fill (常驻灰底)</text></SnButton>
+    <SnButton cell="menu"><text>cell=menu (透明无圆角)</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-button-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  max-width: 600rpx;
+}
+</style>

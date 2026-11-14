@@ -7,8 +7,8 @@
 import type { SnDocPageData } from '../../components/doc-page/types';
 
 export const colorPickerDocPage: SnDocPageData = {
-  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'ColorPicker' }],
-  title: 'ColorPicker',
+  crumbs: [{ text: '文档首页', link: '/' }, { text: '表单组件 Form' }, { text: 'ColorPicker 颜色选择' }],
+  title: 'ColorPicker 颜色选择',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
     { label: 'Web 端', tone: 'accent', icon: 'dual' },

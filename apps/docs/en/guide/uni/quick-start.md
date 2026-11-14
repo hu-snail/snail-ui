@@ -1,79 +1,174 @@
-# Quick start (uni-app)
+# Quick start (uni-app x)
 
-AUI's uni-app renderer (Phase 3) shares the same Protocol / Runtime contracts as the Web renderer. The renderer maps `UINode.type` to a uni-app component rather than a DOM element.
+Wire snui into a uni-app x project (App side, vapor mode) in 5 minutes.
 
-> ⚠️ `@snui/uni` is currently a placeholder package. The contract surface is finalized (see `/guide/web/architecture`), and component docs under `/components/uni/` will light up as the implementation lands in Phase 3.
+Recommended path: consume the `.uvue` artifacts of `@snui/uni-x`, generated
+deterministically from the single `@snui/uni` source (see
+[uni-app x (Vapor Mode) support](/en/guide/uni/uni-app-x)). Classic
+uni-app (H5 / mini-programs / App-vue) is the compatibility target; its setup
+is kept in the second half of this page.
 
-## 1. Install
+## uni-app x setup (vapor mode)
+
+### 1. Install
 
 ```bash
-pnpm add @snui/uni @snui/runtime @snui/protocol @snui/tokens
+pnpm add @snui/uni-x
 ```
 
-Uni-app target peer is `@dcloudio/uni-app` (see uni-app docs).
+The component artifacts (`.uvue` + theme layer) ship with the package — no
+local generation, no directory copying.
 
-## 2. Same UISchema, different renderer
+### 2. Configure easycom
+
+Add to `pages.json`:
+
+```json
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^sn-(.*)": "@snui/uni-x/components/sn-$1/sn-$1.uvue"
+    }
+  }
+}
+```
+
+### 3. Import the theme tokens
+
+Import the class-only token layer in `App.uvue`'s `<style>` (App side has no
+`:root`; variables mount on `.sn-theme-root`, which `sn-config-provider`
+carries automatically):
+
+```css
+@import '@snui/uni-x/theme/index.css';
+```
+
+### 4. Enable vapor mode
+
+Tick "vapor mode" in the HBuilderX (5.31+) `manifest.json` visual editor, or
+confirm it in source view:
+
+```json
+{
+  "uni-app-x": { "vapor": true }
+}
+```
+
+### 5. Use the components
+
+Use them directly in templates (no import needed):
+
+```vue
+<template>
+  <view class="container">
+    <sn-button type="primary" @click="onSubmit">Submit</sn-button>
+  </view>
+</template>
+
+<script setup lang="ts">
+const onSubmit = () => {
+  uni.showToast({ title: 'Submitted' });
+};
+</script>
+```
+
+A full in-repo example project lives at `apps/uni-demo-x` (100 component
+demo pages, reproducible via its `gen` / `check` scripts). Status and the
+device verification checklist:
+[uni-app x (Vapor Mode) support](/en/guide/uni/uni-app-x).
+
+## Classic uni-app setup (compatibility target: H5 / mini-programs / App-vue)
+
+### Install
+
+```bash
+pnpm add @snui/uni
+```
+
+### Configure easycom
+
+`@snui/uni` follows the easycom convention (`components/sn-*/sn-*.vue`);
+configure it in your project's `pages.json`:
+
+```json
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^sn-(.*)": "@snui/uni/src/components/sn-$1/sn-$1.vue"
+    }
+  }
+}
+```
+
+Or rely on default scanning (recommended; place the components under
+`src/components/`):
+
+```json
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {}
+  }
+}
+```
+
+### Import the styles
+
+Top of `App.vue`'s `<style>`:
+
+```css
+@import '@snui/tokens/styles/index.css';
+```
+
+### Use the components
+
+Use them directly in templates (no import needed):
+
+```vue
+<template>
+  <view class="container">
+    <sn-button type="primary" @click="onSubmit">Submit</sn-button>
+  </view>
+</template>
+
+<script setup lang="ts">
+const onSubmit = () => {
+  uni.showToast({ title: 'Submitted' });
+};
+</script>
+```
+
+Explicit import, when needed:
 
 ```ts
-// main.ts (uni-app entry)
-import { createUniRenderer, createUniRegistry } from '@snui/uni';
-import { Button as UniButton } from '@snui/uni/components/button';
-
-const registry = createUniRegistry();
-registry.register('button', UniButton);
-
-const renderer = createUniRenderer({ registry });
-
-const schema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', size: 'medium', text: 'Submit' },
-  },
-};
-
-// In a uni-app page:
-export default {
-  setup() {
-    onMounted(() => {
-      renderer.mount(schema /* uni-app page ref */);
-    });
-  },
-};
+import { SnButton } from '@snui/uni';
 ```
 
-## 3. Capability fallback
+### Cross-platform builds
 
-uni-app's API varies across platforms (WeChat MP / iOS / Android / H5). The renderer detects capabilities and falls back:
+`@snui/uni` components support H5, WeChat / Alipay / Douyin mini-programs
+and App. Run:
 
-```ts
-import { UICapabilitySchema } from '@snui/protocol';
-
-const capability: UICapability = {
-  platform: 'mp-weixin', // mini-program WeChat
-  feature: 'clipboard.write',
-  // Renderer picks the best API for the current platform, falling back when unsupported.
-};
+```bash
+pnpm dev:h5           # H5
+pnpm dev:mp-weixin    # WeChat mini-program
+pnpm dev:mp-alipay    # Alipay mini-program
+pnpm build:app        # App
 ```
 
-See [Capabilities](/en/guide/web/architecture) for the full capability negotiation system.
+### Dark mode
 
-## What's the same vs different?
+```html
+<html data-theme="dark"></html>
+```
 
-| Concern       | Web                               | uni-app                              |
-| ------------- | --------------------------------- | ------------------------------------ |
-| Schema        | UISchema                          | Same                                 |
-| Runtime       | AUIRuntime                        | Same                                 |
-| Tokens        | Theme / Style / Density           | Same                                 |
-| Actions       | ActionRegistry + AppBridge        | Same AppBridge, host services differ |
-| Event catalog | DOM events (`click`, `change`, …) | Uni events + DOM events on H5        |
-| Renderer      | `createVueRenderer()`             | `createUniRenderer()`                |
-
-The component contract's `events` and `capabilities` keys differ by end. Check `/components/uni/` for the uni-specific event catalog per component.
+CSS variables cascade automatically.
 
 ## Next
 
-- [Button (uni)](/en/components/uni/button)
-- [Architecture](/en/guide/web/architecture)
-- [Web quick start](/en/guide/web/quick-start)
+- Component docs: [`sn-button`](/en/components/uni/button)
+- uni-app x (Vapor Mode) support: [`/en/guide/uni/uni-app-x`](/en/guide/uni/uni-app-x)
+- Cross-platform notes: [`capabilities`](/en/guide/uni/cross-platform)
+- Web setup: [`Web quick start`](/en/guide/web/quick-start)

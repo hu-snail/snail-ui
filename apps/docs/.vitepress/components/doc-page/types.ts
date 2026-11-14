@@ -23,8 +23,11 @@ export interface DocBadge {
   icon?: 'stable' | 'dual' | 'ai';
 }
 
-/** 行内富文本片段：普通文本或行内 code。避免 v-html 注入面。 */
-export type DocSeg = { t: 'text'; s: string } | { t: 'code'; s: string };
+/** 行内富文本片段：普通文本、行内 code 或站外链接（模板渲染 <a>，避免 v-html）。 */
+export type DocSeg =
+  | { t: 'text'; s: string }
+  | { t: 'code'; s: string }
+  | { t: 'link'; s: string; href: string };
 
 export type DocQuickIcon = 'copy' | 'link' | 'palette';
 

@@ -1,4 +1,4 @@
-/** AvatarGroup (uni-app) — English page data. Props from sn-avatar-group.vue; demos from the en page. */
+/** AvatarGroup (uni-app x) — English page data. Props from sn-avatar-group.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const avatarGroupDocPageEn: SnDocPageData = {
@@ -6,7 +6,7 @@ export const avatarGroupDocPageEn: SnDocPageData = {
   title: 'AvatarGroup',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -40,7 +40,7 @@ export const avatarGroupDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'AvatarGroup.vue',
@@ -56,10 +56,31 @@ import { AvatarGroup } from '@snui/uni';
   },
   demos: [
     {
-      name: 'avatar-mp-group',
+      name: 'avatar-group-mp-basic',
       title: 'Basic usage',
+      blurb: 'Basic stack: no max-count, everything visible; cascading sets the direction.',
+    },
+    {
+      name: 'avatar-group-mp-max-count',
+      title: 'Overflow limit (`max-count`)',
       blurb:
-        'Max-count collapse, custom collapse text (collapse-avatar), cascading direction, vertical stacking and uniform size / shape.',
+        'max-count=3 → 2 avatars + a bubble; max-count counts slots and the bubble owns the last one.',
+    },
+    {
+      name: 'avatar-group-mp-collapse',
+      title: 'Custom collapse text (`collapse-avatar`)',
+      blurb: 'collapse-avatar="+12" replaces the derived +N; max-count semantics unchanged.',
+    },
+    {
+      name: 'avatar-group-mp-vertical',
+      title: 'Vertical stacking (`vertical`)',
+      blurb: '`vertical` ignores `cascading` and stacks top-down.',
+    },
+    {
+      name: 'avatar-group-mp-shape',
+      title: 'Shape (`shape`)',
+      blurb:
+        'Uniform member shape: round (default) and square — the group wins over member props.',
     },
   ],
   props: {
@@ -118,8 +139,8 @@ import { AvatarGroup } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-avatar', link: '/en/components/uni/avatar' },
-    next: { text: 'sn-navbar', link: '/en/components/uni/navbar' },
+    prev: { text: 'Avatar', link: '/en/components/uni/avatar' },
+    next: { text: 'Navbar', link: '/en/components/uni/navbar' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

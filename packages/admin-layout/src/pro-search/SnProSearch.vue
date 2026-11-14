@@ -276,6 +276,10 @@ function pathText(hit: SnProMenuHit): string {
   position: relative;
   width: 100%;
   min-width: 0;
+  /* Fresh look: the field border joins the panel on the subtle (lighter)
+   * border token instead of SnInput's default border — one lighter line
+   * across the whole search UI, no SnInput API change. */
+  --sn-web-input-border-color: var(--sn-web-color-border-subtle);
 }
 
 .sn-pro-search__panel {
@@ -291,7 +295,8 @@ function pathText(hit: SnProMenuHit): string {
   border: 1px solid var(--sn-web-color-border-subtle);
   border-radius: var(--sn-web-radius-md);
   background-color: var(--sn-web-color-background-elevated);
-  box-shadow: var(--sn-web-shadow-lg, 0 6px 16px rgba(0, 0, 0, 0.12));
+  /* Fresh look: soft elevation (shadow-sm) instead of the heavy shadow-lg. */
+  box-shadow: var(--sn-web-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08));
 }
 
 .sn-pro-search__list {

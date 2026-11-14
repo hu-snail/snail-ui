@@ -6,6 +6,8 @@
  * the long-press timer teardown. No rpx numbers in assertions.
  */
 
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnInputNumber from './sn-input-number.vue';
@@ -54,12 +56,45 @@ describe('sn-input-number', () => {
     it('hides the field when withoutInput is set', () => {
       const w = mountNumber({ withoutInput: true });
       expect(w.find('.sn-input-number__field').exists()).toBe(false);
+      expect(w.find('.sn-input-number__inner').exists()).toBe(false);
       expect(w.classes()).toContain('sn-input-number--without-input');
+    });
+
+    it('wraps the field in its own inner segment', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__inner .sn-input-number__field').exists()).toBe(true);
+    });
+
+    it('separates the three segments with real divider nodes', () => {
+      // Pseudo-elements are dropped by the uni-app x CSS transform, so the
+      // hairline gaps must stay real nodes in the uni source.
+      const w = mountNumber();
+      expect(w.findAll('.sn-input-number__action-divider')).toHaveLength(2);
+      expect(w.find('.sn-input-number__minus .sn-input-number__action-divider').exists()).toBe(
+        true,
+      );
+      expect(w.find('.sn-input-number__plus .sn-input-number__action-divider').exists()).toBe(true);
     });
 
     it('applies the theme class', () => {
       expect(mountNumber({ theme: 'outline' }).classes()).toContain('sn-input-number--outline');
       expect(mountNumber({ theme: 'primary' }).classes()).toContain('sn-input-number--primary');
+      expect(mountNumber({ theme: 'circle' }).classes()).toContain('sn-input-number--circle');
+    });
+
+    it('paints both action buttons with buttonColor and on-primary glyphs', () => {
+      const w = mountNumber({ buttonColor: '#1c64fd' });
+      for (const button of ['.sn-input-number__minus', '.sn-input-number__plus']) {
+        const style = w.find(button).attributes('style') ?? '';
+        expect(style).toContain('background-color: #1c64fd');
+        expect(style).toContain('color: var(--sn-mp-color-text-on-primary)');
+      }
+    });
+
+    it('leaves the action buttons unstyled without buttonColor', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__minus').attributes('style')).toBeUndefined();
+      expect(w.find('.sn-input-number__plus').attributes('style')).toBeUndefined();
     });
 
     it('applies the round class', () => {
@@ -306,6 +341,56 @@ describe('sn-input-number', () => {
       await vi.advanceTimersByTimeAsync(400);
       expect(w.emitted('update:modelValue')).toBeUndefined();
     });
+
+    it('does not add a trailing step when the tap fires after a long-press release', async () => {
+      // Regression: the repeat interval steps N times, then the release `@tap`
+      // stepped once more — every long press over-shot by exactly one.
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 0, max: 100, longPress: true });
+      await w.find('.sn-input-number__plus').trigger('touchstart');
+      await vi.advanceTimersByTimeAsync(400);
+      const settled = w.vm.modelValue as number;
+      const settledCount = w.emitted('update:modelValue')?.length ?? 0;
+      await w.find('.sn-input-number__plus').trigger('touchend');
+      await w.find('.sn-input-number__plus').trigger('tap');
+      expect(w.vm.modelValue).toBe(settled);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBe(settledCount);
+      // A fresh tap after a new press still steps exactly once.
+      await w.find('.sn-input-number__plus').trigger('touchstart');
+      await w.find('.sn-input-number__plus').trigger('tap');
+      expect(w.vm.modelValue).toBe(settled + 1);
+    });
+
+    it('pauses the repeat when the held finger moves off the button', async () => {
+      // Regression: touch events keep firing on the press-start element after
+      // the finger leaves it, so without the move check the stepper counted
+      // on while the user was dragging elsewhere (AUI-UNI-FB-018).
+      vi.useFakeTimers();
+      const w = mountNumber({ modelValue: 0, max: 100, longPress: true });
+      const plus = w.find('.sn-input-number__plus');
+      await plus.trigger('touchstart', { touches: [{ clientX: 20, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      const stepped = w.emitted('update:modelValue')?.length ?? 0;
+      expect(stepped).toBeGreaterThan(0);
+      // 40px of travel — far past the 8px cancel threshold.
+      await plus.trigger('touchmove', { touches: [{ clientX: 60, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(400);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBe(stepped);
+    });
+
+    it('keeps repeating through sub-threshold hold jitter', async () => {
+      vi.useFakeTimers();
+      const w = mountNumber({ modelValue: 0, max: 100, longPress: true });
+      const plus = w.find('.sn-input-number__plus');
+      await plus.trigger('touchstart', { touches: [{ clientX: 20, clientY: 20 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      const stepped = w.emitted('update:modelValue')?.length ?? 0;
+      expect(stepped).toBeGreaterThan(0);
+      // ~3px of jitter stays inside the 8px threshold.
+      await plus.trigger('touchmove', { touches: [{ clientX: 22, clientY: 23 }] });
+      await vi.advanceTimersByTimeAsync(240);
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBeGreaterThan(stepped);
+    });
   });
 
   /* ── Extended coverage: presentation props, a11y, coercion edges ── */
@@ -386,6 +471,41 @@ describe('sn-input-number', () => {
     it('snaps a mount value onto the step grid when stepStrictly is on', () => {
       const w = mountNumber({ modelValue: 3, min: 0, max: 10, step: 2, stepStrictly: true });
       expect(lastValue(w)).toBe(4);
+    });
+
+    it('anchors the strict grid at zero and lands inside [min, max]', () => {
+      // wd-input-number contract: step 2 → multiples of 2, then strict bounds.
+      const below = mountNumber({
+        modelValue: 1,
+        min: 3,
+        max: 15,
+        step: 2,
+        stepStrictly: true,
+      });
+      expect(lastValue(below)).toBe(4); // smallest multiple of 2 that is >= 3
+
+      const above = mountNumber({
+        modelValue: 17,
+        min: 3,
+        max: 15,
+        step: 2,
+        stepStrictly: true,
+      });
+      expect(lastValue(above)).toBe(14); // largest multiple of 2 that is <= 15
+    });
+
+    it('never emits a strict-step value that is not a multiple of step', () => {
+      // min 3 / step 2: the old min-anchored grid produced 3 and 5.
+      const w = mountNumber({ modelValue: 5, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect((lastValue(w) as number) % 2).toBe(0);
+    });
+
+    it('disables stepping past the strict grid bounds', () => {
+      const low = mountNumber({ modelValue: 4, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect(low.find('.sn-input-number__minus').attributes('aria-disabled')).toBe('true');
+
+      const high = mountNumber({ modelValue: 14, min: 3, max: 15, step: 2, stepStrictly: true });
+      expect(high.find('.sn-input-number__plus').attributes('aria-disabled')).toBe('true');
     });
 
     it('honours a string precision prop', async () => {
@@ -512,6 +632,28 @@ describe('sn-input-number', () => {
       await Promise.resolve();
       expect(w.emitted('update:modelValue')).toBeUndefined();
       expect(w.props('modelValue')).toBe('');
+    });
+  });
+
+  describe('uni-app x style contract', () => {
+    // The uni-app x CSS transform rewrites descendant overrides into a
+    // fallback-less `var(--snx-…)` consumed by the segment rule. A fill,
+    // glyph color, or corner radius that only exists on another rule
+    // therefore renders transparent / square on App / uni-app x web — white
+    // +/- buttons next to a gray field (AUI-UNI-FB-018). Each segment must
+    // own its base values so the transform can emit `var(--snx-…, <base>)`.
+    it('declares the fill, glyph color and corner radius on each segment rule', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-input-number.vue'), 'utf8');
+      for (const segment of ['sn-input-number__minus', 'sn-input-number__plus']) {
+        const start = source.indexOf(`\n.${segment} {`);
+        expect(start, `${segment} base rule must exist`).toBeGreaterThan(-1);
+        const rule = source.slice(start, source.indexOf('}', start));
+        expect(rule).toContain('background-color: var(--sn-mp-color-background-soft)');
+        expect(rule).toContain('color: var(--sn-mp-color-text-secondary)');
+        // Themes override the border-radius shorthand, so the base must be
+        // declared as the shorthand too — not per-corner longhands.
+        expect(rule).toContain('border-radius:');
+      }
     });
   });
 });

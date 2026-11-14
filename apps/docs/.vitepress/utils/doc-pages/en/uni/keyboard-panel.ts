@@ -1,16 +1,16 @@
-/** KeyboardPanel · uni-app (uni-app) — English page data. Props from sn-keyboard-panel.vue; demos from the en page. */
+/** KeyboardPanel · uni-app x (uni-app x) — English page data. Props from sn-keyboard-panel.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const keyboardPanelDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'KeyboardPanel · uni-app' },
+    { text: 'KeyboardPanel · uni-app x' },
   ],
-  title: 'KeyboardPanel · uni-app',
+  title: 'KeyboardPanel · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -42,10 +42,10 @@ export const keyboardPanelDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'KeyboardPanel · uni-app.vue',
+    fileLabel: 'KeyboardPanel · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -124,7 +124,7 @@ import { KeyboardPanel } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'KeyboardPanel · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'KeyboardPanel · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { KeyboardPanel } from '@snui/uni';",
     chipCopy: "import { KeyboardPanel } from '@snui/uni';",
     stats: [
@@ -134,8 +134,8 @@ import { KeyboardPanel } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-keyboard', link: '/en/components/uni/keyboard' },
-    next: { text: 'sn-plate-input', link: '/en/components/uni/plate-input' },
+    prev: { text: 'Keyboard', link: '/en/components/uni/keyboard' },
+    next: { text: 'PlateInput', link: '/en/components/uni/plate-input' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

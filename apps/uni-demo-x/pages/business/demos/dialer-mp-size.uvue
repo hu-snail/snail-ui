@@ -1,0 +1,62 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialer (uni-end) — 尺寸：size 各档。
+ */
+import SnDialer from '@snui/uni-x/components/sn-dialer/sn-dialer.uvue';
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
+const prizes: SnDialerPrize[] = [
+  { id: 'a', name: '奖品 A' },
+  { id: 'b', name: '奖品 B' },
+  { id: 'c', name: '奖品 C' },
+  { id: 'd', name: '奖品 D' },
+];
+
+const smallRef = ref<InstanceType<typeof SnDialer> | null>(null);
+const bigRef = ref<InstanceType<typeof SnDialer> | null>(null);
+
+function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: number): void {
+  dialer?.run(Math.floor(Math.random() * count));
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">size="420rpx"（小盘）</text>
+    <view class="dialer-stage">
+      <SnDialer
+        ref="smallRef"
+        :prize-list="prizes"
+        size="420rpx"
+        @click="spinToRandom(smallRef, prizes.length)"
+      />
+    </view>
+
+    <text class="sn-demo__title">size="560rpx"（大盘）</text>
+    <view class="dialer-stage">
+      <SnDialer
+        ref="bigRef"
+        :prize-list="prizes"
+        size="560rpx"
+        @click="spinToRandom(bigRef, prizes.length)"
+      />
+    </view>
+    <text class="sn-demo__meta">每个转盘点击指针即随机落定</text>
+  </view>
+</template>
+<style scoped>
+.dialer-stage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,30 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-toast (uni-end) — z-index / custom-style.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-toast from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnToast from '@snui/uni-x/components/sn-toast/sn-toast.uvue';
+const styled = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnButton block @click="styled = true"><text> z-index=300 + custom-style </text></SnButton>
+
+    <SnToast
+      v-model="styled"
+      msg="z-index 与 custom-style"
+      icon-name="info"
+      :z-index="300"
+      custom-style="padding: var(--sn-mp-spacing-5); border-radius: var(--sn-mp-radius-xl);"
+      custom-class="sn-demo-contained"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

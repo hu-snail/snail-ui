@@ -1,0 +1,46 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — loading state: `loading` shows the option list as loading and `loadingColor` recolors the spinner. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'cherry', label: 'Cherry' },
+];
+
+const loading = ref<Array<string | number | boolean>>([]);
+const open = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">loading + loadingColor</text>
+    <view class="sn-demo__button" @click="open = true"><text>Loading state</text></view>
+    <SnSelectPicker
+      v-model="loading"
+      v-model:visible="open"
+      :columns="options"
+      loading
+      loading-color="var(--sn-mp-color-action-primary)"
+      title="Loading state"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+  flex-direction: row;
+}
+</style>

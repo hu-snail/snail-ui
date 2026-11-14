@@ -15,7 +15,7 @@ export const keyboardPanelDocPage: SnDocPageData = {
   title: 'KeyboardPanel 键盘面板',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -56,7 +56,7 @@ export const keyboardPanelDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'KeyboardPanel 键盘面板.vue',
     meta: 'Vue 3 · <script setup>',
@@ -132,8 +132,8 @@ import { KeyboardPanel } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-keyboard', link: '/components/uni/keyboard' },
-    next: { text: 'sn-plate-input', link: '/components/uni/plate-input' },
+    prev: { text: 'Keyboard', link: '/components/uni/keyboard' },
+    next: { text: 'PlateInput', link: '/components/uni/plate-input' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

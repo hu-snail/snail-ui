@@ -15,7 +15,7 @@ export const inputNumberDocPage: SnDocPageData = {
   title: 'InputNumber 计数器',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -41,7 +41,7 @@ export const inputNumberDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'InputNumber 计数器.vue',
     meta: 'Vue 3 · <script setup>',
@@ -63,7 +63,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-theme',
       title: '主题（theme）',
-      blurb: 'default / outline / outline-split / primary 四种主题。',
+      blurb: 'default / primary / outline-split / outline + circle 圆形按钮胶囊（buttonColor 支持主题色圆钮）。',
     },
     {
       name: 'input-number-mp-round',
@@ -154,8 +154,14 @@ import { InputNumber } from '@snui/uni';
         default: "'digit'",
         desc: 'Native keyboard type for the field.',
       },
-      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme.' },
+      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme. `circle` 为 AUI 追加：灰色胶囊轨道 + 两端圆形按钮。' },
       { name: 'round', type: 'boolean', default: 'false', desc: '圆角样式' },
+      {
+        name: 'buttonColor',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: 'AUI 追加：两侧按钮填充色（CSS 色 / `var(--sn-mp-color-*)`），覆盖主题填充，glyph 自动切换 on-primary。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -178,8 +184,8 @@ import { InputNumber } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-plate-input', link: '/components/uni/plate-input' },
-    next: { text: 'sn-search', link: '/components/uni/search' },
+    prev: { text: 'PlateInput', link: '/components/uni/plate-input' },
+    next: { text: 'Search', link: '/components/uni/search' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-slide-verify — icon glyphs (`icon` / `successIcon`).
+ *
+ * Without `icon` / `success-icon` the built-in SVG glyphs render; a name goes
+ * through the iconfont convention (`icon-prefix` + `-` + name) and `css-icon`
+ * treats the name as a bare class. `icon-size` / `success-icon-size` size the
+ * two glyph boxes independently (a number is rpx).
+ */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
+const state = ref('Not verified');
+const onSuccess = (): void => {
+  state.value = 'Verified';
+};
+const onFail = (): void => {
+  state.value = 'Failed';
+};
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSlideVerify
+      icon="demo-next"
+      success-icon="demo-done"
+      icon-prefix="sn-icon"
+      :icon-size="40"
+      :success-icon-size="36"
+      @success="onSuccess"
+      @fail="onFail"
+    />
+    <text class="sn-demo__meta"
+      >icon / successIcon follow the iconfont convention (sn-icon-demo-next); sizes are
+      independent</text
+    >
+
+    <SnSlideVerify css-icon="demo-verify-css" :icon-size="32" @success="onSuccess" @fail="onFail" />
+    <text class="sn-demo__meta"
+      >cssIcon as a string: the class renders verbatim, with no iconPrefix</text
+    >
+
+    <text class="sn-demo__meta">Status: {{ state }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+/*
+ * Placeholder iconfont glyphs: in a real app these classes come from an icon
+ * font. Here tokens draw a distinguishable box that proves the class
+ * passthrough works.
+ */
+</style>

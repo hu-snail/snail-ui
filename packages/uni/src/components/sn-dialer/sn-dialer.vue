@@ -20,19 +20,12 @@
  */
 
 import { computed, onBeforeUnmount, ref } from 'vue';
+import type { SnDialerPrize } from './sn-dialer-types';
 
 defineOptions({ name: 'SnDialer' });
 
-export interface SnDialerPrize {
-  /** 奖品 id。 */
-  id: string;
-  /** 奖品名。 */
-  name: string;
-  /** 奖品图（可选）。 */
-  img?: string;
-  /** 本扇区背景色（优先于 prizeBgColors）。 */
-  color?: string;
-}
+// 类型契约本体在 ./sn-dialer-types（纯 ts 模块，uni-x 端的稳定导入目标）。
+export type { SnDialerPrize } from './sn-dialer-types';
 
 const props = withDefaults(
   defineProps<{

@@ -1,0 +1,36 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-tabs — 禁用页签（disabled）。
+ *
+ * `disabled` 阻止切换，点击只 emit `disabled`。
+ */
+import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';
+import SnTab from '@snui/uni-x/components/sn-tabs/sn-tab.uvue';
+const disabledActive = ref(0);
+const disabledHits = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnTabs v-model="disabledActive" @disabled="disabledHits += 1">
+      <SnTab title="推荐" :name="0"><text>推荐内容</text></SnTab>
+      <SnTab title="关注" :name="1"><text>关注内容</text></SnTab>
+      <SnTab title="停用" :name="2" disabled><text>不可点击，点击只触发 disabled 事件</text></SnTab>
+    </SnTabs>
+
+    <text class="sn-demo__meta">
+      disabled 事件已触发 {{ disabledHits }} 次；当前页签：{{ disabledActive }}
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  align-items: stretch;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

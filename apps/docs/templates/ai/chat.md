@@ -1,8 +1,8 @@
 # AI 对话页 AiChat / sn-ai-chat
 
-一个完整可用的 AI 对话页：Web 端由消息列表模板（转录区）、输入框模板（输入区）与两页共用的轮次引擎（排队调度 / 中断）组装而成。安装后传入一个「运行一轮对话」的函数（`run`）即可跑起来，Web 与 uni-app 两端共用同一份消息 / 流式契约。
+一个完整可用的 AI 对话页：Web 端由消息列表模板（转录区）、输入框模板（输入区）与两页共用的轮次引擎（排队调度 / 中断）组装而成。安装后传入一个「运行一轮对话」的函数（`run`）即可跑起来，Web 与 uni-app x 两端共用同一份消息 / 流式契约。
 
-> 平台：`Web`（`SnAiChat`，来自 `@snui/templates/web/chat`） / `uni-app`（`SnAiChat`，来自 `@snui/templates/uni/chat`）
+> 平台：`Web`（`SnAiChat`，来自 `@snui/templates/web/chat`） / `uni-app x`（`SnAiChat`，来自 `@snui/templates/uni/chat`）
 
 ## 何时使用
 
@@ -27,13 +27,15 @@ import '@snui/templates/styles';
 import '@snui/templates/styles/web-chat.css';
 ```
 
-uni-app 端同理，只换个入口：
+uni-app x 端同理，只换个入口：
 
 ```ts
 import { SnAiChat } from '@snui/templates/uni/chat';
 import '@snui/templates/styles';
 import '@snui/templates/styles/uni-chat.css';
 ```
+
+`@snui/templates/uni/*` 是经典 uni-app（H5 / 小程序 / App-vue）产物；uni-app x（蒸汽模式）消费的 `.uvue` 由同一套 uni-x 管线从这份源码生成，仓库内示例见 `apps/uni-demo-x/templates`。
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
@@ -180,7 +182,7 @@ const run: SnAiRunTurn = async (turn, { signal, emit }) => {
 
 <Demo name="ai-chat-web-states" description="等待行、流式光标、工具行、错误卡片与停止提示的状态对照。" />
 
-### uni-app 端消息与思考输出
+### uni-app x 端消息与思考输出
 
 uni 端与 Web 端共用消息契约，排版按移动端尺寸呈现：静态转录展示思考折叠、流式光标、错误卡片与停止提示。
 
@@ -266,7 +268,7 @@ uni 端没有 `theme` prop：`--sn-mp-*` 别名层由 `@snui/tokens-mp` 提供�
 
 两端共用消息、流式增量与错误结构，差异只在排版与输入区能力：
 
-| 方面   | Web（`SnAiChat`）                                                                                                | uni-app（`SnAiChat`）                                                        |
+| 方面   | Web（`SnAiChat`）                                                                                                | uni-app x（`SnAiChat`）                                                      |
 | ------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | 元素   | `<div>` / `<header>` / `<footer>` 等标准标签                                                                     | `<view>` / `<text>` / `<scroll-view scroll-y>` 等跨端元素                    |
 | 单位   | px 级别的 `--sn-web-*` token                                                                                     | `--sn-mp-*` token，尺寸为 rpx，跨设备等比缩放                                |

@@ -51,6 +51,20 @@
  * the root handler — tapping another trigger therefore switches bubbles in
  * one gesture. Pages that never bind the handler simply never outside-close.
  *
+ * On uni-app x App the page-root dispatcher never sees page taps either
+ * (taps stay inside their compilation unit), so the App close paths are the
+ * trigger re-tap and the bubble's own close button.
+ *
+ * ## App trigger catcher (uni-app x App)
+ *
+ * Taps on slot content never cross into this component's compilation unit on
+ * App — the wrapper's `@tap` never fires from the page's trigger element, and
+ * page-bound listeners on slotted components never fire either. The template
+ * therefore ships an `#ifdef APP` transparent catcher over the trigger box
+ * (a node this component owns) that receives the tap and runs the same
+ * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
+ * `trigger` prop note for when `manual` is actually needed.
+ *
  * ## Bubble palette (wot-ui parity: --wot-tooltip-bg / --wot-tooltip-color)
  *
  * The fill defaults to the elevated surface (white in the light theme) and
@@ -137,6 +151,17 @@ const props = withDefaults(
   defineProps<{
     /** Whether the bubble is shown (v-model). */
     modelValue?: boolean;
+    /**
+     * How the trigger reacts. `slot` (default) binds the tap on the trigger
+     * wrapper itself — on uni-app x App an App-only catcher node (see the
+     * template note) receives the tap because slot-content taps never reach
+     * this component's own views there. `manual` leaves toggling to the page
+     * via v-model: use it when the tap target lives outside the default slot
+     * (a remote button, imperative open/close), not as an App workaround —
+     * event listeners the page binds on components inside the slot never fire
+     * on App either, so a manual-mode slotted trigger is inert there too.
+     */
+    trigger?: 'slot' | 'manual';
     /** Bubble text; an array renders one line per entry. */
     content?: string | TooltipContentRow[];
     /** Bubble anchor. */
@@ -165,6 +190,7 @@ const props = withDefaults(
   }>(),
   {
     modelValue: false,
+    trigger: 'slot',
     content: '',
     placement: 'bottom',
     offset: 0,
@@ -268,10 +294,14 @@ function open(): void {
   if (!props.modelValue) void enter();
 }
 
-/** Hide the bubble and notify the consumer. */
+/** Hide the bubble and notify the consumer. Idempotent (outside-close contract). */
 function close(): void {
+  // Idempotent: a bubble opened uncontrolled (consumer ignoring the v-model
+  // event) has `props.modelValue === false` while still shown — decide from
+  // the actual shown state (popover parity).
+  const wasUp = props.modelValue || isShown.value || isMounted.value;
   emit('update:modelValue', false);
-  if (props.modelValue) leave();
+  if (wasUp) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -282,8 +312,12 @@ function updatePosition(): void {
 defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
+  if (props.trigger === 'manual') return;
   if (props.disabled) return;
-  if (props.modelValue) {
+  // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
+  // bubble (consumer ignoring the v-model event) must still close on the
+  // second trigger tap (popover parity).
+  if (isShown.value) {
     close();
     return;
   }
@@ -351,6 +385,23 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
       @tap.stop="onTriggerTap"
     >
       <slot />
+      <!-- #ifdef APP -->
+      <!-- uni-app x App: a tap on the trigger's slot content (the page's
+           compilation unit) never reaches this component's own views — not as
+           a native bubble, not as a component emit — so the wrapper's @tap
+           alone can never fire there. This App-only transparent catcher is a
+           node this component owns that sits on top of the trigger box, so the
+           tap lands on it directly (the same component-internal tap path every
+           other App-working trigger uses). Web / MP strip it: there the slot
+           content taps reach the wrapper by native bubbling, and the catcher
+           would only steal the trigger's press feedback. -->
+      <view
+        class="sn-tooltip__trigger-catcher"
+        hover-class="sn-tooltip__trigger-catcher--pressed"
+        aria-hidden="true"
+        @tap.stop="onTriggerTap"
+      />
+      <!-- #endif -->
     </view>
 
     <view v-if="isMounted" :class="popClass" role="tooltip" @tap.stop>
@@ -389,8 +440,26 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 .sn-tooltip__trigger {
+  position: relative;
   display: block;
 }
+
+/* #ifdef APP */
+/* App trigger catcher (see the template note): a transparent shield over the
+ * trigger box. `position: relative` on the wrapper above is its containing
+ * block. The pressed leg restores the touch feedback the covered slot content
+ * can no longer receive on App. */
+.sn-tooltip__trigger-catcher {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.sn-tooltip__trigger-catcher--pressed {
+  background-color: var(--sn-mp-color-background-soft);
+}
+/* #endif */
 
 /* ── Bubble ────────────────────────────────────────────────────────────── */
 

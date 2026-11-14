@@ -331,7 +331,17 @@ onMounted(() => {
 
 watch(
   () => props.list,
-  () => {
+  (next, prev) => {
+    // A parent re-render that re-creates the array with the SAME page objects
+    // changes nothing — refit()'s selector-query round would be pure churn.
+    // New objects mean new content and still refit.
+    if (
+      fitted.value &&
+      next.length === prev.length &&
+      next.every((page, index) => page === prev[index])
+    ) {
+      return;
+    }
     void refit();
   },
 );

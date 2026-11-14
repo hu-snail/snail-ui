@@ -1,0 +1,58 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-dialer (uni-end) — 旋转参数：turns 圈数 / duration 时长。
+ */
+import SnDialer from '@snui/uni-x/components/sn-dialer/sn-dialer.uvue';
+import type { SnDialerPrize } from '@snui/uni-x/components/sn-dialer/sn-dialer-types';
+const prizes: SnDialerPrize[] = [
+  { id: 'a', name: '奖品 A' },
+  { id: 'b', name: '奖品 B' },
+  { id: 'c', name: '奖品 C' },
+  { id: 'd', name: '奖品 D' },
+];
+
+const slowRef = ref<InstanceType<typeof SnDialer> | null>(null);
+const quickRef = ref<InstanceType<typeof SnDialer> | null>(null);
+
+function spinToRandom(dialer: InstanceType<typeof SnDialer> | null, count: number): void {
+  dialer?.run(Math.floor(Math.random() * count));
+}
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">默认（turns=6 / duration=3s）</text>
+    <view class="dialer-stage">
+      <SnDialer ref="slowRef" :prize-list="prizes" @click="spinToRandom(slowRef, prizes.length)" />
+    </view>
+
+    <text class="sn-demo__title">turns=8 / duration=1.2（快节奏）</text>
+    <view class="dialer-stage">
+      <SnDialer
+        ref="quickRef"
+        :prize-list="prizes"
+        :turns="8"
+        :duration="1.2"
+        @click="spinToRandom(quickRef, prizes.length)"
+      />
+    </view>
+    <text class="sn-demo__meta">点击指针起转，对比圈数与时长</text>
+  </view>
+</template>
+<style scoped>
+.dialer-stage {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.sn-demo__title {
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

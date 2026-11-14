@@ -1,0 +1,27 @@
+<script setup lang="ts">
+/** Demo: sn-steps — English shadow of steps-mp-error. */
+import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
+import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSteps :active="2">
+      <SnStep title="Submit" description="10:00" />
+      <SnStep title="Risk check" description="10:05" />
+      <SnStep title="Review failed" description="10:10" status="error" />
+    </SnSteps>
+    <text class="sn-demo__meta">status="error" marks the step as failed.</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

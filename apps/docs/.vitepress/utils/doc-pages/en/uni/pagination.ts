@@ -1,16 +1,16 @@
-/** Pagination · uni-app (uni-app) — English page data. Props from sn-pagination.vue; demos from the en page. */
+/** Pagination · uni-app x (uni-app x) — English page data. Props from sn-pagination.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const paginationDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Navigation Components' },
-    { text: 'Pagination · uni-app' },
+    { text: 'Pagination · uni-app x' },
   ],
-  title: 'Pagination · uni-app',
+  title: 'Pagination · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -36,10 +36,10 @@ export const paginationDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Pagination · uni-app.vue',
+    fileLabel: 'Pagination · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -138,7 +138,7 @@ import { Pagination } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Pagination · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Pagination · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Pagination } from '@snui/uni';",
     chipCopy: "import { Pagination } from '@snui/uni';",
     stats: [
@@ -148,8 +148,8 @@ import { Pagination } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-sidebar', link: '/en/components/uni/sidebar' },
-    next: { text: 'sn-index-bar', link: '/en/components/uni/index-bar' },
+    prev: { text: 'Sidebar', link: '/en/components/uni/sidebar' },
+    next: { text: 'IndexBar', link: '/en/components/uni/index-bar' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

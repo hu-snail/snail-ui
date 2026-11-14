@@ -1,16 +1,16 @@
-/** Overlay · uni-app (uni-app) — English page data. Props from sn-overlay.vue; demos from the en page. */
+/** Overlay · uni-app x (uni-app x) — English page data. Props from sn-overlay.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const overlayDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'Overlay · uni-app' },
+    { text: 'Overlay · uni-app x' },
   ],
-  title: 'Overlay · uni-app',
+  title: 'Overlay · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -42,10 +42,10 @@ export const overlayDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Overlay · uni-app.vue',
+    fileLabel: 'Overlay · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -102,7 +102,7 @@ import { Overlay } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Overlay · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Overlay · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Overlay } from '@snui/uni';",
     chipCopy: "import { Overlay } from '@snui/uni';",
     stats: [
@@ -112,8 +112,8 @@ import { Overlay } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-popup', link: '/en/components/uni/popup' },
-    next: { text: 'sn-dialog', link: '/en/components/uni/dialog' },
+    prev: { text: 'Popup', link: '/en/components/uni/popup' },
+    next: { text: 'Dialog', link: '/en/components/uni/dialog' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

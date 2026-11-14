@@ -53,7 +53,9 @@ const actions = [
   font-weight: var(--sn-mp-font-weight-semibold);
   letter-spacing: 2rpx;
 }
-/* Docs-preview only — pin the fixed layer to the phone screen. */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-action-sheet.sn-demo-contained {
   position: absolute;
 }

@@ -264,17 +264,13 @@ export const buttonDocPage: SnDocPageData = {
     {
       name: 'button-web-color',
       title: '自定义颜色',
-      blurb: 'color prop 设置自定义 CSS 颜色 → --sn-button-color。',
+      blurb:
+        'color prop 设置自定义 CSS 颜色 → --sn-button-color；渐变经 background-image 叠加实现。',
     },
     {
       name: 'button-web-tag',
       title: '根标签切换',
       blurb: "tag='a' 渲染为链接；tag='div' 渲染为容器；默认 button。",
-    },
-    {
-      name: 'button-web-doodle',
-      title: '涂鸦风格',
-      blurb: 'Doodle 风格包：粗墨边 + 硬阴影 + 波浪圆角。',
     },
     {
       name: 'button-web-icon-placement',

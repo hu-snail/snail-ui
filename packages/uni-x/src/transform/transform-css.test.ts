@@ -47,6 +47,76 @@ describe('transformCss (component mode)', () => {
     ).toBe(false);
   });
 
+  it('should keep shorthand-derived longhand fallbacks when a skin rule overrides border parts', () => {
+    // Bug (real-world, picker indicator): the base rule declares only the
+    // `border-top` shorthand; the skin rule overrides width/color longhands,
+    // so the flattened injection appended fallback-less var()s — with the
+    // skin inactive those vars are unset and CSS drops the longhands back to
+    // their *initial* values (3px medium + currentColor), shattering the
+    // 1px subtle line into a heavy black one. The injection must carry the
+    // shorthand-derived values as fallbacks instead.
+    const css =
+      '.sk .t {\n' +
+      '  border-top-width: 4rpx;\n' +
+      '  border-top-color: var(--sn-mp-color-text-primary);\n' +
+      '}\n' +
+      '.t {\n' +
+      '  border-top: 2rpx solid var(--sn-mp-color-border-subtle);\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain(
+      'border-top-width: var(--snx-t-border-top-width, 2rpx);',
+    );
+    expect(r.css).toContain(
+      'border-top-color: var(--snx-t-border-top-color, var(--sn-mp-color-border-subtle));',
+    );
+  });
+
+  it('should expand a plain border shorthand in a descendant rule into per-longhand vars with no-border fallbacks', () => {
+    // Bug (real-world, input-number actions): a theme rule overriding the
+    // plain `border` shorthand was flattened as ONE fallback-less var() —
+    // `border: var(--undefined)` on App resolves every longhand from the
+    // unset var (width → initial `medium`, 3px), an engine-dependent landmine
+    // per the uni-app x docs (shorthands cannot reliably carry var() on App).
+    // Each longhand must get its own var() slot and an explicit no-border
+    // fallback so the absent-context state is inert.
+    const css = '.theme .t {\n  border: 2rpx solid var(--sn-mp-color-border-default);\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('--snx-t-border-width: 2rpx;');
+    expect(r.css).toContain('--snx-t-border-style: solid;');
+    expect(r.css).toContain('--snx-t-border-color: var(--sn-mp-color-border-default)');
+    expect(r.css).toContain('border-width: var(--snx-t-border-width, 0);');
+    expect(r.css).toContain('border-style: var(--snx-t-border-style, none);');
+    expect(r.css).toContain('border-color: var(--snx-t-border-color, transparent)');
+    expect(r.css).not.toContain('border: var(');
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should keep base shorthand values as flatten fallbacks when a skin overrides border longhands', () => {
+    // Bug (real-world, input-number container): the base rule declares the
+    // plain `border` shorthand and the doodle skin overrides width/color
+    // longhands — the flatten could not find base longhand entries and
+    // appended fallback-less var()s, so with the skin inactive border-width
+    // resolved to its initial `medium` (3px) with currentColor ink while the
+    // shorthand's solid style survived: a heavy black frame around the
+    // stepper. The base shorthand must be expanded so its own values become
+    // the fallbacks (same contract as the border-top case above).
+    const css =
+      '.sk .t {\n' +
+      '  border-width: 4rpx;\n' +
+      '  border-color: var(--sn-mp-color-text-primary);\n' +
+      '}\n' +
+      '.t {\n' +
+      '  border: 2rpx solid transparent;\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('--snx-t-border-width: 4rpx;');
+    expect(r.css).toContain('--snx-t-border-color: var(--sn-mp-color-text-primary);');
+    expect(r.css).toContain('border-width: var(--snx-t-border-width, 2rpx);');
+    expect(r.css).toContain('border-color: var(--snx-t-border-color, transparent);');
+    expect(r.issues).toHaveLength(0);
+  });
+
   it('should merge multiple container rules onto one target var name', () => {
     const css = '.a .b {\n  color: red;\n}\n.c .b {\n  color: green;\n}\n.b {\n  color: blue;\n}\n';
     const r = transformCss(css, 'component', FILE);
@@ -74,6 +144,28 @@ describe('transformCss (component mode)', () => {
     expect(r.issues).toHaveLength(0);
   });
 
+  it('should inject flex-direction: row into flex containers relying on the W3C default', () => {
+    const css =
+      '.row {\n  display: flex;\n  gap: 8px;\n}\n.inline {\n  display: inline-flex;\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('.row {\n  display: flex;\n  gap: 8px;\n  flex-direction: row;');
+    expect(r.css).toContain('.inline {\n  display: inline-flex;\n  flex-direction: row;');
+    expect(r.issues.some((i) => i.kind === 'flex-direction-row')).toBe(true);
+  });
+
+  it('should not inject flex-direction when it is already declared', () => {
+    const css = '.col {\n  display: flex;\n  flex-direction: column;\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).not.toContain('flex-direction: row');
+    expect(r.issues.some((i) => i.kind === 'flex-direction-row')).toBe(false);
+  });
+
+  it('should not inject flex-direction into non-flex rules', () => {
+    const r = transformCss('.a {\n  display: block;\n  color: red;\n}\n', 'component', FILE);
+    expect(r.css).not.toContain('flex-direction');
+    expect(r.issues).toHaveLength(0);
+  });
+
   it('should strip unsupported properties and report them', () => {
     const r = transformCss('.a {\n  cursor: pointer;\n  color: red;\n}\n', 'component', FILE);
     expect(r.css).not.toContain('cursor');
@@ -97,12 +189,15 @@ describe('transformCss (component mode)', () => {
 });
 
 describe('transformCss (tokens mode)', () => {
-  it('should rewrite :root and page selectors to class-only hooks', () => {
+  it('should rewrite :root and page selectors to page + class-only hooks', () => {
+    // `page` must survive: WeChat app.wxss selectors never match inside custom
+    // components, so the vars only reach them through inheritance from the
+    // page node. `.sn-theme-root` stays for the App class hook (ADR-0004).
     const css = ':root {\n  --x: 1;\n}\npage.sn-theme-dark, .sn-theme-dark {\n  --x: 2;\n}\n';
     const r = transformCss(css, 'tokens', FILE);
-    expect(r.css).toContain('.sn-theme-root {\n  --x: 1;\n}');
-    expect(r.css).toContain('.sn-theme-root.sn-theme-dark');
+    expect(r.css).toContain('page, .sn-theme-root {\n  --x: 1;\n}');
+    expect(r.css).toContain('page.sn-theme-dark, .sn-theme-root.sn-theme-dark');
+    expect(r.css).toContain('.sn-theme-dark');
     expect(r.css).not.toContain(':root');
-    expect(r.css).not.toContain('page');
   });
 });

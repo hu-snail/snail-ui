@@ -1,0 +1,36 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-skeleton (uni-end) — gradient / flashed shimmer + loading toggle.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-skeleton from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnSkeleton from '@snui/uni-x/components/sn-skeleton/sn-skeleton.uvue';
+const loading = ref(true);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSkeleton theme="paragraph" animation="gradient" />
+    <SnSkeleton theme="paragraph" animation="flashed" />
+
+    <SnSkeleton :loading="loading" theme="paragraph" animation="gradient">
+      <text class="sn-skeleton-demo__content">
+        Real content rendered: with loading=false the skeleton is replaced by the default slot.
+      </text>
+    </SnSkeleton>
+
+    <SnButton size="small" @click="loading = !loading"><text>
+      {{ loading ? 'Finish loading' : 'Reload' }}
+    </text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.sn-skeleton-demo__content {
+  font-size: 28rpx;
+  color: var(--vp-c-text-2);
+}
+</style>

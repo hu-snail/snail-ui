@@ -1,0 +1,44 @@
+<script setup lang="ts">
+/** Demo: sn-select-picker — filterable: a search box filters the options on the label; `filterPlaceholder` customizes its hint. */
+import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'cherry', label: 'Cherry' },
+];
+const filtered = ref<Array<string | number | boolean>>([]);
+const open = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="sn-demo__button" @click="open = true"><text>Filterable</text></view>
+    <text class="sn-demo__meta">Selected: {{ filtered.join(' / ') || '(not selected)' }}</text>
+    <SnSelectPicker
+      v-model="filtered"
+      v-model:visible="open"
+      :columns="options"
+      filterable
+      filter-placeholder="Search fruits"
+      title="Filterable"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72rpx;
+  padding: 0 32rpx;
+  border-radius: var(--sn-mp-button-radius);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: 28rpx;
+  flex-direction: row;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,16 +1,16 @@
-/** InputNumber · uni-app (uni-app) — English page data. Props from sn-input-number.vue; demos from the en page. */
+/** InputNumber · uni-app x (uni-app x) — English page data. Props from sn-input-number.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const inputNumberDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'InputNumber · uni-app' },
+    { text: 'InputNumber · uni-app x' },
   ],
-  title: 'InputNumber · uni-app',
+  title: 'InputNumber · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [{ t: 'text', s: 'Basic sn-input-number: min / max bounds, step and precision.' }],
@@ -31,10 +31,10 @@ export const inputNumberDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'InputNumber · uni-app.vue',
+    fileLabel: 'InputNumber · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -54,7 +54,7 @@ import { InputNumber } from '@snui/uni';
     {
       name: 'input-number-mp-theme',
       title: 'Theme (theme)',
-      blurb: 'Four themes: default / outline / outline-split / primary.',
+      blurb: 'default / primary / outline-split / outline + circle pill with circular buttons (buttonColor for themable circles).',
     },
     {
       name: 'input-number-mp-round',
@@ -201,8 +201,19 @@ import { InputNumber } from '@snui/uni';
         default: "'digit'",
         desc: 'Native keyboard type for the field.',
       },
-      { name: 'theme', type: 'InputNumberTheme', default: "'default'", desc: 'Visual theme.' },
+      {
+        name: 'theme',
+        type: 'InputNumberTheme',
+        default: "'default'",
+        desc: 'Visual theme. `circle` is AUI-additive: gray pill track with circular end buttons.',
+      },
       { name: 'round', type: 'boolean', default: 'false', desc: 'Fully rounded action buttons.' },
+      {
+        name: 'buttonColor',
+        type: 'string | undefined',
+        default: 'undefined',
+        desc: 'AUI-additive: action-button fill (CSS color / `var(--sn-mp-color-*)`); overrides theme fills, glyph flips to on-primary.',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -215,7 +226,7 @@ import { InputNumber } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'InputNumber · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'InputNumber · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { InputNumber } from '@snui/uni';",
     chipCopy: "import { InputNumber } from '@snui/uni';",
     stats: [
@@ -225,8 +236,8 @@ import { InputNumber } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-plate-input', link: '/en/components/uni/plate-input' },
-    next: { text: 'sn-search', link: '/en/components/uni/search' },
+    prev: { text: 'PlateInput', link: '/en/components/uni/plate-input' },
+    next: { text: 'Search', link: '/en/components/uni/search' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

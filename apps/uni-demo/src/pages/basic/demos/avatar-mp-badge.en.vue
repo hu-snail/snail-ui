@@ -2,11 +2,18 @@
 /**
  * Demo: sn-avatar (uni-end) — badge avatars composed from sn-badge.
  * Grid layout: avatar on top, label below.
+ *
+ * A circular avatar's visible edge is its arc, while the badge anchors at the
+ * content's BOX corner (outside the arc) — un-nudged, the marker reads as
+ * fully detached. top / right (the contract nudge props; 8rpx measured for a
+ * 72rpx avatar with a 32rpx marker) pull the marker center onto the arc:
+ * half on the avatar, half off, matching the wd-avatar riding look.
  */
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
 import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
 
-const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
+const photo = '/static/avatar-user.png';
+const arcNudge = { top: '8rpx', right: '8rpx' };
 </script>
 
 <template>
@@ -14,13 +21,13 @@ const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
     <text class="sn-demo__meta">Badge avatars: sn-badge wrapping sn-avatar (count / dot):</text>
     <view class="st-grid">
       <view class="st-cell">
-        <SnBadge :value="99" :max="99">
+        <SnBadge :value="99" :max="99" :top="arcNudge.top" :right="arcNudge.right">
           <SnAvatar :src="photo" />
         </SnBadge>
         <text class="st-label">Count</text>
       </view>
       <view class="st-cell">
-        <SnBadge :value="3">
+        <SnBadge :value="3" :top="arcNudge.top" :right="arcNudge.right">
           <SnAvatar
             text="C"
             bg-color="var(--sn-mp-color-action-primary)"
@@ -30,7 +37,7 @@ const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
         <text class="st-label">Count</text>
       </view>
       <view class="st-cell">
-        <SnBadge :value="5">
+        <SnBadge :value="5" :top="arcNudge.top" :right="arcNudge.right">
           <SnAvatar
             icon="User"
             bg-color="var(--sn-mp-color-feedback-success)"
@@ -40,7 +47,7 @@ const photo = 'https://picsum.photos/seed/snui-avatar-status/96/96';
         <text class="st-label">Icon avatar</text>
       </view>
       <view class="st-cell">
-        <SnBadge is-dot>
+        <SnBadge is-dot :top="arcNudge.top" :right="arcNudge.right">
           <SnAvatar text="M" />
         </SnBadge>
         <text class="st-label">Dot</text>

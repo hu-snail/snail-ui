@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-img-cropper (uni-end) — zoom cap (`maxScale`).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-img-cropper from its SFC source.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnImgCropper from '@snui/uni-x/components/sn-img-cropper/sn-img-cropper.uvue';
+const visible = ref(false);
+const maxScale = ref(2);
+const result = ref('—');
+
+const imgSrc = 'https://picsum.photos/seed/snui-crop-export/1200/900';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__row">
+      <SnButton size="small" @click="visible = true"><text>Open crop</text></SnButton>
+      <SnButton size="small" @click="maxScale = 2"><text>max-scale = 2</text></SnButton>
+      <SnButton size="small" @click="maxScale = 6"><text>max-scale = 6</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">Result: {{ result }}</text>
+
+    <SnImgCropper
+      v-model="visible"
+      :img-src="imgSrc"
+      :max-scale="maxScale"
+      custom-class="sn-demo-contained"
+      @confirm="result = `zoom cap ${maxScale} applied`"
+      @cancel="result = 'Cancelled'"
+    />
+
+    <text class="sn-demo__meta">
+      max-scale caps the pinch zoom (floor 0.5): at 6 the pinch goes much further, back at 2 it
+      tightens immediately.
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+  align-items: flex-start;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: 24rpx;
+  line-height: var(--sn-mp-font-line-height-normal);
+  word-break: break-all;
+}
+</style>

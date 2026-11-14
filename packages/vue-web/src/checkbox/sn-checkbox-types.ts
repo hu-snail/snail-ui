@@ -15,7 +15,7 @@ export type SnCheckboxValue = string | number | boolean;
  * Layout variant (AUI additive): `default` inline marker + label,
  * `card` selectable card (`#card` slot for content), `icon` square icon tile.
  */
-export type SnCheckboxVariant = 'default' | 'card' | 'icon';
+export type SnCheckboxVariant = 'default' | 'card';
 
 /**
  * Where the marker (or corner tick) sits.
@@ -47,7 +47,7 @@ export type SnCheckboxLabelPlacement = 'marker-first' | 'label-first';
  * outlined box; `inverted` fills the box with the theme colour and punches
  * the tick out in the surface colour (反转态).
  */
-export type SnCheckboxMarkerShape = 'ring' | 'inverted';
+export type SnCheckboxMarkerShape = 'base' | 'inverted' | 'check';
 
 /** Shape accepted by `SnCheckboxGroup`'s `options` prop entries. */
 export interface SnCheckboxGroupOption {

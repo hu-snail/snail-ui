@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: sn-radio-group — basic single-select (single-value v-model). */
+import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
+import SnRadioGroup from '@snui/uni-x/components/sn-radio/sn-radio-group.uvue';
+const picked = ref<string | number | boolean | undefined>('a');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRadioGroup v-model="picked">
+      <SnRadio value="a"><text>Option A</text></SnRadio>
+      <SnRadio value="b"><text>Option B</text></SnRadio>
+      <SnRadio value="c"><text>Option C</text></SnRadio>
+    </SnRadioGroup>
+    <text class="sn-demo__meta">Selected: {{ picked ?? '(none)' }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

@@ -1,0 +1,17 @@
+<script setup lang="ts">
+/** Demo: sn-rate — readonly: taps are blocked, the score is display-only. */
+import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
+const readonly = ref<number | null>(4);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnRate v-model="readonly" readonly />
+    <text class="sn-demo__meta">readonly: shows {{ readonly }} and ignores taps</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

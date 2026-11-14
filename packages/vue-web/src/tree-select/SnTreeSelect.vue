@@ -285,8 +285,12 @@
  *     mode; selections are independent — no cascade check strategy)
  *   - options: tree of { label, key | value, disabled?, children? } with
  *     labelField / keyField / childrenField remapping
- *   - leaf AND parent nodes are selectable — choosing a parent commits
- *     the parent's own value only
+ *   - leaf nodes are selectable by click; branch rows expand / collapse on
+ *     label click (`expand-on-click`, ON by default — see below), so the
+ *     children stay reachable without aiming at the switcher
+ *   - `expand-on-click={false}` restores the reference "click a branch =
+ *     commit the branch value" behaviour; choosing a parent commits the
+ *     parent's own value only (no cascade)
  *   - defaultExpandAll (non-controlled expansion; expandedKeys control
  *     simplified away)
  *   - `show-line` + `line-style` / `line-corner` / `line-color` (AUI additive):
@@ -343,6 +347,14 @@ const props = withDefaults(
     options?: SnTreeSelectOptionInput[];
     /** Expand every parent on first render (non-controlled expansion). */
     defaultExpandAll?: boolean;
+    /**
+     * Clicking a branch row's label expands / collapses it instead of
+     * committing the branch as the selected value. ON by default: committing
+     * + closing on click would make the children unreachable without aiming
+     * at the small switcher. Pass `false` to restore "click a branch = select
+     * it" (children then expand from the switcher only).
+     */
+    expandOnClick?: boolean;
     /** Placeholder text when empty. */
     placeholder?: string;
     /** Show the clear (×) button when a value is present. */
@@ -388,6 +400,7 @@ const props = withDefaults(
     checkable: false,
     options: () => [],
     defaultExpandAll: false,
+    expandOnClick: true,
     placeholder: 'Please select',
     clearable: false,
     filterable: false,
@@ -764,6 +777,14 @@ function emitChange(next: SnTreeSelectValue | SnTreeSelectValue[] | null): void 
 
 function chooseNode(node: SnTreeSelectNode): void {
   if (!isInteractive.value || node.disabled) return;
+  // `expand-on-click`: a branch row is a drill-down target, so clicking its
+  // label toggles the subtree instead of committing the branch (committing +
+  // closing would make the children unreachable). Enter follows the same path,
+  // so keyboard and pointer stay consistent.
+  if (props.expandOnClick && hasChildren(node)) {
+    toggleExpand(node);
+    return;
+  }
   if (isMulti.value) {
     // Independent toggles — no cascade between parent and children.
     const current = Array.isArray(props.modelValue) ? [...props.modelValue] : [];

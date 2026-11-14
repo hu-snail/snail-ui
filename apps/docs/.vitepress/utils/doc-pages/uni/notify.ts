@@ -15,7 +15,7 @@ export const notifyDocPage: SnDocPageData = {
   title: 'Notify 消息通知',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app 移动端', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x 移动端', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -54,7 +54,7 @@ export const notifyDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
     ],
     fileLabel: 'Notify 消息通知.vue',
     meta: 'Vue 3 · <script setup>',
@@ -162,8 +162,8 @@ import { Notify } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-toast', link: '/components/uni/toast' },
-    next: { text: 'sn-notice-bar', link: '/components/uni/notice-bar' },
+    prev: { text: 'Toast', link: '/components/uni/toast' },
+    next: { text: 'NoticeBar', link: '/components/uni/notice-bar' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

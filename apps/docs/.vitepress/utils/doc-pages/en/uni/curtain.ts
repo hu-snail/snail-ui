@@ -1,16 +1,16 @@
-/** Curtain · uni-app (uni-app) — English page data. Props from sn-curtain.vue; demos from the en page. */
+/** Curtain · uni-app x (uni-app x) — English page data. Props from sn-curtain.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const curtainDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'Curtain · uni-app' },
+    { text: 'Curtain · uni-app x' },
   ],
-  title: 'Curtain · uni-app',
+  title: 'Curtain · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -43,10 +43,10 @@ export const curtainDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Curtain · uni-app.vue',
+    fileLabel: 'Curtain · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -177,7 +177,7 @@ import { Curtain } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Curtain · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Curtain · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Curtain } from '@snui/uni';",
     chipCopy: "import { Curtain } from '@snui/uni';",
     stats: [
@@ -187,8 +187,8 @@ import { Curtain } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-paging', link: '/en/components/uni/paging' },
-    next: { text: 'sn-swipe-action', link: '/en/components/uni/swipe-action' },
+    prev: { text: 'Paging', link: '/en/components/uni/paging' },
+    next: { text: 'SwipeAction', link: '/en/components/uni/swipe-action' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

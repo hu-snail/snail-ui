@@ -1,0 +1,48 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-barcode (uni-end) — Style props: line-length / line-color /
+ * background / text-align / margin.
+ */
+import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" line-length="80rpx" />
+    </view>
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" line-color="#e02020" />
+    </view>
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode
+        text="690123456789"
+        :module-width="2"
+        background="var(--sn-mp-color-background-muted)"
+      />
+    </view>
+    <view class="barcode-card barcode-card--tinted">
+      <SnBarcode text="690123456789" :module-width="2" text-align="left" margin="16rpx" />
+    </view>
+    <text class="sn-demo__meta">line-length / line-color / background / text-align / margin</text>
+  </view>
+</template>
+<style scoped>
+.barcode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.barcode-card--tinted {
+  align-items: stretch;
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

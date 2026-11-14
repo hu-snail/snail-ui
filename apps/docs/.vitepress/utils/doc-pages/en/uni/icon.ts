@@ -1,12 +1,12 @@
-/** sn-icon (uni-app) — English page data. Props from sn-icon.vue; demos from the en page. */
+/** sn-icon (uni-app x) — English page data. Props from sn-icon.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const iconDocPageEn: SnDocPageData = {
-  crumbs: [{ text: 'Docs', link: '/en/' }, { text: 'Basic Components' }, { text: 'sn-icon' }],
-  title: 'sn-icon',
+  crumbs: [{ text: 'Docs', link: '/en/' }, { text: 'Basic Components' }, { text: 'Icon' }],
+  title: 'Icon',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -41,7 +41,7 @@ export const iconDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
     fileLabel: 'sn-icon.vue',
@@ -177,8 +177,8 @@ import { Icon } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-button', link: '/en/components/uni/button' },
-    next: { text: 'sn-text', link: '/en/components/uni/text' },
+    prev: { text: 'Button', link: '/en/components/uni/button' },
+    next: { text: 'Text', link: '/en/components/uni/text' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

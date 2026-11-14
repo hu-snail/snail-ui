@@ -1,16 +1,16 @@
-/** ActionSheet · uni-app (uni-app) — English page data. Props from sn-action-sheet.vue; demos from the en page. */
+/** ActionSheet · uni-app x (uni-app x) — English page data. Props from sn-action-sheet.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const actionSheetDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Feedback Components' },
-    { text: 'ActionSheet · uni-app' },
+    { text: 'ActionSheet · uni-app x' },
   ],
-  title: 'ActionSheet · uni-app',
+  title: 'ActionSheet · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -37,10 +37,10 @@ export const actionSheetDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'ActionSheet · uni-app.vue',
+    fileLabel: 'ActionSheet · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -180,7 +180,7 @@ import { ActionSheet } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'ActionSheet · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'ActionSheet · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { ActionSheet } from '@snui/uni';",
     chipCopy: "import { ActionSheet } from '@snui/uni';",
     stats: [
@@ -190,8 +190,8 @@ import { ActionSheet } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-dialog', link: '/en/components/uni/dialog' },
-    next: { text: 'sn-loading', link: '/en/components/uni/loading' },
+    prev: { text: 'Dialog', link: '/en/components/uni/dialog' },
+    next: { text: 'Loading', link: '/en/components/uni/loading' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

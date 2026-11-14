@@ -43,12 +43,23 @@
  *
  * ## Additive: presence status (AUI 追加，wd-avatar 没有此能力)
  *
- * `status` paints an online / offline presence dot on the bottom-right corner.
- * wd-avatar has no presence concept, so this is an AUI addition registered in
- * AGENTS.md §112.3a — the reference prop surface stays 1:1 (`status` is only
- * additive; nothing existing changed meaning). The dot is decorative in the
- * DOM but announced through the root `aria-label`, so a text avatar reads as
- * "AU online" instead of dropping the state silently.
+ * `status` paints an online / offline presence dot straddling the bottom-right
+ * edge of the circle. wd-avatar has no presence concept, so this is an AUI
+ * addition registered in AGENTS.md §112.3a — the reference prop surface stays
+ * 1:1 (`status` is only additive; nothing existing changed meaning). The dot
+ * is decorative in the DOM but announced through the root `aria-label`, so a
+ * text avatar reads as "AU online" instead of dropping the state silently.
+ *
+ * ## Two-box structure (wrapper vs `__body`)
+ *
+ * The root is a plain positioning box (size, stack margins, `role`); the
+ * painted circle is the `__body` child. uni-app x App clips children to a
+ * rounded root no matter what (`overflow: visible` is unreliable for
+ * absolutely positioned children — the live-verified sn-badge conclusion),
+ * so a dot anchored in a rounded root gets shaved to a crescent there. With
+ * the split, the dot lives in the unrounded wrapper's corner: it pokes past
+ * the circle's arc but never leaves the wrapper's box, so every end renders
+ * the same edge-straddling dot and nothing depends on overflow behaviour.
  *
  * Not responsible for:
  *   - 头像叠层 / 折叠计数 — 用 sn-avatar-group
@@ -232,15 +243,27 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
+/** Wrapper box: fixed diameter only. Paint (including user `customStyle`)
+ * lives on the body — the wrapper must stay unrounded and unpainted so the
+ * presence dot can straddle the circle edge without any box clipping it, and
+ * a user background (e.g. a gradient `background-image`) would otherwise
+ * paint an unrounded square behind the circle. */
 const rootStyle = computed(() => {
   const parts: string[] = [
     `width: ${resolveSize(sizeSource.value)}`,
     `height: ${resolveSize(sizeSource.value)}`,
   ];
+  return parts.join('; ');
+});
+
+/** Circle paint: background / ink overrides and user `customStyle` land on
+ * `__body` — it is the visible, rounded element. */
+const bodyStyle = computed(() => {
+  const parts: string[] = [];
   if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
   if (props.color) parts.push(`color: ${props.color}`);
   if (props.customStyle) parts.push(props.customStyle);
-  return parts.join('; ');
+  return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
 function onTap(event: Event): void {
@@ -262,27 +285,32 @@ function onImageError(event: Event): void {
     :aria-label="ariaLabel"
     @tap="onTap"
   >
-    <slot>
-      <image
-        v-if="showImage"
-        class="sn-avatar__image"
-        :src="src"
-        :mode="mode"
-        @error="onImageError"
-      />
-      <text v-else-if="fallbackText" class="sn-avatar__text">{{ fallbackText }}</text>
-      <SnIcon
-        v-else-if="iconData"
-        class="sn-avatar__icon"
-        :icon="iconData"
-        :size="sizeSource === 'small' ? 24 : 32"
-      />
-      <text
-        v-else-if="cssIconClass"
-        :class="['sn-avatar__icon', cssIconClass]"
-        aria-hidden="true"
-      />
-    </slot>
+    <!-- Painted circle: background / shape / ring live here and clip the
+         photo. The wrapper (root) never rounds or clips, so the presence dot
+         below straddles the circle edge without being shaved anywhere. -->
+    <view class="sn-avatar__body" :style="bodyStyle">
+      <slot>
+        <image
+          v-if="showImage"
+          class="sn-avatar__image"
+          :src="src"
+          :mode="mode"
+          @error="onImageError"
+        />
+        <text v-else-if="fallbackText" class="sn-avatar__text">{{ fallbackText }}</text>
+        <SnIcon
+          v-else-if="iconData"
+          class="sn-avatar__icon"
+          :icon="iconData"
+          :size="sizeSource === 'small' ? 24 : 32"
+        />
+        <text
+          v-else-if="cssIconClass"
+          :class="['sn-avatar__icon', cssIconClass]"
+          aria-hidden="true"
+        />
+      </slot>
+    </view>
 
     <!-- Presence dot (additive): decorative, the state rides on aria-label. -->
     <view v-if="hasStatus" class="sn-avatar__status" aria-hidden="true" />
@@ -296,63 +324,79 @@ function onImageError(event: Event): void {
 .sn-avatar {
   box-sizing: border-box;
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
   flex: 0 0 auto;
-  /* No `overflow: hidden` here on purpose: the root hosts the absolutely
-     positioned presence dot on the corner, and clipping the root would shave
-     the dot off. The round shape is instead carried by the image itself
-     (`border-radius: inherit` below), which clips the photo to the circle. */
+  vertical-align: middle;
+  /* Positioning box only — NO background / border-radius here. uni-app x App
+     clips children to a rounded root no matter what (`overflow: visible` is
+     unreliable for absolutely positioned children — the live-verified
+     sn-badge conclusion), so the painted circle is the separate `__body`
+     child and the presence dot anchors in this unrounded wrapper's corner:
+     it pokes past the circle's arc while staying inside this box, which is
+     what lets every end render the same edge-straddling dot. */
+  /* Group stacking contract (sn-avatar-group hands these down; see that file
+     for why the child styles itself instead of the group reaching in with a
+     `:deep()` rule — App cannot express one, AGENTS.md §116.2). A standalone
+     avatar inherits the neutral defaults on `__body` and keeps its geometry. */
+  margin-left: var(--sn-avatar-group-overlap-left, 0);
+  margin-top: var(--sn-avatar-group-overlap-top, 0);
+}
+
+/* The painted circle: background, shape, group ring and content centering.
+   The photo clips itself via `border-radius: inherit` — the wrapper cannot. */
+.sn-avatar__body {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-lg);
   font-weight: var(--sn-mp-font-weight-semibold);
   line-height: 1;
-  vertical-align: middle;
-  /* Group stacking contract (sn-avatar-group hands these down; see that file
-     for why the child styles itself instead of the group reaching in with a
-     `:deep()` rule — App cannot express one, AGENTS.md §116.2). A standalone
-     avatar inherits the neutral defaults below and keeps its own geometry. */
-  margin-left: var(--sn-avatar-group-overlap-left, 0);
-  margin-top: var(--sn-avatar-group-overlap-top, 0);
   box-shadow: var(--sn-avatar-group-ring, 0 0 0 0 transparent);
 }
 
-.sn-avatar--square {
+.sn-avatar--square .sn-avatar__body {
   border-radius: var(--sn-mp-radius-md);
 }
 
 /* Named size presets. The inline width / height carry the same value; the
-   classes exist so the label font-size can scale with the diameter (a 48rpx
-   avatar cannot hold a 32rpx label). */
-.sn-avatar--size-small {
+   classes scale the label font-size with the diameter (a 48rpx avatar cannot
+   hold a 32rpx label). They target `__body` because the base font-size lives
+   there now — a declaration on the body would beat an inherited root value. */
+.sn-avatar--size-small .sn-avatar__body {
   font-size: var(--sn-mp-font-size-xs);
 }
 
-.sn-avatar--size-normal {
+.sn-avatar--size-normal .sn-avatar__body {
   font-size: var(--sn-mp-font-size-md);
 }
 
-.sn-avatar--size-medium {
+.sn-avatar--size-medium .sn-avatar__body {
   font-size: var(--sn-mp-font-size-lg);
 }
 
-.sn-avatar--size-large {
+.sn-avatar--size-large .sn-avatar__body {
   font-size: var(--sn-mp-font-size-xl);
 }
 
 /* ── Presence dot (additive) ───────────────────────────────────────────── */
 
-/* Anchored on the bottom-right corner like the reference badge layout. The
-   root no longer clips (the image carries its own radius), so the dot is
-   never shaved by the avatar's border; the surface-coloured ring keeps it
-   legible on top of a photo. */
+/* Half in, half out: the dot's CENTER sits on the circle's arc along the
+   bottom-right diagonal — offset = 0.146 × diameter − dot/2 per preset (the
+   arc crosses the diagonal at 0.854 × diameter from the top-left). Anchored
+   in the unrounded wrapper's corner region, it never leaves the wrapper's
+   box, so no end shaves it; the surface-coloured ring keeps the dot legible
+   on top of a photo. */
 .sn-avatar__status {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: 1rpx;
+  bottom: 1rpx;
   box-sizing: border-box;
   width: 20rpx;
   height: 20rpx;
@@ -369,19 +413,32 @@ function onImageError(event: Event): void {
   background-color: var(--sn-mp-color-text-tertiary);
 }
 
-/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head. */
+/* The dot scales with the preset — a 20rpx dot covers half of a 48rpx head —
+   and each preset re-anchors the arc crossing from the 0.146 × D − dot/2
+   geometry (small's arcs cross at its corner, hence the 0 inset). */
 .sn-avatar--size-small .sn-avatar__status {
+  right: 0;
+  bottom: 0;
   width: 16rpx;
   height: 16rpx;
   border-width: 3rpx;
 }
 
+.sn-avatar--size-normal .sn-avatar__status {
+  right: 1rpx;
+  bottom: 1rpx;
+}
+
 .sn-avatar--size-medium .sn-avatar__status {
+  right: 2rpx;
+  bottom: 2rpx;
   width: 24rpx;
   height: 24rpx;
 }
 
 .sn-avatar--size-large .sn-avatar__status {
+  right: 2rpx;
+  bottom: 2rpx;
   width: 28rpx;
   height: 28rpx;
 }
@@ -417,7 +474,8 @@ function onImageError(event: Event): void {
 
 /* ── Doodle skin ───────────────────────────────────────────────────────── */
 
-.snui-skin-doodle .sn-avatar {
+/* Border / radius / weight paint the circle, so the skin targets `__body`. */
+.snui-skin-doodle .sn-avatar__body {
   border: 4rpx solid var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-radius-md);
   font-weight: var(--sn-mp-font-weight-bold);

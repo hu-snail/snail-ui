@@ -45,11 +45,7 @@ const dotIndexes = computed(() =>
 );
 
 const rootClass = computed(() => ['sn-typing', props.customClass]);
-const rootStyle = computed(() => {
-  const parts = [] as string[];
-  if (props.customStyle !== '') parts.push(props.customStyle);
-  return parts.join('; ');
-});
+const rootStyle = computed(() => props.customStyle || undefined);
 
 function dotStyle(index: number): string {
   return `background-color: ${props.activeDotColor}; animation-duration: ${props.speed}ms; animation-delay: ${((index - 1) * props.speed) / 3}ms`;

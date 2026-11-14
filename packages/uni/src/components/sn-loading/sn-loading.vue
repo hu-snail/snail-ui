@@ -126,19 +126,26 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
       <!-- circular: a ring with one transparent quadrant, rotating. -->
       <view v-if="type === 'circular'" class="sn-loading__circular" />
 
-      <!-- spinner: N tapering bars fading around a circle. -->
+      <!-- spinner: N tapering bars fading around a circle. Per-index modifier
+           classes carry the stagger — :nth-child is unrepresentable on App. -->
       <view v-else-if="type === 'spinner'" class="sn-loading__spinner-bars">
         <view
           v-for="i in 8"
           :key="i"
           class="sn-loading__spinner-bar"
+          :class="`sn-loading__spinner-bar--${i}`"
           :style="{ transform: `rotate(${(i - 1) * 45}deg)` }"
         />
       </view>
 
       <!-- dots: three pulsing dots. -->
       <view v-else-if="type === 'dots'" class="sn-loading__dots">
-        <view v-for="i in 3" :key="i" class="sn-loading__dot" />
+        <view
+          v-for="i in 3"
+          :key="i"
+          class="sn-loading__dot"
+          :class="`sn-loading__dot--${i}`"
+        />
       </view>
 
       <!-- wave: five bars scaling up and down in sequence. -->
@@ -229,35 +236,36 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
   animation: sn-loading-bar-fade 0.8s linear infinite;
 }
 
-.sn-loading__spinner-bar:nth-child(1) {
+/* Stagger rides per-index modifier classes (App has no :nth-child, §116.2). */
+.sn-loading__spinner-bar--1 {
   animation-delay: 0s;
   opacity: 1;
 }
-.sn-loading__spinner-bar:nth-child(2) {
+.sn-loading__spinner-bar--2 {
   animation-delay: 0.1s;
   opacity: 0.875;
 }
-.sn-loading__spinner-bar:nth-child(3) {
+.sn-loading__spinner-bar--3 {
   animation-delay: 0.2s;
   opacity: 0.75;
 }
-.sn-loading__spinner-bar:nth-child(4) {
+.sn-loading__spinner-bar--4 {
   animation-delay: 0.3s;
   opacity: 0.625;
 }
-.sn-loading__spinner-bar:nth-child(5) {
+.sn-loading__spinner-bar--5 {
   animation-delay: 0.4s;
   opacity: 0.5;
 }
-.sn-loading__spinner-bar:nth-child(6) {
+.sn-loading__spinner-bar--6 {
   animation-delay: 0.5s;
   opacity: 0.375;
 }
-.sn-loading__spinner-bar:nth-child(7) {
+.sn-loading__spinner-bar--7 {
   animation-delay: 0.6s;
   opacity: 0.25;
 }
-.sn-loading__spinner-bar:nth-child(8) {
+.sn-loading__spinner-bar--8 {
   animation-delay: 0.7s;
   opacity: 0.125;
 }
@@ -280,10 +288,10 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
   animation: sn-loading-dot-pulse 1s ease-in-out infinite;
 }
 
-.sn-loading__dot:nth-child(2) {
+.sn-loading__dot--2 {
   animation-delay: 0.15s;
 }
-.sn-loading__dot:nth-child(3) {
+.sn-loading__dot--3 {
   animation-delay: 0.3s;
 }
 

@@ -19,6 +19,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "clean:appledouble": "find apps packages -name '._*' -not -path '*/node_modules/*' -delete",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml,vue}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml,vue}\"",
     "changeset": "changeset",

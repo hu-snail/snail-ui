@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/** Demo: sn-button — variant 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'. */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+</script>
+<template>
+  <view class="sn-button-demo">
+    <SnButton type="primary" variant="base"><text>base</text></SnButton>
+    <SnButton type="primary" variant="plain"><text>plain</text></SnButton>
+    <SnButton type="primary" variant="dashed"><text>dashed</text></SnButton>
+    <SnButton type="primary" variant="soft"><text>soft</text></SnButton>
+    <SnButton variant="subtle"><text>subtle</text></SnButton>
+    <SnButton variant="text"><text>text</text></SnButton>
+  </view>
+</template>
+<style scoped>
+.sn-button-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+</style>

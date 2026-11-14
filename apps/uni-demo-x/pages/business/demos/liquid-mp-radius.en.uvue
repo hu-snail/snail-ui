@@ -1,0 +1,28 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-liquid (uni-end) — Container radius: `radius`.
+ */
+import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="liquid-row">
+      <SnLiquid :percent="70" radius="32rpx" size="160rpx" />
+    </view>
+    <text class="sn-demo__meta">radius="32rpx" (squircle container)</text>
+  </view>
+</template>
+<style scoped>
+.liquid-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-4);
+}
+
+.sn-demo__meta {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

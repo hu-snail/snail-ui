@@ -11,6 +11,99 @@
 
 import type { TextTransformResult, TransformIssue } from './types.ts';
 
+/**
+ * Import specifiers: @snui/uni sources reference sibling components as
+ * `.vue` (correct for the classic uni-app build), but the dist tree ships
+ * `.uvue` entities — unrewritten specifiers fail resolution the moment a
+ * real compiler sees them (first caught by the uni-demo-x web compile).
+ * Type-only imports point at the pure-ts `<comp>-types` entity instead of
+ * the .uvue: type contracts live outside SFCs on uni-app x (sn-icon-types
+ * pattern; SnFabAction / SnDialerPrize follow it too).
+ */
+export function transformImportSpecifiers(src: string, file: string): TextTransformResult {
+  const issues: TransformIssue[] = [];
+  let code = src;
+  const typeImports = code.match(
+    /^import\s+type\s*\{[^}]*\}\s*from\s*'(\.{1,2}\/[^']*sn-icon\/sn-icon)\.vue';/gm,
+  )?.length;
+  if (typeImports) {
+    code = code.replace(
+      /^(import\s+type\s*\{[^}]*\}\s*from\s+')(\.{1,2}\/[^']*sn-icon\/sn-icon)\.vue(';)/gm,
+      '$1$2-types$3',
+    );
+    issues.push({
+      file,
+      kind: 'import-rewrite',
+      detail: `${typeImports} type import(s) redirected to sn-icon-types`,
+    });
+  }
+  const valueImports = code.match(/from\s+'(\.{1,2}\/[^']*)\.vue'/g)?.length ?? 0;
+  if (valueImports > 0) {
+    code = code.replace(/(from\s+')(\.{1,2}\/[^']*)\.vue(')/g, '$1$2.uvue$3');
+    issues.push({
+      file,
+      kind: 'import-rewrite',
+      detail: `${valueImports} relative .vue import(s) rewritten to .uvue`,
+    });
+  }
+  return { code: rewriteKebabTags(injectSelfImport(code, file)), issues };
+}
+
+/**
+ * Recursive components (template uses its own file-name tag, e.g.
+ * sn-rich-text-node rendering child nodes) rely on Vue's implicit
+ * self-reference — which the consumer compiler's easycom pass hijacks into a
+ * `@snui/uni-x/components/<c>/<c>.uvue` import whose top-level layout doesn't
+ * exist for nested entities. Injecting an explicit self-import turns the tag
+ * into a resolvable local binding (rewriteKebabTags then PascalCases it).
+ */
+function injectSelfImport(code: string, relPath: string): string {
+  const fileName = relPath.split('/').pop()?.replace(/\.u?vue$/, '');
+  if (!fileName || !fileName.startsWith('sn-')) return code;
+  if (!new RegExp(`<${fileName}[\\s/>]`).test(code.slice(code.indexOf('<template>')))) {
+    return code;
+  }
+  const pascal = fileName
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+  if (new RegExp(`import\\s+${pascal}\\s+from`).test(code)) return code;
+  const firstImport = code.match(/^import\s/m);
+  if (!firstImport || firstImport.index === undefined) return code;
+  const selfImport = `import ${pascal} from './${fileName}.uvue';\n`;
+  return code.slice(0, firstImport.index) + selfImport + code.slice(firstImport.index);
+}
+
+/**
+ * Kebab sub-component tags backed by an explicit import are rewritten to the
+ * PascalCase binding name: the local binding resolves the tag directly, and
+ * the easycom regex (`^sn-`, case-sensitive) cannot hijack PascalCase tags.
+ * Left in kebab, a dist component's inner tag gets rewritten by the consumer
+ * compiler to `@snui/uni-x/components/<c>/<c>.uvue` — a path that only
+ * exists for top-level easycom entities (first broken by sn-rich-text-node,
+ * whose entity lives inside its parent's directory). Tags without a local
+ * import are left alone (easycom fallback still applies).
+ */
+function rewriteKebabTags(code: string): string {
+  const bindings = new Map<string, string>();
+  for (const m of code.matchAll(
+    /import\s+(Sn[A-Za-z0-9]+)\s+from\s+'(?:\.\.?\/|@snui\/)[^']*\.(?:uvue|vue)';/g,
+  )) {
+    const binding: string = m[1]!;
+    bindings.set(binding.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase(), binding);
+  }
+  if (bindings.size === 0) return code;
+  const tplStart: number = code.indexOf('<template>');
+  const tplEnd: number = code.lastIndexOf('</template>');
+  if (tplStart === -1 || tplEnd === -1) return code;
+  let tpl = code.slice(tplStart, tplEnd);
+  for (const [kebab, pascal] of bindings) {
+    tpl = tpl.replaceAll(new RegExp(`<${kebab}(?=[\\s/>])`, 'g'), `<${pascal}`);
+    tpl = tpl.replaceAll(`</${kebab}>`, `</${pascal}>`);
+  }
+  return code.slice(0, tplStart) + tpl + code.slice(tplEnd);
+}
+
 export function transformScript(src: string, file: string): TextTransformResult {
   const issues: TransformIssue[] = [];
   let code = src;

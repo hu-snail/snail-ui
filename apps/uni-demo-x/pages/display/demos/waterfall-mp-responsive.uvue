@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-waterfall (uni-end) — 响应式列数（min-column-width）。
+ * Per AUI-DOCS-016: imports the real @snui/uni components from their SFC
+ * source. 160rpx ≈ 80px minimum column width: a phone-width container lands
+ * on 2–4 columns and follows the live width.
+ */
+import SnWaterfall from '@snui/uni-x/components/sn-waterfall/sn-waterfall.uvue';
+import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
+interface Photo {
+  id: string;
+  width: number;
+  height: number;
+}
+
+const photos: Photo[] = [
+  { id: 'a', width: 400, height: 520 },
+  { id: 'b', width: 400, height: 340 },
+  { id: 'c', width: 400, height: 600 },
+  { id: 'd', width: 400, height: 400 },
+  { id: 'e', width: 400, height: 300 },
+  { id: 'f', width: 400, height: 480 },
+  { id: 'g', width: 400, height: 360 },
+  { id: 'h', width: 400, height: 560 },
+];
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <!-- 列数跟随容器实测宽度；columns 只在测量前（首帧 / SSR）作猜测。 -->
+    <SnWaterfall :min-column-width="160" :columns="2" :column-gap="12" :row-gap="12">
+      <view v-for="photo in photos" :key="photo.id" class="resp-card">
+        <SnImg
+          :src="`https://picsum.photos/seed/snui-waterfall-resp-${photo.id}/${photo.width}/${photo.height}`"
+          mode="widthFix"
+          width="100%"
+          :radius="12"
+        />
+      </view>
+    </SnWaterfall>
+    <text class="sn-demo__caption"
+      >min-column-width=160 → 列数跟随实测容器宽度，横竖屏 / 平板自动增删列</text
+    >
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__caption {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+.resp-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+</style>

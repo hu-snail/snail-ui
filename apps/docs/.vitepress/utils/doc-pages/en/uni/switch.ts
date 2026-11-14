@@ -1,22 +1,22 @@
-/** Switch · uni-app (uni-app) — English page data. Props from sn-switch.vue; demos from the en page. */
+/** Switch · uni-app x (uni-app x) — English page data. Props from sn-switch.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const switchDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Form Components' },
-    { text: 'Switch · uni-app' },
+    { text: 'Switch · uni-app x' },
   ],
-  title: 'Switch · uni-app',
+  title: 'Switch · uni-app x',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
     {
       t: 'text',
-      s: 'Cross-end on/off toggle for uni-app (H5 / WeChat MP / App). easycom auto-registration (',
+      s: 'Cross-end on/off toggle for uni-app x (H5 / WeChat MP / App). easycom auto-registration (',
     },
     { t: 'code', s: 'components/sn-switch/sn-switch.vue' },
     { t: 'text', s: ' → ' },
@@ -44,10 +44,10 @@ export const switchDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'Switch · uni-app.vue',
+    fileLabel: 'Switch · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -241,7 +241,7 @@ import { Switch } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'Switch · uni-app ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'Switch · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { Switch } from '@snui/uni';",
     chipCopy: "import { Switch } from '@snui/uni';",
     stats: [
@@ -251,8 +251,8 @@ import { Switch } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-radio', link: '/en/components/uni/radio' },
-    next: { text: 'sn-rate', link: '/en/components/uni/rate' },
+    prev: { text: 'Radio', link: '/en/components/uni/radio' },
+    next: { text: 'Rate', link: '/en/components/uni/rate' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

@@ -1,0 +1,18 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-navbar — English shadow of navbar-mp-safe-area.
+ */
+import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnNavbar title="Safe area + z-index" safe-area-inset-top :z-index="30" bordered />
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

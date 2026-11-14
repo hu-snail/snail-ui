@@ -64,7 +64,7 @@ describe('DocsSearchEngine', () => {
       end: 'other',
       category: '指南',
       headings: ['两端差异'],
-      text: 'snail-aui 是面向 Web 端与 uni-app 移动端的 AI-Native UI 框架生态，两端从开发到打包完全独立。',
+      text: 'snail-aui 是面向 Web 端与 uni-app x 移动端的 AI-Native UI 框架生态，两端从开发到打包完全独立。',
     }),
   ];
 

@@ -1,16 +1,16 @@
-/** RootPortal · uni-app (Mobile) (uni-app) — English page data. Props from sn-root-portal.vue; demos from the en page. */
+/** RootPortal · uni-app x (Mobile) (uni-app x) — English page data. Props from sn-root-portal.vue; demos from the en page. */
 import type { SnDocPageData } from '../../../components/doc-page/types';
 
 export const rootPortalDocPageEn: SnDocPageData = {
   crumbs: [
     { text: 'Docs', link: '/en/' },
     { text: 'Basic Components' },
-    { text: 'RootPortal · uni-app (Mobile)' },
+    { text: 'RootPortal · uni-app x (Mobile)' },
   ],
-  title: 'RootPortal · uni-app (Mobile)',
+  title: 'RootPortal · uni-app x (Mobile)',
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app mobile', tone: 'accent', icon: 'dual' },
+    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
@@ -37,10 +37,10 @@ export const rootPortalDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'uni-app registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
       },
     ],
-    fileLabel: 'RootPortal · uni-app (Mobile).vue',
+    fileLabel: 'RootPortal · uni-app x (Mobile).vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
@@ -84,7 +84,7 @@ import { RootPortal } from '@snui/uni';
   ai: {
     badge: 'ai-description.md · bundled',
     heading: 'A machine-readable contract for LLMs',
-    copy: 'RootPortal · uni-app (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
+    copy: 'RootPortal · uni-app x (Mobile) ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
     chip: "import { RootPortal } from '@snui/uni';",
     chipCopy: "import { RootPortal } from '@snui/uni';",
     stats: [
@@ -94,8 +94,8 @@ import { RootPortal } from '@snui/uni';
     ],
   },
   pager: {
-    prev: { text: 'sn-config-provider', link: '/en/components/uni/config-provider' },
-    next: { text: 'sn-divider', link: '/en/components/uni/divider' },
+    prev: { text: 'ConfigProvider', link: '/en/components/uni/config-provider' },
+    next: { text: 'Divider', link: '/en/components/uni/divider' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },
