@@ -69,7 +69,7 @@
  *   - 角标 / 在线状态 — sn-badge / sn-avatar 的 status
  */
 
-import { computed, provide, useSlots } from 'vue';
+import { computed, onMounted, onUpdated, provide, ref, useSlots } from 'vue';
 import { Fragment } from 'vue';
 import SnAvatar from '../sn-avatar/sn-avatar.vue';
 import { SN_AVATAR_GROUP } from '../sn-avatar/avatar-group-context';
@@ -133,6 +133,25 @@ provide(
 const slots = useSlots();
 
 /**
+ * MP slot wiring is LATE: on mini-program runtimes the slot content reaches
+ * `instance.slots` only after the component attaches (the setup-time
+ * `slots.default` is undefined — the uni runtime hands the rendered slot over
+ * through the compiled WXML properties). The count therefore reads as 0 at
+ * setup on MP: no clip window, no bubble, every member un-clipped (device
+ * regression). Bump a version on mounted / updated so the count re-evaluates
+ * once the runtime has populated the slot, and again whenever the parent
+ * re-renders it; H5 / App re-walk and get the same number, so the bump is a
+ * no-op there.
+ */
+const slotVersion = ref(0);
+onMounted(() => {
+  slotVersion.value++;
+});
+onUpdated(() => {
+  slotVersion.value++;
+});
+
+/**
  * Count the avatars in the default slot.
  *
  * Slot content arrives as vnodes: a `v-for` produces an array, `v-if` chains
@@ -178,7 +197,12 @@ function countAvatarNodes(nodes: unknown): number {
   return total;
 }
 
-const totalCount = computed<number>(() => countAvatarNodes(resolveSlotNodes(slots.default)));
+const totalCount = computed<number>(() => {
+  // Track the late-slot-population bumps (see slotVersion) — without reading
+  // it here the computed never re-runs after the MP runtime fills the slot.
+  slotVersion.value;
+  return countAvatarNodes(resolveSlotNodes(slots.default));
+});
 
 /** Stack geometry (arithmetic lives in the pure geometry module). */
 const geometry = computed(() =>

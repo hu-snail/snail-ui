@@ -76,7 +76,7 @@ import { AvatarGroup } from '@snui/uni';
     {
       name: 'avatar-group-mp-shape',
       title: '形状（shape）',
-      blurb: '组内统一形状：round 圆形 / square 方形，组的 shape 覆盖成员自身设置。',
+      blurb: '组内统一形状与折叠：round 圆形 / square 方形（max-count 折叠计数），组的 shape 覆盖成员自身设置。',
     },
   ],
   props: {
