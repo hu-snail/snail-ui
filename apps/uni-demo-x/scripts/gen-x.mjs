@@ -25,6 +25,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transformVueToUvue } from '../../../packages/uni-x/src/transform/index.ts';
@@ -563,6 +564,22 @@ function main() {
   emitReport();
   // After every writer has run — GEN-REPORT.md gets its own companion too.
   cleanAppleDouble();
+
+  // dist → 本工程 node_modules 拷贝同步：@snui/uni-x 在本工程内是 sync-uni-x
+  // 物化的真实目录（消除软链），组件重建后不同步拷贝，HBuilderX 的 web 编译
+  // 会一直服务旧组件（编译缓存按路径驻留，重启才重读磁盘）——真机与 web 均
+  // 复现过的回归。gen 与 sync 强绑定，杜绝「build 了忘 sync」的跳步。
+  const syncScript = fileURLToPath(new URL('sync-uni-x.mjs', import.meta.url));
+  try {
+    execFileSync(process.execPath, [syncScript], { stdio: 'inherit' });
+  } catch (error) {
+    console.error(
+      '[gen-x] sync-uni-x 失败 —— node_modules/@snui/uni-x 拷贝仍是旧组件，' +
+        '请手动运行 pnpm -F @snui/uni-demo-x sync-uni-x。',
+      error,
+    );
+  }
+
   console.log(
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
       ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped},` +
