@@ -138,14 +138,20 @@ const slots = useSlots();
  * `slots.default` is undefined — the uni runtime hands the rendered slot over
  * through the compiled WXML properties). The count therefore reads as 0 at
  * setup on MP: no clip window, no bubble, every member un-clipped (device
- * regression). Bump a version on mounted / updated so the count re-evaluates
- * once the runtime has populated the slot, and again whenever the parent
- * re-renders it; H5 / App re-walk and get the same number, so the bump is a
- * no-op there.
+ * regression). Bump a version on mounted / updated, and re-bump on a
+ * staggered schedule (the sn-icon computedStyle probing pattern) — the
+ * wiring timing differs per runtime and device, and the group does not
+ * re-render by itself, so only these bumps re-run the count. Once wired the
+ * count is stable: extra bumps re-walk and get the same number (no loop).
  */
 const slotVersion = ref(0);
 onMounted(() => {
   slotVersion.value++;
+  for (const delay of [100, 300, 600, 1200]) {
+    setTimeout(() => {
+      slotVersion.value++;
+    }, delay);
+  }
 });
 onUpdated(() => {
   slotVersion.value++;
@@ -159,6 +165,11 @@ onUpdated(() => {
  * Fragment — all three are flattened here. Wrapper elements are descended into
  * (their children are still avatars), component vnodes are counted as one.
  *
+ * MP runtimes hand slot children over LAZILY: a Fragment's children (and on
+ * some runtimes the slot items themselves) arrive as render FUNCTIONS instead
+ * of arrays — call them and walk the result, or every member is skipped and
+ * the group renders un-clipped with no bubble (uni-demo MP regression).
+ *
  * Only `Fragment` is imported by name: the MP runtime (`uni-mp-vue`) does not
  * export `Comment`, so comment / text placeholders are recognised
  * structurally — any other symbol-typed vnode is not an avatar and is skipped.
@@ -166,6 +177,11 @@ onUpdated(() => {
 function countAvatarNodes(nodes: unknown): number {
   let total = 0;
   const walk = (value: unknown): void => {
+    if (typeof value === 'function') {
+      // Lazy children / lazy slot item: invoke (pure render fn) and recurse.
+      walk((value as () => unknown)());
+      return;
+    }
     if (Array.isArray(value)) {
       for (const entry of value) walk(entry);
       return;
@@ -251,10 +267,15 @@ const rootStyle = computed(() => {
  * keeps `length` as the outer size (the padding must not widen the window).
  * The last visible member's far arc ends exactly on the far window edge, and
  * the bubble paints over the next member's sliver (see the geometry module).
+ *
+ * Without a window the clip must declare `overflow: visible` EXPLICITLY:
+ * uni-app x views clip content by default (overflow hidden on App AND web —
+ * every computed style on the device read hidden), so the default clips
+ * member 1's pulled edge against the clip's own box even with no window.
  */
 const clipStyle = computed(() => {
   const { clipping, diameter, length, overlap, vertical, paddingSide } = geometry.value;
-  if (!clipping || diameter === null || overlap === null) return undefined;
+  if (!clipping || diameter === null || overlap === null) return 'overflow: visible';
   const long = `${length}rpx`;
   const deep = `${diameter}rpx`;
   const pull = `margin-${paddingSide}: -${overlap}rpx; padding-${paddingSide}: ${overlap}rpx; box-sizing: border-box;`;
