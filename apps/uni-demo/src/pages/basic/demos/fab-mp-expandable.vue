@@ -32,7 +32,7 @@ function onClick(): void {
       position="right-bottom"
       :expandable="false"
       :gap="{ bottom: 16, right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
       @click="onClick"
     >
       <template #trigger>
@@ -71,8 +71,4 @@ function onClick(): void {
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

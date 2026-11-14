@@ -23,7 +23,7 @@ import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
       position="left-bottom"
       disabled
       :gap="{ bottom: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     />
   </view>
 </template>
@@ -57,8 +57,4 @@ import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

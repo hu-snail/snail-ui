@@ -12,8 +12,10 @@
  *     action (semantic tokens); copy stays in parity with fab-mp-basic.vue.
  *   - Tapping an item records the feedback and collapses the menu.
  *
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
- * the phone screen (the real runtime keeps `position: fixed`).
+ * Every instance pins into the demo stage with inline
+ * `custom-style="position: absolute;"` — the stage is the anchor container on
+ * every end (H5 / MP / uni-app x). A page-scope class rule cannot reach a
+ * child component's root through MP style isolation; inline style can.
  */
 import { ref } from 'vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
@@ -43,7 +45,7 @@ function pick(label: string): void {
       v-model:active="active"
       position="right-bottom"
       direction="up"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -150,8 +152,4 @@ function pick(label: string): void {
   color: var(--sn-mp-color-text-primary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

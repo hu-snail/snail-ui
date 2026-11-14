@@ -181,18 +181,8 @@ function toTs(srcPath, outDir) {
 const DEMO_CONTAINED_RE = /\.sn-demo-contained(?![\w-])/;
 
 /**
- * 钉住规则在 x 产物里保留的组件。fab 是悬浮按钮：`position` 预设描述的是
- * 容器内锚点而非全屏层，App 端 absolute 锚定直接父元素（官方 css/position
- * 文档），钉进 demo 舞台正是 demo 想表达的行为——不钉的话 fixed 会按页面根
- * 绝对布局，一页多个场景的按钮全部堆到屏幕四角（真机反馈的「布局错乱」）。
- * 其余 fixed 全屏层（popup / dialog / calendar …）必须保持页面根绝对布局，
- * 钉住会把全屏层压回卡片坐标裁剪——继续剥离。
- */
-const DEMO_PIN_KEEP_RES = [/\.sn-fab(?![\w-])/];
-
-/**
  * 剥离 demo 场景产物 <style> 里的 docs 预览钉住规则（`.sn-demo-contained`
- * 为主体、且不在 DEMO_PIN_KEEP_RES 保留名单内的规则块）。
+ * 为主体的规则块）。
  *
  * Why: 钉住规则（`.sn-<comp>.sn-demo-contained { position: absolute }`）
  * 只服务 docs iframe 预览——把 fixed 全屏层钉进演示卡片；uni-app x App 端
@@ -243,9 +233,7 @@ function stripPinRules(css, issueTag) {
       continue;
     }
     const selectors = splitSelectorList(headBare);
-    const kept = selectors.filter(
-      (s) => !DEMO_CONTAINED_RE.test(s) || DEMO_PIN_KEEP_RES.some((re) => re.test(s)),
-    );
+    const kept = selectors.filter((s) => !DEMO_CONTAINED_RE.test(s));
     if (kept.length === 0) {
       // 整块剥离：selector 前的紧邻注释（docs 预览说明）随 head 一并去掉。
       for (const s of selectors) stats.demoPinStrips.push(`${issueTag}: ${s.trim()}`);

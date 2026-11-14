@@ -7,8 +7,10 @@
  *   - 拖动与展开互不干扰：拖完仍可点开展开动作项，动作项沿上方滑出。
  *   - 文案与 fab-mp-drag.en.vue 对等。
  *
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
- * the phone screen (the real runtime keeps `position: fixed`).
+ * Every instance pins into the demo stage with inline
+ * `custom-style="position: absolute;"` — the stage is the anchor container on
+ * every end (H5 / MP / uni-app x). A page-scope class rule cannot reach a
+ * child component's root through MP style isolation; inline style can.
  */
 import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
 import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
@@ -38,7 +40,7 @@ function pick(label: string): void {
       position="right-bottom"
       direction="up"
       draggable
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view class="sn-fab-demo__bubble" role="button" aria-label="音乐" @click="pick('音乐')">
         <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
@@ -94,8 +96,4 @@ function pick(label: string): void {
   flex-direction: row;
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

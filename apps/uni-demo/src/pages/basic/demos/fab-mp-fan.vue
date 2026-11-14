@@ -72,7 +72,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="bottom-center"
       :actions="centerActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
@@ -83,7 +82,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="right-bottom"
       :actions="cornerActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="() => pick('右下角')"
     />
@@ -94,7 +92,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="left-top"
       :actions="topActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="() => pick('左上角')"
     />
