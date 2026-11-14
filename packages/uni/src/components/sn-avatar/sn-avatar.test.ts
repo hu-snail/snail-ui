@@ -133,12 +133,13 @@ describe('sn-avatar', () => {
       expect(style).toContain('color: #abcdef');
     });
 
-    it('forwards customClass and customStyle to the root node', () => {
+    it('forwards customClass to the root and customStyle to the painted body', () => {
       const w = mount(SnAvatar, {
         props: { text: 'A', customClass: 'my-avatar', customStyle: 'margin: 4px' },
       });
       expect(w.classes()).toContain('my-avatar');
-      expect(w.attributes('style')).toContain('margin: 4px');
+      expect(w.find('.sn-avatar__body').attributes('style')).toContain('margin: 4px');
+      expect(w.attributes('style')).not.toContain('margin: 4px');
     });
   });
 

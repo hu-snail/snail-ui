@@ -243,23 +243,26 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
-/** Wrapper box: fixed diameter + user passthrough. Paint lives on the body. */
+/** Wrapper box: fixed diameter only. Paint (including user `customStyle`)
+ * lives on the body — the wrapper must stay unrounded and unpainted so the
+ * presence dot can straddle the circle edge without any box clipping it, and
+ * a user background (e.g. a gradient `background-image`) would otherwise
+ * paint an unrounded square behind the circle. */
 const rootStyle = computed(() => {
   const parts: string[] = [
     `width: ${resolveSize(sizeSource.value)}`,
     `height: ${resolveSize(sizeSource.value)}`,
   ];
-  if (props.customStyle) parts.push(props.customStyle);
   return parts.join('; ');
 });
 
-/** Circle paint: background / ink overrides land on `__body`, not the
- * wrapper — the wrapper must stay unrounded and unpainted so the presence
- * dot can straddle the circle edge without any box clipping it. */
+/** Circle paint: background / ink overrides and user `customStyle` land on
+ * `__body` — it is the visible, rounded element. */
 const bodyStyle = computed(() => {
   const parts: string[] = [];
   if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
   if (props.color) parts.push(`color: ${props.color}`);
+  if (props.customStyle) parts.push(props.customStyle);
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
