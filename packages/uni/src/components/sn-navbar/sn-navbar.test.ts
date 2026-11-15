@@ -7,7 +7,7 @@
  * lengths it cannot parse.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 
 // getCapsuleMetrics 在组件模块加载即被调用并缓存返回对象；测试通过共享可变
@@ -317,6 +317,95 @@ describe('sn-navbar', () => {
       });
       expect(wrapper.find('.sn-navbar__left').attributes('hover-class')).toBe('none');
       expect(wrapper.find('.sn-navbar__right').attributes('hover-class')).toBe('none');
+    });
+  });
+
+  describe('default back navigation (autoBack)', () => {
+    const host = globalThis as {
+      uni?: { navigateBack: ReturnType<typeof vi.fn>; reLaunch: ReturnType<typeof vi.fn> };
+      getCurrentPages?: () => unknown[];
+    };
+
+    /** 装一个栈深度可控的 uni 宿主，返回两个路由 spy。 */
+    function installRouter(stackSize: number): {
+      navigateBack: ReturnType<typeof vi.fn>;
+      reLaunch: ReturnType<typeof vi.fn>;
+    } {
+      const navigateBack = vi.fn();
+      const reLaunch = vi.fn();
+      host.uni = { navigateBack, reLaunch };
+      host.getCurrentPages = () =>
+        Array.from({ length: stackSize }, (_, index) => ({ route: `page-${index}` }));
+      return { navigateBack, reLaunch };
+    }
+
+    afterEach(() => {
+      delete host.uni;
+      delete host.getCurrentPages;
+    });
+
+    it('pops the page stack through uni.navigateBack when a previous page exists', async () => {
+      const { navigateBack, reLaunch } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).toHaveBeenCalledTimes(1);
+      expect(navigateBack).toHaveBeenCalledWith({ delta: 1 });
+      expect(reLaunch).not.toHaveBeenCalled();
+    });
+
+    it('reLaunches backFallback when the stack has no previous page', async () => {
+      const { navigateBack, reLaunch } = installRouter(1);
+      const wrapper = mount(SnNavbar, {
+        props: { leftArrow: true, backFallback: '/pages/index/index' },
+      });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).toHaveBeenCalledWith({ url: '/pages/index/index' });
+    });
+
+    it('does not reload or reLaunch when the stack has no previous page and no fallback', async () => {
+      const { navigateBack, reLaunch } = installRouter(1);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).not.toHaveBeenCalled();
+    });
+
+    it('leaves navigation to the host when autoBack is off', async () => {
+      const { navigateBack, reLaunch } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true, autoBack: false } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).not.toHaveBeenCalled();
+      expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+
+    it('does not navigate from a left zone without the arrow', async () => {
+      const { navigateBack } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftText: 'Back' } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate while leftDisabled', async () => {
+      const { navigateBack } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true, leftDisabled: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+    });
+
+    it('still emits click-left / back alongside the default navigation', async () => {
+      installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(wrapper.emitted('click-left')).toHaveLength(1);
+      expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+
+    it('is inert without a uni host (docs preview / unit env)', async () => {
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await expect(wrapper.find('.sn-navbar__left').trigger('tap')).resolves.toBeUndefined();
+      expect(wrapper.emitted('back')).toHaveLength(1);
     });
   });
 });

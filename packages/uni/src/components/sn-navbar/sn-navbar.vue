@@ -25,17 +25,30 @@
  * runtime exposes it as `--status-bar-height`; the fallback keeps the design
  * canvas rhythm (44rpx) on targets that do not define it.
  *
- * Per AGENTS.md §32, this component handles rendering + interaction only.
+ * ## Default back navigation (`autoBack`)
+ *
+ * Tapping the back arrow performs the platform back navigation itself, so the
+ * host does not need per-end `window.history` / `uni.navigateBack` branches:
+ *
+ *   - every end (H5 / MP / App / uni-app x) goes through the static
+ *     `uni.navigateBack` call — the uni compiler bundles only statically
+ *     visible router APIs (see src/uni-env.d.ts);
+ *   - when the page stack holds just the current page (page opened directly /
+ *     refreshed), `navigateBack` is skipped (H5 clamps delta to 0 and reloads
+ *     the page) and `backFallback` is reLaunched instead, when provided.
+ *
+ * The `back` event still fires first, so a host that owns the transition keeps
+ * listening and sets `:auto-back="false"` to opt out (AGENTS.md §112.3a
+ * additive capability; wd-navbar only emits).
  *
  * Not responsible for:
- *   - 页面路由 / 返回栈 — 由宿主 AppBridge 处理，组件只 emit 事件
  *   - 标签栏 — 用 sn-tabbar
  *   - 侧边导航 — 用 sn-sidebar
  */
 
 import { computed, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
-import { ArrowLeft } from '../sn-icon/sn-icon-set';
+import { ChevronLeft } from '../sn-icon/sn-icon-set';
 import { getCapsuleMetrics } from '../../utils/capsule';
 
 defineOptions({ name: 'SnNavbar' });
@@ -70,6 +83,18 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+    /**
+     * AUI 追加（wd-navbar 无）：点击返回箭头时由组件自己完成跨端返回
+     * （页面栈有上一页 → `uni.navigateBack`；只有当前页 → `backFallback`）。
+     *
+     * 宿主想自行接管返回时传 `false`（仍会收到 `back` / `click-left` 事件）。
+     */
+    autoBack?: boolean;
+    /**
+     * AUI 追加（wd-navbar 无）：页面栈没有上一页（直接打开内页 / 刷新后栈
+     * 重建）时的兜底页面，经 `uni.reLaunch` 打开。空串 = 不做兜底。
+     */
+    backFallback?: string;
   }>(),
   {
     title: '',
@@ -85,6 +110,8 @@ const props = withDefaults(
     rightDisabled: false,
     customClass: '',
     customStyle: '',
+    autoBack: true,
+    backFallback: '',
   },
 );
 
@@ -120,13 +147,45 @@ const hasLeft = computed(() => props.leftArrow || props.leftText !== '' || !!slo
 /** Right zone renders only when it actually carries something. */
 const hasRight = computed(() => props.rightText !== '' || !!slots.right);
 
+/** 页面栈深度；宿主未暴露 `getCurrentPages` 时返回 0（栈深度未知）。 */
+function pageStackDepth(): number {
+  if (typeof getCurrentPages !== 'function') return 0;
+  try {
+    return getCurrentPages().length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * 默认跨端返回（`autoBack`）：静态 `uni.*` 调用，uni-app 编译器才会把路由
+ * API 打进产物；`window` / `globalThis.uni` 动态查找在 App / uni-app x 上
+ * 不存在（App 端没有 window），会导致点击静默失效。
+ *
+ * 栈里只有当前页时不调用 `navigateBack` —— H5 会把 delta 钳到 0
+ * （`router.go(0)`）整页 reload，改走 `backFallback`。
+ */
+function navigateBackByDefault(): void {
+  if (typeof uni === 'undefined' || typeof uni.navigateBack !== 'function') return;
+  const depth = pageStackDepth();
+  if (depth > 1 || depth === 0) {
+    uni.navigateBack({ delta: 1 });
+    return;
+  }
+  if (props.backFallback !== '' && typeof uni.reLaunch === 'function') {
+    uni.reLaunch({ url: props.backFallback });
+  }
+}
+
 function onLeftTap(event: Event): void {
   if (props.leftDisabled) {
     event.stopPropagation();
     return;
   }
   emit('click-left', event);
-  if (props.leftArrow) emit('back', event);
+  if (!props.leftArrow) return;
+  emit('back', event);
+  if (props.autoBack) navigateBackByDefault();
 }
 
 function onRightTap(event: Event): void {
@@ -221,7 +280,13 @@ const placeholderStyle = computed(() =>
       @tap="onLeftTap"
     >
       <slot name="left">
-        <SnIcon v-if="leftArrow" class="sn-navbar__arrow" :icon="ArrowLeft" :size="36" />
+        <SnIcon
+          v-if="leftArrow"
+          class="sn-navbar__arrow"
+          :icon="ChevronLeft"
+          size="44rpx"
+          :stroke-width="2.5"
+        />
         <text v-if="leftText" class="sn-navbar__text">{{ leftText }}</text>
       </slot>
     </view>

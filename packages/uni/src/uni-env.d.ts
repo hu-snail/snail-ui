@@ -62,4 +62,18 @@ declare const uni: {
   getSystemInfoSync: () => UniWindowInfo;
   /** WeChat capsule rect — present on MP-WEIXIN only. */
   getMenuButtonBoundingClientRect: () => UniMenuButtonRect;
+  /**
+   * Page-stack back used by sn-navbar's default back navigation. Declared
+   * statically so the uni-app compiler bundles the router API — a dynamic
+   * `globalThis.uni?.navigateBack` lookup is tree-shaken away.
+   */
+  navigateBack: (options?: { delta?: number; fail?: (error: unknown) => void }) => unknown;
+  /** No-history fallback of the navbar back (`backFallback`). */
+  reLaunch: (options: { url: string; fail?: (error: unknown) => void }) => unknown;
 };
+
+/**
+ * Page stack (uni-app / uni-app x global). sn-navbar reads its depth to decide
+ * between `navigateBack` and the `backFallback` reLaunch.
+ */
+declare function getCurrentPages(): unknown[];

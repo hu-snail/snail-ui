@@ -226,6 +226,7 @@ function exitFull(): void {
               left-text="Demo"
               safe-area-inset-top
               bordered
+              :auto-back="false"
               @back="exitFull"
             />
             <SnTabs :model-value="activeChannel" @change="switchChannel($event.index)">
@@ -267,6 +268,7 @@ function exitFull(): void {
               left-text="Back"
               safe-area-inset-top
               bordered
+              :auto-back="false"
               @back="backToFeed"
             />
           </template>

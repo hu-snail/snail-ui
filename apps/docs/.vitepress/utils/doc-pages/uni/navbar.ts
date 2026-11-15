@@ -56,7 +56,8 @@ import { Navbar } from '@snui/uni';
     {
       name: 'navbar-mp-basic',
       title: '基础用法',
-      blurb: 'title 标题；left-text / right-text 左右文案；left-arrow 返回箭头；bordered 下边框。',
+      blurb:
+        'title 标题；left-text / right-text 左右文案；left-arrow 返回箭头（默认接管跨端返回）；bordered 下边框。',
     },
     {
       name: 'navbar-mp-slots',
@@ -110,6 +111,18 @@ import { Navbar } from '@snui/uni';
       { name: 'rightDisabled', type: 'boolean', default: 'false', desc: '是否禁用右侧按钮' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
+      {
+        name: 'autoBack',
+        type: 'boolean',
+        default: 'true',
+        desc: '点击返回箭头时由组件完成跨端返回（AUI 追加；自行接管返回时传 `false`）。',
+      },
+      {
+        name: 'backFallback',
+        type: 'string',
+        default: "''",
+        desc: '页面栈没有上一页时的兜底页面（`uni.reLaunch`；AUI 追加）。',
+      },
     ],
   },
   ai: {
