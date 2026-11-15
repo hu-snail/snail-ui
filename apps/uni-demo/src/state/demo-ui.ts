@@ -89,6 +89,26 @@ const stylePackOptions = computed(() =>
   })),
 );
 
+/**
+ * 当前主题色（`--aui-color-action-primary` 的字面值）：default 包为库默认
+ * blue-500，风格包（iOS 蓝 / Doodle 粉 …）随包覆盖。总览页弥散头部与分类
+ * chips 高亮以字面色输出而非 CSS 变量 —— 渐变函数内的 var() 在 MP WXSS 与
+ * uvue 内联样式里不可靠，只能由 JS 算好 concrete 值再绑定。
+ */
+const primaryColor = computed<string>(() => {
+  const pack = allPacks.find((p) => p.name === stylePack.value);
+  // 与 stylePackVars 同源：包自带 theme（如 Doodle 的粉主色）优先，
+  // 未声明时回退当前深浅主题
+  const bindings = resolveEnvironment({
+    theme: pack?.theme ?? (isDark.value ? DARK_THEME : LIGHT_THEME),
+    style: pack?.style ?? MODERN_STYLE,
+    density: pack?.density ?? COMFORTABLE_DENSITY,
+  });
+  const primary = bindings.find((b) => b.name === '--aui-color-action-primary');
+  // 解析结果必须是字面色才能参与渐变；异常回退库默认 blue-500
+  return primary !== undefined && !primary.value.startsWith('var(') ? primary.value : '#1677ff';
+});
+
 /** 设定风格包并持久化（未知名忽略）。弹层 UI（sn-popup）在首页自身维护。
  * 注意（AUI-MP-002 回归）：uvue 蒸汽编译器会静默丢弃含「解构参数箭头回调」
  * 的整个函数——保持无回调的同步实现，不要塞 success: ({ tapIndex }) => …
@@ -325,6 +345,7 @@ export function useDemoUi() {
     stylePackOptions,
     stylePackVars,
     shellVars,
+    primaryColor,
     t,
     toggleLang,
     toggleTheme,

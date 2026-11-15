@@ -139,12 +139,17 @@ for (const dir of generatedDirs) {
 
 /* 5. 与 uni-demo 的同步契约：首页分组 + pages.json 分组逐项对齐。
  *    home-data 的分组块是 `    key:`（4 空格缩进，组件 comp 是 8 空格），
- *    以此区分分组条目与组件条目；顺序也参与比较——首页 chips 按该顺序渲染。 */
+ *    以此区分分组条目与组件条目；顺序也参与比较——首页 chips 按该顺序渲染。
+ *    生成器历史上两种引号形态并存：单引号字面量（旧产物）与
+ *    JSON.stringify 双引号（现产物），分组键/标签不含引号字符，两种都收。 */
 const uniDemoRoot = resolve(appRoot, '../uni-demo');
-const homeGroupRe = /^ {4}key: '([a-z0-9-]+)',\n {4}label: '([^']*)',\n {4}labelEn: '([^']*)',/gm;
+const homeGroupRe =
+  /^ {4}(?:key|"key"): (?:'([a-z0-9-]+)'|"([a-z0-9-]+)"),\n {4}(?:label|"label"): (?:'([^']*)'|"([^"]*)"),\n {4}(?:labelEn|"labelEn"): (?:'([^']*)'|"([^"]*)"),/gm;
 function homeGroupsOf(file) {
   const source = readFileSync(file, 'utf8');
-  return [...source.matchAll(homeGroupRe)].map((m) => `${m[1]}|${m[2]}|${m[3]}`);
+  return [...source.matchAll(homeGroupRe)].map(
+    (m) => `${m[1] ?? m[2]}|${m[3] ?? m[4]}|${m[5] ?? m[6]}`,
+  );
 }
 const sourceHomeGroups = homeGroupsOf(join(uniDemoRoot, 'src/pages/index/home-data.ts'));
 const targetHomeGroups = homeGroupsOf(join(appRoot, 'pages/index/home-data.ts'));

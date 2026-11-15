@@ -1,10 +1,11 @@
 <script setup lang="ts">
 // 首页 —— 组件目录（手写页面；目录数据由 scripts/gen-pages.mjs 生成到
 // home-data.ts，含中英双字段）。
-// 版式：页面根节点 sn-paging —— 品牌区（标题 + 风格包/语言/主题按钮）+ 搜索框
-// + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏），双列图标卡
-// 在默认插槽滚动（目录为静态数据，禁用下拉刷新与加载更多；图标卡见
-// home-icons.ts）。
+// 版式：页面根节点 sn-paging —— 品牌区（logo + 标题 + 风格包/语言/主题按钮）
+// + 搜索框 + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏，
+// 头部铺主题色 radial 光斑弥散背景、chips 选中态同取主题色，见 haloStyle /
+// chipActiveStyle），双列图标卡在默认插槽滚动（目录为静态数据，禁用下拉
+// 刷新与加载更多；图标卡见 home-icons.ts）。
 // 微信小程序：`--status-bar-height` 在 WXSS 中不存在，顶部用 sn-navbar
 // （fixed + placeholder + safe-area-inset-top）占出状态栏 + 导航带，品牌区
 // 从胶囊下方开始；H5 / App 不渲染占位，保持原紧凑头部。
@@ -37,7 +38,79 @@ const {
   toggleLang,
   toggleTheme,
   setStylePack,
+  primaryColor,
 } = useDemoUi();
+
+/* ── 主题色工具：弥散头部 / chips 高亮从 primaryColor 现算字面色（渐变里的
+ * var() 在 MP WXSS 与 uvue 内联样式不可靠，见 demo-ui primaryColor 注） ── */
+
+/** 解析 #rrggbb / #rgb 为 rgb 三元组；非 hex 形态（rgba() 等）返回 null。 */
+function parseHexColor(color: string): [number, number, number] | null {
+  let hex = color.trim().replace('#', '');
+  if (hex.length === 3) {
+    // charAt 而非下标访问：与 uvue 端写法保持一致（两页同步维护）
+    hex =
+      hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+  }
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+  return [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
+}
+
+/** 主题色 + alpha → rgba()；非 hex 色原样返回（无透明度，仍可作渐变端点）。 */
+function primaryAlpha(alpha: number): string {
+  const rgb = parseHexColor(primaryColor.value);
+  if (rgb === null) return primaryColor.value;
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+}
+
+/** 主题色向白混合（ratio = 白占比）→ 高光档。 */
+function primaryTint(ratio: number): string {
+  const rgb = parseHexColor(primaryColor.value);
+  if (rgb === null) return primaryColor.value;
+  const r = Math.round(rgb[0] + (255 - rgb[0]) * ratio);
+  const g = Math.round(rgb[1] + (255 - rgb[1]) * ratio);
+  const b = Math.round(rgb[2] + (255 - rgb[2]) * ratio);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * 弥散头部：主题色三层 radial 光斑（右上主光斑 + 左上辅光斑 + 顶部弱光斑），
+ * 同色 alpha 逐档衰减到 0 形成弥散过渡；深色下整体提档补偿暗底。
+ */
+function haloBlob(cx: number, cy: number, rx: string, ry: string, alpha: number): string {
+  return (
+    `radial-gradient(${rx} ${ry} at ${cx}% ${cy}%, ` +
+    `${primaryAlpha(alpha)} 0%, ${primaryAlpha(alpha * 0.45)} 40%, ` +
+    `${primaryAlpha(alpha * 0.16)} 62%, ${primaryAlpha(0)} 80%)`
+  );
+}
+
+/** 头部弥散背景（inline 绑定在 .home__top 的 backgroundImage 上）。 */
+const haloStyle = computed<Record<string, string>>(() => {
+  const k = isDark.value ? 1.6 : 1;
+  return {
+    backgroundImage: [
+      haloBlob(88, 0, '110%', '85%', 0.3 * k),
+      haloBlob(6, 2, '85%', '70%', 0.18 * k),
+      haloBlob(48, 0, '55%', '45%', 0.1 * k),
+    ].join(', '),
+  };
+});
+
+/** 分类 chip 选中态：主题色渐变（→ 混白高光）+ 主题色投影。 */
+const chipActiveStyle = computed<Record<string, string>>(() => ({
+  backgroundImage: `linear-gradient(135deg, ${primaryColor.value} 0%, ${primaryTint(0.4)} 100%)`,
+  boxShadow: `0 6rpx 16rpx ${primaryAlpha(0.28)}`,
+}));
+
+/** 非选中 chip 返回空样式对象（两端三元 style 绑定统一走函数，避开 undefined）。 */
+function chipStyleFor(index: number): Record<string, string> {
+  return index === activeIndex.value ? chipActiveStyle.value : {};
+}
 
 interface HomeComp extends DemoHomeComp {
   /** 当前语言下的组件名。 */
@@ -223,9 +296,10 @@ function open(comp: HomeComp): void {
         :load-more-enabled="false"
         @query="onQuery"
       >
-        <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动 -->
+        <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动；
+             弥散头部 = 主题色 radial 光斑随风格包/主题联动（haloStyle） -->
         <template #top>
-          <view class="home__top">
+          <view class="home__top" :style="haloStyle">
             <!-- 小程序：sn-navbar 占位（状态栏 + 胶囊导航带），品牌区从胶囊下方开始。
                  H5 / App 不占位，保留原来的紧凑头部。 -->
             <!-- #ifdef MP -->
@@ -238,10 +312,14 @@ function open(comp: HomeComp): void {
             <!-- #endif -->
             <view class="home__bar">
               <view class="home__brand">
-                <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
-                <text class="home__brand-sub">
-                  {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
-                </text>
+                <!-- 文档站同源 logo（apps/docs/public/logo.webp 转 PNG，MP 兼容） -->
+                <image class="home__brand-logo" src="/static/logo.png" mode="aspectFit" />
+                <view class="home__brand-text">
+                  <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
+                  <text class="home__brand-sub">
+                    {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
+                  </text>
+                </view>
               </view>
               <view class="home__actions">
                 <view
@@ -294,6 +372,7 @@ function open(comp: HomeComp): void {
                   :key="category.id"
                   class="home__chip"
                   :class="{ 'home__chip--active': index === activeIndex }"
+                  :style="chipStyleFor(index)"
                   @tap="pickCategory(index)"
                 >
                   <text class="home__chip-text">{{ category.label }}</text>
@@ -413,6 +492,21 @@ function open(comp: HomeComp): void {
 }
 
 .home__brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 文档站同源 logo：330×200 透明底，行高对齐品牌双行文本 */
+.home__brand-logo {
+  width: 92rpx;
+  height: 56rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.home__brand-text {
   display: flex;
   flex-direction: column;
 }
@@ -551,11 +645,10 @@ function open(comp: HomeComp): void {
   font-weight: 500;
 }
 
+/* 选中态底色/投影由 inline 主题色渐变承担（chipActiveStyle，随风格包/主题
+ * 联动）；class 只负责描边隐藏与文字反白。 */
 .home__chip--active {
-  background: linear-gradient(135deg, #7c5cfc, #a78bfa);
   border-color: transparent;
-  /* 选中态阴影收敛（0.32 → 0.18）：底部投影过重，视觉重心下坠 */
-  box-shadow: 0 6rpx 16rpx rgba(124, 92, 252, 0.18);
 }
 
 .home__chip--active .home__chip-text {
