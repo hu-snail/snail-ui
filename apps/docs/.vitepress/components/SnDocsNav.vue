@@ -397,11 +397,13 @@ function onLocaleClick(event: MouseEvent): void {
   border: none;
   border-radius: 6px;
   background: transparent;
+  /* 菜单标题统一走自托管 MiSans 字体库（--vp-font-family-base），
+   * 文字色由 secondary 加深到 primary，首页透明导航带上一眼可读。 */
   font-family: var(--vp-font-family-base);
   font-size: 13.5px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 32px;
-  color: var(--sn-web-color-text-secondary);
+  color: var(--sn-web-color-text-primary);
 }
 .sn-docs-nav__menu
   :deep(.sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active)) {
@@ -546,9 +548,9 @@ function onLocaleClick(event: MouseEvent): void {
   background: transparent;
   font-family: var(--vp-font-family-base);
   font-size: 13.5px;
-  font-weight: 400;
+  font-weight: 500;
   line-height: 32px;
-  color: var(--sn-web-color-text-secondary);
+  color: var(--sn-web-color-text-primary);
   cursor: pointer;
   transition:
     background 0.15s,
