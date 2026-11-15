@@ -176,13 +176,18 @@ const rootStyle = computed(() => {
 });
 
 /**
- * MP placeholder must mirror the bar's box: content-box min-height 88rpx plus
- * the measured status-bar padding. H5 / App keep the CSS `--status-bar-height`
+ * MP placeholder must mirror the bar's total border-box height: measured
+ * status-bar padding + the 88rpx nav row. Views are globally
+ * `box-sizing: border-box` (uvue.wxss), so `height: auto; min-height: 88rpx;
+ * padding-top: Npx` collapses an empty placeholder to `max(88rpx, Npx)` —
+ * the nav row is eaten by the padding and first-screen content slides under
+ * the fixed bar. An explicit calc height keeps placeholder === bar regardless
+ * of the title slot's content. H5 / App keep the CSS `--status-bar-height`
  * path (the measured value is 0 there).
  */
 const placeholderStyle = computed(() =>
   props.safeAreaInsetTop && capsule.statusBarHeight > 0
-    ? { paddingTop: `${capsule.statusBarHeight}px` }
+    ? { height: `calc(${capsule.statusBarHeight}px + 88rpx)` }
     : undefined,
 );
 </script>
@@ -267,7 +272,8 @@ const placeholderStyle = computed(() =>
 
 .sn-navbar--safe-area {
   height: auto;
-  min-height: 88rpx;
+  /* border-box：min-height 必须含状态栏 padding，否则导航行被吃掉（见占位注释） */
+  min-height: calc(var(--status-bar-height, 44rpx) + 88rpx);
   padding-top: var(--status-bar-height, 44rpx);
 }
 
@@ -281,12 +287,13 @@ const placeholderStyle = computed(() =>
 }
 
 /* safe-area 开启时占位元素镜像导航栏自身的盒子（88rpx + 状态栏 padding）：
- * 导航栏在 safe-area 下是 `height: auto; min-height: 88rpx; padding-top`
- * 占位元素若仍固定 88rpx，MP 真机（状态栏为实际高度）首屏内容会被压进
- * 导航栏下方。 */
+ * 全局 border-box 下 `min-height: 88rpx; padding-top: Npx` 的空元素高度是
+ * max(88rpx, Npx) 而不是 Npx + 88rpx——导航行被 padding 吃掉，MP 真机首屏
+ * 内容会被压进导航栏下方。min-height 必须按 calc(状态栏 + 88rpx) 预留，
+ * MP 实测路径由 placeholderStyle 直接给显式总高。 */
 .sn-navbar__placeholder--safe-area {
   height: auto;
-  min-height: 88rpx;
+  min-height: calc(var(--status-bar-height, 44rpx) + 88rpx);
   padding-top: var(--status-bar-height, 44rpx);
 }
 

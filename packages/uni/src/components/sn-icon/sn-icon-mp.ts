@@ -178,9 +178,26 @@ export function useMpIconColor(color: () => string): Ref<string> {
     }
     if (!needsComputedColor()) return;
 
-    const uniHost = (globalThis as { uni?: IconUniHost }).uni;
-    const createSelectorQuery = uniHost?.createSelectorQuery;
-    if (typeof createSelectorQuery !== 'function' || instance === null) {
+    // Query acquisition order:
+    // 1. `globalThis.uni` — uni-app x runtime injects it on App / H5 hosts.
+    // 2. The component's mp `$scope` — classic uni vue3 MP compiles keep the
+    //    uni API module-scoped (`globalThis.uni` is never assigned there), but
+    //    the WeChat Component instance natively owns `createSelectorQuery`.
+    //    Without this path every cascade-colored icon falls back to ink.
+    const proxy = instance?.proxy as
+      | { $scope?: IconUniHost; $?: { scope?: IconUniHost } }
+      | null;
+    const scope = proxy?.$scope ?? proxy?.$?.scope;
+    const globalHost = (globalThis as { uni?: IconUniHost }).uni;
+    let createQuery: (() => IconSelectorQuery) | null = null;
+    let queryScope: unknown = instance?.proxy;
+    if (typeof globalHost?.createSelectorQuery === 'function') {
+      createQuery = globalHost.createSelectorQuery;
+    } else if (typeof scope?.createSelectorQuery === 'function') {
+      createQuery = scope.createSelectorQuery;
+      queryScope = scope;
+    }
+    if (createQuery === null || instance === null) {
       resolved.value = ICON_INK_FALLBACK;
       return;
     }
@@ -189,9 +206,8 @@ export function useMpIconColor(color: () => string): Ref<string> {
     nextTick(() => {
       if (current !== seq) return;
       try {
-        createSelectorQuery
-          .call(uniHost)
-          .in(instance.proxy)
+        createQuery()
+          .in(queryScope)
           .select(ICON_SELECTOR)
           .fields({ computedStyle: ['color'] }, (ret) => {
             if (current !== seq) return;

@@ -6,7 +6,13 @@
  * 平台不支持时静默降级，页面自身样式由 CSS 变量承担，不依赖导航栏 API）。
  */
 import { computed, ref } from 'vue';
-import { COMFORTABLE_DENSITY, LIGHT_THEME, MODERN_STYLE, resolveEnvironment } from '@snui/tokens';
+import {
+  COMFORTABLE_DENSITY,
+  DARK_THEME,
+  LIGHT_THEME,
+  MODERN_STYLE,
+  resolveEnvironment,
+} from '@snui/tokens';
 import { allPacks } from '@snui/style-packs';
 
 export type DemoLang = 'zh' | 'en';
@@ -74,19 +80,119 @@ const stylePackVars = computed<Record<string, string>>(() => {
   return vars;
 });
 
-/** 弹出风格包选择（原生 action sheet，MP / H5 通用）。 */
+/** 弹出风格包选择（原生 action sheet，MP / H5 通用）。
+ * success 回调取 res.tapIndex 而不是解构参数——uni-app x 蒸汽编译器
+ * （HBuilderX 5.33 alpha）会静默丢弃含解构参数箭头回调的整个函数，
+ * 首页换皮肤按钮因此变成 undefined（AUI-MP-002 回归）。 */
 function chooseStylePack(): void {
-  const labels = allPacks.map((p) => p.label);
+  const labels: string[] = allPacks.map((p) => p.label);
   uni.showActionSheet({
     itemList: labels,
-    success: ({ tapIndex }) => {
-      const pack = allPacks[tapIndex];
+    success: (res) => {
+      const pack = allPacks[res.tapIndex];
       if (!pack) return;
       stylePack.value = pack.name;
       writeStored(STYLE_KEY, pack.name);
     },
   });
 }
+
+/* ── MP 样式隔离桥（AUI-MP-002）─────────────────────────────────────────
+ * mp-weixin 组件默认 isolated：app.wxss 的 `page` 变量靠 DOM 继承可以进
+ * 组件，但任何选择器块（`.demo-shell` / `.demo-shell--dark` / `.dark`）
+ * 都匹配不到组件内部节点。因此：
+ *   1. `--sn-mp-color-* → var(--aui-*)` 锚定必须在 shell 根节点 inline 重挂
+ *      （page 级别名在 page 元素上就解析成浅色字面量，子树覆盖 --aui-* 不
+ *      会跟着翻转）；
+ *   2. 深色翻转的 `--aui-*` 差集 + demo 骨架深色变量也要 inline。
+ * H5 / App 无隔离，inline 与 CSS 块同值并存无冲突。改下面的映射时须与
+ * App.vue 的 `.demo-shell` / `.demo-shell--dark` 块同步。 */
+const SN_MP_ANCHORS: Record<string, string> = {
+  '--sn-mp-color-text-primary': 'var(--aui-color-text-primary)',
+  '--sn-mp-color-text-secondary': 'var(--aui-color-text-secondary)',
+  '--sn-mp-color-text-disabled': 'var(--aui-color-text-disabled)',
+  '--sn-mp-color-text-tertiary': 'var(--aui-color-text-tertiary)',
+  '--sn-mp-color-text-on-primary': 'var(--aui-color-text-on-primary)',
+  '--sn-mp-color-background-surface': 'var(--aui-color-background-surface)',
+  '--sn-mp-color-background-subtle': 'var(--aui-color-background-subtle)',
+  '--sn-mp-color-background-elevated': 'var(--aui-color-background-elevated)',
+  '--sn-mp-color-background-overlay': 'var(--aui-color-background-overlay)',
+  '--sn-mp-color-background-soft': 'var(--aui-color-background-subtle)',
+  '--sn-mp-color-background-sunken': 'var(--aui-color-background-sunken)',
+  '--sn-mp-color-background-inverse': 'var(--aui-color-background-inverse)',
+  '--sn-mp-color-border-default': 'var(--aui-color-border-default)',
+  '--sn-mp-color-border-subtle': 'var(--aui-color-border-subtle)',
+  '--sn-mp-color-action-primary': 'var(--aui-color-action-primary)',
+  '--sn-mp-color-action-primary-hover': 'var(--aui-color-action-primary-hover)',
+  '--sn-mp-color-action-primary-soft': 'var(--aui-color-action-primary-soft)',
+  '--sn-mp-color-feedback-success': 'var(--aui-color-feedback-success)',
+  '--sn-mp-color-feedback-success-soft': 'var(--aui-color-feedback-success-soft)',
+  '--sn-mp-color-feedback-warning': 'var(--aui-color-feedback-warning)',
+  '--sn-mp-color-feedback-warning-soft': 'var(--aui-color-feedback-warning-soft)',
+  '--sn-mp-color-feedback-danger': 'var(--aui-color-feedback-danger)',
+  '--sn-mp-color-feedback-danger-hover': 'var(--aui-color-feedback-danger-hover)',
+  '--sn-mp-color-feedback-danger-soft': 'var(--aui-color-feedback-danger-soft)',
+  '--sn-mp-color-feedback-info': 'var(--aui-color-feedback-info)',
+  '--sn-mp-color-input-bg': 'var(--aui-color-background-surface)',
+  '--sn-mp-color-input-text': 'var(--aui-color-text-primary)',
+  '--sn-mp-color-input-placeholder': 'var(--aui-color-text-disabled)',
+  '--sn-mp-color-input-border': 'var(--aui-color-border-default)',
+  '--sn-mp-color-input-border-focus': 'var(--aui-color-action-primary)',
+  '--sn-mp-color-control-unchecked': 'var(--aui-color-border-default)',
+  '--sn-mp-color-control-knob': 'var(--aui-color-background-elevated)',
+  '--sn-mp-color-volcano': 'var(--aui-color-volcano)',
+  '--sn-mp-color-volcano-soft': 'var(--aui-color-volcano-soft)',
+  '--sn-mp-color-lightblue': 'var(--aui-color-lightblue)',
+  '--sn-mp-color-lightblue-soft': 'var(--aui-color-lightblue-soft)',
+  '--sn-mp-color-cyan': 'var(--aui-color-cyan)',
+  '--sn-mp-color-cyan-soft': 'var(--aui-color-cyan-soft)',
+  '--sn-mp-color-pink': 'var(--aui-color-pink)',
+  '--sn-mp-color-pink-soft': 'var(--aui-color-pink-soft)',
+  '--sn-mp-color-purple': 'var(--aui-color-purple)',
+  '--sn-mp-color-purple-soft': 'var(--aui-color-purple-soft)',
+};
+
+/** demo 骨架深色变量（App.vue `.demo-shell--dark` 块的 inline 镜像）。 */
+const DEMO_DARK_VARS: Record<string, string> = {
+  '--sn-mp-color-control-knob': '#e4e4e7',
+  '--demo-page-bg': '#121020',
+  '--demo-page-canvas': 'linear-gradient(180deg, #171526 0%, #121020 100%)',
+  '--demo-card-bg': 'linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+  '--demo-card-border': 'rgba(255, 255, 255, 0.1)',
+  '--demo-card-shadow': '0 12rpx 40rpx rgba(0, 0, 0, 0.4)',
+  '--demo-btn-bg': 'rgba(255, 255, 255, 0.1)',
+  '--demo-btn-border': 'rgba(255, 255, 255, 0.16)',
+  '--demo-search-bg': 'rgba(255, 255, 255, 0.07)',
+  '--demo-chip-bg': 'rgba(255, 255, 255, 0.08)',
+  '--demo-chip-border': 'rgba(255, 255, 255, 0.12)',
+  '--demo-icon-bg': 'rgba(124, 92, 252, 0.22)',
+  '--demo-icon-fg': '#a9bcff',
+  '--demo-title': '#eef1fa',
+  '--demo-text': '#a7aec4',
+  '--demo-text-3': '#6d7488',
+};
+
+/**
+ * shell 根节点 inline 变量：锚定（恒挂）+ 风格包 + 深色翻转。
+ * 深色集合取 resolveEnvironment(DARK_THEME) 与浅色的差集——只有主题敏感
+ * 的 --aui-* 需要覆盖，字面量与 `@snui/uni/styles` 的 `.dark` 块同源。
+ */
+const shellVars = computed<Record<string, string>>(() => {
+  const pack = allPacks.find((p) => p.name === stylePack.value);
+  const dims = {
+    style: pack?.style ?? MODERN_STYLE,
+    density: pack?.density ?? COMFORTABLE_DENSITY,
+  };
+  const vars: Record<string, string> = { ...SN_MP_ANCHORS, ...stylePackVars.value };
+  if (!isDark.value) return vars;
+  const light = new Map(
+    resolveEnvironment({ theme: LIGHT_THEME, ...dims }).map((b) => [b.name, b.value]),
+  );
+  for (const binding of resolveEnvironment({ theme: DARK_THEME, ...dims })) {
+    if (light.get(binding.name) !== binding.value) vars[binding.name] = binding.value;
+  }
+  return { ...vars, ...DEMO_DARK_VARS };
+});
 
 /** 按当前主题同步导航栏颜色（frontColor 仅接受纯黑/纯白）。 */
 function applyNavBar(): void {
@@ -215,6 +321,7 @@ export function useDemoUi() {
     stylePack,
     stylePackLabel,
     stylePackVars,
+    shellVars,
     t,
     toggleLang,
     toggleTheme,

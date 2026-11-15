@@ -7,8 +7,21 @@
  * lengths it cannot parse.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+
+// getCapsuleMetrics 在组件模块加载即被调用并缓存返回对象；测试通过共享可变
+// 对象驱动"测量到/未测量到"两条路径（组件持有同一引用，改字段即生效）。
+const capsuleState = vi.hoisted(() => ({
+  statusBarHeight: 0,
+  navBarHeight: 44,
+  capsulePadRight: 0,
+  hasCapsule: false,
+}));
+vi.mock('../../utils/capsule', () => ({
+  getCapsuleMetrics: () => capsuleState,
+}));
+
 import SnNavbar from './sn-navbar.vue';
 
 describe('sn-navbar', () => {
@@ -168,6 +181,26 @@ describe('sn-navbar', () => {
           .find('.sn-navbar__placeholder')
           .classes(),
       ).not.toContain('sn-navbar__placeholder--safe-area');
+    });
+
+    it('reserves the measured status bar + nav row on the placeholder (MP border-box)', () => {
+      // 全局 box-sizing: border-box 下，`min-height: 88rpx; padding-top: Npx`
+      // 的空占位会塌成 max(88rpx, Npx)——导航行被 padding 吃掉，首屏内容
+      // 顶进 fixed 导航栏下方（AUI-MP-002 回归）。占位必须显式拿
+      // `calc(statusBar + 88rpx)` 总高。
+      capsuleState.statusBarHeight = 47;
+      capsuleState.hasCapsule = true;
+      try {
+        const wrapper = mount(SnNavbar, {
+          props: { fixed: true, placeholder: true, safeAreaInsetTop: true },
+        });
+        expect(wrapper.find('.sn-navbar__placeholder').attributes('style')).toContain(
+          'calc(47px + 88rpx)',
+        );
+      } finally {
+        capsuleState.statusBarHeight = 0;
+        capsuleState.hasCapsule = false;
+      }
     });
 
     it('adds the safe-area class', () => {

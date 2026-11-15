@@ -44,17 +44,20 @@ const props = withDefaults(
   { titleZh: '', titleEn: '', desc: '', navStyle: 'blend', bg: '' },
 );
 
-const { lang, isDark, stylePackVars, t, applyNavBar, setNavTitle } = useDemoUi();
+const { lang, isDark, shellVars, t, applyNavBar, setNavTitle } = useDemoUi();
 
 const { closeOutside } = useQueue();
 
 /**
  * 画布样式：bg 覆盖只在浅色主题生效（深色维持暗色画布，白色画布在深色下
- * 不可读）；风格包变量始终透传，二者叠加。
+ * 不可读）；shellVars（锚定 + 风格包 + 深色 inline，见 demo-ui）始终透传，
+ * 二者叠加。
  */
 const shellStyle = computed(() => {
-  if (!props.bg || isDark.value) return stylePackVars;
-  return [stylePackVars, { background: props.bg }];
+  // 显式 .value：computed 返回 ref 不会再被模板解包，:style 会拿到
+  // ComputedRef 而不是样式对象
+  if (!props.bg || isDark.value) return shellVars.value;
+  return [shellVars.value, { background: props.bg }];
 });
 
 /**
