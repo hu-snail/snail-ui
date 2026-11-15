@@ -8,6 +8,8 @@
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 
 // getCapsuleMetrics 在组件模块加载即被调用并缓存返回对象；测试通过共享可变
@@ -406,6 +408,26 @@ describe('sn-navbar', () => {
       const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
       await expect(wrapper.find('.sn-navbar__left').trigger('tap')).resolves.toBeUndefined();
       expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+  });
+
+  describe('H5 hit-testing (stacking order)', () => {
+    it('stacks the side zones above the full-width center container', () => {
+      // 回归（H5 返回键点了没反应）：.sn-navbar__center 是 width:100% 的定位
+      // 元素、DOM 顺序在侧区之后，浏览器会把它整块画在绝对定位的左右按钮
+      // 之上 —— 点击落在标题容器上，onLeftTap 永远不触发（Playwright 报
+      // "covered by .sn-navbar__center"）。happy-dom 不做绘制顺序，只能锁
+      // 源码契约：侧区与胶囊区必须显式抬层。
+      const source = readFileSync(
+        resolve(process.cwd(), 'src/components/sn-navbar/sn-navbar.vue'),
+        'utf8',
+      );
+      for (const selector of ['.sn-navbar__side', '.sn-navbar__capsule']) {
+        const start = source.indexOf(`${selector} {`);
+        expect(start, `${selector} rule missing`).toBeGreaterThan(-1);
+        const body = source.slice(start, source.indexOf('}', start));
+        expect(body).toMatch(/z-index:\s*1;/);
+      }
     });
   });
 });

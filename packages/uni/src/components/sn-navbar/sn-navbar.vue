@@ -366,6 +366,9 @@ const placeholderStyle = computed(() =>
   position: absolute;
   top: 0;
   bottom: 0;
+  /* 中心标题区是 width:100% 的普通流元素，DOM 里排在侧区之后，H5 上会整块
+   * 盖住绝对定位的左右按钮（点击落不到 onLeftTap）。侧区必须显式抬层。 */
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: var(--sn-mp-spacing-1);
@@ -409,6 +412,8 @@ const placeholderStyle = computed(() =>
   top: 0;
   bottom: 0;
   left: var(--sn-mp-spacing-3);
+  /* 同侧区：抬到中心标题区之上，否则 H5 上胶囊点击被标题容器拦截。 */
+  z-index: 1;
   display: flex;
   align-items: center;
 }
