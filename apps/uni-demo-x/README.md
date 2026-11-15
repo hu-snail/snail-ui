@@ -46,6 +46,13 @@ App 端不受影响（真机屏宽即 750rpx 基准）。
 
 注意：
 
+- **HBuilderX 的工作区必须是本目录，不能是仓库根目录**。在 monorepo 根目录
+  （`snail-aui`）里打开工程再运行子目录，uni-app x 启动器会把项目解析到工作区
+  根并报「项目 … 不是 uni-app 项目，暂不支持」（SDK 日志里 `projectName` 变成
+  `snail-aui` 即此症状）。出现该提示时：完全退出 HBuilderX（包括后台编译引擎），
+  再用 `文件 → 打开目录` 直接打开 `apps/uni-demo-x`；仍复现时可删除
+  `~/Library/Application Support/HBuilderV-Alpha/User/globalStorage/hbuilderx-uniapp-sdk/HBuilder X.ini`
+  （仅 UI/会话状态，重启后自动重建）。
 - pnpm 的 `node_modules` 符号链接在 HBuilderX 下偶有解析问题；若组件找不到，
   可 `pnpm -F @snui/uni-x pack` 后把 tarball 解到本工程 `node_modules/@snui/uni-x`。
 - uni-app x 暂无 CLI（[官方答复](https://ask.dcloud.net.cn/question/208871)），
