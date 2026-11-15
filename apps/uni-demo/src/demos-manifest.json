@@ -854,6 +854,16 @@
           "name": "navbar-mp-slots",
           "title": "左右插槽",
           "hasEn": true
+        },
+        {
+          "name": "navbar-mp-capsule",
+          "title": "胶囊样式 / 带搜索栏",
+          "hasEn": true
+        },
+        {
+          "name": "navbar-mp-mp-capsule",
+          "title": "微信小程序胶囊适配",
+          "hasEn": true
         }
       ]
     },

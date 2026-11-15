@@ -173,7 +173,7 @@
           "path": "navbar",
           "style": {
             "navigationBarTitleText": "导航栏",
-            "navigationStyle": "custom"
+            "navigationStyle": "default"
           }
         },
         {

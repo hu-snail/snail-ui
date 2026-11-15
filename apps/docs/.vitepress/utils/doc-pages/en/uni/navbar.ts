@@ -78,6 +78,18 @@ import { Navbar } from '@snui/uni';
       blurb:
         '#capsule takes over the left zone; #title replaces the heading; custom-class / custom-style land on the root.',
     },
+    {
+      name: 'navbar-mp-capsule',
+      title: 'Capsule style / search bar',
+      blurb:
+        '#capsule renders a WeChat-style back + home capsule; #title becomes a pill search field while both side labels stay.',
+    },
+    {
+      name: 'navbar-mp-mp-capsule',
+      title: 'WeChat mini-program capsule',
+      blurb:
+        'Custom navigation always keeps the WeChat system capsule at the top-right: left capsule, centered title, right inset. safe-area-inset-top reserves the measured inset.',
+    },
   ],
   props: {
     hint: [],

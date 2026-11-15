@@ -84,6 +84,18 @@ import { Navbar } from '@snui/uni';
       title: '胶囊插槽',
       blurb: '#capsule 占据左侧区；#title 自定义标题；custom-class / custom-style 落在根节点。',
     },
+    {
+      name: 'navbar-mp-capsule',
+      title: '胶囊样式 / 带搜索栏',
+      blurb:
+        '#capsule 放微信小程序风格「返回 + 首页」胶囊；#title 换成胶囊形搜索框，左右保留文案按钮。',
+    },
+    {
+      name: 'navbar-mp-mp-capsule',
+      title: '微信小程序胶囊适配',
+      blurb:
+        '自定义导航右上角固定是系统胶囊；左侧胶囊 + 居中标题 + 右侧留白避让，safe-area-inset-top 按实测值留白。',
+    },
   ],
   props: {
     hint: [],

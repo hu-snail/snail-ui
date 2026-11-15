@@ -209,7 +209,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '导航栏',
         titleEn: 'Navbar',
         desc: '页面顶部标题栏',
-        count: 6,
+        count: 8,
       },
       {
         key: 'pagination',

@@ -4,16 +4,16 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1435 |
+| .uvue 产出 | 1439 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2060 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2068 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
 
 ## App.uvue 专属改写
 
-- static: mirrored 2 asset(s) from apps/uni-demo/src/static
+- static: mirrored 3 asset(s) from apps/uni-demo/src/static
 - App: @dcloudio/uni-app lifecycle import dropped (uvue auto-imports)
 - App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme
 - App: demo-bridge import dropped (docs-iframe only, ADR-0005)
@@ -193,6 +193,10 @@
 - ../uni-demo/src/pages/display/demos/img-cropper-mp-rotate.vue: ref
 - ../uni-demo/src/pages/display/demos/img-mp-state.en.vue: ref
 - ../uni-demo/src/pages/display/demos/img-mp-state.vue: ref
+- ../uni-demo/src/pages/display/demos/qr-code-mp-color.en.vue: computed
+- ../uni-demo/src/pages/display/demos/qr-code-mp-color.en.vue: ref
+- ../uni-demo/src/pages/display/demos/qr-code-mp-color.vue: computed
+- ../uni-demo/src/pages/display/demos/qr-code-mp-color.vue: ref
 - ../uni-demo/src/pages/display/demos/qr-code-mp-export.en.vue: ref
 - ../uni-demo/src/pages/display/demos/qr-code-mp-export.vue: ref
 - ../uni-demo/src/pages/display/demos/rich-text-mp-anchor.vue: ref
@@ -1020,8 +1024,12 @@
 - ../uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.vue: ref
 - ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.en.vue: ref
 - ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.vue: ref
+- ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule.en.vue: ref
+- ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule.vue: ref
 - ../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.en.vue: ref
 - ../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.vue: ref
+- ../uni-demo/src/pages/navigation/demos/navbar-mp-mp-capsule.en.vue: ref
+- ../uni-demo/src/pages/navigation/demos/navbar-mp-mp-capsule.vue: ref
 - ../uni-demo/src/pages/navigation/demos/pagination-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/navigation/demos/pagination-mp-basic.vue: ref
 - ../uni-demo/src/pages/navigation/demos/pagination-mp-disabled.en.vue: ref
@@ -1861,7 +1869,9 @@
 - pages/display/demos/qr-code-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-canvas-id.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
 - pages/display/demos/qr-code-mp-canvas-id.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
+- pages/display/demos/qr-code-mp-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/qr-code-mp-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/qr-code-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-dot-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-dot-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2537,7 +2547,7 @@
 - pages/form-2/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
-- pages/index/index.vue: [template-attr] 7 @tap binding(s) renamed to @click
+- pages/index/index.vue: [template-attr] 10 @tap binding(s) renamed to @click
 - pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__btn:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
@@ -2642,6 +2652,14 @@
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-capsule.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-capsule.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-capsule.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-capsule.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-mp-capsule.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-mp-capsule.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-mp-capsule.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-mp-capsule.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/pagination-mp-slots.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/pagination-mp-slots.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/popover-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2675,7 +2693,7 @@
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/navigation/grid.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
-- pages/navigation/navbar.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation/navbar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
