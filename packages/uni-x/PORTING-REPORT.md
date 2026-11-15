@@ -12,7 +12,7 @@
 | import-rewrite | 83 |
 | defineSlots-stripped | 69 |
 | unsupported-property | 33 |
-| patch | 19 |
+| patch | 15 |
 | template-bare-text | 12 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
@@ -22,7 +22,7 @@
 - **sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.
 - **sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).
 - **sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.
-- **sn-qr-code** — canvas runs on the W3C-aligned 2d context of uni-app x (bitmap sizing + `toDataURL` export patched in); verify first-paint bitmap timing and the roundRect/gradient fallbacks on device.
+- **sn-qr-code** — the shared source detects the host: uni-app x App/Web use the W3C 2d context (element box × DPR bitmap, device-pixel drawing), uni-app x mini-programs use only `uni.createCanvasContextAsync` (logical px when no resizable bitmap, cached surface, `draw()` flush, bounded repaint tail), classic uni-app keeps `createCanvasContext` + `draw()`. Verify on device: MP-WEIXIN / MP-ALIPAY first paint, the rounded corner-block `roundRect` → `arc` → `fillRect` degradation, gradient fallbacks and `toDataURL` export.
 - **sn-paging** — scroll-view `refresher` slot content + refresherpulling/refresh/restore/abort contract: verify the custom refresher renders and `refresher-triggered` collapses on uvue devices; load-more rides native `@scrolltolower`.
 - **sn-icon** — IconData path renders via `<image>` + SVG data URL; verify App-side SVG decode, otherwise use the iconfont glyph path (`name` prop).
 - **Style packs** — skins ARE variable-injected: two-level skin rules flatten into single-class `--snx-*` blocks (measured: 59 components, 1097 injected vars, 434 consumers). Only 9 interactive-state rules (`:hover`/`:active`) are dropped — pseudo-classes are unrepresentable on App (ADR-0004 revision).
@@ -378,15 +378,15 @@
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 type import(s) redirected to sn-icon-types
 - import specifier rewritten for .uvue dist — `import-rewrite`: 2 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- bare text wrapped in <text> — `template-bare-text` (line 113): 1 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 119): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 4 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 128): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 157): outline stripped
+- unsupported property stripped — `unsupported-property` (line 134): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 176): outline stripped
 - unsupported property stripped — `unsupported-property`: cursor stripped
-- unsupported property stripped — `unsupported-property` (line 180): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 209): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 230): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 199): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 228): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 249): cursor stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 7 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-keyboard-panel/sn-keyboard-panel.uvue
@@ -542,13 +542,9 @@
 
 ### sn-qr-code/sn-qr-code.uvue
 
-- patch applied — `patch`: UniHost gains getDeviceInfo for uni-app x canvas bitmap sizing
-- patch applied — `patch`: CanvasLike gains toDataURL (uni-app x export path)
-- patch applied — `patch`: uni-app x canvas bitmap sizing + DPR scale added (official sample pattern)
-- patch applied — `patch`: element-context path (uni-app x template ref = UniCanvasElement) applies bitmap sizing
-- patch applied — `patch`: exportImage prefers ctx.toDataURL (uni-app x); legacy canvasToTempFilePath stays as fallback
+- patch applied — `patch`: declare const uni stripped — UTS has no ambient declarations (uni is a built-in namespace)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
-- template attribute rewritten — `template-attr`: 5 data-* attribute(s) stripped
+- template attribute rewritten — `template-attr`: 6 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-radio/sn-radio-group.uvue

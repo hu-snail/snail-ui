@@ -4,19 +4,82 @@ import { describe, expect, it } from 'vitest';
 import { transformVueToUvue } from './index.ts';
 import { PATCHES } from './patches.ts';
 
-describe('sn-qr-code canvas patches (uni-app x)', () => {
-  it('should apply every qr-code anchor patch to a source containing all anchors', () => {
-    const patches = PATCHES['sn-qr-code/sn-qr-code.vue'] ?? [];
-    expect(patches.length).toBeGreaterThanOrEqual(5);
-    // A source containing every anchor verbatim guarantees every patch fires.
-    const source = `<script setup lang="ts">\n${patches
-      .map((p) => p.anchor)
-      .join('\n')}\n</script>\n<template>\n  <view />\n</template>\n`;
-    const result = transformVueToUvue(source, 'sn-qr-code/sn-qr-code.vue');
-    expect(result.issues.filter((i) => i.kind === 'patch').length).toBe(patches.length);
-    expect(result.code).toContain('applyCanvasBitmapSize');
+describe('sn-qr-code canvas rendering (uni-app x)', () => {
+  // Regression (device / H5 preview): the component preferred the legacy
+  // `uni.createCanvasContext`, which on uni-app x is a deprecated shim that
+  // paints into a detached surface — every QR rendered fully transparent.
+  // The fix lives in the SHARED source (packages/uni), not in a uni-x patch,
+  // so the classic uni-app branch and the uni-app x branch cannot drift.
+  const source = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-qr-code/sn-qr-code.vue'),
+    'utf8',
+  );
+  const result = transformVueToUvue(source, 'sn-qr-code/sn-qr-code.vue');
+
+  it('strips only the tsc declare and keeps the shared W3C surface resolution', () => {
+    // The single patch strips `declare const uni` — UTS has no ambient
+    // declarations and resolves `uni` as a built-in namespace. Everything else
+    // (host detection, surface resolution, DPR sizing) must stay untouched.
+    expect(PATCHES['sn-qr-code/sn-qr-code.vue']).toHaveLength(1);
+    expect(result.code).not.toContain('declare const uni');
+    expect(result.issues.filter((i) => i.kind === 'patch')).toHaveLength(1);
+    expect(result.code).toContain('function isUniAppX()');
+    // Surface resolution is centralised in acquireSurface(): uni-app x Web
+    // takes the W3C element, while uni-app x mini-programs take the cached
+    // async CanvasContext (getElementById is unavailable there).
+    expect(result.code).toContain('function acquireSurface()');
+    expect(result.code).toContain('if (isMiniProgram()) return asyncSurface;');
+    expect(result.code).toContain('return tryW3cSurface();');
+    expect(result.code).toContain('getElementById');
+    expect(result.code).toContain('createCanvasContextAsync');
+  });
+
+  it('sizes the bitmap from the element box × DPR and draws in device pixels', () => {
+    expect(result.code).toContain('elementBoxSize');
+    expect(result.code).toContain('devicePixelRatio()');
+    expect(result.code).toContain('const extent = surface.extent');
+    // No scale(): a second sizing pass used to double the DPR transform.
+    expect(result.code).not.toContain('ctx.scale(');
+    expect(result.code).not.toContain('applyCanvasBitmapSize');
+  });
+
+  it('keeps the legacy draw() flush and the component proxy scope for classic uni-app', () => {
+    expect(result.code).toContain('tryLegacySurface()');
+    expect(result.code).toContain('componentScope()');
+    // The draw() flush now covers both the legacy uni context and the
+    // mini-program async context that queues commands behind a W3C-shaped API.
+    expect(result.code).toContain('surface.legacy || surface === asyncSurface');
+    expect(result.code).toContain("typeof ctx.draw === 'function'");
+  });
+
+  it('retries first paint until layout is measured and exports via toDataURL', () => {
+    expect(result.code).toContain('UNI_X_RETRY_DELAYS');
+    expect(result.code).toContain('onCanvasReady');
+    expect(result.code).toContain('@ready="onCanvasReady"');
     expect(result.code).toContain('toDataURL');
-    expect(result.code).toContain('getDeviceInfo');
+  });
+
+  it('carries the rounded corner blocks from the shared source, not a patch', () => {
+    expect(result.code).toContain('cornerRadius?: number');
+    expect(result.code).toContain('DEFAULT_CORNER_RADIUS');
+    expect(result.code).toContain('function cornerBlocks(matrix: SnQrEncoded)');
+    expect(result.code).toContain('function paintRoundedRect(');
+    expect(result.code).toContain('cornerRadiusValue.value');
+    // `data-*` attributes are tool hooks only and must not reach the uvue.
+    expect(result.code).not.toContain('data-corner-radius');
+  });
+
+  it('keeps the mini-program async CanvasContext path in the shared source', () => {
+    // Regression: on MP-WEIXIN the synchronous element lookup is unavailable
+    // and a template ref is not a W3C canvas. Painting through it left every
+    // QR blank. The fix is a host check + cached createCanvasContextAsync
+    // surface + logical-px extent + draw() flush + bounded repaint tail.
+    expect(result.code).toContain('function isMiniProgram()');
+    expect(result.code).toContain('getSystemInfoSync');
+    expect(result.code).toContain('asyncSurface');
+    expect(result.code).toContain('surface === asyncSurface');
+    expect(result.code).toContain('isUniAppX() && !hasBitmap');
+    expect(result.code).toContain('UNI_X_RETRY_DELAYS');
   });
 });
 
