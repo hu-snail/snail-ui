@@ -80,21 +80,23 @@ const stylePackVars = computed<Record<string, string>>(() => {
   return vars;
 });
 
-/** 弹出风格包选择（原生 action sheet，MP / H5 通用）。
- * success 回调取 res.tapIndex 而不是解构参数——uni-app x 蒸汽编译器
- * （HBuilderX 5.33 alpha）会静默丢弃含解构参数箭头回调的整个函数，
- * 首页换皮肤按钮因此变成 undefined（AUI-MP-002 回归）。 */
-function chooseStylePack(): void {
-  const labels: string[] = allPacks.map((p) => p.label);
-  uni.showActionSheet({
-    itemList: labels,
-    success: (res) => {
-      const pack = allPacks[res.tapIndex];
-      if (!pack) return;
-      stylePack.value = pack.name;
-      writeStored(STYLE_KEY, pack.name);
-    },
-  });
+/** 风格包选择项（名称 + 展示名 + 描述），供首页 sn-popup 选择弹层渲染。 */
+const stylePackOptions = computed(() =>
+  allPacks.map((p) => ({
+    name: p.name,
+    label: p.label,
+    description: p.description ?? '',
+  })),
+);
+
+/** 设定风格包并持久化（未知名忽略）。弹层 UI（sn-popup）在首页自身维护。
+ * 注意（AUI-MP-002 回归）：uvue 蒸汽编译器会静默丢弃含「解构参数箭头回调」
+ * 的整个函数——保持无回调的同步实现，不要塞 success: ({ tapIndex }) => …
+ * 这类写法，否则函数整体变 undefined，调用点静默失效。 */
+function setStylePack(name: string): void {
+  if (!allPacks.some((p) => p.name === name)) return;
+  stylePack.value = name;
+  writeStored(STYLE_KEY, name);
 }
 
 /* ── MP 样式隔离桥（AUI-MP-002）─────────────────────────────────────────
@@ -320,6 +322,7 @@ export function useDemoUi() {
     isDark,
     stylePack,
     stylePackLabel,
+    stylePackOptions,
     stylePackVars,
     shellVars,
     t,
@@ -327,6 +330,7 @@ export function useDemoUi() {
     toggleTheme,
     setTheme,
     setLang,
+    setStylePack,
     followSystemTheme,
     applyNavBar,
     setNavTitle,

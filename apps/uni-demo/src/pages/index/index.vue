@@ -14,7 +14,12 @@ import { computed, ref, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
-import { Search as SearchIcon, X as CloseIcon } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnPopup from '@snui/uni-src/components/sn-popup/sn-popup.vue';
+import {
+  Check as CheckIcon,
+  Search as SearchIcon,
+  X as CloseIcon,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -22,8 +27,17 @@ import { HOME_GROUPS } from './home-data';
 import type { DemoHomeComp } from './home-data';
 import { homeIcon } from './home-icons';
 
-const { lang, isDark, stylePack, stylePackLabel, t, toggleLang, toggleTheme, chooseStylePack } =
-  useDemoUi();
+const {
+  lang,
+  isDark,
+  stylePack,
+  stylePackLabel,
+  stylePackOptions,
+  t,
+  toggleLang,
+  toggleTheme,
+  setStylePack,
+} = useDemoUi();
 
 interface HomeComp extends DemoHomeComp {
   /** 当前语言下的组件名。 */
@@ -149,6 +163,22 @@ const themeLabel = computed(() =>
   isDark.value ? t('切换到浅色', 'Switch to light') : t('切换到深色', 'Switch to dark'),
 );
 
+/* ── 风格包选择弹层（sn-popup 底部面板；替代 uni.showActionSheet —— 首页
+ * 调色板按钮此前解构到未导出的 chooseStylePack，点击静默失效） ── */
+
+/** 风格包选择弹层可见性。 */
+const showStylePack = ref(false);
+const stylePackTitle = computed(() => t('选择风格包', 'Style pack'));
+
+function openStylePack(): void {
+  showStylePack.value = true;
+}
+
+function pickStylePack(name: string): void {
+  setStylePack(name);
+  showStylePack.value = false;
+}
+
 /* ── sn-paging 数据流：目录是静态数据，查询即时以当前可见全集应答 ── */
 
 /** sn-paging v-model 列表（query 应答 + 搜索/切类的直接同步共同驱动）。 */
@@ -218,7 +248,7 @@ function open(comp: HomeComp): void {
                   class="home__btn"
                   role="button"
                   :aria-label="t('切换风格', 'Switch style pack')"
-                  @tap="chooseStylePack"
+                  @tap="openStylePack"
                 >
                   <SnIcon :icon="PaletteIcon" :size="16" />
                   <text v-if="stylePack !== 'default'" class="home__btn-text">
@@ -315,6 +345,42 @@ function open(comp: HomeComp): void {
           <text class="home__empty-text">{{ t('没有匹配的组件', 'No matching components') }}</text>
         </template>
       </SnPaging>
+
+      <!-- 风格包选择：sn-popup 底部面板（closable + 点遮罩关闭 + 底部安全区） -->
+      <SnPopup
+        v-model="showStylePack"
+        position="bottom"
+        round
+        closable
+        safe-area-inset-bottom
+        :z-index="99"
+      >
+        <view class="home__packs">
+          <text class="home__packs-title">{{ stylePackTitle }}</text>
+          <view
+            v-for="option in stylePackOptions"
+            :key="option.name"
+            class="home__pack"
+            :class="{ 'home__pack--active': option.name === stylePack }"
+            role="button"
+            :aria-label="option.label"
+            @tap="pickStylePack(option.name)"
+          >
+            <view class="home__pack-info">
+              <text class="home__pack-label">{{ option.label }}</text>
+              <text v-if="option.description !== ''" class="home__pack-desc">
+                {{ option.description }}
+              </text>
+            </view>
+            <SnIcon
+              v-if="option.name === stylePack"
+              class="home__pack-check"
+              :icon="CheckIcon"
+              :size="16"
+            />
+          </view>
+        </view>
+      </SnPopup>
     </view>
   </DemoPageShell>
 </template>
@@ -438,21 +504,26 @@ function open(comp: HomeComp): void {
 }
 
 /* ── 分类 chips ───────────────────────────────────────────────────────── */
+/* 横滚条布局与 sn-tabs / sn-table 同款：内层 flex + min-width: 100% 让内容
+ * 撑开滚动宽度。不能用 inline-flex（uni-app x 布局引擎不支持，落回 flex 后
+ * 容器恒为视口宽，溢出的 chips 不产生滚动区 → 横向滑不动）。 */
 .home__chips {
   width: 100%;
-  white-space: nowrap;
   margin-bottom: 6rpx;
 }
 
 .home__chips-inner {
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 100%;
+  box-sizing: border-box;
   padding: 4rpx 2rpx 10rpx;
 }
 
 .home__chip {
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 64rpx;
@@ -462,9 +533,8 @@ function open(comp: HomeComp): void {
   background: var(--demo-chip-bg);
   border: 1px solid var(--demo-chip-border);
   color: var(--demo-text);
-  flex-shrink: 0;
+  flex: 0 0 auto;
   transition: opacity 0.15s ease;
-  flex-direction: row;
 }
 
 .home__chip:active {
@@ -480,7 +550,8 @@ function open(comp: HomeComp): void {
 .home__chip--active {
   background: linear-gradient(135deg, #7c5cfc, #a78bfa);
   border-color: transparent;
-  box-shadow: 0 10rpx 24rpx rgba(124, 92, 252, 0.32);
+  /* 选中态阴影收敛（0.32 → 0.18）：底部投影过重，视觉重心下坠 */
+  box-shadow: 0 6rpx 16rpx rgba(124, 92, 252, 0.18);
 }
 
 .home__chip--active .home__chip-text {
@@ -601,5 +672,62 @@ function open(comp: HomeComp): void {
 .home__foot-text {
   font-size: 22rpx;
   color: var(--demo-text-3);
+}
+
+/* ── 风格包选择弹层（sn-popup 底部面板内容） ──────────────────────────── */
+.home__packs {
+  display: flex;
+  flex-direction: column;
+  padding: 12rpx 12rpx 24rpx;
+}
+
+.home__packs-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--demo-title);
+  padding: 16rpx 20rpx 8rpx;
+}
+
+.home__pack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  margin-top: 12rpx;
+  border-radius: 24rpx;
+  background: var(--demo-chip-bg);
+  border: 1px solid var(--demo-chip-border);
+  transition: opacity 0.15s ease;
+}
+
+.home__pack--active {
+  background: var(--demo-icon-bg);
+  border-color: rgba(124, 92, 252, 0.45);
+}
+
+.home__pack-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.home__pack-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--demo-title);
+}
+
+.home__pack-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--demo-text-3);
+}
+
+.home__pack-check {
+  color: #7c5cfc;
+  flex-shrink: 0;
 }
 </style>

@@ -6,7 +6,7 @@
 | --- | --- |
 | .uvue 产出 | 1435 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2059 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2060 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -2535,7 +2535,7 @@
 - pages/form-2/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
-- pages/index/index.vue: [template-attr] 6 @tap binding(s) renamed to @click
+- pages/index/index.vue: [template-attr] 7 @tap binding(s) renamed to @click
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__btn:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__card:active"
