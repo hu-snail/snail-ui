@@ -829,6 +829,10 @@ function cellStyle(colSpan: number, width: string): string {
 .sn-rich-text__table-scroll {
   width: 100%;
   white-space: nowrap;
+  /* uni-app x: scroller flex-direction row — the content wrapper follows it,
+   * otherwise the table scroll extent clamps to the viewport (official
+   * scroll-view example pattern). No-op on uni-app H5. */
+  flex-direction: row;
 }
 
 .sn-rich-text__table-body {

@@ -506,9 +506,13 @@ function open(comp: HomeComp): void {
 /* ── 分类 chips ───────────────────────────────────────────────────────── */
 /* 横滚条布局与 sn-tabs / sn-table 同款：内层 flex + min-width: 100% 让内容
  * 撑开滚动宽度。不能用 inline-flex（uni-app x 布局引擎不支持，落回 flex 后
- * 容器恒为视口宽，溢出的 chips 不产生滚动区 → 横向滑不动）。 */
+ * 容器恒为视口宽，溢出的 chips 不产生滚动区 → 横向滑不动）。
+ * scroll-view 自身必须显式 flex-direction: row：uni-app x 的内容包装层跟随
+ * 组件的 flex 方向（官方示例同款），列向默认会把内层钳在视口宽；uni-app H5
+ * 的滚动层是块级盒，此声明无副作用。 */
 .home__chips {
   width: 100%;
+  flex-direction: row;
   margin-bottom: 6rpx;
 }
 

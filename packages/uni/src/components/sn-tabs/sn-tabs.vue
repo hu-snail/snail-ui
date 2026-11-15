@@ -501,6 +501,11 @@ const scrollIntoViewId = computed(() => {
 .sn-tabs__nav {
   width: 100%;
   white-space: nowrap;
+  /* uni-app x: the scroll-view content wrapper follows the component's
+   * flex-direction — declare row or the inner clamps to the viewport width
+   * and the strip can never scroll (official scroll-view example pattern).
+   * No-op on uni-app H5, where the scroller is a block box. */
+  flex-direction: row;
   background-color: var(--sn-mp-color-background-surface);
 }
 

@@ -1486,9 +1486,11 @@
 - pages/basic-2/demos/icon-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/basic-2/demos/icon-mp-gallery.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-iconify.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-iconify.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2536,6 +2538,7 @@
 - pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [template-attr] 7 @tap binding(s) renamed to @click
+- pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__btn:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__card:active"

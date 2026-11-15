@@ -63,4 +63,57 @@ describe('transformTemplate', () => {
     const r = transformTemplate("<view :class=\"a > b ? 'x' : 'y'\" />", FILE);
     expect(r.code).toBe("<view :class=\"a > b ? 'x' : 'y'\" />");
   });
+
+  it('should rewrite bare scroll-x to direction="horizontal"', () => {
+    const r = transformTemplate(
+      '<scroll-view class="chips" scroll-x :show-scrollbar="false"><view class="inner" /></scroll-view>',
+      FILE,
+    );
+    expect(r.code).toContain('direction="horizontal"');
+    expect(r.code).not.toContain('scroll-x');
+    expect(r.code).toContain(':show-scrollbar="false"');
+    expect(r.issues.some((i) => i.kind === 'template-attr' && i.detail.includes('direction'))).toBe(
+      true,
+    );
+  });
+
+  it('should rewrite :scroll-x="true" to direction="horizontal"', () => {
+    const r = transformTemplate('<scroll-view :scroll-x="true"><view /></scroll-view>', FILE);
+    expect(r.code).toContain('direction="horizontal"');
+    expect(r.code).not.toContain(':scroll-x');
+  });
+
+  it('should rewrite scroll-x combined with scroll-y to direction="all"', () => {
+    const r = transformTemplate(
+      '<scroll-view scroll-x :scroll-y="scrollsVertically"><view /></scroll-view>',
+      FILE,
+    );
+    expect(r.code).toContain('direction="all"');
+    expect(r.code).not.toContain('scroll-x');
+    expect(r.code).not.toContain(':scroll-y');
+  });
+
+  it('should keep scroll-y-only scroll-views untouched (uni-app x defaults to vertical)', () => {
+    const src = '<scroll-view scroll-y><view /></scroll-view>';
+    const r = transformTemplate(src, FILE);
+    expect(r.code).toBe(src);
+    expect(r.issues.some((i) => i.detail.includes('direction'))).toBe(false);
+  });
+
+  it('should flag non-literal :scroll-x bindings for manual attention', () => {
+    const r = transformTemplate('<scroll-view :scroll-x="canPan"><view /></scroll-view>', FILE);
+    expect(r.code).toContain(':scroll-x="canPan"');
+    expect(r.issues.some((i) => i.detail.includes('dynamic :scroll-x'))).toBe(true);
+  });
+
+  it('should not rewrite scroll-x appearing inside other attribute names or values', () => {
+    const r = transformTemplate(
+      '<scroll-view scroll-x :scroll-into-view="targetId" scroll-with-animation />',
+      FILE,
+    );
+    expect(r.code).toContain('direction="horizontal"');
+    expect(r.code).toContain(':scroll-into-view="targetId"');
+    expect(r.code).toContain('scroll-with-animation');
+    expect(r.code).not.toContain('scroll-x');
+  });
 });

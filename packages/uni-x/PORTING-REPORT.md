@@ -7,12 +7,12 @@
 
 | kind | count |
 | --- | --- |
-| template-attr | 170 |
+| template-attr | 173 |
 | flex-direction-row | 89 |
 | import-rewrite | 83 |
 | defineSlots-stripped | 69 |
 | unsupported-property | 33 |
-| patch | 17 |
+| patch | 19 |
 | template-bare-text | 12 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
@@ -41,6 +41,7 @@
 
 ### sn-avatar-group/sn-avatar-group.uvue
 
+- patch applied — `patch`: separating ring handed down as a border width on App — box-shadow crescents covered stacked avatars
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
@@ -48,6 +49,7 @@
 
 ### sn-avatar/sn-avatar.uvue
 
+- patch applied — `patch`: group-ring box-shadow replaced by an in-box surface-coloured border on App
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 type import(s) redirected to sn-icon-types
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
@@ -578,6 +580,7 @@
 
 ### sn-rich-text/sn-rich-text-node.uvue
 
+- template attribute rewritten — `template-attr`: 1 scroll-x/scroll-y attr(s) rewritten to direction
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 4 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-rich-text/sn-rich-text.uvue
@@ -745,6 +748,7 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
+- template attribute rewritten — `template-attr`: 1 scroll-x/scroll-y attr(s) rewritten to direction
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 4 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-tabs/sn-tab.uvue
@@ -759,6 +763,7 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
+- template attribute rewritten — `template-attr`: 1 scroll-x/scroll-y attr(s) rewritten to direction
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-tag/sn-tag.uvue

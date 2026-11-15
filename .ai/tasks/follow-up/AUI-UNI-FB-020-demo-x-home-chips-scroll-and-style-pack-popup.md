@@ -1,6 +1,6 @@
 # AUI-UNI-FB-020 — uni-demo-x 首页三处缺陷：chips 横滚失效 / 选中阴影过重 / 风格包按钮静默失效（已修复）
 
-- 状态：CLOSED（2026-11-15）
+- 状态：CLOSED（2026-11-15；二轮补充见文末「根因 1 补充」）
 - 页面：`apps/uni-demo/src/pages/index/index.vue` + `apps/uni-demo/src/state/demo-ui.ts`
   （uni-demo-x 侧为 gen-x 生成物，勿手改）
 - 类型：实现根因留档（AGENTS.md §103）
@@ -66,3 +66,56 @@ closable + 点遮罩关闭 + 底部安全区。
     `check`（101 pages / 113 tags 解析 / vapor manifest）PASS。
 - 记忆条目：本条目即项目层记忆（.minimax memory 体系在本机不存在，按 §103
   「只在本项目成立」落入仓库留档）。
+
+## 根因 1 补充（二轮）：一轮修复后 uni-app x 真实构建仍滑不动 —— 两个更深的根因
+
+**现场**：一轮验证做在 uni-demo（uni-app CLI H5）上全过；用户在 HBuilderX 里跑的
+是 **uni-demo-x（uni-app x vapor）web 运行**（占用同一个 5173 端口），刷新后依旧
+滑不动。教训：`apps/uni-demo`（uni-app）的浏览器验证**不能替代** uni-app x 真实
+构建的行为——两者 scroll-view 运行时完全不同（元素名 `uni-scroll-view` vs
+字面 `<scroll-view>` 标签可作鉴别特征）。
+
+**根因 1a：`scroll-x` 在 uni-app x 是废弃 no-op**。官方文档明确「已废弃，请改用
+direction」，vapor 构建实测该属性被忽略（滚动层 `overflow-x: hidden`，内容宽度
+被钳在视口）。uni-app x 横滚必须 `direction="horizontal"`（默认 `vertical`；
+组合横竖用 `all`）。
+
+**修法**：`packages/uni-x/src/transform/template.ts` 增加通用规则——`scroll-x`
+（bare / `:scroll-x="true"`）→ `direction="horizontal"`；与任意 `scroll-y` 形态
+同现 → `direction="all"`（剥掉两者）；`scroll-y` 单独出现不动（direction 默认即
+vertical）；动态 `:scroll-x="<expr>"` 无法映射（App 端禁止动态切向）→ 保留并发
+issue 报警。受影响产物：首页 chips / sn-tabs / sn-table（all）/ sn-rich-text
+表格滚动 / icon-mp-gallery demo。回归：`transform-template.test.ts` 6 条新用例
+（15/15 PASS）。
+
+**根因 1b：scroll-view 内容包装层跟随组件自身的 `flex-direction`**。即使
+`direction` 正确，包装层默认仍按列向布局，内层 `min-width: 100%` 被钳在视口宽、
+被内层 `overflow: hidden` 裁掉（uni-app x 的 view 默认裁剪，与 uni-app H5 的
+`overflow: visible` 不同）。必须给**横滚 scroll-view 自身**声明
+`flex-direction: row`（官方 scroll-view 示例同款），内容包装层才会行向布局、
+内层按内容自适应。uni-app H5 的滚动层是块级盒，该声明无副作用。
+
+**修法**：横滚 scroller 的源码 CSS 全部补 `flex-direction: row`——
+`sn-tabs__nav` / `sn-table__scroller` / `sn-rich-text__table-scroll`（库组件）+
+首页 `.home__chips` + icon-mp-gallery `.chips`（demo）。
+
+**验证（uni-app x 真实构建，HBuilderX 5.33 alpha web 运行 + 热编译）**：
+`direction="horizontal"` 落在元素上；滚动层 `scrollWidth 642 > clientWidth 365`、
+`overflow-x: auto`；内层 642 按内容自适应；程序化滚动到最大 277 后末位 chip 可点、
+分类切换生效；滚轮/触摸板横滑（wheel deltaX）到最大值生效；风格包 sn-popup 弹层
+四选项 / 选中回显 / 持久化 / 关闭复验通过。`uni-x` lint + typecheck + 75 测试、
+`build:h5`、`gen` + `check` 全过。App / MP-x 端编译 NOT RUN（无 CLI）。
+
+**桌面鼠标左键拖拽不滚动**是浏览器原生行为（overflow 滚动区只响应触摸/滚轮/
+触摸板，与所有 uni scroll-view 在桌面 web 上一致）；若需要鼠标拖拽需另立任务
+（参考 sn-picker-view 的 bindMouseGestures additive 先例，并处理拖拽 vs 点击
+chip 的歧义）。
+
+**教训（项目通用）**：
+1. uni-app x 横滚条 = `direction="horizontal"` + scroller 自身
+   `flex-direction: row` + 内容层 `flex + min-width: 100%`，三件缺一不可；
+2. `scroll-x` / `scroll-y` 在 uni-app x 是静默 no-op，transform 管线已统一改写，
+   新组件直接写 `direction` 也可以（uni-app 端不认识会告警，仍以源码写 scroll-x
+   + 管线改写为规范）；
+3. 跨端行为验证必须在目标端真实构建上做——HBuilderX 热编译 + 浏览器自动化可
+   本地闭环，不需要真机。

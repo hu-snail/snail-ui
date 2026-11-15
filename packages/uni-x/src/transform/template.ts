@@ -22,6 +22,21 @@ const TAP_RE = /@tap(?=[.=\s])/g;
 const DATA_ATTR_RE =
   /(\s)(?::)?data-[A-Za-z0-9_.-]+(?:="[^"]*"|='[^']*'|=[^\s"'<>/`]+|(?=[\s/<>]))/g;
 
+// scroll-x / scroll-y are deprecated no-ops in uni-app x (vapor honors only
+// `direction`, which defaults to vertical) — a scroll-x scroll-view silently
+// loses horizontal scrolling. Bare attr and the :scroll-x="true" literal map
+// to direction="horizontal"; combined with any scroll-y form they map to
+// direction="all". scroll-y-only stays untouched (default is vertical).
+// Non-literal :scroll-x bindings cannot map (App forbids dynamic direction
+// switches) — left in place and flagged via issue.
+const SCROLL_X_BARE_TEST = /(\s)scroll-x(?=[\s/=>])/;
+const SCROLL_X_BARE_RE = /(\s)scroll-x(?=[\s/=>])/g;
+const SCROLL_X_LITERAL_TEST = /(\s):scroll-x="true"(?=[\s/=>])/;
+const SCROLL_X_LITERAL_RE = /(\s):scroll-x="true"(?=[\s/=>])/g;
+const SCROLL_X_DYNAMIC_TEST = /(\s):scroll-x="(?!true")/;
+const SCROLL_Y_TEST = /(\s)(?::scroll-y="[^"]*"|scroll-y)(?=[\s/=>])/;
+const SCROLL_Y_RE = /(\s)(?::scroll-y="[^"]*"|scroll-y)(?=[\s/=>])/g;
+
 interface OpenTag {
   raw: string;
   name: string;
@@ -54,6 +69,7 @@ export function transformTemplate(src: string, file: string): TextTransformResul
   let bareText = 0;
   let renamedTap = 0;
   let strippedDataAttrs = 0;
+  let scrollDirRewrites = 0;
   let firstBareLine = 0;
   const lineAt = (pos: number): number => src.slice(0, pos).split('\n').length;
 
@@ -87,6 +103,30 @@ export function transformTemplate(src: string, file: string): TextTransformResul
       tagText = tagText.replace(TAP_RE, '@click');
       strippedDataAttrs += countMatches(tagText, DATA_ATTR_RE);
       tagText = tagText.replace(DATA_ATTR_RE, '$1');
+
+      // uni-app x scroll-view: deprecated scroll-x / scroll-y → direction
+      if (
+        SCROLL_X_BARE_TEST.test(tagText) ||
+        SCROLL_X_LITERAL_TEST.test(tagText) ||
+        SCROLL_X_DYNAMIC_TEST.test(tagText)
+      ) {
+        if (SCROLL_X_DYNAMIC_TEST.test(tagText)) {
+          issues.push({
+            file,
+            kind: 'template-attr',
+            detail: 'dynamic :scroll-x binding left in place — uni-app x App forbids dynamic direction switches, map to a static direction manually',
+          });
+        }
+        if (SCROLL_X_BARE_TEST.test(tagText) || SCROLL_X_LITERAL_TEST.test(tagText)) {
+          const direction = SCROLL_Y_TEST.test(tagText) ? 'all' : 'horizontal';
+          tagText = tagText
+            .replace(SCROLL_X_BARE_RE, `$1direction="${direction}"`)
+            .replace(SCROLL_X_LITERAL_RE, `$1direction="${direction}"`);
+          if (direction === 'all') tagText = tagText.replace(SCROLL_Y_RE, '$1');
+          scrollDirRewrites++;
+        }
+      }
+
       out += tagText;
       if (!tag.selfClosing) stack.push(tag.name);
       i = tag.end;
@@ -129,6 +169,13 @@ export function transformTemplate(src: string, file: string): TextTransformResul
       file,
       kind: 'template-attr',
       detail: `${strippedDataAttrs} data-* attribute(s) stripped`,
+    });
+  }
+  if (scrollDirRewrites > 0) {
+    issues.push({
+      file,
+      kind: 'template-attr',
+      detail: `${scrollDirRewrites} scroll-x/scroll-y attr(s) rewritten to direction`,
     });
   }
   return { code: out, issues };
