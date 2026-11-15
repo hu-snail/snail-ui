@@ -191,13 +191,23 @@ const rootStyle = computed(() => {
   >
     <view :class="contentClass">
       <slot>
-        <!-- Square mode: one absolutely-positioned stack centred as a whole,
-             so icon + label keep their mutual spacing instead of being pinned
-             to fixed percentages that overlap in narrow cells. -->
+        <!-- Icon + label live in ONE stack. Square mode absolutely centres that
+             stack inside the padding-box square: with the label outside the
+             stack it sat in the 0-height content box, overflowed into the
+             padding and was clipped by the uni-app x view (label half-hidden,
+             pinned above the icon). Keeping both children together also makes
+             `reverse` (order on icon-wrap) and horizontal layout work. -->
         <view class="sn-grid-item__stack">
           <view
             class="sn-grid-item__icon-wrap"
-            :class="{ 'sn-grid-item__icon-wrap--reverse': grid?.reverse.value }"
+            :class="{
+              'sn-grid-item__icon-wrap--reverse': grid?.reverse.value,
+              /* Reserve a corner only for cells that actually draw a badge:
+               * square cells have a FIXED height, and a permanent padding makes
+               * icon + gap + label taller than the clipped stack (label bottom
+               * gets shaved off by the view's default overflow: hidden). */
+              'sn-grid-item__icon-wrap--badge': isDot || badgeText,
+            }"
           >
             <slot name="icon">
               <SnIcon
@@ -221,16 +231,16 @@ const rootStyle = computed(() => {
               <text v-if="badgeText" class="sn-grid-item__badge-text">{{ badgeText }}</text>
             </view>
           </view>
-        </view>
 
-        <view class="sn-grid-item__text-wrap">
-          <slot name="text">
-            <text
-              class="sn-grid-item__text"
-              :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
-              >{{ text }}</text
-            >
-          </slot>
+          <view class="sn-grid-item__text-wrap">
+            <slot name="text">
+              <text
+                class="sn-grid-item__text"
+                :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
+                >{{ text }}</text
+              >
+            </slot>
+          </view>
         </view>
       </slot>
     </view>
@@ -273,9 +283,11 @@ const rootStyle = computed(() => {
   justify-content: center;
 }
 
-/* The stack mirrors the content's flex layout so icon and label keep the
-  * gap-driven spacing in every mode; content lays out the stack as a single
-  * child (column / row / centring / top-align all keep working). */
+/* The stack owns BOTH the icon and the label, so their gap-driven spacing is
+  * identical in every mode and `reverse` can reorder the two siblings. content
+  * lays out the stack as a single child (column / row / centring all keep
+  * working); in square mode the stack is the one absolutely centred inside the
+  * padding-box square, which keeps every child inside a non-clipping box. */
 .sn-grid-item__stack {
   display: flex;
   flex: 0 0 auto;
@@ -318,6 +330,21 @@ const rootStyle = computed(() => {
   color: var(--sn-mp-color-text-secondary);
 }
 
+/* uni-app x clips overflowing children of a view by default. The badge must
+ * stay INSIDE this box — the old negative top/right offsets were shaved into
+ * a half-circle. Symmetric padding reserves the corner without moving the
+ * icon off centre.
+ *
+ * This padding is CONDITIONAL on `--badge`: a square cell is a fixed-height
+ * padding-box square (`height: 0; padding-bottom: 100%`) with an absolutely
+ * positioned stack. Adding 24rpx to both sides here grows icon-wrap to ~53px,
+ * which with the gap and the ~17px label exceeds the ~62px stack; centring
+ * then pushes the label past the stack's clipped bottom edge. Every badge-less
+ * square cell (the "布局" demo) must stay padding-free. */
+.sn-grid-item__icon-wrap--badge {
+  padding: var(--sn-mp-spacing-4);
+}
+
 .sn-grid-item__icon {
   color: inherit;
 }
@@ -342,10 +369,12 @@ const rootStyle = computed(() => {
   text-overflow: ellipsis;
 }
 
+/* Pinned to the icon box's own top-right corner (see the padding note above):
+ * no part of the badge leaves the box, so neither App nor web can clip it. */
 .sn-grid-item__badge {
   position: absolute;
-  top: -8rpx;
-  right: -16rpx;
+  top: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -358,8 +387,8 @@ const rootStyle = computed(() => {
 }
 
 .sn-grid-item__badge--dot {
-  top: -4rpx;
-  right: -8rpx;
+  top: 0;
+  right: 0;
   min-width: 14rpx;
   width: 14rpx;
   height: 14rpx;
