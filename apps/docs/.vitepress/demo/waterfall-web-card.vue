@@ -7,7 +7,7 @@
  *   - `masonry=false` 关掉多列布局，退化为普通单列竖向堆叠；
  *   - 同一份子项数据在不同列数下按最短列优先重新分配。
  *
- * 卡片封面使用真实网络图片（picsum.photos），`seed` 固定则同一张图稳定复现。
+ * 卡片封面使用真实网络图库（uview CDN，国内稳定图源）：`seed` 中的数字映射到固定的 10 张图。
  */
 import { ref } from 'vue';
 import { SnCard, SnWaterfall } from '@snui/vue-web';
@@ -75,7 +75,7 @@ const cards: CardItem[] = [
 /** 按封面目标比例取图（占位宽 300px），`object-fit: cover` 再兜底裁切。 */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 const columnOptions = [2, 3, 4];

@@ -7,7 +7,7 @@
  * placement packs each column on its own, so a short column never leaves a
  * hole beside a tall one.
  *
- * Tile images come from a real network source (picsum.photos): the `seed` is
+ * Tile images come from a stable China-hosted library (uview CDN): the `seed` digits map
  * fixed, so the same photo is reproduced every time.
  */
 import { SnWaterfall } from '@snui/vue-web';
@@ -33,7 +33,7 @@ const tiles: Tile[] = [
 /** Request the image at the tile's aspect ratio; `object-fit` crops the rest. */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 </script>
 

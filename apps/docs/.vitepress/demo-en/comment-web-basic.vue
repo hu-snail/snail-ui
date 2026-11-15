@@ -7,7 +7,7 @@ import { SnComment } from '@snui/vue-web';
   <div class="comment-demo">
     <SnComment
       author="Socrates"
-      avatar="https://picsum.photos/id/1005/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/7.jpg"
       datetime="1 hour ago"
       content="The unexamined life is not worth living. Design is no different: every UI decision should be able to answer 'why this way'."
     >

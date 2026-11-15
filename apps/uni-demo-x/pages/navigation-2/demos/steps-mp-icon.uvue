@@ -12,7 +12,7 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 import { Home, ShoppingCart, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** 图片图标：与矢量图标共用同一套尺寸档位。 */
-const riderAvatar = 'https://picsum.photos/seed/snui-steps-rider/48/48';
+const riderAvatar = 'https://cdn.uviewui.com/uview/album/3.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

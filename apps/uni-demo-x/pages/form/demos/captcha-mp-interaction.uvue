@@ -23,8 +23,8 @@ const chainPassed = computed(() => sliderPassed.value && puzzlePassed.value);
 
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
-  'https://picsum.photos/seed/snui-captcha-chain-a/600/400',
-  'https://picsum.photos/seed/snui-captcha-chain-b/600/400',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
 ];
 
 const sceneIndex = ref(0);

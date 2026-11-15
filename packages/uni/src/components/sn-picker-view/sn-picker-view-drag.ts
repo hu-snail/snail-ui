@@ -62,6 +62,7 @@
  */
 
 import { ref, type Ref } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 /** Viewport assumed when neither `uni` nor `window` reports a width (tests). */
 const DEFAULT_VIEWPORT_WIDTH = 375;
@@ -220,13 +221,10 @@ function touchY(event: Event, identifier: number | null): number | null {
 
 /** Viewport width in px — the basis of the rpx unit (750rpx = viewport). */
 function viewportWidth(): number {
-  const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowWidth?: number } };
-    innerWidth?: number;
-  };
-  const width = host.uni?.getSystemInfoSync?.()?.windowWidth;
-  if (typeof width === 'number' && width > 0) return width;
-  if (typeof host.innerWidth === 'number' && host.innerWidth > 0) return host.innerWidth;
+  const uniWidth = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number } }>()?.getSystemInfoSync?.()?.windowWidth;
+  if (typeof uniWidth === 'number' && uniWidth > 0) return uniWidth;
+  const innerWidth = (globalThis as { innerWidth?: number }).innerWidth;
+  if (typeof innerWidth === 'number' && innerWidth > 0) return innerWidth;
   return DEFAULT_VIEWPORT_WIDTH;
 }
 

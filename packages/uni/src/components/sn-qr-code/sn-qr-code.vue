@@ -108,6 +108,7 @@
  */
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 import { encode, type SnQrEncoded } from './sn-qr-core';
 
 defineOptions({ name: 'SnQrCode' });
@@ -332,12 +333,6 @@ interface UniHost {
   getSystemInfoSync?: () => unknown;
 }
 
-/**
- * Ambient free identifier — the uni-app / uni-app x compilers rewrite it into
- * their injected API module. Type-only; erased at build time.
- */
-declare const uni: UniHost | undefined;
-
 /** A resolved drawing target plus the coordinate space it expects. */
 interface QrSurface {
   ctx: CanvasLike;
@@ -350,20 +345,7 @@ interface QrSurface {
 }
 
 function getUni(): UniHost | null {
-  // `uni` MUST be read through the free identifier: the uni compilers rewrite
-  // it to their injected API module, the only channel that resolves on classic
-  // uni-app mini-programs — there `globalThis.uni` is NOT set (verified in the
-  // WeChat app-service), which left every surface unresolved and every QR
-  // blank. The global slot stays as the fallback for test stubs, which vitest
-  // reaches through the catch because an unbound free identifier throws there.
-  // (try/catch rather than `typeof uni`: UTS on uni-app x App has no reliable
-  // typeof semantics for a namespace object.)
-  try {
-    return uni ?? null;
-  } catch {
-    const host = globalThis as { uni?: UniHost };
-    return host.uni ?? null;
-  }
+  return resolveUniHost<UniHost>();
 }
 
 /**

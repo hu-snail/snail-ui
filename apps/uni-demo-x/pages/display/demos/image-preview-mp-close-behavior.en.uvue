@@ -12,8 +12,8 @@ const preview = ref<{
 } | null>(null);
 
 const images = [
-  'https://picsum.photos/seed/snui-loop-a/900/1300',
-  'https://picsum.photos/seed/snui-loop-b/900/1300',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
 ];
 </script>
 <template>

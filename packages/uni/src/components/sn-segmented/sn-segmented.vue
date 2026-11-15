@@ -33,6 +33,7 @@
  */
 
 import { computed, ref, watch } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnSegmented' });
 
@@ -142,10 +143,10 @@ function isActive(option: SegmentedOption): boolean {
 /** Short haptic feedback — guarded because H5 has no vibration motor. */
 function vibrate(): void {
   if (!props.vibrateShort) return;
-  const uni = (globalThis as { uni?: { vibrateShort?: (opts?: object) => unknown } }).uni;
-  if (typeof uni?.vibrateShort !== 'function') return;
+  const host = resolveUniHost<{ vibrateShort?: (opts?: object) => unknown }>();
+  if (typeof host?.vibrateShort !== 'function') return;
   try {
-    uni.vibrateShort({});
+    host.vibrateShort({});
   } catch {
     /* Vibration is decorative — a host that rejects the API must not break tap. */
   }

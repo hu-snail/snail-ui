@@ -5,7 +5,7 @@
  */
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 
-const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+const plain = 'https://cdn.uviewui.com/uview/album/7.jpg';
 </script>
 
 <template>

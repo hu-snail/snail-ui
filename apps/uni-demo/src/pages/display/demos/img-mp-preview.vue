@@ -6,9 +6,9 @@
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 
 /** 缩略图地址与点击预览时打开的大图地址不同：previewSrc 覆盖 src。 */
-const thumb = 'https://picsum.photos/seed/snui-img-thumb/300/300';
-const full = 'https://picsum.photos/seed/snui-img-full/1400/1400';
-const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+const thumb = 'https://cdn.uviewui.com/uview/album/9.jpg';
+const full = 'https://cdn.uviewui.com/uview/album/10.jpg';
+const plain = 'https://cdn.uviewui.com/uview/album/1.jpg';
 </script>
 
 <template>

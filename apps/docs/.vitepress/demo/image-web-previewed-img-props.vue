@@ -7,7 +7,7 @@ import { SnImage } from '@snui/vue-web';
   <div class="demo-row">
     <SnImage
       width="120"
-      src="https://picsum.photos/id/1044/1200/800"
+      src="https://cdn.uviewui.com/uview/album/7.jpg"
       :previewed-img-props="{
         style: { border: '8px solid var(--sn-web-color-background-surface)', borderRadius: '8px' },
       }"

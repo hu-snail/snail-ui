@@ -30,6 +30,7 @@ import {
   type Ref,
 } from 'vue';
 import type { IconData } from './sn-icon-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 /** Last-resort ink so an unresolved color never erases the glyph. */
 const ICON_INK_FALLBACK = '#1a1a1a';
@@ -179,16 +180,17 @@ export function useMpIconColor(color: () => string): Ref<string> {
     if (!needsComputedColor()) return;
 
     // Query acquisition order:
-    // 1. `globalThis.uni` — uni-app x runtime injects it on App / H5 hosts.
-    // 2. The component's mp `$scope` — classic uni vue3 MP compiles keep the
-    //    uni API module-scoped (`globalThis.uni` is never assigned there), but
-    //    the WeChat Component instance natively owns `createSelectorQuery`.
-    //    Without this path every cascade-colored icon falls back to ink.
+    // 1. The uni API module (free `uni` identifier, rewritten by the uni
+    //    compilers — `globalThis.uni` is never assigned on classic MP, see
+    //    AUI-UNI-FB-012).
+    // 2. The component's mp `$scope` — the WeChat Component instance
+    //    natively owns `createSelectorQuery`. Without this path every
+    //    cascade-colored icon falls back to ink.
     const proxy = instance?.proxy as
       | { $scope?: IconUniHost; $?: { scope?: IconUniHost } }
       | null;
     const scope = proxy?.$scope ?? proxy?.$?.scope;
-    const globalHost = (globalThis as { uni?: IconUniHost }).uni;
+    const globalHost = resolveUniHost<IconUniHost>();
     let createQuery: (() => IconSelectorQuery) | null = null;
     let queryScope: unknown = instance?.proxy;
     if (typeof globalHost?.createSelectorQuery === 'function') {

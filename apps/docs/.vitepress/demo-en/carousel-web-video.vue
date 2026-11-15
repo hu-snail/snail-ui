@@ -6,10 +6,10 @@
 import { SnCarousel } from '@snui/vue-web';
 
 /**
- * 演示用网络图片（picsum.photos）。A fixed seed keeps the same image stable across visits.
+ * 演示用网络图片（uview CDN，国内稳定图源）。A fixed seed keeps the same image stable across visits.
  */
 function photo(seed: string, w = 800, h = 400): string {
-  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 /** options mode: type: 'video' marks video entries; the media markup is built in. */

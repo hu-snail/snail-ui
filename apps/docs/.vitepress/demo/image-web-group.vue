@@ -3,9 +3,9 @@
 import { SnImage, SnImageGroup } from '@snui/vue-web';
 
 const urls = [
-  'https://picsum.photos/id/1015/1200/800',
-  'https://picsum.photos/id/1016/1200/800',
-  'https://picsum.photos/id/1018/1200/800',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
+  'https://cdn.uviewui.com/uview/album/10.jpg',
 ];
 </script>
 

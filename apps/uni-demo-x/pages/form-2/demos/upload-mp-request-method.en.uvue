@@ -17,14 +17,14 @@ const uploader = ref<InstanceType<typeof SnUpload> | null>(null);
 const pending = ref<UploadFileItem[]>([
   {
     uid: 1,
-    url: 'https://picsum.photos/seed/req-a/200',
+    url: 'https://cdn.uviewui.com/uview/album/4.jpg',
     name: 'a.png',
     status: 'pending',
     percent: 0,
   },
   {
     uid: 2,
-    url: 'https://picsum.photos/seed/req-b/200',
+    url: 'https://cdn.uviewui.com/uview/album/5.jpg',
     name: 'b.png',
     status: 'pending',
     percent: 0,
@@ -35,20 +35,20 @@ const pending = ref<UploadFileItem[]>([
 const mixed = ref<UploadFileItem[]>([
   {
     uid: 3,
-    url: 'https://picsum.photos/seed/req-c/200',
+    url: 'https://cdn.uviewui.com/uview/album/6.jpg',
     name: 'c.png',
     status: 'loading',
     percent: 45,
   },
   {
     uid: 4,
-    url: 'https://picsum.photos/seed/req-d/200',
+    url: 'https://cdn.uviewui.com/uview/album/7.jpg',
     name: 'd.png',
     status: 'success',
     percent: 100,
     response: '{"id":"d"}',
   },
-  { uid: 5, url: 'https://picsum.photos/seed/req-e/200', name: 'e.png', status: 'fail' },
+  { uid: 5, url: 'https://cdn.uviewui.com/uview/album/8.jpg', name: 'e.png', status: 'fail' },
 ]);
 
 const lastResult = ref('—');

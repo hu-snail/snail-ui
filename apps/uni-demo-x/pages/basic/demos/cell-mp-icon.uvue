@@ -74,12 +74,12 @@ registerSnIcons({ 'cell-moon': MoonIcon });
       <SnCell
         title="前置图片"
         value="头像"
-        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+        prefix-icon-url="https://cdn.uviewui.com/uview/album/7.jpg"
       />
       <SnCell
         title="后置图片"
         value="附件"
-        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+        suffix-icon-url="https://cdn.uviewui.com/uview/album/8.jpg"
       />
     </SnCellGroup>
   </view>

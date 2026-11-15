@@ -6,9 +6,9 @@
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: 'Slide 1 · custom classes' },
+  { value: 'https://cdn.uviewui.com/uview/album/4.jpg', text: 'Slide 1 · custom classes' },
   {
-    value: 'https://picsum.photos/seed/snui-sw-c2/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/5.jpg',
     text: 'Slide 2 · custom caption style',
   },
 ];

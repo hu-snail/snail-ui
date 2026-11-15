@@ -73,12 +73,12 @@ registerSnIcons({ 'cell-moon': MoonIcon });
       <SnCell
         title="Leading image"
         value="Avatar"
-        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+        prefix-icon-url="https://cdn.uviewui.com/uview/album/4.jpg"
       />
       <SnCell
         title="Trailing image"
         value="Attachment"
-        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+        suffix-icon-url="https://cdn.uviewui.com/uview/album/5.jpg"
       />
     </SnCellGroup>
   </view>

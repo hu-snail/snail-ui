@@ -14,7 +14,7 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 import { Home, ShoppingCart, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 /** Image icon: shares the icon-size tiers with the vector glyphs. */
-const riderAvatar = 'https://picsum.photos/seed/snui-steps-rider/48/48';
+const riderAvatar = 'https://cdn.uviewui.com/uview/album/10.jpg';
 </script>
 
 <template>

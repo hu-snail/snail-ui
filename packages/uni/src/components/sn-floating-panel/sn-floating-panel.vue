@@ -32,9 +32,10 @@
  * ## Anchors and the viewport
  *
  * The wd default anchor set is `[100, windowHeight * 0.6]`. There is no
- * `window` on miniprogram, so the default is resolved from
- * `globalThis.uni.getSystemInfoSync()` when available and falls back to the
- * single static anchor otherwise. An explicit `anchors` array always wins.
+ * `window` on miniprogram, so the default is resolved from the uni
+ * `getSystemInfoSync()` API (via the shared free-identifier host resolver)
+ * when available and falls back to the single static anchor otherwise. An
+ * explicit `anchors` array always wins.
  *
  * ## Gesture model (AGENTS.md §41: nothing global to dispose)
  *
@@ -56,6 +57,7 @@
  */
 
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnFloatingPanel' });
 
@@ -113,10 +115,7 @@ const emit = defineEmits<{
  * guarded, so H5 / tests fall back to the single static anchor.
  */
 function defaultAnchors(): number[] {
-  const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowHeight?: number } };
-  };
-  const windowHeight = host.uni?.getSystemInfoSync?.()?.windowHeight;
+  const windowHeight = resolveUniHost<{ getSystemInfoSync?: () => { windowHeight?: number } }>()?.getSystemInfoSync?.()?.windowHeight;
   if (typeof windowHeight === 'number' && windowHeight > 0) {
     return [FALLBACK_HEIGHT, windowHeight * 0.6];
   }

@@ -12,7 +12,7 @@ const show = ref(false);
 const passed = ref(false);
 
 /** Stable network poster (picsum seed) so the puzzle cuts a real photo. */
-const SOURCE = 'https://picsum.photos/seed/snui-captcha-copy/640/320';
+const SOURCE = 'https://cdn.uviewui.com/uview/album/7.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

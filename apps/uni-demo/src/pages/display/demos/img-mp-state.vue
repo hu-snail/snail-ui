@@ -7,7 +7,7 @@ import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 
-const okSrc = 'https://picsum.photos/seed/snui-img-b/400/300';
+const okSrc = 'https://cdn.uviewui.com/uview/album/6.jpg';
 const brokenSrc = 'https://invalid.example/not-found.png';
 const src = ref(okSrc);
 </script>

@@ -25,14 +25,17 @@
  *   - `show-menu-by-longpress` maps onto `<image>`'s own
  *     `show-menu-by-longpress` attribute, which only WeChat honours; other
  *     targets ignore it.
- *   - `to` navigates through `globalThis.uni.navigateTo` behind an existence
- *     guard (see below), never through a router import — routing belongs to
+ *   - `to` navigates through the uni `navigateTo` API (resolved via the
+ *     shared free-identifier host resolver, see utils/uni-host) behind an
+ *     existence guard, never through a router import — routing belongs to
  *     the host (AGENTS.md §20 / §60).
  *
  * ## `to` navigation (AGENTS.md §23: no dynamic code, §60: host owns routing)
  *
- * `uni` is looked up through a guarded `globalThis` access, so the component
- * also renders in H5 / test environments where the uni runtime is absent.
+ * `uni` is resolved through the shared free-identifier resolver
+ * (utils/uni-host — AUI-UNI-FB-012: a `globalThis.uni` read never resolves on
+ * classic uni-app mini-programs), so the component also renders in H5 / test
+ * environments where the uni runtime is absent.
  * When there is no `navigateTo` (or the call fails, e.g. an unregistered page
  * path), the failure is swallowed and `click` still fires — the host can
  * handle navigation itself.
@@ -54,6 +57,7 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnCurtain' });
 
@@ -211,16 +215,13 @@ function requestClose(): void {
 /**
  * Navigate to `to` through the host uni runtime.
  *
- * `uni` is read from `globalThis` behind a guard so the component also works
+ * `uni` is read through the shared free-identifier resolver so the component also works
  * in H5 / tests where the runtime is absent. A rejected navigation (unknown
  * page path) is swallowed — `click` still fires so the host can react.
  */
 function navigateTo(): void {
   if (!props.to) return;
-  const host = globalThis as {
-    uni?: { navigateTo?: (options: { url: string }) => unknown };
-  };
-  const navigate = host.uni?.navigateTo;
+  const navigate = resolveUniHost<{ navigateTo?: (options: { url: string }) => unknown }>()?.navigateTo;
   if (typeof navigate !== 'function') return;
   try {
     const result = navigate({ url: props.to });

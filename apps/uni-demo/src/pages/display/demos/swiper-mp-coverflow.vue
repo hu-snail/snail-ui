@@ -8,16 +8,16 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 /** 露出效果演示（picsum 按种子稳定取图）。 */
 const peekSlides = [
-  { value: 'https://picsum.photos/seed/snui-peek-1/640/420', text: '北欧绿植美学空间' },
-  { value: 'https://picsum.photos/seed/snui-peek-2/640/420', text: '地中海夏日光影' },
-  { value: 'https://picsum.photos/seed/snui-peek-3/640/420', text: '晨光采光' },
-  { value: 'https://picsum.photos/seed/snui-peek-4/640/420', text: '暮色度假光影' },
-  { value: 'https://picsum.photos/seed/snui-peek-5/640/420', text: '焕灯光影' },
+  { value: 'https://cdn.uviewui.com/uview/album/7.jpg', text: '北欧绿植美学空间' },
+  { value: 'https://cdn.uviewui.com/uview/album/8.jpg', text: '地中海夏日光影' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: '晨光采光' },
+  { value: 'https://cdn.uviewui.com/uview/album/10.jpg', text: '暮色度假光影' },
+  { value: 'https://cdn.uviewui.com/uview/album/1.jpg', text: '焕灯光影' },
 ];
 
 /** 景深层叠演示（更低 coverflow-scale，层叠感更强）。 */
 const scaleSlides = [1, 2, 3, 4].map((n) => ({
-  value: `https://picsum.photos/seed/snui-scale-${n}/640/420`,
+  value: `https://cdn.uviewui.com/uview/album/7.jpg`,
   text: `微动效设计 ${n}`,
 }));
 </script>

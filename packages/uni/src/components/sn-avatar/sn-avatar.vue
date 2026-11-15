@@ -75,7 +75,7 @@
  * stylesheet below applies to itself.
  */
 
-import { computed, inject, markRaw, ref, watch } from 'vue';
+import { computed, getCurrentInstance, inject, markRaw, onUnmounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
@@ -206,9 +206,19 @@ const fallbackText = computed<string>(() => {
  * Group context: inside `sn-avatar-group` the group's `size` / `shape` win —
  * the reference contract is "统一设置组内头像尺寸 / 形状" (uniformly set the
  * group's avatars). `inject` is template-independent, so this survives the MP
- * compiler, unlike re-rendering the slot's vnodes with extra props.
+ * compiler, unlike re-rendering the slot's vnodes with extra props. This
+ * avatar also registers its uid into the group's member registry (setup-time,
+ * idempotent) — the group derives the fold geometry from the registry instead
+ * of counting slot vnodes, whose shape and population timing differ on every
+ * uni runtime (see `avatar-group-context.ts`).
  */
 const group = inject(SN_AVATAR_GROUP, null);
+const selfUid = getCurrentInstance()?.uid;
+if (group?.value.registerMember && selfUid !== undefined) {
+  console.log("[avatar-reg] uid", selfUid, "hasReg", !!group.value.registerMember);
+  group.value.registerMember(selfUid);
+  onUnmounted(() => group.value.unregisterMember?.(selfUid));
+}
 
 /** Effective diameter source: group → own prop → `normal` default. */
 const sizeSource = computed<string | number>(() => group?.value.size ?? props.size);

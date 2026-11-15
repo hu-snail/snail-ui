@@ -47,7 +47,7 @@ const observerOptions = { rootMargin: '400px' };
       v-for="photo in photos"
       :key="photo.id"
       class="waterfall-image__photo"
-      :src="`https://picsum.photos/seed/${photo.seed}/${photo.width}/${photo.height}`"
+      :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
       :width="photo.width"
       :height="photo.height"
       :alt="photo.title"

@@ -6,7 +6,7 @@ import type { RichTextInstance } from '@snui/uni-src/components/sn-rich-text/sn-
 
 const media = `
   <h3>视频片段</h3>
-  <video id="trip" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/2minute-demo.mp4" poster="https://picsum.photos/id/1016/640/360"></video>
+  <video id="trip" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/2minute-demo.mp4" poster="https://cdn.uviewui.com/uview/album/6.jpg"></video>
   <h3>音频片段</h3>
   <audio id="music" title="阅读时光" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/ForElise.mp3"></audio>
   <p>通过组件方法播放 / 暂停 / 跳转，<code>true</code> 表示指令已下发。</p>

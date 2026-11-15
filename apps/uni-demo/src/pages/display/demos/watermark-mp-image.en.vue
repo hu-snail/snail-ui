@@ -5,7 +5,7 @@
  */
 import SnWatermark from '@snui/uni-src/components/sn-watermark/sn-watermark.vue';
 
-const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
+const logo = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 
 <template>

@@ -61,6 +61,7 @@ import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } 
 import { barsOf, dotsOf, shouldSample } from './sn-signature-strokes';
 import type { SignaturePoint, SignatureSegment } from './sn-signature-strokes';
 import { bindMouseDrawing } from './sn-signature-mouse';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnSignature' });
 
@@ -252,8 +253,7 @@ interface PadQueryLike {
 
 /** Refresh the cached pad origin (mini-program path; no-op without a host). */
 function measurePadOrigin(): void {
-  const host = (globalThis as { uni?: { createSelectorQuery?: () => PadQueryLike } }).uni;
-  const createSelectorQuery = host?.createSelectorQuery;
+  const createSelectorQuery = resolveUniHost<{ createSelectorQuery?: () => PadQueryLike }>()?.createSelectorQuery;
   if (typeof createSelectorQuery !== 'function') return;
   try {
     const query = createSelectorQuery();

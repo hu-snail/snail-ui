@@ -69,12 +69,10 @@
  *   - 角标 / 在线状态 — sn-badge / sn-avatar 的 status
  */
 
-import { computed, onMounted, onUpdated, provide, ref, useSlots } from 'vue';
-import { Fragment } from 'vue';
+import { computed, provide, ref } from 'vue';
 import SnAvatar from '../sn-avatar/sn-avatar.vue';
 import { SN_AVATAR_GROUP } from '../sn-avatar/avatar-group-context';
 import { resolveGeometry } from './sn-avatar-group-geometry';
-import { resolveSlotNodes } from './sn-avatar-group-slots';
 
 defineOptions({ name: 'SnAvatarGroup' });
 
@@ -125,105 +123,64 @@ defineSlots<{
  * 组内头像…"). provide/inject survives every end, unlike re-rendering the
  * slot's vnodes with extra props — the MP compiler cannot express that.
  */
+/**
+ * 成员注册表（uid）+ 注册版本号：头像在 setup 里注册、卸载时注销（见
+ * avatar-group-context）。版本号在每次注册/注销时递增，totalCount 读它——
+ * 只靠 memberUids 的数组变更不够：注册发生在**子组件的 setup**（嵌在组的
+ * patch 过程里），此刻组自己的渲染 effect 尚未建立对 memberUids 的订阅，
+ * Vue 的调度会把这次变更当作「渲染期间变更」丢弃，组从此不再更新（实测：
+ * totalCount 已到 4 而模板永远渲染 +0）。显式版本号让组渲染 effect 在首次
+ * 渲染时订阅它，之后的每次递增都必然调度一次组重渲染。
+ */
+const memberUids = ref<number[]>([]);
+const registryVersion = ref(0);
+
 provide(
   SN_AVATAR_GROUP,
-  computed(() => ({ size: props.size, shape: props.shape })),
+  computed(() => ({
+    size: props.size,
+    shape: props.shape,
+    registerMember: (uid: number) => {
+      if (memberUids.value.includes(uid)) return;
+      // 赋值推迟到微任务：注册发生在组的渲染 effect 执行期间（子组件 setup
+      // 嵌在组 patch 里），同步变更会被 Vue 当作「渲染期间变更」丢弃——实测
+      // totalCount 已正确而模板永远停在 +0。微任务里赋值落在渲染之外，
+      // registryVersion 的递增必然调度一次组重渲染。
+      queueMicrotask(() => {
+        if (memberUids.value.includes(uid)) return;
+        memberUids.value = [...memberUids.value, uid];
+        registryVersion.value++;
+      });
+    },
+    unregisterMember: (uid: number) => {
+      if (!memberUids.value.includes(uid)) return;
+      queueMicrotask(() => {
+        memberUids.value = memberUids.value.filter((u) => u !== uid);
+        registryVersion.value++;
+      });
+    },
+  })),
 );
 
-const slots = useSlots();
-
 /**
- * MP slot wiring is LATE: on mini-program runtimes the slot content reaches
- * `instance.slots` only after the component attaches (the setup-time
- * `slots.default` is undefined — the uni runtime hands the rendered slot over
- * through the compiled WXML properties). The count therefore reads as 0 at
- * setup on MP: no clip window, no bubble, every member un-clipped (device
- * regression). Bump a version on mounted / updated, and re-bump on a
- * staggered schedule (the sn-icon computedStyle probing pattern) — the
- * wiring timing differs per runtime and device, and the group does not
- * re-render by itself, so only these bumps re-run the count. Once wired the
- * count is stable: extra bumps re-walk and get the same number (no loop).
+ * 成员总数 = 注册数 − 1：折叠头像**常驻渲染**（v-show 控制显隐）、永远注册，
+ * 所以注册数恒为「成员 + 折叠头像」，减一即成员数——该恒等式让计数与插槽
+ * 形态、填充时序彻底解耦（vnode 计数在 MP 各运行时形态/时序不一，已废弃）。
  */
-const slotVersion = ref(0);
-onMounted(() => {
-  slotVersion.value++;
-  for (const delay of [100, 300, 600, 1200]) {
-    setTimeout(() => {
-      slotVersion.value++;
-    }, delay);
-  }
-});
-onUpdated(() => {
-  slotVersion.value++;
-});
-
-/**
- * Count the avatars in the default slot.
- *
- * Slot content arrives as vnodes: a `v-for` produces an array, `v-if` chains
- * produce comment placeholders, and a template with multiple roots produces a
- * Fragment — all three are flattened here. Wrapper elements are descended into
- * (their children are still avatars), component vnodes are counted as one.
- *
- * MP runtimes hand slot children over LAZILY: a Fragment's children (and on
- * some runtimes the slot items themselves) arrive as render FUNCTIONS instead
- * of arrays — call them and walk the result, or every member is skipped and
- * the group renders un-clipped with no bubble (uni-demo MP regression).
- *
- * Only `Fragment` is imported by name: the MP runtime (`uni-mp-vue`) does not
- * export `Comment`, so comment / text placeholders are recognised
- * structurally — any other symbol-typed vnode is not an avatar and is skipped.
- */
-function countAvatarNodes(nodes: unknown): number {
-  let total = 0;
-  const walk = (value: unknown): void => {
-    if (typeof value === 'function') {
-      // Lazy children / lazy slot item: invoke (pure render fn) and recurse.
-      walk((value as () => unknown)());
-      return;
-    }
-    if (Array.isArray(value)) {
-      for (const entry of value) walk(entry);
-      return;
-    }
-    if (value === null || value === undefined || typeof value !== 'object') {
-      // Text / number vnodes are never avatars; skip them.
-      return;
-    }
-    const vnode = value as { type?: unknown; children?: unknown };
-    if (vnode.type === Fragment) {
-      // Fragment (v-for / multi-root template) recurses.
-      walk(vnode.children);
-      return;
-    }
-    if (typeof vnode.type === 'symbol') {
-      // Comment / text placeholders (v-if chains, interpolations): the MP
-      // runtime does not export their symbols, so anything symbol-typed that
-      // is not a Fragment is skipped.
-      return;
-    }
-    if (typeof vnode.type === 'string') {
-      // A plain element (wrapper `<view>`): descend, but do not count it.
-      walk(vnode.children);
-      return;
-    }
-    total += 1;
-  };
-  walk(nodes);
-  return total;
-}
-
 const totalCount = computed<number>(() => {
-  // Track the late-slot-population bumps (see slotVersion) — without reading
-  // it here the computed never re-runs after the MP runtime fills the slot.
-  slotVersion.value;
-  return countAvatarNodes(resolveSlotNodes(slots.default));
+  console.log("[count-eval] uids", JSON.stringify(memberUids.value), "ver", registryVersion.value);
+  // 订阅注册版本号：注册/注销必经这里（见 registryVersion 注释）。
+  registryVersion.value;
+  return Math.max(memberUids.value.length - 1, 0);
 });
 
 /** Stack geometry (arithmetic lives in the pure geometry module). */
 const geometry = computed(() =>
   resolveGeometry({
-    total: totalCount.value,
+    // 直接依赖注册版本号：computed 链（geometry→totalCount→refs）的失效传播
+    // 在「渲染期间变更」场景下不可靠（见 registryVersion 注释），直接读版本
+    // 号保证组的渲染 effect 订阅到注册事件本身。
+    total: (registryVersion.value, totalCount.value),
     maxCount: props.maxCount,
     size: props.size,
     vertical: props.vertical,
@@ -232,7 +189,10 @@ const geometry = computed(() =>
 );
 
 /** Bubble text: the reference prop verbatim, else the derived `+N`. */
-const collapseText = computed<string>(() => props.collapseAvatar || `+${geometry.value.hidden}`);
+const collapseText = computed<string>(() => {
+  registryVersion.value; // 失效传播兜底（见 geometry 注释）
+  return props.collapseAvatar || `+${geometry.value.hidden}`;
+});
 
 const rootClass = computed(() => [
   'sn-avatar-group',
@@ -291,8 +251,14 @@ const clipStyle = computed(() => {
       <slot />
     </view>
 
-    <!-- Overflow bubble: one slot of the limit, sitting in the stack. -->
-    <SnAvatar v-if="geometry.clipping" class="sn-avatar-group__collapse" :text="collapseText" />
+    <!-- Overflow bubble: one slot of the limit, sitting in the stack. 常驻渲染
+         （v-show 控制显隐）——它的注册恒为 +1，成员计数恒等式依赖这一点；用
+         v-if 会在 max-count 恰好等于成员数时出现注册数歧义（计数震荡）。 -->
+    <SnAvatar
+      v-show="geometry.clipping"
+      class="sn-avatar-group__collapse"
+      :text="collapseText"
+    />
   </view>
 </template>
 

@@ -8,7 +8,7 @@ import { SnComment } from '@snui/vue-web';
     <p class="comment-align-demo__label">默认（datetime 与 actions 靠左）</p>
     <SnComment
       author="巴尔扎克"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/10.jpg"
       datetime="1 小时前"
       content="设计是一种计划，把对象或系统按规格构造出来。"
     >
@@ -21,7 +21,7 @@ import { SnComment } from '@snui/vue-web';
     <p class="comment-align-demo__label">align=&quot;right&quot;（两行都靠右）</p>
     <SnComment
       author="巴尔扎克"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/10.jpg"
       datetime="1 小时前"
       content='align="right" 时作者留在左边，datetime 与 actions 一起靠到右缘。'
       align="right"
@@ -37,7 +37,7 @@ import { SnComment } from '@snui/vue-web';
     </p>
     <SnComment
       author="巴尔扎克"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/10.jpg"
       datetime="1 小时前"
       content="对象形态可以单独控制：datetime 保持跟随作者，actions 靠右。"
       :align="{ actions: 'right' }"

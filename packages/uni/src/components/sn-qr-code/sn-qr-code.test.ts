@@ -1116,7 +1116,7 @@ describe('sn-qr-code (rounded corner blocks)', () => {
 const mpPlatform = () => ({ uniPlatform: 'mp-weixin' });
 
 describe('sn-qr-code (mini-program hosts)', () => {
-  it('should read the uni host through the free identifier, with a globalThis fallback', () => {
+  it('should read the uni host through the shared free-identifier resolver', () => {
     // Regression (MP): classic uni-app mini-programs do NOT expose `uni` on
     // globalThis (verified in the WeChat app-service) — the compilers rewrite
     // a free `uni` identifier into their injected API module instead. Reading
@@ -1124,9 +1124,10 @@ describe('sn-qr-code (mini-program hosts)', () => {
     // failure only exists after compilation, so no happy-dom test can observe
     // it directly; this guard pins the source convention itself.
     const source = componentSource;
-    expect(source).toMatch(/return uni \?\? null/);
-    // The declare keeps TypeScript honest while staying erased at runtime.
-    expect(source).toMatch(/declare const uni: UniHost \| undefined/);
+    expect(source).toMatch(/import \{ resolveUniHost \} from '\.\.\/\.\.\/utils\/uni-host'/);
+    expect(source).toMatch(/resolveUniHost<UniHost>\(\)/);
+    // The broken pattern must not creep back into this component.
+    expect(source).not.toMatch(/globalThis as \{ uni\?[:]/);
   });
 
   it('should keep classic uni-app MP on the legacy logical-px path and flush draw()', () => {

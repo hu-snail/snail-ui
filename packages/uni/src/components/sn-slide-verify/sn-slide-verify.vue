@@ -74,6 +74,7 @@ import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref 
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Check as CheckIcon, ChevronRight as ChevronRightIcon } from '../sn-icon/sn-icon-set';
+import { resolveUniHost } from '../../utils/uni-host';
 import {
   bindHorizontalDragMouse,
   pxPerDesign,
@@ -183,8 +184,7 @@ function applyTrackWidth(cssWidth: number): void {
 
 /** Measure through `uni.createSelectorQuery()` (mini-programs / App). */
 function queryTrackWidth(): void {
-  const host = globalThis as { uni?: { createSelectorQuery?: () => SelectorQueryLike } };
-  const createSelectorQuery = host.uni?.createSelectorQuery;
+  const createSelectorQuery = resolveUniHost<{ createSelectorQuery?: () => SelectorQueryLike }>()?.createSelectorQuery;
   if (typeof createSelectorQuery !== 'function' || instance === null) return;
   try {
     createSelectorQuery()

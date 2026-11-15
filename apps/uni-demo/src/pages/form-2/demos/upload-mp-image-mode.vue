@@ -10,14 +10,14 @@ import type { UploadFileItem } from '@snui/uni-src/components/sn-upload/sn-uploa
 const photos = ref<UploadFileItem[]>([
   {
     uid: 1,
-    url: 'https://picsum.photos/id/1015/400/300',
+    url: 'https://cdn.uviewui.com/uview/album/5.jpg',
     name: 'wide.jpg',
     status: 'success',
     percent: 100,
   },
   {
     uid: 2,
-    url: 'https://picsum.photos/id/1016/300/400',
+    url: 'https://cdn.uviewui.com/uview/album/6.jpg',
     name: 'tall.jpg',
     status: 'success',
     percent: 100,

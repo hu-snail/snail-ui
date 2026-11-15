@@ -20,7 +20,7 @@ import type { UploadFileItem } from '@snui/uni-src/components/sn-upload/sn-uploa
 const album = ref<UploadFileItem[]>([
   {
     uid: 1,
-    url: 'https://picsum.photos/seed/multi-a/200',
+    url: 'https://cdn.uviewui.com/uview/album/1.jpg',
     name: 'a.png',
     status: 'success',
     percent: 100,
@@ -34,14 +34,14 @@ const camera = ref<UploadFileItem[]>([]);
 const files = ref<UploadFileItem[]>([
   {
     uid: 2,
-    url: 'https://picsum.photos/seed/multi-b/200',
+    url: 'https://cdn.uviewui.com/uview/album/2.jpg',
     name: 'b.pdf',
     status: 'success',
     percent: 100,
   },
   {
     uid: 3,
-    url: 'https://picsum.photos/seed/multi-c/200',
+    url: 'https://cdn.uviewui.com/uview/album/3.jpg',
     name: 'c.pdf',
     status: 'success',
     percent: 100,

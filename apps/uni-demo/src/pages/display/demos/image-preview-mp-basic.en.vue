@@ -15,9 +15,9 @@ const preview = ref<{
 } | null>(null);
 
 const images = [
-  'https://picsum.photos/seed/snui-prev-a/900/1400',
-  'https://picsum.photos/seed/snui-prev-b/900/1400',
-  'https://picsum.photos/seed/snui-prev-c/900/1400',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
 ];
 
 const lastEvent = ref('—');

@@ -13,19 +13,19 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 const list = [
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/3.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/3.jpg',
     text: '视频项 1 · 渲染海报',
   },
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/4.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/4.jpg',
     text: '视频项 2 · 渲染海报',
   },
   {
     type: 'image' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd3/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/5.jpg',
     text: '普通图片项',
   },
 ];

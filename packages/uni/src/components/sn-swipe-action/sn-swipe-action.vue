@@ -78,6 +78,7 @@
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnSwipeAction' });
 
@@ -219,20 +220,17 @@ function measureSide(side: SwipeActionPosition): void {
     }
   }
   // (2) uni runtime — the cross-end measurement API.
-  const host = globalThis as {
-    uni?: {
-      createSelectorQuery?: () => {
-        in?: (component: unknown) => unknown;
-        select?: (selector: string) => {
-          boundingClientRect?: (cb: (rect: { width?: number } | null) => void) => {
-            exec?: (cb?: () => void) => void;
-          };
+  const queryFactory = resolveUniHost<{
+    createSelectorQuery?: () => {
+      in?: (component: unknown) => unknown;
+      select?: (selector: string) => {
+        boundingClientRect?: (cb: (rect: { width?: number } | null) => void) => {
+          exec?: (cb?: () => void) => void;
         };
-        exec?: (cb?: () => void) => void;
       };
+      exec?: (cb?: () => void) => void;
     };
-  };
-  const queryFactory = host.uni?.createSelectorQuery;
+  }>()?.createSelectorQuery;
   if (typeof queryFactory !== 'function') return;
   try {
     const query = queryFactory();

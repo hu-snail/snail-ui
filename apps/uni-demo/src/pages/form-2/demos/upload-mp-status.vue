@@ -7,12 +7,12 @@ import type { UploadFileItem } from '@snui/uni-src/components/sn-upload/sn-uploa
 const files = ref<UploadFileItem[]>([
   {
     uid: 1,
-    url: 'https://picsum.photos/seed/a/200',
+    url: 'https://cdn.uviewui.com/uview/album/4.jpg',
     name: 'a.png',
     status: 'success',
     percent: 100,
   },
-  { uid: 2, url: 'https://picsum.photos/seed/b/200', name: 'b.png', status: 'fail' },
+  { uid: 2, url: 'https://cdn.uviewui.com/uview/album/5.jpg', name: 'b.png', status: 'fail' },
 ]);
 </script>
 

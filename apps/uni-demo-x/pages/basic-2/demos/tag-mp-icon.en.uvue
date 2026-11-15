@@ -13,8 +13,8 @@ import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 import { Gift, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** Bitmap icons share the same size tiers as vector icons. */
-const brandLogo = 'https://picsum.photos/seed/snui-tag-brand/48/48';
-const badgeShot = 'https://picsum.photos/seed/snui-tag-shot/48/48';
+const brandLogo = 'https://cdn.uviewui.com/uview/album/3.jpg';
+const badgeShot = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

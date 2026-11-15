@@ -11,7 +11,7 @@ import SnImgCropper from '@snui/uni-src/components/sn-img-cropper/sn-img-cropper
 const visible = ref(false);
 const result = ref('—');
 
-const imgSrc = 'https://picsum.photos/seed/snui-crop-wide/1400/900';
+const imgSrc = 'https://cdn.uviewui.com/uview/album/9.jpg';
 </script>
 
 <template>

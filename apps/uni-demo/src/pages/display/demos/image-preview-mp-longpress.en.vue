@@ -13,7 +13,7 @@ const preview = ref<{
   setActive: (index: number) => void;
 } | null>(null);
 
-const images = ['https://picsum.photos/seed/snui-lp-a/900/1300'];
+const images = ['https://cdn.uviewui.com/uview/album/2.jpg'];
 
 const lastEvent = ref('—');
 </script>

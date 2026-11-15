@@ -14,7 +14,7 @@ const preview = ref<{
 
 const clip = {
   src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  poster: 'https://picsum.photos/seed/snui-video-cfg/750/420',
+  poster: 'https://cdn.uviewui.com/uview/album/9.jpg',
   title: '自定义层级与样式',
 };
 </script>

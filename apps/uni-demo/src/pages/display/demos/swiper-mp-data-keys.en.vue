@@ -9,9 +9,9 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 /** Custom field names: the URL lives in `url`, the caption in `title`. */
 const list = [
-  { url: 'https://picsum.photos/seed/snui-sw-d1/750/400', title: 'Custom fields 1' },
-  { url: 'https://picsum.photos/seed/snui-sw-d2/750/400', title: 'Custom fields 2' },
-  { url: 'https://picsum.photos/seed/snui-sw-d3/750/400', title: 'Custom fields 3' },
+  { url: 'https://cdn.uviewui.com/uview/album/4.jpg', title: 'Custom fields 1' },
+  { url: 'https://cdn.uviewui.com/uview/album/5.jpg', title: 'Custom fields 2' },
+  { url: 'https://cdn.uviewui.com/uview/album/6.jpg', title: 'Custom fields 3' },
 ];
 
 const current = ref(0);

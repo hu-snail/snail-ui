@@ -6,9 +6,9 @@
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-v1/750/400', text: 'Vertical slide 1' },
-  { value: 'https://picsum.photos/seed/snui-sw-v2/750/400', text: 'Vertical slide 2' },
-  { value: 'https://picsum.photos/seed/snui-sw-v3/750/400', text: 'Vertical slide 3' },
+  { value: 'https://cdn.uviewui.com/uview/album/7.jpg', text: 'Vertical slide 1' },
+  { value: 'https://cdn.uviewui.com/uview/album/8.jpg', text: 'Vertical slide 2' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: 'Vertical slide 3' },
 ];
 </script>
 

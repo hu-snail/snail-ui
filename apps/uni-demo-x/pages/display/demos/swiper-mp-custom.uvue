@@ -5,8 +5,8 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: '第一张 · 自定义类名' },
-  { value: 'https://picsum.photos/seed/snui-sw-c2/750/400', text: '第二张 · 自定义文案样式' },
+  { value: 'https://cdn.uviewui.com/uview/album/5.jpg', text: '第一张 · 自定义类名' },
+  { value: 'https://cdn.uviewui.com/uview/album/6.jpg', text: '第二张 · 自定义文案样式' },
 ];
 </script>
 <template>

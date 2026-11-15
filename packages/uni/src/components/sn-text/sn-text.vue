@@ -50,6 +50,7 @@
  */
 
 import { computed } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnText' });
 
@@ -71,7 +72,7 @@ interface UniRuntime {
  * component touches is `makePhoneCall`, so that is the whole contract.
  */
 function readUniRuntime(): UniRuntime | undefined {
-  return (globalThis as { uni?: UniRuntime }).uni;
+  return resolveUniHost<UniRuntime>() ?? undefined;
 }
 
 // Reference: wot-ui wd-text Attributes

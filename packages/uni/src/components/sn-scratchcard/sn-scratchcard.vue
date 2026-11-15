@@ -22,6 +22,7 @@
  */
 
 import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnScratchcard' });
 
@@ -83,8 +84,7 @@ interface UniHost {
 }
 
 function getUni(): UniHost | null {
-  const host = globalThis as { uni?: UniHost };
-  return host.uni ?? null;
+  return resolveUniHost<UniHost>();
 }
 
 const instance = getCurrentInstance();

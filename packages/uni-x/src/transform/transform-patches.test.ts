@@ -2,7 +2,9 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { transformVueToUvue } from './index.ts';
+import { applyPatches } from './patches.ts';
 import { PATCHES } from './patches.ts';
+import type { TransformIssue } from './types.ts';
 
 describe('sn-qr-code canvas rendering (uni-app x)', () => {
   // Regression (device / H5 preview): the component preferred the legacy
@@ -16,13 +18,14 @@ describe('sn-qr-code canvas rendering (uni-app x)', () => {
   );
   const result = transformVueToUvue(source, 'sn-qr-code/sn-qr-code.vue');
 
-  it('strips only the tsc declare and keeps the shared W3C surface resolution', () => {
-    // The single patch strips `declare const uni` — UTS has no ambient
-    // declarations and resolves `uni` as a built-in namespace. Everything else
-    // (host detection, surface resolution, DPR sizing) must stay untouched.
-    expect(PATCHES['sn-qr-code/sn-qr-code.vue']).toHaveLength(1);
+  it('keeps the component patch-free and resolves the host via the shared resolver', () => {
+    // The component itself needs no patch: the uni host comes from the shared
+    // utils/uni-host free-identifier resolver, and the W3C surface resolution
+    // (host detection, DPR sizing) stays untouched in the shared source.
+    expect(PATCHES['sn-qr-code/sn-qr-code.vue']).toBeUndefined();
+    expect(result.issues.filter((i) => i.kind === 'patch')).toHaveLength(0);
+    expect(result.code).toContain('resolveUniHost');
     expect(result.code).not.toContain('declare const uni');
-    expect(result.issues.filter((i) => i.kind === 'patch')).toHaveLength(1);
     expect(result.code).toContain('function isUniAppX()');
     // Surface resolution is centralised in acquireSurface(): uni-app x Web
     // takes the W3C element, while uni-app x mini-programs take the cached
@@ -299,5 +302,33 @@ describe('sn-avatar-group separating ring (uni-app x)', () => {
     ];
     const hits = [...group.issues, ...avatar.issues].filter((issue) => issue.kind === 'patch');
     expect(hits.length).toBe(patches.length);
+  });
+});
+
+describe('utils-shared/uni-host.ts (uni-app x)', () => {
+  // The shared uni-host resolver owns the AUI-UNI-FB-012 compiler contract:
+  // a free `uni` identifier (rewritten by the uni compilers into their
+  // injected API module) with a globalThis fallback for test stubs. The .ts
+  // helper carries an ambient `declare const uni` for tsc that UTS cannot
+  // parse — the patch strips exactly that line.
+  const source = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/utils/uni-host.ts'),
+    'utf8',
+  );
+  const issues: TransformIssue[] = [];
+  const patched = applyPatches(source, 'utils-shared/uni-host.ts', issues);
+
+  it('strips only the ambient declare, keeping the free-identifier reads', () => {
+    expect(PATCHES['utils-shared/uni-host.ts']).toHaveLength(1);
+    expect(issues.filter((issue) => issue.kind === 'patch')).toHaveLength(1);
+    expect(patched).not.toMatch(/declare const uni/);
+    expect(patched).toContain('return uni as T');
+    expect(patched).toContain('globalThis as { uni?: T }');
+  });
+
+  it('fails loudly when the upstream helper drifts', () => {
+    expect(() => applyPatches('const drifted = 1;', 'utils-shared/uni-host.ts', [])).toThrow(
+      /patch anchor missing/,
+    );
   });
 });

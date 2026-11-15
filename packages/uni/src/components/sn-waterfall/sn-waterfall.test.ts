@@ -495,17 +495,14 @@ describe('sn-waterfall', () => {
       });
       const wrapper = mount(Harness);
       stubRoot = wrapper.element;
-      expect(wrapper.findAll('.entry').map((entry) => entry.text())).toEqual([
-        'a:first',
-        'b:first',
-      ]);
+      // columnTexts scopes to the JS-placed columns: in plain-vue tests (no
+      // conditional compilation) the MP CSS-columns branch also renders the
+      // slot, so an unscoped .entry query double-counts.
+      expect(columnTexts(wrapper).flat()).toEqual(['a:first', 'b:first']);
 
       title.value = 'second';
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('.entry').map((entry) => entry.text())).toEqual([
-        'a:second',
-        'b:second',
-      ]);
+      expect(columnTexts(wrapper).flat()).toEqual(['a:second', 'b:second']);
       // …and the placement is untouched (two columns, one item each, order
       // unchanged) — a content change must not re-place or re-measure.
       expect(

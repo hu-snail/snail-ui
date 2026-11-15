@@ -44,6 +44,7 @@ import SnRichTextNode from './sn-rich-text-node.vue';
 import SnImagePreview from '../sn-image-preview/sn-image-preview.vue';
 import { RICH_TEXT_CONTEXT_KEY } from './sn-rich-text-context';
 import type { RichTextNodeContext } from './sn-rich-text-context';
+import { resolveUniHost } from '../../utils/uni-host';
 import type {
   RichTextAnchorRect,
   RichTextErrorEvent,
@@ -167,7 +168,7 @@ interface UniHost {
 }
 
 function readUniHost(): UniHost | undefined {
-  return (globalThis as { uni?: UniHost }).uni;
+  return resolveUniHost<UniHost>() ?? undefined;
 }
 
 /** Component proxy, needed for `createSelectorQuery().in()`. */

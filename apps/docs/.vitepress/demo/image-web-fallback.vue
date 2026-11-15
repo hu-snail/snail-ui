@@ -8,7 +8,7 @@ import { SnImage } from '@snui/vue-web';
     <SnImage
       width="120"
       src="这个地址注定加载失败"
-      fallback-src="https://picsum.photos/id/1020/400/300"
+      fallback-src="https://cdn.uviewui.com/uview/album/7.jpg"
       alt="加载失败回退"
     />
   </div>

@@ -8,16 +8,16 @@
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** Peeking demo (picsum, stable per seed). */
 const peekSlides = [
-  { value: 'https://picsum.photos/seed/snui-peek-1/640/420', text: 'Nordic green living' },
-  { value: 'https://picsum.photos/seed/snui-peek-2/640/420', text: 'Mediterranean summer' },
-  { value: 'https://picsum.photos/seed/snui-peek-3/640/420', text: 'Morning light' },
-  { value: 'https://picsum.photos/seed/snui-peek-4/640/420', text: 'Dusk resort' },
-  { value: 'https://picsum.photos/seed/snui-peek-5/640/420', text: 'Warm light & shadow' },
+  { value: 'https://cdn.uviewui.com/uview/album/6.jpg', text: 'Nordic green living' },
+  { value: 'https://cdn.uviewui.com/uview/album/7.jpg', text: 'Mediterranean summer' },
+  { value: 'https://cdn.uviewui.com/uview/album/8.jpg', text: 'Morning light' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: 'Dusk resort' },
+  { value: 'https://cdn.uviewui.com/uview/album/10.jpg', text: 'Warm light & shadow' },
 ];
 
 /** Depth stack demo (lower coverflow-scale, stronger depth). */
 const scaleSlides = [1, 2, 3, 4].map((n) => ({
-  value: `https://picsum.photos/seed/snui-scale-${n}/640/420`,
+  value: `https://cdn.uviewui.com/uview/album/6.jpg`,
   text: `Motion design ${n}`,
 }));
 </script>

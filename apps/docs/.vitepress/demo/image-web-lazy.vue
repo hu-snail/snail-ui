@@ -13,7 +13,7 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
 <template>
   <div class="demo-col">
     <p class="hint">单独设置 lazy（原生 loading="lazy"）：</p>
-    <SnImage lazy width="120" height="80" src="https://picsum.photos/id/1039/400/300" />
+    <SnImage lazy width="120" height="80" src="https://cdn.uviewui.com/uview/album/3.jpg" />
 
     <p class="hint">lazy + intersection-observer-options（滚动容器内进入视口再加载）：</p>
     <div class="scroll-box">

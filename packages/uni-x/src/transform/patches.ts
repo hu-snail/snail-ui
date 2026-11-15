@@ -564,21 +564,16 @@ const ringDataUrl = computed<string | undefined>(() => {
     },
   ],
 
-  // sn-qr-code: the shared source detects the uni-app x runtime itself
-  // (getElementById / createCanvasContextAsync), paints through the W3C 2d
-  // context, sizes the bitmap from the element box × DPR, retries first paint
-  // until layout is measured and exports via toDataURL(). Keeping that logic
-  // in the source means the classic uni-app branch stays intact and the two
-  // ends cannot drift (ADR-0004 patches are for untransformable code).
-  'sn-qr-code/sn-qr-code.vue': [
+  // sn-qr-code: NO uni-app x patch. The shared source detects the uni-app x
+  // runtime itself (getElementById / createCanvasContextAsync) and resolves
+  // the uni host through the shared utils/uni-host free-identifier resolver,
+  // so nothing uni-specific needs stripping here (ADR-0004 patches are for
+  // untransformable code).
+  'utils-shared/uni-host.ts': [
     {
-      anchor: `/**
- * Ambient free identifier — the uni-app / uni-app x compilers rewrite it into
- * their injected API module. Type-only; erased at build time.
- */
-declare const uni: UniHost | undefined;`,
-      replacement: `// The classic uni-app source carries an ambient type-level declare for tsc.
-// UTS resolves \`uni\` as a built-in namespace and has no ambient declarations,
+      anchor: `declare const uni: unknown;`,
+      replacement: `// The classic uni-app source declares \`uni\` for tsc (type-only). UTS
+// resolves \`uni\` as a built-in namespace and has no ambient declarations,
 // so that line is stripped here — the free-identifier reads stay untouched.`,
       note: 'declare const uni stripped — UTS has no ambient declarations (uni is a built-in namespace)',
     },

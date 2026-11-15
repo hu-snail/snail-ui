@@ -9,9 +9,9 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 const current = ref(0);
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-a/750/400', text: 'Slide 1 · image carousel' },
-  { value: 'https://picsum.photos/seed/snui-sw-b/750/400', text: 'Slide 2 · autoplay enabled' },
-  { value: 'https://picsum.photos/seed/snui-sw-c/750/400', text: 'Slide 3 · loops forever' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: 'Slide 1 · image carousel' },
+  { value: 'https://cdn.uviewui.com/uview/album/10.jpg', text: 'Slide 2 · autoplay enabled' },
+  { value: 'https://cdn.uviewui.com/uview/album/1.jpg', text: 'Slide 3 · loops forever' },
 ];
 </script>
 

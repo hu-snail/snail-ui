@@ -5,9 +5,9 @@
  */
 import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 /** The thumbnail and the full-size image opened on tap are different: previewSrc overrides src. */
-const thumb = 'https://picsum.photos/seed/snui-img-thumb/300/300';
-const full = 'https://picsum.photos/seed/snui-img-full/1400/1400';
-const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+const thumb = 'https://cdn.uviewui.com/uview/album/2.jpg';
+const full = 'https://cdn.uviewui.com/uview/album/3.jpg';
+const plain = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

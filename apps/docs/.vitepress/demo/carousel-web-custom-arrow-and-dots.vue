@@ -4,11 +4,11 @@ import { ref } from 'vue';
 import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
 
 /**
- * 演示用网络图片（picsum.photos）。真实照片比渐变占位更能体现轮播的过渡与裁切效果；
- * `seed` 固定则同一张图稳定复现，便于 demo 长期一致。
+ * 演示用网络图片（uview CDN，国内稳定图源）。真实照片比渐变占位更能体现轮播的过渡与裁切效果；
+ * `seed` 中的数字映射到固定的 10 张图库，便于 demo 长期一致。
  */
 function photo(seed: string, w = 800, h = 400): string {
-  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 const images = [

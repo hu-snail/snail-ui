@@ -7,7 +7,7 @@
  *   - `masonry=false` drops the multi-column layout into a plain vertical stack;
  *   - the same item data is re-distributed shortest-column-first as the count changes.
  *
- * Covers come from a real network source (picsum.photos); the `seed` is fixed so
+ * Covers come from a stable China-hosted library (uview CDN); the `seed` digits map
  * the same photo is reproduced every time.
  */
 import { ref } from 'vue';
@@ -76,7 +76,7 @@ const cards: CardItem[] = [
 /** Request the cover at its aspect ratio; `object-fit` crops the rest. */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 const columnOptions = [2, 3, 4];

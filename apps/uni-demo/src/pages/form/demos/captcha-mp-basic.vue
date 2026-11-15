@@ -16,7 +16,7 @@ const passed = ref(false);
 const attempts = ref(0);
 
 /** Stable network poster (picsum seed) so the puzzle cuts a real photo. */
-const SOURCE = 'https://picsum.photos/seed/snui-captcha-basic/600/400';
+const SOURCE = 'https://cdn.uviewui.com/uview/album/4.jpg';
 
 function onSuccess(): void {
   passed.value = true;

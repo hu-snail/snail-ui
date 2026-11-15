@@ -4,9 +4,9 @@ import { ref } from 'vue';
 import SnImagePreview from '@snui/uni-src/components/sn-image-preview/sn-image-preview.vue';
 
 const images = [
-  'https://picsum.photos/id/1015/800/1200',
-  'https://picsum.photos/id/1035/800/1000',
-  'https://picsum.photos/id/1043/1200/800',
+  'https://cdn.uviewui.com/uview/album/5.jpg',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
 ];
 
 const preview = ref();

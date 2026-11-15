@@ -54,6 +54,7 @@ import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 import type { SnFabAction, SnFabGap } from './sn-fab-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 // 类型契约本体在 ./sn-fab-types（纯 ts 模块，uni-x 端的稳定导入目标）。
 export type { SnFabAction, SnFabGap } from './sn-fab-types';
@@ -574,12 +575,10 @@ function onTouchEnd(): void {
  * trigger can never be dragged fully off-screen. `uni.getSystemInfoSync()`
  * is the only cross-end viewport query; it is optional and guarded. */
 function clampDragOffset(): void {
-  const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } };
-  };
+  const host = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } }>();
   let info: { windowWidth?: number; windowHeight?: number } | undefined;
   try {
-    info = host.uni?.getSystemInfoSync?.();
+    info = host?.getSystemInfoSync?.();
   } catch {
     // A host that rejects the probe must not break the gesture (same stance as
     // `vibrateShort` above) — the offset simply stays unclamped.
