@@ -684,6 +684,43 @@ function getSurface(): CanvasLike | null {`,
       note: 'root node carries .sn-theme-root for token var mounting',
     },
   ],
+  // sn-avatar-group / sn-avatar: keep the separating white ring, but paint it
+  // as a BORDER inside each avatar instead of a spread box-shadow. On uni-app
+  // x App (and on flattened vapor views) spread-radius shadows are unreliable
+  // and views clip the outer shadow by default, so the upstream shadow landed
+  // as a wide white crescent ON TOP of the neighbouring avatar — every member
+  // looked half covered by a white border. A border follows the avatar's own
+  // shape, stays inside its box and never covers a neighbour. Same conclusion
+  // as sn-tabbar-item (its fab shadow formed a crescent too, replaced by a
+  // border). Only this end changes: the web / MP ends keep the upstream
+  // box-shadow ring.
+  'sn-avatar-group/sn-avatar-group.vue': [
+    {
+      anchor: `/** Separating ring painted on every member avatar (surface coloured). */
+const RING = '0 0 0 4rpx var(--sn-mp-color-background-surface)';`,
+      replacement: `/* uni-app x: the ring is a border WIDTH, not a shadow. The upstream spread
+   box-shadow rendered as a wide white crescent over the neighbouring avatar
+   on App / flattened views (spread-radius is unreliable and views clip the
+   outer shadow). A border keeps the thin surface-coloured ring inside each
+   avatar's own box. */
+const RING = '4rpx';`,
+      note: 'separating ring handed down as a border width on App — box-shadow crescents covered stacked avatars',
+    },
+  ],
+
+  'sn-avatar/sn-avatar.vue': [
+    {
+      anchor: `  box-shadow: var(--sn-avatar-group-ring, 0 0 0 0 transparent);`,
+      replacement: `  /* uni-app x: ring drawn as a border INSIDE the painted circle (see the
+     sn-avatar-group patch). A spread box-shadow crescents over the previous
+     avatar on App; a border follows the shape and never leaves the box.
+     Standalone avatars inherit no ring width, so the border stays at 0. */
+  border-width: var(--sn-avatar-group-ring, 0);
+  border-style: solid;
+  border-color: var(--sn-mp-color-background-surface);`,
+      note: 'group-ring box-shadow replaced by an in-box surface-coloured border on App',
+    },
+  ],
 };
 
 export function applyPatches(source: string, relPath: string, issues: TransformIssue[]): string {

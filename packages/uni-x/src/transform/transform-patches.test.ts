@@ -181,3 +181,60 @@ describe('sn-circle ring patches (uni-app x)', () => {
     expect(result.code).toContain('entries[entries.length - 1]');
   });
 });
+
+describe('sn-avatar-group separating ring (uni-app x)', () => {
+  // Regression (device / web preview): the upstream 4rpx spread box-shadow
+  // painted a white crescent over each neighbouring avatar on App and on
+  // flattened vapor views, so every member looked half covered by a white
+  // border. The ring is still REQUIRED — it must be a thin in-box border
+  // instead. Run the real upstream sources through the full pipeline — anchor
+  // drift fails here at test time instead of silently restoring the shadow.
+  const groupSource = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-avatar-group/sn-avatar-group.vue'),
+    'utf8',
+  );
+  const avatarSource = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-avatar/sn-avatar.vue'),
+    'utf8',
+  );
+  const group = transformVueToUvue(groupSource, 'sn-avatar-group/sn-avatar-group.vue');
+  const avatar = transformVueToUvue(avatarSource, 'sn-avatar/sn-avatar.vue');
+  const avatarStyle = avatar.code.slice(
+    avatar.code.indexOf('<style'),
+    avatar.code.indexOf('</style>'),
+  );
+
+  it('hands the ring down as a border width, not a spread shadow', () => {
+    expect(group.code).toContain("const RING = '4rpx';");
+    expect(group.code).not.toContain('0 0 0 4rpx');
+    // The stacking contract stays intact — only the ring's paint channel changed.
+    expect(group.code).toContain('--sn-avatar-group-overlap-left');
+    expect(group.code).toContain('--sn-avatar-group-ring');
+  });
+
+  it('paints the ring as a surface-coloured border inside the circle', () => {
+    expect(avatarStyle).toContain('border-width');
+    expect(avatarStyle).toContain('var(--sn-avatar-group-ring, 0)');
+    expect(avatarStyle).toContain('border-style');
+    expect(avatarStyle).toContain('solid');
+    expect(avatarStyle).toContain('border-color');
+    expect(avatarStyle).toContain('var(--sn-mp-color-background-surface)');
+    expect(avatarStyle).not.toContain('box-shadow: var(--sn-avatar-group-ring');
+  });
+
+  it('keeps the doodle skin border override reachable through the flattened vars', () => {
+    // The css flattener wraps base longhands in --snx-* vars; the skin must
+    // still be able to replace the white ring with its own ink border.
+    expect(avatarStyle).toContain('--snx-sn-avatar__body-border-width: 4rpx');
+    expect(avatarStyle).toContain('--snx-sn-avatar__body-border-style: solid');
+  });
+
+  it('keeps every avatar-group anchor applied', () => {
+    const patches = [
+      ...(PATCHES['sn-avatar-group/sn-avatar-group.vue'] ?? []),
+      ...(PATCHES['sn-avatar/sn-avatar.vue'] ?? []),
+    ];
+    const hits = [...group.issues, ...avatar.issues].filter((issue) => issue.kind === 'patch');
+    expect(hits.length).toBe(patches.length);
+  });
+});
