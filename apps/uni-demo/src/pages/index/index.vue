@@ -7,10 +7,15 @@
 // chipActiveStyle），双列图标卡在默认插槽滚动（目录为静态数据，禁用下拉
 // 刷新与加载更多；图标卡见 home-icons.ts）。
 // 微信小程序：`--status-bar-height` 在 WXSS 中不存在，顶部用 sn-navbar
-// （fixed + placeholder + safe-area-inset-top）占出状态栏 + 导航带，品牌区
-// 从胶囊下方开始；H5 / App 不渲染占位，保持原紧凑头部。
+// （fixed + placeholder + safe-area-inset-top）占出状态栏 + 导航带；品牌行
+// （logo + 标题）以负 margin 拉入导航带与系统胶囊平行，副标题 + 切换按钮
+// 组成下方 meta 行（留在带内会撞胶囊）。H5 / App 不渲染占位，品牌行含副
+// 标题保持原紧凑头部。
 // 分类按分组标签合并（basic / basic-2 同为「基础组件」），点 chip 切换分组；
 // 搜索时跨全部分组平铺结果。
+// 磨砂玻璃：组件卡 / 搜索框 / chips 半透明底 + backdrop blur；浅色底色由
+// inline 绑定提供（MP 页面样式选不到 shell 根的 dark 类，主题差异只能
+// inline，见 cardStyle / searchStyle / chipStyleFor）。
 import { computed, ref, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
@@ -23,6 +28,7 @@ import {
 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 import { useDemoUi } from '../../state/demo-ui';
 import { HOME_GROUPS } from './home-data';
 import type { DemoHomeComp } from './home-data';
@@ -107,9 +113,45 @@ const chipActiveStyle = computed<Record<string, string>>(() => ({
   boxShadow: `0 6rpx 16rpx ${primaryAlpha(0.28)}`,
 }));
 
-/** 非选中 chip 返回空样式对象（两端三元 style 绑定统一走函数，避开 undefined）。 */
+/**
+ * 组件卡磨砂玻璃底（浅色）：灰白弥散渐变 + 半透明白，盖在画布与弥散头部
+ * 上呈磨砂质感；深色走 --demo-card-bg 暗玻璃 inline 变量（demo-ui），留空。
+ * MP 页面样式选不到 shell 根的 dark 类，主题差异只能 inline（与 haloStyle 同理）。
+ */
+const cardStyle = computed<Record<string, string>>(() =>
+  isDark.value
+    ? {}
+    : {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        backgroundImage:
+          'linear-gradient(155deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.55) 48%, rgba(238, 243, 250, 0.62) 100%)',
+      },
+);
+
+/** 搜索框磨砂透明底（浅色）；深色 --demo-search-bg 已是半透明，留空。 */
+const searchStyle = computed<Record<string, string>>(() =>
+  isDark.value ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.45)' },
+);
+
+/**
+ * MP 品牌行几何：直接取 sn-navbar 同源的胶囊度量（状态栏高 + 导航带高），
+ * 绝对定位到导航带内、与系统胶囊垂直居中平行。不用「占位高度 + 负 margin」
+ * 推算 —— 那依赖 placeholder 与 88rpx 行高的换算，跨端/跨基库易漂移。
+ * H5 / App 无胶囊：度量全 0，返回空对象（走普通文档流）。
+ */
+const capsuleMetrics = getCapsuleMetrics();
+const mpBarStyle: Record<string, string> =
+  capsuleMetrics.statusBarHeight > 0
+    ? { top: `${capsuleMetrics.statusBarHeight}px`, height: `${capsuleMetrics.navBarHeight}px` }
+    : {};
+
+/**
+ * chip 样式：选中 → 主题色渐变；未选中浅色 → 磨砂透明白（盖在弥散头部上）；
+ * 未选中深色 → --demo-chip-bg 已是半透明，留空。
+ */
 function chipStyleFor(index: number): Record<string, string> {
-  return index === activeIndex.value ? chipActiveStyle.value : {};
+  if (index === activeIndex.value) return chipActiveStyle.value;
+  return isDark.value ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.42)' };
 }
 
 interface HomeComp extends DemoHomeComp {
@@ -310,17 +352,50 @@ function open(comp: HomeComp): void {
               custom-style="background-color: transparent;"
             />
             <!-- #endif -->
-            <view class="home__bar">
+            <view class="home__bar" :style="mpBarStyle">
               <view class="home__brand">
                 <!-- 文档站同源 logo（apps/docs/public/logo.webp 转 PNG，MP 兼容） -->
                 <image class="home__brand-logo" src="/static/logo.png" mode="aspectFit" />
                 <view class="home__brand-text">
                   <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
+                  <!-- #ifndef MP -->
                   <text class="home__brand-sub">
                     {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
                   </text>
+                  <!-- #endif -->
                 </view>
               </view>
+              <!-- #ifndef MP -->
+              <view class="home__actions">
+                <view
+                  class="home__btn"
+                  role="button"
+                  :aria-label="t('切换风格', 'Switch style pack')"
+                  @tap="openStylePack"
+                >
+                  <SnIcon :icon="PaletteIcon" :size="16" />
+                  <text v-if="stylePack !== 'default'" class="home__btn-text">
+                    {{ stylePackLabel }}
+                  </text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="langLabel" @tap="toggleLang">
+                  <SnIcon :icon="GlobeIcon" :size="16" />
+                  <text class="home__btn-text">{{ lang === 'zh' ? 'EN' : '中' }}</text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="themeLabel" @tap="toggleTheme">
+                  <SnIcon :icon="isDark ? SunIcon : MoonIcon" :size="16" />
+                </view>
+              </view>
+              <!-- #endif -->
+            </view>
+
+            <!-- #ifdef MP -->
+            <!-- MP：品牌行拉入导航带与胶囊平行后，副标题 + 操作按钮单独成行
+                 （操作按钮留在导航带会撞系统胶囊）。 -->
+            <view class="home__meta">
+              <text class="home__brand-sub home__meta-sub">
+                {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
+              </text>
               <view class="home__actions">
                 <view
                   class="home__btn"
@@ -342,9 +417,10 @@ function open(comp: HomeComp): void {
                 </view>
               </view>
             </view>
+            <!-- #endif -->
 
-            <!-- 搜索框 -->
-            <view class="home__search">
+            <!-- 搜索框（磨砂透明） -->
+            <view class="home__search" :style="searchStyle">
               <SnIcon class="home__search-icon" :icon="SearchIcon" :size="16" />
               <input
                 v-model="keyword"
@@ -397,6 +473,7 @@ function open(comp: HomeComp): void {
               v-for="comp in list"
               :key="`${comp.group}-${comp.key}`"
               class="home__card"
+              :style="cardStyle"
               @tap="open(comp)"
             >
               <view class="home__card-head">
@@ -472,6 +549,8 @@ function open(comp: HomeComp): void {
 
 /* ── #top 固定区：状态栏通栏 + 品牌条 + 搜索 + chips（不随列表滚动） ──── */
 .home__top {
+  /* relative：MP 品牌行绝对定位以本区为锚（见下方 MP 段） */
+  position: relative;
   padding: 0 24rpx 0;
 }
 
@@ -490,6 +569,36 @@ function open(comp: HomeComp): void {
   /* 页面左右 24rpx 之上再补 8rpx：与旧版全幅壳（32rpx）的品牌位对齐 */
   padding: 32rpx 8rpx 8rpx;
 }
+
+/* #ifdef MP */
+/* MP：品牌行绝对定位到导航带内（top / height 由 mpBarStyle 以胶囊度量给出），
+ * 与系统胶囊垂直居中平行；占位元素仍在文档流里占住导航带，副标题 + 切换
+ * 按钮的 meta 行紧随其后（留在带内会撞胶囊）。 */
+.home__bar {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  z-index: 11;
+  padding: 0 8rpx;
+}
+
+.home__meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 8rpx 0;
+}
+
+.home__meta-sub {
+  flex: 1;
+  overflow: hidden;
+  margin-top: 0;
+  margin-right: 16rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* #endif */
 
 .home__brand {
   display: flex;
@@ -555,7 +664,7 @@ function open(comp: HomeComp): void {
   font-weight: 600;
 }
 
-/* ── 搜索框 ───────────────────────────────────────────────────────────── */
+/* ── 搜索框（磨砂透明：半透明白 + backdrop blur，盖在弥散头部上） ─────── */
 .home__search {
   display: flex;
   flex-direction: row;
@@ -568,6 +677,8 @@ function open(comp: HomeComp): void {
   background: var(--demo-search-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: 0 10rpx 30rpx rgba(60, 52, 120, 0.07);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
 }
 
 .home__search-icon {
@@ -633,6 +744,8 @@ function open(comp: HomeComp): void {
   color: var(--demo-text);
   flex: 0 0 auto;
   transition: opacity 0.15s ease;
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
 }
 
 .home__chip:active {
@@ -700,6 +813,9 @@ function open(comp: HomeComp): void {
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
   transition: transform 0.15s ease;
+  /* 磨砂玻璃：浅色底由 inline cardStyle 提供灰白弥散渐变，blur 对画布取景 */
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
 }
 
 .home__card:active {
