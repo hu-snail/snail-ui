@@ -15,7 +15,9 @@ export const iconDocPage: SnDocPageData = {
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '跨端图标基础组件。四条渲染路径：**iconfont 字形**（' },
+    { t: 'text', s: '跨端图标基础组件。五条渲染路径：**注册制字体图标**（' },
+    { t: 'code', s: 'registerFontIcon' },
+    { t: 'text', s: ' → <text> unicode，颜色继承）、**iconfont 字形**（' },
     { t: 'code', s: 'name' },
     { t: 'text', s: ' + ' },
     { t: 'code', s: 'classPrefix' },
@@ -66,6 +68,12 @@ import { Icon } from '@snui/uni';
 </template>`,
   },
   demos: [
+    {
+      name: 'icon-mp-font',
+      title: '字体图标（registerFontIcon 注册制）',
+      blurb:
+        'registerFontIcon 注册 name→unicode 映射 + fontUrl：命中即渲染 <text> 字形，三端一致、颜色 CSS 继承；未命中回落内置 SVG 目录 / Provider。demo 用 RemixIcon 公开字体演示（MP 真机需字体域名白名单）。',
+    },
     {
       name: 'icon-mp-string',
       title: '方式 1：string icon — 内置图标库（推荐）',

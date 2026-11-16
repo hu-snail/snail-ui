@@ -1,0 +1,78 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-icon — English shadow of icon-mp-font.
+ */
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { registerFontIcon } from '@snui/uni-src/components/sn-icon/sn-icon-font';
+
+// Registered once at app bootstrap in real hosts; demos register per scene (idempotent).
+registerFontIcon({
+  prefix: 'ri',
+  fontFamily: 'remixicon-demo',
+  icons: {
+    // RemixIcon codepoints (content map from fonts/remixicon.css).
+    home: 'EE2B',
+    'arrow-right': 'EA6C',
+    heart: 'EE0F',
+    search: 'F0D1',
+  },
+  fontUrl: 'https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.ttf',
+});
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Prefix form (ri:home)</text>
+    <view class="sn-demo__row">
+      <SnIcon name="ri:home" :size="40" />
+      <SnIcon name="ri:search" :size="40" />
+      <SnIcon name="ri:heart" :size="40" />
+    </view>
+
+    <text class="sn-demo__label">Bare name (lookup by registration order)</text>
+    <view class="sn-demo__row">
+      <SnIcon name="home" :size="40" />
+      <SnIcon name="arrow-right" :size="40" />
+    </view>
+
+    <text class="sn-demo__label">Colour inheritance (parent color, no baking)</text>
+    <view class="sn-demo__row sn-demo__row--tinted">
+      <SnIcon name="ri:heart" :size="40" />
+      <SnIcon name="ri:arrow-right" :size="40" />
+    </view>
+
+    <text class="sn-demo__meta">
+      Fonts register via registerFontIcon (name→unicode + fontUrl): web/MP inject @font-face, App
+      loads through uni.loadFontFace. Registered names render as a &lt;text&gt; glyph inheriting the
+      host color; misses fall back to the built-in SVG catalog / providers.
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  align-items: center;
+}
+.sn-demo__row--tinted {
+  color: var(--sn-mp-color-feedback-danger);
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: 1.6;
+}
+</style>

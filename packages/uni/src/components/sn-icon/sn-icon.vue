@@ -46,6 +46,7 @@ import {
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
 import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
+import { resolveFontIcon } from './sn-icon-font';
 import type { IconData } from './sn-icon-types';
 
 defineOptions({ name: 'SnIcon' });
@@ -122,6 +123,21 @@ const viewBox = computed(() =>
  * background-image 路径。`name` 优先 — 这是 wot-ui 原生调用形态。
  */
 const isGlyph = computed(() => props.name !== '' || typeof props.cssIcon === 'string');
+
+/**
+ * 字体图标命中（registerFontIcon 注册映射，ADR-0011 阶段一）：
+ * `name` 按 `<prefix>:<name>` 或裸 name 命中注册表 → `<text>` unicode 渲染
+ * （三端一致，颜色 CSS 继承），优先于 wot-ui class 字形。未命中 → null，
+ * 走既有 class 字形 / SVG 目录链。
+ */
+const fontGlyph = computed(() => (props.name === '' ? null : resolveFontIcon(props.name)));
+
+/** 字形 text 的内联样式：font-family 指向注册的字体家族，字号 = 图标盒边长。 */
+const fontGlyphStyle = computed(() =>
+  fontGlyph.value === null
+    ? undefined
+    : { fontFamily: `'${fontGlyph.value.fontFamily}'`, fontSize: sizeCss.value },
+);
 
 /** iconfont 字形路径的类名列表。 */
 const glyphClass = computed<string[]>(() => {
@@ -282,9 +298,13 @@ const remoteStyle = computed(() =>
  * 字符串 `customStyle` 不能塞进对象里的 `cssText` 键：patchStyle 最后才
  * 处理它，会把同对象里先设置的 width/height/color 整体抹掉。改为数组
  * 绑定让 Vue 逐项合并。 */
+/** 尺寸盒边长（数字 = px，字符串经 rpx 归一）—— 盒与字体字形共享同一边长。 */
+const sizeCss = computed(() =>
+  typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size),
+);
+
 const boxStyle = computed(() => {
-  const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
-  const style: Record<string, string> = { width: len, height: len };
+  const style: Record<string, string> = { width: sizeCss.value, height: sizeCss.value };
   if (props.color !== 'currentColor') style.color = props.color;
   return style;
 });
@@ -306,10 +326,24 @@ const customStyleBinding = computed(() => {
     :style="[boxStyle, customStyleBinding]"
   >
     <!--
+      字体图标路径（registerFontIcon 注册映射命中，ADR-0011 阶段一）：
+      `<text>` unicode 字面量 + fontFamily —— 三端一致，颜色由 CSS `color`
+      继承。文字必须包在 <text> 里：uni-app x App 的 view 不承载文本。
+    -->
+    <view
+      v-if="fontGlyph"
+      class="sn-icon__glyph sn-icon__glyph--font"
+      :style="fontGlyphStyle"
+      data-sn-icon-glyph=""
+    >
+      <text class="sn-icon__glyph-text">{{ fontGlyph.char }}</text>
+    </view>
+
+    <!--
       iconfont 字形路径（wot-ui 原生）：类名承载字形，样式表由宿主 app 提供。
       阿里 iconfont 项目生成的类名符合 `{prefix}-{name}` 约定时直接可用。
     -->
-    <view v-if="isGlyph" class="sn-icon__glyph" :class="glyphClass" data-sn-icon-glyph="" />
+    <view v-else-if="isGlyph" class="sn-icon__glyph" :class="glyphClass" data-sn-icon-glyph="" />
 
     <!--
       远程 SVG 路径（异步 Provider，如 Iconify 按需加载）：background-image
@@ -397,5 +431,20 @@ const customStyleBinding = computed(() => {
   height: 100%;
   line-height: 1;
   text-align: center;
+}
+
+/* 字体字形（registerFontIcon 命中）：字号随包装盒（wrapper width/height 由
+ * size prop 驱动），颜色继承宿主级联 —— 字体图标不经过任何取色/烘焙链。 */
+.sn-icon__glyph--font {
+  /* 包一层 flex 让 <text> 在 MP / uni-app x 的非 DOM 布局里垂直居中。 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sn-icon__glyph--font .sn-icon__glyph-text {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
 }
 </style>

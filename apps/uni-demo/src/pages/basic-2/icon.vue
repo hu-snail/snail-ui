@@ -3,13 +3,14 @@
 import Demo0 from './demos/icon-mp-basic.vue';
 import Demo1 from './demos/icon-mp-css.vue';
 import Demo2 from './demos/icon-mp-custom.vue';
-import Demo3 from './demos/icon-mp-gallery.vue';
-import Demo4 from './demos/icon-mp-iconify.vue';
-import Demo5 from './demos/icon-mp-name.vue';
-import Demo6 from './demos/icon-mp-registry.vue';
-import Demo7 from './demos/icon-mp-size.vue';
-import Demo8 from './demos/icon-mp-string.vue';
-import Demo9 from './demos/icon-mp-stroke-width.vue';
+import Demo3 from './demos/icon-mp-font.vue';
+import Demo4 from './demos/icon-mp-gallery.vue';
+import Demo5 from './demos/icon-mp-iconify.vue';
+import Demo6 from './demos/icon-mp-name.vue';
+import Demo7 from './demos/icon-mp-registry.vue';
+import Demo8 from './demos/icon-mp-size.vue';
+import Demo9 from './demos/icon-mp-string.vue';
+import Demo10 from './demos/icon-mp-stroke-width.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -45,39 +46,45 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标总览', 'Gallery')" badge="gallery" />
+        <DemoModuleHead :title="t('font', 'Font')" badge="font" />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('Iconify 按需', 'Iconify on demand')" badge="iconify" />
+        <DemoModuleHead :title="t('图标总览', 'Gallery')" badge="gallery" />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('name', 'Name')" badge="name" />
+        <DemoModuleHead :title="t('Iconify 按需', 'Iconify on demand')" badge="iconify" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('registry', 'Registry')" badge="registry" />
+        <DemoModuleHead :title="t('name', 'Name')" badge="name" />
         <view class="module__body">
           <Demo6 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸（size）', 'Sizes (`size`)')" badge="size" />
+        <DemoModuleHead :title="t('registry', 'Registry')" badge="registry" />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('目录用法', 'Catalog names')" badge="string" />
+        <DemoModuleHead :title="t('尺寸（size）', 'Sizes (`size`)')" badge="size" />
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('目录用法', 'Catalog names')" badge="string" />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
       <view class="module">
@@ -86,7 +93,7 @@ const { t } = useDemoUi();
           badge="stroke-width"
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo10 />
         </view>
       </view>
     </view>

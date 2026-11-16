@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1427 |
+| .uvue 产出 | 1429 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2050 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2052 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -1456,6 +1456,8 @@
 - pages/basic-2/demos/icon-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo--framed)"
 - pages/basic-2/demos/icon-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-font.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-font.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
@@ -1661,7 +1663,7 @@
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/transition-mp-touch-move.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/gap.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
-- pages/basic-2/icon.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/icon.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/layout.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/resize.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/root-portal.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue

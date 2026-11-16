@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:01851b19f4fcdebf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:f89fa66392b93b84 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -107,7 +107,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图标',
         titleEn: 'Icon',
         desc: 'SVG 数据 / iconfont 双路径图标',
-        count: 10,
+        count: 11,
       },
       {
         key: 'layout',

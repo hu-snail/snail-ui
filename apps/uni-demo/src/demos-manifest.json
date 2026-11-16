@@ -360,6 +360,11 @@
           "hasEn": true
         },
         {
+          "name": "icon-mp-font",
+          "title": "font",
+          "hasEn": true
+        },
+        {
           "name": "icon-mp-gallery",
           "title": "图标总览",
           "hasEn": true

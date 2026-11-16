@@ -106,7 +106,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图标',
         titleEn: 'Icon',
         desc: 'SVG 数据 / iconfont 双路径图标',
-        count: 10,
+        count: 11,
       },
       {
         key: 'layout',
