@@ -34,16 +34,26 @@ sn-icon 引入**一等字体图标路径**：内置 iconfont 子集 + 宿主字�
 
 ## 3. Reference Survey（成熟方案调研）
 
-| 方案 | 字体资产 | 端适配 | 关键机制 |
-| --- | --- | --- | --- |
-| **uni-ui `uni-icons`**（uni 生态标准答案） | 自带 ttf + JS 端 glyphMap（name→unicode） | App：`uni.loadFontFace` 启动加载；MP/H5：@font-face CSS | `<text>` 渲染 unicode 字面量；字号走 font-size |
-| **wot-ui `wd-icon`** | iconfont.cn 项目字体（woff2/ttf），CSS 类承载 | MP/H5/App：@font-face + class 伪元素 | class 字形 + `color` 继承 |
-| **uview-plus `u-icon`** | 内置 ttf（@font-face 网络地址）+ `custom-fontUrl` 宿主自定义 | MP/H5：class 字形；App：loadFontFace | class 字形 + name→unicode 兜底 |
-| **vant 4 / element-plus** | 仅 web 端方案（ vant 字体、element SVG 组件） | 不覆盖小程序/App 原生 | 不适用（但 element 证实"svg 组件式"在纯 web 是主流） |
+| 方案                                                      | 字体资产                                                                                             | 端适配                                                                                               | 关键机制                                                                                                                                                                                                                                                                                                                    |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **uni-ui `uni-icons`**（uni 生态标准答案）                | 自带 ttf + JS 端 glyphMap（name→unicode）                                                            | App：`uni.loadFontFace` 启动加载；MP/H5：@font-face CSS                                              | `<text>` 渲染 unicode 字面量；字号走 font-size                                                                                                                                                                                                                                                                              |
+| **Lime UI `lime-icon`**（uni-app x 原生库，用户指定参考） | `registerFontIcon({ prefix, fontFamily, icons: {name→'E600'}, fontUrl, jsonUrl })` —— 注册制字体图标 | 三端：`<text>` 渲染 unicode 字面量 + fontFamily；App 端注册内部走 loadFontFace；web/MP 走 @font-face | 双轨图标源：内置字体 + **Iconify**（`collection:name`，默认走 iconify API，可 `@iconify/tools` 私有化离线 JSON）+ 图片 URL；SVG 在 App 端**依赖收费原生插件 lime-svg**（¥8 + 自定义基座）；token：`--l-icon-size`（App 16px / Web 1em）、`--l-icon-color`（App $text-primary / Web currentColor）、`inherit: true` 继承父色 |
+| **wot-ui `wd-icon`**                                      | iconfont.cn 项目字体（woff2/ttf），CSS 类承载                                                        | MP/H5/App：@font-face + class 伪元素                                                                 | class 字形 + `color` 继承                                                                                                                                                                                                                                                                                                   |
+| **uview-plus `u-icon`**                                   | 内置 ttf（@font-face 网络地址）+ `custom-fontUrl` 宿主自定义                                         | MP/H5：class 字形；App：loadFontFace                                                                 | class 字形 + name→unicode 兜底                                                                                                                                                                                                                                                                                              |
+| **vant 4 / element-plus**                                 | 仅 web 端方案（vant 字体、element SVG 组件）                                                         | 不覆盖小程序/App 原生                                                                                | 不适用（但 element 证实"svg 组件式"在纯 web 是主流）                                                                                                                                                                                                                                                                        |
 
-**结论**：uni 生态的跨端收敛答案是 **ttf + glyphMap + loadFontFace + `<text>`
-unicode 渲染**（uni-ui 模式）。wot-ui/uview 的 class+伪元素方案在 uni-app x App
-端不可行。参考采纳 **uni-ui 模式为主干，wot-ui 的 class 字形保留为宿主字体通道**。
+**结论**：
+
+1. uni 生态的跨端收敛答案是 **ttf + glyphMap（name→unicode）+ loadFontFace + `<text>`
+   unicode 渲染**（uni-ui / lime-icon 双重印证）。wot-ui/uview 的 class+伪元素方案在
+   uni-app x App 端不可行。
+2. **lime-icon 证实了 uni-app x 的 svg 渲染困境**：连它都要靠收费原生插件才能在
+   App 端画 SVG —— 我们的 base64 `<image>` 光栅化是免插件路线，应保留为 Fallback。
+3. **采纳 lime-icon 的注册 API 形态**：`registerFontIcon({ prefix, fontFamily,
+icons, fontUrl })` —— 比 ADR 初稿的 `registerIconFont({ family, css })` 更清晰
+   （name→unicode 映射 + 字体 URL 显式分离），宿主字体与内置字体同一条注册通道。
+4. lime-icon 的 `--l-icon-color`（App 固定 $text-primary / Web currentColor）与我方
+   `--sn-mp-*` 继承策略一致；其 `inherit` prop 印证"颜色继承"是字体图标的核益。
 
 ## 4. Options
 
@@ -88,20 +98,27 @@ unicode 渲染**（uni-ui 模式）。wot-ui/uview 的 class+伪元素方案在 
 ## 7. Consequences / Rollout
 
 1. **阶段一**（约 0.5d，纯代码）：
-   - `sn-icon` 字形分支按端分流：uni-app x（转换补丁识别）→ `<text>{{char}}</text>`
-     + `fontFamily` 样式；MP/web → 维持 class 字形；
-   - 新增 `useIconFont()`：宿主字体注册（`registerIconFont({ family, css })` →
-     App 端 `uni.loadFontFace`，其余端注入 style）；
-   - demo：`icon-mp-font.vue` 三端场景；文档双语同步（§110）。
+   - `sn-icon` 字形分支按端分流：uni-app x（转换补丁识别）→ `<text>{{unicode}}</text>`
+     - `fontFamily` 样式；MP/web → 维持 class 字形；
+   - 新增 `registerFontIcon({ prefix, fontFamily, icons, fontUrl, jsonUrl })`
+     （lime-icon 同形态）：name→unicode 映射注册；App 端 `uni.loadFontFace(fontUrl)`
+     bootstrap，web/MP 端注入 @font-face 样式（fontUrl https 直链或 base64）；
+   - 内置目录与字体的对应关系：注册成功后 `name` 命中映射 → 走字形渲染，未命中
+     → 回落 SVG 目录/Provider（现有解析链不动）；
+   - demo：`icon-mp-font.vue` 三端场景（内置字体 + 宿主注册字体 + unicode 直传）；
+     文档双语同步（§110）。
    - 验收：web / MP-WEIXIN / App（HBuilderX）三端字形显示 + color 继承正确。
 2. **阶段二**（依赖设计资源，约 1-2d）：
    - `scripts/build-icon-font.mjs`：目录子集 SVG → fill 轮廓字体（svgtofont /
-     fantamin 工具链）→ woff2 base64（分包）+ ttf + codepoint map TS；
+     iconfont 工具链）→ woff2 base64（分包）+ ttf + codepoint map TS；内置字体
+     走同一 `registerFontIcon` 通道注册（内置 = 默认注册的字体包）；
    - CI：codepoint map 与目录一致性校验（缺映射即 FAIL）；
    - `render` prop + auto 策略 + Fallback 测试；`docs` 同步。
-3. 明确不做：全量目录字体化（Option A）；删除 SVG 光栅化（保留为 Fallback）。
+3. 明确不做：全量目录字体化（Option A）；删除 SVG 光栅化（保留为 Fallback，
+   uni-app x App 的 svg 原生插件路线不考虑——收费 + 自定义基座，§57 依赖原则）。
 
 ## 8. 影响 Public API
 
-- additive：`sn-icon.render` prop（阶段二）、`registerIconFont()`（阶段一）、
-  `sn-icon` 新增内置字体类目常量。均 additive（§78），不破坏现有调用。
+- additive：`sn-icon.render` prop（阶段二）、`registerFontIcon()`（阶段一，
+  lime-icon 同形态签名）、`sn-icon` 新增内置字体类目常量。均 additive（§78），
+  不破坏现有调用。
