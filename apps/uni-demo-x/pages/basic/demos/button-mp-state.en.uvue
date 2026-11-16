@@ -1,6 +1,7 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.en.vue sha256:1e620268d6cc839c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled & loading.
+ * Demo: sn-button (uni-end) — disabled & loading states (every semantic hue).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
@@ -13,18 +14,43 @@ function trigger(): void {
 }
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton disabled><text>Disabled</text></SnButton>
-    <SnButton loading><text>Loading</text></SnButton>
-    <SnButton :loading="loading" type="primary" @click="trigger"><text>Click to trigger loading</text></SnButton>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Disabled</text>
+    <view class="sn-demo__row">
+      <SnButton disabled><text>Default button</text></SnButton>
+      <SnButton disabled type="primary"><text>Primary button</text></SnButton>
+      <SnButton disabled type="success"><text>Success button</text></SnButton>
+      <SnButton disabled type="info"><text>Info button</text></SnButton>
+      <SnButton disabled type="warning"><text>Warning button</text></SnButton>
+      <SnButton disabled type="danger"><text>Danger button</text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">Loading</text>
+    <view class="sn-demo__row">
+      <SnButton loading type="primary"><text>Saving</text></SnButton>
+      <SnButton loading type="success"><text>Submitting</text></SnButton>
+      <SnButton loading type="danger"><text>Deleting</text></SnButton>
+      <SnButton :loading="loading" type="primary" @click="trigger"><text>Click to trigger loading</text></SnButton>
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16rpx;
   align-items: center;
   flex-direction: row;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

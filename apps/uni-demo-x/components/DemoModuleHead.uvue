@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/components/DemoModuleHead.vue sha256:5c4a842fb7d0a3f5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * DemoModuleHead —— 组件页场景模块标题行：场景标题 + 场景徽标。

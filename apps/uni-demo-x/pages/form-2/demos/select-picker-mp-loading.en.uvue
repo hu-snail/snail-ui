@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-loading.en.vue sha256:3a8e048b0ac7854d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-select-picker — loading state: `loading` shows the option list as loading and `loadingColor` recolors the spinner. */
 import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';

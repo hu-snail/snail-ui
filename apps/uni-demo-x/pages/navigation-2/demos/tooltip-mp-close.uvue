@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.vue sha256:1095a687bd89495f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tooltip (uni-end) — 关闭按钮与偏移（show-close / offset）。

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slide-verify-mp-color.vue sha256:9967e207bf671a47 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slide-verify — 轨道配色：backgroundColor / activeBackgroundColor 覆盖轨道底色与拖过填充。 */
 import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';

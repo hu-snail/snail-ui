@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/waterfall-mp-responsive.vue sha256:95dc1671a005bb83 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-waterfall (uni-end) — 响应式列数（min-column-width）。

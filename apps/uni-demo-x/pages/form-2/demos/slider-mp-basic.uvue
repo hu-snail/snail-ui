@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-basic.vue sha256:82f19a614be98d45 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — sn-slider 单滑块：min / max / step 控制范围与步长，showExtremeValue 显示两端文案。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

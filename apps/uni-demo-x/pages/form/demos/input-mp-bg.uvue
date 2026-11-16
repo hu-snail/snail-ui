@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-bg.vue sha256:cb6044892e3e9dde —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 背景（bg）：surface / transparent / soft 三档底色。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

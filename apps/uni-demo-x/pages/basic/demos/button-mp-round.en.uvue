@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-round.en.vue sha256:891cb11780e02da7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — round button (`round`).
@@ -7,7 +8,11 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">
-    <SnButton round type="success"><text>Rounded</text></SnButton>
+    <SnButton round type="primary"><text>Primary button</text></SnButton>
+    <SnButton round type="success"><text>Success button</text></SnButton>
+    <SnButton round type="info"><text>Info button</text></SnButton>
+    <SnButton round type="warning"><text>Warning button</text></SnButton>
+    <SnButton round type="danger"><text>Danger button</text></SnButton>
   </view>
 </template>
 <style scoped>

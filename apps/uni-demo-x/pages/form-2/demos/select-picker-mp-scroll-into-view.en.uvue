@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue sha256:124fff0f8eb1e33e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-select-picker — scroll into view: `scrollIntoView` scrolls the selected row into view on open; `customContentClass` restyles the content area. */
 import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';

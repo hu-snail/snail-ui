@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/rich-text-mp-images.vue sha256:3969ee2043a58350 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 图片：占位、预览、original-src、失败回退。 */
 import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';

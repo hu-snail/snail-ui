@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-basic.en.vue sha256:1c1908f896fac86f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — Basic sn-rate: `num` sets the icon count, tapping an icon writes `v-model`. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

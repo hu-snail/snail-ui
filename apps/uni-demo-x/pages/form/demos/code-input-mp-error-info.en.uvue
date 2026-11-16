@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-error-info.en.vue sha256:37d6b429e7d146d9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — error state (errorInfo): overrides info and paints the borders danger. */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-allow-null.vue sha256:72f81fda53bc00eb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — 可空输入（allowNull）：输入框可留空，placeholder 兜底。 */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

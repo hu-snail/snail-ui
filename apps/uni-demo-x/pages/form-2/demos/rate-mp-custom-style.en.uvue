@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-custom-style.en.vue sha256:503df800862a36e2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — root styling: custom-class + custom-style are appended to the root node. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

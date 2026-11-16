@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-confirm-type.vue sha256:d53791f436e5d573 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 确认键文案（confirmType）：软键盘右下角按钮文案。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

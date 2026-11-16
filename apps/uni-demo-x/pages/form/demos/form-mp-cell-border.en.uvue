@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-cell-border.en.vue sha256:92b68ac2060c5a1e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form-item — cell dividers and truncation: `border` divider / `ellipsis` for long labels. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

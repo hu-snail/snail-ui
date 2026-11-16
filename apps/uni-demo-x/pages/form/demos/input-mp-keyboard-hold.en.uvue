@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-keyboard-hold.en.vue sha256:0915a5c2f4f0687c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — keyboard hold and page push (holdKeyboard / adjustPosition / always-embed). */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

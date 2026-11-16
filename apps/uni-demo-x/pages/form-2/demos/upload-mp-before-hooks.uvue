@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-before-hooks.vue sha256:c207f5db26852a06 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-upload — beforeUpload / beforeChoose / beforeRemove / beforePreview / maxSize。

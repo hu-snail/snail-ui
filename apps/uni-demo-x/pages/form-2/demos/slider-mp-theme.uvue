@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-theme.vue sha256:ed43edf64b94a9a4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 主题：theme="capsule" 加粗轨道。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

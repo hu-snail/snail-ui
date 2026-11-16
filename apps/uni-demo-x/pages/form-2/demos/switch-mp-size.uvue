@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/switch-mp-size.vue sha256:a40a0d8378c147c2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-switch — 尺寸：size 控制开关尺寸（数字按 rpx 处理）。 */
 import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';

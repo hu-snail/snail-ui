@@ -10,10 +10,14 @@
  *    pages.json 分组（subPackage root + 页面清单）必须与 uni-demo 逐项一致
  *    —— x 端是 uni-demo 的生成镜像，uni-demo 增删分组（如展示 / 业务 /
  *    更多）后未重新 gen-x 时在这里直接失败，而不是上线后少一栏分类。
+ * 6. 新鲜度契约：每个生成产物头部的 gen-x 源指纹（源路径 + sha256）必须与
+ *    当前源一致 —— 改了 apps/uni-demo / templates / uni 组件源码而未重跑
+ *    gen-x 时在这里直接失败（曾导致预览端跑旧 token、样式"改了没生效"）。
  *
  * 运行：pnpm -F @snui/uni-demo-x check
  */
 
+import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -171,7 +175,9 @@ function subpackageShape(pagesJson) {
     pages: sp.pages.map((p) => p.path).join(','),
   }));
 }
-const sourceShape = JSON.stringify(subpackageShape(JSON.parse(readFileSync(join(uniDemoRoot, 'src/pages.json'), 'utf8'))));
+const sourceShape = JSON.stringify(
+  subpackageShape(JSON.parse(readFileSync(join(uniDemoRoot, 'src/pages.json'), 'utf8'))),
+);
 const targetShape = JSON.stringify(subpackageShape(pagesJson));
 if (sourceShape !== targetShape) {
   const sourceRoots = JSON.parse(sourceShape).map((s) => s.root);
@@ -201,6 +207,40 @@ for (const file of residueFiles) {
   if (vueImport) problems.push(`.vue 导入残留: ${relative(appRoot, file)}: ${vueImport[0]}`);
 }
 
+/* 7. 新鲜度契约（gen-x 源指纹）：每个生成产物头部携带
+ *    `gen-x: source <repo-rel-path> sha256:<16hex>`，与当前源文件重算值
+ *    必须一致 —— 源码改动后未重跑 gen-x（预览端跑旧产物、样式/token
+ *    "改了没生效"）在这里直接失败，而不是让人对着旧构建排查。 */
+const repoRoot = resolve(appRoot, '..', '..');
+const stampRe = /(?:<!--|\/\/)\s*gen-x:\s*source\s+(\S+)\s+sha256:([0-9a-f]{16})/;
+let stamped = 0;
+for (const file of residueFiles) {
+  const head = readFileSync(file, 'utf8').slice(0, 400);
+  const match = stampRe.exec(head);
+  if (match === null) {
+    problems.push(
+      `生成产物缺少源指纹: ${relative(appRoot, file)} —— 重跑 \`pnpm -F @snui/uni-demo-x gen\``,
+    );
+    continue;
+  }
+  stamped += 1;
+  const [, srcRel, recorded] = match;
+  const srcAbs = resolve(repoRoot, srcRel);
+  if (!existsSync(srcAbs)) {
+    problems.push(`生成产物 ${relative(appRoot, file)} 的源已不存在: ${srcRel}`);
+    continue;
+  }
+  const current = createHash('sha256')
+    .update(readFileSync(srcAbs, 'utf8'))
+    .digest('hex')
+    .slice(0, 16);
+  if (current !== recorded) {
+    problems.push(
+      `生成产物过期: ${relative(appRoot, file)}（源 ${srcRel} 已改动）—— 重跑 \`pnpm -F @snui/uni-demo-x gen\``,
+    );
+  }
+}
+
 if (problems.length > 0) {
   console.error(`[check-x] FAIL — ${problems.length} 个问题:`);
   for (const p of problems) console.error(`  ✕ ${p}`);
@@ -209,6 +249,7 @@ if (problems.length > 0) {
 console.log(
   `[check-x] OK — ${notes.pages} pages / ${notes.uvue} .uvue / ` +
     `${notes.explicit}+${notes.resolved}/${notes.tags.size} tags resolved, ` +
-    `${notes.groups} home groups in sync with uni-demo ` +
+    `${notes.groups} home groups in sync with uni-demo, ` +
+    `${stamped}/${residueFiles.length} artifacts fresh ` +
     `(explicit import + easycom fallback, vapor manifest)`,
 );

@@ -152,6 +152,50 @@ function needsComputedColor(): boolean {
 }
 
 /**
+ * 查询失败后的重试节奏（毫秒）。重型 demo 页的组件树 / 样式落地较慢，
+ * 单次 50ms 重试会输给首次渲染 —— 部分图标实例查不到级联色就永远落在墨色
+ * 兜底上（回归：按钮内嵌 heart 图标在 MP 上渲染为黑）。预算收在 ~3s：
+ * 页面 settled 后仍取不到色，多半是宿主查询器本身失效，继续重试无意义。
+ */
+export const RETRY_DELAYS_MS = [50, 100, 200, 400, 800, 1600];
+
+/** 计算色查询宿主的选取结果：'scope' = 组件 $scope，'uni' = uni 宿主，null = 无。 */
+export type MpQueryHostPick =
+  | { kind: 'scope'; createQuery: () => IconSelectorQuery; queryScope: unknown }
+  | { kind: 'uni'; createQuery: () => IconSelectorQuery; queryScope: unknown }
+  | { kind: null };
+
+/**
+ * 选取计算色查询的宿主。
+ *
+ * **优先组件自带的 `$scope.createSelectorQuery`** —— WeChat Component 实例
+ * 原生拥有它，`.in($scope)` 把选择器作用域原生收敛到本组件子树，级联色
+ * 读取稳定。uni 宿主的页面级查询（AUI-UNI-FB-012 经由自由标识符拿到的
+ * `uni.createSelectorQuery`）在嵌套自定义组件（sn-button 内嵌 sn-icon）里
+ * `.in(Vue proxy)` 不可靠 —— 232331e5 迁移时误把它排在前面，导致部分图标
+ * 实例取色失败、永落墨色（回归：heart 图标在 MP 上渲染为黑）。uni 宿主
+ * 仅在没有 `$scope` 的宿主形态下兜底（此时 queryScope 只能尽力传入
+ * 组件 proxy）。
+ */
+export function pickMpQueryHost(
+  scope: IconUniHost | null | undefined,
+  globalHost: IconUniHost | null | undefined,
+  fallbackQueryScope: unknown,
+): MpQueryHostPick {
+  if (typeof scope?.createSelectorQuery === 'function') {
+    return { kind: 'scope', createQuery: scope.createSelectorQuery, queryScope: scope };
+  }
+  if (typeof globalHost?.createSelectorQuery === 'function') {
+    return {
+      kind: 'uni',
+      createQuery: globalHost.createSelectorQuery,
+      queryScope: fallbackQueryScope,
+    };
+  }
+  return { kind: null };
+}
+
+/**
  * Resolve the icon's effective stroke color for the MP data URL.
  *
  * A concrete `color` prop is used verbatim. Otherwise the wrapper's computed
@@ -166,7 +210,13 @@ export function useMpIconColor(color: () => string): Ref<string> {
   let seq = 0;
   let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
-  function resolve(retried = false): void {
+  /** 兜底：清掉挂起的重试并落到墨色（空图标不可接受的历史契约）。 */
+  function settleToInk(seqSnapshot: number): void {
+    if (seqSnapshot !== seq) return;
+    resolved.value = ICON_INK_FALLBACK;
+  }
+
+  function resolve(attempt = 0): void {
     if (retryTimer !== null) {
       clearTimeout(retryTimer);
       retryTimer = null;
@@ -180,29 +230,21 @@ export function useMpIconColor(color: () => string): Ref<string> {
     if (!needsComputedColor()) return;
 
     // Query acquisition order:
-    // 1. The uni API module (free `uni` identifier, rewritten by the uni
-    //    compilers — `globalThis.uni` is never assigned on classic MP, see
-    //    AUI-UNI-FB-012).
-    // 2. The component's mp `$scope` — the WeChat Component instance
-    //    natively owns `createSelectorQuery`. Without this path every
-    //    cascade-colored icon falls back to ink.
-    const proxy = instance?.proxy as
-      | { $scope?: IconUniHost; $?: { scope?: IconUniHost } }
-      | null;
+    // 1. The component's mp `$scope` — the WeChat Component instance natively
+    //    owns `createSelectorQuery` and `.in($scope)` scopes natively (see
+    //    pickMpQueryHostKind).
+    // 2. The uni host (free `uni` identifier, rewritten by the uni compilers
+    //    — `globalThis.uni` is never assigned on classic MP, see
+    //    src/uni-env.d.ts) — page-level query, `.in(Vue proxy)` best effort.
+    const proxy = instance?.proxy as { $scope?: IconUniHost; $?: { scope?: IconUniHost } } | null;
     const scope = proxy?.$scope ?? proxy?.$?.scope;
     const globalHost = resolveUniHost<IconUniHost>();
-    let createQuery: (() => IconSelectorQuery) | null = null;
-    let queryScope: unknown = instance?.proxy;
-    if (typeof globalHost?.createSelectorQuery === 'function') {
-      createQuery = globalHost.createSelectorQuery;
-    } else if (typeof scope?.createSelectorQuery === 'function') {
-      createQuery = scope.createSelectorQuery;
-      queryScope = scope;
-    }
-    if (createQuery === null || instance === null) {
+    const picked = pickMpQueryHost(scope, globalHost, instance?.proxy);
+    if (picked.kind === null || instance === null) {
       resolved.value = ICON_INK_FALLBACK;
       return;
     }
+    const { createQuery, queryScope } = picked;
 
     const current = ++seq;
     nextTick(() => {
@@ -218,17 +260,25 @@ export function useMpIconColor(color: () => string): Ref<string> {
               resolved.value = value;
               return;
             }
-            if (!retried) {
+            if (attempt < RETRY_DELAYS_MS.length) {
               retryTimer = setTimeout(() => {
-                if (current === seq) resolve(true);
-              }, 50);
-              return;
+                retryTimer = null;
+                if (current === seq) resolve(attempt + 1);
+              }, RETRY_DELAYS_MS[attempt]);
+            } else {
+              settleToInk(current);
             }
-            resolved.value = ICON_INK_FALLBACK;
           })
           .exec();
       } catch {
-        if (current === seq) resolved.value = ICON_INK_FALLBACK;
+        if (attempt < RETRY_DELAYS_MS.length) {
+          retryTimer = setTimeout(() => {
+            retryTimer = null;
+            if (current === seq) resolve(attempt + 1);
+          }, RETRY_DELAYS_MS[attempt]);
+        } else {
+          settleToInk(current);
+        }
       }
     });
   }

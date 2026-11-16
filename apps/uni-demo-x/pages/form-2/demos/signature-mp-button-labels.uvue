@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-button-labels.vue sha256:b75c25a922b5047c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — 按钮文案：confirmText / clearText / revokeText / restoreText，以及 undoText / redoText 覆盖。 */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

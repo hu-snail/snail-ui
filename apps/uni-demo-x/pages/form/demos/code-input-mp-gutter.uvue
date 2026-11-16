@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-gutter.vue sha256:1e8384d29b5f7153 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — 格子间距（gutter）：默认 gutter=8（16rpx 间距），gutter=0 回到贴合布局。 */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

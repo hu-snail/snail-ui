@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-custom-style.en.vue sha256:3b6b35863b0f0483 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — root styling: customClass / customStyle land on the root node. */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

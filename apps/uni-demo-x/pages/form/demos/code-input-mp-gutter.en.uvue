@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-gutter.en.vue sha256:271100c4abbbc272 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — cell gap (gutter): default gutter=8 (16rpx gap), gutter=0 restores the flush layout. */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

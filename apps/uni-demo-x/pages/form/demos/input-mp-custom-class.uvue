@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-custom-class.vue sha256:3ae09038284c5d38 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — customClass / customStyle / customInputClass 三个挂载点。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

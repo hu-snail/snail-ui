@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-cursor-spacing.en.vue sha256:37a0223c3270e4b3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — cursor spacing (cursorSpacing): keeps the caret a fixed distance above the keyboard. */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

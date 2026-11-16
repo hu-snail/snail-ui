@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-step.vue sha256:e30ce91dd347a932 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — 撤回步长：step 一次撤回 2 笔（需配合 enableHistory）。 */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

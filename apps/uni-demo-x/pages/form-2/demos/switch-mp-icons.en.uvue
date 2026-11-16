@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/switch-mp-icons.en.vue sha256:e1bca09d1e3741c1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-switch — icon glyphs: activeActionIcon / inactiveActionIcon (knob) and activeIcon / inactiveIcon (rail). */
 import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';

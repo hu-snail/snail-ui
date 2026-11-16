@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-status.vue sha256:c5d6c63a814be741 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — status 校验状态：default / error / warning。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

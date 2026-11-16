@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/search-mp-maxlength.vue sha256:99971a414e54f6b9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-search — 字数上限：maxlength 限制可输入字符数（-1 不限制）。 */
 import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';

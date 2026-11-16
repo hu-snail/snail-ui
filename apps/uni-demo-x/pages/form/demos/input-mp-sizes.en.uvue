@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-sizes.en.vue sha256:2e8b86afac20a448 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — all 3 size presets (uni-end). */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

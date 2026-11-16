@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/count-down-mp-autostart.vue sha256:b574415f28c86753 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-count-down (uni-end) — auto-start=false 手动开始 + custom-class / custom-style。

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/dialog-mp-custom.vue sha256:9e1480eb4b6b7356 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-dialog (uni-end) — selector / root-portal / custom-style.

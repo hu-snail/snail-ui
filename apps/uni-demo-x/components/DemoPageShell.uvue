@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/components/DemoPageShell.vue sha256:59ef5212d6ddbbc9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * DemoPageShell —— 演示工程页面壳：中性浅灰画布 + 主题变量挂载 +

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-sheet.vue sha256:b7f88b7d4de05e96 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-select-picker — 弹层行为与样式：closeOnClickModal 点蒙层关闭 /

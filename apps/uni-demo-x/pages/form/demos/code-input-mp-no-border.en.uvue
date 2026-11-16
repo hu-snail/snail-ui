@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-no-border.en.vue sha256:f7859234a36f5398 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — `border='none'` strips every cell border (the underline rule included) for background-only cells; pairs naturally with `background`. */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

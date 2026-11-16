@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/ai-chat-mp-basic.en.vue sha256:258c556e12c5ac13 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: AI chat page (uni-app) — messages and reasoning output.

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/search-mp-focus.vue sha256:f98258ee7870603e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-search — 聚焦：focus 挂载即聚焦；focusWhenClear 清空按钮后重新聚焦（与 @clear 联动）。 */
 import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/date-strip-mp-formatter.vue sha256:cf60a35be77cfc00 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-date-strip — 自定义日期文案：formatter 在日号下方注入价格文案。 */
 import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';

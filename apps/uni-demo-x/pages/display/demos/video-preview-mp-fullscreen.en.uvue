@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/video-preview-mp-fullscreen.en.vue sha256:977d7179229b03d9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-video-preview (uni-end) — full-screen mode (`fullScreen`).

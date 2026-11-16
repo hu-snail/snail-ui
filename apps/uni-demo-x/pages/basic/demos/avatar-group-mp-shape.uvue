@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-group-mp-shape.vue sha256:180045c3ccb85691 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — 形状：round 圆形（默认）/ square 方形。

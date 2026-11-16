@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-disabled.en.vue sha256:9b172ab70ef6698e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — `disabled` freezes every column; dragging is ignored. */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';

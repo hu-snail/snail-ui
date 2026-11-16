@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/qr-code-mp-color.en.vue sha256:bb5db0cf1b14801b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-qr-code (uni-end) — custom colours (`colorDark` / `colorLight`).

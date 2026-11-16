@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/keyboard-mp-decimal.en.vue sha256:ddebc054ba250a2b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-keyboard — decimal keyboard: `extra-key="."` takes the bottom-left slot, for amounts. */
 import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';

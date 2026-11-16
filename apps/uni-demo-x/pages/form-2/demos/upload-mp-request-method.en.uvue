@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-request-method.en.vue sha256:b7109c99c32c99e7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-upload — action / header / name / formData / buildFormData / uploadMethod / autoUpload / submit.

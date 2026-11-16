@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/grid-mp-layout.en.vue sha256:50775682466027a3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-grid — column count, gutter, square cells and horizontal flow. */
 import SnGrid from '@snui/uni-x/components/sn-grid/sn-grid.uvue';

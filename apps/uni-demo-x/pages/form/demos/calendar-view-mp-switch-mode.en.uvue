@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-switch-mode.en.vue sha256:47b047ab1750c3fb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-calendar-view — month / year switch (switchMode): `switchMode="month"` switches to one month with prev / next controls. */
 import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';

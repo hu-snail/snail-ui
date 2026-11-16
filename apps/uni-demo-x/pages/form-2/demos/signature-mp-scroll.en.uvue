@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-scroll.en.vue sha256:5c29ded38b420fc1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — pad scrolling: `disableScroll=false` keeps the page scrollable while drawing. */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

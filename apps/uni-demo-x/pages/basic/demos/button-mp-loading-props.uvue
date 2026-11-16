@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-loading-props.vue sha256:693bfea904e827be —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — `loading-props` 对象写法。
@@ -20,15 +21,15 @@ const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 
         loading
         :loading-props="{ color: 'var(--sn-mp-color-feedback-success)' }"
       ><text>
-        品牌色 spinner
+        品牌色加载图标
       </text></SnButton>
-      <SnButton type="primary" loading><text>默认 spinner</text></SnButton>
+      <SnButton type="primary" loading><text>默认加载图标</text></SnButton>
     </view>
 
     <text class="sn-demo__meta">loading-props 同时给 color + size（size 走 rpx）</text>
     <view class="sn-demo__row">
-      <SnButton type="success" loading :loading-props="spinnerFromProps"><text>48rpx spinner</text></SnButton>
-      <SnButton type="success" loading><text>32rpx spinner</text></SnButton>
+      <SnButton type="success" loading :loading-props="spinnerFromProps"><text>大号加载图标</text></SnButton>
+      <SnButton type="success" loading><text>默认大小加载图标</text></SnButton>
     </view>
 
     <text class="sn-demo__meta">
@@ -41,7 +42,7 @@ const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 
         loading-color="var(--sn-mp-color-feedback-danger)"
         :loading-props="{ color: 'var(--sn-mp-color-action-primary)', size: 64 }"
       ><text>
-        loading-color 赢
+        扁平属性优先生效
       </text></SnButton>
     </view>
   </view>

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-focus.vue sha256:fabec8f1583ca070 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 自动聚焦（focus）：挂载即聚焦。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

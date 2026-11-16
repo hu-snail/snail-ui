@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-group-mp-max-count.en.vue sha256:30f11ca99829f7e9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — overflow limit: max-count=3 → 2 avatars

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.vue sha256:9ac7886b9394a04b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-index-bar — 整页通讯录（紧凑预览 + 全屏整页 + 联系人详情）。

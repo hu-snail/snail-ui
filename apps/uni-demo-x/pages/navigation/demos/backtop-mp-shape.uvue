@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/backtop-mp-shape.vue sha256:54de7705b3f30ceb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-backtop — 圆形 / 方形 × 尺寸 × 内容形态。 */
 import SnBacktop from '@snui/uni-x/components/sn-backtop/sn-backtop.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/icon-mp-string.vue sha256:eb9f38a6d87553a7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-icon (uni-end) — string icon API（内置目录 / registry / 覆盖）。

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-basic.vue sha256:2b182fe01632b1ff —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tabs — 基础页签 + v-model（索引与名称两种绑定方式）。 */
 import SnTabs from '@snui/uni-x/components/sn-tabs/sn-tabs.uvue';

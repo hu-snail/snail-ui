@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/slider-bar-mp-variant.en.vue sha256:b4bd4b90bed09295 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 竖排：variant="column" 轨道竖起来。 */
 import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-form-type.vue sha256:14122cf3dcfeee4d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-button — formType 'submit' | 'reset' (MP 表单提交). */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
@@ -12,20 +13,20 @@ function onSubmit(): void {
 }
 function onReset(): void {
   form.email = '';
-  submitted.value = '(reset)';
+  submitted.value = '（已重置）';
 }
 </script>
 <template>
   <view class="sn-form-demo">
     <SnForm :model="form" label-position="left" label-width="120">
-      <SnFormItem prop="email" label="Email">
+      <SnFormItem prop="email" label="邮箱">
         <SnInput v-model="form.email" placeholder="you@example.com" />
       </SnFormItem>
       <view class="sn-form-demo__actions">
-        <SnButton type="primary" form-type="submit" @click="onSubmit"><text>formType=submit</text></SnButton>
-        <SnButton form-type="reset" @click="onReset"><text>formType=reset</text></SnButton>
+        <SnButton type="primary" form-type="submit" @click="onSubmit"><text>提交表单</text></SnButton>
+        <SnButton form-type="reset" @click="onReset"><text>重置表单</text></SnButton>
       </view>
-      <view class="sn-form-demo__result"><text>submitted: {{ submitted || '—' }}</text></view>
+      <view class="sn-form-demo__result"><text>提交结果：{{ submitted || '—' }}</text></view>
     </SnForm>
   </view>
 </template>

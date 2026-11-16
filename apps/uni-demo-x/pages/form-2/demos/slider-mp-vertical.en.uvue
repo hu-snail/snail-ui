@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-vertical.en.vue sha256:48e18822665663e7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — vertical: `vertical` stands the track up (400rpx tall by default). */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/toast-mp-cover.en.vue sha256:a134d42d4bdea4b8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-toast (uni-end) — English shadow of toast-mp-cover.

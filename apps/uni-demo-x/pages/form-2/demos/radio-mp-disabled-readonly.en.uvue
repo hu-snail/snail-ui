@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-disabled-readonly.en.vue sha256:b91ebee3f01503df —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — disabled & readonly: `disabled` locks the whole group, `readonly` makes it non-interactive. */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';

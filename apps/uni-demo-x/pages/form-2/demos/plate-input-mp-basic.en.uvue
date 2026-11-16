@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/plate-input-mp-basic.en.vue sha256:e8226e901baadf08 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-plate-input — tap the boxes to raise the shared car keyboard (province → letters auto-switch, hold-to-repeat delete). */
 import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';

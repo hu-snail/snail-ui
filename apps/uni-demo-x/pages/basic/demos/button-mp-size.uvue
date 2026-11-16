@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-size.vue sha256:dbcdec60f249cceb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — three sizes (no tiny on mobile).
@@ -7,9 +8,9 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">
-    <SnButton size="small"><text>small</text></SnButton>
-    <SnButton size="medium"><text>medium</text></SnButton>
-    <SnButton size="large"><text>large</text></SnButton>
+    <SnButton size="small"><text>小号按钮</text></SnButton>
+    <SnButton size="medium"><text>中号按钮</text></SnButton>
+    <SnButton size="large"><text>大号按钮</text></SnButton>
   </view>
 </template>
 <style scoped>

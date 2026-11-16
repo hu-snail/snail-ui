@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-basic.vue sha256:2043fd8cb66f4ad5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — sn-code-input 方框密码框：length 控制格子数，mask 控制是否显示圆点，focused 与键盘显隐联动。 */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

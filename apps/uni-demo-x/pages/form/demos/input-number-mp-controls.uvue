@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-controls.vue sha256:90a9582d72760f3e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — 按钮与输入框的独立开关：disableInput / disableMinus / disablePlus / withoutInput / inputWidth。 */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tour-mp-panel-slot.vue sha256:55647028be27926c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tour — 自定义面板与按钮（show-tour-buttons / #footer / #default）。

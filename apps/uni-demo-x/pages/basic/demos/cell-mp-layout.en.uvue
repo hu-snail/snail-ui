@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-layout.en.vue sha256:c9b09ee374307d64 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-cell — layout forms (wrapping titles / column alignment / vertical / group styles). */
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.vue sha256:c27ac012a793d32f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-plate-input — 新能源车牌：maxlength=8 渲染 8 格。 */
 import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';

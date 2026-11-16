@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-color-override.vue sha256:7751479466f0d68f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button — `bgColor` / `color` 内联颜色覆盖。
@@ -16,18 +17,18 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
         bg-color="var(--sn-mp-color-action-primary)"
         color="var(--sn-mp-color-text-on-primary)"
       ><text>
-        bgColor + color
+        自定义背景与文字色
       </text></SnButton>
       <SnButton color="var(--sn-mp-color-action-info)" variant="plain"><text>
-        color 描边 + 文字
+        自定义文字色（描边）
       </text></SnButton>
     </view>
 
     <text class="sn-demo__meta">customClass 追加类名 / customStyle 内联覆盖</text>
     <view class="sn-demo__row">
-      <SnButton custom-class="my-mp-cta" type="primary"><text>customClass</text></SnButton>
+      <SnButton custom-class="my-mp-cta" type="primary"><text>自定义类名</text></SnButton>
       <SnButton :custom-style="{ 'border-radius': '999rpx', padding: '0 40rpx' }" type="warning"><text>
-        customStyle
+        自定义样式
       </text></SnButton>
     </view>
   </view>

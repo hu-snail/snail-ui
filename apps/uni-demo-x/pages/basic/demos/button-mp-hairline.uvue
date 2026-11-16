@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hairline.vue sha256:117770af7558d05b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — `hairline` 细边框。
@@ -16,17 +17,17 @@ function toggleBusy(): void {
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta">hairline：default 类型下 true 显示细边框，false 去掉边框</text>
     <view class="sn-demo__row">
-      <SnButton><text>hairline（默认）</text></SnButton>
-      <SnButton :hairline="false"><text>hairline=false</text></SnButton>
-      <SnButton hairline :disabled="true"><text>hairline + disabled</text></SnButton>
+      <SnButton><text>细边框（默认）</text></SnButton>
+      <SnButton :hairline="false"><text>去掉边框</text></SnButton>
+      <SnButton hairline :disabled="true"><text>细边框 + 禁用</text></SnButton>
     </view>
 
     <text class="sn-demo__meta">loading 与 hairline 叠加：细边框按钮的加载态</text>
     <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }"><text>加载中（hairline）</text></SnButton>
+      <SnButton loading :loading-props="{ size: 40 }"><text>加载中（细边框）</text></SnButton>
       <SnButton :hairline="false" loading><text>加载中（无边框）</text></SnButton>
       <SnButton type="primary" :loading="busy" @click="toggleBusy"><text>
-        {{ busy ? '请求中…' : '点我切 loading' }}
+        {{ busy ? '请求中…' : '点击切换加载' }}
       </text></SnButton>
     </view>
   </view>

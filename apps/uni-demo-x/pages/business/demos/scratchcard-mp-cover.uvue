@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/scratchcard-mp-cover.vue sha256:a73c358277475fc2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-scratchcard (uni-end) — 封面色：coverColor（字面量：canvas

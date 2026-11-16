@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-accept.vue sha256:c1907717108ae31e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-upload — 选择器类型：accept 切换选择器（image / video / file）。 */
 import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';

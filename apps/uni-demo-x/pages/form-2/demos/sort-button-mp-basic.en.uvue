@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/sort-button-mp-basic.en.vue sha256:4a0ce09763859e60 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sort-button — Tri-state sort toggle: 1 ascending / 0 reset / -1 descending; by default it toggles between ascending and descending. */
 import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.vue sha256:f2dd63ff747e7411 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — cascade 模式下 columns 传树形结构，组件按已选路径推导后续列。 */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';

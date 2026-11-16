@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/index-bar-mp-basic.vue sha256:9c305aa8ed247654 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-index-bar — 字母索引 + 右侧快速跳转。 */
 import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';

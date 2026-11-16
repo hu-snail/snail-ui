@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/sticky-mp-offset.en.vue sha256:60ac996f03759bda —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sticky — custom sticky offset and stacking level. */
 import SnSticky from '@snui/uni-x/components/sn-sticky/sn-sticky.uvue';

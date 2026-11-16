@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/paging-mp-second-floor.vue sha256:62adb3d0e96b7aaa —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-paging (uni-end) — 下拉进入二楼。

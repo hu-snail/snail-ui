@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-cursor-selection.en.vue sha256:f8470ee3f25fe702 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — caret and selection (cursor / selection-start / selection-end): initial caret and preselected region. */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

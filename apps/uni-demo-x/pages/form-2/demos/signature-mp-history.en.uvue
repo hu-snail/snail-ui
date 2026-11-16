@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-history.en.vue sha256:a54876f461e42b9c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — undo / redo: `enableHistory` renders the undo / redo buttons; the pad owns its own history stack. */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-cropper-mp-ratio.vue sha256:c25a9206133296ba —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img-cropper (uni-end) — 裁剪比例（aspectRatio）。

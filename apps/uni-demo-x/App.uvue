@@ -1,4 +1,4 @@
-<!-- 由 scripts/gen-x.mjs 从 apps/uni-demo/src/App.vue 生成，勿手改。 -->
+<!-- gen-x: source apps/uni-demo/src/App.vue sha256:44c4fd286e5ef4da —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import { useDemoUi } from './state/demo-ui';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/waterfall-mp-lazy-load.en.vue sha256:217f3cc3fecc731f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-waterfall (uni-end) — English shadow of waterfall-mp-lazy-load.

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.vue sha256:426d36e3fb27d19e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — basic types.
@@ -7,11 +8,12 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">
-    <SnButton><text>默认</text></SnButton>
-    <SnButton type="primary"><text>主要</text></SnButton>
-    <SnButton type="success"><text>成功</text></SnButton>
-    <SnButton type="warning"><text>警告</text></SnButton>
-    <SnButton type="danger"><text>危险</text></SnButton>
+    <SnButton><text>默认按钮</text></SnButton>
+    <SnButton type="primary"><text>主要按钮</text></SnButton>
+    <SnButton type="success"><text>成功按钮</text></SnButton>
+    <SnButton type="info"><text>信息按钮</text></SnButton>
+    <SnButton type="warning"><text>警告按钮</text></SnButton>
+    <SnButton type="danger"><text>危险按钮</text></SnButton>
   </view>
 </template>
 <style scoped>

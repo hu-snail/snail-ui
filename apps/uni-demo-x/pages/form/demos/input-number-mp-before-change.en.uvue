@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-before-change.en.vue sha256:5936db6fd1803e34 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — commit veto (beforeChange): even numbers only. */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

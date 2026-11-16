@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-vertical.vue sha256:ddd41368cceac797 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 竖排：vertical 把轨道竖起来（默认高度 400rpx）。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

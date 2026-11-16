@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-basic.en.vue sha256:f1eaee9cda6ba1e6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — Signature pad: touchstart / touchmove sample the points and `confirm` reports the stroke geometry (`paths`). */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

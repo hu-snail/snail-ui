@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-mp-button-text.vue sha256:4bf9cab270607654 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker — 按钮文案：cancelButtonText / confirmButtonText 覆盖取消与确认按钮。 */
 import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';

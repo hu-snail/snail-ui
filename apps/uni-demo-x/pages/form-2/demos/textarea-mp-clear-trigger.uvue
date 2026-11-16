@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-clear-trigger.vue sha256:88c1ea30d1457ff0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — clearTrigger 控制 × 显示时机，focusWhenClear 控制清空后是否回焦。 */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

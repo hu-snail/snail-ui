@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-disabled-readonly.en.vue sha256:bd5ac0b14af74fe4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — readonly & disabled: `readonly` is selectable but not editable; `disabled` locks the whole field. */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

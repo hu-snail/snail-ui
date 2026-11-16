@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-disabled.vue sha256:fa476fc66a742498 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 禁用：disabled 拦掉拖动。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

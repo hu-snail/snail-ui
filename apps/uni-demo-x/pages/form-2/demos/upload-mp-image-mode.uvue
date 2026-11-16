@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-image-mode.vue sha256:ec8a2ed15373bb58 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-upload — 缩略图模式：imageMode 直接透传给缩略图的 `<image mode>`

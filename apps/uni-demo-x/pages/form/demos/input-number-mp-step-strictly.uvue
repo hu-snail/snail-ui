@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-step-strictly.vue sha256:1e347cf8ffad96db —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — 步进吸附（stepStrictly）：step=3 时值吸附到 0/3/6/9…；带边界时修正到区间内最近的步进倍数。 */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

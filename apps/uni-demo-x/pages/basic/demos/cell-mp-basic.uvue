@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-basic.vue sha256:3a5eb116e17cbc01 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cell — 信息展示形态（通讯录 / 设置页的真实信息行）。

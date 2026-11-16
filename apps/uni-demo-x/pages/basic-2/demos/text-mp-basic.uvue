@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/text-mp-basic.vue sha256:f4d676563da82029 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — 主题类型 + 粗体 + 装饰线。 */
 import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';

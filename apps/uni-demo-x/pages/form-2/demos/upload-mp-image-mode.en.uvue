@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-image-mode.en.vue sha256:4f73169961468e8b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-upload — thumbnail mode: `image-mode` is forwarded straight to the

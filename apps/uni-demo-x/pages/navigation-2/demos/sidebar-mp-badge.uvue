@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/sidebar-mp-badge.vue sha256:1b6bd0e4431b7114 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sidebar — 徽标（badge / is-dot）。 */
 import SnSidebar from '@snui/uni-x/components/sn-sidebar/sn-sidebar.uvue';

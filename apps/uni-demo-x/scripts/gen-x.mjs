@@ -25,6 +25,7 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -89,7 +90,10 @@ function rewriteImports(code, fromFile, outDir) {
   code = code.replace(
     /^import\s+(\w+)\s*,\s*\{([^}]*)\}\s*from\s+'(@snui\/(?:uni-src|uni)\/components\/sn-[a-z0-9-]+\/sn-[a-z0-9-]+)\.vue';\s*\n/gm,
     (line, name, bindings, spec) => {
-      const parts = bindings.split(',').map((n) => n.trim()).filter(Boolean);
+      const parts = bindings
+        .split(',')
+        .map((n) => n.trim())
+        .filter(Boolean);
       const nonType = parts.filter((n) => !n.startsWith('type '));
       if (nonType.length > 0) {
         throw new Error(
@@ -130,15 +134,12 @@ function rewriteImports(code, fromFile, outDir) {
     },
   );
   // 3. 场景引用的模板组件 → 本工程 templates/ 产物（相对路径换算）。
-  code = code.replace(
-    /from\s*'@snui\/templates-src\/([^']+)'/g,
-    (line, spec) => {
-      const outPath = templateOutPath(spec);
-      stats.templatesMapped++;
-      const relSpec = relative(outDir, outPath).replace(/\\/g, '/');
-      return `from '${relSpec.startsWith('.') ? relSpec : `./${relSpec}`}'`;
-    },
-  );
+  code = code.replace(/from\s*'@snui\/templates-src\/([^']+)'/g, (line, spec) => {
+    const outPath = templateOutPath(spec);
+    stats.templatesMapped++;
+    const relSpec = relative(outDir, outPath).replace(/\\/g, '/');
+    return `from '${relSpec.startsWith('.') ? relSpec : `./${relSpec}`}'`;
+  });
   // 4. 其余 @snui/uni-src → @snui/uni-x（组件协同 ts / utils）。
   code = code.replaceAll('@snui/uni-src/', '@snui/uni-x/');
   // 5. demo 相对导入的 .vue → .uvue（聚合页 → 场景、场景 → 场景）。
@@ -146,7 +147,10 @@ function rewriteImports(code, fromFile, outDir) {
   // 6. `import { x } from 'vue'`：剥离 uvue 自动导入名单内的名字，
   //    全部可剥离时整行删除。
   code = code.replace(/^import\s*\{([^}]*)\}\s*from\s*'vue';\s*\n/gm, (line, names) => {
-    const parts = names.split(',').map((n) => n.trim()).filter(Boolean);
+    const parts = names
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
     const kept = parts.filter((n) => !VUE_AUTO_IMPORTS.has(n.replace(/^type\s+/, '')));
     for (const dropped of parts.filter((n) => VUE_AUTO_IMPORTS.has(n.replace(/^type\s+/, '')))) {
       stats.vueImportStrips.push(`${relFromOut(fromFile)}: ${dropped}`);
@@ -391,25 +395,48 @@ function emitApp() {
       return '';
     })
     .replace(/^import\s+'@snui\/uni\/styles';\s*\n/m, () => {
-      stats.appSpecific.push("App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme");
+      stats.appSpecific.push(
+        "App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme",
+      );
       return '';
     })
     .replace(/^import\s*\{\s*initDemoBridge\s*\}\s*from\s*'\.\/state\/demo-bridge';\s*\n/m, () => {
       stats.appSpecific.push('App: demo-bridge import dropped (docs-iframe only, ADR-0005)');
       return '';
     })
-    .replace(/\n\/\/ #ifdef H5\n\/\/ 宿主（docs iframe）桥[^\n]*\ninitDemoBridge\(\);\n\/\/ #endif\n/g, '\n')
-    .replace(/^<style>/m, "<style>\n/* 主题变量层（uni-app x App 端无 :root，变量挂在 .sn-theme-root ——\n   DemoPageShell 根节点携带该 class；本块由 gen-x.mjs 生成，勿手改）。 */\n@import '@snui/uni-x/theme/index.css';");
-  code = `<!-- 由 scripts/gen-x.mjs 从 apps/uni-demo/src/App.vue 生成，勿手改。 -->\n${code}`;
+    .replace(
+      /\n\/\/ #ifdef H5\n\/\/ 宿主（docs iframe）桥[^\n]*\ninitDemoBridge\(\);\n\/\/ #endif\n/g,
+      '\n',
+    )
+    .replace(
+      /^<style>/m,
+      "<style>\n/* 主题变量层（uni-app x App 端无 :root，变量挂在 .sn-theme-root ——\n   DemoPageShell 根节点携带该 class；本块由 gen-x.mjs 生成，勿手改）。 */\n@import '@snui/uni-x/theme/index.css';",
+    );
+  code = `${sourceStamp('apps/uni-demo/src/App.vue', readFileSync(src, 'utf8'), true)}\n${code}`;
   code = rewriteImports(code, src, outRoot);
   writeFileEnsured(join(outRoot, 'App.uvue'), code);
   stats.uvue++;
+}
+
+/**
+ * 生成文件头的源指纹：check-x 的「新鲜度契约」据此校验生成树是否与
+ * apps/uni-demo 当前源同步 —— 源码改动后未重跑 gen-x（H5 / MP 预览仍跑
+ * 旧产物）在这里直接失败，而不是让人对着旧样式反复排查。哈希基于源文件
+ * 内容（clone / checkout 安全，与 mtime 无关）。
+ */
+function sourceStamp(repoRelSrc, sourceCode, isVue) {
+  const hash = createHash('sha256').update(sourceCode).digest('hex').slice(0, 16);
+  const body =
+    `gen-x: source ${repoRelSrc} sha256:${hash} —— 生成产物勿手改；` +
+    '源码改动后重跑 pnpm -F @snui/uni-demo-x gen';
+  return isVue ? `<!-- ${body} -->` : `// ${body}`;
 }
 
 /** DemoPageShell 根节点补 sn-theme-root（主题变量挂载点，见 App.uvue 注释）。 */
 function emitShell(srcPath, outPath) {
   let code = toUvue(srcPath, dirname(outPath), relative(srcRoot, srcPath));
   code = code.replace('class="demo-shell"', 'class="sn-theme-root demo-shell"');
+  code = `${sourceStamp(`apps/uni-demo/src/${relative(srcRoot, srcPath).split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), true)}\n${code}`;
   writeFileEnsured(outPath, code);
   stats.uvue++;
 }
@@ -513,7 +540,10 @@ function main() {
       isVue && relSrc.split(/[/\\]/).includes('demos')
         ? stripDemoContainedPins(code, relSrc)
         : code;
-    writeFileEnsured(outPath, finalCode);
+    writeFileEnsured(
+      outPath,
+      `${sourceStamp(`apps/uni-demo/src/${relSrc.split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), isVue)}\n${finalCode}`,
+    );
     if (isVue) stats.uvue++;
     else stats.ts++;
   }
@@ -528,7 +558,10 @@ function main() {
     const code = isVue
       ? toUvue(srcPath, dirname(outPath), `templates/${relSpec}`)
       : toTs(srcPath, dirname(outPath));
-    writeFileEnsured(outPath, code);
+    writeFileEnsured(
+      outPath,
+      `${sourceStamp(`packages/templates/src/${relSpec.split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), isVue)}\n${code}`,
+    );
     if (isVue) stats.uvue++;
     else stats.ts++;
   }

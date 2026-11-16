@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-cell.en.vue sha256:9813381d259c1f4f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (cell-list styling). */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';

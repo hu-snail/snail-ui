@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-theme.en.vue sha256:6321fb88810c7d9f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — theme: default / primary / outline-split / outline (wot-ui v2 order) + circle pill with circular buttons (AUI additive, buttonColor for themable circles). */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.en.vue sha256:00134f4a8c3ea996 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — native textarea attributes (caret / keyboard / confirm key / composition). */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

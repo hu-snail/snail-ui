@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-color.vue sha256:ad7f5e3a4479490a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — 评分颜色：activeColor 支持逐图标数组。 */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.vue sha256:ad89bdd0d4634619 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — 块级按钮（`block`）。
@@ -7,7 +8,9 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">
-    <SnButton block type="primary"><text>块级按钮</text></SnButton>
+    <SnButton block type="primary"><text>主要按钮</text></SnButton>
+    <SnButton block type="success"><text>成功按钮</text></SnButton>
+    <SnButton block type="danger"><text>危险按钮</text></SnButton>
   </view>
 </template>
 <style scoped>

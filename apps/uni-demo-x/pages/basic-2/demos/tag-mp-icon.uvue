@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-icon.vue sha256:c59ab91b90cd47e0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tag (uni-end) — 图标三轨：内置目录名 / IconData 对象 / iconUrl 位图。

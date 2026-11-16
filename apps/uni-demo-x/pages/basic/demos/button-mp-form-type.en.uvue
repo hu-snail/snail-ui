@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-form-type.en.vue sha256:022c76bd13ba1ff7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-button — formType 'submit' | 'reset' (MP form submission). */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';

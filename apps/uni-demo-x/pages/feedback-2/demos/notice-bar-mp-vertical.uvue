@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notice-bar-mp-vertical.vue sha256:50dfe5e07f56ec85 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-notice-bar (uni-end) — vertical one-line-at-a-time rotation.

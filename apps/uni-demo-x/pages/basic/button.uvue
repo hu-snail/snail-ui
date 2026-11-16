@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/button.vue sha256:b11241a1f33820cc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— button 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/button-mp-basic.uvue';
@@ -9,13 +10,11 @@ import Demo5 from './demos/button-mp-cell.uvue';
 import Demo6 from './demos/button-mp-hover.uvue';
 import Demo7 from './demos/button-mp-loading-props.uvue';
 import Demo8 from './demos/button-mp-form-type.uvue';
-import Demo9 from './demos/button-mp-open-type.uvue';
-import Demo10 from './demos/button-mp-mp-open-type.uvue';
-import Demo11 from './demos/button-mp-block.uvue';
-import Demo12 from './demos/button-mp-color-override.uvue';
-import Demo13 from './demos/button-mp-hairline.uvue';
-import Demo14 from './demos/button-mp-loading-color.uvue';
-import Demo15 from './demos/button-mp-round.uvue';
+import Demo9 from './demos/button-mp-block.uvue';
+import Demo10 from './demos/button-mp-color-override.uvue';
+import Demo11 from './demos/button-mp-hairline.uvue';
+import Demo12 from './demos/button-mp-loading-color.uvue';
+import Demo13 from './demos/button-mp-round.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -89,21 +88,9 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('open-type', 'Open Type')" badge="open-type" />
-        <view class="module__body">
-          <Demo9 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('mp-open-type', 'Mp Open Type')" badge="mp-open-type" />
-        <view class="module__body">
-          <Demo10 />
-        </view>
-      </view>
-      <view class="module">
         <DemoModuleHead :title="t('块级按钮（block）', 'Block button (`block`)')" badge="block" />
         <view class="module__body">
-          <Demo11 />
+          <Demo9 />
         </view>
       </view>
       <view class="module">
@@ -114,7 +101,7 @@ const { t } = useDemoUi();
           badge="color-override"
         />
         <view class="module__body">
-          <Demo12 />
+          <Demo10 />
         </view>
       </view>
       <view class="module">
@@ -123,7 +110,7 @@ const { t } = useDemoUi();
           badge="hairline"
         />
         <view class="module__body">
-          <Demo13 />
+          <Demo11 />
         </view>
       </view>
       <view class="module">
@@ -137,13 +124,13 @@ const { t } = useDemoUi();
           badge="loading-color"
         />
         <view class="module__body">
-          <Demo14 />
+          <Demo12 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('圆角按钮（round）', 'Round button (`round`)')" badge="round" />
         <view class="module__body">
-          <Demo15 />
+          <Demo13 />
         </view>
       </view>
     </view>

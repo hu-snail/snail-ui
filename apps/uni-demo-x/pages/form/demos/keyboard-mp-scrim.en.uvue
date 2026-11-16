@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/keyboard-mp-scrim.en.vue sha256:c3e09198c23fbb69 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-keyboard — scrim and sheet behaviour: modal / hideOnClickOutside / lockScroll / safeAreaInsetBottom / rootPortal / custom*. */
 import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';

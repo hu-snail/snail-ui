@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.en.vue sha256:9cff95c7ad6dd966 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-keys.

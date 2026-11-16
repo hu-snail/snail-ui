@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/pagination-mp-hide-on-one-page.vue sha256:a16e3bebaed317a0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-pagination — 单页隐藏（hide-if-one-page）。

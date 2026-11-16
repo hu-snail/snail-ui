@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tour-mp-custom.vue sha256:49d4a5b0538c8072 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tour — 自定义文案、遮罩点击进入下一步。 */
 import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-radius.vue sha256:c039e8eacb7b759d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — radius 圆角档位（AUI 追加，档位映射 --sn-mp-radius-*）。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

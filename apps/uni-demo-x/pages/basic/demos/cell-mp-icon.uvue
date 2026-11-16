@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-icon.vue sha256:0bcedc28c6af8592 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cell — 前导图标的三种来源与尺寸 / 颜色档位。

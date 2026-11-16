@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/image-preview-mp-basic.en.vue sha256:f20f24cd7a2535c8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-image-preview (uni-end) — thumbnail tap to preview + imperative API.

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-type-radio.vue sha256:488621f5c01efd21 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-select-picker — 单选模式：type="radio" 写回标量（不是数组）。 */
 import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';

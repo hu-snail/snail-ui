@@ -1,3 +1,4 @@
+// gen-x: source apps/uni-demo/src/state/demo-ui.ts sha256:5e68e5443261cc5f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * 演示工程 UI 状态 —— 语言（中/英）、主题（浅/深）与风格包（Style Pack）。
  *

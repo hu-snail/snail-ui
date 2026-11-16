@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-border.vue sha256:3478cde5f38b6846 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 边框（border）：border 四种取值 + bordered 旧布尔别名（圆角见 radius 场景）。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

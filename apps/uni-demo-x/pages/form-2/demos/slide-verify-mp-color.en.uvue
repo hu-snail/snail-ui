@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slide-verify-mp-color.en.vue sha256:bb2c22bc6fdcbda3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slide-verify — track colors: `backgroundColor` / `activeBackgroundColor` override the track fill and the dragged-over tint. */
 import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';

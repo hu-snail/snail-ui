@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slide-verify-mp-icons.en.vue sha256:a18fe48aed55eb7b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-slide-verify — icon glyphs (`icon` / `successIcon`).

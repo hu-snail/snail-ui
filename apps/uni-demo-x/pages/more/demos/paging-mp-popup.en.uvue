@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/paging-mp-popup.en.vue sha256:934c02de4b0fa816 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-paging (uni-end) — pull-to-refresh + load-more inside a popup (EN).

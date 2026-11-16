@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-basic.en.vue sha256:d58476a5b2fc5634 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — basic usage (v-model + placeholder). */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-loading-color.vue sha256:1fac997e85d1d995 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-button — 加载 spinner 定制（`loadingColor` / `loadingSize`）。 */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
@@ -7,9 +8,9 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
     <text class="sn-demo__meta">loading-color / loading-size 改 spinner</text>
     <view class="sn-demo__row">
       <SnButton loading loading-color="var(--sn-mp-color-feedback-success)" type="primary"><text>
-        loading-color
+        自定义颜色
       </text></SnButton>
-      <SnButton loading loading-size="48" type="success"><text>loading-size</text></SnButton>
+      <SnButton loading loading-size="48" type="success"><text>自定义大小</text></SnButton>
     </view>
   </view>
 </template>

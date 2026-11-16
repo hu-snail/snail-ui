@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-disabled.vue sha256:4489605e9ff085c8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-upload — 禁用：disabled 锁掉选择与删除，仅展示列表。 */
 import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/switch-mp-text.vue sha256:4dcfa667e6fa2e6d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-switch — 轨道文案：activeText / inactiveText 显示在轨道两侧。 */
 import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';

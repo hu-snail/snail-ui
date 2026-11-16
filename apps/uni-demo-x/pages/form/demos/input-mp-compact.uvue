@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-compact.vue sha256:2939c45451170a2c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 紧凑行内形态（compact）：compact + border="bottom"（嵌进 Cell / FormItem 的行内形态）。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

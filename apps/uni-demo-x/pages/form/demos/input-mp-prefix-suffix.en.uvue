@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-prefix-suffix.en.vue sha256:be301e83abecd95d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — prefixIcon / suffixIcon name mode + cssIcon class mode. */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-count.vue sha256:7db757545b960ed9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 字数计数（showCount）：maxlength + 计数角标。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

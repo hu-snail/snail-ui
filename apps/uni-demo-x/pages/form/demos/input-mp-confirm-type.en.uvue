@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-confirm-type.en.vue sha256:8c6d6f7bbbd0817b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — confirm-type: the soft-keyboard confirm button label. */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hover.en.vue sha256:f6105b803f0ff8a9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-button — hover-class / hover-start-time / hover-stay-time. */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';

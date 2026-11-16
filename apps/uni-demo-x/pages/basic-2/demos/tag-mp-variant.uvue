@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-variant.vue sha256:c467f4963651185f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — 五种变体：同一语义色下的视觉强度梯度。 */
 import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';

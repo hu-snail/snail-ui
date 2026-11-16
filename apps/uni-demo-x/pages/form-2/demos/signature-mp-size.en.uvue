@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-size.en.vue sha256:2b00d6a1f5bdd333 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — pad size & background: `height` (a number is an rpx design value), `width` and `backgroundColor` override the pad background token. */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/keyboard-mp-car-custom.vue sha256:f84366774edaf3d6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-keyboard — mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；mode="custom" 右侧加大号操作列，extraKey 追加额外键。 */
 import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-layout.en.vue sha256:7ce6ee1a33685857 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — arrangement (layout / center): layout="vertical" stacks the label above the control; center vertically centers the control column. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/navbar-mp-safe-area.vue sha256:0e9b40beb26dc7f2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-navbar — 安全区与层级（safe-area-inset-top / z-index）。

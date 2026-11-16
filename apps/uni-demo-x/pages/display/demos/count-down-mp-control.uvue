@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/count-down-mp-control.vue sha256:b40e7f8c2d7a9564 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-count-down (uni-end) — 控制方法（start / pause / reset）。

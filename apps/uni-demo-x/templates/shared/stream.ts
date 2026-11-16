@@ -1,3 +1,4 @@
+// gen-x: source packages/templates/src/shared/stream.ts sha256:4a20da8e9b9bed14 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * Shared AI stream fold — pure functions that turn stream deltas into the
  * `SnAiMessage` transcript contract.

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-allow-null.en.vue sha256:22b0cddbd7e2efdf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — nullable input (allowNull): the field may stay empty; placeholder covers it. */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

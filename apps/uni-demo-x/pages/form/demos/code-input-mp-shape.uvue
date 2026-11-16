@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-shape.vue sha256:1c3a77b130f02468 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — shape='box' 方框（默认）与 shape='underline' 下划线两种格子形状。 */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

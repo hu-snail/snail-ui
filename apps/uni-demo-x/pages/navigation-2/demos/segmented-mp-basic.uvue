@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.vue sha256:23deb8ab89d23b45 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-segmented — 基础分段器 + v-model。 */
 import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';

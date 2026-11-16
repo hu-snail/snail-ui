@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-step-strictly.en.vue sha256:279162daec8f995c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — step snapping (stepStrictly): with step=3 values snap to 0/3/6/9…; bounds correct to the nearest legal multiple. */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';

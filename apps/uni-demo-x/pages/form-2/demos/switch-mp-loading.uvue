@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/switch-mp-loading.vue sha256:85b7673291061b92 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-switch — 加载态：loading 在旋钮内显示 spinner，loadingProps 配置 spinner。 */
 import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';

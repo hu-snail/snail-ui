@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/sort-button-mp-line.en.vue sha256:8c65fd45a3716fdb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sort-button — underline: `line` adds an underline to the label. */
 import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';

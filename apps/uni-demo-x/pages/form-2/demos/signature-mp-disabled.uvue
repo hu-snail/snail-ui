@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-disabled.vue sha256:0c47ff1ea94f0b0b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — 禁用：disabled 锁掉画板，不能绘制。 */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

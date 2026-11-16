@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-word-limit.vue sha256:ec43d2c3d655bb46 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 字数统计：showWordLimit（showCount 的别名）配合 maxlength。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

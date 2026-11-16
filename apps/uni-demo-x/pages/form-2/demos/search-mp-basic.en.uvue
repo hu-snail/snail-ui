@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/search-mp-basic.en.vue sha256:0a56b76c2e17ec7c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-search — basic usage + the search event. */
 import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';

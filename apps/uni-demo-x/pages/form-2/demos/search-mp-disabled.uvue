@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/search-mp-disabled.vue sha256:b55692a905cdc9c3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-search — 禁用：disabled 锁掉输入与清空。 */
 import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';

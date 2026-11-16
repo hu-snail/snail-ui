@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-range.vue sha256:1982212065f4ecde —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 区间与刻度：range 双滑块返回 [start, end]；marks 支持对象形式。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

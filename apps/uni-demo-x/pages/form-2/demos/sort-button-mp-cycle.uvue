@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/sort-button-mp-cycle.vue sha256:ed11e5e67fafa894 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sort-button — 排序循环：allowReset 把 0 纳入循环；descFirst 首次点击进入降序。 */
 import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';

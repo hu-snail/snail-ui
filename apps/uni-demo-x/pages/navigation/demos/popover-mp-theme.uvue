@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-theme.vue sha256:e6becb0b5fc040b2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — 暗黑主题气泡（sn-config-provider theme="dark"）。

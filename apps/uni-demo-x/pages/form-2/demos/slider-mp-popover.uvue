@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-popover.vue sha256:fe3ae95243c87f0d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 数值气泡：popoverVisible 取 always / normal / never 控制数值气泡。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

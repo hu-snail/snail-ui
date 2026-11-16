@@ -3864,6 +3864,41 @@ review 通过 → squash merge → 删除源分支
 
 ---
 
+# 118. uni-demo-x 生成产物同步契约（AUI-UNI-FB-021）
+
+`apps/uni-demo-x` 不是手写工程：pages / components / state / templates 全部由
+`gen-x.mjs` 从 `apps/uni-demo` 场景源生成（ADR-0004 镜像），组件消费
+`@snui/uni-x`（`packages/uni` 组件源的 .uvue 转换产物）。
+
+## 118.1 三步管线（缺一不可）
+
+改了以下任一源码后，预览端（HBuilderX 编译 / demo-x dev 服务器）生效的唯一路径：
+
+```bash
+pnpm -F @snui/uni-x build           # packages/uni 组件源 → uni-x/dist（.uvue）
+pnpm -F @snui/uni-demo-x sync-uni-x # uni-x/dist 物化进 demo-x/node_modules
+pnpm -F @snui/uni-demo-x gen        # apps/uni-demo 场景源 → demo-x 页面
+pnpm -F @snui/uni-demo-x check      # 结构 + 新鲜度校验（必须全过）
+```
+
+适用源：`apps/uni-demo/src/**`、`packages/uni/src/**`、`packages/templates/src/{uni,shared}/**`。
+
+## 118.2 新鲜度契约（check-x 第 6 条）
+
+- 每个生成产物头部携带源指纹：`gen-x: source <repo-rel-path> sha256:<16hex>`。
+- `check-x` 逐产物重算源哈希：不一致 / 缺指纹 / 源不存在 → FAIL（0 容忍）。
+- 禁止在 demo-x 生成树里手改 `.uvue` / 生成 `.ts` —— 手改会被指纹校验与下次 gen 冲掉。
+
+## 118.3 事故记录（勿重蹈）
+
+2026-11-16：连续三轮只改 `apps/uni-demo` 源码而未跑管线，5173 / MP 预览持续跑旧
+产物 —— 用户看到「胶囊样式改了没生效」「图标 token 全黑」的假象（AUI-UNI-FB-021）。
+同轮修复 MP 图标取色回归：`sn-icon-mp.ts` 计算色查询宿主必须 **`$scope` 优先**
+（uni 宿主页面级查询在嵌套自定义组件里 `.in(Vue proxy)` 不可靠），重试用
+`RETRY_DELAYS_MS` 有界退避 —— 单次重试在重型页面上会让部分图标实例永落墨色兜底。
+
+---
+
 # END
 
 AUI Agent 执行标准 v1.0.3（补充规则 #101-#117）

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/switch-mp-css-icons.vue sha256:66ad23ba9b629973 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-switch — CSS 类图标模式：activeActionCssIcon / inactiveActionCssIcon / activeCssIcon / inactiveCssIcon + classPrefix。 */
 import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';

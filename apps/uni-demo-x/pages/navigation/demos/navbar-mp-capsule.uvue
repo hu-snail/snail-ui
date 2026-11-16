@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/navbar-mp-capsule.vue sha256:8609eda3aa6ccfbc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-navbar — 胶囊样式 / 带搜索栏。
@@ -23,11 +24,11 @@ function report(label: string): void {
       <template #capsule>
         <view class="capsule">
           <view class="capsule__btn" @click="report('返回')">
-            <SnIcon :icon="ChevronLeft" :size="36" />
+            <SnIcon :icon="ChevronLeft" :size="28" />
           </view>
           <view class="capsule__rule" />
           <view class="capsule__btn" @click="report('首页')">
-            <SnIcon :icon="Home" :size="32" />
+            <SnIcon :icon="Home" :size="26" />
           </view>
         </view>
       </template>
@@ -68,23 +69,24 @@ function report(label: string): void {
   flex-direction: row;
   align-items: center;
   height: 64rpx;
-  border: 2rpx solid var(--sn-mp-color-border-default);
+  /* 对齐微信系统胶囊的安静观感：极淡描边 + 次级图标色。 */
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
-  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-mp-color-text-secondary);
 }
 .capsule__btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
+  width: 86rpx;
   height: 100%;
   flex-direction: row;
 }
 .capsule__rule {
   width: 2rpx;
   height: 32rpx;
-  background-color: var(--sn-mp-color-border-default);
+  background-color: var(--sn-mp-color-border-subtle);
 }
 .search-left {
   display: flex;

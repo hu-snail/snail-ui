@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-placeholder.vue sha256:f4e839b848341287 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — 占位符样式（placeholderClass / placeholderStyle）。 */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

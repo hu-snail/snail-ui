@@ -1,3 +1,4 @@
+<!-- gen-x: source packages/templates/src/uni/sn-ai-chat.vue sha256:71387bf4919498c3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * sn-ai-chat — uni-end conversation page (AUI-TPL-002).

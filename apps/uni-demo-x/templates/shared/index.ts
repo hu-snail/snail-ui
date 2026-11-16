@@ -1,3 +1,4 @@
+// gen-x: source packages/templates/src/shared/index.ts sha256:ec7c9c013adb0c35 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * Shared layer barrel — the single import surface for both ends' templates.
  *

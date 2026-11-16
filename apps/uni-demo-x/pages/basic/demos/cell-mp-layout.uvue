@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-layout.vue sha256:e0b0fbcc7d7913b7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cell — 布局形态（多行标题 / 列宽对齐 / 纵向排布 / 分组差异）。

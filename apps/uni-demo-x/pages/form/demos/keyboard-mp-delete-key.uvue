@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/keyboard-mp-delete-key.vue sha256:6ff1c62098365e3d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-keyboard — 删除键开关（showDeleteKey）：showDeleteKey=false 不渲染删除键。 */
 import SnKeyboard from '@snui/uni-x/components/sn-keyboard/sn-keyboard.uvue';

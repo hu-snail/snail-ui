@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-mp-immediate.en.vue sha256:a6a1bdb24185b47d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker — commit while scrolling: immediateChange writes v-model continuously during the roll instead of on confirm. */
 import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';

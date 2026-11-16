@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-space.vue sha256:2724c344c631662e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — 间距与铺满：space 控制图标间距（数字按 rpx 设计值 ×2）、size 控制图标尺寸、block 均分整行宽度。 */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

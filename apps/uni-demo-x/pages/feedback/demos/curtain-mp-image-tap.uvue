@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/curtain-mp-image-tap.vue sha256:5b6dc3c105e42a69 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-curtain (uni-end) — 点图片关闭（close-on-click 默认 true）。

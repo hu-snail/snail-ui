@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-cell-clickable.en.vue sha256:424e8744013750e9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form-item — tappable rows (clickable / isLink): the whole row is tappable and shows the arrow. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

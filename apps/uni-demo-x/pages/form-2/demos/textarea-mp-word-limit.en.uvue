@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-word-limit.en.vue sha256:98f46a2412472abd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — word limit: `showWordLimit` + `maxlength` render the counter. */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

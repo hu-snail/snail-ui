@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/search-mp-placeholder-left.en.vue sha256:f4555ce4372887ab —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-search — left-aligned placeholder: `placeholderLeft` keeps the placeholder text on the left. */
 import SnSearch from '@snui/uni-x/components/sn-search/sn-search.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.en.vue sha256:3517183c8b1a5de4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tooltip (uni-end) — English shadow of tooltip-mp-close.

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-schema.en.vue sha256:65c228a6ab2105ac —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — form schema: field name + label + required flag stored on the form context; validation still runs on rules. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

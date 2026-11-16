@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-chip-size.vue sha256:02edcb1e0b4f4009 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-select-picker — chip 尺寸与确认：selectSize 控制 chip 尺寸档位，

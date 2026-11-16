@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notify-mp-variant.en.vue sha256:d0da47ddb7233fae —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-notify (uni-end) — floating variant, closable, bottom anchor.

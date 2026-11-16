@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/select-picker-mp-before-confirm.en.vue sha256:edd05e36f89908f3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-select-picker — confirm guard: a `beforeConfirm` returning false leaves the model untouched. */
 import SnSelectPicker from '@snui/uni-x/components/sn-select-picker/sn-select-picker.uvue';

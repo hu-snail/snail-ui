@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.vue sha256:43acd59c38c46881 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — 小程序原生 textarea 属性（光标 / 键盘 / 确认键 / 合成事件）。 */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-custom-class.en.vue sha256:a1b521c98dcd101b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — the customClass / customStyle / customTextareaClass mount points. */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

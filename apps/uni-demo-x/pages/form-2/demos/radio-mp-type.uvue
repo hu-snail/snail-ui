@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-type.vue sha256:ad1cd597a43b8be1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — type 形状（circle / dot / square / button）。 */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';

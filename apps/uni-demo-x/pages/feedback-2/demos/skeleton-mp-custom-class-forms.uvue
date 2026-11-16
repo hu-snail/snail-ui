@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue sha256:e2c8a54d648233b2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-skeleton (uni-end) — `customClass` 的三种形态。

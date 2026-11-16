@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/date-strip-mp-lunar.vue sha256:d2f7d88e5f013e4c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-date-strip — 农历显示：show-lunar 在日号下方铺农历角标，初一显示月名。 */
 import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';

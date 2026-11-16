@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/upload-mp-status.vue sha256:422a5e9e3709a886 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-upload — 文件状态渲染：status 列表形态按 success / fail 渲染进度与失败态。 */
 import SnUpload from '@snui/uni-x/components/sn-upload/sn-upload.uvue';

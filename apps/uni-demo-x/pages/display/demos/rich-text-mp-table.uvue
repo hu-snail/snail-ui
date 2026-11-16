@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/rich-text-mp-table.vue sha256:5564a405a415012f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 表格：colspan / rowspan / colgroup 列宽 / 横向滚动。 */
 import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-mp-border.en.vue sha256:33ca044436ccebb1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input — border: all border values plus the bordered legacy boolean alias (radius has its own scenario). */
 import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';

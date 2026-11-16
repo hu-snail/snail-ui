@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-readonly.en.vue sha256:76021978bd85adcd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — readonly: taps are blocked, the score is display-only. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

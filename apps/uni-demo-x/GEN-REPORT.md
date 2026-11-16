@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1439 |
+| .uvue 产出 | 1435 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2068 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2064 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -37,8 +37,6 @@
 - ../uni-demo/src/pages/basic/demos/button-mp-form-type.vue: ref
 - ../uni-demo/src/pages/basic/demos/button-mp-hairline.en.vue: ref
 - ../uni-demo/src/pages/basic/demos/button-mp-hairline.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-mp-open-type.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-mp-open-type.vue: ref
 - ../uni-demo/src/pages/basic/demos/button-mp-state.en.vue: ref
 - ../uni-demo/src/pages/basic/demos/button-mp-state.vue: ref
 - ../uni-demo/src/pages/basic/demos/cell-mp-link.en.vue: ref
@@ -1287,7 +1285,7 @@
 - pages/basic/avatar-group.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/basic/avatar.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
+- pages/basic/button.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue
 - pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -1332,12 +1330,12 @@
 - pages/basic/demos/badge-mp-visibility.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-visibility.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic/demos/badge-mp-visibility.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-basic.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-basic.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-block.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-block.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-block.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-block.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-cell.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-cell.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
@@ -1374,29 +1372,19 @@
 - pages/basic/demos/button-mp-loading-props.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-loading-props.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-loading-props.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-mp-open-type.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-mp-open-type.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-open-type.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-open-type.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-round.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-round.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-round.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-round.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-size.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-size.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-state.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.en.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-state.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-state.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-state.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-variant.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-variant.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/cell-mp-link.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/cell-mp-link.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>

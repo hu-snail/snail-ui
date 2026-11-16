@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue sha256:7a83d193d0a8a9f7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — 节点类名与偏移：custom-arrow / custom-pop / offset / custom-style。

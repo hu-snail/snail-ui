@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/textarea-mp-placeholder.vue sha256:2454bd4b6fc1da76 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-textarea — 占位符样式：placeholderStyle 内联声明 + placeholderClass 类名，只作用于占位文本。 */
 import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';

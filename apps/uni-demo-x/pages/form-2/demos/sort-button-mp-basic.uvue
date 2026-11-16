@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/sort-button-mp-basic.vue sha256:d05dde6e6ff17b48 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-sort-button — sn-sort-button 三态排序：1 升序 / 0 重置 / -1 降序；默认在升序与降序之间切换。 */
 import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';

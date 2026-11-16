@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/signature-mp-disabled.en.vue sha256:446901fdaf74fe2c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-signature — disabled: the pad is locked and drawing is ignored. */
 import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';

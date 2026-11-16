@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-mp-mode.vue sha256:c9e449cb17617a33 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar (uni-end) — 图片裁切（mode）+ 根节点样式（customClass / customStyle）。

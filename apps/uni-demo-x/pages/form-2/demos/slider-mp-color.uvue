@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/slider-mp-color.vue sha256:184ab59e1d559fb0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider — 轨道配色：activeColor / inactiveColor 覆盖已填充与未填充轨道颜色。 */
 import SnSlider from '@snui/uni-x/components/sn-slider/sn-slider.uvue';

@@ -1,6 +1,7 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.vue sha256:9351cb91e0fba052 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled & loading.
+ * Demo: sn-button (uni-end) — disabled 与 loading 状态（全语义色）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
@@ -13,18 +14,43 @@ function trigger(): void {
 }
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton disabled><text>禁用</text></SnButton>
-    <SnButton loading><text>加载中</text></SnButton>
-    <SnButton :loading="loading" type="primary" @click="trigger"><text>点击触发加载</text></SnButton>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">禁用（disabled）</text>
+    <view class="sn-demo__row">
+      <SnButton disabled><text>默认按钮</text></SnButton>
+      <SnButton disabled type="primary"><text>主要按钮</text></SnButton>
+      <SnButton disabled type="success"><text>成功按钮</text></SnButton>
+      <SnButton disabled type="info"><text>信息按钮</text></SnButton>
+      <SnButton disabled type="warning"><text>警告按钮</text></SnButton>
+      <SnButton disabled type="danger"><text>危险按钮</text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">加载（loading）</text>
+    <view class="sn-demo__row">
+      <SnButton loading type="primary"><text>保存中</text></SnButton>
+      <SnButton loading type="success"><text>提交中</text></SnButton>
+      <SnButton loading type="danger"><text>删除中</text></SnButton>
+      <SnButton :loading="loading" type="primary" @click="trigger"><text>点击触发加载</text></SnButton>
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16rpx;
   align-items: center;
   flex-direction: row;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

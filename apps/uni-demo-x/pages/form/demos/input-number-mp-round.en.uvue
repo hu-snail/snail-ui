@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/input-number-mp-round.en.vue sha256:15248d5d23663660 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-input-number — rounded (round): a pill-shaped primary stepper. */
 import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
