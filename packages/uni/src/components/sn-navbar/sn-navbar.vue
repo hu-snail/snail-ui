@@ -324,7 +324,7 @@ const placeholderStyle = computed(() =>
           aria-label="Back"
           @tap.stop="onBuiltinBackTap"
         >
-          <SnIcon :icon="ChevronLeft" :size="36" />
+          <SnIcon :icon="ChevronLeft" :size="28" />
         </view>
         <view class="sn-navbar__mp-capsule-rule" aria-hidden="true" />
         <view
@@ -333,7 +333,7 @@ const placeholderStyle = computed(() =>
           aria-label="Home"
           @tap.stop="onBuiltinHomeTap"
         >
-          <SnIcon :icon="Home" :size="32" />
+          <SnIcon :icon="Home" :size="26" />
         </view>
       </view>
     </view>
@@ -486,8 +486,8 @@ const placeholderStyle = computed(() =>
   align-items: center;
 }
 
-/* 内置小程序胶囊（AUI 追加）：对齐微信系统胶囊的安静观感——极淡描边 +
- * 次级图标色，不再复用侧区的 action-primary 强调色。 */
+/* 内置小程序胶囊（AUI 追加）：几何对齐微信真胶囊（87px × 32px = 174 × 64rpx，
+ * 按钮 86rpx 居中字形），观感对齐其安静本色——极淡描边 + 次级图标色。 */
 .sn-navbar__mp-capsule {
   display: flex;
   flex-direction: row;
@@ -503,7 +503,7 @@ const placeholderStyle = computed(() =>
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
+  width: 86rpx;
   height: 100%;
 }
 

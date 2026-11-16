@@ -16,37 +16,28 @@ function report(label: string): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="mp-nav">
-      <SnNavbar
-        title="Mini program"
-        custom-style="padding-right: 208rpx;"
-        @back-home="report('Home')"
-      >
-        <template #capsule>
-          <view class="mp-nav__capsule">
-            <view class="mp-nav__capsule-btn" @tap="report('Back')">
-              <SnIcon :icon="ChevronLeft" :size="36" />
-            </view>
-            <view class="mp-nav__capsule-rule" />
-            <view class="mp-nav__capsule-btn" @tap="report('Home')">
-              <SnIcon :icon="Home" :size="32" />
-            </view>
+    <SnNavbar
+      title="Mini program"
+      custom-style="padding-right: 208rpx;"
+      @back-home="report('Home')"
+    >
+      <template #capsule>
+        <view class="mp-nav__capsule">
+          <view class="mp-nav__capsule-btn" @tap="report('Back')">
+            <SnIcon :icon="ChevronLeft" :size="28" />
           </view>
-        </template>
-      </SnNavbar>
-
-      <!-- Illustration only: on a real device WeChat draws the native capsule. -->
-      <view class="mp-nav__system">
-        <text class="mp-nav__dots">•••</text>
-        <view class="mp-nav__system-rule" />
-        <text class="mp-nav__target">⊙</text>
-      </view>
-    </view>
+          <view class="mp-nav__capsule-rule" />
+          <view class="mp-nav__capsule-btn" @tap="report('Home')">
+            <SnIcon :icon="Home" :size="26" />
+          </view>
+        </view>
+      </template>
+    </SnNavbar>
 
     <text class="sn-demo__meta">
-      The 208rpx right inset clears WeChat's system capsule in custom navigation; do not put right
-      slot content there. With safe-area-inset-top the component reserves the measured inset and the
-      status bar automatically.
+      The 208rpx right inset clears WeChat's system capsule, which the MP environment draws itself
+      (the demo does not fake it); do not put right slot content there. With safe-area-inset-top the
+      component reserves the measured inset and the status bar automatically.
     </text>
     <text class="sn-demo__meta">Last tap: {{ lastAction }}</text>
   </view>
@@ -63,17 +54,14 @@ function report(label: string): void {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }
-.mp-nav {
-  position: relative;
-}
 .mp-nav__capsule {
   display: flex;
   flex-direction: row;
   align-items: center;
   height: 64rpx;
-  /* Mirrors the WeChat system capsule's quiet look: faint hairline + secondary icon colour.
-   * Real hosts need not hand-draw it — sn-navbar renders a built-in capsule in the MP
-   * environment when `mp-capsule` is on. */
+  /* Geometry mirrors the real WeChat capsule (87px × 32px = 174 × 64rpx); quiet look:
+   * faint hairline + secondary icon colour. Real hosts need not hand-draw it — sn-navbar
+   * renders a built-in capsule in the MP environment when `mp-capsule` is on. */
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
@@ -83,40 +71,12 @@ function report(label: string): void {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
+  width: 86rpx;
   height: 100%;
 }
 .mp-nav__capsule-rule {
   width: 2rpx;
   height: 32rpx;
   background-color: var(--sn-mp-color-border-subtle);
-}
-.mp-nav__system {
-  position: absolute;
-  top: 12rpx;
-  right: 16rpx;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  height: 64rpx;
-  padding: 0 20rpx;
-  border: 2rpx solid var(--sn-mp-color-border-default);
-  border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-background-surface);
-}
-.mp-nav__dots {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-primary);
-}
-.mp-nav__system-rule {
-  width: 2rpx;
-  height: 32rpx;
-  background-color: var(--sn-mp-color-border-default);
-}
-.mp-nav__target {
-  font-size: 32rpx;
-  color: var(--sn-mp-color-text-primary);
 }
 </style>

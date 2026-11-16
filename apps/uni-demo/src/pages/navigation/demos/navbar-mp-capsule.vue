@@ -25,11 +25,11 @@ function report(label: string): void {
       <template #capsule>
         <view class="capsule">
           <view class="capsule__btn" @tap="report('返回')">
-            <SnIcon :icon="ChevronLeft" :size="36" />
+            <SnIcon :icon="ChevronLeft" :size="28" />
           </view>
           <view class="capsule__rule" />
           <view class="capsule__btn" @tap="report('首页')">
-            <SnIcon :icon="Home" :size="32" />
+            <SnIcon :icon="Home" :size="26" />
           </view>
         </view>
       </template>
@@ -81,7 +81,7 @@ function report(label: string): void {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
+  width: 86rpx;
   height: 100%;
 }
 .capsule__rule {

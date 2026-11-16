@@ -18,17 +18,17 @@ function report(label: string): void {
   <view class="sn-demo sn-demo--stack">
     <!-- Capsule style -->
     <SnNavbar title="Title" right-text="Settings" @click-right="report('Settings')">
-      <template #capsule>
-        <view class="capsule">
-          <view class="capsule__btn" @tap="report('Back')">
-            <SnIcon :icon="ChevronLeft" :size="36" />
+        <template #capsule>
+          <view class="capsule">
+            <view class="capsule__btn" @tap="report('Back')">
+              <SnIcon :icon="ChevronLeft" :size="28" />
+            </view>
+            <view class="capsule__rule" />
+            <view class="capsule__btn" @tap="report('Home')">
+              <SnIcon :icon="Home" :size="26" />
+            </view>
           </view>
-          <view class="capsule__rule" />
-          <view class="capsule__btn" @tap="report('Home')">
-            <SnIcon :icon="Home" :size="32" />
-          </view>
-        </view>
-      </template>
+        </template>
     </SnNavbar>
 
     <!-- With search bar -->
@@ -77,7 +77,7 @@ function report(label: string): void {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 68rpx;
+  width: 86rpx;
   height: 100%;
 }
 .capsule__rule {
