@@ -147,8 +147,27 @@ export function readResolvedIconColor(value: unknown): string {
 }
 
 /** H5 has a real DOM and renders inline `<svg>`; only MP/App need the query. */
-function needsComputedColor(): boolean {
-  return typeof document === 'undefined';
+/** DOM 形态宿主（uni-app x web / 经典 uni H5）下 $el 的最小探测面。 */
+interface IconDomEl {
+  querySelector(selector: string): Element | null;
+  ownerDocument?: { defaultView?: { getComputedStyle(el: Element): CSSStyleDeclaration } | null };
+}
+
+/**
+ * 该端是否需要解析"烘焙进 data-URL 的级联色"—— 以组件**真实渲染形态**为准，
+ * 不做编译目标假设：
+ *
+ * - MP / App 原生：无 DOM（`$el` 不可用），data-URL `<image>` 是唯一渲染 → 需要查询器；
+ * - 经典 uni-app H5：inline `<svg>` + `currentColor`，继承即着色 → 不需要；
+ * - **uni-app x web**：转换层把 `<svg>` 分支替换成 `<image>` 光栅化（uni-app x 无
+ *   内联 svg 元素），web 上 `document` 存在但渲染的仍是烘焙位图 —— 曾因
+ *   `typeof document === 'undefined'` 的目标假设在 web 上直接早退，全站图标
+ *   永落墨色（AUI-UNI-FB-021）。DOM 形态下无 svg 子节点即视为光栅化渲染。
+ */
+export function rendersRasterized(el: unknown): boolean {
+  if (el === undefined || el === null) return true;
+  if (typeof (el as IconDomEl).querySelector !== 'function') return true;
+  return (el as IconDomEl).querySelector('svg') === null;
 }
 
 /**
@@ -227,7 +246,19 @@ export function useMpIconColor(color: () => string): Ref<string> {
       resolved.value = raw;
       return;
     }
-    if (!needsComputedColor()) return;
+    const el = (instance?.proxy as { $el?: unknown } | undefined)?.$el;
+    if (!rendersRasterized(el)) return; // inline <svg>（经典 uni H5）：currentColor 继承即可
+    if (typeof (el as IconDomEl | undefined)?.querySelector === 'function') {
+      // DOM 形态且走光栅化（uni-app x web）：selector query 的 computedStyle 在 web
+      // 运行时不可靠，getComputedStyle 同步读取宿主级联色（data-URL 是独立 SVG
+      // 文档，拿不到宿主 CSS —— 与 MP 同理）。
+      const node = el as unknown as IconDomEl & Element;
+      const style = node.ownerDocument?.defaultView?.getComputedStyle(node);
+      const value = readResolvedIconColor({ color: style?.color });
+      seq++;
+      resolved.value = value !== '' ? value : ICON_INK_FALLBACK;
+      return;
+    }
 
     // Query acquisition order:
     // 1. The component's mp `$scope` — the WeChat Component instance natively

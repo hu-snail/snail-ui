@@ -350,6 +350,7 @@ function open(comp: HomeComp): void {
               placeholder
               safe-area-inset-top
               custom-style="background-color: transparent;"
+              :mp-capsule="false"
             />
             <!-- #endif -->
             <view class="home__bar" :style="mpBarStyle">

@@ -13,6 +13,7 @@ import {
   isConcreteIconColor,
   readResolvedIconColor,
   pickMpQueryHost,
+  rendersRasterized,
   RETRY_DELAYS_MS,
 } from './sn-icon-mp';
 import { resolveSnIconStringSync } from './sn-icon-providers';
@@ -95,6 +96,30 @@ describe('readResolvedIconColor', () => {
     expect(readResolvedIconColor({ color: 'currentColor' })).toBe('');
     expect(readResolvedIconColor({})).toBe('');
     expect(readResolvedIconColor(null)).toBe('');
+  });
+});
+
+describe('rendersRasterized', () => {
+  it('treats DOM-less targets (MP / App native) as rasterized', () => {
+    expect(rendersRasterized(undefined)).toBe(true);
+    expect(rendersRasterized(null)).toBe(true);
+  });
+
+  it('treats a DOM node without an svg child as rasterized (uni-app x web)', () => {
+    // 回归：uni-x 转换把所有端的 <svg> 分支替换成 <image> 光栅化，而旧的
+    // `typeof document === 'undefined'` 门在 web 上为 false → 取色器早退，
+    // 全站图标永落墨色。以真实渲染形态为准：无 svg 子节点 = 光栅化。
+    const imgHost = { querySelector: () => null, ownerDocument: undefined };
+    expect(rendersRasterized(imgHost)).toBe(true);
+  });
+
+  it('treats an inline-svg host as NOT rasterized (classic uni H5)', () => {
+    const svgHost = { querySelector: (s: string) => (s === 'svg' ? ({} as Element) : null) };
+    expect(rendersRasterized(svgHost)).toBe(false);
+  });
+
+  it('treats unknown shapes conservatively as rasterized', () => {
+    expect(rendersRasterized({})).toBe(true);
   });
 });
 

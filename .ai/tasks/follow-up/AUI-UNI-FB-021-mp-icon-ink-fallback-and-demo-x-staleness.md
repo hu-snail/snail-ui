@@ -52,6 +52,22 @@ doodle 包内联级联会把 `--aui-color-text-secondary` 重映射为 #3f3f46�
    **新鲜度契约** —— 逐产物重算源哈希，不一致即 FAIL（1444/1444 fresh）。
    AGENTS.md §113 登记管线契约。
 
+## 追加根因 C：uni-app x web 上取色器被目标假设早退（图标全黑的主因）
+
+uni-x 转换层（`packages/uni-x/src/transform/patches.ts`）把 sn-icon 的
+`#ifndef MP` inline-`<svg>` 分支替换为 `<image>` 光栅化 —— **uni-app x 无内联
+svg 元素，所有端（含 web）都走 data-URL 位图**。而 `sn-icon-mp.ts` 的取色门是
+`typeof document === 'undefined'`（"只有 MP 没有文档"）—— uni-app x web 上
+`document` 存在 → 取色器直接早退 → `mpIconColor` 永远停在
+`ICON_INK_FALLBACK`（#1a1a1a）→ **全站图标黑色**（浏览器 DOM 实证：28 个
+image 全部 `stroke="#1a1a1a"`，与按钮类型 / 图标名无关）。
+
+修法：废除目标假设，按**真实渲染形态**判断 —— 新增 `rendersRasterized($el)`：
+`$el` 无 DOM（MP/App）→ 走 selector query；DOM 有 `<svg>` 子节点（经典 uni H5）
+→ currentColor 继承、不查询；DOM 无 `<svg>`（uni-app x web）→ 用
+`getComputedStyle($el).color` 同步读取级联色（selector query 的 computedStyle
+在 web 运行时不可靠）。
+
 ## 教训
 
 - **改 `apps/uni-demo` / `packages/uni` / `packages/templates` 源码后，预览端生效路径
