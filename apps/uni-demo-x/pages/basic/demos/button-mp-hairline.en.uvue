@@ -1,46 +1,60 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hairline.en.vue sha256:14ec95036d48448e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hairline.en.vue sha256:effd3ff44f8fac5d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — hairline border toggle (every semantic hue).
- *
- * hairline defaults to true: the default type paints a neutral hairline and
- * semantic types render as outlines in their own hue; `false` strips borders
- * on every type. Loading states live in the dedicated loading module.
+ * Spacing note: uni-app x has no flex `gap` support — inline `custom-style`
+ * margins + explicit `flex-direction: row`.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+/** In-row spacing fallback (uni-app x lacks gap). */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__meta">Hairline on (default): semantic types stroke in their own hue</text>
-    <view class="sn-demo__row">
-      <SnButton><text>Default button</text></SnButton>
-      <SnButton variant="plain" type="primary"><text>Primary button</text></SnButton>
-      <SnButton variant="plain" type="success"><text>Success button</text></SnButton>
-      <SnButton variant="plain" type="info"><text>Info button</text></SnButton>
-      <SnButton variant="plain" type="warning"><text>Warning button</text></SnButton>
-      <SnButton variant="plain" type="danger"><text>Danger button</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-meta">Hairline on (default): semantic types stroke in their own hue</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap"><text>Default button</text></SnButton>
+      <SnButton :custom-style="rowGap" variant="plain" type="primary"><text>Primary button</text></SnButton>
+      <SnButton :custom-style="rowGap" variant="plain" type="success"><text>Success button</text></SnButton>
+      <SnButton :custom-style="rowGap" variant="plain" type="info"><text>Info button</text></SnButton>
+      <SnButton :custom-style="rowGap" variant="plain" type="warning"><text>Warning button</text></SnButton>
+      <SnButton :custom-style="rowGap" variant="plain" type="danger"><text>Danger button</text></SnButton>
     </view>
 
-    <text class="sn-demo__meta">Hairline off (hairline=false): borders stripped on every type</text>
-    <view class="sn-demo__row">
-      <SnButton :hairline="false"><text>Default button</text></SnButton>
-      <SnButton :hairline="false" variant="plain" type="primary"><text>Primary button</text></SnButton>
-      <SnButton :hairline="false" variant="plain" type="success"><text>Success button</text></SnButton>
-      <SnButton :hairline="false" variant="plain" type="info"><text>Info button</text></SnButton>
-      <SnButton :hairline="false" variant="plain" type="warning"><text>Warning button</text></SnButton>
-      <SnButton :hairline="false" variant="plain" type="danger"><text>Danger button</text></SnButton>
+    <text class="sn-mp-btn-meta">Hairline off (hairline=false): borders stripped on every type</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" :hairline="false"><text>Default button</text></SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="primary"><text>
+        Primary button
+      </text></SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="success"><text>
+        Success button
+      </text></SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="info"><text>
+        Info button
+      </text></SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="warning"><text>
+        Warning button
+      </text></SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="danger"><text>
+        Danger button
+      </text></SnButton>
     </view>
   </view>
 </template>
 <style scoped>
-.sn-demo__row {
+.sn-mp-btn-stack {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-  align-items: center;
-  flex-direction: row;
+  flex-direction: column;
 }
-.sn-demo__meta {
+.sn-mp-btn-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sn-mp-btn-meta {
+  margin-bottom: 12rpx;
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

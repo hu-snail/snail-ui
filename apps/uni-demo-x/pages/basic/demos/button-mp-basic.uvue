@@ -1,20 +1,38 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.vue sha256:893c4cd4d01a4496 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.vue sha256:f543be67a4ef1cee —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — basic types.
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`（README 真机清单），行内间距统一用
+ * SnButton 的内联 `custom-style` margin 兜底，显式 `flex-direction: row`
+ * 抵消 uni-app x 的 column 默认值。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+/** 行内按钮间距（uni-app x 无 gap 兜底）。 */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-demo">
-    <view class="sn-demo__row">
-      <SnButton><text>默认按钮</text></SnButton>
-      <SnButton type="primary"><text>主要按钮</text></SnButton>
-      <SnButton type="success"><text>成功按钮</text></SnButton>
-      <SnButton type="info"><text>信息按钮</text></SnButton>
-      <SnButton type="warning"><text>警告按钮</text></SnButton>
-      <SnButton type="danger"><text>危险按钮</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap"><text>默认按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" type="primary"><text>主要按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" type="success"><text>成功按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" type="info"><text>信息按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" type="warning"><text>警告按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" type="danger"><text>危险按钮</text></SnButton>
     </view>
   </view>
 </template>
+<style scoped>
+.sn-mp-btn-stack {
+  display: flex;
+  flex-direction: column;
+}
+.sn-mp-btn-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+</style>

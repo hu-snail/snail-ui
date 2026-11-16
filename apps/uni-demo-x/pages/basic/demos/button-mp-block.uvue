@@ -1,15 +1,50 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.vue sha256:5f176ed0316239a4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.vue sha256:83549f2871bbc3eb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — 块级按钮（`block`）。
- * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ * Demo: sn-button (uni-end) — 块级按钮（`block`）× 场景。
+ *
+ * block 占满父容器宽度，叠加语义色与常用形态：实心、圆角胶囊、朴素、
+ * 柔和、加载态。
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`，块级按钮的纵向间距用内联
+ * `custom-style` margin 兜底。
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+/** 块级按钮纵向间距（uni-app x 无 gap 兜底）。 */
+const stackGap = { 'margin-bottom': '16rpx' };
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton block type="primary"><text>主要按钮</text></SnButton>
-    <SnButton block type="success"><text>成功按钮</text></SnButton>
-    <SnButton block type="danger"><text>危险按钮</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">实心（block × 语义色）</text>
+    <SnButton :custom-style="stackGap" block type="primary"><text>主要按钮</text></SnButton>
+    <SnButton :custom-style="stackGap" block type="success"><text>成功按钮</text></SnButton>
+    <SnButton :custom-style="stackGap" block type="danger"><text>危险按钮</text></SnButton>
+
+    <text class="sn-mp-btn-label">圆角（block × round）</text>
+    <SnButton :custom-style="stackGap" block round type="primary"><text>圆角主要按钮</text></SnButton>
+    <SnButton :custom-style="stackGap" block round type="success"><text>圆角成功按钮</text></SnButton>
+
+    <text class="sn-mp-btn-label">朴素（block × plain）</text>
+    <SnButton :custom-style="stackGap" block variant="plain" type="primary"><text>朴素主要按钮</text></SnButton>
+    <SnButton :custom-style="stackGap" block variant="plain" type="danger"><text>朴素危险按钮</text></SnButton>
+
+    <text class="sn-mp-btn-label">柔和（block × soft）</text>
+    <SnButton :custom-style="stackGap" block variant="soft" type="primary"><text>柔和主要按钮</text></SnButton>
+    <SnButton :custom-style="stackGap" block variant="soft" type="success"><text>柔和成功按钮</text></SnButton>
+
+    <text class="sn-mp-btn-label">加载（block × loading）</text>
+    <SnButton :custom-style="stackGap" block loading type="primary"><text>保存中</text></SnButton>
+    <SnButton block loading type="success"><text>提交中</text></SnButton>
   </view>
 </template>
+<style scoped>
+.sn-mp-btn-stack {
+  display: flex;
+  flex-direction: column;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+</style>

@@ -1,20 +1,36 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.en.vue sha256:6e35ed0dc1ec5df2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.en.vue sha256:d79024d86e4c7ea4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — basic types.
+ * Spacing note: uni-app x has no flex `gap` support (README device-verify
+ * list) — inline `custom-style` margins + explicit `flex-direction: row`.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+/** In-row spacing fallback (uni-app x lacks gap). */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-demo">
-    <view class="sn-demo__row">
-      <SnButton><text>Default</text></SnButton>
-      <SnButton type="primary"><text>Primary button</text></SnButton>
-      <SnButton type="success"><text>Success button</text></SnButton>
-      <SnButton type="info"><text>Info button</text></SnButton>
-      <SnButton type="warning"><text>Warning button</text></SnButton>
-      <SnButton type="danger"><text>Danger button</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap"><text>Default</text></SnButton>
+      <SnButton :custom-style="rowGap" type="primary"><text>Primary button</text></SnButton>
+      <SnButton :custom-style="rowGap" type="success"><text>Success button</text></SnButton>
+      <SnButton :custom-style="rowGap" type="info"><text>Info button</text></SnButton>
+      <SnButton :custom-style="rowGap" type="warning"><text>Warning button</text></SnButton>
+      <SnButton :custom-style="rowGap" type="danger"><text>Danger button</text></SnButton>
     </view>
   </view>
 </template>
+<style scoped>
+.sn-mp-btn-stack {
+  display: flex;
+  flex-direction: column;
+}
+.sn-mp-btn-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+</style>

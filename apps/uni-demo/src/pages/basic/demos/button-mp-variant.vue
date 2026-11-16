@@ -5,6 +5,9 @@
  * `variant`: 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'。
  * plain / dashed 透明底 + 语义描边（dashed 为朴素虚线），soft 浅色填充，
  * text 只保留语义文字色，subtle 淡灰底 + 语义文字色。
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`，间距用内联 `custom-style` margin
+ * 兜底，显式 `flex-direction: row` 抵消 uni-app x 的 column 默认值。
  */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
@@ -28,16 +31,20 @@ const types: Array<{ key: SemanticType; label: string }> = [
   { key: 'warning', label: '警告按钮' },
   { key: 'danger', label: '危险按钮' },
 ];
+
+/** 行内按钮间距（uni-app x 无 gap 兜底）。 */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 
 <template>
-  <view class="sn-button-demo sn-button-demo--stack">
-    <view v-for="variant in variants" :key="variant.key" class="sn-button-demo__group">
-      <text class="sn-button-demo__label">{{ variant.label }}（{{ variant.key }}）</text>
-      <view class="sn-button-demo__row">
+  <view class="sn-mp-btn-stack">
+    <view v-for="variant in variants" :key="variant.key" class="sn-mp-btn-group">
+      <text class="sn-mp-btn-label">{{ variant.label }}（{{ variant.key }}）</text>
+      <view class="sn-mp-btn-row">
         <SnButton
           v-for="item in types"
           :key="item.key"
+          :custom-style="rowGap"
           :type="item.key"
           :variant="variant.key"
         >
@@ -49,24 +56,23 @@ const types: Array<{ key: SemanticType; label: string }> = [
 </template>
 
 <style scoped>
-.sn-button-demo--stack {
+.sn-mp-btn-stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  width: 100%;
 }
-.sn-button-demo__group {
+.sn-mp-btn-group {
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  margin-bottom: 20rpx;
 }
-.sn-button-demo__row {
+.sn-mp-btn-row {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 16rpx;
   align-items: center;
 }
-.sn-button-demo__label {
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

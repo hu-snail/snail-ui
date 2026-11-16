@@ -1,73 +1,71 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — icon buttons wired to the built-in sn-icon set.
- *
- * `icon-name` strings are resolved by the embedded sn-icon (registry → built-in
- * lucide catalog → provider); the SVG renders directly, no font file needed.
- * The icon size auto-fits the button preset (small 28 / medium 32 / large 40);
- * `icon-size` overrides it explicitly.
+ * Demo: sn-button (uni-end) — icon buttons with built-in sn-icon glyphs.
+ * Spacing note: uni-app x has no flex `gap` support — inline `custom-style`
+ * margins + explicit `flex-direction: row`.
  */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+
+/** In-row spacing fallback (uni-app x lacks gap). */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__label">Common actions (icon size auto-fits the button preset)</text>
-    <view class="sn-demo__row">
-      <SnButton type="primary" icon-name="check">Confirm</SnButton>
-      <SnButton type="danger" icon-name="trash-2">Delete</SnButton>
-      <SnButton type="info" icon-name="arrow-right">Forward</SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">Common actions (icon size auto-fits the button preset)</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" type="primary" icon-name="check">Confirm</SnButton>
+      <SnButton :custom-style="rowGap" type="danger" icon-name="trash-2">Delete</SnButton>
+      <SnButton :custom-style="rowGap" type="info" icon-name="arrow-right">Forward</SnButton>
     </view>
 
-    <text class="sn-demo__label">Icon only (no text)</text>
-    <view class="sn-demo__row">
-      <SnButton icon-name="settings" />
-      <SnButton type="primary" icon-name="search" />
-      <SnButton type="success" icon-name="plus" />
-      <SnButton type="warning" icon-name="heart" />
+    <text class="sn-mp-btn-label">Icon only (no text)</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" icon-name="settings" />
+      <SnButton :custom-style="rowGap" type="primary" icon-name="search" />
+      <SnButton :custom-style="rowGap" type="success" icon-name="plus" />
+      <SnButton :custom-style="rowGap" type="warning" icon-name="heart" />
     </view>
 
-    <text class="sn-demo__label">Circle icon buttons</text>
-    <view class="sn-demo__row">
-      <SnButton circle icon-name="settings" />
-      <SnButton circle type="primary" icon-name="search" />
-      <SnButton circle type="success" icon-name="plus" />
-      <SnButton circle type="danger" icon-name="trash-2" />
-      <SnButton circle size="small" type="info" icon-name="arrow-right" />
-      <SnButton circle size="large" type="warning" icon-name="heart" />
+    <text class="sn-mp-btn-label">Circle icon buttons</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" circle icon-name="settings" />
+      <SnButton :custom-style="rowGap" circle type="primary" icon-name="search" />
+      <SnButton :custom-style="rowGap" circle type="success" icon-name="plus" />
+      <SnButton :custom-style="rowGap" circle type="danger" icon-name="trash-2" />
+      <SnButton :custom-style="rowGap" circle size="small" type="info" icon-name="arrow-right" />
+      <SnButton :custom-style="rowGap" circle size="large" type="warning" icon-name="heart" />
     </view>
 
-    <text class="sn-demo__label">Icons × variants (plain / soft / dashed / hairline)</text>
-    <view class="sn-demo__row">
-      <SnButton variant="plain" type="primary" icon-name="settings" />
-      <SnButton variant="soft" type="primary" icon-name="settings" />
-      <SnButton variant="dashed" type="primary" icon-name="settings" />
-      <SnButton icon-name="settings" />
+    <text class="sn-mp-btn-label">Icons × variants (plain / soft / dashed / hairline)</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" variant="plain" type="primary" icon-name="settings" />
+      <SnButton :custom-style="rowGap" variant="soft" type="primary" icon-name="settings" />
+      <SnButton :custom-style="rowGap" variant="dashed" type="primary" icon-name="settings" />
+      <SnButton :custom-style="rowGap" icon-name="settings" />
     </view>
 
-    <text class="sn-demo__label">Icon + loading state</text>
-    <view class="sn-demo__row">
-      <SnButton type="primary" icon-name="download">Download</SnButton>
-      <SnButton type="primary" loading>Downloading</SnButton>
+    <text class="sn-mp-btn-label">Icon + loading state</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" type="primary" icon-name="download">Download</SnButton>
+      <SnButton :custom-style="rowGap" type="primary" loading>Downloading</SnButton>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo--stack {
+.sn-mp-btn-stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
 }
-.sn-demo__row {
+.sn-mp-btn-row {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 16rpx;
   align-items: center;
 }
-.sn-demo__label {
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }
