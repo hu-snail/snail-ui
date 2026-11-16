@@ -94,7 +94,7 @@ import { Navbar } from '@snui/uni';
       name: 'navbar-mp-mp-capsule',
       title: '微信小程序胶囊适配',
       blurb:
-        '自定义导航右上角固定是系统胶囊；左侧胶囊 + 居中标题 + 右侧留白避让，safe-area-inset-top 按实测值留白。',
+        '自定义导航右上角固定是系统胶囊；左侧胶囊 + 居中标题 + 右侧留白避让，safe-area-inset-top 按实测值留白。真机宿主可省去手画：mp-capsule 开启时组件在小程序环境自动渲染内置胶囊。',
     },
   ],
   props: {
@@ -134,6 +134,12 @@ import { Navbar } from '@snui/uni';
         type: 'string',
         default: "''",
         desc: '页面栈没有上一页时的兜底页面（`uni.reLaunch`；AUI 追加）。',
+      },
+      {
+        name: 'mpCapsule',
+        type: 'boolean',
+        default: 'true',
+        desc: '小程序环境（实测到系统胶囊）且未提供 `#capsule` 插槽、左侧为空时，自动渲染内置「返回 + 首页」胶囊：淡描边 + 次级图标色，返回键复用 `auto-back` 返回逻辑，首页键发 `back-home`（AUI 追加；传 `false` 关闭）。',
       },
     ],
   },

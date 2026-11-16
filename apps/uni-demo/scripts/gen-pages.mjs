@@ -463,6 +463,8 @@ const SCENARIO_LABEL_OVERRIDES = {
   'navbar-disabled': '禁用侧按钮（left-disabled）',
   'navbar-safe-area': '安全区与层级',
   'navbar-capsule-slot': '胶囊插槽',
+  'navbar-capsule': '胶囊样式 / 带搜索栏',
+  'navbar-mp-capsule': '微信小程序胶囊适配',
   'pagination-hide-on-one-page': '单页隐藏（hide-if-one-page）',
   'pagination-slots': '插槽自定义',
   'popover-icon-class': '兼容图标字段（iconClass）',
@@ -510,6 +512,21 @@ const SCENARIO_LABEL_OVERRIDES = {
 const PAGE_BG_OVERRIDES = {
   input: '#ffffff',
 };
+
+/**
+ * 组件页顶部导航形态覆盖：navbar 演示页本身就在展示导航栏，页面壳若再渲染
+ * 一条 sn-navbar（blend 通栏 + 透明磨砂）会与场景重复、并把示例挤下去。
+ * 该页改用 uni 原生导航栏（仍有返回键与标题），页面内不再出现导航组件实例。
+ * 其它组件页保持 blend 通栏，产物不变。
+ */
+const NATIVE_NAV_PAGES = new Set(['navbar']);
+
+/**
+ * 组件页「完整展开」覆盖：navbar 演示页按参考稿通栏平铺——场景模块去掉
+ * 白底 / 圆角 / 描边 / 柔影 / 内边距，导航栏示例直接铺满整行；仅场景标题
+ * 行保留一条浅色底，便于区分分组。其它组件页仍用浮起分区卡。
+ */
+const MODULE_FLAT_PAGES = new Set(['navbar']);
 
 /**
  * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
@@ -613,6 +630,15 @@ const DEMO_ORDER = {
   'waterfall-mp-responsive': 3,
   'waterfall-mp-masonry-off': 4,
   'tabbar-mp-playground': 1,
+  // navbar：既有 6 个场景保持原字母序，新增的胶囊场景固定追加在末尾。
+  'navbar-mp-basic': 1,
+  'navbar-mp-capsule-slot': 2,
+  'navbar-mp-disabled': 3,
+  'navbar-mp-fixed': 4,
+  'navbar-mp-safe-area': 5,
+  'navbar-mp-slots': 6,
+  'navbar-mp-capsule': 7,
+  'navbar-mp-mp-capsule': 8,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -1036,6 +1062,8 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'navbar-disabled': 'Disabled sides (`left-disabled`)',
   'navbar-safe-area': 'Safe area & stacking',
   'navbar-capsule-slot': 'Capsule slot',
+  'navbar-capsule': 'Capsule style / search bar',
+  'navbar-mp-capsule': 'WeChat mini-program capsule',
   'pagination-hide-on-one-page': 'Hide on single page (`hide-if-one-page`)',
   'pagination-slots': 'Slot customization',
   'popover-icon-class': 'Legacy icon field (`iconClass`)',
@@ -1126,12 +1154,10 @@ for (const { file } of demoFiles) {
   if (!byComp.has(comp)) byComp.set(comp, []);
   byComp.get(comp).push({ name, scenario, hasEn: enNames.has(name) });
 }
+/** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
+const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
 for (const list of byComp.values()) {
-  /** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
-  const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
-  for (const list of byComp.values()) {
-    list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
-  }
+  list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
 }
 
 // ── 组件分组与元数据（分组/切分单源见 scripts/subpackages.mjs） ─────────────
@@ -1163,8 +1189,9 @@ const pagesJson = {
       style: {
         navigationBarTitleText: comp.title,
         // 通栏：原生导航栏退位，DemoPageShell 渲染毛玻璃悬浮头部（背景与
-        // 内容区渐变一致）；个别页面需要原生栏时在此覆盖为 default。
-        navigationStyle: 'custom',
+        // 内容区渐变一致）；NATIVE_NAV_PAGES 里的页面改用原生栏（页面内
+        // 不再渲染导航组件实例）。
+        navigationStyle: NATIVE_NAV_PAGES.has(comp.key) ? 'default' : 'custom',
         ...(PAGE_BG_OVERRIDES[comp.key] ? { backgroundColor: PAGE_BG_OVERRIDES[comp.key] } : {}),
       },
     })),
@@ -1228,6 +1255,8 @@ for (const sub of subpackages) {
   }
   for (const comp of sub.comps) {
     const isHeadless = MODULE_HEADLESS_PAGES.has(comp.key);
+    const isFlat = !isHeadless && MODULE_FLAT_PAGES.has(comp.key);
+    const nativeNav = NATIVE_NAV_PAGES.has(comp.key);
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
       ...(isHeadless ? [] : [`import DemoModuleHead from '../../components/DemoModuleHead.vue'`]),
@@ -1241,14 +1270,45 @@ for (const sub of subpackages) {
           return `      <Demo${i} />`;
         }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
+        const head = `<DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge} />`;
+        // 通栏平铺页：标题行包一层本页作用域的节点，才能在不改共享
+        // DemoModuleHead、也不用 :deep()（uni-app x 转换会丢弃）的前提下
+        // 给标题行单独铺底与留白。
+        const headRow = isFlat
+          ? `        <view class="module__head">
+          ${head}
+        </view>`
+          : `        ${head}`;
         return `      <view class="module">
-        <DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge} />
+${headRow}
         <view class="module__body">
           <Demo${i} />
         </view>
       </view>`;
       })
       .join('\n');
+    // 组件级 CSS 追加段（透明变体 / 通栏标题行）合并成一个插值，避免给
+    // 其它组件页的生成物多塞空行（产物按字节比对需保持稳定）。
+    const extraModuleCss = [
+      !isHeadless && MODULE_BARE_PAGES.has(comp.key)
+        ? `
+/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+`
+        : '',
+      isFlat
+        ? `
+.module__head {
+  padding: 24rpx 32rpx 16rpx;
+  background: var(--demo-card-bg);
+}
+`
+        : '',
+    ].join('');
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
 ${imports}
@@ -1262,7 +1322,7 @@ const { t } = useDemoUi();`
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
+  <DemoPageShell :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'"${nativeNav ? ' nav-style="native"' : ''}>
     <view class="page">
 ${modules}
     </view>
@@ -1271,33 +1331,28 @@ ${modules}
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: ${isFlat ? '0 0 48rpx' : '24rpx 24rpx 48rpx'};
 }
 
-/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+${
+  isFlat
+    ? `/* ${comp.key}：按参考稿完整展开——场景模块去掉白底 / 圆角 / 描边 / 柔影 /
+ * 内边距，导航栏示例通栏铺满整行；标题行单独留白铺底。刻意不设 overflow /
+ * transform / backdrop-filter——它们会把 position: fixed 的后代变成卡片坐标系。 */`
+    : `/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
  * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
  * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
- * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */`
+}
 .module {
   margin-bottom: 24rpx;
-  padding: 32rpx;
-  border-radius: 24rpx;
-  background: var(--demo-card-bg);
-  border: 1px solid var(--demo-card-border);
-  box-shadow: var(--demo-card-shadow);
+  padding: ${isFlat ? '0' : '32rpx'};
+  border-radius: ${isFlat ? '0' : '24rpx'};
+  background: ${isFlat ? 'transparent' : 'var(--demo-card-bg)'};
+  border: ${isFlat ? 'none' : '1px solid var(--demo-card-border)'};
+  box-shadow: ${isFlat ? 'none' : 'var(--demo-card-shadow)'};
 }
-${
-  !isHeadless && MODULE_BARE_PAGES.has(comp.key)
-    ? `
-/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
-.module {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}`
-    : ''
-}
-
+${extraModuleCss}
 .module__body {
   padding: 0;
 }

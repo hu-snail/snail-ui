@@ -171,10 +171,9 @@ describe('sn-navbar', () => {
     });
 
     it('mirrors the safe-area box on the placeholder when safeAreaInsetTop is on', () => {
-      const wrapper = mount(
-        SnNavbar,
-        { props: { fixed: true, placeholder: true, safeAreaInsetTop: true } },
-      );
+      const wrapper = mount(SnNavbar, {
+        props: { fixed: true, placeholder: true, safeAreaInsetTop: true },
+      });
       expect(wrapper.find('.sn-navbar__placeholder').classes()).toContain(
         'sn-navbar__placeholder--safe-area',
       );
@@ -280,6 +279,111 @@ describe('sn-navbar', () => {
       await wrapper.find('.sn-navbar__capsule').trigger('tap');
       expect(wrapper.emitted('back-home')).toHaveLength(1);
       expect(wrapper.emitted('click-left')).toBeUndefined();
+    });
+  });
+
+  describe('built-in MP capsule (mpCapsule)', () => {
+    afterEach(() => {
+      capsuleState.hasCapsule = false;
+    });
+
+    it('renders the built-in capsule when the MP environment is measured', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(true);
+    });
+
+    it('renders nothing in the capsule zone outside the MP environment', () => {
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+      expect(wrapper.find('.sn-navbar__capsule').exists()).toBe(false);
+    });
+
+    it('yields to a custom #capsule slot', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, {
+        slots: { capsule: '<text class="custom-cap">cap</text>' },
+      });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+      expect(wrapper.find('.custom-cap').exists()).toBe(true);
+    });
+
+    it('yields to left-zone content', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home', leftText: 'Back' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+    });
+
+    it('stays off when mpCapsule is false', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home', mpCapsule: false } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+    });
+
+    it('names the built-in capsule buttons for assistive tech', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      const buttons = wrapper.findAll('.sn-navbar__mp-capsule-btn');
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0].attributes('role')).toBe('button');
+      expect(buttons[0].attributes('aria-label')).toBe('Back');
+      expect(buttons[1].attributes('role')).toBe('button');
+      expect(buttons[1].attributes('aria-label')).toBe('Home');
+    });
+
+    it('emits back and navigates back from the built-in back button', async () => {
+      capsuleState.hasCapsule = true;
+      const navigateBack = vi.fn();
+      const host = globalThis as {
+        uni?: { navigateBack: ReturnType<typeof vi.fn> };
+        getCurrentPages?: () => unknown[];
+      };
+      host.uni = { navigateBack };
+      host.getCurrentPages = () => [{ route: 'a' }, { route: 'b' }];
+      try {
+        const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+        await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+        expect(wrapper.emitted('back')).toHaveLength(1);
+        expect(navigateBack).toHaveBeenCalledWith({ delta: 1 });
+        // 胶囊不是左侧文案区：不发 click-left。
+        expect(wrapper.emitted('click-left')).toBeUndefined();
+      } finally {
+        delete host.uni;
+        delete host.getCurrentPages;
+      }
+    });
+
+    it('leaves navigation to the host when autoBack is off on the built-in capsule', async () => {
+      capsuleState.hasCapsule = true;
+      const navigateBack = vi.fn();
+      const host = globalThis as { uni?: { navigateBack: ReturnType<typeof vi.fn> } };
+      host.uni = { navigateBack };
+      host.getCurrentPages = () => [{ route: 'a' }, { route: 'b' }];
+      try {
+        const wrapper = mount(SnNavbar, { props: { title: 'Home', autoBack: false } });
+        await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+        expect(navigateBack).not.toHaveBeenCalled();
+        expect(wrapper.emitted('back')).toHaveLength(1);
+      } finally {
+        delete host.uni;
+        delete host.getCurrentPages;
+      }
+    });
+
+    it('does not emit back-home when the built-in back button is tapped', async () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+      // 返回键 stop 冒泡：容器的 back-home 契约只属于插槽内容。
+      expect(wrapper.emitted('back-home')).toBeUndefined();
+    });
+
+    it('emits back-home once from the built-in home button', async () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      const homeButton = wrapper.findAll('.sn-navbar__mp-capsule-btn')[1];
+      await homeButton.trigger('tap');
+      expect(wrapper.emitted('back-home')).toHaveLength(1);
     });
   });
 

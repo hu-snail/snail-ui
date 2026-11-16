@@ -71,10 +71,13 @@ function report(label: string): void {
   flex-direction: row;
   align-items: center;
   height: 64rpx;
-  border: 2rpx solid var(--sn-mp-color-border-default);
+  /* Mirrors the WeChat system capsule's quiet look: faint hairline + secondary icon colour.
+   * Real hosts need not hand-draw it — sn-navbar renders a built-in capsule in the MP
+   * environment when `mp-capsule` is on. */
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
-  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-mp-color-text-secondary);
 }
 .mp-nav__capsule-btn {
   display: flex;
@@ -86,7 +89,7 @@ function report(label: string): void {
 .mp-nav__capsule-rule {
   width: 2rpx;
   height: 32rpx;
-  background-color: var(--sn-mp-color-border-default);
+  background-color: var(--sn-mp-color-border-subtle);
 }
 .mp-nav__system {
   position: absolute;

@@ -41,6 +41,18 @@
  * listening and sets `:auto-back="false"` to opt out (AGENTS.md §112.3a
  * additive capability; wd-navbar only emits).
  *
+ * ## Built-in MP capsule (`mpCapsule`, AUI additive)
+ *
+ * A WeChat mini-program page with custom navigation carries the «返回 + 首页»
+ * capsule on the left — WeChat draws the right system capsule itself, but the
+ * left one is the page's job. Instead of hand-drawing it per page (as the
+ * `#capsule` slot requires), the bar renders a built-in capsule whenever it
+ * detects the MP environment (a measured system capsule) and the host filled
+ * neither the `#capsule` slot nor the left zone. The back half reuses the
+ * `autoBack` / `backFallback` navigation; the home half emits `back-home`.
+ * The pill mirrors the system capsule's quiet look: faint border, secondary
+ * icon colour. Set `:mp-capsule="false"` to opt out.
+ *
  * Not responsible for:
  *   - 标签栏 — 用 sn-tabbar
  *   - 侧边导航 — 用 sn-sidebar
@@ -48,7 +60,7 @@
 
 import { computed, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
-import { ChevronLeft } from '../sn-icon/sn-icon-set';
+import { ChevronLeft, Home } from '../sn-icon/sn-icon-set';
 import { getCapsuleMetrics } from '../../utils/capsule';
 
 defineOptions({ name: 'SnNavbar' });
@@ -95,6 +107,13 @@ const props = withDefaults(
      * 重建）时的兜底页面，经 `uni.reLaunch` 打开。空串 = 不做兜底。
      */
     backFallback?: string;
+    /**
+     * AUI 追加（wd-navbar 无）：小程序环境下自动渲染内置「返回 + 首页」胶囊。
+     * 仅当运行环境实测到系统胶囊（微信小程序）、且宿主未提供 `#capsule` 插槽、
+     * 左侧区域为空时生效；返回键复用 `autoBack` / `backFallback` 返回逻辑，
+     * 首页键发 `back-home`。传 `false` 关闭。
+     */
+    mpCapsule?: boolean;
   }>(),
   {
     title: '',
@@ -112,6 +131,7 @@ const props = withDefaults(
     customStyle: '',
     autoBack: true,
     backFallback: '',
+    mpCapsule: true,
   },
 );
 
@@ -146,6 +166,15 @@ const capsule = getCapsuleMetrics();
 const hasLeft = computed(() => props.leftArrow || props.leftText !== '' || !!slots.left);
 /** Right zone renders only when it actually carries something. */
 const hasRight = computed(() => props.rightText !== '' || !!slots.right);
+
+/**
+ * 内置小程序胶囊：实测到系统胶囊（= 微信小程序环境）且宿主没有自定义胶囊
+ * 插槽、左侧区域为空时自动渲染。胶囊是小程序自定义导航的固定件，宿主不应
+ * 每页手画；`mpCapsule: false` 退出，或提供 `#capsule` / 左侧内容即被取代。
+ */
+const showBuiltinCapsule = computed(
+  () => props.mpCapsule && capsule.hasCapsule && !slots.capsule && !hasLeft.value,
+);
 
 /** 页面栈深度；宿主未暴露 `getCurrentPages` 时返回 0（栈深度未知）。 */
 function pageStackDepth(): number {
@@ -197,6 +226,20 @@ function onRightTap(event: Event): void {
 }
 
 function onCapsuleTap(event: Event): void {
+  emit('back-home', event);
+}
+
+/**
+ * 内置胶囊的返回键：与 `leftArrow` 同一条返回契约（先发 `back`，再按
+ * `autoBack` 跨端返回），但不发 `click-left` —— 胶囊不是左侧文案区。
+ */
+function onBuiltinBackTap(event: Event): void {
+  emit('back', event);
+  if (props.autoBack) navigateBackByDefault();
+}
+
+/** 内置胶囊的首页键：只发 `back-home`，跳不跳转由宿主决定（与插槽一致）。 */
+function onBuiltinHomeTap(event: Event): void {
   emit('back-home', event);
 }
 
@@ -266,8 +309,33 @@ const placeholderStyle = computed(() =>
     role="navigation"
     :aria-label="title || undefined"
   >
-    <view v-if="$slots.capsule" class="sn-navbar__capsule" @tap="onCapsuleTap">
+    <view
+      v-if="$slots.capsule || showBuiltinCapsule"
+      class="sn-navbar__capsule"
+      @tap="onCapsuleTap"
+    >
       <slot name="capsule" />
+      <!-- 内置胶囊：实测到小程序系统胶囊且宿主未自定义时自动渲染。按键 stop
+           冒泡——容器 @tap 是插槽的 back-home 契约，内置返回键不发它。 -->
+      <view v-if="showBuiltinCapsule" class="sn-navbar__mp-capsule">
+        <view
+          class="sn-navbar__mp-capsule-btn"
+          role="button"
+          aria-label="Back"
+          @tap.stop="onBuiltinBackTap"
+        >
+          <SnIcon :icon="ChevronLeft" :size="36" />
+        </view>
+        <view class="sn-navbar__mp-capsule-rule" aria-hidden="true" />
+        <view
+          class="sn-navbar__mp-capsule-btn"
+          role="button"
+          aria-label="Home"
+          @tap.stop="onBuiltinHomeTap"
+        >
+          <SnIcon :icon="Home" :size="32" />
+        </view>
+      </view>
     </view>
 
     <view
@@ -416,6 +484,33 @@ const placeholderStyle = computed(() =>
   z-index: 1;
   display: flex;
   align-items: center;
+}
+
+/* 内置小程序胶囊（AUI 追加）：对齐微信系统胶囊的安静观感——极淡描边 +
+ * 次级图标色，不再复用侧区的 action-primary 强调色。 */
+.sn-navbar__mp-capsule {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 64rpx;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-surface);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-navbar__mp-capsule-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 68rpx;
+  height: 100%;
+}
+
+.sn-navbar__mp-capsule-rule {
+  width: 2rpx;
+  height: 32rpx;
+  background-color: var(--sn-mp-color-border-subtle);
 }
 
 .sn-navbar__arrow {

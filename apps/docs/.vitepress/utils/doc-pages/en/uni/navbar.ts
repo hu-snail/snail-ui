@@ -88,7 +88,7 @@ import { Navbar } from '@snui/uni';
       name: 'navbar-mp-mp-capsule',
       title: 'WeChat mini-program capsule',
       blurb:
-        'Custom navigation always keeps the WeChat system capsule at the top-right: left capsule, centered title, right inset. safe-area-inset-top reserves the measured inset.',
+        'Custom navigation always keeps the WeChat system capsule at the top-right: left capsule, centered title, right inset. safe-area-inset-top reserves the measured inset. Real hosts can skip hand-drawing: with `mp-capsule` on, the bar renders its built-in capsule in the MP environment.',
     },
   ],
   props: {
@@ -143,6 +143,12 @@ import { Navbar } from '@snui/uni';
         type: 'string',
         default: "''",
         desc: 'Page opened through `uni.reLaunch` when the stack has no previous page (AUI additive).',
+      },
+      {
+        name: 'mpCapsule',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Auto-renders the built-in back + home capsule in the MP environment (measured system capsule) when no `#capsule` slot is given and the left zone is empty: faint hairline pill with secondary icon colour, back half reuses `auto-back`, home half emits `back-home` (AUI additive; pass `false` to opt out).',
       },
     ],
   },

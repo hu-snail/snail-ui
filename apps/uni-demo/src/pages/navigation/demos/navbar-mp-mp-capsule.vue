@@ -76,10 +76,12 @@ function report(label: string): void {
   flex-direction: row;
   align-items: center;
   height: 64rpx;
-  border: 2rpx solid var(--sn-mp-color-border-default);
+  /* 对齐微信系统胶囊的安静观感：极淡描边 + 次级图标色。真机宿主也可以
+   * 不手画——sn-navbar 开启 mp-capsule 时会在小程序环境自动渲染内置胶囊。 */
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
-  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-mp-color-text-secondary);
 }
 .mp-nav__capsule-btn {
   display: flex;
@@ -91,7 +93,7 @@ function report(label: string): void {
 .mp-nav__capsule-rule {
   width: 2rpx;
   height: 32rpx;
-  background-color: var(--sn-mp-color-border-default);
+  background-color: var(--sn-mp-color-border-subtle);
 }
 .mp-nav__system {
   position: absolute;
