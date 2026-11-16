@@ -1,24 +1,81 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-size.en.vue sha256:747e5d511ffe933a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-size.en.vue sha256:9297cbfd63cd58ff —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — three sizes (no tiny on mobile).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ * Demo: sn-button (uni-end) — sizes × form scenes.
+ *
+ * Three size tiers (small / medium / large, no tiny on mobile) each shown as:
+ * primary fill, plain outline, soft tint, hairline border (default type), and
+ * circular icon buttons (glyph auto-fits the size: small 28 / medium 32 /
+ * large 40).
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+type SizeKey = 'small' | 'medium' | 'large';
+type SizeLabel = { key: SizeKey; label: string };
+
+const sizes: SizeLabel[] = [
+  { key: 'small', label: 'Small' },
+  { key: 'medium', label: 'Medium' },
+  { key: 'large', label: 'Large' },
+];
+
+/** Built-in icon names for the circular icon row (glyph auto-fits the size). */
+const iconSizes: Array<{ key: SizeKey; icon: string }> = [
+  { key: 'small', icon: 'settings' },
+  { key: 'medium', icon: 'search' },
+  { key: 'large', icon: 'plus' },
+];
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton size="small"><text>small</text></SnButton>
-    <SnButton size="medium"><text>medium</text></SnButton>
-    <SnButton size="large"><text>large</text></SnButton>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Filled (type=primary)</text>
+    <view class="sn-demo__row">
+      <SnButton v-for="item in sizes" :key="item.key" type="primary" :size="item.key"><text>
+        {{ item.label }} button
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">Plain</text>
+    <view class="sn-demo__row">
+      <SnButton v-for="item in sizes" :key="item.key" type="primary" variant="plain" :size="item.key"><text>
+        {{ item.label }} button
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">Soft</text>
+    <view class="sn-demo__row">
+      <SnButton v-for="item in sizes" :key="item.key" type="primary" variant="soft" :size="item.key"><text>
+        {{ item.label }} button
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">Hairline (default type)</text>
+    <view class="sn-demo__row">
+      <SnButton v-for="item in sizes" :key="item.key" :size="item.key"><text>{{ item.label }} button</text></SnButton>
+    </view>
+
+    <text class="sn-demo__label">Icon buttons (circle, glyph auto-fits the size)</text>
+    <view class="sn-demo__row">
+      <SnButton
+        v-for="item in iconSizes"
+        :key="item.key"
+        circle
+        type="primary"
+        :size="item.key"
+        :icon-name="item.icon"
+      />
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16rpx;
   align-items: center;
   flex-direction: row;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

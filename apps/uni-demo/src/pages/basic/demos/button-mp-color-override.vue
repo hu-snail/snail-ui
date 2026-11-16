@@ -17,18 +17,18 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
         bg-color="var(--sn-mp-color-action-primary)"
         color="var(--sn-mp-color-text-on-primary)"
       >
-        bgColor + color
+        自定义背景与文字色
       </SnButton>
       <SnButton color="var(--sn-mp-color-action-info)" variant="plain">
-        color 描边 + 文字
+        自定义文字色（描边）
       </SnButton>
     </view>
 
     <text class="sn-demo__meta">customClass 追加类名 / customStyle 内联覆盖</text>
     <view class="sn-demo__row">
-      <SnButton custom-class="my-mp-cta" type="primary">customClass</SnButton>
+      <SnButton custom-class="my-mp-cta" type="primary">自定义类名</SnButton>
       <SnButton :custom-style="{ 'border-radius': '999rpx', padding: '0 40rpx' }" type="warning">
-        customStyle
+        自定义样式
       </SnButton>
     </view>
   </view>

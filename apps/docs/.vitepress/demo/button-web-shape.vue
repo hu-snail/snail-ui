@@ -8,8 +8,8 @@ import { SnButton } from '@snui/vue-web';
 
 <template>
   <div class="sn-demo">
-    <SnButton block type="primary">块级按钮</SnButton>
-    <SnButton round type="success">胶囊形</SnButton>
+    <SnButton block type="primary">主要按钮</SnButton>
+    <SnButton round type="success">成功按钮</SnButton>
   </div>
 </template>
 

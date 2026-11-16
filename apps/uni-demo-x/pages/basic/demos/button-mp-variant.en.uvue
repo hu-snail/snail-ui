@@ -1,19 +1,20 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-variant.en.vue sha256:cc7e4eafccb05ea6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-variant.en.vue sha256:88de97eec9607b24 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button — variant matrix × semantic types (every variant in every hue).
+ * Demo: sn-button — variant matrix × semantic types (base is the default
+ * filled look shown in Basic usage, so no dedicated group here).
  *
- * `variant`: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'.
- * plain / dashed keep the semantic border, soft adds a tinted background,
- * text keeps only the semantic text color, subtle stays uniform light-gray.
+ * `variant`: 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'.
+ * plain / dashed keep a transparent fill with a semantic stroke (dashed adds
+ * the dashed pattern), soft adds a tinted background, text keeps only the
+ * semantic text color, subtle pairs a gray plate with the semantic text hue.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-type ButtonVariant = 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
+type ButtonVariant = 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
 type SemanticType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
 
 /** Variant group labels (API enum value in parens). */
 const variants: Array<{ key: ButtonVariant; label: string }> = [
-  { key: 'base', label: 'Filled' },
   { key: 'plain', label: 'Plain' },
   { key: 'dashed', label: 'Dashed' },
   { key: 'soft', label: 'Soft' },

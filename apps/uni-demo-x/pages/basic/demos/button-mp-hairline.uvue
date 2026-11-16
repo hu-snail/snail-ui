@@ -1,45 +1,37 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hairline.vue sha256:117770af7558d05b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-hairline.vue sha256:07f6a4288790097e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — `hairline` 细边框。
+ * Demo: sn-button (uni-end) — 细边框（`hairline`，全类型描边开关）。
  *
- * `hairline` 只对 `type="default"` 生效（其它类型本来就有语义色描边），
- * 默认 true，置 false 后边框变透明；可与 loading 态叠加。
+ * hairline 默认 true：default 类型显示灰细边框，语义类型以描边形态
+ * 显示主题色；置 false 后全部类型去边框。加载态见「加载」模块。
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-const busy = ref(false);
-
-function toggleBusy(): void {
-  busy.value = !busy.value;
-}
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__meta">hairline：default 类型下 true 显示细边框，false 去掉边框</text>
+    <text class="sn-demo__meta">细边框（默认开启）：语义类型以描边形态显示主题色</text>
     <view class="sn-demo__row">
-      <SnButton><text>细边框（默认）</text></SnButton>
-      <SnButton :hairline="false"><text>去掉边框</text></SnButton>
-      <SnButton hairline :disabled="true"><text>细边框 + 禁用</text></SnButton>
+      <SnButton><text>默认按钮</text></SnButton>
+      <SnButton variant="plain" type="primary"><text>主要按钮</text></SnButton>
+      <SnButton variant="plain" type="success"><text>成功按钮</text></SnButton>
+      <SnButton variant="plain" type="info"><text>信息按钮</text></SnButton>
+      <SnButton variant="plain" type="warning"><text>警告按钮</text></SnButton>
+      <SnButton variant="plain" type="danger"><text>危险按钮</text></SnButton>
     </view>
 
-    <text class="sn-demo__meta">loading 与 hairline 叠加：细边框按钮的加载态</text>
+    <text class="sn-demo__meta">去掉边框（hairline=false）：全部类型去描边</text>
     <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }"><text>加载中（细边框）</text></SnButton>
-      <SnButton :hairline="false" loading><text>加载中（无边框）</text></SnButton>
-      <SnButton type="primary" :loading="busy" @click="toggleBusy"><text>
-        {{ busy ? '请求中…' : '点击切换加载' }}
-      </text></SnButton>
+      <SnButton :hairline="false"><text>默认按钮</text></SnButton>
+      <SnButton :hairline="false" variant="plain" type="primary"><text>主要按钮</text></SnButton>
+      <SnButton :hairline="false" variant="plain" type="success"><text>成功按钮</text></SnButton>
+      <SnButton :hairline="false" variant="plain" type="info"><text>信息按钮</text></SnButton>
+      <SnButton :hairline="false" variant="plain" type="warning"><text>警告按钮</text></SnButton>
+      <SnButton :hairline="false" variant="plain" type="danger"><text>危险按钮</text></SnButton>
     </view>
   </view>
 </template>
 <style scoped>
-.sn-demo--stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
-}
 .sn-demo__row {
   display: flex;
   flex-wrap: wrap;

@@ -155,11 +155,18 @@ page {
    * alert backgrounds). Literal light tints rather than primitive ramp refs:
    * the ramps only carry blue / neutral, and a 12% alpha of the base hue keeps
    * the tint on-brand without inventing a second palette. Dark mode overrides
-   * these four with higher-alpha tints so they stay visible on a dark surface.
+   * these five with higher-alpha tints so they stay visible on a dark surface.
+   * info-soft derives from the info token itself (neutral hue) so it follows
+   * theme swaps instead of freezing a literal.
    */
   --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.12);
   --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.12);
   --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.12);
+  --aui-color-feedback-info-soft: color-mix(
+    in srgb,
+    var(--aui-color-feedback-info) 12%,
+    transparent
+  );
   /*
    * Extra hue families used by the mobile tag's `type` set. The semantic
    * palette only carries blue / neutral / green / amber / red, while a tag
@@ -485,6 +492,11 @@ page {
   --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
   --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
   --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
+  --aui-color-feedback-info-soft: color-mix(
+    in srgb,
+    var(--aui-color-feedback-info) 22%,
+    transparent
+  );
   /* Dark counterparts of the extra tag hues: the hue keeps its identity, only
      the tint alpha grows so a light-variant tag stays visible on a dark page. */
   --aui-color-volcano-soft: rgba(250, 140, 22, 0.22);

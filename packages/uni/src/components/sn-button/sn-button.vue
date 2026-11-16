@@ -34,7 +34,7 @@ const props = withDefaults(
     disabled?: boolean;
     /** Loading. Shows spinner. Skips click. */
     loading?: boolean;
-    /** Show hairline border (default type only). */
+    /** Paint the border. `false` strips every type's stroke; colored types keep their semantic hue. */
     hairline?: boolean;
     /** Tap feedback (active state opacity). */
     feedback?: boolean;
@@ -268,7 +268,10 @@ const classList = computed(() => [
     'sn-button--circle': props.circle,
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
-    'sn-button--hairline': props.hairline && props.type === 'default',
+    // 双类描边开关：uvue CSS 不支持 :not()，关闭态用显式类表达（见样式尾部
+    // 的 kill-switch 规则）。
+    'sn-button--hairline': props.hairline,
+    'sn-button--no-hairline': !props.hairline,
     'sn-button--plain': props.plain,
     'sn-button--cell-hover': props.cell === 'hover',
     'sn-button--cell-fill': props.cell === 'fill',
@@ -441,57 +444,108 @@ function onTap(event: Event): void {
   height: 88rpx;
 }
 
-/* Variants — color tokens only; geometry stays as rpx values above. */
+/* Variants — color tokens only; geometry stays as rpx values above.
+ * Border colors ride the hairline gate (see below) so `:hairline="false"`
+ * strips the stroke on every type. */
 .sn-button--primary {
   background-color: var(--sn-mp-color-action-primary);
   color: var(--sn-mp-color-text-on-primary);
-  border-color: var(--sn-mp-color-action-primary);
 }
 .sn-button--success {
   background-color: var(--sn-mp-color-feedback-success);
   color: var(--sn-mp-color-text-on-primary);
-  border-color: var(--sn-mp-color-feedback-success);
 }
 .sn-button--warning {
   background-color: var(--sn-mp-color-feedback-warning);
   color: var(--sn-mp-color-text-on-primary);
-  border-color: var(--sn-mp-color-feedback-warning);
 }
 .sn-button--danger {
   background-color: var(--sn-mp-color-feedback-danger);
   color: var(--sn-mp-color-text-on-primary);
-  border-color: var(--sn-mp-color-feedback-danger);
 }
 .sn-button--info {
   background-color: var(--sn-mp-color-feedback-info);
   color: var(--sn-mp-color-text-on-primary);
-  border-color: var(--sn-mp-color-feedback-info);
 }
 
 .sn-button--default {
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
 }
+
+/* Hairline gate — border paints only while `hairline` is on (default true);
+ * colored types stroke in their semantic hue, default strokes neutral. */
+.sn-button--primary.sn-button--hairline {
+  border-color: var(--sn-mp-color-action-primary);
+}
+.sn-button--success.sn-button--hairline {
+  border-color: var(--sn-mp-color-feedback-success);
+}
+.sn-button--warning.sn-button--hairline {
+  border-color: var(--sn-mp-color-feedback-warning);
+}
+.sn-button--danger.sn-button--hairline {
+  border-color: var(--sn-mp-color-feedback-danger);
+}
+.sn-button--info.sn-button--hairline {
+  border-color: var(--sn-mp-color-feedback-info);
+}
 .sn-button--default.sn-button--hairline {
   border-color: var(--sn-mp-color-border-default);
 }
 
-/* Variant: plain — transparent background, colored border. */
+/* Variant: plain — transparent background, colored border (all semantic types,
+ * wot-ui wd-button parity: plain renders an outlined button for every type). */
 .sn-button--variant-plain.sn-button--primary {
   background-color: transparent;
   color: var(--sn-mp-color-action-primary);
   border-color: var(--sn-mp-color-action-primary);
+}
+.sn-button--variant-plain.sn-button--success {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-success);
+  border-color: var(--sn-mp-color-feedback-success);
+}
+.sn-button--variant-plain.sn-button--warning {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-warning);
+  border-color: var(--sn-mp-color-feedback-warning);
+}
+.sn-button--variant-plain.sn-button--info {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-info);
+  border-color: var(--sn-mp-color-feedback-info);
 }
 .sn-button--variant-plain.sn-button--danger {
   background-color: transparent;
   color: var(--sn-mp-color-feedback-danger);
   border-color: var(--sn-mp-color-feedback-danger);
 }
+.sn-button--variant-plain.sn-button--default {
+  background-color: transparent;
+  color: var(--sn-mp-color-text-primary);
+  border-color: var(--sn-mp-color-border-default);
+}
 
-/* Variant: soft — tinted background. */
+/* Variant: soft — tinted background (all semantic types). */
 .sn-button--variant-soft.sn-button--primary {
   background-color: var(--sn-mp-color-action-primary-soft);
   color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+}
+.sn-button--variant-soft.sn-button--success {
+  background-color: var(--sn-mp-color-feedback-success-soft);
+  color: var(--sn-mp-color-feedback-success);
+  border-color: transparent;
+}
+.sn-button--variant-soft.sn-button--warning {
+  background-color: var(--sn-mp-color-feedback-warning-soft);
+  color: var(--sn-mp-color-feedback-warning);
+  border-color: transparent;
+}
+.sn-button--variant-soft.sn-button--info {
+  background-color: var(--sn-mp-color-feedback-info-soft);
+  color: var(--sn-mp-color-feedback-info);
   border-color: transparent;
 }
 .sn-button--variant-soft.sn-button--danger {
@@ -500,21 +554,105 @@ function onTap(event: Event): void {
   border-color: transparent;
 }
 
-/* Variant: dashed — dashed border. */
+/* Variant: dashed — plain-style dashed (transparent fill, semantic stroke,
+ * dashed pattern; a filled body under a dashed border reads as a broken
+ * solid button, wot-ui parity keeps dashed on the plain look). */
 .sn-button--variant-dashed {
   border-style: dashed;
 }
+.sn-button--variant-dashed.sn-button--primary {
+  background-color: transparent;
+  color: var(--sn-mp-color-action-primary);
+  border-color: var(--sn-mp-color-action-primary);
+}
+.sn-button--variant-dashed.sn-button--success {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-success);
+  border-color: var(--sn-mp-color-feedback-success);
+}
+.sn-button--variant-dashed.sn-button--warning {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-warning);
+  border-color: var(--sn-mp-color-feedback-warning);
+}
+.sn-button--variant-dashed.sn-button--info {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-info);
+  border-color: var(--sn-mp-color-feedback-info);
+}
+.sn-button--variant-dashed.sn-button--danger {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-danger);
+  border-color: var(--sn-mp-color-feedback-danger);
+}
+.sn-button--variant-dashed.sn-button--default {
+  background-color: transparent;
+  color: var(--sn-mp-color-text-primary);
+  border-color: var(--sn-mp-color-border-default);
+}
 
-/* Variant: text — transparent, no border. */
+/* Variant: text — transparent, no border; text keeps the semantic hue (the
+ * type classes paint on-color white text, which vanishes on a transparent
+ * background — variant-text must re-assert the semantic text color). */
 .sn-button--variant-text {
   background-color: transparent;
   border-color: transparent;
 }
+.sn-button--variant-text.sn-button--primary {
+  color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+}
+.sn-button--variant-text.sn-button--success {
+  color: var(--sn-mp-color-feedback-success);
+  border-color: transparent;
+}
+.sn-button--variant-text.sn-button--warning {
+  color: var(--sn-mp-color-feedback-warning);
+  border-color: transparent;
+}
+.sn-button--variant-text.sn-button--info {
+  color: var(--sn-mp-color-feedback-info);
+  border-color: transparent;
+}
+.sn-button--variant-text.sn-button--danger {
+  color: var(--sn-mp-color-feedback-danger);
+  border-color: transparent;
+}
 
-/* Variant: subtle — light gray background, primary text. */
+/* Variant: subtle — light gray plate with the semantic text hue; the plate
+ * stays uniform so the hue reads from the label only. */
 .sn-button--variant-subtle {
   background-color: var(--sn-mp-color-background-soft);
   color: var(--sn-mp-color-text-primary);
+  border-color: transparent;
+}
+.sn-button--variant-subtle.sn-button--primary {
+  color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+}
+.sn-button--variant-subtle.sn-button--success {
+  color: var(--sn-mp-color-feedback-success);
+  border-color: transparent;
+}
+.sn-button--variant-subtle.sn-button--warning {
+  color: var(--sn-mp-color-feedback-warning);
+  border-color: transparent;
+}
+.sn-button--variant-subtle.sn-button--info {
+  color: var(--sn-mp-color-feedback-info);
+  border-color: transparent;
+}
+.sn-button--variant-subtle.sn-button--danger {
+  color: var(--sn-mp-color-feedback-danger);
+  border-color: transparent;
+}
+
+/* Border kill-switch — `hairline=false` strips every stroke, variant paint
+ * included (plain / dashed keep their transparent fill + semantic text).
+ * Double-class selector keeps the (0,2,0) tie-break with variant rules and
+ * stays expressible on uni-app x (no `:not()` support there); declared last
+ * so it wins the tie. */
+.sn-button.sn-button--no-hairline {
   border-color: transparent;
 }
 

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.vue sha256:ad89bdd0d4634619 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.vue sha256:5f176ed0316239a4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — 块级按钮（`block`）。
@@ -13,10 +13,3 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
     <SnButton block type="danger"><text>危险按钮</text></SnButton>
   </view>
 </template>
-<style scoped>
-.sn-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-</style>

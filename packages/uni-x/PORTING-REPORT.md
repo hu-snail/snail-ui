@@ -444,9 +444,9 @@
 
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 5 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 4 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 5 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-notice-bar/sn-notice-bar.uvue
 

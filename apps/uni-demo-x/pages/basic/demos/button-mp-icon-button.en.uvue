@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.en.vue sha256:6bbbe528871143df —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.en.vue sha256:701ce373593f3493 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — icon buttons wired to the built-in sn-icon set.
@@ -35,6 +35,14 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
       <SnButton circle type="danger" icon-name="trash-2" />
       <SnButton circle size="small" type="info" icon-name="arrow-right" />
       <SnButton circle size="large" type="warning" icon-name="heart" />
+    </view>
+
+    <text class="sn-demo__label">Icons × variants (plain / soft / dashed / hairline)</text>
+    <view class="sn-demo__row">
+      <SnButton variant="plain" type="primary" icon-name="settings" />
+      <SnButton variant="soft" type="primary" icon-name="settings" />
+      <SnButton variant="dashed" type="primary" icon-name="settings" />
+      <SnButton icon-name="settings" />
     </view>
 
     <text class="sn-demo__label">Icon + loading state</text>

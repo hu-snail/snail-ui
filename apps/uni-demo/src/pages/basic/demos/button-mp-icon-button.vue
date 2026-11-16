@@ -36,6 +36,14 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
       <SnButton circle size="large" type="warning" icon-name="heart" />
     </view>
 
+    <text class="sn-demo__label">图标 × 变体（朴素 / 柔和 / 虚线 / 细边框）</text>
+    <view class="sn-demo__row">
+      <SnButton variant="plain" type="primary" icon-name="settings" />
+      <SnButton variant="soft" type="primary" icon-name="settings" />
+      <SnButton variant="dashed" type="primary" icon-name="settings" />
+      <SnButton icon-name="settings" />
+    </view>
+
     <text class="sn-demo__label">图标 + 加载态</text>
     <view class="sn-demo__row">
       <SnButton type="primary" icon-name="download">下载</SnButton>

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.vue sha256:dcea6dc1089a06d2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.vue sha256:900e07180cfb4967 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — 图标按钮，集成 sn-icon 内置图标。
@@ -34,6 +34,14 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
       <SnButton circle type="danger" icon-name="trash-2" />
       <SnButton circle size="small" type="info" icon-name="arrow-right" />
       <SnButton circle size="large" type="warning" icon-name="heart" />
+    </view>
+
+    <text class="sn-demo__label">图标 × 变体（朴素 / 柔和 / 虚线 / 细边框）</text>
+    <view class="sn-demo__row">
+      <SnButton variant="plain" type="primary" icon-name="settings" />
+      <SnButton variant="soft" type="primary" icon-name="settings" />
+      <SnButton variant="dashed" type="primary" icon-name="settings" />
+      <SnButton icon-name="settings" />
     </view>
 
     <text class="sn-demo__label">图标 + 加载态</text>

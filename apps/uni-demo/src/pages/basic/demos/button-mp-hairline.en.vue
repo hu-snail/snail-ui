@@ -1,51 +1,39 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — `hairline`.
+ * Demo: sn-button (uni-end) — hairline border toggle (every semantic hue).
  *
- * `hairline` only applies to `type="default"` (the semantic types already carry
- * a coloured border). It defaults to true; false makes the border transparent.
- * It stacks with the loading state.
+ * hairline defaults to true: the default type paints a neutral hairline and
+ * semantic types render as outlines in their own hue; `false` strips borders
+ * on every type. Loading states live in the dedicated loading module.
  */
-import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
-
-const busy = ref(false);
-
-function toggleBusy(): void {
-  busy.value = !busy.value;
-}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__meta"
-      >hairline: on a default button true draws a thin border, false drops it</text
-    >
+    <text class="sn-demo__meta">Hairline on (default): semantic types stroke in their own hue</text>
     <view class="sn-demo__row">
-      <SnButton>hairline (default)</SnButton>
-      <SnButton :hairline="false">hairline=false</SnButton>
-      <SnButton hairline :disabled="true">hairline + disabled</SnButton>
+      <SnButton>Default button</SnButton>
+      <SnButton variant="plain" type="primary">Primary button</SnButton>
+      <SnButton variant="plain" type="success">Success button</SnButton>
+      <SnButton variant="plain" type="info">Info button</SnButton>
+      <SnButton variant="plain" type="warning">Warning button</SnButton>
+      <SnButton variant="plain" type="danger">Danger button</SnButton>
     </view>
 
-    <text class="sn-demo__meta">loading plus hairline: the loading state of a bordered button</text>
+    <text class="sn-demo__meta">Hairline off (hairline=false): borders stripped on every type</text>
     <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }">Loading (hairline)</SnButton>
-      <SnButton :hairline="false" loading>Loading (no border)</SnButton>
-      <SnButton type="primary" :loading="busy" @tap="toggleBusy">
-        {{ busy ? 'Requesting…' : 'Tap to toggle loading' }}
-      </SnButton>
+      <SnButton :hairline="false">Default button</SnButton>
+      <SnButton :hairline="false" variant="plain" type="primary">Primary button</SnButton>
+      <SnButton :hairline="false" variant="plain" type="success">Success button</SnButton>
+      <SnButton :hairline="false" variant="plain" type="info">Info button</SnButton>
+      <SnButton :hairline="false" variant="plain" type="warning">Warning button</SnButton>
+      <SnButton :hairline="false" variant="plain" type="danger">Danger button</SnButton>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo--stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
-}
 .sn-demo__row {
   display: flex;
   flex-wrap: wrap;

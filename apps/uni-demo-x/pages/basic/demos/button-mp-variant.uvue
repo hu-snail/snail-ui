@@ -1,19 +1,18 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-variant.vue sha256:7fd7d9172fa7b356 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-variant.vue sha256:390ab556e32ba3a3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button — variant 六档 × 语义类型全矩阵。
+ * Demo: sn-button — 变体 × 语义类型全矩阵（base 即默认实心，见基础用法，不重复成组）。
  *
- * `variant`: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'。
- * 每档变体都给出全部语义色：plain / dashed 保留语义描边，soft 给浅色底，
- * text 只保留语义文字色，subtle 固定淡灰底（不随类型变化）。
+ * `variant`: 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'。
+ * plain / dashed 透明底 + 语义描边（dashed 为朴素虚线），soft 浅色填充，
+ * text 只保留语义文字色，subtle 淡灰底 + 语义文字色。
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-type ButtonVariant = 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
+type ButtonVariant = 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
 type SemanticType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
 
-/** 六档变体的分组标签（括号内为 API 枚举值）。 */
+/** 变体分组标签（括号内为 API 枚举值）。 */
 const variants: Array<{ key: ButtonVariant; label: string }> = [
-  { key: 'base', label: '实心' },
   { key: 'plain', label: '朴素' },
   { key: 'dashed', label: '虚线' },
   { key: 'soft', label: '柔和' },
@@ -39,7 +38,7 @@ const types: Array<{ key: SemanticType; label: string }> = [
           v-for="item in types"
           :key="item.key"
           :type="item.key"
-          :variant="variant.key === 'base' ? undefined : variant.key"
+          :variant="variant.key"
         ><text>
           {{ variant.key === 'text' ? '按钮' : item.label }}
         </text></SnButton>

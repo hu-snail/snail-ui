@@ -1,48 +1,38 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — `hairline` 细边框。
+ * Demo: sn-button (uni-end) — 细边框（`hairline`，全类型描边开关）。
  *
- * `hairline` 只对 `type="default"` 生效（其它类型本来就有语义色描边），
- * 默认 true，置 false 后边框变透明；可与 loading 态叠加。
+ * hairline 默认 true：default 类型显示灰细边框，语义类型以描边形态
+ * 显示主题色；置 false 后全部类型去边框。加载态见「加载」模块。
  */
-import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
-
-const busy = ref(false);
-
-function toggleBusy(): void {
-  busy.value = !busy.value;
-}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__meta">hairline：default 类型下 true 显示细边框，false 去掉边框</text>
+    <text class="sn-demo__meta">细边框（默认开启）：语义类型以描边形态显示主题色</text>
     <view class="sn-demo__row">
-      <SnButton>hairline（默认）</SnButton>
-      <SnButton :hairline="false">hairline=false</SnButton>
-      <SnButton hairline :disabled="true">hairline + disabled</SnButton>
+      <SnButton>默认按钮</SnButton>
+      <SnButton variant="plain" type="primary">主要按钮</SnButton>
+      <SnButton variant="plain" type="success">成功按钮</SnButton>
+      <SnButton variant="plain" type="info">信息按钮</SnButton>
+      <SnButton variant="plain" type="warning">警告按钮</SnButton>
+      <SnButton variant="plain" type="danger">危险按钮</SnButton>
     </view>
 
-    <text class="sn-demo__meta">loading 与 hairline 叠加：细边框按钮的加载态</text>
+    <text class="sn-demo__meta">去掉边框（hairline=false）：全部类型去描边</text>
     <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }">加载中（hairline）</SnButton>
-      <SnButton :hairline="false" loading>加载中（无边框）</SnButton>
-      <SnButton type="primary" :loading="busy" @tap="toggleBusy">
-        {{ busy ? '请求中…' : '点我切 loading' }}
-      </SnButton>
+      <SnButton :hairline="false">默认按钮</SnButton>
+      <SnButton :hairline="false" variant="plain" type="primary">主要按钮</SnButton>
+      <SnButton :hairline="false" variant="plain" type="success">成功按钮</SnButton>
+      <SnButton :hairline="false" variant="plain" type="info">信息按钮</SnButton>
+      <SnButton :hairline="false" variant="plain" type="warning">警告按钮</SnButton>
+      <SnButton :hairline="false" variant="plain" type="danger">危险按钮</SnButton>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo--stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
-}
 .sn-demo__row {
   display: flex;
   flex-wrap: wrap;

@@ -1,21 +1,15 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.vue sha256:9351cb91e0fba052 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.vue sha256:34b82e119305138c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled 与 loading 状态（全语义色）。
+ * Demo: sn-button (uni-end) — disabled 状态（语义色 + 变体形态）。
+ * 加载状态统一收敛到「加载」模块。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-const loading = ref(false);
-function trigger(): void {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-}
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__label">禁用（disabled）</text>
+    <text class="sn-demo__label">禁用（disabled × 语义色）</text>
     <view class="sn-demo__row">
       <SnButton disabled><text>默认按钮</text></SnButton>
       <SnButton disabled type="primary"><text>主要按钮</text></SnButton>
@@ -25,23 +19,16 @@ function trigger(): void {
       <SnButton disabled type="danger"><text>危险按钮</text></SnButton>
     </view>
 
-    <text class="sn-demo__label">加载（loading）</text>
+    <text class="sn-demo__label">禁用（disabled × 变体：朴素 / 柔和 / 虚线 / 细边框）</text>
     <view class="sn-demo__row">
-      <SnButton loading type="primary"><text>保存中</text></SnButton>
-      <SnButton loading type="success"><text>提交中</text></SnButton>
-      <SnButton loading type="danger"><text>删除中</text></SnButton>
-      <SnButton :loading="loading" type="primary" @click="trigger"><text>点击触发加载</text></SnButton>
+      <SnButton disabled variant="plain" type="primary"><text>朴素禁用</text></SnButton>
+      <SnButton disabled variant="soft" type="primary"><text>柔和禁用</text></SnButton>
+      <SnButton disabled variant="dashed" type="primary"><text>虚线禁用</text></SnButton>
+      <SnButton disabled><text>细边框禁用</text></SnButton>
     </view>
   </view>
 </template>
 <style scoped>
-.sn-demo--stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
-}
 .sn-demo__row {
   display: flex;
   flex-wrap: wrap;

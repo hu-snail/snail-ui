@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/index/index.vue sha256:b98c082aa15472e8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/index/index.vue sha256:7c958d395d597abf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 首页 —— 组件目录（手写页面；目录数据由 scripts/gen-pages.mjs 生成到
 // home-data.ts，含中英双字段）。
@@ -349,6 +349,7 @@ function open(comp: HomeComp): void {
               placeholder
               safe-area-inset-top
               custom-style="background-color: transparent;"
+              :mp-capsule="false"
             />
             <!-- #endif -->
             <view class="home__bar" :style="mpBarStyle">

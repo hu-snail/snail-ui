@@ -5,17 +5,11 @@ import Demo1 from './demos/button-mp-size.vue';
 import Demo2 from './demos/button-mp-variant.vue';
 import Demo3 from './demos/button-mp-state.vue';
 import Demo4 from './demos/button-mp-icon-button.vue';
-import Demo5 from './demos/button-mp-cell.vue';
-import Demo6 from './demos/button-mp-hover.vue';
-import Demo7 from './demos/button-mp-loading-props.vue';
-import Demo8 from './demos/button-mp-form-type.vue';
-import Demo9 from './demos/button-mp-open-type.vue';
-import Demo10 from './demos/button-mp-mp-open-type.vue';
-import Demo11 from './demos/button-mp-block.vue';
-import Demo12 from './demos/button-mp-color-override.vue';
-import Demo13 from './demos/button-mp-hairline.vue';
-import Demo14 from './demos/button-mp-loading-color.vue';
-import Demo15 from './demos/button-mp-round.vue';
+import Demo5 from './demos/button-mp-loading.vue';
+import Demo6 from './demos/button-mp-block.vue';
+import Demo7 from './demos/button-mp-color-override.vue';
+import Demo8 from './demos/button-mp-hairline.vue';
+import Demo9 from './demos/button-mp-round.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -63,48 +57,15 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('单元格', 'Cell')" badge="cell" />
+        <DemoModuleHead :title="t('loading', 'Loading')" badge="loading" />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('悬停', 'Hover')" badge="hover" />
-        <view class="module__body">
-          <Demo6 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead
-          :title="t('loading-props 对象写法', 'The `loading-props` object')"
-          badge="loading-props"
-        />
-        <view class="module__body">
-          <Demo7 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('表单类型', 'Form type')" badge="form-type" />
-        <view class="module__body">
-          <Demo8 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('open-type', 'Open Type')" badge="open-type" />
-        <view class="module__body">
-          <Demo9 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('mp-open-type', 'Mp Open Type')" badge="mp-open-type" />
-        <view class="module__body">
-          <Demo10 />
-        </view>
-      </view>
-      <view class="module">
         <DemoModuleHead :title="t('块级按钮（block）', 'Block button (`block`)')" badge="block" />
         <view class="module__body">
-          <Demo11 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -115,7 +76,7 @@ const { t } = useDemoUi();
           badge="color-override"
         />
         <view class="module__body">
-          <Demo12 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
@@ -124,27 +85,13 @@ const { t } = useDemoUi();
           badge="hairline"
         />
         <view class="module__body">
-          <Demo13 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead
-          :title="
-            t(
-              '加载 spinner 定制（loadingColor / loadingSize）',
-              'Spinner customization (`loadingColor` / `loadingSize`)',
-            )
-          "
-          badge="loading-color"
-        />
-        <view class="module__body">
-          <Demo14 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('圆角按钮（round）', 'Round button (`round`)')" badge="round" />
         <view class="module__body">
-          <Demo15 />
+          <Demo9 />
         </view>
       </view>
     </view>

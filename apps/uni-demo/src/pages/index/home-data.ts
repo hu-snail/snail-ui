@@ -51,7 +51,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '按钮',
         titleEn: 'Button',
         desc: '多种类型与变体的主操作按钮',
-        count: 16,
+        count: 10,
       },
       {
         key: 'cell',

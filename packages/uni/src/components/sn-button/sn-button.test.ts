@@ -164,6 +164,30 @@ describe('sn-button', () => {
     expect(wrapper.classes()).toContain('sn-button--variant-soft');
   });
 
+  it('pairs plain / soft variants with every semantic type', () => {
+    // Regression: plain / soft paint rules used to cover only primary and
+    // danger, so variant=plain + type=success silently rendered a filled
+    // button. Every hue must keep its variant class (paint lives in CSS).
+    for (const variant of ['plain', 'soft'] as const) {
+      for (const type of ['primary', 'success', 'info', 'warning', 'danger'] as const) {
+        const wrapper = mount(SnButton, { props: { variant, type }, slots: { default: 'X' } });
+        expect(wrapper.classes()).toContain(`sn-button--variant-${variant}`);
+        expect(wrapper.classes()).toContain(`sn-button--${type}`);
+      }
+    }
+  });
+
+  it('toggles the hairline class on every type', () => {
+    // Regression: the hairline class used to be default-type-only, so
+    // :hairline="false" could not strip colored types' strokes.
+    for (const type of ['default', 'primary', 'success', 'info', 'warning', 'danger'] as const) {
+      const on = mount(SnButton, { props: { type }, slots: { default: 'X' } });
+      expect(on.classes()).toContain('sn-button--hairline');
+      const off = mount(SnButton, { props: { type, hairline: false }, slots: { default: 'X' } });
+      expect(off.classes()).not.toContain('sn-button--hairline');
+    }
+  });
+
   it('honors variant=dashed for dashed border', () => {
     const wrapper = mount(SnButton, {
       props: { variant: 'dashed' },

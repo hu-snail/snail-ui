@@ -1,0 +1,85 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-loading.en.vue sha256:cf6b0d3a0c237bd7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-button (uni-end) — loading states in one module.
+ *
+ * Covers: semantic-color loading, click-to-trigger, the `loading-props`
+ * object form (wot-ui `wd-button` compat: color / size, flat
+ * `loading-color` / `loading-size` win), and direct `loading-color` /
+ * `loading-size` customization.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+const loading = ref(false);
+function trigger(): void {
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
+}
+
+/** loading-props with both color + size (size in rpx). */
+const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 };
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">Loading (loading × semantic hues)</text>
+    <view class="sn-demo__row">
+      <SnButton loading type="primary"><text>Saving</text></SnButton>
+      <SnButton loading type="success"><text>Submitting</text></SnButton>
+      <SnButton loading type="danger"><text>Deleting</text></SnButton>
+      <SnButton :loading="loading" type="primary" @click="trigger"><text>Click to trigger loading</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">loading-props with color only: the spinner takes the brand color</text>
+    <view class="sn-demo__row">
+      <SnButton type="primary" loading :loading-props="{ color: 'var(--sn-mp-color-feedback-success)' }"><text>
+        Brand spinner
+      </text></SnButton>
+      <SnButton type="primary" loading><text>Default spinner</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">loading-props with color + size (size in rpx)</text>
+    <view class="sn-demo__row">
+      <SnButton type="success" loading :loading-props="spinnerFromProps"><text>Large spinner</text></SnButton>
+      <SnButton type="success" loading><text>Default-size spinner</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">Flat props win: loading-color / loading-size override loading-props</text>
+    <view class="sn-demo__row">
+      <SnButton
+        type="warning"
+        loading
+        loading-color="var(--sn-mp-color-feedback-danger)"
+        :loading-props="{ color: 'var(--sn-mp-color-action-primary)', size: 64 }"
+      ><text>
+        Flat props win
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">Direct loading-color / loading-size customization</text>
+    <view class="sn-demo__row">
+      <SnButton loading loading-color="var(--sn-mp-color-feedback-success)" type="primary"><text>
+        Custom color
+      </text></SnButton>
+      <SnButton loading loading-size="48" type="success"><text>Custom size</text></SnButton>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -16,15 +16,15 @@ function reset(): void {
 <template>
   <div class="sn-demo">
     <SnForm :model="form" label-position="top">
-      <SnFormItem label="Email" prop="email">
+      <SnFormItem label="邮箱" prop="email">
         <SnInput v-model="form.email" placeholder="you@example.com" />
       </SnFormItem>
       <div class="sn-demo__actions">
-        <SnButton type="primary" attr-type="submit" @click="submit">Submit</SnButton>
-        <SnButton attr-type="reset" @click="reset">Reset</SnButton>
-        <SnButton :focusable="false">Not tab-focusable</SnButton>
+        <SnButton type="primary" attr-type="submit" @click="submit">提交</SnButton>
+        <SnButton attr-type="reset" @click="reset">重置</SnButton>
+        <SnButton :focusable="false">不可聚焦</SnButton>
       </div>
-      <p>submit count: {{ count }}</p>
+      <p>提交次数：{{ count }}</p>
     </SnForm>
   </div>
 </template>

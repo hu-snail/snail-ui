@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.en.vue sha256:a76d887b27d3aeb8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-basic.en.vue sha256:6e35ed0dc1ec5df2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — basic types.
@@ -8,20 +8,13 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 </script>
 <template>
   <view class="sn-demo">
-    <SnButton><text>Default</text></SnButton>
-    <SnButton type="primary"><text>Primary button</text></SnButton>
-    <SnButton type="success"><text>Success button</text></SnButton>
-    <SnButton type="info"><text>Info button</text></SnButton>
-    <SnButton type="warning"><text>Warning button</text></SnButton>
-    <SnButton type="danger"><text>Danger button</text></SnButton>
+    <view class="sn-demo__row">
+      <SnButton><text>Default</text></SnButton>
+      <SnButton type="primary"><text>Primary button</text></SnButton>
+      <SnButton type="success"><text>Success button</text></SnButton>
+      <SnButton type="info"><text>Info button</text></SnButton>
+      <SnButton type="warning"><text>Warning button</text></SnButton>
+      <SnButton type="danger"><text>Danger button</text></SnButton>
+    </view>
   </view>
 </template>
-<style scoped>
-.sn-demo {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  flex-direction: row;
-}
-</style>

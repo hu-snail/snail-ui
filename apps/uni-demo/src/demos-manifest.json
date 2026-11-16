@@ -147,33 +147,8 @@
           "hasEn": true
         },
         {
-          "name": "button-mp-cell",
-          "title": "单元格",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-hover",
-          "title": "悬停",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-loading-props",
-          "title": "loading-props 对象写法",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-form-type",
-          "title": "表单类型",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-open-type",
-          "title": "open-type",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-mp-open-type",
-          "title": "mp-open-type",
+          "name": "button-mp-loading",
+          "title": "loading",
           "hasEn": true
         },
         {
@@ -189,11 +164,6 @@
         {
           "name": "button-mp-hairline",
           "title": "细边框（hairline）",
-          "hasEn": true
-        },
-        {
-          "name": "button-mp-loading-color",
-          "title": "加载 spinner 定制（loadingColor / loadingSize）",
           "hasEn": true
         },
         {

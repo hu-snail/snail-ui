@@ -1,0 +1,84 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-loading.vue sha256:4788a41312328e13 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-button (uni-end) — 加载状态全场景（唯一加载模块）。
+ *
+ * 覆盖：语义色 loading、点击触发、`loading-props` 对象写法（wot-ui
+ * `wd-button` 兼容：color / size，扁平 `loading-color` / `loading-size`
+ * 优先）、`loading-color` / `loading-size` 直接定制。
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+const loading = ref(false);
+function trigger(): void {
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
+}
+
+/** loading-props 同时给 color + size（size 走 rpx）。 */
+const spinnerFromProps = { color: 'var(--sn-mp-color-action-primary)', size: 48 };
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">加载中（loading × 语义色）</text>
+    <view class="sn-demo__row">
+      <SnButton loading type="primary"><text>保存中</text></SnButton>
+      <SnButton loading type="success"><text>提交中</text></SnButton>
+      <SnButton loading type="danger"><text>删除中</text></SnButton>
+      <SnButton :loading="loading" type="primary" @click="trigger"><text>点击触发加载</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">loading-props 只给 color：spinner 换成品牌色</text>
+    <view class="sn-demo__row">
+      <SnButton type="primary" loading :loading-props="{ color: 'var(--sn-mp-color-feedback-success)' }"><text>
+        品牌色加载图标
+      </text></SnButton>
+      <SnButton type="primary" loading><text>默认加载图标</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">loading-props 同时给 color + size（size 走 rpx）</text>
+    <view class="sn-demo__row">
+      <SnButton type="success" loading :loading-props="spinnerFromProps"><text>大号加载图标</text></SnButton>
+      <SnButton type="success" loading><text>默认大小加载图标</text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">扁平属性优先生效：loading-color / loading-size 覆盖 loading-props 同名项</text>
+    <view class="sn-demo__row">
+      <SnButton
+        type="warning"
+        loading
+        loading-color="var(--sn-mp-color-feedback-danger)"
+        :loading-props="{ color: 'var(--sn-mp-color-action-primary)', size: 64 }"
+      ><text>
+        扁平属性优先生效
+      </text></SnButton>
+    </view>
+
+    <text class="sn-demo__meta">loading-color / loading-size 直接定制 spinner</text>
+    <view class="sn-demo__row">
+      <SnButton loading loading-color="var(--sn-mp-color-feedback-success)" type="primary"><text>
+        自定义颜色
+      </text></SnButton>
+      <SnButton loading loading-size="48" type="success"><text>自定义大小</text></SnButton>
+    </view>
+  </view>
+</template>
+<style scoped>
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+</style>

@@ -8,19 +8,13 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
 <template>
   <view class="sn-demo">
-    <SnButton>默认</SnButton>
-    <SnButton type="primary">主要</SnButton>
-    <SnButton type="success">成功</SnButton>
-    <SnButton type="warning">警告</SnButton>
-    <SnButton type="danger">危险</SnButton>
+    <view class="sn-demo__row">
+      <SnButton>默认按钮</SnButton>
+      <SnButton type="primary">主要按钮</SnButton>
+      <SnButton type="success">成功按钮</SnButton>
+      <SnButton type="info">信息按钮</SnButton>
+      <SnButton type="warning">警告按钮</SnButton>
+      <SnButton type="danger">危险按钮</SnButton>
+    </view>
   </view>
 </template>
-
-<style scoped>
-.sn-demo {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-</style>

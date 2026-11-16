@@ -1,21 +1,66 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — round button (`round`).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ * Demo: sn-button (uni-end) — round capsules × variant scenes.
+ *
+ * Pill shape stacked over semantic types and the common variants:
+ * filled / plain / dashed / soft.
  */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+
+type ButtonVariant = 'base' | 'plain' | 'dashed' | 'soft';
+type SemanticType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
+
+/** Variant group labels (API enum value in parens). */
+const variants: Array<{ key: ButtonVariant; label: string }> = [
+  { key: 'base', label: 'Filled' },
+  { key: 'plain', label: 'Plain' },
+  { key: 'dashed', label: 'Dashed' },
+  { key: 'soft', label: 'Soft' },
+];
+
+/** Semantic types shown in every group. */
+const types: Array<{ key: SemanticType; label: string }> = [
+  { key: 'primary', label: 'Primary button' },
+  { key: 'success', label: 'Success button' },
+  { key: 'info', label: 'Info button' },
+  { key: 'warning', label: 'Warning button' },
+  { key: 'danger', label: 'Danger button' },
+];
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnButton round type="success">Rounded</SnButton>
+  <view class="sn-demo sn-demo--stack">
+    <view v-for="variant in variants" :key="variant.key" class="sn-demo__group">
+      <text class="sn-demo__label">{{ variant.label }} ({{ variant.key }})</text>
+      <view class="sn-demo__row">
+        <SnButton
+          v-for="item in types"
+          :key="item.key"
+          round
+          :type="item.key"
+          :variant="variant.key === 'base' ? undefined : variant.key"
+        >
+          {{ item.label }}
+        </SnButton>
+      </view>
+    </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-demo__group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12rpx;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  align-items: center;
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

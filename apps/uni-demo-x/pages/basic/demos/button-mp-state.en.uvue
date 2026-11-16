@@ -1,21 +1,15 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.en.vue sha256:1e620268d6cc839c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.en.vue sha256:4924636a3f1ade8f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled & loading states (every semantic hue).
+ * Demo: sn-button (uni-end) — disabled state (semantic hues + variant forms).
+ * Loading states live in the dedicated loading module.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-const loading = ref(false);
-function trigger(): void {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-}
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__label">Disabled</text>
+    <text class="sn-demo__label">Disabled (× semantic hues)</text>
     <view class="sn-demo__row">
       <SnButton disabled><text>Default button</text></SnButton>
       <SnButton disabled type="primary"><text>Primary button</text></SnButton>
@@ -25,23 +19,16 @@ function trigger(): void {
       <SnButton disabled type="danger"><text>Danger button</text></SnButton>
     </view>
 
-    <text class="sn-demo__label">Loading</text>
+    <text class="sn-demo__label">Disabled (× variants: plain / soft / dashed / hairline)</text>
     <view class="sn-demo__row">
-      <SnButton loading type="primary"><text>Saving</text></SnButton>
-      <SnButton loading type="success"><text>Submitting</text></SnButton>
-      <SnButton loading type="danger"><text>Deleting</text></SnButton>
-      <SnButton :loading="loading" type="primary" @click="trigger"><text>Click to trigger loading</text></SnButton>
+      <SnButton disabled variant="plain" type="primary"><text>Plain disabled</text></SnButton>
+      <SnButton disabled variant="soft" type="primary"><text>Soft disabled</text></SnButton>
+      <SnButton disabled variant="dashed" type="primary"><text>Dashed disabled</text></SnButton>
+      <SnButton disabled><text>Hairline disabled</text></SnButton>
     </view>
   </view>
 </template>
 <style scoped>
-.sn-demo--stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
-}
 .sn-demo__row {
   display: flex;
   flex-wrap: wrap;

@@ -5,12 +5,12 @@ import { SnButton } from '@snui/vue-web';
 
 <template>
   <div class="sn-demo">
-    <SnButton tag="button" type="primary">tag=button</SnButton>
+    <SnButton tag="button" type="primary">默认按钮</SnButton>
     <SnButton tag="a" type="primary" href="https://example.com" target="_blank">
-      tag=a (link)
+      链接按钮
     </SnButton>
-    <SnButton tag="div" type="success">tag=div</SnButton>
-    <SnButton tag="span" type="warning">tag=span (inline)</SnButton>
+    <SnButton tag="div" type="success">容器按钮</SnButton>
+    <SnButton tag="span" type="warning">行内按钮</SnButton>
   </div>
 </template>
 

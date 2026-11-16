@@ -37,6 +37,14 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
       <SnButton circle size="large" type="warning" icon-name="heart" />
     </view>
 
+    <text class="sn-demo__label">Icons × variants (plain / soft / dashed / hairline)</text>
+    <view class="sn-demo__row">
+      <SnButton variant="plain" type="primary" icon-name="settings" />
+      <SnButton variant="soft" type="primary" icon-name="settings" />
+      <SnButton variant="dashed" type="primary" icon-name="settings" />
+      <SnButton icon-name="settings" />
+    </view>
+
     <text class="sn-demo__label">Icon + loading state</text>
     <view class="sn-demo__row">
       <SnButton type="primary" icon-name="download">Download</SnButton>

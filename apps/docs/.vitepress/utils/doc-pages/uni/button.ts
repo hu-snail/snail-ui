@@ -54,7 +54,7 @@ import { Button } from '@snui/uni';
       title: '基础用法',
       blurb: '6 种语义类型：primary / success / warning / danger / info / default。',
     },
-    { name: 'button-mp-size', title: '尺寸', blurb: '三档高度。' },
+    { name: 'button-mp-size', title: '尺寸', blurb: '三档高度 × 实心 / 朴素 / 柔和 / 细边框 / 圆形图标按钮场景。' },
     {
       name: 'button-mp-block',
       title: '块级按钮（block）',
@@ -62,24 +62,19 @@ import { Button } from '@snui/uni';
     },
     {
       name: 'button-mp-round',
-      title: '圆角按钮（round）',
-      blurb: 'round 应用胶囊形圆角。',
+      title: '圆角按钮（round × 变体）',
+      blurb: 'round 胶囊形态叠加语义类型与常用变体：实心 / 朴素 / 虚线 / 柔和。',
     },
     {
       name: 'button-mp-state',
       title: '状态',
-      blurb: 'disabled 完全禁用；loading 显示 spinner 且不可点击；可手动触发 loading 状态。',
+      blurb: 'disabled 全语义色 + 变体形态（朴素 / 柔和 / 虚线 / 细边框）；加载状态统一见「加载」模块。',
     },
     {
       name: 'button-mp-variant',
-      title: '变体（`variant`：`base` / `plain` / `dashed` / `soft` / `subtle` / `text`）',
+      title: '变体（`variant`：`plain` / `dashed` / `soft` / `subtle` / `text`）',
       blurb:
-        'variant 6 档：base 填充实心、plain 透明描边、dashed 虚线、soft 浅色填充、subtle 极淡灰底、text 纯文字。',
-    },
-    {
-      name: 'button-mp-cell',
-      title: 'Cell 列表化（`cell`：`hover` / `fill` / `menu`）',
-      blurb: 'Cell 列表化：hover 按下灰底、fill 常驻灰底、menu 透明无圆角。',
+        '每档变体给出全部语义色：plain 透明描边、dashed 朴素虚线、soft 浅色填充、subtle 淡灰底语义字、text 纯文字（base 为默认实心，见基础用法）。',
     },
     {
       name: 'button-mp-color-override',
@@ -88,48 +83,21 @@ import { Button } from '@snui/uni';
         'bgColor / color 内联覆盖语义色（优先级高于类型 token）；附带 customClass / customStyle 根节点样式。',
     },
     {
-      name: 'button-mp-loading-color',
-      title: '加载 spinner 定制（loadingColor / loadingSize）',
-      blurb: 'loadingColor 改 spinner 颜色；loadingSize 改 rpx 尺寸。',
-    },
-    {
       name: 'button-mp-icon-button',
       title: '字体图标（`icon` / `class-prefix` / `css-icon`）',
       blurb:
         'icon + class-prefix 拼出 {prefix}-{icon}；css-icon 字符串原样渲染；css-icon 布尔同时挂两个类名。',
     },
     {
-      name: 'button-mp-loading-props',
-      title: 'loading-props 对象写法',
-      blurb: 'loading-props 的 color / size；扁平 prop 优先。',
+      name: 'button-mp-loading',
+      title: '加载（loading 全场景）',
+      blurb:
+        '语义色 loading 与点击触发；loading-props 对象写法（color / size，扁平 loading-color / loading-size 优先）；loadingColor / loadingSize 直接定制。',
     },
     {
       name: 'button-mp-hairline',
       title: '细边框（hairline）',
-      blurb: 'hairline 仅对 default 类型生效；与 loading 叠加对比。',
-    },
-    {
-      name: 'button-mp-open-type',
-      title: '开放能力（`open-type`，MP-only）',
-      blurb:
-        'open-type: share / feedback / launchApp / contact / getUserInfo / openSetting / favorite / chooseAvatar。',
-    },
-    {
-      name: 'button-mp-mp-open-type',
-      title: '扩展参数（`session-from` / `send-message-*` / `app-parameter` / `scope` …）',
-      blurb:
-        'open-type 扩展参数透传：contact 会话配置、lang 三档、app-parameter、scope、hover-stop-propagation。',
-    },
-    {
-      name: 'button-mp-hover',
-      title: '按住反馈（`hover-class` / `hover-start-time` / `hover-stay-time`）',
-      blurb:
-        '自定义 press 反馈 class；hover-start-time 按住多久触发；hover-stay-time 松手后多久消失。',
-    },
-    {
-      name: 'button-mp-form-type',
-      title: '表单提交类型（`form-type`，MP-only）',
-      blurb: "form-type='submit' 提交表单；form-type='reset' 重置表单。",
+      blurb: 'hairline 控制全部类型的描边：false 时全部去边框。',
     },
   ],
   props: {
@@ -146,7 +114,7 @@ import { Button } from '@snui/uni';
       { name: 'round', type: 'boolean', default: '—', desc: '胶囊形。' },
       { name: 'disabled', type: 'boolean', default: '—', desc: '禁用。' },
       { name: 'loading', type: 'boolean', default: '—', desc: '加载中（spinner + 阻止 click）。' },
-      { name: 'hairline', type: 'boolean', default: '—', desc: '显示细边框（default 类型）。' },
+      { name: 'hairline', type: 'boolean', default: '—', desc: '描边开关（false 全部类型去边框）。' },
       { name: 'feedback', type: 'boolean', default: '—', desc: '点击反馈（active 透明度）。' },
       {
         name: 'plain',

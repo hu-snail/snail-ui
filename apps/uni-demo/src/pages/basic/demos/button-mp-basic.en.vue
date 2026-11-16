@@ -8,19 +8,14 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
 <template>
   <view class="sn-demo">
-    <SnButton>Default</SnButton>
-    <SnButton type="primary">Primary</SnButton>
-    <SnButton type="success">Success</SnButton>
-    <SnButton type="warning">Warning</SnButton>
-    <SnButton type="danger">Danger</SnButton>
+    <view class="sn-demo__row">
+      <SnButton>Default</SnButton>
+      <SnButton type="primary">Primary button</SnButton>
+      <SnButton type="success">Success button</SnButton>
+      <SnButton type="info">Info button</SnButton>
+      <SnButton type="warning">Warning button</SnButton>
+      <SnButton type="danger">Danger button</SnButton>
+    </view>
   </view>
 </template>
 
-<style scoped>
-.sn-demo {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-</style>

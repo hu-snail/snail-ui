@@ -391,28 +391,84 @@ function onClick(event: MouseEvent): void {
   );
 }
 
-/* Text variant — plain text, transparent. */
+/* Dashed border — plain-style dashed: transparent fill + semantic stroke so
+ * the dashed pattern reads the same as the uni-end `variant: 'dashed'`. */
+.sn-button--dashed {
+  border-style: dashed;
+  background-color: transparent;
+}
+.sn-button--dashed.sn-button--primary {
+  color: var(--sn-web-color-action-primary);
+  border-color: var(--sn-web-color-action-primary);
+}
+.sn-button--dashed.sn-button--success {
+  color: var(--sn-web-color-feedback-success);
+  border-color: var(--sn-web-color-feedback-success);
+}
+.sn-button--dashed.sn-button--warning {
+  color: var(--sn-web-color-feedback-warning);
+  border-color: var(--sn-web-color-feedback-warning);
+}
+.sn-button--dashed.sn-button--info {
+  color: var(--sn-web-color-feedback-info);
+  border-color: var(--sn-web-color-feedback-info);
+}
+.sn-button--dashed.sn-button--error {
+  color: var(--sn-web-color-feedback-danger);
+  border-color: var(--sn-web-color-feedback-danger);
+}
+.sn-button--dashed.sn-button--default {
+  color: var(--sn-web-color-text-primary);
+  border-color: var(--sn-web-color-border-default);
+}
+
+/* Text variant — plain text, transparent; semantic types keep their hue on
+ * the label (the var fallback preserves a user-set `color` prop). */
 .sn-button--text {
   background-color: transparent;
   border-color: transparent;
   color: var(--sn-button-color, var(--sn-web-color-text-primary));
 }
+.sn-button--text.sn-button--primary {
+  color: var(--sn-button-color, var(--sn-web-color-action-primary));
+}
+.sn-button--text.sn-button--success {
+  color: var(--sn-button-color, var(--sn-web-color-feedback-success));
+}
+.sn-button--text.sn-button--warning {
+  color: var(--sn-button-color, var(--sn-web-color-feedback-warning));
+}
+.sn-button--text.sn-button--info {
+  color: var(--sn-button-color, var(--sn-web-color-feedback-info));
+}
+.sn-button--text.sn-button--error {
+  color: var(--sn-button-color, var(--sn-web-color-feedback-danger));
+}
 .sn-button--text:hover:not(.sn-button--disabled):not(.sn-button--loading) {
   background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
-}
-
-/* Dashed border. */
-.sn-button--dashed {
-  border-style: dashed;
 }
 
 /* Ghost — transparent background, colored border. */
 .sn-button--ghost {
   background-color: transparent;
 }
+/* Ghost renders an outlined button for every semantic type (naive-ui n-button
+ * ghost parity: each type keeps its hue on border + text). */
 .sn-button--ghost.sn-button--primary {
   color: var(--sn-web-color-action-primary);
   border-color: var(--sn-web-color-action-primary);
+}
+.sn-button--ghost.sn-button--success {
+  color: var(--sn-web-color-feedback-success);
+  border-color: var(--sn-web-color-feedback-success);
+}
+.sn-button--ghost.sn-button--warning {
+  color: var(--sn-web-color-feedback-warning);
+  border-color: var(--sn-web-color-feedback-warning);
+}
+.sn-button--ghost.sn-button--info {
+  color: var(--sn-web-color-feedback-info);
+  border-color: var(--sn-web-color-feedback-info);
 }
 .sn-button--ghost.sn-button--error {
   color: var(--sn-web-color-feedback-danger);
