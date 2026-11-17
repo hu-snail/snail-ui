@@ -13,7 +13,7 @@
 | defineSlots-stripped | 69 |
 | unsupported-property | 33 |
 | patch | 15 |
-| template-bare-text | 12 |
+| template-bare-text | 13 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
 
@@ -91,9 +91,10 @@
 
 ### sn-calendar/sn-calendar.uvue
 
-- import specifier rewritten for .uvue dist — `import-rewrite`: 2 relative .vue import(s) rewritten to .uvue
+- import specifier rewritten for .uvue dist — `import-rewrite`: 3 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
+- bare text wrapped in <text> — `template-bare-text` (line 65): 2 bare text node(s) wrapped in <text>
+- template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 5 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
@@ -530,11 +531,11 @@
 ### sn-popup/sn-popup.uvue
 
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
-- script DOM guard — `script-guard`: 1 DOM event call(s) converted to optional calls
+- script DOM guard — `script-guard`: 2 DOM event call(s) converted to optional calls
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-progress/sn-progress.uvue
 
