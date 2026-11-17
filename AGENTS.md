@@ -3897,6 +3897,25 @@ pnpm -F @snui/uni-demo-x check      # 结构 + 新鲜度校验（必须全过）
 （uni 宿主页面级查询在嵌套自定义组件里 `.in(Vue proxy)` 不可靠），重试用
 `RETRY_DELAYS_MS` 有界退避 —— 单次重试在重型页面上会让部分图标实例永落墨色兜底。
 
+2026-11-17（复发多次）：HBuilderX 运行报「项目 apps/uni-demo-x 不是 uni-app 项目，
+暂不支持 / 已停止运行」。根因是 **HBuilderX 工程监视器与 gen-x 全量重建并发**：
+gen-x 先 `rmSync` pages/** 再逐文件重写、末尾整体重写 App.uvue / pages.json /
+manifest.json（已是 tmp+rename 原子写），监视器在删除/重排窗口读到工程不完整
+→ 工程类型识别失败并缓存错误分类，此后每次运行都报「不是 uni-app 项目」。
+触发规律：`pnpm -F @snui/uni-demo-x gen` / `gen:pages` 运行期间或刚结束时立刻在
+HBuilderX 点运行（两个 AI 会话交替跑 gen 时必然复现）。
+
+处置与预防（勿重蹈）：
+
+1. **先跑完 gen，再编译**：HBuilderX 运行前确认 `pnpm -F @snui/uni-demo-x gen`
+   已退出（无并发 gen 会话时基本不会再复现）。
+2. **识别失效的恢复**：工程文件本身完好（manifest.json `uni-app-x` 标记、
+   pages.json、App.uvue 均在）——HBuilderX 里对工程右键「刷新」或关闭工程重新
+   导入（必要时重启 HBuilderX）即恢复识别，**不要**因报错去手改 manifest /
+   重建工程。
+3. Agent 在用户可能正开着 HBuilderX 编译时，避免后台跑 gen-x；跑完主动告知
+   「可以重新编译了」。
+
 ---
 
 # END
