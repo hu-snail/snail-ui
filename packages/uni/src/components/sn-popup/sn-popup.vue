@@ -25,6 +25,20 @@
  *     implementation is a single keyframe pair per name played in reverse for
  *     the leave leg (no separate wd-transition component).
  *
+ * ## Additive: `draggable` grabber (AGENTS.md §112.3a — wd-popup has no drag
+ * handle)
+ *
+ *   - `draggable` renders a grabber bar at the top center of the panel and
+ *     lets a downward drag on it close the sheet. Only `position="bottom"`
+ *     gains the handle — the geometry of the other anchors has no natural
+ *     "pull down to dismiss" direction, so the prop is inert there.
+ *   - While the finger is down the panel follows it through an inline
+ *     transform (transition off); on release past the distance/velocity
+ *     threshold the sheet closes, otherwise it springs back. The keyframe
+ *     animation class is gated to enter/leave legs so it never fights the
+ *     inline drag transform (`animation-fill-mode: both` would otherwise pin
+ *     the panel at `translateY(0)` and swallow the gesture).
+ *
  * ## Background scroll lock (AGENTS.md §41 / uni has no `document`)
  *
  * The scrim intercepts `touchmove` and calls `preventDefault()` while
@@ -77,6 +91,12 @@ const props = withDefaults(
     transition?: PopupTransition | '';
     /** Show the close button in the panel's top-right corner. */
     closable?: boolean;
+    /**
+     * Render the drag handle at the top center of a bottom sheet; pulling it
+     * down past the threshold closes the popup. Bottom position only — the
+     * other anchors have no natural dismiss direction.
+     */
+    draggable?: boolean;
     /** Anchor of the panel. */
     position?: PopupPosition;
     /** Tapping the scrim closes the popup (emits `click-modal` either way). */
@@ -113,6 +133,7 @@ const props = withDefaults(
     modelValue: false,
     transition: '',
     closable: false,
+    draggable: false,
     position: 'center',
     closeOnClickModal: true,
     duration: DEFAULT_DURATION,
@@ -188,6 +209,133 @@ function clearTimer(): void {
   }
 }
 
+/* ── Draggable grabber (additive, `position="bottom"` only) ─────────────── */
+
+/** Distance (px) past which a release closes the sheet. */
+const DRAG_CLOSE_DISTANCE = 80;
+/** Release velocity (px/ms) above which a drag closes even under the distance. */
+const DRAG_FLING_VELOCITY = 0.6;
+
+/** Drag gesture leg. `closing` owns the leave leg until `finishLeave`. */
+const dragState = ref<'idle' | 'dragging' | 'settling' | 'closing'>('idle');
+/** Current drag offset in px — applied to the panel as an inline transform. */
+const dragY = ref(0);
+/** The running leave leg was started by a drag release (skip the keyframes). */
+let leaveFromDrag = false;
+/**
+ * Set while the close emitted from a drag release is still in flight — the
+ * controlled `v-model` sync arrives through the watcher one flush later and
+ * must not start a second leave leg on top of it. Cleared after the flush.
+ */
+let dragClosePending = false;
+/** Gesture origin Y (px). */
+let dragStartY = 0;
+/** Drag offset when the gesture started (resume an interrupted settle). */
+let dragStartOffset = 0;
+/** Previous move sample (px, ms) — the fling velocity comes from the last segment. */
+let dragPrevY = 0;
+let dragPrevTs = 0;
+/** Velocity (px/ms) of the latest move segment. */
+let dragVelocity = 0;
+
+function resetDrag(): void {
+  dragState.value = 'idle';
+  dragY.value = 0;
+  leaveFromDrag = false;
+}
+
+/** Read the vertical point out of a uni / DOM touch event (§floating-panel). */
+function touchY(event: Event): number {
+  const detail = event as unknown as {
+    touches?: Array<{ clientY?: number; pageY?: number }>;
+    changedTouches?: Array<{ clientY?: number; pageY?: number }>;
+  };
+  const list = detail.touches ?? detail.changedTouches;
+  const point = list && list.length > 0 ? list[0] : undefined;
+  if (typeof point?.clientY === 'number') return point.clientY;
+  if (typeof point?.pageY === 'number') return point.pageY;
+  return 0;
+}
+
+function onGrabberTouchStart(event: Event): void {
+  // Only a resting sheet may be grabbed — an enter/leave leg owns the panel.
+  if (phase.value !== 'none' || !props.modelValue) return;
+  clearTimer();
+  generation += 1; // a settle in flight is abandoned; the finger takes over
+  dragStartY = touchY(event);
+  dragStartOffset = dragY.value;
+  dragPrevY = dragStartY;
+  dragPrevTs = Date.now();
+  dragVelocity = 0;
+  dragState.value = 'dragging';
+}
+
+function onGrabberTouchMove(event: Event): void {
+  if (dragState.value !== 'dragging') return;
+  // Keep the gesture from scrolling the page behind the sheet.
+  event.preventDefault();
+  event.stopPropagation();
+  const y = touchY(event);
+  const now = Date.now();
+  dragVelocity = Math.abs(y - dragPrevY) / Math.max(now - dragPrevTs, 1);
+  dragPrevY = y;
+  dragPrevTs = now;
+  const dy = y - dragStartY + dragStartOffset;
+  // Only downward drags move the sheet; an upward pull is resisted at rest.
+  dragY.value = Math.max(dy, 0);
+}
+
+function onGrabberTouchEnd(): void {
+  if (dragState.value !== 'dragging') return;
+  const distance = dragY.value;
+  if (distance >= DRAG_CLOSE_DISTANCE || dragVelocity >= DRAG_FLING_VELOCITY) beginDragClose();
+  else settleBack();
+}
+
+/** Release under the threshold: transition the panel back to rest. */
+function settleBack(): void {
+  clearTimer();
+  const token = ++generation;
+  dragState.value = 'settling';
+  dragY.value = 0;
+  if (durationMs.value <= 0) {
+    dragState.value = 'idle';
+    return;
+  }
+  timer = setTimeout(() => {
+    timer = null;
+    if (token !== generation) return;
+    dragState.value = 'idle';
+  }, durationMs.value);
+}
+
+/** Release past the threshold: close from the dragged offset, no jump. */
+function beginDragClose(): void {
+  clearTimer();
+  const token = ++generation;
+  leaveFromDrag = true;
+  dragState.value = 'closing';
+  emit('before-leave');
+  durationMs.value = resolveDuration(props.duration, 'leave');
+  phase.value = 'leave';
+  emit('leave');
+  emit('update:modelValue', false);
+  emit('close');
+  if (durationMs.value <= 0) {
+    finishLeave();
+    return;
+  }
+  timer = setTimeout(() => {
+    if (token !== generation) return;
+    finishLeave();
+  }, durationMs.value);
+  // The watcher consumes the flag during this flush; drop it afterwards so a
+  // later, unrelated close still runs a normal leg.
+  void nextTick(() => {
+    dragClosePending = false;
+  });
+}
+
 /** Default animation for a position, mirroring the geometry of the anchor. */
 function defaultTransition(): PopupTransition {
   switch (props.position) {
@@ -209,6 +357,7 @@ const animationName = computed<PopupTransition>(() => props.transition || defaul
 async function enter(): Promise<void> {
   clearTimer();
   const token = ++generation;
+  resetDrag();
   emit('before-enter');
   durationMs.value = resolveDuration(props.duration, 'enter');
   isMounted.value = true;
@@ -232,8 +381,12 @@ async function enter(): Promise<void> {
 }
 
 function leave(): void {
+  // Already fully closed (hideWhenClose unmounted the node) — a duplicate
+  // close sync must not replay the exit leg.
+  if (!isMounted.value && props.hideWhenClose) return;
   clearTimer();
   const token = ++generation;
+  resetDrag();
   emit('before-leave');
   durationMs.value = resolveDuration(props.duration, 'leave');
   phase.value = 'leave';
@@ -249,6 +402,7 @@ function leave(): void {
 function finishLeave(): void {
   timer = null;
   phase.value = 'none';
+  resetDrag();
   if (props.hideWhenClose) isMounted.value = false;
   emit('after-leave');
 }
@@ -256,8 +410,18 @@ function finishLeave(): void {
 watch(
   () => props.modelValue,
   (value) => {
-    if (value) void enter();
-    else leave();
+    if (value) {
+      dragClosePending = false;
+      void enter();
+      return;
+    }
+    // A drag-initiated close already runs its own leave leg from the dragged
+    // offset — the controlled sync of that same close must not start another.
+    if (dragClosePending) {
+      dragClosePending = false;
+      return;
+    }
+    if (dragState.value !== 'closing') leave();
   },
 );
 
@@ -304,22 +468,42 @@ function onTouchMove(event: Event): void {
 const rootClass = computed(() => [
   'sn-popup',
   `sn-popup--${props.position}`,
-  `sn-popup--anim-${animationName.value}`,
+  // Keyframes only while an enter/leave leg owns the panel. A rest state with
+  // no animation lets the inline drag transform work (fill-mode `both` would
+  // otherwise pin the panel at the `to` frame and swallow the gesture), and
+  // re-adding the class on leave restarts it exactly from the rest position.
+  ...(phase.value !== 'none' && !leaveFromDrag
+    ? [`sn-popup--anim-${animationName.value}` as const]
+    : []),
   {
     'sn-popup--round': props.round,
     'sn-popup--safe-bottom': props.safeAreaInsetBottom,
     'sn-popup--leaving': phase.value === 'leave',
+    'sn-popup--dragging': dragState.value === 'dragging',
+    'sn-popup--drag-settling': dragState.value === 'settling',
+    'sn-popup--drag-closing': dragState.value === 'closing',
     'sn-popup--hidden': phase.value === 'none' && !props.modelValue && isMounted.value,
   },
   props.customClass,
 ]);
+
+/** Bottom sheets with a grabber show the pull-down handle. */
+const showGrabber = computed(() => props.draggable && props.position === 'bottom');
 
 const rootStyle = computed(() =>
   [`z-index: ${props.zIndex}`, `--sn-popup-duration: ${durationMs.value}ms`].join('; '),
 );
 
 /** `custom-style` styles the panel itself (mirrors wd-popup `custom-style`). */
-const panelStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
+const panelStyle = computed(() => {
+  const parts = [props.customStyle];
+  if (dragState.value === 'dragging' || dragState.value === 'settling') {
+    parts.push(`transform: translateY(${dragY.value}px)`);
+  } else if (dragState.value === 'closing') {
+    parts.push('transform: translateY(100%)');
+  }
+  return parts.filter(Boolean).join('; ') || undefined;
+});
 
 const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefined));
 </script>
@@ -336,6 +520,16 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
     />
 
     <view class="sn-popup__panel" :style="panelStyle" role="dialog" aria-modal="true">
+      <view
+        v-if="showGrabber"
+        class="sn-popup__grabber"
+        @touchstart="onGrabberTouchStart"
+        @touchmove="onGrabberTouchMove"
+        @touchend="onGrabberTouchEnd"
+        @touchcancel="onGrabberTouchEnd"
+      >
+        <view class="sn-popup__grabber-bar" aria-hidden="true" />
+      </view>
       <view
         v-if="closable"
         class="sn-popup__close"
@@ -429,7 +623,9 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   /* Float the layer off the page (same slot as sn-fab / sn-floating-panel). */
   box-shadow: var(--sn-mp-shadow-lg);
   animation-duration: var(--sn-popup-duration);
-  animation-timing-function: ease;
+  /* Enter leg: decelerate into place — a sheet that rises fast then glides
+   * to rest reads natural; a symmetric `ease` reads mechanical. */
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   animation-fill-mode: both;
 }
 
@@ -492,6 +688,25 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   z-index: 1;
 }
 
+/* ── Drag handle (additive `draggable`, bottom sheets) ─────────────────── */
+
+.sn-popup__grabber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Full-width hit zone riding the panel's top padding; the bar itself is a
+   * narrow centered pill. */
+  height: 48rpx;
+  margin: -16rpx 0 8rpx;
+}
+
+.sn-popup__grabber-bar {
+  width: 64rpx;
+  height: 8rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-border-default);
+}
+
 /* ── Animations ─────────────────────────────────────────────────────────
  * One keyframe pair per name: the enter leg plays it forwards, the leave leg
  * plays the same keyframe in reverse — so enter / leave stay symmetric
@@ -535,6 +750,32 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
 .sn-popup--leaving .sn-popup__panel,
 .sn-popup--leaving .sn-popup__modal {
   animation-direction: reverse;
+}
+
+/* Leave leg: accelerate away (the reverse of an ease-out enter starts fast
+ * and stalls — an exit should start slow and commit). */
+.sn-popup--leaving .sn-popup__panel,
+.sn-popup--leaving .sn-popup__modal {
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ── Drag gesture legs ───────────────────────────────────────────────────
+ * While the finger is down the panel tracks it with no transition; on
+ * release the same inline transform is animated by a transition — settle
+ * decelerates back to rest, close accelerates off-screen (mirrors the
+ * keyframe legs above).
+ */
+
+.sn-popup--dragging .sn-popup__panel {
+  transition: none;
+}
+
+.sn-popup--drag-settling .sn-popup__panel {
+  transition: transform var(--sn-popup-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sn-popup--drag-closing .sn-popup__panel {
+  transition: transform var(--sn-popup-duration) cubic-bezier(0.4, 0, 1, 1);
 }
 
 /* At rest: no animation, node parked off-screen for `hideWhenClose=false`. */

@@ -98,6 +98,12 @@ import { Popup } from '@snui/uni';
         desc: "Show the close button in the panel's top-right corner.",
       },
       {
+        name: 'draggable',
+        type: 'boolean',
+        default: 'false',
+        desc: '底部弹层顶部渲染拖拽横条，下拉越过阈值关闭弹层——**AUI 追加**（仅 `position="bottom"` 生效）。',
+      },
+      {
         name: 'position',
         type: 'PopupPosition',
         default: "'center'",

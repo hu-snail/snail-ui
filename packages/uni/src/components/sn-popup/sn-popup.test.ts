@@ -31,8 +31,20 @@ describe('sn-popup', () => {
     expect(wrapper.text()).toContain('panel body');
   });
 
-  it('defaults to the center anchor with the fade animation', () => {
-    const wrapper = mount(SnPopup, { props: { modelValue: true } });
+  /**
+   * Mount closed, then open — the enter leg is what carries the anim class
+   * (an already-open first paint renders at rest with no animation, matching
+   * the onMounted contract).
+   */
+  async function mountOpened(props: Record<string, unknown> = {}) {
+    const wrapper = mount(SnPopup, { props: { modelValue: false, ...props } });
+    await wrapper.setProps({ modelValue: true });
+    await wrapper.vm.$nextTick();
+    return wrapper;
+  }
+
+  it('defaults to the center anchor with the fade animation', async () => {
+    const wrapper = await mountOpened();
     expect(wrapper.classes()).toContain('sn-popup--center');
     expect(wrapper.classes()).toContain('sn-popup--anim-fade');
   });
@@ -44,18 +56,16 @@ describe('sn-popup', () => {
     }
   });
 
-  it('picks a slide animation that matches the anchor by default', () => {
-    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
+  it('picks a slide animation that matches the anchor by default', async () => {
+    const bottom = await mountOpened({ position: 'bottom' });
     expect(bottom.classes()).toContain('sn-popup--anim-slide-up');
 
-    const right = mount(SnPopup, { props: { modelValue: true, position: 'right' } });
+    const right = await mountOpened({ position: 'right' });
     expect(right.classes()).toContain('sn-popup--anim-slide-left');
   });
 
-  it('lets `transition` override the anchor default', () => {
-    const wrapper = mount(SnPopup, {
-      props: { modelValue: true, position: 'bottom', transition: 'zoom-in' },
-    });
+  it('lets `transition` override the anchor default', async () => {
+    const wrapper = await mountOpened({ position: 'bottom', transition: 'zoom-in' });
     expect(wrapper.classes()).toContain('sn-popup--anim-zoom-in');
     expect(wrapper.classes()).not.toContain('sn-popup--anim-slide-up');
   });
@@ -307,15 +317,15 @@ describe('sn-popup', () => {
     expect(wrapper.attributes('data-snui-component')).toBe('popup');
   });
 
-  it('maps the top and left anchors to their default slide animations', () => {
-    const top = mount(SnPopup, { props: { modelValue: true, position: 'top' } });
+  it('maps the top and left anchors to their default slide animations', async () => {
+    const top = await mountOpened({ position: 'top' });
     expect(top.classes()).toContain('sn-popup--anim-slide-down');
 
-    const left = mount(SnPopup, { props: { modelValue: true, position: 'left' } });
+    const left = await mountOpened({ position: 'left' });
     expect(left.classes()).toContain('sn-popup--anim-slide-right');
   });
 
-  it('applies the anim class for every supported transition name', () => {
+  it('applies the anim class for every supported transition name', async () => {
     const names = [
       'fade',
       'fade-up',
@@ -330,8 +340,145 @@ describe('sn-popup', () => {
       'zoom-out',
     ] as const;
     for (const name of names) {
-      const wrapper = mount(SnPopup, { props: { modelValue: true, transition: name } });
+      const wrapper = await mountOpened({ transition: name });
       expect(wrapper.classes()).toContain(`sn-popup--anim-${name}`);
+    }
+  });
+
+  it('drops the anim class once the enter leg settles (drag transform owns the panel)', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, { props: { modelValue: false, duration: 100 } });
+      await wrapper.setProps({ modelValue: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).toContain('sn-popup--anim-fade');
+      vi.advanceTimersByTime(100);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).not.toContain('sn-popup--anim-fade');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('sn-popup draggable', () => {
+  /** Simulate a grabber drag: start at `from`, move to `to`, release. */
+  async function dragGrabber(
+    wrapper: ReturnType<typeof mount>,
+    from: number,
+    to: number,
+  ): Promise<void> {
+    const grabber = wrapper.find('.sn-popup__grabber');
+    await grabber.trigger('touchstart', { touches: [{ clientY: from }] });
+    await grabber.trigger('touchmove', { touches: [{ clientY: to }] });
+    await grabber.trigger('touchend');
+  }
+
+  it('renders the grabber only for bottom sheets with draggable on', () => {
+    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom', draggable: true } });
+    expect(bottom.find('.sn-popup__grabber').exists()).toBe(true);
+    expect(bottom.find('.sn-popup__grabber-bar').attributes('aria-hidden')).toBe('true');
+
+    const center = mount(SnPopup, { props: { modelValue: true, draggable: true } });
+    expect(center.find('.sn-popup__grabber').exists()).toBe(false);
+
+    const plain = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
+    expect(plain.find('.sn-popup__grabber').exists()).toBe(false);
+  });
+
+  it('closes when the drag passes the distance threshold', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    await dragGrabber(wrapper, 100, 200);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+    expect(wrapper.emitted('close')).toHaveLength(1);
+    expect(wrapper.emitted('after-leave')).toHaveLength(1);
+    expect(wrapper.find('.sn-popup').exists()).toBe(false);
+  });
+
+  it('closes on a fast fling even under the distance threshold', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(0);
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+      });
+      const grabber = wrapper.find('.sn-popup__grabber');
+      await grabber.trigger('touchstart', { touches: [{ clientY: 0 }] });
+      vi.setSystemTime(50);
+      // 60px over 50ms = 1.2px/ms — a fling, though under the 80px distance.
+      await grabber.trigger('touchmove', { touches: [{ clientY: 60 }] });
+      await grabber.trigger('touchend');
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('springs back without closing under the threshold', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(0);
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+      });
+      const grabber = wrapper.find('.sn-popup__grabber');
+      await grabber.trigger('touchstart', { touches: [{ clientY: 100 }] });
+      // A slow 40px drag (300ms) — under both the distance and the fling.
+      vi.setSystemTime(300);
+      await grabber.trigger('touchmove', { touches: [{ clientY: 140 }] });
+      await grabber.trigger('touchend');
+      expect(wrapper.emitted('close')).toBeUndefined();
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+      expect(wrapper.find('.sn-popup').exists()).toBe(true);
+      // The settle leg finished instantly (duration=false) — back at rest.
+      expect(wrapper.find('.sn-popup__panel').attributes('style') ?? '').not.toContain(
+        'translateY',
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps the dragged offset while the finger is down', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    const grabber = wrapper.find('.sn-popup__grabber');
+    await grabber.trigger('touchstart', { touches: [{ clientY: 0 }] });
+    await grabber.trigger('touchmove', { touches: [{ clientY: 120 }] });
+    expect(wrapper.find('.sn-popup__panel').attributes('style')).toContain('translateY(120px)');
+    await grabber.trigger('touchend');
+  });
+
+  it('does not run a second leave leg when the controlled sync arrives (regression)', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    await dragGrabber(wrapper, 0, 200);
+    expect(wrapper.emitted('before-leave')).toHaveLength(1);
+    // The parent applies the close after the drag already finished the leg.
+    await wrapper.setProps({ modelValue: false });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('before-leave')).toHaveLength(1);
+    expect(wrapper.emitted('after-leave')).toHaveLength(1);
+  });
+
+  it('unmounts after the drag-close leg when animated', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: 200 },
+      });
+      await dragGrabber(wrapper, 0, 200);
+      expect(wrapper.find('.sn-popup').exists()).toBe(true);
+      vi.advanceTimersByTime(200);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toHaveLength(1);
+      expect(wrapper.find('.sn-popup').exists()).toBe(false);
+    } finally {
+      vi.useRealTimers();
     }
   });
 });
