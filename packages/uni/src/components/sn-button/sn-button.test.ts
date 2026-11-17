@@ -79,6 +79,8 @@ describe('sn-button', () => {
       props: { disabled: true },
       slots: { default: 'X' },
     });
+    // A uni `view` is not a native button — the role must be explicit (§52).
+    expect(wrapper.attributes('role')).toBe('button');
     expect(wrapper.attributes('aria-disabled')).toBe('true');
   });
 

@@ -7,6 +7,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnCalendar from './sn-calendar.vue';
 
@@ -60,6 +62,48 @@ describe('sn-calendar', () => {
       const w = mountCalendar();
       expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
       expect(w.find('.sn-calendar__footer-right').exists()).toBe(true);
+    });
+
+    it('renders the footer actions as sn-button instances', () => {
+      const w = mountCalendar();
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button');
+      expect(confirm.classes()).toContain('sn-button');
+      expect(cancel.text()).toBe('取消');
+      expect(confirm.attributes('role')).toBe('button');
+    });
+
+    it('keeps the conventional default button themes', () => {
+      const w = mountCalendar();
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button--default');
+      expect(cancel.classes()).toContain('sn-button--variant-base');
+      expect(confirm.classes()).toContain('sn-button--primary');
+      expect(confirm.classes()).toContain('sn-button--variant-base');
+    });
+
+    it('maps the button theme / variant props onto sn-button classes', () => {
+      const w = mountCalendar({
+        cancelType: 'info',
+        cancelVariant: 'soft',
+        confirmType: 'danger',
+        confirmVariant: 'plain',
+      });
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button--info');
+      expect(cancel.classes()).toContain('sn-button--variant-soft');
+      expect(confirm.classes()).toContain('sn-button--danger');
+      expect(confirm.classes()).toContain('sn-button--variant-plain');
+    });
+
+    it('splits the footer row evenly between the actions (source contract)', () => {
+      // Layout is CSS-driven; happy-dom drops stylesheets, so pin the flex
+      // contract on the source text (same pattern as sn-popup's geometry).
+      const source = readFileSync(resolve(__dirname, 'sn-calendar.vue'), 'utf8');
+      expect(source).toMatch(/\.sn-calendar__cancel,\n\.sn-calendar__confirm \{\n {2}flex: 1 1 0;/);
     });
   });
 

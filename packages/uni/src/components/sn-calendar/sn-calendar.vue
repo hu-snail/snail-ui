@@ -30,6 +30,16 @@
  *     slot the default `title` text renders exactly as before, so the change
  *     is purely additive.
  *
+ * ## Additive: footer buttons (AGENTS.md §112.3a — wd-calendar has no
+ * button-theme props)
+ *
+ *   - The footer actions render as real `sn-button` instances that split the
+ *     footer row evenly (`flex: 1`), replacing the hand-rolled cancel /
+ *     confirm views.
+ *   - `cancelType` / `cancelVariant` / `confirmType` / `confirmVariant` map
+ *     straight onto the `sn-button` `type` / `variant` props; defaults keep
+ *     the conventional sheet look (neutral cancel, primary confirm).
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -38,6 +48,7 @@
  */
 
 import { computed, ref, watch } from 'vue';
+import SnButton from '../sn-button/sn-button.vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
 import SnCalendarView from '../sn-calendar-view/sn-calendar-view.vue';
 import type {
@@ -142,6 +153,14 @@ const props = withDefaults(
      * 格子下方显示农历日名，初一显示月名。`formatter` 可覆盖。
      */
     showLunar?: boolean;
+    /** 取消按钮主题（additive）：`sn-button` 的 `type`。 */
+    cancelType?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
+    /** 取消按钮变体（additive）：`sn-button` 的 `variant`。 */
+    cancelVariant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
+    /** 确认按钮主题（additive）：`sn-button` 的 `type`。 */
+    confirmType?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
+    /** 确认按钮变体（additive）：`sn-button` 的 `variant`。 */
+    confirmVariant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
   }>(),
   {
     modelValue: null,
@@ -179,6 +198,10 @@ const props = withDefaults(
     onShortcutsClick: undefined,
     rootPortal: false,
     showLunar: false,
+    cancelType: 'default',
+    cancelVariant: 'base',
+    confirmType: 'primary',
+    confirmVariant: 'base',
   },
 );
 
@@ -353,16 +376,22 @@ const viewClass = computed(() => props.customViewClass);
           <slot name="confirm-left" />
         </view>
         <view class="sn-calendar__actions">
-          <view class="sn-calendar__cancel" role="button" aria-label="cancel" @tap="onCancel"
-            ><text>取消</text></view
+          <SnButton
+            custom-class="sn-calendar__cancel"
+            :type="props.cancelType"
+            :variant="props.cancelVariant"
+            aria-label="cancel"
+            @click="onCancel"
+            >取消</SnButton
           >
-          <view
+          <SnButton
             v-if="props.showConfirm"
-            class="sn-calendar__confirm"
-            role="button"
+            custom-class="sn-calendar__confirm"
+            :type="props.confirmType"
+            :variant="props.confirmVariant"
             :aria-label="props.confirmText"
-            @tap="onConfirm"
-            ><text>{{ props.confirmText }}</text></view
+            @click="onConfirm"
+            >{{ props.confirmText }}</SnButton
           >
         </view>
         <view class="sn-calendar__footer-right">
@@ -415,7 +444,6 @@ const viewClass = computed(() => props.customViewClass);
 .sn-calendar__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
@@ -428,25 +456,23 @@ const viewClass = computed(() => props.customViewClass);
   flex: 0 0 auto;
 }
 
+/* The action buttons split the remaining footer width evenly (AGENTS.md
+ * §112.3a additive: sn-button footer). With both slots empty that is the
+ * full row — 取消 / 确认 各占一半。The classes sit on the sn-button root
+ * (child-root inherits the parent scope id), so a plain class rule targets
+ * it — no :deep(), which App CSS cannot express (§116.2). */
 .sn-calendar__actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  flex: 1 1 0;
   gap: var(--sn-mp-spacing-2);
-  margin-left: auto;
+  min-width: 0;
 }
 
 .sn-calendar__cancel,
 .sn-calendar__confirm {
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
-  border-radius: var(--sn-mp-radius-md);
-  font-size: var(--sn-mp-font-size-md);
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-calendar__confirm {
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-weight: var(--sn-mp-font-weight-semibold);
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 /* Doodle skin — hand-drawn header rule. */

@@ -217,6 +217,30 @@ import { Calendar } from '@snui/uni';
         default: 'false',
         desc: '农历角标——**AUI 追加**（初一显示月名；`formatter` 可覆盖）',
       },
+      {
+        name: 'cancelType',
+        type: "'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'",
+        default: "'default'",
+        desc: '取消按钮主题——**AUI 追加**（映射 `sn-button` 的 `type`）',
+      },
+      {
+        name: 'cancelVariant',
+        type: "'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'",
+        default: "'base'",
+        desc: '取消按钮变体——**AUI 追加**（映射 `sn-button` 的 `variant`）',
+      },
+      {
+        name: 'confirmType',
+        type: "'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'",
+        default: "'primary'",
+        desc: '确认按钮主题——**AUI 追加**（映射 `sn-button` 的 `type`）',
+      },
+      {
+        name: 'confirmVariant',
+        type: "'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'",
+        default: "'base'",
+        desc: '确认按钮变体——**AUI 追加**（映射 `sn-button` 的 `variant`）',
+      },
     ],
   },
   ai: {

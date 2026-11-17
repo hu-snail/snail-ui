@@ -52,6 +52,8 @@ import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 | `showLunar`                                     | `boolean`                                                  | `false`                   | Lunar caption under each day cell; the month name on 初一, `formatter` overrides. Additive (AUI-OPT-11). |
 | `duration`                                      | `number`                                                   | `200`                     | Sheet animation duration.                                                                                |
 | `customClass` / `customStyle`                   | `string`                                                   | `''`                      | Root forwarding.                                                                                         |
+| `cancelType` / `cancelVariant`                  | `sn-button` `type` / `variant`                             | `'default'` / `'base'`    | Footer cancel button theme. Additive (AGENTS.md §112.3a).                                                |
+| `confirmType` / `confirmVariant`                | `sn-button` `type` / `variant`                             | `'primary'` / `'base'`    | Footer confirm button theme. Additive (AGENTS.md §112.3a).                                               |
 
 ## Events
 
@@ -92,7 +94,8 @@ import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 
 ## Accessibility
 
-- Cancel / confirm are `role="button"` with `aria-label`.
+- Cancel / confirm render as `sn-button` roots carrying `role="button"` with
+  `aria-label`; they split the footer row evenly (`flex: 1`).
 - Shortcut chips are `role="button"` with `aria-label`.
 - The `header` slot content owns the sheet's readable title when used — keep a
   text label inside it (the default branch renders `title` as plain text).

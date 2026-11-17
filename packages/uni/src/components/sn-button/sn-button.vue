@@ -327,6 +327,7 @@ function onTap(event: Event): void {
     data-snui-component="button"
     :class="classList"
     :style="wrapperStyle"
+    role="button"
     :aria-disabled="disabled || loading"
     :aria-busy="loading"
     :aria-label="ariaLabel"
