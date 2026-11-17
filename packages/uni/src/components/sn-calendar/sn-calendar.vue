@@ -445,7 +445,9 @@ const viewClass = computed(() => props.customViewClass);
   display: flex;
   align-items: center;
   gap: var(--sn-mp-spacing-3);
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  /* Horizontal inset mirrors the calendar data area (weeks / panel both use
+   * spacing-3) so the buttons line up with the rendered grid columns. */
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-3);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 

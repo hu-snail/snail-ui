@@ -374,16 +374,18 @@ describe('sn-popup draggable', () => {
     await grabber.trigger('touchend');
   }
 
-  it('renders the grabber only for bottom sheets with draggable on', () => {
-    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom', draggable: true } });
+  it('renders the grabber on bottom sheets by default and honours draggable=false', () => {
+    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
     expect(bottom.find('.sn-popup__grabber').exists()).toBe(true);
     expect(bottom.find('.sn-popup__grabber-bar').attributes('aria-hidden')).toBe('true');
 
-    const center = mount(SnPopup, { props: { modelValue: true, draggable: true } });
-    expect(center.find('.sn-popup__grabber').exists()).toBe(false);
+    const off = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: false },
+    });
+    expect(off.find('.sn-popup__grabber').exists()).toBe(false);
 
-    const plain = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
-    expect(plain.find('.sn-popup__grabber').exists()).toBe(false);
+    const center = mount(SnPopup, { props: { modelValue: true } });
+    expect(center.find('.sn-popup__grabber').exists()).toBe(false);
   });
 
   it('closes when the drag passes the distance threshold', async () => {

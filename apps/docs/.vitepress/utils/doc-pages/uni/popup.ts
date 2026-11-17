@@ -100,8 +100,8 @@ import { Popup } from '@snui/uni';
       {
         name: 'draggable',
         type: 'boolean',
-        default: 'false',
-        desc: '底部弹层顶部渲染拖拽横条，下拉越过阈值关闭弹层——**AUI 追加**（仅 `position="bottom"` 生效）。',
+        default: 'true',
+        desc: '底部弹层顶部渲染拖拽横条（默认开启），下拉越过阈值关闭弹层——**AUI 追加**（仅 `position="bottom"` 生效，`false` 关闭）。',
       },
       {
         name: 'position',

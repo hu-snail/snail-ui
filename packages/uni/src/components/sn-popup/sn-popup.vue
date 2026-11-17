@@ -94,7 +94,8 @@ const props = withDefaults(
     /**
      * Render the drag handle at the top center of a bottom sheet; pulling it
      * down past the threshold closes the popup. Bottom position only — the
-     * other anchors have no natural dismiss direction.
+     * other anchors have no natural dismiss direction. Default on: a bottom
+     * sheet reads incomplete without its pull handle (AUI additive).
      */
     draggable?: boolean;
     /** Anchor of the panel. */
@@ -133,7 +134,7 @@ const props = withDefaults(
     modelValue: false,
     transition: '',
     closable: false,
-    draggable: false,
+    draggable: true,
     position: 'center',
     closeOnClickModal: true,
     duration: DEFAULT_DURATION,
