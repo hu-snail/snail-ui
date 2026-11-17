@@ -426,6 +426,8 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   color: var(--sn-mp-color-text-primary);
   font-size: 28rpx;
   line-height: var(--sn-mp-font-line-height-normal);
+  /* Float the layer off the page (same slot as sn-fab / sn-floating-panel). */
+  box-shadow: var(--sn-mp-shadow-lg);
   animation-duration: var(--sn-popup-duration);
   animation-timing-function: ease;
   animation-fill-mode: both;

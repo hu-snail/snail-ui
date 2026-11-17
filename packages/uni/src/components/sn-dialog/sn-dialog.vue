@@ -467,6 +467,7 @@ const actionsClass = computed(() => [
               v-if="cancelButton.visible"
               class="sn-dialog__cancel"
               :variant="theme === 'text' ? 'text' : 'base'"
+              :hairline="theme !== 'text'"
               v-bind="cancelButton.attrs"
               @click="handleCancel"
             >
@@ -477,6 +478,7 @@ const actionsClass = computed(() => [
               class="sn-dialog__confirm"
               type="primary"
               :variant="theme === 'text' ? 'text' : 'base'"
+              :hairline="theme !== 'text'"
               v-bind="confirmButton.attrs"
               @click="handleConfirm"
             >
@@ -534,11 +536,15 @@ const actionsClass = computed(() => [
   margin-bottom: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-xl);
-  font-weight: var(--sn-mp-font-weight-medium);
+  font-weight: var(--sn-mp-font-weight-semibold);
   line-height: var(--sn-mp-font-line-height-tight);
 }
 
 .sn-dialog__msg {
+  /* uni-app x App: <text> does not inherit text-align from the parent view,
+   * so the centering must sit on the message itself (the title stays centered
+   * through the body's flex align-items). */
+  text-align: center;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);

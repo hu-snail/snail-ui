@@ -123,6 +123,107 @@ function expandBorderShorthand(prop: string, value: string): Array<[string, stri
   ];
 }
 
+/**
+ * Box shorthands that participate in the flatten cascade — expanded into their
+ * longhands so each side of the box gets its own var() slot.
+ *
+ * Why (real-world, dialog panel): the popup position rules declare the
+ * `padding` shorthand while the safe-area rule overrides `padding-bottom`, and
+ * the popup round rules declare the `border-radius` shorthand while other
+ * anchors override per-corner longhands. Flattening both groups onto one base
+ * rule emitted the shorthand var() followed by longhand var()s that no active
+ * container defined — per CSS an undefined var() is invalid at computed-value
+ * time (→ initial), and the trailing longhands reset every corner of the
+ * shorthand to 0: the dialog rendered square and panels without the safe-area
+ * class lost their bottom padding. With everything expanded to longhands the
+ * per-side slots compose exactly like the original cascade (later container
+ * rules override the sides they declare, the rest keep the shorthand values).
+ *
+ * The longhands are listed in the CSS cycle order so a 1-4 value list maps
+ * positionally: TRBL for padding/margin, TL→TR→BR→BL for border-radius.
+ */
+const BOX_SHORTHAND_LONGHANDS: Readonly<Record<string, readonly string[]>> = {
+  padding: ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
+  margin: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+  'border-radius': [
+    'border-top-left-radius',
+    'border-top-right-radius',
+    'border-bottom-right-radius',
+    'border-bottom-left-radius',
+  ],
+};
+
+/** Standard 1-4 value cycle → the four per-side values, in longhand order. */
+function cycleBoxValues(values: string[]): string[] {
+  switch (values.length) {
+    case 1:
+      return [values[0]!, values[0]!, values[0]!, values[0]!];
+    case 2:
+      return [values[0]!, values[1]!, values[0]!, values[1]!];
+    case 3:
+      return [values[0]!, values[1]!, values[2]!, values[1]!];
+    default:
+      return values.slice(0, 4);
+  }
+}
+
+/**
+ * Expand `padding` / `margin` / `border-radius` into their four longhands.
+ * Elliptical radii (`16rpx / 32rpx`) cannot be expressed as four plain
+ * longhands and stay whole; a `var()` part is safe to split — per spec each
+ * longhand resolves from its own position in the substituted value.
+ */
+function expandBoxShorthand(prop: string, value: string): Array<[string, string]> {
+  const longhands: readonly string[] | undefined = BOX_SHORTHAND_LONGHANDS[prop];
+  if (longhands === undefined) return [[prop, value]];
+  const parts: string[] = splitTopLevel(value);
+  if (parts.length === 0 || parts.length > 4) return [[prop, value]];
+  // Elliptical radii (`16rpx / 32rpx`) cannot be expressed as four plain
+  // longhands and stay whole.
+  if (parts.some((part) => part.includes('/'))) return [[prop, value]];
+  const cycled: string[] = cycleBoxValues(parts);
+  return longhands.map((longhand, i) => [longhand, cycled[i]!]);
+}
+
+/**
+ * Timing keywords / functions an `animation` shorthand may carry before the
+ * name — stripped so the remaining first token is the animation-name. Iteration
+ * counts (`infinite`, bare numbers), direction / fill / play-state keywords and
+ * `steps()` / `cubic-bezier()` all map onto their own longhands; `none` is
+ * deliberately NOT listed: as the lone value (`animation: none`) it means
+ * `animation-name: none`, matching browser shorthand parsing.
+ */
+const ANIMATION_NON_NAME_TOKEN =
+  /^(?:[-0-9.]+(?:ms|s)|\d+|infinite|linear|ease(?:-in|-out|-in-out)?|step-start|step-end|steps\([^)]*\)|cubic-bezier\([^)]*\)|normal|reverse|alternate(?:-reverse)?|forwards|backwards|both|running|paused)$/i;
+
+/**
+ * Reduce an `animation` shorthand to its `animation-name` longhand. Only the
+ * name is derived (the remaining longhands stay whole in the original
+ * declaration): the flatten states that matter in this codebase are
+ * `animation: none` and `animation: <name> …`, and the name is the one longhand
+ * whose absence silences a layer entirely — an undefined `animation: var()`
+ * resets the whole shorthand and kills every enter/leave animation.
+ */
+function expandAnimationShorthand(prop: string, value: string): Array<[string, string]> {
+  if (prop !== 'animation') return [[prop, value]];
+  const parts: string[] = splitTopLevel(value);
+  const name: string | undefined = parts.find((part) => !ANIMATION_NON_NAME_TOKEN.test(part));
+  if (name === undefined) return [[prop, value]];
+  return [['animation-name', name]];
+}
+
+/** Full shorthand expansion pipeline shared by the base-collection pass and
+ * the flatten loop, so both sides of a flatten see the same longhand set. */
+function expandShorthand(prop: string, value: string): Array<[string, string]> {
+  const expanded: Array<[string, string]> = [];
+  for (const [p, v] of expandBorderShorthand(prop, value)) {
+    for (const [p2, v2] of expandBoxShorthand(p, v)) {
+      expanded.push(...expandAnimationShorthand(p2, v2));
+    }
+  }
+  return expanded;
+}
+
 function parseCompound(input: string): ParsedCompound {
   const out: ParsedCompound = {
     tag: null,
@@ -345,7 +446,7 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
     }
     rule.walkDecls((decl) => {
       if (!decl.prop.startsWith('--')) {
-        for (const [prop, value] of expandBorderShorthand(decl.prop, decl.value)) {
+        for (const [prop, value] of expandShorthand(decl.prop, decl.value)) {
           entry!.decls.set(prop, postcss.decl({ prop, value }));
         }
       }
@@ -482,10 +583,13 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
             pushContainerDecl(op.containerSelector, d.prop, d.value);
             continue;
           }
-          // Border shorthands split into longhands so each part gets its own
-          // var() slot and its own base-value fallback (same contract as the
-          // base-collection pass below).
-          for (const [prop, value] of expandBorderShorthand(d.prop, d.value)) {
+          // Shorthands split into longhands (border parts, box sides, the
+          // animation name) so each gets its own var() slot and its own
+          // base-value fallback — same contract as the base-collection pass.
+          // Flattening a shorthand whole would let a later longhand var()
+          // slot with no active container reset that side to its initial
+          // value (the square-dialog / zero-bottom-padding regression).
+          for (const [prop, value] of expandShorthand(d.prop, d.value)) {
             const varName = `--snx-${op.targetClass}-${prop}`;
             pushContainerDecl(op.containerSelector, varName, value);
             const injectKey = `${op.targetClass}.${prop}`;
