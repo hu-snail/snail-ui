@@ -93,7 +93,7 @@
 
 - import specifier rewritten for .uvue dist — `import-rewrite`: 3 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- bare text wrapped in <text> — `template-bare-text` (line 65): 2 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 68): 2 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 5 flex container(s) given explicit flex-direction: row (uni-app x column default)
