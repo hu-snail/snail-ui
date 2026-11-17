@@ -1332,8 +1332,8 @@
 - pages/basic/demos/button-mp-color-override.en.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
 - pages/basic/demos/button-mp-color-override.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
-- pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 12 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 12 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-loading.en.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>

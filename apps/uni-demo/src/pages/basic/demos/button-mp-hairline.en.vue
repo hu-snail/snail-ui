@@ -1,6 +1,11 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — hairline border toggle (every semantic hue).
+ * Demo: sn-button (uni-end) — hairline border toggle.
+ *
+ * The hairline itself is the neutral thin stroke on the default type (the
+ * colored outlines belong to the variant module). `hairline=false` is the
+ * master switch: strips the default stroke and reduces plain / dashed
+ * variants to their text color only.
  * Spacing note: uni-app x has no flex `gap` support — inline `custom-style`
  * margins + explicit `flex-direction: row`.
  */
@@ -12,33 +17,20 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
 
 <template>
   <view class="sn-mp-btn-stack">
-    <text class="sn-mp-btn-meta">Hairline on (default): semantic types stroke in their own hue</text>
+    <text class="sn-mp-btn-meta">Hairline on (default): the neutral thin stroke on the default type</text>
     <view class="sn-mp-btn-row">
       <SnButton :custom-style="rowGap">Default button</SnButton>
-      <SnButton :custom-style="rowGap" variant="plain" type="primary">Primary button</SnButton>
-      <SnButton :custom-style="rowGap" variant="plain" type="success">Success button</SnButton>
-      <SnButton :custom-style="rowGap" variant="plain" type="info">Info button</SnButton>
-      <SnButton :custom-style="rowGap" variant="plain" type="warning">Warning button</SnButton>
-      <SnButton :custom-style="rowGap" variant="plain" type="danger">Danger button</SnButton>
+      <SnButton :custom-style="rowGap" size="large">Default button</SnButton>
     </view>
 
-    <text class="sn-mp-btn-meta">Hairline off (hairline=false): borders stripped on every type</text>
+    <text class="sn-mp-btn-meta">hairline=false: default loses its stroke; plain / dashed keep text color only</text>
     <view class="sn-mp-btn-row">
       <SnButton :custom-style="rowGap" :hairline="false">Default button</SnButton>
       <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="primary">
-        Primary button
+        Stroke removed
       </SnButton>
-      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="success">
-        Success button
-      </SnButton>
-      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="info">
-        Info button
-      </SnButton>
-      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="warning">
-        Warning button
-      </SnButton>
-      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="danger">
-        Danger button
+      <SnButton :custom-style="rowGap" :hairline="false" variant="dashed" type="success">
+        Stroke removed
       </SnButton>
     </view>
   </view>
