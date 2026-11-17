@@ -3,7 +3,6 @@
 import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const min = new Date(2024, 0, 1).getTime();
@@ -25,24 +24,22 @@ const hoursText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="限定时段"
-        label="minHour 08 / maxHour 18，minMinute 15 / maxMinute 45"
-        :prefix-icon-data="Clock"
-        :value="hoursText"
-        is-link
-        @click="openHours = true"
-      />
-      <SnCell
-        title="精确到秒"
-        label="useSecond + maxSecond 30"
-        :prefix-icon-data="Clock"
-        :value="String(withSeconds)"
-        is-link
-        @click="openSeconds = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="限定时段"
+      label="minHour 08 / maxHour 18，minMinute 15 / maxMinute 45"
+      :prefix-icon-data="Clock"
+      :value="hoursText"
+      is-link
+      @click="openHours = true"
+    />
+    <SnCell
+      title="精确到秒"
+      label="useSecond + maxSecond 30"
+      :prefix-icon-data="Clock"
+      :value="String(withSeconds)"
+      is-link
+      @click="openSeconds = true"
+    />
 
     <SnDatetimePicker
       v-model="hours"

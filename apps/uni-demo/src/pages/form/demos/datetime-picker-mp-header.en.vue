@@ -11,7 +11,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const stamp = new Date(2026, 9, 29).getTime();
@@ -39,35 +38,33 @@ const customText = computed(() => textOf(custom.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="With a title"
-        label="title: centred heading, cancel / confirm on the two edges"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="titledText"
-        is-link
-        @click="openTitled = true"
-      />
-      <SnCell
-        title="Without a title"
-        label="no title: confirm stays flush right"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="bareText"
-        is-link
-        @click="openBare = true"
-      />
-      <SnCell
-        title="Custom labels"
-        label="cancelButtonText / confirmButtonText: wording only, layout unchanged"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="customText"
-        is-link
-        @click="openCustom = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="With a title"
+      label="title: centred heading, cancel / confirm on the two edges"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="titledText"
+      is-link
+      @click="openTitled = true"
+    />
+    <SnCell
+      title="Without a title"
+      label="no title: confirm stays flush right"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="bareText"
+      is-link
+      @click="openBare = true"
+    />
+    <SnCell
+      title="Custom labels"
+      label="cancelButtonText / confirmButtonText: wording only, layout unchanged"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="customText"
+      is-link
+      @click="openCustom = true"
+    />
 
     <SnDatetimePicker
       v-model="titled"

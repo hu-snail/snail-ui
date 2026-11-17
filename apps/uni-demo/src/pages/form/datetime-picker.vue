@@ -140,6 +140,16 @@ const { t } = useDemoUi();
   box-shadow: var(--demo-card-shadow);
 }
 
+/* datetime-picker：场景模块透明变体——入口行直接使用 sn-cell（无分组卡片，模块标题由
+ * 外层场景标题行承担），cell 自带 surface 背景，即组件的真实形态；白卡底
+ * 会与组件背景双重叠加。去掉卡底与描边，入口行直接浮在页面画布上，层级由
+ * cell 自身的圆角 / 描边 / 分隔线承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .module__body {
   padding: 0;
 }

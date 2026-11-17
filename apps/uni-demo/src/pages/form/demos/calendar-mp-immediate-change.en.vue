@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — immediate write-back (immediateChange).
  *
- * One cell card carries the entry: with immediate-change on, tapping a cell
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): with immediate-change on, tapping a cell
  * writes v-model right away, no confirm button involved.
  */
 import { computed, ref } from 'vue';
 import { Zap } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -28,17 +27,15 @@ const instantText = computed(() => fmtStamp(instant.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Immediate write-back">
-      <SnCell
-        title="Immediate write-back"
-        label="immediate-change: writes v-model as soon as a cell is tapped"
-        :value="instantText"
-        placeholder="Not selected"
-        :prefix-icon-data="Zap"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Immediate write-back"
+      label="immediate-change: writes v-model as soon as a cell is tapped"
+      :value="instantText"
+      placeholder="Not selected"
+      :prefix-icon-data="Zap"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="instant"

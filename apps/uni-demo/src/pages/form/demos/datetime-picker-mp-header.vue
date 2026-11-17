@@ -9,7 +9,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const stamp = new Date(2026, 9, 29).getTime();
@@ -37,35 +36,33 @@ const customText = computed(() => textOf(custom.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="带标题"
-        label="title：标题居中，取消 / 确认分列两侧"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="titledText"
-        is-link
-        @click="openTitled = true"
-      />
-      <SnCell
-        title="无标题"
-        label="不传 title：确认仍贴右边缘"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="bareText"
-        is-link
-        @click="openBare = true"
-      />
-      <SnCell
-        title="自定义文案"
-        label="cancelButtonText / confirmButtonText：只换文字，位置不变"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="customText"
-        is-link
-        @click="openCustom = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="带标题"
+      label="title：标题居中，取消 / 确认分列两侧"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="titledText"
+      is-link
+      @click="openTitled = true"
+    />
+    <SnCell
+      title="无标题"
+      label="不传 title：确认仍贴右边缘"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="bareText"
+      is-link
+      @click="openBare = true"
+    />
+    <SnCell
+      title="自定义文案"
+      label="cancelButtonText / confirmButtonText：只换文字，位置不变"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="customText"
+      is-link
+      @click="openCustom = true"
+    />
 
     <SnDatetimePicker
       v-model="titled"

@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — 声明对齐参数（timeFilter / hideSecond 等）。
  *
- * 一张 cell 卡片承载入口：innerDisplayFormat / ellipsis / showTypeSwitch /
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：innerDisplayFormat / ellipsis / showTypeSwitch /
  * hideSecond / timeFilter 为参考库对齐参数——本构建没有时间滚筒与区间 tab，
  * 声明但不产生视觉效果，仅保证配置可以原样通过类型检查。
  */
@@ -10,7 +10,6 @@ import { ref } from 'vue';
 import { Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -27,17 +26,15 @@ const innerFormat = '自定义区间回显';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="声明对齐参数">
-      <SnCell
-        title="对齐参数"
-        label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
-        :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
-        placeholder="未选择"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="对齐参数"
+      label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
+      :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
+      placeholder="未选择"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">
       innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter

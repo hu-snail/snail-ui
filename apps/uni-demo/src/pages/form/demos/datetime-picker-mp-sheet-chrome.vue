@@ -3,7 +3,6 @@
 import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const chrome = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
@@ -15,15 +14,13 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="弹层外观"
-        label="取消/确认文案、禁止遮罩关闭、zIndex、custom*"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="openChrome = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="弹层外观"
+      label="取消/确认文案、禁止遮罩关闭、zIndex、custom*"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="openChrome = true"
+    />
 
     <SnDatetimePicker
       v-model="chrome"

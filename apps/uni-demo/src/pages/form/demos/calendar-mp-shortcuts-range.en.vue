@@ -1,16 +1,15 @@
 <script setup lang="ts">
 /**
- * Demo: sn-calendar — shortcuts and the range mode, carried by cell cards.
+ * Demo: sn-calendar — shortcuts and the range mode, carried by sn-cell rows.
  *
  * `shortcuts` renders preset chips (`days` is relative to today);
- * `type="daterange"` picks a span; the card shows the confirmed span and the
- * second card echoes the shortcut chip that was tapped last.
+ * `type="daterange"` picks a span; the first row shows the confirmed span and the
+ * second row echoes the shortcut chip that was tapped last.
  */
 import { computed, ref } from 'vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -38,7 +37,7 @@ const rangeText = computed(() => {
 
 const lastShortcut = ref('—');
 
-/** Fired after a shortcut chip writes its value; the card echoes the last tap. */
+/** Fired after a shortcut chip writes its value; the cell row echoes the last tap. */
 const onShortcut = (shortcut: { text: string }) => {
   lastShortcut.value = shortcut.text;
 };
@@ -46,18 +45,16 @@ const onShortcut = (shortcut: { text: string }) => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Shortcuts &amp; range">
-      <SnCell
-        title="Range + shortcuts"
-        label="shortcuts (`days` is relative to today) · type=daterange · custom confirm label"
-        :value="rangeText"
-        placeholder="Not selected"
-        :prefix-icon-data="Filter"
-        is-link
-        @click="open = true"
-      />
-      <SnCell title="Last shortcut tapped" :value="lastShortcut" />
-    </SnCellGroup>
+    <SnCell
+      title="Range + shortcuts"
+      label="shortcuts (`days` is relative to today) · type=daterange · custom confirm label"
+      :value="rangeText"
+      placeholder="Not selected"
+      :prefix-icon-data="Filter"
+      is-link
+      @click="open = true"
+    />
+    <SnCell title="Last shortcut tapped" :value="lastShortcut" />
 
     <text class="sn-demo__meta">Range: {{ rangeText || 'Not selected' }}</text>
 

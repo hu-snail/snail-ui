@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — 面板尺寸与切换（panelHeight / switchMode）。
  *
- * 一张 cell 卡片承载入口：panel-height 拉高可滚动面板、show-panel-title 关掉
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：panel-height 拉高可滚动面板、show-panel-title 关掉
  * 月份标题、switch-mode=year-month 换成月 / 年切换控件、duration 调整动画时长。
  */
 import { computed, ref } from 'vue';
 import { Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -28,17 +27,15 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="面板尺寸与切换">
-      <SnCell
-        title="月 / 年切换"
-        label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
-        :value="monthSwitchText"
-        placeholder="未选择"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="月 / 年切换"
+      label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
+      :value="monthSwitchText"
+      placeholder="未选择"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="monthSwitch"

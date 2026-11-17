@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — 弹层外观与底栏插槽。
  *
- * 一张 cell 卡片承载入口：show-confirm=false 去掉确认按钮、confirm-left 插槽
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：show-confirm=false 去掉确认按钮、confirm-left 插槽
  * 置清空动作，叠加遮罩关闭 / 底部安全区 / 层级 / 自定义类名与样式转发。
  */
 import { computed, ref } from 'vue';
 import { Info } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -28,17 +27,15 @@ const noConfirmText = computed(() => fmtStamp(noConfirm.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="弹层外观与底栏插槽">
-      <SnCell
-        title="无确认按钮 + 底栏插槽"
-        label="show-confirm=false · confirm-left 插槽置清空 · close-on-click-modal=false"
-        :value="noConfirmText"
-        placeholder="未选择"
-        :prefix-icon-data="Info"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="无确认按钮 + 底栏插槽"
+      label="show-confirm=false · confirm-left 插槽置清空 · close-on-click-modal=false"
+      :value="noConfirmText"
+      placeholder="未选择"
+      :prefix-icon-data="Info"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="noConfirm"

@@ -535,10 +535,19 @@ const MODULE_FLAT_PAGES = new Set(['navbar']);
  *   浮在页面画布上。
  * - cell：单元格分组自带 surface 背景，那就是组件的真实形态——白卡底与
  *   组件背景双重叠加，去底后分组按真实页面渲染直接浮在画布上。
+ * - calendar / datetime-picker：入口行已改为直接使用 sn-cell（无分组卡片，
+ *   模块标题由外层 DemoModuleHead 承担），同 cell 的理由——cell 自带
+ *   surface 背景，白卡底会双重叠加。
  * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
  * （保持 drop-menu / tabbar 既有产物不变）。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell']);
+const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell', 'calendar', 'datetime-picker']);
+
+/** cell 入口扁平页（calendar / datetime-picker）的共 reason 文案。 */
+const SHEET_ENTRY_BARE_COMMENT = `入口行直接使用 sn-cell（无分组卡片，模块标题由
+ * 外层场景标题行承担），cell 自带 surface 背景，即组件的真实形态；白卡底
+ * 会与组件背景双重叠加。去掉卡底与描边，入口行直接浮在页面画布上，层级由
+ * cell 自身的圆角 / 描边 / 分隔线承担`;
 
 /** 透明变体在生成页里的按页注释主体（去掉卡底之后的 Why）。 */
 const MODULE_BARE_COMMENTS = {
@@ -548,6 +557,8 @@ const MODULE_BARE_COMMENTS = {
   cell: `单元格分组自带 surface 背景，即组件的真实形态；白卡底会与
  * 组件背景双重叠加。去掉卡底与描边，分组直接浮在页面画布上，层级由
  * 分组自身的圆角 / 描边 / 分隔线承担`,
+  calendar: SHEET_ENTRY_BARE_COMMENT,
+  'datetime-picker': SHEET_ENTRY_BARE_COMMENT,
 };
 
 /**

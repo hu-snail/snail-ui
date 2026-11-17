@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — cell formatting (formatter).
  *
- * One cell card carries the entry: the formatter rewrites topInfo /
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): the formatter rewrites topInfo /
  * bottomInfo / disabled — the 1st of every month gets a "1st" tag and
  * weekends are greyed out as "Off". Tapping opens the sheet.
  */
@@ -10,7 +10,6 @@ import { computed, ref } from 'vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -37,17 +36,15 @@ const formattedText = computed(() => fmtDate(formatted.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Cell formatting">
-      <SnCell
-        title="formatter hook"
-        label="formatter rewrites topInfo / bottomInfo / disabled"
-        :value="formattedText"
-        placeholder="Not selected"
-        :prefix-icon-data="Filter"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="formatter hook"
+      label="formatter rewrites topInfo / bottomInfo / disabled"
+      :value="formattedText"
+      placeholder="Not selected"
+      :prefix-icon-data="Filter"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="formatted"

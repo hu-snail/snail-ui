@@ -1,15 +1,14 @@
 <script setup lang="ts">
 /**
- * Demo: sn-calendar — 快捷选项与区间（cell 卡片承载入口与回显）。
+ * Demo: sn-calendar — 快捷选项与区间（sn-cell 承载入口与回显）。
  *
  * `shortcuts` 渲染预设 chip（`days` 相对今天）；`type="daterange"` 选区间；
- * 卡片右侧显示已确认区间，第二张卡片记录最近一次确认的表单化文案。
+ * 首行右侧显示已确认区间，第二行记录最近一次确认的表单化文案。
  */
 import { computed, ref } from 'vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -37,7 +36,7 @@ const rangeText = computed(() => {
 
 const lastShortcut = ref('—');
 
-/** 快捷 chip 写值之后的回调，卡片右侧回显最近一次点击。 */
+/** 快捷 chip 写值之后的回调，sn-cell 行右侧回显最近一次点击。 */
 const onShortcut = (shortcut: { text: string }) => {
   lastShortcut.value = shortcut.text;
 };
@@ -45,18 +44,16 @@ const onShortcut = (shortcut: { text: string }) => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="快捷选项与区间">
-      <SnCell
-        title="区间 + 快捷选项"
-        label="shortcuts（days 相对今天）· type=daterange · confirm-text 自定义"
-        :value="rangeText"
-        placeholder="未选择"
-        :prefix-icon-data="Filter"
-        is-link
-        @click="open = true"
-      />
-      <SnCell title="最近点击的快捷项" :value="lastShortcut" />
-    </SnCellGroup>
+    <SnCell
+      title="区间 + 快捷选项"
+      label="shortcuts（days 相对今天）· type=daterange · confirm-text 自定义"
+      :value="rangeText"
+      placeholder="未选择"
+      :prefix-icon-data="Filter"
+      is-link
+      @click="open = true"
+    />
+    <SnCell title="最近点击的快捷项" :value="lastShortcut" />
 
     <text class="sn-demo__meta">区间：{{ rangeText || '未选择' }}</text>
 
