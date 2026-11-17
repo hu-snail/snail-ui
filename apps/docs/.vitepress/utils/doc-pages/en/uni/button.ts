@@ -207,6 +207,12 @@ import { Button } from '@snui/uni';
         desc: 'Icon name resolved via the sn-icon registry (populated by `registerSnIcons()` at app bootstrap).',
       },
       {
+        name: 'iconPlacement',
+        type: "'left' | 'right'",
+        default: "'left'",
+        desc: "Icon position relative to the label — `right` moves the glyph (and the loading spinner) after the text.",
+      },
+      {
         name: 'iconSize',
         type: 'number | string',
         default: '—',

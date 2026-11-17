@@ -30,6 +30,7 @@ packages/uni/src/components/sn-button/sn-button.vue
 | `disabled` | `boolean`                                                      | `false`     | Disabled state.                           |
 | `loading`  | `boolean`                                                      | `false`     | Loading state with spinner.               |
 | `hairline` | `boolean`                                                      | `true`      | Border toggle — `false` strips the stroke on every type; colored types stroke in their semantic hue. |
+| `iconPlacement` | `'left' \| 'right'`                                            | `'left'`    | Icon position relative to the label; `right` flips the row. |
 | `feedback` | `boolean`                                                      | `true`      | Tap feedback (active opacity).            |
 
 ## Events

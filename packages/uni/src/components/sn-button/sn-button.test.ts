@@ -188,6 +188,19 @@ describe('sn-button', () => {
     }
   });
 
+  it('places the icon after the label with iconPlacement=right', () => {
+    // web `iconPlacement` parity: left is the default, right flips the flex
+    // row (row-reverse) so the glyph (and the loading spinner) follow the
+    // label.
+    const left = mount(SnButton, { props: { iconName: 'check' }, slots: { default: 'L' } });
+    expect(left.classes()).not.toContain('sn-button--icon-right');
+    const right = mount(SnButton, {
+      props: { iconName: 'check', iconPlacement: 'right' },
+      slots: { default: 'R' },
+    });
+    expect(right.classes()).toContain('sn-button--icon-right');
+  });
+
   it('honors variant=dashed for dashed border', () => {
     const wrapper = mount(SnButton, {
       props: { variant: 'dashed' },

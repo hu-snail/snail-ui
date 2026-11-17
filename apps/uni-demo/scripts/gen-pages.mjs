@@ -553,9 +553,10 @@ const MODULE_BARE_COMMENTS = {
 /**
  * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
  * 整页就是 demo 本体。tabbar 的整页 playground（栏固定在屏幕底部、其余
- * 全部是设置项）不需要「完整演示」标题占一行。
+ * 全部是设置项）不需要「完整演示」标题占一行；collapse 只要折叠面板本身，
+ * 去掉场景卡片与标题行，让面板直接落在页面画布上。
  */
-const MODULE_HEADLESS_PAGES = new Set(['tabbar']);
+const MODULE_HEADLESS_PAGES = new Set(['tabbar', 'collapse']);
 
 /**
  * 场景标题 → 模板属性安全字面量：生成页把标题嵌入

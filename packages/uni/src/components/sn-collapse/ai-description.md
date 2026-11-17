@@ -95,8 +95,9 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | Surface / feedback | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft`                                                          | Panel surface and header feedback      |
 | Divider / card     | `--sn-mp-color-border-subtle`                                                                                                | Panel divider and card outline         |
 | Text               | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                  | Heading, body and chevron              |
-| Action             | `--sn-mp-color-action-primary`, `--sn-mp-color-action-primary-soft`                                                          | Open state colour and chevron backing  |
+| Action             | `--sn-mp-color-action-primary`                                                                                               | View-more label; icons stay neutral    |
 | Card chrome        | `--sn-mp-radius-lg`, `--sn-mp-shadow-sm`                                                                                     | Card radius and elevation              |
+| Body motion        | `--sn-collapse-body-max-height`                                                                                              | Expanded-body ceiling (default 1600rpx) |
 | Font / spacing     | `--sn-mp-font-size-md`, `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`, `--sn-mp-spacing-1` … `--sn-mp-spacing-4` | Typography, padding and gaps           |
 | Icon               | `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge`, `--sn-mp-icon-stroke-width`                                           | Chevron / title-icon length and stroke |
 

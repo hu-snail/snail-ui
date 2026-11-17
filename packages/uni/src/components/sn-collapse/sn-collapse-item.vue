@@ -46,21 +46,28 @@
  *
  * ## Icon colour / size standard (family-wide)
  *
+ * Both states keep the same neutral colours — no action-primary highlight:
+ *
  * | Slot        | Rest                            | Expanded                        |
  * | ----------- | ------------------------------- | ------------------------------- |
- * | Chevron     | `--sn-mp-color-text-tertiary`   | `--sn-mp-color-action-primary`  |
- * | Title icon  | `--sn-mp-color-text-secondary`  | `--sn-mp-color-action-primary`  |
+ * | Chevron     | `--sn-mp-color-text-tertiary`   | `--sn-mp-color-text-tertiary`   |
+ * | Title icon  | `--sn-mp-color-text-secondary`  | `--sn-mp-color-text-secondary`  |
  *
  * Geometry comes from one length token per panel: `--sn-mp-icon-size-medium`
- * by default, overridable by tier name or an explicit length. The chevron sits
- * in a pill that picks up `--sn-mp-color-action-primary-soft` while open, so
- * the state reads at a glance without a second glyph.
+ * by default, overridable by tier name or an explicit length. The chevron stays
+ * a bare glyph — no pill, no circular icon and no expanded background — so the
+ * open state is carried by rotation alone.
  *
  * ## Chevron
  *
  * Always the built-in `ChevronDown` object, rotating 180° through the
  * `--expanded` class (a CSS class, not an inline transform, so App targets get
  * the same motion and the state is inspectable from the DOM).
+ *
+ * ## Body transition
+ *
+ * The body animates `max-height` + opacity through the same class instead of
+ * `v-show`, so opening and closing stay smooth on H5, mini-programs and App.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -161,6 +168,8 @@ const collapse = inject(SN_COLLAPSE_KEY, null);
 const expanded = computed(() => collapse?.isExpanded(props.name) ?? false);
 const isViewmore = computed(() => collapse?.viewmore.value ?? false);
 const viewmoreExpanded = computed(() => collapse?.viewmoreExpanded.value ?? false);
+/** View-more bodies stay visible; normal bodies follow the expanded flag. */
+const bodyOpen = computed(() => isViewmore.value || expanded.value);
 
 /** In view-more mode the body is clamped to `lineNum` lines unless opened. */
 const bodyStyle = computed(() => {
@@ -312,14 +321,17 @@ const rootClass = computed(() => [
     </view>
 
     <view
-      v-show="isViewmore || expanded"
       :class="[
         'sn-collapse-item__body',
-        { 'sn-collapse-item__body--clamped': isViewmore && !viewmoreExpanded },
+        {
+          'sn-collapse-item__body--open': bodyOpen,
+          'sn-collapse-item__body--clamped': isViewmore && !viewmoreExpanded,
+        },
         customBodyClass,
       ]"
       :style="bodyStyle"
       role="region"
+      :aria-hidden="!bodyOpen"
     >
       <slot />
     </view>
@@ -376,9 +388,8 @@ const rootClass = computed(() => [
   min-width: 0;
 }
 
-/* Title icons (additive) sit in the secondary text slot; the panel lifts them
-   to the action colour once open, so the title and the chevron flip together
-   instead of painting two glyph colours side by side. */
+/* Title icons (additive) sit in the secondary text slot and keep that neutral
+   colour in both states — the chevron rotation alone signals expansion. */
 .sn-collapse-item__title-icon {
   flex: 0 0 auto;
   color: var(--sn-mp-color-text-secondary);
@@ -389,10 +400,6 @@ const rootClass = computed(() => [
   display: block;
   flex: 0 0 auto;
   border-radius: var(--sn-mp-radius-sm);
-}
-
-.sn-collapse-item--expanded .sn-collapse-item__title-icon {
-  color: var(--sn-mp-color-action-primary);
 }
 
 .sn-collapse-item__title-body {
@@ -409,45 +416,53 @@ const rootClass = computed(() => [
   text-overflow: ellipsis;
 }
 
-/* Chevron pill: padding + full radius build the target around whatever glyph
-   length `iconSize` resolves to, so the tap affordance scales with the token
-   instead of a hard-coded box (§112.5). */
+/* Bare chevron: the whole header is the tap target, so the arrow needs no
+   pill, circle or backing — rotation alone carries the open state. */
 .sn-collapse-item__arrow {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   margin-left: var(--sn-mp-spacing-2);
-  padding: var(--sn-mp-spacing-1);
-  border-radius: var(--sn-mp-radius-full);
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Chevron colour + rotation ride classes (not inline styles): App targets get
-   the same transition, and the state stays inspectable from the DOM. */
+/* Chevron keeps the tertiary token in both states; rotation rides a class so
+   App targets get the same transition and the state stays DOM-inspectable. */
 .sn-collapse-item__chevron {
   color: var(--sn-mp-color-text-tertiary);
 }
 
-.sn-collapse-item--expanded .sn-collapse-item__chevron {
-  color: var(--sn-mp-color-action-primary);
-}
-
 .sn-collapse-item--expanded .sn-collapse-item__arrow {
-  background-color: var(--sn-mp-color-action-primary-soft);
   transform: rotate(180deg);
 }
 
+/* Body reveal: max-height + opacity animate through a class instead of
+ * v-show, so the panel opens/closes smoothly on H5, MP and App. The ceiling is
+ * intentionally generous and can be raised with --sn-collapse-body-max-height
+ * when a consumer renders unusually long content. */
 .sn-collapse-item__body {
   box-sizing: border-box;
   width: 100%;
-  padding: 0 var(--sn-mp-spacing-4) var(--sn-mp-spacing-4);
+  max-height: 0;
+  padding: 0 var(--sn-mp-spacing-4);
   overflow: hidden;
+  opacity: 0;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
+  transition:
+    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease;
+}
+
+.sn-collapse-item__body--open {
+  max-height: var(--sn-collapse-body-max-height, 1600rpx);
+  padding-top: var(--sn-mp-spacing-3);
+  padding-bottom: var(--sn-mp-spacing-4);
+  opacity: 1;
 }
 
 /* View-more clamp — CSS-only, so no async height measurement is needed. */

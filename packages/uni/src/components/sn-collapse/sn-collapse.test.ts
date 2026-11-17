@@ -495,15 +495,19 @@ describe('sn-collapse', () => {
     });
 
     it('hides the body of a closed panel in normal mode', () => {
-      // happy-dom's getComputedStyle does not feed VTU's isVisible() for the
-      // v-show contract here, so assert the inline style v-show writes.
+      // The body stays mounted so max-height/opacity can animate; the open
+      // class and aria-hidden carry the collapsed state instead of v-show.
       const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
-      expect(closed.find('.sn-collapse-item__body').attributes('style')).toContain('display: none');
+      expect(closed.find('.sn-collapse-item__body').classes()).not.toContain(
+        'sn-collapse-item__body--open',
+      );
+      expect(closed.find('.sn-collapse-item__body').attributes('aria-hidden')).toBe('true');
 
       const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
-      expect(open.find('.sn-collapse-item__body').attributes('style') ?? '').not.toContain(
-        'display: none',
+      expect(open.find('.sn-collapse-item__body').classes()).toContain(
+        'sn-collapse-item__body--open',
       );
+      expect(open.find('.sn-collapse-item__body').attributes('aria-hidden')).toBe('false');
     });
 
     it('forwards customClass on the container and the item', () => {

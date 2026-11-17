@@ -12,13 +12,13 @@ const open = ref(['a']);
   <view class="sn-demo sn-demo--column">
     <SnCollapse v-model="open">
       <SnCollapseItem name="a" title="Shipping" :title-icon-data="Truck">
-        <text class="sn-demo__body">SF Express, delivery in about 2 days.</text>
+        <text class="sn-demo__body">SF Express, delivery in about 2 days. Live tracking is available on the order detail page; remote areas may take one extra day.</text>
       </SnCollapseItem>
       <SnCollapseItem name="b" title="Payment" :title-icon-data="CreditCard">
-        <text class="sn-demo__body">WeChat Pay and Alipay are both supported.</text>
+        <text class="sn-demo__body">WeChat Pay and Alipay are both supported, along with any linked bank card. You will land on the order result page once payment succeeds.</text>
       </SnCollapseItem>
       <SnCollapseItem name="c" title="Invoice" :title-icon-data="FileText">
-        <text class="sn-demo__body">Request an e-invoice once the order completes.</text>
+        <text class="sn-demo__body">Request an e-invoice once the order completes. Add your title and tax ID, and it will reach your inbox within 24 hours.</text>
       </SnCollapseItem>
     </SnCollapse>
     <text class="sn-demo__meta">Expanded: {{ open.join(', ') || 'none' }}</text>

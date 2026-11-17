@@ -1334,8 +1334,8 @@
 - pages/basic/demos/button-mp-color-override.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
 - pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-loading.en.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-loading.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-round.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2525,7 +2525,7 @@
 - pages/more/paging.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/more/slider-bar.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/backtop.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/navigation/collapse.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/navigation/collapse.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/demos/backtop-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
 - pages/navigation/demos/backtop-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)

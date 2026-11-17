@@ -24,12 +24,82 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       <SnButton :custom-style="rowGap" type="info" icon-name="arrow-right">前进</SnButton>
     </view>
 
+    <text class="sn-mp-btn-label">左图标 / 右图标（iconPlacement，默认左）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" type="primary" icon-name="check">图标在左（默认）</SnButton>
+      <SnButton :custom-style="rowGap" type="primary" icon-name="arrow-right" icon-placement="right">
+        图标在右
+      </SnButton>
+      <SnButton :custom-style="rowGap" circle icon-name="arrow-right" icon-placement="right" />
+    </view>
+
     <text class="sn-mp-btn-label">纯图标（无文字）</text>
     <view class="sn-mp-btn-row">
       <SnButton :custom-style="rowGap" icon-name="settings" />
       <SnButton :custom-style="rowGap" type="primary" icon-name="search" />
       <SnButton :custom-style="rowGap" type="success" icon-name="plus" />
       <SnButton :custom-style="rowGap" type="warning" icon-name="heart" />
+    </view>
+
+    <text class="sn-mp-btn-label">自定义背景（bgColor / color）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        :custom-style="rowGap"
+        circle
+        bg-color="var(--sn-mp-color-feedback-info)"
+        color="var(--sn-mp-color-text-on-primary)"
+        icon-name="settings"
+      />
+      <SnButton
+        :custom-style="rowGap"
+        circle
+        bg-color="var(--sn-mp-color-feedback-danger)"
+        color="var(--sn-mp-color-text-on-primary)"
+        icon-name="trash-2"
+      />
+      <SnButton
+        :custom-style="rowGap"
+        bg-color="var(--sn-mp-color-background-surface)"
+        color="var(--sn-mp-color-action-primary)"
+        variant="plain"
+        icon-name="download"
+      >
+        下载
+      </SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">渐变背景（custom-style 渐变）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        :custom-style="{
+          ...rowGap,
+          'background-image': 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+          'border-color': 'transparent',
+        }"
+        circle
+        icon-name="search"
+      />
+      <SnButton
+        :custom-style="{
+          ...rowGap,
+          'background-image': 'linear-gradient(135deg, #f59e0b, #ec4899)',
+          'border-color': 'transparent',
+        }"
+        icon-name="send"
+      >
+        渐变按钮
+      </SnButton>
+      <SnButton
+        :custom-style="{
+          ...rowGap,
+          'background-image': 'linear-gradient(135deg, #10b981, #06b6d4)',
+          'border-color': 'transparent',
+        }"
+        icon-name="arrow-right"
+        icon-placement="right"
+      >
+        渐变 + 右图标
+      </SnButton>
     </view>
 
     <text class="sn-mp-btn-label">圆形图标按钮（circle）</text>

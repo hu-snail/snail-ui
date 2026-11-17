@@ -42,8 +42,9 @@
  *
  * ## Icon colour / size standard
  *
- * Chevron: `--sn-mp-color-text-tertiary` at rest → `--sn-mp-color-action-primary`
- * while open. Title icons: `--sn-mp-color-text-secondary` → action-primary.
+ * Icons keep the same neutral colour in both states — no open-state highlight:
+ * chevrons use `--sn-mp-color-text-tertiary`, title icons use
+ * `--sn-mp-color-text-secondary`. The 180° chevron rotation signals expansion.
  * Geometry: one `--sn-mp-icon-size-*` length per panel (medium by default).
  * Stroke: `--sn-mp-icon-stroke-width` (2) unless an item overrides it.
  *
@@ -377,6 +378,6 @@ const moreIconStyle = computed(() =>
 }
 
 .sn-collapse__more-chevron {
-  color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

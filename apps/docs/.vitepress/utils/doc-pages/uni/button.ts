@@ -153,6 +153,12 @@ import { Button } from '@snui/uni';
       { name: 'iconData', type: 'IconData', default: '—', desc: '图标数据。' },
       { name: 'iconName', type: 'string', default: '—', desc: '通过 `registerSnIcons` 解析。' },
       {
+        name: 'iconPlacement',
+        type: "'left' | 'right'",
+        default: "'left'",
+        desc: '图标相对文案的位置，`right` 时图标随加载 spinner 一起放到文案右侧。',
+      },
+      {
         name: 'iconSize',
         type: 'number | string',
         default: '—',

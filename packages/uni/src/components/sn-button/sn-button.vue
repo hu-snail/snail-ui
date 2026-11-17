@@ -101,6 +101,12 @@ const props = withDefaults(
      * large 40 auto-fit); strings with a unit (`'32rpx'` / `'1.5em'`) pass
      * through verbatim. */
     iconSize?: number | string;
+    /**
+     * Icon position relative to the label — web `iconPlacement` parity.
+     * `right` flips the root flex direction (row-reverse), so the glyph and
+     * the loading spinner both land after the text.
+     */
+    iconPlacement?: 'left' | 'right';
     /** 圆形按钮（icon-only）：宽高相等、全圆角，配合内置图标使用。 */
     circle?: boolean;
     /**
@@ -161,6 +167,7 @@ const props = withDefaults(
     feedback: true,
     plain: false,
     variant: 'base',
+    iconPlacement: 'left',
     loadingColor: '',
     loadingSize: 32,
     hoverClass: 'sn-button--feedback',
@@ -266,6 +273,7 @@ const classList = computed(() => [
     'sn-button--round': props.round || props.circle,
     'sn-button--block': props.block,
     'sn-button--circle': props.circle,
+    'sn-button--icon-right': props.iconPlacement === 'right',
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
     // 双类描边开关：uvue CSS 不支持 :not()，关闭态用显式类表达（见样式尾部
@@ -430,6 +438,13 @@ function onTap(event: Event): void {
 .sn-button--circle {
   padding: 0;
   border-radius: var(--sn-mp-radius-full);
+}
+
+/* Icon on the right — flip the whole flex row (content stays centered via
+ * justify-content: center); the loading spinner rides the same slot so it
+ * flips along with the glyph. */
+.sn-button--icon-right {
+  flex-direction: row-reverse;
 }
 .sn-button--circle.sn-button--small {
   width: 56rpx;
