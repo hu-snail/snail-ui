@@ -11,7 +11,7 @@ const textThemeOpen = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton block @tap="textThemeOpen = true">Text buttons (theme=&quot;text&quot;)</SnButton>
+    <SnButton block @tap="textThemeOpen = true">Plain buttons (theme=&quot;text&quot;)</SnButton>
 
     <SnDialog
       v-model="textThemeOpen"

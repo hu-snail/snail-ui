@@ -68,7 +68,7 @@ import { Dialog } from '@snui/uni';
       title: '状态图标（icon）',
       blurb: 'icon 状态图标；icon-color 自定义颜色。',
     },
-    { name: 'dialog-mp-theme', title: '按钮主题（theme）', blurb: 'theme="text" 文本按钮形态。' },
+    { name: 'dialog-mp-theme', title: '按钮主题（theme）', blurb: 'theme="text" 朴素按钮形态。' },
     {
       name: 'dialog-mp-vertical',
       title: '竖排操作区（actionLayout）',
@@ -93,7 +93,7 @@ import { Dialog } from '@snui/uni';
         name: 'theme',
         type: 'DialogTheme',
         default: "'button'",
-        desc: 'Button style: filled buttons or borderless text buttons.',
+        desc: '按钮风格：`button` = 实心按钮；`text` = 朴素按钮（`plain`：透明底 + 类型色描边）。',
       },
       { name: 'zIndex', type: 'number', default: '99', desc: '弹窗层级' },
       { name: 'lazyRender', type: 'boolean', default: 'true', desc: '弹层内容懒渲染' },
