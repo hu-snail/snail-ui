@@ -68,11 +68,12 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       </SnButton>
     </view>
 
-    <text class="sn-mp-btn-label">渐变背景（custom-style 渐变）</text>
+    <text class="sn-mp-btn-label">渐变背景（custom-style 渐变，文字/图标反白）</text>
     <view class="sn-mp-btn-row">
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #8b5cf6, #ec4899)',
           'border-color': 'transparent',
         }"
@@ -82,6 +83,7 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #f59e0b, #ec4899)',
           'border-color': 'transparent',
         }"
@@ -92,6 +94,7 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #10b981, #06b6d4)',
           'border-color': 'transparent',
         }"

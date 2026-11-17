@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.vue sha256:a46caddcd9496307 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-icon-button.vue sha256:a941b4f5d9379089 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-button (uni-end) — 图标按钮，集成 sn-icon 内置图标。
@@ -67,11 +67,12 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       </text></SnButton>
     </view>
 
-    <text class="sn-mp-btn-label">渐变背景（custom-style 渐变）</text>
+    <text class="sn-mp-btn-label">渐变背景（custom-style 渐变，文字/图标反白）</text>
     <view class="sn-mp-btn-row">
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #8b5cf6, #ec4899)',
           'border-color': 'transparent',
         }"
@@ -81,6 +82,7 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #f59e0b, #ec4899)',
           'border-color': 'transparent',
         }"
@@ -91,6 +93,7 @@ const rowGap = { margin: '0 16rpx 16rpx 0' };
       <SnButton
         :custom-style="{
           ...rowGap,
+          color: 'var(--sn-mp-color-text-on-primary)',
           'background-image': 'linear-gradient(135deg, #10b981, #06b6d4)',
           'border-color': 'transparent',
         }"

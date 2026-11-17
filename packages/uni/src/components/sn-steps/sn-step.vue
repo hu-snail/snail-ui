@@ -134,6 +134,14 @@ const isLast = computed(() => {
 
 const isVertical = computed(() => steps?.vertical.value ?? false);
 const isDot = computed(() => steps?.dot.value ?? false);
+/** `align-center` is horizontal-only (wd-steps contract). */
+const isCenter = computed(() => (steps?.alignCenter.value ?? false) && !isVertical.value);
+/**
+ * A step needs an intrinsic width when `space` is set or the bar is centered —
+ * `flex: 1 1 0` would otherwise stretch it to fill the row, which is exactly
+ * why `space` / `align-center` had no visible effect.
+ */
+const isIntrinsic = computed(() => (steps?.space.value ?? '') !== '' || isCenter.value);
 
 /** `icon` name resolved through registry → built-in catalogue (sync only). */
 const resolvedNameIcon = computed<IconData | undefined>(() => {
@@ -197,6 +205,8 @@ const rootClass = computed(() => [
     'sn-step--vertical': isVertical.value,
     'sn-step--horizontal': !isVertical.value,
     'sn-step--dot': isDot.value,
+    'sn-step--center': isCenter.value,
+    'sn-step--intrinsic': isIntrinsic.value,
   },
   props.customClass,
 ]);
@@ -215,7 +225,11 @@ const rootClass = computed(() => [
            (number / status glyph) as a whole; the connector line stays. -->
       <slot name="node">
         <view class="sn-step__indicator">
-          <slot name="icon">
+          <!-- Dot mode renders a pure dot: the number / status glyphs are
+               suppressed so the indicator stays a clean circle (wd-steps
+               contract). The `icon` slot is intentionally bypassed here. -->
+          <view v-if="isDot" class="sn-step__dot" />
+          <slot v-else name="icon">
             <!-- Icon precedence: IconData object > image URL > resolved name.
                  An unresolvable name falls through to the builtin glyphs so
                  the indicator is never blank. -->
@@ -285,17 +299,54 @@ const rootClass = computed(() => [
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-step {
   display: flex;
-  flex: 1 1 0;
+  /* `flex: none` is the safe default: in a vertical (column) container a
+   * `flex-basis: 0` collapses every step to zero height and nothing renders.
+   * Horizontal steps opt into equal widths via `.sn-step--horizontal`. */
+  flex: none;
   flex-direction: column;
   box-sizing: border-box;
   min-width: 0;
 }
 
 .sn-step--horizontal {
+  position: relative;
+  flex: 1 1 0;
   align-items: center;
 }
 
+/* `align-center`: indicator sits at 50% of its step and the connector starts
+ * right after it, spanning the full step width to meet the next indicator.
+ * The line is absolutely positioned so it cannot push the indicator off
+ * centre (a flex spacer would leave a visible gap between steps). */
+.sn-step--center .sn-step__header {
+  justify-content: center;
+}
+
+.sn-step--center .sn-step__line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  margin-left: 20rpx;
+  flex: none;
+}
+
+.sn-step--center .sn-step__content {
+  align-items: center;
+}
+
+.sn-step--center.sn-step--dot .sn-step__line {
+  margin-left: 8rpx;
+}
+
+/* `space` / `align-center` need an intrinsic width instead of an equal flex
+ * share, otherwise the container's justify-content can never take effect. */
+.sn-step--horizontal.sn-step--intrinsic {
+  flex: 0 0 auto;
+}
+
 .sn-step--vertical {
+  flex: none;
   flex-direction: row;
   align-items: flex-start;
 }
@@ -309,7 +360,10 @@ const rootClass = computed(() => [
 .sn-step--vertical .sn-step__header {
   flex-direction: column;
   width: auto;
-  height: 100%;
+  /* Fill the step's content-driven height so the connector can stretch.
+   * `height: 100%` against an auto-height step collapsed to zero on MP/uvue. */
+  height: auto;
+  align-self: stretch;
 }
 
 .sn-step__indicator {
@@ -332,6 +386,13 @@ const rootClass = computed(() => [
   height: 16rpx;
   border: none;
   background-color: var(--sn-mp-color-border-default);
+}
+
+/* Dot mode glyph: the indicator itself carries the background / state colour,
+ * this child only exists to keep the slot tree non-empty (no number / icon). */
+.sn-step__dot {
+  width: 100%;
+  height: 100%;
 }
 
 .sn-step--finished .sn-step__indicator {
@@ -392,7 +453,9 @@ const rootClass = computed(() => [
 
 .sn-step--vertical .sn-step__line {
   width: 0;
-  height: 100%;
+  height: auto;
+  flex: 1 1 auto;
+  align-self: stretch;
   min-height: 40rpx;
   border-top-width: 0;
   border-left-width: 2rpx;
