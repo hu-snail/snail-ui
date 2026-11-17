@@ -58,10 +58,31 @@ describe('sn-calendar', () => {
       expect(mountCalendar({ visible: false }).find('.sn-calendar').exists()).toBe(false);
     });
 
-    it('renders both footer slots', () => {
+    it('renders the footer slot containers only when slots are provided', () => {
+      // An empty flex child still eats one `gap` per side and pushes the
+      // action buttons off the calendar grid's gutters — empty containers
+      // must stay out of the tree.
       const w = mountCalendar();
+      expect(w.find('.sn-calendar__footer-left').exists()).toBe(false);
+      expect(w.find('.sn-calendar__footer-right').exists()).toBe(false);
+    });
+
+    it('renders provided footer slot containers', () => {
+      const w = mount(SnCalendar, {
+        props: {
+          visible: true,
+          minDate: new Date(2024, 5, 1).getTime(),
+          maxDate: new Date(2024, 5, 30).getTime(),
+        },
+        slots: {
+          'confirm-left': '<text class="left-action">left action</text>',
+          'confirm-right': '<text class="right-action">right action</text>',
+        },
+      });
       expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
       expect(w.find('.sn-calendar__footer-right').exists()).toBe(true);
+      expect(w.find('.left-action').exists()).toBe(true);
+      expect(w.find('.right-action').exists()).toBe(true);
     });
 
     it('renders the footer actions as sn-button instances', () => {
@@ -330,7 +351,7 @@ describe('sn-calendar', () => {
       expect(w.find('.sn-calendar__shortcut').exists()).toBe(true);
       expect(w.find('.sn-calendar-view__day').exists()).toBe(true);
       expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
-      expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
+      expect(w.find('.sn-calendar__actions').exists()).toBe(true);
     });
   });
 

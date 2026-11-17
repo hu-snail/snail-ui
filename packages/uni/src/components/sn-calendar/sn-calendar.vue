@@ -372,7 +372,10 @@ const viewClass = computed(() => props.customViewClass);
       />
 
       <view class="sn-calendar__footer">
-        <view class="sn-calendar__footer-left">
+        <!-- Empty slot containers stay out of the tree: a rendered-but-empty
+             flex child still eats one `gap` on its side, pushing the action
+             buttons off the calendar grid's gutters. -->
+        <view v-if="$slots['confirm-left']" class="sn-calendar__footer-left">
           <slot name="confirm-left" />
         </view>
         <view class="sn-calendar__actions">
@@ -394,7 +397,7 @@ const viewClass = computed(() => props.customViewClass);
             >{{ props.confirmText }}</SnButton
           >
         </view>
-        <view class="sn-calendar__footer-right">
+        <view v-if="$slots['confirm-right']" class="sn-calendar__footer-right">
           <slot name="confirm-right" />
         </view>
       </view>

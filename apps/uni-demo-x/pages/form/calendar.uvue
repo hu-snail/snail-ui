@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/calendar.vue sha256:46b541c53e01d777 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/calendar.vue sha256:99cf0434a50174cd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— calendar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/calendar-mp-basic.uvue';
@@ -170,6 +170,16 @@ const { t } = useDemoUi();
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
+}
+
+/* calendar：场景模块透明变体——入口行直接使用 sn-cell（无分组卡片，模块标题由
+ * 外层场景标题行承担），cell 自带 surface 背景，即组件的真实形态；白卡底
+ * 会与组件背景双重叠加。去掉卡底与描边，入口行直接浮在页面画布上，层级由
+ * cell 自身的圆角 / 描边 / 分隔线承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .module__body {

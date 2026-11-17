@@ -1,16 +1,15 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue sha256:997b7d784f19127e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue sha256:b03d0b4e2139540a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 声明对齐参数（timeFilter / hideSecond 等）。
  *
- * 一张 cell 卡片承载入口：innerDisplayFormat / ellipsis / showTypeSwitch /
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：innerDisplayFormat / ellipsis / showTypeSwitch /
  * hideSecond / timeFilter 为参考库对齐参数——本构建没有时间滚筒与区间 tab，
  * 声明但不产生视觉效果，仅保证配置可以原样通过类型检查。
  */
 import { Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
-import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
 
@@ -25,17 +24,15 @@ const innerFormat = '自定义区间回显';
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="声明对齐参数">
-      <SnCell
-        title="对齐参数"
-        label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
-        :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
-        placeholder="未选择"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="对齐参数"
+      label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
+      :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
+      placeholder="未选择"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">
       innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter
