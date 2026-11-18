@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/switch.vue sha256:8d5f9513a528d34d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/switch.vue sha256:337e858eca2341bc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— switch 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/switch-mp-basic.uvue';
@@ -48,7 +48,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
+        <DemoModuleHead :title="t('图标选项', 'Icon options')" badge="icons" />
         <view class="module__body">
           <Demo4 />
         </view>

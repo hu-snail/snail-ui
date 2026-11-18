@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— wheel-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/wheel-picker-mp-basic.vue';
-import Demo1 from './demos/wheel-picker-mp-vibrate.vue';
+import Demo1 from './demos/wheel-picker-mp-reminder.vue';
+import Demo2 from './demos/wheel-picker-mp-vibrate.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -25,9 +26,15 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滑动震动', 'Slide haptic')" badge="vibrate" />
+        <DemoModuleHead :title="t('提醒弹层', 'Reminder sheet')" badge="reminder" />
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('滑动震动', 'Slide haptic')" badge="vibrate" />
+        <view class="module__body">
+          <Demo2 />
         </view>
       </view>
     </view>

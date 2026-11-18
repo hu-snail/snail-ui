@@ -438,7 +438,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '选择器视图',
         titleEn: 'Picker View',
         desc: '内嵌滚轮选择',
-        count: 8,
+        count: 11,
       },
       {
         key: 'plate-input',
@@ -549,7 +549,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滚轮选择器',
         titleEn: 'Wheel Picker',
         desc: 'wheel 风格内嵌滚轮',
-        count: 2,
+        count: 3,
       },
     ],
   },

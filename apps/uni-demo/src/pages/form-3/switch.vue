@@ -48,7 +48,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icons')" badge="icons" />
+        <DemoModuleHead :title="t('图标选项', 'Icon options')" badge="icons" />
         <view class="module__body">
           <Demo4 />
         </view>

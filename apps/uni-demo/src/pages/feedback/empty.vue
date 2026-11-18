@@ -34,7 +34,7 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('插槽', 'Slots')" badge="slots" />
+        <DemoModuleHead :title="t('时间槽', 'Time slots')" badge="slots" />
         <view class="module__body">
           <Demo3 />
         </view>

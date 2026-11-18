@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:acde7e2311b10a68 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:f7498f541f237e58 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -439,7 +439,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '选择器视图',
         titleEn: 'Picker View',
         desc: '内嵌滚轮选择',
-        count: 8,
+        count: 11,
       },
       {
         key: 'plate-input',
@@ -550,7 +550,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滚轮选择器',
         titleEn: 'Wheel Picker',
         desc: 'wheel 风格内嵌滚轮',
-        count: 2,
+        count: 3,
       },
     ],
   },

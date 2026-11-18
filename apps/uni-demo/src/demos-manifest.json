@@ -1895,7 +1895,7 @@
         },
         {
           "name": "input-mp-slots",
-          "title": "插槽",
+          "title": "时间槽",
           "hasEn": true
         },
         {
@@ -2204,6 +2204,11 @@
       "page": "pages/form-2/picker-view",
       "demos": [
         {
+          "name": "picker-view-mp-band",
+          "title": "胶囊带主题",
+          "hasEn": true
+        },
+        {
           "name": "picker-view-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -2224,6 +2229,11 @@
           "hasEn": true
         },
         {
+          "name": "picker-view-mp-icons",
+          "title": "图标选项",
+          "hasEn": true
+        },
+        {
           "name": "picker-view-mp-immediate",
           "title": "拖动即时回写（`immediateChange`）",
           "hasEn": true
@@ -2236,6 +2246,11 @@
         {
           "name": "picker-view-mp-rows",
           "title": "滚筒几何（`itemHeight` / `visibleItemCount`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-slots",
+          "title": "时间槽",
           "hasEn": true
         },
         {
@@ -2700,7 +2715,7 @@
         },
         {
           "name": "switch-mp-icons",
-          "title": "图标",
+          "title": "图标选项",
           "hasEn": true
         },
         {
@@ -2860,6 +2875,11 @@
         {
           "name": "wheel-picker-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-reminder",
+          "title": "提醒弹层",
           "hasEn": true
         },
         {
@@ -3044,7 +3064,7 @@
         },
         {
           "name": "empty-mp-slots",
-          "title": "插槽",
+          "title": "时间槽",
           "hasEn": true
         }
       ]

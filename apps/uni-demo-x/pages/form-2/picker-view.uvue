@@ -1,14 +1,17 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/picker-view.vue sha256:c832301e8272736f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/picker-view.vue sha256:e1ae9920bba1f422 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— picker-view 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/picker-view-mp-basic.uvue';
-import Demo1 from './demos/picker-view-mp-cascade.uvue';
-import Demo2 from './demos/picker-view-mp-custom-style.uvue';
-import Demo3 from './demos/picker-view-mp-disabled.uvue';
-import Demo4 from './demos/picker-view-mp-immediate.uvue';
-import Demo5 from './demos/picker-view-mp-keys.uvue';
-import Demo6 from './demos/picker-view-mp-rows.uvue';
-import Demo7 from './demos/picker-view-mp-wheel.uvue';
+import Demo0 from './demos/picker-view-mp-band.uvue';
+import Demo1 from './demos/picker-view-mp-basic.uvue';
+import Demo2 from './demos/picker-view-mp-cascade.uvue';
+import Demo3 from './demos/picker-view-mp-custom-style.uvue';
+import Demo4 from './demos/picker-view-mp-disabled.uvue';
+import Demo5 from './demos/picker-view-mp-icons.uvue';
+import Demo6 from './demos/picker-view-mp-immediate.uvue';
+import Demo7 from './demos/picker-view-mp-keys.uvue';
+import Demo8 from './demos/picker-view-mp-rows.uvue';
+import Demo9 from './demos/picker-view-mp-slots.uvue';
+import Demo10 from './demos/picker-view-mp-wheel.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -20,9 +23,15 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'选择器视图'" :title-en="'Picker View'" :desc="'内嵌滚轮选择'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('胶囊带主题', 'Band theme')" badge="band" />
         <view class="module__body">
           <Demo0 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo1 />
         </view>
       </view>
       <view class="module">
@@ -31,7 +40,7 @@ const { t } = useDemoUi();
           badge="cascade"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo2 />
         </view>
       </view>
       <view class="module">
@@ -45,7 +54,7 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo3 />
         </view>
       </view>
       <view class="module">
@@ -54,7 +63,13 @@ const { t } = useDemoUi();
           badge="disabled"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('图标选项', 'Icon options')" badge="icons" />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
       <view class="module">
@@ -65,7 +80,7 @@ const { t } = useDemoUi();
           badge="immediate"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -79,7 +94,7 @@ const { t } = useDemoUi();
           badge="keys"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
@@ -93,13 +108,19 @@ const { t } = useDemoUi();
           badge="rows"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('时间槽', 'Time slots')" badge="slots" />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
         <view class="module__body">
-          <Demo7 />
+          <Demo10 />
         </view>
       </view>
     </view>
