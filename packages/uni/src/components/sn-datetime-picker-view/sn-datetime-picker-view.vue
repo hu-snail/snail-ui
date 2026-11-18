@@ -166,6 +166,13 @@ const props = withDefaults(
      */
     wheel?: boolean;
     /**
+     * 高亮带形态（additive，`wheel` 开启时生效）：`shared`（默认）横跨全部
+     * 列一整条带；`perColumn` 每列一条。带漆 / 圆角 / 水平内边距经
+     * `--sn-datetime-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`
+     * 变量自定义。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
      * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
      * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
      * 静默跳过；点选与程序赋值不震动。
@@ -198,6 +205,7 @@ const props = withDefaults(
     customStyle: '',
     lunar: false,
     wheel: false,
+    wheelBand: 'shared',
     vibrateShort: false,
   },
 );
@@ -576,9 +584,16 @@ const rootClass = computed(() => [
   {
     'sn-datetime-picker-view--lunar': isLunarMode.value,
     'sn-datetime-picker-view--wheel': props.wheel,
+    'sn-datetime-picker-view--wheel-band-shared': showSharedBand.value,
   },
   props.customClass,
 ]);
+
+/**
+ * Shared-band mode: one pill spans every column from the root. The per-column
+ * indicators are not rendered at all — two bands would double-paint.
+ */
+const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
 
 const rootStyle = computed(() => {
   const vars = [
@@ -611,6 +626,9 @@ const ariaValue = computed(() => {
     role="group"
     :aria-label="ariaValue"
   >
+    <!-- Shared wheel band (additive): one pill spanning every column, painted
+         behind the roller text (z0). -->
+    <view v-if="showSharedBand" class="sn-datetime-picker-view__wheel-band" aria-hidden="true" />
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -653,7 +671,9 @@ const ariaValue = computed(() => {
         class="sn-datetime-picker-view__mask sn-datetime-picker-view__mask--bottom"
         aria-hidden="true"
       />
-      <view class="sn-datetime-picker-view__indicator" aria-hidden="true" />
+      <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
+           Hidden entirely in shared-band mode (the root band takes over). -->
+      <view v-if="!showSharedBand" class="sn-datetime-picker-view__indicator" aria-hidden="true" />
     </view>
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
@@ -722,8 +742,9 @@ const ariaValue = computed(() => {
 
 .sn-datetime-picker-view__indicator {
   position: absolute;
-  left: var(--sn-mp-spacing-2);
-  right: var(--sn-mp-spacing-2);
+  /* Same inset variable as the shared band — one knob controls both. */
+  left: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
   top: 50%;
   height: var(--sn-datetime-picker-view-item-height);
   margin-top: calc(var(--sn-datetime-picker-view-item-height) / -2);
@@ -732,6 +753,20 @@ const ariaValue = computed(() => {
   pointer-events: none;
   /* Behind the roller text: the wheel band is an opaque fill and would
      otherwise hide the selected label. */
+  z-index: 0;
+}
+
+/* Shared wheel band — one pill spanning every column (additive). */
+.sn-datetime-picker-view__wheel-band {
+  position: absolute;
+  left: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  top: 50%;
+  height: var(--sn-datetime-picker-view-item-height);
+  margin-top: calc(var(--sn-datetime-picker-view-item-height) / -2);
+  background: var(--sn-datetime-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
+  border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
+  pointer-events: none;
   z-index: 0;
 }
 

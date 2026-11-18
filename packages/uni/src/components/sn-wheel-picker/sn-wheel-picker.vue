@@ -69,6 +69,11 @@ const props = withDefaults(
     /** Disables the whole roller. */
     disabled?: boolean;
     /**
+     * 高亮带形态（additive，`wheel` 固定开启）：`shared`（默认）横跨全部列
+     * 一整条带；`perColumn` 每列一条。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
      * 滑动短震动（additive，AGENTS.md §112.3a）：默认开启——滑动经过每一行
      * 档位触发 `uni.vibrateShort({ type: 'light' })`，App / 小程序生效，H5
      * 静默跳过；点选与程序赋值不震动。传 false 关闭。
@@ -90,6 +95,7 @@ const props = withDefaults(
     immediateChange: false,
     cascade: false,
     disabled: false,
+    wheelBand: 'shared',
     vibrateShort: true,
     customClass: '',
     customStyle: '',
@@ -139,6 +145,7 @@ defineExpose({
     :disabled="props.disabled"
     :immediate-change="props.immediateChange"
     :wheel="true"
+    :wheel-band="props.wheelBand"
     :vibrate-short="props.vibrateShort"
     :custom-class="props.customClass"
     :custom-style="props.customStyle"

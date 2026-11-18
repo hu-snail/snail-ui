@@ -619,6 +619,30 @@ describe('sn-picker-view', () => {
       expect(w.findAll('.sn-picker-view__item--far')).toHaveLength(0);
     });
 
+    it('renders one shared band across columns by default', () => {
+      const w = mountView({ wheel: true, columns: [FRUITS, ['a', 'b']] });
+      // One root-level pill; the per-column indicators are gone.
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(1);
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(0);
+    });
+
+    it('keeps a per-column pill when wheelBand is perColumn', () => {
+      const w = mountView({
+        wheel: true,
+        wheelBand: 'perColumn',
+        columns: [FRUITS, ['a', 'b']],
+      });
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(0);
+      // One pill per column.
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(2);
+    });
+
+    it('renders hairline indicators without any wheel band', () => {
+      const w = mountView({ columns: [FRUITS, ['a', 'b']] });
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(0);
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(2);
+    });
+
     it('paints the band through the overridable wheel-band variable', () => {
       const w = mountView({ wheel: true, customStyle: '--sn-picker-view-wheel-band: #e6f0ff' });
       // customStyle lands on the root; the CSS var chain reaches the indicator.

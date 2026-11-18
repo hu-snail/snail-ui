@@ -97,6 +97,11 @@ const props = withDefaults(
      */
     wheel?: boolean;
     /**
+     * 高亮带形态（additive）：`shared`（默认）横跨全部列一整条带；
+     * `perColumn` 每列一条。转发给 `sn-picker-view`。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
      * 滑动短震动（additive，AGENTS.md §112.3a）：转发给 `sn-picker-view`，
      * 滑动经过每一行档位时触发 `uni.vibrateShort({ type: 'light' })`。
      */
@@ -132,6 +137,7 @@ const props = withDefaults(
     safeAreaInsetBottom: true,
     immediateChange: false,
     wheel: false,
+    wheelBand: 'shared',
     vibrateShort: false,
     customClass: '',
     customStyle: '',
@@ -270,6 +276,7 @@ const viewClass = computed(() => props.customViewClass);
         :visible-item-count="props.visibleItemCount"
         :immediate-change="props.immediateChange"
         :wheel="props.wheel"
+        :wheel-band="props.wheelBand"
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       />

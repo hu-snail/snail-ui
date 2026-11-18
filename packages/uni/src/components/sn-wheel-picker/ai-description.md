@@ -54,6 +54,7 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | `cascade`                     | `boolean`                                  | `false`  | no       | Treat `columns` as a nested tree.                  |
 | `disabled`                    | `boolean`                                  | `false`  | no       | Disables the roller.                               |
 | `vibrateShort`                | `boolean`                                  | `true`   | no       | Slide haptic per detent (App / MP; H5 skips).      |
+| `wheelBand`                   | `'shared' \| 'perColumn'`                  | `'shared'` | no     | Band shape: one pill across all columns, or one per column (additive). |
 | `customClass` / `customStyle` | `string`                                   | `''`     | no       | Root forwarding.                                   |
 
 ## Events
@@ -94,12 +95,14 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | Token                                                     | Purpose                       |
 | --------------------------------------------------------- | ----------------------------- |
 | `--sn-mp-color-background-elevated`                       | Roller surface                |
-| `--sn-mp-color-background-subtle`                         | Wheel pill band               |
+| `--sn-mp-color-background-subtle`                         | Wheel pill band default       |
+| `--sn-picker-view-wheel-band`                             | Band paint override (any background) |
 | `--sn-mp-color-action-primary`                            | Active row text               |
 | `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled` | Row text fade   |
 | `--sn-mp-font-size-md` / `--sn-mp-font-weight-semibold`   | Row text                      |
 | `--sn-mp-spacing-2` / `-3`                                | Indicator inset / row padding |
 | `--sn-picker-view-wheel-radius`                           | Pill band radius override     |
+| `--sn-picker-view-wheel-inset`                            | Pill band horizontal inset    |
 
 ## Accessibility
 

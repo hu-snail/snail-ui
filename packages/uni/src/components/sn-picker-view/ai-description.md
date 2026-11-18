@@ -43,6 +43,7 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | `cascade`                     | `boolean`                                  | `false`      | no       | Treat `columns` as a nested tree.               |
 | `disabled`                    | `boolean`                                  | `false`      | no       | Disables the roller.                            |
 | `wheel`                       | `boolean`                                  | `false`      | no       | Wheel style: pill selection band + distance fade (additive). |
+| `wheelBand`                   | `'shared' \| 'perColumn'`                  | `'shared'`   | no       | Band shape: one pill across all columns, or one per column (additive). |
 | `vibrateShort`                | `boolean`                                  | `false`      | no       | Slide haptic per detent, App / MP only (additive). |
 | `customClass` / `customStyle` | `string`                                   | `''`         | no       | Root forwarding.                                |
 
@@ -80,6 +81,7 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | `--sn-mp-color-background-subtle`                         | Wheel pill band default       |
 | `--sn-picker-view-wheel-band`                             | Band paint override (any background) |
 | `--sn-picker-view-wheel-radius`                           | Band radius override          |
+| `--sn-picker-view-wheel-inset`                            | Band horizontal inset override |
 | `--sn-mp-color-action-primary`                            | Wheel active row text         |
 | `--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled` | Row text fade   |
 | `--sn-mp-color-border-subtle`                             | Selection indicator           |
