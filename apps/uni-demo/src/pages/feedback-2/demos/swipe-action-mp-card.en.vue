@@ -52,9 +52,11 @@ function archive(key: 'a' | 'b' | 'c'): void {
       <template #right>
         <view class="sw-pillbar">
           <view class="sw-pill sw-pill--primary" @tap="archive('a')">
-            <SnIcon :icon="Mail" :size="20" />
-            <text class="sw-pill__label">Archive</text>
-          </view>
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
         </view>
       </template>
     </SnSwipeAction>
@@ -77,9 +79,11 @@ function archive(key: 'a' | 'b' | 'c'): void {
       <template #right>
         <view class="sw-pillbar">
           <view class="sw-pill sw-pill--primary" @tap="archive('b')">
-            <SnIcon :icon="Mail" :size="20" />
-            <text class="sw-pill__label">Archive</text>
-          </view>
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
         </view>
       </template>
     </SnSwipeAction>
@@ -101,9 +105,11 @@ function archive(key: 'a' | 'b' | 'c'): void {
       <template #right>
         <view class="sw-pillbar">
           <view class="sw-pill sw-pill--primary" @tap="archive('c')">
-            <SnIcon :icon="Mail" :size="20" />
-            <text class="sw-pill__label">Archive</text>
-          </view>
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
         </view>
       </template>
     </SnSwipeAction>
@@ -206,14 +212,23 @@ function archive(key: 'a' | 'b' | 'c'): void {
 
 .sw-pill {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
   width: 136rpx;
   height: 132rpx;
   border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+/* 图标 + 名称随遮挡距离渐显 / 渐隐（组件经 CSS var 发布进度，200ms 缓动跟手）。 */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
 }
 
 .sw-pill--primary {

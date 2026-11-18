@@ -424,6 +424,47 @@ describe('sn-swipe-action', () => {
     });
   });
 
+  describe('reveal fade vars', () => {
+    it('publishes zero progress on both sides while closed', () => {
+      const w = mount(SnSwipeAction, { slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-swipe-action-reveal-left: 0.000');
+      expect(style).toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+
+    it('publishes full progress for the open side', () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-swipe-action-reveal-right: 1.000');
+      expect(style).toContain('--sn-swipe-action-reveal-left: 0.000');
+    });
+
+    it('tracks the occluded fraction while dragging', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 160, clientY: 100 }] });
+      // 40px of the 88px fallback distance revealed.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.455');
+    });
+
+    it('fades back out as the drag re-covers an open row', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 260, clientY: 100 }] });
+      // Open at −88px, dragged 60px back → 28px still revealed.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.318');
+    });
+
+    it('merges the consumer custom-style with the reveal vars', () => {
+      const w = mount(SnSwipeAction, { props: { customStyle: 'border-radius: 8px;' }, slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('border-radius: 8px;');
+      expect(style).toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+  });
+
   describe('accessibility', () => {
     it('reports the expanded state on the content area', () => {
       const closed = mount(SnSwipeAction, { slots });

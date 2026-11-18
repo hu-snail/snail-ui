@@ -2,10 +2,11 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swipe-action 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swipe-action-mp-basic.vue';
 import Demo1 from './demos/swipe-action-mp-card.vue';
-import Demo2 from './demos/swipe-action-mp-both-sides.vue';
-import Demo3 from './demos/swipe-action-mp-before-close.vue';
-import Demo4 from './demos/swipe-action-mp-disabled.vue';
-import Demo5 from './demos/swipe-action-mp-custom-style.vue';
+import Demo2 from './demos/swipe-action-mp-cell-group.vue';
+import Demo3 from './demos/swipe-action-mp-both-sides.vue';
+import Demo4 from './demos/swipe-action-mp-before-close.vue';
+import Demo5 from './demos/swipe-action-mp-disabled.vue';
+import Demo6 from './demos/swipe-action-mp-custom-style.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -34,9 +35,19 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
+        <DemoModuleHead
+          :title="t('列表组（cell 风格）', 'List group (cell style)')"
+          badge="cell-group"
+          inset
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
       <view class="module">
@@ -46,7 +57,7 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
         </view>
       </view>
       <view class="module">
@@ -56,13 +67,13 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo5 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" inset />
         <view class="module__body">
-          <Demo5 />
+          <Demo6 />
         </view>
       </view>
     </view>

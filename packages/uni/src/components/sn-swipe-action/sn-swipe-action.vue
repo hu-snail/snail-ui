@@ -49,6 +49,22 @@
  * the page canvas between the card and the pill buttons. Classic full-bleed
  * rows keep working by painting the surface on the slot content itself.
  *
+ * ## Action reveal fade (additive, CSS-var contract)
+ *
+ * The root publishes each side's reveal progress (0 = fully covered by the
+ * content, 1 = fully revealed) as CSS custom properties:
+ *
+ *   --sn-swipe-action-reveal-left / --sn-swipe-action-reveal-right
+ *
+ * The value follows the finger 1:1 during a drag and jumps to the settle
+ * target when the row settles (demo styles ease the transition). Action
+ * buttons bind their glyph/label opacity to it —
+ * `opacity: var(--sn-swipe-action-reveal-right, 1)` — so icon + name fade in
+ * while the card uncovers them and fade out as it covers them again, while
+ * the button surface stays fully painted. Where a runtime cannot resolve
+ * inline custom properties the fallback `1` keeps glyphs visible (no fade,
+ * no breakage).
+ *
  * ## How far the row slides (why there is a measurement)
  *
  * The open distance must equal the action area's real width, and that width is
@@ -491,7 +507,33 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
-const rootStyle = computed(() => props.customStyle || undefined);
+/**
+ * Reveal progress per side: 0 = the content fully covers the action area,
+ * 1 = fully revealed. During a drag it tracks the occluded fraction 1:1;
+ * at rest it snaps to the settle target (consumers transition the opacity).
+ */
+function revealProgressFor(side: SwipeActionPosition): number {
+  const distance = openDistance.value[side];
+  if (distance <= 0) return 0;
+  if (isDragging.value) {
+    const travelled = side === 'left' ? dragOffset.value : -dragOffset.value;
+    return Math.min(Math.max(travelled / distance, 0), 1);
+  }
+  return status.value === side ? 1 : 0;
+}
+
+/** Root-level CSS vars publishing the per-side reveal progress. */
+const revealVars = computed(() => {
+  const left = revealProgressFor('left').toFixed(3);
+  const right = revealProgressFor('right').toFixed(3);
+  return `--sn-swipe-action-reveal-left: ${left}; --sn-swipe-action-reveal-right: ${right};`;
+});
+
+const rootStyle = computed(() => {
+  const custom = props.customStyle.trim();
+  if (custom === '') return revealVars.value;
+  return custom.endsWith(';') ? `${custom} ${revealVars.value}` : `${custom}; ${revealVars.value}`;
+});
 
 /** Distance the row sits from rest, in design px. */
 const offset = computed(() => {

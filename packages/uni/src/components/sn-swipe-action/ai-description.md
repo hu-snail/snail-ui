@@ -89,7 +89,34 @@ is what enables the floating-card form (iOS Mail style): the default slot
 paints a rounded card, the action slots paint pill buttons, and the page canvas
 shows through between them while a row is open. Classic full-bleed rows keep
 working by painting the surface on the slot content (or via `custom-style` on
-the root).
+the root). Cell-style groups work by sandwiching the row between an
+`sn-cell-group card` and an `sn-cell` — the group paints the card surface and
+hairlines, the row carries the gesture.
+
+## Reveal Fade (CSS vars, additive)
+
+The root publishes each side's reveal progress (0 = fully covered by the
+content, 1 = fully revealed) as CSS custom properties:
+
+| CSS var                              | Meaning                                   |
+| ------------------------------------ | ----------------------------------------- |
+| `--sn-swipe-action-reveal-left`      | Left action area reveal progress (0–1).   |
+| `--sn-swipe-action-reveal-right`     | Right action area reveal progress (0–1).  |
+
+The value tracks the occluded fraction 1:1 during a drag and jumps to the
+settle target when the row settles (ease it with a short `transition: opacity`
+on the consuming element). Bind action-button glyph / label opacity to it:
+
+```css
+.sw-pill__content {
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+```
+
+The button surface stays fully painted — only the glyph + name fade. Where a
+runtime cannot resolve inline custom properties the fallback `1` keeps glyphs
+visible (no fade, no breakage).
 
 ## Gestures
 

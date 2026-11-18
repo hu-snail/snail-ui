@@ -22,7 +22,9 @@ export const swipeActionDocPageEn: SnDocPageData = {
     { t: 'code', s: 'v-model' },
     { t: 'text', s: ' reports ' },
     { t: 'code', s: "'left' | 'close' | 'right'" },
-    { t: 'text', s: '.' },
+    { t: 'text', s: '. Action glyphs can fade with the occlusion distance via the ' },
+    { t: 'code', s: '--sn-swipe-action-reveal-*' },
+    { t: 'text', s: ' CSS vars.' },
   ],
   quickActions: [
     { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
@@ -65,6 +67,11 @@ import { SwipeAction } from '@snui/uni';
       name: 'swipe-action-mp-card',
       title: 'Card rows (message list)',
       blurb: 'iOS-mail style message cards: swipe to reveal an Archive pill; tapping it collapses the row.',
+    },
+    {
+      name: 'swipe-action-mp-cell-group',
+      title: 'List group (cell style)',
+      blurb: 'Gapless sn-cell-group list; swipe a row for Mute / Delete — glyphs fade with the occlusion distance.',
     },
     {
       name: 'swipe-action-mp-both-sides',

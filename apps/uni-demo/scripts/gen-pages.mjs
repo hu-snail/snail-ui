@@ -453,6 +453,7 @@ const SCENARIO_LABEL_OVERRIDES = {
   'swipe-action-disabled': '禁用（disabled）',
   'swipe-action-custom-style': '根节点样式',
   'swipe-action-card': '浮卡行（消息列表）',
+  'swipe-action-cell-group': '列表组（cell 风格）',
   'backtop-threshold': '显示阈值（top）',
   'backtop-icon-style': '图标样式与层级',
   'collapse-accordion': '手风琴模式（accordion）',
@@ -697,10 +698,11 @@ const DEMO_ORDER = {
   'slider-bar-mp-knob-icon': 11,
   'swipe-action-mp-basic': 1,
   'swipe-action-mp-card': 2,
-  'swipe-action-mp-both-sides': 3,
-  'swipe-action-mp-before-close': 4,
-  'swipe-action-mp-disabled': 5,
-  'swipe-action-mp-custom-style': 6,
+  'swipe-action-mp-cell-group': 3,
+  'swipe-action-mp-both-sides': 4,
+  'swipe-action-mp-before-close': 5,
+  'swipe-action-mp-disabled': 6,
+  'swipe-action-mp-custom-style': 7,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -1114,6 +1116,7 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'swipe-action-disabled': 'Disabled (`disabled`)',
   'swipe-action-custom-style': 'Root styling',
   'swipe-action-card': 'Card rows (message list)',
+  'swipe-action-cell-group': 'List group (cell style)',
   'backtop-threshold': 'Visibility threshold (`top`)',
   'backtop-icon-style': 'Icon styling & stacking',
   'collapse-accordion': 'Accordion mode (`accordion`)',

@@ -1,0 +1,267 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-swipe-action (uni-end) — cell-style list group (gapless rows), EN copy.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
+ *
+ * sn-cell-group card paints the group surface and the row hairlines; the
+ * swipe-action sits between the group and each sn-cell carrying the gesture —
+ * the component paints no background, so row height and dividers are owned by
+ * the cell and the revealed area shows the group surface. Pill glyphs + labels
+ * fade with the occlusion distance (the component publishes progress via CSS
+ * vars).
+ */
+import { ref } from 'vue';
+
+import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Bell, Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const openA = ref<'left' | 'close' | 'right'>('close');
+const openB = ref<'left' | 'close' | 'right'>('close');
+const openC = ref<'left' | 'close' | 'right'>('close');
+const openD = ref<'left' | 'close' | 'right'>('close');
+
+/** Tapping a pill collapses the row and counts it for feedback. */
+const dismissed = ref({ mute: 0, del: 0 });
+
+function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
+  dismissed.value[kind] += 1;
+  if (key === 'a') openA.value = 'close';
+  if (key === 'b') openB.value = 'close';
+  if (key === 'c') openC.value = 'close';
+  if (key === 'd') openD.value = 'close';
+}
+</script>
+
+<template>
+  <view class="sw-group">
+    <SnCellGroup card>
+      <SnSwipeAction v-model="openA">
+        <SnCell title="Design Team" label="Maya: Pushed the new prototypes">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--a" />
+          </template>
+          <template #default>
+            <text class="sw-time">9:41</text>
+            <view class="sw-badge"><text class="sw-badge-text">3</text></view>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'a')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'a')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">Delete</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openB">
+        <SnCell title="Ava Thompson" label="Quarterly planning agenda is attached">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--b" />
+          </template>
+          <template #default>
+            <text class="sw-time">8:15</text>
+            <view class="sw-badge"><text class="sw-badge-text">1</text></view>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'b')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'b')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">Delete</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openC">
+        <SnCell title="Weekend Trip" label="Liam: Booked the cabin for Saturday">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--c" />
+          </template>
+          <template #default>
+            <text class="sw-time">Yesterday</text>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'c')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'c')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">Delete</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openD">
+        <SnCell title="Noah Carter" label="Thanks, the invoice looks good to me">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--d" />
+          </template>
+          <template #default>
+            <text class="sw-time">Mon</text>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'd')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'd')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">Delete</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+    </SnCellGroup>
+  </view>
+
+  <text class="sw-meta">
+    {{
+      dismissed.mute + dismissed.del > 0
+        ? `${dismissed.mute} muted · ${dismissed.del} deleted`
+        : 'Swipe any row left — glyphs fade in with the reveal'
+    }}
+  </text>
+</template>
+
+<style scoped>
+/* Full-bleed page: the group card carries its own side margins and floats on
+ * the page canvas. */
+.sw-group {
+  padding: 20rpx var(--sn-mp-spacing-4) 0;
+}
+
+/* Row avatars: gradient dots (prefix slot, replacing the default icon). */
+.sw-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+}
+
+.sw-avatar--a {
+  background-image: linear-gradient(135deg, #93c5fd, #6366f1);
+}
+
+.sw-avatar--b {
+  background-image: linear-gradient(135deg, #fdba74, #f43f5e);
+}
+
+.sw-avatar--c {
+  background-image: linear-gradient(135deg, #6ee7b7, #0ea5e9);
+}
+
+.sw-avatar--d {
+  background-image: linear-gradient(135deg, #c4b5fd, #7c3aed);
+}
+
+.sw-time {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sw-badge {
+  margin-left: 16rpx;
+  padding: 2rpx 16rpx;
+  border-radius: 999rpx;
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sw-badge-text {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+/* Cell-row pills: rounded strips matching the row height (vs the card pills). */
+.sw-pillbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  padding-right: 16rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin: 10rpx 0;
+  width: 120rpx;
+  border-radius: 24rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+.sw-pill--soft {
+  background-color: var(--sn-mp-color-background-soft);
+}
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+/* Glyphs + labels fade with the occlusion distance (progress published via
+ * CSS vars by the component, 200ms easing follows the finger). */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
+}
+
+.sw-pill__label--muted {
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sw-meta {
+  display: block;
+  margin: 16rpx 24rpx 0;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>
