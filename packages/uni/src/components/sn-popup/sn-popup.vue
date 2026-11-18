@@ -63,9 +63,10 @@
  *   - 页面级路由跳转 — 由宿主 AppBridge 决定
  */
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
+import { SN_POPUP_DRAG_KEY } from './sn-popup-types';
 
 defineOptions({ name: 'SnPopup' });
 
@@ -237,6 +238,15 @@ const DRAG_FLING_VELOCITY = 0.6;
 const dragState = ref<'idle' | 'dragging' | 'settling' | 'closing'>('idle');
 /** Current drag offset in px — applied to the panel as an inline transform. */
 const dragY = ref(0);
+
+/**
+ * Tell a scrollable panel body to stand down while the grabber owns the
+ * gesture. Without this the inner `scroll-view` keeps consuming touchmove, so
+ * the list scrolls instead of the sheet following the finger.
+ */
+const isDragging = computed(() => dragState.value === 'dragging');
+provide(SN_POPUP_DRAG_KEY, { isDragging });
+
 /**
  * Set while the close emitted from a drag release is still in flight — the
  * controlled `v-model` sync arrives through the watcher one flush later and

@@ -9,8 +9,10 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import SnCalendarView from './sn-calendar-view.vue';
+import { SN_POPUP_DRAG_KEY } from '../sn-popup/sn-popup-types';
 
 const JUNE_15 = new Date(2024, 5, 15).getTime();
 
@@ -345,6 +347,35 @@ describe('sn-calendar-view', () => {
       expect(source).toContain('const rows = Math.max(Math.ceil(block.cells.length / 7), 4);');
       // The auto height that broke mp scrolling must be gone.
       expect(source).not.toContain('height: auto;');
+    });
+
+    it('scrolls by default when no host sheet is dragging', () => {
+      const w = mountView();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
+      expect(w.classes()).not.toContain('sn-calendar-view--scroll-locked');
+    });
+
+    it('stops scrolling while a host sheet grabber is being dragged', async () => {
+      // The popup provides this signal; without it the inner scroll-view wins
+      // the vertical gesture and the sheet never follows the finger.
+      const isDragging = ref(false);
+      const w = mount(SnCalendarView, {
+        props: {
+          minDate: new Date(2024, 5, 1).getTime(),
+          maxDate: new Date(2024, 5, 30).getTime(),
+        },
+        global: { provide: { [SN_POPUP_DRAG_KEY as symbol]: { isDragging } } },
+      });
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
+
+      isDragging.value = true;
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).toBe('false');
+      expect(w.classes()).toContain('sn-calendar-view--scroll-locked');
+
+      isDragging.value = false;
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
     });
   });
 

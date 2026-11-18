@@ -42,7 +42,8 @@
  *   - 时间滚筒 — 用 sn-datetime-picker-view
  */
 
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
+import { SN_POPUP_DRAG_KEY } from '../sn-popup/sn-popup-types';
 import type {
   CalendarDayItem,
   CalendarDayType,
@@ -425,6 +426,18 @@ function initialMonthIndex(): number {
 
 const activeMonthIndex = ref(initialMonthIndex());
 
+/**
+ * Stand down while a host sheet's grabber is being dragged.
+ *
+ * When this grid lives inside `sn-popup` with `draggable`, the pull handle and
+ * the grid compete for the same vertical gesture — the grid's `scroll-view`
+ * wins and the sheet never follows the finger. The popup provides its drag
+ * state; a standalone `sn-calendar-view` (no popup above it) gets `undefined`
+ * and scrolls as usual.
+ */
+const popupDrag = inject(SN_POPUP_DRAG_KEY, undefined);
+const scrollEnabled = computed(() => !(popupDrag?.isDragging.value ?? false));
+
 /** `scroll-into-view` target for the active month. */
 const scrollIntoViewId = computed(() => {
   const blocks = monthBlocks.value;
@@ -494,6 +507,7 @@ const rootClass = computed(() => [
   {
     'sn-calendar-view--switch': props.switchMode !== 'none',
     'sn-calendar-view--is-datetime': isDatetimeType.value,
+    'sn-calendar-view--scroll-locked': !scrollEnabled.value,
   },
   props.customClass,
 ]);
@@ -610,7 +624,7 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
     <scroll-view
       class="sn-calendar-view__panel"
       :style="panelStyle"
-      scroll-y
+      :scroll-y="scrollEnabled"
       :scroll-into-view="scrollIntoViewId"
     >
       <view
@@ -714,6 +728,14 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
  * height transition below eases the jump between 4- and 5-row months. */
 .sn-calendar-view--switch .sn-calendar-view__panel {
   transition: height 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* While a host sheet's grabber is dragging, the grid must not scroll — the
+ * `scroll-y` binding above is the real switch on miniprogram; this covers H5,
+ * where a native scroll can still start under the finger. */
+.sn-calendar-view--scroll-locked .sn-calendar-view__panel {
+  touch-action: none;
+  overflow: hidden;
 }
 
 .sn-calendar-view__month {
