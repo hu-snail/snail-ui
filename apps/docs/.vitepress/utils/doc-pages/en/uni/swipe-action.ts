@@ -59,12 +59,17 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-basic',
       title: 'Basic usage',
-      blurb: 'Swipe left to reveal Delete; the state is shown live.',
+      blurb: 'Floating card row + delete pill: swipe left to reveal Delete; the state is shown live.',
+    },
+    {
+      name: 'swipe-action-mp-card',
+      title: 'Card rows (message list)',
+      blurb: 'iOS-mail style message cards: swipe to reveal an Archive pill; tapping it collapses the row.',
     },
     {
       name: 'swipe-action-mp-both-sides',
       title: 'Both sides',
-      blurb: 'The #left / #right slots render action areas on both sides.',
+      blurb: 'The #left / #right slots render pills on both sides; dragging past the centre flips sides.',
     },
     {
       name: 'swipe-action-mp-before-close',
@@ -79,7 +84,7 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-custom-style',
       title: 'Root styling',
-      blurb: 'custom-class / custom-style land on the root node.',
+      blurb: 'custom-class / custom-style land on the root node (the component paints no background).',
     },
   ],
   props: {

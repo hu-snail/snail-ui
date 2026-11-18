@@ -66,12 +66,17 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-basic',
       title: '基础用法',
-      blurb: '向左滑动露出删除按钮，状态实时显示。',
+      blurb: '浮卡行 + 删除胶囊钮：向左滑动露出删除，状态实时显示。',
+    },
+    {
+      name: 'swipe-action-mp-card',
+      title: '浮卡行（消息列表）',
+      blurb: 'iOS 邮件式浮卡消息列表：滑开露出归档胶囊钮，点钮收起该行。',
     },
     {
       name: 'swipe-action-mp-both-sides',
       title: '两侧操作区',
-      blurb: '#left / #right 插槽同时渲染两侧操作区。',
+      blurb: '#left / #right 插槽同时渲染两侧操作钮；行拖到中线可翻到另一侧。',
     },
     {
       name: 'swipe-action-mp-before-close',
@@ -86,7 +91,7 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-custom-style',
       title: '根节点样式',
-      blurb: 'custom-class / custom-style 落在根节点上。',
+      blurb: 'custom-class / custom-style 落在根节点上（组件默认不画背景）。',
     },
   ],
   props: {

@@ -2,7 +2,11 @@
  * sn-swipe-action unit tests — uni-end swipe-to-reveal row (wd-swipe-action parity).
  *
  * Behaviour only (AGENTS.md §46):
- *   - a horizontal swipe opens the matching side; a vertical gesture is ignored
+ *   - a horizontal swipe past the settle threshold opens the matching side;
+ *     a small drag springs back closed; a fast flick settles below the threshold
+ *   - the row drags from where it sits: touching an open row does not snap it
+ *     shut, and a back-drag closes before a side flip can happen
+ *   - a vertical gesture is ignored
  *   - `v-model` reports the new status; `disabled` blocks every gesture
  *   - `before-close` returning false blocks the close (sync and async)
  *   - `touchcancel` settles the row closed
@@ -24,6 +28,12 @@ import SnSwipeAction from './sn-swipe-action.vue';
 
 const slots = {
   default: '<text class="row-content">内容</text>',
+  right: '<view class="row-delete">删除</view>',
+};
+
+const bothSlots = {
+  default: '<text class="row-content">内容</text>',
+  left: '<view class="row-star">收藏</view>',
   right: '<view class="row-delete">删除</view>',
 };
 
@@ -137,6 +147,58 @@ describe('sn-swipe-action', () => {
       const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
       await swipe(w, 60);
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['close']);
+    });
+
+    it('closes on a back-drag before flipping sides when both slots exist', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots: bothSlots });
+      await swipe(w, 60);
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['close']);
+    });
+
+    it('flips to the other side when the drag crosses the centre', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots: bothSlots });
+      await swipe(w, 220);
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['left']);
+    });
+
+    it('springs back closed when the drag stays under the open threshold', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      await swipe(w, -12);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.classes()).not.toContain('sn-swipe-action--open');
+    });
+
+    it('keeps an open row under the finger while it is touched', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 203, clientY: 100 }] });
+      // Base −88px (fallback distance) + 3px of drag — not snapped to the delta.
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-85px)',
+      );
+    });
+
+    it('stays open when released while stretched past the open distance', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      await swipe(w, -60);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('opens on a fast flick below the open threshold', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnSwipeAction, { slots });
+        const root = w.find('.sn-swipe-action');
+        await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+        await root.trigger('touchmove', { touches: [{ clientX: 180, clientY: 100 }] });
+        vi.advanceTimersByTime(40); // 20px / 40ms = 0.5 px/ms
+        await root.trigger('touchend');
+        await flushPromises();
+        expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 
@@ -299,11 +361,11 @@ describe('sn-swipe-action', () => {
       try {
         const w = mount(SnSwipeAction, { slots });
         await swipe(w, -120);
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300); // settle duration elapsed — parked again
         await swipe(w, 60);
         // Still animating closed — the area must stay inside to be covered.
         expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300);
         await w.vm.$nextTick();
         expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
           'transform: translateX(100%)',
@@ -353,7 +415,7 @@ describe('sn-swipe-action', () => {
         await root.trigger('touchend');
         await flushPromises();
         expect(w.classes()).toContain('sn-swipe-action--animating');
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300);
         await w.vm.$nextTick();
         expect(w.classes()).not.toContain('sn-swipe-action--animating');
       } finally {

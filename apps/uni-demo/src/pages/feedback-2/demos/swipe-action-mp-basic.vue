@@ -1,11 +1,13 @@
 <script setup lang="ts">
 /**
- * Demo: sn-swipe-action (uni-end) — right action area with a delete button.
+ * Demo: sn-swipe-action (uni-end) — right action area with a delete pill.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
 import { ref } from 'vue';
 
 import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const status = ref<'left' | 'close' | 'right'>('close');
 const removed = ref(false);
@@ -14,19 +16,24 @@ const removed = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSwipeAction v-model="status">
-      <view class="sn-swipe-demo__row">
-        <text class="sn-swipe-demo__title">向左滑动露出删除</text>
-        <text class="sn-swipe-demo__desc">状态：{{ status }}</text>
+      <view class="sw-card">
+        <view class="sw-card__body">
+          <text class="sw-card__title">向左滑动露出删除</text>
+          <text class="sw-card__snippet">状态：{{ status }}</text>
+        </view>
       </view>
 
       <template #right>
-        <view class="sn-swipe-demo__action" @tap="removed = true">
-          <text class="sn-swipe-demo__action-text">删除</text>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--danger" @tap="removed = true">
+            <SnIcon :icon="Trash" :size="20" />
+            <text class="sw-pill__label">删除</text>
+          </view>
         </view>
       </template>
     </SnSwipeAction>
 
-    <text class="sn-swipe-demo__meta">
+    <text class="sw-meta">
       {{ removed ? '已点击删除按钮' : '滑一下试试' }}
     </text>
   </view>
@@ -36,35 +43,70 @@ const removed = ref(false);
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 8rpx;
 }
-.sn-swipe-demo__row {
+
+/* 浮卡：表面由 demo 自绘，组件不画背景。 */
+.sw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 20rpx 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+
+.sw-card__body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding: 24rpx 32rpx;
 }
-.sn-swipe-demo__title {
+
+.sw-card__title {
   font-size: 28rpx;
+  font-weight: 600;
   color: var(--sn-mp-color-text-primary);
 }
-.sn-swipe-demo__desc {
+
+.sw-card__snippet {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }
-.sn-swipe-demo__action {
+
+.sw-pillbar {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-right: 24rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 160rpx;
-  background: var(--sn-mp-color-feedback-danger);
-}
-.sn-swipe-demo__action-text {
-  font-size: 28rpx;
+  gap: 8rpx;
+  width: 136rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
 }
-.sn-swipe-demo__meta {
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
+}
+
+.sw-meta {
+  margin: 8rpx 24rpx 0;
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

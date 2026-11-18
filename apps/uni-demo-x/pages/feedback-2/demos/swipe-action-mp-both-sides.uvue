@@ -1,29 +1,44 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:75db661a21a39f13 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:a82c287c920510c6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swipe-action (uni-end) — left + right action areas (#left / #right slots).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
 import SnSwipeAction from '@snui/uni-x/components/sn-swipe-action/sn-swipe-action.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { Bell, Eye, Trash } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
 const both = ref<'left' | 'close' | 'right'>('close');
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSwipeAction v-model="both">
-      <view class="sn-swipe-demo__row">
-        <text class="sn-swipe-demo__title">左右都能滑</text>
-        <text class="sn-swipe-demo__desc">状态：{{ both }}</text>
+      <view class="sw-card">
+        <view class="sw-card__body">
+          <text class="sw-card__title">左右都能滑</text>
+          <text class="sw-card__snippet">状态：{{ both }}</text>
+        </view>
       </view>
 
       <template #left>
-        <view class="sn-swipe-demo__action sn-swipe-demo__action--left">
-          <text class="sn-swipe-demo__action-text">收藏</text>
+        <view class="sw-pillbar sw-pillbar--left">
+          <view class="sw-pill sw-pill--success">
+            <SnIcon :icon="Eye" :size="20" />
+            <text class="sw-pill__label">已读</text>
+          </view>
         </view>
       </template>
 
       <template #right>
-        <view class="sn-swipe-demo__action">
-          <text class="sn-swipe-demo__action-text">删除</text>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--soft">
+            <SnIcon :icon="Bell" :size="20" />
+            <text class="sw-pill__label sw-pill__label--muted">静音</text>
+          </view>
+          <view class="sw-pill sw-pill--danger">
+            <SnIcon :icon="Trash" :size="20" />
+            <text class="sw-pill__label">删除</text>
+          </view>
         </view>
       </template>
     </SnSwipeAction>
@@ -33,35 +48,84 @@ const both = ref<'left' | 'close' | 'right'>('close');
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 8rpx;
 }
-.sn-swipe-demo__row {
+
+/* 浮卡：表面由 demo 自绘，组件不画背景。 */
+.sw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 20rpx 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+
+.sw-card__body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding: 24rpx 32rpx;
 }
-.sn-swipe-demo__title {
+
+.sw-card__title {
   font-size: 28rpx;
+  font-weight: 600;
   color: var(--sn-mp-color-text-primary);
 }
-.sn-swipe-demo__desc {
+
+.sw-card__snippet {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }
-.sn-swipe-demo__action {
+
+/* 右侧操作区右缘留 24rpx 缝隙露画布。 */
+.sw-pillbar {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-right: 24rpx;
+}
+
+/* 左侧操作区与右缘镜像。 */
+.sw-pillbar--left {
+  padding-right: 0;
+  padding-left: 24rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 160rpx;
-  background: var(--sn-mp-color-feedback-danger);
-  flex-direction: row;
-}
-.sn-swipe-demo__action--left {
-  background: var(--sn-mp-color-action-primary);
-}
-.sn-swipe-demo__action-text {
-  font-size: 28rpx;
+  gap: 8rpx;
+  width: 136rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+.sw-pill--success {
+  background-color: var(--sn-mp-color-feedback-success);
+}
+
+.sw-pill--soft {
+  background-color: var(--sn-mp-color-background-soft);
+}
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
+}
+
+/* 中性胶囊上没有 on-primary 关系，文字用主文本色。 */
+.sw-pill__label--muted {
+  color: var(--sn-mp-color-text-primary);
 }
 </style>

@@ -6,6 +6,8 @@
 import { ref } from 'vue';
 
 import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const guarded = ref<'left' | 'close' | 'right'>('close');
 const guardHits = ref(0);
@@ -20,14 +22,19 @@ function beforeClose(): boolean {
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSwipeAction v-model="guarded" :before-close="beforeClose">
-      <view class="sn-swipe-demo__row">
-        <text class="sn-swipe-demo__title">before-close 拦截第一次关闭</text>
-        <text class="sn-swipe-demo__desc">已调用 {{ guardHits }} 次</text>
+      <view class="sw-card">
+        <view class="sw-card__body">
+          <text class="sw-card__title">before-close 拦截第一次关闭</text>
+          <text class="sw-card__snippet">已调用 {{ guardHits }} 次</text>
+        </view>
       </view>
 
       <template #right>
-        <view class="sn-swipe-demo__action">
-          <text class="sn-swipe-demo__action-text">归档</text>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--danger">
+            <SnIcon :icon="Trash" :size="20" />
+            <text class="sw-pill__label">删除</text>
+          </view>
         </view>
       </template>
     </SnSwipeAction>
@@ -38,31 +45,64 @@ function beforeClose(): boolean {
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 8rpx;
 }
-.sn-swipe-demo__row {
+
+/* 浮卡：表面由 demo 自绘，组件不画背景。 */
+.sw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 20rpx 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+
+.sw-card__body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding: 24rpx 32rpx;
 }
-.sn-swipe-demo__title {
+
+.sw-card__title {
   font-size: 28rpx;
+  font-weight: 600;
   color: var(--sn-mp-color-text-primary);
 }
-.sn-swipe-demo__desc {
+
+.sw-card__snippet {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }
-.sn-swipe-demo__action {
+
+.sw-pillbar {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-right: 24rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 160rpx;
-  background: var(--sn-mp-color-feedback-danger);
-}
-.sn-swipe-demo__action-text {
-  font-size: 28rpx;
+  gap: 8rpx;
+  width: 136rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
 }
 </style>

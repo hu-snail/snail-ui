@@ -86,6 +86,8 @@ const SCENARIO_LABELS = {
   hover: '悬停',
   'image-tap': '点图片关闭',
   lunar: '农历',
+  wheel: 'wheel 风格',
+  vibrate: '滑动震动',
   card: '卡片',
   direction: '方向',
   theme: '主题',
@@ -311,9 +313,11 @@ const SCENARIO_LABEL_OVERRIDES = {
   'slide-verify-custom-style': '根节点样式',
   'slider-bar-basic': '基础用法',
   'slider-bar-range': '区间（`range`）',
-  'slider-bar-theme': '主题（`theme`）',
+  'slider-bar-theme': '主题预设（`theme`）',
   'slider-bar-size': '尺寸（`size`）',
   'slider-bar-variant': '竖排（`variant=column`）',
+  'slider-bar-shape': '把手形状与尺寸（`knobShape` / `knobSize`）',
+  'slider-bar-knob-icon': '把手图标 × 形状（`knobIcon`）',
   'slider-range': '区间与刻度（`range` / `marks`）',
   'slider-theme': '主题（`theme`）',
   'slider-disabled': '禁用（`disabled`）',
@@ -444,6 +448,7 @@ const SCENARIO_LABEL_OVERRIDES = {
   'swipe-action-before-close': '关闭拦截（before-close）',
   'swipe-action-disabled': '禁用（disabled）',
   'swipe-action-custom-style': '根节点样式',
+  'swipe-action-card': '浮卡行（消息列表）',
   'backtop-threshold': '显示阈值（top）',
   'backtop-icon-style': '图标样式与层级',
   'collapse-accordion': '手风琴模式（accordion）',
@@ -544,10 +549,22 @@ const MODULE_FLAT_PAGES = new Set(['navbar']);
  *   模块标题由外层 DemoModuleHead 承担），同 cell 的理由——cell 自带
  *   surface 背景，白卡底会双重叠加。这两页同时走 MODULE_FULL_BLEED_PAGES：
  *   入口行通栏（cell 自己承担左右内边距），只有卡片形态的场景保留外间距。
+ * - swipe-action：滑动行是浮卡形态（参考 iOS 邮件滑动交互），行卡片与
+ *   操作钮的表面由 demo 内容自绘，组件本身不画背景——白卡底会与行卡片
+ *   双重叠加，滑开露出的钮缝也需要露出页面画布。同时走
+ *   MODULE_FULL_BLEED_PAGES：行卡片自带左右外间距，标题行由 DemoModuleHead
+ *   的 inset 补回留白。
  * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
  * （保持 drop-menu / tabbar 既有产物不变）。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell', 'calendar', 'datetime-picker']);
+const MODULE_BARE_PAGES = new Set([
+  'drop-menu',
+  'tabbar',
+  'cell',
+  'calendar',
+  'datetime-picker',
+  'swipe-action',
+]);
 
 /**
  * 组件页通栏覆盖：列出的组件页去掉页面左右 padding，场景模块也不再留
@@ -557,7 +574,7 @@ const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell', 'calendar', 'd
  * 铺满整行，标题行经 DemoModuleHead 的 `inset` 补回留白，卡片形态 demo
  * 自带外间距。
  */
-const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker', 'cell']);
+const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker', 'cell', 'swipe-action']);
 
 /** cell 入口扁平页（calendar / datetime-picker）的共 reason 文案。 */
 const SHEET_ENTRY_BARE_COMMENT = `入口行直接使用 sn-cell（无分组卡片，模块标题由
@@ -575,6 +592,10 @@ const MODULE_BARE_COMMENTS = {
  * 分组自身的圆角 / 描边 / 分隔线承担`,
   calendar: SHEET_ENTRY_BARE_COMMENT,
   'datetime-picker': SHEET_ENTRY_BARE_COMMENT,
+  'swipe-action': `滑动行是浮卡形态（组件不画背景，卡片与操作钮的表面由
+ * 行内容自绘）：白卡底会与行卡片双重叠加，且滑开露出的操作钮之间需要
+ * 露出页面画布。去掉卡底与描边，行卡片直接浮在页面画布上，标题行也
+ * 落在画布上`,
 };
 
 /**
@@ -668,6 +689,14 @@ const DEMO_ORDER = {
   'slider-bar-mp-look-range': 7,
   'slider-bar-mp-look-column': 8,
   'slider-bar-mp-look-color': 9,
+  'slider-bar-mp-shape': 10,
+  'slider-bar-mp-knob-icon': 11,
+  'swipe-action-mp-basic': 1,
+  'swipe-action-mp-card': 2,
+  'swipe-action-mp-both-sides': 3,
+  'swipe-action-mp-before-close': 4,
+  'swipe-action-mp-disabled': 5,
+  'swipe-action-mp-custom-style': 6,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -718,6 +747,8 @@ const SCENARIO_LABELS_EN = {
   visibility: 'Visibility',
   hover: 'Hover',
   lunar: 'Lunar',
+  wheel: 'Wheel style',
+  vibrate: 'Slide haptic',
   card: 'Card',
   direction: 'Direction',
   theme: 'Theme',
@@ -939,9 +970,11 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'slide-verify-custom-style': 'Root styling',
   'slider-bar-basic': 'Basic usage',
   'slider-bar-range': 'Range (`range`)',
-  'slider-bar-theme': 'Theme (`theme`)',
+  'slider-bar-theme': 'Theme presets (`theme`)',
   'slider-bar-size': 'Size (`size`)',
   'slider-bar-variant': 'Vertical (`variant=column`)',
+  'slider-bar-shape': 'Knob shape & size (`knobShape` / `knobSize`)',
+  'slider-bar-knob-icon': 'Knob glyphs × shapes (`knobIcon`)',
   'slider-range': 'Range & marks (`range` / `marks`)',
   'slider-theme': 'Theme (`theme`)',
   'slider-disabled': 'Disabled (`disabled`)',
@@ -1072,6 +1105,7 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'swipe-action-before-close': 'Close guard (`before-close`)',
   'swipe-action-disabled': 'Disabled (`disabled`)',
   'swipe-action-custom-style': 'Root styling',
+  'swipe-action-card': 'Card rows (message list)',
   'backtop-threshold': 'Visibility threshold (`top`)',
   'backtop-icon-style': 'Icon styling & stacking',
   'collapse-accordion': 'Accordion mode (`accordion`)',

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swipe-action 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swipe-action-mp-basic.vue';
-import Demo1 from './demos/swipe-action-mp-before-close.vue';
+import Demo1 from './demos/swipe-action-mp-card.vue';
 import Demo2 from './demos/swipe-action-mp-both-sides.vue';
-import Demo3 from './demos/swipe-action-mp-custom-style.vue';
+import Demo3 from './demos/swipe-action-mp-before-close.vue';
 import Demo4 from './demos/swipe-action-mp-disabled.vue';
+import Demo5 from './demos/swipe-action-mp-custom-style.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -17,36 +18,51 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :desc="'侧滑菜单'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('关闭拦截（before-close）', 'Close guard (`before-close`)')"
-          badge="before-close"
+          :title="t('浮卡行（消息列表）', 'Card rows (message list)')"
+          badge="card"
+          inset
         />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" />
+        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
+        <DemoModuleHead
+          :title="t('关闭拦截（before-close）', 'Close guard (`before-close`)')"
+          badge="before-close"
+          inset
+        />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
+        <DemoModuleHead
+          :title="t('禁用（disabled）', 'Disabled (`disabled`)')"
+          badge="disabled"
+          inset
+        />
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" inset />
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>
@@ -55,7 +71,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -69,6 +85,21 @@ const { t } = useDemoUi();
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
+}
+
+/* swipe-action：场景模块透明变体——滑动行是浮卡形态（组件不画背景，卡片与操作钮的表面由
+ * 行内容自绘）：白卡底会与行卡片双重叠加，且滑开露出的操作钮之间需要
+ * 露出页面画布。去掉卡底与描边，行卡片直接浮在页面画布上，标题行也
+ * 落在画布上。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.module {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .module__body {
