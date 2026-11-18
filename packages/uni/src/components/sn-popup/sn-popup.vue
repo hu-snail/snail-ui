@@ -34,10 +34,18 @@
  *     "pull down to dismiss" direction, so the prop is inert there.
  *   - While the finger is down the panel follows it through an inline
  *     transform (transition off); on release past the distance/velocity
- *     threshold the sheet closes, otherwise it springs back. The keyframe
- *     animation class is gated to enter/leave legs so it never fights the
- *     inline drag transform (`animation-fill-mode: both` would otherwise pin
- *     the panel at `translateY(0)` and swallow the gesture).
+ *     threshold the sheet closes, otherwise it springs back.
+ *
+ * ## Why the legs are transition-driven, not keyframes
+ *
+ *   The enter / leave legs animate an inline `transform` / `opacity` through a
+ *   CSS transition. A keyframe pair per name used to drive them, but the
+ *   uni-app x transformer rewrites `animation-name` into a CSS-variable
+ *   indirection whose default is unset — the panel mounted with no animation
+ *   at all on that pipeline. `transition` survives both pipelines intact
+ *   (same mechanism as sn-swipe-action / sn-floating-panel), and it composes
+ *   with the drag gesture: one transform channel, no `animation-fill-mode`
+ *   fighting the inline style.
  *
  * ## Background scroll lock (AGENTS.md §41 / uni has no `document`)
  *
@@ -188,6 +196,14 @@ const isMounted = ref(props.modelValue);
 const hasRendered = ref(props.modelValue || !props.lazyRender);
 /** Animation leg currently playing. `none` = at rest. */
 const phase = ref<'none' | 'enter' | 'leave'>('none');
+/**
+ * Whether the panel is parked at its off-screen start position for the leg
+ * that is about to run. The enter leg renders one frame in that position,
+ * then flips this to `false` on the next tick — the inline transform change is
+ * what the CSS transition animates into place. The leave leg does the reverse:
+ * it flips this to `true` and lets the transition carry the panel away.
+ */
+const atStart = ref(false);
 /** Duration of the current leg (exposed to CSS as a custom property). */
 const durationMs = ref(resolveDuration(props.duration, 'enter'));
 
@@ -221,8 +237,6 @@ const DRAG_FLING_VELOCITY = 0.6;
 const dragState = ref<'idle' | 'dragging' | 'settling' | 'closing'>('idle');
 /** Current drag offset in px — applied to the panel as an inline transform. */
 const dragY = ref(0);
-/** The running leave leg was started by a drag release (skip the keyframes). */
-let leaveFromDrag = false;
 /**
  * Set while the close emitted from a drag release is still in flight — the
  * controlled `v-model` sync arrives through the watcher one flush later and
@@ -242,7 +256,6 @@ let dragVelocity = 0;
 function resetDrag(): void {
   dragState.value = 'idle';
   dragY.value = 0;
-  leaveFromDrag = false;
 }
 
 /** Read the vertical point out of a uni / DOM touch event (§floating-panel). */
@@ -314,11 +327,13 @@ function settleBack(): void {
 function beginDragClose(): void {
   clearTimer();
   const token = ++generation;
-  leaveFromDrag = true;
   dragState.value = 'closing';
   emit('before-leave');
   durationMs.value = resolveDuration(props.duration, 'leave');
   phase.value = 'leave';
+  // The panel is already at the dragged offset; parking `atStart` carries it
+  // the rest of the way off-screen through the drag-closing transition.
+  atStart.value = true;
   emit('leave');
   emit('update:modelValue', false);
   emit('close');
@@ -363,16 +378,26 @@ async function enter(): Promise<void> {
   durationMs.value = resolveDuration(props.duration, 'enter');
   isMounted.value = true;
   hasRendered.value = true;
+  // Frame 1: mount at the off-screen start with no transition. Frame 2: drop
+  // to the rest position; the transition carries it in.
+  atStart.value = true;
   phase.value = 'enter';
   await nextTick();
   // A leave started while we were waiting for the tick — abandon this leg.
   if (token !== generation) return;
   emit('enter');
   if (durationMs.value <= 0) {
+    atStart.value = false;
     phase.value = 'none';
     emit('after-enter');
     return;
   }
+  // A second tick guarantees the start frame was painted before the flip;
+  // without it a fast mount can batch both states into one paint and the
+  // transition never runs.
+  await nextTick();
+  if (token !== generation) return;
+  atStart.value = false;
   timer = setTimeout(() => {
     timer = null;
     if (token !== generation) return;
@@ -391,6 +416,9 @@ function leave(): void {
   emit('before-leave');
   durationMs.value = resolveDuration(props.duration, 'leave');
   phase.value = 'leave';
+  // Park the panel off-screen; the transition carries it away from wherever
+  // it currently is (rest or a dragged offset).
+  atStart.value = true;
   emit('leave');
   if (durationMs.value <= 0) finishLeave();
   else
@@ -469,16 +497,10 @@ function onTouchMove(event: Event): void {
 const rootClass = computed(() => [
   'sn-popup',
   `sn-popup--${props.position}`,
-  // Keyframes only while an enter/leave leg owns the panel. A rest state with
-  // no animation lets the inline drag transform work (fill-mode `both` would
-  // otherwise pin the panel at the `to` frame and swallow the gesture), and
-  // re-adding the class on leave restarts it exactly from the rest position.
-  ...(phase.value !== 'none' && !leaveFromDrag
-    ? [`sn-popup--anim-${animationName.value}` as const]
-    : []),
   {
     'sn-popup--round': props.round,
     'sn-popup--safe-bottom': props.safeAreaInsetBottom,
+    'sn-popup--animating': phase.value !== 'none',
     'sn-popup--leaving': phase.value === 'leave',
     'sn-popup--dragging': dragState.value === 'dragging',
     'sn-popup--drag-settling': dragState.value === 'settling',
@@ -495,18 +517,70 @@ const rootStyle = computed(() =>
   [`z-index: ${props.zIndex}`, `--sn-popup-duration: ${durationMs.value}ms`].join('; '),
 );
 
+/**
+ * The panel's parked position for the current leg, in CSS terms.
+ *
+ * `fade*` names only shift a token distance; `slide*` / `zoom*` move the whole
+ * panel out of / into frame. `null` = no transform at rest.
+ */
+const startTransform = computed<string | null>(() => {
+  switch (animationName.value) {
+    case 'slide-up':
+      return 'translateY(100%)';
+    case 'slide-down':
+      return 'translateY(-100%)';
+    case 'slide-left':
+      return 'translateX(100%)';
+    case 'slide-right':
+      return 'translateX(-100%)';
+    case 'zoom-in':
+      return 'scale(0.8)';
+    case 'zoom-out':
+      return 'scale(1.2)';
+    case 'fade-up':
+      return 'translateY(24rpx)';
+    case 'fade-down':
+      return 'translateY(-24rpx)';
+    case 'fade-left':
+      return 'translateX(24rpx)';
+    case 'fade-right':
+      return 'translateX(-24rpx)';
+    default:
+      return null;
+  }
+});
+
+/** The parked position hides the panel — `fade` and the zoom pair do too. */
+const startOpacity = computed(() => (startTransform.value === null || animationName.value.startsWith('zoom') ? 0 : 1));
+
 /** `custom-style` styles the panel itself (mirrors wd-popup `custom-style`). */
 const panelStyle = computed(() => {
   const parts = [props.customStyle];
+  // The drag gesture owns the transform while it is in flight.
+  const dragOwnsTransform =
+    dragState.value === 'dragging' ||
+    dragState.value === 'settling' ||
+    dragState.value === 'closing';
   if (dragState.value === 'dragging' || dragState.value === 'settling') {
     parts.push(`transform: translateY(${dragY.value}px)`);
   } else if (dragState.value === 'closing') {
     parts.push('transform: translateY(100%)');
+  } else if (atStart.value && startTransform.value !== null) {
+    parts.push(`transform: ${startTransform.value}`);
+  }
+  if (!dragOwnsTransform) {
+    const parked = atStart.value;
+    parts.push(`opacity: ${parked ? startOpacity.value : 1}`);
   }
   return parts.filter(Boolean).join('; ') || undefined;
 });
 
-const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefined));
+const modalStyle = computed(() => {
+  const parts = [props.modalStyle];
+  // The scrim fades with the panel on both legs.
+  if (phase.value !== 'none') parts.push(`opacity: ${atStart.value ? 0 : 1}`);
+  return parts.filter(Boolean).join('; ') || undefined;
+});
 </script>
 
 <template>
@@ -605,7 +679,8 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   height: 100%;
   /* Scrim token — dark-mode aware, no light fallback (§112 / CONTRIBUTING §6). */
   background-color: var(--sn-mp-color-background-overlay);
-  animation: sn-popup-fade var(--sn-popup-duration) ease both;
+  /* The scrim fades with the panel; `opacity` is driven inline per leg. */
+  transition: opacity var(--sn-popup-duration) ease;
 }
 
 /* ── Panel ─────────────────────────────────────────────────────────────── */
@@ -623,11 +698,19 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   line-height: var(--sn-mp-font-line-height-normal);
   /* Float the layer off the page (same slot as sn-fab / sn-floating-panel). */
   box-shadow: var(--sn-mp-shadow-lg);
-  animation-duration: var(--sn-popup-duration);
-  /* Enter leg: decelerate into place — a sheet that rises fast then glides
-   * to rest reads natural; a symmetric `ease` reads mechanical. */
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-fill-mode: both;
+  /* Enter / leave legs animate the inline transform + opacity. Enter
+   * decelerates into place (a sheet that rises fast then glides to rest reads
+   * natural; a symmetric `ease` reads mechanical); leave accelerates away —
+   * the reverse of an ease-out exit starts fast and stalls. */
+  transition:
+    transform var(--sn-popup-duration) cubic-bezier(0.22, 1, 0.36, 1),
+    opacity var(--sn-popup-duration) ease;
+}
+
+/* A leg with no duration (`duration: false`) must not animate at all. */
+.sn-popup--animating .sn-popup__panel,
+.sn-popup--animating .sn-popup__modal {
+  will-change: transform, opacity;
 }
 
 .sn-popup--center .sn-popup__panel {
@@ -691,14 +774,22 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
 
 /* ── Drag handle (additive `draggable`, bottom sheets) ─────────────────── */
 
+/* Sits in the panel's top padding band (40rpx tall, matching the bottom
+ * sheet's padding-top) so the bar clears the content below and the whole band
+ * is a comfortable pull target. `top: 12rpx` is the requested gap from the
+ * panel edge. */
 .sn-popup__grabber {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  /* Full-width hit zone riding the panel's top padding; the bar itself is a
-   * narrow centered pill. */
-  height: 48rpx;
-  margin: -16rpx 0 8rpx;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40rpx;
+  padding-top: 12rpx;
+  z-index: 2;
 }
 
 .sn-popup__grabber-bar {
@@ -708,63 +799,24 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   background-color: var(--sn-mp-color-border-default);
 }
 
-/* ── Animations ─────────────────────────────────────────────────────────
- * One keyframe pair per name: the enter leg plays it forwards, the leave leg
- * plays the same keyframe in reverse — so enter / leave stay symmetric
- * without duplicating every keyframe.
+/* ── Animation legs ─────────────────────────────────────────────────────
+ * Every leg animates the inline transform / opacity (set from the script per
+ * leg) through the panel's transition. Keyframes used to drive this, but the
+ * uni-app x transformer rewrites `animation-name` into an unset CSS-variable
+ * indirection — the sheet mounted with no animation on that pipeline.
  */
 
-.sn-popup--anim-fade .sn-popup__panel {
-  animation-name: sn-popup-fade;
-}
-.sn-popup--anim-fade-up .sn-popup__panel {
-  animation-name: sn-popup-fade-up;
-}
-.sn-popup--anim-fade-down .sn-popup__panel {
-  animation-name: sn-popup-fade-down;
-}
-.sn-popup--anim-fade-left .sn-popup__panel {
-  animation-name: sn-popup-fade-left;
-}
-.sn-popup--anim-fade-right .sn-popup__panel {
-  animation-name: sn-popup-fade-right;
-}
-.sn-popup--anim-slide-up .sn-popup__panel {
-  animation-name: sn-popup-slide-up;
-}
-.sn-popup--anim-slide-down .sn-popup__panel {
-  animation-name: sn-popup-slide-down;
-}
-.sn-popup--anim-slide-left .sn-popup__panel {
-  animation-name: sn-popup-slide-left;
-}
-.sn-popup--anim-slide-right .sn-popup__panel {
-  animation-name: sn-popup-slide-right;
-}
-.sn-popup--anim-zoom-in .sn-popup__panel {
-  animation-name: sn-popup-zoom-in;
-}
-.sn-popup--anim-zoom-out .sn-popup__panel {
-  animation-name: sn-popup-zoom-out;
-}
-
-.sn-popup--leaving .sn-popup__panel,
-.sn-popup--leaving .sn-popup__modal {
-  animation-direction: reverse;
-}
-
-/* Leave leg: accelerate away (the reverse of an ease-out enter starts fast
- * and stalls — an exit should start slow and commit). */
-.sn-popup--leaving .sn-popup__panel,
-.sn-popup--leaving .sn-popup__modal {
-  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+/* Leave: accelerate away — the reverse of an ease-out exit starts fast and
+ * stalls, while an exit should start slow and commit. */
+.sn-popup--leaving .sn-popup__panel {
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
 
 /* ── Drag gesture legs ───────────────────────────────────────────────────
  * While the finger is down the panel tracks it with no transition; on
  * release the same inline transform is animated by a transition — settle
  * decelerates back to rest, close accelerates off-screen (mirrors the
- * keyframe legs above).
+ * enter / leave legs above).
  */
 
 .sn-popup--dragging .sn-popup__panel {
@@ -779,114 +831,10 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
   transition: transform var(--sn-popup-duration) cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* At rest: no animation, node parked off-screen for `hideWhenClose=false`. */
+/* At rest: node parked off-screen for `hideWhenClose=false`. */
 .sn-popup--hidden {
   visibility: hidden;
   pointer-events: none;
 }
-.sn-popup--hidden .sn-popup__panel,
-.sn-popup--hidden .sn-popup__modal {
-  animation: none;
-}
 
-@keyframes sn-popup-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes sn-popup-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(24rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes sn-popup-fade-down {
-  from {
-    opacity: 0;
-    transform: translateY(-24rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes sn-popup-fade-left {
-  from {
-    opacity: 0;
-    transform: translateX(24rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes sn-popup-fade-right {
-  from {
-    opacity: 0;
-    transform: translateX(-24rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-@keyframes sn-popup-slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-@keyframes sn-popup-slide-down {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-@keyframes sn-popup-slide-left {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-@keyframes sn-popup-slide-right {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-@keyframes sn-popup-zoom-in {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-@keyframes sn-popup-zoom-out {
-  from {
-    opacity: 0;
-    transform: scale(1.2);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 </style>

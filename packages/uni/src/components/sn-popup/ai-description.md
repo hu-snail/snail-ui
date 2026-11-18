@@ -51,6 +51,11 @@ import { SnPopup } from '@snui/uni';
 | `customClass`         | `string`                                                                                                                                                      | `''`       | no       | Custom class for the root node.                                               |
 | `customStyle`         | `string`                                                                                                                                                      | `''`       | no       | Custom inline style for the panel.                                            |
 
+**Animation mechanism:** the enter / leave legs animate an inline `transform` +
+`opacity` through a CSS transition (not keyframes — the uni-app x transformer
+rewrites `animation-name` into an unset CSS-variable indirection, which left
+the sheet mounting with no animation on that pipeline).
+
 **Not implemented (documented divergence):** `root-portal` — uni-app
 miniprogram has no portal host, so a popup inside a transformed ancestor
 cannot be reparented to the page root.

@@ -32,9 +32,10 @@ describe('sn-popup', () => {
   });
 
   /**
-   * Mount closed, then open — the enter leg is what carries the anim class
-   * (an already-open first paint renders at rest with no animation, matching
-   * the onMounted contract).
+   * Mount closed, then open — the enter leg is what carries the animation
+   * (an already-open first paint renders at rest, matching the onMounted
+   * contract). The leg is transition-driven: the first frame parks the panel
+   * at its off-screen start, the next tick drops it to rest.
    */
   async function mountOpened(props: Record<string, unknown> = {}) {
     const wrapper = mount(SnPopup, { props: { modelValue: false, ...props } });
@@ -43,10 +44,15 @@ describe('sn-popup', () => {
     return wrapper;
   }
 
-  it('defaults to the center anchor with the fade animation', async () => {
+  /** The panel's style attribute ('' when unset). */
+  const panelStyle = (w: ReturnType<typeof mount>): string =>
+    w.find('.sn-popup__panel').attributes('style') ?? '';
+
+  it('defaults to the center anchor and fades the panel in', async () => {
     const wrapper = await mountOpened();
     expect(wrapper.classes()).toContain('sn-popup--center');
-    expect(wrapper.classes()).toContain('sn-popup--anim-fade');
+    // A fade parks on opacity only — no transform offset.
+    expect(panelStyle(wrapper)).toContain('opacity: 0');
   });
 
   it('applies the anchor-specific class for each position', () => {
@@ -56,18 +62,18 @@ describe('sn-popup', () => {
     }
   });
 
-  it('picks a slide animation that matches the anchor by default', async () => {
+  it('slides the panel in from the edge its anchor implies', async () => {
     const bottom = await mountOpened({ position: 'bottom' });
-    expect(bottom.classes()).toContain('sn-popup--anim-slide-up');
+    expect(panelStyle(bottom)).toContain('translateY(100%)');
 
     const right = await mountOpened({ position: 'right' });
-    expect(right.classes()).toContain('sn-popup--anim-slide-left');
+    expect(panelStyle(right)).toContain('translateX(100%)');
   });
 
   it('lets `transition` override the anchor default', async () => {
     const wrapper = await mountOpened({ position: 'bottom', transition: 'zoom-in' });
-    expect(wrapper.classes()).toContain('sn-popup--anim-zoom-in');
-    expect(wrapper.classes()).not.toContain('sn-popup--anim-slide-up');
+    expect(panelStyle(wrapper)).toContain('scale(0.8)');
+    expect(panelStyle(wrapper)).not.toContain('translateY(100%)');
   });
 
   it('renders the close button only when closable', () => {
@@ -317,44 +323,49 @@ describe('sn-popup', () => {
     expect(wrapper.attributes('data-snui-component')).toBe('popup');
   });
 
-  it('maps the top and left anchors to their default slide animations', async () => {
+  it('maps the top and left anchors to their own slide directions', async () => {
     const top = await mountOpened({ position: 'top' });
-    expect(top.classes()).toContain('sn-popup--anim-slide-down');
+    expect(panelStyle(top)).toContain('translateY(-100%)');
 
     const left = await mountOpened({ position: 'left' });
-    expect(left.classes()).toContain('sn-popup--anim-slide-right');
+    expect(panelStyle(left)).toContain('translateX(-100%)');
   });
 
-  it('applies the anim class for every supported transition name', async () => {
-    const names = [
-      'fade',
-      'fade-up',
-      'fade-down',
-      'fade-left',
-      'fade-right',
-      'slide-up',
-      'slide-down',
-      'slide-left',
-      'slide-right',
-      'zoom-in',
-      'zoom-out',
-    ] as const;
-    for (const name of names) {
+  it('parks the panel for every supported transition name', async () => {
+    const expected: Record<string, string> = {
+      fade: 'opacity: 0',
+      'fade-up': 'translateY(24rpx)',
+      'fade-down': 'translateY(-24rpx)',
+      'fade-left': 'translateX(24rpx)',
+      'fade-right': 'translateX(-24rpx)',
+      'slide-up': 'translateY(100%)',
+      'slide-down': 'translateY(-100%)',
+      'slide-left': 'translateX(100%)',
+      'slide-right': 'translateX(-100%)',
+      'zoom-in': 'scale(0.8)',
+      'zoom-out': 'scale(1.2)',
+    };
+    for (const [name, parked] of Object.entries(expected)) {
       const wrapper = await mountOpened({ transition: name });
-      expect(wrapper.classes()).toContain(`sn-popup--anim-${name}`);
+      expect(panelStyle(wrapper)).toContain(parked);
     }
   });
 
-  it('drops the anim class once the enter leg settles (drag transform owns the panel)', async () => {
+  it('settles at rest once the enter leg ends', async () => {
     vi.useFakeTimers();
     try {
       const wrapper = mount(SnPopup, { props: { modelValue: false, duration: 100 } });
       await wrapper.setProps({ modelValue: true });
+      // enter() paints the parked frame, then flips on the following tick —
+      // the leg timer starts after that second tick.
       await wrapper.vm.$nextTick();
-      expect(wrapper.classes()).toContain('sn-popup--anim-fade');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).toContain('sn-popup--animating');
       vi.advanceTimersByTime(100);
       await wrapper.vm.$nextTick();
-      expect(wrapper.classes()).not.toContain('sn-popup--anim-fade');
+      expect(wrapper.classes()).not.toContain('sn-popup--animating');
+      expect(panelStyle(wrapper)).toContain('opacity: 1');
+      expect(panelStyle(wrapper)).not.toContain('scale(');
     } finally {
       vi.useRealTimers();
     }

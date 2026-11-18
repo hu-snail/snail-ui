@@ -128,6 +128,51 @@ describe('sn-calendar', () => {
     });
   });
 
+  describe('footer visibility', () => {
+    it('hides the whole footer when showFooter is off', () => {
+      const w = mountCalendar({ showFooter: false });
+      expect(w.find('.sn-calendar__footer').exists()).toBe(false);
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(false);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(false);
+      // The grid itself stays.
+      expect(w.find('.sn-calendar-view').exists()).toBe(true);
+    });
+  });
+
+  describe('confirmOnSelect', () => {
+    it('writes v-model and closes as soon as a single day is tapped', async () => {
+      const w = mountCalendar({ confirmOnSelect: true });
+      await dayCells(w)[9]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getDate()).toBe(10);
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('waits for both ends of a range before closing', async () => {
+      const w = mountCalendar({ type: 'daterange', confirmOnSelect: true });
+      await dayCells(w)[2]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      await dayCells(w)[5]?.trigger('tap');
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('stays open after a single tap when the option is off', async () => {
+      const w = mountCalendar();
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+
+    it('honours a beforeConfirm veto even on select', async () => {
+      const w = mountCalendar({ confirmOnSelect: true, beforeConfirm: () => false });
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+  });
+
   describe('confirm / cancel', () => {
     it('writes v-model on confirm (deferred mode)', async () => {
       const w = mountCalendar();

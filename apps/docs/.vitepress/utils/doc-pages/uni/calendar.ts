@@ -166,6 +166,18 @@ import { Calendar } from '@snui/uni';
       { name: 'zIndex', type: 'number', default: '15', desc: '弹层层级' },
       { name: 'showConfirm', type: 'boolean', default: 'true', desc: '渲染确认按钮。' },
       { name: 'confirmText', type: 'string', default: "'确定'", desc: 'Confirm button label.' },
+      {
+        name: 'showFooter',
+        type: 'boolean',
+        default: 'true',
+        desc: '渲染底栏（取消 / 确认区）——**AUI 追加**，`false` 时连顶部分割线一起隐藏',
+      },
+      {
+        name: 'confirmOnSelect',
+        type: 'boolean',
+        default: 'false',
+        desc: '选中即确认并关闭（单日 / 月份立即生效；区间等两端选齐）——**AUI 追加**',
+      },
       { name: 'shortcuts', type: 'CalendarShortcut[]', default: '() => []', desc: '快捷选项 chip' },
       { name: 'safeAreaInsetBottom', type: 'boolean', default: 'true', desc: '底部安全区留白' },
       {

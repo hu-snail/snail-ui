@@ -106,6 +106,18 @@ const props = withDefaults(
     showConfirm?: boolean;
     /** Confirm button label. */
     confirmText?: string;
+    /**
+     * 渲染底栏（取消 / 确认按钮区）。`false` 时整条底栏连同顶部分割线一起
+     * 不渲染——配合 `confirmOnSelect` 得到「点选即完成」的轻量选择器
+     * （additive，AGENTS.md §112.3a）。
+     */
+    showFooter?: boolean;
+    /**
+     * 选中即确认：单日 / 月份类型点选后立刻写回 `v-model` 并关闭弹层，不需要
+     * 底栏确认（additive）。区间 / 多选类型要等选区完成才触发，见
+     * `isSelectionComplete`。
+     */
+    confirmOnSelect?: boolean;
     /** Preset chips shown above the grid. */
     shortcuts?: CalendarShortcut[];
     /** Pad the sheet for the device safe area. */
@@ -178,6 +190,8 @@ const props = withDefaults(
     closeOnClickModal: true,
     zIndex: 15,
     showConfirm: true,
+    showFooter: true,
+    confirmOnSelect: false,
     confirmText: '确定',
     shortcuts: () => [],
     safeAreaInsetBottom: true,
@@ -252,6 +266,23 @@ function onViewChange(payload: { value: CalendarValue }): void {
   if (props.immediateChange) emit('update:modelValue', payload.value);
   else draft.value = payload.value;
   emit('change', payload);
+  if (props.confirmOnSelect && isSelectionComplete(payload.value)) void onConfirm();
+}
+
+/**
+ * Whether a selection is finished, for `confirmOnSelect`.
+ *
+ * Single-value types complete on one tap; `dates` and the range types need a
+ * second interaction (a second day / a pending start needs its end), so they
+ * wait for the shape the mode promises instead of closing on the first tap.
+ */
+function isSelectionComplete(value: CalendarValue): boolean {
+  if (Array.isArray(value)) {
+    // A range is complete with both ends; a multi-select set is complete as
+    // soon as it holds anything (each further tap is a separate intent).
+    return props.type === 'dates' ? value.length > 0 : value.length === 2;
+  }
+  return typeof value === 'number';
 }
 
 function requestClose(): void {
@@ -371,7 +402,7 @@ const viewClass = computed(() => props.customViewClass);
         @change="onViewChange"
       />
 
-      <view class="sn-calendar__footer">
+      <view v-if="props.showFooter" class="sn-calendar__footer">
         <!-- Empty slot containers stay out of the tree: a rendered-but-empty
              flex child still eats one `gap` on its side, pushing the action
              buttons off the calendar grid's gutters. -->
@@ -448,9 +479,10 @@ const viewClass = computed(() => props.customViewClass);
   display: flex;
   align-items: center;
   gap: var(--sn-mp-spacing-3);
-  /* Horizontal inset mirrors the calendar data area (weeks / panel both use
-   * spacing-3) so the buttons line up with the rendered grid columns. */
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-3);
+  /* No horizontal padding: the top rule is the footer's own border, which
+   * spans the sheet's content width — the action buttons must end exactly on
+   * that rule's two ends. */
+  padding: var(--sn-mp-spacing-3) 0;
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
