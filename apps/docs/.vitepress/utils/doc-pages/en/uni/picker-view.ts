@@ -89,6 +89,21 @@ import { PickerView } from '@snui/uni';
       blurb: 'The wheel mode swaps in a rounded pill selection band with a distance fade, shared across columns.',
     },
     {
+      name: 'picker-view-mp-icons',
+      title: 'Icon options (`#option` slot)',
+      blurb: 'The scoped `option` slot replaces row content: icon + label, the active row turns theme-colored.',
+    },
+    {
+      name: 'picker-view-mp-band',
+      title: 'Band theme (`--sn-picker-view-wheel-band`)',
+      blurb: 'customStyle overrides the band color and radius variables — one-line reskin.',
+    },
+    {
+      name: 'picker-view-mp-slots',
+      title: 'Time slots (`#option` slot + distance)',
+      blurb: 'The slot draws a dashed box per row with a solid theme border on the active row and a distance fade.',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
       blurb:

@@ -71,6 +71,11 @@ import { WheelPicker } from '@snui/uni';
       title: '滑动震动开关（`vibrateShort`）',
       blurb: 'vibrateShort 默认 true；传 false 静音滑动。真机对比感受（App / 小程序）。',
     },
+    {
+      name: 'wheel-picker-mp-reminder',
+      title: '提醒弹层组装（`sn-popup` 组合）',
+      blurb: 'sn-popup + 自定义标题行 + wheel 滚轮 + 块级确认按钮，组装提醒时间弹层。',
+    },
   ],
   props: {
     hint: [],

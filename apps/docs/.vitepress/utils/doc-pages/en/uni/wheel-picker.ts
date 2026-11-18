@@ -60,6 +60,11 @@ import { WheelPicker } from '@snui/uni';
       title: 'Slide haptic switch (`vibrateShort`)',
       blurb: '`vibrateShort` defaults to true; pass false for a silent slide. Compare on device (App / MP).',
     },
+    {
+      name: 'wheel-picker-mp-reminder',
+      title: 'Reminder sheet assembly (`sn-popup`)',
+      blurb: 'sn-popup + custom header + wheel roller + block confirm button assembles a reminder-time sheet.',
+    },
   ],
   props: {
     hint: [],

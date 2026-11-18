@@ -91,6 +91,21 @@ import { PickerView } from '@snui/uni';
       blurb: 'wheel 模式换装圆角胶囊高亮带 + 远行淡出，多列共享同一条带。',
     },
     {
+      name: 'picker-view-mp-icons',
+      title: '图标选项（`#option` 插槽）',
+      blurb: '#option 作用域插槽自定义行内容：图标 + 文字，选中行转主题色。',
+    },
+    {
+      name: 'picker-view-mp-band',
+      title: '胶囊带主题（`--sn-picker-view-wheel-band`）',
+      blurb: 'customStyle 覆盖高亮带底色与圆角变量，一行换肤。',
+    },
+    {
+      name: 'picker-view-mp-slots',
+      title: '时间槽（`#option` 插槽 + distance）',
+      blurb: '插槽画每行虚线时间槽盒，选中行实线主题框，远行按 distance 淡出。',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: '根节点样式（`customClass` / `customStyle`）',
       blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',
