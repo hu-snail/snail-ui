@@ -38,7 +38,7 @@ const both = ref<'left' | 'close' | 'right'>('close');
           <view class="sw-pill sw-pill--soft">
             <view class="sw-pill__content">
               <SnIcon :icon="Bell" :size="20" />
-              <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+              <text class="sw-pill__label">Mute</text>
             </view>
 </view>
           <view class="sw-pill sw-pill--danger">
@@ -131,7 +131,8 @@ const both = ref<'left' | 'close' | 'right'>('close');
 }
 
 .sw-pill--soft {
-  background-color: var(--sn-mp-color-background-soft);
+  background-color: var(--sn-mp-color-control-unchecked);
+  color: var(--sn-mp-color-text-primary);
 }
 
 .sw-pill--danger {
@@ -140,10 +141,5 @@ const both = ref<'left' | 'close' | 'right'>('close');
 
 .sw-pill__label {
   font-size: 22rpx;
-}
-
-/* The neutral pill has no on-primary pairing — use the primary text color. */
-.sw-pill__label--muted {
-  color: var(--sn-mp-color-text-primary);
 }
 </style>

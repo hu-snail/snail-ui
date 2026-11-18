@@ -54,7 +54,7 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
             <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'a')">
               <view class="sw-pill__content">
                 <SnIcon :icon="Bell" :size="20" />
-                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+                <text class="sw-pill__label">Mute</text>
               </view>
             </view>
             <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'a')">
@@ -83,7 +83,7 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
             <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'b')">
               <view class="sw-pill__content">
                 <SnIcon :icon="Bell" :size="20" />
-                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+                <text class="sw-pill__label">Mute</text>
               </view>
             </view>
             <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'b')">
@@ -111,7 +111,7 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
             <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'c')">
               <view class="sw-pill__content">
                 <SnIcon :icon="Bell" :size="20" />
-                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+                <text class="sw-pill__label">Mute</text>
               </view>
             </view>
             <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'c')">
@@ -139,7 +139,7 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
             <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'd')">
               <view class="sw-pill__content">
                 <SnIcon :icon="Bell" :size="20" />
-                <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+                <text class="sw-pill__label">Mute</text>
               </view>
             </view>
             <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'd')">
@@ -232,7 +232,8 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
 }
 
 .sw-pill--soft {
-  background-color: var(--sn-mp-color-background-soft);
+  background-color: var(--sn-mp-color-control-unchecked);
+  color: var(--sn-mp-color-text-primary);
 }
 
 .sw-pill--danger {
@@ -252,10 +253,6 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
 
 .sw-pill__label {
   font-size: 22rpx;
-}
-
-.sw-pill__label--muted {
-  color: var(--sn-mp-color-text-primary);
 }
 
 .sw-meta {

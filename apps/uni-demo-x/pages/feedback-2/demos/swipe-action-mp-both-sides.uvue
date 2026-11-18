@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:6fb1f008653f6765 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:41c43938c58de50e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swipe-action (uni-end) — left + right action areas (#left / #right slots).
@@ -36,7 +36,7 @@ const both = ref<'left' | 'close' | 'right'>('close');
           <view class="sw-pill sw-pill--soft">
             <view class="sw-pill__content">
               <SnIcon :icon="Bell" :size="20" />
-              <text class="sw-pill__label sw-pill__label--muted">静音</text>
+              <text class="sw-pill__label">静音</text>
             </view>
 </view>
           <view class="sw-pill sw-pill--danger">
@@ -128,7 +128,8 @@ const both = ref<'left' | 'close' | 'right'>('close');
 }
 
 .sw-pill--soft {
-  background-color: var(--sn-mp-color-background-soft);
+  background-color: var(--sn-mp-color-control-unchecked);
+  color: var(--sn-mp-color-text-primary);
 }
 
 .sw-pill--danger {
@@ -137,10 +138,5 @@ const both = ref<'left' | 'close' | 'right'>('close');
 
 .sw-pill__label {
   font-size: 22rpx;
-}
-
-/* 中性胶囊上没有 on-primary 关系，文字用主文本色。 */
-.sw-pill__label--muted {
-  color: var(--sn-mp-color-text-primary);
 }
 </style>
