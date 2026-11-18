@@ -88,8 +88,6 @@ const multiText = computed(() => {
       title="Single date"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -100,8 +98,6 @@ const multiText = computed(() => {
       confirm-text="Apply range"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -111,8 +107,6 @@ const multiText = computed(() => {
       title="Multiple dates"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

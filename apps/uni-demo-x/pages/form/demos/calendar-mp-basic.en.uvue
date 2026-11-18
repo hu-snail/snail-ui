@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue sha256:aada375d3f324d30 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue sha256:430148ebf35ad5f3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — cell entry row for the sheet calendar.
@@ -41,8 +41,6 @@ const formatted = computed(() => {
       :min-date="min"
       :max-date="max"
       title="Pick a date"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

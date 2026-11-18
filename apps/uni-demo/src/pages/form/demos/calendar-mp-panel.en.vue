@@ -49,8 +49,6 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
       switch-mode="year-month"
       :duration="320"
       custom-view-class="sn-demo__panel"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

@@ -4,15 +4,16 @@ import Demo0 from './demos/calendar-mp-basic.vue';
 import Demo1 from './demos/calendar-mp-card.vue';
 import Demo2 from './demos/calendar-mp-declared-props.vue';
 import Demo3 from './demos/calendar-mp-first-day-of-week.vue';
-import Demo4 from './demos/calendar-mp-formatter.vue';
-import Demo5 from './demos/calendar-mp-header.vue';
-import Demo6 from './demos/calendar-mp-immediate-change.vue';
-import Demo7 from './demos/calendar-mp-lunar.vue';
-import Demo8 from './demos/calendar-mp-panel.vue';
-import Demo9 from './demos/calendar-mp-range-constraints.vue';
-import Demo10 from './demos/calendar-mp-sheet-chrome.vue';
-import Demo11 from './demos/calendar-mp-shortcuts-events.vue';
-import Demo12 from './demos/calendar-mp-shortcuts-range.vue';
+import Demo4 from './demos/calendar-mp-footer.vue';
+import Demo5 from './demos/calendar-mp-formatter.vue';
+import Demo6 from './demos/calendar-mp-header.vue';
+import Demo7 from './demos/calendar-mp-immediate-change.vue';
+import Demo8 from './demos/calendar-mp-lunar.vue';
+import Demo9 from './demos/calendar-mp-panel.vue';
+import Demo10 from './demos/calendar-mp-range-constraints.vue';
+import Demo11 from './demos/calendar-mp-sheet-chrome.vue';
+import Demo12 from './demos/calendar-mp-shortcuts-events.vue';
+import Demo13 from './demos/calendar-mp-shortcuts-range.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -66,17 +67,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('单元格格式化（formatter）', 'Cell formatting (formatter)')"
-          badge="formatter"
+          :title="t('底栏形态（取消开关 / 无底栏）', 'Footer shapes (cancel toggle / no footer)')"
+          badge="footer"
         />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
+        <DemoModuleHead
+          :title="t('单元格格式化（formatter）', 'Cell formatting (formatter)')"
+          badge="formatter"
+        />
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -85,13 +95,13 @@ const { t } = useDemoUi();
           badge="immediate-change"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
         <view class="module__body">
-          <Demo7 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
@@ -105,7 +115,7 @@ const { t } = useDemoUi();
           badge="panel"
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo9 />
         </view>
       </view>
       <view class="module">
@@ -119,7 +129,7 @@ const { t } = useDemoUi();
           badge="range-constraints"
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo10 />
         </view>
       </view>
       <view class="module">
@@ -128,7 +138,7 @@ const { t } = useDemoUi();
           badge="sheet-chrome"
         />
         <view class="module__body">
-          <Demo10 />
+          <Demo11 />
         </view>
       </view>
       <view class="module">
@@ -142,13 +152,13 @@ const { t } = useDemoUi();
           badge="shortcuts-events"
         />
         <view class="module__body">
-          <Demo11 />
+          <Demo12 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('shortcuts-range', 'Shortcuts Range')" badge="shortcuts-range" />
         <view class="module__body">
-          <Demo12 />
+          <Demo13 />
         </view>
       </view>
     </view>

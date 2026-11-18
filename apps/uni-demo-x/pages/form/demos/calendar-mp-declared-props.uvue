@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue sha256:210a76fddf32eec7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue sha256:d5f48b5a7dcf3997 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 声明对齐参数（timeFilter / hideSecond 等）。
@@ -51,8 +51,6 @@ const innerFormat = '自定义区间回显';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

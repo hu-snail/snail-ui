@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-header.en.vue sha256:ae376398a9170ded —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-header.en.vue sha256:ba2a489b43d42573 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — sheet header slot (`header`, additive; AGENTS.md §112.3a).
@@ -63,8 +63,6 @@ const dayCount = computed(() => {
       immediate-change
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     >
       <template #header>
         <view class="sn-demo__sheet-head">

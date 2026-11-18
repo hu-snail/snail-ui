@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue sha256:fdbd991a5065006c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue sha256:6f558e91ae436066 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — lunar captions (`show-lunar`, additive): a lunar day name
@@ -45,8 +45,6 @@ const text = computed(() => {
       :max-date="max"
       title="Pick a date"
       show-lunar
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

@@ -165,6 +165,12 @@ import { Calendar } from '@snui/uni';
       { name: 'closeOnClickModal', type: 'boolean', default: 'true', desc: '点击遮罩关闭' },
       { name: 'zIndex', type: 'number', default: '15', desc: '弹层层级' },
       { name: 'showConfirm', type: 'boolean', default: 'true', desc: '渲染确认按钮。' },
+      {
+        name: 'showCancel',
+        type: 'boolean',
+        default: 'true',
+        desc: '渲染取消按钮——**AUI 追加**；`false` 时底栏只剩确认按钮并由它独占整行（块级按钮）',
+      },
       { name: 'confirmText', type: 'string', default: "'确定'", desc: 'Confirm button label.' },
       {
         name: 'showFooter',

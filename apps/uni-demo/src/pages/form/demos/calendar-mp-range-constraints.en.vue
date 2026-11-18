@@ -56,8 +56,6 @@ const rangeText = computed(() => {
       range-prompt="You can only pick 7 days"
       allow-same-day
       default-time="08:00:00"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

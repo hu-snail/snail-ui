@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-basic.vue sha256:f06da5582c3e77a3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-basic.vue sha256:83652d2e6c7fb633 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 弹层日历的 cell 入口行。
@@ -40,8 +40,6 @@ const formatted = computed(() => {
       :min-date="min"
       :max-date="max"
       title="选择日期"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

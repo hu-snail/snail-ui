@@ -44,8 +44,6 @@ const instantText = computed(() => fmtStamp(instant.value));
       :min-date="min"
       :max-date="max"
       immediate-change
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

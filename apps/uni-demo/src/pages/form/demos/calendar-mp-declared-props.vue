@@ -53,8 +53,6 @@ const innerFormat = '自定义区间回显';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

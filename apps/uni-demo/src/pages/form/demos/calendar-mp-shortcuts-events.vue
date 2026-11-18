@@ -53,8 +53,6 @@ const guard = (payload: number | number[] | null) => payload !== null;
       :on-shortcuts-click="onShortcut"
       :before-confirm="guard"
       confirm-text="确定区间"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

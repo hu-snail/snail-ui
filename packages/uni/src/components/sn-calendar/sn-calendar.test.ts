@@ -137,6 +137,50 @@ describe('sn-calendar', () => {
       // The grid itself stays.
       expect(w.find('.sn-calendar-view').exists()).toBe(true);
     });
+
+    it('renders both buttons by default', () => {
+      const w = mountCalendar();
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(true);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
+    });
+
+    it('drops only the cancel button when showCancel is off', () => {
+      const w = mountCalendar({ showCancel: false });
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(false);
+      // The footer and the confirm button stay — confirm now spans the row.
+      expect(w.find('.sn-calendar__footer').exists()).toBe(true);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
+    });
+
+    it('hides the footer entirely when both buttons are off', () => {
+      const w = mountCalendar({ showCancel: false, showConfirm: false });
+      expect(w.find('.sn-calendar__footer').exists()).toBe(false);
+    });
+  });
+
+  describe('commit timing', () => {
+    it('keeps a draft until confirm when a footer is present', async () => {
+      const w = mountCalendar();
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+
+    it('commits and closes on pick when there is no footer', async () => {
+      const w = mountCalendar({ showFooter: false });
+      await dayCells(w)[9]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getDate()).toBe(10);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('still waits for confirm when the cancel button alone is removed', async () => {
+      const w = mountCalendar({ showCancel: false });
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      await w.find('.sn-calendar__confirm').trigger('tap');
+      expect(w.emitted('update:modelValue')).toHaveLength(1);
+    });
   });
 
   describe('confirmOnSelect', () => {

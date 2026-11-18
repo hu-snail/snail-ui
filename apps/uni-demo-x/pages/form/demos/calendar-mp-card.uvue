@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-card.vue sha256:61a58b5ce7070abb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-card.vue sha256:37fe4e27c1b53c82 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 卡片形态入口（cells card 形态）。
@@ -85,8 +85,6 @@ const multiText = computed(() => {
       title="单日"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -97,8 +95,6 @@ const multiText = computed(() => {
       confirm-text="确定区间"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -108,8 +104,6 @@ const multiText = computed(() => {
       title="多个日期"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

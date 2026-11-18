@@ -52,8 +52,6 @@ const formattedText = computed(() => fmtDate(formatted.value));
       :min-date="min"
       :max-date="max"
       :formatter="cellFormatter"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

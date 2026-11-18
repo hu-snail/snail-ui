@@ -55,8 +55,6 @@ const rangeText = computed(() => {
       range-prompt="最多只能选 7 天"
       allow-same-day
       default-time="08:00:00"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

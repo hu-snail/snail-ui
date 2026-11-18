@@ -1,0 +1,105 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar — footer shapes (cancel toggle / whole-footer toggle).
+ *
+ * Three entry rows, one footer configuration each:
+ * - default: cancel + confirm share the footer;
+ * - `show-cancel=false`: cancel is gone, confirm spans the row as a block button;
+ * - `show-footer=false`: no footer (and no rule) at all — a pick writes v-model
+ *   and closes immediately.
+ */
+import { computed, ref } from 'vue';
+import { Calendar, Check, X } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const both = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const openBoth = ref(false);
+
+const blockConfirm = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const openBlock = ref(false);
+
+const noFooter = ref<number | number[] | null>(null);
+const openNoFooter = ref(false);
+
+function fmtStamp(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const bothText = computed(() => fmtStamp(both.value));
+const blockText = computed(() => fmtStamp(blockConfirm.value));
+const noFooterText = computed(() => fmtStamp(noFooter.value));
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCell
+      title="Cancel + confirm"
+      :value="bothText"
+      placeholder="Not selected"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="openBoth = true"
+    />
+    <SnCell
+      title="Confirm only (block button)"
+      :value="blockText"
+      placeholder="Not selected"
+      :prefix-icon-data="Check"
+      is-link
+      @click="openBlock = true"
+    />
+    <SnCell
+      title="No footer (commit on pick)"
+      :value="noFooterText"
+      placeholder="Not selected"
+      :prefix-icon-data="X"
+      is-link
+      @click="openNoFooter = true"
+    />
+
+    <SnCalendar
+      v-model="both"
+      v-model:visible="openBoth"
+      type="date"
+      title="Cancel + confirm"
+      :min-date="min"
+      :max-date="max"
+    />
+
+    <SnCalendar
+      v-model="blockConfirm"
+      v-model:visible="openBlock"
+      type="date"
+      title="Confirm only"
+      :min-date="min"
+      :max-date="max"
+      :show-cancel="false"
+      confirm-text="Done"
+    />
+
+    <SnCalendar
+      v-model="noFooter"
+      v-model:visible="openNoFooter"
+      type="date"
+      title="No footer"
+      :min-date="min"
+      :max-date="max"
+      :show-footer="false"
+    />
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+</style>

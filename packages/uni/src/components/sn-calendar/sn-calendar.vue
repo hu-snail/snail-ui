@@ -104,6 +104,11 @@ const props = withDefaults(
     zIndex?: number;
     /** Render the confirm button. */
     showConfirm?: boolean;
+    /**
+     * 渲染取消按钮。`false` 时底栏只剩确认按钮，由 `flex: 1` 独占整行，
+     * 成为一个块级按钮（additive，AGENTS.md §112.3a）。
+     */
+    showCancel?: boolean;
     /** Confirm button label. */
     confirmText?: string;
     /**
@@ -190,6 +195,7 @@ const props = withDefaults(
     closeOnClickModal: true,
     zIndex: 15,
     showConfirm: true,
+    showCancel: true,
     showFooter: true,
     confirmOnSelect: false,
     confirmText: '确定',
@@ -266,8 +272,18 @@ function onViewChange(payload: { value: CalendarValue }): void {
   if (props.immediateChange) emit('update:modelValue', payload.value);
   else draft.value = payload.value;
   emit('change', payload);
-  if (props.confirmOnSelect && isSelectionComplete(payload.value)) void onConfirm();
+  if (commitsOnSelect.value && isSelectionComplete(payload.value)) void onConfirm();
 }
+
+/**
+ * Whether a pick commits and closes on its own.
+ *
+ * Two ways to get there: `confirmOnSelect` explicitly, or no footer at all —
+ * without a confirm button there is nothing left to press, so a completed
+ * selection must write `v-model` itself. With a footer the sheet stays a
+ * draft-until-confirm flow: rolling only updates the draft.
+ */
+const commitsOnSelect = computed(() => props.confirmOnSelect || !props.showFooter);
 
 /**
  * Whether a selection is finished, for `confirmOnSelect`.
@@ -402,7 +418,13 @@ const viewClass = computed(() => props.customViewClass);
         @change="onViewChange"
       />
 
-      <view v-if="props.showFooter" class="sn-calendar__footer">
+      <view
+        v-if="
+          props.showFooter &&
+          (props.showCancel || props.showConfirm || $slots['confirm-left'] || $slots['confirm-right'])
+        "
+        class="sn-calendar__footer"
+      >
         <!-- Empty slot containers stay out of the tree: a rendered-but-empty
              flex child still eats one `gap` on its side, pushing the action
              buttons off the calendar grid's gutters. -->
@@ -411,6 +433,7 @@ const viewClass = computed(() => props.customViewClass);
         </view>
         <view class="sn-calendar__actions">
           <SnButton
+            v-if="props.showCancel"
             custom-class="sn-calendar__cancel"
             :type="props.cancelType"
             :variant="props.cancelVariant"

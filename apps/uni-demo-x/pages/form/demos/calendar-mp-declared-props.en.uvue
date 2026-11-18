@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.en.vue sha256:e3cbee02fcd9ce15 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-declared-props.en.vue sha256:9806763423b1c6d2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — parity placeholder props (timeFilter / hideSecond etc.).
@@ -52,8 +52,6 @@ const innerFormat = 'Custom range echo';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

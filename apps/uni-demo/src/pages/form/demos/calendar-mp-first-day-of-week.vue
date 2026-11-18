@@ -44,8 +44,6 @@ const mondayText = computed(() => fmtDate(mondayFirst.value));
       :first-day-of-week="1"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

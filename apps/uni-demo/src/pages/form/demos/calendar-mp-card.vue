@@ -87,8 +87,6 @@ const multiText = computed(() => {
       title="单日"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -99,8 +97,6 @@ const multiText = computed(() => {
       confirm-text="确定区间"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
 
     <SnCalendar
@@ -110,8 +106,6 @@ const multiText = computed(() => {
       title="多个日期"
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

@@ -43,8 +43,6 @@ const formatted = computed(() => {
       :min-date="min"
       :max-date="max"
       title="Pick a date"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

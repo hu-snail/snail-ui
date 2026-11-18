@@ -66,8 +66,6 @@ const onShortcut = (shortcut: { text: string }) => {
       title="选择区间"
       confirm-text="就用它"
       :on-shortcuts-click="onShortcut"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

@@ -54,8 +54,6 @@ const innerFormat = 'Custom range echo';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

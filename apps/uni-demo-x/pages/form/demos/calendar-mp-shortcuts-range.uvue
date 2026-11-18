@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue sha256:465ff550cf575383 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue sha256:d90d9ac4cc35647f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 快捷选项与区间（sn-cell 承载入口与回显）。
@@ -64,8 +64,6 @@ const onShortcut = (shortcut: { text: string }) => {
       title="选择区间"
       confirm-text="就用它"
       :on-shortcuts-click="onShortcut"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

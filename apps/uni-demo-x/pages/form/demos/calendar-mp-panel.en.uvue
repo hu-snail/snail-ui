@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue sha256:9bd967b79294da16 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue sha256:34a899c3d26d3edd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — panel size and switcher (panelHeight / switchMode).
@@ -47,8 +47,6 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
       switch-mode="year-month"
       :duration="320"
       custom-view-class="sn-demo__panel"
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>

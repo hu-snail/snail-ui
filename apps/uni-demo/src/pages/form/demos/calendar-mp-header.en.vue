@@ -65,8 +65,6 @@ const dayCount = computed(() => {
       immediate-change
       :min-date="min"
       :max-date="max"
-      :show-footer="false"
-      confirm-on-select
     >
       <template #header>
         <view class="sn-demo__sheet-head">

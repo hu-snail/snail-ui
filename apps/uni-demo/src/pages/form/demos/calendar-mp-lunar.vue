@@ -44,8 +44,6 @@ const text = computed(() => {
       :max-date="max"
       title="选择日期"
       show-lunar
-      :show-footer="false"
-      confirm-on-select
     />
   </view>
 </template>
