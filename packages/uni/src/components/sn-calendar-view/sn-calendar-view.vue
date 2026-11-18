@@ -400,12 +400,40 @@ function onCellTap(cell: Cell): void {
 
 /* ── Navigation (month / year-month switch modes) ──────────────────────── */
 
-const activeMonthIndex = ref(0);
+/**
+ * Index of the month the sheet opens on: the selected value's month, else
+ * today's month, clamped to the nearest exposed month when either falls
+ * outside the bounds. Without this the sheet always opened on the first month
+ * of the range, so a value months in the future sat off-screen.
+ */
+function initialMonthIndex(): number {
+  const blocks = monthBlocks.value;
+  if (blocks.length === 0) return 0;
+  const selected = selection.value[0];
+  const parts = toParts(typeof selected === 'number' ? selected : now);
+  const exact = blocks.findIndex(
+    (block) => block.year === parts.year && block.month === parts.month,
+  );
+  if (exact >= 0) return exact;
+  // Out of range: clamp to the nearest end (target before the range → first,
+  // after it → last).
+  const first = blocks[0];
+  if (first === undefined) return 0;
+  const before = parts.year < first.year || (parts.year === first.year && parts.month < first.month);
+  return before ? 0 : blocks.length - 1;
+}
+
+const activeMonthIndex = ref(initialMonthIndex());
 
 /** `scroll-into-view` target for the active month. */
 const scrollIntoViewId = computed(() => {
-  if (props.switchMode === 'none') return '';
-  const block = monthBlocks.value[activeMonthIndex.value];
+  const blocks = monthBlocks.value;
+  const block =
+    props.switchMode === 'none'
+      ? // Flat mode renders every month in one scroller — scroll to the same
+        // month the switch modes open on.
+        blocks[initialMonthIndex()]
+      : blocks[activeMonthIndex.value];
   return block ? `sn-calendar-view-month-${block.key}` : '';
 });
 

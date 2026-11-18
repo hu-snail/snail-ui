@@ -355,12 +355,28 @@ function onShortcutTap(shortcut: CalendarShortcut): void {
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
+/**
+ * `sn-calendar-popup` carries the chrome overrides for this sheet. The panel
+ * itself must not scroll: the grid already lives in its own `scroll-view`, and
+ * a second scroll container on the panel let a stray touch shift the whole
+ * sheet (title, weeks row and footer scrolled out of place). `overflow: hidden`
+ * hands every scroll gesture to the grid.
+ */
 const popupClass = computed(() =>
   ['sn-calendar-popup', props.customClass].filter(Boolean).join(' '),
 );
 
-/** Forwarded to sn-popup — a string, so `exactOptionalPropertyTypes` stays happy. */
-const rootStyle = computed(() => props.customStyle);
+/**
+ * Inline style for the popup panel (sn-popup's `custom-style`).
+ *
+ * `overflow: hidden` is load-bearing: the grid owns the only scroll area, and
+ * the panel's default `overflow: auto` let a drag shift the whole sheet —
+ * title, weeks row and footer slid out of the panel's frame. Host `customStyle`
+ * is appended last so it can still override.
+ */
+const rootStyle = computed(() =>
+  ['overflow: hidden', props.customStyle].filter(Boolean).join('; '),
+);
 
 const viewClass = computed(() => props.customViewClass);
 </script>
