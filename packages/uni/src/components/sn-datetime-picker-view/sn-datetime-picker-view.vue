@@ -688,6 +688,10 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__roller {
+  /* Above the wheel band (z0) so the opaque pill never covers the selected
+     label, below the fade masks (z2) which must stay over the text. */
+  position: relative;
+  z-index: 1;
   /* Settle only — the length scales with the distance to the snapped row. */
   transition: transform var(--sn-datetime-picker-view-settle-duration, 180ms)
     cubic-bezier(0.22, 1, 0.36, 1);
@@ -726,7 +730,9 @@ const ariaValue = computed(() => {
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   pointer-events: none;
-  z-index: 2;
+  /* Behind the roller text: the wheel band is an opaque fill and would
+     otherwise hide the selected label. */
+  z-index: 0;
 }
 
 .sn-datetime-picker-view__mask {
@@ -735,7 +741,8 @@ const ariaValue = computed(() => {
   right: 0;
   height: var(--sn-datetime-picker-view-mask-height);
   pointer-events: none;
-  z-index: 1;
+  /* Over the text — these gradients are what fade the far rows out. */
+  z-index: 2;
 }
 
 .sn-datetime-picker-view__mask--top {

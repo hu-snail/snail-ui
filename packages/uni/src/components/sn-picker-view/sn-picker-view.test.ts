@@ -8,6 +8,8 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import SnPickerView from './sn-picker-view.vue';
 import { PICKER_DRAG_CLOCK_INJECT } from './sn-picker-view-drag';
 import type { PickerViewChangePayload } from './sn-picker-view-types';
@@ -647,6 +649,21 @@ describe('sn-picker-view', () => {
       expect(rows[0]?.text()).toBe('0:apple:false:1');
       expect(rows[1]?.text()).toBe('1:banana:true:0');
       expect(rows[2]?.text()).toBe('2:cherry:false:1');
+    });
+  });
+
+  describe('wheel z-stack (additive, regression)', () => {
+    it('paints the band behind the text and the fade masks over it', () => {
+      // happy-dom cannot reproduce paint order; the z-stack is anchored on the
+      // source (same pattern as sn-calendar's flex contract). Regression: the
+      // opaque wheel band sat at z-index 2 and hid the selected label.
+      const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
+      const stack = source.slice(source.indexOf('.sn-picker-view__indicator {'));
+      expect(stack).toMatch(/\.sn-picker-view__indicator \{[^}]*z-index: 0/s);
+      expect(stack).toMatch(/\.sn-picker-view__mask \{[^}]*z-index: 2/s);
+      expect(source).toMatch(
+        /\.sn-picker-view__roller \{\n[^}]*position: relative;\n {2}z-index: 1;/,
+      );
     });
   });
 

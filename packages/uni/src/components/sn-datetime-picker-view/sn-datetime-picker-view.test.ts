@@ -9,6 +9,8 @@
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import SnDatetimePickerView from './sn-datetime-picker-view.vue';
 import { PICKER_DRAG_CLOCK_INJECT } from '../sn-picker-view/sn-picker-view-drag';
 
@@ -289,6 +291,21 @@ describe('sn-datetime-picker-view', () => {
       expect(items[4]?.classes()).toContain('sn-datetime-picker-view__item--active');
       expect(items[4]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
       expect(items[6]?.classes()).toContain('sn-datetime-picker-view__item--far');
+    });
+  });
+
+  describe('wheel z-stack (additive, regression)', () => {
+    it('paints the band behind the text and the fade masks over it', () => {
+      // happy-dom cannot reproduce paint order; the z-stack is anchored on the
+      // source (same pattern as sn-calendar's flex contract). Regression: the
+      // opaque wheel band sat at z-index 2 and hid the selected label.
+      const source = readFileSync(resolve(__dirname, 'sn-datetime-picker-view.vue'), 'utf8');
+      const stack = source.slice(source.indexOf('.sn-datetime-picker-view__indicator {'));
+      expect(stack).toMatch(/\.sn-datetime-picker-view__indicator \{[^}]*z-index: 0/s);
+      expect(stack).toMatch(/\.sn-datetime-picker-view__mask \{[^}]*z-index: 2/s);
+      expect(source).toMatch(
+        /\.sn-datetime-picker-view__roller \{\n[^}]*position: relative;\n {2}z-index: 1;/,
+      );
     });
   });
 

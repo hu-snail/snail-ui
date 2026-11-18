@@ -1,12 +1,13 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/swipe-action.vue sha256:30445a63e044da9e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/swipe-action.vue sha256:b4bb8d8c2fa60d6c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swipe-action 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swipe-action-mp-basic.uvue';
 import Demo1 from './demos/swipe-action-mp-card.uvue';
-import Demo2 from './demos/swipe-action-mp-both-sides.uvue';
-import Demo3 from './demos/swipe-action-mp-before-close.uvue';
-import Demo4 from './demos/swipe-action-mp-disabled.uvue';
-import Demo5 from './demos/swipe-action-mp-custom-style.uvue';
+import Demo2 from './demos/swipe-action-mp-cell-group.uvue';
+import Demo3 from './demos/swipe-action-mp-both-sides.uvue';
+import Demo4 from './demos/swipe-action-mp-before-close.uvue';
+import Demo5 from './demos/swipe-action-mp-disabled.uvue';
+import Demo6 from './demos/swipe-action-mp-custom-style.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -34,9 +35,19 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
+        <DemoModuleHead
+          :title="t('列表组（cell 风格）', 'List group (cell style)')"
+          badge="cell-group"
+          inset
+        />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
       <view class="module">
@@ -46,7 +57,7 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
         </view>
       </view>
       <view class="module">
@@ -56,13 +67,13 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo5 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" inset />
         <view class="module__body">
-          <Demo5 />
+          <Demo6 />
         </view>
       </view>
     </view>

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue sha256:54cb8c9036bf6901 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue sha256:736c1521acc03956 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swipe-action (uni-end) — left + right action areas, EN copy.
@@ -23,22 +23,28 @@ const both = ref<'left' | 'close' | 'right'>('close');
       <template #left>
         <view class="sw-pillbar sw-pillbar--left">
           <view class="sw-pill sw-pill--success">
-            <SnIcon :icon="Eye" :size="20" />
-            <text class="sw-pill__label">Read</text>
-          </view>
+            <view class="sw-pill__content sw-pill__content--left">
+              <SnIcon :icon="Eye" :size="20" />
+              <text class="sw-pill__label">Read</text>
+            </view>
+</view>
         </view>
       </template>
 
       <template #right>
         <view class="sw-pillbar">
           <view class="sw-pill sw-pill--soft">
-            <SnIcon :icon="Bell" :size="20" />
-            <text class="sw-pill__label sw-pill__label--muted">Mute</text>
-          </view>
+            <view class="sw-pill__content">
+              <SnIcon :icon="Bell" :size="20" />
+              <text class="sw-pill__label sw-pill__label--muted">Mute</text>
+            </view>
+</view>
           <view class="sw-pill sw-pill--danger">
-            <SnIcon :icon="Trash" :size="20" />
-            <text class="sw-pill__label">Delete</text>
-          </view>
+            <view class="sw-pill__content">
+              <SnIcon :icon="Trash" :size="20" />
+              <text class="sw-pill__label">Delete</text>
+            </view>
+</view>
         </view>
       </template>
     </SnSwipeAction>
@@ -98,14 +104,23 @@ const both = ref<'left' | 'close' | 'right'>('close');
 
 .sw-pill {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
   width: 136rpx;
   height: 132rpx;
   border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+/* 图标 + 名称随遮挡距离渐显 / 渐隐（组件经 CSS var 发布进度，200ms 缓动跟手）。 */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
 }
 
 .sw-pill--success {

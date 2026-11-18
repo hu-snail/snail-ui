@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1466 |
+| .uvue 产出 | 1468 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2062 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2070 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -312,6 +312,8 @@
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.en.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: computed
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: ref
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-cell-group.en.vue: ref
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-cell-group.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: ref
@@ -2132,6 +2134,8 @@
 - pages/feedback-2/demos/swipe-action-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/swipe-action-mp-card.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/swipe-action-mp-card.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-cell-group.en.vue: [template-attr] 8 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-cell-group.vue: [template-attr] 8 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2160,7 +2164,7 @@
 - pages/feedback-2/popup.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/progress.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/skeleton.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/feedback-2/swipe-action.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/swipe-action.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/toast.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/form/calendar-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form/calendar.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue

@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:f7498f541f237e58 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:05faa83e46dd8eb3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -684,7 +684,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滑动操作',
         titleEn: 'Swipe Action',
         desc: '侧滑菜单',
-        count: 6,
+        count: 7,
       },
       {
         key: 'toast',
