@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-number-mp-long-press.vue sha256:9e3e8507a9bf3a0c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input-number — 长按连加（longPress）：按住按钮连续加减。 */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
+const value = ref(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnInputNumber v-model="value" :min="0" :max="100" long-press />
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+}
+</style>

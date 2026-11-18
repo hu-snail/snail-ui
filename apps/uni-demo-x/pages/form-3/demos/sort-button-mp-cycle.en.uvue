@@ -1,0 +1,20 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/sort-button-mp-cycle.en.vue sha256:debd6b18ce85fd30 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-sort-button — sort cycle: `allowReset` puts 0 back into the cycle; `descFirst` starts with descending. */
+import SnSortButton from '@snui/uni-x/components/sn-sort-button/sn-sort-button.uvue';
+const a = ref<1 | 0 | -1>(0);
+const b = ref<1 | 0 | -1>(0);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSortButton v-model="a" title="Sales" allow-reset />
+    <SnSortButton v-model="b" title="Rating" desc-first allow-reset />
+    <text class="sn-demo__meta">Sales: {{ a }} / Rating: {{ b }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

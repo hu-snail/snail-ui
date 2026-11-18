@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/textarea-mp-clearable.en.vue sha256:f8987fd7d1975c5d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-textarea — clearable: a × on the right clears the value in one tap. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
+const clearable = ref('Tap the × on the right to clear this text');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">clearable</text>
+    <SnTextarea v-model="clearable" clearable />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

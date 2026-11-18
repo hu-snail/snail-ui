@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-space.en.vue sha256:f6d902b1b351e2de —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-space.en.vue sha256:cc80cfb6a68c8291 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — English shadow of steps-mp-space.
@@ -23,9 +23,11 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

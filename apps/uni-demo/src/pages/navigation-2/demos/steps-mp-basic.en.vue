@@ -9,7 +9,7 @@ const active = ref(1);
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnSteps :active="active">
+    <SnSteps :active="active" align-center>
       <SnStep title="Order placed" description="Submitted" />
       <SnStep title="Shipped" description="In progress" />
       <SnStep title="Delivered" description="Pending" />
@@ -25,14 +25,16 @@ const active = ref(1);
 .sn-demo--column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__actions {
   display: flex;
-  gap: 8px;
+  flex-direction: row;
+  margin-top: 12px;
 }
 .sn-demo__button {
+  margin-right: 8px;
   padding: 6px 12px;
   border: 1px solid var(--sn-mp-color-border-default);
   border-radius: 8rpx;

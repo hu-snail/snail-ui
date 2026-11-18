@@ -331,7 +331,12 @@
             "navigationBarTitleText": "表单",
             "navigationStyle": "custom"
           }
-        },
+        }
+      ]
+    },
+    {
+      "root": "pages/form-2",
+      "pages": [
         {
           "path": "input",
           "style": {
@@ -360,12 +365,7 @@
             "navigationBarTitleText": "键盘面板",
             "navigationStyle": "custom"
           }
-        }
-      ]
-    },
-    {
-      "root": "pages/form-2",
-      "pages": [
+        },
         {
           "path": "picker",
           "style": {
@@ -407,7 +407,12 @@
             "navigationBarTitleText": "搜索框",
             "navigationStyle": "custom"
           }
-        },
+        }
+      ]
+    },
+    {
+      "root": "pages/form-3",
+      "pages": [
         {
           "path": "select-picker",
           "style": {
@@ -461,6 +466,13 @@
           "path": "upload",
           "style": {
             "navigationBarTitleText": "上传",
+            "navigationStyle": "custom"
+          }
+        },
+        {
+          "path": "wheel-picker",
+          "style": {
+            "navigationBarTitleText": "滚轮选择器",
             "navigationStyle": "custom"
           }
         }

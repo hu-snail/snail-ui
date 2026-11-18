@@ -1,0 +1,77 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-slider-bar — knob shapes and sizes: `knob-shape="circle"` + `knob-size`.
+ *
+ * All five knobs share one value (drag any of them and the rest follow), so the
+ * silhouettes can be compared at the exact same position:
+ * - circle: a true disc — equal width and height, 50% radius;
+ * - knob-size 56 / 32: an explicit diameter (numbers are rpx, "28px" also works);
+ * - square: a rounded square whose side equals the track thickness;
+ * - pill: a tall capsule, narrower than the track.
+ */
+import { ref } from 'vue';
+import SnSliderBar from '@snui/uni-src/components/sn-slider-bar/sn-slider-bar.vue';
+
+const volume = ref(52);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="look-head">
+      <text class="look-head__label">Circle</text>
+      <text class="look-head__value">{{ volume }}</text>
+    </view>
+    <SnSliderBar v-model="volume" knob-shape="circle" aria-label="Circle knob" />
+
+    <view class="look-head">
+      <text class="look-head__label">Circle + knob-size 56</text>
+    </view>
+    <SnSliderBar
+      v-model="volume"
+      knob-shape="circle"
+      :knob-size="56"
+      aria-label="Circle knob, 56 rpx"
+    />
+
+    <view class="look-head">
+      <text class="look-head__label">Circle + knob-size 32</text>
+    </view>
+    <SnSliderBar
+      v-model="volume"
+      knob-shape="circle"
+      :knob-size="32"
+      aria-label="Circle knob, 32 rpx"
+    />
+
+    <view class="look-head">
+      <text class="look-head__label">Square</text>
+    </view>
+    <SnSliderBar v-model="volume" knob-shape="square" aria-label="Square knob" />
+
+    <view class="look-head">
+      <text class="look-head__label">Pill</text>
+    </view>
+    <SnSliderBar v-model="volume" knob-shape="pill" aria-label="Pill knob" />
+  </view>
+</template>
+
+<style scoped>
+.look-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28rpx;
+  margin-bottom: 20rpx;
+}
+.look-head__label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--sn-mp-color-text-secondary);
+}
+.look-head__value {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

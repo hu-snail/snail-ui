@@ -1,0 +1,22 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/textarea-mp-disabled-readonly.en.vue sha256:bd5ac0b14af74fe4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-textarea — readonly & disabled: `readonly` is selectable but not editable; `disabled` locks the whole field. */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
+const readonlyValue = ref('Read-only content: selectable but not editable.');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">readonly</text>
+    <SnTextarea v-model="readonlyValue" readonly />
+
+    <text class="sn-demo__title">disabled</text>
+    <SnTextarea v-model="readonlyValue" disabled />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

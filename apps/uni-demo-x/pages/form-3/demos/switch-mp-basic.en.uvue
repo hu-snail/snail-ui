@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/switch-mp-basic.en.vue sha256:809c9d927c1e8749 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-switch — basic toggle + the change event. */
+import SnSwitch from '@snui/uni-x/components/sn-switch/sn-switch.uvue';
+const enabled = ref(false);
+const lastChange = ref('—');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSwitch v-model="enabled" @change="lastChange = String($event)" />
+    <text class="sn-demo__meta">v-model = {{ enabled }}; last change = {{ lastChange }}</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

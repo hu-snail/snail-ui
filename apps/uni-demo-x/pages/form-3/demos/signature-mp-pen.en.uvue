@@ -1,0 +1,10 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/signature-mp-pen.en.vue sha256:74188b4f9778f2f8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-signature — pen look: `penColor` overrides the stroke color and `lineWidth` sets the width. */
+import SnSignature from '@snui/uni-x/components/sn-signature/sn-signature.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSignature :line-width="4" pen-color="var(--sn-mp-color-action-primary)" />
+  </view>
+</template>

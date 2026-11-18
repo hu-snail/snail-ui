@@ -1269,6 +1269,11 @@
           "hasEn": true
         },
         {
+          "name": "calendar-mp-footer",
+          "title": "底栏形态（取消开关 / 无底栏）",
+          "hasEn": true
+        },
+        {
           "name": "calendar-mp-formatter",
           "title": "单元格格式化（formatter）",
           "hasEn": true
@@ -1668,6 +1673,11 @@
           "name": "datetime-picker-mp-time-type",
           "title": "时间类型（type=\"time\"）",
           "hasEn": true
+        },
+        {
+          "name": "datetime-picker-mp-wheel",
+          "title": "wheel 风格",
+          "hasEn": true
         }
       ]
     },
@@ -1720,6 +1730,11 @@
         {
           "name": "datetime-picker-view-mp-time-type",
           "title": "时间类型写回",
+          "hasEn": true
+        },
+        {
+          "name": "datetime-picker-view-mp-wheel",
+          "title": "wheel 风格",
           "hasEn": true
         }
       ]
@@ -1848,10 +1863,10 @@
       ]
     },
     "input": {
-      "group": "form",
+      "group": "form-2",
       "title": "输入框",
       "desc": "单行文本输入",
-      "page": "pages/form/input",
+      "page": "pages/form-2/input",
       "demos": [
         {
           "name": "input-mp-basic",
@@ -1996,10 +2011,10 @@
       ]
     },
     "input-number": {
-      "group": "form",
+      "group": "form-2",
       "title": "计数器",
       "desc": "步进数值输入",
-      "page": "pages/form/input-number",
+      "page": "pages/form-2/input-number",
       "demos": [
         {
           "name": "input-number-mp-allow-null",
@@ -2069,10 +2084,10 @@
       ]
     },
     "keyboard": {
-      "group": "form",
+      "group": "form-2",
       "title": "虚拟键盘",
       "desc": "自定义数字键盘",
-      "page": "pages/form/keyboard",
+      "page": "pages/form-2/keyboard",
       "demos": [
         {
           "name": "keyboard-mp-basic",
@@ -2122,10 +2137,10 @@
       ]
     },
     "keyboard-panel": {
-      "group": "form",
+      "group": "form-2",
       "title": "键盘面板",
       "desc": "内嵌键盘视图",
-      "page": "pages/form/keyboard-panel",
+      "page": "pages/form-2/keyboard-panel",
       "demos": [
         {
           "name": "keyboard-panel-mp-basic",
@@ -2174,6 +2189,11 @@
           "name": "picker-mp-sheet",
           "title": "弹层行为（遮罩 / 层级 / 安全区）",
           "hasEn": true
+        },
+        {
+          "name": "picker-mp-wheel",
+          "title": "wheel 风格",
+          "hasEn": true
         }
       ]
     },
@@ -2216,6 +2236,11 @@
         {
           "name": "picker-view-mp-rows",
           "title": "滚筒几何（`itemHeight` / `visibleItemCount`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-wheel",
+          "title": "wheel 风格",
           "hasEn": true
         }
       ]
@@ -2413,10 +2438,10 @@
       ]
     },
     "select-picker": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "单复选选择器",
       "desc": "单选 / 多选弹层",
-      "page": "pages/form-2/select-picker",
+      "page": "pages/form-3/select-picker",
       "demos": [
         {
           "name": "select-picker-mp-basic",
@@ -2471,10 +2496,10 @@
       ]
     },
     "signature": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "签名",
       "desc": "手写签名板",
-      "page": "pages/form-2/signature",
+      "page": "pages/form-3/signature",
       "demos": [
         {
           "name": "signature-mp-basic",
@@ -2529,10 +2554,10 @@
       ]
     },
     "slide-verify": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "滑动验证",
       "desc": "滑块拼图验证",
-      "page": "pages/form-2/slide-verify",
+      "page": "pages/form-3/slide-verify",
       "demos": [
         {
           "name": "slide-verify-mp-basic",
@@ -2572,10 +2597,10 @@
       ]
     },
     "slider": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "滑块",
       "desc": "拖拽取值滑块",
-      "page": "pages/form-2/slider",
+      "page": "pages/form-3/slider",
       "demos": [
         {
           "name": "slider-mp-basic",
@@ -2620,10 +2645,10 @@
       ]
     },
     "sort-button": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "排序按钮",
       "desc": "升降序切换按钮",
-      "page": "pages/form-2/sort-button",
+      "page": "pages/form-3/sort-button",
       "demos": [
         {
           "name": "sort-button-mp-basic",
@@ -2648,10 +2673,10 @@
       ]
     },
     "switch": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "开关",
       "desc": "布尔切换",
-      "page": "pages/form-2/switch",
+      "page": "pages/form-3/switch",
       "demos": [
         {
           "name": "switch-mp-basic",
@@ -2701,10 +2726,10 @@
       ]
     },
     "textarea": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "文本域",
       "desc": "多行文本输入",
-      "page": "pages/form-2/textarea",
+      "page": "pages/form-3/textarea",
       "demos": [
         {
           "name": "textarea-mp-auto-height",
@@ -2769,10 +2794,10 @@
       ]
     },
     "upload": {
-      "group": "form-2",
+      "group": "form-3",
       "title": "上传",
       "desc": "文件 / 图片上传",
-      "page": "pages/form-2/upload",
+      "page": "pages/form-3/upload",
       "demos": [
         {
           "name": "upload-mp-accept",
@@ -2822,6 +2847,24 @@
         {
           "name": "upload-mp-status",
           "title": "文件状态渲染（`status`）",
+          "hasEn": true
+        }
+      ]
+    },
+    "wheel-picker": {
+      "group": "form-3",
+      "title": "滚轮选择器",
+      "desc": "wheel 风格内嵌滚轮",
+      "page": "pages/form-3/wheel-picker",
+      "demos": [
+        {
+          "name": "wheel-picker-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-vibrate",
+          "title": "滑动震动",
           "hasEn": true
         }
       ]
@@ -3270,8 +3313,8 @@
           "hasEn": true
         },
         {
-          "name": "swipe-action-mp-before-close",
-          "title": "关闭拦截（before-close）",
+          "name": "swipe-action-mp-card",
+          "title": "浮卡行（消息列表）",
           "hasEn": true
         },
         {
@@ -3280,13 +3323,18 @@
           "hasEn": true
         },
         {
-          "name": "swipe-action-mp-custom-style",
-          "title": "根节点样式",
+          "name": "swipe-action-mp-before-close",
+          "title": "关闭拦截（before-close）",
           "hasEn": true
         },
         {
           "name": "swipe-action-mp-disabled",
           "title": "禁用（disabled）",
+          "hasEn": true
+        },
+        {
+          "name": "swipe-action-mp-custom-style",
+          "title": "根节点样式",
           "hasEn": true
         }
       ]
@@ -4115,6 +4163,36 @@
       "page": "pages/more/slider-bar",
       "demos": [
         {
+          "name": "slider-bar-mp-look-basic",
+          "title": "参考风格：描边圆盘（Volume）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-look-range",
+          "title": "参考风格：双柄区间",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-look-column",
+          "title": "参考风格：竖排胶囊",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-look-color",
+          "title": "参考风格：多彩变体",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-shape",
+          "title": "把手形状与尺寸（`knobShape` / `knobSize`）",
+          "hasEn": true
+        },
+        {
+          "name": "slider-bar-mp-knob-icon",
+          "title": "把手图标 × 形状（`knobIcon`）",
+          "hasEn": true
+        },
+        {
           "name": "slider-bar-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -4131,7 +4209,7 @@
         },
         {
           "name": "slider-bar-mp-theme",
-          "title": "主题（`theme`）",
+          "title": "主题预设（`theme`）",
           "hasEn": true
         },
         {

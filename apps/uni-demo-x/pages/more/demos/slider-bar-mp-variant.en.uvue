@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/more/demos/slider-bar-mp-variant.en.vue sha256:b4bd4b90bed09295 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/slider-bar-mp-variant.en.vue sha256:690ba394a88babb8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-slider-bar — 竖排：variant="column" 轨道竖起来。 */
 import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
@@ -8,15 +8,19 @@ const dimmer = ref(21);
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__title">竖排 column</text>
     <view class="sn-demo__row">
-      <SnSliderBar v-model="dimmer" variant="column" :min="15" :max="30" show-value />
-      <SnSliderBar
-        v-model="dimmer"
-        variant="column"
-        theme="aurora"
-        :min="15"
-        :max="30"
-        show-value
-      />
+      <view class="sn-demo__col">
+        <SnSliderBar v-model="dimmer" variant="column" :min="15" :max="30" show-value />
+      </view>
+      <view class="sn-demo__col">
+        <SnSliderBar
+          v-model="dimmer"
+          variant="column"
+          theme="aurora"
+          :min="15"
+          :max="30"
+          show-value
+        />
+      </view>
     </view>
   </view>
 </template>
@@ -28,8 +32,18 @@ const dimmer = ref(21);
 }
 .sn-demo__row {
   display: flex;
+  flex-direction: row;
   gap: 24rpx;
   height: 260rpx;
+}
+/* The column slider is width-constrained by its track; the cell owns the
+   horizontal space so the two strips sit side by side. */
+.sn-demo__col {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  justify-content: center;
   flex-direction: row;
 }
 </style>

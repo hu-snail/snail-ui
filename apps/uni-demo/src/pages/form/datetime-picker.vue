@@ -11,6 +11,7 @@ import Demo7 from './demos/datetime-picker-mp-roller-geometry.vue';
 import Demo8 from './demos/datetime-picker-mp-sheet-chrome.vue';
 import Demo9 from './demos/datetime-picker-mp-time-bounds.vue';
 import Demo10 from './demos/datetime-picker-mp-time-type.vue';
+import Demo11 from './demos/datetime-picker-mp-wheel.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -126,6 +127,12 @@ const { t } = useDemoUi();
         />
         <view class="module__body">
           <Demo10 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" inset />
+        <view class="module__body">
+          <Demo11 />
         </view>
       </view>
     </view>

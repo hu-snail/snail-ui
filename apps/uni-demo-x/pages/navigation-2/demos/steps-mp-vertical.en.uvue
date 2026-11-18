@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-vertical.en.vue sha256:f010ac3c93aa9742 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-vertical.en.vue sha256:7abfe1c9cf2e23eb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-steps — English shadow of steps-mp-vertical. */
 import SnSteps from '@snui/uni-x/components/sn-steps/sn-steps.uvue';
@@ -18,10 +18,11 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 .sn-demo--column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: 12px;
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }

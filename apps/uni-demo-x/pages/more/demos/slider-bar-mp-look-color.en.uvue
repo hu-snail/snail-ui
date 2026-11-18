@@ -1,0 +1,83 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/slider-bar-mp-look-color.en.vue sha256:24ae09c3fc10b794 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-slider-bar — 参考风格：多彩变体，验证把手配色 / 形状 / 轨道渐变。
+ * 对应参考图「Battery / Volume / Mood」：
+ * - Battery：彩虹填充 + 深色圆钮描绿环；
+ * - Volume：橙色填充 + 深橙圆角方钮，橙环；
+ * - Mood：紫青渐变填充 + 白色药丸钮描浅青环。
+ */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
+const battery = ref(65);
+const volume = ref(40);
+const mood = ref(70);
+
+const rainbow = 'linear-gradient(90deg, #ff4d4f 0%, #faad14 32%, #a0d911 62%, #52c41a 100%)';
+const rainbowTrack = 'linear-gradient(90deg, #ffd6d6 0%, #ffe7ba 32%, #eaffba 62%, #d9f7be 100%)';
+const moodFill = 'linear-gradient(90deg, #7c5cff 0%, #4d8dff 45%, #36cfc9 100%)';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="look-head">
+      <text class="look-head__label">Battery</text>
+      <text class="look-head__value">{{ battery }}</text>
+    </view>
+    <SnSliderBar
+      v-model="battery"
+      :fill-background="rainbow"
+      :bar-background="rainbowTrack"
+      knob-shape="square"
+      knob-radius="50%"
+      knob-color="#2b2b2b"
+      knob-border-color="#52c41a"
+      aria-label="Battery"
+    />
+
+    <view class="look-head">
+      <text class="look-head__label">Volume</text>
+      <text class="look-head__value">{{ volume }}</text>
+    </view>
+    <SnSliderBar
+      v-model="volume"
+      fill-background="#fa8c16"
+      bar-background="#ffe7ba"
+      knob-shape="square"
+      knob-color="#46210a"
+      knob-border-color="#f59e0b"
+      aria-label="Volume"
+    />
+
+    <view class="look-head">
+      <text class="look-head__label">Mood</text>
+      <text class="look-head__value">{{ mood }}</text>
+    </view>
+    <SnSliderBar
+      v-model="mood"
+      :fill-background="moodFill"
+      knob-shape="pill"
+      :thickness="64"
+      knob-border-color="#e6fffb"
+      aria-label="Mood"
+    />
+  </view>
+</template>
+<style scoped>
+.look-head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+  margin-bottom: 20rpx;
+}
+.look-head__label {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+.look-head__value {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

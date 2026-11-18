@@ -1,0 +1,22 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-composition.vue sha256:4b27d2802deb9e74 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — 输入合成（ignoreCompositionEvent）：ignoreCompositionEvent=false 时合成期间也触发 input。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const composing = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput
+      v-model="composing"
+      :ignore-composition-event="false"
+      placeholder="中文输入时逐字同步"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

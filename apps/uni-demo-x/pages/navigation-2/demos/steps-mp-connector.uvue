@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-connector.vue sha256:dc8fddb2f7cca4c0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-connector.vue sha256:2b89ad05f8ba9965 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — 连接线类型（solid / dashed / dotted）。
@@ -13,21 +13,21 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label">connector="solid"（默认直线）</text>
-    <SnSteps :active="1">
+    <SnSteps :active="1" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
     </SnSteps>
 
     <text class="sn-demo__label">connector="dashed"（虚线）</text>
-    <SnSteps :active="1" connector="dashed">
+    <SnSteps :active="1" connector="dashed" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
     </SnSteps>
 
     <text class="sn-demo__label">connector="dotted"（点线）</text>
-    <SnSteps :active="1" connector="dotted">
+    <SnSteps :active="1" connector="dotted" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
@@ -45,11 +45,12 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-4);
   width: 100%;
 }
 
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__label {
+  margin: var(--sn-mp-spacing-4) 0 var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

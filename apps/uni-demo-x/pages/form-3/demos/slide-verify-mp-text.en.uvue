@@ -1,0 +1,10 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/slide-verify-mp-text.en.vue sha256:89dfa4da52eed73d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-slide-verify — copy: `text` / `successText` override the built-in hint and success copy. */
+import SnSlideVerify from '@snui/uni-x/components/sn-slide-verify/sn-slide-verify.uvue';
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnSlideVerify text="Hold and drag to the right" success-text="Verified" />
+  </view>
+</template>

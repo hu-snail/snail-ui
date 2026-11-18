@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1429 |
+| .uvue 产出 | 1458 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2052 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2050 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -308,6 +308,10 @@
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue: ref
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.en.vue: computed
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.en.vue: ref
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: computed
+- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.vue: ref
 - ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: ref
@@ -336,6 +340,10 @@
 - ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.en.vue: ref
 - ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: computed
 - ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: ref
+- ../uni-demo/src/pages/form/demos/calendar-mp-footer.en.vue: computed
+- ../uni-demo/src/pages/form/demos/calendar-mp-footer.en.vue: ref
+- ../uni-demo/src/pages/form/demos/calendar-mp-footer.vue: computed
+- ../uni-demo/src/pages/form/demos/calendar-mp-footer.vue: ref
 - ../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: computed
 - ../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: ref
 - ../uni-demo/src/pages/form/demos/calendar-mp-formatter.vue: computed
@@ -529,6 +537,10 @@
 - ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.en.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.vue: ref
+- ../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.en.vue: computed
+- ../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.en.vue: ref
+- ../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.vue: computed
+- ../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: computed
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.vue: ref
@@ -549,6 +561,8 @@
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-bounds.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.en.vue: ref
 - ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.vue: ref
+- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.en.vue: ref
+- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.vue: ref
 - ../uni-demo/src/pages/form/demos/form-mp-asterisk.en.vue: reactive
 - ../uni-demo/src/pages/form/demos/form-mp-asterisk.vue: reactive
 - ../uni-demo/src/pages/form/demos/form-mp-basic.en.vue: reactive
@@ -621,100 +635,100 @@
 - ../uni-demo/src/pages/form/demos/form-mp-validation-flow.vue: ref
 - ../uni-demo/src/pages/form/demos/form-mp-value-align.en.vue: reactive
 - ../uni-demo/src/pages/form/demos/form-mp-value-align.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-align.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-align.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clear-trigger.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clear-trigger.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clearable.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clearable.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-compact.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-compact.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-composition.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-composition.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-hold.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-hold.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-type.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-count.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-count.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-selection.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-selection.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-spacing.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-spacing.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-enable-native.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-enable-native.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-focus.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-focus.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-inputmode.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-inputmode.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-keyboard-hold.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-keyboard-hold.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-password-toggle.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-password-toggle.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-placeholder.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-placeholder.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-prefix-suffix.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-prefix-suffix.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-sizes.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-sizes.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-slots.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-slots.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-status.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-status.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-types.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-types.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-word-limit.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-word-limit.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-allow-null.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-allow-null.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-before-change.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-before-change.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-hooks.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-hooks.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-timing.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-timing.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-controls.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-controls.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-long-press.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-long-press.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-round.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-round.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-step-strictly.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-step-strictly.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme-state.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme-state.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-car-custom.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-car-custom.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-close-loading.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-close-loading.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-decimal.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-decimal.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-delete-key.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-delete-key.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-idcard.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-idcard.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-labels.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-labels.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-random-order.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-random-order.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-scrim.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-scrim.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-panel-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-panel-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-align.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-align.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-clear-trigger.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-clear-trigger.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-clearable.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-clearable.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-compact.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-compact.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-composition.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-composition.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-confirm-hold.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-confirm-hold.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-confirm-type.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-confirm-type.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-count.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-count.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-cursor-selection.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-cursor-selection.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-cursor-spacing.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-cursor-spacing.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-custom-class.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-custom-class.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-enable-native.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-enable-native.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-focus.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-focus.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-inputmode.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-inputmode.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-keyboard-hold.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-keyboard-hold.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-password-toggle.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-password-toggle.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-placeholder.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-placeholder.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-prefix-suffix.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-prefix-suffix.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-sizes.en.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-sizes.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-slots.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-slots.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-status.en.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-status.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-types.en.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-types.vue: reactive
+- ../uni-demo/src/pages/form-2/demos/input-mp-word-limit.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-mp-word-limit.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-before-change.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-before-change.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-commit-hooks.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-commit-hooks.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-commit-timing.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-commit-timing.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-controls.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-controls.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-custom-class.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-custom-class.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-disabled.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-disabled.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-long-press.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-long-press.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-round.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-round.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-step-strictly.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-step-strictly.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-theme-state.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-theme-state.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-theme.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/input-number-mp-theme.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-car-custom.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-car-custom.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-close-loading.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-close-loading.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-decimal.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-decimal.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-delete-key.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-delete-key.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-idcard.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-idcard.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-labels.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-labels.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-random-order.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-random-order.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-scrim.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-mp-scrim.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-panel-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/keyboard-panel-mp-basic.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-basic.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-button-text.en.vue: ref
@@ -729,6 +743,8 @@
 - ../uni-demo/src/pages/form-2/demos/picker-mp-rows.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-sheet.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-sheet.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-mp-wheel.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-mp-wheel.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.en.vue: ref
@@ -743,6 +759,8 @@
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-wheel.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-wheel.vue: ref
 - ../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.vue: ref
 - ../uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.en.vue: ref
@@ -805,128 +823,132 @@
 - ../uni-demo/src/pages/form-2/demos/search-mp-placeholder-style.vue: ref
 - ../uni-demo/src/pages/form-2/demos/search-mp-variant.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/search-mp-variant.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-before-confirm.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-before-confirm.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-checked-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-checked-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-chip-size.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-chip-size.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-fields.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-fields.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-filterable.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-filterable.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-loading.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-loading.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-scroll-into-view.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-sheet.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-sheet.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-type-radio.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-type-radio.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-export.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-export.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-tolerance.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-tolerance.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-popover.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-popover.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-range.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-range.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-theme.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-vertical.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-vertical.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.vue: computed
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-cycle.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-cycle.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-line.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-line.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-css-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-css-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-loading.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-loading.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-shape.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-shape.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-size.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-size.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-text.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-text.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-auto-height.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-auto-height.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clear-trigger.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clear-trigger.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clearable.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clearable.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-compact.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-compact.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-disabled-readonly.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-disabled-readonly.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-error.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-error.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-placeholder.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-placeholder.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-prefix-icon.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-prefix-icon.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-word-limit.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-word-limit.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-accept.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-accept.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-before-hooks.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-before-hooks.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.en.vue: computed
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.vue: computed
-- ../uni-demo/src/pages/form-2/demos/upload-mp-image-mode.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-image-mode.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-multiple-source.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-multiple-source.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-request-method.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-request-method.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-status.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-status.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-before-confirm.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-before-confirm.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-checked-color.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-checked-color.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-chip-size.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-chip-size.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-fields.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-fields.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-filterable.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-filterable.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-loading.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-loading.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-scroll-into-view.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-sheet.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-sheet.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-type-radio.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/select-picker-mp-type-radio.vue: ref
+- ../uni-demo/src/pages/form-3/demos/signature-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/signature-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/signature-mp-export.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/signature-mp-export.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-custom-style.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-custom-style.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-icons.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-icons.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-tolerance.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slide-verify-mp-tolerance.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-color.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-color.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-custom-style.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-custom-style.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-disabled.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-disabled.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-popover.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-popover.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-range.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-range.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-theme.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-theme.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-vertical.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/slider-mp-vertical.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.en.vue: computed
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.vue: computed
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-custom-style.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-custom-style.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-cycle.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-cycle.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-line.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/sort-button-mp-line.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-color.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-color.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-css-icons.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-css-icons.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-custom-style.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-custom-style.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-icons.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-icons.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-loading.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-loading.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-shape.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-shape.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-size.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-size.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-text.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/switch-mp-text.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-auto-height.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-auto-height.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-clear-trigger.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-clear-trigger.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-clearable.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-clearable.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-compact.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-compact.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-custom-class.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-custom-class.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-disabled-readonly.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-disabled-readonly.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-error.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-error.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-mp-runtime.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-mp-runtime.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-placeholder.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-placeholder.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-prefix-icon.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-prefix-icon.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-word-limit.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/textarea-mp-word-limit.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-accept.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-accept.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-before-hooks.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-before-hooks.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-custom-style.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-custom-style.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-disabled.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-disabled.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.en.vue: computed
+- ../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.vue: computed
+- ../uni-demo/src/pages/form-3/demos/upload-mp-image-mode.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-image-mode.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-multiple-source.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-multiple-source.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-request-method.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-request-method.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-status.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/upload-mp-status.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.vue: ref
 - ../uni-demo/src/pages/index/index.vue: computed
 - ../uni-demo/src/pages/index/index.vue: ref
 - ../uni-demo/src/pages/index/index.vue: watch
@@ -946,8 +968,20 @@
 - ../uni-demo/src/pages/more/demos/paging-mp-states.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-basic.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-knob-icon.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-knob-icon.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-basic.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-basic.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-color.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-color.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-column.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-column.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-range.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-look-range.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-range.en.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-range.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-shape.en.vue: ref
+- ../uni-demo/src/pages/more/demos/slider-bar-mp-shape.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-size.en.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-size.vue: ref
 - ../uni-demo/src/pages/more/demos/slider-bar-mp-theme.en.vue: ref
@@ -2087,19 +2121,9 @@
 - pages/feedback-2/demos/skeleton-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/skeleton-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/swipe-action-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/swipe-action-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-before-close.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-before-close.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-both-sides.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
-- pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
-- pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-disabled.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-card.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-card.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2128,17 +2152,17 @@
 - pages/feedback-2/popup.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/progress.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/skeleton.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/feedback-2/swipe-action.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/swipe-action.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/toast.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/form/calendar-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form/calendar.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form/calendar.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue
 - pages/form/captcha.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/form/cascader.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form/checkbox.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/form/code-input.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/form/date-strip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/form/datetime-picker-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form/datetime-picker.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker-view.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form/demos/calendar-mp-sheet-chrome.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-mp-sheet-chrome.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-view-mp-time-props.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__calendar)"
@@ -2213,6 +2237,8 @@
 - pages/form/demos/code-input-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin--tall)"
 - pages/form/demos/code-input-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin)"
 - pages/form/demos/code-input-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin--tall)"
+- pages/form/demos/datetime-picker-mp-wheel.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/datetime-picker-mp-wheel.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/form-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
@@ -2241,69 +2267,65 @@
 - pages/form/demos/form-mp-validate.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-validation-flow.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-validation-flow.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/input-mp-prefix-suffix.en.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
-- pages/form/demos/input-mp-prefix-suffix.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
-- pages/form/demos/input-mp-slots.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/input-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-car-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-car-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-car-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-close-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-close-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-close-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-decimal.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-decimal.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-decimal.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-decimal.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-decimal.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-decimal.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-delete-key.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-delete-key.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-delete-key.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-idcard.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-idcard.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-idcard.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-idcard.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-idcard.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-idcard.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-labels.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-labels.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-labels.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-labels.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-labels.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-labels.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-random-order.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-random-order.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-random-order.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-random-order.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-random-order.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-random-order.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-scrim.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-scrim.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-scrim.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/form.vue: [import-rewrite] 25 relative .vue import(s) rewritten to .uvue
-- pages/form/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
-- pages/form/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
-- pages/form/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
-- pages/form/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/demos/input-mp-prefix-suffix.en.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
+- pages/form-2/demos/input-mp-prefix-suffix.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
+- pages/form-2/demos/input-mp-slots.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/input-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-decimal.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-decimal.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-decimal.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-idcard.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-idcard.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-idcard.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-labels.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-labels.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-labels.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-random-order.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-random-order.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-random-order.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-scrim.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2346,6 +2368,8 @@
 - pages/form-2/demos/picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/picker-mp-wheel.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-wheel.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-view-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
 - pages/form-2/demos/picker-view-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
 - pages/form-2/demos/radio-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2386,116 +2410,121 @@
 - pages/form-2/demos/search-mp-placeholder-style.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo__placeholder)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-filterable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-filterable.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-filterable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slide-verify-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
-- pages/form-2/demos/slide-verify-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
-- pages/form-2/demos/slider-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
-- pages/form-2/demos/slider-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
-- pages/form-2/demos/slider-mp-popover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-popover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/sort-button-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
-- pages/form-2/demos/sort-button-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
-- pages/form-2/demos/switch-mp-css-icons.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/switch-mp-css-icons.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/textarea-mp-prefix-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/textarea-mp-prefix-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
-- pages/form-2/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/picker-view.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
-- pages/form-2/picker.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-2/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form-2/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
+- pages/form-2/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
+- pages/form-2/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker-view.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/form-2/radio.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/form-2/rate.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/form-2/search.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form-2/select-picker.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/signature.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/slide-verify.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
-- pages/form-2/slider.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
-- pages/form-2/sort-button.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
-- pages/form-2/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form-2/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
-- pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-filterable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-filterable.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-filterable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slide-verify-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
+- pages/form-3/demos/slide-verify-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
+- pages/form-3/demos/slider-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
+- pages/form-3/demos/slider-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
+- pages/form-3/demos/slider-mp-popover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-popover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/sort-button-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
+- pages/form-3/demos/sort-button-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
+- pages/form-3/demos/switch-mp-css-icons.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/switch-mp-css-icons.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/textarea-mp-prefix-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/textarea-mp-prefix-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
+- pages/form-3/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/select-picker.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/signature.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/slide-verify.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-3/slider.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form-3/sort-button.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/form-3/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-3/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
+- pages/form-3/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/wheel-picker.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [template-attr] 10 @tap binding(s) renamed to @click
 - pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
@@ -2520,10 +2549,12 @@
 - pages/more/demos/paging-mp-states.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-states.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/more/demos/paging-mp-states.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-look-column.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-look-column.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/slider-bar-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/slider-bar-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/paging.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/more/slider-bar.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/more/slider-bar.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/navigation/backtop.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/collapse.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/demos/backtop-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2665,12 +2696,16 @@
 - pages/navigation-2/demos/sidebar-mp-scroll.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sidebar-mp-scroll.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/navigation-2/demos/steps-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/navigation-2/demos/steps-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/steps-mp-connector.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-connector.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
 - pages/navigation-2/demos/steps-mp-custom-class.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
+- pages/navigation-2/demos/steps-mp-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-icon.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-node.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-node.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/steps-mp-node.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-node.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sticky-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/sticky-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>

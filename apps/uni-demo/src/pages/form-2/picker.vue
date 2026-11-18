@@ -7,6 +7,7 @@ import Demo3 from './demos/picker-mp-fields.vue';
 import Demo4 from './demos/picker-mp-immediate.vue';
 import Demo5 from './demos/picker-mp-rows.vue';
 import Demo6 from './demos/picker-mp-sheet.vue';
+import Demo7 from './demos/picker-mp-wheel.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -92,6 +93,12 @@ const { t } = useDemoUi();
         />
         <view class="module__body">
           <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

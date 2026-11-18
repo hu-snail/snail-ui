@@ -9,6 +9,7 @@ import Demo5 from './demos/datetime-picker-view-mp-keys.vue';
 import Demo6 from './demos/datetime-picker-view-mp-roller-geometry.vue';
 import Demo7 from './demos/datetime-picker-view-mp-time-bounds.vue';
 import Demo8 from './demos/datetime-picker-view-mp-time-type.vue';
+import Demo9 from './demos/datetime-picker-view-mp-wheel.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -97,6 +98,12 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('时间类型写回', 'Time type write-back')" badge="time-type" />
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

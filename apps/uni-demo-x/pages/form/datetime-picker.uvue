@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker.vue sha256:bd5a52d5218b08dc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker.vue sha256:4218d5a1b0da1cea —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— datetime-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/datetime-picker-mp-basic.uvue';
@@ -12,6 +12,7 @@ import Demo7 from './demos/datetime-picker-mp-roller-geometry.uvue';
 import Demo8 from './demos/datetime-picker-mp-sheet-chrome.uvue';
 import Demo9 from './demos/datetime-picker-mp-time-bounds.uvue';
 import Demo10 from './demos/datetime-picker-mp-time-type.uvue';
+import Demo11 from './demos/datetime-picker-mp-wheel.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -126,6 +127,12 @@ const { t } = useDemoUi();
         />
         <view class="module__body">
           <Demo10 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" inset />
+        <view class="module__body">
+          <Demo11 />
         </view>
       </view>
     </view>

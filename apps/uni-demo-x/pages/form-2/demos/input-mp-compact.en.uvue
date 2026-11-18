@@ -1,0 +1,18 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-compact.en.vue sha256:460eab719e2a6549 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — compact inline form (compact): `compact` + `border="bottom"` (an inline row inside Cell / FormItem). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const inline = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="inline" compact border="bottom" placeholder="Inline search" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

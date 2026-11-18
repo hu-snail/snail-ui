@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker-view.vue sha256:20673b9259239813 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker-view.vue sha256:072ae8b9a114935f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— datetime-picker-view 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/datetime-picker-view-mp-basic.uvue';
@@ -10,6 +10,7 @@ import Demo5 from './demos/datetime-picker-view-mp-keys.uvue';
 import Demo6 from './demos/datetime-picker-view-mp-roller-geometry.uvue';
 import Demo7 from './demos/datetime-picker-view-mp-time-bounds.uvue';
 import Demo8 from './demos/datetime-picker-view-mp-time-type.uvue';
+import Demo9 from './demos/datetime-picker-view-mp-wheel.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -97,6 +98,12 @@ const { t } = useDemoUi();
         <DemoModuleHead :title="t('时间类型写回', 'Time type write-back')" badge="time-type" />
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:f89fa66392b93b84 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:acde7e2311b10a68 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -312,7 +312,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日历选择器',
         titleEn: 'Calendar',
         desc: '日期区间选择弹层',
-        count: 13,
+        count: 14,
       },
       {
         key: 'calendar-view',
@@ -368,7 +368,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '时间选择器',
         titleEn: 'Datetime Picker',
         desc: '日期时间弹层选择',
-        count: 11,
+        count: 12,
       },
       {
         key: 'datetime-picker-view',
@@ -376,7 +376,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '时间选择器视图',
         titleEn: 'Datetime Picker View',
         desc: '内嵌时间滚轮',
-        count: 9,
+        count: 10,
       },
       {
         key: 'form',
@@ -386,38 +386,6 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         desc: '校验与布局容器',
         count: 23,
       },
-      {
-        key: 'input',
-        group: 'form',
-        title: '输入框',
-        titleEn: 'Input',
-        desc: '单行文本输入',
-        count: 28,
-      },
-      {
-        key: 'input-number',
-        group: 'form',
-        title: '计数器',
-        titleEn: 'Input Number',
-        desc: '步进数值输入',
-        count: 13,
-      },
-      {
-        key: 'keyboard',
-        group: 'form',
-        title: '虚拟键盘',
-        titleEn: 'Keyboard',
-        desc: '自定义数字键盘',
-        count: 9,
-      },
-      {
-        key: 'keyboard-panel',
-        group: 'form',
-        title: '键盘面板',
-        titleEn: 'Keyboard Panel',
-        desc: '内嵌键盘视图',
-        count: 1,
-      },
     ],
   },
   {
@@ -426,12 +394,44 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
     labelEn: 'Form Components',
     comps: [
       {
+        key: 'input',
+        group: 'form-2',
+        title: '输入框',
+        titleEn: 'Input',
+        desc: '单行文本输入',
+        count: 28,
+      },
+      {
+        key: 'input-number',
+        group: 'form-2',
+        title: '计数器',
+        titleEn: 'Input Number',
+        desc: '步进数值输入',
+        count: 13,
+      },
+      {
+        key: 'keyboard',
+        group: 'form-2',
+        title: '虚拟键盘',
+        titleEn: 'Keyboard',
+        desc: '自定义数字键盘',
+        count: 9,
+      },
+      {
+        key: 'keyboard-panel',
+        group: 'form-2',
+        title: '键盘面板',
+        titleEn: 'Keyboard Panel',
+        desc: '内嵌键盘视图',
+        count: 1,
+      },
+      {
         key: 'picker',
         group: 'form-2',
         title: '选择器',
         titleEn: 'Picker',
         desc: '弹层多列选择',
-        count: 7,
+        count: 8,
       },
       {
         key: 'picker-view',
@@ -439,7 +439,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '选择器视图',
         titleEn: 'Picker View',
         desc: '内嵌滚轮选择',
-        count: 7,
+        count: 8,
       },
       {
         key: 'plate-input',
@@ -473,9 +473,16 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         desc: '搜索输入与联想',
         count: 9,
       },
+    ],
+  },
+  {
+    key: 'form-3',
+    label: '录入组件',
+    labelEn: 'Form Components',
+    comps: [
       {
         key: 'select-picker',
-        group: 'form-2',
+        group: 'form-3',
         title: '单复选选择器',
         titleEn: 'Select Picker',
         desc: '单选 / 多选弹层',
@@ -483,7 +490,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'signature',
-        group: 'form-2',
+        group: 'form-3',
         title: '签名',
         titleEn: 'Signature',
         desc: '手写签名板',
@@ -491,7 +498,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'slide-verify',
-        group: 'form-2',
+        group: 'form-3',
         title: '滑动验证',
         titleEn: 'Slide Verify',
         desc: '滑块拼图验证',
@@ -499,7 +506,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'slider',
-        group: 'form-2',
+        group: 'form-3',
         title: '滑块',
         titleEn: 'Slider',
         desc: '拖拽取值滑块',
@@ -507,7 +514,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'sort-button',
-        group: 'form-2',
+        group: 'form-3',
         title: '排序按钮',
         titleEn: 'Sort Button',
         desc: '升降序切换按钮',
@@ -515,7 +522,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'switch',
-        group: 'form-2',
+        group: 'form-3',
         title: '开关',
         titleEn: 'Switch',
         desc: '布尔切换',
@@ -523,7 +530,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'textarea',
-        group: 'form-2',
+        group: 'form-3',
         title: '文本域',
         titleEn: 'Textarea',
         desc: '多行文本输入',
@@ -531,11 +538,19 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
       },
       {
         key: 'upload',
-        group: 'form-2',
+        group: 'form-3',
         title: '上传',
         titleEn: 'Upload',
         desc: '文件 / 图片上传',
         count: 10,
+      },
+      {
+        key: 'wheel-picker',
+        group: 'form-3',
+        title: '滚轮选择器',
+        titleEn: 'Wheel Picker',
+        desc: 'wheel 风格内嵌滚轮',
+        count: 2,
       },
     ],
   },
@@ -669,7 +684,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滑动操作',
         titleEn: 'Swipe Action',
         desc: '侧滑菜单',
-        count: 5,
+        count: 6,
       },
       {
         key: 'toast',
@@ -890,7 +905,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: 'slider-bar',
         titleEn: 'Slider Bar',
         desc: '',
-        count: 5,
+        count: 11,
       },
     ],
   },

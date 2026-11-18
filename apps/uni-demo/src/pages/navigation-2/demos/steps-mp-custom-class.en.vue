@@ -8,7 +8,7 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnSteps :active="1" custom-class="steps-brand">
+    <SnSteps :active="1" custom-class="steps-brand" align-center>
       <SnStep title="Order" description="09:00" />
       <SnStep title="Pay" description="09:05" />
       <SnStep title="Ship" description="Pending" />
@@ -24,9 +24,11 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: var(--sn-mp-spacing-3);
   font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-tertiary);
 }
