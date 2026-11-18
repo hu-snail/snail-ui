@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-no-border.vue sha256:55154bb7e01109f2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-no-border.vue sha256:7ec44a19302a7c0e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cell-group — 无边框形态（:border="false"）。
@@ -33,7 +33,10 @@ import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
   gap: 24rpx;
   width: 100%;
 }
+/* 通栏页 demo 不再包外间距：描述行自己补回左右留白，与 cell 行内 padding
+ * （24rpx）和模块标题的 inset 对齐；贴屏边的文字会被裁。 */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

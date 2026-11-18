@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-icon.en.vue sha256:0610c4d125abd5e2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-icon.en.vue sha256:d9d5c75291782f56 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-cell — the three leading-icon sources plus size tiers and colour tokens. */
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
@@ -91,7 +91,10 @@ registerSnIcons({ 'cell-moon': MoonIcon });
   gap: 24rpx;
   width: 100%;
 }
+/* Full-bleed page: demos no longer carry outer padding — captions pad
+ * themselves back to align with cell rows (24rpx) and the module head inset. */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }
