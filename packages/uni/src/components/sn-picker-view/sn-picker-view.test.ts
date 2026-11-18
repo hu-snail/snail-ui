@@ -616,6 +616,38 @@ describe('sn-picker-view', () => {
       const w = mountView({ modelValue: ['banana'] });
       expect(w.findAll('.sn-picker-view__item--far')).toHaveLength(0);
     });
+
+    it('paints the band through the overridable wheel-band variable', () => {
+      const w = mountView({ wheel: true, customStyle: '--sn-picker-view-wheel-band: #e6f0ff' });
+      // customStyle lands on the root; the CSS var chain reaches the indicator.
+      expect(w.attributes('style')).toContain('--sn-picker-view-wheel-band: #e6f0ff');
+    });
+  });
+
+  describe('option slot (additive)', () => {
+    it('renders the label by default', () => {
+      const w = mountView();
+      expect(w.findAll('.sn-picker-view__item')[0]?.text()).toBe('apple');
+    });
+
+    it('replaces row content with the slot scope', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['banana'], columns: [FRUITS] },
+        slots: {
+          option: `
+            <template #option="{ option, active, distance, index }">
+              <text class="slot-row">{{ index }}:{{ option.label }}:{{ active }}:{{ distance }}</text>
+            </template>
+          `,
+        },
+      });
+      const rows = w.findAll('.slot-row');
+      expect(rows).toHaveLength(3);
+      // banana sits at index 1: neighbours read distance 1, the active row 0.
+      expect(rows[0]?.text()).toBe('0:apple:false:1');
+      expect(rows[1]?.text()).toBe('1:banana:true:0');
+      expect(rows[2]?.text()).toBe('2:cherry:false:1');
+    });
   });
 
   describe('vibrateShort (additive)', () => {

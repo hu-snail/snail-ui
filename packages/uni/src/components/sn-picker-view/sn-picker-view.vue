@@ -43,11 +43,20 @@
  * ## Wheel style + slide haptics (additive, AGENTS.md §112.3a)
  *
  * `wheel` swaps the hairline indicator for a rounded pill selection band with
- * an action-primary active row and a distance fade two rows out. `vibrateShort`
+ * an action-primary active row and a distance fade two rows out. The band
+ * color/paint is `var(--sn-picker-view-wheel-band, …)` on the indicator, so a
+ * caller can inject any color or gradient through `customStyle`. `vibrateShort`
  * fires `uni.vibrateShort({ type: 'light' })` on every detent the drag engine
  * crosses (see `sn-picker-view-drag` `onDetent`) — App / mini-program only,
  * tap selection and programmatic commits stay silent. `sn-wheel-picker` is
  * this component preset to `wheel` + `vibrateShort: true`.
+ *
+ * ## `#option` slot (additive)
+ *
+ * Rows render their label by default; the scoped `option` slot replaces the
+ * content per row (icons, rich text, per-row boxes) with the scope
+ * `{ option, active, distance, columnIndex, index }`. Slot styling stays with
+ * the caller — the component only lays the row out and keeps the tap target.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -68,6 +77,21 @@ import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-dra
 import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
 
 defineOptions({ name: 'SnPickerView' });
+
+defineSlots<{
+  /**
+   * Custom row content — icons, rich text, per-row boxes (additive).
+   * Scope: `option` (normalized), `active`, `distance` (rows from the
+   * selection), `columnIndex`, `index`. Falls back to the option label.
+   */
+  option?(scope: {
+    option: NormalizedPickerOption;
+    active: boolean;
+    distance: number;
+    columnIndex: number;
+    index: number;
+  }): unknown;
+}>();
 
 const props = withDefaults(
   defineProps<{
@@ -468,7 +492,15 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
-          ><text>{{ option.label }}</text></view
+          ><slot
+            name="option"
+            :option="option"
+            :active="isActive(columnIndex, rowIndex)"
+            :distance="distanceOf(columnIndex, rowIndex)"
+            :column-index="columnIndex"
+            :index="rowIndex"
+            ><text>{{ option.label }}</text></slot
+          ></view
         >
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />
@@ -585,11 +617,12 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 /* Wheel 风格（additive）— hairline 指示线换成圆角胶囊高亮带，选中行文字转
-   主题色，两行外淡出。规则放在 doodle 之后以赢下同特异性优先级。 */
+   主题色，两行外淡出。带色走 --sn-picker-view-wheel-band（background 简写，
+   调用方可注入纯色或渐变覆盖）。规则放在 doodle 之后以赢下同特异性优先级。 */
 .sn-picker-view--wheel .sn-picker-view__indicator {
   border-top-width: 0;
   border-bottom-width: 0;
-  background-color: var(--sn-mp-color-background-subtle);
+  background: var(--sn-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
   border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
 }
 
