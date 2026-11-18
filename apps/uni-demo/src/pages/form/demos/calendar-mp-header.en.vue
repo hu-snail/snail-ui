@@ -44,7 +44,6 @@ const dayCount = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Date range"
-      label="the header slot replaces the title row; summary follows the picks"
       :value="rangeText"
       placeholder="Not selected"
       :prefix-icon-data="Calendar"
@@ -66,6 +65,8 @@ const dayCount = computed(() => {
       immediate-change
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     >
       <template #header>
         <view class="sn-demo__sheet-head">

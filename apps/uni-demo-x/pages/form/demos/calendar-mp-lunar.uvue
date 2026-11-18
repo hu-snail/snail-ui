@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-lunar.vue sha256:216c45c25b1eff99 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-lunar.vue sha256:65b81aedbbc9285c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 农历角标（`show-lunar`，additive）：格子下方显示农历日名，
@@ -27,7 +27,6 @@ const text = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="农历日历"
-      label="show-lunar：格下角标，初一显示月名"
       :value="text"
       placeholder="未选择"
       :prefix-icon-data="Calendar"
@@ -44,6 +43,8 @@ const text = computed(() => {
       :max-date="max"
       title="选择日期"
       show-lunar
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

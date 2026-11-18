@@ -29,7 +29,6 @@ const instantText = computed(() => fmtStamp(instant.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="即时写回"
-      label="immediate-change：点格子即写 v-model"
       :value="instantText"
       placeholder="未选择"
       :prefix-icon-data="Zap"
@@ -45,6 +44,8 @@ const instantText = computed(() => fmtStamp(instant.value));
       :min-date="min"
       :max-date="max"
       immediate-change
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

@@ -122,7 +122,12 @@ const props = withDefaults(
     showPanelTitle?: boolean;
     /** Default clock time applied to date / datetime values. */
     defaultTime?: string | string[];
-    /** Scrollable panel height in px design units. */
+    /**
+     * Panel height in px design units. Only used in `switch-mode="none"`, where
+     * every month is rendered flat and the panel needs a fixed scroll window.
+     * Switch modes render one month at a time and size to its content instead
+     * (a fixed height left a large empty band under short months).
+     */
     panelHeight?: number;
     /** Emit `change` as soon as a cell is tapped. */
     immediateChange?: boolean;
@@ -414,11 +419,24 @@ function shiftYear(delta: number): void {
   const current = monthBlocks.value[activeMonthIndex.value];
   if (!current) return;
   const targetYear = current.year + delta;
-  const index = monthBlocks.value.findIndex(
+  // Prefer the same month in the target year; when the bounds do not reach it
+  // (a year near either edge of the range) fall back to the nearest month the
+  // target year does expose, so a year step is never a dead click.
+  const sameMonth = monthBlocks.value.findIndex(
     (block) => block.year === targetYear && block.month === current.month,
   );
-  if (index < 0) return;
-  activeMonthIndex.value = index;
+  if (sameMonth >= 0) {
+    activeMonthIndex.value = sameMonth;
+    return;
+  }
+  const firstInYear = monthBlocks.value.findIndex((block) => block.year === targetYear);
+  if (firstInYear < 0) return;
+  let lastInYear = firstInYear;
+  for (let i = firstInYear; i < monthBlocks.value.length; i += 1) {
+    if (monthBlocks.value[i]?.year !== targetYear) break;
+    lastInYear = i;
+  }
+  activeMonthIndex.value = delta > 0 ? firstInYear : lastInYear;
 }
 
 function jumpToToday(): void {
@@ -434,8 +452,6 @@ defineExpose({ shiftMonth, shiftYear, jumpToToday });
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 const RATIO = 2;
-
-const panelHeightRpx = computed(() => `${Math.max(props.panelHeight, 1) * RATIO}rpx`);
 
 /** Months actually rendered: every block in `none`, the active one otherwise. */
 const visibleBlocks = computed<MonthBlock[]>(() => {
@@ -456,7 +472,19 @@ const rootClass = computed(() => [
 
 const rootStyle = computed(() => props.customStyle || undefined);
 
-const panelStyle = computed(() => ({ height: panelHeightRpx.value }));
+/**
+ * Panel height.
+ *
+ * `none` renders every month flat, so the panel is a fixed scroll window
+ * (`panelHeight`). A switch mode renders exactly one month — a fixed height
+ * would leave a large empty band under short months, so it sizes to content
+ * and the CSS height transition animates the jump between months of different
+ * row counts.
+ */
+const panelStyle = computed(() => {
+  if (props.switchMode !== 'none') return undefined;
+  return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+});
 
 function cellClass(cell: Cell): Record<string, boolean> {
   return {
@@ -498,6 +526,14 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
     :aria-label="type"
   >
     <view v-if="switchMode !== 'none'" class="sn-calendar-view__controls">
+      <view
+        v-if="switchMode === 'year-month'"
+        class="sn-calendar-view__control sn-calendar-view__control--prev-year"
+        role="button"
+        aria-label="previous year"
+        @tap="shiftYear(-1)"
+        ><text>«</text></view
+      >
       <view
         class="sn-calendar-view__control sn-calendar-view__control--prev"
         role="button"
@@ -631,6 +667,14 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
 .sn-calendar-view__panel {
   padding: 0 var(--sn-mp-spacing-3) var(--sn-mp-spacing-3);
   box-sizing: border-box;
+}
+
+/* Switch modes size the panel to the active month; a month with five week rows
+ * is one row taller than one with four, and this transition eases that jump
+ * instead of snapping. `none` keeps the fixed scroll window (inline height). */
+.sn-calendar-view--switch .sn-calendar-view__panel {
+  height: auto;
+  transition: height 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sn-calendar-view__month {

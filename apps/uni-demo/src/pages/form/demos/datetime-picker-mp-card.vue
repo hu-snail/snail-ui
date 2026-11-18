@@ -39,7 +39,7 @@ const meetingText = computed(() => {
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <text class="sn-demo__label">分组卡片（sn-cell-group card，每行一张卡，行间距走 token）</text>
     <SnCellGroup card>
       <SnCell
@@ -98,6 +98,12 @@ const meetingText = computed(() => {
 </template>
 
 <style scoped>
+/* 通栏页里只有卡片形态保留左右外间距：cell 入口行贴边，卡片浮在画布上。 */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

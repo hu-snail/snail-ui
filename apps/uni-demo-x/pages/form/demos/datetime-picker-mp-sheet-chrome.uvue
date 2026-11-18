@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.vue sha256:52d9c7e5aa5c1f8f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.vue sha256:f7511a4c5e88cc57 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — 弹层外观：取消/确认文案 / 遮罩 / 安全区 / 层级 / custom* / displayFormatTabLabel。 */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -13,13 +13,7 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCell
-      title="弹层外观"
-      label="取消/确认文案、禁止遮罩关闭、zIndex、custom*"
-      :prefix-icon-data="Settings"
-      is-link
-      @click="openChrome = true"
-    />
+    <SnCell title="弹层外观" :prefix-icon-data="Settings" is-link @click="openChrome = true" />
 
     <SnDatetimePicker
       v-model="chrome"

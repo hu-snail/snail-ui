@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.en.vue sha256:495c2e498f596dcf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.en.vue sha256:b2445db16dd8fea2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — time type (`type="time"`): writes back an `HH:mm` string. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -12,7 +12,6 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Time"
-      label="type=time writes back an HH:mm string"
       :prefix-icon-data="Clock"
       placeholder="Select"
       :value="time ? String(time) : ''"

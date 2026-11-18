@@ -46,10 +46,9 @@ const multiText = computed(() => {
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <SnCell
       title="Single date"
-      label="type=date · card-form entry row"
       :value="dateText"
       placeholder="Not selected"
       :prefix-icon-data="Calendar"
@@ -59,7 +58,6 @@ const multiText = computed(() => {
     />
     <SnCell
       title="Date range"
-      label="type=daterange · writes v-model on confirm"
       :value="rangeText"
       placeholder="Not selected"
       :prefix-icon-data="Filter"
@@ -69,7 +67,6 @@ const multiText = computed(() => {
     />
     <SnCell
       title="Multiple dates"
-      label="type=dates · tap as many days as you need"
       :value="multiText"
       placeholder="Not selected"
       :prefix-icon-data="Check"
@@ -91,6 +88,8 @@ const multiText = computed(() => {
       title="Single date"
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     />
 
     <SnCalendar
@@ -101,6 +100,8 @@ const multiText = computed(() => {
       confirm-text="Apply range"
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     />
 
     <SnCalendar
@@ -110,11 +111,19 @@ const multiText = computed(() => {
       title="Multiple dates"
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>
 
 <style scoped>
+/* 通栏页里只有卡片形态保留左右外间距：cell 入口行贴边，卡片浮在画布上。 */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

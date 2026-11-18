@@ -13,7 +13,6 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="选择时间"
-      label="type=time 写回 HH:mm 字符串"
       :prefix-icon-data="Clock"
       placeholder="请选择"
       :value="time ? String(time) : ''"

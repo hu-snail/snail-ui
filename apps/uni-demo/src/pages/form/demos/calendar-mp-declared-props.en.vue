@@ -29,7 +29,6 @@ const innerFormat = 'Custom range echo';
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Parity props"
-      label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
       :value="Array.isArray(value) ? `${value.length} dates` : ''"
       placeholder="Not selected"
       :prefix-icon-data="Settings"
@@ -55,6 +54,8 @@ const innerFormat = 'Custom range echo';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

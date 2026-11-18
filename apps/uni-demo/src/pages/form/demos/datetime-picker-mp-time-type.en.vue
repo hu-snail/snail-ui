@@ -13,7 +13,6 @@ const open = ref(false);
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Time"
-      label="type=time writes back an HH:mm string"
       :prefix-icon-data="Clock"
       placeholder="Select"
       :value="time ? String(time) : ''"

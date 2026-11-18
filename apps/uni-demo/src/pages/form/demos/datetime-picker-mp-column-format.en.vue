@@ -32,7 +32,6 @@ const formattedText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Formatted + filtered"
-      label="unit suffixes on the labels; even months only"
       :prefix-icon-data="Filter"
       :value="formattedText"
       is-link

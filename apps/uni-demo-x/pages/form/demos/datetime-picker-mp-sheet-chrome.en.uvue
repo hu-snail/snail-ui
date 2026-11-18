@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.en.vue sha256:096a4e66553f16a1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.en.vue sha256:24e0774b4503017d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — sheet chrome: button labels / scrim / safe area / zIndex / custom* / displayFormatTabLabel. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -13,13 +13,7 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCell
-      title="Sheet chrome"
-      label="button labels, mask close disabled, zIndex, custom*"
-      :prefix-icon-data="Settings"
-      is-link
-      @click="openChrome = true"
-    />
+    <SnCell title="Sheet chrome" :prefix-icon-data="Settings" is-link @click="openChrome = true" />
 
     <SnDatetimePicker
       v-model="chrome"

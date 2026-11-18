@@ -35,7 +35,6 @@ const guard = (payload: number | number[] | null) => payload !== null;
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Shortcuts"
-      label="shortcuts + on-shortcuts-click + before-confirm"
       :value="Array.isArray(value) ? `${value.length} dates` : ''"
       placeholder="Not selected"
       :prefix-icon-data="Filter"
@@ -55,6 +54,8 @@ const guard = (payload: number | number[] | null) => payload !== null;
       :on-shortcuts-click="onShortcut"
       :before-confirm="guard"
       confirm-text="Apply range"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

@@ -23,7 +23,6 @@ const dateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Tall rows"
-      label="itemHeight 44 / 6 visible rows, range limited to 2024"
       :prefix-icon-data="Calendar"
       :value="dateText"
       is-link

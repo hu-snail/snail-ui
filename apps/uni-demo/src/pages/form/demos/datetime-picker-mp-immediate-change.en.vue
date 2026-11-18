@@ -20,7 +20,6 @@ const immediateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Immediate write-back"
-      label="immediateChange: every roll writes v-model, no confirm needed"
       :prefix-icon-data="Clock"
       :value="immediateText"
       is-link

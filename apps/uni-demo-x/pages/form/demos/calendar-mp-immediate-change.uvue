@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue sha256:3ee050aa8b86b9ba —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue sha256:5e9c407a3a8fcdfb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 即时写回（immediateChange）。
@@ -27,7 +27,6 @@ const instantText = computed(() => fmtStamp(instant.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="即时写回"
-      label="immediate-change：点格子即写 v-model"
       :value="instantText"
       placeholder="未选择"
       :prefix-icon-data="Zap"
@@ -43,6 +42,8 @@ const instantText = computed(() => fmtStamp(instant.value));
       :min-date="min"
       :max-date="max"
       immediate-change
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

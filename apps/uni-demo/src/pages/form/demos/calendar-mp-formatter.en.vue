@@ -38,7 +38,6 @@ const formattedText = computed(() => fmtDate(formatted.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="formatter hook"
-      label="formatter rewrites topInfo / bottomInfo / disabled"
       :value="formattedText"
       placeholder="Not selected"
       :prefix-icon-data="Filter"
@@ -54,6 +53,8 @@ const formattedText = computed(() => fmtDate(formatted.value));
       :min-date="min"
       :max-date="max"
       :formatter="cellFormatter"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

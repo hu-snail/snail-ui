@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue sha256:3fdca7733f6beb2c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue sha256:7761d37a74803cee —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — roller geometry (itemHeight / visibleItemCount): tall rows, more visible rows. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -22,7 +22,6 @@ const dateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Tall rows"
-      label="itemHeight 44 / 6 visible rows, range limited to 2024"
       :prefix-icon-data="Calendar"
       :value="dateText"
       is-link

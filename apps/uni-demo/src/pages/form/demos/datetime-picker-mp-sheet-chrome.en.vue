@@ -14,13 +14,7 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? 'Start' : 'End');
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCell
-      title="Sheet chrome"
-      label="button labels, mask close disabled, zIndex, custom*"
-      :prefix-icon-data="Settings"
-      is-link
-      @click="openChrome = true"
-    />
+    <SnCell title="Sheet chrome" :prefix-icon-data="Settings" is-link @click="openChrome = true" />
 
     <SnDatetimePicker
       v-model="chrome"

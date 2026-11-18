@@ -40,7 +40,6 @@ const customText = computed(() => textOf(custom.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="With a title"
-      label="title: centred heading, cancel / confirm on the two edges"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="titledText"
@@ -49,7 +48,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="Without a title"
-      label="no title: confirm stays flush right"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="bareText"
@@ -58,7 +56,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="Custom labels"
-      label="cancelButtonText / confirmButtonText: wording only, layout unchanged"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="customText"

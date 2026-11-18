@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue sha256:6a6b9c49e62e49a9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue sha256:13023e2a23f78934 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — immediate write-back (immediateChange).
@@ -27,7 +27,6 @@ const instantText = computed(() => fmtStamp(instant.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Immediate write-back"
-      label="immediate-change: writes v-model as soon as a cell is tapped"
       :value="instantText"
       placeholder="Not selected"
       :prefix-icon-data="Zap"
@@ -43,6 +42,8 @@ const instantText = computed(() => fmtStamp(instant.value));
       :min-date="min"
       :max-date="max"
       immediate-change
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

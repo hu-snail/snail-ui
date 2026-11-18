@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/calendar.vue sha256:99cf0434a50174cd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/calendar.vue sha256:cfccb55c028e3a9f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— calendar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/calendar-mp-basic.uvue';
@@ -156,7 +156,7 @@ const { t } = useDemoUi();
 </template>
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -170,6 +170,8 @@ const { t } = useDemoUi();
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
+  --snx-demo-module-head-padding-left: var(--sn-mp-spacing-4);
+  --snx-demo-module-head-padding-right: var(--sn-mp-spacing-4);
 }
 
 /* calendar：场景模块透明变体——入口行直接使用 sn-cell（无分组卡片，模块标题由
@@ -182,7 +184,17 @@ const { t } = useDemoUi();
   box-shadow: none;
 }
 
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .module__body {
   padding: 0;
+}
+
+.demo-module-head {
+  padding-left: var(--snx-demo-module-head-padding-left);
+  padding-right: var(--snx-demo-module-head-padding-right);
 }
 </style>

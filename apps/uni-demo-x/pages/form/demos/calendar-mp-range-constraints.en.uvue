@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue sha256:36df104356d40c1f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue sha256:344218b752c0b4ca —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — range constraints (maxRange / allowSameDay / defaultTime).
@@ -34,7 +34,6 @@ const rangeText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Range span"
-      label="max-range = 7 · allow-same-day · default-time = 08:00:00"
       :value="rangeText"
       placeholder="Not selected"
       :prefix-icon-data="Clock"
@@ -55,6 +54,8 @@ const rangeText = computed(() => {
       range-prompt="You can only pick 7 days"
       allow-same-day
       default-time="08:00:00"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

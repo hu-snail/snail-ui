@@ -15,7 +15,6 @@ const guard = (value: string | number) => String(value) >= '09:00';
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Confirm veto"
-      label="beforeConfirm (vetoes anything before 09:00)"
       :prefix-icon-data="Clock"
       placeholder="Select"
       :value="time ? String(time) : ''"

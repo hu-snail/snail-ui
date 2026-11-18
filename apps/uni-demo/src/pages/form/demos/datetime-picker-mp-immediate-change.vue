@@ -20,7 +20,6 @@ const immediateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="即时写回"
-      label="immediateChange：滚动即写 v-model，不必确认"
       :prefix-icon-data="Clock"
       :value="immediateText"
       is-link

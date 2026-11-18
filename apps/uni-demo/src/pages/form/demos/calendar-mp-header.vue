@@ -43,7 +43,6 @@ const dayCount = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="日期区间"
-      label="header 插槽替换标题行，摘要随点选实时更新"
       :value="rangeText"
       placeholder="未选择"
       :prefix-icon-data="Calendar"
@@ -65,6 +64,8 @@ const dayCount = computed(() => {
       immediate-change
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     >
       <template #header>
         <view class="sn-demo__sheet-head">

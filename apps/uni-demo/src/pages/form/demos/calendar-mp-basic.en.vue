@@ -3,8 +3,8 @@
  * Demo: sn-calendar — cell entry row for the sheet calendar.
  *
  * The entry row uses sn-cell directly (no group card; the module title is
- * carried by the page outside); tapping it opens the sheet. Rolling inside only updates the draft —
- * `v-model` is written on confirm and cancel discards the draft.
+ * carried by the page outside); tapping it opens the sheet. A pick writes `v-model`
+ * and closes right away (confirm-on-select, no footer).
  */
 import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
@@ -28,7 +28,6 @@ const formatted = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Pick a date"
-      label="Bounds: 2024-06-01 ~ 2024-08-31"
       :value="formatted"
       placeholder="Not selected"
       :prefix-icon-data="Calendar"
@@ -44,6 +43,8 @@ const formatted = computed(() => {
       :min-date="min"
       :max-date="max"
       title="Pick a date"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

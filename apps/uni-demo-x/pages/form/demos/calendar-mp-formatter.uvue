@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-formatter.vue sha256:f424b95a17bf6056 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-formatter.vue sha256:d1a42d9c205c7451 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 单元格格式化（formatter）。
@@ -35,7 +35,6 @@ const formattedText = computed(() => fmtDate(formatted.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="formatter 钩子"
-      label="formatter 改写 topInfo / bottomInfo / disabled"
       :value="formattedText"
       placeholder="未选择"
       :prefix-icon-data="Filter"
@@ -51,6 +50,8 @@ const formattedText = computed(() => fmtDate(formatted.value));
       :min-date="min"
       :max-date="max"
       :formatter="cellFormatter"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

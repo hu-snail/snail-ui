@@ -32,7 +32,6 @@ const formattedText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="格式化与过滤"
-      label="列文案加单位；月份只留偶数月"
       :prefix-icon-data="Filter"
       :value="formattedText"
       is-link

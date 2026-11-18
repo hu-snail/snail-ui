@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue sha256:a5022d28c882f872 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue sha256:06f34a1f76976ff7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — immediate write-back (immediateChange): every roll writes v-model, no confirm needed. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -19,7 +19,6 @@ const immediateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Immediate write-back"
-      label="immediateChange: every roll writes v-model, no confirm needed"
       :prefix-icon-data="Clock"
       :value="immediateText"
       is-link

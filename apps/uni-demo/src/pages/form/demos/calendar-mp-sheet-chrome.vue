@@ -29,7 +29,6 @@ const noConfirmText = computed(() => fmtStamp(noConfirm.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="无确认按钮 + 底栏插槽"
-      label="show-confirm=false · confirm-left 插槽置清空 · close-on-click-modal=false"
       :value="noConfirmText"
       placeholder="未选择"
       :prefix-icon-data="Info"

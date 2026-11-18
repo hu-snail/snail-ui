@@ -46,7 +46,6 @@ const onShortcut = (shortcut: { text: string }) => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="区间 + 快捷选项"
-      label="shortcuts（days 相对今天）· type=daterange · confirm-text 自定义"
       :value="rangeText"
       placeholder="未选择"
       :prefix-icon-data="Filter"
@@ -67,6 +66,8 @@ const onShortcut = (shortcut: { text: string }) => {
       title="选择区间"
       confirm-text="就用它"
       :on-shortcuts-click="onShortcut"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

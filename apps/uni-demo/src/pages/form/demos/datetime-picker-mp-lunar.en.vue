@@ -29,7 +29,6 @@ const clockText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Lunar date"
-      label="lunar: stem-branch year / months with leap month / days 初一…三十"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="lunarText"
@@ -38,7 +37,6 @@ const clockText = computed(() => {
     />
     <SnCell
       title="Lunar + time"
-      label="datetime + lunar: keeps the clock rollers"
       :prefix-icon-data="Clock"
       placeholder="Select"
       :value="clockText"

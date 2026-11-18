@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue sha256:74096949485028e3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue sha256:ee58ee5fb85045cc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — 滚筒几何（itemHeight / visibleItemCount）：大行高、多可见行。 */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -22,7 +22,6 @@ const dateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="大行高滚筒"
-      label="itemHeight 44 / 可见 6 行，范围 2024 全年"
       :prefix-icon-data="Calendar"
       :value="dateText"
       is-link

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.en.vue sha256:0384b409f05293b4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.en.vue sha256:3fbb7429c15a82bb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — shortcut callback and confirm veto (onShortcutsClick / beforeConfirm).
@@ -33,7 +33,6 @@ const guard = (payload: number | number[] | null) => payload !== null;
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Shortcuts"
-      label="shortcuts + on-shortcuts-click + before-confirm"
       :value="Array.isArray(value) ? `${value.length} dates` : ''"
       placeholder="Not selected"
       :prefix-icon-data="Filter"
@@ -53,6 +52,8 @@ const guard = (payload: number | number[] | null) => payload !== null;
       :on-shortcuts-click="onShortcut"
       :before-confirm="guard"
       confirm-text="Apply range"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

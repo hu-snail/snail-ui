@@ -30,7 +30,6 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Month / year switch"
-      label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
       :value="monthSwitchText"
       placeholder="Not selected"
       :prefix-icon-data="Settings"
@@ -50,6 +49,8 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
       switch-mode="year-month"
       :duration="320"
       custom-view-class="sn-demo__panel"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

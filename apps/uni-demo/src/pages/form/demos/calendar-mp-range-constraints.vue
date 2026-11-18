@@ -35,7 +35,6 @@ const rangeText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="区间跨度"
-      label="max-range = 7 · allow-same-day · default-time = 08:00:00"
       :value="rangeText"
       placeholder="未选择"
       :prefix-icon-data="Clock"
@@ -56,6 +55,8 @@ const rangeText = computed(() => {
       range-prompt="最多只能选 7 天"
       allow-same-day
       default-time="08:00:00"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

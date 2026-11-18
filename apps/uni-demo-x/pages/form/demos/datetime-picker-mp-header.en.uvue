@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue sha256:11d4ed60a8e5cf71 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue sha256:28f8eb9494b73277 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-datetime-picker — sheet header contract (cancel left / title centre / confirm right).
@@ -39,7 +39,6 @@ const customText = computed(() => textOf(custom.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="With a title"
-      label="title: centred heading, cancel / confirm on the two edges"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="titledText"
@@ -48,7 +47,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="Without a title"
-      label="no title: confirm stays flush right"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="bareText"
@@ -57,7 +55,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="Custom labels"
-      label="cancelButtonText / confirmButtonText: wording only, layout unchanged"
       :prefix-icon-data="Calendar"
       placeholder="Select"
       :value="customText"

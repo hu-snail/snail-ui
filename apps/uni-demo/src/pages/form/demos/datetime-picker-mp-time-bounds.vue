@@ -26,7 +26,6 @@ const hoursText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="限定时段"
-      label="minHour 08 / maxHour 18，minMinute 15 / maxMinute 45"
       :prefix-icon-data="Clock"
       :value="hoursText"
       is-link
@@ -34,7 +33,6 @@ const hoursText = computed(() => {
     />
     <SnCell
       title="精确到秒"
-      label="useSecond + maxSecond 30"
       :prefix-icon-data="Clock"
       :value="String(withSeconds)"
       is-link

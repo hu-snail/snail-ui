@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue sha256:55cd20728b7afcb6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue sha256:8b16ece4cb4c0aea —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — 农历滚筒（additive）：年列干支 / 月列含闰月 / 日列初一三十，v-model 仍是公历时间戳。 */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -26,7 +26,6 @@ const clockText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="农历日期"
-      label="lunar：年干支 / 月含闰月 / 日初一三十"
       :prefix-icon-data="Calendar"
       placeholder="请选择"
       :value="lunarText"
@@ -35,7 +34,6 @@ const clockText = computed(() => {
     />
     <SnCell
       title="农历 + 时间"
-      label="datetime + lunar：保留时分滚筒"
       :prefix-icon-data="Clock"
       placeholder="请选择"
       :value="clockText"

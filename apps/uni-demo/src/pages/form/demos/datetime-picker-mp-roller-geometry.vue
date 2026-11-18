@@ -23,7 +23,6 @@ const dateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="大行高滚筒"
-      label="itemHeight 44 / 可见 6 行，范围 2024 全年"
       :prefix-icon-data="Calendar"
       :value="dateText"
       is-link

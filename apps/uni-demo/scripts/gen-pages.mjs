@@ -502,6 +502,10 @@ const SCENARIO_LABEL_OVERRIDES = {
   'radio-indicator': '指示器位置与选中态',
   'checkbox-card': '卡片模式（variant=card）',
   'checkbox-indicator': '指示器位置与选中态',
+  'slider-bar-look-basic': '参考风格：描边圆盘（Volume）',
+  'slider-bar-look-range': '参考风格：双柄区间',
+  'slider-bar-look-column': '参考风格：竖排胶囊',
+  'slider-bar-look-color': '参考风格：多彩变体',
 };
 
 /**
@@ -537,11 +541,20 @@ const MODULE_FLAT_PAGES = new Set(['navbar']);
  *   组件背景双重叠加，去底后分组按真实页面渲染直接浮在画布上。
  * - calendar / datetime-picker：入口行已改为直接使用 sn-cell（无分组卡片，
  *   模块标题由外层 DemoModuleHead 承担），同 cell 的理由——cell 自带
- *   surface 背景，白卡底会双重叠加。
+ *   surface 背景，白卡底会双重叠加。这两页同时走 MODULE_FULL_BLEED_PAGES：
+ *   入口行通栏（cell 自己承担左右内边距），只有卡片形态的场景保留外间距。
  * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
  * （保持 drop-menu / tabbar 既有产物不变）。
  */
 const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell', 'calendar', 'datetime-picker']);
+
+/**
+ * 组件页通栏覆盖：列出的组件页去掉页面左右 padding，场景模块也不再留
+ * 左右内边距——cell 入口行按真实列表铺满整行（左右由 cell 自己的
+ * spacing 承担）。卡片形态的场景（`*-mp-card`）仍由 demo 内的 card 样式
+ * 自带外间距，因此「只有卡片有间距」。
+ */
+const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker']);
 
 /** cell 入口扁平页（calendar / datetime-picker）的共 reason 文案。 */
 const SHEET_ENTRY_BARE_COMMENT = `入口行直接使用 sn-cell（无分组卡片，模块标题由
@@ -648,6 +661,10 @@ const DEMO_ORDER = {
   'navbar-mp-slots': 6,
   'navbar-mp-capsule': 7,
   'navbar-mp-mp-capsule': 8,
+  'slider-bar-mp-look-basic': 6,
+  'slider-bar-mp-look-range': 7,
+  'slider-bar-mp-look-column': 8,
+  'slider-bar-mp-look-color': 9,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -1110,6 +1127,10 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'radio-indicator': 'Indicator placement & checked paint',
   'checkbox-card': 'Card variant',
   'checkbox-indicator': 'Indicator placement & checked paint',
+  'slider-bar-look-basic': 'Reference look: ringed disc (Volume)',
+  'slider-bar-look-range': 'Reference look: dual-handle ranges',
+  'slider-bar-look-column': 'Reference look: vertical pills',
+  'slider-bar-look-color': 'Reference look: colour variants',
 };
 
 function scenarioLabel(comp, scenario) {
@@ -1265,6 +1286,7 @@ for (const sub of subpackages) {
   for (const comp of sub.comps) {
     const isHeadless = MODULE_HEADLESS_PAGES.has(comp.key);
     const isFlat = !isHeadless && MODULE_FLAT_PAGES.has(comp.key);
+    const isFullBleed = !isHeadless && MODULE_FULL_BLEED_PAGES.has(comp.key);
     const nativeNav = NATIVE_NAV_PAGES.has(comp.key);
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
@@ -1317,6 +1339,22 @@ ${headRow}
 }
 `
         : '',
+      // 通栏页：模块去掉左右内边距，cell 入口行铺满整行（左右由 cell 自己
+      // 的 spacing 承担）。标题行自身没有左右内边距（原本靠 .module 的），
+      // 所以单独补回来，否则标题会贴到屏幕边缘。
+      isFullBleed
+        ? `
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.module .demo-module-head {
+  padding-left: var(--sn-mp-spacing-4);
+  padding-right: var(--sn-mp-spacing-4);
+}
+`
+        : '',
     ].join('');
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
@@ -1340,7 +1378,7 @@ ${modules}
 
 <style scoped>
 .page {
-  padding: ${isFlat ? '0 0 48rpx' : '24rpx 24rpx 48rpx'};
+  padding: ${isFlat || isFullBleed ? '0 0 48rpx' : '24rpx 24rpx 48rpx'};
 }
 
 ${

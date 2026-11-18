@@ -30,7 +30,6 @@ const noConfirmText = computed(() => fmtStamp(noConfirm.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="No confirm button + footer slot"
-      label="show-confirm=false · confirm-left slot holds a clear action · close-on-click-modal=false"
       :value="noConfirmText"
       placeholder="Not selected"
       :prefix-icon-data="Info"

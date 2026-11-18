@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.en.vue sha256:06507319cd66a7b8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.en.vue sha256:2b8cb2158a271e24 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — confirm veto (beforeConfirm): a veto keeps the sheet open. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -14,7 +14,6 @@ const guard = (value: string | number) => String(value) >= '09:00';
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Confirm veto"
-      label="beforeConfirm (vetoes anything before 09:00)"
       :prefix-icon-data="Clock"
       placeholder="Select"
       :value="time ? String(time) : ''"

@@ -124,7 +124,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -148,6 +148,16 @@ const { t } = useDemoUi();
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.module .demo-module-head {
+  padding-left: var(--sn-mp-spacing-4);
+  padding-right: var(--sn-mp-spacing-4);
 }
 
 .module__body {

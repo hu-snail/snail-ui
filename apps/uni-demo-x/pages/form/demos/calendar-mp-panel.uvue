@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-panel.vue sha256:872a95d0468d251e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-panel.vue sha256:6a290ef7df982182 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — 面板尺寸与切换（panelHeight / switchMode）。
@@ -27,7 +27,6 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="月 / 年切换"
-      label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
       :value="monthSwitchText"
       placeholder="未选择"
       :prefix-icon-data="Settings"
@@ -47,6 +46,8 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
       switch-mode="year-month"
       :duration="320"
       custom-view-class="sn-demo__panel"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

@@ -7,6 +7,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnCalendarView from './sn-calendar-view.vue';
 
@@ -283,6 +285,51 @@ describe('sn-calendar-view', () => {
       expect(
         mountView({ switchMode: 'month' }).find('.sn-calendar-view__control--next-year').exists(),
       ).toBe(false);
+    });
+
+    it('steps a whole year forward and back from the controls', async () => {
+      const w = mountView({
+        switchMode: 'year-month',
+        minDate: new Date(2023, 0, 1).getTime(),
+        maxDate: new Date(2025, 11, 31).getTime(),
+      });
+      const title = () => w.find('.sn-calendar-view__control-title').text();
+
+      await w.find('.sn-calendar-view__control--next-year').trigger('tap');
+      expect(title()).toContain('2024');
+      await w.find('.sn-calendar-view__control--prev-year').trigger('tap');
+      expect(title()).toContain('2023');
+    });
+
+    it('falls back to the nearest month when the target year lacks the same month', async () => {
+      // Bounds stop at 2024-06: stepping a year forward from 2023-11 cannot
+      // land on 2024-11, so the step clamps to the last exposed month.
+      const w = mountView({
+        switchMode: 'year-month',
+        minDate: new Date(2023, 0, 1).getTime(),
+        maxDate: new Date(2024, 5, 30).getTime(),
+      });
+      const vm = w.vm as unknown as {
+        shiftMonth(delta: number): void;
+        shiftYear(delta: number): void;
+      };
+      for (let i = 0; i < 10; i += 1) vm.shiftMonth(1);
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__control-title').text()).toContain('2023 年 11 月');
+
+      vm.shiftYear(1);
+      await w.vm.$nextTick();
+      // 2024-11 is out of range → land on the first month 2024 exposes.
+      expect(w.find('.sn-calendar-view__control-title').text()).toContain('2024 年 1 月');
+    });
+
+    it('sizes the panel to content in switch modes and fixes it in none mode', () => {
+      // The fixed scroll window only exists in `none`. happy-dom drops rpx
+      // lengths, so pin the contract on the source: switch modes return no
+      // inline height while `none` does.
+      const source = readFileSync(resolve(__dirname, 'sn-calendar-view.vue'), 'utf8');
+      expect(source).toContain("if (props.switchMode !== 'none') return undefined;");
+      expect(source).toContain('height: auto;');
     });
   });
 

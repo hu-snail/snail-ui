@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue sha256:c64f9ce9d5de4752 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue sha256:0cf4f14379e5c631 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — h-m-s bounds: minHour / maxHour / minMinute / maxMinute + useSecond / maxSecond. */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -25,7 +25,6 @@ const hoursText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Restricted hours"
-      label="minHour 08 / maxHour 18, minMinute 15 / maxMinute 45"
       :prefix-icon-data="Clock"
       :value="hoursText"
       is-link
@@ -33,7 +32,6 @@ const hoursText = computed(() => {
     />
     <SnCell
       title="With seconds"
-      label="useSecond + maxSecond 30"
       :prefix-icon-data="Clock"
       :value="String(withSeconds)"
       is-link

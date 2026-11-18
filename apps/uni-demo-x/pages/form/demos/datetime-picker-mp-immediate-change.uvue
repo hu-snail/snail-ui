@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue sha256:99c6a2b2a58f94b6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue sha256:47c6a62c160a4b14 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker — 即时写回（immediateChange）：滚动即写 v-model，不必确认。 */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
@@ -19,7 +19,6 @@ const immediateText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="即时写回"
-      label="immediateChange：滚动即写 v-model，不必确认"
       :prefix-icon-data="Clock"
       :value="immediateText"
       is-link

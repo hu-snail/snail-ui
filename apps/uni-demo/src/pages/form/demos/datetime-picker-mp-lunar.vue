@@ -27,7 +27,6 @@ const clockText = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="农历日期"
-      label="lunar：年干支 / 月含闰月 / 日初一三十"
       :prefix-icon-data="Calendar"
       placeholder="请选择"
       :value="lunarText"
@@ -36,7 +35,6 @@ const clockText = computed(() => {
     />
     <SnCell
       title="农历 + 时间"
-      label="datetime + lunar：保留时分滚筒"
       :prefix-icon-data="Clock"
       placeholder="请选择"
       :value="clockText"

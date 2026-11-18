@@ -14,13 +14,7 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCell
-      title="弹层外观"
-      label="取消/确认文案、禁止遮罩关闭、zIndex、custom*"
-      :prefix-icon-data="Settings"
-      is-link
-      @click="openChrome = true"
-    />
+    <SnCell title="弹层外观" :prefix-icon-data="Settings" is-link @click="openChrome = true" />
 
     <SnDatetimePicker
       v-model="chrome"

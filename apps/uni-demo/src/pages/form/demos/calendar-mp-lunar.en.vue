@@ -30,7 +30,6 @@ const text = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Lunar calendar"
-      label="show-lunar: caption under each day, month name on 初一"
       :value="text"
       placeholder="Not selected"
       :prefix-icon-data="Calendar"
@@ -47,6 +46,8 @@ const text = computed(() => {
       :max-date="max"
       title="Pick a date"
       show-lunar
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

@@ -28,7 +28,6 @@ const innerFormat = '自定义区间回显';
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="对齐参数"
-      label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
       :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
       placeholder="未选择"
       :prefix-icon-data="Settings"
@@ -54,6 +53,8 @@ const innerFormat = '自定义区间回显';
       :show-type-switch="false"
       :hide-second="true"
       :time-filter="evenHours"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

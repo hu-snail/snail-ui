@@ -29,7 +29,6 @@ const instantText = computed(() => fmtStamp(instant.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Immediate write-back"
-      label="immediate-change: writes v-model as soon as a cell is tapped"
       :value="instantText"
       placeholder="Not selected"
       :prefix-icon-data="Zap"
@@ -45,6 +44,8 @@ const instantText = computed(() => fmtStamp(instant.value));
       :min-date="min"
       :max-date="max"
       immediate-change
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

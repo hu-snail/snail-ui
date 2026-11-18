@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue sha256:96a21cc4b8671fd6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue sha256:39f5113f5dce5330 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-datetime-picker — card form (sn-cell card: every row renders as its own rounded card).
@@ -40,7 +40,7 @@ const meetingText = computed(() => {
 });
 </script>
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <text class="sn-demo__label"
       >Card group (sn-cell-group card — one card per row, token gap)</text
     >
@@ -100,6 +100,12 @@ const meetingText = computed(() => {
   </view>
 </template>
 <style scoped>
+/* 通栏页里只有卡片形态保留左右外间距：cell 入口行贴边，卡片浮在画布上。 */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

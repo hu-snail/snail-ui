@@ -3,7 +3,7 @@
  * Demo: sn-calendar — 弹层日历的 cell 入口行。
  *
  * 入口行直接用 sn-cell（无分组卡片，模块标题由页面外层承担），
- * 点击打开弹层；弹层内滚动只改草稿，确认才写 v-model，取消丢弃草稿。
+ * 点击打开弹层；点选即写回并关闭（confirm-on-select，无底栏）。
  */
 import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
@@ -27,7 +27,6 @@ const formatted = computed(() => {
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="选择日期"
-      label="范围：2024-06-01 ~ 2024-08-31"
       :value="formatted"
       placeholder="未选择"
       :prefix-icon-data="Calendar"
@@ -43,6 +42,8 @@ const formatted = computed(() => {
       :min-date="min"
       :max-date="max"
       title="选择日期"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>

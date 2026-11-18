@@ -38,7 +38,6 @@ const customText = computed(() => textOf(custom.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="带标题"
-      label="title：标题居中，取消 / 确认分列两侧"
       :prefix-icon-data="Calendar"
       placeholder="请选择"
       :value="titledText"
@@ -47,7 +46,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="无标题"
-      label="不传 title：确认仍贴右边缘"
       :prefix-icon-data="Calendar"
       placeholder="请选择"
       :value="bareText"
@@ -56,7 +54,6 @@ const customText = computed(() => textOf(custom.value));
     />
     <SnCell
       title="自定义文案"
-      label="cancelButtonText / confirmButtonText：只换文字，位置不变"
       :prefix-icon-data="Calendar"
       placeholder="请选择"
       :value="customText"

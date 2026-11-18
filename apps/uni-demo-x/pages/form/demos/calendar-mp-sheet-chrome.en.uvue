@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue sha256:9f910661b0d13506 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue sha256:7386a3631d8f5afe —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — sheet chrome and footer slot.
@@ -28,7 +28,6 @@ const noConfirmText = computed(() => fmtStamp(noConfirm.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="No confirm button + footer slot"
-      label="show-confirm=false · confirm-left slot holds a clear action · close-on-click-modal=false"
       :value="noConfirmText"
       placeholder="Not selected"
       :prefix-icon-data="Info"

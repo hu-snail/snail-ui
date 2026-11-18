@@ -29,7 +29,6 @@ const mondayText = computed(() => fmtDate(mondayFirst.value));
   <view class="sn-demo sn-demo--column">
     <SnCell
       title="Monday first"
-      label="first-day-of-week = 1 (Monday)"
       :value="mondayText"
       placeholder="Not selected"
       :prefix-icon-data="Calendar"
@@ -45,6 +44,8 @@ const mondayText = computed(() => fmtDate(mondayFirst.value));
       :first-day-of-week="1"
       :min-date="min"
       :max-date="max"
+      :show-footer="false"
+      confirm-on-select
     />
   </view>
 </template>
