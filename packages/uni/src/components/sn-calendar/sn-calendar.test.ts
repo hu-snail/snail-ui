@@ -123,8 +123,25 @@ describe('sn-calendar', () => {
     it('splits the footer row evenly between the actions (source contract)', () => {
       // Layout is CSS-driven; happy-dom drops stylesheets, so pin the flex
       // contract on the source text (same pattern as sn-popup's geometry).
+      // The flex cell is a wrapper view, not the sn-button root: on mp-weixin
+      // a child component's root does not receive the parent's scope id, so a
+      // rule aimed at the button root never matched there.
       const source = readFileSync(resolve(__dirname, 'sn-calendar.vue'), 'utf8');
-      expect(source).toMatch(/\.sn-calendar__cancel,\n\.sn-calendar__confirm \{\n {2}flex: 1 1 0;/);
+      expect(source).toMatch(/\.sn-calendar__action \{\n {2}flex: 1 1 0;/);
+    });
+
+    it('wraps each action in its own flex cell', () => {
+      const w = mountCalendar();
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(2);
+      // Each cell holds exactly one block button.
+      for (const cell of w.findAll('.sn-calendar__action')) {
+        expect(cell.find('.sn-button').classes()).toContain('sn-button--block');
+      }
+    });
+
+    it('keeps a single full-width cell when only confirm is shown', () => {
+      const w = mountCalendar({ showCancel: false });
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(1);
     });
   });
 
@@ -440,7 +457,7 @@ describe('sn-calendar', () => {
       expect(w.find('.sn-calendar__shortcut').exists()).toBe(true);
       expect(w.find('.sn-calendar-view__day').exists()).toBe(true);
       expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
-      expect(w.find('.sn-calendar__actions').exists()).toBe(true);
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(2);
     });
   });
 

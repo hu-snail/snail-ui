@@ -447,21 +447,29 @@ const viewClass = computed(() => props.customViewClass);
         <view v-if="$slots['confirm-left']" class="sn-calendar__footer-left">
           <slot name="confirm-left" />
         </view>
-        <view class="sn-calendar__actions">
+        <!-- Each action gets a flex cell of its own. The cell (not the
+             sn-button root) carries `flex: 1 1 0`: on mp-weixin a child
+             component's root node does NOT receive the parent's scope id, so
+             `.sn-calendar__cancel { flex: 1 }` never matched there — the
+             buttons stayed content-width. The button inside is `block`, so it
+             fills its cell. -->
+        <view v-if="props.showCancel" class="sn-calendar__action">
           <SnButton
-            v-if="props.showCancel"
             custom-class="sn-calendar__cancel"
             :type="props.cancelType"
             :variant="props.cancelVariant"
+            block
             aria-label="cancel"
             @click="onCancel"
             >取消</SnButton
           >
+        </view>
+        <view v-if="props.showConfirm" class="sn-calendar__action">
           <SnButton
-            v-if="props.showConfirm"
             custom-class="sn-calendar__confirm"
             :type="props.confirmType"
             :variant="props.confirmVariant"
+            block
             :aria-label="props.confirmText"
             @click="onConfirm"
             >{{ props.confirmText }}</SnButton
@@ -534,9 +542,7 @@ const viewClass = computed(() => props.customViewClass);
 
 /* The action buttons split the remaining footer width evenly (AGENTS.md
  * §112.3a additive: sn-button footer). With both slots empty that is the
- * full row — 取消 / 确认 各占一半。The classes sit on the sn-button root
- * (child-root inherits the parent scope id), so a plain class rule targets
- * it — no :deep(), which App CSS cannot express (§116.2). */
+ * full row — 取消 / 确认 各占一半。 */
 .sn-calendar__actions {
   display: flex;
   align-items: stretch;
@@ -545,10 +551,14 @@ const viewClass = computed(() => props.customViewClass);
   min-width: 0;
 }
 
-.sn-calendar__cancel,
-.sn-calendar__confirm {
+/* One flex cell per action. The cell owns the sizing (a child component's
+ * root does not inherit the parent's scope id on mp-weixin, so styling the
+ * sn-button root from here silently fails there); the `block` button inside
+ * fills it. */
+.sn-calendar__action {
   flex: 1 1 0;
   min-width: 0;
+  display: flex;
 }
 
 /* Doodle skin — hand-drawn header rule. */
