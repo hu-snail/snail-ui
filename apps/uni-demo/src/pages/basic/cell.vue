@@ -23,37 +23,37 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" inset />
         <view class="module__body">
           <Demo2 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
+        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" inset />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('link', 'Link')" badge="link" />
+        <DemoModuleHead :title="t('link', 'Link')" badge="link" inset />
         <view class="module__body">
           <Demo4 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" />
+        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" inset />
         <view class="module__body">
           <Demo5 />
         </view>
@@ -64,7 +64,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -87,6 +87,11 @@ const { t } = useDemoUi();
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+.module {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .module__body {

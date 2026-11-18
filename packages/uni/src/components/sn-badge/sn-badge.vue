@@ -43,7 +43,10 @@
  * protrusion (half the marker height). The marker anchors at the root's
  * outer corner with no transform: it overlaps the content corner by half and
  * spends the other half inside the root box's reserved headroom, so nothing
- * ever leaves the root box and no end depends on overflow or stacking.
+ * ever leaves the root box and no end depends on overflow or stacking. The
+ * `__host` min sizes keep that invariant for a contentless badge (cell-row
+ * count marker): the root never shrinks below the marker box, so the marker
+ * stays fully rendered even with nothing wrapped.
  * Trade-off: the root is half a marker taller / wider than the content —
  * layout space is bought for deterministic rendering. `top` / `right` props
  * keep their semantics (nudge down / left from the riding corner).
@@ -222,8 +225,14 @@ const markerStyle = computed(() => {
  * 高度的一半）。marker 锚在 root 外角（top:0 / right:0、无 transform）后，
  * 一半压在内容盒角上、一半留在这段余量里——骑跨视觉不依赖任何 overflow
  * 行为（App 端圆角根对 absolute 子元素的裁剪压不住，sn-avatar __body 拆分
- * 的同款实测结论），也没有 transform 骑角在 H5 被后绘模块盖住的层叠问题。 */
+ * 的同款实测结论），也没有 transform 骑角在 H5 被后绘模块盖住的层叠问题。
+ * min 尺寸守住「空内容」场景：不包裹任何宿主内容时（如 cell 行尾的纯计数
+ * 徽标）宿主盒为 0，root 收缩到只剩余量，marker 反而有一半溢出 root 盒、
+ * 在真机被裁掉——min 让 root 始终 ≥ marker 盒，marker 永不出盒的契约对
+ * 无内容徽标同样成立。 */
 .sn-badge__host {
+  min-width: 16rpx;
+  min-height: 16rpx;
   margin-top: 16rpx;
   margin-right: 16rpx;
 }
@@ -254,7 +263,7 @@ const markerStyle = computed(() => {
 }
 
 /* Dot: a small round marker, no label. 余量同步减半（16rpx 点 ⇒ 8rpx），
- * 点心仍落在内容角点上。 */
+ * 点心仍落在内容角点上；min 同步减半，空内容时 root 仍包住整个点。 */
 .sn-badge--dot .sn-badge__marker {
   min-width: 16rpx;
   width: 16rpx;
@@ -264,6 +273,8 @@ const markerStyle = computed(() => {
 }
 
 .sn-badge--dot .sn-badge__host {
+  min-width: 8rpx;
+  min-height: 8rpx;
   margin-top: 8rpx;
   margin-right: 8rpx;
 }

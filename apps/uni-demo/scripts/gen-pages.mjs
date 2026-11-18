@@ -553,9 +553,11 @@ const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell', 'calendar', 'd
  * 组件页通栏覆盖：列出的组件页去掉页面左右 padding，场景模块也不再留
  * 左右内边距——cell 入口行按真实列表铺满整行（左右由 cell 自己的
  * spacing 承担）。卡片形态的场景（`*-mp-card`）仍由 demo 内的 card 样式
- * 自带外间距，因此「只有卡片有间距」。
+ * 自带外间距，因此「只有卡片有间距」。cell 的信息分组页同此：分组直接
+ * 铺满整行，标题行经 DemoModuleHead 的 `inset` 补回留白，卡片形态 demo
+ * 自带外间距。
  */
-const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker']);
+const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker', 'cell']);
 
 /** cell 入口扁平页（calendar / datetime-picker）的共 reason 文案。 */
 const SHEET_ENTRY_BARE_COMMENT = `入口行直接使用 sn-cell（无分组卡片，模块标题由

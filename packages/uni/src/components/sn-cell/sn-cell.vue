@@ -481,9 +481,10 @@ const rootClass = computed(() => [
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  /* Vertical rhythm tuned +4rpx per design review (16rpx read cramped under
-     large titles); horizontal keeps the spacing token. */
-  padding: 20rpx var(--sn-mp-spacing-4);
+  /* Vertical rhythm: 24rpx matches the horizontal gutter token — rows read
+     open enough under large titles and badge content without crowding the
+     hairlines; horizontal keeps the spacing token. */
+  padding: 24rpx var(--sn-mp-spacing-4);
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
