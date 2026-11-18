@@ -42,6 +42,25 @@ min 只在内容小于阈值时生效，包裹内容的既有几何完全不变�
 - 只靠 margin 预留突出量，没有 min 尺寸兜底；
 - 用 demo 侧"给徽标塞个占位内容"绕过组件几何缺陷（掩盖而非修复）。
 
+## 踩坑补充：修复"看起来没生效"
+
+第一轮修复提交后真机依旧被裁——根因不在修复本身，而在产物链：
+demo 应用消费的是 `@snui/uni-x` **build 产物**（transform 后的 .uvue），
+改完 `packages/uni` 源码只跑 `uni-demo-x gen` 不会刷新它。组件修复的完整
+发布链是：
+
+```text
+改 packages/uni 源码
+  ↓ pnpm -F @snui/uni-x build      ← 重新 transform 出 dist .uvue
+  ↓ pnpm -F @snui/uni-demo-x gen   ← 重新物化 node_modules/@snui/uni-x
+  ↓ HBuilderX 重新编译
+```
+
+漏掉第二步 = 真机跑旧组件（gen-x 的 hint 有提示，但跑完 gen 容易当成已
+完成）。验证产物是否新鲜：直接 grep
+`apps/uni-demo-x/node_modules/@snui/uni-x/dist/components/<comp>/<comp>.uvue`
+里的目标声明。
+
 ## 回归守卫
 
 `packages/uni/src/components/sn-badge/sn-badge.test.ts`
