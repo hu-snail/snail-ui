@@ -104,6 +104,11 @@ import { DatetimePickerView } from '@snui/uni';
       title: '即时 change（immediateChange）',
       blurb: 'immediateChange：每次滚动立即 emit change。',
     },
+    {
+      name: 'datetime-picker-view-mp-wheel',
+      title: 'wheel 风格（`wheel` / `vibrateShort`）',
+      blurb: '滚轮换装圆角胶囊高亮带 + 远行淡出，滑动每档位轻震（App / 小程序生效）。',
+    },
   ],
   props: {
     hint: [],
@@ -178,6 +183,18 @@ import { DatetimePickerView } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: '农历滚筒（additive，AGENTS.md §112.3a）：年列显示干支（甲辰年）、月列 显示正月至腊月（含闰X月）、日列显示初一到三十。`v-model` 仍是公历 时间戳。仅对 date / year-month / year / datetime 生效，`time` 忽略； `minDate` / `maxDate` 在农历模式下只约束年列。',
+      },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'wheel 风格（additive，AGENTS.md §112.3a）：选中行渲染圆角胶囊高亮带 + 远行淡出。',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: '滑动短震动（additive，AGENTS.md §112.3a）：每档位触发 `uni.vibrateShort({ type: "light" })`，App / 小程序生效；点选与程序赋值不震。',
       },
     ],
   },

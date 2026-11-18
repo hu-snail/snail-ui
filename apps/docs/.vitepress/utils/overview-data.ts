@@ -85,6 +85,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-slider', title: '滑块', desc: '拖拽取值滑块' },
       { name: 'sn-picker', title: '选择器', desc: '弹层多列选择' },
       { name: 'sn-picker-view', title: '选择器视图', desc: '内嵌滚轮选择' },
+      { name: 'sn-wheel-picker', title: '滚轮选择器', desc: 'wheel 风格内嵌滚轮' },
       { name: 'sn-select-picker', title: '单复选选择器', desc: '单选 / 多选弹层' },
       { name: 'sn-cascader', title: '级联选择器', desc: '多级联动选择' },
       { name: 'sn-calendar', title: '日历选择器', desc: '日期区间选择弹层' },

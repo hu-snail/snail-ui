@@ -84,6 +84,11 @@ import { PickerView } from '@snui/uni';
       blurb: '`immediateChange` fires `change` continuously while dragging for live updates.',
     },
     {
+      name: 'picker-view-mp-wheel',
+      title: 'Wheel style (`wheel`)',
+      blurb: 'The wheel mode swaps in a rounded pill selection band with a distance fade, shared across columns.',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
       blurb:
@@ -148,6 +153,18 @@ import { PickerView } from '@snui/uni';
         desc: 'Treat `columns` as a nested option tree.',
       },
       { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables the whole roller.' },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Wheel style (additive): the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Slide haptic (additive): fires `uni.vibrateShort({ type: "light" })` per detent on App / mini-program; H5 skips silently.',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -171,7 +188,7 @@ import { PickerView } from '@snui/uni';
   },
   pager: {
     prev: { text: 'Picker', link: '/en/components/uni/picker' },
-    next: { text: 'SelectPicker', link: '/en/components/uni/select-picker' },
+    next: { text: 'WheelPicker', link: '/en/components/uni/wheel-picker' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

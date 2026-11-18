@@ -107,6 +107,11 @@ import { DatetimePicker } from '@snui/uni';
       blurb: 'immediateChange：滚动即写 v-model，不必确认。',
     },
     {
+      name: 'datetime-picker-mp-wheel',
+      title: 'wheel 风格（`wheel` / `vibrateShort`）',
+      blurb: '弹层内滚轮换装圆角胶囊高亮带，滑动每档位轻震（App / 小程序生效）。',
+    },
+    {
       name: 'datetime-picker-mp-sheet-chrome',
       title: '弹层外观（文案 / 遮罩 / 层级）',
       blurb:
@@ -174,6 +179,18 @@ import { DatetimePicker } from '@snui/uni';
       { name: 'maxSecond', type: 'number', default: '59', desc: '最大秒。' },
       { name: 'zIndex', type: 'number', default: '15', desc: '弹层层级' },
       { name: 'immediateChange', type: 'boolean', default: 'false', desc: '滚动即写回 v-model' },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'wheel 风格（additive）：转发给滚筒，选中行渲染圆角胶囊高亮带 + 远行淡出。',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: '滑动短震动（additive）：转发给滚筒，每档位触发 `uni.vibrateShort({ type: "light" })`，App / 小程序生效。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       { name: 'customStyle', type: 'string', default: "''", desc: 'Inline style on the sheet.' },
       {

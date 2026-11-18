@@ -103,6 +103,11 @@ import { DatetimePicker } from '@snui/uni';
       blurb: 'immediateChange: every roll writes v-model, no confirm needed.',
     },
     {
+      name: 'datetime-picker-mp-wheel',
+      title: 'Wheel style (`wheel` / `vibrateShort`)',
+      blurb: 'The sheet roller wears the rounded pill band; sliding ticks a light haptic (App / MP).',
+    },
+    {
       name: 'datetime-picker-mp-sheet-chrome',
       title: 'Sheet chrome (labels / scrim / stacking)',
       blurb:
@@ -184,6 +189,18 @@ import { DatetimePicker } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: 'Write `v-model` on every roll instead of only on confirm.',
+      },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Wheel style (additive): forwarded to the roller — the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Slide haptic (additive): forwarded to the roller — fires `uni.vibrateShort({ type: "light" })` per detent on App / MP.',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       { name: 'customStyle', type: 'string', default: "''", desc: 'Inline style on the sheet.' },

@@ -96,6 +96,11 @@ import { DatetimePickerView } from '@snui/uni';
       title: 'Immediate change (immediateChange)',
       blurb: 'immediateChange: emits change on every roll.',
     },
+    {
+      name: 'datetime-picker-view-mp-wheel',
+      title: 'Wheel style (`wheel` / `vibrateShort`)',
+      blurb: 'The roller wears the rounded pill band with a distance fade; sliding ticks a light haptic (App / MP).',
+    },
   ],
   props: {
     hint: [],
@@ -170,6 +175,18 @@ import { DatetimePickerView } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: '农历滚筒（additive，AGENTS.md §112.3a）：年列显示干支（甲辰年）、月列 显示正月至腊月（含闰X月）、日列显示初一到三十。`v-model` 仍是公历 时间戳。仅对 date / year-month / year / datetime 生效，`time` 忽略； `minDate` / `maxDate` 在农历模式下只约束年列。',
+      },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Wheel style (additive, AGENTS.md §112.3a): the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Slide haptic (additive, AGENTS.md §112.3a): fires `uni.vibrateShort({ type: "light" })` per detent on App / MP; taps and programmatic writes stay silent.',
       },
     ],
   },

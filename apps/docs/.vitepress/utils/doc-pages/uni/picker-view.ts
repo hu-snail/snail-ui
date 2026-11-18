@@ -86,6 +86,11 @@ import { PickerView } from '@snui/uni';
       blurb: 'immediateChange 拖动中持续触发 change，配合事件实时联动。',
     },
     {
+      name: 'picker-view-mp-wheel',
+      title: 'wheel 风格（`wheel`）',
+      blurb: 'wheel 模式换装圆角胶囊高亮带 + 远行淡出，多列共享同一条带。',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: '根节点样式（`customClass` / `customStyle`）',
       blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',
@@ -124,6 +129,18 @@ import { PickerView } from '@snui/uni';
       },
       { name: 'cascade', type: 'boolean', default: 'false', desc: '把 columns 当树处理' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用滚轮' },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'wheel 风格（additive）：选中行渲染圆角胶囊高亮带 + 远行淡出。',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: '滑动短震动（additive）：每档位触发 `uni.vibrateShort({ type: "light" })`，App / 小程序生效。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -147,7 +164,7 @@ import { PickerView } from '@snui/uni';
   },
   pager: {
     prev: { text: 'Picker', link: '/components/uni/picker' },
-    next: { text: 'SelectPicker', link: '/components/uni/select-picker' },
+    next: { text: 'WheelPicker', link: '/components/uni/wheel-picker' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },
