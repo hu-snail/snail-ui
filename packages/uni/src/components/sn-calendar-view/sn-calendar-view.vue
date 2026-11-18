@@ -503,15 +503,27 @@ const rootStyle = computed(() => props.customStyle || undefined);
 /**
  * Panel height.
  *
- * `none` renders every month flat, so the panel is a fixed scroll window
- * (`panelHeight`). A switch mode renders exactly one month — a fixed height
- * would leave a large empty band under short months, so it sizes to content
- * and the CSS height transition animates the jump between months of different
- * row counts.
+ * miniprogram `scroll-view` only scrolls when it has a definite height — with
+ * `height: auto` it silently loses its scroll behaviour and the gesture falls
+ * through to the page. Switch modes therefore keep a real height, but size it
+ * to the ACTIVE month's row count instead of the flat-mode window, so a short
+ * month does not leave an empty band; the CSS height transition animates the
+ * jump between four- and five-row months.
  */
 const panelStyle = computed(() => {
-  if (props.switchMode !== 'none') return undefined;
-  return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+  if (props.switchMode === 'none') {
+    return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+  }
+  const block = monthBlocks.value[activeMonthIndex.value];
+  if (block === undefined) return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+  // 7 columns × 88rpx day cells; a month spans `cells.length / 7` rows.
+  const rows = Math.max(Math.ceil(block.cells.length / 7), 4);
+  // Chrome around the grid: the month block's top padding (spacing-3 = 16rpx)
+  // plus the panel's bottom padding (16rpx), and the month title row when it
+  // renders (spacing-2 × 2 + a ~36rpx line). Rounded up — a few rpx of slack
+  // keeps the last row fully reachable instead of clipping it.
+  const chrome = 32 + (props.showPanelTitle ? 56 : 0);
+  return { height: `${rows * 88 + chrome}rpx` };
 });
 
 function cellClass(cell: Cell): Record<string, boolean> {
@@ -697,11 +709,10 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
   box-sizing: border-box;
 }
 
-/* Switch modes size the panel to the active month; a month with five week rows
- * is one row taller than one with four, and this transition eases that jump
- * instead of snapping. `none` keeps the fixed scroll window (inline height). */
+/* The panel always carries an inline height (mp `scroll-view` needs a definite
+ * one to scroll at all). Switch modes size it to the active month, so the
+ * height transition below eases the jump between 4- and 5-row months. */
 .sn-calendar-view--switch .sn-calendar-view__panel {
-  height: auto;
   transition: height 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 

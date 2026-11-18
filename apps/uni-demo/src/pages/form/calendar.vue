@@ -31,13 +31,13 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
           <Demo1 />
         </view>
@@ -51,6 +51,7 @@ const { t } = useDemoUi();
             )
           "
           badge="declared-props"
+          inset
         />
         <view class="module__body">
           <Demo2 />
@@ -60,6 +61,7 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('周起始日（firstDayOfWeek）', 'First day of week (firstDayOfWeek)')"
           badge="first-day-of-week"
+          inset
         />
         <view class="module__body">
           <Demo3 />
@@ -69,6 +71,7 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('底栏形态（取消开关 / 无底栏）', 'Footer shapes (cancel toggle / no footer)')"
           badge="footer"
+          inset
         />
         <view class="module__body">
           <Demo4 />
@@ -78,13 +81,14 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('单元格格式化（formatter）', 'Cell formatting (formatter)')"
           badge="formatter"
+          inset
         />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
+        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" inset />
         <view class="module__body">
           <Demo6 />
         </view>
@@ -93,13 +97,14 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('即时写回（immediateChange）', 'Immediate write-back (immediateChange)')"
           badge="immediate-change"
+          inset
         />
         <view class="module__body">
           <Demo7 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
+        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" inset />
         <view class="module__body">
           <Demo8 />
         </view>
@@ -113,6 +118,7 @@ const { t } = useDemoUi();
             )
           "
           badge="panel"
+          inset
         />
         <view class="module__body">
           <Demo9 />
@@ -127,6 +133,7 @@ const { t } = useDemoUi();
             )
           "
           badge="range-constraints"
+          inset
         />
         <view class="module__body">
           <Demo10 />
@@ -136,6 +143,7 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('弹层外观与底栏插槽', 'Sheet chrome & footer slot')"
           badge="sheet-chrome"
+          inset
         />
         <view class="module__body">
           <Demo11 />
@@ -150,13 +158,18 @@ const { t } = useDemoUi();
             )
           "
           badge="shortcuts-events"
+          inset
         />
         <view class="module__body">
           <Demo12 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('shortcuts-range', 'Shortcuts Range')" badge="shortcuts-range" />
+        <DemoModuleHead
+          :title="t('shortcuts-range', 'Shortcuts Range')"
+          badge="shortcuts-range"
+          inset
+        />
         <view class="module__body">
           <Demo13 />
         </view>
@@ -196,11 +209,6 @@ const { t } = useDemoUi();
 .module {
   padding-left: 0;
   padding-right: 0;
-}
-
-.module .demo-module-head {
-  padding-left: var(--sn-mp-spacing-4);
-  padding-right: var(--sn-mp-spacing-4);
 }
 
 .module__body {

@@ -494,6 +494,22 @@ function onTouchMove(event: Event): void {
   event.stopPropagation();
 }
 
+/**
+ * Panel-side scroll lock.
+ *
+ * The scrim handler above only covers the area outside the panel. A sheet
+ * whose own content does not scroll (calendar hands its scrolling to an inner
+ * `scroll-view`, popups with short content have nothing to scroll) lets the
+ * gesture bubble to the page, so the PAGE moved while the sheet appeared
+ * frozen. Catching touchmove on the panel keeps the page still; an inner
+ * `scroll-view` still scrolls because it consumes the gesture itself before it
+ * reaches this handler.
+ */
+function onPanelTouchMove(event: Event): void {
+  if (!props.lockScroll) return;
+  event.stopPropagation();
+}
+
 const rootClass = computed(() => [
   'sn-popup',
   `sn-popup--${props.position}`,
@@ -594,7 +610,13 @@ const modalStyle = computed(() => {
       @touchmove="onTouchMove"
     />
 
-    <view class="sn-popup__panel" :style="panelStyle" role="dialog" aria-modal="true">
+    <view
+      class="sn-popup__panel"
+      :style="panelStyle"
+      role="dialog"
+      aria-modal="true"
+      @touchmove="onPanelTouchMove"
+    >
       <view
         v-if="showGrabber"
         class="sn-popup__grabber"

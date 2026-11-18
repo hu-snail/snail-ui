@@ -12,7 +12,7 @@
 | import-rewrite | 83 |
 | defineSlots-stripped | 69 |
 | unsupported-property | 33 |
-| patch | 15 |
+| patch | 18 |
 | template-bare-text | 13 |
 | script-guard | 11 |
 | defineSlots-manual | 1 |
@@ -655,9 +655,15 @@
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
+### sn-slider-bar/sn-slider-bar-drag.ts
+
+- patch applied — `patch`: desktop H5 mouse followers gated behind #ifdef H5 (no DOM on App)
+- patch applied — `patch`: mouse follower cleanup gated behind #ifdef H5
+- patch applied — `patch`: document-level mousedown bind/unbind gated behind #ifdef H5
+
 ### sn-slider-bar/sn-slider-bar.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 78): 1 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 82): 1 bare text node(s) wrapped in <text>
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-slider/sn-slider.uvue

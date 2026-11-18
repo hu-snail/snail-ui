@@ -28,7 +28,7 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
         <view class="module__body">
           <Demo0 />
         </view>
@@ -37,13 +37,14 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('确认拦截（beforeConfirm）', 'Confirm veto (beforeConfirm)')"
           badge="before-confirm"
+          inset
         />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
           <Demo2 />
         </view>
@@ -54,13 +55,14 @@ const { t } = useDemoUi();
             t('列文案与过滤（formatter / filter）', 'Column copy & filtering (formatter / filter)')
           "
           badge="column-format"
+          inset
         />
         <view class="module__body">
           <Demo3 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
+        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" inset />
         <view class="module__body">
           <Demo4 />
         </view>
@@ -69,13 +71,14 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('即时写回（immediateChange）', 'Immediate write-back (immediateChange)')"
           badge="immediate-change"
+          inset
         />
         <view class="module__body">
           <Demo5 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
+        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" inset />
         <view class="module__body">
           <Demo6 />
         </view>
@@ -89,6 +92,7 @@ const { t } = useDemoUi();
             )
           "
           badge="roller-geometry"
+          inset
         />
         <view class="module__body">
           <Demo7 />
@@ -98,13 +102,18 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('弹层外观（文案 / 遮罩 / 层级）', 'Sheet chrome (labels / scrim / stacking)')"
           badge="sheet-chrome"
+          inset
         />
         <view class="module__body">
           <Demo8 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('时分秒边界', 'Hour-minute-second bounds')" badge="time-bounds" />
+        <DemoModuleHead
+          :title="t('时分秒边界', 'Hour-minute-second bounds')"
+          badge="time-bounds"
+          inset
+        />
         <view class="module__body">
           <Demo9 />
         </view>
@@ -113,6 +122,7 @@ const { t } = useDemoUi();
         <DemoModuleHead
           :title="t('时间类型（type=&quot;time&quot;）', 'Time type (type=&quot;time&quot;)')"
           badge="time-type"
+          inset
         />
         <view class="module__body">
           <Demo10 />
@@ -153,11 +163,6 @@ const { t } = useDemoUi();
 .module {
   padding-left: 0;
   padding-right: 0;
-}
-
-.module .demo-module-head {
-  padding-left: var(--sn-mp-spacing-4);
-  padding-right: var(--sn-mp-spacing-4);
 }
 
 .module__body {

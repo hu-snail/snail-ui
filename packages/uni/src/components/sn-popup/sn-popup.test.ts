@@ -229,6 +229,45 @@ describe('sn-popup', () => {
     expect(event.defaultPrevented).toBe(false);
   });
 
+  it('stops a panel touchmove from reaching the page when lockScroll is on', () => {
+    // The sheet's own content often does not scroll (the calendar hands that to
+    // an inner scroll-view), so without this the PAGE scrolled behind a frozen
+    // sheet. The handler stops propagation but does not preventDefault — an
+    // inner scroll-view must still be able to consume the gesture.
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, lockScroll: true },
+      attachTo: document.body,
+    });
+    const pageListener = vi.fn();
+    document.addEventListener('touchmove', pageListener);
+    try {
+      const event = new Event('touchmove', { cancelable: true, bubbles: true });
+      wrapper.find('.sn-popup__panel').element.dispatchEvent(event);
+      expect(pageListener).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    } finally {
+      document.removeEventListener('touchmove', pageListener);
+      wrapper.unmount();
+    }
+  });
+
+  it('lets a panel touchmove bubble when lockScroll is off', () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, lockScroll: false },
+      attachTo: document.body,
+    });
+    const pageListener = vi.fn();
+    document.addEventListener('touchmove', pageListener);
+    try {
+      const event = new Event('touchmove', { cancelable: true, bubbles: true });
+      wrapper.find('.sn-popup__panel').element.dispatchEvent(event);
+      expect(pageListener).toHaveBeenCalled();
+    } finally {
+      document.removeEventListener('touchmove', pageListener);
+      wrapper.unmount();
+    }
+  });
+
   it('marks the panel as a modal dialog for assistive tech', () => {
     const wrapper = mount(SnPopup, { props: { modelValue: true } });
     const panel = wrapper.find('.sn-popup__panel');

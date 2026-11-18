@@ -335,13 +335,16 @@ describe('sn-calendar-view', () => {
       expect(w.find('.sn-calendar-view__control-title').text()).toContain('2024 年 1 月');
     });
 
-    it('sizes the panel to content in switch modes and fixes it in none mode', () => {
-      // The fixed scroll window only exists in `none`. happy-dom drops rpx
-      // lengths, so pin the contract on the source: switch modes return no
-      // inline height while `none` does.
+    it('sizes the panel to the active month in switch modes, fixed window in none', () => {
+      // miniprogram `scroll-view` only scrolls with a definite height, so the
+      // panel always carries one — but switch modes derive it from the active
+      // month's row count instead of the flat-mode window. happy-dom drops rpx
+      // lengths, so pin the contract on the source.
       const source = readFileSync(resolve(__dirname, 'sn-calendar-view.vue'), 'utf8');
-      expect(source).toContain("if (props.switchMode !== 'none') return undefined;");
-      expect(source).toContain('height: auto;');
+      expect(source).toContain("if (props.switchMode === 'none') {");
+      expect(source).toContain('const rows = Math.max(Math.ceil(block.cells.length / 7), 4);');
+      // The auto height that broke mp scrolling must be gone.
+      expect(source).not.toContain('height: auto;');
     });
   });
 

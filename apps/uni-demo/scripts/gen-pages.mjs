@@ -1303,10 +1303,16 @@ for (const sub of subpackages) {
           return `      <Demo${i} />`;
         }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
-        const head = `<DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge} />`;
+        // 通栏页把模块左右内边距归零了（让 cell 入口行铺满整行），标题行
+        // 因此要自己补回留白 —— 通过 `inset` 交给 DemoModuleHead 自己的样式。
+        // 不能写成页面里的后代选择器：mp-weixin 的 WXSS 只支持 class 选择器，
+        // `.module .demo-module-head` 会被静默丢弃（H5 却正常，是最难发现的
+        // 一类跨端差异）。
+        const inset = isFullBleed ? ' inset' : '';
+        const head = `<DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge}${inset} />`;
         // 通栏平铺页：标题行包一层本页作用域的节点，才能在不改共享
         // DemoModuleHead、也不用 :deep()（uni-app x 转换会丢弃）的前提下
-        // 给标题行单独铺底与留白。
+        // 给标题行单独铺底。
         const headRow = isFlat
           ? `        <view class="module__head">
           ${head}
@@ -1342,18 +1348,13 @@ ${headRow}
 `
         : '',
       // 通栏页：模块去掉左右内边距，cell 入口行铺满整行（左右由 cell 自己
-      // 的 spacing 承担）。标题行自身没有左右内边距（原本靠 .module 的），
-      // 所以单独补回来，否则标题会贴到屏幕边缘。
+      // 的 spacing 承担）。标题行的左右留白由 DemoModuleHead 的 `inset` 属性
+      // 自己负责 —— 后代选择器在 mp-weixin 的 WXSS 里不被支持。
       isFullBleed
         ? `
 .module {
   padding-left: 0;
   padding-right: 0;
-}
-
-.module .demo-module-head {
-  padding-left: var(--sn-mp-spacing-4);
-  padding-right: var(--sn-mp-spacing-4);
 }
 `
         : '',
