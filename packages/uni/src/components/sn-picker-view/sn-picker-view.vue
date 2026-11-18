@@ -40,6 +40,15 @@
  * per notch. The root carries `data-snui-mouse-gesture` so the docs-preview
  * mouse→touch bridge can leave these gestures to the component.
  *
+ * ## Wheel style + slide haptics (additive, AGENTS.md §112.3a)
+ *
+ * `wheel` swaps the hairline indicator for a rounded pill selection band with
+ * an action-primary active row and a distance fade two rows out. `vibrateShort`
+ * fires `uni.vibrateShort({ type: 'light' })` on every detent the drag engine
+ * crosses (see `sn-picker-view-drag` `onDetent`) — App / mini-program only,
+ * tap selection and programmatic commits stay silent. `sn-wheel-picker` is
+ * this component preset to `wheel` + `vibrateShort: true`.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -56,6 +65,7 @@ import type {
   PickerViewChangePayload,
 } from './sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-drag';
+import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
 
 defineOptions({ name: 'SnPickerView' });
 
@@ -87,6 +97,18 @@ const props = withDefaults(
     cascade?: boolean;
     /** Disables the whole roller. */
     disabled?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：选中行渲染圆角胶囊高亮带、
+     * 文字转主题色，两行外文字淡出（对齐 iOS 滚轮观感）。默认 false 保持
+     * hairline 指示线。
+     */
+    wheel?: boolean;
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
+     * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
+     * 静默跳过；点选与程序赋值不震动。
+     */
+    vibrateShort?: boolean;
     /** Class on the root node. */
     customClass?: string;
     /** Inline style on the root node. */
@@ -103,6 +125,8 @@ const props = withDefaults(
     immediateChange: false,
     cascade: false,
     disabled: false,
+    wheel: false,
+    vibrateShort: false,
     customClass: '',
     customStyle: '',
   },
@@ -216,6 +240,9 @@ const drag = createRollerDrag({
   commit,
   onStart: () => emit('pickstart'),
   onEnd: () => emit('pickend'),
+  onDetent: () => {
+    if (props.vibrateShort) fireHaptic('light');
+  },
 });
 
 const {
@@ -365,6 +392,7 @@ const rootClass = computed(() => [
   {
     'sn-picker-view--disabled': props.disabled,
     'sn-picker-view--cascade': props.cascade,
+    'sn-picker-view--wheel': props.wheel,
   },
   props.customClass,
 ]);
@@ -386,6 +414,11 @@ const rootStyle = computed(() => {
 
 function isActive(columnIndex: number, rowIndex: number): boolean {
   return (selectedIndexes.value[columnIndex] ?? 0) === rowIndex;
+}
+
+/** Rows between the item and the selection — drives the wheel-mode fade. */
+function distanceOf(columnIndex: number, rowIndex: number): number {
+  return Math.abs(rowIndex - (selectedIndexes.value[columnIndex] ?? 0));
 }
 
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
@@ -426,6 +459,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
             'sn-picker-view__item',
             {
               'sn-picker-view__item--active': isActive(columnIndex, rowIndex),
+              'sn-picker-view__item--far': props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
               'sn-picker-view__item--disabled': option.disabled,
             },
           ]"
@@ -546,6 +580,31 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 .snui-skin-doodle .sn-picker-view__indicator {
   border-top-width: 4rpx;
   border-bottom-width: 4rpx;
+  border-top-color: var(--sn-mp-color-text-primary);
+  border-bottom-color: var(--sn-mp-color-text-primary);
+}
+
+/* Wheel 风格（additive）— hairline 指示线换成圆角胶囊高亮带，选中行文字转
+   主题色，两行外淡出。规则放在 doodle 之后以赢下同特异性优先级。 */
+.sn-picker-view--wheel .sn-picker-view__indicator {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  background-color: var(--sn-mp-color-background-subtle);
+  border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
+}
+
+.sn-picker-view--wheel .sn-picker-view__item--active {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-picker-view--wheel .sn-picker-view__item--far {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+/* Doodle skin 下胶囊带保留手绘描边。 */
+.snui-skin-doodle .sn-picker-view--wheel .sn-picker-view__indicator {
+  border-top-width: 2rpx;
+  border-bottom-width: 2rpx;
   border-top-color: var(--sn-mp-color-text-primary);
   border-bottom-color: var(--sn-mp-color-text-primary);
 }

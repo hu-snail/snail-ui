@@ -43,6 +43,14 @@
  * drag runs the same drag core as touch; the wheel advances one committed row
  * per notch.
  *
+ * ## Wheel style + slide haptics (additive, AGENTS.md §112.3a)
+ *
+ * Same as `sn-picker-view`: `wheel` swaps the hairline indicator for a rounded
+ * pill selection band with an action-primary active row and a distance fade
+ * two rows out; `vibrateShort` fires `uni.vibrateShort({ type: 'light' })` on
+ * every detent the drag engine crosses — App / mini-program only, tap
+ * selection and programmatic commits stay silent.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -53,6 +61,7 @@
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
+import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -150,6 +159,18 @@ const props = withDefaults(
      * `minDate` / `maxDate` 在农历模式下只约束年列。
      */
     lunar?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：选中行渲染圆角胶囊高亮带、
+     * 文字转主题色，两行外文字淡出（对齐 iOS 滚轮观感）。默认 false 保持
+     * hairline 指示线。
+     */
+    wheel?: boolean;
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
+     * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
+     * 静默跳过；点选与程序赋值不震动。
+     */
+    vibrateShort?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -176,6 +197,8 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
     lunar: false,
+    wheel: false,
+    vibrateShort: false,
   },
 );
 
@@ -383,6 +406,11 @@ function indexOf(columnIndex: number): number {
   return found < 0 ? 0 : found;
 }
 
+/** Rows between the item and the selection — drives the wheel-mode fade. */
+function distanceOf(columnIndex: number, rowIndex: number): number {
+  return Math.abs(rowIndex - indexOf(columnIndex));
+}
+
 /** Emit a value derived from a full parts record. */
 function emitParts(next: DateParts, columnIndex: number): void {
   const value =
@@ -476,6 +504,9 @@ const drag = createRollerDrag({
   commit: (columnIndex, rowIndex) => selectRow(columnIndex, rowIndex),
   onStart: () => emit('pickstart'),
   onEnd: () => emit('pickend'),
+  onDetent: () => {
+    if (props.vibrateShort) fireHaptic('light');
+  },
 });
 
 const {
@@ -542,7 +573,10 @@ defineExpose({ getSelectedOptions, correctValue, getOriginColumns });
 const rootClass = computed(() => [
   'sn-datetime-picker-view',
   `sn-datetime-picker-view--${props.type}`,
-  { 'sn-datetime-picker-view--lunar': isLunarMode.value },
+  {
+    'sn-datetime-picker-view--lunar': isLunarMode.value,
+    'sn-datetime-picker-view--wheel': props.wheel,
+  },
   props.customClass,
 ]);
 
@@ -598,7 +632,11 @@ const ariaValue = computed(() => {
           :key="value"
           :class="[
             'sn-datetime-picker-view__item',
-            { 'sn-datetime-picker-view__item--active': column.selected === value },
+            {
+              'sn-datetime-picker-view__item--active': column.selected === value,
+              'sn-datetime-picker-view__item--far':
+                props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
+            },
           ]"
           :style="{ height: itemHeightRpx }"
           role="button"
@@ -726,6 +764,31 @@ const ariaValue = computed(() => {
 .snui-skin-doodle .sn-datetime-picker-view__indicator {
   border-top-width: 4rpx;
   border-bottom-width: 4rpx;
+  border-top-color: var(--sn-mp-color-text-primary);
+  border-bottom-color: var(--sn-mp-color-text-primary);
+}
+
+/* Wheel 风格（additive）— hairline 指示线换成圆角胶囊高亮带，选中行文字转
+   主题色，两行外淡出。规则放在 doodle 之后以赢下同特异性优先级。 */
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  background-color: var(--sn-mp-color-background-subtle);
+  border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
+}
+
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__item--active {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__item--far {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+/* Doodle skin 下胶囊带保留手绘描边。 */
+.snui-skin-doodle .sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator {
+  border-top-width: 2rpx;
+  border-bottom-width: 2rpx;
   border-top-color: var(--sn-mp-color-text-primary);
   border-bottom-color: var(--sn-mp-color-text-primary);
 }

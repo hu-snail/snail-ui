@@ -91,6 +91,16 @@ const props = withDefaults(
     safeAreaInsetBottom?: boolean;
     /** Write `v-model` on every roll instead of only on confirm. */
     immediateChange?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：转发给 `sn-picker-view`，
+     * 选中行渲染圆角胶囊高亮带 + 远行淡出。
+     */
+    wheel?: boolean;
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：转发给 `sn-picker-view`，
+     * 滑动经过每一行档位时触发 `uni.vibrateShort({ type: 'light' })`。
+     */
+    vibrateShort?: boolean;
     /** Class on the root node. */
     customClass?: string;
     /** Inline style on the sheet. */
@@ -121,6 +131,8 @@ const props = withDefaults(
     zIndex: 15,
     safeAreaInsetBottom: true,
     immediateChange: false,
+    wheel: false,
+    vibrateShort: false,
     customClass: '',
     customStyle: '',
     rootPortal: false,
@@ -257,6 +269,8 @@ const viewClass = computed(() => props.customViewClass);
         :item-height="props.itemHeight"
         :visible-item-count="props.visibleItemCount"
         :immediate-change="props.immediateChange"
+        :wheel="props.wheel"
+        :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       />
     </view>

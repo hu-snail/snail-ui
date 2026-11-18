@@ -45,6 +45,7 @@ interface Harness {
   commits: Array<[number, number]>;
   starts: number[];
   ends: number[];
+  detents: Array<[number, number]>;
   tick(ms: number): void;
 }
 
@@ -53,6 +54,7 @@ function mountEngine(overrides: Partial<RollerDragOptions> = {}): Harness {
   const commits: Array<[number, number]> = [];
   const starts: number[] = [];
   const ends: number[] = [];
+  const detents: Array<[number, number]> = [];
   const api = createRollerDrag({
     isDisabled: () => false,
     itemRpx: () => 88,
@@ -64,6 +66,7 @@ function mountEngine(overrides: Partial<RollerDragOptions> = {}): Harness {
     commit: (columnIndex, rowIndex) => commits.push([columnIndex, rowIndex]),
     onStart: () => starts.push(0),
     onEnd: () => ends.push(0),
+    onDetent: (columnIndex, rowIndex) => detents.push([columnIndex, rowIndex]),
     now: () => clock,
     ...overrides,
   });
@@ -72,6 +75,7 @@ function mountEngine(overrides: Partial<RollerDragOptions> = {}): Harness {
     commits,
     starts,
     ends,
+    detents,
     tick(ms: number) {
       clock += ms;
     },
@@ -204,6 +208,73 @@ describe('sn-picker-view-drag', () => {
       tick(16);
       api.onTouchMove(touchStart(200), 0);
       expect(commits).toEqual([]);
+    });
+  });
+
+  describe('detent hook', () => {
+    it('ticks once per row crossing while dragging', () => {
+      const { api, detents, tick } = mountEngine();
+      api.onTouchStart(touchStart(300), 0);
+      tick(16);
+      // 44px per row at the reference viewport: 256 → row 1, 212 → row 2.
+      api.onTouchMove(touchStart(256), 0);
+      tick(16);
+      api.onTouchMove(touchStart(212), 0);
+      expect(detents).toEqual([
+        [0, 1],
+        [0, 2],
+      ]);
+      // Pause so the release carries no flick velocity, then settle on the
+      // already-ticked row — no extra tick.
+      tick(400);
+      api.onTouchEnd(touchEnd(212), 0);
+      expect(detents).toEqual([
+        [0, 1],
+        [0, 2],
+      ]);
+    });
+
+    it('ticks the landing row when a flick skips the intermediate rows', () => {
+      const { api, detents, tick } = mountEngine();
+      api.onTouchStart(touchStart(300), 0);
+      tick(20);
+      // Same flick as the momentum suite: finger travel lands on row 3.
+      api.onTouchMove(touchStart(280), 0);
+      tick(10);
+      api.onTouchEnd(touchEnd(275), 0);
+      expect(detents).toEqual([[0, 3]]);
+    });
+
+    it('does not tick when the wheel never leaves the row', () => {
+      const { api, detents, tick } = mountEngine();
+      api.onTouchStart(touchStart(300), 0);
+      tick(16);
+      // 10px of wiggle stays inside row 0; pause so the release carries no
+      // flick velocity, and the settle lands back on row 0.
+      api.onTouchMove(touchStart(290), 0);
+      tick(400);
+      api.onTouchEnd(touchEnd(290), 0);
+      expect(detents).toEqual([]);
+    });
+
+    it('does not tick a tap', () => {
+      const { api, detents } = mountEngine();
+      api.onTouchStart(touchStart(300), 0);
+      api.onTouchEnd(touchEnd(300), 0);
+      expect(detents).toEqual([]);
+    });
+
+    it('ticks with immediateChange off (haptic is draft-mode independent)', () => {
+      const { api, commits, detents, tick } = mountEngine({ isImmediate: () => false });
+      api.onTouchStart(touchStart(300), 0);
+      tick(16);
+      // One synthetic move jumps straight to row 2 — the tick follows the
+      // resolved row, no commit is made in draft mode.
+      api.onTouchMove(touchStart(212), 0);
+      expect(detents).toEqual([[0, 2]]);
+      expect(commits).toEqual([]);
+      tick(400);
+      api.onTouchEnd(touchEnd(212), 0);
     });
   });
 
@@ -419,6 +490,13 @@ describe('sn-picker-view-drag', () => {
       mouseUp(256);
       // 44px up at the 375px reference viewport = exactly one row.
       expect(commits).toEqual([[0, 1]]);
+    });
+
+    it('ticks the detent hook on a wheel-notch step', () => {
+      const { api, detents } = mountEngine();
+      const surface = mountSurface(api);
+      wheel(surface.column, 100);
+      expect(detents).toEqual([[0, 1]]);
     });
 
     it('tracks the roller with the pointer while the button is down', () => {

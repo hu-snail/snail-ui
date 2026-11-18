@@ -6,7 +6,7 @@
  * writes and the exposed helpers. No rpx numbers in assertions.
  */
 
-import { beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnDatetimePickerView from './sn-datetime-picker-view.vue';
@@ -264,6 +264,86 @@ describe('sn-datetime-picker-view', () => {
       });
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
       expect(new Date(value).getFullYear()).toBe(2020);
+    });
+  });
+
+  describe('wheel style (additive)', () => {
+    it('flags the root with the wheel class only when enabled', () => {
+      expect(mountView({ type: 'year' }).classes()).not.toContain('sn-datetime-picker-view--wheel');
+      expect(mountView({ type: 'year', wheel: true }).classes()).toContain(
+        'sn-datetime-picker-view--wheel',
+      );
+    });
+
+    it('fades rows two or more slots away from the selection', () => {
+      const w = mountView({
+        type: 'year',
+        modelValue: new Date(2024, 5, 15).getTime(),
+        wheel: true,
+      });
+      const items = w.findAll('.sn-datetime-picker-view__item');
+      // Year column runs 2020–2030; 2024 sits at index 4.
+      expect(items[0]?.text()).toBe('2020');
+      expect(items[0]?.classes()).toContain('sn-datetime-picker-view__item--far');
+      expect(items[3]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
+      expect(items[4]?.classes()).toContain('sn-datetime-picker-view__item--active');
+      expect(items[4]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
+      expect(items[6]?.classes()).toContain('sn-datetime-picker-view__item--far');
+    });
+  });
+
+  describe('vibrateShort (additive)', () => {
+    /** Host stub collecting `uni.vibrateShort` calls; cleaned up per test. */
+    function stubHost(): unknown[] {
+      const calls: unknown[] = [];
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: (opts: unknown) => calls.push(opts),
+      };
+      return calls;
+    }
+
+    afterEach(() => {
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+
+    it('vibrates per detent while sliding when enabled', async () => {
+      // FB-010：阶跃时钟（+4ms < MIN_SAMPLE_MS）排除动量对落点的干扰。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const calls = stubHost();
+      const w = mountView(
+        { type: 'year', modelValue: new Date(2024, 5, 15).getTime(), vibrateShort: true },
+        { [PICKER_DRAG_CLOCK_INJECT]: stepClock },
+      );
+      const column = w.find('.sn-datetime-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(1);
+      await column.trigger('touchmove', { touches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      // Push the clock past the 100ms velocity window so the release carries
+      // no flick: the settle lands on the already-ticked row, no third tick.
+      clockT += 200;
+      await column.trigger('touchend', { changedTouches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      const value = w.emitted('update:modelValue')?.at(-1)?.[0] as number;
+      expect(new Date(value).getFullYear()).toBe(2026);
+    });
+
+    it('does not vibrate by default or on a tap selection', async () => {
+      const calls = stubHost();
+      const w = mountView({ type: 'year' });
+      const column = w.find('.sn-datetime-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      await column.trigger('touchend', { changedTouches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(0);
+      // Tap selection stays silent even with the flag on.
+      const w2 = mountView({ type: 'year', vibrateShort: true });
+      await w2.findAll('.sn-datetime-picker-view__item')[5]!.trigger('tap');
+      expect(calls).toHaveLength(0);
+      const value = w2.emitted('update:modelValue')?.at(-1)?.[0] as number;
+      expect(new Date(value).getFullYear()).toBe(2025);
     });
   });
   describe('exposed API', () => {

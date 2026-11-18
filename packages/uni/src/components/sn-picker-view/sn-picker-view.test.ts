@@ -5,7 +5,7 @@
  * rows, the cascade column derivation and the exposed query API. No rpx
  * numbers in assertions — happy-dom discards lengths it cannot parse.
  */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnPickerView from './sn-picker-view.vue';
@@ -592,6 +592,89 @@ describe('sn-picker-view', () => {
       expect(w.findAll('.sn-picker-view__column')).toHaveLength(2);
       const secondColumn = w.findAll('.sn-picker-view__column')[1];
       expect(secondColumn?.find('.sn-picker-view__item--active').text()).toBe('Hangzhou');
+    });
+  });
+
+  describe('wheel style (additive)', () => {
+    it('flags the root with the wheel class only when enabled', () => {
+      expect(mountView().classes()).not.toContain('sn-picker-view--wheel');
+      expect(mountView({ wheel: true }).classes()).toContain('sn-picker-view--wheel');
+    });
+
+    it('fades rows two or more slots away from the selection', () => {
+      const w = mountView({ modelValue: ['c'], columns: [['a', 'b', 'c', 'd', 'e']], wheel: true });
+      const items = w.findAll('.sn-picker-view__item');
+      expect(items[0]?.classes()).toContain('sn-picker-view__item--far');
+      // Adjacent row keeps the default tone; the active row never fades.
+      expect(items[1]?.classes()).not.toContain('sn-picker-view__item--far');
+      expect(items[2]?.classes()).not.toContain('sn-picker-view__item--far');
+      expect(items[2]?.classes()).toContain('sn-picker-view__item--active');
+      expect(items[4]?.classes()).toContain('sn-picker-view__item--far');
+    });
+
+    it('does not fade rows when wheel is off', () => {
+      const w = mountView({ modelValue: ['banana'] });
+      expect(w.findAll('.sn-picker-view__item--far')).toHaveLength(0);
+    });
+  });
+
+  describe('vibrateShort (additive)', () => {
+    /** Host stub collecting `uni.vibrateShort` calls; cleaned up per test. */
+    function stubHost(): unknown[] {
+      const calls: unknown[] = [];
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: (opts: unknown) => calls.push(opts),
+      };
+      return calls;
+    }
+
+    afterEach(() => {
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+
+    it('does not vibrate by default while sliding', async () => {
+      // FB-010：阶跃时钟（+4ms < MIN_SAMPLE_MS）排除动量对落点的干扰。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const calls = stubHost();
+      const w = mountView({ modelValue: ['apple'] }, { [PICKER_DRAG_CLOCK_INJECT]: stepClock });
+      const column = w.find('.sn-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 212 }] });
+      await column.trigger('touchend', { changedTouches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(0);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['cherry']]);
+    });
+
+    it('vibrates per detent while sliding when enabled', async () => {
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const calls = stubHost();
+      const w = mountView(
+        { modelValue: ['apple'], vibrateShort: true },
+        { [PICKER_DRAG_CLOCK_INJECT]: stepClock },
+      );
+      const column = w.find('.sn-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      // 44px per row at the reference viewport: each crossing ticks once.
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(1);
+      await column.trigger('touchmove', { touches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      // Push the clock past the 100ms velocity window so the release carries
+      // no flick: the settle lands on the already-ticked row, no third tick.
+      clockT += 200;
+      await column.trigger('touchend', { changedTouches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['cherry']]);
+    });
+
+    it('does not vibrate on a tap selection', async () => {
+      const calls = stubHost();
+      const w = mountView({ modelValue: ['apple'], vibrateShort: true });
+      await w.findAll('.sn-picker-view__item')[1]!.trigger('tap');
+      expect(calls).toHaveLength(0);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']]);
     });
   });
 });
