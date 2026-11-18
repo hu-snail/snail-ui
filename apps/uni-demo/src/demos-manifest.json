@@ -2209,6 +2209,11 @@
           "hasEn": true
         },
         {
+          "name": "picker-view-mp-band-mode",
+          "title": "分列与渐变带",
+          "hasEn": true
+        },
+        {
           "name": "picker-view-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -2241,6 +2246,11 @@
         {
           "name": "picker-view-mp-keys",
           "title": "自定义字段名（`valueKey` / `labelKey` / `childrenKey`）",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-rich",
+          "title": "富内容行",
           "hasEn": true
         },
         {
@@ -3335,6 +3345,11 @@
         {
           "name": "swipe-action-mp-card",
           "title": "浮卡行（消息列表）",
+          "hasEn": true
+        },
+        {
+          "name": "swipe-action-mp-cell-group",
+          "title": "列表组（cell 风格）",
           "hasEn": true
         },
         {

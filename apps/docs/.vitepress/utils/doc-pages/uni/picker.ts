@@ -161,6 +161,12 @@ import { Picker } from '@snui/uni';
         desc: 'wheel 风格（additive）：转发给滚筒，选中行渲染圆角胶囊高亮带 + 远行淡出。',
       },
       {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: '高亮带形态（additive）：shared 横跨全部列一整条带；perColumn 每列一条。转发给滚筒。',
+      },
+      {
         name: 'vibrateShort',
         type: 'boolean',
         default: 'false',

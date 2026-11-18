@@ -85,6 +85,12 @@ import { WheelPicker } from '@snui/uni';
         default: 'true',
         desc: 'Slide haptic (additive): fires `uni.vibrateShort({ type: "light" })` per detent on App / MP; taps and programmatic writes stay silent.',
       },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "Band shape (additive): shared spans every column with one pill; perColumn one band per column. Paint / radius / inset via `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`.",
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       { name: 'customStyle', type: 'string', default: "''", desc: 'Inline style on the root node.' },
     ],

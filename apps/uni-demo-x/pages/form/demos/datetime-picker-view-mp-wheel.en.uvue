@@ -1,12 +1,15 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.en.vue sha256:9c868a9bd50f97de —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.en.vue sha256:5344dae56223cb23 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — inline wheel style time roller with the pill band and slide haptic. */
 import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
+// type="time" accepts a timestamp initially but writes back an 'HH:mm' string — display both shapes.
 const value = ref<string | number>(new Date(2026, 5, 15, 9, 30, 0).getTime());
 
 const pad = (n: number) => String(n).padStart(2, '0');
-const timeText = () => {
-  const d = new Date(Number(value.value));
+const timeText = (): string => {
+  const raw = value.value;
+  if (typeof raw === 'string') return raw.slice(0, 5);
+  const d = new Date(raw);
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 </script>

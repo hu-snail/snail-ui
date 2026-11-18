@@ -106,6 +106,16 @@ import { PickerView } from '@snui/uni';
       blurb: '插槽画每行虚线时间槽盒，选中行实线主题框，远行按 distance 淡出。',
     },
     {
+      name: 'picker-view-mp-rich',
+      title: '富内容行（`#option` 插槽）',
+      blurb: '主标题 + 副标题双行布局，option.raw 透传业务字段。',
+    },
+    {
+      name: 'picker-view-mp-band-mode',
+      title: '块自定义（`wheelBand` / 渐变带 / inset）',
+      blurb: 'shared 一整条横跨全部列；perColumn 每列一条；带漆 / 圆角 / 内边距走 CSS 变量。',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: '根节点样式（`customClass` / `customStyle`）',
       blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',
@@ -149,6 +159,12 @@ import { PickerView } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: 'wheel 风格（additive）：选中行渲染圆角胶囊高亮带 + 远行淡出。',
+      },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "高亮带形态（additive）：shared 横跨全部列一整条带；perColumn 每列一条。带漆 / 圆角 / 内边距经 `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset` 自定义。",
       },
       {
         name: 'vibrateShort',

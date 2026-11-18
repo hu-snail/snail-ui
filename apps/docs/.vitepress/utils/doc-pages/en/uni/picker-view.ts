@@ -104,6 +104,16 @@ import { PickerView } from '@snui/uni';
       blurb: 'The slot draws a dashed box per row with a solid theme border on the active row and a distance fade.',
     },
     {
+      name: 'picker-view-mp-rich',
+      title: 'Rich rows (`#option` slot)',
+      blurb: 'Title + subtitle two-line layout; option.raw carries business fields.',
+    },
+    {
+      name: 'picker-view-mp-band-mode',
+      title: 'Band customization (`wheelBand` / gradient / inset)',
+      blurb: 'shared renders one pill across columns; perColumn one per column; paint / radius / inset via CSS vars.',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
       blurb:
@@ -173,6 +183,12 @@ import { PickerView } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: 'Wheel style (additive): the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "Band shape (additive): shared spans every column with one pill; perColumn one band per column. Paint / radius / inset via `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`.",
       },
       {
         name: 'vibrateShort',

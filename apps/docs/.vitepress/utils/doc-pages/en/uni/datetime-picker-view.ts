@@ -183,6 +183,12 @@ import { DatetimePickerView } from '@snui/uni';
         desc: 'Wheel style (additive, AGENTS.md §112.3a): the selected row renders a rounded pill band with a distance fade.',
       },
       {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "Band shape (additive): shared spans every column with one pill; perColumn one band per column. Paint / radius / inset via `--sn-datetime-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`.",
+      },
+      {
         name: 'vibrateShort',
         type: 'boolean',
         default: 'false',

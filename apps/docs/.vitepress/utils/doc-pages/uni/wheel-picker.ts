@@ -96,6 +96,12 @@ import { WheelPicker } from '@snui/uni';
         default: 'true',
         desc: '滑动短震动（additive）：每档位触发 `uni.vibrateShort({ type: "light" })`，App / 小程序生效；点选与程序赋值不震。',
       },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "高亮带形态（additive）：shared 横跨全部列一整条带；perColumn 每列一条。带漆 / 圆角 / 内边距经 `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset` 自定义。",
+      },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点 class。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点 style。' },
     ],

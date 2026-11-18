@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1468 |
+| .uvue 产出 | 1472 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2070 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2074 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -747,6 +747,8 @@
 - ../uni-demo/src/pages/form-2/demos/picker-mp-sheet.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-wheel.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-mp-wheel.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-band.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-band.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.en.vue: ref
@@ -763,6 +765,8 @@
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-rich.en.vue: ref
+- ../uni-demo/src/pages/form-2/demos/picker-view-mp-rich.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.en.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.vue: ref
 - ../uni-demo/src/pages/form-2/demos/picker-view-mp-slots.en.vue: ref
@@ -2428,7 +2432,7 @@
 - pages/form-2/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
 - pages/form-2/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
 - pages/form-2/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form-2/picker-view.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker-view.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
 - pages/form-2/picker.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/form-2/radio.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
