@@ -643,8 +643,7 @@ describe('sn-picker-view', () => {
       expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(2);
     });
 
-    it('paints the band through the overridable wheel-band variable', () => {
-      const w = mountView({ wheel: true, customStyle: '--sn-picker-view-wheel-band: #e6f0ff' });
+    it('paints the band through the overridable wheel-band variable', () => {      const w = mountView({ wheel: true, customStyle: '--sn-picker-view-wheel-band: #e6f0ff' });
       // customStyle lands on the root; the CSS var chain reaches the indicator.
       expect(w.attributes('style')).toContain('--sn-picker-view-wheel-band: #e6f0ff');
     });
@@ -688,6 +687,36 @@ describe('sn-picker-view', () => {
       expect(source).toMatch(
         /\.sn-picker-view__roller \{\n[^}]*position: relative;\n {2}z-index: 1;/,
       );
+    });
+  });
+
+  describe('band slot (additive)', () => {
+    it('replaces the shared band paint and reports mode / columnIndex', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a'], columns: [['a', 'b']], wheel: true },
+        slots: { band: `<template #band="{ mode, columnIndex }"><view class="custom-band">{{ mode }}:{{ columnIndex }}</view></template>` },
+      });
+      const band = w.find('.sn-picker-view__wheel-band .custom-band');
+      expect(band.exists()).toBe(true);
+      expect(band.text()).toBe('shared:-1');
+    });
+
+    it('paints every per-column band in perColumn mode', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a', 'x'], columns: [['a', 'b'], ['x', 'y']], wheel: true, wheelBand: 'perColumn' },
+        slots: { band: `<template #band="{ columnIndex }"><view class="custom-band">{{ columnIndex }}</view></template>` },
+      });
+      const bands = w.findAll('.custom-band');
+      expect(bands).toHaveLength(2);
+      expect(bands.map((b) => b.text())).toEqual(['0', '1']);
+    });
+
+    it('does not render the band slot in hairline mode', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a'], columns: [['a', 'b']] },
+        slots: { band: `<template #band><view class="custom-band" /></template>` },
+      });
+      expect(w.findAll('.custom-band')).toHaveLength(0);
     });
   });
 

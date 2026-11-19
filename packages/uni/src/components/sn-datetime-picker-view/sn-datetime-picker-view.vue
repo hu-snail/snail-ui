@@ -102,6 +102,20 @@ interface RollerColumn {
   labels: string[];
 }
 
+defineSlots<{
+  /**
+   * Custom wheel band (additive) — replaces the pill's painted fill so a
+   * caller can draw a texture, border, dotted pattern or gradient the CSS
+   * vars cannot express. The band box stays with the component.
+   */
+  band?(scope: {
+    /** `shared` (one pill across columns) or `perColumn`. */
+    mode: 'shared' | 'perColumn';
+    /** Column index in perColumn mode; `-1` for the shared band. */
+    columnIndex: number;
+  }): unknown;
+}>();
+
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-datetime-picker-view` 1:1 surface ───────────────────── */
@@ -211,8 +225,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void;
-  (e: 'change', payload: { value: string | number; columns: RollerColumn[] }): void;
+  (e: 'update:modelValue', value: string | number): void;  (e: 'change', payload: { value: string | number; columns: RollerColumn[] }): void;
   (e: 'pickstart'): void;
   (e: 'pickend'): void;
 }>();
@@ -627,8 +640,10 @@ const ariaValue = computed(() => {
     :aria-label="ariaValue"
   >
     <!-- Shared wheel band (additive): one pill spanning every column, painted
-         behind the roller text (z0). -->
-    <view v-if="showSharedBand" class="sn-datetime-picker-view__wheel-band" aria-hidden="true" />
+         behind the roller text (z0). The #band slot replaces the paint. -->
+    <view v-if="showSharedBand" class="sn-datetime-picker-view__wheel-band" aria-hidden="true"
+      ><slot name="band" :mode="'shared'" :column-index="-1"
+    /></view>
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -673,7 +688,9 @@ const ariaValue = computed(() => {
       />
       <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
            Hidden entirely in shared-band mode (the root band takes over). -->
-      <view v-if="!showSharedBand" class="sn-datetime-picker-view__indicator" aria-hidden="true" />
+      <view v-if="!showSharedBand" class="sn-datetime-picker-view__indicator" aria-hidden="true"
+        ><slot v-if="props.wheel" name="band" :mode="'perColumn'" :column-index="columnIndex"
+      /></view>
     </view>
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
@@ -768,6 +785,8 @@ const ariaValue = computed(() => {
   border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
   pointer-events: none;
   z-index: 0;
+  /* #band slot content fills the pill and is clipped by its radius. */
+  overflow: hidden;
 }
 
 .sn-datetime-picker-view__mask {

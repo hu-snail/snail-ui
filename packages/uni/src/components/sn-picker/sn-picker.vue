@@ -38,6 +38,7 @@ import { computed, ref, watch } from 'vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
 import SnPickerView from '../sn-picker-view/sn-picker-view.vue';
 import type {
+  NormalizedPickerOption,
   PickerColumn,
   PickerOption,
   PickerValue,
@@ -145,6 +146,25 @@ const props = withDefaults(
     customViewClass: '',
   },
 );
+
+defineSlots<{
+  /**
+   * Custom row content (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ option, active, distance, columnIndex, index }`.
+   */
+  option?(scope: {
+    option: NormalizedPickerOption;
+    active: boolean;
+    distance: number;
+    columnIndex: number;
+    index: number;
+  }): unknown;
+  /**
+   * Custom wheel band paint (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ mode, columnIndex }`.
+   */
+  band?(scope: { mode: 'shared' | 'perColumn'; columnIndex: number }): unknown;
+}>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: PickerValue[]): void;
@@ -279,7 +299,10 @@ const viewClass = computed(() => props.customViewClass);
         :wheel-band="props.wheelBand"
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
-      />
+      >
+        <template v-if="$slots.option" #option="scope"><slot name="option" v-bind="scope" /></template>
+        <template v-if="$slots.band" #band="scope"><slot name="band" v-bind="scope" /></template>
+      </SnPickerView>
     </view>
   </SnPopup>
 </template>

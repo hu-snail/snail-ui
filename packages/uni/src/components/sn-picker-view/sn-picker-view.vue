@@ -91,6 +91,19 @@ defineSlots<{
     columnIndex: number;
     index: number;
   }): unknown;
+  /**
+   * Custom wheel band (additive) — replaces the pill's painted fill so a
+   * caller can draw a texture, border, dotted pattern, gradient or any other
+   * look CSS vars cannot express. The band box (size / position / radius)
+   * stays with the component; the slot only owns the inner paint. Rendered
+   * for `wheel` in both `shared` and `perColumn` modes.
+   */
+  band?(scope: {
+    /** `shared` (one pill across columns) or `perColumn`. */
+    mode: 'shared' | 'perColumn';
+    /** Column index in perColumn mode; `-1` for the shared band. */
+    columnIndex: number;
+  }): unknown;
 }>();
 
 const props = withDefaults(
@@ -476,8 +489,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
     :aria-disabled="disabled ? 'true' : undefined"
   >
     <!-- Shared wheel band (additive): one pill spanning every column, painted
-         behind the roller text (z0). -->
-    <view v-if="showSharedBand" class="sn-picker-view__wheel-band" aria-hidden="true" />
+         behind the roller text (z0). The #band slot replaces the paint. -->
+    <view v-if="showSharedBand" class="sn-picker-view__wheel-band" aria-hidden="true"
+      ><slot name="band" :mode="'shared'" :column-index="-1"
+    /></view>
     <view
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"
@@ -525,7 +540,9 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       <view class="sn-picker-view__mask sn-picker-view__mask--bottom" aria-hidden="true" />
       <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
            Hidden entirely in shared-band mode (the root band takes over). -->
-      <view v-if="!showSharedBand" class="sn-picker-view__indicator" aria-hidden="true" />
+      <view v-if="!showSharedBand" class="sn-picker-view__indicator" aria-hidden="true"
+        ><slot v-if="props.wheel" name="band" :mode="'perColumn'" :column-index="columnIndex"
+      /></view>
     </view>
   </view>
 </template>
@@ -624,6 +641,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
   pointer-events: none;
   z-index: 0;
+  /* #band slot content fills the pill and is clipped by its radius. */
+  overflow: hidden;
 }
 
 .sn-picker-view__mask {

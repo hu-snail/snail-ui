@@ -52,6 +52,7 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | Name     | Scope                                                                  | Description                                        |
 | -------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
 | `option` | `{ option, active, distance, columnIndex, index }`                     | Custom row content (icons / rich text / boxes); falls back to the label. |
+| `band`   | `{ mode, columnIndex }`                                                | Replaces the wheel pill paint (texture / border / gradient); the band box stays with the component. |
 
 ## Events
 

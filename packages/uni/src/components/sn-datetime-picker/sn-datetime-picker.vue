@@ -60,6 +60,14 @@ type DateTimeTab = 'start' | 'end';
 
 defineOptions({ name: 'SnDatetimePicker' });
 
+defineSlots<{
+  /**
+   * Custom wheel band paint (additive) — forwarded to
+   * `sn-datetime-picker-view`. Scope: `{ mode, columnIndex }`.
+   */
+  band?(scope: { mode: 'shared' | 'perColumn'; columnIndex: number }): unknown;
+}>();
+
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-datetime-picker` 1:1 surface ────────────────────────── */
@@ -340,7 +348,9 @@ const viewClass = computed(() => props.customViewClass);
         :wheel-band="props.wheelBand"
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
-      />
+      >
+        <template v-if="$slots.band" #band="scope"><slot name="band" v-bind="scope" /></template>
+      </SnDatetimePickerView>
     </view>
   </SnPopup>
 </template>

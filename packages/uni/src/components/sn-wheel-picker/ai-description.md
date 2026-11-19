@@ -77,8 +77,14 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | `getColumnsData` / `getColumnData`    | `(index?) => Array` | Normalized column data.                         |
 | `resetColumns`                        | `() => void`        | Reset every column to its first selectable row. |
 
-## AI Patch Boundary
+## Slots
 
+| Name     | Scope                                   | Description                                                     |
+| -------- | --------------------------------------- | --------------------------------------------------------------- |
+| `option` | `{ option, active, distance, columnIndex, index }` | Custom row content; falls back to the label. |
+| `band`   | `{ mode, columnIndex }`                 | Replaces the wheel pill paint (texture / border / gradient).     |
+
+## AI Patch Boundary
 | Field                | Patchable | Notes                                    |
 | -------------------- | --------- | ---------------------------------------- |
 | `modelValue`         | yes       | Values must exist in `columns`.          |
@@ -87,6 +93,7 @@ import type { PickerViewChangePayload } from '@snui/uni-src/components/sn-picker
 | `visibleItemCount`   | yes       | Odd numbers keep a centered selection.   |
 | `cascade`            | yes       | Requires `childrenKey` tree data.        |
 | `disabled`           | yes       | Freezes the roller.                      |
+| `wheelBand`          | yes       | `shared` (default) or `perColumn`.       |
 | `vibrateShort`       | yes       | `false` silences the slide haptic.       |
 | internal drag state  | readonly  | Never patch gesture state.               |
 

@@ -44,6 +44,25 @@ import type {
 
 defineOptions({ name: 'SnWheelPicker' });
 
+defineSlots<{
+  /**
+   * Custom row content (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ option, active, distance, columnIndex, index }`.
+   */
+  option?(scope: {
+    option: NormalizedPickerOption;
+    active: boolean;
+    distance: number;
+    columnIndex: number;
+    index: number;
+  }): unknown;
+  /**
+   * Custom wheel band paint (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ mode, columnIndex }`.
+   */
+  band?(scope: { mode: 'shared' | 'perColumn'; columnIndex: number }): unknown;
+}>();
+
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-picker-view` 1:1 surface ────────────────────────────── */
@@ -153,5 +172,8 @@ defineExpose({
     @change="onViewChange"
     @pickstart="emit('pickstart')"
     @pickend="emit('pickend')"
-  />
+  >
+    <template v-if="$slots.option" #option="scope"><slot name="option" v-bind="scope" /></template>
+    <template v-if="$slots.band" #band="scope"><slot name="band" v-bind="scope" /></template>
+  </SnPickerView>
 </template>
