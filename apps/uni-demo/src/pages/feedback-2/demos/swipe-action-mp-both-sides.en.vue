@@ -126,6 +126,12 @@ const both = ref<'left' | 'close' | 'right'>('close');
   transition: opacity 200ms ease-out;
 }
 
+/* Left pills consume the LEFT side's progress (the base rule reads the right
+ * side, which reads 0 while the left side is open — glyphs vanished). */
+.sw-pill__content--left {
+  opacity: var(--sn-swipe-action-reveal-left, 1);
+}
+
 .sw-pill--success {
   background-color: var(--sn-mp-color-feedback-success);
 }

@@ -126,6 +126,11 @@ const both = ref<'left' | 'close' | 'right'>('close');
   transition: opacity 200ms ease-out;
 }
 
+/* 左侧钮消费 left 侧的进度（默认规则读的是 right，左开时会读成 0 而消失）。 */
+.sw-pill__content--left {
+  opacity: var(--sn-swipe-action-reveal-left, 1);
+}
+
 .sw-pill--success {
   background-color: var(--sn-mp-color-feedback-success);
 }

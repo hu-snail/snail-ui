@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:41c43938c58de50e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue sha256:841a092febd48005 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swipe-action (uni-end) — left + right action areas (#left / #right slots).
@@ -121,6 +121,11 @@ const both = ref<'left' | 'close' | 'right'>('close');
   gap: 8rpx;
   opacity: var(--sn-swipe-action-reveal-right, 1);
   transition: opacity 200ms ease-out;
+}
+
+/* 左侧钮消费 left 侧的进度（默认规则读的是 right，左开时会读成 0 而消失）。 */
+.sw-pill__content--left {
+  opacity: var(--sn-swipe-action-reveal-left, 1);
 }
 
 .sw-pill--success {

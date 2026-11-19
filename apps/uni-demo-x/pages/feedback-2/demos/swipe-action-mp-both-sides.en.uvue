@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue sha256:e0acbafb88ae98e9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue sha256:79e04e4d717fa928 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swipe-action (uni-end) — left + right action areas, EN copy.
@@ -121,6 +121,12 @@ const both = ref<'left' | 'close' | 'right'>('close');
   gap: 8rpx;
   opacity: var(--sn-swipe-action-reveal-right, 1);
   transition: opacity 200ms ease-out;
+}
+
+/* Left pills consume the LEFT side's progress (the base rule reads the right
+ * side, which reads 0 while the left side is open — glyphs vanished). */
+.sw-pill__content--left {
+  opacity: var(--sn-swipe-action-reveal-left, 1);
 }
 
 .sw-pill--success {

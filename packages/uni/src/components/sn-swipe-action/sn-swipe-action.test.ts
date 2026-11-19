@@ -448,6 +448,17 @@ describe('sn-swipe-action', () => {
       expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.455');
     });
 
+    it('tracks the left side while dragging rightwards', async () => {
+      const leftSlots = { default: 'x', left: '<view class="row-star">收藏</view>' };
+      const w = mount(SnSwipeAction, { slots: leftSlots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 240, clientY: 100 }] });
+      // Left pull grows the left progress and keeps the right at zero.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-left: 0.455');
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+
     it('fades back out as the drag re-covers an open row', async () => {
       const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
       const root = w.find('.sn-swipe-action');
