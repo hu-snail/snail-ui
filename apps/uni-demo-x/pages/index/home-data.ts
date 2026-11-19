@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:9d8f754d11e499cb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:7d591d485c4790f7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -643,7 +643,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         group: 'feedback-2',
         title: '消息通知',
         titleEn: 'Notify',
-        desc: '顶部通知条',
+        desc: '顶部卡片通知堆叠',
         count: 3,
       },
       {

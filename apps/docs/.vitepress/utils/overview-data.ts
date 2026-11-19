@@ -112,7 +112,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-progress', title: '进度条', desc: '线性进度展示' },
       { name: 'sn-circle', title: '环形进度条', desc: '环形进度展示' },
       { name: 'sn-toast', title: '轻提示', desc: '轻量消息提示' },
-      { name: 'sn-notify', title: '消息通知', desc: '顶部通知条' },
+      { name: 'sn-notify', title: '消息通知', desc: '顶部卡片通知堆叠' },
       { name: 'sn-notice-bar', title: '通知栏', desc: '滚动通知' },
       { name: 'sn-empty', title: '缺省提示', desc: '空状态占位' },
       { name: 'sn-skeleton', title: '骨架屏', desc: '加载占位骨架' },

@@ -6,7 +6,7 @@
 | --- | --- |
 | .uvue 产出 | 1488 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2094 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2096 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -2090,18 +2090,20 @@
 - pages/feedback-2/demos/notice-bar-mp-closable.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/notice-bar-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/feedback-2/demos/notice-bar-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
-- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-basic.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-basic.vue: [template-attr] 4 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-style.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-style.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-style.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-style.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-variant.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-variant.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-style.en.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/notify-mp-style.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-style.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-variant.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-variant.vue: [template-attr] 4 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/overlay-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/overlay-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/overlay-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>

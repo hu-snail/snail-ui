@@ -1,48 +1,65 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notify-mp-basic.vue sha256:ba1b83b58d9bc6e3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notify-mp-basic.vue sha256:958ab7f66b425b46 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-notify (uni-end) — component-form banner notification.
+ * Demo: sn-notify (uni-end) — 语义色卡片通知（default / primary / success /
+ * warning / danger）+ 一键清空。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-notify from its SFC source.
- * NOTE: only the component form ships this round — `useNotify()` is not implemented.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnNotify from '@snui/uni-x/components/sn-notify/sn-notify.uvue';
-const primaryOpen = ref(false);
-const successOpen = ref(false);
-const warningOpen = ref(false);
-const dangerOpen = ref(false);
+import type { SnNotifyInstance, SnNotifyOptions } from '@snui/uni-x/components/sn-notify/sn-notify-types';
+
+const notify = ref<SnNotifyInstance | null>(null);
+
+const CASES: Array<SnNotifyOptions & { label: string }> = [
+  {
+    label: 'default 通知',
+    title: '加入团队',
+    description: 'Junior Garcia 邀请你加入 HeroUI 团队',
+  },
+  {
+    label: 'primary 通知',
+    type: 'primary',
+    title: '剩余额度 2 条',
+    description: '升级付费计划获取更多额度',
+  },
+  {
+    label: 'success 通知',
+    type: 'success',
+    title: '升级成功',
+    description: '可以继续使用全部功能了',
+  },
+  {
+    label: 'warning 通知',
+    type: 'warning',
+    title: '额度已用尽',
+    description: '升级付费计划后才能继续使用',
+  },
+  {
+    label: 'danger 通知',
+    type: 'danger',
+    title: '网络异常',
+    description: '请求失败，请检查网络后重试',
+  },
+];
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @click="primaryOpen = true"><text>primary</text></SnButton>
-    <SnButton type="success" block @click="successOpen = true"><text>success</text></SnButton>
-    <SnButton type="warning" block @click="warningOpen = true"><text>warning</text></SnButton>
-    <SnButton type="danger" block @click="dangerOpen = true"><text>danger</text></SnButton>
+    <SnButton
+      v-for="item in CASES"
+      :key="item.label"
+      :type="item.type ?? 'default'"
+      variant="soft"
+      block
+      @click="notify?.show(item)"
+    ><text>
+      {{ item.label }}
+    </text></SnButton>
+    <SnButton type="danger" variant="soft" block @click="notify?.hideAll()"><text>
+      清空全部通知
+    </text></SnButton>
 
-    <SnNotify
-      v-model:visible="primaryOpen"
-      type="primary"
-      message="这是一条普通通知"
-      custom-class="sn-demo-contained"
-    />
-    <SnNotify
-      v-model:visible="successOpen"
-      type="success"
-      message="保存成功"
-      custom-class="sn-demo-contained"
-    />
-    <SnNotify
-      v-model:visible="warningOpen"
-      type="warning"
-      message="额度即将用尽，请及时充值"
-      custom-class="sn-demo-contained"
-    />
-    <SnNotify
-      v-model:visible="dangerOpen"
-      type="danger"
-      message="网络异常，请稍后重试"
-      custom-class="sn-demo-contained"
-    />
+    <SnNotify ref="notify" custom-class="sn-demo-contained" />
   </view>
 </template>
 <style scoped>

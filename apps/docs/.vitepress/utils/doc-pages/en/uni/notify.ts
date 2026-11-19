@@ -14,17 +14,15 @@ export const notifyDocPageEn: SnDocPageData = {
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'The fills and text colors all come from semantic tokens (' },
+    { t: 'text', s: 'A stacked card notification anchored to the top (or bottom) edge: every message renders as an elevated rounded card — semantic-colored title and glyph, secondary description, close pill — that slides in smoothly from the screen edge; older cards glide down and peek out below the front card (deck stack). Swipe-to-dismiss and per-card customization included. Fills and text colors all come from semantic tokens (' },
     { t: 'code', s: '--sn-mp-color-action-primary' },
     { t: 'text', s: ' / ' },
     { t: 'code', s: '--sn-mp-color-feedback-*' },
     { t: 'text', s: ' / ' },
-    { t: 'code', s: '--sn-mp-color-text-*' },
-    { t: 'text', s: ' / ' },
     { t: 'code', s: '--sn-mp-color-background-elevated' },
     { t: 'text', s: '), all overridden in the dark block of ' },
     { t: 'code', s: '@snui/tokens-mp/styles' },
-    { t: 'text', s: ', so it adapts aut' },
+    { t: 'text', s: ', so it adapts to dark mode automatically.' },
   ],
   quickActions: [
     { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
@@ -35,123 +33,84 @@ export const notifyDocPageEn: SnDocPageData = {
     },
   ],
   features: [
-    { text: 'rpx scales across devices', icon: 'layers' },
+    { text: 'Deck card stacking', icon: 'layers' },
     { text: 'easycom auto-registration', icon: 'eco' },
-    { text: 'Touch-optimised interaction', icon: 'touch' },
+    { text: 'Swipe-to-dismiss interaction', icon: 'touch' },
   ],
   usage: {
     hint: [
       {
         t: 'text',
-        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
+        s: 'Place one <sn-notify> per page as the queue container and drive it through the template ref (show / hide / hideAll). Each show() call takes the full message config: title is required, type picks the semantic color (default / primary / success / warning / danger), icon accepts a custom IconData (null hides it), duration = 0 keeps the card open, and an empty closeText renders an icon-only close pill.',
       },
     ],
     fileLabel: 'Notify · uni-app x.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
-import { Notify } from '@snui/uni';
+import { ref } from 'vue';
+import type { SnNotifyInstance } from '@snui/uni';
+
+const notify = ref<SnNotifyInstance | null>(null);
+
+function upgradeDone(): void {
+  notify.value?.show({
+    title: 'Plan upgraded',
+    description: 'You can continue using all features',
+    type: 'success',
+  });
+}
 </script>
 
 <template>
-  <sn-notify />
+  <sn-notify ref="notify" position="top" :duration="4000" />
+  <sn-button type="success" @tap="upgradeDone">Upgrade</sn-button>
 </template>`,
   },
   demos: [
     {
       name: 'notify-mp-basic',
       title: 'Basic usage',
-      blurb: 'primary / success / warning / danger.',
+      blurb: 'Five semantic card colors (default / primary / success / warning / danger) + hide all.',
     },
     {
       name: 'notify-mp-variant',
-      title: 'Variant and position',
-      blurb: 'Floating card, closable (never auto-dismisses), bottom anchor.',
+      title: 'Stacking and position',
+      blurb: 'Multi-message deck stack (older cards peek below), maxVisible cap, bottom anchor.',
     },
     {
       name: 'notify-mp-style',
-      title: 'Colors, stacking and safe area',
-      blurb: 'Custom fill and text color / safe-height=88 / zIndex=300 + custom-style.',
+      title: 'Customization',
+      blurb: 'Custom icon / background / radius / X close pill / sticky duration / fully custom card slot.',
     },
   ],
   props: {
     hint: [],
     rows: [
-      {
-        name: 'visible',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the notification is visible (v-model:visible).',
-      },
-      {
-        name: 'type',
-        type: 'NotifyType',
-        default: "'danger'",
-        desc: 'Semantic type — drives the fill color and the default icon.',
-      },
-      {
-        name: 'message',
-        type: 'string | number',
-        default: "''",
-        desc: 'Message text; `\\n` renders as a line break.',
-      },
-      {
-        name: 'duration',
-        type: 'number',
-        default: '3000',
-        desc: 'Auto-dismiss delay in ms; `0` keeps the notification open.',
-      },
-      { name: 'position', type: 'NotifyPosition', default: "'top'", desc: 'Anchor of the banner.' },
-      {
-        name: 'color',
-        type: 'string',
-        default: "''",
-        desc: 'Text color override (any CSS color value).',
-      },
-      {
-        name: 'background',
-        type: 'string',
-        default: "''",
-        desc: 'Background color override (any CSS color value).',
-      },
-      { name: 'zIndex', type: 'number', default: '99', desc: 'Stacking level.' },
-      {
-        name: 'safeHeight',
-        type: 'number | string | undefined',
-        default: 'undefined',
-        desc: 'Extra top offset in px (or any CSS length) — accounts for a custom nav bar.',
-      },
-      { name: 'closable', type: 'boolean', default: 'false', desc: 'Show the close button.' },
-      {
-        name: 'variant',
-        type: 'NotifyVariant',
-        default: "'filled'",
-        desc: 'Visual shape: edge-to-edge bar or a floating rounded card.',
-      },
-      {
-        name: 'selector',
-        type: 'string',
-        default: "''",
-        desc: 'Instance id used by the function API (parity only, no effect here).',
-      },
-      {
-        name: 'customClass',
-        type: 'string',
-        default: "''",
-        desc: 'Custom class for the root node.',
-      },
-      {
-        name: 'customStyle',
-        type: 'string',
-        default: "''",
-        desc: 'Custom inline style for the root node.',
-      },
-      {
-        name: 'rootPortal',
-        type: 'boolean',
-        default: 'false',
-        desc: "Accepted for wot-ui parity, NOT implemented — miniprogram has no portal host, so the layer cannot leave the page's document flow.",
-      },
+      { name: 'position', type: 'NotifyPosition', default: "'top'", desc: 'Stack anchor: top slides in from the top edge, bottom from the bottom edge.' },
+      { name: 'duration', type: 'number', default: '4000', desc: 'Default auto-dismiss delay in ms; `0` keeps cards open.' },
+      { name: 'maxVisible', type: 'number', default: '3', desc: 'Queue cap; the deepest card closes with reason overflow.' },
+      { name: 'zIndex', type: 'number', default: '9990', desc: 'Stacking level.' },
+      { name: 'closable', type: 'boolean', default: 'true', desc: 'Render the close pill by default.' },
+      { name: 'closeText', type: 'string', default: "'Close'", desc: 'Default close pill label; overridable per message.' },
+      { name: 'swipeToDismiss', type: 'boolean', default: 'true', desc: 'The front card supports horizontal swipe-to-dismiss.' },
+      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: 'Extra top offset in px (or any CSS length) — accounts for a custom nav bar.' },
+      { name: 'customClass', type: 'string', default: "''", desc: 'Custom class for the root node.' },
+      { name: 'customStyle', type: 'string', default: "''", desc: 'Custom inline style for the root node.' },
+    ],
+  },
+  events: {
+    hint: [{ t: 'text', s: 'open / click payloads are { id, title, description, type }; close additionally carries a reason.' }],
+    rows: [
+      { name: 'open', payload: 'SnNotifyOpenPayload', desc: 'A message was queued.' },
+      { name: 'close', payload: 'SnNotifyClosePayload', desc: 'A card started leaving; reason: auto (timer) / close (pill) / swipe / api (ref call) / overflow (queue cap).' },
+      { name: 'click', payload: 'SnNotifyOpenPayload', desc: 'The front card body was tapped.' },
+    ],
+  },
+  slots: {
+    hint: [{ t: 'text', s: 'The slot applies to every card of its container; branch on item.id for per-card rendering.' }],
+    rows: [
+      { name: 'card', props: '{ id, title, description, type }', desc: 'Fully replaces the card content; render your own close trigger and call hide(id).' },
     ],
   },
   ai: {

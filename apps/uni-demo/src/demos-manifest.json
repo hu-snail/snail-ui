@@ -3234,7 +3234,7 @@
     "notify": {
       "group": "feedback-2",
       "title": "消息通知",
-      "desc": "顶部通知条",
+      "desc": "顶部卡片通知堆叠",
       "page": "pages/feedback-2/notify",
       "demos": [
         {

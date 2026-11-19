@@ -642,7 +642,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         group: 'feedback-2',
         title: '消息通知',
         titleEn: 'Notify',
-        desc: '顶部通知条',
+        desc: '顶部卡片通知堆叠',
         count: 3,
       },
       {

@@ -19,20 +19,15 @@ export const notifyDocPage: SnDocPageData = {
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '填充色与文字色全部来自语义色 token（' },
+    { t: 'text', s: '顶部（或底部）卡片通知堆栈：每条消息是一张悬浮圆角卡片——语义色标题与图标、副标题描述、关闭按钮——从屏幕边缘丝滑滑入；旧卡片顺滑下移，在新卡片底部露出一条边（deck 堆叠）。支持左右滑动关闭、按条自定义时长与内容。卡片底色 / 文字色全部来自语义 token（' },
     { t: 'code', s: '--sn-mp-color-action-primary' },
     { t: 'text', s: ' / ' },
     { t: 'code', s: '--sn-mp-color-feedback-*' },
     { t: 'text', s: ' / ' },
-    { t: 'code', s: '--sn-mp-color-text-*' },
-    { t: 'text', s: ' / ' },
     { t: 'code', s: '--sn-mp-color-background-elevated' },
-    { t: 'text', s: '），这些都在 ' },
+    { t: 'text', s: '），在 ' },
     { t: 'code', s: '@snui/tokens-mp/styles' },
-    {
-      t: 'text',
-      s: ' 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：',
-    },
+    { t: 'text', s: ' 的暗色块里覆盖过，自动适配暗色主题。' },
   ],
   quickActions: [
     {
@@ -48,105 +43,81 @@ export const notifyDocPage: SnDocPageData = {
     },
   ],
   features: [
-    { text: 'rpx 跨设备缩放', icon: 'layers' },
+    { text: 'deck 卡片堆叠', icon: 'layers' },
     { text: 'easycom 自动注册', icon: 'eco' },
-    { text: '触控交互优化', icon: 'touch' },
+    { text: '滑动关闭 / 触控反馈', icon: 'touch' },
   ],
   usage: {
     hint: [
-      { t: 'text', s: 'uni-app x 走 easycom 自动注册，无需手动 import；如需显式引入见下方代码。' },
+      { t: 'text', s: '页面里放一个 <sn-notify> 作为队列容器，通过模板 ref 调用 show / hide / hideAll。show 的入参即每条消息的完整配置：title 必填，type 决定语义色（default / primary / success / warning / danger），icon 可传 IconData 自定义字形（传 null 隐藏图标），duration = 0 表示常驻，closeText 传空字符串渲染为 X 图标关闭钮。' },
     ],
     fileLabel: 'Notify 消息通知.vue',
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
-import { Notify } from '@snui/uni';
+import { ref } from 'vue';
+import type { SnNotifyInstance } from '@snui/uni';
+
+const notify = ref<SnNotifyInstance | null>(null);
+
+function upgradeDone(): void {
+  notify.value?.show({
+    title: '升级成功',
+    description: '可以继续使用全部功能了',
+    type: 'success',
+  });
+}
 </script>
 
 <template>
-  <sn-notify />
+  <sn-notify ref="notify" position="top" :duration="4000" />
+  <sn-button type="success" @tap="upgradeDone">升级</sn-button>
 </template>`,
   },
   demos: [
     {
       name: 'notify-mp-basic',
       title: '基础用法',
-      blurb: 'primary / success / warning / danger 四种类型。',
+      blurb: 'default / primary / success / warning / danger 五种语义色卡片 + 一键清空。',
     },
     {
       name: 'notify-mp-variant',
-      title: '形态与位置',
-      blurb: 'floating 悬浮卡片、可关闭（不自动消失）、底部弹出。',
+      title: '堆叠与位置',
+      blurb: '连发多条 deck 堆叠（旧卡露边）、maxVisible 队列上限、底部锚点。',
     },
     {
       name: 'notify-mp-style',
-      title: '颜色、层级与安全区',
-      blurb: '自定义底色与文字色 / safe-height=88 / zIndex=300 + custom-style。',
+      title: '自定义',
+      blurb: '自定义图标 / 底色 / 圆角 / X 关闭钮 / 常驻时长 / card 插槽全自定义。',
     },
   ],
   props: {
     hint: [],
     rows: [
-      { name: 'visible', type: 'boolean', default: 'false', desc: '是否显示（`v-model:visible`）' },
-      {
-        name: 'type',
-        type: 'NotifyType',
-        default: "'danger'",
-        desc: 'Semantic type — drives the fill color and the default icon.',
-      },
-      {
-        name: 'message',
-        type: 'string | number',
-        default: "''",
-        desc: 'Message text; `\\n` renders as a line break.',
-      },
-      { name: 'duration', type: 'number', default: '3000', desc: '展示时长（ms），`0` 表示不消失' },
-      { name: 'position', type: 'NotifyPosition', default: "'top'", desc: 'Anchor of the banner.' },
-      {
-        name: 'color',
-        type: 'string',
-        default: "''",
-        desc: 'Text color override (any CSS color value).',
-      },
-      {
-        name: 'background',
-        type: 'string',
-        default: "''",
-        desc: 'Background color override (any CSS color value).',
-      },
-      { name: 'zIndex', type: 'number', default: '99', desc: '层级' },
-      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: '—' },
-      { name: 'closable', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
-      {
-        name: 'variant',
-        type: 'NotifyVariant',
-        default: "'filled'",
-        desc: 'Visual shape: edge-to-edge bar or a floating rounded card.',
-      },
-      {
-        name: 'selector',
-        type: 'string',
-        default: "''",
-        desc: 'Instance id used by the function API (parity only, no effect here).',
-      },
-      {
-        name: 'customClass',
-        type: 'string',
-        default: "''",
-        desc: 'Custom class for the root node.',
-      },
-      {
-        name: 'customStyle',
-        type: 'string',
-        default: "''",
-        desc: 'Custom inline style for the root node.',
-      },
-      {
-        name: 'rootPortal',
-        type: 'boolean',
-        default: 'false',
-        desc: "Accepted for wot-ui parity, NOT implemented — miniprogram has no portal host, so the layer cannot leave the page's document flow.",
-      },
+      { name: 'position', type: 'NotifyPosition', default: "'top'", desc: '堆叠锚点：top 从顶部滑入，bottom 从底部滑入。' },
+      { name: 'duration', type: 'number', default: '4000', desc: '默认自动关闭时长（ms），`0` 表示常驻。' },
+      { name: 'maxVisible', type: 'number', default: '3', desc: '队列上限，超出时最旧的卡片以 overflow 关闭。' },
+      { name: 'zIndex', type: 'number', default: '9990', desc: '层级' },
+      { name: 'closable', type: 'boolean', default: 'true', desc: '是否默认渲染关闭按钮。' },
+      { name: 'closeText', type: 'string', default: "'Close'", desc: '默认关闭按钮文案；每条消息可覆盖。' },
+      { name: 'swipeToDismiss', type: 'boolean', default: 'true', desc: '前端卡片支持左右滑动关闭。' },
+      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: '顶部安全区偏移（裸数字 = px，适配自定义导航栏）。' },
+      { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
+      { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
+    ],
+  },
+  events: {
+    hint: [{ t: 'text', s: 'open / click 载荷为 { id, title, description, type }；close 额外携带 reason。' }],
+    rows: [
+      { name: 'open', payload: 'SnNotifyOpenPayload', desc: '消息入队时触发。' },
+      { name: 'close', payload: 'SnNotifyClosePayload', desc: '卡片开始关闭时触发；reason：auto（计时）/ close（按钮）/ swipe（滑动）/ api（ref 调用）/ overflow（队列溢出）。' },
+      { name: 'click', payload: 'SnNotifyOpenPayload', desc: '前端卡片主体被点击时触发。' },
+    ],
+  },
+  slots: {
+    hint: [{ t: 'text', s: '插槽作用于容器内所有卡片；需要逐卡差异化时按 item.id 分支渲染。' }],
+    rows: [
+      { name: 'card', props: '{ id, title, description, type }', desc: '完全替换卡片内容；自行渲染关闭触发并调用 hide(id)。' },
     ],
   },
   ai: {
