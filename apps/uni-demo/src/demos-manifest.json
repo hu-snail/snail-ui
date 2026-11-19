@@ -2898,6 +2898,11 @@
           "hasEn": true
         },
         {
+          "name": "wheel-picker-mp-cascade",
+          "title": "cascade",
+          "hasEn": true
+        },
+        {
           "name": "wheel-picker-mp-icons",
           "title": "图标选项",
           "hasEn": true

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.en.vue sha256:cc9ada8fb896320d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.en.vue sha256:f4e48ad850c98ed2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — band customization: wheelBand="perColumn" split bands + gradient band paint + inset/radius variables. */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
@@ -23,7 +23,7 @@ const value = ref<Array<string | number>>([2, 22]);
       wheel
       wheel-band="perColumn"
       :visible-item-count="5"
-      custom-style="--sn-picker-view-wheel-inset: 8rpx; --sn-picker-view-wheel-radius: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 24rpx; --sn-picker-view-wheel-radius: 24rpx"
     />
     <text class="sn-demo__meta">Selected: {{ value.join(' : ') }} (band paint / radius / inset all customizable via CSS vars)</text>
   </view>

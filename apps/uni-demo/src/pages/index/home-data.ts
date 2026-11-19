@@ -549,7 +549,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '滚轮选择器',
         titleEn: 'Wheel Picker',
         desc: 'wheel 风格内嵌滚轮',
-        count: 8,
+        count: 9,
       },
     ],
   },

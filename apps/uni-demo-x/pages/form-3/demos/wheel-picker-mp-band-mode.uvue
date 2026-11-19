@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.vue sha256:8354926a225dae38 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.vue sha256:9604d51156053fe7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — 块自定义：多列共享带 vs 分列带（`wheelBand`）+ 渐变带漆。 */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
@@ -21,7 +21,7 @@ const value = ref<Array<string | number>>([2, 22]);
       :columns="[hours, minutes]"
       wheel-band="perColumn"
       :visible-item-count="5"
-      custom-style="--sn-picker-view-wheel-inset: 8rpx; --sn-picker-view-wheel-radius: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 24rpx; --sn-picker-view-wheel-radius: 24rpx"
     />
     <text class="sn-demo__meta">已选：{{ value.join(' : ') }}（带形态 / 漆色 / 圆角 / 内边距均可自定义）</text>
   </view>

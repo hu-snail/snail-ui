@@ -1,25 +1,22 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue sha256:40ef800c394fb1e3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue sha256:60be3af33fd457b8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — content customization: the `#option` slot renders icon rows; the active row gets a dashed icon frame. */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
-import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
-import type { NormalizedPickerOption } from '@snui/uni-x/components/sn-picker-view/sn-picker-view-types';
-
 const choices = [
   { value: 'notification', label: 'Notification' },
   { value: 'payment', label: 'Payment' },
   { value: 'personal', label: 'Personal' },
 ];
-const iconNames: Record<string, string> = {
-  notification: 'bell',
-  payment: 'wallet',
-  personal: 'user',
+const iconGlyphs: Record<string, string> = {
+  notification: "🔔",
+  payment: "💳",
+  personal: "👤",
 };
 const value = ref<Array<string | number>>(['notification']);
 
-const iconNameOf = (option: NormalizedPickerOption): string =>
-  iconNames[String(option.value)] ?? 'bell';
+const iconGlyphOf = (option: { value: unknown }): string =>
+  iconGlyphs[String(option.value)] ?? "🔔";
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
@@ -33,7 +30,7 @@ const iconNameOf = (option: NormalizedPickerOption): string =>
       <template #option="{ option, active }">
         <view class="icon-row">
           <view class="icon-box" :class="{ 'icon-box--active': active }">
-            <SnIcon :name="iconNameOf(option)" :size="28" />
+            <text class="icon-glyph">{{ iconGlyphOf(option) }}</text>
           </view>
           <text class="icon-row__label" :class="{ 'icon-row__label--active': active }">
             {{ option.label }}
@@ -85,6 +82,13 @@ const iconNameOf = (option: NormalizedPickerOption): string =>
   font-weight: var(--sn-mp-font-weight-semibold);
 }
 
+.icon-glyph {
+  font-size: 34rpx;
+  line-height: 1;
+  color: var(--sn-mp-color-text-tertiary);
+  color: var(--snx-icon-glyph-color, var(--sn-mp-color-text-tertiary));
+}
+
 .icon-box {
   display: flex;
   align-items: center;
@@ -105,5 +109,9 @@ const iconNameOf = (option: NormalizedPickerOption): string =>
 .sn-demo__meta {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+}
+
+.icon-row--active {
+  --snx-icon-glyph-color: var(--sn-mp-color-action-primary);
 }
 </style>

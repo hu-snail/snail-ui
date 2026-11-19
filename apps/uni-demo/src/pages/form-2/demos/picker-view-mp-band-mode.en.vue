@@ -25,7 +25,7 @@ const value = ref<Array<string | number>>([2, 22]);
       wheel
       wheel-band="perColumn"
       :visible-item-count="5"
-      custom-style="--sn-picker-view-wheel-inset: 8rpx; --sn-picker-view-wheel-radius: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 24rpx; --sn-picker-view-wheel-radius: 24rpx"
     />
     <text class="sn-demo__meta">Selected: {{ value.join(' : ') }} (band paint / radius / inset all customizable via CSS vars)</text>
   </view>

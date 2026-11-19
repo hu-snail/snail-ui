@@ -1,0 +1,79 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-cascade.en.vue sha256:0b3d58e64a6651bc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-wheel-picker — cascade selection (`cascade`): province / city / district linkage with the wheel style band + slide haptic. */
+import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
+interface RegionNode {
+  value: string;
+  label: string;
+  children?: RegionNode[];
+}
+
+const regions: RegionNode[] = [
+  {
+    value: 'zj',
+    label: 'Zhejiang',
+    children: [
+      {
+        value: 'hz',
+        label: 'Hangzhou',
+        children: [
+          { value: 'xh', label: 'Xihu' },
+          { value: 'bc', label: 'Binjiang' },
+          { value: 'yl', label: 'Yuhang' },
+        ],
+      },
+      {
+        value: 'nb',
+        label: 'Ningbo',
+        children: [
+          { value: 'ha', label: 'Haishu' },
+          { value: 'jd', label: 'Jiangdong' },
+        ],
+      },
+    ],
+  },
+  {
+    value: 'gd',
+    label: 'Guangdong',
+    children: [
+      {
+        value: 'gz',
+        label: 'Guangzhou',
+        children: [
+          { value: 'th', label: 'Tianhe' },
+          { value: 'hp', label: 'Huangpu' },
+        ],
+      },
+      {
+        value: 'sz',
+        label: 'Shenzhen',
+        children: [
+          { value: 'ns', label: 'Nanshan' },
+          { value: 'ft', label: 'Futian' },
+        ],
+      },
+    ],
+  },
+];
+
+const value = ref<Array<string | number>>(['zj', 'hz', 'xh']);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnWheelPicker
+      v-model="value"
+      :columns="regions"
+      cascade
+      :visible-item-count="5"
+      :item-height="44"
+      custom-style="--sn-picker-view-wheel-inset: 100rpx; --sn-picker-view-wheel-radius: 44rpx"
+    />
+    <text class="sn-demo__meta">Selected: {{ value.join(' / ') }} (cascade columns inherit the wheel band + haptic)</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

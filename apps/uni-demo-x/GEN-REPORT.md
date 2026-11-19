@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1486 |
+| .uvue 产出 | 1488 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2096 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2094 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -969,6 +969,8 @@
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-soft.vue: ref
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.en.vue: ref
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-cascade.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-cascade.vue: ref
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue: ref
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.vue: ref
 - ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-reminder.en.vue: ref
@@ -2562,7 +2564,7 @@
 - pages/form-3/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form-3/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form-3/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-3/wheel-picker.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form-3/wheel-picker.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [template-attr] 10 @tap binding(s) renamed to @click
 - pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction

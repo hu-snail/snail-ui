@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.en.vue sha256:95e3ae5d9b3043e2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.en.vue sha256:40feed1b4ab8331c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — band customization: multi-column shared band vs per-column bands (`wheelBand`) + gradient paint. */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
@@ -21,7 +21,7 @@ const value = ref<Array<string | number>>([2, 22]);
       :columns="[hours, minutes]"
       wheel-band="perColumn"
       :visible-item-count="5"
-      custom-style="--sn-picker-view-wheel-inset: 8rpx; --sn-picker-view-wheel-radius: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 24rpx; --sn-picker-view-wheel-radius: 24rpx"
     />
     <text class="sn-demo__meta">Selected: {{ value.join(' : ') }} (shape / paint / radius / inset all customizable)</text>
   </view>

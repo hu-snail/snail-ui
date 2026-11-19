@@ -16,11 +16,11 @@ const value = ref<Array<string | number>>([25]);
       vibrate-short
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 56rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">
-          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
+          <view v-for="dot in 150" :key="dot" class="dotted-band__dot" />
         </view>
       </template>
     </SnPickerView>
@@ -45,12 +45,12 @@ const value = ref<Array<string | number>>([25]);
 }
 
 .dotted-band__dot {
-  width: 4rpx;
-  height: 4rpx;
-  margin: 5rpx;
-  border-radius: 2rpx;
+  width: 3rpx;
+  height: 3rpx;
+  margin: 6rpx;
+  border-radius: 1.5rpx;
   background-color: var(--sn-mp-color-lightblue);
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 .sn-demo__meta {
