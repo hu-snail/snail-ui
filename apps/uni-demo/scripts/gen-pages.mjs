@@ -634,6 +634,31 @@ function titleAttr(text) {
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
 const DEMO_ORDER = {
+  /* wheel-picker：基础 → 内容自定义 → 块自定义 → 震动 → 弹层组装。 */
+  'wheel-picker-mp-basic': 1,
+  'wheel-picker-mp-icons': 2,
+  'wheel-picker-mp-rich': 3,
+  'wheel-picker-mp-band-mode': 4,
+  'wheel-picker-mp-band-dots': 5,
+  'wheel-picker-mp-band-soft': 6,
+  'wheel-picker-mp-vibrate': 7,
+  'wheel-picker-mp-reminder': 8,
+  /* picker-view：基础 → 行为 → 内容槽 → 块槽 → 外观。 */
+  'picker-view-mp-basic': 1,
+  'picker-view-mp-wheel': 2,
+  'picker-view-mp-icons': 3,
+  'picker-view-mp-rich': 4,
+  'picker-view-mp-slots': 5,
+  'picker-view-mp-band-mode': 6,
+  'picker-view-mp-band-dots': 7,
+  'picker-view-mp-band-soft': 8,
+  'picker-view-mp-band': 9,
+  'picker-view-mp-cascade': 10,
+  'picker-view-mp-disabled': 11,
+  'picker-view-mp-immediate': 12,
+  'picker-view-mp-keys': 13,
+  'picker-view-mp-rows': 14,
+  'picker-view-mp-custom-style': 15,
   'keyboard-mp-basic': 1,
   'keyboard-mp-decimal': 2,
   'keyboard-mp-idcard': 3,

@@ -2204,13 +2204,28 @@
       "page": "pages/form-2/picker-view",
       "demos": [
         {
-          "name": "picker-view-mp-band",
-          "title": "胶囊带主题",
+          "name": "picker-view-mp-basic",
+          "title": "基础用法",
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-band-dots",
-          "title": "点阵纹理带",
+          "name": "picker-view-mp-wheel",
+          "title": "wheel 风格",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-icons",
+          "title": "图标选项",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-rich",
+          "title": "富内容行",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-slots",
+          "title": "时间槽",
           "hasEn": true
         },
         {
@@ -2219,13 +2234,18 @@
           "hasEn": true
         },
         {
+          "name": "picker-view-mp-band-dots",
+          "title": "点阵纹理带",
+          "hasEn": true
+        },
+        {
           "name": "picker-view-mp-band-soft",
           "title": "整幅软色带",
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-basic",
-          "title": "基础用法",
+          "name": "picker-view-mp-band",
+          "title": "胶囊带主题",
           "hasEn": true
         },
         {
@@ -2234,18 +2254,8 @@
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-custom-style",
-          "title": "根节点样式（`customClass` / `customStyle`）",
-          "hasEn": true
-        },
-        {
           "name": "picker-view-mp-disabled",
           "title": "禁用（`disabled`）",
-          "hasEn": true
-        },
-        {
-          "name": "picker-view-mp-icons",
-          "title": "图标选项",
           "hasEn": true
         },
         {
@@ -2259,23 +2269,13 @@
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-rich",
-          "title": "富内容行",
-          "hasEn": true
-        },
-        {
           "name": "picker-view-mp-rows",
           "title": "滚筒几何（`itemHeight` / `visibleItemCount`）",
           "hasEn": true
         },
         {
-          "name": "picker-view-mp-slots",
-          "title": "时间槽",
-          "hasEn": true
-        },
-        {
-          "name": "picker-view-mp-wheel",
-          "title": "wheel 风格",
+          "name": "picker-view-mp-custom-style",
+          "title": "根节点样式（`customClass` / `customStyle`）",
           "hasEn": true
         }
       ]
@@ -2898,13 +2898,38 @@
           "hasEn": true
         },
         {
-          "name": "wheel-picker-mp-reminder",
-          "title": "提醒弹层",
+          "name": "wheel-picker-mp-icons",
+          "title": "图标选项",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-rich",
+          "title": "富内容行",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-band-mode",
+          "title": "分列与渐变带",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-band-dots",
+          "title": "点阵纹理带",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-band-soft",
+          "title": "整幅软色带",
           "hasEn": true
         },
         {
           "name": "wheel-picker-mp-vibrate",
           "title": "滑动震动",
+          "hasEn": true
+        },
+        {
+          "name": "wheel-picker-mp-reminder",
+          "title": "提醒弹层",
           "hasEn": true
         }
       ]

@@ -1,0 +1,81 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue sha256:e61e296db6f0827b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-wheel-picker — content customization: the `#option` slot renders icon rows; the active row gets a dashed icon frame. */
+import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { Bell, Wallet, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import type { NormalizedPickerOption } from '@snui/uni-x/components/sn-picker-view/sn-picker-view-types';
+
+const choices = [
+  { value: 'notification', label: 'Notification' },
+  { value: 'payment', label: 'Payment' },
+  { value: 'personal', label: 'Personal' },
+];
+const icons: Record<string, unknown> = { notification: Bell, payment: Wallet, personal: User };
+const value = ref<Array<string | number>>(['notification']);
+
+const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.value)];
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnWheelPicker
+      v-model="value"
+      :columns="[choices]"
+      :visible-item-count="3"
+      :item-height="52"
+    >
+      <template #option="{ option, active }">
+        <view class="icon-row">
+          <view class="icon-box" :class="{ 'icon-box--active': active }">
+            <SnIcon :data="iconOf(option)" :size="28" />
+          </view>
+          <text class="icon-row__label" :class="{ 'icon-row__label--active': active }">
+            {{ option.label }}
+          </text>
+        </view>
+      </template>
+    </SnWheelPicker>
+    <text class="sn-demo__meta">Selected: {{ value[0] }} (#option slot customizes row content)</text>
+  </view>
+</template>
+<style scoped>
+.icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.icon-row__label {
+  margin-left: 16rpx;
+  font-size: 30rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.icon-row__label--active {
+  color: var(--sn-mp-color-action-primary);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56rpx;
+  height: 56rpx;
+  border: 2rpx dashed transparent;
+  border-radius: 14rpx;
+  color: var(--sn-mp-color-text-tertiary);
+  flex-direction: row;
+}
+
+.icon-box--active {
+  border-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

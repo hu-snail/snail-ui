@@ -67,6 +67,31 @@ import { WheelPicker } from '@snui/uni';
       blurb: '行内年份滚轮：胶囊高亮带 + 远行淡出 + 滑动短震动（默认开）。',
     },
     {
+      name: 'wheel-picker-mp-icons',
+      title: '图标行（`#option` 插槽）',
+      blurb: '#option 插槽渲染图标 + 文字，选中行图标描虚线框、文字转主题色。',
+    },
+    {
+      name: 'wheel-picker-mp-rich',
+      title: '富内容行（`#option` 插槽）',
+      blurb: '主标题 + 副标题双行布局，option.raw 透传业务字段。',
+    },
+    {
+      name: 'wheel-picker-mp-band-mode',
+      title: '带形态自定义（`wheelBand` / 渐变带）',
+      blurb: 'shared 一整条横跨全部列 + 渐变带漆；perColumn 每列一条；圆角 / 内边距走 CSS 变量。',
+    },
+    {
+      name: 'wheel-picker-mp-band-dots',
+      title: '点阵纹理带（`#band` 插槽）',
+      blurb: '#band 插槽替换高亮块漆面：浅蓝底 + 圆点阵列 + 描边。',
+    },
+    {
+      name: 'wheel-picker-mp-band-soft',
+      title: '整幅软色带（`#band` 插槽）',
+      blurb: '零内边距 + 大圆角的整幅浅蓝带。',
+    },
+    {
       name: 'wheel-picker-mp-vibrate',
       title: '滑动震动开关（`vibrateShort`）',
       blurb: 'vibrateShort 默认 true；传 false 静音滑动。真机对比感受（App / 小程序）。',

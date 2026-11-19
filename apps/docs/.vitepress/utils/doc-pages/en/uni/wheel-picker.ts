@@ -56,6 +56,31 @@ import { WheelPicker } from '@snui/uni';
       blurb: 'Inline year roller: pill band + distance fade + slide haptic (on by default).',
     },
     {
+      name: 'wheel-picker-mp-icons',
+      title: 'Icon rows (`#option` slot)',
+      blurb: 'The `#option` slot renders icon + label; the active row gets a dashed icon frame.',
+    },
+    {
+      name: 'wheel-picker-mp-rich',
+      title: 'Rich rows (`#option` slot)',
+      blurb: 'Title + subtitle two-line layout; `option.raw` carries business fields.',
+    },
+    {
+      name: 'wheel-picker-mp-band-mode',
+      title: 'Band shape (`wheelBand` / gradient)',
+      blurb: 'shared spans every column with a gradient paint; perColumn one band per column; radius / inset via CSS vars.',
+    },
+    {
+      name: 'wheel-picker-mp-band-dots',
+      title: 'Dotted texture band (`#band` slot)',
+      blurb: 'The `#band` slot replaces the pill paint: soft blue + dot grid + border.',
+    },
+    {
+      name: 'wheel-picker-mp-band-soft',
+      title: 'Full soft band (`#band` slot)',
+      blurb: 'Zero inset + large radius full-width soft blue band.',
+    },
+    {
       name: 'wheel-picker-mp-vibrate',
       title: 'Slide haptic switch (`vibrateShort`)',
       blurb: '`vibrateShort` defaults to true; pass false for a silent slide. Compare on device (App / MP).',

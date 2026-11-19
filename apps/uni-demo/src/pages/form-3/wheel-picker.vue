@@ -1,8 +1,13 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— wheel-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/wheel-picker-mp-basic.vue';
-import Demo1 from './demos/wheel-picker-mp-reminder.vue';
-import Demo2 from './demos/wheel-picker-mp-vibrate.vue';
+import Demo1 from './demos/wheel-picker-mp-icons.vue';
+import Demo2 from './demos/wheel-picker-mp-rich.vue';
+import Demo3 from './demos/wheel-picker-mp-band-mode.vue';
+import Demo4 from './demos/wheel-picker-mp-band-dots.vue';
+import Demo5 from './demos/wheel-picker-mp-band-soft.vue';
+import Demo6 from './demos/wheel-picker-mp-vibrate.vue';
+import Demo7 from './demos/wheel-picker-mp-reminder.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -26,15 +31,45 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('提醒弹层', 'Reminder sheet')" badge="reminder" />
+        <DemoModuleHead :title="t('图标选项', 'Icon options')" badge="icons" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滑动震动', 'Slide haptic')" badge="vibrate" />
+        <DemoModuleHead :title="t('富内容行', 'Rich rows')" badge="rich" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('分列与渐变带', 'Split & gradient bands')" badge="band-mode" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('点阵纹理带', 'Dotted texture band')" badge="band-dots" />
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('整幅软色带', 'Full soft band')" badge="band-soft" />
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('滑动震动', 'Slide haptic')" badge="vibrate" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('提醒弹层', 'Reminder sheet')" badge="reminder" />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

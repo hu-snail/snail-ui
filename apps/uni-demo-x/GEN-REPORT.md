@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1476 |
+| .uvue 产出 | 1486 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2078 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2090 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
@@ -961,10 +961,20 @@
 - ../uni-demo/src/pages/form-3/demos/upload-mp-request-method.vue: ref
 - ../uni-demo/src/pages/form-3/demos/upload-mp-status.en.vue: ref
 - ../uni-demo/src/pages/form-3/demos/upload-mp-status.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-soft.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-soft.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.en.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-reminder.en.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-reminder.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-rich.en.vue: ref
+- ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-rich.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.en.vue: ref
 - ../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.vue: ref
 - ../uni-demo/src/pages/index/index.vue: computed
@@ -2538,6 +2548,8 @@
 - pages/form-3/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-3/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-3/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-icons.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-icons.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-3/demos/wheel-picker-mp-reminder.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/form-3/demos/wheel-picker-mp-reminder.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-3/demos/wheel-picker-mp-reminder.vue: [template-attr] 3 @tap binding(s) renamed to @click
@@ -2550,7 +2562,7 @@
 - pages/form-3/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form-3/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form-3/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-3/wheel-picker.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
+- pages/form-3/wheel-picker.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [template-attr] 10 @tap binding(s) renamed to @click
 - pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
