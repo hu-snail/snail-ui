@@ -642,8 +642,10 @@ const ariaValue = computed(() => {
     <!-- Shared wheel band (additive): one pill spanning every column, painted
          behind the roller text (z0). The #band slot replaces the paint. -->
     <view v-if="showSharedBand" class="sn-datetime-picker-view__wheel-band" aria-hidden="true"
-      ><slot name="band" :mode="'shared'" :column-index="-1"
-    /></view>
+      ><view class="sn-datetime-picker-view__fill"
+        ><slot name="band" :mode="'shared'" :column-index="-1"
+      /></view>
+    </view>
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -689,8 +691,10 @@ const ariaValue = computed(() => {
       <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
            Hidden entirely in shared-band mode (the root band takes over). -->
       <view v-if="!showSharedBand" class="sn-datetime-picker-view__indicator" aria-hidden="true"
-        ><slot v-if="props.wheel" name="band" :mode="'perColumn'" :column-index="columnIndex"
-      /></view>
+        ><view v-if="props.wheel" class="sn-datetime-picker-view__fill"
+          ><slot name="band" :mode="'perColumn'" :column-index="columnIndex"
+        /></view>
+      </view>
     </view>
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
@@ -771,6 +775,20 @@ const ariaValue = computed(() => {
   /* Behind the roller text: the wheel band is an opaque fill and would
      otherwise hide the selected label. */
   z-index: 0;
+}
+
+/* Slot fill — mp-weixin wraps injected slot content in a compiler view
+   (.uni__inherit_flex_box_style) that shrinks to content size, breaking
+   width/height:100% inside the slot. A column-direction stretch wrapper
+   forces that layer to span the full band box on every end. */
+.sn-datetime-picker-view__fill {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
 }
 
 /* Shared wheel band — one pill spanning every column (additive). */

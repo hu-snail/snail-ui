@@ -20,7 +20,7 @@ const value = ref<Array<string | number>>([25]);
     >
       <template #band>
         <view class="dotted-band">
-          <view v-for="dot in 48" :key="dot" class="dotted-band__dot" />
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
         </view>
       </template>
     </SnPickerView>
@@ -45,10 +45,10 @@ const value = ref<Array<string | number>>([25]);
 }
 
 .dotted-band__dot {
-  width: 6rpx;
-  height: 6rpx;
-  margin: 6rpx;
-  border-radius: 3rpx;
+  width: 4rpx;
+  height: 4rpx;
+  margin: 5rpx;
+  border-radius: 2rpx;
   background-color: var(--sn-mp-color-lightblue);
   opacity: 0.55;
 }

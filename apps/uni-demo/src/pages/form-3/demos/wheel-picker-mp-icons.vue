@@ -3,7 +3,6 @@
 import { ref } from 'vue';
 import SnWheelPicker from '@snui/uni-src/components/sn-wheel-picker/sn-wheel-picker.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Bell, Wallet, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { NormalizedPickerOption } from '@snui/uni-src/components/sn-picker-view/sn-picker-view-types';
 
 const choices = [
@@ -11,10 +10,15 @@ const choices = [
   { value: 'payment', label: 'Payment' },
   { value: 'personal', label: 'Personal' },
 ];
-const icons: Record<string, unknown> = { notification: Bell, payment: Wallet, personal: User };
+const iconNames: Record<string, string> = {
+  notification: 'bell',
+  payment: 'wallet',
+  personal: 'user',
+};
 const value = ref<Array<string | number>>(['notification']);
 
-const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.value)];
+const iconNameOf = (option: NormalizedPickerOption): string =>
+  iconNames[String(option.value)] ?? 'bell';
 </script>
 
 <template>
@@ -28,7 +32,7 @@ const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.
       <template #option="{ option, active }">
         <view class="icon-row">
           <view class="icon-box" :class="{ 'icon-box--active': active }">
-            <SnIcon :data="iconOf(option)" :size="28" />
+            <SnIcon :name="iconNameOf(option)" :size="28" />
           </view>
           <text class="icon-row__label" :class="{ 'icon-row__label--active': active }">
             {{ option.label }}

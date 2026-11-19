@@ -1,9 +1,12 @@
 <script setup lang="ts">
-/** Demo: sn-picker-view — wheel style + `#option` slot: icon option list, the active row turns theme-colored. */
+/** Demo: sn-picker-view — wheel style + `#option` slot: icon rows, active row gets a dashed icon frame.
+ *
+ * Icons use the builtin iconfont `name` path (native font rendering,
+ * reliable on mp-weixin); the `data` path (SVG data URL + `<image>`) does
+ * not render on WeChat mini-programs. */
 import { ref } from 'vue';
 import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { Bell, Wallet, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { NormalizedPickerOption } from '@snui/uni-src/components/sn-picker-view/sn-picker-view-types';
 
 const choices = [
@@ -11,10 +14,15 @@ const choices = [
   { value: 'payment', label: 'Payment' },
   { value: 'personal', label: 'Personal' },
 ];
-const icons: Record<string, unknown> = { notification: Bell, payment: Wallet, personal: User };
+const iconNames: Record<string, string> = {
+  notification: 'bell',
+  payment: 'wallet',
+  personal: 'user',
+};
 const value = ref<Array<string | number>>(['notification']);
 
-const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.value)];
+const iconNameOf = (option: NormalizedPickerOption): string =>
+  iconNames[String(option.value)] ?? 'bell';
 </script>
 
 <template>
@@ -30,7 +38,7 @@ const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.
       <template #option="{ option, active }">
         <view class="icon-row" :class="{ 'icon-row--active': active }">
           <view class="icon-box" :class="{ 'icon-box--active': active }">
-            <SnIcon :data="iconOf(option)" :size="28" />
+            <SnIcon :name="iconNameOf(option)" :size="28" />
           </view>
           <text class="icon-row__label">{{ option.label }}</text>
         </view>
@@ -45,6 +53,7 @@ const iconOf = (option: NormalizedPickerOption): unknown => icons[String(option.
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   flex-direction: row;
 }
 

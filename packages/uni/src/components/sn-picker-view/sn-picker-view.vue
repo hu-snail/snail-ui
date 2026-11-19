@@ -491,8 +491,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
     <!-- Shared wheel band (additive): one pill spanning every column, painted
          behind the roller text (z0). The #band slot replaces the paint. -->
     <view v-if="showSharedBand" class="sn-picker-view__wheel-band" aria-hidden="true"
-      ><slot name="band" :mode="'shared'" :column-index="-1"
-    /></view>
+      ><view class="sn-picker-view__fill"
+        ><slot name="band" :mode="'shared'" :column-index="-1"
+      /></view>
+    </view>
     <view
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"
@@ -525,15 +527,16 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
-          ><slot
-            name="option"
-            :option="option"
-            :active="isActive(columnIndex, rowIndex)"
-            :distance="distanceOf(columnIndex, rowIndex)"
-            :column-index="columnIndex"
-            :index="rowIndex"
-            ><text>{{ option.label }}</text></slot
-          ></view
+          ><view class="sn-picker-view__fill"
+            ><slot
+              name="option"
+              :option="option"
+              :active="isActive(columnIndex, rowIndex)"
+              :distance="distanceOf(columnIndex, rowIndex)"
+              :column-index="columnIndex"
+              :index="rowIndex"
+              ><text>{{ option.label }}</text></slot
+          ></view></view
         >
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />
@@ -541,8 +544,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
            Hidden entirely in shared-band mode (the root band takes over). -->
       <view v-if="!showSharedBand" class="sn-picker-view__indicator" aria-hidden="true"
-        ><slot v-if="props.wheel" name="band" :mode="'perColumn'" :column-index="columnIndex"
-      /></view>
+        ><view v-if="props.wheel" class="sn-picker-view__fill"
+          ><slot name="band" :mode="'perColumn'" :column-index="columnIndex"
+        /></view>
+      </view>
     </view>
   </view>
 </template>
@@ -627,6 +632,21 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   /* Behind the roller text: the wheel band is an opaque fill and would
      otherwise hide the selected label. */
   z-index: 0;
+}
+
+/* Slot fill — mp-weixin wraps injected slot content in a compiler view
+   (.uni__inherit_flex_box_style) that inherits the row direction of this
+   flex item and therefore shrinks to content size, breaking every
+   width/height:100% inside the slot. A column-direction stretch wrapper
+   forces that layer to span the full row box on every end. */
+.sn-picker-view__fill {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
 }
 
 /* Shared wheel band — one pill spanning every column (additive). */

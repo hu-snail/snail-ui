@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:f60fc3c170f80a60 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:9d75f121144941fd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — 块自定义：`#band` 插槽画点阵纹理胶囊带（浅蓝底 + 圆点阵列 + 描边）。 */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
@@ -16,7 +16,7 @@ const value = ref<Array<string | number>>([25]);
     >
       <template #band>
         <view class="dotted-band">
-          <view v-for="dot in 48" :key="dot" class="dotted-band__dot" />
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
         </view>
       </template>
     </SnWheelPicker>
@@ -40,10 +40,10 @@ const value = ref<Array<string | number>>([25]);
 }
 
 .dotted-band__dot {
-  width: 6rpx;
-  height: 6rpx;
-  margin: 6rpx;
-  border-radius: 3rpx;
+  width: 4rpx;
+  height: 4rpx;
+  margin: 5rpx;
+  border-radius: 2rpx;
   background-color: var(--sn-mp-color-lightblue);
   opacity: 0.55;
 }

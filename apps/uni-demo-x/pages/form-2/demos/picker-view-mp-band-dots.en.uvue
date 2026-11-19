@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.en.vue sha256:107c47cbc64a3f4f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.en.vue sha256:084d5dfa00c63be1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — band customization: the `#band` slot paints a dotted texture pill (soft blue + dot grid + border). */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
@@ -18,7 +18,7 @@ const value = ref<Array<string | number>>([25]);
     >
       <template #band>
         <view class="dotted-band">
-          <view v-for="dot in 48" :key="dot" class="dotted-band__dot" />
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
         </view>
       </template>
     </SnPickerView>
@@ -42,10 +42,10 @@ const value = ref<Array<string | number>>([25]);
 }
 
 .dotted-band__dot {
-  width: 6rpx;
-  height: 6rpx;
-  margin: 6rpx;
-  border-radius: 3rpx;
+  width: 4rpx;
+  height: 4rpx;
+  margin: 5rpx;
+  border-radius: 2rpx;
   background-color: var(--sn-mp-color-lightblue);
   opacity: 0.55;
 }
