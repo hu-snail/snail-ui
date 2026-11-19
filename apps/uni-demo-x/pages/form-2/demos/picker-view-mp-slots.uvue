@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-slots.vue sha256:95ff8afb0b61f802 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-slots.vue sha256:c06b2712215eb96e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — `#option` 插槽画每行虚线时间槽盒：选中行实线主题框，远行按 distance 淡出。 */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
@@ -25,10 +25,10 @@ const value = ref<Array<string | number>>(['1:30pm']);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 88rpx;
+  width: 75%;
+  height: 100rpx;
   border: 2rpx dashed var(--sn-mp-color-border-default);
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   flex-direction: row;
 }
 

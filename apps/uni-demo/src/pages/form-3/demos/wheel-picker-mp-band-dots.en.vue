@@ -2,6 +2,7 @@
 /** Demo: sn-wheel-picker — band customization: the `#band` slot paints a dotted texture pill (soft blue + dot grid + border). */
 import { ref } from 'vue';
 import SnWheelPicker from '@snui/uni-src/components/sn-wheel-picker/sn-wheel-picker.vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
 
 const minutes = [15, 20, 25, 30, 45];
 const value = ref<Array<string | number>>([25]);
@@ -9,12 +10,13 @@ const value = ref<Array<string | number>>([25]);
 
 <template>
   <view class="sn-demo sn-demo--column">
+    <!-- #ifndef MP-WEIXIN -->
     <SnWheelPicker
       v-model="value"
       :columns="[minutes]"
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 12rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">
@@ -22,6 +24,24 @@ const value = ref<Array<string | number>>([25]);
         </view>
       </template>
     </SnWheelPicker>
+    <!-- #endif -->
+    <!-- #ifdef MP-WEIXIN -->
+    <SnPickerView
+      v-model="value"
+      :columns="[minutes]"
+      :visible-item-count="5"
+      :item-height="56"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+    
+      wheel
+      vibrate-short>
+      <template #band>
+        <view class="dotted-band">
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
+        </view>
+      </template>
+    </SnPickerView>
+    <!-- #endif -->
     <text class="sn-demo__meta">Selected: {{ value[0] }} min (#band slot: dotted texture pill)</text>
   </view>
 </template>

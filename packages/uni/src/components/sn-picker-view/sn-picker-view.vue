@@ -202,6 +202,9 @@ function normalizeOption(raw: PickerValue | PickerOption): NormalizedPickerOptio
       raw,
     };
   }
+  // Primitive options keep their original value: String()-mangling breaks
+  // strict-equality against a numeric modelValue and every initial selection
+  // snapped back to row 0 (visible on mp-weixin: 1995 demo opened on 1991).
   return { value: raw, label: String(raw), disabled: false, raw };
 }
 
@@ -228,7 +231,7 @@ function resolveColumns(values: PickerValue[]): NormalizedPickerOption[][] {
   for (let i = 0; i < values.length; i += 1) {
     const current = result[i];
     if (!current) break;
-    const selected = current.find((option) => option.value === values[i]);
+    const selected = current.find((option) => sameValue(option.value, values[i]));
     if (!selected) break;
     const children = readChildren(selected.raw);
     if (!children || children.length === 0) break;
@@ -244,7 +247,7 @@ const resolvedColumns = computed<NormalizedPickerOption[][]>(() =>
 /** Index of the selected row per column (0 when the value is not present). */
 const selectedIndexes = computed<number[]>(() =>
   resolvedColumns.value.map((column, ci) => {
-    const index = column.findIndex((option) => option.value === props.modelValue[ci]);
+    const index = column.findIndex((option) => sameValue(option.value, props.modelValue[ci]));
     return index < 0 ? 0 : index;
   }),
 );
@@ -257,6 +260,17 @@ const effectiveValues = computed<PickerValue[]>(() =>
     return option ? option.value : (props.modelValue[ci] ?? '');
   }),
 );
+
+/**
+ * Value equality across the mp-weixin prop channel: the mini-program runtime
+ * may hand back numeric modelValue entries as strings ("1995" !== 1995), so
+ * selection identity uses the string form as a fallback. Numeric/string
+ * option ids are never mixed in real columns, so this cannot mis-select.
+ */
+function sameValue(a: PickerValue, b: PickerValue | undefined): boolean {
+  if (a === undefined || b === undefined) return false;
+  return a === b || String(a) === String(b);
+}
 
 /* ── Geometry (all rpx — 1px design = 2rpx) ────────────────────────────── */
 
@@ -354,7 +368,7 @@ function buildPayload(
   const selectedIndexes: number[] = [];
   columns.forEach((column, ci) => {
     const index = Math.max(
-      column.findIndex((option) => option.value === values[ci]),
+      column.findIndex((option) => sameValue(option.value, values[ci])),
       0,
     );
     const option = column[index];
@@ -535,7 +549,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
               :distance="distanceOf(columnIndex, rowIndex)"
               :column-index="columnIndex"
               :index="rowIndex"
-              ><text>{{ option.label }}</text></slot
+              ><text class="sn-picker-view__label">{{ option.label }}</text></slot
           ></view></view
         >
       </view>
@@ -647,6 +661,16 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   flex: 1 1 auto;
   align-self: stretch;
   width: 100%;
+}
+
+/* Label fallback — the fill stretches it full-width (column cross axis), so
+   the text itself must center or it hugs the left edge on mp-weixin. */
+.sn-picker-view__label {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Shared wheel band — one pill spanning every column (additive). */

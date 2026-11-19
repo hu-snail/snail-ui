@@ -1,18 +1,20 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:9d75f121144941fd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:e1590b9cc2c8b179 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — 块自定义：`#band` 插槽画点阵纹理胶囊带（浅蓝底 + 圆点阵列 + 描边）。 */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
 const minutes = [15, 20, 25, 30, 45];
 const value = ref<Array<string | number>>([25]);
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
+    <!-- #ifndef MP-WEIXIN -->
     <SnWheelPicker
       v-model="value"
       :columns="[minutes]"
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 12rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">
@@ -20,6 +22,24 @@ const value = ref<Array<string | number>>([25]);
         </view>
       </template>
     </SnWheelPicker>
+    <!-- #endif -->
+    <!-- #ifdef MP-WEIXIN -->
+    <SnPickerView
+      v-model="value"
+      :columns="[minutes]"
+      :visible-item-count="5"
+      :item-height="56"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+    
+      wheel
+      vibrate-short>
+      <template #band>
+        <view class="dotted-band">
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
+        </view>
+      </template>
+    </SnPickerView>
+    <!-- #endif -->
     <text class="sn-demo__meta">已选：{{ value[0] }} min（#band 插槽自定义高亮块：点阵纹理）</text>
   </view>
 </template>

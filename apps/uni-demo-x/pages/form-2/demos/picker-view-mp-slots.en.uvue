@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-slots.en.vue sha256:7989ae0abafd7181 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-slots.en.vue sha256:ce80fda867259190 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — `#option` slot draws dashed time-slot boxes per row: solid theme border on the active row, distance fade. */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
@@ -25,10 +25,10 @@ const value = ref<Array<string | number>>(['1:30pm']);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 88rpx;
+  width: 75%;
+  height: 100rpx;
   border: 2rpx dashed var(--sn-mp-color-border-default);
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   flex-direction: row;
 }
 

@@ -2,6 +2,7 @@
 /** Demo: sn-wheel-picker — 内容自定义：`#option` 插槽主标题 + 副标题双行，raw 透传业务字段。 */
 import { ref } from 'vue';
 import SnWheelPicker from '@snui/uni-src/components/sn-wheel-picker/sn-wheel-picker.vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
 
 const cities = [
   { value: 'hz', label: '杭州', code: 'ZHS · 0571' },
@@ -15,6 +16,7 @@ const value = ref<Array<string | number>>(['sz']);
 
 <template>
   <view class="sn-demo sn-demo--column">
+    <!-- #ifndef MP-WEIXIN -->
     <SnWheelPicker v-model="value" :columns="[cities]" :visible-item-count="5" :item-height="52">
       <template #option="{ option, active }">
         <view class="rich-row">
@@ -27,6 +29,23 @@ const value = ref<Array<string | number>>(['sz']);
         </view>
       </template>
     </SnWheelPicker>
+    <!-- #endif -->
+    <!-- #ifdef MP-WEIXIN -->
+    <SnPickerView v-model="value" :columns="[cities]" :visible-item-count="5" :item-height="52"
+      wheel
+      vibrate-short>
+      <template #option="{ option, active }">
+        <view class="rich-row">
+          <text class="rich-row__title" :class="{ 'rich-row__title--active': active }">
+            {{ option.label }}
+          </text>
+          <text class="rich-row__code" :class="{ 'rich-row__code--active': active }">
+            {{ String(option.raw.code) }}
+          </text>
+        </view>
+      </template>
+    </SnPickerView>
+    <!-- #endif -->
     <text class="sn-demo__meta">已选：{{ value[0] }}（主副标题双行，raw 透传业务字段）</text>
   </view>
 </template>

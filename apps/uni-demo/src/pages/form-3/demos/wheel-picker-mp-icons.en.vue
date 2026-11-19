@@ -2,6 +2,7 @@
 /** Demo: sn-wheel-picker — content customization: the `#option` slot renders icon rows; the active row gets a dashed icon frame. */
 import { ref } from 'vue';
 import SnWheelPicker from '@snui/uni-src/components/sn-wheel-picker/sn-wheel-picker.vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import type { NormalizedPickerOption } from '@snui/uni-src/components/sn-picker-view/sn-picker-view-types';
 
@@ -23,6 +24,7 @@ const iconNameOf = (option: NormalizedPickerOption): string =>
 
 <template>
   <view class="sn-demo sn-demo--column">
+    <!-- #ifndef MP-WEIXIN -->
     <SnWheelPicker
       v-model="value"
       :columns="[choices]"
@@ -40,6 +42,28 @@ const iconNameOf = (option: NormalizedPickerOption): string =>
         </view>
       </template>
     </SnWheelPicker>
+    <!-- #endif -->
+    <!-- #ifdef MP-WEIXIN -->
+    <SnPickerView
+      v-model="value"
+      :columns="[choices]"
+      wheel
+      vibrate-short
+      :visible-item-count="3"
+      :item-height="52"
+    >
+      <template #option="{ option, active }">
+        <view class="icon-row">
+          <view class="icon-box" :class="{ 'icon-box--active': active }">
+            <SnIcon :name="iconNameOf(option)" :size="28" />
+          </view>
+          <text class="icon-row__label" :class="{ 'icon-row__label--active': active }">
+            {{ option.label }}
+          </text>
+        </view>
+      </template>
+    </SnPickerView>
+    <!-- #endif -->
     <text class="sn-demo__meta">Selected: {{ value[0] }} (#option slot customizes row content)</text>
   </view>
 </template>

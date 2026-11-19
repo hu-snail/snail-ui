@@ -9,7 +9,13 @@ const year = ref<Array<string | number>>([1995]);
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnWheelPicker v-model="year" :columns="[years]" :item-height="44" :visible-item-count="5" />
+    <SnWheelPicker
+      v-model="year"
+      :columns="[years]"
+      :item-height="44"
+      :visible-item-count="5"
+      custom-style="--sn-picker-view-wheel-inset: 150rpx"
+    />
     <text class="sn-demo__meta">Selected: {{ year[0] }} (each detent ticks a light haptic on App / MP)</text>
   </view>
 </template>

@@ -28,10 +28,10 @@ const value = ref<Array<string | number>>(['1:30pm']);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 88rpx;
+  width: 75%;
+  height: 100rpx;
   border: 2rpx dashed var(--sn-mp-color-border-default);
-  border-radius: 24rpx;
+  border-radius: 32rpx;
   flex-direction: row;
 }
 
