@@ -300,8 +300,11 @@ const viewClass = computed(() => props.customViewClass);
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       >
-        <!-- uvue 编译器不支持 v-bind="obj"（无参对象展开），透传必须逐个显式绑定。 -->
-        <template #option="scope"
+        <!-- uvue: 无参 v-bind="obj" 不支持 → 逐字段显式绑定；$slots.xxx 守卫
+             必须保留——无条件透传会让 picker-view 的 $slots.option 恒为 true，
+             mp 端 fallback 编译（$slots.x ? slot : text）走空 slot 出口，行
+             内容全空（微信小程序实测回归）。 -->
+        <template v-if="$slots.option" #option="scope"
           ><slot
             name="option"
             :option="scope.option"
@@ -310,7 +313,7 @@ const viewClass = computed(() => props.customViewClass);
             :column-index="scope.columnIndex"
             :index="scope.index"
         /></template>
-        <template #band="scope"
+        <template v-if="$slots.band" #band="scope"
           ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
         /></template>
       </SnPickerView>

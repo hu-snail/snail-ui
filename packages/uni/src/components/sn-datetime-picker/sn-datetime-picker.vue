@@ -349,8 +349,9 @@ const viewClass = computed(() => props.customViewClass);
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       >
-        <!-- uvue 编译器不支持 v-bind="obj"（无参对象展开），透传必须逐个显式绑定。 -->
-        <template #band="scope"
+        <!-- uvue: 无参 v-bind="obj" 不支持 → 显式绑定；$slots.band 守卫必须
+             保留（mp 端 fallback 编译依赖 $slots 判定，见 sn-picker 注释）。 -->
+        <template v-if="$slots.band" #band="scope"
           ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
         /></template>
       </SnDatetimePickerView>
