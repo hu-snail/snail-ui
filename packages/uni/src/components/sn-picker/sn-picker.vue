@@ -300,8 +300,19 @@ const viewClass = computed(() => props.customViewClass);
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       >
-        <template v-if="$slots.option" #option="scope"><slot name="option" v-bind="scope" /></template>
-        <template v-if="$slots.band" #band="scope"><slot name="band" v-bind="scope" /></template>
+        <!-- uvue 编译器不支持 v-bind="obj"（无参对象展开），透传必须逐个显式绑定。 -->
+        <template #option="scope"
+          ><slot
+            name="option"
+            :option="scope.option"
+            :active="scope.active"
+            :distance="scope.distance"
+            :column-index="scope.columnIndex"
+            :index="scope.index"
+        /></template>
+        <template #band="scope"
+          ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
+        /></template>
       </SnPickerView>
     </view>
   </SnPopup>

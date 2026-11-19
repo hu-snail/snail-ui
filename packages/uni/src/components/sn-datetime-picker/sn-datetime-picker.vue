@@ -349,7 +349,10 @@ const viewClass = computed(() => props.customViewClass);
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       >
-        <template v-if="$slots.band" #band="scope"><slot name="band" v-bind="scope" /></template>
+        <!-- uvue 编译器不支持 v-bind="obj"（无参对象展开），透传必须逐个显式绑定。 -->
+        <template #band="scope"
+          ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
+        /></template>
       </SnDatetimePickerView>
     </view>
   </SnPopup>
