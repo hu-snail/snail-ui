@@ -297,6 +297,15 @@ describe('sn-picker', () => {
       Object.defineProperty(globalThis, 'innerWidth', { value: 375, configurable: true, writable: true });
     });
 
+    it('keeps the label fallback when the caller passes no option slot', () => {
+      // Regression: the slot forwarding used to be gated on `$slots.option`;
+      // unconditional forwarding means the inner `<slot name="option">` must
+      // carry its own fallback, or rows render blank for plain callers.
+      const w = mountPicker({ modelValue: ['banana'] });
+      const items = w.findAll('.sn-picker-view__item');
+      expect(items.map((item) => item.text())).toEqual(['apple', 'banana', 'cherry']);
+    });
+
     it('forwards wheel to the roller body', () => {
       expect(mountPicker().find('.sn-picker-view').classes()).not.toContain(
         'sn-picker-view--wheel',
