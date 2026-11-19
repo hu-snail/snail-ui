@@ -116,6 +116,16 @@ import { PickerView } from '@snui/uni';
       blurb: 'shared 一整条横跨全部列；perColumn 每列一条；带漆 / 圆角 / 内边距走 CSS 变量。',
     },
     {
+      name: 'picker-view-mp-band-dots',
+      title: '点阵纹理带（`#band` 插槽）',
+      blurb: '#band 插槽替换高亮块的漆面：浅蓝底 + 圆点阵列 + 描边，CSS 变量做不到的纹理由调用方绘制。',
+    },
+    {
+      name: 'picker-view-mp-band-soft',
+      title: '整幅软色带（`#band` 插槽）',
+      blurb: '零内边距 + 大圆角的整幅浅蓝带，对齐时间滚轮参考稿。',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: '根节点样式（`customClass` / `customStyle`）',
       blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',

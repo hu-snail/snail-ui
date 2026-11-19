@@ -1,18 +1,20 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— picker-view 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/picker-view-mp-band.vue';
-import Demo1 from './demos/picker-view-mp-band-mode.vue';
-import Demo2 from './demos/picker-view-mp-basic.vue';
-import Demo3 from './demos/picker-view-mp-cascade.vue';
-import Demo4 from './demos/picker-view-mp-custom-style.vue';
-import Demo5 from './demos/picker-view-mp-disabled.vue';
-import Demo6 from './demos/picker-view-mp-icons.vue';
-import Demo7 from './demos/picker-view-mp-immediate.vue';
-import Demo8 from './demos/picker-view-mp-keys.vue';
-import Demo9 from './demos/picker-view-mp-rich.vue';
-import Demo10 from './demos/picker-view-mp-rows.vue';
-import Demo11 from './demos/picker-view-mp-slots.vue';
-import Demo12 from './demos/picker-view-mp-wheel.vue';
+import Demo1 from './demos/picker-view-mp-band-dots.vue';
+import Demo2 from './demos/picker-view-mp-band-mode.vue';
+import Demo3 from './demos/picker-view-mp-band-soft.vue';
+import Demo4 from './demos/picker-view-mp-basic.vue';
+import Demo5 from './demos/picker-view-mp-cascade.vue';
+import Demo6 from './demos/picker-view-mp-custom-style.vue';
+import Demo7 from './demos/picker-view-mp-disabled.vue';
+import Demo8 from './demos/picker-view-mp-icons.vue';
+import Demo9 from './demos/picker-view-mp-immediate.vue';
+import Demo10 from './demos/picker-view-mp-keys.vue';
+import Demo11 from './demos/picker-view-mp-rich.vue';
+import Demo12 from './demos/picker-view-mp-rows.vue';
+import Demo13 from './demos/picker-view-mp-slots.vue';
+import Demo14 from './demos/picker-view-mp-wheel.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -31,15 +33,27 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('分列与渐变带', 'Split & gradient bands')" badge="band-mode" />
+        <DemoModuleHead :title="t('点阵纹理带', 'Dotted texture band')" badge="band-dots" />
         <view class="module__body">
           <Demo1 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('分列与渐变带', 'Split & gradient bands')" badge="band-mode" />
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('整幅软色带', 'Full soft band')" badge="band-soft" />
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
       <view class="module">
@@ -48,7 +62,7 @@ const { t } = useDemoUi();
           badge="cascade"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo5 />
         </view>
       </view>
       <view class="module">
@@ -62,7 +76,7 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -71,13 +85,13 @@ const { t } = useDemoUi();
           badge="disabled"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('图标选项', 'Icon options')" badge="icons" />
         <view class="module__body">
-          <Demo6 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
@@ -88,7 +102,7 @@ const { t } = useDemoUi();
           badge="immediate"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo9 />
         </view>
       </view>
       <view class="module">
@@ -102,13 +116,13 @@ const { t } = useDemoUi();
           badge="keys"
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo10 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('富内容行', 'Rich rows')" badge="rich" />
         <view class="module__body">
-          <Demo9 />
+          <Demo11 />
         </view>
       </view>
       <view class="module">
@@ -122,19 +136,19 @@ const { t } = useDemoUi();
           badge="rows"
         />
         <view class="module__body">
-          <Demo10 />
+          <Demo12 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('时间槽', 'Time slots')" badge="slots" />
         <view class="module__body">
-          <Demo11 />
+          <Demo13 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
         <view class="module__body">
-          <Demo12 />
+          <Demo14 />
         </view>
       </view>
     </view>

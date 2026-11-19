@@ -114,6 +114,16 @@ import { PickerView } from '@snui/uni';
       blurb: 'shared renders one pill across columns; perColumn one per column; paint / radius / inset via CSS vars.',
     },
     {
+      name: 'picker-view-mp-band-dots',
+      title: 'Dotted texture band (`#band` slot)',
+      blurb: 'The #band slot replaces the pill paint: soft blue + dot grid + border — textures CSS vars cannot express.',
+    },
+    {
+      name: 'picker-view-mp-band-soft',
+      title: 'Full soft band (`#band` slot)',
+      blurb: 'Zero inset + large radius full-width soft blue band, matching the time-roller reference.',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
       blurb:

@@ -2209,8 +2209,18 @@
           "hasEn": true
         },
         {
+          "name": "picker-view-mp-band-dots",
+          "title": "点阵纹理带",
+          "hasEn": true
+        },
+        {
           "name": "picker-view-mp-band-mode",
           "title": "分列与渐变带",
+          "hasEn": true
+        },
+        {
+          "name": "picker-view-mp-band-soft",
+          "title": "整幅软色带",
           "hasEn": true
         },
         {
