@@ -148,6 +148,12 @@ const props = withDefaults(
      */
     wheelBand?: 'shared' | 'perColumn';
     /**
+     * 隐藏列内指示线（additive）：hairline 模式下插槽自带盒子描边（如时间
+     * 槽）时，隐藏默认 hairline 避免上下分割线；wheel 模式不渲染列内指示
+     * 器，无此需求。
+     */
+    hideIndicator?: boolean;
+    /**
      * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
      * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
      * 静默跳过；点选与程序赋值不震动。
@@ -171,6 +177,7 @@ const props = withDefaults(
     disabled: false,
     wheel: false,
     wheelBand: 'shared',
+    hideIndicator: false,
     vibrateShort: false,
     customClass: '',
     customStyle: '',
@@ -557,8 +564,11 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       <view class="sn-picker-view__mask sn-picker-view__mask--bottom" aria-hidden="true" />
       <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
            Hidden entirely in shared-band mode (the root band takes over). -->
-      <view v-if="!showSharedBand" class="sn-picker-view__indicator" aria-hidden="true"
-        ><view v-if="props.wheel" class="sn-picker-view__fill"
+      <view
+        v-if="!showSharedBand && !props.hideIndicator"
+        class="sn-picker-view__indicator"
+        aria-hidden="true"
+      ><view v-if="props.wheel" class="sn-picker-view__fill"
           ><slot name="band" :mode="'perColumn'" :column-index="columnIndex"
         /></view>
       </view>
@@ -574,7 +584,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  padding: var(--sn-mp-spacing-3) 0;
+  /* No vertical padding: the column is exactly visibleItemCount rows, and
+     mp-weixin stretches the flex column past the padding box, leaking a
+     sixth row outside the clip. Callers own any outer spacing. */
+  padding: 0;
   box-sizing: border-box;
   background-color: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-primary);

@@ -9,7 +9,13 @@ const value = ref<Array<string | number>>(['1:30pm']);
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPickerView v-model="value" :columns="[slots]" :visible-item-count="5" :item-height="56">
+    <SnPickerView
+      v-model="value"
+      :columns="[slots]"
+      :visible-item-count="5"
+      :item-height="56"
+      hide-indicator
+    >
       <template #option="{ option, active, distance }">
         <view
           class="slot-box"
