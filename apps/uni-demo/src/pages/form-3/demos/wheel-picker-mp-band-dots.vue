@@ -14,7 +14,7 @@ const value = ref<Array<string | number>>([25]);
       :columns="[minutes]"
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 12rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">

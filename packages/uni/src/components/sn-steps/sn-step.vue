@@ -47,7 +47,7 @@
  *   - 步骤间流转 — 由宿主驱动
  */
 
-import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
@@ -132,16 +132,31 @@ const isLast = computed(() => {
   return stepIndex.value >= 0 && stepIndex.value === count - 1;
 });
 
+const isFirst = computed(() => stepIndex.value === 0);
+
+/* Keep the resolved status in the container so the next step can colour the
+ * leading rail with the step it is coming from (dashed / dotted included). */
+watchEffect(() => {
+  if (!steps || stepIndex.value < 0) return;
+  steps.setStepStatus(uid, resolvedStatus.value);
+});
+
+/** Status of the step immediately before this one — drives the leading rail. */
+const previousStatus = computed<SnStepStatus | undefined>(() => {
+  if (stepIndex.value <= 0) return undefined;
+  return steps?.getStepStatus(stepIndex.value - 1);
+});
+
 const isVertical = computed(() => steps?.vertical.value ?? false);
 const isDot = computed(() => steps?.dot.value ?? false);
 /** `align-center` is horizontal-only (wd-steps contract). */
 const isCenter = computed(() => (steps?.alignCenter.value ?? false) && !isVertical.value);
 /**
- * A step needs an intrinsic width when `space` is set or the bar is centered —
- * `flex: 1 1 0` would otherwise stretch it to fill the row, which is exactly
- * why `space` / `align-center` had no visible effect.
+ * `space` supplies an explicit width per step; the equal flex share would
+ * otherwise stretch it and cancel the spacing. Centering (`align-center`)
+ * keeps wd-steps' equal widths and only centres each step's content.
  */
-const isIntrinsic = computed(() => (steps?.space.value ?? '') !== '' || isCenter.value);
+const isIntrinsic = computed(() => (steps?.space.value ?? '') !== '');
 
 /** `icon` name resolved through registry → built-in catalogue (sync only). */
 const resolvedNameIcon = computed<IconData | undefined>(() => {
@@ -207,6 +222,8 @@ const rootClass = computed(() => [
     'sn-step--dot': isDot.value,
     'sn-step--center': isCenter.value,
     'sn-step--intrinsic': isIntrinsic.value,
+    'sn-step--prev-finished': previousStatus.value === 'finished',
+    'sn-step--prev-error': previousStatus.value === 'error',
   },
   props.customClass,
 ]);
@@ -221,6 +238,17 @@ const rootClass = computed(() => [
     :aria-current="resolvedStatus === 'process' ? 'step' : undefined"
   >
     <view class="sn-step__header">
+      <!-- Centered mode uses two symmetric rails: the leading rail fills the
+           gap from the previous step into this indicator; the trailing rail
+           fills the gap out of it. Equal flex shares keep the indicator at
+           50% without absolute-position calc (fragile on MP / uvue). -->
+      <view
+        v-if="isCenter && !isDot"
+        class="sn-step__line sn-step__line--before"
+        :class="{ 'sn-step__line--hidden': isFirst }"
+        :style="connectorStyle"
+        aria-hidden="true"
+      />
       <!-- additive `node` slot: a custom node replaces the default indicator
            (number / status glyph) as a whole; the connector line stays. -->
       <slot name="node">
@@ -271,8 +299,18 @@ const rootClass = computed(() => [
           </slot>
         </view>
       </slot>
+      <!-- In centered mode the trailing rail is always present (hidden on the
+           last step) so the indicator stays centered. Without centering, only
+           non-last steps draw a connector. -->
       <view
-        v-if="!isLast && !isDot"
+        v-if="isCenter && !isDot"
+        class="sn-step__line sn-step__line--after"
+        :class="{ 'sn-step__line--hidden': isLast }"
+        :style="connectorStyle"
+        aria-hidden="true"
+      />
+      <view
+        v-else-if="!isLast && !isDot"
         class="sn-step__line"
         :style="connectorStyle"
         aria-hidden="true"
@@ -309,38 +347,47 @@ const rootClass = computed(() => [
 }
 
 .sn-step--horizontal {
-  position: relative;
   flex: 1 1 0;
   align-items: center;
 }
 
-/* `align-center`: indicator sits at 50% of its step and the connector starts
- * right after it, spanning the full step width to meet the next indicator.
- * The line is absolutely positioned so it cannot push the indicator off
- * centre (a flex spacer would leave a visible gap between steps). */
+/* `align-center`: symmetric rails inside the header keep the indicator at
+ * 50% and make the connector continuous across step boundaries. No absolute
+ * positioning / calc() — MP and uvue resolve those inconsistently. */
 .sn-step--center .sn-step__header {
   justify-content: center;
 }
 
 .sn-step--center .sn-step__line {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  margin-left: 20rpx;
-  flex: none;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The leading rail keeps the indicator centred but must not paint: MP and
+ * uvue can drop a zero-height flex border. The trailing rail is stretched to
+ * cover the whole gap, so one element owns one connector segment and its
+ * colour always comes from the step being left. */
+.sn-step--center .sn-step__line--before {
+  border-color: transparent;
+}
+
+.sn-step--center .sn-step__line--after {
+  transform: scaleX(2);
+  transform-origin: left center;
+}
+
+/* The outer rails are layout-only on the first / last step. */
+.sn-step--center .sn-step__line--hidden {
+  visibility: hidden;
 }
 
 .sn-step--center .sn-step__content {
   align-items: center;
 }
 
-.sn-step--center.sn-step--dot .sn-step__line {
-  margin-left: 8rpx;
-}
-
-/* `space` / `align-center` need an intrinsic width instead of an equal flex
- * share, otherwise the container's justify-content can never take effect. */
+/* `space` needs an intrinsic width instead of an equal flex share, otherwise
+ * the container's justify-content can never take effect. Centering itself is
+ * handled by the symmetric rails above. */
 .sn-step--horizontal.sn-step--intrinsic {
   flex: 0 0 auto;
 }
@@ -355,6 +402,9 @@ const rootClass = computed(() => [
   display: flex;
   align-items: center;
   width: 100%;
+  /* The centered trailing rail is scaled past the step box; a host / uni
+   * reset with `overflow: hidden` would clip it at the step boundary. */
+  overflow: visible;
 }
 
 .sn-step--vertical .sn-step__header {
@@ -372,13 +422,17 @@ const rootClass = computed(() => [
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 40rpx;
-  height: 40rpx;
+  /* 48rpx leaves a visible gap around the default 32rpx glyph; a 40rpx ring
+   * crowded the icon right up against its border (see the icon demo). */
+  width: 48rpx;
+  height: 48rpx;
   border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
+  padding: 0;
+  margin: 0;
 }
 
 .sn-step--dot .sn-step__indicator {
@@ -452,17 +506,25 @@ const rootClass = computed(() => [
 }
 
 .sn-step--vertical .sn-step__line {
+  /* The column header is already center-aligned; `stretch` here used to pin
+   * the zero-width line to the left edge of the indicator. */
   width: 0;
   height: auto;
   flex: 1 1 auto;
-  align-self: stretch;
-  min-height: 40rpx;
+  align-self: center;
+  min-height: 48rpx;
   border-top-width: 0;
   border-left-width: 2rpx;
 }
 
+/* A connector segment belongs to the step it leaves: the trailing rail uses
+ * that step's status; the leading rail on the next step mirrors it. */
 .sn-step--finished .sn-step__line {
   border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-step--error .sn-step__line {
+  border-color: var(--sn-mp-color-feedback-danger);
 }
 
 .sn-step__content {

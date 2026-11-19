@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.vue sha256:ffbf6872ab0b5eed —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.vue sha256:591691cb744f8360 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — 块自定义: `#band` 插槽画点状纹理胶囊带（浅蓝底 + 圆点阵列 + 描边）。 */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
@@ -14,7 +14,7 @@ const value = ref<Array<string | number>>([25]);
       vibrate-short
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 12rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">

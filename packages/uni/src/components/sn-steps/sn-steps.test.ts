@@ -35,7 +35,9 @@ async function mountSteps(
     },
   });
   const wrapper = mount(Harness);
-  /* Registration happens in `onMounted` — flush it before asserting. */
+  /* Registration + status publication happen in mount / watchEffect — flush
+   * both before asserting. */
+  await wrapper.vm.$nextTick();
   await wrapper.vm.$nextTick();
   return wrapper;
 }
@@ -109,6 +111,52 @@ describe('sn-steps', () => {
     it('suppresses the connector line in dot mode', async () => {
       const wrapper = await mountSteps({ dot: true });
       expect(wrapper.find('.sn-step__line').exists()).toBe(false);
+    });
+
+    it('renders a pure dot in dot mode (no number or status glyph)', async () => {
+      const wrapper = await mountSteps({ dot: true, active: 1 });
+      expect(wrapper.findAll('.sn-step__dot')).toHaveLength(3);
+      expect(wrapper.find('.sn-step__number').exists()).toBe(false);
+      expect(wrapper.find('.sn-step__indicator .sn-icon').exists()).toBe(false);
+    });
+
+    it('applies the center class only for horizontal align-center', async () => {
+      const centered = await mountSteps({ alignCenter: true });
+      expect(centered.find('.sn-step').classes()).toContain('sn-step--center');
+      const vertical = await mountSteps({ alignCenter: true, vertical: true });
+      expect(vertical.find('.sn-step').classes()).not.toContain('sn-step--center');
+    });
+
+    it('keeps centered connectors continuous with hidden outer rails', async () => {
+      const steps = (await mountSteps({ alignCenter: true })).findAll('.sn-step');
+      expect(steps[0]!.find('.sn-step__line--before').classes()).toContain('sn-step__line--hidden');
+      expect(steps[0]!.find('.sn-step__line--after').classes()).not.toContain(
+        'sn-step__line--hidden',
+      );
+      expect(steps[1]!.find('.sn-step__line--before').classes()).not.toContain(
+        'sn-step__line--hidden',
+      );
+      expect(steps.at(-1)!.find('.sn-step__line--after').classes()).toContain(
+        'sn-step__line--hidden',
+      );
+    });
+
+    it('colours the leading rail with the previous step status', async () => {
+      const steps = (await mountSteps({ alignCenter: true, active: 1 })).findAll('.sn-step');
+      expect(steps[1]!.classes()).toContain('sn-step--prev-finished');
+      expect(steps[2]!.classes()).not.toContain('sn-step--prev-finished');
+    });
+
+    it('keeps an explicit error step colour on the following connector', async () => {
+      const steps = (
+        await mountSteps({ alignCenter: true, active: 2 }, [
+          { title: 'A' },
+          { title: 'B' },
+          { title: 'C', status: 'error' },
+          { title: 'D' },
+        ])
+      ).findAll('.sn-step');
+      expect(steps[3]!.classes()).toContain('sn-step--prev-error');
     });
 
     it('suppresses the connector on the last step', async () => {

@@ -313,7 +313,8 @@ const moreIconStyle = computed(() =>
       hover-class="sn-collapse__more--pressed"
       @tap="toggleViewmore"
     >
-      <slot name="more" :expanded="viewmoreExpanded">
+      <slot v-if="useMoreSlot" name="more" :expanded="viewmoreExpanded" />
+      <view v-else class="sn-collapse__more-default">
         <text class="sn-collapse__more-text">{{ viewmoreExpanded ? '收起' : '展开' }}</text>
         <view
           :class="['sn-collapse__more-arrow', { 'sn-collapse__more-arrow--up': viewmoreExpanded }]"
@@ -326,7 +327,7 @@ const moreIconStyle = computed(() =>
             :style="moreIconStyle"
           />
         </view>
-      </slot>
+      </view>
     </view>
   </view>
 </template>
@@ -357,6 +358,14 @@ const moreIconStyle = computed(() =>
 /* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
 .sn-collapse__more--pressed {
   opacity: 0.7;
+}
+
+/* Built-in control (when `useMoreSlot` is off): one flex row, so the wrapper
+   lays out exactly like the bare slot content it replaces. */
+.sn-collapse__more-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sn-collapse__more-text {

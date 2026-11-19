@@ -30,7 +30,7 @@
  */
 
 import { computed, provide, ref, toRef } from 'vue';
-import { SN_STEPS_KEY, type SnStepConnector } from './sn-steps-types';
+import { SN_STEPS_KEY, type SnStepConnector, type SnStepStatus } from './sn-steps-types';
 
 defineOptions({ name: 'SnSteps' });
 
@@ -81,6 +81,9 @@ defineSlots<{
 /** Registered step ids in DOM order. */
 const stepIds = ref<number[]>([]);
 
+/** Resolved status per step id — lets a step colour the rail before it. */
+const stepStatuses = ref<Record<number, SnStepStatus>>({});
+
 /** Number of registered steps — drives the "last step" flag. */
 const stepCount = computed(() => stepIds.value.length);
 
@@ -91,6 +94,19 @@ function registerStep(uid: number): number {
 
 function unregisterStep(uid: number): void {
   stepIds.value = stepIds.value.filter((entry) => entry !== uid);
+  const next = { ...stepStatuses.value };
+  delete next[uid];
+  stepStatuses.value = next;
+}
+
+function setStepStatus(uid: number, status: SnStepStatus): void {
+  if (stepStatuses.value[uid] === status) return;
+  stepStatuses.value = { ...stepStatuses.value, [uid]: status };
+}
+
+function getStepStatus(index: number): SnStepStatus | undefined {
+  const uid = stepIds.value[index];
+  return uid === undefined ? undefined : stepStatuses.value[uid];
 }
 
 provide(SN_STEPS_KEY, {
@@ -103,6 +119,8 @@ provide(SN_STEPS_KEY, {
   registerStep,
   unregisterStep,
   stepCount,
+  setStepStatus,
+  getStepStatus,
 });
 
 const rootClass = computed(() => [

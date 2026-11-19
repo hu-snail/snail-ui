@@ -11,8 +11,34 @@ export type SliderValue = number | number[];
 /** `bar` horizontal capsule, `column` vertical strip. */
 export type SliderBarVariant = 'bar' | 'column';
 
-/** Visual theme — `aurora` adds the gradient + drifting stars + disc knob. */
-export type SliderBarTheme = 'default' | 'aurora';
+/**
+ * Visual theme.
+ *
+ * `default` and `aurora` are the two original looks; the rest are colour
+ * presets (fill + knob ring + track tint) that need no extra props —
+ * `theme="ocean"` is enough. `aurora` additionally paints the drifting stars.
+ */
+export type SliderBarTheme = 'default' | 'aurora' | 'ocean' | 'sunset' | 'grape' | 'mono';
+
+/**
+ * Knob silhouette (additive, uni end).
+ * - `round`: rounded rectangle, longer along the travel axis (default).
+ * - `circle`: a true disc — equal width and height, `50%` radius.
+ * - `square`: rounded square matching the track thickness.
+ * - `pill`: vertical capsule — narrower than the track, taller than it.
+ */
+export type SliderBarKnobShape = 'round' | 'circle' | 'square' | 'pill';
+
+/**
+ * How the thumb meets the ends of the track (additive, uni end).
+ * - `auto` (default): `overlap` for the bar, `inset` for the column strip — a
+ *   vertical bar reads as a level meter, and a thumb hanging off its top cap
+ *   looks broken rather than deliberate.
+ * - `overlap`: the centre travels the full 0…100 %, so a thumb at an end
+ *   straddles the capsule's cap and overlaps the track.
+ * - `inset`: the whole thumb box stays inside the track, flush with the caps.
+ */
+export type SliderBarKnobAlign = 'auto' | 'overlap' | 'inset';
 
 /** Caption source. */
 export type SliderBarFormat = 'percent' | 'value';
@@ -79,6 +105,32 @@ export interface SnSliderBarProps {
   suffix?: string;
   /** Custom fill background (ignored by the aurora theme). */
   fillBackground?: string;
+  /** Custom track background (any CSS background). */
+  barBackground?: string;
+  /** Knob silhouette — round / circle / square / pill. */
+  knobShape?: SliderBarKnobShape;
+  /** Knob diameter in rpx (number) or any CSS length — overrides the shape ratio. */
+  knobSize?: string | number;
+  /** Knob fill colour (empty = theme default, white). */
+  knobColor?: string;
+  /** Knob outline colour (empty = theme action colour). */
+  knobBorderColor?: string;
+  /** Knob outline width as a CSS length (empty = theme default). */
+  knobBorderWidth?: string;
+  /** Knob corner radius (empty = shape default; `50%` turns square into a disc). */
+  knobRadius?: string;
+  /**
+   * Glyph painted inside the knob (any sn-icon name: registry → built-in
+   * catalogue → async provider). Left empty the knob stays a plain chip; the
+   * `knob` slot wins over it when present.
+   */
+  knobIcon?: string;
+  /** Glyph colour (empty = the knob's ring colour). */
+  knobIconColor?: string;
+  /** Glyph size — number is rpx, `12px` honoured (empty = 56 % of the knob). */
+  knobIconSize?: string | number;
+  /** Thumb vs. track ends: `overlap` (centre on the cap) or `inset` (flush inside). */
+  knobAlign?: SliderBarKnobAlign;
   /** Aurora gradient. */
   gradient?: string;
   /** Aurora star-field density (0 = off). */

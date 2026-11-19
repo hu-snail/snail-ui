@@ -301,9 +301,10 @@ const viewClass = computed(() => props.customViewClass);
         @change="onViewChange"
       >
         <!-- uvue: 无参 v-bind="obj" 不支持 → 逐字段显式绑定；$slots.xxx 守卫
-             必须保留——无条件透传会让 picker-view 的 $slots.option 恒为 true，
-             mp 端 fallback 编译（$slots.x ? slot : text）走空 slot 出口，行
-             内容全空（微信小程序实测回归）。 -->
+             仅约束 H5/App——mp 端 uni 运行时对 u-s 声明的插槽恒提供真值，
+             二级作用域插槽转发在 mp-weixin 错位（uni-app x mp alpha 缺陷），
+             条件编译跳过，mp 端回落 label fallback（显式退化，§85）。 -->
+        <!-- #ifndef MP-WEIXIN -->
         <template v-if="$slots.option" #option="scope"
           ><slot
             name="option"
@@ -316,6 +317,7 @@ const viewClass = computed(() => props.customViewClass);
         <template v-if="$slots.band" #band="scope"
           ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
         /></template>
+        <!-- #endif -->
       </SnPickerView>
     </view>
   </SnPopup>

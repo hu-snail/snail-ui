@@ -66,8 +66,20 @@
  *
  * ## Body transition
  *
- * The body animates `max-height` + opacity through the same class instead of
- * `v-show`, so opening and closing stay smooth on H5, mini-programs and App.
+ * The body animates its **measured content height** instead of a guessed
+ * `max-height`, so short and long panels share the same natural 0.24s unfold.
+ * The height is read once through `uni.createSelectorQuery` (with a DOM
+ * fallback on H5); when measurement is unavailable the class-based max-height
+ * ceiling remains the safe fallback.
+ *
+ * View-more mode has two boxes instead of two states — the N-line clamp and
+ * the full paragraph — and both are measured, so 展开 / 收起 animate between
+ * them instead of only relabelling the control. The clamp lives on a padding-
+ * free `-webkit-box` inside the padded wrapper (`-webkit-line-clamp` is inert
+ * on any other element, and `overflow` clips at the padding box, which would
+ * leak the next line into the gap). It also lands one transition late on
+ * collapse so the text shrinks with the box rather than snapping to two lines
+ * first.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -76,7 +88,17 @@
  *   - 内容排版 — 由使用方决定
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { ChevronDown } from '../sn-icon/sn-icon-set';
@@ -171,11 +193,132 @@ const viewmoreExpanded = computed(() => collapse?.viewmoreExpanded.value ?? fals
 /** View-more bodies stay visible; normal bodies follow the expanded flag. */
 const bodyOpen = computed(() => isViewmore.value || expanded.value);
 
-/** In view-more mode the body is clamped to `lineNum` lines unless opened. */
+/* ── Measured height: the only way a height transition feels natural ─────── */
+
+interface SelectorQueryLike {
+  in(context?: unknown): SelectorQueryLike;
+  select(selector: string): SelectorQueryLike;
+  boundingClientRect(callback: (rect: unknown) => void): SelectorQueryLike;
+  exec(): void;
+}
+interface UniHost {
+  createSelectorQuery?: () => SelectorQueryLike;
+}
+
+const instance = getCurrentInstance();
+const bodyInnerRef = ref<unknown>(null);
+
+/** Normal / accordion mode: the box a panel unfolds to. */
+const measuredBodyHeight = ref<number | null>(null);
+/** View-more mode: the N-line box, measured while the clamp is on. */
+const clampedBodyHeight = ref<number | null>(null);
+/** View-more mode: the full box, measured while the clamp is off. */
+const unclampedBodyHeight = ref<number | null>(null);
+
+/** Must track the body `height` transition in the stylesheet below. */
+const BODY_MOTION_MS = 240;
+
+/**
+ * View-more collapse runs in two beats: the box shrinks while the text is
+ * still whole (clipped by `overflow`), and the N-line clamp only lands once
+ * the box has finished moving. Clamping first would snap the paragraph to two
+ * lines and then leave an empty gap shrinking behind it.
+ */
+const bodySettled = ref(true);
+let settleTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** H5 / test fallback when no uni host measurement is available. */
+function readDomHeight(): number | null {
+  const target = bodyInnerRef.value as { $el?: HTMLElement } | HTMLElement | null;
+  const node =
+    target !== null && '$el' in target ? (target.$el ?? null) : (target as HTMLElement | null);
+  const height = node?.offsetHeight;
+  return typeof height === 'number' && height > 0 ? height : null;
+}
+
+/**
+ * True while the paragraph box is in its N-line form. The measured inner box
+ * wraps it, so a measurement taken in this state is the clamped box.
+ */
+const clampActive = computed(
+  () =>
+    isViewmore.value &&
+    !viewmoreExpanded.value &&
+    /* No cached clamped box yet (first collapse after mounting open): clamp at
+       once so the measurement below can capture it. */
+    (bodySettled.value || clampedBodyHeight.value === null),
+);
+
+/** Route a measurement to the slot that matches the state it was taken in. */
+function storeBodyHeight(height: number): void {
+  const px = Math.ceil(height);
+  if (!isViewmore.value) {
+    measuredBodyHeight.value = px;
+    return;
+  }
+  if (clampActive.value) clampedBodyHeight.value = px;
+  else unclampedBodyHeight.value = px;
+}
+
+/** Read the inner box once; the slot is static in practice, so no observer. */
+function measureBodyHeight(): void {
+  void nextTick(() => {
+    const host = resolveUniHost<UniHost>();
+    if (host?.createSelectorQuery !== undefined && instance !== null) {
+      try {
+        host
+          .createSelectorQuery()
+          .in(instance.proxy)
+          .select('.sn-collapse-item__body-inner')
+          .boundingClientRect((rect) => {
+            const box = Array.isArray(rect) ? rect[0] : (rect as { height?: number } | null);
+            const height = box?.height;
+            if (typeof height === 'number' && height > 0) storeBodyHeight(height);
+          })
+          .exec();
+      } catch {
+        /* A mis-shaped host keeps the CSS max-height fallback. */
+      }
+    }
+    const fallback = readDomHeight();
+    if (fallback !== null && (isViewmore.value || measuredBodyHeight.value === null))
+      storeBodyHeight(fallback);
+  });
+}
+
+/**
+ * View-more clamp — the shape of the paragraph box.
+ *
+ * `-webkit-line-clamp` only bites on the element that is itself the
+ * `-webkit-box` of the paragraph. Style it on the outer body (a plain block
+ * that carries the animated height) and it is a silent no-op: the paragraph
+ * never clamps and 展开 / 收起 appear to do nothing. Only the line count is
+ * inline here; the box geometry rides the `--clamped` modifier class so a
+ * single class selector expresses it (§116.2 — no descendant selectors).
+ */
+const bodyInnerStyle = computed(() =>
+  clampActive.value ? `-webkit-line-clamp: ${collapse?.lineNum.value ?? 2}` : undefined,
+);
+
+/** The box the body is animating to, in the current mode. */
+const bodyHeightTarget = computed<number | null>(() => {
+  if (!isViewmore.value) return measuredBodyHeight.value;
+  /* A collapsing view-more aims straight at the cached N-line box, so the
+   * text shrinks with the box instead of snapping shut first. Opening falls
+   * back to that same box until the full height is known — pinning it keeps
+   * the first unfold a transition instead of a jump to `height: auto`. */
+  return viewmoreExpanded.value
+    ? (unclampedBodyHeight.value ?? clampedBodyHeight.value)
+    : clampedBodyHeight.value;
+});
+
 const bodyStyle = computed(() => {
   const parts: string[] = [];
-  if (isViewmore.value && !viewmoreExpanded.value) {
-    parts.push(`-webkit-line-clamp: ${collapse?.lineNum.value ?? 2}`);
+  /* An exact height animates smoothly; without one the open class falls back
+   * to a max-height ceiling. `max-height: none` clears the collapsed cap. */
+  const height = bodyHeightTarget.value;
+  if (bodyOpen.value && height !== null) {
+    parts.push('max-height: none', `height: ${height}px`);
   }
   if (props.customBodyStyle) parts.push(props.customBodyStyle);
   return parts.length > 0 ? parts.join('; ') : undefined;
@@ -235,13 +378,40 @@ async function onTap(): Promise<void> {
 }
 
 /* The container needs the name list for `toggleAll`; report it on mount. */
-onMounted(() => collapse?.registerName(props.name, props.disabled));
+onMounted(() => {
+  collapse?.registerName(props.name, props.disabled);
+  measureBodyHeight();
+});
 /* Keep the registered disabled state fresh so `skipDisabled` stays accurate. */
 watch(
   () => props.disabled,
   (disabled) => collapse?.registerName(props.name, disabled),
 );
-onBeforeUnmount(() => collapse?.unregisterName(props.name));
+/* Late slot / font layout can change the box after mount — remeasure on open.
+ * Same value is a no-op, so there is no visible jump in the common case. */
+watch(bodyOpen, (open) => {
+  if (open) measureBodyHeight();
+});
+/* View-more flips between two boxes (N lines / full), and neither the open
+ * state nor `bodyOpen` changes — this panel is always "open". Without this
+ * watch the height stays pinned to whatever was measured on mount, which is
+ * precisely why the 展开 / 收起 control looked dead. */
+watch(viewmoreExpanded, () => {
+  if (!isViewmore.value) return;
+  bodySettled.value = false;
+  measureBodyHeight();
+  if (settleTimer !== null) clearTimeout(settleTimer);
+  settleTimer = setTimeout(() => {
+    settleTimer = null;
+    bodySettled.value = true;
+    /* The clamp just landed: capture the N-line box for the next collapse. */
+    measureBodyHeight();
+  }, BODY_MOTION_MS);
+});
+onBeforeUnmount(() => {
+  if (settleTimer !== null) clearTimeout(settleTimer);
+  collapse?.unregisterName(props.name);
+});
 
 /** Slot scope flags, narrowed to `boolean` for the template. */
 const isExpandedForSlot = computed<boolean>(() => expanded.value === true);
@@ -325,7 +495,7 @@ const rootClass = computed(() => [
         'sn-collapse-item__body',
         {
           'sn-collapse-item__body--open': bodyOpen,
-          'sn-collapse-item__body--clamped': isViewmore && !viewmoreExpanded,
+          'sn-collapse-item__body--clamped': clampActive,
         },
         customBodyClass,
       ]"
@@ -333,7 +503,19 @@ const rootClass = computed(() => [
       role="region"
       :aria-hidden="!bodyOpen"
     >
-      <slot />
+      <view ref="bodyInnerRef" class="sn-collapse-item__body-inner">
+        <!-- The clamp box carries no padding: `overflow: hidden` clips at the
+             padding box, so padding here would leak the next line into the gap. -->
+        <view
+          :class="[
+            'sn-collapse-item__body-clamp',
+            { 'sn-collapse-item__body-clamp--clamped': clampActive },
+          ]"
+          :style="bodyInnerStyle"
+        >
+          <slot />
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -424,7 +606,7 @@ const rootClass = computed(() => [
   align-items: center;
   justify-content: center;
   margin-left: var(--sn-mp-spacing-2);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Chevron keeps the tertiary token in both states; rotation rides a class so
@@ -437,39 +619,59 @@ const rootClass = computed(() => [
   transform: rotate(180deg);
 }
 
-/* Body reveal: max-height + opacity animate through a class instead of
- * v-show, so the panel opens/closes smoothly on H5, MP and App. The ceiling is
- * intentionally generous and can be raised with --sn-collapse-body-max-height
- * when a consumer renders unusually long content. */
+/* Body reveal: animate the measured content height so the curve always ends
+ * exactly at the content edge — no ceiling dead-time, no rigid snap. The
+ * max-height rule is only the fallback when measurement is unavailable. */
 .sn-collapse-item__body {
   box-sizing: border-box;
   width: 100%;
+  height: 0;
   max-height: 0;
-  padding: 0 var(--sn-mp-spacing-4);
   overflow: hidden;
   opacity: 0;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
+  transform: translateY(-6rpx);
   transition:
-    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    padding-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s ease;
+    height 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    max-height 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.18s ease-out,
+    transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .sn-collapse-item__body--open {
-  max-height: var(--sn-collapse-body-max-height, 1600rpx);
-  padding-top: var(--sn-mp-spacing-3);
-  padding-bottom: var(--sn-mp-spacing-4);
+  height: auto;
+  max-height: var(--sn-collapse-body-max-height, 1200rpx);
   opacity: 1;
+  transform: translateY(0);
 }
 
-/* View-more clamp — CSS-only, so no async height measurement is needed. */
-.sn-collapse-item__body--clamped {
+/* Padding is always present on the measured inner box — it must already be in
+ * the box we measure while collapsed, otherwise expanding adds height later and
+ * the last line gets clipped. The body's height transition hides it when shut. */
+.sn-collapse-item__body-inner {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4) var(--sn-mp-spacing-4);
+}
+
+/* View-more clamp: this box becomes the paragraph's `-webkit-box`, so the line
+ * count (inline, from `lineNum`) has a box to act on. It deliberately carries
+ * no padding — `overflow: hidden` clips at the padding box, and a bottom
+ * padding would leave the top slice of the next line visible under the gap. */
+.sn-collapse-item__body-clamp {
+  width: 100%;
+}
+
+.sn-collapse-item__body-clamp--clamped {
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  overflow: hidden;
 }
+
+/* `.sn-collapse-item__body--clamped` stays a state hook only (callers / skins
+ * read it); the geometry lives on the inner modifier above. */
 
 /* Doodle skin — heavier divider. */
 .snui-skin-doodle .sn-collapse-item--border {

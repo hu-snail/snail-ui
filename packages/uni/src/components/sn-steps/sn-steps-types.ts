@@ -73,6 +73,10 @@ export interface SnStepsContext {
   unregisterStep: (uid: number) => void;
   /** Total registered steps (drives "is this the last one"). */
   stepCount: Ref<number>;
+  /** Publish a step's resolved status so its successor can colour the connector. */
+  setStepStatus: (uid: number, status: SnStepStatus) => void;
+  /** Status of an earlier step; used for the leading connector rail. */
+  getStepStatus: (index: number) => SnStepStatus | undefined;
 }
 
 export const SN_STEPS_KEY: InjectionKey<SnStepsContext> = Symbol('sn-steps');

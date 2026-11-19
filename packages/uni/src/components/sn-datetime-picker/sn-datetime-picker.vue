@@ -349,11 +349,14 @@ const viewClass = computed(() => props.customViewClass);
         :vibrate-short="props.vibrateShort"
         @change="onViewChange"
       >
-        <!-- uvue: 无参 v-bind="obj" 不支持 → 显式绑定；$slots.band 守卫必须
-             保留（mp 端 fallback 编译依赖 $slots 判定，见 sn-picker 注释）。 -->
+        <!-- uvue: 无参 v-bind="obj" 不支持 → 显式绑定；$slots.band 守卫仅约束
+             H5/App——mp 端二级插槽转发错位（uni-app x mp alpha 缺陷），
+             条件编译跳过，mp 端回落默认漆面（显式退化，§85）。 -->
+        <!-- #ifndef MP-WEIXIN -->
         <template v-if="$slots.band" #band="scope"
           ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
         /></template>
+        <!-- #endif -->
       </SnDatetimePickerView>
     </view>
   </SnPopup>

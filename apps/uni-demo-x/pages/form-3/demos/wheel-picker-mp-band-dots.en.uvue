@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.en.vue sha256:36f8bf8c095bebab —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.en.vue sha256:9121edce90703f24 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — band customization: the `#band` slot paints a dotted texture pill (soft blue + dot grid + border). */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
@@ -12,7 +12,7 @@ const value = ref<Array<string | number>>([25]);
       :columns="[minutes]"
       :visible-item-count="5"
       :item-height="56"
-      custom-style="--sn-picker-view-wheel-inset: 12rpx"
+      custom-style="--sn-picker-view-wheel-inset: 12rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
     >
       <template #band>
         <view class="dotted-band">

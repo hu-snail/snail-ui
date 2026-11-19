@@ -10,8 +10,9 @@
 ## Purpose
 
 Collapsible panels in three modes sharing one bound value: `string[]`
-(normal), `string` (accordion) and `boolean` (view-more). View-more clamps the
-body with a CSS line clamp, so no height measurement is needed.
+(normal), `string` (accordion) and `boolean` (view-more). Every body animates
+its measured content height; view-more measures both its `lineNum`-line box and
+its full box, so the control expands and collapses the paragraph.
 
 ## Import
 
@@ -36,7 +37,7 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | `accordion`            | `boolean`                       | `false`     | Mode switches.                                                  |
 | `viewmore`             | `boolean`                       | `false`     | Mode switches.                                                  |
 | `lineNum`              | `number`                        | `2`         | Collapsed line count in view-more mode.                         |
-| `useMoreSlot`          | `boolean`                       | `false`     | More-slot hooks.                                                |
+| `useMoreSlot`          | `boolean`                       | `false`     | Opt in to the `more` slot over the built-in control.            |
 | `customMoreSlotClass`  | `string`                        | `''`        | More-slot hooks.                                                |
 | `customClass`          | `string`                        | `''`        | Root forwarding.                                                |
 | `customStyle`          | `string`                        | `''`        | Root forwarding.                                                |
@@ -97,14 +98,15 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 | Text               | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                  | Heading, body and chevron               |
 | Action             | `--sn-mp-color-action-primary`                                                                                               | View-more label; icons stay neutral     |
 | Card chrome        | `--sn-mp-radius-lg`, `--sn-mp-shadow-sm`                                                                                     | Card radius and elevation               |
-| Body motion        | `--sn-collapse-body-max-height`                                                                                              | Expanded-body ceiling (default 1600rpx) |
+| Body motion        | `--sn-collapse-body-max-height`                                                                                              | Expanded-body ceiling (default 1200rpx) |
 | Font / spacing     | `--sn-mp-font-size-md`, `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`, `--sn-mp-spacing-1` … `--sn-mp-spacing-4` | Typography, padding and gaps            |
 | Icon               | `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge`, `--sn-mp-icon-stroke-width`                                           | Chevron / title-icon length and stroke  |
 
 ## Accessibility
 
 - Header is `role="button"` with `aria-expanded`, `aria-disabled` and `aria-label` from `title`.
-- Body is `role="region"`; while collapsed it is hidden with `v-show`.
+- Body is `role="region"`; collapsing it keeps the node mounted and marks it
+  `aria-hidden` (§116.2 — `v-show` is not a cross-target primitive here).
 - The expand / collapse control is `role="button"` with `aria-expanded`.
 - Mobile only: interaction is `tap`; miniprogram has no keyboard focus.
 
