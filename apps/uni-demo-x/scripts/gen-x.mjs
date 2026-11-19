@@ -36,7 +36,12 @@ const appRoot = resolve(here, '..');
 const srcRoot = resolve(appRoot, '../uni-demo/src');
 const templatesRoot = resolve(appRoot, '../../packages/templates/src');
 const uniXDist = resolve(appRoot, '../../packages/uni-x/dist');
-const outRoot = appRoot;
+// main() 在生成期间把 outRoot 指向暂存目录，全部产物写入 stage 后按目录
+// rename 原子交换回工程根：HBuilderX 工程监视器看到的不再是 rmSync + 数千
+// 次逐文件重写，而是一次目录替换，消除「读到不完整工程 → 工程类型识别
+// 失败被缓存 → 运行报『不是 uni-app 项目，暂不支持』」的并发窗口
+// （AGENTS.md §118.3，2026-11-17 起复发多次，外置卷上更频发）。
+let outRoot = appRoot;
 
 /** uni-app x 组合式 API 自动导入名单（uvue 无需 import from 'vue'）。 */
 const VUE_AUTO_IMPORTS = new Set([
@@ -510,7 +515,14 @@ function main() {
     console.error('[gen-x] packages/uni-x/dist 不存在 —— 先运行 pnpm -F @snui/uni-x build');
     process.exit(1);
   }
+  // 全量产物先写进隐藏暂存目录（点开头目录 HBuilderX 工程树不收录），写完
+  // 后逐目录原子交换回工程根——监视器不再经历 rm + 逐文件重写的裸窗口。
+  const stageRoot = join(appRoot, '.gen-stage');
+  rmSync(stageRoot, { recursive: true, force: true });
+  mkdirSync(stageRoot, { recursive: true });
+  outRoot = stageRoot;
   for (const dir of ['pages', 'components', 'state', 'templates']) {
+    // stage 是全新目录，无需清理；保留调用以维持与旧流程相同的语义边界。
     rmSync(join(outRoot, dir), { recursive: true, force: true });
   }
   // App.uvue / pages.json are always rewritten at the end of the run — do NOT
@@ -595,6 +607,23 @@ function main() {
   emitApp();
   emitPagesJson();
   emitReport();
+  // 写入阶段结束：恢复工程根，把暂存目录里的产物按目录/文件原子交换回来。
+  // rename 同一卷内是单次系统调用，HBuilderX 监视器只看到一次替换事件。
+  outRoot = appRoot;
+  for (const dir of ['pages', 'components', 'state', 'templates']) {
+    rmSync(join(outRoot, dir), { recursive: true, force: true });
+    renameSync(join(stageRoot, dir), join(outRoot, dir));
+  }
+  if (existsSync(join(stageRoot, 'static'))) {
+    rmSync(join(outRoot, 'static'), { recursive: true, force: true });
+    renameSync(join(stageRoot, 'static'), join(outRoot, 'static'));
+  }
+  for (const file of ['App.uvue', 'pages.json', 'GEN-REPORT.md']) {
+    if (existsSync(join(stageRoot, file))) {
+      renameSync(join(stageRoot, file), join(outRoot, file));
+    }
+  }
+  rmSync(stageRoot, { recursive: true, force: true });
   // After every writer has run — GEN-REPORT.md gets its own companion too.
   cleanAppleDouble();
 
