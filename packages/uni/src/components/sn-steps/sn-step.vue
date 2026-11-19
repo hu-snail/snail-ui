@@ -41,6 +41,28 @@
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
+ * ## MP wrapper node (virtualHost)
+ *
+ * WeChat MP wraps every component in a custom-component host node, and that
+ * node — not the root view — becomes the flex item inside `.sn-steps`. The
+ * root's `flex: 1 1 0` then never applies, every step shrinks to fit-content
+ * width, and the horizontal connectors stop short of the next indicator
+ * (device-verified regression). `options: { virtualHost: true }` removes the
+ * wrapper so the root view participates directly — the same switch wot-ui's
+ * `wd-step` flips (AGENTS.md §112 reference library). With the wrapper gone,
+ * `class` / `style` passed on the component tag merge onto the root only when
+ * the host app enables `mergeVirtualHostAttributes` in its manifest — props
+ * (`customClass` / `customStyle`) are unaffected.
+ *
+ * ## Vertical rail
+ *
+ * The connector is absolutely positioned against the step root (`top` under
+ * the 48rpx indicator, `bottom: 0` on the step's bottom edge) instead of being
+ * flex-grown inside the header: the header's height is content-driven and the
+ * stretch + flex-grow chain stalled at the line's min-height on MP, leaving
+ * the gap under it uncovered. Absolute anchoring is the same strategy as the
+ * sn-badge corner pin and is immune to the content height.
+ *
  * Not responsible for:
  *   - 激活下标本身 — 由 sn-steps 持有
  *   - 连接线样式 — 由 sn-steps 的 `connector` 统一持有
@@ -55,7 +77,12 @@ import { Check, X } from '../sn-icon/sn-icon-set';
 import { nextUid } from '../../utils/uid';
 import { SN_STEPS_KEY, resolveSnStepIconSize, type SnStepStatus } from './sn-steps-types';
 
-defineOptions({ name: 'SnStep' });
+defineOptions({
+  name: 'SnStep',
+  // #ifdef MP-WEIXIN
+  options: { virtualHost: true },
+  // #endif
+});
 
 const props = withDefaults(
   defineProps<{
@@ -241,12 +268,14 @@ const rootClass = computed(() => [
       <!-- Centered mode uses two symmetric rails: the leading rail fills the
            gap from the previous step into this indicator; the trailing rail
            fills the gap out of it. Equal flex shares keep the indicator at
-           50% without absolute-position calc (fragile on MP / uvue). -->
+           50% without absolute-position calc (fragile on MP / uvue). The
+           outer rails are hidden inline — class-based visibility rides a
+           var()-injected rule on MP-WeChat and must not be load-bearing. -->
       <view
         v-if="isCenter && !isDot"
         class="sn-step__line sn-step__line--before"
         :class="{ 'sn-step__line--hidden': isFirst }"
-        :style="connectorStyle"
+        :style="[connectorStyle, isFirst ? 'visibility: hidden;' : '']"
         aria-hidden="true"
       />
       <!-- additive `node` slot: a custom node replaces the default indicator
@@ -301,17 +330,19 @@ const rootClass = computed(() => [
       </slot>
       <!-- In centered mode the trailing rail is always present (hidden on the
            last step) so the indicator stays centered. Without centering, only
-           non-last steps draw a connector. -->
+           non-last steps draw a connector. Vertical steps anchor the connector
+           against the root box (see the .sn-step__line--vertical note). -->
       <view
         v-if="isCenter && !isDot"
         class="sn-step__line sn-step__line--after"
         :class="{ 'sn-step__line--hidden': isLast }"
-        :style="connectorStyle"
+        :style="[connectorStyle, isLast ? 'visibility: hidden;' : '']"
         aria-hidden="true"
       />
       <view
         v-else-if="!isLast && !isDot"
         class="sn-step__line"
+        :class="{ 'sn-step__line--vertical': isVertical }"
         :style="connectorStyle"
         aria-hidden="true"
       />
@@ -363,17 +394,27 @@ const rootClass = computed(() => [
   min-width: 0;
 }
 
-/* The leading rail keeps the indicator centred but must not paint: MP and
- * uvue can drop a zero-height flex border. The trailing rail is stretched to
- * cover the whole gap, so one element owns one connector segment and its
- * colour always comes from the step being left. */
+/* Centered mode paints the connector as two adjacent in-flow segments: the
+ * leading rail (inside this step's box, indicator-ward) takes the PREVIOUS
+ * step's status colour, the trailing rail takes this step's own. Flex-packed
+ * boxes touch, so the two halves form one continuous line with no transform.
+ * The old design painted only the trailing rail and stretched it across the
+ * boundary with a scaled overhang; the overhang never rendered on MP-WeChat
+ * (device-verified), leaving the next step's leading rail as a visible gap. */
 .sn-step--center .sn-step__line--before {
-  border-color: transparent;
+  border-color: var(--sn-mp-color-border-default);
 }
 
-.sn-step--center .sn-step__line--after {
-  transform: scaleX(2);
-  transform-origin: left center;
+/* The root carries --prev-finished / --prev-error for exactly this: the
+ * segment left of the indicator belongs to the connector the previous step
+ * is leaving. Declared after the center rule so the status colour wins the
+ * same-var cascade on roots carrying both classes. */
+.sn-step--prev-finished .sn-step__line--before {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-step--prev-error .sn-step__line--before {
+  border-color: var(--sn-mp-color-feedback-danger);
 }
 
 /* The outer rails are layout-only on the first / last step. */
@@ -392,10 +433,13 @@ const rootClass = computed(() => [
   flex: 0 0 auto;
 }
 
+/* `position: relative` anchors the absolute vertical rail to this box (see
+ * .sn-step__line--vertical below). */
 .sn-step--vertical {
   flex: none;
   flex-direction: row;
   align-items: flex-start;
+  position: relative;
 }
 
 .sn-step__header {
@@ -505,14 +549,26 @@ const rootClass = computed(() => [
   border-left-style: solid;
 }
 
-.sn-step--vertical .sn-step__line {
-  /* The column header is already center-aligned; `stretch` here used to pin
-   * the zero-width line to the left edge of the indicator. */
+/**
+ * Vertical rail — absolutely positioned against the step root instead of
+ * flex-grown inside the header. The old chain (header `align-self: stretch`
+ * feeding a flex-grow line) is content-height dependent and stalled at the
+ * line's min-height on MP-WeChat, leaving the gap under it uncovered.
+ * Anchoring `top` under the 48rpx indicator and `bottom: 0` on the step's
+ * bottom edge — which is the next indicator's top — is correct for any
+ * content height and needs no stretch. Single-class selector: a descendant
+ * rule here would be var-injected by the uni-x flattener (AGENTS.md §116.2),
+ * and concrete geometry must not ride on var() substitution. Declared after
+ * the base rule so it wins the cascade at equal specificity.
+ */
+.sn-step__line--vertical {
+  position: absolute;
+  top: 50rpx;
+  bottom: 0;
+  left: 23rpx;
   width: 0;
   height: auto;
-  flex: 1 1 auto;
-  align-self: center;
-  min-height: 48rpx;
+  min-height: 0;
   border-top-width: 0;
   border-left-width: 2rpx;
 }
@@ -532,11 +588,19 @@ const rootClass = computed(() => [
   flex-direction: column;
   gap: var(--sn-mp-spacing-1);
   min-width: 0;
-  padding: var(--sn-mp-spacing-2) 0;
+  /* Longhands, not a shorthand: the uni-x descendant flattener splits
+   * multi-value shorthands across the injected --snx-* context vars and
+   * multi-value splits come out invalid (the vertical content lost its left
+   * indent and bottom padding on MP-WeChat — same conclusion as the border
+   * longhands above). */
+  padding-top: var(--sn-mp-spacing-2);
+  padding-bottom: var(--sn-mp-spacing-2);
 }
 
 .sn-step--vertical .sn-step__content {
-  padding: 0 0 var(--sn-mp-spacing-5) var(--sn-mp-spacing-3);
+  padding-top: 0;
+  padding-bottom: var(--sn-mp-spacing-5);
+  padding-left: var(--sn-mp-spacing-3);
 }
 
 .sn-step__title-row {
