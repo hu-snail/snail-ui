@@ -1,7 +1,12 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-content-slot.en.vue sha256:9f90d28df011cf5d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-content-slot.en.vue sha256:14c580e7a28a5871 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover — English shadow of popover-mp-content-slot.
+ * Demo: sn-popover — the `content` slot.
+ *
+ * The `content` slot fully replaces the bubble body (both modes).
+ *
+ * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
+ * inside the demo.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';

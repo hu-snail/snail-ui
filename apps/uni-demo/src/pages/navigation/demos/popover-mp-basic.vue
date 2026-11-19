@@ -1,34 +1,37 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — normal mode with plain text content.
+ * Demo: sn-popover (uni-end) — rich card bubble (icon plate + title + text).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+import { MapPin } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="open"
-      mode="normal"
-      content="今天还有 3 个待办，先处理逾期的两项。"
-      placement="bottom"
-      :show-close="true"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton type="primary" block>点击查看气泡</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        title="快速提示"
+        content="小程序没有 hover，气泡用点击触发；点击气泡外部任意位置即可关闭，再点一次触发器也可收起。"
+        :icon-data="MapPin"
+        placement="bottom"
+        :show-close="true"
+        custom-class="sn-demo-contained"
+      >
+        <SnButton type="primary">显示气泡</SnButton>
+      </SnPopover>
+    </view>
 
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
     <text class="sn-demo__hint"
-      >点击气泡外部任意位置即可关闭（页面根 closeOutside
-      通道，不挡页面点击）；再点一次触发器也可收起。</text
+      >富内容卡片：图标圆底 + 标题 + 描述 + 右上角关闭；卡片定宽（--sn-popover-width）。</text
     >
   </view>
 </template>
@@ -47,13 +50,18 @@ const open = ref(false);
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — relative keeps the demo flow intact while the bubble
- * stays anchored to the component root; the spacer below leaves room for the
- * bottom-placed bubble instead of letting it cover the copy. */
-.sn-popover.sn-demo-contained {
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bottom-placed card instead of covering copy. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
   position: relative;
+  display: block;
 }
 .sn-popover-demo__space {
-  height: 180rpx;
+  height: 320rpx;
 }
 </style>

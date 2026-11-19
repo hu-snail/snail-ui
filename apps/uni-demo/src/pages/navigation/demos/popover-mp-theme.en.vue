@@ -1,11 +1,14 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — dark-theme bubble via sn-config-provider theme="dark".
+ * Demo: sn-popover — dark theme bubble (sn-config-provider theme="dark").
  *
- * Two side-by-side panes: the dark one carries `.sn-theme-dark`, so the
- * bubble resolves the dark `--sn-mp-color-*` aliases (dark fill, light text,
- * dark border) — arrow and border follow the theme with no extra styling;
- * the light pane keeps the page-level values.
+ * Two contrast panes: inside the dark pane the bubble picks up the
+ * `.sn-theme-dark` `--sn-mp-color-*` aliases (`--sn-popover-bg` = deep fill,
+ * text = light, border = dark outline); the arrow and bubble outline follow
+ * the theme automatically. The light pane keeps page-level values.
+ *
+ * Docs-preview only: `custom-class="sn-popover-contained"` anchors the bubble
+ * with relative; the spacer leaves room for the bottom bubble.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -23,7 +26,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="darkOpen"
         mode="normal"
-        content="Dark-theme bubble: dark fill, light text; the border and arrow flip with the theme, no extra styling needed."
+        content="Dark theme bubble: deep fill with light text; the outline and arrow flip with the theme, no extra palette needed."
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
@@ -38,7 +41,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="lightOpen"
         mode="normal"
-        content="Light-theme bubble: white fill, dark text — a direct contrast with the dark pane."
+        content="Light theme bubble: white fill with dark text, contrasted against the dark pane."
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
@@ -49,8 +52,8 @@ const lightOpen = ref(false);
     </SnConfigProvider>
 
     <text class="sn-popover-theme__meta">
-      Every bubble color rides the --sn-popover-* tokens; the dark values flip through
-      sn-config-provider (.sn-theme-dark) as one unit.
+      The bubble palette is entirely token-driven (--sn-popover-*); dark mode flips through
+      sn-config-provider (.sn-theme-dark).
     </text>
   </view>
 </template>

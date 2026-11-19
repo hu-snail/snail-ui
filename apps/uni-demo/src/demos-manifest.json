@@ -887,6 +887,11 @@
       "page": "pages/navigation/popover",
       "demos": [
         {
+          "name": "popover-mp-alignment",
+          "title": "对齐方式",
+          "hasEn": true
+        },
+        {
           "name": "popover-mp-basic",
           "title": "基础用法",
           "hasEn": true
@@ -917,8 +922,18 @@
           "hasEn": true
         },
         {
+          "name": "popover-mp-notification",
+          "title": "通知卡片",
+          "hasEn": true
+        },
+        {
           "name": "popover-mp-placement",
           "title": "弹出位置",
+          "hasEn": true
+        },
+        {
+          "name": "popover-mp-sheet",
+          "title": "底部面板",
           "hasEn": true
         },
         {
@@ -2433,6 +2448,11 @@
         {
           "name": "search-mp-cancel",
           "title": "取消按钮（`cancelTxt` / `hideCancel`）",
+          "hasEn": true
+        },
+        {
+          "name": "search-mp-card",
+          "title": "卡片",
           "hasEn": true
         },
         {

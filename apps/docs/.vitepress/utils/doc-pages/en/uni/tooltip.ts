@@ -14,19 +14,16 @@ export const tooltipDocPageEn: SnDocPageData = {
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'An array ' },
+    { t: 'text', s: 'The tooltip carries ' },
+    { t: 'code', s: 'text hints only' },
+    {
+      t: 'text',
+      s: ': a dark transient plate (the toast token pair), deliberately split from sn-popover — icon / title / description / actions belong to the popover card. ',
+    },
     { t: 'code', s: 'content' },
-    { t: 'text', s: ' renders one line per entry (objects contribute whichever of ' },
-    { t: 'code', s: 'label' },
-    { t: 'text', s: ' / ' },
-    { t: 'code', s: 'text' },
-    { t: 'text', s: ' / ' },
-    { t: 'code', s: 'content' },
-    { t: 'text', s: ' / ' },
-    { t: 'code', s: 'name' },
-    { t: 'text', s: ' is present); the ' },
-    { t: 'code', s: 'content' },
-    { t: 'text', s: ' slot replaces the bubble body entirely with any structure:' },
+    { t: 'text', s: ' accepts a string or a string[] (one line per entry); the plate width is fixed via ' },
+    { t: 'code', s: '--sn-tooltip-width' },
+    { t: 'text', s: ' (uni-app x App drops max-content), text wraps inside it.' },
   ],
   quickActions: [
     { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
@@ -87,9 +84,9 @@ import { Tooltip } from '@snui/uni';
     },
     {
       name: 'tooltip-mp-content',
-      title: 'Multi-line content and the content slot',
+      title: 'Multi-line text content',
       blurb:
-        'array content renders multiple lines; the content slot carries a custom structure; offset as [x, y] and { x, y }.',
+        'array content renders one line per entry; dark plate, text-only hints — rich bubbles use sn-popover; offset as [x, y] and { x, y }.',
     },
   ],
   props: {
@@ -100,12 +97,6 @@ import { Tooltip } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: 'Whether the bubble is shown (v-model).',
-      },
-      {
-        name: 'content',
-        type: 'string | TooltipContentRow[]',
-        default: "''",
-        desc: 'Bubble text; an array renders one line per entry.',
       },
       { name: 'placement', type: 'TooltipPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
       {

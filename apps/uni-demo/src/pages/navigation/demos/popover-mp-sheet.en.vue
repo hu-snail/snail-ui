@@ -1,0 +1,70 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover (uni-end) — sheet presentation: a fixed bottom panel with
+ * mask, handle, centred heading, rich option rows and a Cancel pill.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+import { Download, FileText, Share2 } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const open = ref(false);
+const picked = ref('—');
+
+const shareRows = [
+  { content: 'Share Link', description: 'Send via messaging app', iconData: Share2 },
+  { content: 'Copy Link', description: 'Copy to clipboard', iconData: FileText },
+  { content: 'Save Offline', description: 'Download for later', iconData: Download },
+];
+
+function onPick(payload: { item: { content?: string } }): void {
+  picked.value = payload.item.content ?? '—';
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        presentation="sheet"
+        mode="menu"
+        title="Share Options"
+        subtitle="Choose how you'd like to share this content"
+        :content="shareRows"
+        cancel-text="Cancel"
+        custom-class="sn-demo-sheet"
+        @menuclick="onPick"
+      >
+        <SnButton type="primary">More Options</SnButton>
+      </SnPopover>
+    </view>
+
+    <text class="sn-demo__meta">Picked: {{ picked }}</text>
+    <text class="sn-demo__hint"
+      >`presentation="sheet"`: fixed bottom panel (mask + handle + centred heading + rich rows +
+      Cancel); it ignores placement / arrow; close via the mask or Cancel.</text
+    >
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+</style>

@@ -1,70 +1,63 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue sha256:3a276cb536d33846 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue sha256:b692eb546c5068f8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — all 12 placement directions (wot-ui demo grid).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ * Demo: sn-popover (uni-end) — top / left / right / bottom placement grid.
+ * Triggers sit at the corners so each anchored bubble has room to open; the
+ * start / end alignment variants are covered by the alignment demo.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
-type Placement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'left-start'
-  | 'left-end'
-  | 'right'
-  | 'right-start'
-  | 'right-end';
+import { MapPin } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
-/** One grid row; `null` fills a cell so the left / right families mirror. */
-const rows: (Placement | null)[][] = [
-  ['bottom-start', 'bottom', 'bottom-end'],
-  ['right-start', null, 'left-start'],
-  ['right', null, 'left'],
-  ['right-end', null, 'left-end'],
-  ['top-start', 'top', 'top-end'],
+type Direction = 'top' | 'left' | 'right' | 'bottom';
+
+/** Corner layout: Top/Left in row 1, Right/Bottom in row 2 (flex, MP / App safe). */
+const firstRow: { key: Direction; label: string }[] = [
+  { key: 'top', label: 'Top' },
+  { key: 'left', label: 'Left' },
+];
+const secondRow: { key: Direction; label: string }[] = [
+  { key: 'right', label: 'Right' },
+  { key: 'bottom', label: 'Bottom' },
 ];
 
-const openPlacement = ref<Placement | null>(null);
+const openDirection = ref<Direction | null>(null);
 
-function setOpen(placement: Placement, value: boolean): void {
-  openPlacement.value = value
-    ? placement
-    : openPlacement.value === placement
+function setOpen(direction: Direction, value: boolean): void {
+  openDirection.value = value
+    ? direction
+    : openDirection.value === direction
       ? null
-      : openPlacement.value;
+      : openDirection.value;
 }
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-popover-demo__grid">
-      <template v-for="(row, rowIndex) in rows" :key="rowIndex">
-        <view
-          v-for="(placement, cellIndex) in row"
-          :key="placement ?? `empty-${rowIndex}-${cellIndex}`"
-          class="sn-popover-demo__cell"
-        >
+      <view v-for="(row, rowIndex) in [firstRow, secondRow]" :key="rowIndex" class="sn-popover-demo__row">
+        <view v-for="cell in row" :key="cell.key" class="sn-popover-demo__cell">
           <SnPopover
-            v-if="placement"
-            :model-value="openPlacement === placement"
-            :content="`${placement} hint text`"
-            :placement="placement"
-            @update:model-value="setOpen(placement, $event)"
+            :model-value="openDirection === cell.key"
+            :placement="cell.key"
+            title="Quick Tip"
+            :content="`This popover appears on the ${cell.key} side of the trigger button.`"
+            :icon-data="MapPin"
+            custom-class="sn-demo-contained"
+            @update:model-value="setOpen(cell.key, $event)"
           >
-            <SnButton type="primary" size="small"><text>{{ placement }}</text></SnButton>
+            <SnButton size="small"><text>{{ cell.label }}</text></SnButton>
           </SnPopover>
         </view>
-      </template>
+        <view class="sn-popover-demo__gap" />
+      </view>
     </view>
 
-    <text class="sn-popover-demo__meta">
-      Miniprogram has no hover, so all 12 directions open on tap; tapping anywhere outside the
-      bubble closes it (the mask takes the outside tap).
-    </text>
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__hint"
+      >All four directions render an arrow pointing at the trigger; tap anywhere outside to
+      close.</text
+    >
   </view>
 </template>
 <style scoped>
@@ -73,19 +66,31 @@ function setOpen(placement: Placement, value: boolean): void {
   flex-direction: column;
   gap: 16rpx;
 }
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
 .sn-popover-demo__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx 16rpx;
-  padding: 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding: 24rpx 0;
+}
+.sn-popover-demo__row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .sn-popover-demo__cell {
   display: flex;
-  justify-content: center;
   flex-direction: row;
 }
-.sn-popover-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
+/* Row 1 pairs [Top … Left]: the spacer keeps Left on the right edge. */
+.sn-popover-demo__gap {
+  flex: 1;
 }
+.sn-popover-demo__space {
+  height: 300rpx;
+}
+/* Docs-preview only — keep the bubble inside the demo flow. */
 </style>

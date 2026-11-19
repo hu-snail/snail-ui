@@ -4,6 +4,8 @@
  *
  * - `custom-arrow` / `custom-pop` 给箭头节点与气泡节点追加类名
  * - `offset` 与 `custom-style` 同时作用在根节点（`offset` 走 CSS 变量）
+ * - `custom-style` 可覆盖组件令牌：卡片定宽 `--sn-popover-width`、图标圆底
+ *   `--sn-popover-icon-bg` / `--sn-popover-icon-color`
  *
  * 预览专用：`custom-class="sn-demo-contained"` 把气泡定位收在 demo 内。
  */
@@ -19,16 +21,25 @@ const styledOpen = ref(false);
     <SnPopover
       v-model="styledOpen"
       mode="normal"
-      content="带描边箭头与气泡的气泡"
+      title="自定义外观"
+      content="描边箭头、主题色边框，以及通过组件令牌放大的卡片与图标圆底。"
+      icon="crown"
       placement="bottom-start"
       :offset="{ x: 0, y: 4 }"
       custom-arrow="sn-demo__arrow"
       custom-pop="sn-demo__pop"
       custom-class="sn-demo-contained"
-      custom-style="display: block;"
+      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
     >
       <SnButton block>custom-arrow / custom-pop / offset</SnButton>
     </SnPopover>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__hint"
+      >--sn-popover-width / --sn-popover-icon-bg / --sn-popover-icon-color 均可通过
+      custom-style 覆盖。</text
+    >
   </view>
 </template>
 
@@ -37,6 +48,13 @@ const styledOpen = ref(false);
   display: flex;
   flex-direction: column;
   gap: 16rpx;
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__space {
+  height: 360rpx;
 }
 /* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {

@@ -1,6 +1,16 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — English shadow of popover-mp-custom-style.
+ * Demo: sn-popover — node classes & offset: custom-arrow / custom-pop /
+ * offset / custom-style.
+ *
+ * - `custom-arrow` / `custom-pop` append classes to the arrow / bubble nodes
+ * - `offset` and `custom-style` both land on the root (`offset` via CSS vars)
+ * - `custom-style` can override the component tokens: the fixed card width
+ *   `--sn-popover-width` and the glyph plate `--sn-popover-icon-bg` /
+ *   `--sn-popover-icon-color`
+ *
+ * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
+ * inside the demo.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -14,16 +24,25 @@ const styledOpen = ref(false);
     <SnPopover
       v-model="styledOpen"
       mode="normal"
-      content="A bubble with outlined arrow and body"
+      title="Custom look"
+      content="Outlined arrow, accent border, and an enlarged card / glyph plate through the component tokens."
+      icon="crown"
       placement="bottom-start"
       :offset="{ x: 0, y: 4 }"
       custom-arrow="sn-demo__arrow"
       custom-pop="sn-demo__pop"
       custom-class="sn-demo-contained"
-      custom-style="display: block;"
+      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
     >
       <SnButton block>custom-arrow / custom-pop / offset</SnButton>
     </SnPopover>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__hint"
+      >--sn-popover-width / --sn-popover-icon-bg / --sn-popover-icon-color are all overridable
+      through custom-style.</text
+    >
   </view>
 </template>
 
@@ -32,6 +51,13 @@ const styledOpen = ref(false);
   display: flex;
   flex-direction: column;
   gap: 16rpx;
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__space {
+  height: 360rpx;
 }
 /* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {

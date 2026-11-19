@@ -1,10 +1,12 @@
 /**
- * sn-tooltip unit tests — uni-end tap-triggered hint bubble (wd-tooltip parity).
+ * sn-tooltip unit tests — uni-end tap-triggered TEXT-ONLY hint bubble.
  *
  * Behaviour only (AGENTS.md §46):
  *   - the trigger toggles the bubble, `open` / `close` / `change` fire in order
  *   - `disabled` blocks both the trigger and the imperative API
- *   - `content` renders as text lines; the `content` slot wins over it
+ *   - `content` renders as plain-text lines (string | string[] only — the
+ *     text-only split from sn-popover); the old `content` slot is gone
+ *   - the bubble rides the dark transient plate (toast token pair)
  *   - `placement` becomes a class, `offset` becomes a CSS variable pair
  *   - closeOutside() (page-root queue) closes the bubble; mounting registers it
  *   - `showClose` renders a close button that hides the bubble
@@ -36,19 +38,21 @@ describe('sn-tooltip', () => {
 
     it('renders one line per entry for an array content', () => {
       const w = mount(SnTooltip, {
-        props: { modelValue: true, content: ['第一行', { label: '第二行' }] },
+        props: { modelValue: true, content: ['第一行', '第二行'] },
       });
       const lines = w.findAll('.sn-tooltip__line');
       expect(lines).toHaveLength(2);
       expect(lines[1]!.text()).toBe('第二行');
     });
 
-    it('renders object rows through the alternate text keys and skips label-less rows', () => {
+    it('drops non-string entries deterministically instead of stringifying them', () => {
+      // Text hints only (split from sn-popover): a JS caller passing the old
+      // object rows must never see "[object Object]" — entries are dropped.
       const w = mount(SnTooltip, {
-        props: { modelValue: true, content: [{ text: '甲' }, { name: '乙' }, { other: 1 }, '丙'] },
+        props: { modelValue: true, content: ['甲', { text: '乙' } as unknown as string] },
       });
-      const lines = w.findAll('.sn-tooltip__line');
-      expect(lines.map((line) => line.text())).toEqual(['甲', '乙', '丙']);
+      expect(w.findAll('.sn-tooltip__line')).toHaveLength(1);
+      expect(w.find('.sn-tooltip__line').text()).toBe('甲');
     });
 
     it('renders no lines for empty string content', () => {
@@ -56,13 +60,32 @@ describe('sn-tooltip', () => {
       expect(w.findAll('.sn-tooltip__line')).toHaveLength(0);
     });
 
-    it('lets the content slot replace the content prop', () => {
+    it('declares no content slot — rich bodies belong to sn-popover', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).not.toContain('<slot name="content"');
+      // The custom body a caller still passes renders nowhere.
       const w = mount(SnTooltip, {
         props: { modelValue: true, content: 'prop 文案' },
         slots: { content: '<text class="custom-body">slot 文案</text>' },
       });
-      expect(w.find('.custom-body').exists()).toBe(true);
-      expect(w.find('.sn-tooltip__line').exists()).toBe(false);
+      expect(w.find('.custom-body').exists()).toBe(false);
+      expect(w.find('.sn-tooltip__line').text()).toBe('prop 文案');
+    });
+
+    it('rides the dark transient plate (toast token pair, split from sn-popover)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).toContain('--sn-tooltip-bg: var(--sn-mp-color-background-inverse)');
+      expect(source).toContain('--sn-tooltip-color: var(--sn-mp-color-text-on-primary)');
+    });
+
+    it('sizes the bubble through the fixed-width token (no max-content / vw on App)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const popRule = source.indexOf('.sn-tooltip__pop {');
+      const block = source.slice(popRule, source.indexOf('}', popRule));
+      expect(block).toContain('width: var(--sn-tooltip-width)');
+      expect(block).not.toContain('max-content');
+      expect(block).not.toContain('100vw');
+      expect(source).toContain('--sn-tooltip-width: 320rpx');
     });
 
     it('applies the placement class', () => {

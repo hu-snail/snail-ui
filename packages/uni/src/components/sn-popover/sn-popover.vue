@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * sn-popover (uni-end) — tap-triggered bubble with normal / menu modes.
+ * sn-popover (uni-end) — tap-triggered rich bubble with anchor / sheet forms.
  *
  * Reference library: wot-ui `wd-popover`
  *   (https://wot-ui.cn/component/popover.html)
- * Per AGENTS.md §112, the prop surface below mirrors wd-popover 1:1.
+ * Per AGENTS.md §112, the wd-parity prop surface below mirrors wd-popover 1:1.
  * Anything new added here MUST also be added to the reference list in
  * AGENTS.md §112.
  *
@@ -27,13 +27,32 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
- * ## Click-outside close (AUI-OPT-07 — mask-free, tooltip parity)
+ * ## Rich card body (additive, reference-design refactor)
+ *
+ * `normal` mode renders a card, not a bare text bubble: a header row (glyph in
+ * a tinted circle + bold `title` + muted `subtitle`), the `content` text, a
+ * `footer` slot, and full-width pill `actions`. All parts are optional — a
+ * popover with only `content` stays the plain bubble it always was. The glyph
+ * resolves from three sources, highest precedence first: `iconData` (inline
+ * IconData, no registration step) → `iconUrl` (image) → `icon` (SnIcon
+ * registry name). `menu` rows gain the same shape: `content` is the row title
+ * and the additive `description` field renders a muted second line.
+ *
+ * ## Sheet presentation (additive)
+ *
+ * `presentation="sheet"` swaps the anchored bubble for a fixed bottom sheet
+ * (mask + handle + centred title / subtitle + body + action pills). The sheet
+ * ignores `placement` / `visibleArrow` / `offset` — there is no anchor to
+ * point at. `cancelText` (non-empty) appends the reference Cancel pill and its
+ * tap emits `cancel` + closes. A sheet has its own mask, so its outside-close
+ * is the mask tap itself; the page-root `closeOutside` channel still closes it.
+ *
+ * ## Click-outside close (AUI-OPT-07 — mask-free anchor mode)
  *
  * uni-app components cannot listen to taps outside their own subtree, so the
- * close rides the shared outside-close queue: while mounted (and
- * `closeOnClickOutside` is on, the default) the bubble registers an
- * idempotent close in `utils/outside-close.ts`, and the page root dispatches
- * it —
+ * anchor-mode close rides the shared outside-close queue: while mounted (and
+ * `closeOnClickOutside` is on, the default) the bubble registers an idempotent
+ * close in `utils/outside-close.ts`, and the page root dispatches it —
  *
  *     const { closeOutside } = useQueue();
  *     <view @tap="closeOutside"> … page … </view>
@@ -47,7 +66,7 @@
  *
  * On uni-app x App the page-root dispatcher never sees page taps either
  * (taps stay inside their compilation unit), so the App close paths are the
- * trigger re-tap and the bubble's own close button.
+ * trigger re-tap, the bubble's own close button, and the sheet mask.
  *
  * ## App trigger catcher (uni-app x App)
  *
@@ -59,37 +78,19 @@
  * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
  * `trigger` prop note for when `manual` is actually needed.
  *
- * ## Auto height (AUI-OPT-07)
+ * ## Cross-platform bubble geometry (H5 / mp-weixin / uni-app x App)
  *
- * The bubble sizes to its content and never clips it: the pop is `height: auto`
- * with no cap, menu labels wrap instead of forcing one line, and no glyph lives
- * in a fixed square whose geometry disagrees with the icon's own scale — the
- * row glyph and the close glyph are sized by `--sn-mp-icon-size-*` tokens, so a
- * larger icon or a long label grows the bubble instead of overflowing it.
- *
- * ## Menu row icons (additive, AUI-OPT-07, AGENTS.md §112.3a)
- *
- * A `menu` row resolves its glyph from four sources, highest precedence first:
- *
- *   - `iconData`  — an inline `IconData` object; no registration step needed
- *   - `iconUrl`   — an image address, rendered as `<image>`
- *   - `icon`      — a name resolved by SnIcon (registry → built-in catalogue →
- *                   `prefix:rest` provider)
- *   - `iconClass` — wd-parity legacy field: a name, or an image address when
- *                   the value looks like one (`http` / `data` / `//` / `/`)
- *
- * The glyph scale is `--sn-popover-menu-icon-size` (wd
- * `--wot-popover-menu-icon-size` parity), defaulting to the `medium` icon tier;
- * the close glyph follows `--sn-popover-close-icon-size`, defaulting to
- * `small`. Both are published on the bubble, overridable via `custom-style`.
- *
- * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
- *
- * The fill already defaults to the elevated surface (white in the light
- * theme) and the label to the page text color; both flip with the mp dark
- * theme. They are published as `--sn-popover-bg` / `--sn-popover-color` so
- * consumers can recolor the bubble through `custom-style="--sn-popover-bg: …"`
- * (inline beats the class default). The arrow follows the fill.
+ * The bubble is a FIXED-width card — `--sn-popover-width` (normal, default
+ * 480rpx) / `--sn-popover-menu-width` (menu, default 320rpx) — overridable via
+ * `custom-style`. The previous `width: max-content` +
+ * `max-width: min(480rpx, calc(100vw - 32rpx))` pair silently broke on
+ * renderers that drop unsupported declarations (uni-app x App has no
+ * `max-content`, `min()` or `vw`): the bubble lost its sizing and could render
+ * collapsed / invisible. Fixed width is deterministic on all three platforms;
+ * the cost is no automatic edge clamping, so near the screen edge an
+ * `-start` / `-end` alignment is the consumer's tool. Centering uses pure
+ * `translateX/Y(-50%)` (no `calc()` inside `transform`) with the offset folded
+ * into margins, which every renderer supports.
  *
  * ## Timers (AGENTS.md §41)
  *
@@ -98,12 +99,12 @@
  * registered (miniprogram has no `document`).
  *
  * Usage:
- *   <sn-popover v-model="open" mode="menu" :content="items" @menuclick="onPick">
- *     <sn-button>更多</sn-button>
+ *   <sn-popover v-model="open" title="Quick Tip" icon="location" content="…">
+ *     <sn-button>提示</sn-button>
  *   </sn-popover>
  *
  * Not responsible for:
- *   - 纯文本提示 — 用 sn-tooltip
+ *   - 纯文字提示 — 用 sn-tooltip
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
@@ -148,6 +149,12 @@ type PopoverPlacement =
 type PopoverMode = 'normal' | 'menu';
 
 /**
+ * Where the popover appears (additive). `anchor` (default) pins the bubble to
+ * the trigger; `sheet` presents it as a fixed bottom sheet.
+ */
+type PopoverPresentation = 'anchor' | 'sheet';
+
+/**
  * Gap between trigger and bubble. `number` applies to both axes, `[x, y]`
  * sets them individually, `{ x, y }` sets either one.
  */
@@ -155,8 +162,10 @@ type PopoverOffset = number | number[] | { x?: number; y?: number };
 
 /** One row of the `menu` mode list. */
 export interface SnPopoverMenuItem {
-  /** Row label. */
+  /** Row title. */
   content?: string;
+  /** Muted second line under the title (additive). */
+  description?: string;
   /**
    * Row glyph as inline SVG data (additive, AUI-OPT-07). Highest precedence —
    * pass a built-in set object and no registration step is needed.
@@ -174,12 +183,22 @@ export interface SnPopoverMenuItem {
    */
   icon?: string;
   /**
-   * wd-parity legacy glyph field: an SnIcon registry name, or an image address
-   * when the value looks like one (`http` / `data` / `//` / `/` / `./`).
+   * wd-parity legacy glyph field: a name, or an image address when the value
+   * looks like one (`http` / `data` / `//` / `/` / `./`).
    * Lowest precedence of the four glyph sources.
    */
   iconClass?: string;
   /** Disable the row — taps are ignored. */
+  disabled?: boolean;
+}
+
+/** One pill button under the bubble body (additive). */
+export interface SnPopoverAction {
+  /** Button label. */
+  label: string;
+  /** `danger` renders the label in the danger feedback color. */
+  type?: 'default' | 'danger';
+  /** Disable the button — taps are ignored. */
   disabled?: boolean;
 }
 
@@ -193,6 +212,8 @@ const ANIMATION_DURATION = 150;
  */
 const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
 const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
+/** Header glyph scale — one tier above the menu rows. */
+const HEAD_ICON_SIZE = 'var(--sn-popover-icon-size)';
 
 const props = withDefaults(
   defineProps<{
@@ -201,33 +222,50 @@ const props = withDefaults(
     /**
      * How the trigger reacts. `slot` (default) binds the tap on the trigger
      * wrapper itself — on uni-app x App an App-only catcher node (see the
-     * template note) receives the tap because slot-content taps never reach
-     * this component's own views there. `manual` leaves toggling to the page
-     * via v-model: use it when the tap target lives outside the default slot
-     * (a remote button, imperative open/close), not as an App workaround —
-     * event listeners the page binds on components inside the slot never fire
-     * on App either, so a manual-mode slotted trigger is inert there too.
+     * template note) receives it because slot-content taps never reach this
+     * component's own views there. `manual` leaves toggling to the page via
+     * v-model.
      */
     trigger?: 'slot' | 'manual';
+    /**
+     * Where the popover appears (additive): `anchor` (default) pins the bubble
+     * to the trigger; `sheet` presents it as a fixed bottom sheet.
+     */
+    presentation?: PopoverPresentation;
     /** Bubble body: a string in `normal` mode, a list in `menu` mode. */
     content?: string | SnPopoverMenuItem[];
     /** Bubble display mode. */
     mode?: PopoverMode;
-    /** Bubble anchor. */
+    /** Bold card title (additive). */
+    title?: string;
+    /** Muted line under the title — a timestamp, or the sheet description (additive). */
+    subtitle?: string;
+    /** Header glyph as inline SVG data (additive). Beats `iconUrl` / `icon`. */
+    iconData?: IconData;
+    /** Header glyph as an image address (additive). Beats `icon`, loses to `iconData`. */
+    iconUrl?: string;
+    /** Header glyph as an SnIcon registry name (additive). */
+    icon?: string;
+    /** Bubble anchor (anchor presentation). */
     placement?: PopoverPlacement;
     /** Gap between trigger and bubble, in design px. */
     offset?: PopoverOffset;
-    /** Render the arrow pointing at the trigger. */
+    /** Render the arrow pointing at the trigger (anchor presentation). */
     visibleArrow?: boolean;
     /** Disables the trigger — taps are ignored and the bubble stays closed. */
     disabled?: boolean;
-    /** Render a close button inside the bubble. */
+    /** Render a close button in the card header. */
     showClose?: boolean;
+    /** Full-width pill buttons under the bubble body (additive). */
+    actions?: SnPopoverAction[];
+    /** Close the bubble after an action / menu row tap (additive). */
+    closeOnAction?: boolean;
+    /** Sheet Cancel pill label — empty hides the pill (additive, sn-action-sheet parity). */
+    cancelText?: string;
     /**
      * Close the bubble when the user taps outside it (additive, AUI-OPT-07).
      * The close rides the page-root `closeOutside` channel and never swallows
-     * the tap — the same gesture still lands on whatever button sits under
-     * it. Pass `false` to unregister the outside-close while mounted.
+     * the tap. Pass `false` to unregister the outside-close while mounted.
      */
     closeOnClickOutside?: boolean;
     /** Extra class on the root node. */
@@ -247,13 +285,21 @@ const props = withDefaults(
   {
     modelValue: false,
     trigger: 'slot',
+    presentation: 'anchor',
     content: '',
     mode: 'normal',
+    title: '',
+    subtitle: '',
+    iconUrl: '',
+    icon: '',
     placement: 'bottom',
     offset: 0,
     visibleArrow: true,
     disabled: false,
     showClose: false,
+    actions: () => [],
+    closeOnAction: true,
+    cancelText: '',
     closeOnClickOutside: true,
     customClass: '',
     customStyle: '',
@@ -266,8 +312,10 @@ const props = withDefaults(
 defineSlots<{
   /** Trigger content (the element the bubble points at). */
   default?(): unknown;
-  /** Custom bubble body; replaces `content`. */
+  /** Custom bubble body; replaces `content` in both modes. */
   content?(): unknown;
+  /** Card footer strip under the body (additive) — a tag row, a meta line. */
+  footer?(): unknown;
 }>();
 
 const emit = defineEmits<{
@@ -276,6 +324,8 @@ const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'change', payload: { show: boolean }): void;
   (e: 'menuclick', payload: { item: SnPopoverMenuItem; index: number }): void;
+  (e: 'actionclick', payload: { item: SnPopoverAction; index: number }): void;
+  (e: 'cancel'): void;
 }>();
 
 /** Bubble node present in the tree (survives the leave leg). */
@@ -355,7 +405,6 @@ function open(): void {
 function close(): void {
   // Idempotent: a second close gesture (the mask plus the page-root queue, a
   // close button while the fade-out leg runs) must not replay the event pair.
-  // A bubble that is neither shown nor mounted is already fully closed.
   const wasUp = props.modelValue || isShown.value || isMounted.value;
   emit('update:modelValue', false);
   if (wasUp) leave();
@@ -413,9 +462,35 @@ function onTriggerTap(): void {
   open();
 }
 
-function onMenuTap(item: SnPopoverMenuItem, index: number): void {
-  if (item.disabled) return;
-  emit('menuclick', { item, index });
+/** Looks like an image source rather than an icon name. */
+function isImageSource(value: string): boolean {
+  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
+}
+
+/** Which glyph source a slot uses (precedence: iconData > iconUrl > icon > iconClass). */
+function iconSourceOf(item: {
+  iconData?: IconData | undefined;
+  iconUrl?: string | undefined;
+  icon?: string | undefined;
+  iconClass?: string | undefined;
+}): 'data' | 'url' | 'name' | 'none' {
+  if (item.iconData !== undefined) return 'data';
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
+  if (item.icon !== undefined && item.icon !== '') return 'name';
+  const legacy = item.iconClass;
+  if (legacy === undefined || legacy === '') return 'none';
+  return isImageSource(legacy) ? 'url' : 'name';
+}
+
+/** Image address of a `url` slot — `iconUrl`, or the URL-shaped legacy field. */
+function iconUrlOf(item: { iconUrl?: string | undefined; iconClass?: string | undefined }): string {
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
+  return item.iconClass ?? '';
+}
+
+/** Glyph name of a `name` slot — `icon`, or the legacy field's name form. */
+function iconNameOf(item: { icon?: string | undefined; iconClass?: string | undefined }): string {
+  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -440,36 +515,28 @@ const menuItems = computed<SnPopoverMenuItem[]>(() =>
 /** Plain text body for `normal` mode. */
 const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
-/** Looks like an image source rather than an icon name. */
-function isImageSource(value: string): boolean {
-  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
-}
+/** Header glyph source — same precedence chain as the menu rows. */
+const headIconSource = computed(() => iconSourceOf(props));
 
-/** Which glyph source a `menu` row uses (precedence: see the header). */
-function rowIconSource(item: SnPopoverMenuItem): 'data' | 'url' | 'name' | 'none' {
-  if (item.iconData !== undefined) return 'data';
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
-  if (item.icon !== undefined && item.icon !== '') return 'name';
-  const legacy = item.iconClass;
-  if (legacy === undefined || legacy === '') return 'none';
-  return isImageSource(legacy) ? 'url' : 'name';
-}
+/** Whether the card header row (glyph / title / subtitle / close) renders. */
+const hasHead = computed(
+  () =>
+    headIconSource.value !== 'none' ||
+    props.title !== '' ||
+    props.subtitle !== '' ||
+    props.showClose,
+);
 
-/** Image address of a `url` row — `iconUrl`, or the URL-shaped legacy field. */
-function rowIconUrl(item: SnPopoverMenuItem): string {
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
-  return item.iconClass ?? '';
-}
+const isSheet = computed(() => props.presentation === 'sheet');
 
-/** Glyph name of a `name` row — `icon`, or the legacy field's name form. */
-function rowIconName(item: SnPopoverMenuItem): string {
-  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
-}
+/** Sheet Cancel pill — non-empty label shows it (sn-action-sheet parity). */
+const showsCancel = computed(() => props.cancelText !== '');
 
 const rootClass = computed(() => [
   'sn-popover',
   `sn-popover--${props.placement}`,
   `sn-popover--${props.mode}`,
+  `sn-popover--${props.presentation}`,
   {
     'sn-popover--disabled': props.disabled,
     'sn-popover--shown': isShown.value,
@@ -486,6 +553,33 @@ const rootStyle = computed(() => {
 const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
 const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
+
+const sheetPanelClass = computed(() => [
+  'sn-popover__sheet-panel',
+  { 'sn-popover__sheet-panel--shown': isShown.value },
+]);
+
+const sheetMaskClass = computed(() => [
+  'sn-popover__sheet-mask',
+  { 'sn-popover__sheet-mask--shown': isShown.value },
+]);
+
+function onMenuTap(item: SnPopoverMenuItem, index: number): void {
+  if (item.disabled) return;
+  emit('menuclick', { item, index });
+  if (props.closeOnAction) close();
+}
+
+function onActionTap(action: SnPopoverAction, index: number): void {
+  if (action.disabled) return;
+  emit('actionclick', { item: action, index });
+  if (props.closeOnAction) close();
+}
+
+function onCancelTap(): void {
+  emit('cancel');
+  close();
+}
 </script>
 
 <template>
@@ -517,7 +611,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       <!-- #endif -->
     </view>
 
-    <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
+    <!-- ── Anchor bubble ─────────────────────────────────────────────────── -->
+    <view v-if="isMounted && !isSheet" :class="popClass" role="dialog" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
       <view v-if="mode === 'menu'" class="sn-popover__menu">
@@ -533,43 +628,170 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
           >
             <!-- Row glyph precedence: inline data > image address > name. -->
             <SnIcon
-              v-if="rowIconSource(item) === 'data'"
+              v-if="iconSourceOf(item) === 'data'"
               class="sn-popover__menu-icon"
               :icon="item.iconData"
               :size="MENU_ICON_SIZE"
             />
             <image
-              v-else-if="rowIconSource(item) === 'url'"
+              v-else-if="iconSourceOf(item) === 'url'"
               class="sn-popover__menu-icon"
-              :src="rowIconUrl(item)"
+              :src="iconUrlOf(item)"
               mode="aspectFit"
               aria-hidden="true"
             />
             <SnIcon
-              v-else-if="rowIconSource(item) === 'name'"
+              v-else-if="iconSourceOf(item) === 'name'"
               class="sn-popover__menu-icon"
-              :icon="rowIconName(item)"
+              :icon="iconNameOf(item)"
               :size="MENU_ICON_SIZE"
             />
-            <text class="sn-popover__menu-text">{{ item.content }}</text>
+            <view class="sn-popover__menu-main">
+              <text class="sn-popover__menu-text">{{ item.content }}</text>
+              <text v-if="item.description" class="sn-popover__menu-desc">
+                {{ item.description }}
+              </text>
+            </view>
           </view>
         </slot>
       </view>
 
       <view v-else class="sn-popover__body">
         <slot name="content">
+          <!-- Card header: glyph circle + title / subtitle + close. -->
+          <view v-if="hasHead" class="sn-popover__head">
+            <view v-if="headIconSource !== 'none'" class="sn-popover__icon-plate" aria-hidden="true">
+              <SnIcon
+                v-if="headIconSource === 'data'"
+                :icon="props.iconData"
+                :size="HEAD_ICON_SIZE"
+              />
+              <image
+                v-else-if="headIconSource === 'url'"
+                class="sn-popover__icon-image"
+                :src="props.iconUrl"
+                mode="aspectFit"
+              />
+              <SnIcon v-else :icon="props.icon" :size="HEAD_ICON_SIZE" />
+            </view>
+            <view class="sn-popover__head-main">
+              <text v-if="props.title" class="sn-popover__title">{{ props.title }}</text>
+              <text v-if="props.subtitle" class="sn-popover__subtitle">{{ props.subtitle }}</text>
+            </view>
+            <view
+              v-if="props.showClose"
+              class="sn-popover__close"
+              role="button"
+              aria-label="close"
+              @tap="close"
+            >
+              <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" />
+            </view>
+          </view>
           <text v-if="normalText" class="sn-popover__text">{{ normalText }}</text>
         </slot>
+        <slot name="footer" />
       </view>
 
-      <view
-        v-if="showClose"
-        class="sn-popover__close"
-        role="button"
-        aria-label="close"
-        @tap="close"
-      >
-        <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" />
+      <view v-if="props.actions.length > 0" class="sn-popover__actions">
+        <view
+          v-for="(action, index) in props.actions"
+          :key="index"
+          class="sn-popover__action"
+          :class="{
+            'sn-popover__action--danger': action.type === 'danger',
+            'sn-popover__action--disabled': action.disabled,
+          }"
+          role="button"
+          :aria-label="action.label"
+          :aria-disabled="action.disabled ? 'true' : 'false'"
+          @tap="onActionTap(action, index)"
+        >
+          <text class="sn-popover__action-text">{{ action.label }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ── Sheet presentation ────────────────────────────────────────────── -->
+    <view v-if="isMounted && isSheet" class="sn-popover__sheet" role="dialog">
+      <view :class="sheetMaskClass" @tap="close" />
+      <view :class="sheetPanelClass" @tap.stop>
+        <view class="sn-popover__sheet-handle" aria-hidden="true" />
+        <view v-if="props.title || props.subtitle" class="sn-popover__sheet-head">
+          <text v-if="props.title" class="sn-popover__sheet-title">{{ props.title }}</text>
+          <text v-if="props.subtitle" class="sn-popover__sheet-subtitle">
+            {{ props.subtitle }}
+          </text>
+        </view>
+
+        <view v-if="mode === 'menu'" class="sn-popover__menu sn-popover__menu--sheet">
+          <slot name="content">
+            <view
+              v-for="(item, index) in menuItems"
+              :key="index"
+              class="sn-popover__menu-item"
+              :class="{ 'sn-popover__menu-item--disabled': item.disabled }"
+              role="menuitem"
+              :aria-disabled="item.disabled ? 'true' : 'false'"
+              @tap="onMenuTap(item, index)"
+            >
+              <view v-if="iconSourceOf(item) !== 'none'" class="sn-popover__icon-plate">
+                <SnIcon
+                  v-if="iconSourceOf(item) === 'data'"
+                  :icon="item.iconData"
+                  :size="MENU_ICON_SIZE"
+                />
+                <image
+                  v-else-if="iconSourceOf(item) === 'url'"
+                  class="sn-popover__icon-image"
+                  :src="iconUrlOf(item)"
+                  mode="aspectFit"
+                />
+                <SnIcon v-else :icon="iconNameOf(item)" :size="MENU_ICON_SIZE" />
+              </view>
+              <view class="sn-popover__menu-main">
+                <text class="sn-popover__menu-text">{{ item.content }}</text>
+                <text v-if="item.description" class="sn-popover__menu-desc">
+                  {{ item.description }}
+                </text>
+              </view>
+            </view>
+          </slot>
+        </view>
+
+        <view v-else class="sn-popover__sheet-body">
+          <slot name="content">
+            <text v-if="normalText" class="sn-popover__text">{{ normalText }}</text>
+          </slot>
+        </view>
+        <slot name="footer" />
+
+        <view v-if="props.actions.length > 0 || showsCancel" class="sn-popover__sheet-actions">
+          <view
+            v-for="(action, index) in props.actions"
+            :key="index"
+            class="sn-popover__action"
+            :class="{
+              'sn-popover__action--danger': action.type === 'danger',
+              'sn-popover__action--disabled': action.disabled,
+            }"
+            role="button"
+            :aria-label="action.label"
+            :aria-disabled="action.disabled ? 'true' : 'false'"
+            @tap="onActionTap(action, index)"
+          >
+            <text class="sn-popover__action-text">{{ action.label }}</text>
+          </view>
+          <view
+            v-if="showsCancel"
+            class="sn-popover__cancel"
+            role="button"
+            :aria-label="props.cancelText"
+            @tap="onCancelTap"
+          >
+            <text class="sn-popover__cancel-text">{{ props.cancelText }}</text>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -583,11 +805,21 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
+  /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
   --sn-popover-border: var(--sn-mp-color-border-subtle);
   --sn-popover-color: var(--sn-mp-color-text-primary);
-  /* Glyph scale (see header): tier tokens, overridable via `custom-style`. */
+  /* Fixed bubble widths — the cross-platform replacement for `max-content` +
+   * `min(…, 100vw)` sizing, which uni-app x App drops (unsupported), leaving
+   * the bubble collapsed / invisible. Overridable via `custom-style`. */
+  --sn-popover-width: 480rpx;
+  --sn-popover-menu-width: 320rpx;
+  /* Header glyph plate + scale. */
+  --sn-popover-icon-size: var(--sn-mp-icon-size-medium);
+  --sn-popover-icon-plate-size: 72rpx;
+  --sn-popover-icon-bg: var(--sn-mp-color-background-sunken);
+  --sn-popover-icon-color: var(--sn-mp-color-text-secondary);
+  /* Glyph scale (wd parity), overridable via `custom-style`. */
   --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
   --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
 }
@@ -614,29 +846,22 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 }
 /* #endif */
 
-/* ── Bubble ────────────────────────────────────────────────────────────── */
+/* ── Anchor bubble ─────────────────────────────────────────────────────── */
 
 .sn-popover__pop {
   position: absolute;
   z-index: 500;
   display: flex;
-  align-items: flex-start;
-  gap: var(--sn-mp-spacing-2);
-  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
-   * the trigger-sized root and `left: 50%` leaves only half of it available.
-   * `max-content` grows past that cap; `max-width` still bounds long text. */
-  width: max-content;
-  /* Auto height (AUI-OPT-07): the bubble grows with its content and never
-   * clips it — labels wrap and glyph boxes follow their tokens (no fixed
-   * square disagrees with the icon scale). */
+  flex-direction: column;
+  /* Fixed card width (see the root note): deterministic on H5 / MP / App
+   * where the old `max-content` + `min(…, 100vw)` sizing broke the bubble. */
+  width: var(--sn-popover-width);
+  /* Auto height (AUI-OPT-07): the card grows with its content and never clips
+   * it — labels wrap and glyph plates follow their tokens. */
   height: auto;
-  min-width: 160rpx;
-  /* Never wider than the viewport: the bubble is centered on the trigger,
-   * so an unclamped width overflows the screen near either edge. */
-  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
   border: 2rpx solid var(--sn-popover-border);
-  border-radius: var(--sn-mp-radius-md);
+  border-radius: var(--sn-mp-radius-lg);
   background-color: var(--sn-popover-bg);
   color: var(--sn-popover-color);
   font-size: var(--sn-mp-font-size-sm);
@@ -652,33 +877,123 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   pointer-events: auto;
 }
 
-.sn-popover__body {
-  display: block;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+/* Menu mode keeps a narrower card (rows are short labels, not paragraphs). */
+.sn-popover--menu .sn-popover__pop {
+  width: var(--sn-popover-menu-width);
+  padding: var(--sn-mp-spacing-2) 0;
 }
 
-.sn-popover__text {
+/* ── Card body ─────────────────────────────────────────────────────────── */
+
+.sn-popover__body {
+  display: flex;
+  flex-direction: column;
+  /* Flex gap spaces the header from the description (uni-app x App drops the
+   * `~` sibling combinator, so spacing must not rely on it). A lone child —
+   * a bare text body — sits flush either way. */
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+}
+
+.sn-popover__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+}
+
+.sn-popover__icon-plate {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--sn-popover-icon-plate-size);
+  height: var(--sn-popover-icon-plate-size);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-popover-icon-bg);
+  color: var(--sn-popover-icon-color);
+}
+
+.sn-popover__icon-image {
+  width: var(--sn-popover-icon-size);
+  height: var(--sn-popover-icon-size);
+}
+
+.sn-popover__head-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--sn-mp-spacing-1);
+}
+
+.sn-popover__title {
   display: block;
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-popover__subtitle {
+  display: block;
+  font-size: var(--sn-mp-font-size-xs);
+  color: var(--sn-mp-color-text-tertiary);
 }
 
 .sn-popover__close {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
   width: var(--sn-popover-close-icon-size);
   height: var(--sn-popover-close-icon-size);
-  margin: var(--sn-mp-spacing-2);
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-popover__text {
+  display: block;
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* ── Menu mode ─────────────────────────────────────────────────────────── */
+/* ── Actions ───────────────────────────────────────────────────────────── */
 
-.sn-popover--menu .sn-popover__pop {
+.sn-popover__actions {
+  display: flex;
   flex-direction: column;
-  gap: 0;
-  padding: var(--sn-mp-spacing-2) 0;
+  gap: var(--sn-mp-spacing-2);
+  margin-top: var(--sn-mp-spacing-3);
 }
+
+.sn-popover__action {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+}
+
+.sn-popover__action-text {
+  display: block;
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-medium);
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-popover__action--danger .sn-popover__action-text {
+  color: var(--sn-mp-color-feedback-danger);
+}
+
+.sn-popover__action--disabled {
+  opacity: 0.5;
+}
+
+/* ── Menu mode ─────────────────────────────────────────────────────────── */
 
 .sn-popover__menu {
   display: flex;
@@ -689,13 +1004,13 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--sn-mp-spacing-2);
+  gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-primary);
 }
 
 .sn-popover__menu-item--disabled {
-  color: var(--sn-mp-color-text-disabled);
+  opacity: 0.5;
 }
 
 /* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
@@ -703,6 +1018,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
  * it (auto height, AUI-OPT-07). */
 .sn-popover__menu-icon {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
@@ -711,13 +1027,28 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   color: var(--sn-mp-color-text-secondary);
 }
 
+.sn-popover__menu-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 4rpx;
+}
+
 .sn-popover__menu-text {
   display: block;
-  /* Long labels wrap inside the bubble's max-width instead of forcing one
+  /* Long labels wrap inside the bubble's fixed width instead of forcing one
    * line and spilling out of the pop: flex + min-width let the text shrink
    * below its max-content width. */
   flex: 1;
   min-width: 0;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-popover__menu-desc {
+  display: block;
+  font-size: var(--sn-mp-font-size-xs);
+  color: var(--sn-mp-color-text-tertiary);
 }
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
@@ -739,17 +1070,15 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
+/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`;
+ * `offset-x/y` folds into the margins, which every renderer supports. */
 
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
   left: 50%;
   margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  /* True center: the pop center is pinned to the root center at any width
-   * (stretch + auto margins collapse to 0 once max-content outgrows the
-   * trigger, walking the pop — and the arrow's 50% — off the trigger).
-   * max-content is bounded by the viewport clamp, so a centered pop never
-   * crosses the screen edge by itself; offset-x rides the same transform. */
-  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
+  margin-left: var(--sn-popover-offset-x);
+  transform: translateX(-50%);
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
@@ -770,7 +1099,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: 100%;
   left: 50%;
   margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
+  margin-left: var(--sn-popover-offset-x);
+  transform: translateX(-50%);
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
@@ -791,7 +1121,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: 50%;
   right: 100%;
   margin-right: calc(12rpx + var(--sn-popover-offset-x));
-  transform: translateY(calc(-50% + var(--sn-popover-offset-y)));
+  margin-top: var(--sn-popover-offset-y);
+  transform: translateY(-50%);
 }
 .sn-popover--left-start .sn-popover__pop {
   top: 0;
@@ -812,7 +1143,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: 50%;
   left: 100%;
   margin-left: calc(12rpx + var(--sn-popover-offset-x));
-  transform: translateY(calc(-50% + var(--sn-popover-offset-y)));
+  margin-top: var(--sn-popover-offset-y);
+  transform: translateY(-50%);
 }
 .sn-popover--right-start .sn-popover__pop {
   top: 0;
@@ -880,10 +1212,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: calc(50% - 8rpx);
 }
 .sn-popover--left-start .sn-popover__arrow {
-  top: 16rpx;
+  top: 24rpx;
 }
 .sn-popover--left-end .sn-popover__arrow {
-  bottom: 16rpx;
+  bottom: 24rpx;
 }
 
 .sn-popover--right .sn-popover__arrow,
@@ -899,10 +1231,126 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   top: calc(50% - 8rpx);
 }
 .sn-popover--right-start .sn-popover__arrow {
-  top: 16rpx;
+  top: 24rpx;
 }
 .sn-popover--right-end .sn-popover__arrow {
-  bottom: 16rpx;
+  bottom: 24rpx;
+}
+
+/* ── Sheet presentation ────────────────────────────────────────────────── */
+
+.sn-popover__sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 500;
+}
+
+.sn-popover__sheet-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--sn-mp-color-background-overlay);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.sn-popover__sheet-mask--shown {
+  opacity: 1;
+}
+
+.sn-popover__sheet-panel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-5) var(--sn-mp-spacing-5);
+  border-top-left-radius: var(--sn-mp-radius-xl);
+  border-top-right-radius: var(--sn-mp-radius-xl);
+  background-color: var(--sn-popover-bg);
+  color: var(--sn-popover-color);
+  transform: translateY(100%);
+  transition: transform 200ms ease, opacity 200ms ease;
+  opacity: 0;
+}
+
+.sn-popover__sheet-panel--shown {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.sn-popover__sheet-handle {
+  align-self: center;
+  flex: 0 0 auto;
+  width: 64rpx;
+  height: 8rpx;
+  margin-bottom: var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-border-default);
+}
+
+.sn-popover__sheet-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sn-mp-spacing-1);
+  margin-bottom: var(--sn-mp-spacing-3);
+}
+
+.sn-popover__sheet-title {
+  display: block;
+  font-size: var(--sn-mp-font-size-lg);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-popover__sheet-subtitle {
+  display: block;
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-popover__sheet-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sheet rows are roomier than the anchored menu card's. */
+.sn-popover__menu--sheet .sn-popover__menu-item {
+  padding: var(--sn-mp-spacing-3) 0;
+}
+
+.sn-popover__sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+  margin-top: var(--sn-mp-spacing-4);
+}
+
+.sn-popover__cancel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+}
+
+.sn-popover__cancel-text {
+  display: block;
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  color: var(--sn-mp-color-text-primary);
 }
 
 .sn-popover--disabled .sn-popover__trigger {
@@ -910,7 +1358,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 }
 
 /* Doodle skin — hand-drawn bubble outline. */
-.snui-skin-doodle .sn-popover__pop {
+.snui-skin-doodle .sn-popover__pop,
+.snui-skin-doodle .sn-popover__sheet-panel {
   border-width: 4rpx;
   border-radius: var(--sn-mp-radius-xs);
 }

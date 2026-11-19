@@ -1,34 +1,38 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — normal mode with plain text content.
+ * Demo: sn-popover (uni-end) — rich card bubble (icon plate + title + text).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+import { MapPin } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="open"
-      mode="normal"
-      content="3 tasks are left today — start with the two overdue ones."
-      placement="bottom"
-      :show-close="true"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton type="primary" block>Show the bubble</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        title="Quick Tip"
+        content="There is no hover on miniprogram — the bubble toggles on tap. Tap anywhere outside it to close, or tap the trigger again."
+        :icon-data="MapPin"
+        placement="bottom"
+        :show-close="true"
+        custom-class="sn-demo-contained"
+      >
+        <SnButton type="primary">Show bubble</SnButton>
+      </SnPopover>
+    </view>
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__meta">State: {{ open ? 'open' : 'closed' }}</text>
+    <text class="sn-demo__meta">State: {{ open ? 'expanded' : 'collapsed' }}</text>
     <text class="sn-demo__hint"
-      >Tap anywhere outside the bubble to close it via the page-root closeOutside channel — the same
-      gesture still reaches other controls; the trigger toggles it too.</text
+      >Rich card: icon plate + title + description + corner close; fixed card width
+      (--sn-popover-width).</text
     >
   </view>
 </template>
@@ -47,13 +51,18 @@ const open = ref(false);
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — relative keeps the demo flow intact while the bubble
- * stays anchored to the component root; the spacer below leaves room for the
- * bottom-placed bubble instead of letting it cover the copy. */
-.sn-popover.sn-demo-contained {
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bottom-placed card instead of covering copy. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
   position: relative;
+  display: block;
 }
 .sn-popover-demo__space {
-  height: 180rpx;
+  height: 320rpx;
 }
 </style>

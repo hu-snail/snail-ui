@@ -1,6 +1,11 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — English shadow of popover-mp-content-slot.
+ * Demo: sn-popover — the `content` slot.
+ *
+ * The `content` slot fully replaces the bubble body (both modes).
+ *
+ * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
+ * inside the demo.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';

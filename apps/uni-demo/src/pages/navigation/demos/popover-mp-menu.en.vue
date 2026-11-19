@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — menu mode with the row-icon configuration.
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ * Demo: sn-popover (uni-end) — menu mode with rich rows and the row-icon
+ * configuration. Per AUI-DOCS-016: imports the real @snui/uni sn-popover.
  *
- * Row glyphs resolve from the three documented sources, highest precedence
- * first:
+ * Row glyphs resolve from the documented sources, highest precedence first:
  *   - `iconData` — an inline IconData object, no registration step
  *   - `iconUrl`  — an image address, rendered as `<image>`
  *   - `icon`     — a name resolved through SnIcon (built-in catalog here)
  * The legacy `iconClass` field keeps working (name or image address).
+ * The additive `description` field renders a muted second line per row.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -23,10 +23,10 @@ const tagImage =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
 
 const menu = [
-  { content: 'Star', iconData: Star },
-  { content: 'Share', icon: 'share' },
-  { content: 'Add tag', iconUrl: tagImage },
-  { content: 'Bookmark', iconClass: 'bookmark' },
+  { content: 'Star it', description: 'Pin it to your saved list', iconData: Star },
+  { content: 'Share with friends', description: 'Send via messaging app', icon: 'share' },
+  { content: 'Add a tag', iconUrl: tagImage },
+  { content: 'Save to bookmarks', iconClass: 'bookmark' },
   { content: 'Delete', icon: 'trash-2', disabled: true },
 ];
 
@@ -50,10 +50,11 @@ function onMenuClick(payload: { item: { content?: string } }): void {
     </SnPopover>
 
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
-    <text class="sn-demo__hint">
-      Glyph sources: iconData (inline, no registration) · icon (name) · iconUrl (image) · iconClass
-      (legacy field)
-    </text>
+    <text class="sn-demo__hint"
+      >Rich rows: `content` is the title, `description` the muted second line; glyph sources:
+      iconData (inline / no registration) · icon (name) · iconUrl (image) · iconClass (legacy,
+      compatible)</text
+    >
   </view>
 </template>
 

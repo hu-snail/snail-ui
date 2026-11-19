@@ -1,13 +1,16 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— popover 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/popover-mp-basic.vue';
-import Demo1 from './demos/popover-mp-content-slot.vue';
-import Demo2 from './demos/popover-mp-custom-style.vue';
-import Demo3 from './demos/popover-mp-height.vue';
-import Demo4 from './demos/popover-mp-icon-class.vue';
-import Demo5 from './demos/popover-mp-menu.vue';
-import Demo6 from './demos/popover-mp-placement.vue';
-import Demo7 from './demos/popover-mp-theme.vue';
+import Demo0 from './demos/popover-mp-alignment.vue';
+import Demo1 from './demos/popover-mp-basic.vue';
+import Demo2 from './demos/popover-mp-content-slot.vue';
+import Demo3 from './demos/popover-mp-custom-style.vue';
+import Demo4 from './demos/popover-mp-height.vue';
+import Demo5 from './demos/popover-mp-icon-class.vue';
+import Demo6 from './demos/popover-mp-menu.vue';
+import Demo7 from './demos/popover-mp-notification.vue';
+import Demo8 from './demos/popover-mp-placement.vue';
+import Demo9 from './demos/popover-mp-sheet.vue';
+import Demo10 from './demos/popover-mp-theme.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -20,15 +23,21 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'气泡'" :title-en="'Popover'" :desc="'锚点弹出气泡卡片'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead :title="t('对齐方式', 'Alignment')" badge="alignment" />
         <view class="module__body">
           <Demo0 />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('content 插槽', '`content` slot')" badge="content-slot" />
+        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('content 插槽', '`content` slot')" badge="content-slot" />
+        <view class="module__body">
+          <Demo2 />
         </view>
       </view>
       <view class="module">
@@ -37,13 +46,13 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo3 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('高度', 'Height')" badge="height" />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
         </view>
       </view>
       <view class="module">
@@ -52,25 +61,37 @@ const { t } = useDemoUi();
           badge="icon-class"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo5 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('menu', 'Menu')" badge="menu" />
         <view class="module__body">
-          <Demo5 />
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('通知卡片', 'Notification card')" badge="notification" />
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('弹出位置', 'Placement')" badge="placement" />
         <view class="module__body">
-          <Demo6 />
+          <Demo8 />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead :title="t('底部面板', 'Bottom sheet')" badge="sheet" />
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" />
         <view class="module__body">
-          <Demo7 />
+          <Demo10 />
         </view>
       </view>
     </view>

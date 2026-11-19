@@ -4,7 +4,7 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
  *
  * - the bubble sizes to its content (`height: auto`): long text wraps inside
- *   the bubble max width and the bubble grows downwards
+ *   the fixed card width and the bubble grows downwards
  * - a long menu label wraps the same way (no one-line overflow)
  * - glyph boxes follow `--sn-popover-menu-icon-size`, so a bigger icon grows
  *   the row instead of overflowing it — override per instance via `custom-style`
@@ -21,10 +21,10 @@ const picked = ref('—');
 const longMenu = [
   {
     content:
-      'A very long menu label: the row text wraps inside the bubble max width and the bubble grows to fit its content — nothing gets clipped',
+      'A very long menu label: when the bubble width is capped the text wraps and the bubble grows with its content — never clipped',
     iconData: FileText,
   },
-  { content: 'Second row', icon: 'download' },
+  { content: 'Second item', icon: 'download' },
 ];
 
 function onMenuClick(payload: { item: { content?: string } }): void {
@@ -38,12 +38,12 @@ function onMenuClick(payload: { item: { content?: string } }): void {
     <SnPopover
       v-model="normalOpen"
       mode="normal"
-      content="This hint is intentionally long: it verifies the bubble sizes to its content — the text wraps inside the max width and the bubble grows downwards instead of clipping the body."
+      content="This hint is long on purpose, to verify that the bubble height follows its content: text wraps inside the card width and the bubble grows downwards — nothing is clipped, nothing spills out."
       placement="bottom-start"
       :show-close="true"
       custom-class="sn-demo-contained"
     >
-      <SnButton block>Long text · normal mode</SnButton>
+      <SnButton block>Long copy · normal mode</SnButton>
     </SnPopover>
 
     <SnPopover
@@ -55,15 +55,15 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
     >
-      <SnButton block>Long menu label · bigger glyph</SnButton>
+      <SnButton block>Long labels · enlarged icon</SnButton>
     </SnPopover>
 
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
     <text class="sn-demo__hint">
-      Glyph scale comes from --sn-popover-menu-icon-size (44rpx here): a bigger icon grows the row
-      instead of overflowing.
+      The glyph scale rides --sn-popover-menu-icon-size (44rpx here): a bigger icon grows the
+      row instead of overflowing it.
     </text>
   </view>
 </template>

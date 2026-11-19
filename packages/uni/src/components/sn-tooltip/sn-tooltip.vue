@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * sn-tooltip (uni-end) — tap-triggered text hint bubble.
+ * sn-tooltip (uni-end) — tap-triggered TEXT-ONLY hint bubble (dark plate).
  *
  * Reference library: wot-ui `wd-tooltip`
  *   (https://wot-ui.cn/component/tooltip.html)
@@ -14,6 +14,17 @@
  *
  * Per AGENTS.md §32, this component handles rendering + interaction + DOM
  * bridge only. No schema validation; no business logic.
+ *
+ * ## Scope: text hints only (deliberate split from sn-popover)
+ *
+ * The tooltip is the dark, compact, text-only hint: `content` is a string or
+ * a list of plain-text lines, rendered on the platform-standard dark
+ * transient plate (the toast token pair `--sn-mp-color-background-inverse` /
+ * `--sn-mp-color-text-on-primary`). There is deliberately NO `content` slot,
+ * no title / description / icon / actions — rich anchored cards, menus and
+ * bottom sheets belong to `sn-popover`; page-level filters to `sn-drop-menu`.
+ * The former `content` slot and object-row rendering were removed when the
+ * two components were split (breaking, by design).
  *
  * ## Documented divergences from wd-tooltip
  *
@@ -29,11 +40,20 @@
  *
  * ## Why the offset is a CSS variable pair, not an inline transform
  *
- * The placement rules already use `transform: translateX(-50%)` to centre the
- * bubble on its trigger. An inline `transform` would win the cascade and
- * silently break that centring, so `offset` is published as
+ * The placement rules already use pure `translateX/Y(-50%)` (no `calc()`
+ * inside `transform` — uni-app x App drops complex calc) to centre the bubble
+ * on its trigger. An inline `transform` would win the cascade and silently
+ * break that centring, so `offset` is published as
  * `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y` and folded into the
  * placement margins with `calc()`.
+ *
+ * ## Fixed bubble width (cross-platform geometry)
+ *
+ * The bubble is a fixed-width plate — `--sn-tooltip-width` (default 320rpx),
+ * overridable via `custom-style`. The previous `width: max-content` +
+ * `100vw` clamp silently broke on renderers that drop unsupported
+ * declarations (uni-app x App has no `max-content` / `vw`); a fixed width is
+ * deterministic on H5 / mp-weixin / uni-app x App. Text wraps inside it.
  *
  * ## Click-outside close (useQueue / closeOutside, wot-ui parity)
  *
@@ -65,14 +85,6 @@
  * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
  * `trigger` prop note for when `manual` is actually needed.
  *
- * ## Bubble palette (wot-ui parity: --wot-tooltip-bg / --wot-tooltip-color)
- *
- * The fill defaults to the elevated surface (white in the light theme) and
- * the label to the page text color; both flip with the mp dark theme. They
- * are published as `--sn-tooltip-bg` / `--sn-tooltip-color` so consumers can
- * recolor the bubble through `custom-style="--sn-tooltip-bg: …"` (inline
- * beats the class default). The arrow follows the fill.
- *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer keeps the bubble mounted for the fade-out leg. It is
@@ -85,7 +97,7 @@
  *   </sn-tooltip>
  *
  * Not responsible for:
- *   - 带菜单项的富气泡 — 用 sn-popover
+ *   - 富气泡 / 菜单 / 底部面板 — 用 sn-popover
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
@@ -139,10 +151,7 @@ type TooltipPlacement =
  * Gap between trigger and bubble. `number` applies to both axes, `[x, y]`
  * sets them individually, `{ x, y }` sets either one.
  */
-type PopoverOffset = number | number[] | { x?: number; y?: number };
-
-/** One row of an array `content`. */
-type TooltipContentRow = Record<string, unknown> | string;
+type TooltipOffset = number | number[] | { x?: number; y?: number };
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
@@ -154,20 +163,20 @@ const props = withDefaults(
     /**
      * How the trigger reacts. `slot` (default) binds the tap on the trigger
      * wrapper itself — on uni-app x App an App-only catcher node (see the
-     * template note) receives the tap because slot-content taps never reach
-     * this component's own views there. `manual` leaves toggling to the page
-     * via v-model: use it when the tap target lives outside the default slot
+     * template note) receives it because slot-content taps never reach this
+     * component's own views there. `manual` leaves toggling to the page via
+     * v-model: use it when the tap target lives outside the default slot
      * (a remote button, imperative open/close), not as an App workaround —
      * event listeners the page binds on components inside the slot never fire
      * on App either, so a manual-mode slotted trigger is inert there too.
      */
     trigger?: 'slot' | 'manual';
-    /** Bubble text; an array renders one line per entry. */
-    content?: string | TooltipContentRow[];
+    /** Bubble text; an array renders one plain-text line per entry. */
+    content?: string | string[];
     /** Bubble anchor. */
     placement?: TooltipPlacement;
     /** Gap between trigger and bubble, in design px. */
-    offset?: PopoverOffset;
+    offset?: TooltipOffset;
     /** Render the arrow pointing at the trigger. */
     visibleArrow?: boolean;
     /** Disables the trigger — taps are ignored and the bubble stays closed. */
@@ -208,8 +217,6 @@ const props = withDefaults(
 defineSlots<{
   /** Trigger content (the element the bubble points at). */
   default?(): unknown;
-  /** Custom bubble body; replaces `content`. */
-  content?(): unknown;
 }>();
 
 const emit = defineEmits<{
@@ -342,16 +349,12 @@ const offsetPair = computed<{ x: number; y: number }>(() => {
   return { x: value.x ?? 0, y: value.y ?? 0 };
 });
 
-/** Text lines for a `content` value. */
+/** Plain-text lines for a `content` value (text hints only — no objects).
+ * Non-string entries (a JS caller passing the old object rows) degrade
+ * deterministically: they are dropped, never stringified (§85). */
 const contentLines = computed<string[]>(() => {
   if (typeof props.content === 'string') return props.content ? [props.content] : [];
-  return props.content
-    .map((row) => {
-      if (typeof row === 'string') return row;
-      const label = row.label ?? row.text ?? row.content ?? row.name;
-      return typeof label === 'string' ? label : '';
-    })
-    .filter((line) => line !== '');
+  return props.content.filter((line) => typeof line === 'string' && line !== '');
 });
 
 const rootClass = computed(() => [
@@ -407,11 +410,9 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
     <view v-if="isMounted" :class="popClass" role="tooltip" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
       <view class="sn-tooltip__body">
-        <slot name="content">
-          <text v-for="(line, index) in contentLines" :key="index" class="sn-tooltip__line">
-            {{ line }}
-          </text>
-        </slot>
+        <text v-for="(line, index) in contentLines" :key="index" class="sn-tooltip__line">
+          {{ line }}
+        </text>
       </view>
       <view
         v-if="showClose"
@@ -434,9 +435,14 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: relative;
   display: inline-block;
   box-sizing: border-box;
-  /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
-  --sn-tooltip-bg: var(--sn-mp-color-background-elevated);
-  --sn-tooltip-color: var(--sn-mp-color-text-primary);
+  /* Dark transient plate — the platform-standard toast token pair, so the
+   * tooltip reads as a hint, not a card (sn-popover owns cards). Inline
+   * `custom-style` beats these defaults. */
+  --sn-tooltip-bg: var(--sn-mp-color-background-inverse);
+  --sn-tooltip-color: var(--sn-mp-color-text-on-primary);
+  /* Fixed plate width (see the header note): deterministic on H5 / MP / App
+   * where the old `max-content` + `100vw` sizing broke the bubble. */
+  --sn-tooltip-width: 320rpx;
 }
 
 .sn-tooltip__trigger {
@@ -467,23 +473,17 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: absolute;
   z-index: 500;
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
   gap: var(--sn-mp-spacing-2);
-  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
-   * the trigger-sized root and `left: 50%` leaves only half of it available.
-   * `max-content` grows past that cap; `max-width` still bounds long text. */
-  width: max-content;
-  /* Never wider than the viewport: the bubble is centered on the trigger,
-   * so an unclamped width overflows the screen near either edge. */
-  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  width: var(--sn-tooltip-width);
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-tooltip-bg);
   color: var(--sn-tooltip-color);
-  font-size: var(--sn-mp-font-size-sm);
+  font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
-  box-shadow: var(--sn-mp-shadow-md);
   opacity: 0;
   transition: opacity 150ms ease;
   pointer-events: none;
@@ -497,6 +497,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip__body {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
   gap: 4rpx;
 }
 
@@ -506,11 +508,13 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip__close {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 32rpx;
   height: 32rpx;
-  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-tooltip-color);
   opacity: 0.7;
 }
 
@@ -520,20 +524,23 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: absolute;
   width: 16rpx;
   height: 16rpx;
+  /* Solid diamond: the dark plate has no outline, so the arrow follows the
+   * fill and needs no border trick. */
   background-color: var(--sn-tooltip-bg);
   transform: rotate(45deg);
+  pointer-events: none;
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
+/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`;
+ * `offset-x/y` folds into the margins, which every renderer supports. */
 
 .sn-tooltip--top .sn-tooltip__pop {
   bottom: 100%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  left: 50%;
   margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(var(--sn-tooltip-offset-x));
+  margin-left: var(--sn-tooltip-offset-x);
+  transform: translateX(-50%);
 }
 .sn-tooltip--top-start .sn-tooltip__pop {
   bottom: 100%;
@@ -552,12 +559,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--bottom .sn-tooltip__pop {
   top: 100%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  left: 50%;
   margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(var(--sn-tooltip-offset-x));
+  margin-left: var(--sn-tooltip-offset-x);
+  transform: translateX(-50%);
 }
 .sn-tooltip--bottom-start .sn-tooltip__pop {
   top: 100%;
@@ -578,7 +583,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   top: 50%;
   right: 100%;
   margin-right: calc(12rpx + var(--sn-tooltip-offset-x));
-  transform: translateY(calc(-50% + var(--sn-tooltip-offset-y)));
+  margin-top: var(--sn-tooltip-offset-y);
+  transform: translateY(-50%);
 }
 .sn-tooltip--left-start .sn-tooltip__pop {
   top: 0;
@@ -599,7 +605,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   top: 50%;
   left: 100%;
   margin-left: calc(12rpx + var(--sn-tooltip-offset-x));
-  transform: translateY(calc(-50% + var(--sn-tooltip-offset-y)));
+  margin-top: var(--sn-tooltip-offset-y);
+  transform: translateY(-50%);
 }
 .sn-tooltip--right-start .sn-tooltip__pop {
   top: 0;
@@ -655,10 +662,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   top: calc(50% - 8rpx);
 }
 .sn-tooltip--left-start .sn-tooltip__arrow {
-  top: 16rpx;
+  top: 24rpx;
 }
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  bottom: 16rpx;
+  bottom: 24rpx;
 }
 
 .sn-tooltip--right .sn-tooltip__arrow,
@@ -670,10 +677,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   top: calc(50% - 8rpx);
 }
 .sn-tooltip--right-start .sn-tooltip__arrow {
-  top: 16rpx;
+  top: 24rpx;
 }
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  bottom: 16rpx;
+  bottom: 24rpx;
 }
 
 .sn-tooltip--disabled .sn-tooltip__trigger {

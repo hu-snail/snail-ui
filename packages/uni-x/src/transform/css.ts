@@ -29,6 +29,9 @@ const STRIPPED_PROPERTIES = new Set([
   '-webkit-user-select',
   'outline',
   'appearance',
+  // uni-app x App has no pointer-events; the declaration is silently dropped
+  // by the native renderer, so stripping keeps the porting report honest.
+  'pointer-events',
 ]);
 
 interface ParsedCompound {

@@ -540,14 +540,34 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     const popRule = source.indexOf('.sn-popover__pop {');
     expect(popRule).toBeGreaterThan(-1);
     expect(source.slice(popRule, source.indexOf('}', popRule))).toContain('height: auto');
-    const textRule = source.indexOf('.sn-popover__menu-text {');
-    expect(textRule).toBeGreaterThan(-1);
-    const textBlock = source.slice(textRule, source.indexOf('}', textRule));
+    const mainRule = source.indexOf('.sn-popover__menu-main {');
+    expect(mainRule).toBeGreaterThan(-1);
+    const mainBlock = source.slice(mainRule, source.indexOf('}', mainRule));
     // One-line labels used to be forced with `white-space: nowrap`, which
     // spilled long labels out of the bubble instead of growing its height.
-    expect(textBlock).not.toContain('white-space: nowrap');
-    expect(textBlock).toContain('flex: 1');
-    expect(textBlock).toContain('min-width: 0');
+    expect(mainBlock).not.toContain('white-space: nowrap');
+    expect(mainBlock).toContain('flex: 1');
+    expect(mainBlock).toContain('min-width: 0');
+  });
+
+  it('sizes the bubble through fixed-width tokens (no max-content / min / vw on App)', () => {
+    // uni-app x App drops `max-content` / `min()` / `vw` declarations — the
+    // bubble then loses its sizing and can render collapsed / invisible. The
+    // refactor replaces them with fixed-width component vars.
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    // Comments are stripped so the assertions judge declarations, not prose.
+    const stripComments = (css: string): string => css.replace(/\/\*[\s\S]*?\*\//g, '');
+    const popRule = source.indexOf('.sn-popover__pop {');
+    const popBlock = stripComments(source.slice(popRule, source.indexOf('}', popRule)));
+    expect(popBlock).toContain('width: var(--sn-popover-width)');
+    expect(popBlock).not.toContain('max-content');
+    expect(popBlock).not.toContain('100vw');
+    expect(popBlock).not.toContain('min(');
+    expect(source).toContain('--sn-popover-width: 480rpx');
+    expect(source).toContain('--sn-popover-menu-width: 320rpx');
+    // Centering must stay calc-free inside `transform`.
+    expect(source).toContain('transform: translateX(-50%)');
+    expect(source).not.toContain('translate(calc(');
   });
 
   it('sizes the glyph boxes with the component vars (no fixed square)', () => {
@@ -686,6 +706,7 @@ describe('sn-popover (App trigger catcher, uni-app x)', () => {
     expect(ungated).not.toContain('trigger-catcher');
   });
 
+
   it('anchors the catcher to a relative trigger wrapper in the stylesheet', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
     const triggerRule = source.slice(
@@ -701,5 +722,206 @@ describe('sn-popover (App trigger catcher, uni-app x)', () => {
     expect(css).toContain('.sn-popover__trigger-catcher {');
     expect(css).toContain('position: absolute');
     expect(css).toContain('var(--sn-mp-color-background-soft)');
+  });
+});
+
+describe('sn-popover (rich card body, additive)', () => {
+  it('renders the card header with glyph plate, title and subtitle', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, title: 'Alignment', subtitle: '2 minutes ago', icon: 'Star' },
+    });
+    expect(w.find('.sn-popover__head').exists()).toBe(true);
+    expect(w.find('.sn-popover__title').text()).toBe('Alignment');
+    expect(w.find('.sn-popover__subtitle').text()).toBe('2 minutes ago');
+    expect(w.find('.sn-popover__icon-plate').exists()).toBe(true);
+  });
+
+  it('keeps the plain text bubble when no header part is set', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: '纯文本' } });
+    expect(w.find('.sn-popover__head').exists()).toBe(false);
+    expect(w.find('.sn-popover__text').text()).toBe('纯文本');
+  });
+
+  it('separates the description from a header with the sibling rule', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, title: '标题', content: '描述文字' },
+    });
+    expect(w.find('.sn-popover__title').exists()).toBe(true);
+    expect(w.find('.sn-popover__text').text()).toBe('描述文字');
+  });
+
+  it('prefers iconData over iconUrl and icon for the header glyph', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        title: '三源',
+        iconData: Star,
+        iconUrl: 'https://example.com/a.png',
+        icon: 'arrow-up',
+      },
+    });
+    expect(w.find('.sn-popover__icon-plate svg path').attributes('d')).toBe(Star.paths[0]);
+    expect(w.find('.sn-popover__icon-image').exists()).toBe(false);
+  });
+
+  it('renders iconUrl as the header glyph image and it beats icon', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, title: '图', iconUrl: 'https://example.com/b.png', icon: 'Star' },
+    });
+    expect(w.find('.sn-popover__icon-image').attributes('src')).toBe('https://example.com/b.png');
+    expect(w.find('.sn-popover__icon-plate svg').exists()).toBe(false);
+  });
+
+  it('resolves the header glyph name through the SnIcon chain', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, title: '升', icon: 'arrow-up' } });
+    expect(w.find('.sn-popover__icon-plate svg').exists()).toBe(true);
+  });
+
+  it('scales the header glyph through the icon plate tokens', () => {
+    const w = mount(SnPopover, { props: { title: 'T', icon: 'Star' } });
+    expect(w.attributes('style') ?? '').not.toContain('--sn-popover-icon-size');
+    expect(w.find('.sn-popover__icon-plate').exists()).toBe(false);
+  });
+
+  it('moves the close button into the header row', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, title: '标题', showClose: true } });
+    const close = w.find('.sn-popover__head .sn-popover__close');
+    expect(close.exists()).toBe(true);
+    await close.trigger('tap');
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('renders a close-only header when showClose is set without a title', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, showClose: true, content: 'A' } });
+    expect(w.find('.sn-popover__head').exists()).toBe(true);
+    await w.find('.sn-popover__close').trigger('tap');
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('renders action pills and emits actionclick with the item and index', async () => {
+    const actions = [{ label: 'Dismiss' }, { label: '删除', type: 'danger' as const }];
+    const w = mount(SnPopover, { props: { modelValue: true, actions } });
+    const pills = w.findAll('.sn-popover__action');
+    expect(pills).toHaveLength(2);
+    await pills[1]!.trigger('tap');
+    expect(w.emitted('actionclick')?.[0]).toEqual([{ item: actions[1], index: 1 }]);
+    // closeOnAction defaults to true: the bubble folds after the action tap.
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('ignores disabled action pills', async () => {
+    const actions = [{ label: '禁用', disabled: true }];
+    const w = mount(SnPopover, { props: { modelValue: true, actions } });
+    await w.find('.sn-popover__action').trigger('tap');
+    expect(w.emitted('actionclick')).toBeUndefined();
+    expect(w.find('.sn-popover__action').attributes('aria-disabled')).toBe('true');
+  });
+
+  it('keeps the bubble open when closeOnAction is false', async () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, actions: [{ label: 'Stay' }], closeOnAction: false },
+    });
+    await w.find('.sn-popover__action').trigger('tap');
+    expect(w.emitted('actionclick')).toHaveLength(1);
+    expect(w.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('renders rich menu rows with a muted description line', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [{ content: 'Share Link', description: 'Send via messaging app' }],
+      },
+    });
+    expect(w.find('.sn-popover__menu-text').text()).toBe('Share Link');
+    expect(w.find('.sn-popover__menu-desc').text()).toBe('Send via messaging app');
+  });
+});
+
+describe('sn-popover (sheet presentation, additive)', () => {
+  it('renders the fixed bottom sheet instead of the anchored bubble', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, presentation: 'sheet', title: 'Share Options' },
+    });
+    expect(w.find('.sn-popover__sheet').exists()).toBe(true);
+    expect(w.find('.sn-popover__pop').exists()).toBe(false);
+    expect(w.find('.sn-popover__sheet-mask').exists()).toBe(true);
+    expect(w.find('.sn-popover__sheet-handle').exists()).toBe(true);
+    expect(w.find('.sn-popover__sheet-title').text()).toBe('Share Options');
+  });
+
+  it('hides the arrow in sheet mode even when visibleArrow stays true', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, presentation: 'sheet' } });
+    expect(w.find('.sn-popover__arrow').exists()).toBe(false);
+  });
+
+  it('keeps the anchored bubble for the default presentation', () => {
+    const w = mount(SnPopover, { props: { modelValue: true } });
+    expect(w.find('.sn-popover__pop').exists()).toBe(true);
+    expect(w.find('.sn-popover__sheet').exists()).toBe(false);
+  });
+
+  it('closes through the sheet mask tap', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, presentation: 'sheet' } });
+    await w.find('.sn-popover__sheet-mask').trigger('tap');
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+    expect(w.emitted('close')).toHaveLength(1);
+  });
+
+  it('renders menu rows inside the sheet panel', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        presentation: 'sheet',
+        mode: 'menu',
+        content: [
+          { content: 'Share Link', description: 'Send via messaging app', icon: 'Star' },
+        ],
+      },
+    });
+    const row = w.find('.sn-popover__menu--sheet .sn-popover__menu-item');
+    expect(row.exists()).toBe(true);
+    expect(w.find('.sn-popover__menu--sheet .sn-popover__menu-desc').text()).toBe(
+      'Send via messaging app',
+    );
+    expect(w.find('.sn-popover__menu--sheet .sn-popover__icon-plate').exists()).toBe(true);
+  });
+
+  it('shows the Cancel pill when cancelText is set; its tap emits cancel and closes', async () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, presentation: 'sheet', cancelText: 'Cancel' },
+    });
+    expect(w.find('.sn-popover__cancel').exists()).toBe(true);
+    await w.find('.sn-popover__cancel').trigger('tap');
+    expect(w.emitted('cancel')).toHaveLength(1);
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('hides the Cancel pill when cancelText is empty', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, presentation: 'sheet' } });
+    expect(w.find('.sn-popover__cancel').exists()).toBe(false);
+  });
+
+  it('emits menuclick from a sheet row and closes by default', async () => {
+    const items = [{ content: 'Copy Link' }];
+    const w = mount(SnPopover, {
+      props: { modelValue: true, presentation: 'sheet', mode: 'menu', content: items },
+    });
+    await w.find('.sn-popover__menu-item').trigger('tap');
+    expect(w.emitted('menuclick')?.[0]).toEqual([{ item: items[0], index: 0 }]);
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('renders action pills in the sheet with the same actionclick contract', async () => {
+    const actions = [{ label: 'Dismiss' }];
+    const w = mount(SnPopover, {
+      props: { modelValue: true, presentation: 'sheet', actions },
+    });
+    const pill = w.find('.sn-popover__sheet-actions .sn-popover__action');
+    expect(pill.exists()).toBe(true);
+    await pill.trigger('tap');
+    expect(w.emitted('actionclick')?.[0]).toEqual([{ item: actions[0], index: 0 }]);
+    expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
   });
 });

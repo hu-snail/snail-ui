@@ -1,6 +1,16 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — English shadow of popover-mp-icon-class.
+ * Demo: sn-popover — the legacy `iconClass` field.
+ *
+ * - in `mode="menu"`, `content` is a `{ content, iconClass, disabled }` list;
+ *   `iconClass` (the wd-compatibility field) accepts a name (resolved through
+ *   SnIcon: built-in catalog / registry) or an image address (rendered as an
+ *   `<image>` when it starts with `http` / `//` / `/` / `./`)
+ * - the newer `iconData` / `iconUrl` / `icon` fields take precedence (see the
+ *   menu scenario)
+ *
+ * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
+ * inside the demo.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -9,9 +19,9 @@ import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 const menuOpen = ref(false);
 const picked = ref('—');
 
-/** The legacy `iconClass` field: a name (resolved through SnIcon) or an image source. */
+/** The legacy `iconClass` field still works: name → SnIcon; URL → `<image>`. */
 const legacyMenu = [
-  { content: 'Pin to top', iconClass: 'star' },
+  { content: 'Mark as favourite', iconClass: 'star' },
   { content: 'Edit', iconClass: 'square-pen' },
   { content: 'Delete', iconClass: 'trash-2', disabled: true },
 ];
@@ -32,7 +42,7 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       custom-class="sn-demo-contained"
       @menuclick="onMenuClick"
     >
-      <SnButton block>Menu mode + the legacy iconClass field</SnButton>
+      <SnButton block>menu mode + legacy iconClass</SnButton>
     </SnPopover>
 
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
