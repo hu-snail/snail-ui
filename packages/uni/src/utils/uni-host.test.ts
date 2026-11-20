@@ -9,11 +9,11 @@
  * itself, since the failure it guards only exists after compilation.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 // Vite-native raw import — reads the helper as text without filesystem path
 // gymnastics (vitest's import.meta.url is not a file:// URL under this setup).
 import helperSource from './uni-host.ts?raw';
-import { resolveUniHost } from './uni-host';
+import { pickSelectorQueryHost, resolveUniHost } from './uni-host';
 
 describe('resolveUniHost', () => {
   it('should resolve the globalThis stub in a plain test host', () => {
@@ -50,5 +50,48 @@ describe('resolveUniHost', () => {
     expect(helperSource).toMatch(/return uni as T/);
     expect(helperSource).toMatch(/declare const uni: unknown/);
     expect(helperSource).toMatch(/globalThis as \{ uni\?: T \}/);
+  });
+});
+
+describe('pickSelectorQueryHost', () => {
+  const makeHost = () => {
+    const exec = vi.fn();
+    return {
+      exec,
+      host: {
+        createSelectorQuery: () => ({
+          in: vi.fn(),
+          select: () => ({
+            boundingClientRect: (cb: (rect: { width: number }) => void) => {
+              cb({ width: 120 });
+              return { exec };
+            },
+          }),
+          exec,
+        }),
+      } as never,
+    };
+  };
+
+  it('should prefer the mp $scope host so the query scopes to the component subtree', () => {
+    const scope = makeHost();
+    const uniHost = makeHost();
+    const picked = pickSelectorQueryHost(scope.host, uniHost.host, 'proxy');
+    expect(picked).not.toBeNull();
+    expect(picked?.queryScope).toBe(scope.host);
+    expect(picked?.createQuery).toBe(scope.host.createSelectorQuery);
+  });
+
+  it('should fall back to the uni host with the component proxy as query scope', () => {
+    const uniHost = makeHost();
+    const picked = pickSelectorQueryHost(undefined, uniHost.host, 'proxy');
+    expect(picked).not.toBeNull();
+    expect(picked?.createQuery).toBe(uniHost.host.createSelectorQuery);
+    expect(picked?.queryScope).toBe('proxy');
+  });
+
+  it('should return null when neither host can create queries', () => {
+    expect(pickSelectorQueryHost(undefined, undefined, 'proxy')).toBeNull();
+    expect(pickSelectorQueryHost({ /* no createSelectorQuery */ }, {}, 'proxy')).toBeNull();
   });
 });

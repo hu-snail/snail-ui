@@ -135,7 +135,11 @@ visible (no fade, no breakage).
 - `touchcancel` (a system gesture stealing the touch) settles the row closed, so it
   can never stick half-open.
 - The open distance equals the real action-area width, measured once per gesture
-  through `uni.createSelectorQuery()` → the DOM node → a fallback constant.
+  through `uni.createSelectorQuery()` → the DOM node → a fallback constant. On
+  mini-programs the query prefers the component's own `$scope` and scopes with
+  `.in($scope)` — the page-level query with `.in(Vue proxy)` resolved against
+  the PAGE inside nested components and measured the first row's action width
+  for every row (§118.3, same root cause as the sn-icon cascade-color fix).
 - While the row is closed (no drag, no settle animation, no open side) the action
   areas are translated fully outside the root's `overflow: hidden` clip
   (`translateX(±100%)`), so the closed state never relies on the content layer

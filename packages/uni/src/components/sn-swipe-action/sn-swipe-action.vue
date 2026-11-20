@@ -125,7 +125,12 @@
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
-import { resolveUniHost } from '../../utils/uni-host';
+import {
+  pickSelectorQueryHost,
+  resolveUniHost,
+  type UniSelectorQuery,
+  type UniSelectorQueryHost,
+} from '../../utils/uni-host';
 
 defineOptions({ name: 'SnSwipeAction' });
 
@@ -287,25 +292,23 @@ function measureSide(side: SwipeActionPosition): void {
       // Fall through to the next strategy.
     }
   }
-  // (2) uni runtime — the cross-end measurement API.
-  const queryFactory = resolveUniHost<{
-    createSelectorQuery?: () => {
-      in?: (component: unknown) => unknown;
-      select?: (selector: string) => {
-        boundingClientRect?: (cb: (rect: { width?: number } | null) => void) => {
-          exec?: (cb?: () => void) => void;
-        };
-      };
-      exec?: (cb?: () => void) => void;
-    };
-  }>()?.createSelectorQuery;
-  if (typeof queryFactory !== 'function') return;
+  // (2) uni runtime — the cross-end measurement API. Host pick per
+  // `pickSelectorQueryHost` (§118.3): the mp `$scope` query scopes natively;
+  // `.in(Vue proxy)` on the page-level query measured the FIRST row's action
+  // width on mp devices (pills stayed covered past a ~80px clamp).
+  const instance = getCurrentInstance();
+  const proxy = instance?.proxy as
+    | { $scope?: UniSelectorQueryHost; $?: { scope?: UniSelectorQueryHost } }
+    | null;
+  const picked = pickSelectorQueryHost(
+    proxy?.$scope ?? proxy?.$?.scope,
+    resolveUniHost<UniSelectorQueryHost>(),
+    instance?.proxy,
+  );
+  if (picked === null) return;
   try {
-    const query = queryFactory();
-    // Scope to this component instance: without `.in()` a mini-program page
-    // resolves the selector against the PAGE, so every row in a list measures
-    // the first row's action width.
-    const scoped = (query.in?.(getCurrentInstance()?.proxy) as typeof query | undefined) ?? query;
+    const query = picked.createQuery();
+    const scoped = (query.in?.(picked.queryScope) as UniSelectorQuery | undefined) ?? query;
     const selection = scoped.select?.(`.sn-swipe-action__actions--${side}`);
     const measured = selection?.boundingClientRect?.((rect) => {
       const width = rect?.width;
