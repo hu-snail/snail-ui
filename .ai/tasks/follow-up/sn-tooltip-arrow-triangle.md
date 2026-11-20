@@ -39,8 +39,18 @@ uni-app x App 引擎的 CSS flattener 不展开 4 值 `border-width` TRBL 简写
 完全落在气泡外；宽度对齐 sn-popover 32rpx 菱形露出的 ~45rpx 尖角）。
 
 **回归测试**: `sn-tooltip.test.ts` 中
-`draws the arrow as a border triangle, not a translucent rotated square`
-与 `keeps the arrow outside the content plate for every placement family`。
+`draws the arrow as a border triangle, not a translucent rotated square`、
+`keeps the arrow outside the content plate for every placement family`、
+`keeps the arrow as wide as the popover footprint (44rpx base)` 与
+`points the apex at the trigger (top colors top, bottom colors bottom)`。
+
+**第二次踩坑（方向反转, 61781fa7）**: 把 web 端 4 值简写拆成 longhand 时，
+top/bottom 两族的着色边写反了 —— 着色 **TOP** border 渲染的是**尖角朝下**
+的三角，着色 **BOTTOM** border 是尖角朝上。vertical 箭头全部倒扣进底盘
+（尖角与底盘同色融合，肉眼看是倒扣漏斗）。规则：箭头指向哪边，就着色
+**靠气泡那条对面边**？不 —— 箭头朝下 = 着色 top；朝上 = 着色 bottom；
+朝右 = 着色 left；朝左 = 着色 right（着色边 = 尖角的对边 = base 所在边，
+base 必须贴气泡边缘）。
 
 **顺带记录**: 完整测试套件中 `sn-avatar-group.test.ts` 8 个用例失败
 （`expected [ … ] to have a length of 4 but got 5` 等），在干净工作树
