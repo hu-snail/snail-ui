@@ -179,9 +179,18 @@ describe('sn-tooltip', () => {
 
     it('keeps the arrow outside the content plate for every placement family', () => {
       const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
-      for (const edge of ['bottom: -20rpx', 'top: -20rpx', 'right: -20rpx', 'left: -20rpx']) {
+      for (const edge of ['bottom: -18rpx', 'top: -18rpx', 'right: -18rpx', 'left: -18rpx']) {
         expect(source).toContain(edge);
       }
+    });
+
+    it('keeps the arrow as wide as the popover footprint (44rpx base)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      // The 20rpx spike read too narrow next to sn-popover's ~45rpx diamond.
+      expect(source).toContain('border-right-width: 22rpx');
+      expect(source).toContain('border-left-width: 22rpx');
+      expect(source).toContain('border-top-width: 22rpx');
+      expect(source).toContain('border-bottom-width: 22rpx');
     });
   });
 

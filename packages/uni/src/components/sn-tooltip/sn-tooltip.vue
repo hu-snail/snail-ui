@@ -524,8 +524,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
  * square sharing the fill double-composites its inner half over the bubble
  * body — a darker diamond showed inside the content area (§103). A triangle
  * paints the fill exactly once, so it can never overlap the text plate.
- * 20×20rpx: a rotated 16rpx square only exposes ~9rpx of visual triangle,
- * too small to read as an arrow (real-device regression, 图4 reference). */
+ * 44rpx base × 18rpx tall — the wide footprint sn-popover's 32rpx diamond
+ * exposes on-page (~45rpx wide); a 20rpx spike read too narrow. */
 
 .sn-tooltip__arrow {
   position: absolute;
@@ -547,38 +547,38 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
   border-top-width: 0;
-  border-right-width: 10rpx;
-  border-bottom-width: 20rpx;
-  border-left-width: 10rpx;
+  border-right-width: 22rpx;
+  border-bottom-width: 18rpx;
+  border-left-width: 22rpx;
   border-bottom-color: var(--sn-tooltip-bg);
 }
 /* Bubble below → apex UP → colored top border. */
 .sn-tooltip--bottom .sn-tooltip__arrow,
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  border-top-width: 20rpx;
-  border-right-width: 10rpx;
+  border-top-width: 18rpx;
+  border-right-width: 22rpx;
   border-bottom-width: 0;
-  border-left-width: 10rpx;
+  border-left-width: 22rpx;
   border-top-color: var(--sn-tooltip-bg);
 }
 /* Bubble left → apex RIGHT → colored left border. */
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  border-top-width: 10rpx;
+  border-top-width: 22rpx;
   border-right-width: 0;
-  border-bottom-width: 10rpx;
-  border-left-width: 20rpx;
+  border-bottom-width: 22rpx;
+  border-left-width: 18rpx;
   border-left-color: var(--sn-tooltip-bg);
 }
 /* Bubble right → apex LEFT → colored right border. */
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  border-top-width: 10rpx;
-  border-right-width: 20rpx;
-  border-bottom-width: 10rpx;
+  border-top-width: 22rpx;
+  border-right-width: 18rpx;
+  border-bottom-width: 22rpx;
   border-left-width: 0;
   border-right-color: var(--sn-tooltip-bg);
 }
@@ -674,17 +674,19 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 /* ── Arrow geometry per placement ──────────────────────────────────────── */
-/* The whole triangle rides OUTSIDE the bubble edge (`-20rpx` = its full
+/* The whole triangle rides OUTSIDE the bubble edge (`-18rpx` = its full
  * height): only the apex may kiss the edge line, the body never overlaps
- * the content plate. start/end offsets aim the apex 24rpx from the edge. */
+ * the content plate. The 44rpx base matches sn-popover's on-page arrow
+ * footprint (its 32rpx diamond exposes ~45rpx); start/end offsets aim the
+ * apex 24rpx from the edge. */
 
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  bottom: -20rpx;
+  bottom: -18rpx;
 }
 .sn-tooltip--top .sn-tooltip__arrow {
-  left: calc(50% - 10rpx);
+  left: calc(50% - 22rpx);
 }
 .sn-tooltip--top-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -696,10 +698,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom .sn-tooltip__arrow,
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  top: -20rpx;
+  top: -18rpx;
 }
 .sn-tooltip--bottom .sn-tooltip__arrow {
-  left: calc(50% - 10rpx);
+  left: calc(50% - 22rpx);
 }
 .sn-tooltip--bottom-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -711,10 +713,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  right: -20rpx;
+  right: -18rpx;
 }
 .sn-tooltip--left .sn-tooltip__arrow {
-  top: calc(50% - 10rpx);
+  top: calc(50% - 22rpx);
 }
 .sn-tooltip--left-start .sn-tooltip__arrow {
   top: 16rpx;
@@ -726,10 +728,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  left: -20rpx;
+  left: -18rpx;
 }
 .sn-tooltip--right .sn-tooltip__arrow {
-  top: calc(50% - 10rpx);
+  top: calc(50% - 22rpx);
 }
 .sn-tooltip--right-start .sn-tooltip__arrow {
   top: 16rpx;
