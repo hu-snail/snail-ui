@@ -1,14 +1,15 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — menu mode with rich rows and the row-icon
- * configuration. Per AUI-DOCS-016: imports the real @snui/uni sn-popover.
+ * Demo: sn-popover (uni-end) — menu mode with rich rows and per-row colored
+ * glyph plates. Per AUI-DOCS-016: imports the real @snui/uni sn-popover.
  *
  * Row glyphs resolve from the documented sources, highest precedence first:
  *   - `iconData` — an inline IconData object, no registration step
  *   - `iconUrl`  — an image address, rendered as `<image>`
  *   - `icon`     — a name resolved through SnIcon (built-in catalog here)
  * The legacy `iconClass` field keeps working (name or image address).
- * The additive `description` field renders a muted second line per row.
+ * The additive `description` field renders a muted second line; `iconBg` /
+ * `iconColor` tint the row's glyph plate (colored icons, reference-style).
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -20,14 +21,37 @@ const picked = ref('—');
 
 /** Image-typed row glyph as an inline SVG data URL — offline-safe for docs. */
 const tagImage =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
 
 const menu = [
-  { content: '设为星标', description: '在收藏列表置顶显示', iconData: Star },
-  { content: '分享给好友', description: '通过消息应用发送', icon: 'share' },
+  {
+    content: '设为星标',
+    description: '在收藏列表置顶显示',
+    iconData: Star,
+    iconBg: 'var(--sn-mp-color-feedback-warning-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    content: '分享给好友',
+    description: '通过消息应用发送',
+    icon: 'share',
+    iconBg: 'var(--sn-mp-color-feedback-info-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-info)',
+  },
   { content: '添加标签', iconUrl: tagImage },
-  { content: '收藏到书签', iconClass: 'bookmark' },
-  { content: '删除', icon: 'trash-2', disabled: true },
+  {
+    content: '收藏到书签',
+    iconClass: 'bookmark',
+    iconBg: 'var(--sn-mp-color-feedback-success-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-success)',
+  },
+  {
+    content: '删除',
+    icon: 'trash-2',
+    disabled: true,
+    iconBg: 'var(--sn-mp-color-feedback-danger-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-danger)',
+  },
 ];
 
 function onMenuClick(payload: { item: { content?: string } }): void {
@@ -38,21 +62,26 @@ function onMenuClick(payload: { item: { content?: string } }): void {
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="open"
-      mode="menu"
-      :content="menu"
-      placement="bottom-end"
-      custom-class="sn-demo-contained"
-      @menuclick="onMenuClick"
-    >
-      <SnButton type="primary" block>更多操作</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        mode="menu"
+        :content="menu"
+        placement="bottom"
+        custom-class="sn-demo-contained"
+        @menuclick="onMenuClick"
+      >
+        <SnButton type="primary">更多操作</SnButton>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">已选择：{{ picked }}</text>
     <text class="sn-demo__hint"
-      >富行：content 为标题、description 为弱化副行；图标来源：iconData（内联数据 /
-      免注册）· icon（名称）· iconUrl（图片）· iconClass（旧字段，兼容）</text
+      >富行：content 为标题、description 为弱化副行；iconBg / iconColor
+      为行级彩色图标圆底；图标来源：iconData（内联数据 / 免注册）· icon（名称）·
+      iconUrl（图片）· iconClass（旧字段，兼容）</text
     >
   </view>
 </template>
@@ -71,8 +100,17 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
-.sn-popover.sn-demo-contained {
-  position: absolute;
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.sn-popover-demo__space {
+  height: 420rpx;
+}
+/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
+  position: relative;
+  display: block;
 }
 </style>

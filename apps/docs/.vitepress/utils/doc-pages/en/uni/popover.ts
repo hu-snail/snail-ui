@@ -86,7 +86,7 @@ import { Popover } from '@snui/uni';
     {
       name: 'popover-mp-menu',
       title: 'Menu mode & glyph sources',
-      blurb: 'Rich rows (content title + description line) and the four glyph sources',
+      blurb: 'Rich rows (content title + description line), per-row colored glyph plates and the four glyph sources',
     },
     {
       name: 'popover-mp-height',

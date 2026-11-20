@@ -1,9 +1,11 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:d034a8230732ba2b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:b9507a85063296bb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — top / left / right / bottom placement grid.
- * Triggers sit at the corners so each anchored bubble has room to open; the
- * start / end alignment variants are covered by the alignment demo.
+ *
+ * 参考稿布局：上行「上 / 左」、下行「右 / 下」，两端对齐留出中缝；每个气泡
+ * 带彩色图标圆底 + 标题 + 描述（与基础 / 对齐 demo 同一卡片语言）。
+ * -start / -end 对齐档见「对齐方式」场景。
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
@@ -12,13 +14,13 @@ import { MapPin } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 type Direction = 'top' | 'left' | 'right' | 'bottom';
 
 /** Corner layout: 上/左 in row 1, 右/下 in row 2 (flex, MP / App safe). */
-const firstRow: { key: Direction; label: string }[] = [
-  { key: 'top', label: '上' },
-  { key: 'left', label: '左' },
+const firstRow: { key: Direction; label: string; side: string }[] = [
+  { key: 'top', label: 'Top', side: '上方' },
+  { key: 'left', label: 'Left', side: '左侧' },
 ];
-const secondRow: { key: Direction; label: string }[] = [
-  { key: 'right', label: '右' },
-  { key: 'bottom', label: '下' },
+const secondRow: { key: Direction; label: string; side: string }[] = [
+  { key: 'right', label: 'Right', side: '右侧' },
+  { key: 'bottom', label: 'Bottom', side: '下方' },
 ];
 
 const openDirection = ref<Direction | null>(null);
@@ -40,8 +42,10 @@ function setOpen(direction: Direction, value: boolean): void {
             :model-value="openDirection === cell.key"
             :placement="cell.key"
             title="快速提示"
-            :content="`气泡出现在触发器的${cell.label}侧。`"
+            :content="`这个气泡出现在触发器的${cell.side}。`"
             :icon-data="MapPin"
+            icon-bg="var(--sn-mp-color-feedback-info-soft)"
+            icon-color="var(--sn-mp-color-feedback-info)"
             custom-class="sn-demo-contained"
             @update:model-value="setOpen(cell.key, $event)"
           >
@@ -56,8 +60,10 @@ function setOpen(direction: Direction, value: boolean): void {
             :model-value="openDirection === cell.key"
             :placement="cell.key"
             title="快速提示"
-            :content="`气泡出现在触发器的${cell.label}侧。`"
+            :content="`这个气泡出现在触发器的${cell.side}。`"
             :icon-data="MapPin"
+            icon-bg="var(--sn-mp-color-feedback-info-soft)"
+            icon-color="var(--sn-mp-color-feedback-info)"
             custom-class="sn-demo-contained"
             @update:model-value="setOpen(cell.key, $event)"
           >
@@ -70,7 +76,7 @@ function setOpen(direction: Direction, value: boolean): void {
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__hint">四个方向都带指向触发器的箭头；点击气泡外部任意位置关闭。</text>
+    <text class="sn-demo__hint">四个方向都带指向触发器的大箭头；点击气泡外部任意位置关闭。</text>
   </view>
 </template>
 <style scoped>
@@ -86,7 +92,7 @@ function setOpen(direction: Direction, value: boolean): void {
 .sn-popover-demo__grid {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 48rpx;
   padding: 24rpx 0;
 }
 .sn-popover-demo__row {
@@ -98,12 +104,12 @@ function setOpen(direction: Direction, value: boolean): void {
   display: flex;
   flex-direction: row;
 }
-/* Row 1 pairs [上 … 左]: the spacer keeps 左 on the right edge. */
+/* Row 1 pairs [Top … Left]: the spacer keeps Left on the right edge. */
 .sn-popover-demo__gap {
   flex: 1;
 }
 .sn-popover-demo__space {
-  height: 300rpx;
+  height: 340rpx;
 }
 /* Docs-preview only — keep the bubble inside the demo flow. */
 </style>

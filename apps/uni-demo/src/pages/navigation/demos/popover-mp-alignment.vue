@@ -38,6 +38,8 @@ function setOpen(alignment: Alignment, value: boolean): void {
           title="对齐方式"
           :content="`气泡${item.label}对齐触发器（${item.placement}）。`"
           :icon-data="Settings"
+          icon-bg="var(--sn-mp-color-feedback-info-soft)"
+          icon-color="var(--sn-mp-color-feedback-info)"
           :visible-arrow="false"
           custom-class="sn-demo-contained"
           @update:model-value="setOpen(item.key, $event)"

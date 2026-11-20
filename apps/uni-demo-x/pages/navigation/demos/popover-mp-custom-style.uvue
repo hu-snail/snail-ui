@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue sha256:7c7af6f6a35b7a2c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue sha256:40eed26a61f10369 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — 节点类名与偏移：custom-arrow / custom-pop / offset / custom-style。
@@ -21,7 +21,7 @@ const styledOpen = ref(false);
       mode="normal"
       title="自定义外观"
       content="描边箭头、主题色边框，以及通过组件令牌放大的卡片与图标圆底。"
-      icon="crown"
+      icon="star"
       placement="bottom-start"
       :offset="{ x: 0, y: 4 }"
       custom-arrow="sn-demo__arrow"

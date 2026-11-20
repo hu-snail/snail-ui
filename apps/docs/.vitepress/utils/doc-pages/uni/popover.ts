@@ -89,7 +89,7 @@ import { Popover } from '@snui/uni';
     {
       name: 'popover-mp-menu',
       title: '菜单模式与图标配置',
-      blurb: '富行（content 标题 + description 副行）与四源图标',
+      blurb: '富行（content 标题 + description 副行）、行级彩色图标圆底与四源图标',
     },
     { name: 'popover-mp-height', title: '自适应高度', blurb: '长文案在定宽内换行，气泡向下增长不裁切' },
     {

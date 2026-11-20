@@ -12,9 +12,27 @@ const open = ref(false);
 const picked = ref('—');
 
 const shareRows = [
-  { content: '分享链接', description: '通过消息应用发送', iconData: Share2 },
-  { content: '复制链接', description: '复制到剪贴板', iconData: FileText },
-  { content: '离线保存', description: '下载以备后用', iconData: Download },
+  {
+    content: '分享链接',
+    description: '通过消息应用发送',
+    iconData: Share2,
+    iconBg: 'var(--sn-mp-color-feedback-info-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-info)',
+  },
+  {
+    content: '复制链接',
+    description: '复制到剪贴板',
+    iconData: FileText,
+    iconBg: 'var(--sn-mp-color-feedback-warning-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    content: '离线保存',
+    description: '下载以备后用',
+    iconData: Download,
+    iconBg: 'var(--sn-mp-color-feedback-success-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-success)',
+  },
 ];
 
 function onPick(payload: { item: { content?: string } }): void {

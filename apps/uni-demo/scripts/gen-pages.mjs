@@ -576,6 +576,8 @@ const MODULE_BARE_PAGES = new Set([
   'calendar',
   'datetime-picker',
   'swipe-action',
+  'popover',
+  'tooltip',
 ]);
 
 /**

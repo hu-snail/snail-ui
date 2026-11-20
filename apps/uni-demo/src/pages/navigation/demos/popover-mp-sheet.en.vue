@@ -12,9 +12,27 @@ const open = ref(false);
 const picked = ref('—');
 
 const shareRows = [
-  { content: 'Share Link', description: 'Send via messaging app', iconData: Share2 },
-  { content: 'Copy Link', description: 'Copy to clipboard', iconData: FileText },
-  { content: 'Save Offline', description: 'Download for later', iconData: Download },
+  {
+    content: 'Share Link',
+    description: 'Send via messaging app',
+    iconData: Share2,
+    iconBg: 'var(--sn-mp-color-feedback-info-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-info)',
+  },
+  {
+    content: 'Copy Link',
+    description: 'Copy to clipboard',
+    iconData: FileText,
+    iconBg: 'var(--sn-mp-color-feedback-warning-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-warning)',
+  },
+  {
+    content: 'Save Offline',
+    description: 'Download for later',
+    iconData: Download,
+    iconBg: 'var(--sn-mp-color-feedback-success-soft)',
+    iconColor: 'var(--sn-mp-color-feedback-success)',
+  },
 ];
 
 function onPick(payload: { item: { content?: string } }): void {

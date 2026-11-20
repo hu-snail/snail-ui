@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.en.vue sha256:945f6f64734af7cc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.en.vue sha256:86aef08d39d17c10 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — node classes & offset: custom-arrow / custom-pop /
@@ -24,7 +24,7 @@ const styledOpen = ref(false);
       mode="normal"
       title="Custom look"
       content="Outlined arrow, accent border, and an enlarged card / glyph plate through the component tokens."
-      icon="crown"
+      icon="star"
       placement="bottom-start"
       :offset="{ x: 0, y: 4 }"
       custom-arrow="sn-demo__arrow"

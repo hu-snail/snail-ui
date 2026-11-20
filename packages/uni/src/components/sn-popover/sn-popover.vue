@@ -167,6 +167,17 @@ export interface SnPopoverMenuItem {
   /** Muted second line under the title (additive). */
   description?: string;
   /**
+   * Row glyph plate fill — any CSS color or var() (additive). When set (or
+   * `iconColor` is), the row renders a tinted circle behind the glyph instead
+   * of the bare glyph / neutral plate. Per-row colored plates, reference-style.
+   */
+  iconBg?: string;
+  /**
+   * Row glyph color — any CSS color or var() (additive). Beats the plate's
+   * `--sn-popover-icon-color` default.
+   */
+  iconColor?: string;
+  /**
    * Row glyph as inline SVG data (additive, AUI-OPT-07). Highest precedence —
    * pass a built-in set object and no registration step is needed.
    */
@@ -493,6 +504,26 @@ function iconNameOf(item: { icon?: string | undefined; iconClass?: string | unde
   return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
 }
 
+/** Whether a menu row carries a per-row glyph tint (colored plate, reference-style). */
+function rowHasTint(item: SnPopoverMenuItem): boolean {
+  return (
+    (item.iconBg !== undefined && item.iconBg !== '') ||
+    (item.iconColor !== undefined && item.iconColor !== '')
+  );
+}
+
+/** Inline plate style from the row's tint fields — only provided fields land. */
+function rowPlateStyle(item: SnPopoverMenuItem): string {
+  const parts: string[] = [];
+  if (item.iconBg !== undefined && item.iconBg !== '') {
+    parts.push(`background-color: ${item.iconBg}`);
+  }
+  if (item.iconColor !== undefined && item.iconColor !== '') {
+    parts.push(`color: ${item.iconColor}`);
+  }
+  return parts.join('; ');
+}
+
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 /** Normalise `offset` into a `{ x, y }` pair of design px. */
@@ -626,26 +657,28 @@ function onCancelTap(): void {
             :aria-disabled="item.disabled ? 'true' : 'false'"
             @tap="onMenuTap(item, index)"
           >
-            <!-- Row glyph precedence: inline data > image address > name. -->
-            <SnIcon
-              v-if="iconSourceOf(item) === 'data'"
-              class="sn-popover__menu-icon"
-              :icon="item.iconData"
-              :size="MENU_ICON_SIZE"
-            />
-            <image
-              v-else-if="iconSourceOf(item) === 'url'"
-              class="sn-popover__menu-icon"
-              :src="iconUrlOf(item)"
-              mode="aspectFit"
-              aria-hidden="true"
-            />
-            <SnIcon
-              v-else-if="iconSourceOf(item) === 'name'"
-              class="sn-popover__menu-icon"
-              :icon="iconNameOf(item)"
-              :size="MENU_ICON_SIZE"
-            />
+            <!-- Row glyph precedence: inline data > image address > name.
+                 A tinted row (iconBg / iconColor) renders the glyph in a
+                 colored circle; untinted anchor rows keep the bare glyph. -->
+            <view
+              v-if="iconSourceOf(item) !== 'none'"
+              :class="rowHasTint(item) ? 'sn-popover__icon-plate' : 'sn-popover__menu-icon'"
+              :style="rowPlateStyle(item)"
+            >
+              <SnIcon
+                v-if="iconSourceOf(item) === 'data'"
+                :icon="item.iconData"
+                :size="MENU_ICON_SIZE"
+              />
+              <image
+                v-else-if="iconSourceOf(item) === 'url'"
+                class="sn-popover__icon-image"
+                :src="iconUrlOf(item)"
+                mode="aspectFit"
+                aria-hidden="true"
+              />
+              <SnIcon v-else :icon="iconNameOf(item)" :size="MENU_ICON_SIZE" />
+            </view>
             <view class="sn-popover__menu-main">
               <text class="sn-popover__menu-text">{{ item.content }}</text>
               <text v-if="item.description" class="sn-popover__menu-desc">
@@ -735,7 +768,11 @@ function onCancelTap(): void {
               :aria-disabled="item.disabled ? 'true' : 'false'"
               @tap="onMenuTap(item, index)"
             >
-              <view v-if="iconSourceOf(item) !== 'none'" class="sn-popover__icon-plate">
+              <view
+                v-if="iconSourceOf(item) !== 'none'"
+                class="sn-popover__icon-plate"
+                :style="rowPlateStyle(item)"
+              >
                 <SnIcon
                   v-if="iconSourceOf(item) === 'data'"
                   :icon="item.iconData"
@@ -1055,8 +1092,10 @@ function onCancelTap(): void {
 
 .sn-popover__arrow {
   position: absolute;
-  width: 16rpx;
-  height: 16rpx;
+  /* Rotated diamond: half sticks out of the bubble edge. 24rpx square → a
+   * ~17rpx wide spike, reference-sized (small diamonds vanish on the page). */
+  width: 24rpx;
+  height: 24rpx;
   background-color: var(--sn-popover-bg);
   /* Outline the diamond so the outside half reads against the page — a bare
    * white diamond vanishes on an elevated (white) host surface, and the half
@@ -1164,7 +1203,7 @@ function onCancelTap(): void {
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
-  bottom: -6rpx;
+  bottom: -9rpx;
   /* Points up: the outside half is the bottom-right of the rotated square. */
   border-top-color: transparent;
   border-left-color: transparent;
@@ -1172,7 +1211,7 @@ function onCancelTap(): void {
   border-right-color: var(--sn-popover-border);
 }
 .sn-popover--top .sn-popover__arrow {
-  left: calc(50% - 8rpx);
+  left: calc(50% - 12rpx);
 }
 .sn-popover--top-start .sn-popover__arrow {
   left: 24rpx;
@@ -1184,13 +1223,13 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  top: -6rpx;
+  top: -9rpx;
   /* Points down: the outside half is the top-left of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-left-color: var(--sn-popover-border);
 }
 .sn-popover--bottom .sn-popover__arrow {
-  left: calc(50% - 8rpx);
+  left: calc(50% - 12rpx);
 }
 .sn-popover--bottom-start .sn-popover__arrow {
   left: 24rpx;
@@ -1202,14 +1241,14 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
-  right: -6rpx;
+  right: -9rpx;
   /* Points left: the outside half is the right edge of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-left-color: transparent;
   border-right-color: var(--sn-popover-border);
 }
 .sn-popover--left .sn-popover__arrow {
-  top: calc(50% - 8rpx);
+  top: calc(50% - 12rpx);
 }
 .sn-popover--left-start .sn-popover__arrow {
   top: 24rpx;
@@ -1221,14 +1260,14 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  left: -6rpx;
+  left: -9rpx;
   /* Points right: the outside half is the left edge of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-right-color: transparent;
   border-left-color: var(--sn-popover-border);
 }
 .sn-popover--right .sn-popover__arrow {
-  top: calc(50% - 8rpx);
+  top: calc(50% - 12rpx);
 }
 .sn-popover--right-start .sn-popover__arrow {
   top: 24rpx;

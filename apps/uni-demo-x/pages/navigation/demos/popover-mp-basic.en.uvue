@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue sha256:84a4fa3e758c109c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue sha256:97aef9437896b7e3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — rich card bubble (icon plate + title + text).
@@ -18,6 +18,8 @@ const open = ref(false);
         title="Quick Tip"
         content="There is no hover on miniprogram — the bubble toggles on tap. Tap anywhere outside it to close, or tap the trigger again."
         :icon-data="MapPin"
+        icon-bg="var(--sn-mp-color-feedback-warning-soft)"
+        icon-color="var(--sn-mp-color-feedback-warning)"
         placement="bottom"
         :show-close="true"
         custom-class="sn-demo-contained"

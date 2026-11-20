@@ -81,6 +81,8 @@ import { SnPopover } from '@snui/uni';
 | ------------- | ---------- | ------------------------------------------------------------------------------------- |
 | `content`     | `string`   | Row title.                                                                            |
 | `description` | `string`   | Muted second line under the title (additive).                                         |
+| `iconBg`      | `string`   | Row glyph plate fill — colored plate when set (additive).                             |
+| `iconColor`   | `string`   | Row glyph color (additive).                                                           |
 | `iconData`    | `IconData` | Inline icon data — highest precedence, no registration step (additive).               |
 | `iconUrl`     | `string`   | Image address, rendered as `<image>` (additive).                                      |
 | `icon`        | `string`   | Icon name resolved through SnIcon: registry → built-in catalog → provider (additive). |
@@ -173,6 +175,8 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
+- Reference-large arrow: the diamond is a 24rpx square protruding 9rpx
+  from the bubble edge (the small 16rpx diamond vanished on-page).
 - Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
   and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,

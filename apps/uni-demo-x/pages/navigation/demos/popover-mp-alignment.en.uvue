@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue sha256:abd68da139e76fb9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue sha256:ccccbc682fd246db —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — start / center / end alignment over a trigger
@@ -37,6 +37,8 @@ function setOpen(alignment: Alignment, value: boolean): void {
           title="Alignment"
           :content="`Aligned to the ${item.key} of the trigger (${item.placement}).`"
           :icon-data="Settings"
+          icon-bg="var(--sn-mp-color-feedback-info-soft)"
+          icon-color="var(--sn-mp-color-feedback-info)"
           :visible-arrow="false"
           custom-class="sn-demo-contained"
           @update:model-value="setOpen(item.key, $event)"

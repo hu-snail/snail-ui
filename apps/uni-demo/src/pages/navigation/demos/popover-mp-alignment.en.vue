@@ -38,6 +38,8 @@ function setOpen(alignment: Alignment, value: boolean): void {
           title="Alignment"
           :content="`Aligned to the ${item.key} of the trigger (${item.placement}).`"
           :icon-data="Settings"
+          icon-bg="var(--sn-mp-color-feedback-info-soft)"
+          icon-color="var(--sn-mp-color-feedback-info)"
           :visible-arrow="false"
           custom-class="sn-demo-contained"
           @update:model-value="setOpen(item.key, $event)"

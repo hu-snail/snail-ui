@@ -371,7 +371,7 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
         ],
       },
     });
-    const images = w.findAll('image.sn-popover__menu-icon');
+    const images = w.findAll('image.sn-popover__menu-icon, image.sn-popover__icon-image');
     expect(images).toHaveLength(2);
     expect(images[0]!.attributes('src')).toBe('https://cdn.example.com/scan.png');
   });
@@ -389,7 +389,7 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
         },
       });
       expect(w.find('.sn-popover__menu-item svg, .sn-popover__menu-icon svg').exists()).toBe(true);
-      expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+      expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
     } finally {
       clearSnIcons();
     }
@@ -590,7 +590,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
       props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
     });
     expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
-    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
   });
 
   it('prefers iconData over iconUrl and icon', () => {
@@ -603,7 +603,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
         ],
       },
     });
-    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
     expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
   });
 
@@ -615,7 +615,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
         content: [{ content: '图', iconUrl: 'https://example.com/b.png', icon: 'Star' }],
       },
     });
-    const image = w.find('image.sn-popover__menu-icon');
+    const image = w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image');
     expect(image.exists()).toBe(true);
     expect(image.attributes('src')).toBe('https://example.com/b.png');
     expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
@@ -626,7 +626,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
       props: { modelValue: true, mode: 'menu', content: [{ content: '升序', icon: 'arrow-up' }] },
     });
     expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(true);
-    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
   });
 
   it('lets icon beat the legacy iconClass field', () => {
@@ -644,7 +644,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '纯文本' }] },
     });
-    expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
     expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
   });
 });
@@ -923,5 +923,66 @@ describe('sn-popover (sheet presentation, additive)', () => {
     await pill.trigger('tap');
     expect(w.emitted('actionclick')?.[0]).toEqual([{ item: actions[0], index: 0 }]);
     expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+});
+
+describe('sn-popover (per-row colored glyph plates, additive)', () => {
+  it('renders a tinted plate for a menu row carrying iconBg / iconColor', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [
+          {
+            content: '设为星标',
+            iconData: Star,
+            iconBg: 'var(--sn-mp-color-feedback-warning-soft)',
+            iconColor: 'var(--sn-mp-color-feedback-warning)',
+          },
+        ],
+      },
+    });
+    const plate = w.find('.sn-popover__menu-item .sn-popover__icon-plate');
+    expect(plate.exists()).toBe(true);
+    const style = plate.attributes('style') ?? '';
+    expect(style).toContain('background-color: var(--sn-mp-color-feedback-warning-soft)');
+    expect(style).toContain('color: var(--sn-mp-color-feedback-warning)');
+    expect(plate.find('svg path').attributes('d')).toBe(Star.paths[0]);
+  });
+
+  it('keeps the bare glyph for untinted anchor rows', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, mode: 'menu', content: [{ content: '纯行', iconData: Star }] },
+    });
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate').exists()).toBe(false);
+    expect(w.find('.sn-popover__menu-item .sn-popover__menu-icon').exists()).toBe(true);
+  });
+
+  it('colors sheet rows through the same tint fields', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        presentation: 'sheet',
+        mode: 'menu',
+        content: [
+          { content: 'Share', iconData: Star, iconBg: '#e6f4ea', iconColor: '#188038' },
+        ],
+      },
+    });
+    const plate = w.find('.sn-popover__menu--sheet .sn-popover__icon-plate');
+    expect(plate.exists()).toBe(true);
+    expect(plate.attributes('style') ?? '').toContain('background-color: #e6f4ea');
+    expect(plate.attributes('style') ?? '').toContain('color: #188038');
+  });
+
+  it('sizes the arrow as a reference-large diamond', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const arrowRule = source.indexOf('.sn-popover__arrow {');
+    const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
+    expect(block).toContain('width: 24rpx');
+    expect(block).toContain('height: 24rpx');
+    // The protrusion must track the bigger square (half minus the border lap).
+    expect(source).toContain('bottom: -9rpx');
+    expect(source).toContain('top: -9rpx');
   });
 });

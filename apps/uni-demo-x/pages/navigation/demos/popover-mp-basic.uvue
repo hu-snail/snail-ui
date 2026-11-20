@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.vue sha256:7caad2d55054919c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.vue sha256:0e5a2f864e62cdc9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — rich card bubble (icon plate + title + text).
@@ -18,6 +18,8 @@ const open = ref(false);
         title="快速提示"
         content="小程序没有 hover，气泡用点击触发；点击气泡外部任意位置即可关闭，再点一次触发器也可收起。"
         :icon-data="MapPin"
+        icon-bg="var(--sn-mp-color-feedback-warning-soft)"
+        icon-color="var(--sn-mp-color-feedback-warning)"
         placement="bottom"
         :show-close="true"
         custom-class="sn-demo-contained"

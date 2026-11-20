@@ -1,8 +1,11 @@
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — top / left / right / bottom placement grid.
- * Triggers sit at the corners so each anchored bubble has room to open; the
- * start / end alignment variants are covered by the alignment demo.
+ *
+ * Reference layout: Top/Left in row 1, Right/Bottom in row 2, spread apart;
+ * each bubble carries a colored icon plate + title + description (the same
+ * card language as the basic / alignment demos). The -start / -end variants
+ * live in the Alignment demo.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
@@ -12,13 +15,13 @@ import { MapPin } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 type Direction = 'top' | 'left' | 'right' | 'bottom';
 
 /** Corner layout: Top/Left in row 1, Right/Bottom in row 2 (flex, MP / App safe). */
-const firstRow: { key: Direction; label: string }[] = [
-  { key: 'top', label: 'Top' },
-  { key: 'left', label: 'Left' },
+const firstRow: { key: Direction; label: string; side: string }[] = [
+  { key: 'top', label: 'Top', side: 'top' },
+  { key: 'left', label: 'Left', side: 'left' },
 ];
-const secondRow: { key: Direction; label: string }[] = [
-  { key: 'right', label: 'Right' },
-  { key: 'bottom', label: 'Bottom' },
+const secondRow: { key: Direction; label: string; side: string }[] = [
+  { key: 'right', label: 'Right', side: 'right' },
+  { key: 'bottom', label: 'Bottom', side: 'bottom' },
 ];
 
 const openDirection = ref<Direction | null>(null);
@@ -41,8 +44,10 @@ function setOpen(direction: Direction, value: boolean): void {
             :model-value="openDirection === cell.key"
             :placement="cell.key"
             title="Quick Tip"
-            :content="`This popover appears on the ${cell.key} side of the trigger button.`"
+            :content="`This popover appears on the ${cell.side} side of the trigger button.`"
             :icon-data="MapPin"
+            icon-bg="var(--sn-mp-color-feedback-info-soft)"
+            icon-color="var(--sn-mp-color-feedback-info)"
             custom-class="sn-demo-contained"
             @update:model-value="setOpen(cell.key, $event)"
           >
@@ -56,7 +61,7 @@ function setOpen(direction: Direction, value: boolean): void {
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__hint"
-      >All four directions render an arrow pointing at the trigger; tap anywhere outside to
+      >All four directions render a large arrow pointing at the trigger; tap anywhere outside to
       close.</text
     >
   </view>
@@ -75,7 +80,7 @@ function setOpen(direction: Direction, value: boolean): void {
 .sn-popover-demo__grid {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 48rpx;
   padding: 24rpx 0;
 }
 .sn-popover-demo__row {
@@ -92,7 +97,7 @@ function setOpen(direction: Direction, value: boolean): void {
   flex: 1;
 }
 .sn-popover-demo__space {
-  height: 300rpx;
+  height: 340rpx;
 }
 /* Docs-preview only — keep the bubble inside the demo flow. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {
