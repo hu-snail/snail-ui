@@ -192,6 +192,27 @@ describe('sn-tooltip', () => {
       expect(source).toContain('border-top-width: 22rpx');
       expect(source).toContain('border-bottom-width: 22rpx');
     });
+
+    // §103 regression: the vertical families used to color the WRONG border —
+    // a colored top border renders apex-down, so `top` (bubble above, apex
+    // must point down at the trigger) colors the TOP border, and `bottom`
+    // colors the BOTTOM border. Inverted, the apex merged into the plate and
+    // every vertical arrow read upside-down.
+    it('points the apex at the trigger (top colors top, bottom colors bottom)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const topRule = source.slice(
+        source.indexOf('.sn-tooltip--top .sn-tooltip__arrow,'),
+        source.indexOf('}', source.indexOf('border-top-color: var(--sn-tooltip-bg)')),
+      );
+      expect(topRule).toContain('border-top-color: var(--sn-tooltip-bg)');
+      expect(topRule).toContain('border-bottom-width: 0');
+      const bottomRule = source.slice(
+        source.indexOf('.sn-tooltip--bottom .sn-tooltip__arrow,'),
+        source.indexOf('}', source.indexOf('border-bottom-color: var(--sn-tooltip-bg)')),
+      );
+      expect(bottomRule).toContain('border-bottom-color: var(--sn-tooltip-bg)');
+      expect(bottomRule).toContain('border-top-width: 0');
+    });
   });
 
   describe('interaction', () => {

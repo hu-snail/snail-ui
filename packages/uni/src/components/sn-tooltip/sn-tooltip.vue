@@ -542,25 +542,28 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
  * App flattener expands border shorthands only into per-side longhands, and
  * a TRBL width shorthand would ride through unexpanded (§85 explicit). */
 
-/* Bubble above → apex DOWN → colored bottom border. */
+/* Bubble above → the arrow rides the bubble's bottom edge → apex DOWN →
+ * colored TOP border (a colored top border with transparent sides renders
+ * base-up / apex-down; the web end maps --top the same way). */
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  border-top-width: 0;
-  border-right-width: 22rpx;
-  border-bottom-width: 18rpx;
-  border-left-width: 22rpx;
-  border-bottom-color: var(--sn-tooltip-bg);
-}
-/* Bubble below → apex UP → colored top border. */
-.sn-tooltip--bottom .sn-tooltip__arrow,
-.sn-tooltip--bottom-start .sn-tooltip__arrow,
-.sn-tooltip--bottom-end .sn-tooltip__arrow {
   border-top-width: 18rpx;
   border-right-width: 22rpx;
   border-bottom-width: 0;
   border-left-width: 22rpx;
   border-top-color: var(--sn-tooltip-bg);
+}
+/* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
+ * border (base-down / apex-up). */
+.sn-tooltip--bottom .sn-tooltip__arrow,
+.sn-tooltip--bottom-start .sn-tooltip__arrow,
+.sn-tooltip--bottom-end .sn-tooltip__arrow {
+  border-top-width: 0;
+  border-right-width: 22rpx;
+  border-bottom-width: 18rpx;
+  border-left-width: 22rpx;
+  border-bottom-color: var(--sn-tooltip-bg);
 }
 /* Bubble left → apex RIGHT → colored left border. */
 .sn-tooltip--left .sn-tooltip__arrow,
