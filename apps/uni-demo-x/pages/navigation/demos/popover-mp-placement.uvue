@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:b9507a85063296bb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:d3c05ba46ea3cfac —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — top / left / right / bottom placement grid.
@@ -52,7 +52,6 @@ function setOpen(direction: Direction, value: boolean): void {
             <SnButton size="small"><text>{{ cell.label }}</text></SnButton>
           </SnPopover>
         </view>
-        <view class="sn-popover-demo__gap" />
       </view>
       <view class="sn-popover-demo__row">
         <view v-for="cell in secondRow" :key="cell.key" class="sn-popover-demo__cell">
@@ -70,7 +69,6 @@ function setOpen(direction: Direction, value: boolean): void {
             <SnButton size="small"><text>{{ cell.label }}</text></SnButton>
           </SnPopover>
         </view>
-        <view class="sn-popover-demo__gap" />
       </view>
     </view>
 
@@ -103,10 +101,6 @@ function setOpen(direction: Direction, value: boolean): void {
 .sn-popover-demo__cell {
   display: flex;
   flex-direction: row;
-}
-/* Row 1 pairs [Top … Left]: the spacer keeps Left on the right edge. */
-.sn-popover-demo__gap {
-  flex: 1;
 }
 .sn-popover-demo__space {
   height: 340rpx;

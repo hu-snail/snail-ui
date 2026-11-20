@@ -207,8 +207,12 @@ export interface SnPopoverMenuItem {
 export interface SnPopoverAction {
   /** Button label. */
   label: string;
-  /** `danger` renders the label in the danger feedback color. */
-  type?: 'default' | 'danger';
+  /**
+   * `primary` renders the filled action button (action-primary fill +
+   * on-primary label — the sn-button primary look); `danger` renders the
+   * label in the danger feedback color; `default` keeps the soft plate.
+   */
+  type?: 'default' | 'primary' | 'danger';
   /** Disable the button — taps are ignored. */
   disabled?: boolean;
 }
@@ -732,6 +736,7 @@ function onCancelTap(): void {
           :key="index"
           class="sn-popover__action"
           :class="{
+            'sn-popover__action--primary': action.type === 'primary',
             'sn-popover__action--danger': action.type === 'danger',
             'sn-popover__action--disabled': action.disabled,
           }"
@@ -1001,6 +1006,9 @@ function onCancelTap(): void {
   flex-direction: column;
   gap: var(--sn-mp-spacing-2);
   margin-top: var(--sn-mp-spacing-3);
+  /* Own horizontal / bottom padding: the actions strip sits outside the
+   * body's padding box, so without it the pill touches the card edge. */
+  padding: 0 var(--sn-mp-spacing-4) var(--sn-mp-spacing-4);
 }
 
 .sn-popover__action {
@@ -1024,6 +1032,16 @@ function onCancelTap(): void {
 
 .sn-popover__action--danger .sn-popover__action-text {
   color: var(--sn-mp-color-feedback-danger);
+}
+
+/* Filled primary — the sn-button primary look (action-primary fill +
+ * on-primary label). */
+.sn-popover__action--primary {
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-popover__action--primary .sn-popover__action-text {
+  color: var(--sn-mp-color-text-on-primary);
 }
 
 .sn-popover__action--disabled {
@@ -1092,10 +1110,10 @@ function onCancelTap(): void {
 
 .sn-popover__arrow {
   position: absolute;
-  /* Rotated diamond: half sticks out of the bubble edge. 24rpx square → a
-   * ~17rpx wide spike, reference-sized (small diamonds vanish on the page). */
-  width: 24rpx;
-  height: 24rpx;
+  /* Rotated diamond: half sticks out of the bubble edge. 32rpx square → a
+   * ~45rpx wide spike (the previous 24rpx one was too narrow on-page). */
+  width: 32rpx;
+  height: 32rpx;
   background-color: var(--sn-popover-bg);
   /* Outline the diamond so the outside half reads against the page — a bare
    * white diamond vanishes on an elevated (white) host surface, and the half
@@ -1203,7 +1221,7 @@ function onCancelTap(): void {
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
-  bottom: -9rpx;
+  bottom: -12rpx;
   /* Points up: the outside half is the bottom-right of the rotated square. */
   border-top-color: transparent;
   border-left-color: transparent;
@@ -1211,7 +1229,7 @@ function onCancelTap(): void {
   border-right-color: var(--sn-popover-border);
 }
 .sn-popover--top .sn-popover__arrow {
-  left: calc(50% - 12rpx);
+  left: calc(50% - 16rpx);
 }
 .sn-popover--top-start .sn-popover__arrow {
   left: 24rpx;
@@ -1223,13 +1241,13 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  top: -9rpx;
+  top: -12rpx;
   /* Points down: the outside half is the top-left of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-left-color: var(--sn-popover-border);
 }
 .sn-popover--bottom .sn-popover__arrow {
-  left: calc(50% - 12rpx);
+  left: calc(50% - 16rpx);
 }
 .sn-popover--bottom-start .sn-popover__arrow {
   left: 24rpx;
@@ -1241,14 +1259,14 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
-  right: -9rpx;
+  right: -12rpx;
   /* Points left: the outside half is the right edge of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-left-color: transparent;
   border-right-color: var(--sn-popover-border);
 }
 .sn-popover--left .sn-popover__arrow {
-  top: calc(50% - 12rpx);
+  top: calc(50% - 16rpx);
 }
 .sn-popover--left-start .sn-popover__arrow {
   top: 24rpx;
@@ -1260,14 +1278,14 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  left: -9rpx;
+  left: -12rpx;
   /* Points right: the outside half is the left edge of the rotated square. */
   border-top-color: var(--sn-popover-border);
   border-right-color: transparent;
   border-left-color: var(--sn-popover-border);
 }
 .sn-popover--right .sn-popover__arrow {
-  top: calc(50% - 12rpx);
+  top: calc(50% - 16rpx);
 }
 .sn-popover--right-start .sn-popover__arrow {
   top: 24rpx;
@@ -1371,6 +1389,11 @@ function onCancelTap(): void {
   flex-direction: column;
   gap: var(--sn-mp-spacing-2);
   margin-top: var(--sn-mp-spacing-4);
+  /* Cancel the shared actions strip's own padding — the sheet panel already
+   * pads its content. */
+  margin-right: calc(-1 * var(--sn-mp-spacing-4));
+  margin-bottom: calc(-1 * var(--sn-mp-spacing-4));
+  margin-left: calc(-1 * var(--sn-mp-spacing-4));
 }
 
 .sn-popover__cancel {

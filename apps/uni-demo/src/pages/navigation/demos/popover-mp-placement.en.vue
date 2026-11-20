@@ -54,7 +54,6 @@ function setOpen(direction: Direction, value: boolean): void {
             <SnButton size="small">{{ cell.label }}</SnButton>
           </SnPopover>
         </view>
-        <view class="sn-popover-demo__gap" />
       </view>
     </view>
 
@@ -91,10 +90,6 @@ function setOpen(direction: Direction, value: boolean): void {
 .sn-popover-demo__cell {
   display: flex;
   flex-direction: row;
-}
-/* Row 1 pairs [Top … Left]: the spacer keeps Left on the right edge. */
-.sn-popover-demo__gap {
-  flex: 1;
 }
 .sn-popover-demo__space {
   height: 340rpx;

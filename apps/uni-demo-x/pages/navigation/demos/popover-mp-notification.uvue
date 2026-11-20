@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-notification.vue sha256:3acb96e10c0dbe20 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-notification.vue sha256:3aa9f904b1e7af0f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — notification card: icon plate + title +
@@ -10,7 +10,7 @@ import { Check } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 
-const actions = [{ label: '知道了' }];
+const actions = [{ label: '知道了', type: 'primary' as const }];
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

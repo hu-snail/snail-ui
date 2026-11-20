@@ -10,7 +10,7 @@ import { Check } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 
-const actions = [{ label: 'Dismiss' }];
+const actions = [{ label: 'Dismiss', type: 'primary' as const }];
 </script>
 
 <template>

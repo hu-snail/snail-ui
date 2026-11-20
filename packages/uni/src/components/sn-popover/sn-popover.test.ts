@@ -979,10 +979,38 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
     const arrowRule = source.indexOf('.sn-popover__arrow {');
     const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
-    expect(block).toContain('width: 24rpx');
-    expect(block).toContain('height: 24rpx');
-    // The protrusion must track the bigger square (half minus the border lap).
-    expect(source).toContain('bottom: -9rpx');
-    expect(source).toContain('top: -9rpx');
+    expect(block).toContain('width: 32rpx');
+    expect(block).toContain('height: 32rpx');
+    // The protrusion must track the wider square (offset ≈ square/2 − lap).
+    expect(source).toContain('bottom: -12rpx');
+    expect(source).toContain('top: -12rpx');
+  });
+});
+
+describe('sn-popover (primary action + strip spacing, additive)', () => {
+  it('renders a filled primary pill (action-primary fill, on-primary label)', () => {
+    const w = mount(SnPopover, {
+      props: { modelValue: true, actions: [{ label: '知道了', type: 'primary' }] },
+    });
+    const pill = w.find('.sn-popover__action--primary');
+    expect(pill.exists()).toBe(true);
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const rule = source.indexOf('.sn-popover__action--primary {');
+    const block = source.slice(rule, source.indexOf('}', rule));
+    expect(block).toContain('background-color: var(--sn-mp-color-action-primary)');
+    const textRule = source.indexOf('.sn-popover__action--primary .sn-popover__action-text {');
+    const textBlock = source.slice(textRule, source.indexOf('}', textRule));
+    expect(textBlock).toContain('color: var(--sn-mp-color-text-on-primary)');
+  });
+
+  it('pads the actions strip so the pill never touches the card edge', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const rule = source.indexOf('.sn-popover__actions {');
+    const block = source.slice(rule, source.indexOf('}', rule));
+    expect(block).toContain('padding: 0 var(--sn-mp-spacing-4) var(--sn-mp-spacing-4)');
+    // The sheet cancels that padding — its panel already pads the content.
+    const sheetRule = source.indexOf('.sn-popover__sheet-actions {');
+    const sheetBlock = source.slice(sheetRule, source.indexOf('}', sheetRule));
+    expect(sheetBlock).toContain('margin-bottom: calc(-1 * var(--sn-mp-spacing-4))');
   });
 });
