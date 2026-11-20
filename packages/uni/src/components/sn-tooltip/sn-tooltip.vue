@@ -478,7 +478,7 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   gap: var(--sn-mp-spacing-2);
   box-sizing: border-box;
   width: var(--sn-tooltip-width);
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-tooltip-bg);
   color: var(--sn-tooltip-color);
@@ -519,16 +519,68 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
+/* Border triangle, NOT a rotated square: the plate fill is translucent
+ * (`--sn-mp-color-background-inverse` = rgba(0,0,0,0.75)), so a rotated
+ * square sharing the fill double-composites its inner half over the bubble
+ * body — a darker diamond showed inside the content area (§103). A triangle
+ * paints the fill exactly once, so it can never overlap the text plate.
+ * 20×20rpx: a rotated 16rpx square only exposes ~9rpx of visual triangle,
+ * too small to read as an arrow (real-device regression, 图4 reference). */
 
 .sn-tooltip__arrow {
   position: absolute;
-  width: 16rpx;
-  height: 16rpx;
-  /* Solid diamond: the dark plate has no outline, so the arrow follows the
-   * fill and needs no border trick. */
-  background-color: var(--sn-tooltip-bg);
-  transform: rotate(45deg);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
   pointer-events: none;
+}
+
+/* Orientation per placement family: the apex points at the trigger, the
+ * colored border is the one on the OUTSIDE edge (the fill paints once).
+ * Declared as longhands, not a 4-value `border-width` shorthand — the uni-x
+ * App flattener expands border shorthands only into per-side longhands, and
+ * a TRBL width shorthand would ride through unexpanded (§85 explicit). */
+
+/* Bubble above → apex DOWN → colored bottom border. */
+.sn-tooltip--top .sn-tooltip__arrow,
+.sn-tooltip--top-start .sn-tooltip__arrow,
+.sn-tooltip--top-end .sn-tooltip__arrow {
+  border-top-width: 0;
+  border-right-width: 10rpx;
+  border-bottom-width: 20rpx;
+  border-left-width: 10rpx;
+  border-bottom-color: var(--sn-tooltip-bg);
+}
+/* Bubble below → apex UP → colored top border. */
+.sn-tooltip--bottom .sn-tooltip__arrow,
+.sn-tooltip--bottom-start .sn-tooltip__arrow,
+.sn-tooltip--bottom-end .sn-tooltip__arrow {
+  border-top-width: 20rpx;
+  border-right-width: 10rpx;
+  border-bottom-width: 0;
+  border-left-width: 10rpx;
+  border-top-color: var(--sn-tooltip-bg);
+}
+/* Bubble left → apex RIGHT → colored left border. */
+.sn-tooltip--left .sn-tooltip__arrow,
+.sn-tooltip--left-start .sn-tooltip__arrow,
+.sn-tooltip--left-end .sn-tooltip__arrow {
+  border-top-width: 10rpx;
+  border-right-width: 0;
+  border-bottom-width: 10rpx;
+  border-left-width: 20rpx;
+  border-left-color: var(--sn-tooltip-bg);
+}
+/* Bubble right → apex LEFT → colored right border. */
+.sn-tooltip--right .sn-tooltip__arrow,
+.sn-tooltip--right-start .sn-tooltip__arrow,
+.sn-tooltip--right-end .sn-tooltip__arrow {
+  border-top-width: 10rpx;
+  border-right-width: 20rpx;
+  border-bottom-width: 10rpx;
+  border-left-width: 0;
+  border-right-color: var(--sn-tooltip-bg);
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
@@ -622,65 +674,68 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 /* ── Arrow geometry per placement ──────────────────────────────────────── */
+/* The whole triangle rides OUTSIDE the bubble edge (`-20rpx` = its full
+ * height): only the apex may kiss the edge line, the body never overlaps
+ * the content plate. start/end offsets aim the apex 24rpx from the edge. */
 
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  bottom: -6rpx;
+  bottom: -20rpx;
 }
 .sn-tooltip--top .sn-tooltip__arrow {
-  left: calc(50% - 8rpx);
+  left: calc(50% - 10rpx);
 }
 .sn-tooltip--top-start .sn-tooltip__arrow {
-  left: 24rpx;
+  left: 16rpx;
 }
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  right: 24rpx;
+  right: 16rpx;
 }
 
 .sn-tooltip--bottom .sn-tooltip__arrow,
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  top: -6rpx;
+  top: -20rpx;
 }
 .sn-tooltip--bottom .sn-tooltip__arrow {
-  left: calc(50% - 8rpx);
+  left: calc(50% - 10rpx);
 }
 .sn-tooltip--bottom-start .sn-tooltip__arrow {
-  left: 24rpx;
+  left: 16rpx;
 }
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  right: 24rpx;
+  right: 16rpx;
 }
 
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  right: -6rpx;
+  right: -20rpx;
 }
 .sn-tooltip--left .sn-tooltip__arrow {
-  top: calc(50% - 8rpx);
+  top: calc(50% - 10rpx);
 }
 .sn-tooltip--left-start .sn-tooltip__arrow {
-  top: 24rpx;
+  top: 16rpx;
 }
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  bottom: 24rpx;
+  bottom: 16rpx;
 }
 
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  left: -6rpx;
+  left: -20rpx;
 }
 .sn-tooltip--right .sn-tooltip__arrow {
-  top: calc(50% - 8rpx);
+  top: calc(50% - 10rpx);
 }
 .sn-tooltip--right-start .sn-tooltip__arrow {
-  top: 24rpx;
+  top: 16rpx;
 }
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  bottom: 24rpx;
+  bottom: 16rpx;
 }
 
 .sn-tooltip--disabled .sn-tooltip__trigger {

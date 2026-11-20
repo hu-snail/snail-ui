@@ -159,6 +159,30 @@ describe('sn-tooltip', () => {
       const w = mount(SnTooltip, { props: { modelValue: true, customArrow: 'my-arrow' } });
       expect(w.find('.sn-tooltip__arrow').classes()).toContain('my-arrow');
     });
+
+    // §103 regression: the arrow used to be a 16rpx rotated SQUARE sharing the
+    // plate's translucent fill — the inner half double-composited over the
+    // bubble body (a darker diamond over the content) and the exposed triangle
+    // read too small. The border triangle paints the fill exactly once and
+    // rides fully outside the plate, so neither can regress silently.
+    it('draws the arrow as a border triangle, not a translucent rotated square', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const arrowBase = source.slice(
+        source.indexOf('.sn-tooltip__arrow {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip__arrow {')),
+      );
+      // A rotated square (transform: rotate) would double-composite alpha.
+      expect(arrowBase).not.toContain('transform');
+      expect(arrowBase).not.toContain('background-color');
+      expect(arrowBase).toContain('border-style: solid');
+    });
+
+    it('keeps the arrow outside the content plate for every placement family', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      for (const edge of ['bottom: -20rpx', 'top: -20rpx', 'right: -20rpx', 'left: -20rpx']) {
+        expect(source).toContain(edge);
+      }
+    });
   });
 
   describe('interaction', () => {

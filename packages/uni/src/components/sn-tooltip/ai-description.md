@@ -89,7 +89,7 @@ import { SnTooltip } from '@snui/uni';
 | Component vars | `--sn-tooltip-bg` (default: `--sn-mp-color-background-inverse`), `--sn-tooltip-color` (default: `--sn-mp-color-text-on-primary`), `--sn-tooltip-width` (default `320rpx`) | Dark transient plate (toast token pair) / text on it / fixed plate width |
 | Elevation      | — (the dark plate reads without a shadow)                                                                                                                        | The former bubble shadow is gone with the dark plate                         |
 | Radius         | `--sn-mp-radius-md`                                                                                                                                              | Plate corners                                                                |
-| Spacing        | `--sn-mp-spacing-2/3`                                                                                                                                            | Plate padding / gaps                                                         |
+| Spacing        | `--sn-mp-spacing-3/4`                                                                                                                                            | Plate padding / gaps                                                         |
 | Typography     | `--sn-mp-font-size-xs`, `--sn-mp-font-line-height-normal`                                                                                                        | Plate text                                                                   |
 
 ## Accessibility
