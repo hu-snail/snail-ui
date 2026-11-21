@@ -58,7 +58,8 @@ import type { SnNotifyInstance, SnNotifyOptions } from '@snui/uni-x/components/s
 | `closable`       | boolean                     | true       | no       | Render the close pill by default.                        |
 | `closeText`      | string                      | 'Close'    | no       | Default close pill label.                                |
 | `swipeToDismiss` | boolean                     | true       | no       | Horizontal swipe dismisses the front card.               |
-| `safeHeight`     | number \| string \| undefined | —        | no       | Extra top offset (bare number = px, custom nav bar).     |
+| `safeAreaInsetTop` | boolean                   | true       | no       | Top stacks auto-clear the status bar + nav band (WeChat capsule measured per AUI-MP-002; App reads the status bar + 44px nav row; H5 flat). `false` for default-navigation-bar pages. |
+| `safeHeight`     | number \| string \| undefined | —        | no       | Extra top offset (bare number = px, stacked on the auto inset); a string overrides `padding-top` verbatim, replacing the auto inset. |
 | `customClass`    | string                      | ''         | no       | Custom class for the root node.                          |
 | `customStyle`    | string                      | ''         | no       | Custom inline style for the root node.                   |
 
@@ -114,6 +115,17 @@ Card heights are measured via `uni.createSelectorQuery` and the deck is laid
 out with per-card `translateY` chains; without a measurement host the
 component degrades to a plain column list. The root carries the explicit
 `sn-notify--deck` / `sn-notify--flow` mode class.
+
+## Safe area (top anchor)
+
+`safeAreaInsetTop` defaults to true: the container reserves the status bar
+plus the nav band so cards never slide under the clock or the WeChat capsule.
+The numbers come from the shared `utils/capsule.ts` metrics (AUI-MP-002) on
+WeChat MP, from `getSystemInfoSync().statusBarHeight` + the default 44px nav
+row on App, and stay 0 on H5. The uni-h5 runtime also styles
+`uni-view { overflow: hidden }` by default, so the container and stack carry
+an explicit `overflow: visible` — the deck cards hang outside the ~0-height
+container and must not be clipped.
 
 ## Tokens Consumed (end: mp)
 

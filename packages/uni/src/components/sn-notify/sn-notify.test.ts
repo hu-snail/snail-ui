@@ -20,10 +20,14 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import SnNotify from './sn-notify.vue';
 import type { IconData, SnNotifyInstance } from './sn-notify-types';
+import { resetCapsuleMetrics } from '../../utils/capsule';
 
 afterEach(() => {
   vi.useRealTimers();
   delete (globalThis as { uni?: unknown }).uni;
+  // The capsule metrics memoize on first read — a stale cache would leak one
+  // test's statusBarHeight stub into the next.
+  resetCapsuleMetrics();
 });
 
 interface FakeRect {
@@ -365,7 +369,52 @@ describe('sn-notify', () => {
     it('applies safeHeight padding on the top anchor', async () => {
       vi.useFakeTimers();
       const wrapper = mount(SnNotify, { props: { safeHeight: 88 } });
-      expect(wrapper.attributes('style')).toContain('padding-top: 88px');
+      // H5 reports no status bar, so the number rides on top of the flat
+      // rhythm: 88px offset + 16rpx (8px at 375) breathing.
+      expect(wrapper.attributes('style')).toContain('padding-top: 96px');
+    });
+
+    it('reserves the status bar + capsule band by default (safeAreaInsetTop)', () => {
+      (globalThis as { uni?: unknown }).uni = {
+        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
+        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
+      };
+      resetCapsuleMetrics();
+      const wrapper = mount(SnNotify);
+      // 47 status bar + 44 capsule band + 8 breathing.
+      expect(wrapper.attributes('style')).toContain('padding-top: 99px');
+    });
+
+    it('skips the safe-area inset when safeAreaInsetTop is false', () => {
+      (globalThis as { uni?: unknown }).uni = {
+        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
+        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
+      };
+      resetCapsuleMetrics();
+      const wrapper = mount(SnNotify, { props: { safeAreaInsetTop: false } });
+      // Default-navigation-bar pages sit below the native bar already.
+      expect(wrapper.attributes('style')).not.toContain('padding-top');
+    });
+
+    it('adds a numeric safeHeight on top of the auto safe-area inset', () => {
+      (globalThis as { uni?: unknown }).uni = {
+        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
+        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
+      };
+      resetCapsuleMetrics();
+      const wrapper = mount(SnNotify, { props: { safeHeight: 88 } });
+      expect(wrapper.attributes('style')).toContain('padding-top: 187px');
+    });
+
+    it('lets a string safeHeight override the auto inset verbatim', () => {
+      (globalThis as { uni?: unknown }).uni = {
+        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
+        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
+      };
+      resetCapsuleMetrics();
+      const wrapper = mount(SnNotify, { props: { safeHeight: '12px' } });
+      expect(wrapper.attributes('style')).toContain('padding-top: 12px');
+      expect(wrapper.attributes('style')).not.toContain('99px');
     });
 
     it('clears every pending timer on unmount', async () => {

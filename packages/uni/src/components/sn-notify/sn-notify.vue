@@ -56,6 +56,7 @@ import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
 import { Bell, X as XIcon } from '../sn-icon/sn-icon-set';
 import { resolveUniHost } from '../../utils/uni-host';
+import { getCapsuleMetrics } from '../../utils/capsule';
 import type {
   NotifyPosition,
   NotifyType,
@@ -114,7 +115,17 @@ const props = withDefaults(
     closeText?: string;
     /** Allow horizontal swipe-to-dismiss on the front card. */
     swipeToDismiss?: boolean;
-    /** Extra top offset in px (or any CSS length) — accounts for a custom nav bar. */
+    /**
+     * Reserve the status-bar + nav band on top-anchored stacks (default).
+     * WeChat MP measures the capsule band (AUI-MP-002), App reads the status
+     * bar; H5 has none and stays flat. Set `false` on default-navigation-bar
+     * pages where `position: fixed` already starts below the native bar.
+     */
+    safeAreaInsetTop?: boolean;
+    /**
+     * Extra top offset in px (added to the safe-area inset). A string is a
+     * full manual `padding-top` override that replaces the auto inset.
+     */
     safeHeight?: number | string | undefined;
     /** Custom class for the root node. */
     customClass?: string;
@@ -129,6 +140,7 @@ const props = withDefaults(
     closable: true,
     closeText: 'Close',
     swipeToDismiss: true,
+    safeAreaInsetTop: true,
     safeHeight: undefined,
     customClass: '',
     customStyle: '',
@@ -487,12 +499,36 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
+/**
+ * Status-bar + nav-band inset (px). WeChat MP reads the measured capsule
+ * band (AUI-MP-002); App has a status bar but no capsule, so the default
+ * 44px nav row stands in; H5 reports no status bar and stays flat.
+ */
+function autoTopInset(): number {
+  const metrics = getCapsuleMetrics();
+  let statusBar = metrics.statusBarHeight;
+  if (statusBar <= 0) {
+    const host = resolveUniHost<{ getSystemInfoSync?: () => { statusBarHeight?: number } }>();
+    statusBar = host?.getSystemInfoSync?.()?.statusBarHeight ?? 0;
+  }
+  return statusBar > 0 ? statusBar + metrics.navBarHeight : 0;
+}
+
 const rootStyle = computed(() => {
   const parts = [`z-index: ${props.zIndex}`];
-  if (props.position === 'top' && props.safeHeight !== undefined && props.safeHeight !== '') {
-    parts.push(
-      `padding-top: ${typeof props.safeHeight === 'number' ? `${props.safeHeight}px` : props.safeHeight}`,
-    );
+  if (props.position === 'top') {
+    if (typeof props.safeHeight === 'string' && props.safeHeight !== '') {
+      // Full manual override — replaces the auto safe-area inset entirely.
+      parts.push(`padding-top: ${props.safeHeight}`);
+    } else {
+      const inset =
+        (props.safeAreaInsetTop ? autoTopInset() : 0) +
+        (typeof props.safeHeight === 'number' ? props.safeHeight : 0);
+      // > 0 only off H5 / with an explicit offset; otherwise the 16rpx class
+      // padding keeps the verified flat rhythm. The inline value must carry
+      // the breathing room itself — it replaces the class padding.
+      if (inset > 0) parts.push(`padding-top: ${inset + rpxToPx(16)}px`);
+    }
   }
   if (props.customStyle) parts.push(props.customStyle);
   return parts.join('; ');
