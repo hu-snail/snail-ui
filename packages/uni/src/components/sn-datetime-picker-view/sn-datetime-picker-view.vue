@@ -452,7 +452,11 @@ function centerIndexOf(columnIndex: number): number {
 
 function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   const center = Math.round(centerIndexOf(columnIndex));
-  const half = Math.ceil(visibleCount.value / 2) + 1;
+  // Exactly the visible window (no guard rows): mp-weixin does not clip
+  // transformed rows, so any row rendered outside the column box leaks
+  // visibly. The settle animation slides the whole roller, so the window
+  // travels with it and no gap shows during the transition.
+  const half = Math.floor(visibleCount.value / 2);
   return Math.abs(rowIndex - center) <= half;
 }
 

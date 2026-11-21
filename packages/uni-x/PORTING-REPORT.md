@@ -10,7 +10,7 @@
 | template-attr | 172 |
 | flex-direction-row | 88 |
 | import-rewrite | 85 |
-| unsupported-property | 75 |
+| unsupported-property | 76 |
 | defineSlots-stripped | 73 |
 | patch | 18 |
 | template-bare-text | 13 |
@@ -341,6 +341,7 @@
 - patch applied — `patch`: remote (iconify / provider URL) branch retargeted to <image :src>
 - patch applied — `patch`: <svg> block replaced by <image :src="iconDataUrl">
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
+- unsupported property stripped — `unsupported-property` (line 13): pointer-events stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
@@ -485,8 +486,8 @@
 - import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 10): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 62): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 14): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 69): pointer-events stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-overlay/sn-overlay.uvue

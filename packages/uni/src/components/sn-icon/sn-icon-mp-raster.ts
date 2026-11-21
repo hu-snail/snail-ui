@@ -20,7 +20,7 @@ import { resolveUniHost } from '../../utils/uni-host';
 import type { IconData } from './sn-icon-types';
 
 /** Minimal 2d canvas surface across uni hosts (classic + uni-app x MP). */
-interface RasterCanvas2d {
+export interface RasterCanvas2d {
   fillStyle: string | CanvasGradient | CanvasPattern;
   strokeStyle: string | CanvasGradient | CanvasPattern;
   lineWidth: number;
@@ -335,6 +335,34 @@ export function drawPathOnCanvas(ctx: RasterCanvas2d, d: string): void {
  * export a PNG data URL. Returns `null` when the host has no offscreen
  * canvas or anything throws — callers fall back to the SVG data URL.
  */
+/**
+ * Paint `icon` (in its native viewBox units — the caller scales the context
+ * first) onto a 2d context. Stroke icons get round caps/joins; fill icons
+ * fill their subpaths.
+ */
+export function paintIconData(
+  ctx: RasterCanvas2d,
+  icon: IconData,
+  color: string,
+  strokeWidth: number | string,
+): void {
+  const isFill = icon.render === 'fill';
+  if (isFill) {
+    ctx.fillStyle = color;
+  } else {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Number(strokeWidth) || 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+  }
+  for (const d of icon.paths) {
+    ctx.beginPath();
+    drawPathOnCanvas(ctx, d);
+    if (isFill) ctx.fill();
+    else ctx.stroke();
+  }
+}
+
 export function rasterizeIconDataUrl(
   icon: IconData,
   color: string,
@@ -352,21 +380,7 @@ export function rasterizeIconDataUrl(
     const vw = viewBox[2] || 24;
     const vh = viewBox[3] || 24;
     ctx.scale(sizePx / vw, sizePx / vh);
-    const isFill = icon.render === 'fill';
-    if (isFill) {
-      ctx.fillStyle = color;
-    } else {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = Number(strokeWidth) || 2;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-    }
-    for (const d of icon.paths) {
-      ctx.beginPath();
-      drawPathOnCanvas(ctx, d);
-      if (isFill) ctx.fill();
-      else ctx.stroke();
-    }
+    paintIconData(ctx, icon, color, strokeWidth);
     const url = canvas.toDataURL('image/png');
     return typeof url === 'string' && url.startsWith('data:image/png') ? url : null;
   } catch {

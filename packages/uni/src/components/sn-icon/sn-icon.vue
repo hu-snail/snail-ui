@@ -38,7 +38,7 @@
  * 外层按钮 / 链接 / label 上，而不是图标本身（AGENTS.md §52）。
  */
 
-import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import {
   resolveSnIconStringSync,
   resolveSnIconStringAsync,
@@ -47,7 +47,7 @@ import {
 import { toRpxSize } from '../../utils/sn-size';
 import { resolveUniHost } from '../../utils/uni-host';
 import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
-import { rasterizeIconDataUrl } from './sn-icon-mp-raster';
+import { paintIconData, rasterizeIconDataUrl, type RasterCanvas2d } from './sn-icon-mp-raster';
 import { resolveFontIcon } from './sn-icon-font';
 import type { IconData } from './sn-icon-types';
 
@@ -321,10 +321,14 @@ const customStyleBinding = computed(() => {
 });
 
 /**
- * MP 端 canvas 光栅化（AUI-MP-003）：WeChat 的 `<image>` 不解码 SVG data
- * URL（AUI-MP-002 的光栅化在真机上渲染空白），改在 offscreen 2d canvas 上
- * 画 IconData 并导出 **PNG** data URL —— `<image>` 原生解码 PNG。光栅化
- * 失败（宿主无 offscreen canvas / 异常）回落 SVG data URL。
+ * MP 端图标光栅化（AUI-MP-003）：WeChat 的 `<image>` 不解码 SVG data
+ * URL（AUI-MP-002 在真机上渲染空白），两级 canvas 光栅化按可用性择一：
+ *
+ * 1. `uni.createOffscreenCanvas({ type: '2d' })` —— 同步，无节点依赖；
+ * 2. uni-app x 小程序只有 `uni.createCanvasContextAsync`（组件内必须有
+ *    `<canvas>` 节点），异步拿到 context 后绘制，`holder.toDataURL()` 导出。
+ *
+ * 两级都不可用时回落 SVG data URL（H5 / 模拟器不受影响）。
  */
 const mpRasteredUrl = ref<string | null>(null);
 const rasterSizePx = computed<number>(() => {
@@ -339,10 +343,59 @@ const rasterSizePx = computed<number>(() => {
   // 2× 物理像素：`<image>` aspectFit 缩回，字形边缘不糊。
   return Math.max(16, Math.round(px * 2));
 });
-watchEffect(() => {
+
+/** 光栅化画布的 viewBox 基准（catalog 图标固定 24）。 */
+const rasterViewBoxSize = computed<number>(() => {
   const icon = displayIcon.value;
-  if (icon === null) {
+  if (icon === null) return 24;
+  const parts = (icon.viewBox ?? '0 0 24 24').split(/[\s,]+/).map(Number);
+  return parts[2] || 24;
+});
+
+/** Offscreen 快捷路径（同步）：宿主提供 createOffscreenCanvas 时直接出图。 */
+
+
+/** Canvas 节点路径：uni-app x 小程序经 createCanvasContextAsync 拿 2d 上下文。 */
+const instance = getCurrentInstance();
+const rasterCanvasId = `sn-icon-raster-${instance?.uid ?? 0}`;
+let mpCanvasCtx: RasterCanvas2d | null = null;
+let mpCanvasHolder: { toDataURL?: () => string } | null = null;
+const mpCanvasReady = ref(false);
+
+/** Canvas 就绪或图标/颜色/尺寸变化时的重绘（重设 bitmap 会重置变换矩阵）。 */
+function repaintMpCanvasRaster(): void {
+  const icon = displayIcon.value;
+  const ctx = mpCanvasCtx;
+  if (icon === null || ctx === null || mpCanvasHolder === null) {
     mpRasteredUrl.value = null;
+    return;
+  }
+  try {
+    const element = (ctx as unknown as { canvas?: { width: number; height: number } }).canvas;
+    if (element && typeof element.width === 'number') {
+      element.width = rasterSizePx.value;
+      element.height = rasterSizePx.value;
+    }
+    const vw = rasterViewBoxSize.value;
+    ctx.scale(rasterSizePx.value / vw, rasterSizePx.value / vw);
+    paintIconData(ctx, icon, strokeColor.value, props.strokeWidth);
+    const url = mpCanvasHolder.toDataURL?.() ?? '';
+    mpRasteredUrl.value = url.startsWith('data:image/png') ? url : null;
+  } catch {
+    mpRasteredUrl.value = null;
+  }
+}
+
+// canvas 就绪前 offscreen 已兜底出图；就绪后改走 canvas 路径（真机 PNG）。
+watchEffect(() => {
+  if (mpCanvasReady.value) repaintMpCanvasRaster();
+});
+
+watchEffect(() => {
+  // Offscreen 快捷路径仅在 canvas 节点路径未就绪时使用。
+  const icon = displayIcon.value;
+  if (icon === null || mpCanvasReady.value) {
+    if (icon === null) mpRasteredUrl.value = null;
     return;
   }
   mpRasteredUrl.value = rasterizeIconDataUrl(
@@ -351,6 +404,34 @@ watchEffect(() => {
     props.strokeWidth,
     rasterSizePx.value,
   );
+});
+onMounted(() => {
+  const host = resolveUniHost<{ createCanvasContextAsync?: (o: Record<string, unknown>) => void }>();
+  if (typeof host?.createCanvasContextAsync !== 'function') return;
+  try {
+    host.createCanvasContextAsync({
+      id: rasterCanvasId,
+      component: instance?.proxy,
+      success: (value: unknown) => {
+        if (value === null || typeof value !== 'object') return;
+        const holder = value as {
+          getContext?: (kind: string) => unknown;
+          toDataURL?: () => string;
+        };
+        const context = holder.getContext?.('2d');
+        if (!context || typeof context !== 'object') return;
+        mpCanvasCtx = context as RasterCanvas2d;
+        mpCanvasHolder = holder;
+        mpCanvasReady.value = true;
+        repaintMpCanvasRaster();
+      },
+      fail: () => {
+        /* 无 canvas 面 —— 维持 offscreen / SVG 回落 */
+      },
+    } as Record<string, unknown>);
+  } catch {
+    /* 回落 */
+  }
 });
 </script>
 
@@ -419,6 +500,18 @@ watchEffect(() => {
       mode="aspectFit"
       aria-hidden="true"
     />
+    <!--
+      光栅化画布（AUI-MP-003）：uni-app x 小程序只能经
+      createCanvasContextAsync 解析组件内 canvas 节点 —— 挂在视口外但保持
+      渲染（display:none 会失去 bitmap），绘制结果导出 PNG 给上方 image。
+    -->
+    <canvas
+      :id="rasterCanvasId"
+      :canvas-id="rasterCanvasId"
+      type="2d"
+      class="sn-icon__raster"
+      aria-hidden="true"
+    />
     <!-- #endif -->
   </view>
 </template>
@@ -429,6 +522,15 @@ watchEffect(() => {
  * 视口缩放的方式与周围 uni-app 组件一致。内层 SVG 通过模板上的样式
  * （width/height 100%）继承包装器尺寸，保证两条渲染路径行为一致。
  */
+.sn-icon__raster {
+  position: absolute;
+  left: -9999rpx;
+  top: 0;
+  width: 120rpx;
+  height: 120rpx;
+  pointer-events: none;
+}
+
 .sn-icon {
   display: inline-flex;
   align-items: center;
