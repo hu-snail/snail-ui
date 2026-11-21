@@ -33,13 +33,32 @@ uni-app x App 引擎的 CSS flattener 不展开 4 值 `border-width` TRBL 简写
 
 **适用范围**: 本项目（uni 端 tooltip / popover 类半透明气泡装饰）。
 
+**第三次踩坑（uni-app x 裁剪与字号, 8515e784 + ba492b3d）**:
+1. **uni-app x 的 view 默认 `overflow: hidden`**（H5/MP 默认 visible）。
+   弹层组件除自身根/pop 显式声明 visible 外，**页面脚手架的每一层容器**
+   （demo 卡 module / page / shell）也会裁掉伸出边界的气泡——只修组件不够，
+   链条上任何一层 hidden 都会裁。demo 脚手架在 App.vue 全链声明 visible；
+   其中 `.demo-shell__body` 必须**写在 DemoPageShell 自己的 scoped 规则里**：
+   uni-app x 按组件作用域编译 class 样式，scoped 定义会**整体遮蔽** App.uvue
+   的同名全局类（不是按属性合并）。
+2. **uni-app x 的 view 带显式默认 font-size，不从父级级联**：pop 上的
+   12px 不会传给子 text view（H5/MP 会级联）→ 子 view 按 16px 运行时默认
+   渲染，文字过大、定宽盘内过度换行。组件内 body/line 需显式声明
+   font-size / line-height。
+3. **HBuilderX web dev 服务不监视 node_modules**：组件产物（经
+   node_modules/@snui/uni-x materialize）变更后必须**重新运行**才生效；
+   工程文件（页面 / App.uvue / components/）可热更。
+
 **对应代码**:
 `packages/uni/src/components/sn-tooltip/sn-tooltip.vue`（`.sn-tooltip__arrow`
 段，箭头 24rpx 底 × 12rpx 高 border 三角，`bottom/top/right/left: -12rpx`
 完全落在气泡外；12rpx 箭头 = 12rpx 触发器间隙 → 尖角**精确贴住触发器边缘**
 （贴边），宽度取自 sn-popover 小箭头参考量级）。`theme="light"` 经根类
 `--sn-tooltip--light` 覆盖 `--sn-tooltip-bg/color` 两个自定义属性实现换肤
-（箭头与底盘同源变量，一处覆盖两处生效）。
+（箭头与底盘同源变量，一处覆盖两处生效）。root / pop 显式
+`overflow: visible`；body / line 显式 font-size + line-height。
+demo 脚手架 overflow 链：`apps/uni-demo/src/App.vue` +
+`apps/uni-demo/src/components/DemoPageShell.vue`。
 
 **回归测试**: `sn-tooltip.test.ts` 中
 `draws the arrow as a border triangle, not a translucent rotated square`、
