@@ -93,6 +93,22 @@ describe('sn-tooltip', () => {
       expect(w.classes()).toContain('sn-tooltip--top-start');
     });
 
+    it('defaults to the dark plate (no light class)', () => {
+      const w = mount(SnTooltip, {});
+      expect(w.classes()).not.toContain('sn-tooltip--light');
+    });
+
+    it('applies the light-theme class for theme="light"', () => {
+      const w = mount(SnTooltip, { props: { theme: 'light' } });
+      expect(w.classes()).toContain('sn-tooltip--light');
+      // the arrow shares the plate fill, so the light override must live on
+      // the root (it cascades to both nodes through --sn-tooltip-bg)
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).toMatch(
+        /\.sn-tooltip--light\s*\{[^}]*--sn-tooltip-bg: var\(--sn-mp-color-background-surface\)/,
+      );
+    });
+
     it('forwards customClass to the root and customPop to the bubble', () => {
       const w = mount(SnTooltip, {
         props: { modelValue: true, customClass: 'my-tip', customPop: 'my-pop' },
@@ -179,18 +195,18 @@ describe('sn-tooltip', () => {
 
     it('keeps the arrow outside the content plate for every placement family', () => {
       const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
-      for (const edge of ['bottom: -18rpx', 'top: -18rpx', 'right: -18rpx', 'left: -18rpx']) {
+      for (const edge of ['bottom: -12rpx', 'top: -12rpx', 'right: -12rpx', 'left: -12rpx']) {
         expect(source).toContain(edge);
       }
     });
 
-    it('keeps the arrow as wide as the popover footprint (44rpx base)', () => {
+    it('sizes the arrow to the trigger gap so the apex lands flush (贴边)', () => {
       const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
-      // The 20rpx spike read too narrow next to sn-popover's ~45rpx diamond.
-      expect(source).toContain('border-right-width: 22rpx');
-      expect(source).toContain('border-left-width: 22rpx');
-      expect(source).toContain('border-top-width: 22rpx');
-      expect(source).toContain('border-bottom-width: 22rpx');
+      // 12rpx triangle in a 12rpx gap: the apex exactly kisses the trigger
+      // edge instead of poking into it (the 18rpx arrow overlapped by 6rpx)
+      // or stopping short of it (the original rotated square left a gap).
+      const allSides = ['border-top-width: 12rpx', 'border-right-width: 12rpx', 'border-bottom-width: 12rpx', 'border-left-width: 12rpx'];
+      for (const side of allSides) expect(source).toContain(side);
     });
 
     // §103 regression: the vertical families used to color the WRONG border —

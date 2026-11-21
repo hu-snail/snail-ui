@@ -78,6 +78,12 @@ import { Tooltip } from '@snui/uni';
       blurb: 'show-close renders a close button; offset tweaks the gap to the trigger.',
     },
     {
+      name: 'tooltip-mp-theme',
+      title: 'Dark / light (`theme`)',
+      blurb:
+        'theme=light switches to a white surface plate (AUI addition — wd-tooltip is dark-only); the arrow re-skins with it.',
+    },
+    {
       name: 'tooltip-mp-disabled',
       title: 'Disabled (`disabled`)',
       blurb: 'disabled freezes the trigger — taps do not open the bubble.',
@@ -110,6 +116,12 @@ import { Tooltip } from '@snui/uni';
         type: 'boolean',
         default: 'true',
         desc: 'Render the arrow pointing at the trigger.',
+      },
+      {
+        name: 'theme',
+        type: "'dark' | 'light'",
+        default: "'dark'",
+        desc: 'Plate appearance (AUI addition): dark translucent plate; light renders a white surface plate with the shadow token — the arrow re-skins with it.',
       },
       {
         name: 'disabled',

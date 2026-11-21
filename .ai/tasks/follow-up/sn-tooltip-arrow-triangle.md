@@ -35,8 +35,11 @@ uni-app x App 引擎的 CSS flattener 不展开 4 值 `border-width` TRBL 简写
 
 **对应代码**:
 `packages/uni/src/components/sn-tooltip/sn-tooltip.vue`（`.sn-tooltip__arrow`
-段，箭头 44rpx 底 × 18rpx 高 border 三角，`bottom/top/right/left: -18rpx`
-完全落在气泡外；宽度对齐 sn-popover 32rpx 菱形露出的 ~45rpx 尖角）。
+段，箭头 24rpx 底 × 12rpx 高 border 三角，`bottom/top/right/left: -12rpx`
+完全落在气泡外；12rpx 箭头 = 12rpx 触发器间隙 → 尖角**精确贴住触发器边缘**
+（贴边），宽度取自 sn-popover 小箭头参考量级）。`theme="light"` 经根类
+`--sn-tooltip--light` 覆盖 `--sn-tooltip-bg/color` 两个自定义属性实现换肤
+（箭头与底盘同源变量，一处覆盖两处生效）。
 
 **回归测试**: `sn-tooltip.test.ts` 中
 `draws the arrow as a border triangle, not a translucent rotated square`、

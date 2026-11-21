@@ -30,6 +30,11 @@
  *
  *   - There is no `hover` on miniprogram / touch devices, so the trigger is
  *     tapped (`@tap`) to toggle instead of hovered.
+ *   - `theme` (`'dark' | 'light'`) is an AUI addition — wd-tooltip is
+ *     dark-only. `light` re-skins the plate to a white surface with dark
+ *     text plus the `--sn-mp-shadow-md` lift (Element-style light tooltip);
+ *     the plate and arrow share the same `--sn-tooltip-bg` custom property,
+ *     so one override re-skins both.
  *   - `root-portal` is declared for parity but NOT implemented: uni-app
  *     miniprogram has no portal host, so the bubble cannot be reparented to
  *     the page root. The host must not wrap the tooltip in a transformed
@@ -179,6 +184,12 @@ const props = withDefaults(
     offset?: TooltipOffset;
     /** Render the arrow pointing at the trigger. */
     visibleArrow?: boolean;
+    /**
+     * Plate appearance (AUI additive — wd-tooltip is dark-only). `dark`
+     * renders the platform-standard translucent toast plate; `light` renders
+     * a white surface plate with dark text (Element-style light tooltip).
+     */
+    theme?: 'dark' | 'light';
     /** Disables the trigger — taps are ignored and the bubble stays closed. */
     disabled?: boolean;
     /** Render a close button inside the bubble. */
@@ -204,6 +215,7 @@ const props = withDefaults(
     placement: 'bottom',
     offset: 0,
     visibleArrow: true,
+    theme: 'dark',
     disabled: false,
     showClose: false,
     customArrow: '',
@@ -361,6 +373,7 @@ const rootClass = computed(() => [
   'sn-tooltip',
   `sn-tooltip--${props.placement}`,
   {
+    'sn-tooltip--light': props.theme === 'light',
     'sn-tooltip--disabled': props.disabled,
     'sn-tooltip--shown': isShown.value,
   },
@@ -524,8 +537,9 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
  * square sharing the fill double-composites its inner half over the bubble
  * body — a darker diamond showed inside the content area (§103). A triangle
  * paints the fill exactly once, so it can never overlap the text plate.
- * 44rpx base × 18rpx tall — the wide footprint sn-popover's 32rpx diamond
- * exposes on-page (~45rpx wide); a 20rpx spike read too narrow. */
+ * 24rpx base × 12rpx tall: with the 12rpx trigger gap the apex lands exactly
+ * on the trigger edge (贴边), and the footprint matches the popover's small
+ * reference arrow. */
 
 .sn-tooltip__arrow {
   position: absolute;
@@ -548,10 +562,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  border-top-width: 18rpx;
-  border-right-width: 22rpx;
+  border-top-width: 12rpx;
+  border-right-width: 12rpx;
   border-bottom-width: 0;
-  border-left-width: 22rpx;
+  border-left-width: 12rpx;
   border-top-color: var(--sn-tooltip-bg);
 }
 /* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
@@ -560,28 +574,28 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
   border-top-width: 0;
-  border-right-width: 22rpx;
-  border-bottom-width: 18rpx;
-  border-left-width: 22rpx;
+  border-right-width: 12rpx;
+  border-bottom-width: 12rpx;
+  border-left-width: 12rpx;
   border-bottom-color: var(--sn-tooltip-bg);
 }
 /* Bubble left → apex RIGHT → colored left border. */
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  border-top-width: 22rpx;
+  border-top-width: 12rpx;
   border-right-width: 0;
-  border-bottom-width: 22rpx;
-  border-left-width: 18rpx;
+  border-bottom-width: 12rpx;
+  border-left-width: 12rpx;
   border-left-color: var(--sn-tooltip-bg);
 }
 /* Bubble right → apex LEFT → colored right border. */
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  border-top-width: 22rpx;
-  border-right-width: 18rpx;
-  border-bottom-width: 22rpx;
+  border-top-width: 12rpx;
+  border-right-width: 12rpx;
+  border-bottom-width: 12rpx;
   border-left-width: 0;
   border-right-color: var(--sn-tooltip-bg);
 }
@@ -677,19 +691,18 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 /* ── Arrow geometry per placement ──────────────────────────────────────── */
-/* The whole triangle rides OUTSIDE the bubble edge (`-18rpx` = its full
- * height): only the apex may kiss the edge line, the body never overlaps
- * the content plate. The 44rpx base matches sn-popover's on-page arrow
- * footprint (its 32rpx diamond exposes ~45rpx); start/end offsets aim the
- * apex 24rpx from the edge. */
+/* The whole triangle rides OUTSIDE the bubble edge (`-12rpx` = its full
+ * height) and the placement gap is also 12rpx, so the apex lands exactly ON
+ * the trigger edge (贴边) without poking into it. start/end offsets aim the
+ * apex 16rpx from the edge. */
 
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  bottom: -18rpx;
+  bottom: -12rpx;
 }
 .sn-tooltip--top .sn-tooltip__arrow {
-  left: calc(50% - 22rpx);
+  left: calc(50% - 12rpx);
 }
 .sn-tooltip--top-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -701,10 +714,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom .sn-tooltip__arrow,
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  top: -18rpx;
+  top: -12rpx;
 }
 .sn-tooltip--bottom .sn-tooltip__arrow {
-  left: calc(50% - 22rpx);
+  left: calc(50% - 12rpx);
 }
 .sn-tooltip--bottom-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -716,10 +729,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  right: -18rpx;
+  right: -12rpx;
 }
 .sn-tooltip--left .sn-tooltip__arrow {
-  top: calc(50% - 22rpx);
+  top: calc(50% - 12rpx);
 }
 .sn-tooltip--left-start .sn-tooltip__arrow {
   top: 16rpx;
@@ -731,10 +744,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  left: -18rpx;
+  left: -12rpx;
 }
 .sn-tooltip--right .sn-tooltip__arrow {
-  top: calc(50% - 22rpx);
+  top: calc(50% - 12rpx);
 }
 .sn-tooltip--right-start .sn-tooltip__arrow {
   top: 16rpx;
@@ -745,6 +758,19 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--disabled .sn-tooltip__trigger {
   opacity: 0.5;
+}
+
+/* Light theme (`theme="light"`) — white surface plate with dark text (the
+ * Element-style light tooltip; 图2 reference). The vars live on the root so
+ * the plate AND the arrow re-skin from one override, and the white plate
+ * carries the shadow the dark plate never needed (dark reads on any
+ * surface; white on white needs the lift). */
+.sn-tooltip--light {
+  --sn-tooltip-bg: var(--sn-mp-color-background-surface);
+  --sn-tooltip-color: var(--sn-mp-color-text-primary);
+}
+.sn-tooltip--light .sn-tooltip__pop {
+  box-shadow: var(--sn-mp-shadow-md);
 }
 
 /* Doodle skin — hand-drawn bubble outline. */

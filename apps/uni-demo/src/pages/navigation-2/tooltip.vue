@@ -6,6 +6,7 @@ import Demo2 from './demos/tooltip-mp-close.vue';
 import Demo3 from './demos/tooltip-mp-content.vue';
 import Demo4 from './demos/tooltip-mp-disabled.vue';
 import Demo5 from './demos/tooltip-mp-placement.vue';
+import Demo6 from './demos/tooltip-mp-theme.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -56,6 +57,12 @@ const { t } = useDemoUi();
           <Demo5 />
         </view>
       </view>
+      <view class="module">
+        <DemoModuleHead :title="t('主题', 'Theme')" badge="theme" />
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
     </view>
   </DemoPageShell>
 </template>
@@ -76,6 +83,15 @@ const { t } = useDemoUi();
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
+}
+
+/* tooltip：场景模块透明变体——组件的面板是自身坐标系内的 absolute 层、
+ * 遮罩是 fixed 全屏层，白底卡片会把白色面板吞进卡片；去掉卡底与描边，
+ * 面板与遮罩直接浮在页面画布上，浮起感由遮罩 + 柔影承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .module__body {

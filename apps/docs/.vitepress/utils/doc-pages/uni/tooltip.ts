@@ -88,6 +88,11 @@ import { Tooltip } from '@snui/uni';
       blurb: 'show-close 显示关闭按钮；offset 调整与触发器的间距。',
     },
     {
+      name: 'tooltip-mp-theme',
+      title: '深色 / 浅色（theme）',
+      blurb: 'theme=light 切换白色底盘（AUI 扩展，wd-tooltip 仅深色）；箭头与底盘同色换肤。',
+    },
+    {
       name: 'tooltip-mp-disabled',
       title: '禁用（disabled）',
       blurb: 'disabled 禁用触发器，点击不打开气泡。',
@@ -106,6 +111,12 @@ import { Tooltip } from '@snui/uni';
       { name: 'placement', type: 'TooltipPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
       { name: 'offset', type: 'PopoverOffset', default: '0', desc: '{ x?, y? }`' },
       { name: 'visibleArrow', type: 'boolean', default: 'true', desc: '是否显示箭头' },
+      {
+        name: 'theme',
+        type: "'dark' | 'light'",
+        default: "'dark'",
+        desc: '底盘外观（AUI 扩展）：dark 半透明深色底盘；light 白色底盘 + 阴影，箭头同色换肤。',
+      },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
       { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {
