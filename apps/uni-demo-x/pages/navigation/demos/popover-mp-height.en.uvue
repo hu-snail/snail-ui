@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue sha256:398f99e2b80847e6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue sha256:d8ad77c27c6d1225 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — auto height: content is never clipped.
@@ -82,5 +82,12 @@ function onMenuClick(payload: { item: { content?: string } }): void {
 .sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__space {
+  overflow: visible;
 }
 </style>

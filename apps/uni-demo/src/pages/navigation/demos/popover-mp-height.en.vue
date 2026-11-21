@@ -89,4 +89,11 @@ function onMenuClick(payload: { item: { content?: string } }): void {
 .sn-popover.sn-demo-contained {
   position: relative;
 }
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__space {
+  overflow: visible;
+}
 </style>

@@ -52,4 +52,17 @@ const slotOpen = ref(false);
   position: relative;
   display: block;
 }
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-demo__body {
+  overflow: visible;
+}
+.sn-demo__text {
+  overflow: visible;
+}
+.sn-demo__title {
+  overflow: visible;
+}
 </style>

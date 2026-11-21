@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-menu.vue sha256:f5dc980fdb56c3f1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-menu.vue sha256:af7a5dd7cfb2ba5b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — menu mode with rich rows and per-row colored
@@ -107,4 +107,14 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   height: 420rpx;
 }
 /* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
+.sn-popover-demo__space {
+  overflow: visible;
+}
 </style>

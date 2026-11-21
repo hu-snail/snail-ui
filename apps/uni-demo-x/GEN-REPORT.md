@@ -1344,6 +1344,8 @@
 ## 管线转换问题（CSS 规则删除等，需真机验证视觉）
 
 - App.vue: [tag-only-selector] tag-only selector "page"
+- App.vue: [tag-only-selector] tag-only selector "uni-app uni-view"
+- App.vue: [tag-only-selector] tag-only selector "view"
 - App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic/avatar-group.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue

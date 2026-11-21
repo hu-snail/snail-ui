@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-theme.vue sha256:e6becb0b5fc040b2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-theme.vue sha256:ed1c75ff731530df —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — 暗黑主题气泡（sn-config-provider theme="dark"）。
@@ -81,5 +81,21 @@ const lightOpen = ref(false);
  * stays anchored to the component root. */
 .sn-popover.sn-popover-contained {
   position: relative;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-theme__label {
+  overflow: visible;
+}
+.sn-popover-theme__meta {
+  overflow: visible;
+}
+.sn-popover-theme__pane {
+  overflow: visible;
+}
+.sn-popover-theme__space {
+  overflow: visible;
 }
 </style>

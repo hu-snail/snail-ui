@@ -162,6 +162,55 @@ page {
   overflow: visible;
 }
 
+/* uni-app x web 运行时对每个 view 施加 `uni-app uni-view { overflow: hidden }`
+ * 默认值（H5 / MP 默认 visible）——demo 源码里**各自声明的包装类**（如
+ * `.sn-popover-demo__center`）无法穷举，弹层组件的气泡会被任意一层裁掉。
+ * 用元素选择器全量放开；组件自身 scoped class 声明的 hidden（如
+ * avatar-group 裁切窗）特异性更高，不受影响。与 H5 / MP 的默认行为对齐。
+ * !important 必须带：uni-app x web 把运行时基础样式表注入在 App 样式之后，
+ * 同特异的 App 规则按顺序反而会输（实测）。App（native）端元素选择器由
+ * uni-x 管线按支持度处理（unsupported 即 dropped+reported），App 端的脚手
+ * 架裁剪由上方逐类规则覆盖。 */
+uni-app uni-view {
+  overflow: visible !important;
+}
+view {
+  overflow: visible !important;
+}
+
+/* popover demo 的局部包装类：uni-app x 按「类在哪个样式表定义」附加作用域
+ * 属性——只在 demo 自己 scoped 样式里声明的类不带 App 作用域，上面的全局
+ * uni-view 规则与脚手架规则都碰不到它们，气泡照样被裁。把类登记到 App
+ * 样式后，使用该类的元素会带上 App 的 data-v，规则即可命中（zh / en 两个
+ * demo 变体共用类名，一处登记双端生效）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
+.sn-popover-demo__cell {
+  overflow: visible;
+}
+.sn-popover-demo__grid {
+  overflow: visible;
+}
+.sn-popover-demo__row {
+  overflow: visible;
+}
+.sn-popover-demo__space {
+  overflow: visible;
+}
+.sn-popover-theme__pane {
+  overflow: visible;
+}
+.sn-popover-theme__label {
+  overflow: visible;
+}
+.sn-popover-theme__meta {
+  overflow: visible;
+}
+.sn-popover-theme__space {
+  overflow: visible;
+}
+
 .sn-demo--stack {
   gap: 20rpx;
 }
