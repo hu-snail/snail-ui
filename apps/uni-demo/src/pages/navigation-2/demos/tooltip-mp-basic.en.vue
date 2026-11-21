@@ -46,4 +46,14 @@ const open = ref(false);
 .sn-tooltip-demo__space {
   height: 180rpx;
 }
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-tooltip-demo__meta {
+  overflow: visible;
+}
+.sn-tooltip-demo__space {
+  overflow: visible;
+}
 </style>

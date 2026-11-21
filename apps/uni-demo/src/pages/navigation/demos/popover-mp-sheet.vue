@@ -85,4 +85,11 @@ function onPick(payload: { item: { content?: string } }): void {
   flex-direction: row;
   justify-content: center;
 }
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
 </style>

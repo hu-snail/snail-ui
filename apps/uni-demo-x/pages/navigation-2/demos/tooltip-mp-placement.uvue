@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.vue sha256:bdcc29639113fd7e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.vue sha256:ff2f1c152f320940 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tooltip (uni-end) — all 12 placement directions (wot-ui demo grid).
@@ -86,5 +86,18 @@ function setOpen(placement: Placement, value: boolean): void {
 .sn-tooltip-demo__meta {
   font-size: 24rpx;
   color: var(--vp-c-text-2);
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-tooltip-demo__grid {
+  overflow: visible;
+}
+.sn-tooltip-demo__cell {
+  overflow: visible;
+}
+.sn-tooltip-demo__meta {
+  overflow: visible;
 }
 </style>

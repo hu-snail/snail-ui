@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.en.vue sha256:9cff95c7ad6dd966 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.en.vue sha256:8a6c2451a44de12e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-drop-menu (uni-end) — English shadow of drop-menu-mp-keys.
@@ -43,5 +43,15 @@ const options = [
 .sn-drop-menu-demo__meta {
   font-size: 24rpx;
   color: var(--vp-c-text-2);
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-drop-menu-demo__spacer {
+  overflow: visible;
+}
+.sn-drop-menu-demo__meta {
+  overflow: visible;
 }
 </style>

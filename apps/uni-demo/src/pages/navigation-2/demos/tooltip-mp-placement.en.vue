@@ -90,4 +90,17 @@ function setOpen(placement: Placement, value: boolean): void {
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-tooltip-demo__grid {
+  overflow: visible;
+}
+.sn-tooltip-demo__cell {
+  overflow: visible;
+}
+.sn-tooltip-demo__meta {
+  overflow: visible;
+}
 </style>
