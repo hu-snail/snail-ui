@@ -228,6 +228,18 @@ describe('sn-tooltip', () => {
       expect(popBlock).toContain('overflow: visible');
     });
 
+    // uni-app x views carry an explicit default font-size and do NOT inherit
+    // the pop's — body text rendered at the 16px runtime default and
+    // over-wrapped inside the fixed plate.
+    it('sets the plate font explicitly on the body and line views', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      for (const cls of ['.sn-tooltip__body {', '.sn-tooltip__line {']) {
+        const block = source.slice(source.indexOf(cls), source.indexOf('}', source.indexOf(cls)));
+        expect(block).toContain('font-size: var(--sn-mp-font-size-xs)');
+        expect(block).toContain('line-height: var(--sn-mp-font-line-height-normal)');
+      }
+    });
+
     // §103 regression: the vertical families used to color the WRONG border —
     // a colored top border renders apex-down, so `top` (bubble above, apex
     // must point down at the trigger) colors the TOP border, and `bottom`

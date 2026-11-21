@@ -521,10 +521,17 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   flex: 1;
   min-width: 0;
   gap: 4rpx;
+  /* uni-app x views carry an explicit default font-size / line-height and do
+   * NOT inherit the pop's — without these the body text renders at the
+   * 16px runtime default and over-wraps inside the fixed plate. */
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
 }
 
 .sn-tooltip__line {
   display: block;
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
 }
 
 .sn-tooltip__close {

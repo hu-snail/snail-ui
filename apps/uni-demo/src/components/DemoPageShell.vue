@@ -161,8 +161,13 @@ watch(
   text-overflow: ellipsis;
 }
 
-/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。 */
+/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。
+ * overflow: visible 同样必须写在**本组件的 scoped 规则里**：uni-app x 按
+ * 组件作用域编译 class 样式，scoped 定义会整体遮蔽 App.uvue 的同名全局类
+ * （而不是按属性合并）——只在 App.vue 全局声明时，这一层仍以运行时默认的
+ * hidden 裁掉伸出卡片边界的弹层（tooltip 等，AGENTS.md §103）。 */
 .demo-shell__body {
   position: relative;
+  overflow: visible;
 }
 </style>

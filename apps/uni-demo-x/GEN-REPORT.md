@@ -4,12 +4,12 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1488 |
+| .uvue 产出 | 1498 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2096 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2114 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
-| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
+| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 125 |
 
 ## App.uvue 专属改写
 
@@ -825,6 +825,8 @@
 - ../../uni-demo/src/pages/form-2/demos/search-mp-basic.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/search-mp-cancel.en.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/search-mp-cancel.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-card.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/search-mp-custom-style.en.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/search-mp-custom-style.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/search-mp-disabled.en.vue: ref
@@ -1098,6 +1100,8 @@
 - ../../uni-demo/src/pages/navigation/demos/pagination-mp-slots.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/pagination-mp-variant.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/pagination-mp-variant.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-alignment.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-basic.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-content-slot.en.vue: ref
@@ -1110,8 +1114,12 @@
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-icon-class.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-notification.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-notification.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-sheet.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-sheet.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.en.vue: ref
@@ -1184,6 +1192,8 @@
 - ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-content.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.en.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-theme.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.en.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/tour-mp-custom.en.vue: ref
@@ -1326,12 +1336,8 @@
 - pages/navigation/demos/drop-menu-mp-guard.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.en.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.vue: .sn-drop-menu.sn-demo-contained
-- pages/navigation/demos/popover-mp-basic.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-basic.vue: .sn-popover.sn-demo-contained
 - pages/navigation/demos/popover-mp-height.en.vue: .sn-popover.sn-demo-contained
 - pages/navigation/demos/popover-mp-height.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-menu.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-menu.vue: .sn-popover.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.en.vue: .sn-tooltip.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.vue: .sn-tooltip.sn-demo-contained
 
@@ -2455,7 +2461,7 @@
 - pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/form-2/radio.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/form-2/rate.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/search.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/search.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/form-3/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-3/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-3/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2685,8 +2691,14 @@
 - pages/navigation/demos/navbar-mp-mp-capsule.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/pagination-mp-slots.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/pagination-mp-slots.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
+- pages/navigation/demos/popover-mp-alignment.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-alignment.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-alignment.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-alignment.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-basic.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-content-slot.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2706,11 +2718,17 @@
 - pages/navigation/demos/popover-mp-icon-class.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-icon-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-menu.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-menu.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-notification.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-notification.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/popover-mp-placement.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-placement.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
@@ -2718,7 +2736,7 @@
 - pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/navigation/navbar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/navigation/popover.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/sidebar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2801,6 +2819,8 @@
 - pages/navigation-2/demos/tooltip-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tooltip-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tooltip-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/tooltip-mp-theme.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tooltip-mp-theme.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tour-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-custom.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2825,7 +2845,7 @@
 - pages/navigation-2/sticky.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tabbar.vue: [import-rewrite] 2 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tabs.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
-- pages/navigation-2/tooltip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tooltip.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tour.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-chat.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-chat.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)

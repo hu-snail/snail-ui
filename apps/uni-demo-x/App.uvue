@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/App.vue sha256:44c4fd286e5ef4da —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/App.vue sha256:6cd196fbb46316b4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import { useDemoUi } from './state/demo-ui';
@@ -123,6 +123,40 @@ page {
   flex-direction: column;
   gap: 16rpx;
   box-sizing: border-box;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden（H5 / MP 默认 visible），demo 脚手架
+ * 的每一层（场景卡 module / 页面 page / shell）都会把伸出卡片边界的弹层
+ * （tooltip / popover 等绝对定位气泡）裁掉半截——只修弹层组件自身不够，链条
+ * 上任何一层 hidden 都会裁。脚手架全链放开；弹层组件根节点已各自声明
+ * visible（如 sn-tooltip）。逐类单规则：uni-app x 对逗号选择器列表的解析
+ * 不保证可用。 */
+.module {
+  overflow: visible;
+}
+.module__body {
+  overflow: visible;
+}
+.page {
+  overflow: visible;
+}
+.demo-shell__body {
+  overflow: visible;
+}
+.demo-shell {
+  overflow: visible;
+}
+.sn-demo {
+  overflow: visible;
+}
+.sn-demo--stack {
+  overflow: visible;
+}
+.sn-demo--column {
+  overflow: visible;
+}
+.sn-demo__row {
+  overflow: visible;
 }
 
 .sn-demo--stack {
