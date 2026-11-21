@@ -20,7 +20,7 @@ const picked = ref('—');
 
 const longMenu = [
   {
-    content: '很长的菜单项文案：气泡宽度受限时文案自动换行，气泡随内容自适应高度，不会被裁切',
+    content: '长菜单项文案会在气泡宽度内自动换行，高度随内容自适应',
     iconData: FileText,
   },
   { content: '第二项', icon: 'download' },

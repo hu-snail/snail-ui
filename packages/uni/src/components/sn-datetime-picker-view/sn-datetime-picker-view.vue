@@ -438,6 +438,24 @@ function distanceOf(columnIndex: number, rowIndex: number): number {
   return Math.abs(rowIndex - indexOf(columnIndex));
 }
 
+/**
+ * Row-window rendering (AUI-MP overflow hardening) — same contract as
+ * sn-picker-view: mp-weixin fails to clip transformed roller rows inside
+ * overflow:hidden columns, so only rows that can be on screen (live center
+ * ± half a window plus one guard row) stay in the tree.
+ */
+function centerIndexOf(columnIndex: number): number {
+  const offset = columnOffsetRpx(columnIndex);
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  return (visibleCount.value - 1) / 2 - offset / item;
+}
+
+function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
+  const center = Math.round(centerIndexOf(columnIndex));
+  const half = Math.ceil(visibleCount.value / 2) + 1;
+  return Math.abs(rowIndex - center) <= half;
+}
+
 /** Emit a value derived from a full parts record. */
 function emitParts(next: DateParts, columnIndex: number): void {
   const value =
@@ -670,6 +688,7 @@ const ariaValue = computed(() => {
       >
         <view
           v-for="(value, rowIndex) in column.values"
+          v-show="isRowRenderable(columnIndex, rowIndex)"
           :key="value"
           :class="[
             'sn-datetime-picker-view__item',
@@ -801,6 +820,7 @@ const ariaValue = computed(() => {
   flex: 1 1 auto;
   align-self: stretch;
   width: 100%;
+  height: 100%;
 }
 
 /* Shared wheel band — one pill spanning every column (additive). */

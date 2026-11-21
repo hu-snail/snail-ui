@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue sha256:d8ad77c27c6d1225 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue sha256:5ca986c9711104a8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — auto height: content is never clipped.
@@ -20,8 +20,7 @@ const picked = ref('—');
 
 const longMenu = [
   {
-    content:
-      'A very long menu label: when the bubble width is capped the text wraps and the bubble grows with its content — never clipped',
+    content: 'A long menu label wraps inside the card width; the bubble grows with it',
     iconData: FileText,
   },
   { content: 'Second item', icon: 'download' },

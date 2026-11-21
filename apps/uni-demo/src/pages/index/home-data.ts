@@ -288,7 +288,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '文字提示',
         titleEn: 'Tooltip',
         desc: '轻量气泡说明',
-        count: 6,
+        count: 7,
       },
       {
         key: 'tour',

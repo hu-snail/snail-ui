@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:7d591d485c4790f7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:716a35f3212fe6f9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -226,7 +226,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '气泡',
         titleEn: 'Popover',
         desc: '锚点弹出气泡卡片',
-        count: 8,
+        count: 11,
       },
     ],
   },
@@ -289,7 +289,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '文字提示',
         titleEn: 'Tooltip',
         desc: '轻量气泡说明',
-        count: 6,
+        count: 7,
       },
       {
         key: 'tour',
@@ -471,7 +471,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '搜索框',
         titleEn: 'Search',
         desc: '搜索输入与联想',
-        count: 9,
+        count: 10,
       },
     ],
   },

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.vue sha256:0375e9458ce8fcb8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-height.vue sha256:dc224ad498f5daf6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — auto height: content is never clipped.
@@ -20,7 +20,7 @@ const picked = ref('—');
 
 const longMenu = [
   {
-    content: '很长的菜单项文案：气泡宽度受限时文案自动换行，气泡随内容自适应高度，不会被裁切',
+    content: '长菜单项文案会在气泡宽度内自动换行，高度随内容自适应',
     iconData: FileText,
   },
   { content: '第二项', icon: 'download' },

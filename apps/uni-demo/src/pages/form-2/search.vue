@@ -2,13 +2,14 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— search 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/search-mp-basic.vue';
 import Demo1 from './demos/search-mp-cancel.vue';
-import Demo2 from './demos/search-mp-custom-style.vue';
-import Demo3 from './demos/search-mp-disabled.vue';
-import Demo4 from './demos/search-mp-focus.vue';
-import Demo5 from './demos/search-mp-maxlength.vue';
-import Demo6 from './demos/search-mp-placeholder-left.vue';
-import Demo7 from './demos/search-mp-placeholder-style.vue';
-import Demo8 from './demos/search-mp-variant.vue';
+import Demo2 from './demos/search-mp-card.vue';
+import Demo3 from './demos/search-mp-custom-style.vue';
+import Demo4 from './demos/search-mp-disabled.vue';
+import Demo5 from './demos/search-mp-focus.vue';
+import Demo6 from './demos/search-mp-maxlength.vue';
+import Demo7 from './demos/search-mp-placeholder-left.vue';
+import Demo8 from './demos/search-mp-placeholder-style.vue';
+import Demo9 from './demos/search-mp-variant.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -41,6 +42,12 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
+        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module">
         <DemoModuleHead
           :title="
             t(
@@ -51,7 +58,7 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo3 />
         </view>
       </view>
       <view class="module">
@@ -60,7 +67,7 @@ const { t } = useDemoUi();
           badge="disabled"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo4 />
         </view>
       </view>
       <view class="module">
@@ -69,7 +76,7 @@ const { t } = useDemoUi();
           badge="focus"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo5 />
         </view>
       </view>
       <view class="module">
@@ -78,7 +85,7 @@ const { t } = useDemoUi();
           badge="maxlength"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo6 />
         </view>
       </view>
       <view class="module">
@@ -89,7 +96,7 @@ const { t } = useDemoUi();
           badge="placeholder-left"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo7 />
         </view>
       </view>
       <view class="module">
@@ -103,13 +110,13 @@ const { t } = useDemoUi();
           badge="placeholder-style"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo8 />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead :title="t('变体', 'Variants')" badge="variant" />
         <view class="module__body">
-          <Demo8 />
+          <Demo9 />
         </view>
       </view>
     </view>

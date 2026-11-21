@@ -494,6 +494,27 @@ function distanceOf(columnIndex: number, rowIndex: number): number {
   return Math.abs(rowIndex - (selectedIndexes.value[columnIndex] ?? 0));
 }
 
+/**
+ * Row-window rendering (AUI-MP overflow hardening): mp-weixin fails to clip
+ * `transform`ed roller rows inside `overflow: hidden` columns — the whole
+ * column leaks across the page during and after slides. Instead of trusting
+ * the clip, only render the rows that can ever be on screen: the live center
+ * row (drag position, or the selection at rest) ± half a window plus one
+ * guard row. mp-weixin then has no off-screen rows to leak at all, and every
+ * other end renders strictly fewer nodes.
+ */
+function centerIndexOf(columnIndex: number): number {
+  const offset = columnOffsetRpx(columnIndex);
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  return (visibleCount.value - 1) / 2 - offset / item;
+}
+
+function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
+  const center = Math.round(centerIndexOf(columnIndex));
+  const half = Math.ceil(visibleCount.value / 2) + 1;
+  return Math.abs(rowIndex - center) <= half;
+}
+
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   return isActive(columnIndex, rowIndex) ? 'true' : 'false';
 }
@@ -534,6 +555,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       >
         <view
           v-for="(option, rowIndex) in column"
+          v-show="isRowRenderable(columnIndex, rowIndex)"
           :key="option.value"
           :class="[
             'sn-picker-view__item',
@@ -674,6 +696,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   flex: 1 1 auto;
   align-self: stretch;
   width: 100%;
+  height: 100%;
 }
 
 /* Label fallback — the fill stretches it full-width (column cross axis), so

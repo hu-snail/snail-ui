@@ -38,14 +38,16 @@
  * 外层按钮 / 链接 / label 上，而不是图标本身（AGENTS.md §52）。
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 import {
   resolveSnIconStringSync,
   resolveSnIconStringAsync,
   SnIconSourceError,
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
+import { resolveUniHost } from '../../utils/uni-host';
 import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
+import { rasterizeIconDataUrl } from './sn-icon-mp-raster';
 import { resolveFontIcon } from './sn-icon-font';
 import type { IconData } from './sn-icon-types';
 
@@ -283,6 +285,8 @@ const iconDataUrl = computed<string | undefined>(() => {
   return buildIconDataUrl(icon, strokeColor.value, props.strokeWidth);
 });
 
+
+
 /** 渲染模式：图标数据声明 `render: 'fill'` 时按实心字形填充（Material 类图标）。 */
 const isFillIcon = computed<boolean>(() => displayIcon.value?.render === 'fill');
 
@@ -314,6 +318,39 @@ const customStyleBinding = computed(() => {
     return props.customStyle !== '' ? props.customStyle : undefined;
   }
   return props.customStyle;
+});
+
+/**
+ * MP 端 canvas 光栅化（AUI-MP-003）：WeChat 的 `<image>` 不解码 SVG data
+ * URL（AUI-MP-002 的光栅化在真机上渲染空白），改在 offscreen 2d canvas 上
+ * 画 IconData 并导出 **PNG** data URL —— `<image>` 原生解码 PNG。光栅化
+ * 失败（宿主无 offscreen canvas / 异常）回落 SVG data URL。
+ */
+const mpRasteredUrl = ref<string | null>(null);
+const rasterSizePx = computed<number>(() => {
+  const m = /^(\d+(?:\.\d+)?)(px|rpx)$/.exec(sizeCss.value);
+  if (!m) return 64;
+  let px = Number(m[1]);
+  if (m[2] === 'rpx') {
+    const host = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number } }>();
+    const width = host?.getSystemInfoSync?.()?.windowWidth;
+    px = (px / 750) * (typeof width === 'number' && width > 0 ? width : 375);
+  }
+  // 2× 物理像素：`<image>` aspectFit 缩回，字形边缘不糊。
+  return Math.max(16, Math.round(px * 2));
+});
+watchEffect(() => {
+  const icon = displayIcon.value;
+  if (icon === null) {
+    mpRasteredUrl.value = null;
+    return;
+  }
+  mpRasteredUrl.value = rasterizeIconDataUrl(
+    icon,
+    strokeColor.value,
+    props.strokeWidth,
+    rasterSizePx.value,
+  );
 });
 </script>
 
@@ -378,7 +415,7 @@ const customStyleBinding = computed(() => {
     <image
       v-else-if="displayIcon"
       class="sn-icon__svg"
-      :src="iconDataUrl"
+      :src="mpRasteredUrl || iconDataUrl"
       mode="aspectFit"
       aria-hidden="true"
     />

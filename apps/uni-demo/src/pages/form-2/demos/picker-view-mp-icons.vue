@@ -5,21 +5,22 @@
  * 路径（SVG data URL + `<image>`）在微信小程序端不渲染。 */
 import { ref } from 'vue';
 import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 
 const choices = [
   { value: 'notification', label: 'Notification' },
   { value: 'payment', label: 'Payment' },
   { value: 'personal', label: 'Personal' },
 ];
-const iconGlyphs: Record<string, string> = {
-  notification: "🔔",
-  payment: "💳",
-  personal: "👤",
+const iconNames: Record<string, string> = {
+  notification: 'bell',
+  payment: 'wallet',
+  personal: 'user',
 };
 const value = ref<Array<string | number>>(['notification']);
 
-const iconGlyphOf = (option: { value: unknown }): string =>
-  iconGlyphs[String(option.value)] ?? "🔔";
+const iconNameOf = (option: { value: unknown }): string =>
+  iconNames[String(option.value)] ?? 'bell';
 </script>
 
 <template>
@@ -35,7 +36,7 @@ const iconGlyphOf = (option: { value: unknown }): string =>
       <template #option="{ option, active }">
         <view class="icon-row" :class="{ 'icon-row--active': active }">
           <view class="icon-box" :class="{ 'icon-box--active': active }">
-            <text class="icon-glyph">{{ iconGlyphOf(option) }}</text>
+            <SnIcon :name="iconNameOf(option)" :size="28" />
           </view>
           <text class="icon-row__label">{{ option.label }}</text>
         </view>
@@ -60,15 +61,6 @@ const iconGlyphOf = (option: { value: unknown }): string =>
   color: var(--sn-mp-color-text-secondary);
 }
 
-.icon-glyph {
-  font-size: 34rpx;
-  line-height: 1;
-  color: var(--sn-mp-color-text-tertiary);
-}
-
-.icon-row--active .icon-glyph {
-  color: var(--sn-mp-color-action-primary);
-}
 
 .icon-box {
   display: flex;

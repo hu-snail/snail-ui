@@ -20,8 +20,7 @@ const picked = ref('—');
 
 const longMenu = [
   {
-    content:
-      'A very long menu label: when the bubble width is capped the text wraps and the bubble grows with its content — never clipped',
+    content: 'A long menu label wraps inside the card width; the bubble grows with it',
     iconData: FileText,
   },
   { content: 'Second item', icon: 'download' },
