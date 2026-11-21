@@ -624,6 +624,10 @@ defineExpose<SnNotifyInstance>({ show, hide, hideAll });
   left: 0;
   right: 0;
   box-sizing: border-box;
+  /* Deck cards hang below/above the ~0-height container; the uni H5 runtime
+   * styles `uni-view { overflow: hidden }` by default, which would clip the
+   * stack to the container's padding strip. */
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -643,6 +647,9 @@ defineExpose<SnNotifyInstance>({ show, hide, hideAll });
   position: relative;
   display: flex;
   flex-direction: column;
+  /* Same H5-runtime clipping guard as the container — the deck cards live
+   * outside the stack's 0-height box in deck mode. */
+  overflow: visible;
   gap: var(--sn-mp-spacing-3);
 }
 

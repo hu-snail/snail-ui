@@ -47,3 +47,26 @@ sn-checkbox-group / sn-swiper 等）是否全部补了 defineExpose —— 本�
 **App 端备注（uni-x 报告 2026-11-21）**: 转换管线新增的 unsupported-property 规则会剥离
 `pointer-events`（容器 `none` / 卡片 `auto` 都被剥）。卡片默认可命中所以功能不受影响；
 仅 deck 模式下容器顶部约 16rpx 的空条带在 App 上会参与命中测试（影响可忽略）。
+
+---
+
+## 二次修复（2026-11-21）：uni-h5 运行时 `uni-view { overflow: hidden }` 把 deck 卡片裁没
+
+**现象**: defineExpose 修完、队列/测量/状态全对（DOM rect y=8 h=102、opacity 1），
+但 H5 端 toast 依然"看不见"，`elementsFromPoint` 里连卡片都没有（被裁掉的区域不参与命中）。
+
+**根因**: uni-app **H5 运行时**框架样式对全部视图容器注入
+`uni-app uni-view, … { overflow: hidden }`。deck 布局的容器高度≈0（卡片 absolute 悬挂在
+容器外），卡片被裁成 ~8px 条带 → 视觉上"没显示"。小程序 / App(uvue) 没有这条默认规则，
+所以只有 H5（demo-x web 预览 / docs 预览）复现。
+
+**修复**: `.sn-notify` 与 `.sn-notify__stack` 显式 `overflow: visible`
+（scoped class 规则特异性高于运行时的类型选择器规则；对 mp/App 无副作用）。
+
+**验证**: uni-demo H5（同一 uni-h5 运行时规则）点击后截图确认——前卡（success 语义色
+标题 + 图标 + 实色 Close 胶囊）+ 两条旧卡底部露边，与目标视觉稿一致。
+
+**教训（跨项目适用）**: 依赖「元素溢出容器仍然可见」的布局（fixed 容器 + absolute 悬挂
+子元素、负 margin 出血、deck 堆叠等）在 uni-h5 必须显式 `overflow: visible`——运行时
+默认裁剪会让"DOM 全对但看不见"且命中测试也失效，极易误判成 z-index / 渲染层问题。
+排查顺序建议：rect → computed overflow 链 → elementsFromPoint。
