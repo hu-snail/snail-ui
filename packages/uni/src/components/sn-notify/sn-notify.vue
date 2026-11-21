@@ -559,6 +559,10 @@ onBeforeUnmount(() => {
   drag = null;
   clearAllTimers();
 });
+
+/** Template refs receive exactly this surface — script setup is closed
+ * without it, so `notify.value?.show(...)` would hit an empty proxy. */
+defineExpose<SnNotifyInstance>({ show, hide, hideAll });
 </script>
 
 <template>

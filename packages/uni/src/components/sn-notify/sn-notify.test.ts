@@ -17,8 +17,9 @@
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
+import { defineComponent, h, ref } from 'vue';
 import SnNotify from './sn-notify.vue';
-import type { IconData } from '../sn-icon/sn-icon.vue';
+import type { IconData, SnNotifyInstance } from './sn-notify-types';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -179,6 +180,38 @@ describe('sn-notify', () => {
 
       await cardsOf(wrapper)[1]!.trigger('tap');
       expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    it('exposes show / hide / hideAll to a real template ref (regression: script setup is closed without defineExpose)', async () => {
+      vi.useFakeTimers();
+      // Function ref — receives the public exposed proxy exactly like a
+      // consumer's `ref="notify"` binding, unlike wrapper.vm which lifts the
+      // setup closure for testing and would mask a missing defineExpose.
+      let exposed: SnNotifyInstance | null = null;
+      const Host = defineComponent({
+        setup() {
+          const notify = ref<SnNotifyInstance | null>(null);
+          return () =>
+            h(SnNotify, {
+              ref: (el: unknown) => {
+                notify.value = el as SnNotifyInstance | null;
+                exposed = notify.value;
+              },
+            });
+        },
+      });
+      const wrapper = mount(Host);
+
+      expect(exposed).not.toBeNull();
+      expect(typeof exposed!.show).toBe('function');
+      expect(typeof exposed!.hide).toBe('function');
+      expect(typeof exposed!.hideAll).toBe('function');
+
+      exposed!.show({ title: 'through the template ref' });
+      await flushPromises();
+      vi.advanceTimersByTime(45);
+      await flushPromises();
+      expect(wrapper.find('.sn-notify__title').text()).toBe('through the template ref');
     });
   });
 
