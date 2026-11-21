@@ -847,6 +847,11 @@ function onCancelTap(): void {
   position: relative;
   display: inline-block;
   box-sizing: border-box;
+  /* The bubble rides OUTSIDE this box (absolute, anchored to the trigger) —
+   * explicit `overflow: visible` is load-bearing: uni-app x views clip
+   * children by default, which swallowed the whole bubble on the App / web
+   * builds (H5 / MP default to visible). Same guard as sn-tooltip. */
+  overflow: visible;
   /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
   --sn-popover-border: var(--sn-mp-color-border-subtle);
@@ -904,6 +909,9 @@ function onCancelTap(): void {
   box-sizing: border-box;
   border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-lg);
+  /* Same uni-app x default-clip guard as the root: the arrow protrudes
+   * outside this box. */
+  overflow: visible;
   background-color: var(--sn-popover-bg);
   color: var(--sn-popover-color);
   font-size: var(--sn-mp-font-size-sm);
@@ -996,6 +1004,10 @@ function onCancelTap(): void {
 
 .sn-popover__text {
   display: block;
+  /* uni-app x views carry an explicit default font-size and do NOT inherit
+   * the pop's — declare the body text size directly. */
+  font-size: var(--sn-mp-font-size-sm);
+  line-height: var(--sn-mp-font-line-height-normal);
   color: var(--sn-mp-color-text-secondary);
 }
 
@@ -1097,6 +1109,10 @@ function onCancelTap(): void {
    * below its max-content width. */
   flex: 1;
   min-width: 0;
+  /* Same non-inheritance guard as __text: uni-app x views do not inherit the
+   * pop's font-size. */
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
   color: var(--sn-mp-color-text-primary);
 }
 

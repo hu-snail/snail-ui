@@ -552,7 +552,7 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
  * square sharing the fill double-composites its inner half over the bubble
  * body — a darker diamond showed inside the content area (§103). A triangle
  * paints the fill exactly once, so it can never overlap the text plate.
- * 24rpx base × 12rpx tall: with the 12rpx trigger gap the apex lands exactly
+ * 28rpx base × 14rpx tall: with the 14rpx trigger gap the apex lands exactly
  * on the trigger edge (贴边), and the footprint matches the popover's small
  * reference arrow. */
 
@@ -577,10 +577,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  border-top-width: 12rpx;
-  border-right-width: 12rpx;
+  border-top-width: 14rpx;
+  border-right-width: 14rpx;
   border-bottom-width: 0;
-  border-left-width: 12rpx;
+  border-left-width: 14rpx;
   border-top-color: var(--sn-tooltip-bg);
 }
 /* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
@@ -589,28 +589,28 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
   border-top-width: 0;
-  border-right-width: 12rpx;
-  border-bottom-width: 12rpx;
-  border-left-width: 12rpx;
+  border-right-width: 14rpx;
+  border-bottom-width: 14rpx;
+  border-left-width: 14rpx;
   border-bottom-color: var(--sn-tooltip-bg);
 }
 /* Bubble left → apex RIGHT → colored left border. */
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  border-top-width: 12rpx;
+  border-top-width: 14rpx;
   border-right-width: 0;
-  border-bottom-width: 12rpx;
-  border-left-width: 12rpx;
+  border-bottom-width: 14rpx;
+  border-left-width: 14rpx;
   border-left-color: var(--sn-tooltip-bg);
 }
 /* Bubble right → apex LEFT → colored right border. */
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  border-top-width: 12rpx;
-  border-right-width: 12rpx;
-  border-bottom-width: 12rpx;
+  border-top-width: 14rpx;
+  border-right-width: 14rpx;
+  border-bottom-width: 14rpx;
   border-left-width: 0;
   border-right-color: var(--sn-tooltip-bg);
 }
@@ -622,21 +622,21 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--top .sn-tooltip__pop {
   bottom: 100%;
   left: 50%;
-  margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
   margin-left: var(--sn-tooltip-offset-x);
   transform: translateX(-50%);
 }
 .sn-tooltip--top-start .sn-tooltip__pop {
   bottom: 100%;
   left: 0;
-  margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
   margin-left: var(--sn-tooltip-offset-x);
 }
 .sn-tooltip--top-end .sn-tooltip__pop {
   right: 0;
   bottom: 100%;
   margin-right: var(--sn-tooltip-offset-x);
-  margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
 }
 
 /* ── Placement: bottom family ──────────────────────────────────────────── */
@@ -644,20 +644,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom .sn-tooltip__pop {
   top: 100%;
   left: 50%;
-  margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
   margin-left: var(--sn-tooltip-offset-x);
   transform: translateX(-50%);
 }
 .sn-tooltip--bottom-start .sn-tooltip__pop {
   top: 100%;
   left: 0;
-  margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
   margin-left: var(--sn-tooltip-offset-x);
 }
 .sn-tooltip--bottom-end .sn-tooltip__pop {
   top: 100%;
   right: 0;
-  margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
+  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
   margin-right: var(--sn-tooltip-offset-x);
 }
 
@@ -666,20 +666,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--left .sn-tooltip__pop {
   top: 50%;
   right: 100%;
-  margin-right: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-top: var(--sn-tooltip-offset-y);
   transform: translateY(-50%);
 }
 .sn-tooltip--left-start .sn-tooltip__pop {
   top: 0;
   right: 100%;
-  margin-right: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-top: var(--sn-tooltip-offset-y);
 }
 .sn-tooltip--left-end .sn-tooltip__pop {
   right: 100%;
   bottom: 0;
-  margin-right: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-bottom: var(--sn-tooltip-offset-y);
 }
 
@@ -688,20 +688,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--right .sn-tooltip__pop {
   top: 50%;
   left: 100%;
-  margin-left: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-top: var(--sn-tooltip-offset-y);
   transform: translateY(-50%);
 }
 .sn-tooltip--right-start .sn-tooltip__pop {
   top: 0;
   left: 100%;
-  margin-left: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-top: var(--sn-tooltip-offset-y);
 }
 .sn-tooltip--right-end .sn-tooltip__pop {
   bottom: 0;
   left: 100%;
-  margin-left: calc(12rpx + var(--sn-tooltip-offset-x));
+  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
   margin-bottom: var(--sn-tooltip-offset-y);
 }
 
@@ -714,10 +714,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--top .sn-tooltip__arrow,
 .sn-tooltip--top-start .sn-tooltip__arrow,
 .sn-tooltip--top-end .sn-tooltip__arrow {
-  bottom: -12rpx;
+  bottom: -14rpx;
 }
 .sn-tooltip--top .sn-tooltip__arrow {
-  left: calc(50% - 12rpx);
+  left: calc(50% - 14rpx);
 }
 .sn-tooltip--top-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -729,10 +729,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom .sn-tooltip__arrow,
 .sn-tooltip--bottom-start .sn-tooltip__arrow,
 .sn-tooltip--bottom-end .sn-tooltip__arrow {
-  top: -12rpx;
+  top: -14rpx;
 }
 .sn-tooltip--bottom .sn-tooltip__arrow {
-  left: calc(50% - 12rpx);
+  left: calc(50% - 14rpx);
 }
 .sn-tooltip--bottom-start .sn-tooltip__arrow {
   left: 16rpx;
@@ -744,10 +744,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--left .sn-tooltip__arrow,
 .sn-tooltip--left-start .sn-tooltip__arrow,
 .sn-tooltip--left-end .sn-tooltip__arrow {
-  right: -12rpx;
+  right: -14rpx;
 }
 .sn-tooltip--left .sn-tooltip__arrow {
-  top: calc(50% - 12rpx);
+  top: calc(50% - 14rpx);
 }
 .sn-tooltip--left-start .sn-tooltip__arrow {
   top: 16rpx;
@@ -759,10 +759,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--right .sn-tooltip__arrow,
 .sn-tooltip--right-start .sn-tooltip__arrow,
 .sn-tooltip--right-end .sn-tooltip__arrow {
-  left: -12rpx;
+  left: -14rpx;
 }
 .sn-tooltip--right .sn-tooltip__arrow {
-  top: calc(50% - 12rpx);
+  top: calc(50% - 14rpx);
 }
 .sn-tooltip--right-start .sn-tooltip__arrow {
   top: 16rpx;

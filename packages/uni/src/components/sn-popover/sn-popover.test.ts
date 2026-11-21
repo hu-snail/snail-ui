@@ -141,6 +141,29 @@ describe('sn-popover', () => {
           .exists(),
       ).toBe(false);
     });
+
+    // §103 regression (uni-app x): views clip children by default, so without
+    // explicit `overflow: visible` the absolutely-positioned bubble and its
+    // protruding arrow never painted on the App / web builds (the tap opened
+    // the bubble while nothing appeared on screen). The text views also carry
+    // an explicit runtime font-size that does not inherit the pop's.
+    it('declares overflow visible on the root and pop and explicit text sizes', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+      const rootBlock = source.slice(
+        source.indexOf('.sn-popover {'),
+        source.indexOf('}', source.indexOf('.sn-popover {')),
+      );
+      expect(rootBlock).toContain('overflow: visible');
+      const popBlock = source.slice(
+        source.indexOf('.sn-popover__pop {'),
+        source.indexOf('}', source.indexOf('.sn-popover__pop {')),
+      );
+      expect(popBlock).toContain('overflow: visible');
+      for (const cls of ['.sn-popover__text {', '.sn-popover__menu-text {']) {
+        const block = source.slice(source.indexOf(cls), source.indexOf('}', source.indexOf(cls)));
+        expect(block).toContain('font-size: var(--sn-mp-font-size-');
+      }
+    });
   });
 
   describe('interaction', () => {
