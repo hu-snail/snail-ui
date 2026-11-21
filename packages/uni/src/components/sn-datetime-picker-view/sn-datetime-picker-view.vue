@@ -749,7 +749,9 @@ const ariaValue = computed(() => {
 
 .sn-datetime-picker-view__column {
   position: relative;
-  flex: 1 1 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
   min-width: 0;
   overflow: hidden;
   /* H5 / App webview: a roller drag must never become a page scroll.

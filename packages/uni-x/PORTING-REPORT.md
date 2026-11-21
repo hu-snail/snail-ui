@@ -222,13 +222,13 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
-- deep/sibling selector dropped — `combinator-unsupported` (line 170): selector ".snui-skin-doodle .sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator" (3 levels, " ")
-- unsupported property stripped — `unsupported-property` (line 28): -webkit-user-select stripped
-- unsupported property stripped — `unsupported-property` (line 29): user-select stripped
-- unsupported property stripped — `unsupported-property` (line 75): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 106): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 117): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 141): pointer-events stripped
+- deep/sibling selector dropped — `combinator-unsupported` (line 172): selector ".snui-skin-doodle .sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator" (3 levels, " ")
+- unsupported property stripped — `unsupported-property` (line 30): -webkit-user-select stripped
+- unsupported property stripped — `unsupported-property` (line 31): user-select stripped
+- unsupported property stripped — `unsupported-property` (line 77): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 108): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 119): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 143): pointer-events stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-datetime-picker/sn-datetime-picker.uvue
@@ -522,12 +522,12 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
-- deep/sibling selector dropped — `combinator-unsupported` (line 179): selector ".snui-skin-doodle .sn-picker-view--wheel .sn-picker-view__indicator" (3 levels, " ")
-- unsupported property stripped — `unsupported-property` (line 28): -webkit-user-select stripped
-- unsupported property stripped — `unsupported-property` (line 29): user-select stripped
-- unsupported property stripped — `unsupported-property` (line 80): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 122): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 133): pointer-events stripped
+- deep/sibling selector dropped — `combinator-unsupported` (line 181): selector ".snui-skin-doodle .sn-picker-view--wheel .sn-picker-view__indicator" (3 levels, " ")
+- unsupported property stripped — `unsupported-property` (line 30): -webkit-user-select stripped
+- unsupported property stripped — `unsupported-property` (line 31): user-select stripped
+- unsupported property stripped — `unsupported-property` (line 82): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 124): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 135): pointer-events stripped
 - flex-direction: row injected (uni-app x column default) — `flex-direction-row`: 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
 
 ### sn-picker/sn-picker.uvue
