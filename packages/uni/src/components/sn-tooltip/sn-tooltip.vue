@@ -448,6 +448,11 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: relative;
   display: inline-block;
   box-sizing: border-box;
+  /* The bubble rides OUTSIDE this box (absolute, below the trigger) — an
+   * explicit `overflow: visible` is load-bearing: uni-app x views clip
+   * children by default, which swallowed the whole bubble on the App / web
+   * builds (H5 / MP default to visible, so it only broke there). */
+  overflow: visible;
   /* Dark transient plate — the platform-standard toast token pair, so the
    * tooltip reads as a hint, not a card (sn-popover owns cards). Inline
    * `custom-style` beats these defaults. */
@@ -493,6 +498,9 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   width: var(--sn-tooltip-width);
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
+  /* Same uni-app x default-clip guard as the root: the arrow protrudes
+   * -12rpx outside this box. */
+  overflow: visible;
   background-color: var(--sn-tooltip-bg);
   color: var(--sn-tooltip-color);
   font-size: var(--sn-mp-font-size-xs);

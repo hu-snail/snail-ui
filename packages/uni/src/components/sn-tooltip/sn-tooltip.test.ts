@@ -209,6 +209,25 @@ describe('sn-tooltip', () => {
       for (const side of allSides) expect(source).toContain(side);
     });
 
+    // §103 regression: uni-app x views clip children by default, so without
+    // explicit `overflow: visible` the absolutely-positioned bubble (outside
+    // the root box) and the protruding arrow never painted on App / uni-app x
+    // web — the tap opened the bubble (shown state + DOM present) while
+    // nothing appeared on screen.
+    it('declares overflow visible where children ride outside the box', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const rootBlock = source.slice(
+        source.indexOf('.sn-tooltip {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip {')),
+      );
+      expect(rootBlock).toContain('overflow: visible');
+      const popBlock = source.slice(
+        source.indexOf('.sn-tooltip__pop {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip__pop {')),
+      );
+      expect(popBlock).toContain('overflow: visible');
+    });
+
     // §103 regression: the vertical families used to color the WRONG border —
     // a colored top border renders apex-down, so `top` (bubble above, apex
     // must point down at the trigger) colors the TOP border, and `bottom`

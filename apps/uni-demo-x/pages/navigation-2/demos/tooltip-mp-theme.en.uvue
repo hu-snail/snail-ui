@@ -1,0 +1,39 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-theme.en.vue sha256:655bfeed7473a641 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-tooltip (uni-end) — English shadow of tooltip-mp-theme.
+ */
+import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+import SnTooltip from '@snui/uni-x/components/sn-tooltip/sn-tooltip.uvue';
+const darkOpen = ref(false);
+const lightOpen = ref(false);
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnTooltip
+      :model-value="darkOpen"
+      content="Dark translucent plate (default theme=dark)"
+      placement="top"
+      @update:model-value="darkOpen = $event"
+    >
+      <SnButton block><text>Dark (theme=dark, default)</text></SnButton>
+    </SnTooltip>
+    <SnTooltip
+      :model-value="lightOpen"
+      content="Light surface plate (theme=light)"
+      theme="light"
+      placement="bottom"
+      @update:model-value="lightOpen = $event"
+    >
+      <SnButton block><text>Light (theme=light)</text></SnButton>
+    </SnTooltip>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding-top: 40rpx;
+}
+</style>
