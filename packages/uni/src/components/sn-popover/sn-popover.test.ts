@@ -1004,9 +1004,16 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
     expect(block).toContain('width: 32rpx');
     expect(block).toContain('height: 32rpx');
-    // The protrusion must track the wider square (offset ≈ square/2 − lap).
-    expect(source).toContain('bottom: -12rpx');
-    expect(source).toContain('top: -12rpx');
+    // Offset = half the square: the diamond's widest line sits ON the card
+    // edge, so the protrusion is the half-diagonal (~22rpx) — never deeper.
+    expect(source).toContain('bottom: -16rpx');
+    expect(source).toContain('top: -16rpx');
+    // The trigger gap must clear the protrusion — the old 12rpx gap let the
+    // diamond overlap the trigger button.
+    expect(source).toContain('calc(28rpx + var(--sn-popover-offset-y))');
+    expect(source).not.toContain('calc(12rpx + var(--sn-popover-offset-y))');
+    // Arrow shadow matches the card's token (bubble + arrow read as one).
+    expect(block).toContain('box-shadow: var(--sn-mp-shadow-md)');
   });
 });
 

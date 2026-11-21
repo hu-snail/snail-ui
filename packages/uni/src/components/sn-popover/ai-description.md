@@ -175,8 +175,10 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
-- Reference-large arrow: the diamond is a 32rpx square protruding 12rpx
-  from the bubble edge (smaller diamonds vanished on-page).
+- Reference-large arrow: a 32rpx rotated diamond with its widest line ON
+  the bubble edge — ~45rpx base, ~22rpx apex — and the trigger gap (28rpx)
+  clears the protrusion so the apex never touches the trigger. The arrow
+  carries the card's shadow token, so bubble + arrow read as one shape.
 - Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
   and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,
