@@ -21,7 +21,7 @@ function showAchievement(): void {
     description: '你已连续学习 1 天',
     type: 'warning',
     icon: Star,
-    background: 'var(--sn-mp-color-feedback-warning-soft)',
+    background: '#FFF4E6', // 不透明暖底：soft token 是 rgba(0.22)，在小程序上会透出页面
     radius: 24,
     closeText: '',
     duration: 0,
@@ -137,6 +137,13 @@ function showSlotted(): void {
   border-radius: var(--sn-mp-radius-xl);
   background-color: var(--sn-mp-color-feedback-success);
 }
+
+/* MP: 同 sn-notify —— 胶囊悬浮在卡片右上角，自绘关闭钮同样落到右下角。 */
+/* #ifdef MP */
+.slot-card__close {
+  align-self: flex-end;
+}
+/* #endif */
 
 .slot-card__close-text {
   font-size: var(--sn-mp-font-size-md);

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notify-mp-style.vue sha256:29c2b7130a02c3f4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/notify-mp-style.vue sha256:c36ee4c41df83533 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-notify (uni-end) — 自定义能力：图标 / 底色 / 圆角 / 关闭文案 /
@@ -21,7 +21,7 @@ function showAchievement(): void {
     description: '你已连续学习 1 天',
     type: 'warning',
     icon: Star,
-    background: 'var(--sn-mp-color-feedback-warning-soft)',
+    background: '#FFF4E6', // 不透明暖底：soft token 是 rgba(0.22)，在小程序上会透出页面
     radius: 24,
     closeText: '',
     duration: 0,
@@ -132,6 +132,13 @@ function showSlotted(): void {
   background-color: var(--sn-mp-color-feedback-success);
   flex-direction: row;
 }
+
+/* MP: 同 sn-notify —— 胶囊悬浮在卡片右上角，自绘关闭钮同样落到右下角。 */
+/* #ifdef MP */
+.slot-card__close {
+  align-self: flex-end;
+}
+/* #endif */
 
 .slot-card__close-text {
   font-size: var(--sn-mp-font-size-md);

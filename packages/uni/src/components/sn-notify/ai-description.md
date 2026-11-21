@@ -126,6 +126,10 @@ uni-h5 runtime also styles `uni-view { overflow: hidden }` by default, so the
 container and stack carry an explicit `overflow: visible` — the deck cards
 hang outside the ~0-height container and must not be clipped.
 
+On WeChat MP the close pill additionally drops to the card's bottom-right
+(`align-self: flex-end` behind `#ifdef MP`) so it never sits under the
+floating capsule; App / H5 keep the top-right HeroUI placement.
+
 ## Tokens Consumed (end: mp)
 
 | Token                               | CSS Variable                        | Purpose                          |

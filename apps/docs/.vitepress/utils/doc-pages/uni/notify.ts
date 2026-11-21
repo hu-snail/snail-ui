@@ -49,7 +49,7 @@ export const notifyDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: '页面里放一个 <sn-notify> 作为队列容器，通过模板 ref 调用 show / hide / hideAll。show 的入参即每条消息的完整配置：title 必填，type 决定语义色（default / primary / success / warning / danger），icon 可传 IconData 自定义字形（传 null 隐藏图标），duration = 0 表示常驻，closeText 传空字符串渲染为 X 图标关闭钮。顶部锚点默认自动让位状态栏（safeAreaInsetTop），无需手动传偏移。' },
+      { t: 'text', s: '页面里放一个 <sn-notify> 作为队列容器，通过模板 ref 调用 show / hide / hideAll。show 的入参即每条消息的完整配置：title 必填，type 决定语义色（default / primary / success / warning / danger），icon 可传 IconData 自定义字形（传 null 隐藏图标），duration = 0 表示常驻，closeText 传空字符串渲染为 X 图标关闭钮。顶部锚点默认自动让位状态栏（safeAreaInsetTop），无需手动传偏移；微信小程序端关闭按钮自动落到卡片右下角避让胶囊。' },
     ],
     fileLabel: 'Notify 消息通知.vue',
     meta: 'Vue 3 · <script setup>',

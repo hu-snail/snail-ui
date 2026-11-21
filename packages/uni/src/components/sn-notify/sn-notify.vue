@@ -808,6 +808,15 @@ defineExpose<SnNotifyInstance>({ show, hide, hideAll });
   padding: 0;
 }
 
+/* WeChat floats its capsule over the card's top-right corner — on MP the
+ * pill drops to the bottom-right so the two never collide. App / H5 keep
+ * the HeroUI top-right placement. */
+/* #ifdef MP */
+.sn-notify__close {
+  align-self: flex-end;
+}
+/* #endif */
+
 .sn-notify__close-text {
   font-size: var(--sn-mp-font-size-md);
   font-weight: 600;

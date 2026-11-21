@@ -21,7 +21,7 @@ function showAchievement(): void {
     description: 'New achievement unlocked',
     type: 'warning',
     icon: Star,
-    background: 'var(--sn-mp-color-feedback-warning-soft)',
+    background: '#FFF4E6', // opaque warm tint: the soft token is rgba(0.22) and reads as transparent on MP
     radius: 24,
     closeText: '',
     duration: 0,
@@ -137,6 +137,14 @@ function showSlotted(): void {
   border-radius: var(--sn-mp-radius-xl);
   background-color: var(--sn-mp-color-feedback-success);
 }
+
+/* MP: same as sn-notify — the capsule floats over the card's top-right, so
+ * the custom close trigger drops to the bottom-right too. */
+/* #ifdef MP */
+.slot-card__close {
+  align-self: flex-end;
+}
+/* #endif */
 
 .slot-card__close-text {
   font-size: var(--sn-mp-font-size-md);

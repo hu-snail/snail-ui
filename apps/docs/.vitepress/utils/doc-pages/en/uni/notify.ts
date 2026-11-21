@@ -41,7 +41,7 @@ export const notifyDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'Place one <sn-notify> per page as the queue container and drive it through the template ref (show / hide / hideAll). Each show() call takes the full message config: title is required, type picks the semantic color (default / primary / success / warning / danger), icon accepts a custom IconData (null hides it), duration = 0 keeps the card open, and an empty closeText renders an icon-only close pill. Top-anchored stacks clear the status bar automatically (safeAreaInsetTop) — no manual offset needed.',
+        s: 'Place one <sn-notify> per page as the queue container and drive it through the template ref (show / hide / hideAll). Each show() call takes the full message config: title is required, type picks the semantic color (default / primary / success / warning / danger), icon accepts a custom IconData (null hides it), duration = 0 keeps the card open, and an empty closeText renders an icon-only close pill. Top-anchored stacks clear the status bar automatically (safeAreaInsetTop) — no manual offset needed; on WeChat MP the close pill drops to the card bottom-right to stay clear of the capsule.',
       },
     ],
     fileLabel: 'Notify · uni-app x.vue',
