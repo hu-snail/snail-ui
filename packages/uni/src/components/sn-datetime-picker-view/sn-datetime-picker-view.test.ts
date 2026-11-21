@@ -107,9 +107,12 @@ describe('sn-datetime-picker-view', () => {
         type: 'date',
         modelValue: new Date(2024, 1, 10).getTime(),
       });
-      const dayColumn = w.findAll('.sn-datetime-picker-view__column')[2];
+      // Column data reads through the exposed API — the render window only
+      // affects DOM nodes, never the derived columns.
+      const days = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[2].labels.length;
       // February 2024 has 29 days.
-      expect(dayColumn?.findAll('.sn-datetime-picker-view__item')).toHaveLength(29);
+      expect(days).toBe(29);
     });
 
     it('drops days beyond the max date inside the max month', () => {
@@ -119,47 +122,52 @@ describe('sn-datetime-picker-view', () => {
         minDate: new Date(2024, 0, 1).getTime(),
         maxDate: new Date(2024, 5, 10).getTime(),
       });
-      const dayColumn = w.findAll('.sn-datetime-picker-view__column')[2];
-      expect(dayColumn?.findAll('.sn-datetime-picker-view__item')).toHaveLength(10);
+      const days = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[2].labels.length;
+      expect(days).toBe(10);
     });
 
     it('honours minHour / maxHour for the time type', () => {
       const w = mountView({ type: 'time', modelValue: '10:30', minHour: 8, maxHour: 18 });
-      const hourColumn = w.findAll('.sn-datetime-picker-view__column')[0];
-      const items = hourColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
-      expect(items).toHaveLength(11);
-      expect(items[0]?.text()).toBe('08');
+      const hourLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[0].labels;
+      expect(hourLabels).toHaveLength(11);
+      expect(hourLabels[0]).toBe('08');
     });
 
     it('spans now ±10 years when min / max dates are not given', () => {
       const w = mount(SnDatetimePickerView, { props: { modelValue: BASE } });
-      const yearColumn = w.findAll('.sn-datetime-picker-view__column')[0];
-      const items = yearColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      const yearLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[0].labels;
       const thisYear = new Date().getFullYear();
-      expect(items).toHaveLength(21);
-      expect(items[0]?.text()).toBe(String(thisYear - 10));
-      expect(items[20]?.text()).toBe(String(thisYear + 10));
+      expect(yearLabels).toHaveLength(21);
+      expect(yearLabels[0]).toBe(String(thisYear - 10));
+      expect(yearLabels[20]).toBe(String(thisYear + 10));
     });
   });
 
   describe('selection writes', () => {
     it('emits a timestamp when a year is tapped', async () => {
       const w = mountView({ type: 'date' });
+      // Row-window rendering keeps only the visible window; tap a row inside
+      // it (2021 sits one slot above the selected 2024).
       await w
         .findAll('.sn-datetime-picker-view__column')[0]
         ?.findAll('.sn-datetime-picker-view__item')[0]
         ?.trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
-      expect(new Date(value).getFullYear()).toBe(2020);
+      expect(new Date(value).getFullYear()).toBe(2021);
     });
 
     it('emits an HH:mm string for the time type', async () => {
       const w = mountView({ type: 'time', modelValue: '10:30' });
+      // Hour 08 sits inside the visible window around the selected 10
+      // (window 07..13 → render index 1).
       await w
         .findAll('.sn-datetime-picker-view__column')[0]
         ?.findAll('.sn-datetime-picker-view__item')[1]
         ?.trigger('tap');
-      expect(w.emitted('update:modelValue')?.[0]).toEqual(['01:30']);
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['08:30']);
     });
 
     it('emits change with the value and the columns', async () => {
@@ -284,12 +292,13 @@ describe('sn-datetime-picker-view', () => {
         wheel: true,
       });
       const items = w.findAll('.sn-datetime-picker-view__item');
-      // Year column runs 2020–2030; 2024 sits at index 4.
-      expect(items[0]?.text()).toBe('2020');
+      // Render window: visible 6 → rows 1..7 (2021..2027) around 2024.
+      expect(items).toHaveLength(7);
+      expect(items[0]?.text()).toBe('2021');
       expect(items[0]?.classes()).toContain('sn-datetime-picker-view__item--far');
       expect(items[3]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
-      expect(items[4]?.classes()).toContain('sn-datetime-picker-view__item--active');
-      expect(items[4]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
+      expect(items[3]?.classes()).toContain('sn-datetime-picker-view__item--active');
+      expect(items[3]?.classes()).not.toContain('sn-datetime-picker-view__item--far');
       expect(items[6]?.classes()).toContain('sn-datetime-picker-view__item--far');
     });
   });
@@ -357,7 +366,8 @@ describe('sn-datetime-picker-view', () => {
       expect(calls).toHaveLength(0);
       // Tap selection stays silent even with the flag on.
       const w2 = mountView({ type: 'year', vibrateShort: true });
-      await w2.findAll('.sn-datetime-picker-view__item')[5]!.trigger('tap');
+      // Render window 2021..2027 → 2025 sits at render index 4.
+      await w2.findAll('.sn-datetime-picker-view__item')[4]!.trigger('tap');
       expect(calls).toHaveLength(0);
       const value = w2.emitted('update:modelValue')?.at(-1)?.[0] as number;
       expect(new Date(value).getFullYear()).toBe(2025);
@@ -440,11 +450,11 @@ describe('sn-datetime-picker-view', () => {
   describe('time bounds', () => {
     it('honours minMinute / maxMinute for the time type', () => {
       const w = mountView({ type: 'time', modelValue: '10:30', minMinute: 10, maxMinute: 40 });
-      const minuteColumn = w.findAll('.sn-datetime-picker-view__column')[1];
-      const items = minuteColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
-      expect(items).toHaveLength(31);
-      expect(items[0]?.text()).toBe('10');
-      expect(items.at(-1)?.text()).toBe('40');
+      const minuteLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[1].labels;
+      expect(minuteLabels).toHaveLength(31);
+      expect(minuteLabels[0]).toBe('10');
+      expect(minuteLabels.at(-1)).toBe('40');
     });
 
     it('honours minSecond / maxSecond when seconds are shown', () => {
@@ -455,10 +465,10 @@ describe('sn-datetime-picker-view', () => {
         minSecond: 15,
         maxSecond: 25,
       });
-      const secondColumn = w.findAll('.sn-datetime-picker-view__column')[2];
-      const items = secondColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
-      expect(items).toHaveLength(11);
-      expect(items[0]?.text()).toBe('15');
+      const secondLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[2].labels;
+      expect(secondLabels).toHaveLength(11);
+      expect(secondLabels[0]).toBe('15');
     });
 
     it('splits an HH:mm:ss value into three columns', () => {
@@ -475,9 +485,9 @@ describe('sn-datetime-picker-view', () => {
         minDate: new Date(2024, 5, 15, 8, 0, 0).getTime(),
         maxDate: new Date(2030, 11, 31, 23, 59, 59).getTime(),
       });
-      const hourColumn = w.findAll('.sn-datetime-picker-view__column')[3];
-      const items = hourColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
-      expect(items[0]?.text()).toBe('08');
+      const hourLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[3].labels;
+      expect(hourLabels[0]).toBe('08');
     });
 
     it('starts the minute column at the min minute inside the min hour', () => {
@@ -486,9 +496,9 @@ describe('sn-datetime-picker-view', () => {
         minDate: new Date(2024, 5, 15, 10, 30, 0).getTime(),
         maxDate: new Date(2030, 11, 31, 23, 59, 59).getTime(),
       });
-      const minuteColumn = w.findAll('.sn-datetime-picker-view__column')[4];
-      const items = minuteColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
-      expect(items[0]?.text()).toBe('30');
+      const minuteLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[4].labels;
+      expect(minuteLabels[0]).toBe('30');
     });
 
     it('clamps an out-of-range value to the first row of the year column', () => {
@@ -604,12 +614,13 @@ describe('sn-datetime-picker-view', () => {
   describe('interaction edges', () => {
     it('emits a timestamp from the year-month month column', async () => {
       const w = mountView({ type: 'year-month' });
+      // Visible window around the selected 06 holds month 03 at render index 0.
       await w
         .findAll('.sn-datetime-picker-view__column')[1]
         ?.findAll('.sn-datetime-picker-view__item')[0]
         ?.trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
-      expect(new Date(value).getMonth()).toBe(0);
+      expect(new Date(value).getMonth()).toBe(2);
       expect(new Date(value).getFullYear()).toBe(2024);
     });
 
@@ -650,10 +661,8 @@ describe('sn-datetime-picker-view', () => {
         lunar: true,
         modelValue: new Date(2025, 0, 29).getTime(),
       });
-      const monthLabels = w
-        .findAll('.sn-datetime-picker-view__column')[1]
-        ?.findAll('.sn-datetime-picker-view__item')
-        .map((item) => item.text());
+      const monthLabels = (w.vm as unknown as { getOriginColumns(): Array<{ labels: string[] }> })
+        .getOriginColumns()[1].labels;
       expect(monthLabels).toContain('冬月');
       expect(monthLabels).toContain('腊月');
 
@@ -669,15 +678,19 @@ describe('sn-datetime-picker-view', () => {
       const w = mountView({
         type: 'date',
         lunar: true,
-        modelValue: new Date(2024, 1, 10).getTime(),
+        // 选中正月初六 —— 渲染窗口（day 3..9）覆盖初八。
+        modelValue: new Date(2024, 1, 15).getTime(),
       });
-      // 正月有 30 天，日列第 15 行（索引 14）= 十五。
-      await w
+      // 日列渲染窗口（选中初六）：初八必然落在窗口内 —— 按渲染文本定位
+      // 行（窗口起点随实现变化，文本定位消除索引偏移耦合）。
+      const dayRows = w
         .findAll('.sn-datetime-picker-view__column')[2]
-        ?.findAll('.sn-datetime-picker-view__item')[14]
-        ?.trigger('tap');
+        ?.findAll('.sn-datetime-picker-view__item');
+      const chuBa = dayRows?.find((row) => row.text() === '初八');
+      await chuBa?.trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
-      expect(new Date(value).toDateString()).toBe(new Date(2024, 1, 24).toDateString());
+      expect(chuBa).toBeDefined();
+      expect(new Date(value).toDateString()).toBe(new Date(2024, 1, 17).toDateString());
     });
 
     it('falls back to the regular month when switching to a year without that leap month', async () => {
@@ -686,10 +699,10 @@ describe('sn-datetime-picker-view', () => {
         lunar: true,
         modelValue: new Date(2025, 6, 25).getTime(),
       });
-      // 年列自 2019（己亥）起，2024（甲辰，无闰六月）在索引 5。
+      // 渲染窗口 2022..2028 —— 甲辰（2024）在渲染索引 2。
       await w
         .findAll('.sn-datetime-picker-view__column')[0]
-        ?.findAll('.sn-datetime-picker-view__item')[5]
+        ?.findAll('.sn-datetime-picker-view__item')[2]
         ?.trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
       // 闰六月初一 → 甲辰年六月初一 = 2024-07-06。

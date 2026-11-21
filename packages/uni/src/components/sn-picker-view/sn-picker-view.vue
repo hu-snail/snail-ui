@@ -557,10 +557,9 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         :class="{ 'sn-picker-view__roller--dragging': isDragging }"
         :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
       >
-        <view
-          v-for="(option, rowIndex) in column"
-          v-show="isRowRenderable(columnIndex, rowIndex)"
-          :key="option.value"
+        <template v-for="(option, rowIndex) in column" :key="option.value">
+          <view
+            v-if="isRowRenderable(columnIndex, rowIndex)"
           :class="[
             'sn-picker-view__item',
             {
@@ -585,6 +584,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
               ><text class="sn-picker-view__label">{{ option.label }}</text></slot
           ></view></view
         >
+        </template>
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />
       <view class="sn-picker-view__mask sn-picker-view__mask--bottom" aria-hidden="true" />

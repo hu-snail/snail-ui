@@ -690,10 +690,9 @@ const ariaValue = computed(() => {
         :class="{ 'sn-datetime-picker-view__roller--dragging': isDragging }"
         :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
       >
+        <template v-for="(value, rowIndex) in column.values" :key="value">
         <view
-          v-for="(value, rowIndex) in column.values"
-          v-show="isRowRenderable(columnIndex, rowIndex)"
-          :key="value"
+          v-if="isRowRenderable(columnIndex, rowIndex)"
           :class="[
             'sn-datetime-picker-view__item',
             {
@@ -708,6 +707,7 @@ const ariaValue = computed(() => {
           @tap="onItemTap(columnIndex, rowIndex)"
           ><text>{{ column.labels[rowIndex] }}</text></view
         >
+        </template>
       </view>
       <view
         class="sn-datetime-picker-view__mask sn-datetime-picker-view__mask--top"
