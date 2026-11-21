@@ -20,14 +20,15 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 import SnNotify from './sn-notify.vue';
 import type { IconData, SnNotifyInstance } from './sn-notify-types';
-import { resetCapsuleMetrics } from '../../utils/capsule';
+
+/** MP-shaped host: status bar 47px, 375 design width (16rpx breathing = 8px). */
+const MP_UNI = {
+  getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
+};
 
 afterEach(() => {
   vi.useRealTimers();
   delete (globalThis as { uni?: unknown }).uni;
-  // The capsule metrics memoize on first read — a stale cache would leak one
-  // test's statusBarHeight stub into the next.
-  resetCapsuleMetrics();
 });
 
 interface FakeRect {
@@ -374,47 +375,32 @@ describe('sn-notify', () => {
       expect(wrapper.attributes('style')).toContain('padding-top: 96px');
     });
 
-    it('reserves the status bar + capsule band by default (safeAreaInsetTop)', () => {
-      (globalThis as { uni?: unknown }).uni = {
-        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
-        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
-      };
-      resetCapsuleMetrics();
+    it('reserves the status bar height by default (safeAreaInsetTop)', () => {
+      (globalThis as { uni?: unknown }).uni = MP_UNI;
       const wrapper = mount(SnNotify);
-      // 47 status bar + 44 capsule band + 8 breathing.
-      expect(wrapper.attributes('style')).toContain('padding-top: 99px');
+      // 47 status bar + 8 breathing — the card clears the clock / notch but
+      // still floats above the page navbar by design.
+      expect(wrapper.attributes('style')).toContain('padding-top: 55px');
     });
 
     it('skips the safe-area inset when safeAreaInsetTop is false', () => {
-      (globalThis as { uni?: unknown }).uni = {
-        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
-        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
-      };
-      resetCapsuleMetrics();
+      (globalThis as { uni?: unknown }).uni = MP_UNI;
       const wrapper = mount(SnNotify, { props: { safeAreaInsetTop: false } });
-      // Default-navigation-bar pages sit below the native bar already.
+      // Hosts whose fixed layer already starts below the bar opt out.
       expect(wrapper.attributes('style')).not.toContain('padding-top');
     });
 
-    it('adds a numeric safeHeight on top of the auto safe-area inset', () => {
-      (globalThis as { uni?: unknown }).uni = {
-        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
-        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
-      };
-      resetCapsuleMetrics();
+    it('adds a numeric safeHeight on top of the status-bar inset', () => {
+      (globalThis as { uni?: unknown }).uni = MP_UNI;
       const wrapper = mount(SnNotify, { props: { safeHeight: 88 } });
-      expect(wrapper.attributes('style')).toContain('padding-top: 187px');
+      expect(wrapper.attributes('style')).toContain('padding-top: 143px');
     });
 
     it('lets a string safeHeight override the auto inset verbatim', () => {
-      (globalThis as { uni?: unknown }).uni = {
-        getSystemInfoSync: () => ({ statusBarHeight: 47, windowWidth: 375 }),
-        getMenuButtonBoundingClientRect: () => ({ width: 87, height: 32, top: 53, left: 289 }),
-      };
-      resetCapsuleMetrics();
+      (globalThis as { uni?: unknown }).uni = MP_UNI;
       const wrapper = mount(SnNotify, { props: { safeHeight: '12px' } });
       expect(wrapper.attributes('style')).toContain('padding-top: 12px');
-      expect(wrapper.attributes('style')).not.toContain('99px');
+      expect(wrapper.attributes('style')).not.toContain('55px');
     });
 
     it('clears every pending timer on unmount', async () => {

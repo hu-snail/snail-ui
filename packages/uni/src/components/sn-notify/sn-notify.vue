@@ -56,7 +56,6 @@ import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
 import { Bell, X as XIcon } from '../sn-icon/sn-icon-set';
 import { resolveUniHost } from '../../utils/uni-host';
-import { getCapsuleMetrics } from '../../utils/capsule';
 import type {
   NotifyPosition,
   NotifyType,
@@ -116,10 +115,10 @@ const props = withDefaults(
     /** Allow horizontal swipe-to-dismiss on the front card. */
     swipeToDismiss?: boolean;
     /**
-     * Reserve the status-bar + nav band on top-anchored stacks (default).
-     * WeChat MP measures the capsule band (AUI-MP-002), App reads the status
-     * bar; H5 has none and stays flat. Set `false` on default-navigation-bar
-     * pages where `position: fixed` already starts below the native bar.
+     * Reserve the status-bar height on top-anchored stacks (default) so the
+     * clock / notch never overlaps the card. The card still floats above the
+     * page navbar by design. H5 has no status bar and stays flat. Set
+     * `false` on hosts where `position: fixed` already starts below the bar.
      */
     safeAreaInsetTop?: boolean;
     /**
@@ -500,18 +499,18 @@ const rootClass = computed(() => [
 ]);
 
 /**
- * Status-bar + nav-band inset (px). WeChat MP reads the measured capsule
- * band (AUI-MP-002); App has a status bar but no capsule, so the default
- * 44px nav row stands in; H5 reports no status bar and stays flat.
+ * Status-bar inset (px) — the card clears the clock / notch but still floats
+ * above the page navbar by design. WeChat MP and App both report the real
+ * height through getSystemInfoSync; H5 reports none and stays flat.
  */
 function autoTopInset(): number {
-  const metrics = getCapsuleMetrics();
-  let statusBar = metrics.statusBarHeight;
-  if (statusBar <= 0) {
-    const host = resolveUniHost<{ getSystemInfoSync?: () => { statusBarHeight?: number } }>();
-    statusBar = host?.getSystemInfoSync?.()?.statusBarHeight ?? 0;
+  const host = resolveUniHost<{ getSystemInfoSync?: () => { statusBarHeight?: number } }>();
+  try {
+    const statusBar = host?.getSystemInfoSync?.()?.statusBarHeight ?? 0;
+    return typeof statusBar === 'number' && statusBar > 0 ? statusBar : 0;
+  } catch {
+    return 0;
   }
-  return statusBar > 0 ? statusBar + metrics.navBarHeight : 0;
 }
 
 const rootStyle = computed(() => {

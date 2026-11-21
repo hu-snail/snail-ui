@@ -41,7 +41,7 @@ export const notifyDocPageEn: SnDocPageData = {
     hint: [
       {
         t: 'text',
-        s: 'Place one <sn-notify> per page as the queue container and drive it through the template ref (show / hide / hideAll). Each show() call takes the full message config: title is required, type picks the semantic color (default / primary / success / warning / danger), icon accepts a custom IconData (null hides it), duration = 0 keeps the card open, and an empty closeText renders an icon-only close pill. Top-anchored stacks clear the status bar and nav band automatically (safeAreaInsetTop) — no manual offset needed.',
+        s: 'Place one <sn-notify> per page as the queue container and drive it through the template ref (show / hide / hideAll). Each show() call takes the full message config: title is required, type picks the semantic color (default / primary / success / warning / danger), icon accepts a custom IconData (null hides it), duration = 0 keeps the card open, and an empty closeText renders an icon-only close pill. Top-anchored stacks clear the status bar automatically (safeAreaInsetTop) — no manual offset needed.',
       },
     ],
     fileLabel: 'Notify · uni-app x.vue',
@@ -94,8 +94,8 @@ function upgradeDone(): void {
       { name: 'closable', type: 'boolean', default: 'true', desc: 'Render the close pill by default.' },
       { name: 'closeText', type: 'string', default: "'Close'", desc: 'Default close pill label; overridable per message.' },
       { name: 'swipeToDismiss', type: 'boolean', default: 'true', desc: 'The front card supports horizontal swipe-to-dismiss.' },
-      { name: 'safeAreaInsetTop', type: 'boolean', default: 'true', desc: 'Top-anchored stacks automatically clear the status bar + nav band (WeChat MP measures the capsule; App uses the status bar + a 44px nav row; H5 has no status bar and stays flat). Set false on default-navigation-bar pages, where fixed already starts below the native bar.' },
-      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: 'Extra top offset in px (stacked on top of the safe-area inset); a string takes over padding-top entirely and replaces the auto inset.' },
+      { name: 'safeAreaInsetTop', type: 'boolean', default: 'true', desc: 'Top-anchored stacks automatically clear the status bar (the card still floats above the page navbar by design); H5 has no status bar and stays flat. Set false on hosts whose fixed layer already starts below the bar.' },
+      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: 'Extra top offset in px (stacked on top of the status-bar inset); a string takes over padding-top entirely and replaces the auto inset.' },
       { name: 'customClass', type: 'string', default: "''", desc: 'Custom class for the root node.' },
       { name: 'customStyle', type: 'string', default: "''", desc: 'Custom inline style for the root node.' },
     ],

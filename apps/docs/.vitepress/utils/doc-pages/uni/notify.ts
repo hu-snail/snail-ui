@@ -49,7 +49,7 @@ export const notifyDocPage: SnDocPageData = {
   ],
   usage: {
     hint: [
-      { t: 'text', s: '页面里放一个 <sn-notify> 作为队列容器，通过模板 ref 调用 show / hide / hideAll。show 的入参即每条消息的完整配置：title 必填，type 决定语义色（default / primary / success / warning / danger），icon 可传 IconData 自定义字形（传 null 隐藏图标），duration = 0 表示常驻，closeText 传空字符串渲染为 X 图标关闭钮。顶部锚点默认自动让位状态栏与导航带（safeAreaInsetTop），无需手动传偏移。' },
+      { t: 'text', s: '页面里放一个 <sn-notify> 作为队列容器，通过模板 ref 调用 show / hide / hideAll。show 的入参即每条消息的完整配置：title 必填，type 决定语义色（default / primary / success / warning / danger），icon 可传 IconData 自定义字形（传 null 隐藏图标），duration = 0 表示常驻，closeText 传空字符串渲染为 X 图标关闭钮。顶部锚点默认自动让位状态栏（safeAreaInsetTop），无需手动传偏移。' },
     ],
     fileLabel: 'Notify 消息通知.vue',
     meta: 'Vue 3 · <script setup>',
@@ -101,8 +101,8 @@ function upgradeDone(): void {
       { name: 'closable', type: 'boolean', default: 'true', desc: '是否默认渲染关闭按钮。' },
       { name: 'closeText', type: 'string', default: "'Close'", desc: '默认关闭按钮文案；每条消息可覆盖。' },
       { name: 'swipeToDismiss', type: 'boolean', default: 'true', desc: '前端卡片支持左右滑动关闭。' },
-      { name: 'safeAreaInsetTop', type: 'boolean', default: 'true', desc: '顶部锚点自动让位状态栏 + 导航带（微信小程序按胶囊实测，App 按状态栏 + 44px 导航行，H5 无状态栏不偏移）；使用系统默认导航栏的页面（fixed 已在原生导航栏之下）设为 false。' },
-      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: '额外顶部偏移（裸数字 = px，叠加在安全区让位之上）；传字符串则整体接管 padding-top，替换自动让位。' },
+      { name: 'safeAreaInsetTop', type: 'boolean', default: 'true', desc: '顶部锚点自动让位状态栏（卡片仍按设计悬浮在页面导航栏之上）；H5 无状态栏不偏移。fixed 层已经从状态栏之下开始（如原生导航栏接管）的宿主设为 false。' },
+      { name: 'safeHeight', type: 'number | string | undefined', default: 'undefined', desc: '额外顶部偏移（裸数字 = px，叠加在状态栏让位之上）；传字符串则整体接管 padding-top，替换自动让位。' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
     ],
