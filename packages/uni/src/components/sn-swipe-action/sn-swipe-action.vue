@@ -322,42 +322,60 @@ function measureSide(side: SwipeActionPosition): void {
       // Fall through to the next strategy.
     }
   }
-  // (2) uni runtime — the cross-end measurement API. Host pick per
-  // `pickSelectorQueryHost` (§118.3): the mp `$scope` query scopes natively;
-  // `.in(Vue proxy)` on the page-level query measured the FIRST row's action
-  // width on mp devices (pills stayed covered past a ~80px clamp).
-  //
-  // The queried selector is a PER-INSTANCE ID, not a class: class selectors
-  // can cross scopes and match a foreign row's (wider) action area on
-  // uni-app x mp even under `.in($scope)` — every row then slid to that
-  // foreign width (device-verified). Ids are unique per instance, so no scope
-  // confusion can widen the measured distance.
+  // (2) uni runtime — the cross-end measurement API. Every query variant
+  // fires at once and the first positive width wins:
+  //   a. the mp `$scope` host (`.in($scope)` scopes natively on classic mp);
+  //   b. the page-level uni query WITHOUT `.in()` — on uni-app x mp the
+  //      runtime's `.in()` rejects the scope objects and scoped variants
+  //      match nothing, while the page-level id query reaches inside nested
+  //      components (slider-bar precedent);
+  //   c. the page-level query with `.in(Vue proxy)` (best effort).
+  // All variants query the same PER-INSTANCE id (`#<actionsNodeId>-<side>`),
+  // so a hit from any of them measures THIS row — ids cannot cross-match
+  // between rows the way class selectors did (device-verified 312rpx bug).
   const instance = getCurrentInstance();
   const proxy = instance?.proxy as
     | { $scope?: UniSelectorQueryHost; $?: { scope?: UniSelectorQueryHost } }
     | null;
-  const picked = pickSelectorQueryHost(
-    proxy?.$scope ?? proxy?.$?.scope,
-    resolveUniHost<UniSelectorQueryHost>(),
-    instance?.proxy,
-  );
-  if (picked === null) return;
-  try {
-    const query = picked.createQuery();
-    const scoped = (query.in?.(picked.queryScope) as UniSelectorQuery | undefined) ?? query;
-    const selection = scoped.select?.(`#${actionsNodeId}-${side}`);
-    const measured = selection?.boundingClientRect?.((rect) => {
-      const width = rect?.width;
-      if (typeof width === 'number' && width > 0) {
-        openDistance.value = { ...openDistance.value, [side]: width };
-      }
-    });
-    // `boundingClientRect` already returns the chainable node on most targets;
-    // fall back to the query itself when it does not.
-    const chain = measured ?? query;
-    chain.exec?.();
-  } catch {
-    // Measurement is best-effort; the fallback width keeps the row usable.
+  const scopeHost = proxy?.$scope ?? proxy?.$?.scope;
+  const uniHost = resolveUniHost<UniSelectorQueryHost>();
+  const picked = pickSelectorQueryHost(scopeHost, uniHost, instance?.proxy);
+  const variants: Array<{ createQuery: () => UniSelectorQuery; queryScope: unknown | undefined }> =
+    [];
+  if (picked !== null) variants.push(picked);
+  if (
+    uniHost !== null &&
+    typeof uniHost.createSelectorQuery === 'function' &&
+    (picked === null || picked.createQuery !== uniHost.createSelectorQuery)
+  ) {
+    // Page-level (no `.in()`) — the variant that reaches nested components on
+    // uni-app x mp.
+    variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: undefined });
+    // Best-effort scoped fallback for hosts where the page-level query is
+    // restricted.
+    variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: instance?.proxy });
+  }
+  for (const variant of variants) {
+    try {
+      const query = variant.createQuery();
+      const scoped =
+        variant.queryScope === undefined
+          ? query
+          : ((query.in?.(variant.queryScope) as UniSelectorQuery | undefined) ?? query);
+      const selection = scoped.select?.(`#${actionsNodeId}-${side}`);
+      const measured = selection?.boundingClientRect?.((rect) => {
+        const width = rect?.width;
+        if (typeof width === 'number' && width > 0) {
+          openDistance.value = { ...openDistance.value, [side]: width };
+        }
+      });
+      // `boundingClientRect` already returns the chainable node on most
+      // targets; fall back to the query itself when it does not.
+      const chain = measured ?? query;
+      chain.exec?.();
+    } catch {
+      // Measurement is best-effort; the fallback width keeps the row usable.
+    }
   }
 }
 
