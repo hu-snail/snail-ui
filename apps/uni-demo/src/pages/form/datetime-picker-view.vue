@@ -20,6 +20,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'时间选择器视图'"
     :title-en="'Datetime Picker View'"
     :desc="'内嵌时间滚轮'"
@@ -27,13 +28,14 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '区间联动（boundaryMinDate / boundaryMaxDate）',
@@ -43,67 +45,83 @@ const { t } = useDemoUi();
           badge="boundary"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('列改写（columnFormatter）', 'Column rewriting (columnFormatter)')"
           badge="column-formatter"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('列文案格式化（formatter）', 'Column label formatting (formatter)')"
           badge="formatter"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('即时 change（immediateChange）', 'Immediate change (immediateChange)')"
           badge="immediate-change"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('字段映射（valueKey / labelKey）', 'Field mapping (valueKey / labelKey)')"
           badge="keys"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('滚筒几何', 'Roller geometry')" badge="roller-geometry" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('滚筒几何', 'Roller geometry')"
+          badge="roller-geometry"
+        />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('time-bounds', 'Time Bounds')" badge="time-bounds" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('time-bounds', 'Time Bounds')"
+          badge="time-bounds"
+        />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('时间类型写回', 'Time type write-back')" badge="time-type" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('时间类型写回', 'Time type write-back')"
+          badge="time-type"
+        />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
+        <DemoModuleHead class="demo-host" :title="t('wheel 风格', 'Wheel style')" badge="wheel" />
         <view class="module__body">
-          <Demo9 />
+          <Demo9 class="demo-host" />
         </view>
       </view>
     </view>
@@ -131,4 +149,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

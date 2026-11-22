@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/slide-verify.vue sha256:d2ae82f36b4d1372 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/slide-verify.vue sha256:ab8e4fa2d8fa187d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— slide-verify 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/slide-verify-mp-basic.uvue';
@@ -16,63 +16,78 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'滑动验证'" :title-en="'Slide Verify'" :desc="'滑块拼图验证'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'滑动验证'"
+    :title-en="'Slide Verify'"
+    :desc="'滑块拼图验证'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('轨道配色（`backgroundColor`）', 'Track colors (`backgroundColor`)')"
           badge="color"
         />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
-        <view class="module__body">
-          <Demo2 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('根节点样式', 'Root styling')"
+          badge="custom-style"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('禁用（`disabled`）', 'Disabled (`disabled`)')"
           badge="disabled"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('图标字形（`icon` / `successIcon`）', 'Icon glyphs (`icon` / `successIcon`)')"
           badge="icons"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('文案（`text` / `successText`）', 'Copy (`text` / `successText`)')"
           badge="text"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('容差（`tolerance`）', 'Tolerance (`tolerance`)')"
           badge="tolerance"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
     </view>
@@ -99,4 +114,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

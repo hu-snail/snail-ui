@@ -285,9 +285,7 @@ describe('sn-picker-view', () => {
       const w = mountView({ modelValue: ['apple'] });
       const column = w.find('.sn-picker-view__column');
       await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
-      expect(w.find('.sn-picker-view__roller').classes()).toContain(
-        'sn-picker-view__roller--dragging',
-      );
+      expect(w.classes()).toContain('sn-picker-view--dragging');
       await column.trigger('touchend', { touches: [{ clientY: 300 }] });
       expect(w.find('.sn-picker-view__roller').classes()).not.toContain(
         'sn-picker-view__roller--dragging',

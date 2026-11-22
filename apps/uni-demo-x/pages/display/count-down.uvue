@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/display/count-down.vue sha256:b8173c9a192c7585 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/display/count-down.vue sha256:37edfa013b165a72 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— count-down 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/count-down-mp-autostart.uvue';
@@ -13,36 +13,44 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'倒计时'" :title-en="'Count Down'" :desc="'秒 / 时间戳倒计时'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'倒计时'"
+    :title-en="'Count Down'"
+    :desc="'秒 / 时间戳倒计时'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('autostart', 'Autostart')" badge="autostart" />
+        <DemoModuleHead class="demo-host" :title="t('autostart', 'Autostart')" badge="autostart" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('控制方法（start / pause / reset）', 'Controls (start / pause / reset)')"
           badge="control"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('毫秒渲染（millisecond）', 'Millisecond rendering (`millisecond`)')"
           badge="millisecond"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
     </view>
@@ -69,4 +77,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

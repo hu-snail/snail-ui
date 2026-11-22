@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/calendar-view.vue sha256:a341cb7b25d882e5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/calendar-view.vue sha256:367437ccb8229c78 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— calendar-view 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/calendar-view-mp-basic.uvue';
@@ -18,46 +18,63 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'日历面板'" :title-en="'Calendar View'" :desc="'内嵌日历面板'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'日历面板'"
+    :title-en="'Calendar View'"
+    :desc="'内嵌日历面板'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('默认时分与即时写回', 'Default time & immediate write-back')"
           badge="default-time"
         />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('周起始日', 'First day of week')" badge="first-day-of-week" />
-        <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('单元格格式化', 'Cell formatting')" badge="formatter" />
-        <view class="module__body">
-          <Demo3 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('周起始日', 'First day of week')"
+          badge="first-day-of-week"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('单元格格式化', 'Cell formatting')"
+          badge="formatter"
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('面板标题（showPanelTitle）', 'Panel title (showPanelTitle)')"
           badge="panel-title"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '区间选择（type=&quot;daterange&quot;）',
@@ -67,34 +84,37 @@ const { t } = useDemoUi();
           badge="range"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('起止同一天（allowSameDay）', 'Same start & end day (allowSameDay)')"
           badge="same-day"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('月 / 年切换（switchMode）', 'Month / year switching (switchMode)')"
           badge="switch-mode"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('时间列声明参数', 'Declared time-column props')"
           badge="time-props"
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
     </view>
@@ -121,4 +141,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

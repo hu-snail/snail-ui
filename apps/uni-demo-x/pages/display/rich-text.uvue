@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/display/rich-text.vue sha256:d24d2ce59e02277c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/display/rich-text.vue sha256:7a745266a6f20254 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— rich-text 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/rich-text-mp-anchor.uvue';
@@ -18,6 +18,7 @@ const { t } = useDemoUi();
 </script>
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'富文本'"
     :title-en="'Rich Text'"
     :desc="'HTML 内容：图文、表格与媒体'"
@@ -26,58 +27,64 @@ const { t } = useDemoUi();
     <view class="page">
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('锚点目录（enableAnchor）', 'Heading anchors (`enableAnchor`)')"
           badge="anchor"
         />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('空状态插槽', 'Empty state slot')" badge="empty" />
-        <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('images', 'Images')" badge="images" />
-        <view class="module__body">
-          <Demo3 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('links', 'Links')" badge="links" />
-        <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('media', 'Media')" badge="media" />
-        <view class="module__body">
-          <Demo5 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('空状态插槽', 'Empty state slot')"
+          badge="empty"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('images', 'Images')" badge="images" />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('links', 'Links')" badge="links" />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('media', 'Media')" badge="media" />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="
             t('样式映射（tagStyle / classStyles）', 'Style maps (`tagStyle` / `classStyles`)')
           "
           badge="style-map"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('table', 'Table')" badge="table" />
+        <DemoModuleHead class="demo-host" :title="t('table', 'Table')" badge="table" />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
     </view>
@@ -104,4 +111,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

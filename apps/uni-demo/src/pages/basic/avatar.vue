@@ -17,6 +17,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'头像'"
     :title-en="'Avatar'"
     :desc="'圆形 / 方形头像与徽标组合'"
@@ -25,50 +26,64 @@ const { t } = useDemoUi();
     <view class="page">
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('微标头像（badge 组合）', 'Badge avatars (badge composition)')"
           badge="badge"
         />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('回退', 'Fallback')" badge="fallback" />
+        <DemoModuleHead class="demo-host" :title="t('回退', 'Fallback')" badge="fallback" />
         <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('图片裁切（mode）', 'Image fit (`mode`)')" badge="mode" />
-        <view class="module__body">
-          <Demo3 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('形状（shape）', 'Shape (`shape`)')" badge="shape" />
-        <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('尺寸（size）', 'Size (`size`)')" badge="size" />
-        <view class="module__body">
-          <Demo5 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('图片裁切（mode）', 'Image fit (`mode`)')"
+          badge="mode"
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('形状（shape）', 'Shape (`shape`)')"
+          badge="shape"
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('尺寸（size）', 'Size (`size`)')"
+          badge="size"
+        />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('在线状态（status）', 'Presence status (`status`)')"
           badge="status"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
     </view>
@@ -96,4 +111,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

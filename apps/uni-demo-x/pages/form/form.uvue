@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/form.vue sha256:82b643cf53f50b3c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/form.vue sha256:775cf82adbbd2a3c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— form 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/form-mp-asterisk.uvue';
@@ -32,10 +32,17 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'表单'" :title-en="'Form'" :desc="'校验与布局容器'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'表单'"
+    :title-en="'Form'"
+    :desc="'校验与布局容器'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '必填星号（asteriskPosition / hideAsterisk）',
@@ -45,160 +52,179 @@ const { t } = useDemoUi();
           badge="asterisk"
         />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('单元格分隔与截断', 'Cell dividers & truncation')"
           badge="cell-border"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('可点击行（clickable / isLink）', 'Tappable rows (clickable / isLink)')"
           badge="cell-clickable"
         />
         <view class="module__body">
-          <Demo3 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('占位与副文案', 'Placeholder & helper copy')" badge="cell-text" />
-        <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
-        <view class="module__body">
-          <Demo5 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('禁用', 'Disabled')" badge="disabled" />
-        <view class="module__body">
-          <Demo6 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('字段', 'Fields')" badge="fields" />
-        <view class="module__body">
-          <Demo7 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('表单类型', 'Form type')" badge="form-type" />
-        <view class="module__body">
-          <Demo8 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('拦截', 'Guard')" badge="guard" />
-        <view class="module__body">
-          <Demo9 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
-        <view class="module__body">
-          <Demo10 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('标签', 'Label')" badge="label" />
-        <view class="module__body">
-          <Demo11 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('占位与副文案', 'Placeholder & helper copy')"
+          badge="cell-text"
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('自定义', 'Custom')" badge="custom" />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('禁用', 'Disabled')" badge="disabled" />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('字段', 'Fields')" badge="fields" />
+        <view class="module__body">
+          <Demo7 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('表单类型', 'Form type')" badge="form-type" />
+        <view class="module__body">
+          <Demo8 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('拦截', 'Guard')" badge="guard" />
+        <view class="module__body">
+          <Demo9 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('图标', 'Icon')" badge="icon" />
+        <view class="module__body">
+          <Demo10 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('标签', 'Label')" badge="label" />
+        <view class="module__body">
+          <Demo11 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('排布（layout / center）', 'Arrangement (layout / center)')"
           badge="layout"
         />
         <view class="module__body">
-          <Demo12 />
+          <Demo12 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('错误消息展示策略', 'Error message display strategies')"
           badge="message-display"
         />
         <view class="module__body">
-          <Demo13 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('reset-submit', 'Reset Submit')" badge="reset-submit" />
-        <view class="module__body">
-          <Demo14 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('rules', 'Rules')" badge="rules" />
-        <view class="module__body">
-          <Demo15 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('表单 schema', 'Form schema')" badge="schema" />
-        <view class="module__body">
-          <Demo16 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('尺寸（size）', 'Size')" badge="size" />
-        <view class="module__body">
-          <Demo17 />
+          <Demo13 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('reset-submit', 'Reset Submit')"
+          badge="reset-submit"
+        />
+        <view class="module__body">
+          <Demo14 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('rules', 'Rules')" badge="rules" />
+        <view class="module__body">
+          <Demo15 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('表单 schema', 'Form schema')" badge="schema" />
+        <view class="module__body">
+          <Demo16 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('尺寸（size）', 'Size')" badge="size" />
+        <view class="module__body">
+          <Demo17 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('状态图标（statusIcon）', 'Status icon (statusIcon)')"
           badge="status-icon"
         />
         <view class="module__body">
-          <Demo18 />
+          <Demo18 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('标签列宽（titleWidth）', 'Label column width (titleWidth)')"
           badge="title-width"
         />
         <view class="module__body">
-          <Demo19 />
+          <Demo19 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('validate', 'Validate')" badge="validate" />
+        <DemoModuleHead class="demo-host" :title="t('validate', 'Validate')" badge="validate" />
         <view class="module__body">
-          <Demo20 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('validation-flow', 'Validation Flow')" badge="validation-flow" />
-        <view class="module__body">
-          <Demo21 />
+          <Demo20 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('validation-flow', 'Validation Flow')"
+          badge="validation-flow"
+        />
+        <view class="module__body">
+          <Demo21 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('值对齐（valueAlign）', 'Value alignment (valueAlign)')"
           badge="value-align"
         />
         <view class="module__body">
-          <Demo22 />
+          <Demo22 class="demo-host" />
         </view>
       </view>
     </view>
@@ -225,4 +251,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

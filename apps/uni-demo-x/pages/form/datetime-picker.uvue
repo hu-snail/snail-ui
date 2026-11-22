@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker.vue sha256:4218d5a1b0da1cea —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form/datetime-picker.vue sha256:9990052925e76207 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— datetime-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/datetime-picker-mp-basic.uvue';
@@ -22,6 +22,7 @@ const { t } = useDemoUi();
 </script>
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'时间选择器'"
     :title-en="'Datetime Picker'"
     :desc="'日期时间弹层选择'"
@@ -29,29 +30,36 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('基础用法', 'Basic usage')"
+          badge="basic"
+          inset
+        />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('确认拦截（beforeConfirm）', 'Confirm veto (beforeConfirm)')"
           badge="before-confirm"
           inset
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" inset />
+        <DemoModuleHead class="demo-host" :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t('列文案与过滤（formatter / filter）', 'Column copy & filtering (formatter / filter)')
           "
@@ -59,33 +67,40 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo3 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" inset />
-        <view class="module__body">
-          <Demo4 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('标题与描述', 'Title & description')"
+          badge="header"
+          inset
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('即时写回（immediateChange）', 'Immediate write-back (immediateChange)')"
           badge="immediate-change"
           inset
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" inset />
+        <DemoModuleHead class="demo-host" :title="t('农历', 'Lunar')" badge="lunar" inset />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '滚筒几何（itemHeight / visibleItemCount）',
@@ -96,43 +111,51 @@ const { t } = useDemoUi();
           inset
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('弹层外观（文案 / 遮罩 / 层级）', 'Sheet chrome (labels / scrim / stacking)')"
           badge="sheet-chrome"
           inset
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('时分秒边界', 'Hour-minute-second bounds')"
           badge="time-bounds"
           inset
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo9 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('时间类型（type=&quot;time&quot;）', 'Time type (type=&quot;time&quot;)')"
           badge="time-type"
           inset
         />
         <view class="module__body">
-          <Demo10 />
+          <Demo10 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('wheel 风格', 'Wheel style')" badge="wheel" inset />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('wheel 风格', 'Wheel style')"
+          badge="wheel"
+          inset
+        />
         <view class="module__body">
-          <Demo11 />
+          <Demo11 class="demo-host" />
         </view>
       </view>
     </view>
@@ -174,4 +197,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

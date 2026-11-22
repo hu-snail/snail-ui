@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-2/input-number.vue sha256:be24395abcfdc51c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/input-number.vue sha256:693af74c95874dc3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— input-number 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/input-number-mp-allow-null.uvue';
@@ -22,99 +22,134 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'计数器'" :title-en="'Input Number'" :desc="'步进数值输入'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'计数器'"
+    :title-en="'Input Number'"
+    :desc="'步进数值输入'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('可空输入（allowNull）', 'Nullable input (allowNull)')"
           badge="allow-null"
         />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('提交拦截（beforeChange）', 'Commit veto (beforeChange)')"
           badge="before-change"
         />
         <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('commit-hooks', 'Commit Hooks')" badge="commit-hooks" />
-        <view class="module__body">
-          <Demo3 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('commit-hooks', 'Commit Hooks')"
+          badge="commit-hooks"
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('提交时机与输入属性', 'Commit timing & input attrs')"
           badge="commit-timing"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('controls', 'Controls')" badge="controls" />
+        <DemoModuleHead class="demo-host" :title="t('controls', 'Controls')" badge="controls" />
         <view class="module__body">
-          <Demo5 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('自定义类名', 'Custom class')" badge="custom-class" />
-        <view class="module__body">
-          <Demo6 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled')" badge="disabled" />
-        <view class="module__body">
-          <Demo7 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('自定义类名', 'Custom class')"
+          badge="custom-class"
+        />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('禁用（disabled）', 'Disabled')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo7 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('长按连加（longPress）', 'Long-press repeat (longPress)')"
           badge="long-press"
         />
         <view class="module__body">
-          <Demo8 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('圆角（round）', 'Rounded (round)')" badge="round" />
-        <view class="module__body">
-          <Demo9 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('圆角（round）', 'Rounded (round)')"
+          badge="round"
+        />
+        <view class="module__body">
+          <Demo9 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('步进吸附（stepStrictly）', 'Step snapping (stepStrictly)')"
           badge="step-strictly"
         />
         <view class="module__body">
-          <Demo10 />
+          <Demo10 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('主题（theme）', 'Theme (theme)')" badge="theme" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('主题（theme）', 'Theme (theme)')"
+          badge="theme"
+        />
         <view class="module__body">
-          <Demo11 />
+          <Demo11 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('theme-state', 'Theme State')" badge="theme-state" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('theme-state', 'Theme State')"
+          badge="theme-state"
+        />
         <view class="module__body">
-          <Demo12 />
+          <Demo12 class="demo-host" />
         </view>
       </view>
     </view>
@@ -141,4 +176,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

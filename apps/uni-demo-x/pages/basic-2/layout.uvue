@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/basic-2/layout.vue sha256:880ae2e34c1fb97d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/layout.vue sha256:93a823e2b5961116 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— layout 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/layout-mp-align.uvue';
@@ -12,27 +12,34 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'布局'" :title-en="'Layout'" :desc="'Row / Col 栅格布局'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'布局'"
+    :title-en="'Layout'"
+    :desc="'Row / Col 栅格布局'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('align', 'Align')" badge="align" />
+        <DemoModuleHead class="demo-host" :title="t('align', 'Align')" badge="align" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('间距与偏移（gutter / offset）', 'Gutters & offsets (`gutter` / `offset`)')"
           badge="gutter"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
     </view>
@@ -59,4 +66,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

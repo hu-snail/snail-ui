@@ -18,69 +18,90 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'下拉菜单'" :title-en="'Drop Menu'" :desc="'顶部下拉筛选'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'下拉菜单'"
+    :title-en="'Drop Menu'"
+    :desc="'顶部下拉筛选'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('方向', 'Direction')" badge="direction" />
+        <DemoModuleHead class="demo-host" :title="t('方向', 'Direction')" badge="direction" />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
-        <view class="module__body">
-          <Demo2 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('禁用（disabled）', 'Disabled (`disabled`)')"
+          badge="disabled"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('开关拦截（beforeToggle）', 'Toggle guard (`beforeToggle`)')"
           badge="guard"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead class="demo-host" :title="t('图标', 'Icon')" badge="icon" />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('字段重命名（labelKey / valueKey）', 'Field keys (`labelKey` / `valueKey`)')"
           badge="keys"
         />
         <view class="module__body">
-          <Demo5 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('蒙层行为（modal）', 'Scrim behavior (`modal`)')" badge="modal" />
-        <view class="module__body">
-          <Demo6 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('蒙层行为（modal）', 'Scrim behavior (`modal`)')"
+          badge="modal"
+        />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('面板高度与样式', 'Panel height & styling')"
           badge="popup-height"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义面板插槽', 'Custom panel slot')" badge="slot" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('自定义面板插槽', 'Custom panel slot')"
+          badge="slot"
+        />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
     </view>
@@ -117,4 +138,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

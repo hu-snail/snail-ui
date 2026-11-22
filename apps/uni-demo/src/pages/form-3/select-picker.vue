@@ -20,6 +20,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'单复选选择器'"
     :title-en="'Select Picker'"
     :desc="'单选 / 多选弹层'"
@@ -27,31 +28,34 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('确认拦截（`beforeConfirm`）', 'Confirm guard (`beforeConfirm`)')"
           badge="before-confirm"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('选中色（`checkedColor`）', 'Checked color (`checkedColor`)')"
           badge="checked-color"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               'chip 尺寸与确认（`selectSize` / `showConfirm`）',
@@ -61,60 +65,69 @@ const { t } = useDemoUi();
           badge="chip-size"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t('字段映射（`valueKey` / `labelKey`）', 'Field mapping (`valueKey` / `labelKey`)')
           "
           badge="fields"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('可搜索（`filterable`）', 'Filterable (`filterable`)')"
           badge="filterable"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('加载态（`loading`）', 'Loading state (`loading`)')"
           badge="loading"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('滚动定位（`scrollIntoView`）', 'Scroll into view (`scrollIntoView`)')"
           badge="scroll-into-view"
         />
         <view class="module__body">
-          <Demo7 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('弹层行为与样式', 'Sheet behavior & styling')" badge="sheet" />
-        <view class="module__body">
-          <Demo8 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('弹层行为与样式', 'Sheet behavior & styling')"
+          badge="sheet"
+        />
+        <view class="module__body">
+          <Demo8 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('单选模式（`type=radio`）', 'Radio mode (`type=radio`)')"
           badge="type-radio"
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo9 class="demo-host" />
         </view>
       </view>
     </view>
@@ -142,4 +155,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

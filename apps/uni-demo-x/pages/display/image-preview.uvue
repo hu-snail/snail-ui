@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/display/image-preview.vue sha256:9416f2173df93f40 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/display/image-preview.vue sha256:a19063abc2d93af1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— image-preview 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/image-preview-mp-basic.uvue';
@@ -16,56 +16,76 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'图片预览'" :title-en="'Image Preview'" :desc="'图片放大预览'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'图片预览'"
+    :title-en="'Image Preview'"
+    :desc="'图片放大预览'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('关闭与循环行为', 'Close & loop behaviour')"
           badge="close-behavior"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t('关闭按钮位置（closeIconPosition）', 'Close button position (`closeIconPosition`)')
           "
           badge="close-position"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('gestures', 'Gestures')" badge="gestures" />
+        <DemoModuleHead class="demo-host" :title="t('gestures', 'Gestures')" badge="gestures" />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('页码与底部插槽', 'Page counter & footer slot')" badge="index" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('页码与底部插槽', 'Page counter & footer slot')"
+          badge="index"
+        />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('长按菜单与事件', 'Long-press menu & event')" badge="longpress" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('长按菜单与事件', 'Long-press menu & event')"
+          badge="longpress"
+        />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('selector 命中区', '`selector` hit areas')" badge="selector" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('selector 命中区', '`selector` hit areas')"
+          badge="selector"
+        />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
     </view>
@@ -92,4 +112,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

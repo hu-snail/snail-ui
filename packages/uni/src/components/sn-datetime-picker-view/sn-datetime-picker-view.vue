@@ -452,12 +452,17 @@ function centerIndexOf(columnIndex: number): number {
 
 function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   const center = Math.round(centerIndexOf(columnIndex));
-  // Exactly the visible window (no guard rows): mp-weixin does not clip
-  // transformed rows, so any row rendered outside the column box leaks
-  // visibly. The settle animation slides the whole roller, so the window
-  // travels with it and no gap shows during the transition.
+  // Exactly the visible window (no guard rows): rows are absolutely
+  // positioned at (row - selection + half) row-heights plus the live drag
+  // shift, so a window row can never sit outside the column box.
   const half = Math.floor(visibleCount.value / 2);
   return Math.abs(rowIndex - center) <= half;
+}
+
+/** Per-row absolute position: selection-anchored row index + drag shift. */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const rows = rowIndex - indexOf(columnIndex) + halfCount.value;
+  return `top: calc(${rows} * var(--sn-datetime-picker-view-item-height) + var(--sn-datetime-picker-view-row-shift-${columnIndex}, 0rpx))`;
 }
 
 /** Emit a value derived from a full parts record. */
@@ -626,6 +631,7 @@ const rootClass = computed(() => [
     'sn-datetime-picker-view--lunar': isLunarMode.value,
     'sn-datetime-picker-view--wheel': props.wheel,
     'sn-datetime-picker-view--wheel-band-shared': showSharedBand.value,
+    'sn-datetime-picker-view--dragging': isDragging.value,
   },
   props.customClass,
 ]);
@@ -636,13 +642,22 @@ const rootClass = computed(() => [
  */
 const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
 
+/** Half the visible window — the selection row anchors the absolute stack. */
+const halfCount = computed(() => Math.floor(visibleCount.value / 2));
+
 const rootStyle = computed(() => {
   const vars = [
     `--sn-datetime-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-datetime-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-datetime-picker-view-settle-duration: ${snapDurationMs.value}ms`,
-  ].join('; ');
-  return props.customStyle ? `${vars}; ${props.customStyle}` : vars;
+  ];
+  // Per-column drag shift for the selection-anchored absolute row stack.
+  for (let ci = 0; ci < columns.value.length; ci += 1) {
+    const base = ((visibleCount.value - 1) / 2 - indexOf(ci)) * Math.max(props.itemHeight, 1) * RATIO;
+    vars.push(`--sn-datetime-picker-view-row-shift-${ci}: ${columnOffsetRpx(ci) - base}rpx`);
+  }
+  const joined = vars.join('; ');
+  return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });
 
 /** Human-readable value echoed to assistive tech. */
@@ -685,11 +700,7 @@ const ariaValue = computed(() => {
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
-      <view
-        class="sn-datetime-picker-view__roller"
-        :class="{ 'sn-datetime-picker-view__roller--dragging': isDragging }"
-        :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
-      >
+      <view class="sn-datetime-picker-view__roller">
         <template v-for="(value, rowIndex) in column.values" :key="value">
         <view
           v-if="isRowRenderable(columnIndex, rowIndex)"
@@ -766,14 +777,12 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__roller {
-  /* Above the wheel band (z0) so the opaque pill never covers the selected
-     label, below the fade masks (z2) which must stay over the text. */
+  /* Pure container: rows position themselves (selection-anchored absolute
+     top + live drag shift) — no roller-level transform, so a broken
+     overflow clip can never leak translated rows across the page. */
   position: relative;
   z-index: 1;
-  /* Settle only — the length scales with the distance to the snapped row. */
-  transition: transform var(--sn-datetime-picker-view-settle-duration, 180ms)
-    cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  height: 100%;
 }
 
 /* While a finger is down the roller tracks it 1:1: any transition here makes
@@ -783,6 +792,11 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: top var(--sn-datetime-picker-view-settle-duration, 180ms)
+    cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -791,6 +805,10 @@ const ariaValue = computed(() => {
   color: var(--sn-mp-color-text-secondary);
   overflow: hidden;
   white-space: nowrap;
+}
+
+.sn-datetime-picker-view--dragging .sn-datetime-picker-view__item {
+  transition: none;
 }
 
 .sn-datetime-picker-view__item--active {

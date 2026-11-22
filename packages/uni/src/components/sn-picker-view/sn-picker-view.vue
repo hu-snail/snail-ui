@@ -460,6 +460,7 @@ const rootClass = computed(() => [
     'sn-picker-view--cascade': props.cascade,
     'sn-picker-view--wheel': props.wheel,
     'sn-picker-view--wheel-band-shared': showSharedBand.value,
+    'sn-picker-view--dragging': isDragging.value,
   },
   props.customClass,
 ]);
@@ -469,6 +470,9 @@ const rootClass = computed(() => [
  * indicators are not rendered at all — two bands would double-paint.
  */
 const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
+
+/** Half the visible window — the selection row anchors the absolute stack. */
+const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
 /** Half the leftover space — the top / bottom fade covers exactly that. */
 const maskHeightRpx = computed(() => {
@@ -481,8 +485,17 @@ const rootStyle = computed(() => {
     `--sn-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-picker-view-settle-duration: ${snapDurationMs.value}ms`,
-  ].join('; ');
-  return props.customStyle ? `${vars}; ${props.customStyle}` : vars;
+  ];
+  // Per-column drag shift: rows are absolutely positioned relative to the
+  // selection row; a live drag shifts every row of the dragged column by the
+  // finger delta through one CSS variable (one style update per frame).
+  for (let ci = 0; ci < resolvedColumns.value.length; ci += 1) {
+    const base =
+      ((visibleCount.value - 1) / 2 - (selectedIndexes.value[ci] ?? 0)) * Math.max(props.itemHeight, 1) * RATIO;
+    vars.push(`--sn-picker-view-row-shift-${ci}: ${columnOffsetRpx(ci) - base}rpx`);
+  }
+  const joined = vars.join('; ');
+  return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });
 
 function isActive(columnIndex: number, rowIndex: number): boolean {
@@ -513,10 +526,17 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   const center = Math.round(centerIndexOf(columnIndex));
   // Exactly the visible window (no guard rows): mp-weixin does not clip
   // transformed rows, so any row rendered outside the column box leaks
-  // visibly. The settle animation slides the whole roller, so the window
-  // travels with it and no gap shows during the transition.
+  // visibly. Rows are absolutely positioned at (row - selection + half)
+  // row-heights plus the live drag shift, so a window row can never sit
+  // outside the column box.
   const half = Math.floor(visibleCount.value / 2);
   return Math.abs(rowIndex - center) <= half;
+}
+
+/** Per-row absolute position: selection-anchored row index + drag shift. */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const rows = rowIndex - (selectedIndexes.value[columnIndex] ?? 0) + halfCount.value;
+  return `top: calc(${rows} * var(--sn-picker-view-item-height) + var(--sn-picker-view-row-shift-${columnIndex}, 0rpx))`;
 }
 
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
@@ -552,23 +572,19 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
-      <view
-        class="sn-picker-view__roller"
-        :class="{ 'sn-picker-view__roller--dragging': isDragging }"
-        :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
-      >
+      <view class="sn-picker-view__roller">
         <template v-for="(option, rowIndex) in column" :key="option.value">
           <view
             v-if="isRowRenderable(columnIndex, rowIndex)"
-          :class="[
-            'sn-picker-view__item',
-            {
-              'sn-picker-view__item--active': isActive(columnIndex, rowIndex),
-              'sn-picker-view__item--far': props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
-              'sn-picker-view__item--disabled': option.disabled,
-            },
-          ]"
-          :style="{ height: itemHeightRpx }"
+            :class="[
+              'sn-picker-view__item',
+              {
+                'sn-picker-view__item--active': isActive(columnIndex, rowIndex),
+                'sn-picker-view__item--far': props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
+                'sn-picker-view__item--disabled': option.disabled,
+              },
+            ]"
+            :style="itemStyle(columnIndex, rowIndex)"
           role="button"
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
@@ -636,19 +652,21 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 .sn-picker-view__roller {
-  /* Above the wheel band (z0) so the opaque pill never covers the selected
-     label, below the fade masks (z2) which must stay over the text. */
+  /* Pure container: rows position themselves (selection-anchored absolute
+     top + live drag shift) — no roller-level transform, so a broken
+     overflow clip can never leak translated rows across the page. */
   position: relative;
   z-index: 1;
-  /* Settle only — the length scales with the distance to the snapped row. */
-  transition: transform var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  height: 100%;
 }
 
-/* While a finger is down the roller tracks it 1:1: any transition here makes
-   the wheel lag behind and read as "the wheel will not move". */
-.sn-picker-view__roller--dragging {
-  transition: none;
+.sn-picker-view__item {
+  /* Absolute stack anchored on the selection row: top moves with the drag
+     shift variable and settles onto the new selection row after release. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: top var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sn-picker-view__item {
@@ -749,6 +767,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 .sn-picker-view__mask--bottom {
   bottom: 0;
   background: linear-gradient(to top, var(--sn-mp-color-background-elevated), transparent);
+}
+
+.sn-picker-view--dragging .sn-picker-view__item {
+  transition: none;
 }
 
 .sn-picker-view--disabled {

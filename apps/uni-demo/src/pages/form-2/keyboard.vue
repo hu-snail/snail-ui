@@ -18,74 +18,92 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'虚拟键盘'" :title-en="'Keyboard'" :desc="'自定义数字键盘'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'虚拟键盘'"
+    :title-en="'Keyboard'"
+    :desc="'自定义数字键盘'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('小数点', 'Decimal')" badge="decimal" />
+        <DemoModuleHead class="demo-host" :title="t('小数点', 'Decimal')" badge="decimal" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('身份证', 'ID number')" badge="idcard" />
+        <DemoModuleHead class="demo-host" :title="t('身份证', 'ID number')" badge="idcard" />
         <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('car-custom', 'Car Custom')" badge="car-custom" />
-        <view class="module__body">
-          <Demo3 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('car-custom', 'Car Custom')"
+          badge="car-custom"
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('键位文案（deleteText / closeText）', 'Key labels (deleteText / closeText)')"
           badge="labels"
         />
         <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('遮罩与弹层行为', 'Scrim & sheet behaviour')" badge="scrim" />
-        <view class="module__body">
-          <Demo5 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('遮罩与弹层行为', 'Scrim & sheet behaviour')"
+          badge="scrim"
+        />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="
             t('关闭键加载态（closeButtonLoading）', 'Close-button loading (closeButtonLoading)')
           "
           badge="close-loading"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('删除键开关（showDeleteKey）', 'Delete key toggle (showDeleteKey)')"
           badge="delete-key"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('随机键序（randomKeyOrder）', 'Shuffled keys (randomKeyOrder)')"
           badge="random-order"
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
     </view>
@@ -113,4 +131,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>
