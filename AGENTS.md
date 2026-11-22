@@ -3927,6 +3927,14 @@ manifest.json（已是 tmp+rename 原子写），监视器在删除/重排窗口
 触发规律：`pnpm -F @snui/uni-demo-x gen` / `gen:pages` 运行期间或刚结束时立刻在
 HBuilderX 点运行（两个 AI 会话交替跑 gen 时必然复现）。
 
+2026-11-21（再次复发，新触发源）：**wechatide 自动化与 HBuilderX 运行并发**。
+wechatide 的开窗 / 导航 / evaluate 类操作会让微信开发者工具把编译产物目录
+（unpackage/dist/dev/mp-weixin）当独立项目导入占用；HBuilderX 运行 uni-demo-x
+时整树重建该目录 —— 两边冲突，HBuilderX 报「不是 uni-app 项目」，微信工具侧
+卡死（close/remove 命令超时）。规则：wechatide 只做只读截图 / console；开窗
+/ 导航 / evaluate 须 HBuilderX 空闲；操作后微信工具里关闭并移除产物目录项目。
+恢复：微信工具关窗+移除项目 → 退出 HBuilderX → 重开运行。
+
 处置与预防（勿重蹈）：
 
 1. **先跑完 gen，再编译**：HBuilderX 运行前确认 `pnpm -F @snui/uni-demo-x gen`

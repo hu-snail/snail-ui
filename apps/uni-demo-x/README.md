@@ -53,6 +53,15 @@ App 端不受影响（真机屏宽即 750rpx 基准）。
   再用 `文件 → 打开目录` 直接打开 `apps/uni-demo-x`；仍复现时可删除
   `~/Library/Application Support/HBuilderV-Alpha/User/globalStorage/hbuilderx-uniapp-sdk/HBuilder X.ini`
   （仅 UI/会话状态，重启后自动重建）。
+- **wechatide（微信开发者工具自动化）与 HBuilderX 运行并发会互相打断**：wechatide
+  的开窗 / 导航 / evaluate 类操作会让微信开发者工具把 HBuilderX 的编译产物
+  目录（`unpackage/dist/dev/mp-weixin`）当独立项目导入并占用；HBuilderX 运行
+  时又要整树重建该目录 —— 两边冲突后 HBuilderX 报「项目 apps/uni-demo-x 不是
+  uni-app 项目，暂不支持」，微信工具侧也会卡死。规则：wechatide 只做只读
+  截图 / console 取证；开窗 / 导航 / evaluate 类操作必须 HBuilderX 空闲时进
+  行，完成后先在微信工具里关闭并移除产物目录项目，再回 HBuilderX 运行。
+  恢复顺序：微信工具关窗 + 项目列表移除产物目录项目 → 完全退出 HBuilderX →
+  重开后运行。
 - pnpm 的 `node_modules` 符号链接在 HBuilderX 下偶有解析问题；若组件找不到，
   可 `pnpm -F @snui/uni-x pack` 后把 tarball 解到本工程 `node_modules/@snui/uni-x`。
 - uni-app x 暂无 CLI（[官方答复](https://ask.dcloud.net.cn/question/208871)），
