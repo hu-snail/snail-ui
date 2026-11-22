@@ -1461,7 +1461,7 @@ const { t } = useDemoUi();`
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'"${nativeNav ? ' nav-style="native"' : ''}>
+  <DemoPageShell class="demo-host" :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'"${nativeNav ? ' nav-style="native"' : ''}>
     <view class="page">
 ${modules}
     </view>
