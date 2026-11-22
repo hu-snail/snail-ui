@@ -459,10 +459,17 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
-/** Per-row absolute position: selection-anchored row index + drag shift. */
+/**
+ * Per-row absolute top in rpx — computed in script, no CSS vars / calc:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Same geometry as sn-picker-view.
+ */
 function itemStyle(columnIndex: number, rowIndex: number): string {
-  const rows = rowIndex - indexOf(columnIndex) + halfCount.value;
-  return `top: calc(${rows} * var(--sn-datetime-picker-view-item-height) + var(--sn-datetime-picker-view-row-shift-${columnIndex}, 0rpx))`;
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = indexOf(columnIndex);
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
 }
 
 /** Emit a value derived from a full parts record. */
@@ -651,11 +658,6 @@ const rootStyle = computed(() => {
     `--sn-datetime-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-datetime-picker-view-settle-duration: ${snapDurationMs.value}ms`,
   ];
-  // Per-column drag shift for the selection-anchored absolute row stack.
-  for (let ci = 0; ci < columns.value.length; ci += 1) {
-    const base = ((visibleCount.value - 1) / 2 - indexOf(ci)) * Math.max(props.itemHeight, 1) * RATIO;
-    vars.push(`--sn-datetime-picker-view-row-shift-${ci}: ${columnOffsetRpx(ci) - base}rpx`);
-  }
   const joined = vars.join('; ');
   return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });

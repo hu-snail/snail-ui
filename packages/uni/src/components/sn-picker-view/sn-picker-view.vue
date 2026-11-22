@@ -486,14 +486,6 @@ const rootStyle = computed(() => {
     `--sn-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-picker-view-settle-duration: ${snapDurationMs.value}ms`,
   ];
-  // Per-column drag shift: rows are absolutely positioned relative to the
-  // selection row; a live drag shifts every row of the dragged column by the
-  // finger delta through one CSS variable (one style update per frame).
-  for (let ci = 0; ci < resolvedColumns.value.length; ci += 1) {
-    const base =
-      ((visibleCount.value - 1) / 2 - (selectedIndexes.value[ci] ?? 0)) * Math.max(props.itemHeight, 1) * RATIO;
-    vars.push(`--sn-picker-view-row-shift-${ci}: ${columnOffsetRpx(ci) - base}rpx`);
-  }
   const joined = vars.join('; ');
   return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });
@@ -533,10 +525,18 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
-/** Per-row absolute position: selection-anchored row index + drag shift. */
+/**
+ * Per-row absolute top in rpx — computed **in script, no CSS vars / calc**:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Geometry: half window above the selected
+ * row, plus the live drag shift of the column (engine offset - rest base).
+ */
 function itemStyle(columnIndex: number, rowIndex: number): string {
-  const rows = rowIndex - (selectedIndexes.value[columnIndex] ?? 0) + halfCount.value;
-  return `top: calc(${rows} * var(--sn-picker-view-item-height) + var(--sn-picker-view-row-shift-${columnIndex}, 0rpx))`;
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = selectedIndexes.value[columnIndex] ?? 0;
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
 }
 
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
