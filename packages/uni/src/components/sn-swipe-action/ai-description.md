@@ -134,12 +134,13 @@ visible (no fade, no breakage).
   300ms spring-feel settle transition (`cubic-bezier(0.32, 0.72, 0, 1)`).
 - `touchcancel` (a system gesture stealing the touch) settles the row closed, so it
   can never stick half-open.
-- The open distance equals the real action-area width, measured once per gesture
-  through `uni.createSelectorQuery()` → the DOM node → a fallback constant. On
-  mini-programs the query prefers the component's own `$scope` and scopes with
-  `.in($scope)` — the page-level query with `.in(Vue proxy)` resolved against
-  the PAGE inside nested components and measured the first row's action width
-  for every row (§118.3, same root cause as the sn-icon cascade-color fix).
+- The open distance equals the real action-area width, measured once per gesture:
+  the DOM node (H5 / docs preview) → a set of `uni.createSelectorQuery()`
+  variants fired together (mp `$scope` host · page-level query ·
+  `.in(Vue proxy)`) against a per-instance id (`#sn-swipe-action-<uid>-left |
+  right` — ids cannot cross-match between rows the way class selectors did)
+  → a fallback constant. On uni-app x mp the scoped variants match nothing and
+  the page-level id query is the one that reaches inside nested components.
 - While the row is closed (no drag, no settle animation, no open side) the action
   areas are translated fully outside the root's `overflow: hidden` clip
   (`translateX(±100%)`), so the closed state never relies on the content layer
