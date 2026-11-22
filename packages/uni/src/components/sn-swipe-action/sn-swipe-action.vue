@@ -41,6 +41,20 @@
  * commits past the threshold, which is what keeps the mid-drag reveal states
  * (button peeking from under the card) stable.
  *
+ * ## MP wrapper node (virtualHost) — why the row must own the full width
+ *
+ * WeChat MP wraps every component in a custom-component host node, and that
+ * node shrink-wraps to its content (inline semantics): the row then measured /
+ * rendered at its max-content width instead of the container width — the
+ * right-anchored action pills sat mid-screen (~600rpx) with a dead zone to the
+ * screen edge, opened rows slid their cards under the screen edge, and the
+ * demo badge row stopped mid-screen (device-verified regression). The same
+ * switch wot-ui's components flip (AGENTS.md §112): `options: { virtualHost:
+ * true }` removes the wrapper so the root view participates directly.
+ * `customClass` / `customStyle` props are unaffected; `class` / `style` passed
+ * on the component tag merge onto the root only when the host app enables
+ * `mergeVirtualHostAttributes` (same caveat as sn-step).
+ *
  * ## Why the component paints no background
  *
  * The mechanic is background-free: the sliding content and the action areas
@@ -132,7 +146,12 @@ import {
   type UniSelectorQueryHost,
 } from '../../utils/uni-host';
 
-defineOptions({ name: 'SnSwipeAction' });
+defineOptions({
+  name: 'SnSwipeAction',
+  // #ifdef MP-WEIXIN
+  options: { virtualHost: true },
+  // #endif
+});
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.

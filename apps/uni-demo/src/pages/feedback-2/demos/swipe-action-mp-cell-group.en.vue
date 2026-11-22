@@ -37,7 +37,7 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
 
 <template>
   <view class="sw-group">
-    <SnCellGroup card>
+    <SnCellGroup card class="demo-host">
       <SnSwipeAction v-model="openA">
         <SnCell title="Design Team" label="Maya: Pushed the new prototypes">
           <template #prefix>
@@ -169,6 +169,15 @@ function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
 .sw-group {
   padding: 20rpx var(--sn-mp-spacing-4) 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩：组卡宿主转 block 铺满列宽，行与
+ * 操作钮才贴得住屏幕右缘（同 sn-step virtualHost / 生成页 demo-host）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 
 /* Row avatars: gradient dots (prefix slot, replacing the default icon). */
 .sw-avatar {

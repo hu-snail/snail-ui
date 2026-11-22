@@ -639,15 +639,16 @@ function titleAttr(text) {
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
 const DEMO_ORDER = {
-  /* wheel-picker：基础 → 内容自定义 → 块自定义 → 震动 → 弹层组装。 */
+  /* wheel-picker：基础 → 级联 → 内容自定义 → 块自定义 → 震动 → 弹层组装。 */
   'wheel-picker-mp-basic': 1,
-  'wheel-picker-mp-icons': 2,
-  'wheel-picker-mp-rich': 3,
-  'wheel-picker-mp-band-mode': 4,
-  'wheel-picker-mp-band-dots': 5,
-  'wheel-picker-mp-band-soft': 6,
-  'wheel-picker-mp-vibrate': 7,
-  'wheel-picker-mp-reminder': 8,
+  'wheel-picker-mp-cascade': 2,
+  'wheel-picker-mp-icons': 3,
+  'wheel-picker-mp-rich': 4,
+  'wheel-picker-mp-band-mode': 5,
+  'wheel-picker-mp-band-dots': 6,
+  'wheel-picker-mp-band-soft': 7,
+  'wheel-picker-mp-vibrate': 8,
+  'wheel-picker-mp-reminder': 9,
   /* picker-view：基础 → 行为 → 内容槽 → 块槽 → 外观。 */
   'picker-view-mp-basic': 1,
   'picker-view-mp-wheel': 2,
@@ -1388,7 +1389,7 @@ for (const sub of subpackages) {
       .map((demo, i) => {
         if (isHeadless) {
           // 无模块头页面：整页就是 demo 本体，不再包 .module 卡片与标题行。
-          return `      <Demo${i} />`;
+          return `      <Demo${i} class="demo-host" />`;
         }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
         // 通栏页把模块左右内边距归零了（让 cell 入口行铺满整行），标题行
@@ -1397,7 +1398,7 @@ for (const sub of subpackages) {
         // `.module .demo-module-head` 会被静默丢弃（H5 却正常，是最难发现的
         // 一类跨端差异）。
         const inset = isFullBleed ? ' inset' : '';
-        const head = `<DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge}${inset} />`;
+        const head = `<DemoModuleHead class="demo-host" :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge}${inset} />`;
         // 通栏平铺页：标题行包一层本页作用域的节点，才能在不改共享
         // DemoModuleHead、也不用 :deep()（uni-app x 转换会丢弃）的前提下
         // 给标题行单独铺底。
@@ -1409,7 +1410,7 @@ for (const sub of subpackages) {
         return `      <view class="module">
 ${headRow}
         <view class="module__body">
-          <Demo${i} />
+          <Demo${i} class="demo-host" />
         </view>
       </view>`;
       })
@@ -1494,6 +1495,17 @@ ${extraModuleCss}
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>
 `;
     writeFileSync(`${pagesDir}${sub.root}/${comp.key}.vue`, vue);

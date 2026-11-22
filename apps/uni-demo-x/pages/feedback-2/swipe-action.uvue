@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/swipe-action.vue sha256:b4bb8d8c2fa60d6c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/swipe-action.vue sha256:3b1dc8bca2bec585 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swipe-action 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swipe-action-mp-basic.uvue';
@@ -19,61 +19,80 @@ const { t } = useDemoUi();
   <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :desc="'侧滑菜单'" :bg="''">
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" inset />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('基础用法', 'Basic usage')"
+          badge="basic"
+          inset
+        />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('浮卡行（消息列表）', 'Card rows (message list)')"
           badge="card"
           inset
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('列表组（cell 风格）', 'List group (cell style)')"
           badge="cell-group"
           inset
         />
         <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" inset />
-        <view class="module__body">
-          <Demo3 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('两侧操作区', 'Both sides')"
+          badge="both-sides"
+          inset
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('关闭拦截（before-close）', 'Close guard (`before-close`)')"
           badge="before-close"
           inset
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('禁用（disabled）', 'Disabled (`disabled`)')"
           badge="disabled"
           inset
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" inset />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('根节点样式', 'Root styling')"
+          badge="custom-style"
+          inset
+        />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
     </view>
@@ -115,4 +134,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

@@ -23,6 +23,8 @@
  */
 
 import { afterEach, describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnSwipeAction from './sn-swipe-action.vue';
 
@@ -473,6 +475,21 @@ describe('sn-swipe-action', () => {
       const style = w.attributes('style') ?? '';
       expect(style).toContain('border-radius: 8px;');
       expect(style).toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+  });
+
+  describe('mp wrapper node', () => {
+    it('declares a virtual host so the row owns the container width', () => {
+      /* Device-verified regression: on mp-weixin the custom-component host
+       * node shrink-wraps to its content, so the row rendered at max-content
+       * width — right-anchored pills sat mid-screen with a dead zone to the
+       * screen edge and opened cards slid under it. The fix is the MP-only
+       * `virtualHost` option (wot-ui components flip the same switch) —
+       * invisible to happy-dom, hence source-anchored like the steps suite. */
+      const source = readFileSync(resolve(__dirname, 'sn-swipe-action.vue'), 'utf8');
+      expect(source).toMatch(
+        /\/\/\s*#ifdef MP-WEIXIN\s*\n\s*options:\s*\{\s*virtualHost:\s*true\s*\}\s*,?\s*\n\s*\/\/\s*#endif/,
+      );
     });
   });
 
