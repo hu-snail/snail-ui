@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:bf00a527f7342ea2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue sha256:3cdc3d39fb7e0d7a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-wheel-picker — 块自定义：`#band` 插槽画点阵纹理胶囊带（浅蓝底 + 圆点阵列 + 描边）。 */
 import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
@@ -55,7 +55,7 @@ const value = ref<Array<string | number>>([25]);
   box-sizing: border-box;
   background-color: var(--sn-mp-color-lightblue-soft);
   border: 2rpx solid var(--sn-mp-color-lightblue);
-  border-radius: inherit;
+  border-radius: 28rpx;
   flex-direction: row;
 }
 

@@ -632,15 +632,9 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :style="{ height: itemHeightRpx }"
           @tap="onItemTap(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
         >
-          <slot
-            name="option"
-            :option="option"
-            :active="isActive(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
-            :distance="distanceOf(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
-            :column-index="columnIndex"
-            :index="resolveNativeRowIndex(columnIndex, option.value)"
-            ><text class="sn-picker-view__label">{{ option.label }}</text></slot
-          >
+          <!-- 原生 picker-view-column 内的 slot 出口不渲染（微信限制）——
+               mp 端强制 fallback label；#option 行内容为 H5/App 能力。 -->
+          <text class="sn-picker-view__label">{{ option.label }}</text>
         </view>
       </picker-view-column>
     </picker-view>

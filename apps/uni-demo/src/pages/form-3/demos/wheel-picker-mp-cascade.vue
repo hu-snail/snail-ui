@@ -68,7 +68,7 @@ const value = ref<Array<string | number>>(['zj', 'hz', 'xh']);
       cascade
       :visible-item-count="5"
       :item-height="44"
-      custom-style="--sn-picker-view-wheel-inset: 100rpx; --sn-picker-view-wheel-radius: 44rpx"
+      custom-style="--sn-picker-view-wheel-inset: 40rpx; --sn-picker-view-wheel-radius: 44rpx"
     />
     <text class="sn-demo__meta">已选：{{ value.join(' / ') }}（级联列继承 wheel 胶囊带 + 滑动震动）</text>
   </view>

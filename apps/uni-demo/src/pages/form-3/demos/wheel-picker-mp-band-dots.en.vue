@@ -58,7 +58,7 @@ const value = ref<Array<string | number>>([25]);
   box-sizing: border-box;
   background-color: var(--sn-mp-color-lightblue-soft);
   border: 2rpx solid var(--sn-mp-color-lightblue);
-  border-radius: inherit;
+  border-radius: 28rpx;
   flex-direction: row;
 }
 
