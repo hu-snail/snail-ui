@@ -116,7 +116,7 @@ describe('sn-datetime-picker', () => {
       expect(w.emitted('update:modelValue')).toBeUndefined();
       await w.find('.sn-datetime-picker__confirm').trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
-      expect(new Date(value).getFullYear()).toBe(2020);
+      expect(new Date(value).getFullYear()).toBe(2021);
     });
 
     it('emits confirm with the value', async () => {
@@ -167,7 +167,7 @@ describe('sn-datetime-picker', () => {
       await w.find('.sn-datetime-picker__confirm').trigger('tap');
       await Promise.resolve();
       const value = beforeConfirm.mock.calls[0]?.[0] as number;
-      expect(new Date(value).getFullYear()).toBe(2020);
+      expect(new Date(value).getFullYear()).toBe(2021);
     });
 
     it('emits cancel and closes without writing the model', async () => {
@@ -348,11 +348,12 @@ describe('sn-datetime-picker', () => {
 
     it('emits change alongside the immediate model write', async () => {
       const w = mountPicker({ immediateChange: true });
+      // Render window 2021..2027 → item[0] is 2021.
       await firstColumn(w)?.findAll('.sn-datetime-picker-view__item')[0]?.trigger('tap');
       expect(w.emitted('update:modelValue')).toHaveLength(1);
       expect(w.emitted('change')).toHaveLength(1);
       const change = w.emitted('change')?.[0]?.[0] as { value: number };
-      expect(new Date(change.value).getFullYear()).toBe(2020);
+      expect(new Date(change.value).getFullYear()).toBe(2021);
     });
 
     it('emits open on every reopen', async () => {
