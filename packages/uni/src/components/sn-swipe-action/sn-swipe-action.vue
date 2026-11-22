@@ -93,18 +93,20 @@
  * Nothing is observed or re-measured in the background, so no resource leaks
  * (§41).
  *
- * ## Why the action areas carry a hidden transform when the row is closed
+ * ## Why the action areas carry a hidden transform + visibility when closed
  *
- * The closed row used to rely on the content layer (opaque background +
- * `z-index`) painting over the action areas. That premise does not hold on
- * uni-app x App: native rounding / stacking leaves a 1–2px sliver of the
- * action area leaking at the row edges with the row fully closed (device
- * report). While nothing is exposed — no drag, no settle animation, no open
- * side — the areas are therefore translated fully outside the root's
- * `overflow: hidden` clip, which makes the closed state deterministic and
- * independent of paint order on every end. The offset is a percentage of the
- * area's own width so a failed / fallback measurement can never leave part of
- * it inside the row.
+ * The closed row relies on the content layer painting over the action areas —
+ * but with background-free surfaces the content layer is transparent, so the
+ * areas must be parked out of sight themselves. The park is doubled:
+ * `translateX(±100%)` moves them outside the root's `overflow: hidden` clip
+ * (a percentage of the area's own width so a failed / fallback measurement can
+ * never leave part of it inside the row), and `visibility: hidden` guarantees
+ * invisibility where clipping does not hold — uni-app x mp does not reliably
+ * clip translated absolute children, leaving a sliver of the parked pill at
+ * the screen edge on closed rows (device-verified regression). `visibility`
+ * hides them regardless of clipping while leaving layout and
+ * `boundingClientRect` measurement untouched; while a drag, a settle
+ * animation, or an open side exposes the areas, the park clears entirely.
  *
  * ## Documented divergences from wd-swipe-action
  *
@@ -581,14 +583,27 @@ const isActionsExposed = computed(
   () => isDragging.value || isAnimating.value || isOpen.value,
 );
 
-/** Left area parked outside the left edge; `undefined` restores its CSS spot. */
+/**
+ * Left area parked outside the left edge; `undefined` restores its CSS spot.
+ *
+ * The park is doubled (`translateX` + `visibility: hidden`) on purpose:
+ * uni-app x mp does not reliably clip translated absolute children with the
+ * root's `overflow: hidden` — device-verified regression where the parked
+ * Mute pill's edge stayed visible at the screen edge on closed rows.
+ * `visibility: hidden` hides them regardless of clipping, and layout /
+ * measurement (`boundingClientRect`) are unaffected while hidden.
+ */
 const leftActionsStyle = computed(() =>
-  isActionsExposed.value ? undefined : 'transform: translateX(-100%)',
+  isActionsExposed.value
+    ? undefined
+    : "transform: translateX(-100%); visibility: hidden",
 );
 
 /** Right area parked outside the right edge; `undefined` restores its CSS spot. */
 const rightActionsStyle = computed(() =>
-  isActionsExposed.value ? undefined : 'transform: translateX(100%)',
+  isActionsExposed.value
+    ? undefined
+    : "transform: translateX(100%); visibility: hidden",
 );
 </script>
 

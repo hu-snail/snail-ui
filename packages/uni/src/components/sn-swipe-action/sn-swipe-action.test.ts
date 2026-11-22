@@ -13,7 +13,9 @@
  *   - tapping the open content area closes it and emits `click`
  *   - slot presence decides which sides can open
  *   - the settle timer is cleared on unmount (§41)
- *   - while closed the action areas sit translated outside the root clip
+ *   - while closed the action areas sit translated outside the root clip and
+ *     additionally hidden (uni-app x mp does not clip translated absolute
+ *     children reliably — device-verified leak)
  *     (deterministic closed state — no reliance on the content covering them);
  *     they come back inside while dragging, animating, or open
  *   - content offsets are applied in px (the unit measurements and touch
@@ -321,16 +323,18 @@ describe('sn-swipe-action', () => {
   describe('closed-state action hiding', () => {
     it('keeps the right action area translated out of the row while closed', () => {
       const w = mount(SnSwipeAction, { slots });
-      expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
-        'transform: translateX(100%)',
-      );
+      const style = w.find('.sn-swipe-action__actions--right').attributes('style') ?? '';
+      expect(style).toContain('transform: translateX(100%)');
+      // uni-app x mp does not reliably clip translated absolute children —
+      // the park also hides the area outright (device-verified leak).
+      expect(style).toContain('visibility: hidden');
     });
 
     it('keeps the left action area translated out of the row while closed', () => {
       const w = mount(SnSwipeAction, { slots: { default: 'x', left: '<view>收藏</view>' } });
-      expect(w.find('.sn-swipe-action__actions--left').attributes('style') ?? '').toContain(
-        'transform: translateX(-100%)',
-      );
+      const style = w.find('.sn-swipe-action__actions--left').attributes('style') ?? '';
+      expect(style).toContain('transform: translateX(-100%)');
+      expect(style).toContain('visibility: hidden');
     });
 
     it('brings the action areas back inside while the row is open', () => {
@@ -369,9 +373,9 @@ describe('sn-swipe-action', () => {
         expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
         vi.advanceTimersByTime(300);
         await w.vm.$nextTick();
-        expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
-          'transform: translateX(100%)',
-        );
+        const parked = w.find('.sn-swipe-action__actions--right').attributes('style') ?? '';
+        expect(parked).toContain('transform: translateX(100%)');
+        expect(parked).toContain('visibility: hidden');
       } finally {
         vi.useRealTimers();
       }
