@@ -485,6 +485,10 @@ const nativeIndexes = computed<number[]>(() =>
   }),
 );
 
+/** Band top in rpx: the indicator row position as a literal — no 50% /
+    negative-margin / calc chain, which mp-weixin + iOS renders offset. */
+const bandTopRpx = computed(() => ((visibleCount.value - 1) / 2) * Math.max(props.itemHeight, 1) * RATIO);
+
 /** Indicator row height stays aligned with itemHeight for the band overlay. */
 const nativeIndicatorStyle = computed(
   () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
@@ -599,7 +603,11 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   >
     <!-- Shared wheel band (additive): one pill spanning every column, painted
          behind the roller text (z0). The #band slot replaces the paint. -->
-    <view v-if="showSharedBand" class="sn-picker-view__wheel-band" aria-hidden="true"
+    <view
+      v-if="showSharedBand"
+      class="sn-picker-view__wheel-band"
+      :style="{ top: bandTopRpx + 'rpx' }"
+      aria-hidden="true"
       ><view class="sn-picker-view__fill"
         ><slot name="band" :mode="'shared'" :column-index="-1"
       /></view>
@@ -822,9 +830,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   position: absolute;
   left: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
   right: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
-  top: 50%;
+  /* top comes from the inline literal (bandTopRpx) — see above. */
   height: var(--sn-picker-view-item-height);
-  margin-top: calc(var(--sn-picker-view-item-height) / -2);
   background: var(--sn-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
   border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
   pointer-events: none;

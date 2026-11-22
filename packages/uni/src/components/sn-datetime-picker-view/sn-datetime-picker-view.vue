@@ -666,6 +666,9 @@ const nativeIndicatorStyle = computed(
   () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
 );
 
+/** Band top in rpx: the indicator row position as a literal (see sn-picker-view). */
+const bandTopRpx = computed(() => ((visibleCount.value - 1) / 2) * Math.max(props.itemHeight, 1) * RATIO);
+
 /** bindchange → diff the changed column → the same selectRow path. */
 function onNativeChange(event: unknown): void {
   const detail = (event as { detail?: { value?: unknown } })?.detail;
@@ -715,7 +718,11 @@ const ariaValue = computed(() => {
   >
     <!-- Shared wheel band (additive): one pill spanning every column, painted
          behind the roller text (z0). The #band slot replaces the paint. -->
-    <view v-if="showSharedBand" class="sn-datetime-picker-view__wheel-band" aria-hidden="true"
+    <view
+      v-if="showSharedBand"
+      class="sn-datetime-picker-view__wheel-band"
+      :style="{ top: bandTopRpx + 'rpx' }"
+      aria-hidden="true"
       ><view class="sn-datetime-picker-view__fill"
         ><slot name="band" :mode="'shared'" :column-index="-1"
       /></view>
@@ -915,9 +922,8 @@ const ariaValue = computed(() => {
   position: absolute;
   left: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
   right: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
-  top: 50%;
+  /* top comes from the inline literal (bandTopRpx) — see above. */
   height: var(--sn-datetime-picker-view-item-height);
-  margin-top: calc(var(--sn-datetime-picker-view-item-height) / -2);
   background: var(--sn-datetime-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
   border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
   pointer-events: none;
