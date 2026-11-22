@@ -141,6 +141,7 @@
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { nextUid } from '../../utils/uid';
 import {
   pickSelectorQueryHost,
   resolveUniHost,
@@ -154,6 +155,14 @@ defineOptions({
   options: { virtualHost: true },
   // #endif
 });
+
+/**
+ * Per-instance DOM id prefix for the action areas — the measurement queries
+ * `#<actionsNodeId>-left|right`. Ids instead of classes because class
+ * selectors can cross scopes on mp and match a foreign row's (wider) action
+ * area, sliding every row to that foreign width (device-verified regression).
+ */
+const actionsNodeId = `sn-swipe-action-${nextUid()}`;
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
@@ -317,6 +326,12 @@ function measureSide(side: SwipeActionPosition): void {
   // `pickSelectorQueryHost` (§118.3): the mp `$scope` query scopes natively;
   // `.in(Vue proxy)` on the page-level query measured the FIRST row's action
   // width on mp devices (pills stayed covered past a ~80px clamp).
+  //
+  // The queried selector is a PER-INSTANCE ID, not a class: class selectors
+  // can cross scopes and match a foreign row's (wider) action area on
+  // uni-app x mp even under `.in($scope)` — every row then slid to that
+  // foreign width (device-verified). Ids are unique per instance, so no scope
+  // confusion can widen the measured distance.
   const instance = getCurrentInstance();
   const proxy = instance?.proxy as
     | { $scope?: UniSelectorQueryHost; $?: { scope?: UniSelectorQueryHost } }
@@ -330,7 +345,7 @@ function measureSide(side: SwipeActionPosition): void {
   try {
     const query = picked.createQuery();
     const scoped = (query.in?.(picked.queryScope) as UniSelectorQuery | undefined) ?? query;
-    const selection = scoped.select?.(`.sn-swipe-action__actions--${side}`);
+    const selection = scoped.select?.(`#${actionsNodeId}-${side}`);
     const measured = selection?.boundingClientRect?.((rect) => {
       const width = rect?.width;
       if (typeof width === 'number' && width > 0) {
@@ -620,6 +635,7 @@ const rightActionsStyle = computed(() =>
     <view
       v-if="hasLeft"
       ref="leftActionsRef"
+      :id="`${actionsNodeId}-left`"
       class="sn-swipe-action__actions sn-swipe-action__actions--left"
       :style="leftActionsStyle"
     >
@@ -640,6 +656,7 @@ const rightActionsStyle = computed(() =>
     <view
       v-if="hasRight"
       ref="rightActionsRef"
+      :id="`${actionsNodeId}-right`"
       class="sn-swipe-action__actions sn-swipe-action__actions--right"
       :style="rightActionsStyle"
     >

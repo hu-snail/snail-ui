@@ -294,18 +294,36 @@ describe('sn-swipe-action', () => {
 
     it('uses uni.createSelectorQuery when the runtime provides it', async () => {
       const exec = vi.fn();
+      const selectors: string[] = [];
       const boundingClientRect = vi.fn((cb: (rect: { width: number }) => void) => {
         cb({ width: 140 });
         return { exec };
       });
       (globalThis as { uni?: unknown }).uni = {
-        createSelectorQuery: () => ({ select: () => ({ boundingClientRect }) }),
+        createSelectorQuery: () => ({
+          select: (selector: string) => {
+            selectors.push(selector);
+            return { boundingClientRect };
+          },
+        }),
       };
       const w = mount(SnSwipeAction, { slots });
       await swipe(w, -200);
       expect(boundingClientRect).toHaveBeenCalled();
       expect(exec).toHaveBeenCalled();
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
+      // The measurement targets a per-instance id, never a class — class
+      // selectors cross scopes on mp and matched a foreign (wider) row.
+      expect(selectors[0]).toMatch(/^#sn-swipe-action-\d+-right$/);
+    });
+
+    it('gives every instance its own action-area ids', () => {
+      const first = mount(SnSwipeAction, { slots });
+      const second = mount(SnSwipeAction, { slots });
+      const idOf = (wrapper: ReturnType<typeof mount>) =>
+        wrapper.find('.sn-swipe-action__actions--right').attributes('id');
+      expect(idOf(first)).toMatch(/^sn-swipe-action-\d+-right$/);
+      expect(idOf(second)).not.toBe(idOf(first));
     });
 
     it('survives a throwing selector query', async () => {
