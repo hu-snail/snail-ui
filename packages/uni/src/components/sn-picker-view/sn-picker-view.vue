@@ -471,6 +471,49 @@ const rootClass = computed(() => [
  */
 const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
 
+/* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
+
+/**
+ * Native picker-view selection: an index array per column, fed back through
+ * bindchange. Rebuilt whenever columns or values change (cascade rebuilds
+ * columns in place).
+ */
+const nativeIndexes = computed<number[]>(() =>
+  resolvedColumns.value.map((column, ci) => {
+    const index = column.findIndex((option) => sameValue(option.value, props.modelValue[ci]));
+    return index < 0 ? 0 : index;
+  }),
+);
+
+/** Indicator row height stays aligned with itemHeight for the band overlay. */
+const nativeIndicatorStyle = computed(
+  () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
+);
+
+/** Map an option value back to its row index inside the rendered column. */
+function resolveNativeRowIndex(columnIndex: number, value: PickerValue): number {
+  const column = resolvedColumns.value[columnIndex];
+  if (!column) return 0;
+  const index = column.findIndex((option) => sameValue(option.value, value));
+  return index < 0 ? 0 : index;
+}
+
+/**
+ * bindchange payload: the full index array. Diff against the previous
+ * selection to find the changed column, then route through the same commit
+ * the hand-rolled roller uses (v-model / change / haptics stay identical).
+ */
+function onNativeChange(event: unknown): void {
+  const detail = (event as { detail?: { value?: unknown } })?.detail;
+  const next = (detail?.value ?? []) as PickerValue[];
+  for (let ci = 0; ci < resolvedColumns.value.length; ci += 1) {
+    const rowIndex = resolveNativeRowIndex(ci, next[ci] as PickerValue);
+    if (rowIndex !== (selectedIndexes.value[ci] ?? 0)) {
+      commit(ci, rowIndex);
+    }
+  }
+}
+
 /** Half the visible window — the selection row anchors the absolute stack. */
 const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
@@ -561,6 +604,48 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         ><slot name="band" :mode="'shared'" :column-index="-1"
       /></view>
     </view>
+    <!--
+      mp-weixin renders through the NATIVE picker-view: the hand-rolled
+      transform roller cannot be reliably clipped / centered on real devices
+      (selection rows floated above the band, columns drifting). The native
+      component owns clipping, centering and inertia; the wheel band stays an
+      overlay aligned to the indicator row, and every prop / contract above
+      is unchanged. All other platforms keep the hand-rolled roller.
+    -->
+    <!-- #ifdef MP-WEIXIN -->
+    <picker-view
+      class="sn-picker-view__native"
+      :value="nativeIndexes"
+      :indicator-style="nativeIndicatorStyle"
+      :mask-style="'background-color: rgba(0, 0, 0, 0)'"
+      :style="{ height: columnHeightRpx }"
+      @change="onNativeChange"
+    >
+      <picker-view-column
+        v-for="(column, columnIndex) in resolvedColumns"
+        :key="columnIndex"
+      >
+        <view
+          v-for="option in column"
+          :key="option.value"
+          class="sn-picker-view__item"
+          :style="{ height: itemHeightRpx }"
+          @tap="onItemTap(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
+        >
+          <slot
+            name="option"
+            :option="option"
+            :active="isActive(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
+            :distance="distanceOf(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
+            :column-index="columnIndex"
+            :index="resolveNativeRowIndex(columnIndex, option.value)"
+            ><text class="sn-picker-view__label">{{ option.label }}</text></slot
+          >
+        </view>
+      </picker-view-column>
+    </picker-view>
+    <!-- #endif -->
+    <!-- #ifndef MP-WEIXIN -->
     <view
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"

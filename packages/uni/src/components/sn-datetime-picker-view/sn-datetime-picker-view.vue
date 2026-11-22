@@ -652,6 +652,35 @@ const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared
 /** Half the visible window — the selection row anchors the absolute stack. */
 const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
+/* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
+
+/** Native picker-view selection: value index per column. */
+const nativeIndexes = computed<number[]>(() =>
+  columns.value.map((column) => {
+    const index = column.values.indexOf(column.selected);
+    return index < 0 ? 0 : index;
+  }),
+);
+
+const nativeIndicatorStyle = computed(
+  () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
+);
+
+/** bindchange → diff the changed column → the same selectRow path. */
+function onNativeChange(event: unknown): void {
+  const detail = (event as { detail?: { value?: unknown } })?.detail;
+  const next = (detail?.value ?? []) as number[];
+  for (let ci = 0; ci < columns.value.length; ci += 1) {
+    const column = columns.value[ci];
+    if (!column) continue;
+    const rowIndex = next[ci] as number;
+    const current = column.values.indexOf(column.selected);
+    if (typeof rowIndex === 'number' && rowIndex !== current) {
+      selectRow(ci, rowIndex);
+    }
+  }
+}
+
 const rootStyle = computed(() => {
   const vars = [
     `--sn-datetime-picker-view-item-height: ${itemHeightRpx.value}`,
@@ -691,6 +720,37 @@ const ariaValue = computed(() => {
         ><slot name="band" :mode="'shared'" :column-index="-1"
       /></view>
     </view>
+    <!--
+      mp-weixin renders through the NATIVE picker-view (same rationale as
+      sn-picker-view): the native component owns clipping / centering /
+      inertia; the wheel band stays an overlay aligned to the indicator row.
+    -->
+    <!-- #ifdef MP-WEIXIN -->
+    <picker-view
+      class="sn-datetime-picker-view__native"
+      :value="nativeIndexes"
+      :indicator-style="nativeIndicatorStyle"
+      :mask-style="'background-color: rgba(0, 0, 0, 0)'"
+      :style="{ height: columnHeightRpx }"
+      @change="onNativeChange"
+    >
+      <picker-view-column
+        v-for="(column, columnIndex) in columns"
+        :key="column.type"
+      >
+        <view
+          v-for="(value, rowIndex) in column.values"
+          :key="value"
+          class="sn-datetime-picker-view__item"
+          :style="{ height: itemHeightRpx }"
+          @tap="selectRow(columnIndex, rowIndex)"
+        >
+          <text>{{ column.labels[rowIndex] }}</text>
+        </view>
+      </picker-view-column>
+    </picker-view>
+    <!-- #endif -->
+    <!-- #ifndef MP-WEIXIN -->
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -741,6 +801,7 @@ const ariaValue = computed(() => {
         /></view>
       </view>
     </view>
+    <!-- #endif -->
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
 </template>

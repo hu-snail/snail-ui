@@ -220,7 +220,7 @@
 ### sn-datetime-picker-view/sn-datetime-picker-view.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
 - deep/sibling selector dropped — `combinator-unsupported` (line 179): selector ".snui-skin-doodle .sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator" (3 levels, " ")
 - unsupported property stripped — `unsupported-property` (line 30): -webkit-user-select stripped
@@ -521,7 +521,7 @@
 ### sn-picker-view/sn-picker-view.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
 - deep/sibling selector dropped — `combinator-unsupported` (line 192): selector ".snui-skin-doodle .sn-picker-view--wheel .sn-picker-view__indicator" (3 levels, " ")
 - unsupported property stripped — `unsupported-property` (line 30): -webkit-user-select stripped
