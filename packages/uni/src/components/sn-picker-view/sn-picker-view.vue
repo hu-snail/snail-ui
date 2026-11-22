@@ -724,9 +724,14 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 /* Label fallback — the fill stretches it full-width (column cross axis), so
-   the text itself must center or it hugs the left edge on mp-weixin. */
+   the text itself must center or it hugs the left edge on mp-weixin. The
+   explicit line-height pins the text box to the row height: iOS WKWebView
+   floats CJK <text> upward with the inherited default line-height, which is
+   exactly the "selection sits above the band" device bug. */
 .sn-picker-view__label {
   width: 100%;
+  height: var(--sn-picker-view-item-height);
+  line-height: var(--sn-picker-view-item-height);
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
