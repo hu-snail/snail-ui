@@ -515,6 +515,21 @@ describe('sn-swipe-action', () => {
     });
   });
 
+  describe('root clip', () => {
+    it('stays clipped when the host page forces every view visible', () => {
+      /* Device-verified regression: the demo shell resets every view with
+       * `view { overflow: visible !important }` (it unclips uni-app x web
+       * popover demos). The root's plain `overflow: hidden` lost to that
+       * reset, so the parked (translateX ±100%) action area widened the page:
+       * document scrollWidth 552px on a 390px viewport, and swiping a row
+       * dragged the whole page sideways — the demo read as overflowing.
+       * happy-dom does not apply SFC styles, so the invariant is
+       * source-anchored like the virtual-host check above. */
+      const source = readFileSync(resolve(__dirname, 'sn-swipe-action.vue'), 'utf8');
+      expect(source).toMatch(/\.sn-swipe-action\s*\{[^}]*overflow:\s*hidden\s*!important;/);
+    });
+  });
+
   describe('accessibility', () => {
     it('reports the expanded state on the content area', () => {
       const closed = mount(SnSwipeAction, { slots });

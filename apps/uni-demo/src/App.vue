@@ -163,20 +163,29 @@ page {
 }
 
 /* uni-app x web 运行时对每个 view 施加 `uni-app uni-view { overflow: hidden }`
- * 默认值（H5 / MP 默认 visible）——demo 源码里**各自声明的包装类**（如
- * `.sn-popover-demo__center`）无法穷举，弹层组件的气泡会被任意一层裁掉。
- * 用元素选择器全量放开；组件自身 scoped class 声明的 hidden（如
- * avatar-group 裁切窗）特异性更高，不受影响。与 H5 / MP 的默认行为对齐。
+ * 默认值——demo 源码里**各自声明的包装类**（如 `.sn-popover-demo__center`）
+ * 无法穷举，弹层组件的气泡会被任意一层裁掉。用元素选择器全量放开。
  * !important 必须带：uni-app x web 把运行时基础样式表注入在 App 样式之后，
- * 同特异的 App 规则按顺序反而会输（实测）。App（native）端元素选择器由
- * uni-x 管线按支持度处理（unsupported 即 dropped+reported），App 端的脚手
- * 架裁剪由上方逐类规则覆盖。 */
+ * 同特异的 App 规则按顺序反而会输（实测）。
+ *
+ * 仅 uni-app x web 编译：`WEB` 在标准 uni-app H5 里同样为真（platform h5
+ * 会置 WEB），必须再叠一层 UNI_APP_X 才能把标准 H5 / MP 排除在外——它们的
+ * view 默认就是 visible，这条 !important 对它们没有放开作用，只会反向覆盖
+ * 组件自身的普通 `overflow: hidden`（如 sn-swipe-action 的 root）：根节点
+ * 一旦不裁剪，闭合态驻外（translateX ±100%）的动作区就把页面 scrollWidth
+ * 撑宽，滑动手势顺手把整页横移（设备实测：390px 视口 → 552px）。App（native）
+ * 端元素选择器由 uni-x 管线按支持度处理（unsupported 即 dropped+reported），
+ * 脚手架与弹层包装的裁剪由上方逐类规则覆盖。 */
+/* #ifdef UNI_APP_X */
+/* #ifdef WEB */
 uni-app uni-view {
   overflow: visible !important;
 }
 view {
   overflow: visible !important;
 }
+/* #endif */
+/* #endif */
 
 /* popover demo 的局部包装类：uni-app x 按「类在哪个样式表定义」附加作用域
  * 属性——只在 demo 自己 scoped 样式里声明的类不带 App 作用域，上面的全局

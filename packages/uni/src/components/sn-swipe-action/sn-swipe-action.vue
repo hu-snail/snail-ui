@@ -695,7 +695,14 @@ const rightActionsStyle = computed(() =>
   position: relative;
   display: block;
   box-sizing: border-box;
-  overflow: hidden;
+  /* The root clip is part of the gesture / layout contract, so it must survive
+   * a host-level reset. The demo shell resets every view with an element
+   * selector's `overflow: visible !important` to unclip uni-app x web popover
+   * bubbles; it also matched this root and the parked (translateX ±100%)
+   * action area then widened the page — document scrollWidth 552px on a 390px
+   * viewport, and swiping dragged the whole page sideways. Equal-important
+   * class rules win on specificity; a plain `overflow: hidden` cannot. */
+  overflow: hidden !important;
 }
 
 /* ── Action areas ──────────────────────────────────────────────────────── */
