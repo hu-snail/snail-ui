@@ -749,10 +749,14 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 
 .sn-picker-view__item {
   /* Absolute stack anchored on the selection row: top moves with the drag
-     shift variable and settles onto the new selection row after release. */
+     shift variable and settles onto the new selection row after release.
+     Explicit height: a height-less absolute parent resolves its box from the
+     first child on uni-app x App, so slot rows taller than the label row
+     (icon-row / rich-row) shift the fill's centering off the band. */
   position: absolute;
   left: 0;
   right: 0;
+  height: var(--sn-picker-view-item-height);
   transition: top var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -802,10 +806,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 .sn-picker-view__fill {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  flex: 1 1 auto;
-  align-self: stretch;
   width: 100%;
   height: 100%;
 }
