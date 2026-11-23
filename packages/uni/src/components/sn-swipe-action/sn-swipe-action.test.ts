@@ -336,6 +336,65 @@ describe('sn-swipe-action', () => {
       await swipe(w, -120);
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
     });
+
+    it('measures the action area through the mounted element on H5', async () => {
+      /* Device-verified regression: the template ref is the uni-view
+       * component instance on H5, so the old DOM path read
+       * `getBoundingClientRect` off the instance and silently skipped it —
+       * H5 lived on the 88px fallback too, and a two-pill action area
+       * (139px) opened half-way with the far pill still covered. The element
+       * itself is on `$el`. */
+      const w = mount(SnSwipeAction, { slots });
+      const setupState = (w.vm.$ as unknown as { setupState: Record<string, unknown> })
+        .setupState;
+      setupState.rightActionsRef = {
+        $el: { getBoundingClientRect: () => ({ width: 139 }) },
+      };
+      await swipe(w, -120);
+      await flushPromises();
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-139px)',
+      );
+    });
+
+    it('scopes the uni query to the component on mp', async () => {
+      /* Device-verified regression: measureSide called `getCurrentInstance()`
+       * inside the touch handler, where it returns null — every `.in()`-scoped
+       * variant was skipped and classic mp kept only the page-level query,
+       * which cannot see inside a custom component. The row then slid to the
+       * 88px fallback and a two-pill row never revealed its far button. */
+      let scopedTo: unknown;
+      (globalThis as { uni?: unknown }).uni = {
+        createSelectorQuery: () => {
+          const query = {
+            in(scope: unknown) {
+              scopedTo = scope;
+              return query;
+            },
+            select(_selector: string) {
+              return {
+                boundingClientRect(cb: (rect: { width?: number } | null) => void) {
+                  cb({ width: 139 });
+                  return query;
+                },
+              };
+            },
+            exec() {},
+          };
+          return query;
+        },
+      };
+      const w = mount(SnSwipeAction, { slots });
+      await swipe(w, -120);
+      await flushPromises();
+      // Measured 139px, not the 88px fallback.
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-139px)',
+      );
+      // The query ran through `.in(<component proxy>)` — the scoped variant,
+      // not the scope-less page-level query classic mp cannot match with.
+      expect(scopedTo).toBe((w.vm.$ as unknown as { proxy: unknown }).proxy);
+    });
   });
 
   describe('closed-state action hiding', () => {

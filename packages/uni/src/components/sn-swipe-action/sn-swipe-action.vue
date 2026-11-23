@@ -83,10 +83,20 @@
  *
  * The open distance must equal the action area's real width, and that width is
  * whatever the consumer puts in the slot — there is no design-time number to
- * hard-code. It is therefore measured once per gesture:
+ * hard-code. It is therefore measured on mount (so v-model-driven opens land
+ * on the real width) and refreshed once per gesture:
  *
- *   1. `uni.createSelectorQuery()` — the cross-end API (H5 / MP / App);
- *   2. the DOM node's `getBoundingClientRect` — docs preview and tests;
+ *   1. the DOM node's `getBoundingClientRect` — H5 / docs preview. The
+ *      template ref is the uni-view component instance there, so the element
+ *      is unwrapped from `$el`; the read is synchronous, so the gesture never
+ *      starts on a stale distance;
+ *   2. `uni.createSelectorQuery()` — MP / App. The component instance is
+ *      captured at setup: `getCurrentInstance()` is null inside touch
+ *      handlers, and without it every scoped variant was skipped — classic mp
+ *      could only fire the page-level query, which cannot see inside a custom
+ *      component, so rows lived on the constant and multi-pill rows opened
+ *      half-way (device-verified). uni-app x mp keeps the page-level variant
+ *      because its runtime rejects scoped queries;
  *   3. `FALLBACK_ACTION_WIDTH` — last resort so the row still opens.
  *
  * Every path is guarded: a missing runtime falls through to the next one.
@@ -165,6 +175,16 @@ defineOptions({
 const actionsNodeId = `sn-swipe-action-${nextUid()}`;
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
+
+/**
+ * The component instance, captured once at setup. `getCurrentInstance()` is
+ * null inside touch handlers, and measureSide runs from `touchstart` — with a
+ * fresh (null) lookup every scoped query variant was silently skipped. Classic
+ * mp then only had the page-level query left, which cannot see inside a custom
+ * component, so every row fell back to the 88px constant: two-pill rows opened
+ * half-way and the far pill stayed covered (device-verified regression).
+ */
+const componentInstance = getCurrentInstance();
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
 onMounted(() =>
   registerOutsideClosable(instanceId, () => {
@@ -261,9 +281,18 @@ const openDistance = ref<{ left: number; right: number }>({
   right: FALLBACK_ACTION_WIDTH,
 });
 
-/** Action-area nodes, used by the DOM measurement fallback. */
-const leftActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
-const rightActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
+/**
+ * Action-area nodes, used by the DOM measurement fallback. The template ref is
+ * the uni-view component instance on H5 — the element itself lives on `$el`
+ * (happy-dom tests mount the element directly).
+ */
+interface ActionAreaNode {
+  $el?: { getBoundingClientRect?: () => { width: number } };
+  getBoundingClientRect?: () => { width: number };
+}
+
+const leftActionsRef = ref<ActionAreaNode | null>(null);
+const rightActionsRef = ref<ActionAreaNode | null>(null);
 
 /** Single pending settle timer (cleared on unmount, §41). */
 let timer: ReturnType<typeof setTimeout> | null = null;
@@ -304,16 +333,19 @@ function clearTimer(): void {
 /**
  * Read the real width of one action area.
  *
- * Tries `uni.createSelectorQuery()` first (works on every uni target), then
- * the DOM node (docs preview / tests), then the fallback constant. Every step
- * is guarded — a failure just means "try the next one".
+ * Tries the DOM node first (H5 / docs preview — synchronous, so the gesture
+ * never starts on a stale distance), then `uni.createSelectorQuery()` (MP /
+ * App), then the fallback constant. Every step is guarded — a failure just
+ * means "try the next one".
  */
 function measureSide(side: SwipeActionPosition): void {
   const fallbackNode = side === 'left' ? leftActionsRef.value : rightActionsRef.value;
-  // (1) DOM node — available in H5 and in the docs preview.
-  if (fallbackNode && typeof fallbackNode.getBoundingClientRect === 'function') {
+  // (1) DOM node — available in H5 and in the docs preview. The template ref
+  // is the uni-view component instance there; the element is on `$el`.
+  const fallbackEl = fallbackNode?.$el ?? fallbackNode;
+  if (fallbackEl && typeof fallbackEl.getBoundingClientRect === 'function') {
     try {
-      const width = fallbackNode.getBoundingClientRect().width;
+      const width = fallbackEl.getBoundingClientRect().width;
       if (width > 0) {
         openDistance.value = { ...openDistance.value, [side]: width };
         return;
@@ -333,7 +365,7 @@ function measureSide(side: SwipeActionPosition): void {
   // All variants query the same PER-INSTANCE id (`#<actionsNodeId>-<side>`),
   // so a hit from any of them measures THIS row — ids cannot cross-match
   // between rows the way class selectors did (device-verified 312rpx bug).
-  const instance = getCurrentInstance();
+  const instance = componentInstance;
   const proxy = instance?.proxy as
     | { $scope?: UniSelectorQueryHost; $?: { scope?: UniSelectorQueryHost } }
     | null;
@@ -378,6 +410,15 @@ function measureSide(side: SwipeActionPosition): void {
     }
   }
 }
+
+// Measure up front so v-model-driven opens (initial `modelValue: 'left' /
+// 'right'`, a host setting the state without a gesture) land on the real
+// action width — the gesture-time refresh only runs once a finger is down.
+// One-shot queries, no observer (§41).
+onMounted(() => {
+  if (hasLeft.value) measureSide('left');
+  if (hasRight.value) measureSide('right');
+});
 
 /**
  * Move the row to `next`.
