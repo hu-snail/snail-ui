@@ -87,12 +87,17 @@ const orientation = computed<'horizontal' | 'vertical'>(() =>
  * Root `:style` — the dashed/colour border declarations plus `customStyle`.
  * Returned as an array so Vue normalizes both a CSS string and a
  * `Record<string, string>` (camelCase keys included) itself.
+ *
+ * Only the active axis gets a border-style: the class CSS sizes and colours
+ * that axis alone, and an inline style on the inactive axis would activate a
+ * border there with the initial `medium` width / `currentColor` colour — the
+ * dark stray bar rendered next to the slot text (device regression).
  */
 const rootStyle = computed(() => {
-  const border: Record<string, string> = {
-    borderTopStyle: props.dashed ? 'dashed' : 'solid',
-    borderLeftStyle: props.dashed ? 'dashed' : 'solid',
-  };
+  const border: Record<string, string> = {};
+  border[isVertical.value ? 'borderLeftStyle' : 'borderTopStyle'] = props.dashed
+    ? 'dashed'
+    : 'solid';
   if (props.color) border.borderColor = props.color;
   return [border, props.customStyle];
 });
@@ -165,7 +170,13 @@ const rootStyle = computed(() => {
 }
 
 /* Content position — the line spans the full width and the slot text masks it
- * where it sits, so aligning the text is what moves the visible gap. */
+ * where it sits, so aligning the text is what moves the visible gap. Without
+ * an explicit center rule the flex default (flex-start) left the default
+ * content-position text hugging the left edge. */
+.sn-divider--content-center {
+  justify-content: center;
+}
+
 .sn-divider--content-left {
   justify-content: flex-start;
 }
