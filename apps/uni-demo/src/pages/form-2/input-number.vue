@@ -1,18 +1,19 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— input-number 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/input-number-mp-allow-null.vue';
-import Demo1 from './demos/input-number-mp-basic.vue';
-import Demo2 from './demos/input-number-mp-before-change.vue';
-import Demo3 from './demos/input-number-mp-commit-hooks.vue';
-import Demo4 from './demos/input-number-mp-commit-timing.vue';
-import Demo5 from './demos/input-number-mp-controls.vue';
-import Demo6 from './demos/input-number-mp-custom-class.vue';
-import Demo7 from './demos/input-number-mp-disabled.vue';
-import Demo8 from './demos/input-number-mp-long-press.vue';
-import Demo9 from './demos/input-number-mp-round.vue';
-import Demo10 from './demos/input-number-mp-step-strictly.vue';
-import Demo11 from './demos/input-number-mp-theme.vue';
-import Demo12 from './demos/input-number-mp-theme-state.vue';
+import Demo1 from './demos/input-number-mp-animation.vue';
+import Demo2 from './demos/input-number-mp-basic.vue';
+import Demo3 from './demos/input-number-mp-before-change.vue';
+import Demo4 from './demos/input-number-mp-commit-hooks.vue';
+import Demo5 from './demos/input-number-mp-commit-timing.vue';
+import Demo6 from './demos/input-number-mp-controls.vue';
+import Demo7 from './demos/input-number-mp-custom-class.vue';
+import Demo8 from './demos/input-number-mp-disabled.vue';
+import Demo9 from './demos/input-number-mp-long-press.vue';
+import Demo10 from './demos/input-number-mp-round.vue';
+import Demo11 from './demos/input-number-mp-step-strictly.vue';
+import Demo12 from './demos/input-number-mp-theme.vue';
+import Demo13 from './demos/input-number-mp-theme-state.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -41,9 +42,19 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('数字滚动动画（animation）', 'Rolling number animation (animation)')"
+          badge="animation"
+        />
         <view class="module__body">
           <Demo1 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -53,7 +64,7 @@ const { t } = useDemoUi();
           badge="before-change"
         />
         <view class="module__body">
-          <Demo2 class="demo-host" />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -63,7 +74,7 @@ const { t } = useDemoUi();
           badge="commit-hooks"
         />
         <view class="module__body">
-          <Demo3 class="demo-host" />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -73,13 +84,13 @@ const { t } = useDemoUi();
           badge="commit-timing"
         />
         <view class="module__body">
-          <Demo4 class="demo-host" />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead class="demo-host" :title="t('controls', 'Controls')" badge="controls" />
         <view class="module__body">
-          <Demo5 class="demo-host" />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -89,7 +100,7 @@ const { t } = useDemoUi();
           badge="custom-class"
         />
         <view class="module__body">
-          <Demo6 class="demo-host" />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -99,7 +110,7 @@ const { t } = useDemoUi();
           badge="disabled"
         />
         <view class="module__body">
-          <Demo7 class="demo-host" />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -109,7 +120,7 @@ const { t } = useDemoUi();
           badge="long-press"
         />
         <view class="module__body">
-          <Demo8 class="demo-host" />
+          <Demo9 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -119,7 +130,7 @@ const { t } = useDemoUi();
           badge="round"
         />
         <view class="module__body">
-          <Demo9 class="demo-host" />
+          <Demo10 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -129,7 +140,7 @@ const { t } = useDemoUi();
           badge="step-strictly"
         />
         <view class="module__body">
-          <Demo10 class="demo-host" />
+          <Demo11 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -139,7 +150,7 @@ const { t } = useDemoUi();
           badge="theme"
         />
         <view class="module__body">
-          <Demo11 class="demo-host" />
+          <Demo12 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -149,7 +160,7 @@ const { t } = useDemoUi();
           badge="theme-state"
         />
         <view class="module__body">
-          <Demo12 class="demo-host" />
+          <Demo13 class="demo-host" />
         </view>
       </view>
     </view>

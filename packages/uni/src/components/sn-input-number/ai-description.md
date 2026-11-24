@@ -51,6 +51,7 @@ import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-num
 | `round`                                         | `boolean`                                                | `false`                   | Fully rounded action buttons.                   |
 | `customClass` / `customStyle`                   | `string`                                                 | `''`                      | Root forwarding.                                |
 | `buttonColor` (AUI additive)                    | `string`                                                 | `undefined`               | Action-button fill (CSS color / `var(--sn-mp-color-*)`); overrides every theme fill, glyph flips to on-primary. |
+| `animation` (AUI additive)                      | `boolean`                                                | `false`                   | Roll the field text vertically on every committed change — increase rolls up, decrease rolls down. Typing drafts and the mount-time `updateOnInit` correction never roll. |
 
 ## Behavior Notes
 
@@ -58,6 +59,10 @@ import SnInputNumber from '@snui/uni-src/components/sn-input-number/sn-input-num
   start point (`touchmove`) — touch events keep firing on the press-start
   element after the finger leaves it, so without this the repeat counts on
   while the user drags elsewhere. A paused press restarts with a new touch.
+- `animation` swaps the field for a two-slot roll viewport for ~320ms per
+  committed change (input hidden via `v-show`, restored when the roll lands).
+  A mid-roll change restarts the roll with the latest from/to pair; timers are
+  cleared on unmount (AGENTS.md §41).
 
 ## Events
 

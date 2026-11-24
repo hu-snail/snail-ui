@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1498 |
+| .uvue 产出 | 1500 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2118 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2120 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 125 |
@@ -687,6 +687,8 @@
 - ../../uni-demo/src/pages/form-2/demos/input-mp-word-limit.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.en.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-animation.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-animation.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/input-number-mp-basic.en.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/input-number-mp-basic.vue: ref
 - ../../uni-demo/src/pages/form-2/demos/input-number-mp-before-change.en.vue: ref
@@ -2454,7 +2456,7 @@
 - pages/form-2/demos/search-mp-placeholder-style.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo__placeholder)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
-- pages/form-2/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form-2/input-number.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue
 - pages/form-2/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
 - pages/form-2/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
 - pages/form-2/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue

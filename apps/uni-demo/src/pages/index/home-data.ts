@@ -406,7 +406,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '计数器',
         titleEn: 'Input Number',
         desc: '步进数值输入',
-        count: 13,
+        count: 14,
       },
       {
         key: 'keyboard',

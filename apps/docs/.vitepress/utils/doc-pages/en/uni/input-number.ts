@@ -67,6 +67,11 @@ import { InputNumber } from '@snui/uni';
       blurb: 'longPress keeps stepping while held.',
     },
     {
+      name: 'input-number-mp-animation',
+      title: 'Rolling number animation (animation)',
+      blurb: 'animation rolls the field text up on increase and down on decrease for every committed change.',
+    },
+    {
       name: 'input-number-mp-disabled',
       title: 'Disabled',
       blurb: 'disabled blocks every interaction.',
@@ -213,6 +218,12 @@ import { InputNumber } from '@snui/uni';
         type: 'string | undefined',
         default: 'undefined',
         desc: 'AUI-additive: action-button fill (CSS color / `var(--sn-mp-color-*)`); overrides theme fills, glyph flips to on-primary.',
+      },
+      {
+        name: 'animation',
+        type: 'boolean',
+        default: 'false',
+        desc: 'AUI-additive: rolling number animation. Every committed change rolls the field text up (increase) / down (decrease); typing drafts and the mount-time correction never roll.',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {

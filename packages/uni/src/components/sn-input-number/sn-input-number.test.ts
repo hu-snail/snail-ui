@@ -635,6 +635,117 @@ describe('sn-input-number', () => {
     });
   });
 
+  describe('roll animation (additive `animation`)', () => {
+    const rollLayer = (w: ReturnType<typeof mountNumber>) =>
+      w.find('.sn-input-number__roll');
+
+    /** VTU `isVisible` disagrees with happy-dom on v-show inputs — read the style. */
+    const fieldDisplay = (w: ReturnType<typeof mountNumber>): string =>
+      w.find('.sn-input-number__field').element.getAttribute('style') ?? '';
+
+    it('keeps the field static by default', async () => {
+      const w = mountVModel({ modelValue: 5, animation: false });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(false);
+      expect(fieldDisplay(w)).not.toContain('display: none');
+    });
+
+    it('rolls up when the value increases', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(true);
+      expect(rollLayer(w).attributes('aria-hidden')).toBe('true');
+      expect(w.find('.sn-input-number__roll-track--up').exists()).toBe(true);
+      const texts = w.findAll('.sn-input-number__roll-text');
+      expect(texts.map((t) => t.text())).toEqual(['5', '6']);
+      // The field yields to the roll viewport while the animation plays.
+      expect(fieldDisplay(w)).toContain('display: none');
+    });
+
+    it('rolls down when the value decreases', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true });
+      await w.find('.sn-input-number__minus').trigger('tap');
+      await w.vm.$nextTick();
+      expect(w.find('.sn-input-number__roll-track--down').exists()).toBe(true);
+      const texts = w.findAll('.sn-input-number__roll-text');
+      expect(texts.map((t) => t.text())).toEqual(['4', '5']);
+    });
+
+    it('unmounts the roll layer and restores the field when the roll lands', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(true);
+      await vi.advanceTimersByTimeAsync(400);
+      expect(rollLayer(w).exists()).toBe(false);
+      expect(fieldDisplay(w)).not.toContain('display: none');
+    });
+
+    it('restarts the roll on a mid-roll change instead of stacking timers', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await w.vm.$nextTick();
+      const firstTrack = w.find('.sn-input-number__roll-track').element;
+      // Advance into the first roll, then commit again — the restarted roll
+      // must outlive the first roll's original unmount deadline.
+      await vi.advanceTimersByTimeAsync(100);
+      await w.setProps({ modelValue: 7 });
+      await w.vm.$nextTick();
+      // A fresh remount key replaces the track node so the CSS animation replays.
+      expect(w.find('.sn-input-number__roll-track').element).not.toBe(firstTrack);
+      const texts = w.findAll('.sn-input-number__roll-text');
+      expect(texts.map((t) => t.text())).toEqual(['6', '7']);
+      // t≈350: past the first roll's deadline, so its timer was cleared.
+      await vi.advanceTimersByTimeAsync(250);
+      expect(rollLayer(w).exists()).toBe(true);
+      // t≈550: past the restarted roll's own deadline.
+      await vi.advanceTimersByTimeAsync(200);
+      expect(rollLayer(w).exists()).toBe(false);
+    });
+
+    it('does not roll while the user is typing a draft', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true });
+      const field = w.find('.sn-input-number__field');
+      await field.setValue('8');
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(false);
+    });
+
+    it('does not roll for non-numeric values (allowNull unset state)', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true, allowNull: true });
+      await w.setProps({ modelValue: '' });
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(false);
+    });
+
+    it('does not roll when withoutInput hides the field', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 5, animation: true, withoutInput: true });
+      await w.setProps({ modelValue: 6 });
+      await w.vm.$nextTick();
+      expect(rollLayer(w).exists()).toBe(false);
+    });
+
+    it('clears the pending roll timer on unmount', async () => {
+      vi.useFakeTimers();
+      const clearSpy = vi.spyOn(globalThis, 'clearTimeout');
+      const w = mountVModel({ modelValue: 5, animation: true });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await w.vm.$nextTick();
+      w.unmount();
+      expect(clearSpy).toHaveBeenCalled();
+      clearSpy.mockRestore();
+    });
+  });
+
   describe('uni-app x style contract', () => {
     // The uni-app x CSS transform rewrites descendant overrides into a
     // fallback-less `var(--snx-…)` consumed by the segment rule. A fill,

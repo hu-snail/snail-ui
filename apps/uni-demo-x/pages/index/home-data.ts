@@ -1,4 +1,4 @@
-// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:716a35f3212fe6f9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
+// gen-x: source apps/uni-demo/src/pages/index/home-data.ts sha256:a5a69e36015e2c5f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 // 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 `pnpm gen:pages`。
 export interface DemoHomeComp {
   key: string;
@@ -407,7 +407,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '计数器',
         titleEn: 'Input Number',
         desc: '步进数值输入',
-        count: 13,
+        count: 14,
       },
       {
         key: 'keyboard',

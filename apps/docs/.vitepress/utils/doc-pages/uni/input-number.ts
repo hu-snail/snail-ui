@@ -76,6 +76,11 @@ import { InputNumber } from '@snui/uni';
       blurb: 'longPress 按住连续加减。',
     },
     {
+      name: 'input-number-mp-animation',
+      title: '数字滚动动画（animation）',
+      blurb: 'animation 开启后每次提交值变化，字段数字向上/向下翻动。',
+    },
+    {
       name: 'input-number-mp-disabled',
       title: '禁用（disabled）',
       blurb: 'disabled 拦掉全部交互。',
@@ -161,6 +166,12 @@ import { InputNumber } from '@snui/uni';
         type: 'string | undefined',
         default: 'undefined',
         desc: 'AUI 追加：两侧按钮填充色（CSS 色 / `var(--sn-mp-color-*)`），覆盖主题填充，glyph 自动切换 on-primary。',
+      },
+      {
+        name: 'animation',
+        type: 'boolean',
+        default: 'false',
+        desc: 'AUI 追加：数字滚动动画。每次提交值变化时字段数字向上（增加）/ 向下（减少）翻动；输入草稿与挂载期修正不触发。',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
