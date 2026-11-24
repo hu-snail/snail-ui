@@ -1040,10 +1040,13 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     expect(source).toContain('border-bottom-color: var(--sn-popover-bg)');
     expect(source).toContain('border-left-color: var(--sn-popover-bg)');
     expect(source).toContain('border-right-color: var(--sn-popover-bg)');
-    // Base flush with the card edge: offset = arrow height (16rpx).
-    expect(source).toContain('bottom: -16rpx');
-    expect(source).toContain('top: -16rpx');
-    // Gap = arrow height → the apex lands exactly on the trigger edge.
+    // The base overlaps 4rpx INTO the card: the fill bridges the junction
+    // band, so no fractional-pixel hairline seam can appear between the
+    // arrow and the card edge (the seam measured 0.33px at exact-edge
+    // alignment).
+    expect(source).toContain('bottom: -12rpx');
+    expect(source).toContain('top: -12rpx');
+    // Gap 16rpx − 4rpx overlap → apex 2rpx short of the trigger edge.
     expect(source).toContain('calc(16rpx + var(--sn-popover-offset-y))');
     expect(source).not.toContain('calc(24rpx + var(--sn-popover-offset-y))');
   });

@@ -1177,7 +1177,10 @@ function onCancelTap(): void {
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
-  bottom: -16rpx;
+  /* 4rpx of the fill overlaps INTO the card: the base no longer meets the
+   * card edge exactly, bridging the fractional-pixel hairline seam that
+   * appeared whenever the card height landed on a fractional pixel. */
+  bottom: -12rpx;
   border-top-width: 16rpx;
   border-right-width: 16rpx;
   border-bottom-width: 0;
@@ -1189,7 +1192,7 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  top: -16rpx;
+  top: -12rpx;
   border-top-width: 0;
   border-right-width: 16rpx;
   border-bottom-width: 16rpx;
@@ -1200,7 +1203,7 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
-  right: -16rpx;
+  right: -12rpx;
   border-top-width: 16rpx;
   border-right-width: 0;
   border-bottom-width: 16rpx;
@@ -1211,7 +1214,7 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  left: -16rpx;
+  left: -12rpx;
   border-top-width: 16rpx;
   border-right-width: 16rpx;
   border-bottom-width: 16rpx;
