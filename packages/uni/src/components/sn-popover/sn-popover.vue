@@ -937,7 +937,7 @@ function onCancelTap(): void {
    * has no filter support: falls back to the rectangle box-shadow token,
    * gated behind conditional compilation. */
   /* #ifndef APP */
-  filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.14));
+  filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.08));
   /* #endif */
   /* #ifdef APP */
   box-shadow: var(--sn-mp-shadow-md);
@@ -1182,9 +1182,9 @@ function onCancelTap(): void {
    * appeared whenever the card height landed on a fractional pixel. */
   bottom: -12rpx;
   border-top-width: 16rpx;
-  border-right-width: 16rpx;
+  border-right-width: 20rpx;
   border-bottom-width: 0;
-  border-left-width: 16rpx;
+  border-left-width: 20rpx;
   border-top-color: var(--sn-popover-bg);
 }
 /* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
@@ -1194,9 +1194,9 @@ function onCancelTap(): void {
 .sn-popover--bottom-end .sn-popover__arrow {
   top: -12rpx;
   border-top-width: 0;
-  border-right-width: 16rpx;
+  border-right-width: 20rpx;
   border-bottom-width: 16rpx;
-  border-left-width: 16rpx;
+  border-left-width: 20rpx;
   border-bottom-color: var(--sn-popover-bg);
 }
 /* Bubble left → apex RIGHT → colored left border. */
@@ -1207,7 +1207,7 @@ function onCancelTap(): void {
   border-top-width: 16rpx;
   border-right-width: 0;
   border-bottom-width: 16rpx;
-  border-left-width: 16rpx;
+  border-left-width: 20rpx;
   border-left-color: var(--sn-popover-bg);
 }
 /* Bubble right → apex LEFT → colored right border. */
@@ -1216,7 +1216,7 @@ function onCancelTap(): void {
 .sn-popover--right-end .sn-popover__arrow {
   left: -12rpx;
   border-top-width: 16rpx;
-  border-right-width: 16rpx;
+  border-right-width: 20rpx;
   border-bottom-width: 16rpx;
   border-left-width: 0;
   border-right-color: var(--sn-popover-bg);
@@ -1226,7 +1226,7 @@ function onCancelTap(): void {
  * -start / -end pin it 20rpx from the near corner. */
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--bottom .sn-popover__arrow {
-  left: calc(50% - 16rpx);
+  left: calc(50% - 20rpx);
 }
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow {
@@ -1238,7 +1238,7 @@ function onCancelTap(): void {
 }
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--right .sn-popover__arrow {
-  top: calc(50% - 16rpx);
+  top: calc(50% - 20rpx);
 }
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow {

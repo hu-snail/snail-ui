@@ -174,7 +174,7 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
-- One-shape arrow: a border-triangle fill (32rpx base × 16rpx tall,
+- One-shape arrow: a border-triangle fill (40rpx base × 16rpx tall,
   tooltip parity) flush with the bubble edge — no own border, no own
   shadow. The trigger gap equals the arrow height, so the apex lands
   exactly on the trigger edge (reference). The fill paints the card color
