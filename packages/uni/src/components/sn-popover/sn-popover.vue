@@ -589,31 +589,6 @@ const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
 const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
-type ArrowFamily = 'top' | 'bottom' | 'left' | 'right';
-
-/** Outline stroke paths per arrow family — the two slant edges only; the
- * base edge is the card junction and must stay open so interiors connect. */
-const ARROW_OUTLINE_PATHS: Record<ArrowFamily, string> = {
-  top: 'M1 1 L16 16 L31 1',
-  bottom: 'M1 31 L16 16 L31 31',
-  left: 'M1 1 L16 16 L1 31',
-  right: 'M31 1 L16 16 L31 31',
-};
-
-const arrowFamily = computed<ArrowFamily>(() => props.placement.split('-')[0] as ArrowFamily);
-
-const arrowFillClass = computed(() => [
-  'sn-popover__arrow-fill',
-  `sn-popover__arrow-fill--${arrowFamily.value}`,
-]);
-
-/** Stroke-mode IconData: draws the two slant outline edges via SnIcon
- * (inline <svg> on H5, canvas-rasterized PNG on MP). */
-const arrowOutlineIcon = computed<IconData>(() => ({
-  viewBox: '0 0 32 32',
-  paths: [ARROW_OUTLINE_PATHS[arrowFamily.value]],
-}));
-
 const sheetPanelClass = computed(() => [
   'sn-popover__sheet-panel',
   { 'sn-popover__sheet-panel--shown': isShown.value },
@@ -684,16 +659,7 @@ function onCancelTap(): void {
         points). SnIcon renders inline <svg> on H5 and the canvas-rasterized
         PNG on MP (AUI-MP-003) — SVG drawing, cross-platform.
       -->
-      <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true">
-        <view :class="arrowFillClass" aria-hidden="true" />
-        <SnIcon
-          class="sn-popover__arrow-outline"
-          :icon="arrowOutlineIcon"
-          :size="'32rpx'"
-          color="currentColor"
-          :stroke-width="2"
-        />
-      </view>
+      <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
       <view v-if="mode === 'menu'" class="sn-popover__menu">
         <slot name="content">
@@ -1183,25 +1149,15 @@ function onCancelTap(): void {
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
 
-/* ── Arrow ─────────────────────────────────────────────────────────────── */
+/* Border triangle, same technique as sn-tooltip: the fill paints exactly
+ * once, with no border of its own and no own shadow — the pop's
+ * drop-shadow covers the protruding half, so arrow + card read as ONE
+ * shape (a rotated diamond could not: its border and box-shadow always
+ * seam against the card's outline and rectangle shadow). 32rpx base ×
+ * 16rpx tall; the 16rpx trigger gap lands the apex exactly on the trigger
+ * edge, matching the reference. */
 
-/* Wrapper: a 32×32 box straddling the card edge (2rpx of it sits INSIDE the
- * card, so the fill layer's base covers the border segment at the junction
- * and the interiors connect). Its `color` chains the outline token into the
- * SnIcon's currentColor stroke. */
 .sn-popover__arrow {
-  position: absolute;
-  width: 32rpx;
-  height: 32rpx;
-  color: var(--sn-popover-arrow-border);
-  pointer-events: none;
-}
-
-/* Fill layer — CSS triangle (tooltip technique): paints the card color
- * exactly once across the junction; theme + custom-style aware via the
- * CSS variable, no runtime resolution needed. */
-
-.sn-popover__arrow-fill {
   position: absolute;
   width: 0;
   height: 0;
@@ -1210,103 +1166,83 @@ function onCancelTap(): void {
   pointer-events: none;
 }
 
-/* Base on the wrapper's near edge (2rpx inside the card), apex at the
- * wrapper center (14rpx toward the trigger). */
-.sn-popover__arrow-fill--bottom {
-  bottom: 0;
-  left: 0;
+/* Orientation per placement family: the apex points at the trigger, and the
+ * colored border is the one on the OUTSIDE edge (fill paints once). Declared
+ * as longhands — the uni-x App flattener expands border shorthands only into
+ * per-side longhands, and a TRBL width shorthand would ride through
+ * unexpanded (§85 explicit). */
+
+/* Bubble above → arrow rides the bubble's bottom edge → apex DOWN →
+ * colored TOP border (base-up / apex-down). */
+.sn-popover--top .sn-popover__arrow,
+.sn-popover--top-start .sn-popover__arrow,
+.sn-popover--top-end .sn-popover__arrow {
+  bottom: -16rpx;
   border-top-width: 16rpx;
   border-right-width: 16rpx;
   border-bottom-width: 0;
   border-left-width: 16rpx;
   border-top-color: var(--sn-popover-bg);
 }
-.sn-popover__arrow-fill--top {
-  top: 0;
-  left: 0;
-  border-bottom-width: 16rpx;
-  border-right-width: 16rpx;
+/* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
+ * border (base-down / apex-up). */
+.sn-popover--bottom .sn-popover__arrow,
+.sn-popover--bottom-start .sn-popover__arrow,
+.sn-popover--bottom-end .sn-popover__arrow {
+  top: -16rpx;
   border-top-width: 0;
+  border-right-width: 16rpx;
+  border-bottom-width: 16rpx;
   border-left-width: 16rpx;
   border-bottom-color: var(--sn-popover-bg);
 }
-.sn-popover__arrow-fill--left {
-  top: 0;
-  left: 0;
-  border-right-width: 16rpx;
+/* Bubble left → apex RIGHT → colored left border. */
+.sn-popover--left .sn-popover__arrow,
+.sn-popover--left-start .sn-popover__arrow,
+.sn-popover--left-end .sn-popover__arrow {
+  right: -16rpx;
   border-top-width: 16rpx;
+  border-right-width: 0;
   border-bottom-width: 16rpx;
-  border-left-width: 0;
+  border-left-width: 16rpx;
   border-left-color: var(--sn-popover-bg);
 }
-.sn-popover__arrow-fill--right {
-  top: 0;
-  right: 0;
-  border-left-width: 16rpx;
+/* Bubble right → apex LEFT → colored right border. */
+.sn-popover--right .sn-popover__arrow,
+.sn-popover--right-start .sn-popover__arrow,
+.sn-popover--right-end .sn-popover__arrow {
+  left: -16rpx;
   border-top-width: 16rpx;
+  border-right-width: 16rpx;
   border-bottom-width: 16rpx;
-  border-right-width: 0;
+  border-left-width: 0;
   border-right-color: var(--sn-popover-bg);
 }
 
-/* Outline layer — stroke-mode SnIcon triangle (inline <svg> on H5 with
- * currentColor riding the wrapper color; canvas-rasterized PNG on MP per
- * AUI-MP-003). Fills the wrapper box; transparent while the outline token
- * is transparent (default plain-fill arrow). */
-.sn-popover__arrow-outline {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* Wrapper footprint per family: the box straddles the card edge, centered
- * on the trigger; -start / -end pin it 20rpx from the near corner. */
-.sn-popover--top .sn-popover__arrow {
-  bottom: -30rpx;
-  left: calc(50% - 16rpx);
-}
-.sn-popover--top-start .sn-popover__arrow {
-  bottom: -30rpx;
-  left: 20rpx;
-}
-.sn-popover--top-end .sn-popover__arrow {
-  bottom: -30rpx;
-  right: 20rpx;
-}
+/* Arrow footprint per family: center arrow centered on the trigger;
+ * -start / -end pin it 20rpx from the near corner. */
+.sn-popover--top .sn-popover__arrow,
 .sn-popover--bottom .sn-popover__arrow {
-  top: -30rpx;
   left: calc(50% - 16rpx);
 }
+.sn-popover--top-start .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow {
-  top: -30rpx;
   left: 20rpx;
 }
+.sn-popover--top-end .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  top: -30rpx;
   right: 20rpx;
 }
-.sn-popover--left .sn-popover__arrow {
-  right: -30rpx;
-  top: calc(50% - 16rpx);
-}
-.sn-popover--left-start .sn-popover__arrow {
-  right: -30rpx;
-  top: 20rpx;
-}
-.sn-popover--left-end .sn-popover__arrow {
-  right: -30rpx;
-  bottom: 20rpx;
-}
+.sn-popover--left .sn-popover__arrow,
 .sn-popover--right .sn-popover__arrow {
-  left: -30rpx;
   top: calc(50% - 16rpx);
 }
+.sn-popover--left-start .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow {
-  left: -30rpx;
   top: 20rpx;
 }
+.sn-popover--left-end .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  left: -30rpx;
   bottom: 20rpx;
 }
 

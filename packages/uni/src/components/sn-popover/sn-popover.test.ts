@@ -604,8 +604,6 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     expect(popRaw).toContain('box-shadow: var(--sn-mp-shadow-md)');
     // Borderless card — an outline would seam against the arrow junction.
     expect(popBlock).not.toContain('border:');
-    // The border token is gone with the outline (doodle skin draws its own).
-    expect(source).not.toContain('--sn-popover-border');
     expect(source).toContain('--sn-popover-width: 480rpx');
     expect(source).toContain('--sn-popover-menu-width: 320rpx');
     // Centering must stay calc-free inside `transform`.
@@ -1023,33 +1021,29 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     expect(plate.attributes('style') ?? '').toContain('color: #188038');
   });
 
-  it('sizes the arrow as a reference-large diamond', () => {
+  it('draws the arrow as a border-triangle fill, one shape with the card', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
-    const arrowRule = source.indexOf('.sn-popover__arrow {');
-    const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
-    // SVG one-piece arrow: the FILL layer is a CSS triangle painting the
-    // card color once across the junction (interiors connect — one shape,
-    // theme + custom-style aware); the OUTLINE layer is a stroke-mode
-    // SnIcon triangle riding the wrapper's --sn-popover-arrow-border via
-    // currentColor (transparent default, colored by custom-arrow).
-    expect(block).toContain('width: 32rpx');
-    expect(block).toContain('height: 32rpx');
-    expect(block).toContain('color: var(--sn-popover-arrow-border)');
-    expect(block).not.toContain('box-shadow');
-    expect(block).not.toContain('transform: rotate');
-    expect(source).toContain('arrow-fill--bottom');
-    expect(source).toContain('arrow-fill--top');
+    const blockOf = (selector: string): string => {
+      const start = source.indexOf(selector);
+      expect(start).toBeGreaterThan(-1);
+      return source.slice(start, source.indexOf('}', start));
+    };
+    const arrowBlock = blockOf('.sn-popover__arrow {');
+    expect(arrowBlock).toContain('width: 0');
+    expect(arrowBlock).toContain('height: 0');
+    expect(arrowBlock).toContain('border-style: solid');
+    expect(arrowBlock).not.toContain('transform: rotate');
+    expect(arrowBlock).not.toContain('box-shadow');
+    expect(arrowBlock).not.toContain('sn-icon');
+    // Apex points at the trigger per family; fill = the card color.
     expect(source).toContain('border-top-color: var(--sn-popover-bg)');
     expect(source).toContain('border-bottom-color: var(--sn-popover-bg)');
     expect(source).toContain('border-left-color: var(--sn-popover-bg)');
     expect(source).toContain('border-right-color: var(--sn-popover-bg)');
-    expect(source).toContain('color="currentColor"');
-    expect(source).toContain('ARROW_OUTLINE_PATHS');
-    // Wrapper straddles the card edge: 2rpx of the box sits inside the card
-    // so the fill base covers the border segment at the junction.
-    expect(source).toContain('bottom: -30rpx');
-    expect(source).toContain('top: -30rpx');
-    // Protrusion is 14rpx — the 16rpx gap leaves 2rpx of clear air.
+    // Base flush with the card edge: offset = arrow height (16rpx).
+    expect(source).toContain('bottom: -16rpx');
+    expect(source).toContain('top: -16rpx');
+    // Gap = arrow height → the apex lands exactly on the trigger edge.
     expect(source).toContain('calc(16rpx + var(--sn-popover-offset-y))');
     expect(source).not.toContain('calc(24rpx + var(--sn-popover-offset-y))');
   });
