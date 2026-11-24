@@ -87,7 +87,13 @@ export function transformTemplate(src: string, file: string): TextTransformResul
         const m = CLOSE_TAG_RE.exec(src.slice(i));
         if (m !== null) {
           stack.pop();
-          out += m[0];
+          // The source uses glued-bracket chains (`></slot\n        >`) to keep
+          // whitespace-only text nodes out of tight layouts. The uts (uni-app x)
+          // parser rejects an end tag whose `>` sits on a later line — it reads
+          // as an unterminated element ("Element is missing end tag"). Re-emit
+          // the tag compactly: the newline lived INSIDE the end tag, so no
+          // text node is introduced and the zero-whitespace glue semantics hold.
+          out += `</${m[1]!}>`;
           i += m[0].length;
           continue;
         }

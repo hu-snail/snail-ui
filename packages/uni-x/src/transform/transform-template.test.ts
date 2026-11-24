@@ -21,6 +21,19 @@ describe('transformTemplate', () => {
     expect(r.issues).toHaveLength(0);
   });
 
+  it('should compact a split end tag so uts parses it (glued-bracket chains)', () => {
+    // uts rejects `</slot\n>` — an end tag whose `>` sits on a later line
+    // ("Element is missing end tag"). The compacted form introduces no text
+    // node: the newline lived inside the end tag.
+    const r = transformTemplate(
+      '<view><view><slot name="s"\n        ><text>hi</text></slot\n      ></view></view\n    >',
+      FILE,
+    );
+    expect(r.code).toBe(
+      '<view><view><slot name="s"\n        ><text>hi</text></slot></view></view>',
+    );
+  });
+
   it('should not wrap text already inside <text>', () => {
     const r = transformTemplate('<text>hello world</text>', FILE);
     expect(r.code).toBe('<text>hello world</text>');
