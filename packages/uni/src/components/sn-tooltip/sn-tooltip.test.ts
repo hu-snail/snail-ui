@@ -158,6 +158,19 @@ describe('sn-tooltip', () => {
       expect(style).toContain('--sn-tooltip-offset-x: 3px');
       expect(style).toContain('--sn-tooltip-offset-y: 7px');
     });
+
+    it('keeps the pop gap in the stylesheet and leaves the pop node unstyled at offset 0', () => {
+      const w = mount(SnTooltip, { props: { modelValue: true } });
+      expect(w.find('.sn-tooltip__pop').attributes('style')).toBeUndefined();
+    });
+
+    it('re-adds the gap inline on the pop node when offset-y is nonzero (bottom family)', () => {
+      const w = mount(SnTooltip, {
+        props: { modelValue: true, offset: { x: 0, y: 8 }, placement: 'bottom' },
+      });
+      const style = w.find('.sn-tooltip__pop').attributes('style') ?? '';
+      expect(style).toContain('margin-top: calc(14rpx + 8px)');
+    });
   });
 
   describe('arrow', () => {

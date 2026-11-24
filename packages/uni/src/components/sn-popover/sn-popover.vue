@@ -579,6 +579,20 @@ const rootStyle = computed(() => {
 
 const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
+/** Gap = 28rpx in the stylesheet (static — see the placement comment). The
+ * `offset` prop folds in here as an inline margin on the pop node, so it
+ * stays effective on renderers that cannot resolve the var chain. */
+const popStyle = computed(() => {
+  const { x, y } = offsetPair.value;
+  const family = props.placement.split('-')[0];
+  if (family === 'top' || family === 'bottom') {
+    if (y === 0) return undefined;
+    return `margin-${family === 'top' ? 'bottom' : 'top'}: calc(28rpx + ${y}px)`;
+  }
+  if (x === 0) return undefined;
+  return `margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`;
+});
+
 const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 const sheetPanelClass = computed(() => [
@@ -639,17 +653,21 @@ function onCancelTap(): void {
     </view>
 
     <!-- ── Anchor bubble ─────────────────────────────────────────────────── -->
-    <view v-if="isMounted && !isSheet" :class="popClass" role="dialog" @tap.stop>
+    <view
+      v-if="isMounted && !isSheet"
+      :class="popClass"
+      :style="popStyle"
+      role="dialog"
+      @tap.stop
+    >
       <!--
-        Arrow, drawn as SVG one-piece: the FILL layer is a CSS triangle
-        (paints the card color exactly once across the junction — interiors
-        connect, one shape, theme + custom-style aware); the OUTLINE layer
-        is a stroke-mode SnIcon triangle whose currentColor rides the
-        card border token (transparent default — the
-        reference arrow is a plain fill; custom-arrow recolors it and the
-        slant strokes then meet the card border at the two junction
-        points). SnIcon renders inline <svg> on H5 and the canvas-rasterized
-        PNG on MP (AUI-MP-003) — SVG drawing, cross-platform.
+        Arrow, drawn as ONE piece: a rotated diamond (32rpx square) centered
+        on the card edge. The fill is the card color covering the border
+        segment behind it (interiors connect), and the outline is the SAME
+        `--sn-popover-border` token as the card border drawn on the two
+        outside edges — the slant strokes meet the card border at the two
+        junction points, so the whole callout reads as ONE continuous
+        outline. The pop's drop-shadow follows the true silhouette.
       -->
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
@@ -1257,27 +1275,31 @@ function onCancelTap(): void {
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
-/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`;
- * `offset-x/y` folds into the margins, which every renderer supports. */
+/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`.
+ * The gap is a static 28rpx: WeChat MP drops var() nested inside a custom
+ * property value (the uni-x `--snx-*` margin payload), which zeroes the
+ * margin and slams the bubble into the trigger — the arrow apex then pokes
+ * into the button on real devices. A nonzero `offset` re-adds the gap
+ * inline on the pop node (popStyle) instead of riding the var chain. */
 
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
   left: 50%;
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: 28rpx;
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
   left: 0;
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: 28rpx;
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--top-end .sn-popover__pop {
   right: 0;
   bottom: 100%;
   margin-right: var(--sn-popover-offset-x);
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: 28rpx;
 }
 
 /* ── Placement: bottom family ──────────────────────────────────────────── */
@@ -1285,20 +1307,20 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__pop {
   top: 100%;
   left: 50%;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: 28rpx;
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
   left: 0;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: 28rpx;
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--bottom-end .sn-popover__pop {
   top: 100%;
   right: 0;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: 28rpx;
   margin-right: var(--sn-popover-offset-x);
 }
 
@@ -1307,20 +1329,20 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__pop {
   top: 50%;
   right: 100%;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: 28rpx;
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--left-start .sn-popover__pop {
   top: 0;
   right: 100%;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: 28rpx;
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--left-end .sn-popover__pop {
   right: 100%;
   bottom: 0;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: 28rpx;
   margin-bottom: var(--sn-popover-offset-y);
 }
 
@@ -1329,20 +1351,20 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__pop {
   top: 50%;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: 28rpx;
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--right-start .sn-popover__pop {
   top: 0;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: 28rpx;
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--right-end .sn-popover__pop {
   bottom: 0;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: 28rpx;
   margin-bottom: var(--sn-popover-offset-y);
 }
 

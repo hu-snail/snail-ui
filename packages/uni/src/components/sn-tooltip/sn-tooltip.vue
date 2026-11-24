@@ -49,8 +49,11 @@
  * inside `transform` — uni-app x App drops complex calc) to centre the bubble
  * on its trigger. An inline `transform` would win the cascade and silently
  * break that centring, so `offset` is published as
- * `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y` and folded into the
- * placement margins with `calc()`.
+ * `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y`. The 14rpx gap itself is
+ * a STATIC margin in the stylesheet — WeChat MP drops var() nested inside a
+ * custom property value, so a `calc(14rpx + var(...))` chain zeroes the gap
+ * on real devices; a nonzero offset re-adds the gap inline on the pop node
+ * (popStyle), which every renderer resolves.
  *
  * ## Fixed bubble width (cross-platform geometry)
  *
@@ -388,6 +391,20 @@ const rootStyle = computed(() => {
 
 const popClass = computed(() => ['sn-tooltip__pop', props.customPop]);
 
+/** Gap = 14rpx in the stylesheet (static — see the placement comment). The
+ * `offset` prop folds in here as an inline margin on the pop node, so it
+ * stays effective on renderers that cannot resolve the var chain. */
+const popStyle = computed(() => {
+  const { x, y } = offsetPair.value;
+  const family = props.placement.split('-')[0];
+  if (family === 'top' || family === 'bottom') {
+    if (y === 0) return undefined;
+    return `margin-${family === 'top' ? 'bottom' : 'top'}: calc(14rpx + ${y}px)`;
+  }
+  if (x === 0) return undefined;
+  return `margin-${family === 'left' ? 'right' : 'left'}: calc(14rpx + ${x}px)`;
+});
+
 const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 </script>
 
@@ -420,7 +437,13 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
       <!-- #endif -->
     </view>
 
-    <view v-if="isMounted" :class="popClass" role="tooltip" @tap.stop>
+    <view
+      v-if="isMounted"
+      :class="popClass"
+      :style="popStyle"
+      role="tooltip"
+      @tap.stop
+    >
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
       <view class="sn-tooltip__body">
         <text v-for="(line, index) in contentLines" :key="index" class="sn-tooltip__line">
@@ -616,27 +639,30 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
-/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`;
- * `offset-x/y` folds into the margins, which every renderer supports. */
+/* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`.
+ * The gap is a static 14rpx: WeChat MP drops var() nested inside a custom
+ * property value (the uni-x `--snx-*` margin payload), which zeroes the
+ * margin and slams the bubble into the trigger. A nonzero `offset` re-adds
+ * the gap inline on the pop node (popStyle) instead of riding the var chain. */
 
 .sn-tooltip--top .sn-tooltip__pop {
   bottom: 100%;
   left: 50%;
-  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: 14rpx;
   margin-left: var(--sn-tooltip-offset-x);
   transform: translateX(-50%);
 }
 .sn-tooltip--top-start .sn-tooltip__pop {
   bottom: 100%;
   left: 0;
-  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: 14rpx;
   margin-left: var(--sn-tooltip-offset-x);
 }
 .sn-tooltip--top-end .sn-tooltip__pop {
   right: 0;
   bottom: 100%;
   margin-right: var(--sn-tooltip-offset-x);
-  margin-bottom: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-bottom: 14rpx;
 }
 
 /* ── Placement: bottom family ──────────────────────────────────────────── */
@@ -644,20 +670,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--bottom .sn-tooltip__pop {
   top: 100%;
   left: 50%;
-  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-top: 14rpx;
   margin-left: var(--sn-tooltip-offset-x);
   transform: translateX(-50%);
 }
 .sn-tooltip--bottom-start .sn-tooltip__pop {
   top: 100%;
   left: 0;
-  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-top: 14rpx;
   margin-left: var(--sn-tooltip-offset-x);
 }
 .sn-tooltip--bottom-end .sn-tooltip__pop {
   top: 100%;
   right: 0;
-  margin-top: calc(14rpx + var(--sn-tooltip-offset-y));
+  margin-top: 14rpx;
   margin-right: var(--sn-tooltip-offset-x);
 }
 
@@ -666,20 +692,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--left .sn-tooltip__pop {
   top: 50%;
   right: 100%;
-  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-right: 14rpx;
   margin-top: var(--sn-tooltip-offset-y);
   transform: translateY(-50%);
 }
 .sn-tooltip--left-start .sn-tooltip__pop {
   top: 0;
   right: 100%;
-  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-right: 14rpx;
   margin-top: var(--sn-tooltip-offset-y);
 }
 .sn-tooltip--left-end .sn-tooltip__pop {
   right: 100%;
   bottom: 0;
-  margin-right: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-right: 14rpx;
   margin-bottom: var(--sn-tooltip-offset-y);
 }
 
@@ -688,20 +714,20 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 .sn-tooltip--right .sn-tooltip__pop {
   top: 50%;
   left: 100%;
-  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-left: 14rpx;
   margin-top: var(--sn-tooltip-offset-y);
   transform: translateY(-50%);
 }
 .sn-tooltip--right-start .sn-tooltip__pop {
   top: 0;
   left: 100%;
-  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-left: 14rpx;
   margin-top: var(--sn-tooltip-offset-y);
 }
 .sn-tooltip--right-end .sn-tooltip__pop {
   bottom: 0;
   left: 100%;
-  margin-left: calc(14rpx + var(--sn-tooltip-offset-x));
+  margin-left: 14rpx;
   margin-bottom: var(--sn-tooltip-offset-y);
 }
 

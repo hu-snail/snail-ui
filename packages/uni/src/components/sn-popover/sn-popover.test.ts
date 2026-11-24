@@ -106,6 +106,27 @@ describe('sn-popover', () => {
       expect(style).toContain('--sn-popover-offset-y: 7px');
     });
 
+    it('keeps the pop gap in the stylesheet and leaves the pop node unstyled at offset 0', () => {
+      const w = mount(SnPopover, { props: { modelValue: true } });
+      expect(w.find('.sn-popover__pop').attributes('style')).toBeUndefined();
+    });
+
+    it('re-adds the gap inline on the pop node when offset-y is nonzero (top family)', () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, offset: { x: 0, y: 8 }, placement: 'top' },
+      });
+      const style = w.find('.sn-popover__pop').attributes('style') ?? '';
+      expect(style).toContain('margin-bottom: calc(28rpx + 8px)');
+    });
+
+    it('re-adds the gap inline on the pop node when offset-x is nonzero (right family)', () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, offset: { x: 6, y: 0 }, placement: 'right' },
+      });
+      const style = w.find('.sn-popover__pop').attributes('style') ?? '';
+      expect(style).toContain('margin-left: calc(28rpx + 6px)');
+    });
+
     it('forwards a --sn-popover-bg / --sn-popover-color override through customStyle', () => {
       const w = mount(SnPopover, {
         props: { customStyle: '--sn-popover-bg: #1890ff; --sn-popover-color: #ffffff' },
@@ -1057,9 +1078,15 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     // the fill covers the border segment behind it (interiors connect).
     expect(source).toContain('bottom: -16rpx');
     expect(source).toContain('top: -16rpx');
-    // Gap clears the protrusion (28rpx > 22.6rpx half-diagonal).
-    expect(source).toContain('calc(28rpx + var(--sn-popover-offset-y))');
-    expect(source).not.toContain('calc(16rpx + var(--sn-popover-offset-y))');
+    // Gap is a STATIC 28rpx: WeChat MP drops var() nested inside a custom
+    // property value (the uni-x `--snx-*` payload) — a calc+var chain zeroes
+    // the margin on real devices and the arrow apex pokes into the trigger.
+    expect(source).toContain('margin-bottom: 28rpx');
+    expect(source).toContain('margin-top: 28rpx');
+    expect(source).toContain('margin-right: 28rpx');
+    expect(source).toContain('margin-left: 28rpx');
+    expect(source).not.toContain('calc(28rpx + var(--sn-popover-offset-y))');
+    expect(source).not.toContain('calc(28rpx + var(--sn-popover-offset-x))');
     // Each family colors only the two OUTSIDE edges.
     expect(source).toContain('border-bottom-color: var(--sn-popover-border)');
     expect(source).toContain('border-top-color: var(--sn-popover-border)');
