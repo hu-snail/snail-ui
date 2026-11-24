@@ -508,14 +508,6 @@ function iconNameOf(item: { icon?: string | undefined; iconClass?: string | unde
   return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
 }
 
-/** Whether a menu row carries a per-row glyph tint (colored plate, reference-style). */
-function rowHasTint(item: SnPopoverMenuItem): boolean {
-  return (
-    (item.iconBg !== undefined && item.iconBg !== '') ||
-    (item.iconColor !== undefined && item.iconColor !== '')
-  );
-}
-
 /** Inline plate style from the row's tint fields — only provided fields land. */
 function rowPlateStyle(item: SnPopoverMenuItem): string {
   const parts: string[] = [];
@@ -673,11 +665,12 @@ function onCancelTap(): void {
             @tap="onMenuTap(item, index)"
           >
             <!-- Row glyph precedence: inline data > image address > name.
-                 A tinted row (iconBg / iconColor) renders the glyph in a
-                 colored circle; untinted anchor rows keep the bare glyph. -->
+                 Every row renders the glyph in a circle plate (untinted
+                 rows take the default sunken plate) — one consistent
+                 rhythm; iconBg / iconColor recolor the plate per row. -->
             <view
               v-if="iconSourceOf(item) !== 'none'"
-              :class="rowHasTint(item) ? 'sn-popover__icon-plate' : 'sn-popover__menu-icon'"
+              class="sn-popover__icon-plate sn-popover__icon-plate--menu"
               :style="rowPlateStyle(item)"
             >
               <SnIcon
@@ -1112,6 +1105,15 @@ function onCancelTap(): void {
   opacity: 0.5;
 }
 
+/* Menu rows ALL render the circle plate (the bare-glyph branch is gone):
+ * untinted rows take the default sunken plate, tinted rows the per-row
+ * colors — one consistent rhythm across the menu. The plate is slightly
+ * smaller than the card head's (64rpx vs 72rpx) to keep the row compact. */
+.sn-popover__menu-item .sn-popover__icon-plate {
+  width: 64rpx;
+  height: 64rpx;
+}
+
 /* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
  * so a bigger glyph or a longer label grows the bubble instead of overflowing
  * it (auto height, AUI-OPT-07). */
@@ -1150,6 +1152,11 @@ function onCancelTap(): void {
 
 .sn-popover__menu-desc {
   display: block;
+  /* Single line with ellipsis — a wrapping description breaks the menu
+   * row rhythm (user report). */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: var(--sn-mp-font-size-xs);
   color: var(--sn-mp-color-text-tertiary);
 }

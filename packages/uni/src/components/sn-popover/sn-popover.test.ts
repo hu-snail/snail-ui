@@ -411,7 +411,7 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
           content: [{ content: '收藏', iconClass: 'Star' }],
         },
       });
-      expect(w.find('.sn-popover__menu-item svg, .sn-popover__menu-icon svg').exists()).toBe(true);
+      expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg').exists()).toBe(true);
       expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
     } finally {
       clearSnIcons();
@@ -631,7 +631,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
     });
-    expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg path').attributes('d')).toBe(Star.paths[0]);
     expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
   });
 
@@ -646,7 +646,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
       },
     });
     expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
-    expect(w.find('.sn-popover__menu-icon svg path').attributes('d')).toBe(Star.paths[0]);
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg path').attributes('d')).toBe(Star.paths[0]);
   });
 
   it('renders iconUrl as an image and it beats icon', () => {
@@ -660,14 +660,14 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
     const image = w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image');
     expect(image.exists()).toBe(true);
     expect(image.attributes('src')).toBe('https://example.com/b.png');
-    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg').exists()).toBe(false);
   });
 
   it('resolves icon through the SnIcon chain (built-in catalogue)', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '升序', icon: 'arrow-up' }] },
     });
-    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(true);
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg').exists()).toBe(true);
     expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
   });
 
@@ -692,7 +692,7 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
       props: { modelValue: true, mode: 'menu', content: [{ content: '纯文本' }] },
     });
     expect(w.find('image.sn-popover__menu-icon, image.sn-popover__icon-image').exists()).toBe(false);
-    expect(w.find('.sn-popover__menu-icon svg').exists()).toBe(false);
+    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate svg').exists()).toBe(false);
   });
 });
 
@@ -997,12 +997,27 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     expect(plate.find('svg path').attributes('d')).toBe(Star.paths[0]);
   });
 
-  it('keeps the bare glyph for untinted anchor rows', () => {
+  it('renders the default plate for untinted rows — every row keeps the same rhythm', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '纯行', iconData: Star }] },
     });
-    expect(w.find('.sn-popover__menu-item .sn-popover__icon-plate').exists()).toBe(false);
-    expect(w.find('.sn-popover__menu-item .sn-popover__menu-icon').exists()).toBe(true);
+    const plate = w.find('.sn-popover__menu-item .sn-popover__icon-plate');
+    expect(plate.exists()).toBe(true);
+    // Untinted: no inline color override — the default sunken plate shows.
+    expect(plate.attributes('style') ?? '').toBe('');
+    // The menu plate is a slightly smaller circle than the card head's.
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const rule = source.indexOf('.sn-popover__menu-item .sn-popover__icon-plate {');
+    const block = source.slice(rule, source.indexOf('}', rule));
+    expect(block).toContain('width: 64rpx');
+  });
+
+  it('keeps menu descriptions on one line with an ellipsis', () => {
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
+    const rule = source.indexOf('.sn-popover__menu-desc {');
+    const block = source.slice(rule, source.indexOf('}', rule));
+    expect(block).toContain('white-space: nowrap');
+    expect(block).toContain('text-overflow: ellipsis');
   });
 
   it('colors sheet rows through the same tint fields', () => {

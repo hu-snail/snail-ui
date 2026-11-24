@@ -167,7 +167,10 @@ import { SnPopover } from '@snui/uni';
   mounted. A `sheet` presentation has its own mask — the mask tap is the
   outside close.
 - Rich card body (additive): header glyph plate + title + subtitle, footer
-  slot, action pills; menu rows gain a muted `description` line.
+  slot, action pills; menu rows gain a muted `description` line (single
+  line with an ellipsis — no wrapping) and ALWAYS render the circle plate
+  (untinted rows take the default sunken plate; iconBg / iconColor recolor
+  it per row) — one consistent glyph rhythm across the menu.
 - Sheet presentation (additive): fixed bottom panel with mask, handle,
   centred heading, rich rows, action pills and the Cancel pill. It ignores
   `placement` / `visibleArrow` / `offset`.
