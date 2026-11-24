@@ -178,12 +178,13 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
-- One-shape arrow: a border-triangle fill (40rpx base × 16rpx tall,
-  tooltip parity) flush with the bubble edge — no own border, no own
-  shadow. The trigger gap equals the arrow height, so the apex lands
-  exactly on the trigger edge (reference). The fill paints the card color
-  once across the junction, so the interiors connect and the arrow reads
-  as one shape with the borderless card under the pop's drop-shadow.
+- One-shape arrow: a rotated diamond (32rpx square, Element-style
+  callout) centered on the card edge — fill = the card color covering the
+  border segment behind it (interiors connect), outline = the SAME
+  `--sn-popover-border` token as the card border drawn on the two outside
+  edges, so the slant strokes meet the card border at the junction points
+  and the whole callout reads as ONE integrated outline. The pop's
+  drop-shadow follows the true silhouette (card + diamond).
 - One-shape elevation: the card is borderless (reference design) and its
   shadow is `filter: drop-shadow` on H5 / miniprogram — the shadow follows
   the true rendered silhouette, card plus protruding arrow. uni-app x App

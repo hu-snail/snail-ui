@@ -653,7 +653,7 @@ function onCancelTap(): void {
         (paints the card color exactly once across the junction — interiors
         connect, one shape, theme + custom-style aware); the OUTLINE layer
         is a stroke-mode SnIcon triangle whose currentColor rides the
-        wrapper's --sn-popover-arrow-border (transparent default — the
+        card border token (transparent default — the
         reference arrow is a plain fill; custom-arrow recolors it and the
         slant strokes then meet the card border at the two junction
         points). SnIcon renders inline <svg> on H5 and the canvas-rasterized
@@ -879,7 +879,6 @@ function onCancelTap(): void {
   /* Glyph scale (wd parity), overridable via `custom-style`. */
   /* Arrow outline — transparent by default (reference plain-fill arrow);
    * custom-arrow recolors it for the outlined custom look. */
-  --sn-popover-arrow-border: transparent;
   /* Card border — transparent by default (reference borderless card);
    * consumers color it via custom-style / custom-class for a custom border.
    * The fill triangle overlaps the junction, so the border opens at the
@@ -1157,104 +1156,97 @@ function onCancelTap(): void {
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
 
-/* Border triangle, same technique as sn-tooltip: the fill paints exactly
- * once, with no border of its own and no own shadow — the pop's
- * drop-shadow covers the protruding half, so arrow + card read as ONE
- * shape (a rotated diamond could not: its border and box-shadow always
- * seam against the card's outline and rectangle shadow). 32rpx base ×
- * 16rpx tall; the 16rpx trigger gap lands the apex exactly on the trigger
- * edge, matching the reference. */
+/* Rotated diamond — the Element-style callout arrow, DRAWN as one shape:
+ * fill = the card color (the diamond's inner half overlaps the card's
+ * junction, covering the border segment behind it — interiors connect, so
+ * the bordered card and the arrow are one piece), outline = the same
+ * --sn-popover-border token as the card border, drawn on the two OUTSIDE
+ * edges of the rotated square — the slant strokes meet the card border at
+ * the two junction points, forming one continuous outline path. The pop's
+ * drop-shadow follows the true silhouette (card + diamond) as one shape. */
 
 .sn-popover__arrow {
   position: absolute;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-color: transparent;
+  width: 32rpx;
+  height: 32rpx;
+  background-color: var(--sn-popover-bg);
+  border: 2rpx solid var(--sn-popover-border);
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  transform: rotate(45deg);
   pointer-events: none;
 }
 
-/* Orientation per placement family: the apex points at the trigger, and the
- * colored border is the one on the OUTSIDE edge (fill paints once). Declared
- * as longhands — the uni-x App flattener expands border shorthands only into
+/* Outline per placement family: only the two OUTSIDE edges of the rotated
+ * square are colored (the inside-facing pair stays transparent — filling
+ * them would double-composite the diamond over the card fill). Longhands
+ * only — the uni-x App flattener expands border shorthands only into
  * per-side longhands, and a TRBL width shorthand would ride through
  * unexpanded (§85 explicit). */
 
-/* Bubble above → arrow rides the bubble's bottom edge → apex DOWN →
- * colored TOP border (base-up / apex-down). */
+/* Bubble above → diamond protrudes from the bubble's bottom edge → the
+ * outside half is the bottom-right of the rotated square. */
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--top-end .sn-popover__arrow {
-  /* 4rpx of the fill overlaps INTO the card: the base no longer meets the
-   * card edge exactly, bridging the fractional-pixel hairline seam that
-   * appeared whenever the card height landed on a fractional pixel. */
-  bottom: -12rpx;
-  border-top-width: 16rpx;
-  border-right-width: 20rpx;
-  border-bottom-width: 0;
-  border-left-width: 20rpx;
-  border-top-color: var(--sn-popover-bg);
+  bottom: -16rpx;
+  border-bottom-color: var(--sn-popover-border);
+  border-right-color: var(--sn-popover-border);
 }
-/* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
- * border (base-down / apex-up). */
+
+/* Bubble below → protrudes from the top edge → outside half is the
+ * top-left of the rotated square. */
 .sn-popover--bottom .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  top: -12rpx;
-  border-top-width: 0;
-  border-right-width: 20rpx;
-  border-bottom-width: 16rpx;
-  border-left-width: 20rpx;
-  border-bottom-color: var(--sn-popover-bg);
+  top: -16rpx;
+  border-top-color: var(--sn-popover-border);
+  border-left-color: var(--sn-popover-border);
 }
-/* Bubble left → apex RIGHT → colored left border. */
+
+/* Bubble left → protrudes from the right edge → right-pointing half. */
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--left-end .sn-popover__arrow {
-  right: -12rpx;
-  border-top-width: 16rpx;
-  border-right-width: 0;
-  border-bottom-width: 16rpx;
-  border-left-width: 20rpx;
-  border-left-color: var(--sn-popover-bg);
+  right: -16rpx;
+  border-top-color: var(--sn-popover-border);
+  border-right-color: var(--sn-popover-border);
 }
-/* Bubble right → apex LEFT → colored right border. */
+
+/* Bubble right → protrudes from the left edge → left-pointing half. */
 .sn-popover--right .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  left: -12rpx;
-  border-top-width: 16rpx;
-  border-right-width: 20rpx;
-  border-bottom-width: 16rpx;
-  border-left-width: 0;
-  border-right-color: var(--sn-popover-bg);
+  left: -16rpx;
+  border-bottom-color: var(--sn-popover-border);
+  border-left-color: var(--sn-popover-border);
 }
 
-/* Arrow footprint per family: center arrow centered on the trigger;
- * -start / -end pin it 20rpx from the near corner. */
+/* Arrow footprint per family: center diamond centered on the trigger;
+ * -start / -end pin it 24rpx from the near corner. */
 .sn-popover--top .sn-popover__arrow,
 .sn-popover--bottom .sn-popover__arrow {
-  left: calc(50% - 20rpx);
+  left: calc(50% - 16rpx);
 }
 .sn-popover--top-start .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow {
-  left: 20rpx;
+  left: 24rpx;
 }
 .sn-popover--top-end .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  right: 20rpx;
+  right: 24rpx;
 }
 .sn-popover--left .sn-popover__arrow,
 .sn-popover--right .sn-popover__arrow {
-  top: calc(50% - 20rpx);
+  top: calc(50% - 16rpx);
 }
 .sn-popover--left-start .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow {
-  top: 20rpx;
+  top: 24rpx;
 }
 .sn-popover--left-end .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  bottom: 20rpx;
+  bottom: 24rpx;
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
@@ -1264,21 +1256,21 @@ function onCancelTap(): void {
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
   left: 50%;
-  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
   left: 0;
-  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--top-end .sn-popover__pop {
   right: 0;
   bottom: 100%;
   margin-right: var(--sn-popover-offset-x);
-  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
 }
 
 /* ── Placement: bottom family ──────────────────────────────────────────── */
@@ -1286,20 +1278,20 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__pop {
   top: 100%;
   left: 50%;
-  margin-top: calc(16rpx + var(--sn-popover-offset-y));
+  margin-top: calc(28rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
   left: 0;
-  margin-top: calc(16rpx + var(--sn-popover-offset-y));
+  margin-top: calc(28rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--bottom-end .sn-popover__pop {
   top: 100%;
   right: 0;
-  margin-top: calc(16rpx + var(--sn-popover-offset-y));
+  margin-top: calc(28rpx + var(--sn-popover-offset-y));
   margin-right: var(--sn-popover-offset-x);
 }
 
@@ -1308,20 +1300,20 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__pop {
   top: 50%;
   right: 100%;
-  margin-right: calc(16rpx + var(--sn-popover-offset-x));
+  margin-right: calc(28rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--left-start .sn-popover__pop {
   top: 0;
   right: 100%;
-  margin-right: calc(16rpx + var(--sn-popover-offset-x));
+  margin-right: calc(28rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--left-end .sn-popover__pop {
   right: 100%;
   bottom: 0;
-  margin-right: calc(16rpx + var(--sn-popover-offset-x));
+  margin-right: calc(28rpx + var(--sn-popover-offset-x));
   margin-bottom: var(--sn-popover-offset-y);
 }
 
@@ -1330,20 +1322,20 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__pop {
   top: 50%;
   left: 100%;
-  margin-left: calc(16rpx + var(--sn-popover-offset-x));
+  margin-left: calc(28rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--right-start .sn-popover__pop {
   top: 0;
   left: 100%;
-  margin-left: calc(16rpx + var(--sn-popover-offset-x));
+  margin-left: calc(28rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--right-end .sn-popover__pop {
   bottom: 0;
   left: 100%;
-  margin-left: calc(16rpx + var(--sn-popover-offset-x));
+  margin-left: calc(28rpx + var(--sn-popover-offset-x));
   margin-bottom: var(--sn-popover-offset-y);
 }
 

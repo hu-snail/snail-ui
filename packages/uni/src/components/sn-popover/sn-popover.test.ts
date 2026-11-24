@@ -539,8 +539,6 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
     });
-    // The arrow outline icon is a SnIcon too — scope to the menu row's
-    // (the only one carrying the Star IconData).
     const menuIcon = w
       .findAllComponents({ name: 'SnIcon' })
       .find((c) => JSON.stringify(c.props('icon')) === JSON.stringify(Star));
@@ -1024,7 +1022,7 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     expect(plate.attributes('style') ?? '').toContain('color: #188038');
   });
 
-  it('draws the arrow as a border-triangle fill, one shape with the card', () => {
+  it('draws the arrow as an outlined rotated diamond, one shape with the card', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
     const blockOf = (selector: string): string => {
       const start = source.indexOf(selector);
@@ -1032,26 +1030,24 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
       return source.slice(start, source.indexOf('}', start));
     };
     const arrowBlock = blockOf('.sn-popover__arrow {');
-    expect(arrowBlock).toContain('width: 0');
-    expect(arrowBlock).toContain('height: 0');
-    expect(arrowBlock).toContain('border-style: solid');
-    expect(arrowBlock).not.toContain('transform: rotate');
+    expect(arrowBlock).toContain('width: 32rpx');
+    expect(arrowBlock).toContain('height: 32rpx');
+    expect(arrowBlock).toContain('background-color: var(--sn-popover-bg)');
+    expect(arrowBlock).toContain('transform: rotate(45deg)');
     expect(arrowBlock).not.toContain('box-shadow');
-    expect(arrowBlock).not.toContain('sn-icon');
-    // Apex points at the trigger per family; fill = the card color.
-    expect(source).toContain('border-top-color: var(--sn-popover-bg)');
-    expect(source).toContain('border-bottom-color: var(--sn-popover-bg)');
-    expect(source).toContain('border-left-color: var(--sn-popover-bg)');
-    expect(source).toContain('border-right-color: var(--sn-popover-bg)');
-    // The base overlaps 4rpx INTO the card: the fill bridges the junction
-    // band, so no fractional-pixel hairline seam can appear between the
-    // arrow and the card edge (the seam measured 0.33px at exact-edge
-    // alignment).
-    expect(source).toContain('bottom: -12rpx');
-    expect(source).toContain('top: -12rpx');
-    // Gap 16rpx − 4rpx overlap → apex 2rpx short of the trigger edge.
-    expect(source).toContain('calc(16rpx + var(--sn-popover-offset-y))');
-    expect(source).not.toContain('calc(24rpx + var(--sn-popover-offset-y))');
+    // The outline rides the SAME token as the card border — one continuous
+    // outline path across the junction points.
+    expect(arrowBlock).toContain('border: 2rpx solid var(--sn-popover-border)');
+    // Offset = half the square → the widest line sits ON the card edge, so
+    // the fill covers the border segment behind it (interiors connect).
+    expect(source).toContain('bottom: -16rpx');
+    expect(source).toContain('top: -16rpx');
+    // Gap clears the protrusion (28rpx > 22.6rpx half-diagonal).
+    expect(source).toContain('calc(28rpx + var(--sn-popover-offset-y))');
+    expect(source).not.toContain('calc(16rpx + var(--sn-popover-offset-y))');
+    // Each family colors only the two OUTSIDE edges.
+    expect(source).toContain('border-bottom-color: var(--sn-popover-border)');
+    expect(source).toContain('border-top-color: var(--sn-popover-border)');
   });
 });
 
