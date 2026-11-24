@@ -21,7 +21,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnPopover from './sn-popover.vue';
-import { Star } from '../sn-icon/sn-icon-set';
+import { Star, X as XIcon } from '../sn-icon/sn-icon-set';
 import { closeOutside } from '../../utils/outside-close';
 
 const menu = [{ content: '编辑' }, { content: '分享' }, { content: '删除', disabled: true }];
@@ -539,16 +539,20 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     const w = mount(SnPopover, {
       props: { modelValue: true, mode: 'menu', content: [{ content: '星标', iconData: Star }] },
     });
-    expect(w.findComponent({ name: 'SnIcon' }).props('size')).toBe(
-      'var(--sn-popover-menu-icon-size)',
-    );
+    // The arrow outline icon is a SnIcon too — scope to the menu row's
+    // (the only one carrying the Star IconData).
+    const menuIcon = w
+      .findAllComponents({ name: 'SnIcon' })
+      .find((c) => JSON.stringify(c.props('icon')) === JSON.stringify(Star));
+    expect(menuIcon?.props('size')).toBe('var(--sn-popover-menu-icon-size)');
   });
 
   it('scales the close glyph through the close icon token', () => {
     const w = mount(SnPopover, { props: { modelValue: true, showClose: true, content: 'A' } });
-    expect(w.findComponent({ name: 'SnIcon' }).props('size')).toBe(
-      'var(--sn-popover-close-icon-size)',
-    );
+    const closeIcon = w
+      .findAllComponents({ name: 'SnIcon' })
+      .find((c) => c.props('icon') === XIcon);
+    expect(closeIcon?.props('size')).toBe('var(--sn-popover-close-icon-size)');
   });
 
   it('publishes the glyph-scale tokens on the root and lets customStyle override them', () => {
@@ -676,7 +680,12 @@ describe('sn-popover (menu row glyph sources, additive)', () => {
         content: [{ content: '优先', icon: 'arrow-up', iconClass: 'Edit' }],
       },
     });
-    expect(w.findComponent({ name: 'SnIcon' }).props('icon')).toBe('arrow-up');
+    // The menu row carries the string icon name — the arrow outline icon
+    // carries IconData, so matching on the string scopes to the row's.
+    const rowIcon = w
+      .findAllComponents({ name: 'SnIcon' })
+      .find((c) => c.props('icon') === 'arrow-up');
+    expect(rowIcon?.props('icon')).toBe('arrow-up');
   });
 
   it('renders no glyph when none of the sources is set', () => {
@@ -1018,25 +1027,31 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
     const arrowRule = source.indexOf('.sn-popover__arrow {');
     const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
-    // Fill triangle (tooltip technique): paints once, no rotation, no own
-    // border or shadow — the pop's drop-shadow covers the protruding half.
-    expect(block).toContain('width: 0');
-    expect(block).toContain('height: 0');
-    expect(block).toContain('border-style: solid');
-    expect(block).not.toContain('transform: rotate');
+    // SVG one-piece arrow: the FILL layer is a CSS triangle painting the
+    // card color once across the junction (interiors connect — one shape,
+    // theme + custom-style aware); the OUTLINE layer is a stroke-mode
+    // SnIcon triangle riding the wrapper's --sn-popover-arrow-border via
+    // currentColor (transparent default, colored by custom-arrow).
+    expect(block).toContain('width: 32rpx');
+    expect(block).toContain('height: 32rpx');
+    expect(block).toContain('color: var(--sn-popover-arrow-border)');
     expect(block).not.toContain('box-shadow');
-    expect(block).not.toContain('border: 2rpx');
-    // Apex points at the trigger per family (colored OUTSIDE border).
+    expect(block).not.toContain('transform: rotate');
+    expect(source).toContain('arrow-fill--bottom');
+    expect(source).toContain('arrow-fill--top');
     expect(source).toContain('border-top-color: var(--sn-popover-bg)');
     expect(source).toContain('border-bottom-color: var(--sn-popover-bg)');
     expect(source).toContain('border-left-color: var(--sn-popover-bg)');
     expect(source).toContain('border-right-color: var(--sn-popover-bg)');
-    // Base flush with the card edge: offset = arrow height (16rpx).
-    expect(source).toContain('bottom: -16rpx');
-    expect(source).toContain('top: -16rpx');
-    // Trigger gap = arrow height → apex exactly on the trigger edge.
+    expect(source).toContain('color="currentColor"');
+    expect(source).toContain('ARROW_OUTLINE_PATHS');
+    // Wrapper straddles the card edge: 2rpx of the box sits inside the card
+    // so the fill base covers the border segment at the junction.
+    expect(source).toContain('bottom: -30rpx');
+    expect(source).toContain('top: -30rpx');
+    // Protrusion is 14rpx — the 16rpx gap leaves 2rpx of clear air.
     expect(source).toContain('calc(16rpx + var(--sn-popover-offset-y))');
-    expect(source).not.toContain('calc(28rpx + var(--sn-popover-offset-y))');
+    expect(source).not.toContain('calc(24rpx + var(--sn-popover-offset-y))');
   });
 });
 

@@ -70,8 +70,10 @@ const styledOpen = ref(false);
   border: 2rpx solid var(--sn-mp-color-action-primary);
 }
 .sn-demo :deep(.sn-demo__arrow) {
-  /* bottom-start → apex up → the fill is the colored bottom border. */
-  border-bottom-color: var(--sn-mp-color-action-primary);
+  /* Outline token: the diamond fill stays card-colored (covering the
+   * junction so interiors connect) while the slant edges pick up the
+   * accent — the outlined custom arrow. */
+  --sn-popover-arrow-border: var(--sn-mp-color-action-primary);
 }
 
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
