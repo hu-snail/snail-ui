@@ -702,8 +702,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         /></view>
       </view>
     </view>
-  </view>
     <!-- #endif -->
+  </view>
 </template>
 
 <style scoped>

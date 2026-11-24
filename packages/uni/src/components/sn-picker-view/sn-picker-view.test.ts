@@ -688,6 +688,21 @@ describe('sn-picker-view', () => {
     });
   });
 
+  describe('conditional compilation (regression)', () => {
+    it('closes the #ifndef MP-WEIXIN block before the root view close', () => {
+      // The #endif once sat AFTER the root </view>: the MP-WEIXIN stripper
+      // removed the root close together with the block, and the uts compile
+      // died with "Element is missing end tag" at the root view (uni-demo-x).
+      const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
+      const templateEnd = source.lastIndexOf('</template>');
+      const endif = source.lastIndexOf('<!-- #endif -->', templateEnd);
+      const rootClose = source.lastIndexOf('</view>', templateEnd);
+      expect(endif).toBeGreaterThan(0);
+      expect(rootClose).toBeGreaterThan(0);
+      expect(endif).toBeLessThan(rootClose);
+    });
+  });
+
   describe('band slot (additive)', () => {
     it('replaces the shared band paint and reports mode / columnIndex', () => {
       const w = mount(SnPickerView, {
