@@ -602,8 +602,11 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     expect(popRaw).toContain('filter: drop-shadow(');
     expect(popRaw).toContain('/* #ifdef APP */');
     expect(popRaw).toContain('box-shadow: var(--sn-mp-shadow-md)');
-    // Borderless card — an outline would seam against the arrow junction.
-    expect(popBlock).not.toContain('border:');
+    // Card border rides the token: transparent by default (reference
+    // borderless look), colored via custom-style for a custom border — the
+    // fill triangle overlaps the junction, so the border opens at the arrow.
+    expect(popBlock).toContain('border: 2rpx solid var(--sn-popover-border)');
+    expect(source).toContain('--sn-popover-border: transparent');
     expect(source).toContain('--sn-popover-width: 480rpx');
     expect(source).toContain('--sn-popover-menu-width: 320rpx');
     // Centering must stay calc-free inside `transform`.

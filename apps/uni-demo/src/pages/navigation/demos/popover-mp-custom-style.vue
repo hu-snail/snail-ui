@@ -29,7 +29,7 @@ const styledOpen = ref(false);
       custom-arrow="sn-demo__arrow"
       custom-pop="sn-demo__pop"
       custom-class="sn-demo-contained"
-      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
+      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-border: var(--sn-mp-color-action-primary); --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
     >
       <SnButton block>custom-arrow / custom-pop / offset</SnButton>
     </SnPopover>
@@ -63,8 +63,7 @@ const styledOpen = ref(false);
 }
 /* custom-pop / custom-arrow land on the bubble and arrow nodes. */
 .sn-demo :deep(.sn-demo__pop) {
-  /* The base card is borderless — the custom class draws its own outline. */
-  border: 2rpx solid var(--sn-mp-color-action-primary);
+  /* The card border rides --sn-popover-border (set via custom-style above). */
 }
 .sn-demo :deep(.sn-demo__arrow) {
   /* Custom classes land on the arrow node — restyle the fill triangle here

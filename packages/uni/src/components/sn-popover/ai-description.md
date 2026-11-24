@@ -1,4 +1,7 @@
 # sn-popover — AI-Friendly Component Description
+- Custom card border: `--sn-popover-border` (transparent default). The fill
+  triangle overlaps the junction, so the border opens at the arrow and the
+  interiors stay connected.
 
 > Human-readable + AI-parseable description of the uni-end sn-popover component.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
@@ -136,6 +139,7 @@ import { SnPopover } from '@snui/uni';
 | Muted text     | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                                                                                                    | Description / subtitle / menu second line                                 |
 | Disabled       | `--sn-mp-color-text-disabled`                                                                                                                                                    | Disabled row (via opacity)                                                |
 | Elevation      | `--sn-mp-shadow-md` (App fallback; H5 / MP use `filter: drop-shadow` following the silhouette)                                                                                   | Bubble + arrow elevation                                                  |
+| Card border    | `--sn-popover-border` (default transparent — borderless reference card; set it via custom-style for a custom border — the fill triangle opens the border at the arrow)                | Card outline                                                              |
 | Radius         | `--sn-mp-radius-lg` (card), `--sn-mp-radius-full` (pills / plate), `--sn-mp-radius-xl` (sheet top)                                                                               | Corners                                                                   |
 | Scrim          | `--sn-mp-color-background-overlay`                                                                                                                                               | Sheet mask                                                                |
 | Spacing        | `--sn-mp-spacing-1/2/3/4/5`                                                                                                                                                      | Padding / gaps                                                            |

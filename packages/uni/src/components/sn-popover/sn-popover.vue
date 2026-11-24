@@ -880,6 +880,11 @@ function onCancelTap(): void {
   /* Arrow outline — transparent by default (reference plain-fill arrow);
    * custom-arrow recolors it for the outlined custom look. */
   --sn-popover-arrow-border: transparent;
+  /* Card border — transparent by default (reference borderless card);
+   * consumers color it via custom-style / custom-class for a custom border.
+   * The fill triangle overlaps the junction, so the border opens at the
+   * arrow and the interiors stay connected. */
+  --sn-popover-border: transparent;
   --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
   --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
 }
@@ -920,8 +925,11 @@ function onCancelTap(): void {
    * it — labels wrap and glyph plates follow their tokens. */
   height: auto;
   box-sizing: border-box;
-  /* Borderless — the reference card reads through fill + elevation alone; an
-   * outline would seam against the arrow junction (one-shape requirement). */
+  /* Borderless by default (the reference card reads through fill +
+   * elevation alone) — the token lets consumers draw a custom border; the
+   * fill triangle overlaps the junction, so the border opens at the arrow
+   * and the interiors stay connected (no seam). */
+  border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-lg);
   /* Same uni-app x default-clip guard as the root: the arrow protrudes
    * outside this box. */
