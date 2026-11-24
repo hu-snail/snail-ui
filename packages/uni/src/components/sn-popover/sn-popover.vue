@@ -1373,7 +1373,8 @@ function onCancelTap(): void {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-5) var(--sn-mp-spacing-5);
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-5)
+    calc(var(--sn-mp-spacing-5) + env(safe-area-inset-bottom));
   border-top-left-radius: var(--sn-mp-radius-xl);
   border-top-right-radius: var(--sn-mp-radius-xl);
   background-color: var(--sn-popover-bg);
@@ -1434,11 +1435,6 @@ function onCancelTap(): void {
   flex-direction: column;
   gap: var(--sn-mp-spacing-2);
   margin-top: var(--sn-mp-spacing-4);
-  /* Cancel the shared actions strip's own padding — the sheet panel already
-   * pads its content. */
-  margin-right: calc(-1 * var(--sn-mp-spacing-4));
-  margin-bottom: calc(-1 * var(--sn-mp-spacing-4));
-  margin-left: calc(-1 * var(--sn-mp-spacing-4));
 }
 
 .sn-popover__cancel {
@@ -1450,14 +1446,16 @@ function onCancelTap(): void {
   width: 100%;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-background-soft);
+  /* Primary button style (user request): filled action-primary with the
+   * on-primary label — the SnButton primary look. */
+  background-color: var(--sn-mp-color-action-primary);
 }
 
 .sn-popover__cancel-text {
   display: block;
   font-size: var(--sn-mp-font-size-md);
   font-weight: var(--sn-mp-font-weight-medium);
-  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-mp-color-text-on-primary);
 }
 
 .sn-popover--disabled .sn-popover__trigger {

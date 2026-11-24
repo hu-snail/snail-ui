@@ -1073,9 +1073,20 @@ describe('sn-popover (primary action + strip spacing, additive)', () => {
     const rule = source.indexOf('.sn-popover__actions {');
     const block = source.slice(rule, source.indexOf('}', rule));
     expect(block).toContain('padding: 0 var(--sn-mp-spacing-4) var(--sn-mp-spacing-4)');
-    // The sheet cancels that padding — its panel already pads the content.
+    // The sheet's own strip carries no extra padding — its panel pads the
+    // content, plus the device safe-area at the bottom edge.
     const sheetRule = source.indexOf('.sn-popover__sheet-actions {');
     const sheetBlock = source.slice(sheetRule, source.indexOf('}', sheetRule));
-    expect(sheetBlock).toContain('margin-bottom: calc(-1 * var(--sn-mp-spacing-4))');
+    expect(sheetBlock).not.toContain('margin-bottom');
+    const panelRule = source.indexOf('.sn-popover__sheet-panel {');
+    const panelBlock = source.slice(panelRule, source.indexOf('}', panelRule));
+    expect(panelBlock).toContain('env(safe-area-inset-bottom)');
+    // The sheet Cancel pill uses the primary button style.
+    const cancelRule = source.indexOf('.sn-popover__cancel {');
+    const cancelBlock = source.slice(cancelRule, source.indexOf('}', cancelRule));
+    expect(cancelBlock).toContain('background-color: var(--sn-mp-color-action-primary)');
+    const cancelTextRule = source.indexOf('.sn-popover__cancel-text {');
+    const cancelTextBlock = source.slice(cancelTextRule, source.indexOf('}', cancelTextRule));
+    expect(cancelTextBlock).toContain('color: var(--sn-mp-color-text-on-primary)');
   });
 });
