@@ -703,6 +703,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       </view>
     </view>
   </view>
+    <!-- #endif -->
 </template>
 
 <style scoped>
