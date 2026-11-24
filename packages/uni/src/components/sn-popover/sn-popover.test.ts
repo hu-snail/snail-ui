@@ -581,11 +581,27 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
     // Comments are stripped so the assertions judge declarations, not prose.
     const stripComments = (css: string): string => css.replace(/\/\*[\s\S]*?\*\//g, '');
     const popRule = source.indexOf('.sn-popover__pop {');
-    const popBlock = stripComments(source.slice(popRule, source.indexOf('}', popRule)));
+    // Slice to the rule's closing brace at line start — the block contains a
+    // nested-looking comment with braces inside filter/ifdef lines.
+    const popEnd = source.indexOf('\n}', popRule);
+    // Raw slice (comments kept) for the conditional-compilation assertions,
+    // stripped slice for the declaration assertions.
+    const popRaw = source.slice(popRule, popEnd);
+    const popBlock = stripComments(popRaw);
     expect(popBlock).toContain('width: var(--sn-popover-width)');
     expect(popBlock).not.toContain('max-content');
     expect(popBlock).not.toContain('100vw');
     expect(popBlock).not.toContain('min(');
+    // One-shape elevation: drop-shadow (follows the silhouette incl. the
+    // arrow) on H5 / MP; rectangle box-shadow only as the App fallback.
+    expect(popRaw).toContain('/* #ifndef APP */');
+    expect(popRaw).toContain('filter: drop-shadow(');
+    expect(popRaw).toContain('/* #ifdef APP */');
+    expect(popRaw).toContain('box-shadow: var(--sn-mp-shadow-md)');
+    // Borderless card — an outline would seam against the arrow junction.
+    expect(popBlock).not.toContain('border:');
+    // The border token is gone with the outline (doodle skin draws its own).
+    expect(source).not.toContain('--sn-popover-border');
     expect(source).toContain('--sn-popover-width: 480rpx');
     expect(source).toContain('--sn-popover-menu-width: 320rpx');
     // Centering must stay calc-free inside `transform`.
@@ -1002,18 +1018,25 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const source = readFileSync(resolve(import.meta.dirname, 'sn-popover.vue'), 'utf8');
     const arrowRule = source.indexOf('.sn-popover__arrow {');
     const block = source.slice(arrowRule, source.indexOf('}', arrowRule));
-    expect(block).toContain('width: 32rpx');
-    expect(block).toContain('height: 32rpx');
-    // Offset = half the square: the diamond's widest line sits ON the card
-    // edge, so the protrusion is the half-diagonal (~22rpx) — never deeper.
+    // Fill triangle (tooltip technique): paints once, no rotation, no own
+    // border or shadow — the pop's drop-shadow covers the protruding half.
+    expect(block).toContain('width: 0');
+    expect(block).toContain('height: 0');
+    expect(block).toContain('border-style: solid');
+    expect(block).not.toContain('transform: rotate');
+    expect(block).not.toContain('box-shadow');
+    expect(block).not.toContain('border: 2rpx');
+    // Apex points at the trigger per family (colored OUTSIDE border).
+    expect(source).toContain('border-top-color: var(--sn-popover-bg)');
+    expect(source).toContain('border-bottom-color: var(--sn-popover-bg)');
+    expect(source).toContain('border-left-color: var(--sn-popover-bg)');
+    expect(source).toContain('border-right-color: var(--sn-popover-bg)');
+    // Base flush with the card edge: offset = arrow height (16rpx).
     expect(source).toContain('bottom: -16rpx');
     expect(source).toContain('top: -16rpx');
-    // The trigger gap must clear the protrusion — the old 12rpx gap let the
-    // diamond overlap the trigger button.
-    expect(source).toContain('calc(28rpx + var(--sn-popover-offset-y))');
-    expect(source).not.toContain('calc(12rpx + var(--sn-popover-offset-y))');
-    // Arrow shadow matches the card's token (bubble + arrow read as one).
-    expect(block).toContain('box-shadow: var(--sn-mp-shadow-md)');
+    // Trigger gap = arrow height → apex exactly on the trigger edge.
+    expect(source).toContain('calc(16rpx + var(--sn-popover-offset-y))');
+    expect(source).not.toContain('calc(28rpx + var(--sn-popover-offset-y))');
   });
 });
 

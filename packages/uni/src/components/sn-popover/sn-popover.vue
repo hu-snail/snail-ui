@@ -854,7 +854,6 @@ function onCancelTap(): void {
   overflow: visible;
   /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
-  --sn-popover-border: var(--sn-mp-color-border-subtle);
   --sn-popover-color: var(--sn-mp-color-text-primary);
   /* Fixed bubble widths — the cross-platform replacement for `max-content` +
    * `min(…, 100vw)` sizing, which uni-app x App drops (unsupported), leaving
@@ -907,7 +906,8 @@ function onCancelTap(): void {
    * it — labels wrap and glyph plates follow their tokens. */
   height: auto;
   box-sizing: border-box;
-  border: 2rpx solid var(--sn-popover-border);
+  /* Borderless — the reference card reads through fill + elevation alone; an
+   * outline would seam against the arrow junction (one-shape requirement). */
   border-radius: var(--sn-mp-radius-lg);
   /* Same uni-app x default-clip guard as the root: the arrow protrudes
    * outside this box. */
@@ -916,7 +916,18 @@ function onCancelTap(): void {
   color: var(--sn-popover-color);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
+  /* Elevation via drop-shadow on H5 / miniprogram: unlike box-shadow's
+   * rectangle, the drop-shadow follows the TRUE rendered silhouette — card
+   * plus protruding arrow — so the two read as one shape (the diamond's own
+   * box-shadow could never merge with the card's rectangle). uni-app x App
+   * has no filter support: falls back to the rectangle box-shadow token,
+   * gated behind conditional compilation. */
+  /* #ifndef APP */
+  filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.14));
+  /* #endif */
+  /* #ifdef APP */
   box-shadow: var(--sn-mp-shadow-md);
+  /* #endif */
   opacity: 0;
   transition: opacity 150ms ease;
   pointer-events: none;
@@ -1124,26 +1135,74 @@ function onCancelTap(): void {
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */
 
+/* Border triangle, same technique as sn-tooltip: the fill paints exactly
+ * once, with no border of its own and no own shadow — the pop's
+ * drop-shadow covers the protruding half, so arrow + card read as ONE
+ * shape (a rotated diamond could not: its border and box-shadow always
+ * seam against the card's outline and rectangle shadow). 32rpx base ×
+ * 16rpx tall; the 16rpx trigger gap lands the apex exactly on the trigger
+ * edge, matching the reference. */
+
 .sn-popover__arrow {
   position: absolute;
-  /* Rotated diamond, widest line ON the bubble edge: half protrudes toward
-   * the trigger (~22rpx spike, ~45rpx base — the old -12rpx offset pushed
-   * the whole diamond outside the card, overlapping the trigger), half
-   * hides inside the card. The shadow uses the card's token so bubble +
-   * arrow read as one elevated shape. */
-  width: 32rpx;
-  height: 32rpx;
-  background-color: var(--sn-popover-bg);
-  box-shadow: var(--sn-mp-shadow-md);
-  /* Outline the diamond so the outside half reads against the page — a bare
-   * white diamond vanishes on an elevated (white) host surface, and the half
-   * inside the pop merges with the bubble fill either way. The border shares
-   * the pop's border token, so the arrow line continues the bubble edge. */
-  border: 2rpx solid var(--sn-popover-border);
-  border-bottom-color: transparent;
-  border-right-color: transparent;
-  transform: rotate(45deg);
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
   pointer-events: none;
+}
+
+/* Orientation per placement family: the apex points at the trigger, and the
+ * colored border is the one on the OUTSIDE edge (fill paints once). Declared
+ * as longhands — the uni-x App flattener expands border shorthands only into
+ * per-side longhands, and a TRBL width shorthand would ride through
+ * unexpanded (§85 explicit). */
+
+/* Bubble above → arrow rides the bubble's bottom edge → apex DOWN →
+ * colored TOP border (base-up / apex-down). */
+.sn-popover--top .sn-popover__arrow,
+.sn-popover--top-start .sn-popover__arrow,
+.sn-popover--top-end .sn-popover__arrow {
+  bottom: -16rpx;
+  border-top-width: 16rpx;
+  border-right-width: 16rpx;
+  border-bottom-width: 0;
+  border-left-width: 16rpx;
+  border-top-color: var(--sn-popover-bg);
+}
+/* Bubble below → arrow on the bubble's top edge → apex UP → colored BOTTOM
+ * border (base-down / apex-up). */
+.sn-popover--bottom .sn-popover__arrow,
+.sn-popover--bottom-start .sn-popover__arrow,
+.sn-popover--bottom-end .sn-popover__arrow {
+  top: -16rpx;
+  border-top-width: 0;
+  border-right-width: 16rpx;
+  border-bottom-width: 16rpx;
+  border-left-width: 16rpx;
+  border-bottom-color: var(--sn-popover-bg);
+}
+/* Bubble left → apex RIGHT → colored left border. */
+.sn-popover--left .sn-popover__arrow,
+.sn-popover--left-start .sn-popover__arrow,
+.sn-popover--left-end .sn-popover__arrow {
+  right: -16rpx;
+  border-top-width: 16rpx;
+  border-right-width: 0;
+  border-bottom-width: 16rpx;
+  border-left-width: 16rpx;
+  border-left-color: var(--sn-popover-bg);
+}
+/* Bubble right → apex LEFT → colored right border. */
+.sn-popover--right .sn-popover__arrow,
+.sn-popover--right-start .sn-popover__arrow,
+.sn-popover--right-end .sn-popover__arrow {
+  left: -16rpx;
+  border-top-width: 16rpx;
+  border-right-width: 16rpx;
+  border-bottom-width: 16rpx;
+  border-left-width: 0;
+  border-right-color: var(--sn-popover-bg);
 }
 
 /* ── Placement: top family ─────────────────────────────────────────────── */
@@ -1153,21 +1212,21 @@ function onCancelTap(): void {
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
   left: 50%;
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
   left: 0;
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--top-end .sn-popover__pop {
   right: 0;
   bottom: 100%;
   margin-right: var(--sn-popover-offset-x);
-  margin-bottom: calc(28rpx + var(--sn-popover-offset-y));
+  margin-bottom: calc(16rpx + var(--sn-popover-offset-y));
 }
 
 /* ── Placement: bottom family ──────────────────────────────────────────── */
@@ -1175,20 +1234,20 @@ function onCancelTap(): void {
 .sn-popover--bottom .sn-popover__pop {
   top: 100%;
   left: 50%;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: calc(16rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
   transform: translateX(-50%);
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;
   left: 0;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: calc(16rpx + var(--sn-popover-offset-y));
   margin-left: var(--sn-popover-offset-x);
 }
 .sn-popover--bottom-end .sn-popover__pop {
   top: 100%;
   right: 0;
-  margin-top: calc(28rpx + var(--sn-popover-offset-y));
+  margin-top: calc(16rpx + var(--sn-popover-offset-y));
   margin-right: var(--sn-popover-offset-x);
 }
 
@@ -1197,20 +1256,20 @@ function onCancelTap(): void {
 .sn-popover--left .sn-popover__pop {
   top: 50%;
   right: 100%;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: calc(16rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--left-start .sn-popover__pop {
   top: 0;
   right: 100%;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: calc(16rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--left-end .sn-popover__pop {
   right: 100%;
   bottom: 0;
-  margin-right: calc(28rpx + var(--sn-popover-offset-x));
+  margin-right: calc(16rpx + var(--sn-popover-offset-x));
   margin-bottom: var(--sn-popover-offset-y);
 }
 
@@ -1219,99 +1278,51 @@ function onCancelTap(): void {
 .sn-popover--right .sn-popover__pop {
   top: 50%;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: calc(16rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
   transform: translateY(-50%);
 }
 .sn-popover--right-start .sn-popover__pop {
   top: 0;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: calc(16rpx + var(--sn-popover-offset-x));
   margin-top: var(--sn-popover-offset-y);
 }
 .sn-popover--right-end .sn-popover__pop {
   bottom: 0;
   left: 100%;
-  margin-left: calc(28rpx + var(--sn-popover-offset-x));
+  margin-left: calc(16rpx + var(--sn-popover-offset-x));
   margin-bottom: var(--sn-popover-offset-y);
 }
 
 /* ── Arrow geometry per placement ──────────────────────────────────────── */
 
+/* Arrow footprint per family (base is flush with the card edge): center
+ * arrow centered on the trigger; -start / -end pin it 20rpx from the
+ * near corner. */
 .sn-popover--top .sn-popover__arrow,
-.sn-popover--top-start .sn-popover__arrow,
-.sn-popover--top-end .sn-popover__arrow {
-  bottom: -16rpx;
-  /* Points up: the outside half is the bottom-right of the rotated square. */
-  border-top-color: transparent;
-  border-left-color: transparent;
-  border-bottom-color: var(--sn-popover-border);
-  border-right-color: var(--sn-popover-border);
-}
-.sn-popover--top .sn-popover__arrow {
-  left: calc(50% - 16rpx);
-}
-.sn-popover--top-start .sn-popover__arrow {
-  left: 24rpx;
-}
-.sn-popover--top-end .sn-popover__arrow {
-  right: 24rpx;
-}
-
-.sn-popover--bottom .sn-popover__arrow,
-.sn-popover--bottom-start .sn-popover__arrow,
-.sn-popover--bottom-end .sn-popover__arrow {
-  top: -16rpx;
-  /* Points down: the outside half is the top-left of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-left-color: var(--sn-popover-border);
-}
 .sn-popover--bottom .sn-popover__arrow {
   left: calc(50% - 16rpx);
 }
+.sn-popover--top-start .sn-popover__arrow,
 .sn-popover--bottom-start .sn-popover__arrow {
-  left: 24rpx;
+  left: 20rpx;
 }
+.sn-popover--top-end .sn-popover__arrow,
 .sn-popover--bottom-end .sn-popover__arrow {
-  right: 24rpx;
+  right: 20rpx;
 }
-
 .sn-popover--left .sn-popover__arrow,
-.sn-popover--left-start .sn-popover__arrow,
-.sn-popover--left-end .sn-popover__arrow {
-  right: -16rpx;
-  /* Points left: the outside half is the right edge of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-left-color: transparent;
-  border-right-color: var(--sn-popover-border);
-}
-.sn-popover--left .sn-popover__arrow {
-  top: calc(50% - 16rpx);
-}
-.sn-popover--left-start .sn-popover__arrow {
-  top: 24rpx;
-}
-.sn-popover--left-end .sn-popover__arrow {
-  bottom: 24rpx;
-}
-
-.sn-popover--right .sn-popover__arrow,
-.sn-popover--right-start .sn-popover__arrow,
-.sn-popover--right-end .sn-popover__arrow {
-  left: -16rpx;
-  /* Points right: the outside half is the left edge of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-right-color: transparent;
-  border-left-color: var(--sn-popover-border);
-}
 .sn-popover--right .sn-popover__arrow {
   top: calc(50% - 16rpx);
 }
+.sn-popover--left-start .sn-popover__arrow,
 .sn-popover--right-start .sn-popover__arrow {
-  top: 24rpx;
+  top: 20rpx;
 }
+.sn-popover--left-end .sn-popover__arrow,
 .sn-popover--right-end .sn-popover__arrow {
-  bottom: 24rpx;
+  bottom: 20rpx;
 }
 
 /* ── Sheet presentation ────────────────────────────────────────────────── */
@@ -1442,7 +1453,8 @@ function onCancelTap(): void {
 /* Doodle skin — hand-drawn bubble outline. */
 .snui-skin-doodle .sn-popover__pop,
 .snui-skin-doodle .sn-popover__sheet-panel {
-  border-width: 4rpx;
+  /* The base card is borderless — the skin draws its hand-drawn outline. */
+  border: 4rpx solid var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-radius-xs);
 }
 </style>

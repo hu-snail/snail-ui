@@ -135,8 +135,7 @@ import { SnPopover } from '@snui/uni';
 | Glyph scale    | `--sn-popover-menu-icon-size` (default: `--sn-mp-icon-size-medium`), `--sn-popover-close-icon-size` (default: `--sn-mp-icon-size-small`)                                         | Menu row glyph / close glyph; both are overridable via `custom-style`     |
 | Muted text     | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                                                                                                    | Description / subtitle / menu second line                                 |
 | Disabled       | `--sn-mp-color-text-disabled`                                                                                                                                                    | Disabled row (via opacity)                                                |
-| Border         | `--sn-mp-color-border-subtle`                                                                                                                                                    | Bubble + arrow outline                                                    |
-| Elevation      | `--sn-mp-shadow-md`                                                                                                                                                              | Bubble shadow                                                             |
+| Elevation      | `--sn-mp-shadow-md` (App fallback; H5 / MP use `filter: drop-shadow` following the silhouette)                                                                                   | Bubble + arrow elevation                                                  |
 | Radius         | `--sn-mp-radius-lg` (card), `--sn-mp-radius-full` (pills / plate), `--sn-mp-radius-xl` (sheet top)                                                                               | Corners                                                                   |
 | Scrim          | `--sn-mp-color-background-overlay`                                                                                                                                               | Sheet mask                                                                |
 | Spacing        | `--sn-mp-spacing-1/2/3/4/5`                                                                                                                                                      | Padding / gaps                                                            |
@@ -175,10 +174,19 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
-- Reference-large arrow: a 32rpx rotated diamond with its widest line ON
-  the bubble edge — ~45rpx base, ~22rpx apex — and the trigger gap (28rpx)
-  clears the protrusion so the apex never touches the trigger. The arrow
-  carries the card's shadow token, so bubble + arrow read as one shape.
+- One-shape arrow: a borderless fill triangle (border-triangle technique,
+  32rpx base × 16rpx tall, tooltip parity) flush with the bubble edge — no
+  own border, no own shadow. The trigger gap equals the arrow height, so
+  the apex lands exactly on the trigger edge (reference). SVG was
+  evaluated and rejected: `<image>` data-URLs cannot track the
+  theme-dependent `--sn-popover-bg` variable and wxml has no inline
+  `<svg>` element.
+- One-shape elevation: the card is borderless (reference design) and its
+  shadow is `filter: drop-shadow` on H5 / miniprogram — the shadow follows
+  the true rendered silhouette, card plus protruding arrow. uni-app x App
+  has no filter support and falls back to the `box-shadow` token behind
+  conditional compilation (breaking: `--sn-popover-border` removed with
+  the outline; the doodle skin draws its own hand-drawn border).
 - Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
   and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,

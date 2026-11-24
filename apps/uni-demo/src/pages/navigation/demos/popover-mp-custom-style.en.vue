@@ -66,10 +66,12 @@ const styledOpen = ref(false);
 }
 /* custom-pop / custom-arrow land on the bubble and arrow nodes. */
 .sn-demo :deep(.sn-demo__pop) {
-  border-color: var(--sn-mp-color-action-primary);
+  /* The base card is borderless — the custom class draws its own outline. */
+  border: 2rpx solid var(--sn-mp-color-action-primary);
 }
 .sn-demo :deep(.sn-demo__arrow) {
-  border-color: var(--sn-mp-color-action-primary);
+  /* bottom-start → apex up → the fill is the colored bottom border. */
+  border-bottom-color: var(--sn-mp-color-action-primary);
 }
 
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
