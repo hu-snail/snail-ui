@@ -73,8 +73,12 @@ function splitTopLevel(value: string): string[] {
   let start = 0;
   for (let i = 0; i < value.length; i++) {
     const c: string = value.charAt(i);
-    if (c === '(') i = skipParens(value, i);
-    else if (/\s/.test(c)) {
+    if (c === '(') {
+      // Land on the char after the closing paren (the loop's i++ would
+      // otherwise swallow it — `var(--x) 0` mis-split as one "var(--x) 0"
+      // part and border-radius corners came out elliptical / 3-valued).
+      i = skipParens(value, i) - 1;
+    } else if (/\s/.test(c)) {
       if (i > start) parts.push(value.slice(start, i));
       start = i + 1;
     }

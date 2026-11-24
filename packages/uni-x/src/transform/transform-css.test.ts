@@ -146,6 +146,41 @@ describe('transformCss (component mode)', () => {
     expect(r.issues).toHaveLength(0);
   });
 
+  it('should expand a 4-value border-radius shorthand carrying var() per the TL-TR-BR-BL cycle', () => {
+    // Bug (real-world, sn-input-number round theme): splitTopLevel skipped the
+    // char right after a paren group (the loop's i++ ran past the space that
+    // follows `var(...)`), so `var(--full) 0 0 var(--full)` split into three
+    // parts and the per-corner cycle came out shifted — top-left got the
+    // elliptical `var(--full) 0` and top-right got an invalid 3-value longhand
+    // (`var(--full) var(--full) 0`, dropped by every CSS parser). The round
+    // theme rendered giant clipped corner arcs on uni-app x.
+    const css =
+      '.round .minus {\n' +
+      '  border-radius: var(--sn-mp-radius-full) 0 0 var(--sn-mp-radius-full);\n' +
+      '}\n' +
+      '.round .plus {\n' +
+      '  border-radius: 0 var(--sn-mp-radius-full) var(--sn-mp-radius-full) 0;\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain(
+      '--snx-minus-border-top-left-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-minus-border-top-right-radius: 0;');
+    expect(r.css).toContain('--snx-minus-border-bottom-right-radius: 0;');
+    expect(r.css).toContain(
+      '--snx-minus-border-bottom-left-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-plus-border-top-left-radius: 0;');
+    expect(r.css).toContain(
+      '--snx-plus-border-top-right-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-plus-border-bottom-right-radius: var(--sn-mp-radius-full)');
+    expect(r.css).toContain('--snx-plus-border-bottom-left-radius: 0');
+    // No corner slot may carry a multi-value or elliptical expansion.
+    expect(r.css).not.toMatch(/--snx-(minus|plus)-border-\w+-radius: [^;]+ [^;]+/);
+    expect(r.issues).toHaveLength(0);
+  });
+
   it('should keep base padding values as flatten fallbacks when a theme overrides padding-bottom', () => {
     // Bug (real-world, popup safe-area): the position rules declared the
     // `padding` shorthand and the safe-area rule overrode `padding-bottom` —
