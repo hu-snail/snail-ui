@@ -25,17 +25,20 @@ interface UniBoundingClientRect {
 /** Chain returned by `uni.createSelectorQuery()` — only what we call. */
 interface UniSelectorQuery {
   in: (component: unknown) => UniSelectorQuery;
-  select: (selector: string) => {
-    boundingClientRect: (callback: (rect: UniBoundingClientRect | null) => void) => {
-      exec: () => void;
-    };
-  };
+  select: (selector: string) => UniNodesRef;
+  exec: (callback?: (res: Array<UniBoundingClientRect | null> | null) => void) => void;
+}
+
+/** Per-node measurement handle; chaining continues the query. */
+interface UniNodesRef {
+  boundingClientRect: (callback?: (rect: UniBoundingClientRect | null) => void) => UniSelectorQuery;
 }
 
 /** Window info slice of `uni.getSystemInfoSync()`. */
 interface UniWindowInfo {
   statusBarHeight?: number;
   windowWidth?: number;
+  windowHeight?: number;
 }
 
 /** Capsule (menu button) rect returned by the WeChat-only API. */

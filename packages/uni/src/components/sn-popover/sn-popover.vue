@@ -125,10 +125,13 @@ import {
   registerOutsideClosable,
   unregisterOutsideClosable,
 } from '../../utils/outside-close';
+import { computeViewportShift } from './sn-popover-viewport';
+import type { PopoverFamily, PopoverShift } from './sn-popover-viewport';
 
 defineOptions({ name: 'SnPopover' });
 
-const instanceId = getCurrentInstance()?.uid ?? 0;
+const instance = getCurrentInstance();
+const instanceId = instance?.uid ?? 0;
 
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
@@ -373,6 +376,9 @@ async function enter(): Promise<void> {
   // One tick so the hidden style is committed before the shown class lands.
   await nextTick();
   if (token !== generation) return;
+  // #ifdef MP-WEIXIN
+  void measureViewportShift();
+  // #endif
   isShown.value = true;
   emit('open');
   emit('change', { show: true });
@@ -390,6 +396,7 @@ function leave(): void {
   isShown.value = false;
   emit('close');
   emit('change', { show: false });
+  viewportShift.value = { x: 0, y: 0 };
   timer = setTimeout(() => {
     timer = null;
     if (token !== generation) return;
@@ -406,6 +413,16 @@ watch(
     else leave();
   },
 );
+
+// #ifdef MP-WEIXIN
+// Re-clamp when the placement changes while the bubble stays open.
+watch(
+  () => props.placement,
+  () => {
+    if (isShown.value || isMounted.value) void measureViewportShift();
+  },
+);
+// #endif
 
 onBeforeUnmount(clearTimer);
 
@@ -534,6 +551,50 @@ const offsetPair = computed<{ x: number; y: number }>(() => {
   return { x: value.x ?? 0, y: value.y ?? 0 };
 });
 
+/** MP viewport clamp (see measureViewportShift) — zero off MP-less targets,
+ * so popStyle emits no transform and the stylesheet anchoring stands. */
+const viewportShift = ref<PopoverShift>({ x: 0, y: 0 });
+
+/** MP: an edge trigger's anchored bubble hangs past the screen (no CSS clamp
+ * exists for a percent-centered absolute box) and gets cut by the viewport.
+ * Measured right after the pop mounts, applied as an inline transform — the
+ * measurement is MP-only (H5 / App keep the pure-CSS anchoring). */
+async function measureViewportShift(): Promise<void> {
+  const proxy = instance?.proxy;
+  if (!proxy) return;
+  await nextTick();
+  await new Promise<void>((resolve) => {
+    uni
+      .createSelectorQuery()
+      .in(proxy)
+      .select('.sn-popover__trigger')
+      .boundingClientRect()
+      .select('.sn-popover__pop')
+      .boundingClientRect()
+      .exec((res) => {
+        const trigger = res?.[0];
+        const bubble = res?.[1];
+        if (!trigger || !bubble) {
+          resolve();
+          return;
+        }
+        const family = props.placement.split('-')[0] as PopoverFamily;
+        const info = uni.getSystemInfoSync();
+        viewportShift.value = computeViewportShift(
+          {
+            left: bubble.left ?? 0,
+            top: bubble.top ?? 0,
+            width: bubble.width ?? 0,
+            height: bubble.height ?? 0,
+          },
+          { width: info.windowWidth ?? 0, height: info.windowHeight ?? 0 },
+          family,
+        );
+        resolve();
+      });
+  });
+}
+
 /** `menu` mode rows (an empty list in `normal` mode). */
 const menuItems = computed<SnPopoverMenuItem[]>(() =>
   props.mode === 'menu' && Array.isArray(props.content) ? props.content : [],
@@ -581,16 +642,38 @@ const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
 /** Gap = 28rpx in the stylesheet (static — see the placement comment). The
  * `offset` prop folds in here as an inline margin on the pop node, so it
- * stays effective on renderers that cannot resolve the var chain. */
+ * stays effective on renderers that cannot resolve the var chain. The MP
+ * viewport-clamp shift (see measureViewportShift) folds in as an inline
+ * transform — margins cannot express the shift for every anchoring side
+ * (a right-anchored box shifts left under margin-left), while a translate
+ * composes with the stylesheet's centering translate via calc(). */
 const popStyle = computed(() => {
   const { x, y } = offsetPair.value;
   const family = props.placement.split('-')[0];
+  const parts: string[] = [];
   if (family === 'top' || family === 'bottom') {
-    if (y === 0) return undefined;
-    return `margin-${family === 'top' ? 'bottom' : 'top'}: calc(28rpx + ${y}px)`;
+    if (y !== 0) parts.push(`margin-${family === 'top' ? 'bottom' : 'top'}: calc(28rpx + ${y}px)`);
+  } else if (x !== 0) {
+    parts.push(`margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`);
   }
-  if (x === 0) return undefined;
-  return `margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`;
+  const centered = props.placement === family;
+  const { x: shiftX, y: shiftY } = viewportShift.value;
+  if (family === 'top' || family === 'bottom') {
+    if (shiftX !== 0) {
+      parts.push(
+        centered
+          ? `transform: translateX(calc(-50% + ${shiftX}px))`
+          : `transform: translateX(${shiftX}px)`,
+      );
+    }
+  } else if (shiftY !== 0) {
+    parts.push(
+      centered
+        ? `transform: translateY(calc(-50% + ${shiftY}px))`
+        : `transform: translateY(${shiftY}px)`,
+    );
+  }
+  return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
 const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
