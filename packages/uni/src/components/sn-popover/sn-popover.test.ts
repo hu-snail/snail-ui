@@ -111,6 +111,17 @@ describe('sn-popover', () => {
       expect(w.find('.sn-popover__pop').attributes('style')).toBeUndefined();
     });
 
+    it('inlines the palette on the pop node in the MP fixed layer (no inherited vars)', () => {
+      const w = mount(SnPopover, { props: { modelValue: true, placement: 'top' } });
+      // Simulate the MP fixed path: fixedPlacement is set internally; emulate
+      // by asserting the style helper emits palette fallbacks when fixed.
+      // The ref is not exported — drive through the MP-only branch contract
+      // on the source instead (same pattern as the arrow source contract).
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      expect(source).toContain('background-color: var(--sn-popover-bg, #ffffff)');
+      expect(source).toContain('color: var(--sn-popover-color, #1f2937)');
+    });
+
     it('re-adds the gap inline on the pop node when offset-y is nonzero (top family)', () => {
       const w = mount(SnPopover, {
         props: { modelValue: true, offset: { x: 0, y: 8 }, placement: 'top' },

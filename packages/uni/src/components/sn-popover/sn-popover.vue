@@ -714,6 +714,16 @@ const popStyle = computed(() => {
   if (fixed) {
     parts.push(`position: fixed`, `left: ${fixed.left}px`, `top: ${fixed.top}px`);
     parts.push('transform: none');
+    // WeChat MP drops the inherited custom-property resolution for the
+    // fixed-positioned pop (background-color: var(--sn-popover-bg) paints
+    // nothing on device even though the DOM chain is intact) — inline the
+    // palette so the card is self-sufficient. customStyle still wins: it
+    // already rides the root node and its --sn-popover-* values land here
+    // through the same props.
+    parts.push(
+      `background-color: var(--sn-popover-bg, #ffffff)`,
+      `color: var(--sn-popover-color, #1f2937)`,
+    );
   }
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
