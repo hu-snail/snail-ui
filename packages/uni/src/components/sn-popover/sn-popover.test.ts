@@ -111,16 +111,51 @@ describe('sn-popover', () => {
       expect(w.find('.sn-popover__pop').attributes('style')).toBeUndefined();
     });
 
-    it('consumes the palette on the painted nodes with literal fallbacks', () => {
-      // WeChat MP fails to resolve the inherited custom-property chain for the
-      // pop (849b1859 / 2212a8e5) — the pop and the sheet panel each paint
-      // var(--sn-popover-*, <literal>) directly on the node so a dropped var
-      // chain still paints a visible card.
+    it('paints the palette with the MP-safe two-line form and literal token payloads', () => {
+      // WeChat MP cannot resolve a var()-containing custom-property PAYLOAD,
+      // and var(--x, fallback) does not rescue it — the fallback covers only
+      // an undefined variable, while a defined-but-unresolvable one computes
+      // to initial (transparent bubble). Contract (see the script header):
+      //   1. every --sn-popover-* definition payload is literal (no var())
+      //   2. painted surfaces consume --sn-mp-* directly (the MP floor line)
+      //   3. the overridable var(--sn-popover-*, var(--sn-mp-*)) line stacks
+      //      on top, so a broken chain loses only the top line
       const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
-      expect(source).toContain('background-color: var(--sn-popover-bg, #ffffff)');
-      expect(source).toContain('color: var(--sn-popover-color, #1f2937)');
-      // The arrow fill carries the same guarantee.
-      expect(source).toContain('background-color: var(--sn-popover-bg, #ffffff)');
+      // (1) literal payloads only — the MP background regression lock.
+      const defRe = /--sn-popover-[a-z-]+:\s*([^;]+);/g;
+      const style = source.slice(source.indexOf('<style'), source.indexOf('</style>'));
+      const bad: string[] = [];
+      for (const m of style.matchAll(defRe)) {
+        if (m[1]!.includes('var(')) bad.push(m[0]!);
+      }
+      expect(bad, `var()-payload definitions break WeChat MP: ${bad.join(' | ')}`).toEqual([]);
+      // (2)+(3) pop, arrow and sheet panel each carry the two-line palette.
+      for (const cls of ['.sn-popover__pop {', '.sn-popover__sheet-panel {']) {
+        const block = source.slice(
+          source.indexOf(cls),
+          source.indexOf('}', source.indexOf(cls)),
+        );
+        expect(block).toContain('background-color: var(--sn-mp-color-background-elevated)');
+        expect(block).toContain(
+          'background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated))',
+        );
+        expect(block).toContain('color: var(--sn-mp-color-text-primary)');
+      }
+      const arrow = source.slice(
+        source.indexOf('.sn-popover__arrow {'),
+        source.indexOf('}', source.indexOf('.sn-popover__arrow {')),
+      );
+      expect(arrow).toContain('background-color: var(--sn-mp-color-background-elevated)');
+      // The bubble stays flow-anchored — no fixed-layer measurement survived.
+      expect(source).not.toContain('createSelectorQuery');
+      // The anchor pop is absolute; only the full-screen sheet container is
+      // allowed to be fixed.
+      const popBlock = source.slice(
+        source.indexOf('.sn-popover__pop {'),
+        source.indexOf('}', source.indexOf('.sn-popover__pop {')),
+      );
+      expect(popBlock).toContain('position: absolute');
+      expect(source.match(/position: fixed/g)).toHaveLength(1);
     });
 
     it('re-adds the gap inline on the pop node when offset-y is nonzero (top family)', () => {
@@ -652,10 +687,12 @@ describe('sn-popover (auto height, AUI-OPT-07)', () => {
       expect(start).toBeGreaterThan(-1);
       return source.slice(start, source.indexOf('}', start));
     };
-    expect(blockOf('.sn-popover__menu-icon {')).toContain(
-      'width: var(--sn-popover-menu-icon-size)',
-    );
     expect(blockOf('.sn-popover__close {')).toContain('width: var(--sn-popover-close-icon-size)');
+    // Glyph-size defaults are literal rpx (the MP contract: a var() payload
+    // default breaks the box on WeChat); custom-style can still override.
+    expect(source).toContain('--sn-popover-icon-size: 32rpx');
+    expect(source).toContain('--sn-popover-menu-icon-size: 32rpx');
+    expect(source).toContain('--sn-popover-close-icon-size: 28rpx');
   });
 });
 
@@ -1080,7 +1117,7 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const arrowBlock = blockOf('.sn-popover__arrow {');
     expect(arrowBlock).toContain('width: 32rpx');
     expect(arrowBlock).toContain('height: 32rpx');
-    expect(arrowBlock).toContain('background-color: var(--sn-popover-bg, #ffffff)');
+    expect(arrowBlock).toContain('background-color: var(--sn-mp-color-background-elevated)');
     expect(arrowBlock).toContain('transform: rotate(45deg)');
     expect(arrowBlock).not.toContain('box-shadow');
     // The outline rides the SAME token as the card border — one continuous

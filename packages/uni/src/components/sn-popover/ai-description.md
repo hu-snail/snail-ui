@@ -4,15 +4,23 @@
   and its outline is the SAME `--sn-popover-border` token drawn on the two
   outside edges, so the slant strokes join the card border at the junction
   points: the whole callout reads as ONE continuous outline.
-- Self-sufficient palette: the pop / sheet panel / arrow each consume
-  `var(--sn-popover-bg, #ffffff)` / `var(--sn-popover-color, #1f2937)`
-  DIRECTLY on the painted node with literal fallbacks — WeChat MP has twice
-  failed to resolve the inherited custom-property chain (849b1859, 2212a8e5),
-  so the fallback-literal form is the cross-renderer guarantee. The bubble
-  stays in the document flow (`position: absolute`, pure-CSS anchoring, the
-  proven sn-tooltip geometry) on every platform; the mp-weixin measured
-  fixed-layer experiment was removed (fixed nodes skip the inherited var
-  chain on WeChat — the bubble painted position but no background).
+- MP custom-property contract (the background-fix invariant): WeChat MP
+  cannot resolve a custom-property payload containing var() (the alias
+  `--sn-popover-bg: var(--sn-mp-color-background-elevated)` left the bubble
+  transparent on device), and a consuming `var(--x, fallback)` does not
+  rescue it — the fallback covers only an undefined variable. Therefore:
+  every `--sn-popover-*` definition in the component carries a LITERAL
+  payload (locked by a source-contract test); painted surfaces stack the
+  overridable `var(--sn-popover-*, var(--sn-mp-*))` line ON TOP of the plain
+  `--sn-mp-*` token line, so a broken chain loses only the top line; glyph
+  sizes default to literal rpx (32/32/28) instead of the
+  `--sn-mp-icon-size-*` aliases.
+- Flow-anchored geometry (fix): the bubble is `position: absolute` anchored
+  by `placement` CSS on every platform. The mp-weixin measured fixed-layer
+  variant (SelectorQuery trigger-rect positioning) was removed — fixed
+  nodes are where WeChat MP's custom-property gaps bite hardest. Host
+  wrappers that clip absolutely-positioned overflow must open their chain
+  (demo scaffold rule).
 
 > Human-readable + AI-parseable description of the uni-end sn-popover component.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
@@ -145,8 +153,8 @@ import { SnPopover } from '@snui/uni';
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | Bubble palette | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`)                                                   | Bubble fill (white in the light theme) / text; the arrow follows the fill |
 | Bubble widths  | `--sn-popover-width` (default `480rpx`), `--sn-popover-menu-width` (default `320rpx`)                                                                                            | Fixed card widths — the cross-platform replacement for `max-content` sizing (uni-app x App drops it) |
-| Header glyph   | `--sn-popover-icon-size` (default `--sn-mp-icon-size-medium`), `--sn-popover-icon-plate-size` (default `72rpx`), `--sn-popover-icon-bg` (default sunken), `--sn-popover-icon-color` (default secondary) | Tinted circle behind the card / sheet row glyph     |
-| Glyph scale    | `--sn-popover-menu-icon-size` (default: `--sn-mp-icon-size-medium`), `--sn-popover-close-icon-size` (default: `--sn-mp-icon-size-small`)                                         | Menu row glyph / close glyph; both are overridable via `custom-style`     |
+| Header glyph   | `--sn-popover-icon-size` (default `32rpx` literal), `--sn-popover-icon-plate-size` (default `72rpx`), `--sn-popover-icon-bg` (default sunken), `--sn-popover-icon-color` (default secondary) | Tinted circle behind the card / sheet row glyph     |
+| Glyph scale    | `--sn-popover-menu-icon-size` (default `32rpx` literal), `--sn-popover-close-icon-size` (default `28rpx` literal)                                                                                                        | Menu row glyph / close glyph; both are overridable via `custom-style`     |
 | Muted text     | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                                                                                                    | Description / subtitle / menu second line                                 |
 | Disabled       | `--sn-mp-color-text-disabled`                                                                                                                                                    | Disabled row (via opacity)                                                |
 | Elevation      | `--sn-mp-shadow-md` (App fallback; H5 / MP use `filter: drop-shadow` following the silhouette)                                                                                   | Bubble + arrow elevation                                                  |

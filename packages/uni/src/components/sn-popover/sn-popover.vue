@@ -90,29 +90,37 @@
  * the cost is no automatic edge clamping, so near the screen edge an
  * `-start` / `-end` alignment is the consumer's tool. Centering uses pure
  * `translateX/Y(-50%)` (no `calc()` inside `transform`) with the offset folded
- * into margins, which every renderer supports.
+ * into margins, which every renderer supports. The bubble stays in the
+ * document flow (`position: absolute`, pure-CSS anchoring) on every platform —
+ * the same proven geometry as sn-tooltip. An mp-weixin measured fixed-layer
+ * experiment (SelectorQuery trigger-rect positioning) was removed: fixed
+ * nodes are where WeChat MP's custom-property gaps bite hardest, and the
+ * flow-anchored variant renders correctly everywhere.
  *
- * The bubble stays in the document flow (`position: absolute`, pure-CSS
- * anchoring) on every platform — the same proven geometry as sn-tooltip.
- * An earlier mp-weixin experiment re-positioned the bubble into a measured
- * `position: fixed` layer; WeChat MP does not resolve the inherited
- * custom-property chain for a fixed-positioned node (device-verified: the
- * bubble painted position but no background), so the flow-anchored bubble is
- * the only variant that renders correctly everywhere. Host wrappers that clip
- * absolutely-positioned overflow are the page's responsibility (the demo
- * scaffold opens its chain explicitly; AGENTS.md §103 note in App.vue).
+ * ## MP custom-property contract (the background-fix invariant)
  *
- * ## Self-sufficient palette
+ * WeChat MP fails to resolve a custom-property payload that itself contains
+ * var() (device-verified: 849b1859 zeroed the placement margin, the alias
+ * `--sn-popover-bg: var(--sn-mp-color-background-elevated)` left the bubble
+ * transparent), and a consuming `var(--x, fallback)` does NOT rescue it — the
+ * fallback applies only to an UNDEFINED variable, while a defined-but-
+ * unresolvable one computes to initial (transparent). The contract:
  *
- * The pop paints its palette as inline-style declarations with literal
- * fallbacks (`var(--sn-popover-bg, #ffffff)`), NOT through the stylesheet's
- * custom-property chain: WeChat MP renderers have repeatedly failed to
- * resolve nested var() payloads (the placement-gap fix 849b1859, the
- * fixed-layer palette fix 2212a8e5), and a literal-fallback var() consumed
- * directly on the painted node is the form verified to survive every
- * renderer. `--sn-popover-bg` / `--sn-popover-color` overrides via
- * `custom-style` still win — they ride the root node and land here through
- * the same props.
+ *   1. Every `--sn-popover-*` DEFINITION in this component carries a literal
+ *      payload (rpx / px / transparent / a hex) — never var(). Locked by a
+ *      source-contract test.
+ *   2. `--sn-mp-*` theme tokens are consumed DIRECTLY (single hop to the
+ *      page-level definitions — the form every sibling component paints with
+ *      on MP).
+ *   3. Overridable surfaces use the TWO-LINE form: the plain token line
+ *      first (always valid — the MP floor), then the overridable
+ *      `var(--sn-popover-*, var(--sn-mp-*))` line (same specificity, wins on
+ *      compliant renderers; on WeChat a broken chain drops only that line,
+ *      never the paint).
+ *
+ * Icon-size tokens default to literal rpx (32/32/28) instead of the
+ * `--sn-mp-icon-size-*` aliases for the same reason; `custom-style` can
+ * still override them with any literal.
  *
  * ## Timers (AGENTS.md §41)
  *
@@ -189,7 +197,7 @@ export interface SnPopoverMenuItem {
   iconBg?: string;
   /**
    * Row glyph color — any CSS color or var() (additive). Beats the plate's
-   * `--sn-popover-icon-color` default.
+   * sunken-token default.
    */
   iconColor?: string;
   /**
@@ -235,11 +243,14 @@ export interface SnPopoverAction {
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
 
-/** Glyph scale tokens, overridable via `custom-style` (wd parity). */
+/**
+ * Glyph scale published as literal-rpx component tokens (see the MP contract
+ * note — a var() payload default would break the box on WeChat). Overridable
+ * via `custom-style`.
+ */
+const HEAD_ICON_SIZE = 'var(--sn-popover-icon-size)';
 const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
 const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
-/** Header glyph scale — one tier above the menu rows. */
-const HEAD_ICON_SIZE = 'var(--sn-popover-icon-size)';
 
 const props = withDefaults(
   defineProps<{
@@ -521,18 +532,6 @@ function resolveGlyph(item: {
     : { kind: 'name', value: legacy };
 }
 
-/** Inline plate style from the row's tint fields — only provided fields land. */
-function rowPlateStyle(item: SnPopoverMenuItem): string {
-  const parts: string[] = [];
-  if (item.iconBg !== undefined && item.iconBg !== '') {
-    parts.push(`background-color: ${item.iconBg}`);
-  }
-  if (item.iconColor !== undefined && item.iconColor !== '') {
-    parts.push(`color: ${item.iconColor}`);
-  }
-  return parts.join('; ');
-}
-
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 /** Normalise `offset` into a `{ x, y }` pair of design px. */
@@ -552,10 +551,35 @@ const menuItems = computed<SnPopoverMenuItem[]>(() =>
   props.mode === 'menu' && Array.isArray(props.content) ? props.content : [],
 );
 
+/** One rendered menu row: the item plus its precomputed glyph / plate style. */
+interface MenuRow {
+  item: SnPopoverMenuItem;
+  index: number;
+  glyph: ResolvedGlyph;
+  plateStyle: string;
+}
+
+/** View model for the row list — resolution runs once, not per binding. */
+const menuRows = computed<MenuRow[]>(() =>
+  menuItems.value.map((item, index) => ({
+    item,
+    index,
+    glyph: resolveGlyph(item),
+    plateStyle: [
+      ...(item.iconBg !== undefined && item.iconBg !== ''
+        ? [`background-color: ${item.iconBg}`]
+        : []),
+      ...(item.iconColor !== undefined && item.iconColor !== ''
+        ? [`color: ${item.iconColor}`]
+        : []),
+    ].join('; '),
+  })),
+);
+
 /** Plain text body for `normal` mode. */
 const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
-/** Header glyph source — same precedence chain as the menu rows. */
+/** Header glyph — same precedence chain as the menu rows. */
 const headGlyph = computed(() => resolveGlyph(props));
 
 /** Whether the card header row (glyph / title / subtitle / close) renders. */
@@ -619,9 +643,9 @@ const sheetMaskClass = computed(() => [
   { 'sn-popover__sheet-mask--shown': isShown.value },
 ]);
 
-function onMenuTap(item: SnPopoverMenuItem, index: number): void {
-  if (item.disabled) return;
-  emit('menuclick', { item, index });
+function onMenuTap(row: MenuRow): void {
+  if (row.item.disabled) return;
+  emit('menuclick', { item: row.item, index: row.index });
   if (props.closeOnAction) close();
 }
 
@@ -688,41 +712,40 @@ function onCancelTap(): void {
       <view v-if="mode === 'menu'" class="sn-popover__menu">
         <slot name="content">
           <view
-            v-for="(item, index) in menuItems"
-            :key="index"
+            v-for="row in menuRows"
+            :key="row.index"
             class="sn-popover__menu-item"
-            :class="{ 'sn-popover__menu-item--disabled': item.disabled }"
+            :class="{ 'sn-popover__menu-item--disabled': row.item.disabled }"
             role="menuitem"
-            :aria-disabled="item.disabled ? 'true' : 'false'"
-            @tap="onMenuTap(item, index)"
+            :aria-disabled="row.item.disabled ? 'true' : 'false'"
+            @tap="onMenuTap(row)"
           >
-            <!-- Row glyph precedence: inline data > image address > name.
-                 Every row renders the glyph in a circle plate (untinted
-                 rows take the default sunken plate) — one consistent
-                 rhythm; iconBg / iconColor recolor the plate per row. -->
+            <!-- Every row renders the glyph in a circle plate (untinted rows
+                 take the default sunken plate) — one consistent rhythm;
+                 iconBg / iconColor recolor the plate per row. -->
             <view
-              v-if="resolveGlyph(item).kind !== 'none'"
-              class="sn-popover__icon-plate sn-popover__icon-plate--menu"
-              :style="rowPlateStyle(item)"
+              v-if="row.glyph.kind !== 'none'"
+              class="sn-popover__icon-plate"
+              :style="row.plateStyle"
             >
               <SnIcon
-                v-if="resolveGlyph(item).kind === 'data'"
-                :icon="resolveGlyph(item).value as IconData"
+                v-if="row.glyph.kind === 'data'"
+                :icon="row.glyph.value as IconData"
                 :size="MENU_ICON_SIZE"
               />
               <image
-                v-else-if="resolveGlyph(item).kind === 'url'"
+                v-else-if="row.glyph.kind === 'url'"
                 class="sn-popover__icon-image"
-                :src="resolveGlyph(item).value as string"
+                :src="row.glyph.value as string"
                 mode="aspectFit"
                 aria-hidden="true"
               />
-              <SnIcon v-else :icon="resolveGlyph(item).value as string" :size="MENU_ICON_SIZE" />
+              <SnIcon v-else :icon="row.glyph.value as string" :size="MENU_ICON_SIZE" />
             </view>
             <view class="sn-popover__menu-main">
-              <text class="sn-popover__menu-text">{{ item.content }}</text>
-              <text v-if="item.description" class="sn-popover__menu-desc">
-                {{ item.description }}
+              <text class="sn-popover__menu-text">{{ row.item.content }}</text>
+              <text v-if="row.item.description" class="sn-popover__menu-desc">
+                {{ row.item.description }}
               </text>
             </view>
           </view>
@@ -805,36 +828,32 @@ function onCancelTap(): void {
         <view v-if="mode === 'menu'" class="sn-popover__menu sn-popover__menu--sheet">
           <slot name="content">
             <view
-              v-for="(item, index) in menuItems"
-              :key="index"
+              v-for="row in menuRows"
+              :key="row.index"
               class="sn-popover__menu-item"
-              :class="{ 'sn-popover__menu-item--disabled': item.disabled }"
+              :class="{ 'sn-popover__menu-item--disabled': row.item.disabled }"
               role="menuitem"
-              :aria-disabled="item.disabled ? 'true' : 'false'"
-              @tap="onMenuTap(item, index)"
+              :aria-disabled="row.item.disabled ? 'true' : 'false'"
+              @tap="onMenuTap(row)"
             >
-              <view
-                v-if="resolveGlyph(item).kind !== 'none'"
-                class="sn-popover__icon-plate"
-                :style="rowPlateStyle(item)"
-              >
+              <view v-if="row.glyph.kind !== 'none'" class="sn-popover__icon-plate" :style="row.plateStyle">
                 <SnIcon
-                  v-if="resolveGlyph(item).kind === 'data'"
-                  :icon="resolveGlyph(item).value as IconData"
+                  v-if="row.glyph.kind === 'data'"
+                  :icon="row.glyph.value as IconData"
                   :size="MENU_ICON_SIZE"
                 />
                 <image
-                  v-else-if="resolveGlyph(item).kind === 'url'"
+                  v-else-if="row.glyph.kind === 'url'"
                   class="sn-popover__icon-image"
-                  :src="resolveGlyph(item).value as string"
+                  :src="row.glyph.value as string"
                   mode="aspectFit"
                 />
-                <SnIcon v-else :icon="resolveGlyph(item).value as string" :size="MENU_ICON_SIZE" />
+                <SnIcon v-else :icon="row.glyph.value as string" :size="MENU_ICON_SIZE" />
               </view>
               <view class="sn-popover__menu-main">
-                <text class="sn-popover__menu-text">{{ item.content }}</text>
-                <text v-if="item.description" class="sn-popover__menu-desc">
-                  {{ item.description }}
+                <text class="sn-popover__menu-text">{{ row.item.content }}</text>
+                <text v-if="row.item.description" class="sn-popover__menu-desc">
+                  {{ row.item.description }}
                 </text>
               </view>
             </view>
@@ -881,7 +900,12 @@ function onCancelTap(): void {
 
 <style scoped>
 /* uni side: --sn-mp-* aliases only (rpx units). Direct --sn-web-* / --aui-*
- * forbidden (enforced by `pnpm snui token-check --dir packages/uni --end mp`). */
+ * forbidden (enforced by `pnpm snui token-check --dir packages/uni --end mp`).
+ *
+ * MP custom-property contract (see the script header): every --sn-popover-*
+ * definition below carries a LITERAL payload; --sn-mp-* tokens are consumed
+ * directly; overridable surfaces stack the overridable var() line ON TOP of
+ * the plain token line so a broken WeChat chain loses only the top line. */
 
 .sn-popover {
   position: relative;
@@ -892,32 +916,23 @@ function onCancelTap(): void {
    * children by default, which swallowed the whole bubble on the App / web
    * builds (H5 / MP default to visible). Same guard as sn-tooltip. */
   overflow: visible;
-  /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults.
-   * The pop CONSUMES these with literal fallbacks on the node itself (see the
-   * pop block) — the custom-property chain alone has failed on WeChat MP
-   * (849b1859 / 2212a8e5); the fallback is the cross-renderer guarantee. */
-  --sn-popover-bg: var(--sn-mp-color-background-elevated);
-  --sn-popover-color: var(--sn-mp-color-text-primary);
   /* Fixed bubble widths — the cross-platform replacement for `max-content` +
    * `min(…, 100vw)` sizing, which uni-app x App drops (unsupported), leaving
-   * the bubble collapsed / invisible. Overridable via `custom-style`. */
+   * the bubble collapsed / invisible. Literal payloads; overridable via
+   * `custom-style`. */
   --sn-popover-width: 480rpx;
   --sn-popover-menu-width: 320rpx;
-  /* Header glyph plate + scale. */
-  --sn-popover-icon-size: var(--sn-mp-icon-size-medium);
+  /* Header glyph plate + scale (literal rpx — see the MP contract note). */
+  --sn-popover-icon-size: 32rpx;
   --sn-popover-icon-plate-size: 72rpx;
-  --sn-popover-icon-bg: var(--sn-mp-color-background-sunken);
-  --sn-popover-icon-color: var(--sn-mp-color-text-secondary);
   /* Glyph scale (wd parity), overridable via `custom-style`. */
-  /* Arrow outline — transparent by default (reference plain-fill arrow);
-   * custom-arrow recolors it for the outlined custom look. */
-  /* Card border — transparent by default (reference borderless card);
-   * consumers color it via custom-style / custom-class for a custom border.
-   * The fill triangle overlaps the junction, so the border opens at the
-   * arrow and the interiors stay connected. */
+  --sn-popover-menu-icon-size: 32rpx;
+  --sn-popover-close-icon-size: 28rpx;
+  /* Arrow / card outline — transparent by default (reference borderless
+   * card); consumers color it via custom-style / custom-class for a custom
+   * border. The fill triangle overlaps the junction, so the border opens at
+   * the arrow and the interiors stay connected. */
   --sn-popover-border: transparent;
-  --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
-  --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
 }
 
 .sn-popover__trigger {
@@ -959,18 +974,20 @@ function onCancelTap(): void {
   /* Borderless by default (the reference card reads through fill +
    * elevation alone) — the token lets consumers draw a custom border; the
    * fill triangle overlaps the junction, so the border opens at the arrow
-   * and the interiors stay connected (no seam). */
+   * and the interiors stay connected (no seam). The definition payload is a
+   * literal, so the consumption is MP-safe. */
   border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-lg);
   /* Same uni-app x default-clip guard as the root: the arrow protrudes
    * outside this box. */
   overflow: visible;
-  /* Palette with literal fallbacks, consumed ON the painted node — the
-   * cross-renderer-safe form (see the root palette note). Each declaration
-   * carries its own fallback so a dropped var chain still paints white-on-
-   * dark text, never an invisible card. */
-  background-color: var(--sn-popover-bg, #ffffff);
-  color: var(--sn-popover-color, #1f2937);
+  /* Palette, TWO-LINE form (see the MP contract): the plain token line is
+   * the always-valid MP floor; the overridable var() line wins on compliant
+   * renderers and loses only itself if a WeChat chain breaks. */
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-primary));
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
   /* Elevation via drop-shadow on H5 / miniprogram: unlike box-shadow's
@@ -1020,6 +1037,9 @@ function onCancelTap(): void {
   gap: var(--sn-mp-spacing-3);
 }
 
+/* Header / row glyph plate. The tint fields stack the overridable lines on
+ * the plain tokens (two-line form) — per-row iconBg / iconColor land as
+ * inline styles and beat both. */
 .sn-popover__icon-plate {
   display: flex;
   flex-direction: row;
@@ -1029,8 +1049,10 @@ function onCancelTap(): void {
   width: var(--sn-popover-icon-plate-size);
   height: var(--sn-popover-icon-plate-size);
   border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-popover-icon-bg);
-  color: var(--sn-popover-icon-color);
+  background-color: var(--sn-mp-color-background-sunken);
+  background-color: var(--sn-popover-icon-bg, var(--sn-mp-color-background-sunken));
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-icon-color, var(--sn-mp-color-text-secondary));
 }
 
 .sn-popover__icon-image {
@@ -1148,27 +1170,13 @@ function onCancelTap(): void {
   opacity: 0.5;
 }
 
-/* Menu rows ALL render the circle plate (the bare-glyph branch is gone):
- * untinted rows take the default sunken plate, tinted rows the per-row
- * colors — one consistent rhythm across the menu. The plate is slightly
- * smaller than the card head's (64rpx vs 72rpx) to keep the row compact. */
+/* Menu rows ALL render the circle plate: untinted rows take the default
+ * sunken plate, tinted rows the per-row colors — one consistent rhythm
+ * across the menu. The plate is slightly smaller than the card head's
+ * (64rpx vs 72rpx) to keep the row compact. */
 .sn-popover__menu-item .sn-popover__icon-plate {
   width: 64rpx;
   height: 64rpx;
-}
-
-/* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
- * so a bigger glyph or a longer label grows the bubble instead of overflowing
- * it (auto height, AUI-OPT-07). */
-.sn-popover__menu-icon {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: var(--sn-popover-menu-icon-size);
-  height: var(--sn-popover-menu-icon-size);
-  color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-popover__menu-main {
@@ -1219,7 +1227,9 @@ function onCancelTap(): void {
   position: absolute;
   width: 32rpx;
   height: 32rpx;
-  background-color: var(--sn-popover-bg, #ffffff);
+  /* Card fill, two-line form (see the MP contract note on the pop). */
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   border: 2rpx solid var(--sn-popover-border);
   border-bottom-color: transparent;
   border-right-color: transparent;
@@ -1302,10 +1312,10 @@ function onCancelTap(): void {
 /* ── Placement: top family ─────────────────────────────────────────────── */
 /* Centering uses pure `translateX/Y(-50%)` — no `calc()` inside `transform`.
  * The gap is a static 28rpx: WeChat MP drops var() nested inside a custom
- * property value (the uni-x `--snx-*` margin payload), which zeroes the
- * margin and slams the bubble into the trigger — the arrow apex then pokes
- * into the button on real devices. A nonzero `offset` re-adds the gap
- * inline on the pop node (popStyle) instead of riding the var chain. */
+ * property value, which zeroes the margin and slams the bubble into the
+ * trigger — the arrow apex then pokes into the button on real devices. A
+ * nonzero `offset` re-adds the gap inline on the pop node (popStyle) instead
+ * of riding the var chain. */
 
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
@@ -1431,9 +1441,11 @@ function onCancelTap(): void {
     calc(var(--sn-mp-spacing-5) + env(safe-area-inset-bottom));
   border-top-left-radius: var(--sn-mp-radius-xl);
   border-top-right-radius: var(--sn-mp-radius-xl);
-  /* Same literal-fallback palette as the pop (WeChat MP var-chain gaps). */
-  background-color: var(--sn-popover-bg, #ffffff);
-  color: var(--sn-popover-color, #1f2937);
+  /* Palette, two-line form (see the MP contract note on the pop). */
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  color: var(--sn-mp-color-text-primary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-primary));
   transform: translateY(100%);
   transition: transform 200ms ease, opacity 200ms ease;
   opacity: 0;
