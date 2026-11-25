@@ -111,15 +111,16 @@ describe('sn-popover', () => {
       expect(w.find('.sn-popover__pop').attributes('style')).toBeUndefined();
     });
 
-    it('inlines the palette on the pop node in the MP fixed layer (no inherited vars)', () => {
-      const w = mount(SnPopover, { props: { modelValue: true, placement: 'top' } });
-      // Simulate the MP fixed path: fixedPlacement is set internally; emulate
-      // by asserting the style helper emits palette fallbacks when fixed.
-      // The ref is not exported — drive through the MP-only branch contract
-      // on the source instead (same pattern as the arrow source contract).
+    it('consumes the palette on the painted nodes with literal fallbacks', () => {
+      // WeChat MP fails to resolve the inherited custom-property chain for the
+      // pop (849b1859 / 2212a8e5) — the pop and the sheet panel each paint
+      // var(--sn-popover-*, <literal>) directly on the node so a dropped var
+      // chain still paints a visible card.
       const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
       expect(source).toContain('background-color: var(--sn-popover-bg, #ffffff)');
       expect(source).toContain('color: var(--sn-popover-color, #1f2937)');
+      // The arrow fill carries the same guarantee.
+      expect(source).toContain('background-color: var(--sn-popover-bg, #ffffff)');
     });
 
     it('re-adds the gap inline on the pop node when offset-y is nonzero (top family)', () => {
@@ -1079,7 +1080,7 @@ describe('sn-popover (per-row colored glyph plates, additive)', () => {
     const arrowBlock = blockOf('.sn-popover__arrow {');
     expect(arrowBlock).toContain('width: 32rpx');
     expect(arrowBlock).toContain('height: 32rpx');
-    expect(arrowBlock).toContain('background-color: var(--sn-popover-bg)');
+    expect(arrowBlock).toContain('background-color: var(--sn-popover-bg, #ffffff)');
     expect(arrowBlock).toContain('transform: rotate(45deg)');
     expect(arrowBlock).not.toContain('box-shadow');
     // The outline rides the SAME token as the card border — one continuous

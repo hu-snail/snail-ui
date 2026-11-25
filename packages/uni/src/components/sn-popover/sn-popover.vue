@@ -92,6 +92,28 @@
  * `translateX/Y(-50%)` (no `calc()` inside `transform`) with the offset folded
  * into margins, which every renderer supports.
  *
+ * The bubble stays in the document flow (`position: absolute`, pure-CSS
+ * anchoring) on every platform — the same proven geometry as sn-tooltip.
+ * An earlier mp-weixin experiment re-positioned the bubble into a measured
+ * `position: fixed` layer; WeChat MP does not resolve the inherited
+ * custom-property chain for a fixed-positioned node (device-verified: the
+ * bubble painted position but no background), so the flow-anchored bubble is
+ * the only variant that renders correctly everywhere. Host wrappers that clip
+ * absolutely-positioned overflow are the page's responsibility (the demo
+ * scaffold opens its chain explicitly; AGENTS.md §103 note in App.vue).
+ *
+ * ## Self-sufficient palette
+ *
+ * The pop paints its palette as inline-style declarations with literal
+ * fallbacks (`var(--sn-popover-bg, #ffffff)`), NOT through the stylesheet's
+ * custom-property chain: WeChat MP renderers have repeatedly failed to
+ * resolve nested var() payloads (the placement-gap fix 849b1859, the
+ * fixed-layer palette fix 2212a8e5), and a literal-fallback var() consumed
+ * directly on the painted node is the form verified to survive every
+ * renderer. `--sn-popover-bg` / `--sn-popover-color` overrides via
+ * `custom-style` still win — they ride the root node and land here through
+ * the same props.
+ *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer keeps the bubble mounted for the fade-out leg. It is
@@ -108,15 +130,7 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import {
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue';
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
@@ -125,7 +139,6 @@ import {
   registerOutsideClosable,
   unregisterOutsideClosable,
 } from '../../utils/outside-close';
-import { computeFixedPlacement } from './sn-popover-viewport';
 
 defineOptions({ name: 'SnPopover' });
 
@@ -222,11 +235,7 @@ export interface SnPopoverAction {
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
 
-/**
- * Menu / close glyph scale. Published as component variables on the bubble so
- * a consumer can resize every glyph through `custom-style` (wd
- * `--wot-popover-menu-icon-size` / `--wot-popover-close-icon-size` parity).
- */
+/** Glyph scale tokens, overridable via `custom-style` (wd parity). */
 const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
 const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
 /** Header glyph scale — one tier above the menu rows. */
@@ -375,9 +384,6 @@ async function enter(): Promise<void> {
   // One tick so the hidden style is committed before the shown class lands.
   await nextTick();
   if (token !== generation) return;
-  // #ifdef MP-WEIXIN
-  void measureMpPlacement();
-  // #endif
   isShown.value = true;
   emit('open');
   emit('change', { show: true });
@@ -391,8 +397,6 @@ function leave(): void {
   if (phase === 'leave' || (!isShown.value && !isMounted.value)) return;
   phase = 'leave';
   clearTimer();
-  clearMpRemeasureTimer();
-  fixedPlacement.value = null;
   const token = ++generation;
   isShown.value = false;
   emit('close');
@@ -414,20 +418,7 @@ watch(
   },
 );
 
-// #ifdef MP-WEIXIN
-// Re-clamp when the placement changes while the bubble stays open.
-watch(
-  () => props.placement,
-  () => {
-    if (isShown.value || isMounted.value) void measureMpPlacement();
-  },
-);
-// #endif
-
-onBeforeUnmount(() => {
-  clearTimer();
-  clearMpRemeasureTimer();
-});
+onBeforeUnmount(clearTimer);
 
 /** Show the bubble and notify the consumer (controlled + uncontrolled). */
 function open(): void {
@@ -497,35 +488,37 @@ function onTriggerTap(): void {
   open();
 }
 
+/* ── Glyph resolution ───────────────────────────────────────────────────── */
+
 /** Looks like an image source rather than an icon name. */
 function isImageSource(value: string): boolean {
   return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
-/** Which glyph source a slot uses (precedence: iconData > iconUrl > icon > iconClass). */
-function iconSourceOf(item: {
+/**
+ * One resolved glyph slot: which branch renders and with what value.
+ * Precedence: `iconData` > `iconUrl` > `icon` > legacy `iconClass`
+ * (name, or an image address when the value looks like one).
+ */
+interface ResolvedGlyph {
+  kind: 'data' | 'url' | 'name' | 'none';
+  value: string | IconData;
+}
+
+function resolveGlyph(item: {
   iconData?: IconData | undefined;
   iconUrl?: string | undefined;
   icon?: string | undefined;
   iconClass?: string | undefined;
-}): 'data' | 'url' | 'name' | 'none' {
-  if (item.iconData !== undefined) return 'data';
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
-  if (item.icon !== undefined && item.icon !== '') return 'name';
+}): ResolvedGlyph {
+  if (item.iconData !== undefined) return { kind: 'data', value: item.iconData };
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return { kind: 'url', value: item.iconUrl };
+  if (item.icon !== undefined && item.icon !== '') return { kind: 'name', value: item.icon };
   const legacy = item.iconClass;
-  if (legacy === undefined || legacy === '') return 'none';
-  return isImageSource(legacy) ? 'url' : 'name';
-}
-
-/** Image address of a `url` slot — `iconUrl`, or the URL-shaped legacy field. */
-function iconUrlOf(item: { iconUrl?: string | undefined; iconClass?: string | undefined }): string {
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
-  return item.iconClass ?? '';
-}
-
-/** Glyph name of a `name` slot — `icon`, or the legacy field's name form. */
-function iconNameOf(item: { icon?: string | undefined; iconClass?: string | undefined }): string {
-  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
+  if (legacy === undefined || legacy === '') return { kind: 'none', value: '' };
+  return isImageSource(legacy)
+    ? { kind: 'url', value: legacy }
+    : { kind: 'name', value: legacy };
 }
 
 /** Inline plate style from the row's tint fields — only provided fields land. */
@@ -554,102 +547,6 @@ const offsetPair = computed<{ x: number; y: number }>(() => {
   return { x: value.x ?? 0, y: value.y ?? 0 };
 });
 
-/** MP fixed-layer placement (see measureMpPlacement) — null off MP, so
- * popStyle emits nothing and the stylesheet anchoring stands. */
-const fixedPlacement = ref<{ left: number; top: number } | null>(null);
-
-/** MP: host wrappers clip absolutely-positioned overflow (uni-app x view
- * default), so a bubble escaping its root box — every top-family placement,
- * any edge-hugging trigger — never paints. The bubble therefore leaves the
- * document flow on MP: measured right after mount, positioned `fixed` at
- * viewport coordinates from the trigger rect (fixed escapes every ancestor
- * clip — probe-verified). H5 / App keep the pure-CSS anchoring. */
-let mpRemeasureTimer: ReturnType<typeof setTimeout> | null = null;
-
-async function measureMpPlacement(): Promise<void> {
-  const rects = await readMpRects();
-  if (!rects) return;
-  applyMpPlacement(rects);
-  // The first read races the bubble's own content layout (async SVG glyphs,
-  // font settling), which over-measures the height and pushes the bubble too
-  // far. Once the paint has settled, re-read and re-apply if it moved.
-  if (mpRemeasureTimer) clearTimeout(mpRemeasureTimer);
-  mpRemeasureTimer = setTimeout(() => {
-    mpRemeasureTimer = null;
-    if (!isShown.value && !isMounted.value) return;
-    // The pop is already FIXED at this point, and a fixed box's rect reads
-    // back collapsed (h=2 on device — measured). Temporarily restore the
-    // stylesheet anchoring so the re-read sees the natural absolute layout,
-    // then re-apply from those rects.
-    fixedPlacement.value = null;
-    void readMpRects().then((again) => {
-      if (!again || (!isShown.value && !isMounted.value)) return;
-      applyMpPlacement(again);
-    });
-  }, 220);
-}
-
-function clearMpRemeasureTimer(): void {
-  if (mpRemeasureTimer) {
-    clearTimeout(mpRemeasureTimer);
-    mpRemeasureTimer = null;
-  }
-}
-
-interface MpRects {
-  trigger: UniBoundingClientRect;
-  bubble: UniBoundingClientRect;
-}
-
-async function readMpRects(): Promise<MpRects | null> {
-  const proxy = instance?.proxy;
-  if (!proxy) return null;
-  await nextTick();
-  return new Promise<MpRects | null>((resolve) => {
-    uni
-      .createSelectorQuery()
-      .in(proxy)
-      .select('.sn-popover__trigger')
-      .boundingClientRect()
-      .select('.sn-popover__pop')
-      .boundingClientRect()
-      .exec((res) => {
-        const trigger = res?.[0];
-        const bubble = res?.[1];
-        resolve(trigger && bubble ? { trigger, bubble } : null);
-      });
-  });
-}
-
-function applyMpPlacement({ trigger, bubble }: MpRects): void {
-  const info = uni.getSystemInfoSync();
-  const px = (info.windowWidth ?? 0) / 750;
-  // TODO(AUI-POP-MP-002): temporary measurement trace — remove after the
-  // coordinate-frame issue is confirmed on a device.
-  console.log(
-    '[sn-popover] mp-rects',
-    props.placement,
-    'trigger',
-    JSON.stringify({ l: trigger.left, t: trigger.top, w: trigger.width, h: trigger.height }),
-    'bubble',
-    JSON.stringify({ l: bubble.left, t: bubble.top, w: bubble.width, h: bubble.height }),
-    'win',
-    JSON.stringify({ w: info.windowWidth, h: info.windowHeight }),
-  );
-  fixedPlacement.value = computeFixedPlacement(
-    {
-      left: trigger.left ?? 0,
-      top: trigger.top ?? 0,
-      width: trigger.width ?? 0,
-      height: trigger.height ?? 0,
-    },
-    { width: bubble.width ?? 0, height: bubble.height ?? 0 },
-    { width: info.windowWidth ?? 0, height: info.windowHeight ?? 0 },
-    props.placement,
-    28 * px,
-  );
-}
-
 /** `menu` mode rows (an empty list in `normal` mode). */
 const menuItems = computed<SnPopoverMenuItem[]>(() =>
   props.mode === 'menu' && Array.isArray(props.content) ? props.content : [],
@@ -659,12 +556,12 @@ const menuItems = computed<SnPopoverMenuItem[]>(() =>
 const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
 /** Header glyph source — same precedence chain as the menu rows. */
-const headIconSource = computed(() => iconSourceOf(props));
+const headGlyph = computed(() => resolveGlyph(props));
 
 /** Whether the card header row (glyph / title / subtitle / close) renders. */
 const hasHead = computed(
   () =>
-    headIconSource.value !== 'none' ||
+    headGlyph.value.kind !== 'none' ||
     props.title !== '' ||
     props.subtitle !== '' ||
     props.showClose,
@@ -697,10 +594,7 @@ const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
 /** Gap = 28rpx in the stylesheet (static — see the placement comment). The
  * `offset` prop folds in here as an inline margin on the pop node, so it
- * stays effective on renderers that cannot resolve the var chain. On MP the
- * bubble additionally switches to the fixed layer (fixedPlacement) — the
- * inline `position/left/top` then carry the geometry and `transform: none`
- * cancels the stylesheet's centering translate. */
+ * stays effective on renderers that cannot resolve the var chain. */
 const popStyle = computed(() => {
   const { x, y } = offsetPair.value;
   const family = props.placement.split('-')[0];
@@ -709,21 +603,6 @@ const popStyle = computed(() => {
     if (y !== 0) parts.push(`margin-${family === 'top' ? 'bottom' : 'top'}: calc(28rpx + ${y}px)`);
   } else if (x !== 0) {
     parts.push(`margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`);
-  }
-  const fixed = fixedPlacement.value;
-  if (fixed) {
-    parts.push(`position: fixed`, `left: ${fixed.left}px`, `top: ${fixed.top}px`);
-    parts.push('transform: none');
-    // WeChat MP drops the inherited custom-property resolution for the
-    // fixed-positioned pop (background-color: var(--sn-popover-bg) paints
-    // nothing on device even though the DOM chain is intact) — inline the
-    // palette so the card is self-sufficient. customStyle still wins: it
-    // already rides the root node and its --sn-popover-* values land here
-    // through the same props.
-    parts.push(
-      `background-color: var(--sn-popover-bg, #ffffff)`,
-      `color: var(--sn-popover-color, #1f2937)`,
-    );
   }
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
@@ -822,23 +701,23 @@ function onCancelTap(): void {
                  rows take the default sunken plate) — one consistent
                  rhythm; iconBg / iconColor recolor the plate per row. -->
             <view
-              v-if="iconSourceOf(item) !== 'none'"
+              v-if="resolveGlyph(item).kind !== 'none'"
               class="sn-popover__icon-plate sn-popover__icon-plate--menu"
               :style="rowPlateStyle(item)"
             >
               <SnIcon
-                v-if="iconSourceOf(item) === 'data'"
-                :icon="item.iconData"
+                v-if="resolveGlyph(item).kind === 'data'"
+                :icon="resolveGlyph(item).value as IconData"
                 :size="MENU_ICON_SIZE"
               />
               <image
-                v-else-if="iconSourceOf(item) === 'url'"
+                v-else-if="resolveGlyph(item).kind === 'url'"
                 class="sn-popover__icon-image"
-                :src="iconUrlOf(item)"
+                :src="resolveGlyph(item).value as string"
                 mode="aspectFit"
                 aria-hidden="true"
               />
-              <SnIcon v-else :icon="iconNameOf(item)" :size="MENU_ICON_SIZE" />
+              <SnIcon v-else :icon="resolveGlyph(item).value as string" :size="MENU_ICON_SIZE" />
             </view>
             <view class="sn-popover__menu-main">
               <text class="sn-popover__menu-text">{{ item.content }}</text>
@@ -854,19 +733,23 @@ function onCancelTap(): void {
         <slot name="content">
           <!-- Card header: glyph circle + title / subtitle + close. -->
           <view v-if="hasHead" class="sn-popover__head">
-            <view v-if="headIconSource !== 'none'" class="sn-popover__icon-plate" aria-hidden="true">
+            <view
+              v-if="headGlyph.kind !== 'none'"
+              class="sn-popover__icon-plate"
+              aria-hidden="true"
+            >
               <SnIcon
-                v-if="headIconSource === 'data'"
-                :icon="props.iconData"
+                v-if="headGlyph.kind === 'data'"
+                :icon="headGlyph.value as IconData"
                 :size="HEAD_ICON_SIZE"
               />
               <image
-                v-else-if="headIconSource === 'url'"
+                v-else-if="headGlyph.kind === 'url'"
                 class="sn-popover__icon-image"
-                :src="props.iconUrl"
+                :src="headGlyph.value as string"
                 mode="aspectFit"
               />
-              <SnIcon v-else :icon="props.icon" :size="HEAD_ICON_SIZE" />
+              <SnIcon v-else :icon="headGlyph.value as string" :size="HEAD_ICON_SIZE" />
             </view>
             <view class="sn-popover__head-main">
               <text v-if="props.title" class="sn-popover__title">{{ props.title }}</text>
@@ -931,22 +814,22 @@ function onCancelTap(): void {
               @tap="onMenuTap(item, index)"
             >
               <view
-                v-if="iconSourceOf(item) !== 'none'"
+                v-if="resolveGlyph(item).kind !== 'none'"
                 class="sn-popover__icon-plate"
                 :style="rowPlateStyle(item)"
               >
                 <SnIcon
-                  v-if="iconSourceOf(item) === 'data'"
-                  :icon="item.iconData"
+                  v-if="resolveGlyph(item).kind === 'data'"
+                  :icon="resolveGlyph(item).value as IconData"
                   :size="MENU_ICON_SIZE"
                 />
                 <image
-                  v-else-if="iconSourceOf(item) === 'url'"
+                  v-else-if="resolveGlyph(item).kind === 'url'"
                   class="sn-popover__icon-image"
-                  :src="iconUrlOf(item)"
+                  :src="resolveGlyph(item).value as string"
                   mode="aspectFit"
                 />
-                <SnIcon v-else :icon="iconNameOf(item)" :size="MENU_ICON_SIZE" />
+                <SnIcon v-else :icon="resolveGlyph(item).value as string" :size="MENU_ICON_SIZE" />
               </view>
               <view class="sn-popover__menu-main">
                 <text class="sn-popover__menu-text">{{ item.content }}</text>
@@ -1009,7 +892,10 @@ function onCancelTap(): void {
    * children by default, which swallowed the whole bubble on the App / web
    * builds (H5 / MP default to visible). Same guard as sn-tooltip. */
   overflow: visible;
-  /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults. */
+  /* Bubble palette (wot-ui parity). Inline `custom-style` beats these defaults.
+   * The pop CONSUMES these with literal fallbacks on the node itself (see the
+   * pop block) — the custom-property chain alone has failed on WeChat MP
+   * (849b1859 / 2212a8e5); the fallback is the cross-renderer guarantee. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
   --sn-popover-color: var(--sn-mp-color-text-primary);
   /* Fixed bubble widths — the cross-platform replacement for `max-content` +
@@ -1079,8 +965,12 @@ function onCancelTap(): void {
   /* Same uni-app x default-clip guard as the root: the arrow protrudes
    * outside this box. */
   overflow: visible;
-  background-color: var(--sn-popover-bg);
-  color: var(--sn-popover-color);
+  /* Palette with literal fallbacks, consumed ON the painted node — the
+   * cross-renderer-safe form (see the root palette note). Each declaration
+   * carries its own fallback so a dropped var chain still paints white-on-
+   * dark text, never an invisible card. */
+  background-color: var(--sn-popover-bg, #ffffff);
+  color: var(--sn-popover-color, #1f2937);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
   /* Elevation via drop-shadow on H5 / miniprogram: unlike box-shadow's
@@ -1329,7 +1219,7 @@ function onCancelTap(): void {
   position: absolute;
   width: 32rpx;
   height: 32rpx;
-  background-color: var(--sn-popover-bg);
+  background-color: var(--sn-popover-bg, #ffffff);
   border: 2rpx solid var(--sn-popover-border);
   border-bottom-color: transparent;
   border-right-color: transparent;
@@ -1541,8 +1431,9 @@ function onCancelTap(): void {
     calc(var(--sn-mp-spacing-5) + env(safe-area-inset-bottom));
   border-top-left-radius: var(--sn-mp-radius-xl);
   border-top-right-radius: var(--sn-mp-radius-xl);
-  background-color: var(--sn-popover-bg);
-  color: var(--sn-popover-color);
+  /* Same literal-fallback palette as the pop (WeChat MP var-chain gaps). */
+  background-color: var(--sn-popover-bg, #ffffff);
+  color: var(--sn-popover-color, #1f2937);
   transform: translateY(100%);
   transition: transform 200ms ease, opacity 200ms ease;
   opacity: 0;

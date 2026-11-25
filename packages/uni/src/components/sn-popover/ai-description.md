@@ -4,6 +4,15 @@
   and its outline is the SAME `--sn-popover-border` token drawn on the two
   outside edges, so the slant strokes join the card border at the junction
   points: the whole callout reads as ONE continuous outline.
+- Self-sufficient palette: the pop / sheet panel / arrow each consume
+  `var(--sn-popover-bg, #ffffff)` / `var(--sn-popover-color, #1f2937)`
+  DIRECTLY on the painted node with literal fallbacks — WeChat MP has twice
+  failed to resolve the inherited custom-property chain (849b1859, 2212a8e5),
+  so the fallback-literal form is the cross-renderer guarantee. The bubble
+  stays in the document flow (`position: absolute`, pure-CSS anchoring, the
+  proven sn-tooltip geometry) on every platform; the mp-weixin measured
+  fixed-layer experiment was removed (fixed nodes skip the inherited var
+  chain on WeChat — the bubble painted position but no background).
 
 > Human-readable + AI-parseable description of the uni-end sn-popover component.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
@@ -196,6 +205,12 @@ import { SnPopover } from '@snui/uni';
   has no filter support and falls back to the `box-shadow` token behind
   conditional compilation (breaking: `--sn-popover-border` removed with
   the outline; the doodle skin draws its own hand-drawn border).
+- Flow-anchored geometry (fix): the bubble is `position: absolute` anchored
+  by `placement` CSS on every platform. The mp-weixin measured fixed-layer
+  variant (SelectorQuery trigger-rect positioning) was removed — WeChat MP
+  skips the inherited custom-property chain for fixed-positioned nodes, so
+  the fixed bubble rendered without a background. Host wrappers that clip
+  absolutely-positioned overflow must open their chain (demo scaffold rule).
 - Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
   and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,
