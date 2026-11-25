@@ -72,8 +72,7 @@ function onValidate(payload: { valid: boolean; errors: Record<string, string> })
       <text class="sn-demo__meta">{{ log }}</text>
       <text class="sn-demo__meta">@validate 回传 errors：{{ errors }}</text>
       <text class="sn-demo__meta"
-        >字段级规则先跑（required → 异步占用），再跑表单级规则（pattern / type）</text
-      >
+        >字段级规则先跑（required → 异步占用），再跑表单级规则（pattern / type）</text>
     </view>
   </view>
 </template>

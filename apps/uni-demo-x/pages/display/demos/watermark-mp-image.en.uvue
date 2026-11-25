@@ -20,8 +20,7 @@ const logo = 'https://cdn.uviewui.com/uview/album/4.jpg';
       <view class="sn-watermark-demo__card">
         <text class="sn-watermark-demo__title">Image watermark tiles</text>
         <text class="sn-watermark-demo__body"
-          >image wins over content; imageWidth / imageHeight size the tile.</text
-        >
+          >image wins over content; imageWidth / imageHeight size the tile.</text>
       </view>
     </view>
   </view>

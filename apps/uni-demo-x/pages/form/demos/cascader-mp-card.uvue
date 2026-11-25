@@ -42,8 +42,7 @@ const listText = computed(() => TEXT[String(listValue.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >卡片形态（card）：每个选项自成一张卡片，圆角 / 描边 / 阴影与 sn-cell card 同一套
-      token。</text
-    >
+      token。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

@@ -45,8 +45,7 @@ const items = [
     </view>
 
     <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle adds padding and fill</text
-    >
+      >Both together: customClass adds the frame, customStyle adds padding and fill</text>
     <view class="sn-demo__row">
       <SnBadge
         is-dot
@@ -58,8 +57,7 @@ const items = [
     </view>
 
     <text class="sn-demo__meta"
-      >The marker itself (type / bgColor / top / right) is untouched by these two props</text
-    >
+      >The marker itself (type / bgColor / top / right) is untouched by these two props</text>
     <view class="sn-demo__row">
       <SnBadge
         :value="6"

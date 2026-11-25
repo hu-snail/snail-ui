@@ -71,8 +71,7 @@ onBeforeUnmount(() => {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Reply arrives after 1.8s; the typing bubble holds the slot until then</text
-    >
+      >Reply arrives after 1.8s; the typing bubble holds the slot until then</text>
   </view>
 </template>
 <style scoped>

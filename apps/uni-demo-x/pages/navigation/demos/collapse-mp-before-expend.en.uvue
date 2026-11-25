@@ -29,8 +29,7 @@ function beforeExpend(): boolean {
 
     <text class="sn-demo__meta"
       >before-expend blocked {{ Math.min(attempts, 2) }} times; open:
-      {{ open.join(', ') || 'none' }}</text
-    >
+      {{ open.join(', ') || 'none' }}</text>
   </view>
 </template>
 <style scoped>

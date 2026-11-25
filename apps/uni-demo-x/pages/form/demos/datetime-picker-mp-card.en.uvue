@@ -42,8 +42,7 @@ const meetingText = computed(() => {
 <template>
   <view class="sn-demo sn-demo--column sn-demo--card">
     <text class="sn-demo__label"
-      >Card group (sn-cell-group card — one card per row, token gap)</text
-    >
+      >Card group (sn-cell-group card — one card per row, token gap)</text>
     <SnCellGroup card>
       <SnCell
         title="Shipping date"

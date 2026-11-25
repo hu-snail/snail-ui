@@ -25,8 +25,7 @@ const composing = ref('');
     />
 
     <text class="sn-demo__title"
-      >cursorSpacing / adjustPosition / disableDefaultPadding / holdKeyboard</text
-    >
+      >cursorSpacing / adjustPosition / disableDefaultPadding / holdKeyboard</text>
     <SnTextarea
       v-model="preset"
       :cursor-spacing="20"

@@ -30,8 +30,7 @@ const sameDayText = computed(() => {
       :panel-height="220"
     />
     <text class="sn-demo__meta"
-      >allowSameDay: both range ends may be the same day — currently {{ sameDayText }}</text
-    >
+      >allowSameDay: both range ends may be the same day — currently {{ sameDayText }}</text>
   </view>
 </template>
 <style scoped>

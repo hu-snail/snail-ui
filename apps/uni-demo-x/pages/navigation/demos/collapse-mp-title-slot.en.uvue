@@ -25,8 +25,7 @@ const open = ref(['a']);
               size="var(--sn-mp-icon-size-medium)"
             />
             <text class="sn-demo__title-text"
-              >Shipping (title slot · {{ expanded ? 'open' : 'closed' }})</text
-            >
+              >Shipping (title slot · {{ expanded ? 'open' : 'closed' }})</text>
           </view>
         </template>
         <text class="sn-demo__body">SF Express, delivery in 2 days.</text>

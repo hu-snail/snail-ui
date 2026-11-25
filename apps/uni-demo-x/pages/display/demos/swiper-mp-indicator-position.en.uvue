@@ -26,8 +26,7 @@ const two = list.slice(0, 2);
 
     <SnSwiper :list="two" :height="200" :indicator="{ minShowNum: 3 }" :autoplay="false" />
     <text class="sn-demo__meta"
-      >minShowNum=3 with only 2 slides: the indicator is hidden entirely.</text
-    >
+      >minShowNum=3 with only 2 slides: the indicator is hidden entirely.</text>
   </view>
 </template>
 <style scoped>

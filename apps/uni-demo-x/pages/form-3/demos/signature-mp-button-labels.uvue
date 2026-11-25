@@ -22,8 +22,7 @@ const onConfirm = (_result: unknown) => {
     />
 
     <text class="sn-demo__title"
-      >undoText / redoText（同时设置时覆盖 revokeText / restoreText）</text
-    >
+      >undoText / redoText（同时设置时覆盖 revokeText / restoreText）</text>
     <SnSignature
       enable-history
       undo-text="撤回"

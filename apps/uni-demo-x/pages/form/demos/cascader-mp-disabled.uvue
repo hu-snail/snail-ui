@@ -31,8 +31,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >「江苏」整枝与「舟山」叶子被禁用：行呈弱化态，点了既不展开也不确认。</text
-    >
+      >「江苏」整枝与「舟山」叶子被禁用：行呈弱化态，点了既不展开也不确认。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

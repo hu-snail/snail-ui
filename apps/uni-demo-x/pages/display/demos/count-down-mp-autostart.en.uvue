@@ -35,14 +35,12 @@ const started = ref(0);
           manual?.start();
           started += 1;
         "
-        ><text>Start</text></SnButton
-      >
+        ><text>Start</text></SnButton>
       <SnButton size="small" @click="manual?.reset()"><text>Reset (stays idle)</text></SnButton>
     </view>
 
     <text class="sn-demo__meta"
-      >Started manually {{ started }} times; customClass / customStyle land on the root node.</text
-    >
+      >Started manually {{ started }} times; customClass / customStyle land on the root node.</text>
     <text class="sn-demo__meta">
       With auto-start=false the countdown does not run on mount and reset() does not restart it —
       only an explicit start() begins timing.

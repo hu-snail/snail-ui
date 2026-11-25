@@ -13,8 +13,7 @@ const subscribed = ref<string>('yes');
   <view class="sn-demo sn-demo--stack">
     <SnCheckbox v-model="standalone"><text>Standalone v-model (outside a group)</text></SnCheckbox>
     <text class="sn-demo__meta"
-      >Standalone: the tick writes back to its own modelValue ({{ standalone }})</text
-    >
+      >Standalone: the tick writes back to its own modelValue ({{ standalone }})</text>
 
     <SnCheckbox v-model="subscribed" true-value="yes" false-value="no"><text>
       custom trueValue / falseValue

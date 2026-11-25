@@ -20,8 +20,7 @@ const logo = 'https://cdn.uviewui.com/uview/album/7.jpg';
       <view class="sn-watermark-demo__card">
         <text class="sn-watermark-demo__title">图片水印瓦片</text>
         <text class="sn-watermark-demo__body"
-          >image 优先于 content，瓦片尺寸由 imageWidth / imageHeight 决定。</text
-        >
+          >image 优先于 content，瓦片尺寸由 imageWidth / imageHeight 决定。</text>
       </view>
     </view>
   </view>

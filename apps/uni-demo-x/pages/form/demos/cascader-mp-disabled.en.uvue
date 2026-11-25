@@ -40,8 +40,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >The whole Jiangsu branch and the Zhoushan leaf are disabled: the rows read dimmed and a tap
-      neither drills down nor confirms.</text
-    >
+      neither drills down nor confirms.</text>
     <view class="sn-demo__cards">
       <SnCell
         card

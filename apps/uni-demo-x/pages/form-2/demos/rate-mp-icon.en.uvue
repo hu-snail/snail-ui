@@ -24,8 +24,7 @@ const hearts = ref<number | null>(3);
       active-color="var(--sn-mp-color-feedback-danger)"
     />
     <text class="sn-demo__meta"
-      >icon / activeIcon resolve through the registry (Heart); iconPrefix is parity only</text
-    >
+      >icon / activeIcon resolve through the registry (Heart); iconPrefix is parity only</text>
   </view>
 </template>
 <style scoped>

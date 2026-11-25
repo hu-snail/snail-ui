@@ -49,8 +49,7 @@ import SnCol from '@snui/uni-x/components/sn-layout/sn-col.uvue';
     >
       <SnCol :span="10"><view class="sn-demo__block"><text>custom-class</text></view></SnCol>
       <SnCol :span="10" custom-style="text-align: right;"
-        ><view class="sn-demo__block"><text>custom-style</text></view></SnCol
-      >
+        ><view class="sn-demo__block"><text>custom-style</text></view></SnCol>
     </SnLayout>
     <text class="sn-demo__meta">
       custom-class 落在 sn-layout 根节点，custom-style 同时支持行级与列级覆盖。

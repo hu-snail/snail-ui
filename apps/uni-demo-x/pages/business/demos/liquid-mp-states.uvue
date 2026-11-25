@@ -52,8 +52,7 @@ function jumpTo(next: number): void {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >点击按钮同时驱动三个球；current 过渡值：{{ Math.round(current) }}</text
-    >
+      >点击按钮同时驱动三个球；current 过渡值：{{ Math.round(current) }}</text>
   </view>
 </template>
 <style scoped>

@@ -65,12 +65,10 @@ function onProgress(): void {
     />
     <text class="sn-demo__meta"
       >showLimitNum=false hides the "current / max" counter; accept="media" picks images and
-      videos</text
-    >
+      videos</text>
     <text class="sn-demo__meta"
       >change fired {{ changeCount }} times; last removed: {{ lastRemoved }}; progress fired
-      {{ progressCount }} times</text
-    >
+      {{ progressCount }} times</text>
     <text class="sn-demo__meta">Remaining: {{ remaining }}</text>
 
     <SnUpload
@@ -83,8 +81,7 @@ function onProgress(): void {
     />
     <text class="sn-demo__meta"
       >accept="all" uses the generic file picker (same list as above, so removals are observable
-      across instances)</text
-    >
+      across instances)</text>
   </view>
 </template>
 <style scoped>

@@ -41,8 +41,7 @@ const demo = 'https://cdn.uviewui.com/uview/album/5.jpg';
       />
     </view>
     <text class="sn-demo__meta"
-      >One image with two customImage classes: zoomed in and faded out.</text
-    >
+      >One image with two customImage classes: zoomed in and faded out.</text>
   </view>
 </template>
 <style scoped>

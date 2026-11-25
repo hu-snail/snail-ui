@@ -30,8 +30,7 @@ const round = ref(0);
       custom-style="letter-spacing: 1rpx"
     />
     <text class="sn-demo__meta"
-      >customClass 挂在根节点、customStyle 追加到 inline style（上方带底色的数字）。</text
-    >
+      >customClass 挂在根节点、customStyle 追加到 inline style（上方带底色的数字）。</text>
 
     <SnButton size="small" @click="round += 1"><text>重新播放两组</text></SnButton>
   </view>

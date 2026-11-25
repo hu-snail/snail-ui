@@ -30,8 +30,7 @@ const classed = ref('');
       placeholder-class="sn-demo__placeholder"
     />
     <text class="sn-demo__meta"
-      >placeholderClass: the placeholder text is styled through a class</text
-    >
+      >placeholderClass: the placeholder text is styled through a class</text>
   </view>
 </template>
 <style scoped>

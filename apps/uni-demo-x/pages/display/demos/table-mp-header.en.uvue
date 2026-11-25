@@ -26,8 +26,7 @@ const rows: Row[] = [
       <SnTableColumn prop="status" label="Status" :width="120" align="center" />
     </SnTable>
     <text class="sn-demo__meta"
-      >show-header=false hides the header row, leaving the body only.</text
-    >
+      >show-header=false hides the header row, leaving the body only.</text>
   </view>
 </template>
 <style scoped>

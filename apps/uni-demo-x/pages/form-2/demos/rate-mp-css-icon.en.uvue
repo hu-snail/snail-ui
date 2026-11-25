@@ -14,13 +14,11 @@ const cssBool = ref<number | null>(2);
   <view class="sn-demo sn-demo--stack">
     <SnRate v-model="css" css-icon="demo-star" :num="5" />
     <text class="sn-demo__meta"
-      >css-icon="demo-star": the class name is applied verbatim to the glyph node</text
-    >
+      >css-icon="demo-star": the class name is applied verbatim to the glyph node</text>
 
     <SnRate v-model="cssBool" icon="demo-star-off" active-icon="demo-star" css-icon />
     <text class="sn-demo__meta"
-      >boolean css-icon + icon / active-icon: both class names are applied</text
-    >
+      >boolean css-icon + icon / active-icon: both class names are applied</text>
   </view>
 </template>
 <style scoped>

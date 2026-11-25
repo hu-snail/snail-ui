@@ -13,8 +13,7 @@ const styled = ref(45);
     />
     <text class="sn-demo__meta"
       >customClass / customStyle land on the root (border from the class, fill from the inline
-      style)</text
-    >
+      style)</text>
   </view>
 </template>
 <style scoped>

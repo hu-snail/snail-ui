@@ -28,8 +28,7 @@ function jumpToLast(): void {
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label"
-      >slidable-num=4 with 8 tabs → the strip scrolls and keeps the selection in view</text
-    >
+      >slidable-num=4 with 8 tabs → the strip scrolls and keeps the selection in view</text>
     <SnTabs
       v-model="activeScroll"
       :slidable-num="4"

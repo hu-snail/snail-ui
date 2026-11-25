@@ -52,8 +52,7 @@ function jumpTo(next: number): void {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text
-    >
+      >Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text>
   </view>
 </template>
 <style scoped>

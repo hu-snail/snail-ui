@@ -30,8 +30,7 @@ function beforeExpend(): boolean {
     <text class="sn-demo__meta"
       >before-expend 已拦截 {{ Math.min(attempts, 2) }} 次；已展开：{{
         open.join('、') || '无'
-      }}</text
-    >
+      }}</text>
   </view>
 </template>
 <style scoped>

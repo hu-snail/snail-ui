@@ -47,8 +47,7 @@ function pick(index: number): void {
     </view>
     <text class="sn-demo__meta"
       >color-dark recolours the modules; color-light the quiet zone. The four corner blocks are
-      rounded by default.</text
-    >
+      rounded by default.</text>
     <view class="sn-demo__swatches" aria-label="QR colour palettes">
       <view
         v-for="(option, index) in palettes"
@@ -64,8 +63,7 @@ function pick(index: number): void {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Selected: {{ active.label }} ({{ active.dark }} / {{ active.light }})</text
-    >
+      >Selected: {{ active.label }} ({{ active.dark }} / {{ active.light }})</text>
   </view>
 </template>
 <style scoped>

@@ -37,8 +37,7 @@ function record(name: string): void {
       <view class="sn-popup-demo__body">
         <text class="sn-popup-demo__title">modal = false</text>
         <text class="sn-popup-demo__text"
-          >遮罩不渲染，点击面板外区域不会关闭，用下方按钮关闭。</text
-        >
+          >遮罩不渲染，点击面板外区域不会关闭，用下方按钮关闭。</text>
         <SnButton type="primary" block @click="noModal = false"><text>关闭</text></SnButton>
       </view>
     </SnPopup>
@@ -55,8 +54,7 @@ function record(name: string): void {
       <view class="sn-popup-demo__body">
         <text class="sn-popup-demo__title">closeOnClickModal = false</text>
         <text class="sn-popup-demo__text"
-          >点击遮罩仍会触发 click-modal，但不会关闭；请用右上角关闭按钮。</text
-        >
+          >点击遮罩仍会触发 click-modal，但不会关闭；请用右上角关闭按钮。</text>
       </view>
     </SnPopup>
 

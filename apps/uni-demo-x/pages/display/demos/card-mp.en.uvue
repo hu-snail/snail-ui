@@ -30,8 +30,7 @@ function handleOk(): void {
       <view class="body">
         <text
           >Record of Yueyang Tower — In the mild spring light and clear air, the waves lie calm; sky
-          and water merge into one boundless expanse of blue.</text
-        >
+          and water merge into one boundless expanse of blue.</text>
       </view>
       <template #footer>
         <SnButton size="small" plain @click="handleOk">

@@ -11,8 +11,7 @@ const colored = ref<number | null>(3);
       :active-color="['var(--sn-mp-color-feedback-danger)', 'var(--sn-mp-color-feedback-warning)']"
     />
     <text class="sn-demo__meta"
-      >activeColor as an array: one color per icon (red → orange → …)</text
-    >
+      >activeColor as an array: one color per icon (red → orange → …)</text>
   </view>
 </template>
 <style scoped>

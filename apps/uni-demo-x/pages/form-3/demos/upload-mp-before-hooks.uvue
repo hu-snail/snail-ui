@@ -83,8 +83,7 @@ function onOversize(payload: { file: UploadFileItem; maxSize: number }): void {
       @oversize="onOversize"
     />
     <text class="sn-demo__meta"
-      >点第二个 × 可删除；点第一个 × 被 beforeRemove 否决。点缩略图只触发 beforePreview。</text
-    >
+      >点第二个 × 可删除；点第一个 × 被 beforeRemove 否决。点缩略图只触发 beforePreview。</text>
     <text class="sn-demo__meta">
       beforeChoose {{ chooseChecks }} / beforeUpload {{ uploadChecks }} / beforeRemove
       {{ removeChecks }} / beforePreview {{ previewChecks }}

@@ -641,6 +641,13 @@ const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
+/**
+ * Always-true guard — same rationale as sn-picker-view: the compiler's
+ * #ifdef marker binding (r0) is never assigned, so a bare branch never
+ * renders on device. A real expression replaces the marker binding.
+ */
+const nativeBranchVisible = computed(() => true);
+
 /** Native picker-view selection: value index per column. */
 const nativeIndexes = computed<number[]>(() =>
   columns.value.map((column) => {
@@ -721,6 +728,7 @@ const ariaValue = computed(() => {
     -->
     <!-- #ifdef MP-WEIXIN -->
     <picker-view
+      v-if="nativeBranchVisible"
       class="sn-datetime-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"

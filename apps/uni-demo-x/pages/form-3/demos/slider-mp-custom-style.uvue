@@ -12,8 +12,7 @@ const styled = ref(45);
       custom-style="padding: 8rpx 16rpx; border-radius: var(--sn-mp-radius-md); background-color: var(--sn-mp-color-background-soft);"
     />
     <text class="sn-demo__meta"
-      >customClass / customStyle 落在根节点上（边框来自类名，底色来自内联样式）</text
-    >
+      >customClass / customStyle 落在根节点上（边框来自类名，底色来自内联样式）</text>
   </view>
 </template>
 <style scoped>

@@ -26,16 +26,14 @@ registerSnIcons({ 'cell-moon': MoonIcon });
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >Name chain (built-in catalogue names need no registration; registry names are custom)</text
-    >
+      >Name chain (built-in catalogue names need no registration; registry names are custom)</text>
     <SnCellGroup insert>
       <SnCell title="Catalogue name" value="bell" prefix-icon="bell" />
       <SnCell title="Registry name" value="cell-moon" prefix-icon="cell-moon" />
     </SnCellGroup>
 
     <text class="sn-demo__label"
-      >IconData objects (named imports from the icon set, win over names)</text
-    >
+      >IconData objects (named imports from the icon set, win over names)</text>
     <SnCellGroup insert>
       <SnCell title="Starred" value="Star" :prefix-icon-data="Star" />
       <SnCell title="Liked" value="Heart" :prefix-icon-data="Heart" />

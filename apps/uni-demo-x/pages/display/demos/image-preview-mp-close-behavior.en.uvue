@@ -20,8 +20,7 @@ const images = [
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnButton size="small" @click="preview?.open()"
-      ><text>Open (no loop / no close button / backdrop tap kept)</text></SnButton
-    >
+      ><text>Open (no loop / no close button / backdrop tap kept)</text></SnButton>
 
     <SnImagePreview
       ref="preview"

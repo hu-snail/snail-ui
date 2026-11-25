@@ -34,8 +34,7 @@ const styledValue = ref('month');
     />
 
     <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle changes the fill</text
-    >
+      >Both together: customClass adds the frame, customStyle changes the fill</text>
     <SnSegmented
       v-model="styledValue"
       :options="options"

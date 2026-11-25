@@ -21,9 +21,7 @@ const easingActive = ref(0);
       <SnTab title="For you" :name="0">
         <view class="sn-demo__pane"
           ><text class="sn-demo__pane-text"
-            >Drag the content area left or right to switch tabs.</text
-          ></view
-        >
+            >Drag the content area left or right to switch tabs.</text></view>
       </SnTab>
       <SnTab title="Following" :name="1">
         <view class="sn-demo__pane"><text class="sn-demo__pane-text">Second pane.</text></view>
@@ -52,9 +50,7 @@ const easingActive = ref(0);
       <SnTab title="Month" :name="2" disabled>
         <view class="sn-demo__pane"
           ><text class="sn-demo__pane-text"
-            >Monthly stats (disabled: swiping here snaps back)</text
-          ></view
-        >
+            >Monthly stats (disabled: swiping here snaps back)</text></view>
       </SnTab>
     </SnTabs>
 

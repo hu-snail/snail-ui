@@ -11,8 +11,7 @@ const panelStyle = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnButton type="primary" block @click="scrimStyle = true"
-      ><text>modal-style (scrim inline style)</text></SnButton
-    >
+      ><text>modal-style (scrim inline style)</text></SnButton>
     <SnButton block @click="panelStyle = true"><text>custom-style (panel inline style)</text></SnButton>
 
     <SnPopup

@@ -51,8 +51,7 @@ function record(name: string): void {
       <view class="sn-demo__body">
         <text class="sn-demo__title">hideWhenClose = false</text>
         <text class="sn-demo__text"
-          >关闭后节点仍在树上，只加 sn-popup--hidden（visibility: hidden）。</text
-        >
+          >关闭后节点仍在树上，只加 sn-popup--hidden（visibility: hidden）。</text>
         <SnButton type="primary" block @click="keepNode = false"><text>关闭</text></SnButton>
       </view>
     </SnPopup>

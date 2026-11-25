@@ -28,8 +28,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <text class="sn-demo__word">自定义颜色</text>
     </view>
     <text class="sn-demo__meta"
-      >direction="vertical" 与 vertical 等价；dashed / color 同样适用</text
-    >
+      >direction="vertical" 与 vertical 等价；dashed / color 同样适用</text>
 
     <view class="sn-demo__row sn-demo__row--tall">
       <text class="sn-demo__word">custom-class</text>

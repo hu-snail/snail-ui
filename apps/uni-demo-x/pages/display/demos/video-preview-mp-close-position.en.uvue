@@ -24,8 +24,7 @@ const clip = {
     <SnVideoPreview ref="preview" close-position="right-top" custom-class="sn-demo-contained" />
 
     <text class="sn-demo__meta"
-      >closePosition sets where the close button sits; right-top here.</text
-    >
+      >closePosition sets where the close button sits; right-top here.</text>
   </view>
 </template>
 <style scoped>

@@ -25,8 +25,7 @@ const open = ref(['a']);
               size="var(--sn-mp-icon-size-medium)"
             />
             <text class="sn-demo__title-text"
-              >配送方式（title 插槽 · {{ expanded ? '已展开' : '已收起' }}）</text
-            >
+              >配送方式（title 插槽 · {{ expanded ? '已展开' : '已收起' }}）</text>
           </view>
         </template>
         <text class="sn-demo__body">顺丰速运，预计 2 天送达。</text>

@@ -46,8 +46,7 @@ function markPayday(day: CalendarDayItem): Partial<CalendarDayItem> | undefined 
       @change="onChange"
     />
     <text class="sn-demo__meta"
-      >defaultTime="09:30:00" + immediateChange：点中即写回带时分秒的时间戳 —— {{ timedText }}</text
-    >
+      >defaultTime="09:30:00" + immediateChange：点中即写回带时分秒的时间戳 —— {{ timedText }}</text>
     <text class="sn-demo__meta">change 已触发 {{ changes }} 次</text>
   </view>
 </template>

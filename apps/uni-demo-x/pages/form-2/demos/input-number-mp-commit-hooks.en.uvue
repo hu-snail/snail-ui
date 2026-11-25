@@ -34,8 +34,7 @@ const evenOnly = (value: number | string) => {
 
     <text class="sn-demo__title"
       >updateOnInit (corrects an out-of-range value on mount) + inputType="number" +
-      adjustPosition=false</text
-    >
+      adjustPosition=false</text>
     <SnInputNumber
       v-model="corrected"
       :min="0"

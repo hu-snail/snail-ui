@@ -21,8 +21,7 @@ const sales = ref<1 | 0 | -1>(1);
     />
     <text class="sn-demo__meta"
       >customClass + customStyle: the inline style supplies the pill fill, the class supplies the
-      border</text
-    >
+      border</text>
 
     <SnSortButton
       v-model="sales"
@@ -33,8 +32,7 @@ const sales = ref<1 | 0 | -1>(1);
     />
     <text class="sn-demo__meta"
       >The same customClass on top of line mode: the underline stays the component's, the frame
-      comes from the class</text
-    >
+      comes from the class</text>
 
     <text class="sn-demo__meta">price {{ price }} / sales {{ sales }}</text>
   </view>

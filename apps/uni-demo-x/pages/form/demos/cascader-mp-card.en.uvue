@@ -49,8 +49,7 @@ const listText = computed(() => TEXT[String(listValue.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >Card look (`card`): every option is its own card — radius / border / shadow from the same
-      tokens sn-cell's card uses.</text
-    >
+      tokens sn-cell's card uses.</text>
     <view class="sn-demo__cards">
       <SnCell
         card
@@ -72,8 +71,7 @@ const listText = computed(() => TEXT[String(listValue.value)] ?? '');
     />
 
     <text class="sn-demo__label"
-      >For comparison: the default list look (no `card`, edge-to-edge rows with a hairline).</text
-    >
+      >For comparison: the default list look (no `card`, edge-to-edge rows with a hairline).</text>
     <view class="sn-demo__cards">
       <SnCell
         card

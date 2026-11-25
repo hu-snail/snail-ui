@@ -38,11 +38,9 @@ const lastEvent = ref('—');
 
     <view class="sn-demo__row">
       <SnButton size="small" @click="preview?.open({ startPosition: 0 })"
-        ><text>Open from the first</text></SnButton
-      >
+        ><text>Open from the first</text></SnButton>
       <SnButton size="small" @click="preview?.open({ startPosition: 2 })"
-        ><text>Open from the third</text></SnButton
-      >
+        ><text>Open from the third</text></SnButton>
     </view>
     <text class="sn-demo__meta">Latest event: {{ lastEvent }}</text>
 

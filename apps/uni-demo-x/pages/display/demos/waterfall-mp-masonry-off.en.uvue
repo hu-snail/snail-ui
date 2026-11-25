@@ -35,8 +35,7 @@ const photos: Photo[] = [
     </SnWaterfall>
     <text class="sn-demo__caption"
       >masonry=false — the same content degrades to a single stacked column (items keep
-      margin-bottom)</text
-    >
+      margin-bottom)</text>
   </view>
 </template>
 <style scoped>

@@ -8,8 +8,7 @@ const railCss = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title"
-      >activeActionCssIcon / inactiveActionCssIcon（旋钮图标改成 CSS 类）</text
-    >
+      >activeActionCssIcon / inactiveActionCssIcon（旋钮图标改成 CSS 类）</text>
     <SnSwitch
       v-model="knobCss"
       class-prefix="sn-demo-icon"

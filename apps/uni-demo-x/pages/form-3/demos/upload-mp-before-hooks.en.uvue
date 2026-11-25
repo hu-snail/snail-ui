@@ -88,16 +88,14 @@ function onOversize(payload: { file: UploadFileItem; maxSize: number }): void {
     />
     <text class="sn-demo__meta"
       >The second × removes its row; the first × is vetoed by beforeRemove. Tapping a thumb only
-      fires beforePreview.</text
-    >
+      fires beforePreview.</text>
     <text class="sn-demo__meta">
       beforeChoose {{ chooseChecks }} / beforeUpload {{ uploadChecks }} / beforeRemove
       {{ removeChecks }} / beforePreview {{ previewChecks }}
     </text>
     <text class="sn-demo__meta">Last hook: {{ log }}</text>
     <text class="sn-demo__meta"
-      >maxSize=5MB: oversized files never enter the list and emit oversize instead</text
-    >
+      >maxSize=5MB: oversized files never enter the list and emit oversize instead</text>
   </view>
 </template>
 <style scoped>

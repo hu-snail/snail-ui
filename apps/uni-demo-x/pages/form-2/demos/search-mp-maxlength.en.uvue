@@ -8,8 +8,7 @@ const limited = ref('');
   <view class="sn-demo sn-demo--stack">
     <SnSearch v-model="limited" :maxlength="8" placeholder="At most 8 characters" />
     <text class="sn-demo__meta"
-      >maxlength=8: extra characters are rejected ({{ limited.length }}/8)</text
-    >
+      >maxlength=8: extra characters are rejected ({{ limited.length }}/8)</text>
   </view>
 </template>
 <style scoped>

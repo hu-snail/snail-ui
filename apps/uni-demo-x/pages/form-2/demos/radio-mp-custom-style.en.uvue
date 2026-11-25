@@ -11,8 +11,7 @@ const styled = ref<string | number | boolean | undefined>('b');
     <text class="sn-demo__title">customLabelClass</text>
     <SnRadioGroup v-model="labeled">
       <SnRadio value="a" custom-label-class="sn-demo__label"
-        ><text>Label styled through customLabelClass</text></SnRadio
-      >
+        ><text>Label styled through customLabelClass</text></SnRadio>
       <SnRadio value="b"><text>Plain label</text></SnRadio>
     </SnRadioGroup>
 

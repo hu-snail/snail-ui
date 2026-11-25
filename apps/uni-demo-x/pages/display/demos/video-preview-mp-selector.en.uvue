@@ -25,8 +25,7 @@ const closed = ref(0);
     <SnButton size="small" type="primary" @click="preview?.open(clip)"><text>Open</text></SnButton>
     <SnButton size="small" @click="preview?.close()"><text>Close</text></SnButton>
     <text class="sn-demo__meta"
-      >on-open fired {{ opened }} times; on-close fired {{ closed }} times</text
-    >
+      >on-open fired {{ opened }} times; on-close fired {{ closed }} times</text>
 
     <SnVideoPreview
       ref="preview"

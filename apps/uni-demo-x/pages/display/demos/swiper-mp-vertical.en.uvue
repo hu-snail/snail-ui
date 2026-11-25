@@ -15,8 +15,7 @@ const list = [
   <view class="sn-demo sn-demo--stack">
     <SnSwiper :list="list" :height="300" direction="vertical" :interval="3000" />
     <text class="sn-demo__meta"
-      >direction="vertical": swipes up and down, the indicator stays bottom-centre.</text
-    >
+      >direction="vertical": swipes up and down, the indicator stays bottom-centre.</text>
 
     <SnSwiper
       :list="list"

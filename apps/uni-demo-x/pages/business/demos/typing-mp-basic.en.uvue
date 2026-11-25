@@ -18,8 +18,7 @@ import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Use the typing bubble while waiting; unmount it once the reply arrives</text
-    >
+      >Use the typing bubble while waiting; unmount it once the reply arrives</text>
   </view>
 </template>
 <style scoped>

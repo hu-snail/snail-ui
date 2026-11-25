@@ -64,8 +64,7 @@ const lastError = ref('—');
     />
     <text class="sn-demo__meta"
       >multiple picks several at once; at limit=6 the picker tile disappears and the counter stops
-      at 6/6</text
-    >
+      at 6/6</text>
 
     <text class="sn-demo__title">sourceType=['camera'] + sizeType=['original']</text>
     <SnUpload
@@ -78,8 +77,7 @@ const lastError = ref('—');
       @chooseerror="lastError = String($event)"
     />
     <text class="sn-demo__meta"
-      >sourceType narrowed to the camera; sizeType keeps originals only</text
-    >
+      >sourceType narrowed to the camera; sizeType keeps originals only</text>
 
     <text class="sn-demo__title">accept="file" already at the limit</text>
     <SnUpload
@@ -91,8 +89,7 @@ const lastError = ref('—');
       @chooseerror="lastError = String($event)"
     />
     <text class="sn-demo__meta"
-      >accept="file" uses the file picker; 2/2 is full, so only the remove controls remain</text
-    >
+      >accept="file" uses the file picker; 2/2 is full, so only the remove controls remain</text>
 
     <text class="sn-demo__meta">chooseerror payload: {{ lastError }}</text>
   </view>

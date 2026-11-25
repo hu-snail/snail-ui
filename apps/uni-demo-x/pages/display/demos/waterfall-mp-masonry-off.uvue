@@ -34,8 +34,7 @@ const photos: Photo[] = [
       </view>
     </SnWaterfall>
     <text class="sn-demo__caption"
-      >masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text
-    >
+      >masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text>
   </view>
 </template>
 <style scoped>

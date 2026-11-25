@@ -36,8 +36,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >checkStrictly: any level can be confirmed and only then does the confirm button render; pick
-      a branch, then tap "Use it".</text
-    >
+      a branch, then tap "Use it".</text>
     <view class="sn-demo__cards">
       <SnCell
         card

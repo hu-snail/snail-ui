@@ -34,8 +34,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
-    >
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text>
     <view class="sn-demo__cards">
       <SnCell
         card

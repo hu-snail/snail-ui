@@ -13,8 +13,7 @@ import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
       <SnQrCode text="AUI-20240001" :size="160" correct-level="M" />
     </view>
     <text class="sn-demo__meta"
-      >Left: default EC level H; right: level M — a shorter payload means bigger modules.</text
-    >
+      >Left: default EC level H; right: level M — a shorter payload means bigger modules.</text>
   </view>
 </template>
 <style scoped>

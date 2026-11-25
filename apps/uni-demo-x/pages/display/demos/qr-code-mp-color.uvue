@@ -44,8 +44,7 @@ function pick(index: number): void {
       />
     </view>
     <text class="sn-demo__meta"
-      >color-dark 换码点色，color-light 换留白色；四个角块默认带圆角。</text
-    >
+      >color-dark 换码点色，color-light 换留白色；四个角块默认带圆角。</text>
     <view class="sn-demo__swatches" aria-label="二维码配色色卡">
       <view
         v-for="(option, index) in palettes"
@@ -61,8 +60,7 @@ function pick(index: number): void {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >当前：{{ active.label }}（{{ active.dark }} / {{ active.light }}）</text
-    >
+      >当前：{{ active.label }}（{{ active.dark }} / {{ active.light }}）</text>
   </view>
 </template>
 <style scoped>

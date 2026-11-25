@@ -14,8 +14,7 @@ const dense = ref<Array<string | number>>(['Shanghai']);
       :visible-item-count="5"
     />
     <text class="sn-demo__meta"
-      >itemHeight=32 + visibleItemCount=5: shorter rows, fewer visible rows</text
-    >
+      >itemHeight=32 + visibleItemCount=5: shorter rows, fewer visible rows</text>
   </view>
 </template>
 <style scoped>

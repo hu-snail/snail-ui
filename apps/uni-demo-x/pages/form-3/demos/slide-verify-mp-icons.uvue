@@ -28,8 +28,7 @@ const onFail = (): void => {
       @fail="onFail"
     />
     <text class="sn-demo__meta"
-      >icon / successIcon 走 iconfont 约定（sn-icon-demo-next），尺寸各自独立</text
-    >
+      >icon / successIcon 走 iconfont 约定（sn-icon-demo-next），尺寸各自独立</text>
 
     <SnSlideVerify css-icon="demo-verify-css" :icon-size="32" @success="onSuccess" @fail="onFail" />
     <text class="sn-demo__meta">cssIcon 传字符串：类名原样渲染，不加 iconPrefix 前缀</text>

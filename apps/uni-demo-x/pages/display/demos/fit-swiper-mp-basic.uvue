@@ -77,8 +77,7 @@ const activeTitle = computed(() => {
       </template>
     </SnFitSwiper>
     <text class="sn-demo__caption"
-      >当前第 {{ current + 1 }} 页（{{ activeTitle }}）— 滑动时高度自适应，指示点带滑轨条</text
-    >
+      >当前第 {{ current + 1 }} 页（{{ activeTitle }}）— 滑动时高度自适应，指示点带滑轨条</text>
   </view>
 </template>
 <style scoped>

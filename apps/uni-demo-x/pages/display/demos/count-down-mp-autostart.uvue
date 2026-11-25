@@ -35,14 +35,12 @@ const started = ref(0);
           manual?.start();
           started += 1;
         "
-        ><text>开始</text></SnButton
-      >
+        ><text>开始</text></SnButton>
       <SnButton size="small" @click="manual?.reset()"><text>重置（不自动跑）</text></SnButton>
     </view>
 
     <text class="sn-demo__meta"
-      >手动开始 {{ started }} 次；customClass / customStyle 作用在根节点上。</text
-    >
+      >手动开始 {{ started }} 次；customClass / customStyle 作用在根节点上。</text>
     <text class="sn-demo__meta">
       auto-start=false 时组件挂载不启动，reset() 也不会自动跑；只有显式调用 start() 才开始计时。
     </text>

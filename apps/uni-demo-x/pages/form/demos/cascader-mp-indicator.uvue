@@ -34,8 +34,7 @@ const dotText = computed(() => TEXT[String(dotValue.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >lineTheme="underline"：指示条铺满当前列底部，lineHeight 数字按 rpx 设计值。</text
-    >
+      >lineTheme="underline"：指示条铺满当前列底部，lineHeight 数字按 rpx 设计值。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

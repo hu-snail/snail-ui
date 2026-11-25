@@ -34,8 +34,7 @@ const photos = ref<UploadFileItem[]>([
       :auto-upload="false"
     />
     <text class="sn-demo__meta"
-      >imageMode="aspectFit": the whole image stays visible, no cropping</text
-    >
+      >imageMode="aspectFit": the whole image stays visible, no cropping</text>
 
     <SnUpload :file-list="photos" :image-mode="'aspectFill'" :limit="4" :auto-upload="false" />
     <text class="sn-demo__meta">imageMode="aspectFill": fills the tile and crops</text>

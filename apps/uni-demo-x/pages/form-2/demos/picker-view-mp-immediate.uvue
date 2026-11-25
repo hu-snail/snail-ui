@@ -19,8 +19,7 @@ function onChange(): void {
   <view class="sn-demo sn-demo--stack">
     <SnPickerView v-model="value" :columns="[seconds]" immediate-change @change="onChange" />
     <text class="sn-demo__meta"
-      >immediateChange：拖动中持续触发 change（已触发 {{ changes }} 次）</text
-    >
+      >immediateChange：拖动中持续触发 change（已触发 {{ changes }} 次）</text>
   </view>
 </template>
 <style scoped>

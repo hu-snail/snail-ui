@@ -39,8 +39,7 @@ function onSort(payload: { prop: string; order: 'none' | 'asc' | 'desc' }) {
     </SnTable>
     <text class="sn-demo__meta"
       >Tap the Amount header to cycle ascending / descending / unsorted; the data is driven by
-      @sort-method.</text
-    >
+      @sort-method.</text>
   </view>
 </template>
 <style scoped>

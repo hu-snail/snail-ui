@@ -14,8 +14,7 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
       <SnStep title="发货" description="待处理" />
     </SnSteps>
     <text class="sn-demo__meta"
-      >custom-class="steps-brand" 给根节点挂自定义类，便于宿主覆盖内部样式。</text
-    >
+      >custom-class="steps-brand" 给根节点挂自定义类，便于宿主覆盖内部样式。</text>
   </view>
 </template>
 <style scoped>

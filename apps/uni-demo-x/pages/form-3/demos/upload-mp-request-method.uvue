@@ -103,8 +103,7 @@ function onFail(payload: { file: UploadFileItem; error: unknown }): void {
       @fail="onFail"
     />
     <text class="sn-demo__meta"
-      >autoUpload=false：选完保持 pending，点下面按钮调 expose 的 submit()</text
-    >
+      >autoUpload=false：选完保持 pending，点下面按钮调 expose 的 submit()</text>
     <view class="sn-demo__action" @click="runSubmit">
       <text class="sn-demo__action-text">submit()</text>
     </view>

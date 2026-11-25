@@ -15,8 +15,7 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
     </SnSteps>
     <text class="sn-demo__meta"
       >custom-class="steps-brand" mounts a custom class on the root for host-side style
-      overrides.</text
-    >
+      overrides.</text>
   </view>
 </template>
 <style scoped>

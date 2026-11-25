@@ -100,8 +100,7 @@ function onThemeChange(value: string | number): void {
     </view>
     <text class="sn-demo__meta"
       >Pull down to refresh, scroll to bottom for the next page; a short last page stops
-      automatically</text
-    >
+      automatically</text>
   </view>
 </template>
 <style scoped>

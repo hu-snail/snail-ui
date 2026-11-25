@@ -25,8 +25,7 @@ const overridden = ref<string | number | boolean | undefined>('a');
     <SnRadioGroup v-model="overridden">
       <SnRadio value="a"><text>Inherits the group color</text></SnRadio>
       <SnRadio value="b" checked-color="var(--sn-mp-color-feedback-danger)"
-        ><text>Overridden to the danger color</text></SnRadio
-      >
+        ><text>Overridden to the danger color</text></SnRadio>
     </SnRadioGroup>
     <text class="sn-demo__meta">Current: {{ overridden ?? '(none)' }}</text>
   </view>

@@ -9,8 +9,7 @@ const composing = ref('');
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title"
-      >focus / autoFocus + fixed (the keyboard does not push the page)</text
-    >
+      >focus / autoFocus + fixed (the keyboard does not push the page)</text>
     <SnTextarea v-model="preset" focus fixed placeholder="Focused on mount + fixed mode" />
     <SnTextarea v-model="preset" auto-focus placeholder="autoFocus raises the keyboard on mount" />
 
@@ -27,8 +26,7 @@ const composing = ref('');
     />
 
     <text class="sn-demo__title"
-      >cursorSpacing / adjustPosition / disableDefaultPadding / holdKeyboard</text
-    >
+      >cursorSpacing / adjustPosition / disableDefaultPadding / holdKeyboard</text>
     <SnTextarea
       v-model="preset"
       :cursor-spacing="20"

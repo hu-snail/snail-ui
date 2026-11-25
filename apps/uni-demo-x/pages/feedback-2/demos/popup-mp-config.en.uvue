@@ -19,8 +19,7 @@ function record(name: string): void {
   <view class="sn-demo sn-demo--stack">
     <SnButton block @click="noModal = true"><text>modal=false (no scrim)</text></SnButton>
     <SnButton block @click="noCloseOnTap = true"
-      ><text>closeOnClickModal=false (scrim tap keeps it open)</text></SnButton
-    >
+      ><text>closeOnClickModal=false (scrim tap keeps it open)</text></SnButton>
     <SnButton block @click="customAnim = true"><text>transition='zoom-in' + duration 600</text></SnButton>
 
     <view v-if="events.length" class="sn-popup-demo__log">
@@ -39,8 +38,7 @@ function record(name: string): void {
       <view class="sn-popup-demo__body">
         <text class="sn-popup-demo__title">modal = false</text>
         <text class="sn-popup-demo__text"
-          >No scrim is rendered and tapping outside does not close it — use the button below.</text
-        >
+          >No scrim is rendered and tapping outside does not close it — use the button below.</text>
         <SnButton type="primary" block @click="noModal = false"><text>Close</text></SnButton>
       </view>
     </SnPopup>
@@ -58,8 +56,7 @@ function record(name: string): void {
         <text class="sn-popup-demo__title">closeOnClickModal = false</text>
         <text class="sn-popup-demo__text"
           >A scrim tap still emits click-modal but keeps the popup open — use the top-right close
-          button.</text
-        >
+          button.</text>
       </view>
     </SnPopup>
 

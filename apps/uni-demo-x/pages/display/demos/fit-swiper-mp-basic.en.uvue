@@ -75,8 +75,7 @@ const activeTitle = computed(() => {
     </SnFitSwiper>
     <text class="sn-demo__caption"
       >Page {{ current + 1 }} ({{ activeTitle }}) — height adapts on swipe, slider-rail
-      indicator</text
-    >
+      indicator</text>
   </view>
 </template>
 <style scoped>

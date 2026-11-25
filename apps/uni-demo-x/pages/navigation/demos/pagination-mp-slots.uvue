@@ -22,8 +22,7 @@ const page = ref(1);
     >
       <template #prev="{ modelValue }">
         <text class="sn-demo__slot" :class="{ 'sn-demo__slot--off': modelValue <= 1 }"
-          >‹ 上一页</text
-        >
+          >‹ 上一页</text>
       </template>
       <template #size="{ modelValue, totalPageNum }">
         <text class="sn-demo__slot">{{ modelValue }} / {{ totalPageNum }}</text>

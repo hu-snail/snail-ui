@@ -16,8 +16,7 @@ import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
       text="custom-class + custom-style 追加在根节点上"
     />
     <text class="sn-demo__meta"
-      >根节点同时挂 sn-text 与 sn-demo__highlight 两个类，内联样式覆盖内边距与圆角。</text
-    >
+      >根节点同时挂 sn-text 与 sn-demo__highlight 两个类，内联样式覆盖内边距与圆角。</text>
 
     <SnText type="primary" bold>
       <template #prefix>

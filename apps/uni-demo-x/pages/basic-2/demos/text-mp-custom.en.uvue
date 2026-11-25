@@ -18,8 +18,7 @@ import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
     />
     <text class="sn-demo__meta"
       >The root carries both sn-text and sn-demo__highlight; the inline style overrides padding and
-      radius.</text
-    >
+      radius.</text>
 
     <SnText type="primary" bold>
       <template #prefix>

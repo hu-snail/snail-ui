@@ -37,8 +37,7 @@ const photos = ref<UploadFileItem[]>([
     />
     <text class="sn-demo__meta"
       >customEvokeClass 改选择瓦片，customPreviewClass 改文件瓦片，customClass / customStyle
-      改根节点</text
-    >
+      改根节点</text>
   </view>
 </template>
 <style scoped>

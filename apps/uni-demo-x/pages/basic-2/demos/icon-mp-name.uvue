@@ -18,8 +18,7 @@ import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
       <SnIcon name="user" :size="40" />
     </view>
     <text class="sn-demo__meta"
-      >默认 classPrefix：sn-icon-home / sn-icon-search / sn-icon-user</text
-    >
+      >默认 classPrefix：sn-icon-home / sn-icon-search / sn-icon-user</text>
 
     <view class="sn-demo__row">
       <SnIcon name="home" class-prefix="wd-icon" :size="40" />

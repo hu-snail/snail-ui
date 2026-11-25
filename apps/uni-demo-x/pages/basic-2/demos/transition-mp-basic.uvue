@@ -21,8 +21,7 @@ const name = ref<(typeof names)[number]>('fade');
           name = n;
           show = true;
         "
-        ><text>{{ n }}</text></SnButton
-      >
+        ><text>{{ n }}</text></SnButton>
     </view>
 
     <SnButton size="small" @click="show = !show"><text>{{ show ? '收起' : '展开' }}</text></SnButton>

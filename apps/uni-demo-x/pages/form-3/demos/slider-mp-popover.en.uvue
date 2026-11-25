@@ -14,8 +14,7 @@ const never = ref(70);
       </view>
     </view>
     <text class="sn-demo__meta"
-      >popoverVisible shows only while dragging by default, "always" keeps it on</text
-    >
+      >popoverVisible shows only while dragging by default, "always" keeps it on</text>
 
     <SnSlider v-model="never" popover-visible="never" />
     <text class="sn-demo__meta">popoverVisible="never": no value bubble even while dragging</text>

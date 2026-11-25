@@ -10,8 +10,7 @@ const photo = '/static/avatar-user.png';
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta"
-      >头像右下角状态点（online 绿 / offline 灰），状态会读进 aria-label：</text
-    >
+      >头像右下角状态点（online 绿 / offline 灰），状态会读进 aria-label：</text>
     <view class="st-grid">
       <view class="st-cell">
         <SnAvatar :src="photo" size="medium" status="online" alt="在线" />

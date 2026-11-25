@@ -19,8 +19,7 @@ const wrapper = ref('snail');
       placeholder="customInputClass"
     />
     <text class="sn-demo__meta"
-      >customInputClass lands on the inner input node, widening letter spacing</text
-    >
+      >customInputClass lands on the inner input node, widening letter spacing</text>
 
     <SnSearch
       v-model="wrapper"

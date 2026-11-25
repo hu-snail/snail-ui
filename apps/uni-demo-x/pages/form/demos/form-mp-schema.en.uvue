@@ -37,8 +37,7 @@ const schema = {
         </SnFormItem>
       </SnForm>
       <text class="sn-demo__meta"
-        >schema lands on the context and does not validate; messages come from rules</text
-      >
+        >schema lands on the context and does not validate; messages come from rules</text>
     </view>
   </view>
 </template>

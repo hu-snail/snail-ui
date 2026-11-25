@@ -62,12 +62,10 @@ function onProgress(): void {
       @progress="onProgress"
     />
     <text class="sn-demo__meta"
-      >showLimitNum=false：不渲染「当前 / 上限」计数；accept="media" 同时可选图片与视频</text
-    >
+      >showLimitNum=false：不渲染「当前 / 上限」计数；accept="media" 同时可选图片与视频</text>
     <text class="sn-demo__meta"
       >change 触发 {{ changeCount }} 次；最近删除：{{ lastRemoved }}；progress 触发
-      {{ progressCount }} 次</text
-    >
+      {{ progressCount }} 次</text>
     <text class="sn-demo__meta">剩余：{{ remaining }}</text>
 
     <SnUpload
@@ -79,8 +77,7 @@ function onProgress(): void {
       :auto-upload="false"
     />
     <text class="sn-demo__meta"
-      >accept="all"：走通用文件选择器（与上面同一份列表，删除可跨实例观察）</text
-    >
+      >accept="all"：走通用文件选择器（与上面同一份列表，删除可跨实例观察）</text>
   </view>
 </template>
 <style scoped>

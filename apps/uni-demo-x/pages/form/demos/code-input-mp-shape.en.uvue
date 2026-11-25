@@ -10,8 +10,7 @@ const line = ref('34');
     <SnCodeInput v-model="box" :length="4" shape="box" info="Box (default)" />
     <SnCodeInput v-model="line" :length="4" shape="underline" info="Underline" />
     <text class="sn-demo__meta"
-      >shape='box' | 'underline' — focus / error borders follow automatically</text
-    >
+      >shape='box' | 'underline' — focus / error borders follow automatically</text>
   </view>
 </template>
 <style scoped>

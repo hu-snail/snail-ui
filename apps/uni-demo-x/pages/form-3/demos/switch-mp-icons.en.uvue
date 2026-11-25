@@ -17,8 +17,7 @@ const mixed = ref(false);
     <SnSwitch v-model="knobIcons" active-action-icon="Check" inactive-action-icon="X" />
 
     <text class="sn-demo__title"
-      >activeIcon / inactiveIcon (rail glyph, replaces the rail label)</text
-    >
+      >activeIcon / inactiveIcon (rail glyph, replaces the rail label)</text>
     <SnSwitch v-model="railIcons" active-icon="Heart" inactive-icon="Eye" />
 
     <text class="sn-demo__title">Rail glyph mixed with a text label</text>

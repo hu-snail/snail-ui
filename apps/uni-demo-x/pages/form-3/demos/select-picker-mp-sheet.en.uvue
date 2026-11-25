@@ -17,8 +17,7 @@ const open = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title"
-      >closeOnClickModal=false + zIndex + safeAreaInsetBottom + rootPortal + custom*</text
-    >
+      >closeOnClickModal=false + zIndex + safeAreaInsetBottom + rootPortal + custom*</text>
     <view class="sn-demo__button" @click="open = true"><text>Sheet behavior</text></view>
     <SnSelectPicker
       v-model="sheet"

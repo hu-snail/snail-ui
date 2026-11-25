@@ -22,8 +22,7 @@ const onConfirm = (_result: unknown) => {
     />
 
     <text class="sn-demo__title"
-      >undoText / redoText (win over revokeText / restoreText when both are set)</text
-    >
+      >undoText / redoText (win over revokeText / restoreText when both are set)</text>
     <SnSignature
       enable-history
       undo-text="Undo"

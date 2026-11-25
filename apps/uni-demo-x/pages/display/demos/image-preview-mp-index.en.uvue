@@ -20,8 +20,7 @@ const images = [
 <template>
   <view class="sn-demo sn-demo--column">
     <SnButton size="small" @click="preview?.open()"
-      ><text>Open (counter hidden / custom footer text)</text></SnButton
-    >
+      ><text>Open (counter hidden / custom footer text)</text></SnButton>
 
     <SnImagePreview
       ref="preview"

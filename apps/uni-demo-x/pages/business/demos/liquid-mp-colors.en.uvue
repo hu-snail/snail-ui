@@ -28,8 +28,7 @@ import SnLiquid from '@snui/uni-x/components/sn-liquid/sn-liquid.uvue';
       />
     </view>
     <text class="sn-demo__meta"
-      >Wave and inner colors are configured in pairs (soft color above the surface)</text
-    >
+      >Wave and inner colors are configured in pairs (soft color above the surface)</text>
   </view>
 </template>
 <style scoped>

@@ -27,8 +27,7 @@ const baseRows: Row[] = [
     </SnTable>
     <text class="sn-demo__meta"
       >Fixed height + pinned header + a left-pinned first column (stays visible while scrolling
-      sideways).</text
-    >
+      sideways).</text>
   </view>
 </template>
 <style scoped>

@@ -17,8 +17,7 @@ import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
       <SnBarcode text="012345678905" format="UPC" :module-width="2" />
     </view>
     <text class="sn-demo__meta"
-      >EAN series auto-computes the check digit; invalid input goes through the error event</text
-    >
+      >EAN series auto-computes the check digit; invalid input goes through the error event</text>
   </view>
 </template>
 <style scoped>

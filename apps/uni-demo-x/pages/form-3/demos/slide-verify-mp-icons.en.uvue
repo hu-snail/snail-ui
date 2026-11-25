@@ -30,13 +30,11 @@ const onFail = (): void => {
     />
     <text class="sn-demo__meta"
       >icon / successIcon follow the iconfont convention (sn-icon-demo-next); sizes are
-      independent</text
-    >
+      independent</text>
 
     <SnSlideVerify css-icon="demo-verify-css" :icon-size="32" @success="onSuccess" @fail="onFail" />
     <text class="sn-demo__meta"
-      >cssIcon as a string: the class renders verbatim, with no iconPrefix</text
-    >
+      >cssIcon as a string: the class renders verbatim, with no iconPrefix</text>
 
     <text class="sn-demo__meta">Status: {{ state }}</text>
   </view>

@@ -20,8 +20,7 @@ const long = ref<boolean>(true);
       A long label used to verify the maxWidth truncation and the customLabelClass style hook
     </text></SnCheckbox>
     <text class="sn-demo__meta"
-      >maxWidth bounds the label; customLabelClass lands on the label text node</text
-    >
+      >maxWidth bounds the label; customLabelClass lands on the label text node</text>
   </view>
 </template>
 <style scoped>

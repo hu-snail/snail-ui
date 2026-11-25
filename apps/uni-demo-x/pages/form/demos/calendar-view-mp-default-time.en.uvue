@@ -50,8 +50,7 @@ function markPayday(day: CalendarDayItem): Partial<CalendarDayItem> | undefined 
     />
     <text class="sn-demo__meta"
       >defaultTime="09:30:00" + immediateChange: a tap writes the clock time back immediately —
-      {{ timedText }}</text
-    >
+      {{ timedText }}</text>
     <text class="sn-demo__meta">change fired {{ changes }} times</text>
   </view>
 </template>

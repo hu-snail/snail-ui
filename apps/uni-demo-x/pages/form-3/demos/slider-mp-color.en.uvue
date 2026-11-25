@@ -12,8 +12,7 @@ const colored = ref(55);
       inactive-color="var(--sn-mp-color-background-sunken)"
     />
     <text class="sn-demo__meta"
-      >activeColor / inactiveColor override the filled / unfilled track colors</text
-    >
+      >activeColor / inactiveColor override the filled / unfilled track colors</text>
   </view>
 </template>
 <style scoped>

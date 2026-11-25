@@ -10,8 +10,7 @@ const singlePage = ref(1);
   <view class="sn-demo sn-demo--stack">
     <SnPagination v-model="singlePage" :total-page="1" hide-if-one-page />
     <text class="sn-demo__meta"
-      >No pager above means the prop took effect (one page → not rendered)</text
-    >
+      >No pager above means the prop took effect (one page → not rendered)</text>
   </view>
 </template>
 <style scoped>

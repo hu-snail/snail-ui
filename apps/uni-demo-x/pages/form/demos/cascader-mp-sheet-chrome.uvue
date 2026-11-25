@@ -31,8 +31,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >弹层配置：遮罩不关闭（closeOnClickModal=false）、不补安全区、zIndex 提升，customStyle
-      改圆角。</text
-    >
+      改圆角。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

@@ -42,8 +42,7 @@ function onJump(index: number) {
       <SnButton size="small" @click="onJump(2)"><text>第 3 张</text></SnButton>
     </view>
     <text class="sn-demo__meta"
-      >current（v-model:current）={{ current }}；最近事件：{{ lastEvent }}</text
-    >
+      >current（v-model:current）={{ current }}；最近事件：{{ lastEvent }}</text>
     <text class="sn-demo__meta">
       valueKey / textKey 改字段名（默认 value / text）；跳张按钮直接写 current 验证受控。
     </text>

@@ -474,6 +474,15 @@ const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
 /**
+ * Always-true guard for the native branch. The uni-app x vapor compiler
+ * compiles a #ifdef-only branch into <block wx:if="{{r0}}"> with an r0
+ * marker it never assigns — the branch never rendered on device. A real
+ * expression on the branch root replaces the marker binding in the emitted
+ * wxml, so the branch renders.
+ */
+const nativeBranchVisible = computed(() => true);
+
+/**
  * Native picker-view selection: an index array per column, fed back through
  * bindchange. Rebuilt whenever columns or values change (cascade rebuilds
  * columns in place).
@@ -608,6 +617,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
     -->
     <!-- #ifdef MP-WEIXIN -->
     <picker-view
+      v-if="nativeBranchVisible"
       class="sn-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"

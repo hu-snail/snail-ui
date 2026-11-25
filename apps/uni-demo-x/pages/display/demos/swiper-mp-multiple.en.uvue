@@ -16,8 +16,7 @@ const list = [
   <view class="sn-demo sn-demo--stack">
     <SnSwiper :list="list" :height="240" :display-multiple-items="2" :autoplay="false" />
     <text class="sn-demo__meta"
-      >display-multiple-items=2: two slides at once, the index moves per group.</text
-    >
+      >display-multiple-items=2: two slides at once, the index moves per group.</text>
 
     <SnSwiper
       :list="list"
@@ -27,8 +26,7 @@ const list = [
       :autoplay="false"
     />
     <text class="sn-demo__meta"
-      >previous-margin / next-margin = 60rpx: the neighbouring slides peek in.</text
-    >
+      >previous-margin / next-margin = 60rpx: the neighbouring slides peek in.</text>
 
     <SnSwiper
       :list="list"
@@ -39,8 +37,7 @@ const list = [
       :autoplay="false"
     />
     <text class="sn-demo__meta"
-      >snap-to-edge: the first and last slides also snap to the inset.</text
-    >
+      >snap-to-edge: the first and last slides also snap to the inset.</text>
   </view>
 </template>
 <style scoped>

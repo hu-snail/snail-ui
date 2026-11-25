@@ -192,8 +192,7 @@ function onRetry(): void {
       <text v-if="isQueued" class="sn-ai-message__pending">排队中，等待上一条回复完成</text>
       <text v-else-if="isThinkingOnly && !hasBody" class="sn-ai-message__pending">正在思考…</text>
       <text v-else-if="!hasBody && !errorParts.length" class="sn-ai-message__pending"
-        >等待输出…</text
-      >
+        >等待输出…</text>
 
       <!-- Aborted notice -->
       <text v-if="isAborted" class="sn-ai-message__notice">

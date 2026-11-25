@@ -8,8 +8,7 @@ const railCss = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title"
-      >activeActionCssIcon / inactiveActionCssIcon (knob glyph becomes a CSS class)</text
-    >
+      >activeActionCssIcon / inactiveActionCssIcon (knob glyph becomes a CSS class)</text>
     <SnSwitch
       v-model="knobCss"
       class-prefix="sn-demo-icon"
@@ -20,8 +19,7 @@ const railCss = ref(false);
     />
 
     <text class="sn-demo__title"
-      >activeCssIcon / inactiveCssIcon (rail glyph becomes a CSS class)</text
-    >
+      >activeCssIcon / inactiveCssIcon (rail glyph becomes a CSS class)</text>
     <SnSwitch
       v-model="railCss"
       active-icon="sn-demo-dot--on"

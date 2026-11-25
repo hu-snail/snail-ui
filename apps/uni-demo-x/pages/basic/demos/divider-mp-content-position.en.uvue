@@ -22,8 +22,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <SnDivider content-position="right" margin-size="small" dashed><text>dashed + right</text></SnDivider>
     </view>
     <text class="sn-demo__meta"
-      >contentPosition is independent of dashed / marginSize and stacks with them.</text
-    >
+      >contentPosition is independent of dashed / marginSize and stacks with them.</text>
   </view>
 </template>
 <style scoped>

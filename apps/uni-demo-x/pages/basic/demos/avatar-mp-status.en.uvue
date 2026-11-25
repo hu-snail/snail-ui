@@ -11,8 +11,7 @@ const photo = '/static/avatar-user.png';
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta"
       >Presence dot on the bottom-right corner (online green / offline grey); the state is announced
-      via aria-label:</text
-    >
+      via aria-label:</text>
     <view class="st-grid">
       <view class="st-cell">
         <SnAvatar :src="photo" size="medium" status="online" alt="Online" />

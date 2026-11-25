@@ -7,16 +7,14 @@ import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >Multi-line titles (long titles wrap, value stays on one line)</text
-    >
+      >Multi-line titles (long titles wrap, value stays on one line)</text>
     <SnCellGroup border>
       <SnCell title="Auto-play videos and GIFs over mobile data" value="Wi-Fi only" />
       <SnCell title="Follow system dark mode" value="On" />
     </SnCellGroup>
 
     <text class="sn-demo__label"
-      >Column alignment (title-width pins the title column, value left)</text
-    >
+      >Column alignment (title-width pins the title column, value left)</text>
     <SnCellGroup border :title-width="140" value-align="left">
       <SnCell title="Nickname" value="Ada" />
       <SnCell title="Birthday" value="1990-08-15" />

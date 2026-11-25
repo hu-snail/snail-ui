@@ -324,7 +324,9 @@
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-cover.vue: ref
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.en.vue: ref
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.en.vue: computed
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue: computed
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue: ref
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.en.vue: ref
 - ../../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.vue: ref

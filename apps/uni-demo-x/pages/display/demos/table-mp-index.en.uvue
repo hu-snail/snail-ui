@@ -26,8 +26,7 @@ const baseRows: Row[] = [
       <SnTableColumn prop="status" label="Status" :width="120" align="center" />
     </SnTable>
     <text class="sn-demo__meta"
-      >index turns on the leading number column (default header "No.").</text
-    >
+      >index turns on the leading number column (default header "No.").</text>
   </view>
 </template>
 <style scoped>

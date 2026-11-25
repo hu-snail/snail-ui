@@ -38,8 +38,7 @@ const photos = ref<UploadFileItem[]>([
     />
     <text class="sn-demo__meta"
       >customEvokeClass restyles the picker tile, customPreviewClass the file tiles, customClass /
-      customStyle the root</text
-    >
+      customStyle the root</text>
   </view>
 </template>
 <style scoped>

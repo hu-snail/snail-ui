@@ -16,8 +16,7 @@ const activeIndex = ref(0);
   <view class="sn-demo sn-demo--stack">
     <SnNoticeBar type="info" :text="lines" direction="vertical" @next="activeIndex = $event" />
     <text class="sn-notice-bar-demo__meta"
-      >当前第 {{ activeIndex + 1 }} / {{ lines.length }} 条</text
-    >
+      >当前第 {{ activeIndex + 1 }} / {{ lines.length }} 条</text>
   </view>
 </template>
 <style scoped>

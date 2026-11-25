@@ -37,8 +37,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >Static mode: drill level by level; tapping a leaf confirms and closes.</text
-    >
+      >Static mode: drill level by level; tapping a leaf confirms and closes.</text>
     <view class="sn-demo__cards">
       <SnCell
         card

@@ -44,8 +44,7 @@ const rows: Row[] = [
       <SnTableColumn prop="status" label="Status" :width="120" align="center" />
     </SnTable>
     <text class="sn-demo__meta"
-      >border=false + stripe=false: a light list without borders or zebra rows.</text
-    >
+      >border=false + stripe=false: a light list without borders or zebra rows.</text>
   </view>
 </template>
 <style scoped>

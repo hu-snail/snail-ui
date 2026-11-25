@@ -28,8 +28,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >checkStrictly：任意层级都可确认，此时才渲染确认按钮；选中分支后点「就它」提交。</text
-    >
+      >checkStrictly：任意层级都可确认，此时才渲染确认按钮；选中分支后点「就它」提交。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

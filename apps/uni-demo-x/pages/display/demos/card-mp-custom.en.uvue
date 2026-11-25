@@ -46,8 +46,7 @@ const rows = [
       <text class="sn-card-demo__rect-body">rectangle type with a custom content class</text>
     </SnCard>
     <text class="sn-demo__meta"
-      >The rectangle variant honours customClass / customContentClass too.</text
-    >
+      >The rectangle variant honours customClass / customContentClass too.</text>
   </view>
 </template>
 <style scoped>

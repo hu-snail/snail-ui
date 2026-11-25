@@ -27,8 +27,7 @@ function open(index: number): void {
       />
     </view>
     <text class="sn-demo__hint"
-      >Pinch to zoom · double-tap · pan when zoomed · drag down to close</text
-    >
+      >Pinch to zoom · double-tap · pan when zoomed · drag down to close</text>
     <SnImagePreview ref="preview" :images="images" />
   </view>
 </template>

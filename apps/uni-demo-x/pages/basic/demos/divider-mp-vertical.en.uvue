@@ -20,8 +20,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <text class="sn-demo__word">Delete</text>
     </view>
     <text class="sn-demo__meta"
-      >The vertical shorthand (1em tall by default, follows the line height)</text
-    >
+      >The vertical shorthand (1em tall by default, follows the line height)</text>
 
     <view class="sn-demo__row">
       <text class="sn-demo__word">Axis</text>
@@ -31,8 +30,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <text class="sn-demo__word">custom colour</text>
     </view>
     <text class="sn-demo__meta"
-      >direction="vertical" is equivalent to vertical; dashed / color apply too</text
-    >
+      >direction="vertical" is equivalent to vertical; dashed / color apply too</text>
 
     <view class="sn-demo__row sn-demo__row--tall">
       <text class="sn-demo__word">custom-class</text>
@@ -42,8 +40,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <text class="sn-demo__word">taller divider</text>
     </view>
     <text class="sn-demo__meta"
-      >custom-class / custom-style land on the root and can override the default height</text
-    >
+      >custom-class / custom-style land on the root and can override the default height</text>
   </view>
 </template>
 <style scoped>

@@ -89,8 +89,7 @@ function onFail(payload: { file: UploadFileItem; error: unknown }): void {
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__title"
-      >uploadMethod + buildFormData (simulated transfer, no request)</text
-    >
+      >uploadMethod + buildFormData (simulated transfer, no request)</text>
     <SnUpload
       ref="uploader"
       v-model:file-list="pending"
@@ -107,8 +106,7 @@ function onFail(payload: { file: UploadFileItem; error: unknown }): void {
     />
     <text class="sn-demo__meta"
       >autoUpload=false: picked files stay pending; the button below calls the exposed
-      submit()</text
-    >
+      submit()</text>
     <view class="sn-demo__action" @click="runSubmit">
       <text class="sn-demo__action-text">submit()</text>
     </view>
@@ -117,8 +115,7 @@ function onFail(payload: { file: UploadFileItem; error: unknown }): void {
     <SnUpload :file-list="mixed" :upload-method="simulateUpload" :auto-upload="false" :limit="6" />
     <text class="sn-demo__meta"
       >loading tiles show a progress scrim with the percentage; failed tiles get a danger
-      border</text
-    >
+      border</text>
 
     <text class="sn-demo__meta">Last result: {{ lastResult }}</text>
   </view>

@@ -12,8 +12,7 @@ const cleared = ref('snail');
 
     <SnSearch v-model="cleared" focus-when-clear placeholder="Refocus after clear" />
     <text class="sn-demo__meta"
-      >focusWhenClear: refocus after the clear button (pairs with @clear)</text
-    >
+      >focusWhenClear: refocus after the clear button (pairs with @clear)</text>
   </view>
 </template>
 <style scoped>

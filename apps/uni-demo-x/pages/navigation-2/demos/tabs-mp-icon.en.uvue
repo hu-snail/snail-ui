@@ -27,8 +27,7 @@ const iconActive = ref(0);
     </SnTabs>
 
     <text class="sn-demo__meta"
-      >Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text
-    >
+      >Active tab: {{ iconActive }} (badges are covered in tabs-mp-badge)</text>
   </view>
 </template>
 <style scoped>

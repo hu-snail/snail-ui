@@ -52,8 +52,7 @@ const list = [
 
     <SnSwiper :list="list" :height="240" :autoplay="false" :indicator="{ type: 'fraction' }" />
     <text class="sn-demo__meta"
-      >Same data with autoplay off and a fraction indicator to inspect all three slides.</text
-    >
+      >Same data with autoplay off and a fraction indicator to inspect all three slides.</text>
   </view>
 </template>
 <style scoped>

@@ -38,8 +38,7 @@ const photos: Photo[] = [
     </SnWaterfall>
     <text class="sn-demo__caption"
       >Two-column waterfall — a tall item no longer pushes its neighbour down; column order equals
-      slot order</text
-    >
+      slot order</text>
   </view>
 </template>
 <style scoped>
