@@ -459,19 +459,6 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
-/**
- * Per-row absolute top in rpx — computed in script, no CSS vars / calc:
- * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
- * value is identical on every end. Same geometry as sn-picker-view.
- */
-function itemStyle(columnIndex: number, rowIndex: number): string {
-  const item = Math.max(props.itemHeight, 1) * RATIO;
-  const selected = indexOf(columnIndex);
-  const half = Math.floor(visibleCount.value / 2) * item;
-  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
-  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
-}
-
 /** Emit a value derived from a full parts record. */
 function emitParts(next: DateParts, columnIndex: number): void {
   const value =
@@ -862,14 +849,14 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__item {
-  position: absolute;
-  left: 0;
-  right: 0;
-  transition: top var(--sn-datetime-picker-view-settle-duration, 180ms)
-    cubic-bezier(0.22, 1, 0.36, 1);
+  /* Normal flow with an explicit row height — the NATIVE picker-view-column
+     (mp-weixin branch) requires flow children: absolutely positioned rows
+     stack on the origin inside the native scroller and every row renders
+     outside the visible window. */
   display: flex;
   align-items: center;
   justify-content: center;
+  height: var(--sn-datetime-picker-view-item-height);
   box-sizing: border-box;
   font-size: var(--sn-mp-font-size-md);
   color: var(--sn-mp-color-text-secondary);

@@ -572,20 +572,6 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
-/**
- * Per-row absolute top in rpx — computed **in script, no CSS vars / calc**:
- * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
- * value is identical on every end. Geometry: half window above the selected
- * row, plus the live drag shift of the column (engine offset - rest base).
- */
-function itemStyle(columnIndex: number, rowIndex: number): string {
-  const item = Math.max(props.itemHeight, 1) * RATIO;
-  const selected = selectedIndexes.value[columnIndex] ?? 0;
-  const half = Math.floor(visibleCount.value / 2) * item;
-  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
-  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
-}
-
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   return isActive(columnIndex, rowIndex) ? 'true' : 'false';
 }
@@ -671,7 +657,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
                 'sn-picker-view__item--disabled': option.disabled,
               },
             ]"
-            :style="itemStyle(columnIndex, rowIndex)"
+            :style="{ height: itemHeightRpx }"
           role="button"
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
@@ -749,16 +735,15 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 .sn-picker-view__item {
-  /* Absolute stack anchored on the selection row: top moves with the drag
-     shift variable and settles onto the new selection row after release.
-     Explicit height: a height-less absolute parent resolves its box from the
-     first child on uni-app x App, so slot rows taller than the label row
-     (icon-row / rich-row) shift the fill's centering off the band. */
-  position: absolute;
-  left: 0;
-  right: 0;
+  /* Normal flow with an explicit row height — the NATIVE picker-view-column
+     (mp-weixin branch) requires flow children: absolutely positioned rows
+     stack on the origin inside the native scroller and every row renders
+     outside the visible window (device evidence: all labels vanished).
+     Height also sizes each row for the native scroller's own layout. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: var(--sn-picker-view-item-height);
-  transition: top var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sn-picker-view__item {
