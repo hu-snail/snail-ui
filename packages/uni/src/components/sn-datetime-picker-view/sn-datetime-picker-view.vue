@@ -62,6 +62,7 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
 import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
+import { resolveUniHost } from '../../utils/uni-host';
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -642,11 +643,26 @@ const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
 /**
- * Always-true guard — same rationale as sn-picker-view: the compiler's
- * #ifdef marker binding (r0) is never assigned, so a bare branch never
- * renders on device. A real expression replaces the marker binding.
+ * Runtime platform flag — template conditional compilation mis-lowers the
+ * branch (see sn-picker-view). One template, branch in script.
  */
-const nativeBranchVisible = computed(() => true);
+const useNativePicker = (() => {
+  try {
+    const info = resolveUniHost<{ getSystemInfoSync?: () => { uniPlatform?: string; platform?: string } }>()
+      ?.getSystemInfoSync?.();
+    const platform = info?.uniPlatform ?? info?.platform ?? '';
+    if (platform.startsWith('mp-') || platform === 'devtools') return true;
+    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
+  } catch {
+    /* fall through */
+  }
+  const host = globalThis as Record<string, unknown>;
+  if (typeof host.document === 'object' && host.document !== null) return false;
+  return ['wx', 'my', 'tt', 'swan', 'qq'].some((n) => typeof host[n] === 'object' && host[n] !== null);
+})();
+
+/** Template guard: native picker-view on mp-weixin, hand-rolled elsewhere. */
+const nativeBranchVisible = computed(() => useNativePicker);
 
 /** Native picker-view selection: value index per column. */
 const nativeIndexes = computed<number[]>(() =>

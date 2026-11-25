@@ -75,6 +75,7 @@ import type {
 } from './sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-drag';
 import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnPickerView' });
 
@@ -474,13 +475,30 @@ const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
 /**
- * Always-true guard for the native branch. The uni-app x vapor compiler
- * compiles a #ifdef-only branch into <block wx:if="{{r0}}"> with an r0
- * marker it never assigns — the branch never rendered on device. A real
- * expression on the branch root replaces the marker binding in the emitted
- * wxml, so the branch renders.
+ * Runtime platform flag — template-level conditional compilation
+ * (#ifdef MP-WEIXIN) is broken in this compiler generation: the emitted
+ * <block wx:if="{{r0}}"> binds a marker the render code never assigns, so
+ * the whole native branch stayed unmounted on device. A runtime JS flag
+ * keeps one template and branches in script, where the compiler cannot
+ * mis-lower it.
  */
-const nativeBranchVisible = computed(() => true);
+const useNativePicker = (() => {
+  try {
+    const info = resolveUniHost<{ getSystemInfoSync?: () => { uniPlatform?: string; platform?: string } }>()
+      ?.getSystemInfoSync?.();
+    const platform = info?.uniPlatform ?? info?.platform ?? '';
+    if (platform.startsWith('mp-') || platform === 'devtools') return true;
+    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
+  } catch {
+    /* fall through */
+  }
+  const host = globalThis as Record<string, unknown>;
+  if (typeof host.document === 'object' && host.document !== null) return false;
+  return ['wx', 'my', 'tt', 'swan', 'qq'].some((n) => typeof host[n] === 'object' && host[n] !== null);
+})();
+
+/** Template guard: native picker-view on mp-weixin, hand-rolled elsewhere. */
+const nativeBranchVisible = computed(() => useNativePicker);
 
 /**
  * Native picker-view selection: an index array per column, fed back through
