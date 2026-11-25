@@ -75,7 +75,6 @@ import type {
 } from './sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-drag';
 import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
-import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnPickerView' });
 
@@ -475,32 +474,6 @@ const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
 /**
- * Runtime platform flag — template-level conditional compilation
- * (#ifdef MP-WEIXIN) is broken in this compiler generation: the emitted
- * <block wx:if="{{r0}}"> binds a marker the render code never assigns, so
- * the whole native branch stayed unmounted on device. A runtime JS flag
- * keeps one template and branches in script, where the compiler cannot
- * mis-lower it.
- */
-const useNativePicker = (() => {
-  try {
-    const info = resolveUniHost<{ getSystemInfoSync?: () => { uniPlatform?: string; platform?: string } }>()
-      ?.getSystemInfoSync?.();
-    const platform = info?.uniPlatform ?? info?.platform ?? '';
-    if (platform.startsWith('mp-') || platform === 'devtools') return true;
-    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
-  } catch {
-    /* fall through */
-  }
-  const host = globalThis as Record<string, unknown>;
-  if (typeof host.document === 'object' && host.document !== null) return false;
-  return ['wx', 'my', 'tt', 'swan', 'qq'].some((n) => typeof host[n] === 'object' && host[n] !== null);
-})();
-
-/** Template guard: native picker-view on mp-weixin, hand-rolled elsewhere. */
-const nativeBranchVisible = computed(() => useNativePicker);
-
-/**
  * Native picker-view selection: an index array per column, fed back through
  * bindchange. Rebuilt whenever columns or values change (cascade rebuilds
  * columns in place).
@@ -599,6 +572,20 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
+/**
+ * Per-row absolute top in rpx — computed **in script, no CSS vars / calc**:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Geometry: half window above the selected
+ * row, plus the live drag shift of the column (engine offset - rest base).
+ */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = selectedIndexes.value[columnIndex] ?? 0;
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
+}
+
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   return isActive(columnIndex, rowIndex) ? 'true' : 'false';
 }
@@ -635,7 +622,6 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
     -->
     <!-- #ifdef MP-WEIXIN -->
     <picker-view
-      v-if="nativeBranchVisible"
       class="sn-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"
@@ -685,7 +671,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
                 'sn-picker-view__item--disabled': option.disabled,
               },
             ]"
-            :style="{ height: itemHeightRpx }"
+            :style="itemStyle(columnIndex, rowIndex)"
           role="button"
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
@@ -763,15 +749,16 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 .sn-picker-view__item {
-  /* Normal flow with an explicit row height — the NATIVE picker-view-column
-     (mp-weixin branch) requires flow children: absolutely positioned rows
-     stack on the origin inside the native scroller and every row renders
-     outside the visible window (device evidence: all labels vanished).
-     Height also sizes each row for the native scroller's own layout. */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Absolute stack anchored on the selection row: top moves with the drag
+     shift variable and settles onto the new selection row after release.
+     Explicit height: a height-less absolute parent resolves its box from the
+     first child on uni-app x App, so slot rows taller than the label row
+     (icon-row / rich-row) shift the fill's centering off the band. */
+  position: absolute;
+  left: 0;
+  right: 0;
   height: var(--sn-picker-view-item-height);
+  transition: top var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sn-picker-view__item {

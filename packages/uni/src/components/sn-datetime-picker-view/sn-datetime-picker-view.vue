@@ -62,7 +62,6 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
 import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
-import { resolveUniHost } from '../../utils/uni-host';
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -460,6 +459,19 @@ function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
   return Math.abs(rowIndex - center) <= half;
 }
 
+/**
+ * Per-row absolute top in rpx — computed in script, no CSS vars / calc:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Same geometry as sn-picker-view.
+ */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = indexOf(columnIndex);
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
+}
+
 /** Emit a value derived from a full parts record. */
 function emitParts(next: DateParts, columnIndex: number): void {
   const value =
@@ -642,28 +654,6 @@ const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
-/**
- * Runtime platform flag — template conditional compilation mis-lowers the
- * branch (see sn-picker-view). One template, branch in script.
- */
-const useNativePicker = (() => {
-  try {
-    const info = resolveUniHost<{ getSystemInfoSync?: () => { uniPlatform?: string; platform?: string } }>()
-      ?.getSystemInfoSync?.();
-    const platform = info?.uniPlatform ?? info?.platform ?? '';
-    if (platform.startsWith('mp-') || platform === 'devtools') return true;
-    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
-  } catch {
-    /* fall through */
-  }
-  const host = globalThis as Record<string, unknown>;
-  if (typeof host.document === 'object' && host.document !== null) return false;
-  return ['wx', 'my', 'tt', 'swan', 'qq'].some((n) => typeof host[n] === 'object' && host[n] !== null);
-})();
-
-/** Template guard: native picker-view on mp-weixin, hand-rolled elsewhere. */
-const nativeBranchVisible = computed(() => useNativePicker);
-
 /** Native picker-view selection: value index per column. */
 const nativeIndexes = computed<number[]>(() =>
   columns.value.map((column) => {
@@ -744,7 +734,6 @@ const ariaValue = computed(() => {
     -->
     <!-- #ifdef MP-WEIXIN -->
     <picker-view
-      v-if="nativeBranchVisible"
       class="sn-datetime-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"
@@ -873,14 +862,14 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__item {
-  /* Normal flow with an explicit row height — the NATIVE picker-view-column
-     (mp-weixin branch) requires flow children: absolutely positioned rows
-     stack on the origin inside the native scroller and every row renders
-     outside the visible window. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: top var(--sn-datetime-picker-view-settle-duration, 180ms)
+    cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: var(--sn-datetime-picker-view-item-height);
   box-sizing: border-box;
   font-size: var(--sn-mp-font-size-md);
   color: var(--sn-mp-color-text-secondary);
