@@ -14,36 +14,41 @@ const verticalOpen = ref(false);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="plainOpen = true">Plain text (middle)</SnButton>
-    <SnButton type="success" block @tap="successOpen = true">Success icon (top)</SnButton>
-    <SnButton block @tap="verticalOpen = true">Vertical layout (bottom)</SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <SnButton type="primary" block @tap="plainOpen = true">Plain text (middle)</SnButton>
+      <SnButton type="success" block @tap="successOpen = true">Success icon (top)</SnButton>
+      <SnButton block @tap="verticalOpen = true">Vertical layout (bottom)</SnButton>
 
-    <SnToast
-      v-model="plainOpen"
-      msg="Copied to clipboard"
-      :duration="1500"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="plainOpen"
+        msg="Copied to clipboard"
+        :duration="1500"
+        custom-class="sn-demo-contained"
+      />
 
-    <SnToast
-      v-model="successOpen"
-      msg="Saved"
-      icon-name="success"
-      position="top"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="successOpen"
+        msg="Saved"
+        icon-name="success"
+        position="top"
+        custom-class="sn-demo-contained"
+      />
 
-    <SnToast
-      v-model="verticalOpen"
-      msg="Submitting, please wait"
-      icon-name="loading"
-      direction="vertical"
-      position="bottom"
-      :duration="0"
-      custom-class="sn-demo-contained"
-      @click="verticalOpen = false"
-    />
+      <SnToast
+        v-model="verticalOpen"
+        msg="Submitting, please wait"
+        icon-name="loading"
+        direction="vertical"
+        position="bottom"
+        :duration="2500"
+        custom-class="sn-demo-contained"
+        @click="verticalOpen = false"
+      />
+    </view>
   </view>
 </template>
 

@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue sha256:a60a73a27800735c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue sha256:9927a044955b8933 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-toast (uni-end) — status glyphs and loading types.
@@ -6,56 +6,92 @@
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnToast from '@snui/uni-x/components/sn-toast/sn-toast.uvue';
-const iconKinds = ['success', 'error', 'warning', 'info'] as const;
-const loadingKinds = ['circular', 'spinner', 'dots', 'wave'] as const;
+import {
+  FeedbackDanger,
+  FeedbackInfo,
+  FeedbackSuccess,
+  FeedbackWarning,
+} from '@snui/uni-x/components/sn-icon/sn-icon-feedback';
 
-const currentIcon = ref<(typeof iconKinds)[number]>('success');
+/** 触发按钮按状态上主题色；图标用与 toast 内一致的同款 feedback 图形。 */
+const iconKinds = [
+  { kind: 'success', type: 'success', icon: FeedbackSuccess },
+  { kind: 'error', type: 'danger', icon: FeedbackDanger },
+  { kind: 'warning', type: 'warning', icon: FeedbackWarning },
+  { kind: 'info', type: 'info', icon: FeedbackInfo },
+] as const;
+type IconKind = (typeof iconKinds)[number]['kind'];
+
+/** 加载形态行：按钮只上主题色（spinner 形态的差异在 toast 里展示）。 */
+const loadingKinds = [
+  { kind: 'circular', type: 'primary' },
+  { kind: 'spinner', type: 'info' },
+  { kind: 'dots', type: 'success' },
+  { kind: 'wave', type: 'warning' },
+] as const;
+type LoadingKind = (typeof loadingKinds)[number]['kind'];
+
+const currentIcon = ref<IconKind>('success');
 const iconOpen = ref(false);
 
-const currentLoading = ref<(typeof loadingKinds)[number]>('circular');
+const currentLoading = ref<LoadingKind>('circular');
 const loadingOpen = ref(false);
 
-function showIcon(kind: (typeof iconKinds)[number]): void {
+function showIcon(kind: IconKind): void {
   currentIcon.value = kind;
   iconOpen.value = true;
 }
 
-function showLoading(kind: (typeof loadingKinds)[number]): void {
+function showLoading(kind: LoadingKind): void {
   currentLoading.value = kind;
   loadingOpen.value = true;
 }
 </script>
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <view class="sn-toast-demo__row">
-      <SnButton v-for="kind in iconKinds" :key="kind" size="small" @click="showIcon(kind)"><text>{{
-        kind
-      }}</text></SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <view class="sn-toast-demo__row">
+        <SnButton
+          v-for="item in iconKinds"
+          :key="item.kind"
+          size="small"
+          :type="item.type"
+          :icon-data="item.icon"
+          @click="showIcon(item.kind)"
+        ><text>{{ item.kind }}</text></SnButton>
+      </view>
+
+      <view class="sn-toast-demo__row">
+        <SnButton
+          v-for="item in loadingKinds"
+          :key="item.kind"
+          size="small"
+          :type="item.type"
+          @click="showLoading(item.kind)"
+        ><text>{{ item.kind }}</text></SnButton>
+      </view>
+
+      <text class="sn-toast-demo__meta">图标：{{ currentIcon }} · 加载：{{ currentLoading }}</text>
+
+      <SnToast
+        v-model="iconOpen"
+        :msg="`icon-name = ${currentIcon}`"
+        :icon-name="currentIcon"
+        custom-class="sn-demo-contained"
+      />
+
+      <SnToast
+        v-model="loadingOpen"
+        :msg="`loading-type = ${currentLoading}`"
+        icon-name="loading"
+        :loading-type="currentLoading"
+        :duration="2000"
+        custom-class="sn-demo-contained"
+      />
     </view>
-
-    <view class="sn-toast-demo__row">
-      <SnButton v-for="kind in loadingKinds" :key="kind" size="small" @click="showLoading(kind)"><text>{{
-        kind
-      }}</text></SnButton>
-    </view>
-
-    <text class="sn-toast-demo__meta">图标：{{ currentIcon }} · 加载：{{ currentLoading }}</text>
-
-    <SnToast
-      v-model="iconOpen"
-      :msg="`icon-name = ${currentIcon}`"
-      :icon-name="currentIcon"
-      custom-class="sn-demo-contained"
-    />
-
-    <SnToast
-      v-model="loadingOpen"
-      :msg="`loading-type = ${currentLoading}`"
-      icon-name="loading"
-      :loading-type="currentLoading"
-      :duration="2000"
-      custom-class="sn-demo-contained"
-    />
   </view>
 </template>
 <style scoped>

@@ -6,58 +6,93 @@
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnToast from '@snui/uni-src/components/sn-toast/sn-toast.vue';
+import {
+  FeedbackDanger,
+  FeedbackInfo,
+  FeedbackSuccess,
+  FeedbackWarning,
+} from '@snui/uni-src/components/sn-icon/sn-icon-feedback';
 
-const iconKinds = ['success', 'error', 'warning', 'info'] as const;
-const loadingKinds = ['circular', 'spinner', 'dots', 'wave'] as const;
+/** 触发按钮按状态上主题色；图标用与 toast 内一致的同款 feedback 图形。 */
+const iconKinds = [
+  { kind: 'success', type: 'success', icon: FeedbackSuccess },
+  { kind: 'error', type: 'danger', icon: FeedbackDanger },
+  { kind: 'warning', type: 'warning', icon: FeedbackWarning },
+  { kind: 'info', type: 'info', icon: FeedbackInfo },
+] as const;
+type IconKind = (typeof iconKinds)[number]['kind'];
 
-const currentIcon = ref<(typeof iconKinds)[number]>('success');
+/** 加载形态行：按钮只上主题色（spinner 形态的差异在 toast 里展示）。 */
+const loadingKinds = [
+  { kind: 'circular', type: 'primary' },
+  { kind: 'spinner', type: 'info' },
+  { kind: 'dots', type: 'success' },
+  { kind: 'wave', type: 'warning' },
+] as const;
+type LoadingKind = (typeof loadingKinds)[number]['kind'];
+
+const currentIcon = ref<IconKind>('success');
 const iconOpen = ref(false);
 
-const currentLoading = ref<(typeof loadingKinds)[number]>('circular');
+const currentLoading = ref<LoadingKind>('circular');
 const loadingOpen = ref(false);
 
-function showIcon(kind: (typeof iconKinds)[number]): void {
+function showIcon(kind: IconKind): void {
   currentIcon.value = kind;
   iconOpen.value = true;
 }
 
-function showLoading(kind: (typeof loadingKinds)[number]): void {
+function showLoading(kind: LoadingKind): void {
   currentLoading.value = kind;
   loadingOpen.value = true;
 }
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <view class="sn-toast-demo__row">
-      <SnButton v-for="kind in iconKinds" :key="kind" size="small" @tap="showIcon(kind)">{{
-        kind
-      }}</SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <view class="sn-toast-demo__row">
+        <SnButton
+          v-for="item in iconKinds"
+          :key="item.kind"
+          size="small"
+          :type="item.type"
+          :icon-data="item.icon"
+          @tap="showIcon(item.kind)"
+        >{{ item.kind }}</SnButton>
+      </view>
+
+      <view class="sn-toast-demo__row">
+        <SnButton
+          v-for="item in loadingKinds"
+          :key="item.kind"
+          size="small"
+          :type="item.type"
+          @tap="showLoading(item.kind)"
+        >{{ item.kind }}</SnButton>
+      </view>
+
+      <text class="sn-toast-demo__meta">Icon: {{ currentIcon }} · Loading: {{ currentLoading }}</text>
+
+      <SnToast
+        v-model="iconOpen"
+        :msg="`icon-name = ${currentIcon}`"
+        :icon-name="currentIcon"
+        custom-class="sn-demo-contained"
+      />
+
+      <SnToast
+        v-model="loadingOpen"
+        :msg="`loading-type = ${currentLoading}`"
+        icon-name="loading"
+        :loading-type="currentLoading"
+        :duration="2000"
+        custom-class="sn-demo-contained"
+      />
     </view>
-
-    <view class="sn-toast-demo__row">
-      <SnButton v-for="kind in loadingKinds" :key="kind" size="small" @tap="showLoading(kind)">{{
-        kind
-      }}</SnButton>
-    </view>
-
-    <text class="sn-toast-demo__meta">Icon: {{ currentIcon }} · Loading: {{ currentLoading }}</text>
-
-    <SnToast
-      v-model="iconOpen"
-      :msg="`icon-name = ${currentIcon}`"
-      :icon-name="currentIcon"
-      custom-class="sn-demo-contained"
-    />
-
-    <SnToast
-      v-model="loadingOpen"
-      :msg="`loading-type = ${currentLoading}`"
-      icon-name="loading"
-      :loading-type="currentLoading"
-      :duration="2000"
-      custom-class="sn-demo-contained"
-    />
   </view>
 </template>
 

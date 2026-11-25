@@ -11,17 +11,22 @@ const styled = ref(false);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <SnButton block @tap="styled = true"> z-index=300 + custom-style </SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <SnButton block @tap="styled = true"> z-index=300 + custom-style </SnButton>
 
-    <SnToast
-      v-model="styled"
-      msg="z-index 与 custom-style"
-      icon-name="info"
-      :z-index="300"
-      custom-style="padding: var(--sn-mp-spacing-5); border-radius: var(--sn-mp-radius-xl);"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="styled"
+        msg="z-index 与 custom-style"
+        icon-name="info"
+        :z-index="300"
+        custom-style="padding: var(--sn-mp-spacing-5); border-radius: var(--sn-mp-radius-xl);"
+        custom-class="sn-demo-contained"
+      />
+    </view>
   </view>
 </template>
 

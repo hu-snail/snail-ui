@@ -12,29 +12,34 @@ const loadingSized = ref(false);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <SnButton type="success" block @tap="iconSized = true"> icon-size / icon-color </SnButton>
-    <SnButton block @tap="loadingSized = true"> loading-size / loading-color </SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <SnButton type="success" block @tap="iconSized = true"> icon-size / icon-color </SnButton>
+      <SnButton block @tap="loadingSized = true"> loading-size / loading-color </SnButton>
 
-    <SnToast
-      v-model="iconSized"
-      msg="放大并改色的状态图标"
-      icon-name="success"
-      :icon-size="72"
-      icon-color="var(--sn-mp-color-feedback-success)"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="iconSized"
+        msg="放大并改色的状态图标"
+        icon-name="success"
+        :icon-size="72"
+        icon-color="var(--sn-mp-color-feedback-success)"
+        custom-class="sn-demo-contained"
+      />
 
-    <SnToast
-      v-model="loadingSized"
-      msg="放大并改色的加载图标"
-      icon-name="loading"
-      :loading-size="64"
-      loading-color="var(--sn-mp-color-feedback-warning)"
-      direction="vertical"
-      :duration="2000"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="loadingSized"
+        msg="放大并改色的加载图标"
+        icon-name="loading"
+        :loading-size="64"
+        loading-color="var(--sn-mp-color-feedback-warning)"
+        direction="vertical"
+        :duration="2000"
+        custom-class="sn-demo-contained"
+      />
+    </view>
   </view>
 </template>
 
