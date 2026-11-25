@@ -3,7 +3,7 @@
  * Demo: sn-toast (uni-end) — status glyphs and loading types.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-toast from its SFC source.
  */
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnToast from '@snui/uni-src/components/sn-toast/sn-toast.vue';
 import {
@@ -13,12 +13,12 @@ import {
   FeedbackWarning,
 } from '@snui/uni-src/components/sn-icon/sn-icon-feedback';
 
-/** 触发按钮按状态上主题色；图标用与 toast 内一致的同款 feedback 图形。 */
+/** 触发按钮与 toast 图标按状态上同色系主题色；图标为 toast 内同款 feedback 图形。 */
 const iconKinds = [
-  { kind: 'success', type: 'success', icon: FeedbackSuccess },
-  { kind: 'error', type: 'danger', icon: FeedbackDanger },
-  { kind: 'warning', type: 'warning', icon: FeedbackWarning },
-  { kind: 'info', type: 'info', icon: FeedbackInfo },
+  { kind: 'success', type: 'success', icon: FeedbackSuccess, color: 'var(--sn-mp-color-feedback-success)' },
+  { kind: 'error', type: 'danger', icon: FeedbackDanger, color: 'var(--sn-mp-color-feedback-danger)' },
+  { kind: 'warning', type: 'warning', icon: FeedbackWarning, color: 'var(--sn-mp-color-feedback-warning)' },
+  { kind: 'info', type: 'info', icon: FeedbackInfo, color: 'var(--sn-mp-color-feedback-info)' },
 ] as const;
 type IconKind = (typeof iconKinds)[number]['kind'];
 
@@ -33,6 +33,8 @@ type LoadingKind = (typeof loadingKinds)[number]['kind'];
 
 const currentIcon = ref<IconKind>('success');
 const iconOpen = ref(false);
+/** toast 状态图标随状态上主题色（icon-color），与触发按钮同色系。 */
+const iconColor = computed(() => iconKinds.find((item) => item.kind === currentIcon.value)?.color ?? '');
 
 const currentLoading = ref<LoadingKind>('circular');
 const loadingOpen = ref(false);
@@ -81,6 +83,7 @@ function showLoading(kind: LoadingKind): void {
         v-model="iconOpen"
         :msg="`icon-name = ${currentIcon}`"
         :icon-name="currentIcon"
+        :icon-color="iconColor"
         custom-class="sn-demo-contained"
       />
 
