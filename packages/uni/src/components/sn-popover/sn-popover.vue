@@ -577,8 +577,13 @@ async function measureMpPlacement(): Promise<void> {
   mpRemeasureTimer = setTimeout(() => {
     mpRemeasureTimer = null;
     if (!isShown.value && !isMounted.value) return;
+    // The pop is already FIXED at this point, and a fixed box's rect reads
+    // back collapsed (h=2 on device — measured). Temporarily restore the
+    // stylesheet anchoring so the re-read sees the natural absolute layout,
+    // then re-apply from those rects.
+    fixedPlacement.value = null;
     void readMpRects().then((again) => {
-      if (!again) return;
+      if (!again || (!isShown.value && !isMounted.value)) return;
       applyMpPlacement(again);
     });
   }, 220);
@@ -619,6 +624,18 @@ async function readMpRects(): Promise<MpRects | null> {
 function applyMpPlacement({ trigger, bubble }: MpRects): void {
   const info = uni.getSystemInfoSync();
   const px = (info.windowWidth ?? 0) / 750;
+  // TODO(AUI-POP-MP-002): temporary measurement trace — remove after the
+  // coordinate-frame issue is confirmed on a device.
+  console.log(
+    '[sn-popover] mp-rects',
+    props.placement,
+    'trigger',
+    JSON.stringify({ l: trigger.left, t: trigger.top, w: trigger.width, h: trigger.height }),
+    'bubble',
+    JSON.stringify({ l: bubble.left, t: bubble.top, w: bubble.width, h: bubble.height }),
+    'win',
+    JSON.stringify({ w: info.windowWidth, h: info.windowHeight }),
+  );
   fixedPlacement.value = computeFixedPlacement(
     {
       left: trigger.left ?? 0,
