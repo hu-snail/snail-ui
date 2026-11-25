@@ -34,8 +34,7 @@ const actions = [{ label: 'Dismiss', type: 'primary' as const }];
     <text class="sn-demo__meta">State: {{ open ? 'expanded' : 'collapsed' }}</text>
     <text class="sn-demo__hint"
       >`subtitle` renders the muted timestamp under the title; `actions` render full-width
-      pills that close the bubble on tap by default.</text
-    >
+      pills that close the bubble on tap by default.</text>
   </view>
 </template>
 <style scoped>

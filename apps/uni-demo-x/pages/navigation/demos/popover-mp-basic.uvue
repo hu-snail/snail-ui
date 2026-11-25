@@ -32,8 +32,7 @@ const open = ref(false);
 
     <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
     <text class="sn-demo__hint"
-      >富内容卡片：图标圆底 + 标题 + 描述 + 右上角关闭；卡片定宽（--sn-popover-width）。</text
-    >
+      >富内容卡片：图标圆底 + 标题 + 描述 + 右上角关闭；卡片定宽（--sn-popover-width）。</text>
   </view>
 </template>
 <style scoped>

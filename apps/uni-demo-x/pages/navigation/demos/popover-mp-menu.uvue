@@ -80,8 +80,7 @@ function onMenuClick(payload: { item: { content?: string } }): void {
     <text class="sn-demo__hint"
       >富行：content 为标题、description 为弱化副行；iconBg / iconColor
       为行级彩色图标圆底；图标来源：iconData（内联数据 / 免注册）· icon（名称）·
-      iconUrl（图片）· iconClass（旧字段，兼容）</text
-    >
+      iconUrl（图片）· iconClass（旧字段，兼容）</text>
   </view>
 </template>
 <style scoped>

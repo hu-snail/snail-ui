@@ -52,8 +52,7 @@ function setOpen(alignment: Alignment, value: boolean): void {
 
     <text class="sn-demo__hint"
       >12 placements = 4 directions (top / left / right / bottom) × 3 alignments (-start /
-      center / -end); this demo covers the top family.</text
-    >
+      center / -end); this demo covers the top family.</text>
   </view>
 </template>
 <style scoped>

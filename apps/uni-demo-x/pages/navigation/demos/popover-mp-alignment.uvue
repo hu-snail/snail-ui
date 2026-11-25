@@ -52,8 +52,7 @@ function setOpen(alignment: Alignment, value: boolean): void {
 
     <text class="sn-demo__hint"
       >12 个方位 = 4 个方向（top / left / right / bottom）× 3 档对齐（-start / 居中 /
-      -end）；本例只演示 top 家族的对齐。</text
-    >
+      -end）；本例只演示 top 家族的对齐。</text>
   </view>
 </template>
 <style scoped>

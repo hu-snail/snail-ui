@@ -60,8 +60,7 @@ function setOpen(direction: Direction, value: boolean): void {
 
     <text class="sn-demo__hint"
       >All four directions render a large arrow pointing at the trigger; tap anywhere outside to
-      close.</text
-    >
+      close.</text>
   </view>
 </template>
 <style scoped>

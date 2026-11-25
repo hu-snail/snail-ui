@@ -33,8 +33,7 @@ const actions = [{ label: '知道了', type: 'primary' as const }];
 
     <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
     <text class="sn-demo__hint"
-      >subtitle 渲染标题下的弱化时间行；actions 渲染通栏胶囊按钮，点击默认收起气泡。</text
-    >
+      >subtitle 渲染标题下的弱化时间行；actions 渲染通栏胶囊按钮，点击默认收起气泡。</text>
   </view>
 </template>
 <style scoped>

@@ -41,12 +41,10 @@ const rows = ['发货时间：48 小时内', '运费：满 99 元包邮', '支�
 
     <text class="sn-demo__meta"
       >状态：{{ rowsOpen ? '多行已展开' : '多行已收起' }} /
-      {{ singleOpen ? '单行已展开' : '单行已收起' }}</text
-    >
+      {{ singleOpen ? '单行已展开' : '单行已收起' }}</text>
     <text class="sn-demo__hint"
       >tooltip 只承载文字提示：深色底盘（toast 同款 token）；富气泡 / 菜单 / 底部面板用
-      sn-popover。</text
-    >
+      sn-popover。</text>
   </view>
 </template>
 <style scoped>

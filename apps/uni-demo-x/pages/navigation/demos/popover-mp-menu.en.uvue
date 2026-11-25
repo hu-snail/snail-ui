@@ -80,8 +80,7 @@ function onMenuClick(payload: { item: { content?: string } }): void {
     <text class="sn-demo__hint"
       >Rich rows: `content` the title, `description` the muted line; `iconBg` / `iconColor` tint
       the row plate; glyph sources: iconData (inline / no registration) · icon (name) · iconUrl
-      (image) · iconClass (legacy, compatible)</text
-    >
+      (image) · iconClass (legacy, compatible)</text>
   </view>
 </template>
 <style scoped>

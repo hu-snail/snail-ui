@@ -60,8 +60,7 @@ function onPick(payload: { item: { content?: string } }): void {
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
     <text class="sn-demo__hint"
       >`presentation="sheet"`: fixed bottom panel (mask + handle + centred heading + rich rows +
-      Cancel); it ignores placement / arrow; close via the mask or Cancel.</text
-    >
+      Cancel); it ignores placement / arrow; close via the mask or Cancel.</text>
   </view>
 </template>
 <style scoped>

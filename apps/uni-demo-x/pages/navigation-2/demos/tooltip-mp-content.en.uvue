@@ -43,12 +43,10 @@ const rows = ['Ships within 48 hours', 'Free shipping over $99', '7-day free ret
 
     <text class="sn-demo__meta"
       >State: {{ rowsOpen ? 'multi-line open' : 'multi-line closed' }} /
-      {{ singleOpen ? 'single open' : 'single closed' }}</text
-    >
+      {{ singleOpen ? 'single open' : 'single closed' }}</text>
     <text class="sn-demo__hint"
       >The tooltip carries text hints only: dark plate (the toast token pair); rich bubbles /
-      menus / bottom sheets use sn-popover.</text
-    >
+      menus / bottom sheets use sn-popover.</text>
   </view>
 </template>
 <style scoped>

@@ -33,8 +33,7 @@ const open = ref(false);
     <text class="sn-demo__meta">State: {{ open ? 'expanded' : 'collapsed' }}</text>
     <text class="sn-demo__hint"
       >Rich card: icon plate + title + description + corner close; fixed card width
-      (--sn-popover-width).</text
-    >
+      (--sn-popover-width).</text>
   </view>
 </template>
 <style scoped>

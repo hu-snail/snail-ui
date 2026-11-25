@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue sha256:dc37ee099876cf3d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue sha256:28dd657b63c161f1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover — 节点类名与偏移：custom-arrow / custom-pop / offset / custom-style。
@@ -27,7 +27,7 @@ const styledOpen = ref(false);
       custom-arrow="sn-demo__arrow"
       custom-pop="sn-demo__pop"
       custom-class="sn-demo-contained"
-      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
+      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-border: var(--sn-mp-color-action-primary); --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
     >
       <SnButton block><text>custom-arrow / custom-pop / offset</text></SnButton>
     </SnPopover>
@@ -36,8 +36,7 @@ const styledOpen = ref(false);
 
     <text class="sn-demo__hint"
       >--sn-popover-width / --sn-popover-icon-bg / --sn-popover-icon-color 均可通过
-      custom-style 覆盖。</text
-    >
+      custom-style 覆盖。</text>
   </view>
 </template>
 <style scoped>

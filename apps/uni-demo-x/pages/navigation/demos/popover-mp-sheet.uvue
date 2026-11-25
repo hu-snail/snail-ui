@@ -60,8 +60,7 @@ function onPick(payload: { item: { content?: string } }): void {
     <text class="sn-demo__meta">已选择：{{ picked }}</text>
     <text class="sn-demo__hint"
       >presentation="sheet"：底部面板（遮罩 + 把手 + 居中标题 + 富选项行 +
-      取消按钮），忽略 placement / 箭头；点遮罩或取消关闭。</text
-    >
+      取消按钮），忽略 placement / 箭头；点遮罩或取消关闭。</text>
   </view>
 </template>
 <style scoped>
