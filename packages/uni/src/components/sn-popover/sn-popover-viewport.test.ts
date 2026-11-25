@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeViewportShift, VIEWPORT_MARGIN } from './sn-popover-viewport';
+import { computeFixedPlacement, computeViewportShift, VIEWPORT_MARGIN } from './sn-popover-viewport';
 
 const VIEWPORT = { width: 375, height: 812 };
 
@@ -44,5 +44,43 @@ describe('computeViewportShift', () => {
     const left = VIEWPORT_MARGIN;
     const bubble = { left, top: 300, width: 240, height: 130 };
     expect(computeViewportShift(bubble, VIEWPORT, 'bottom').x).toBe(0);
+  });
+});
+
+describe('computeFixedPlacement', () => {
+  const TRIGGER = { left: 160, top: 200, width: 100, height: 36 };
+  const BUBBLE = { width: 240, height: 130 };
+
+  it('should place a bottom-centered bubble under the trigger with the gap', () => {
+    const r = computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'bottom', 14);
+    expect(r.left).toBeCloseTo(160 + 50 - 120);
+    expect(r.top).toBeCloseTo(236 + 14);
+  });
+
+  it('should place a top bubble above the trigger', () => {
+    const r = computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'top', 14);
+    expect(r.top).toBeCloseTo(200 - 14 - 130);
+  });
+
+  it('should clamp a right-column trigger so the bubble stays on screen', () => {
+    const edgeTrigger = { left: 300, top: 200, width: 60, height: 36 };
+    const r = computeFixedPlacement(edgeTrigger, BUBBLE, VIEWPORT, 'bottom', 14);
+    expect(r.left).toBe(VIEWPORT.width - VIEWPORT_MARGIN - BUBBLE.width);
+    expect(r.left).toBeGreaterThanOrEqual(VIEWPORT_MARGIN);
+  });
+
+  it('should align start/end placements to the trigger edges (then clamp)', () => {
+    // bottom-start at left 160 overflows the right edge → clamped to 363-240.
+    expect(computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'bottom-start', 14).left).toBe(
+      VIEWPORT.width - VIEWPORT_MARGIN - BUBBLE.width,
+    );
+    // bottom-end ends at the trigger's right edge, inside the viewport.
+    expect(computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'bottom-end', 14).left).toBe(260 - 240);
+    expect(computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'right-start', 14).top).toBe(200);
+  });
+
+  it('should anchor left/right families horizontally off the trigger edges', () => {
+    expect(computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'left', 14).left).toBeCloseTo(160 - 14 - 240);
+    expect(computeFixedPlacement(TRIGGER, BUBBLE, VIEWPORT, 'right', 14).left).toBeCloseTo(260 + 14);
   });
 });

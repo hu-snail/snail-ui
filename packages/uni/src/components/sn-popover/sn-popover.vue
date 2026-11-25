@@ -125,8 +125,7 @@ import {
   registerOutsideClosable,
   unregisterOutsideClosable,
 } from '../../utils/outside-close';
-import { computeViewportShift } from './sn-popover-viewport';
-import type { PopoverFamily, PopoverShift } from './sn-popover-viewport';
+import { computeFixedPlacement } from './sn-popover-viewport';
 
 defineOptions({ name: 'SnPopover' });
 
@@ -377,7 +376,7 @@ async function enter(): Promise<void> {
   await nextTick();
   if (token !== generation) return;
   // #ifdef MP-WEIXIN
-  void measureViewportShift();
+  void measureMpPlacement();
   // #endif
   isShown.value = true;
   emit('open');
@@ -392,11 +391,12 @@ function leave(): void {
   if (phase === 'leave' || (!isShown.value && !isMounted.value)) return;
   phase = 'leave';
   clearTimer();
+  clearMpRemeasureTimer();
+  fixedPlacement.value = null;
   const token = ++generation;
   isShown.value = false;
   emit('close');
   emit('change', { show: false });
-  viewportShift.value = { x: 0, y: 0 };
   timer = setTimeout(() => {
     timer = null;
     if (token !== generation) return;
@@ -419,12 +419,15 @@ watch(
 watch(
   () => props.placement,
   () => {
-    if (isShown.value || isMounted.value) void measureViewportShift();
+    if (isShown.value || isMounted.value) void measureMpPlacement();
   },
 );
 // #endif
 
-onBeforeUnmount(clearTimer);
+onBeforeUnmount(() => {
+  clearTimer();
+  clearMpRemeasureTimer();
+});
 
 /** Show the bubble and notify the consumer (controlled + uncontrolled). */
 function open(): void {
@@ -551,19 +554,53 @@ const offsetPair = computed<{ x: number; y: number }>(() => {
   return { x: value.x ?? 0, y: value.y ?? 0 };
 });
 
-/** MP viewport clamp (see measureViewportShift) — zero off MP-less targets,
- * so popStyle emits no transform and the stylesheet anchoring stands. */
-const viewportShift = ref<PopoverShift>({ x: 0, y: 0 });
+/** MP fixed-layer placement (see measureMpPlacement) — null off MP, so
+ * popStyle emits nothing and the stylesheet anchoring stands. */
+const fixedPlacement = ref<{ left: number; top: number } | null>(null);
 
-/** MP: an edge trigger's anchored bubble hangs past the screen (no CSS clamp
- * exists for a percent-centered absolute box) and gets cut by the viewport.
- * Measured right after the pop mounts, applied as an inline transform — the
- * measurement is MP-only (H5 / App keep the pure-CSS anchoring). */
-async function measureViewportShift(): Promise<void> {
+/** MP: host wrappers clip absolutely-positioned overflow (uni-app x view
+ * default), so a bubble escaping its root box — every top-family placement,
+ * any edge-hugging trigger — never paints. The bubble therefore leaves the
+ * document flow on MP: measured right after mount, positioned `fixed` at
+ * viewport coordinates from the trigger rect (fixed escapes every ancestor
+ * clip — probe-verified). H5 / App keep the pure-CSS anchoring. */
+let mpRemeasureTimer: ReturnType<typeof setTimeout> | null = null;
+
+async function measureMpPlacement(): Promise<void> {
+  const rects = await readMpRects();
+  if (!rects) return;
+  applyMpPlacement(rects);
+  // The first read races the bubble's own content layout (async SVG glyphs,
+  // font settling), which over-measures the height and pushes the bubble too
+  // far. Once the paint has settled, re-read and re-apply if it moved.
+  if (mpRemeasureTimer) clearTimeout(mpRemeasureTimer);
+  mpRemeasureTimer = setTimeout(() => {
+    mpRemeasureTimer = null;
+    if (!isShown.value && !isMounted.value) return;
+    void readMpRects().then((again) => {
+      if (!again) return;
+      applyMpPlacement(again);
+    });
+  }, 220);
+}
+
+function clearMpRemeasureTimer(): void {
+  if (mpRemeasureTimer) {
+    clearTimeout(mpRemeasureTimer);
+    mpRemeasureTimer = null;
+  }
+}
+
+interface MpRects {
+  trigger: UniBoundingClientRect;
+  bubble: UniBoundingClientRect;
+}
+
+async function readMpRects(): Promise<MpRects | null> {
   const proxy = instance?.proxy;
-  if (!proxy) return;
+  if (!proxy) return null;
   await nextTick();
-  await new Promise<void>((resolve) => {
+  return new Promise<MpRects | null>((resolve) => {
     uni
       .createSelectorQuery()
       .in(proxy)
@@ -574,25 +611,26 @@ async function measureViewportShift(): Promise<void> {
       .exec((res) => {
         const trigger = res?.[0];
         const bubble = res?.[1];
-        if (!trigger || !bubble) {
-          resolve();
-          return;
-        }
-        const family = props.placement.split('-')[0] as PopoverFamily;
-        const info = uni.getSystemInfoSync();
-        viewportShift.value = computeViewportShift(
-          {
-            left: bubble.left ?? 0,
-            top: bubble.top ?? 0,
-            width: bubble.width ?? 0,
-            height: bubble.height ?? 0,
-          },
-          { width: info.windowWidth ?? 0, height: info.windowHeight ?? 0 },
-          family,
-        );
-        resolve();
+        resolve(trigger && bubble ? { trigger, bubble } : null);
       });
   });
+}
+
+function applyMpPlacement({ trigger, bubble }: MpRects): void {
+  const info = uni.getSystemInfoSync();
+  const px = (info.windowWidth ?? 0) / 750;
+  fixedPlacement.value = computeFixedPlacement(
+    {
+      left: trigger.left ?? 0,
+      top: trigger.top ?? 0,
+      width: trigger.width ?? 0,
+      height: trigger.height ?? 0,
+    },
+    { width: bubble.width ?? 0, height: bubble.height ?? 0 },
+    { width: info.windowWidth ?? 0, height: info.windowHeight ?? 0 },
+    props.placement,
+    28 * px,
+  );
 }
 
 /** `menu` mode rows (an empty list in `normal` mode). */
@@ -642,11 +680,10 @@ const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
 /** Gap = 28rpx in the stylesheet (static — see the placement comment). The
  * `offset` prop folds in here as an inline margin on the pop node, so it
- * stays effective on renderers that cannot resolve the var chain. The MP
- * viewport-clamp shift (see measureViewportShift) folds in as an inline
- * transform — margins cannot express the shift for every anchoring side
- * (a right-anchored box shifts left under margin-left), while a translate
- * composes with the stylesheet's centering translate via calc(). */
+ * stays effective on renderers that cannot resolve the var chain. On MP the
+ * bubble additionally switches to the fixed layer (fixedPlacement) — the
+ * inline `position/left/top` then carry the geometry and `transform: none`
+ * cancels the stylesheet's centering translate. */
 const popStyle = computed(() => {
   const { x, y } = offsetPair.value;
   const family = props.placement.split('-')[0];
@@ -656,22 +693,10 @@ const popStyle = computed(() => {
   } else if (x !== 0) {
     parts.push(`margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`);
   }
-  const centered = props.placement === family;
-  const { x: shiftX, y: shiftY } = viewportShift.value;
-  if (family === 'top' || family === 'bottom') {
-    if (shiftX !== 0) {
-      parts.push(
-        centered
-          ? `transform: translateX(calc(-50% + ${shiftX}px))`
-          : `transform: translateX(${shiftX}px)`,
-      );
-    }
-  } else if (shiftY !== 0) {
-    parts.push(
-      centered
-        ? `transform: translateY(calc(-50% + ${shiftY}px))`
-        : `transform: translateY(${shiftY}px)`,
-    );
+  const fixed = fixedPlacement.value;
+  if (fixed) {
+    parts.push(`position: fixed`, `left: ${fixed.left}px`, `top: ${fixed.top}px`);
+    parts.push('transform: none');
   }
   return parts.length > 0 ? parts.join('; ') : undefined;
 });

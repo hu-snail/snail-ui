@@ -58,3 +58,51 @@ function clampAxis(start: number, size: number, viewportSize: number): number {
   }
   return 0;
 }
+
+/**
+ * Fixed-layer coordinates for the MP bubble. MP host wrappers clip
+ * absolutely-positioned overflow (uni-app x view default), so the bubble
+ * leaves the document flow entirely: `position: fixed` at viewport
+ * coordinates computed from the trigger rect — fixed elements escape every
+ * ancestor clip. The result is clamped inside the viewport via
+ * {@link computeViewportShift}.
+ *
+ * `placement` is the full 12-direction prop value; `gapPx` the trigger-to-
+ * bubble gap (28rpx in px, plus any inline offset the caller folds in).
+ */
+export function computeFixedPlacement(
+  trigger: PopoverBox,
+  bubble: { width: number; height: number },
+  viewport: { width: number; height: number },
+  placement: string,
+  gapPx: number,
+): { left: number; top: number } {
+  const [family, alignment] = placement.split('-') as [PopoverFamily, string?];
+  const tLeft = trigger.left;
+  const tTop = trigger.top;
+  const tRight = trigger.left + trigger.width;
+  const tBottom = trigger.top + trigger.height;
+  const tCenterX = trigger.left + trigger.width / 2;
+  const tCenterY = trigger.top + trigger.height / 2;
+  const bw = bubble.width;
+  const bh = bubble.height;
+
+  let left: number;
+  let top: number;
+  if (family === 'bottom') {
+    top = tBottom + gapPx;
+    left = alignment === 'start' ? tLeft : alignment === 'end' ? tRight - bw : tCenterX - bw / 2;
+  } else if (family === 'top') {
+    top = tTop - gapPx - bh;
+    left = alignment === 'start' ? tLeft : alignment === 'end' ? tRight - bw : tCenterX - bw / 2;
+  } else if (family === 'left') {
+    left = tLeft - gapPx - bw;
+    top = alignment === 'start' ? tTop : alignment === 'end' ? tBottom - bh : tCenterY - bh / 2;
+  } else {
+    left = tRight + gapPx;
+    top = alignment === 'start' ? tTop : alignment === 'end' ? tBottom - bh : tCenterY - bh / 2;
+  }
+
+  const shift = computeViewportShift({ left, top, width: bw, height: bh }, viewport, family);
+  return { left: left + shift.x, top: top + shift.y };
+}
