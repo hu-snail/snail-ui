@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
-// 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
+// Token 样式链（按 tokens-mp 头部约定：base → alias → 组件样式）。
+// @snui/uni/styles 只消费 --sn-mp-*，本身不定义——缺 base/alias 两层时
+// H5 端组件调色全链失效（气泡等面板背景 transparent）。
+import '@snui/tokens/styles/index.css';
+import '@snui/tokens-mp/styles/index.css';
 import '@snui/uni/styles';
 import { initDemoBridge } from './state/demo-bridge';
 import { useDemoUi } from './state/demo-ui';

@@ -872,12 +872,29 @@ function isConcreteColor(value: string): boolean {
   return /^#[0-9a-fA-F]{3,8}$|^rgba?\(|^hsla?\(/i.test(value.trim());
 }
 
+/**
+ * Fully transparent is NOT a resolved paint — a cascade with no tokens at all
+ * (e.g. an H5 host that never imported the MP token layer) computes
+ * `rgba(0, 0, 0, 0)` and the chrome must fall back to the floor fill, not
+ * bake transparency into the silhouette.
+ */
+function isVisibleConcreteColor(value: string): boolean {
+  if (!isConcreteColor(value)) return false;
+  const rgba = /^rgba?\(([^)]+)\)$/i.exec(value.trim());
+  if (rgba !== null) {
+    const parts = rgba[1]!.split(/[,\s]+/).filter(Boolean);
+    const alpha = parts[3];
+    if (alpha !== undefined && parseFloat(alpha) === 0) return false;
+  }
+  return value.trim().toLowerCase() !== 'transparent';
+}
+
 /** Extract a concrete color from any computedStyle result wrapper. */
 function readComputedColor(value: unknown, field: string): string {
   const probe = (node: unknown): string => {
     if (node === null || typeof node !== 'object') return '';
     const raw = (node as Record<string, unknown>)[field];
-    return typeof raw === 'string' && isConcreteColor(raw) ? raw : '';
+    return typeof raw === 'string' && isVisibleConcreteColor(raw) ? raw : '';
   };
   if (Array.isArray(value)) {
     for (const item of value) {
@@ -937,14 +954,14 @@ async function resolveChromeColors(): Promise<void> {
   // (1) Concrete custom-style override.
   const custom = props.customStyle;
   const bgMatch = /(?:^|;)\s*background(?:-color)?:\s*([^;]+)/i.exec(custom ?? '');
-  if (bgMatch !== null && isConcreteColor(bgMatch[1] ?? '')) {
+  if (bgMatch !== null && isVisibleConcreteColor(bgMatch[1] ?? '')) {
     resolvedBg.value = (bgMatch[1] as string).trim();
   } else {
     resolvedBg.value = '';
   }
   const borderMatch = /(?:^|;)\s*--sn-popover-border:\s*([^;]+)/i.exec(custom ?? '');
   resolvedBorder.value =
-    borderMatch !== null && isConcreteColor(borderMatch[1] ?? '') ? (borderMatch[1] as string).trim() : '';
+    borderMatch !== null && isVisibleConcreteColor(borderMatch[1] ?? '') ? (borderMatch[1] as string).trim() : '';
 
   // (2) DOM hosts.
   const el = (instance?.proxy as { $el?: Element | null } | undefined)?.$el;
@@ -953,9 +970,9 @@ async function resolveChromeColors(): Promise<void> {
       const node = el.querySelector('.sn-popover__pop') ?? el;
       const style = el.ownerDocument?.defaultView?.getComputedStyle(node as Element);
       const bg = style?.backgroundColor ?? '';
-      if (isConcreteColor(bg)) resolvedBg.value = bg;
+      if (isVisibleConcreteColor(bg)) resolvedBg.value = bg;
       const border = style?.borderTopColor ?? '';
-      if (isConcreteColor(border)) resolvedBorder.value = border;
+      if (isVisibleConcreteColor(border)) resolvedBorder.value = border;
     } catch {
       /* 探测失败走地板色 */
     }
@@ -1220,6 +1237,20 @@ const chromeBoxStyle = computed(() => {
   ].join('; ');
 });
 
+/** The raster node's exact box (composed in script — uvue-safe attribute). */
+const chromeRasterStyle = computed(() => {
+  const geometry = chromeGeometry.value;
+  if (geometry === null) return undefined;
+  return `width: ${geometry.box.width}px; height: ${geometry.box.height}px`;
+});
+
+/** The inline-svg viewBox (composed in script — uvue-safe attribute). */
+const chromeViewBox = computed(() => {
+  const geometry = chromeGeometry.value;
+  if (geometry === null) return undefined;
+  return `0 0 ${geometry.box.width} ${geometry.box.height}`;
+});
+
 const sheetPanelClass = computed(() => [
   'sn-popover__sheet-panel',
   { 'sn-popover__sheet-panel--shown': isShown.value },
@@ -1306,7 +1337,7 @@ function onCancelTap(): void {
           v-if="chromeUrl === null"
           class="sn-popover__chrome-svg"
           xmlns="http://www.w3.org/2000/svg"
-          :viewBox="`0 0 ${chromeGeometry.box.width} ${chromeGeometry.box.height}`"
+          :viewBox="chromeViewBox"
           :width="chromeGeometry.box.width"
           :height="chromeGeometry.box.height"
           focusable="false"
@@ -1323,7 +1354,7 @@ function onCancelTap(): void {
           v-else
           class="sn-popover__chrome-image"
           :src="chromeUrl"
-          :style="`width: ${chromeGeometry.box.width}px; height: ${chromeGeometry.box.height}px`"
+          :style="chromeRasterStyle"
           mode="scaleToFill"
         />
         <!-- #endif -->
@@ -1332,7 +1363,7 @@ function onCancelTap(): void {
           v-if="chromeUrl !== null"
           class="sn-popover__chrome-image"
           :src="chromeUrl"
-          :style="`width: ${chromeGeometry.box.width}px; height: ${chromeGeometry.box.height}px`"
+          :style="chromeRasterStyle"
           mode="scaleToFill"
         />
         <!-- #endif -->
