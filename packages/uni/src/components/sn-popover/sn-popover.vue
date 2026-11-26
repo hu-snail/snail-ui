@@ -443,9 +443,13 @@ async function enter(): Promise<void> {
   if (token !== generation) return;
   // Measure BEFORE the fade-in: the pipeline reads the flow-anchored pop
   // (opacity 0, CSS classes positioning it) and swaps in the inline
-  // coordinates; the fade then runs from the final position.
-  resolveChromeColors();
-  void applyMeasuredPlacement();
+  // coordinates; the fade then runs from the final position. On MP the
+  // measurement is async (SelectorQuery) — awaiting it avoids a visible
+  // jump from the CSS fallback position to the measured one.
+  await resolveChromeColors();
+  if (token !== generation) return;
+  await applyMeasuredPlacement();
+  if (token !== generation) return;
   isShown.value = true;
   // after-enter parity (wd-popover handleAfterEnter): content layout may
   // change the bubble's natural size between mount and settle — re-apply
@@ -721,6 +725,7 @@ const chromeGeometry = computed<ChromeGeometry | null>(() => {
     height: size.height,
     placement: props.placement as ChromePlacement,
     arrow: ARROW,
+    withArrow: props.visibleArrow,
     arrowCenter: arrowCenterPx.value,
     arrowInset: 20,
     radius: CARD_RADIUS_PX,
@@ -735,6 +740,13 @@ const chromeGeometry = computed<ChromeGeometry | null>(() => {
  * (reference borderless card); a consumer border arrives as the SVG stroke
  * when `--sn-popover-border` resolves concrete — see resolveChromeColors.
  */
+
+/** Resolved pop background color — the chrome fill bake ('' → floor). */
+const resolvedBg = ref('');
+
+/** Resolved card outline color (`transparent` keeps the borderless card). */
+const resolvedBorder = ref('');
+
 const chromePaint = computed(() => ({
   fill: resolvedBg.value || CHROME_FILL_FLOOR,
   stroke: resolvedBorder.value || CHROME_STROKE_FLOOR,
@@ -794,30 +806,26 @@ function repaintChromeRaster(): void {
     chromeRasterUrl.value = null;
     return;
   }
-  const rasterWidth = Math.ceil(geometry.box.width * RASTER_SCALE);
-  const rasterHeight = Math.ceil(geometry.box.height * RASTER_SCALE);
-  // The offscreen canvas is width/height-symmetric only in the icon case;
-  // the chrome box is usually not square, so the node path resizes per leg.
+  // 2× physical pixels (sn-icon crispness rule). The offscreen canvas takes
+  // one square-ish size; the holder path resizes its bitmap per leg.
+  const rasterSize = Math.ceil(Math.max(geometry.box.width, geometry.box.height) * RASTER_SCALE);
   const holder = mpRasterContext.value?.holder ?? null;
   if (holder !== null) {
-    chromeRasterUrl.value = rasterizeChromePngOnHolder(
-      holder,
-      geometry,
-      chromePaint.value,
-      Math.max(rasterWidth, rasterHeight),
-    );
+    chromeRasterUrl.value = rasterizeChromePngOnHolder(holder, geometry, chromePaint.value, rasterSize);
     return;
   }
-  chromeRasterUrl.value = rasterizeChromePng(geometry, chromePaint.value, Math.max(rasterWidth, rasterHeight));
+  chromeRasterUrl.value = rasterizeChromePng(geometry, chromePaint.value, rasterSize);
 }
 
-watch([chromeGeometry, () => props.customStyle], () => {
-  if (mpCanvasReady.value) repaintChromeRaster();
+// Repaint whenever the geometry, the palette or the theme override changes —
+// on EVERY raster host (classic MP uses the offscreen path synchronously;
+// the holder path picks up as soon as createCanvasContextAsync resolves).
+watch([chromeGeometry, chromePaint], () => {
+  if (chromeGeometry.value !== null) repaintChromeRaster();
 });
 
 /** uni-app x MP canvas node id (component-scoped). */
 const mpCanvasId = `sn-popover-chrome-${instance?.uid ?? 0}`;
-const mpCanvasReady = ref(false);
 
 onMounted(() => {
   const host = resolveUniHost<{ createCanvasContextAsync?: (o: Record<string, unknown>) => void }>();
@@ -831,7 +839,9 @@ onMounted(() => {
         const holder = value as { getContext?: (kind: string) => unknown; toDataURL?: () => string };
         if (typeof holder.getContext !== 'function') return;
         mpRasterContext.value = { holder, canvasId: mpCanvasId };
-        mpCanvasReady.value = true;
+        // The node path just became available — repaint the open bubble
+        // through it (the offscreen path is unavailable on uni-app x MP).
+        repaintChromeRaster();
       },
       fail: () => {
         /* 无 canvas 面 —— offscreen / CSS 回落 */
@@ -849,45 +859,138 @@ onMounted(() => {
  * literal floor (never transparent). Re-probed on every open, so theme /
  * dark-mode flips re-bake on the next bubble.
  */
-const resolvedBg = ref('');
 
-/** Resolved card outline color (`transparent` keeps the borderless card). */
-const resolvedBorder = ref('');
+/** Retry cadence for the MP computed-style probe (styles settle late). */
+const COLOR_RETRY_MS = [50, 120, 240];
 
-function resolveChromeColors(): void {
-  // Concrete custom-style override passes straight through.
-  const custom = props.customStyle;
-  const bgMatch = /(?:^|;)\s*background(?:-color)?:\s*([^;]+)/i.exec(custom ?? '');
-  if (bgMatch !== null) {
-    const value = bgMatch[1]!.trim();
-    if (/^#[0-9a-fA-F]{3,8}$|^rgba?\(|^hsla?\(/.test(value)) {
-      resolvedBg.value = value;
-      return;
+/** Guards a stale color probe from overwriting a newer open's bake. */
+let colorGeneration = 0;
+let colorTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** Concrete CSS color test — var() / currentColor / names fail it. */
+function isConcreteColor(value: string): boolean {
+  return /^#[0-9a-fA-F]{3,8}$|^rgba?\(|^hsla?\(/i.test(value.trim());
+}
+
+/** Extract a concrete color from any computedStyle result wrapper. */
+function readComputedColor(value: unknown, field: string): string {
+  const probe = (node: unknown): string => {
+    if (node === null || typeof node !== 'object') return '';
+    const raw = (node as Record<string, unknown>)[field];
+    return typeof raw === 'string' && isConcreteColor(raw) ? raw : '';
+  };
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const color = probe(item);
+      if (color !== '') return color;
     }
   }
-  const borderMatch = /(?:^|;)\s*--sn-popover-border:\s*([^;]+)/i.exec(custom ?? '');
-  if (borderMatch !== null) {
-    const value = borderMatch[1]!.trim();
-    resolvedBorder.value = /^#[0-9a-fA-F]{3,8}$|^rgba?\(/.test(value) ? value : '';
-  } else {
-    resolvedBorder.value = '';
+  const direct = probe(value);
+  if (direct !== '') return direct;
+  // UTSJSONObject / JSON-string wrappers: probe the serialized shape.
+  try {
+    const json = typeof value === 'string' ? value : JSON.stringify(value);
+    const match = json === undefined ? null : new RegExp(`"${field}"\\s*:\\s*"([^"]+)"`).exec(json);
+    return match !== null && isConcreteColor(match[1] ?? '') ? (match[1] as string) : '';
+  } catch {
+    return '';
   }
-  // DOM hosts (H5 / webview): getComputedStyle on the pop node.
+}
+
+/** Query host for scoped selector queries (component `$scope` first — the
+ * sn-icon / uni-host resolver pattern; the uni host is the H5 / uni-app x
+ * fallback). */
+function pickQueryHost(): { createQuery: () => QueryHost; queryScope: unknown } | null {
+  const proxy = instance?.proxy as
+    | { $scope?: { createSelectorQuery?: () => QueryHost } }
+    | undefined;
+  const scope = proxy?.$scope;
+  if (scope !== undefined && typeof scope.createSelectorQuery === 'function') {
+    return { createQuery: scope.createSelectorQuery, queryScope: scope };
+  }
+  const uniHost = resolveUniHost<QueryUniHost>();
+  if (typeof uniHost?.createSelectorQuery === 'function') {
+    return { createQuery: uniHost.createSelectorQuery, queryScope: instance?.proxy };
+  }
+  return null;
+}
+
+/**
+ * Resolve the chrome palette to CONCRETE values before the shape is baked:
+ *
+ *   1. a concrete `custom-style` background passes straight through;
+ *   2. DOM hosts (H5 / webview): getComputedStyle on the pop node;
+ *   3. MP hosts: `computedStyle` probe of the pop node (sn-icon pattern) —
+ *      the cascade (theme tokens, dark mode) resolves there; a failed probe
+ *      retries briefly, then keeps the literal floor.
+ *
+ * Returns after the FIRST attempt (success or not) so `open` is not stalled;
+ * late retries still land through the reactive paint watch. Re-probed on
+ * every open, so theme flips re-bake on the next bubble.
+ */
+async function resolveChromeColors(): Promise<void> {
+  const generation = ++colorGeneration;
+  if (colorTimer !== null) {
+    clearTimeout(colorTimer);
+    colorTimer = null;
+  }
+  // (1) Concrete custom-style override.
+  const custom = props.customStyle;
+  const bgMatch = /(?:^|;)\s*background(?:-color)?:\s*([^;]+)/i.exec(custom ?? '');
+  if (bgMatch !== null && isConcreteColor(bgMatch[1] ?? '')) {
+    resolvedBg.value = (bgMatch[1] as string).trim();
+  } else {
+    resolvedBg.value = '';
+  }
+  const borderMatch = /(?:^|;)\s*--sn-popover-border:\s*([^;]+)/i.exec(custom ?? '');
+  resolvedBorder.value =
+    borderMatch !== null && isConcreteColor(borderMatch[1] ?? '') ? (borderMatch[1] as string).trim() : '';
+
+  // (2) DOM hosts.
   const el = (instance?.proxy as { $el?: Element | null } | undefined)?.$el;
   if (el !== undefined && el !== null && typeof el.querySelector === 'function') {
     try {
       const node = el.querySelector('.sn-popover__pop') ?? el;
       const style = el.ownerDocument?.defaultView?.getComputedStyle(node as Element);
       const bg = style?.backgroundColor ?? '';
-      resolvedBg.value = /^rgba?\(|^#[0-9a-fA-F]{3,8}$/i.test(bg) ? bg : '';
-      return;
+      if (isConcreteColor(bg)) resolvedBg.value = bg;
+      const border = style?.borderTopColor ?? '';
+      if (isConcreteColor(border)) resolvedBorder.value = border;
     } catch {
       /* 探测失败走地板色 */
     }
+    return;
   }
-  // MP hosts: keep the token floor — the two-line CSS paint below still
-  // consumes --sn-mp-* live, and the chrome bakes the literal floor.
-  resolvedBg.value = '';
+
+  // (3) MP hosts — scoped computedStyle probe.
+  const picked = pickQueryHost();
+  if (picked === null) return;
+  const attempt = (index: number): void => {
+    if (generation !== colorGeneration) return;
+    try {
+      picked
+        .createQuery()
+        .in?.(picked.queryScope)
+        .select?.('.sn-popover__pop')
+        ?.fields?.({ computedStyle: ['background-color', 'border-top-color'] }, (value) => {
+          if (generation !== colorGeneration) return;
+          const bg = readComputedColor(value, 'background-color');
+          const border = readComputedColor(value, 'border-top-color');
+          if (bg !== '') resolvedBg.value = bg;
+          if (border !== '') resolvedBorder.value = border;
+          if (bg === '' && index < COLOR_RETRY_MS.length) {
+            colorTimer = setTimeout(() => {
+              colorTimer = null;
+              attempt(index + 1);
+            }, COLOR_RETRY_MS[index]);
+          }
+        })
+        ?.exec?.();
+    } catch {
+      /* 地板色兜底 */
+    }
+  };
+  attempt(0);
 }
 
 /**
@@ -938,20 +1041,10 @@ async function applyMeasuredPlacement(): Promise<void> {
   }
 
   /* ── SelectorQuery path (classic MP + uni-app x MP) ── */
-  const scope = proxy?.$scope as { createSelectorQuery?: () => QueryHost } | undefined;
-  const uniHost = resolveUniHost<QueryUniHost>();
-  let createQuery: (() => QueryHost) | null = null;
-  let queryScope: unknown = null;
-  if (scope !== undefined && typeof scope.createSelectorQuery === 'function') {
-    createQuery = scope.createSelectorQuery;
-    queryScope = scope;
-  } else if (typeof uniHost?.createSelectorQuery === 'function') {
-    createQuery = uniHost.createSelectorQuery;
-    queryScope = instance?.proxy;
-  }
-  if (createQuery === null) return;
+  const picked = pickQueryHost();
+  if (picked === null) return;
   try {
-    const rects = await measureRects(createQuery, queryScope);
+    const rects = await measureRects(picked.createQuery, picked.queryScope);
     if (rects === null || rects.trigger === null || rects.pop === null) return;
     if (rects.pop.width <= 0 || rects.pop.height <= 0) return;
     const windowInfo = resolveUniHost<{ getWindowInfo?: () => { windowWidth?: number; windowHeight?: number }; getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } }>();
@@ -985,6 +1078,7 @@ interface QueryRect {
 interface QueryNode {
   boundingClientRect?: (cb: (rect: QueryRect | null) => void) => QueryNode;
   fields?: (options: Record<string, unknown>, cb: (value: unknown) => void) => QueryNode;
+  exec?: (cb?: () => void) => void;
 }
 interface QueryHost {
   in?: (scope: unknown) => QueryHost;
@@ -1026,8 +1120,9 @@ function measureRects(
         popRect = toAnchorRect(rect);
       });
       scoped.exec?.(() => finish({ trigger: triggerRect, pop: popRect }));
-      // Hosts whose exec carries no callback still settle.
-      setTimeout(() => finish({ trigger: triggerRect, pop: popRect }), 300);
+      // Hosts whose exec carries no callback still settle (short cap: open
+      // awaits this round-trip, so it must not stall the fade).
+      setTimeout(() => finish({ trigger: triggerRect, pop: popRect }), 150);
     } catch {
       finish({ trigger: null, pop: null });
     }

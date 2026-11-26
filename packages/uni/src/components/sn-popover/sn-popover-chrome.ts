@@ -55,6 +55,11 @@ export interface ChromeGeometryInput {
   placement: ChromePlacement;
   arrow: ChromeArrowSpec;
   /**
+   * Draw the arrow at all — `visibleArrow=false` renders the plain rounded
+   * card silhouette (the chrome still replaces the CSS border/radius paint).
+   */
+  withArrow?: boolean;
+  /**
    * Arrow tip position along the anchored edge, px from the edge start —
    * the fixed layer's trigger projection. `null` falls back to the
    * placement anchor (center, or `arrowInset` for -start / -end).
@@ -117,23 +122,27 @@ export function buildBubbleChrome(input: ChromeGeometryInput): ChromeGeometry | 
   const radius = Math.max(0, Math.min(input.radius, Math.min(width, height) / 2));
   // Pad so the centered stroke (width/2 out) stays inside the chrome box.
   const pad = Math.max(0, strokeWidth / 2);
+  const wantsArrow = input.withArrow !== false;
 
   const side = arrowSideOf(input.placement);
   const horizontal = side === 'top' || side === 'bottom';
   const sideLength = horizontal ? width : height;
+  // A visible arrow reserves its protrusion in the box; without one the box
+  // is the plain padded card rect (the CSS border/radius replacement).
+  const protrusion = wantsArrow ? arrow.protrusion : 0;
 
   const box: ChromeBox = {
-    width: horizontal ? width + pad * 2 : width + arrow.protrusion + pad * 2,
-    height: horizontal ? height + arrow.protrusion + pad * 2 : height + pad * 2,
+    width: horizontal ? width + pad * 2 : width + protrusion + pad * 2,
+    height: horizontal ? height + protrusion + pad * 2 : height + pad * 2,
     // The chrome box extends past the bubble only on the arrow side (plus the
     // stroke pad everywhere), so it is positioned negatively against that side.
-    offsetTop: side === 'top' ? -arrow.protrusion - pad : -pad,
-    offsetLeft: side === 'left' ? -arrow.protrusion - pad : -pad,
+    offsetTop: side === 'top' ? -protrusion - pad : -pad,
+    offsetLeft: side === 'left' ? -protrusion - pad : -pad,
   };
   // Bubble rect inside the chrome box: shifted away from the arrow side so
   // the protrusion has room, inset by the stroke pad everywhere else.
-  const bx = side === 'left' ? arrow.protrusion + pad : pad;
-  const by = side === 'top' ? arrow.protrusion + pad : pad;
+  const bx = side === 'left' ? protrusion + pad : pad;
+  const by = side === 'top' ? protrusion + pad : pad;
   const x0 = bx;
   const y0 = by;
   const x1 = bx + width;
@@ -144,7 +153,7 @@ export function buildBubbleChrome(input: ChromeGeometryInput): ChromeGeometry | 
   const baseHalf = arrow.base / 2;
   const minCenter = radius + baseHalf;
   const maxCenter = sideLength - radius - baseHalf;
-  const hasArrow = minCenter <= maxCenter;
+  const hasArrow = wantsArrow && minCenter <= maxCenter;
   const defaultCenter = input.placement.endsWith('-start')
     ? Math.min(input.arrowInset, sideLength / 2)
     : input.placement.endsWith('-end')

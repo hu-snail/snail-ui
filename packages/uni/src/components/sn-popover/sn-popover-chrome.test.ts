@@ -111,6 +111,16 @@ describe('sn-popover-chrome', () => {
       expect(hasPoint(geo.path, 10.5, 0.5)).toBe(false);
     });
 
+    it('renders a plain padded card silhouette when withArrow is false', () => {
+      const geo = buildBubbleChrome(input({ placement: 'bottom', withArrow: false }))!;
+      // No protrusion reserved: the box is the card plus the stroke pad only.
+      expect(geo.box.width).toBe(base.width + base.strokeWidth);
+      expect(geo.box.height).toBe(base.height + base.strokeWidth);
+      expect(geo.box.offsetTop).toBe(-base.strokeWidth / 2);
+      expect(geo.box.offsetLeft).toBe(-base.strokeWidth / 2);
+      expect(hasPoint(geo.path, 120.5, 0.5)).toBe(false);
+    });
+
     it('is deterministic — identical inputs produce the identical path', () => {
       const a = buildBubbleChrome(input({ placement: 'top-start' }));
       const b = buildBubbleChrome(input({ placement: 'top-start' }));
