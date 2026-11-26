@@ -1,12 +1,21 @@
 # AUI-POP-MP-001 — MP 组件宿主 wrapper 裁剪越界弹层（popover / tooltip 气泡不可见）
 
-> **状态：已解决（2026-11-26，refactor/uni-popover-svg）**
+> **状态：实现完成（2026-11-26，refactor/uni-popover-svg）；设备侧复验由用户执行**
 > 修复方式：uni-app x MP 端气泡改走 **fixed 测量定位层**（下方「修复方向」原定方案），
 > 并以 **SVG 单一轮廓 chrome + 烘焙色** 配套解决 fixed 节点的调色链失效。
 > 实现见 `packages/uni/src/components/sn-popover/sn-popover.vue`（测量管线 +
 > `sn-popover-position.ts` / `sn-popover-chrome.ts` / `sn-popover-raster.ts`），
 > uni-x 适配见 `packages/uni-x/src/transform/patches.ts`。
 > 经典 uni-app MP / H5 端保持 flow-anchored，测量不可用时回落 CSS 几何（不劣化）。
+>
+> 验证状态：
+> - 单测 139 全绿（chrome 几何 / 定位数学 / 光栅化 / 组件行为 / 契约）
+> - uni-x transform 89 全绿，uvue 产物含 `<image :src="chromeAppUrl">` 与 helper 模块
+> - H5（uni-demo）：亮色 fill=rgb(255,255,255)、暗色 fill=rgb(24,24,27) 均正确烘焙，
+>   测量定位与 chrome 轮廓渲染通过
+> - classic MP / uni-app x MP / uni-app x App：**NOT RUN**（wechatide 自动化在
+>   reLaunch 后取不到页面节点，改由用户真机/模拟器自测）
+>
 > tooltip 的同构改造仍属遗留项，另行立项。
 
 ## 现象（wechatide 模拟器实测，uni-demo-x → MP-Weixin）
