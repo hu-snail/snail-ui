@@ -1,6 +1,18 @@
 # AUI-POP-MP-001 — MP 组件宿主 wrapper 裁剪越界弹层（popover / tooltip 气泡不可见）
 
-> **状态：实现完成（2026-11-26，refactor/uni-popover-svg）；设备侧复验由用户执行**
+> **状态：重新打开（2026-11-26）——上一版修复已被后续重写替换**
+> 历史修复（uni-app x MP 端 fixed 测量定位层 + SVG 单一轮廓 chrome + 烘焙色）已被
+> **wot-ui 对齐重写**移除：`sn-popover` 现在在**所有端**都走组件根内的 `position: absolute`
+>（隐藏测量副本 + 12 方向定位表 + CSS border 三角箭头）。这是一次 Human 决策
+> （「全部走 absolute」），已知取舍：uni-app x MP 的宿主 wrapper 裁剪问题在本任务
+> 的复现路径上会**再次出现**。下方「已证死的修复路径」与根因分析仍然有效，是下一次
+> 修复的起点。候选方向：在 uni-x 侧对 sn-popover 做条件编译分支（仅 MP 提升为 fixed），
+> 而不是改回共享源码的定位模型。
+>
+> ---
+> ### 以下为上一版修复的记录（已被替换，留作根因与验证路径参考）
+>
+> 原状态：实现完成（2026-11-26，refactor/uni-popover-svg）；设备侧复验由用户执行
 > 修复方式：uni-app x MP 端气泡改走 **fixed 测量定位层**（下方「修复方向」原定方案），
 > 并以 **SVG 单一轮廓 chrome + 烘焙色** 配套解决 fixed 节点的调色链失效。
 > 实现见 `packages/uni/src/components/sn-popover/sn-popover.vue`（测量管线 +

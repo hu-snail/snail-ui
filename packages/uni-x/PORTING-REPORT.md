@@ -9,8 +9,8 @@
 | --- | --- |
 | template-attr | 172 |
 | flex-direction-row | 88 |
-| import-rewrite | 85 |
-| unsupported-property | 76 |
+| import-rewrite | 84 |
+| unsupported-property | 74 |
 | defineSlots-stripped | 73 |
 | patch | 18 |
 | template-bare-text | 13 |
@@ -549,16 +549,11 @@
 
 ### sn-popover/sn-popover.uvue
 
-- patch applied — `patch`: <svg> chrome block replaced by <image :src="chromeAppUrl">
-- import specifier rewritten for .uvue dist — `import-rewrite`: 1 type import(s) redirected to sn-icon-types
-- import specifier rewritten for .uvue dist — `import-rewrite`: 1 relative .vue import(s) rewritten to .uvue
+- import specifier rewritten for .uvue dist — `import-rewrite`: 2 relative .vue import(s) rewritten to .uvue
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
-- template attribute rewritten — `template-attr`: 11 @tap binding(s) renamed to @click
+- template attribute rewritten — `template-attr`: 5 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 108): pointer-events stripped
-- unsupported property stripped — `unsupported-property`: pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 124): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 371): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 118): pointer-events stripped
 
 ### sn-popup/sn-popup.uvue
 

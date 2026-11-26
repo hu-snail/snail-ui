@@ -1,154 +1,176 @@
 /**
- * sn-popover placement math — measured positioning (wd-popover parity).
+ * sn-popover placement math — the wd-popover `usePopover` table as pure state.
  *
  * The reference library (wot-ui `wd-popover`) positions the bubble from real
- * measurements — trigger rect + bubble size — instead of trusting CSS
- * anchoring, and re-applies the position after the enter transition
- * (`handleAfterEnter → updatePosition`). This module is that math as pure
- * functions so it is unit-testable on every host:
+ * measurements instead of CSS anchoring: a hidden copy of the bubble is
+ * rendered off-screen so its natural size can be read before it is shown,
+ * then the trigger rect + that size are folded through a 12-entry placement
+ * table into inline styles. This module is that table — free of `uni` and of
+ * component internals — so the geometry is unit-testable on every host.
  *
- *   trigger rect + pop size + viewport  →  viewport coords + arrow position
- *
- * The bubble stays `position: absolute` on H5 / classic MP / classic App
- * (converted to root-relative by the caller); uni-app x MP promotes the same
- * coords to `position: fixed` — fixed nodes escape the vapor wrapper's
- * overflow clip (AUI-POP-MP-001 probe-verified), which has no `virtualHost`
- * escape in the uni-x MP compile (unlike the reference library).
- *
- * All inputs/outputs are device px in VIEWPORT coordinates.
+ * Coordinates are root-relative px (the bubble is `position: absolute`
+ * inside the component root on every platform). All four numbers the table
+ * needs come from one `init` pass; `control` is pure over that state, and
+ * `updatePosition` re-runs it only when the measured bubble size changed
+ * (the `after-enter` leg — content may settle to a different natural size).
  */
 
-import type { ChromeArrowSpec, ChromePlacement } from './sn-popover-chrome';
+import { ref } from 'vue';
 
-/** A measured box: viewport coords (left/top) and size. */
-export interface AnchorRect {
+/** 12-direction placement (wd-popover `PlacementType`). */
+export type PopoverPlacement =
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
+
+/** `offset` prop: one number, `[x, y?]`, or `{ x, y }`. */
+export type PopoverOffset = number | number[] | { x: number; y: number };
+
+/** A measured rect (px). `bottom` is the trigger's bottom edge. */
+export interface PopoverRect {
   left: number;
   top: number;
   width: number;
   height: number;
+  bottom: number;
 }
 
-export interface PlacementMeasurements {
-  /** Trigger box, viewport coords. */
-  trigger: AnchorRect;
-  /** Natural bubble size (width from the fixed token, auto height). */
-  pop: { width: number; height: number };
-  viewport: { width: number; height: number };
+/** Arrow leg (px). */
+export const POP_ARROW_SIZE = 9;
+
+/** Gap between the trigger and the bubble (px). */
+export const POP_GAP = 5;
+
+/** Half this size is the smallest trigger edge a centred arrow can hit. */
+const MIN_CENTERED_EDGE = 17;
+
+const ARROW_CLASS_BY_FAMILY: Record<string, string> = {
+  bottom: 'sn-popover__arrow-up',
+  top: 'sn-popover__arrow-down',
+  left: 'sn-popover__arrow-right',
+  right: 'sn-popover__arrow-left',
+};
+
+/** The reference placement table: [pop style, arrow style] per placement. */
+const PLACEMENT_TABLE: Record<PopoverPlacement, (math: PlacementMath) => readonly [string, string]> = {
+  top: (c) => [`left: ${c.verticalX}px; bottom: ${c.verticalY}px; transform: translateX(-50%);`, `left: 50%;`],
+  'top-start': (c) => [`left: ${c.offsetX}px; bottom: ${c.verticalY}px;`, `left: ${c.arrowX}px;`],
+  'top-end': (c) => [`right: ${c.offsetX}px; bottom: ${c.verticalY}px;`, `right: ${c.arrowX}px; transform: translateX(50%);`],
+  bottom: (c) => [`left: ${c.verticalX}px; top: ${c.verticalY}px; transform: translateX(-50%);`, `left: 50%;`],
+  'bottom-start': (c) => [`left: ${c.offsetX}px; top: ${c.verticalY}px;`, `left: ${c.arrowX}px;`],
+  'bottom-end': (c) => [`right: ${c.offsetX}px; top: ${c.verticalY}px;`, `right: ${c.arrowX}px; transform: translateX(50%);`],
+  left: (c) => [`right: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: 50%;`],
+  'left-start': (c) => [`right: ${c.horizontalX}px; top: ${c.offsetY}px;`, `top: ${c.arrowY}px;`],
+  'left-end': (c) => [`right: ${c.horizontalX}px; bottom: ${c.offsetY}px;`, `bottom: ${c.arrowY}px; transform: translateY(50%);`],
+  right: (c) => [`left: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: 50%;`],
+  'right-start': (c) => [`left: ${c.horizontalX}px; top: ${c.offsetY}px;`, `top: ${c.arrowY}px;`],
+  'right-end': (c) => [`left: ${c.horizontalX}px; bottom: ${c.offsetY}px;`, `bottom: ${c.arrowY}px; transform: translateY(50%);`],
+};
+
+interface PlacementMath {
+  verticalX: number;
+  verticalY: number;
+  horizontalX: number;
+  horizontalY: number;
+  offsetX: number;
+  offsetY: number;
+  arrowX: number;
+  arrowY: number;
 }
 
-export interface PlacementOptions {
-  placement: ChromePlacement;
-  /** Cross/gap axis offsets in px (mirrors the `offset` prop semantics). */
-  offset: { x: number; y: number };
-  /** Static trigger↔bubble gap in px (the stylesheet's 28rpx). */
-  gap: number;
-  arrow: ChromeArrowSpec;
-  radius: number;
+function familyOf(placement: PopoverPlacement): string {
+  // `split` always yields at least one segment; the default only satisfies
+  // `noUncheckedIndexedAccess`.
+  return placement.split('-')[0] ?? '';
 }
 
-export interface ComputedPlacement {
-  /** Bubble top-left in viewport coords, BEFORE viewport clamping. */
-  viewportLeft: number;
-  viewportTop: number;
+/** Resolve the two offset axes (the y axis defaults to x). */
+function resolveOffset(offset: PopoverOffset): { x: number; y: number } {
+  if (Array.isArray(offset)) {
+    // `[x, y?]`: the y axis defaults to x when only x is given.
+    const [x = 0, y = x] = offset as [number?, number?];
+    return { x, y };
+  }
+  if (typeof offset === 'object' && offset !== null) return { x: offset.x, y: offset.y };
+  return { x: offset, y: offset };
+}
+
+/**
+ * -start / -end cross-axis shift. A trigger at least 34px on the axis
+ * centres its arrow naturally; a smaller one is shifted so the arrow still
+ * lands on it.
+ */
+function edgeShift(half: number, offsetAxis: number): number {
+  return (half - MIN_CENTERED_EDGE > 0 ? 0 : half - 25) + offsetAxis;
+}
+/** Create one popover position controller. */
+export function createPopoverPosition(visibleArrow: boolean) {
+  const popStyle = ref('');
+  const arrowStyle = ref('');
+  const popWidth = ref(0);
+  const popHeight = ref(0);
+  const width = ref(0);
+  const height = ref(0);
+  /** The last (placement, offset) `control` ran with — `updatePosition` replays it. */
+  let lastArgs: { placement: PopoverPlacement; offset: PopoverOffset } | null = null;
+
+  /** Capture the trigger + bubble measurements. */
+  function init(trigger: PopoverRect, pop: PopoverRect): void {
+    width.value = trigger.width;
+    height.value = trigger.height;
+    popWidth.value = pop.width;
+    popHeight.value = pop.height;
+  }
+
+  /** Arrow orientation classes for one placement; empty when hidden. */
+  function arrowClass(placement: PopoverPlacement): string {
+    if (!visibleArrow) return '';
+    return `sn-popover__arrow ${ARROW_CLASS_BY_FAMILY[familyOf(placement)]}`;
+  }
+
+  /** Derive the pop / arrow inline styles for one placement + offset. */
+  function control(placement: PopoverPlacement, offset: PopoverOffset): { popStyle: string; arrowStyle: string } {
+    lastArgs = { placement, offset };
+    const arrowSize = visibleArrow ? POP_ARROW_SIZE : 0;
+    const { x, y } = resolveOffset(offset);
+    const math: PlacementMath = {
+      verticalX: width.value / 2,
+      verticalY: arrowSize + height.value + POP_GAP,
+      horizontalX: width.value + arrowSize + POP_GAP,
+      horizontalY: height.value / 2,
+      offsetX: edgeShift(width.value / 2, x),
+      offsetY: edgeShift(height.value / 2, y),
+      arrowX: (popWidth.value >= width.value ? width.value / 2 : popWidth.value - 25) - x,
+      arrowY: (popHeight.value >= height.value ? height.value / 2 : popHeight.value - 20) - y,
+    };
+    const [pop, arrow] = PLACEMENT_TABLE[placement](math);
+    popStyle.value = pop;
+    arrowStyle.value = arrow;
+    return { popStyle: popStyle.value, arrowStyle: arrowStyle.value };
+  }
+
   /**
-   * Arrow tip position along the anchored edge, px from the edge start —
-   * the trigger-center projection (the chrome clamps it into the edge).
+   * Re-derive the styles from a freshly measured bubble size. Returns
+   * whether the placement was re-derived.
    */
-  arrowCenter: number;
-}
-
-/** Clamp a point-box into the viewport (min 0 on both axes). */
-export function clampToViewport(
-  left: number,
-  top: number,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number },
-): { left: number; top: number; shifted: boolean } {
-  const clampedLeft = Math.min(Math.max(left, 0), Math.max(0, viewport.width - size.width));
-  const clampedTop = Math.min(Math.max(top, 0), Math.max(0, viewport.height - size.height));
-  return {
-    left: clampedLeft,
-    top: clampedTop,
-    shifted: clampedLeft !== left || clampedTop !== top,
-  };
-}
-
-/**
- * Bubble position + arrow projection for one placement. Mirrors the
- * stylesheet's flow-anchored semantics exactly — `offset.x` rides the cross
- * axis of top/bottom families, `offset.y` the vertical cross axis of
- * left/right families, `offset.{y|x}` extends the gap on the family axis.
- */
-export function computeBubblePlacement(
-  measurements: PlacementMeasurements,
-  options: PlacementOptions,
-): ComputedPlacement {
-  const { trigger, pop } = measurements;
-  const { placement, offset, gap } = options;
-  const family = placement.split('-')[0];
-  const align = placement.split('-')[1];
-  const { width: bw, height: bh } = pop;
-
-  const crossOffset = family === 'top' || family === 'bottom' ? offset.x : offset.y;
-  let viewportLeft = 0;
-  let viewportTop = 0;
-
-  if (family === 'top') {
-    viewportTop = trigger.top - gap - offset.y - bh;
-  } else if (family === 'bottom') {
-    viewportTop = trigger.top + trigger.height + gap + offset.y;
-  } else if (family === 'left') {
-    viewportLeft = trigger.left - gap - offset.x - bw;
-  } else {
-    viewportLeft = trigger.left + trigger.width + gap + offset.x;
+  function updatePosition(pop: PopoverRect): boolean {
+    if (pop.width === popWidth.value && pop.height === popHeight.value) return false;
+    popWidth.value = pop.width;
+    popHeight.value = pop.height;
+    if (lastArgs !== null) control(lastArgs.placement, lastArgs.offset);
+    return true;
   }
 
-  if (family === 'top' || family === 'bottom') {
-    if (align === 'start') {
-      viewportLeft = trigger.left + crossOffset;
-    } else if (align === 'end') {
-      viewportLeft = trigger.left + trigger.width - bw + crossOffset;
-    } else {
-      viewportLeft = trigger.left + trigger.width / 2 - bw / 2 + crossOffset;
-    }
-  } else {
-    if (align === 'start') {
-      viewportTop = trigger.top + crossOffset;
-    } else if (align === 'end') {
-      viewportTop = trigger.top + trigger.height - bh + crossOffset;
-    } else {
-      viewportTop = trigger.top + trigger.height / 2 - bh / 2 + crossOffset;
-    }
-  }
-
-  // Arrow points at the trigger center, projected onto the anchored edge.
-  const horizontalFamily = family === 'top' || family === 'bottom';
-  const arrowCenter = horizontalFamily
-    ? trigger.left + trigger.width / 2 - viewportLeft
-    : trigger.top + trigger.height / 2 - viewportTop;
-
-  return { viewportLeft, viewportTop, arrowCenter };
+  return { popStyle, arrowStyle, arrowClass, init, control, updatePosition };
 }
 
-/**
- * Fixed-layer placement (uni-app x MP): viewport-clamped fixed coords plus
- * the arrow projection recomputed against the clamped position, so the
- * arrow keeps pointing at the trigger after the clamp shifts the bubble.
- */
-export function computeFixedPlacement(
-  measurements: PlacementMeasurements,
-  options: PlacementOptions,
-): {
-  left: number;
-  top: number;
-  arrowCenter: number;
-  shifted: boolean;
-} {
-  const raw = computeBubblePlacement(measurements, options);
-  const clamped = clampToViewport(raw.viewportLeft, raw.viewportTop, measurements.pop, measurements.viewport);
-  const horizontalFamily = options.placement.split('-')[0] === 'top' || options.placement.split('-')[0] === 'bottom';
-  const arrowCenter = horizontalFamily
-    ? measurements.trigger.left + measurements.trigger.width / 2 - clamped.left
-    : measurements.trigger.top + measurements.trigger.height / 2 - clamped.top;
-  return { left: clamped.left, top: clamped.top, arrowCenter, shifted: clamped.shifted };
-}
+export type PopoverPosition = ReturnType<typeof createPopoverPosition>;

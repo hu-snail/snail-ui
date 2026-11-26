@@ -1,30 +1,33 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — the `content` slot.
- *
- * The `content` slot fully replaces the bubble body (both modes).
- *
- * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
- * inside the demo.
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 
-const slotOpen = ref(false);
+const open = ref(false);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover v-model="slotOpen" mode="normal" placement="top" custom-class="sn-demo-contained">
-      <SnButton block>normal mode + content slot</SnButton>
-      <template #content>
-        <view class="sn-demo__body">
-          <text class="sn-demo__title">Custom bubble body</text>
-          <text class="sn-demo__text">The content slot accepts any structure.</text>
-        </view>
-      </template>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover v-model="open" custom-class="sn-demo-contained">
+        <SnButton type="primary">Show bubble</SnButton>
+        <template #content>
+          <view class="sn-popover-demo__slot">
+            <text class="sn-popover-demo__slot-title">Custom content</text>
+            <text class="sn-popover-demo__slot-line">The #content slot owns the whole bubble body</text>
+          </view>
+        </template>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">State: {{ open ? 'Open' : 'Closed' }}</text>
+    <text class="sn-demo__hint">The #content slot replaces the default body with anything you like; the bubble is re-measured after it enters.</text>
   </view>
 </template>
 
@@ -34,20 +37,24 @@ const slotOpen = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
-.sn-demo__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sn-mp-spacing-1);
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
 }
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: var(--sn-mp-font-weight-semibold);
-}
-.sn-demo__text {
+.sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {
   position: relative;
   display: block;
@@ -56,13 +63,25 @@ const slotOpen = ref(false);
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
    弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
    节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
-.sn-demo__body {
+.sn-popover-demo__center {
   overflow: visible;
 }
-.sn-demo__text {
+.sn-popover-demo__space {
   overflow: visible;
 }
-.sn-demo__title {
-  overflow: visible;
+.sn-popover-demo__slot {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sn-mp-spacing-4);
+}
+.sn-popover-demo__slot-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-popover-demo__slot-line {
+  margin-top: var(--sn-mp-spacing-1);
+  font-size: var(--sn-mp-font-size-xs);
+  color: var(--sn-mp-color-text-secondary);
 }
 </style>

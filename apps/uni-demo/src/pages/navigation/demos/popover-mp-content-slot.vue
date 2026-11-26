@@ -1,29 +1,33 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — `content` 插槽。
- *
- * `content` 插槽完全替换气泡正文（normal / menu 两种模式都可用）。
- *
- * 预览专用：`custom-class="sn-demo-contained"` 把气泡定位收在 demo 内。
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 
-const slotOpen = ref(false);
+const open = ref(false);
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover v-model="slotOpen" mode="normal" placement="top" custom-class="sn-demo-contained">
-      <SnButton block>normal 模式 + content 插槽</SnButton>
-      <template #content>
-        <view class="sn-demo__body">
-          <text class="sn-demo__title">自定义气泡正文</text>
-          <text class="sn-demo__text">content 插槽可放任意结构。</text>
-        </view>
-      </template>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover v-model="open" custom-class="sn-demo-contained">
+        <SnButton type="primary">显示气泡</SnButton>
+        <template #content>
+          <view class="sn-popover-demo__slot">
+            <text class="sn-popover-demo__slot-title">自定义内容</text>
+            <text class="sn-popover-demo__slot-line">气泡正文完全由 #content 插槽决定</text>
+          </view>
+        </template>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
+    <text class="sn-demo__hint">#content 插槽替换默认正文，可放任意内容；气泡尺寸会在入场后重新测量。</text>
   </view>
 </template>
 
@@ -33,20 +37,24 @@ const slotOpen = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
-.sn-demo__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sn-mp-spacing-1);
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
 }
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: var(--sn-mp-font-weight-semibold);
-}
-.sn-demo__text {
+.sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {
   position: relative;
   display: block;
@@ -55,13 +63,25 @@ const slotOpen = ref(false);
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
    弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
    节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
-.sn-demo__body {
+.sn-popover-demo__center {
   overflow: visible;
 }
-.sn-demo__text {
+.sn-popover-demo__space {
   overflow: visible;
 }
-.sn-demo__title {
-  overflow: visible;
+.sn-popover-demo__slot {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sn-mp-spacing-4);
+}
+.sn-popover-demo__slot-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  color: var(--sn-mp-color-text-primary);
+}
+.sn-popover-demo__slot-line {
+  margin-top: var(--sn-mp-spacing-1);
+  font-size: var(--sn-mp-font-size-xs);
+  color: var(--sn-mp-color-text-secondary);
 }
 </style>

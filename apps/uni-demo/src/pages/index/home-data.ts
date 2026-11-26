@@ -225,7 +225,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '气泡',
         titleEn: 'Popover',
         desc: '锚点弹出气泡卡片',
-        count: 11,
+        count: 8,
       },
     ],
   },

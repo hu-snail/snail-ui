@@ -5,12 +5,9 @@ import Demo1 from './demos/popover-mp-basic.vue';
 import Demo2 from './demos/popover-mp-content-slot.vue';
 import Demo3 from './demos/popover-mp-custom-style.vue';
 import Demo4 from './demos/popover-mp-height.vue';
-import Demo5 from './demos/popover-mp-icon-class.vue';
-import Demo6 from './demos/popover-mp-menu.vue';
-import Demo7 from './demos/popover-mp-notification.vue';
-import Demo8 from './demos/popover-mp-placement.vue';
-import Demo9 from './demos/popover-mp-sheet.vue';
-import Demo10 from './demos/popover-mp-theme.vue';
+import Demo5 from './demos/popover-mp-menu.vue';
+import Demo6 from './demos/popover-mp-placement.vue';
+import Demo7 from './demos/popover-mp-theme.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -67,47 +64,21 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          class="demo-host"
-          :title="t('兼容图标字段（iconClass）', 'Legacy icon field (`iconClass`)')"
-          badge="icon-class"
-        />
+        <DemoModuleHead class="demo-host" :title="t('menu', 'Menu')" badge="menu" />
         <view class="module__body">
           <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead class="demo-host" :title="t('menu', 'Menu')" badge="menu" />
+        <DemoModuleHead class="demo-host" :title="t('弹出位置', 'Placement')" badge="placement" />
         <view class="module__body">
           <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          class="demo-host"
-          :title="t('通知卡片', 'Notification card')"
-          badge="notification"
-        />
-        <view class="module__body">
-          <Demo7 class="demo-host" />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead class="demo-host" :title="t('弹出位置', 'Placement')" badge="placement" />
-        <view class="module__body">
-          <Demo8 class="demo-host" />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead class="demo-host" :title="t('底部面板', 'Bottom sheet')" badge="sheet" />
-        <view class="module__body">
-          <Demo9 class="demo-host" />
-        </view>
-      </view>
-      <view class="module">
         <DemoModuleHead class="demo-host" :title="t('主题', 'Theme')" badge="theme" />
         <view class="module__body">
-          <Demo10 class="demo-host" />
+          <Demo7 class="demo-host" />
         </view>
       </view>
     </view>

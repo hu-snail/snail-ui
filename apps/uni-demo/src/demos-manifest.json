@@ -912,28 +912,13 @@
           "hasEn": true
         },
         {
-          "name": "popover-mp-icon-class",
-          "title": "兼容图标字段（iconClass）",
-          "hasEn": true
-        },
-        {
           "name": "popover-mp-menu",
           "title": "menu",
           "hasEn": true
         },
         {
-          "name": "popover-mp-notification",
-          "title": "通知卡片",
-          "hasEn": true
-        },
-        {
           "name": "popover-mp-placement",
           "title": "弹出位置",
-          "hasEn": true
-        },
-        {
-          "name": "popover-mp-sheet",
-          "title": "底部面板",
           "hasEn": true
         },
         {

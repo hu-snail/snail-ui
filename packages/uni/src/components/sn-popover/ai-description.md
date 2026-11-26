@@ -1,34 +1,21 @@
 # sn-popover — AI-Friendly Component Description
-- Single-silhouette chrome: the card (rounded rect) and the arrow merge into
-  ONE SVG path (`sn-popover-chrome.ts`) — no rotated-diamond composite, no
-  seam. Corners are true circular arcs; the arrow splices into its edge with
-  the tip clamped inside the straight segment (never over a corner).
-- Colors are BAKED: the fill / outline resolve to concrete values (cascade
-  probe → theme tokens → dark mode) and are painted INTO the shape — never
-  var(). The MP custom-property chain cannot reach the chrome, so the
-  transparent-bubble class of bugs is structurally impossible there. The
-  CSS two-line palette still governs content surfaces (text, plates, pills)
-  and the unmeasured fallback geometry.
-- Render channels: inline `<svg><path>` on H5 / classic webview; a
-  canvas-rasterized PNG data URL on `<image>` for mini-programs (WeChat
-  `<image>` cannot decode SVG documents — sn-icon AUI-MP-003); an
-  SVG-document data URL on `<image>` for uni-app x App (the uni-x patch
-  swaps the svg block; sn-circle decoder constraints: plain path, explicit
-  intrinsic size).
-- Measured placement (wd-popover parity): open mounts the bubble at opacity
-  0, measures trigger + bubble (DOM `getBoundingClientRect` on H5 /
-  `createSelectorQuery` on MP, component `$scope` first), computes viewport
-  coords + the arrow's trigger projection (`sn-popover-position.ts`), applies
-  inline coordinates, THEN fades in; the after-enter leg re-applies
-  (`updatePosition()` is a real re-measure). Viewport clamping keeps the
-  bubble on screen; the arrow re-points at the trigger after the clamp.
-- uni-app x MP promotes the measured coords to `position: fixed` — the vapor
-  wrapper's `overflow:hidden` swallows any absolutely-positioned overflow and
-  the uni-x compile has no `virtualHost` escape (AUI-POP-MP-001,
-  probe-verified: fixed paints, absolute clips). All other ends keep
-  root-relative `absolute`. Unmeasurable hosts fall back to the CSS
-  flow-anchored placement classes + the CSS diamond arrow — strictly no
-  worse than the previous geometry.
+- Measured placement: the bubble is positioned from real measurements, not
+  CSS anchoring. A hidden copy of the bubble stays mounted off-screen
+  (`visibility: hidden; left: -100vw`) so its natural size can be read; the
+  trigger box is measured the same way. Opening folds both rects through a
+  12-entry placement table (`sn-popover-position.ts`) into inline styles.
+- The bubble is `position: absolute` inside the component root on EVERY
+  platform (H5 / mini-program / App). Known limitation: on uni-app x
+  mini-programs the host wrapper clips overflow that leaves the component
+  root, so an anchored bubble may be cut off there (AUI-POP-MP-001).
+- The arrow is a CSS border triangle (per-side longhands — uni-app x App does
+  not expand the 4-value `border-width` shorthand). It shares the bubble's
+  fill through `--sn-popover-bg`, so one override recolours both.
+- The after-enter leg re-measures the SHOWN bubble (`updatePosition`) and
+  re-derives the styles only when its natural size changed — slotted / async
+  content may settle to a different size than the hidden copy predicted.
+- The transition is `sn-transition name="fade"`; it owns and disposes its own
+  animation timer.
 
 > Human-readable + AI-parseable description of the uni-end sn-popover component.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
@@ -36,22 +23,15 @@
 
 ## Purpose
 
-Tap-triggered rich bubble with two display modes (`normal` card / `menu` list)
-and two presentations (`anchor` pinned to the trigger / `sheet` fixed bottom
-panel). Used for contextual actions ("more" menus), rich hint cards
-(icon + title + description + actions), and bottom-sheet option lists.
+Tap-triggered bubble with two display modes — `normal` (a short text hint) and
+`menu` (an action list) — anchored to its trigger in one of 12 placements.
+Used for contextual hints and compact "more" action lists next to a control.
+For a text-only dark hint use `sn-tooltip`; for a page-level filter bar use
+`sn-drop-menu`.
 
-Outside taps close an anchored bubble through the page-root `useQueue` /
-`closeOutside` channel (`closeOnClickOutside`, default `true`) without
-swallowing the tap — the same gesture still reaches whatever control sits under
-it. The trigger and the bubble bind `@tap.stop`, so opening a bubble never
-immediately closes it. On uni-app x App the page-root dispatcher never sees
-page taps, so the App close paths are the trigger re-tap, the card's close
-button, and the sheet mask. The card is fixed-width (`--sn-popover-width`,
-default 480rpx) and auto-height: it grows with its content instead of clipping
-it. The bubble defaults to the elevated surface — white in the light theme —
-with the page text color; recolor via `--sn-popover-bg` / `--sn-popover-color`
-(the bake re-resolves on every open, so theme flips follow).
+The bubble is single-line (`white-space: nowrap`): it grows with its content
+and never wraps or clips. The `content` slot replaces the built-in body in
+both modes.
 
 ## Reference Library
 
@@ -63,11 +43,10 @@ added to the wd-popover parity list.
 
 ```vue
 <!-- easycom auto-register; no import needed -->
-<sn-popover v-model="open" title="Quick Tip" icon="location" content="…">
-  <sn-button>提示</sn-button>
+<sn-popover v-model="open" content="文字提示">
+  <sn-button>显示气泡</sn-button>
 </sn-popover>
-<sn-popover v-model="sheet" presentation="sheet" title="Share Options"
-  :content="rows" cancel-text="取消" @menuclick="onPick">
+<sn-popover v-model="open" mode="menu" :content="actions" @menuclick="onPick">
   <sn-button>更多</sn-button>
 </sn-popover>
 ```
@@ -79,183 +58,112 @@ import { SnPopover } from '@snui/uni';
 
 ## Props
 
-| Name                  | Type                                      | Default    | Required | Description                                                                        |
-| --------------------- | ----------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------- |
-| `modelValue`          | `boolean`                                 | `false`    | no       | Whether the bubble is shown (`v-model`).                                           |
-| `trigger`             | `'slot' \| 'manual'`                      | `'slot'`   | no       | `slot` (default) toggles from the trigger tap (an App-only catcher node receives it on uni-app x App). `manual` leaves toggling to the page via v-model. |
-| `presentation`        | `'anchor' \| 'sheet'`                     | `'anchor'` | no       | Where the popover appears (additive): pinned bubble vs fixed bottom sheet.         |
-| `content`             | `string \| SnPopoverMenuItem[]`           | `''`       | no       | A string in `normal` mode, a row list in `menu` mode.                              |
-| `mode`                | `'normal' \| 'menu'`                      | `'normal'` | no       | Bubble display mode.                                                               |
-| `title`               | `string`                                  | `''`       | no       | Bold card title (additive); centred sheet heading in `sheet` mode.                 |
-| `subtitle`            | `string`                                  | `''`       | no       | Muted line under the title — a timestamp, or the sheet description (additive).     |
-| `iconData`            | `IconData`                                | —          | no       | Header glyph as inline SVG data (additive). Highest precedence.                    |
-| `iconUrl`             | `string`                                  | `''`       | no       | Header glyph as an image address (additive). Beats `icon`, loses to `iconData`.    |
-| `icon`                | `string`                                  | `''`       | no       | Header glyph as an SnIcon registry name (additive).                                |
-| `placement`           | 12-direction `PlacementType`              | `'bottom'` | no       | Bubble anchor (anchor presentation; ignored by `sheet`).                           |
-| `offset`              | `number \| number[] \| { x?, y? }`        | `0`        | no       | Extra gap in design px, folded into the measured placement (family axis extends the gap, cross axis shifts the bubble). |
-| `visibleArrow`        | `boolean`                                 | `true`     | no       | Render the arrow (anchor presentation).                                            |
-| `disabled`            | `boolean`                                 | `false`    | no       | Disables the trigger.                                                              |
-| `showClose`           | `boolean`                                 | `false`    | no       | Render a close button in the card header.                                          |
-| `actions`             | `SnPopoverAction[]`                       | `[]`       | no       | Full-width pill buttons under the bubble body (additive).                          |
-| `closeOnAction`       | `boolean`                                 | `true`     | no       | Close the bubble after an action / menu row tap (additive).                        |
-| `cancelText`          | `string`                                  | `''`       | no       | Sheet Cancel pill label — empty hides the pill (additive, sn-action-sheet parity). |
-| `closeOnClickOutside` | `boolean`                                 | `true`     | no       | Close on an outside tap through the page-root `closeOutside` channel (additive, AUI-OPT-07). |
-| `customClass`         | `string`                                  | `''`       | no       | Custom class for the root node.                                                    |
-| `customStyle`         | `string`                                  | `''`       | no       | Custom inline style for the root node.                                             |
-| `customArrow`         | `string`                                  | `''`       | no       | Extra class on the arrow node.                                                     |
-| `customPop`           | `string`                                  | `''`       | no       | Extra class on the bubble node.                                                    |
-| `rootPortal`          | `boolean`                                 | `false`    | no       | **Not implemented** — declared for parity; miniprogram has no portal host.         |
+| Name             | Type                                      | Default    | Required | Description                                                                            |
+| ---------------- | ----------------------------------------- | ---------- | -------- | -------------------------------------------------------------------------------------- |
+| `modelValue`     | `boolean`                                 | `false`    | no       | Whether the bubble is shown (`v-model`).                                              |
+| `content`        | `string \| SnPopoverMenuItem[]`           | `''`        | no       | A string in `normal` mode, a row list in `menu` mode. Replaced by the `content` slot.  |
+| `mode`           | `'normal' \| 'menu'`                      | `'normal'` | no       | Bubble display mode.                                                                   |
+| `placement`      | 12-direction `PopoverPlacement`           | `'bottom'` | no       | Where the bubble sits relative to the trigger.                                          |
+| `offset`         | `number \| number[] \| { x: number; y: number }` | `0`  | no       | Extra distance in px. For `-start` / `-end` it shifts the bubble and counter-shifts the arrow so the arrow keeps pointing at the trigger. |
+| `visibleArrow`   | `boolean`                                 | `true`     | no       | Render the arrow. When off, the arrow's gap is dropped from the placement too.         |
+| `disabled`       | `boolean`                                 | `false`    | no       | Disables the TRIGGER — a trigger tap is ignored. It does not block a page-driven `v-model`. |
+| `showClose`      | `boolean`                                 | `false`    | no       | Render a close button at the bubble's top-right corner.                               |
+| `customClass`    | `string`                                  | `''`       | no       | Extra class on the root node.                                                          |
+| `customStyle`    | `string`                                  | `''`       | no       | Custom inline style for the root node. Override `--sn-popover-*` tokens here.          |
+| `customArrow`    | `string`                                  | `''`       | no       | Extra class on the arrow node.                                                         |
+| `customPop`      | `string`                                  | `''`       | no       | Extra class on the bubble container (shown bubble and hidden copy both).              |
 
 ### `SnPopoverMenuItem`
 
-| Field         | Type       | Description                                                                           |
-| ------------- | ---------- | ------------------------------------------------------------------------------------- |
-| `content`     | `string`   | Row title.                                                                            |
-| `description` | `string`   | Muted second line under the title (additive).                                         |
-| `iconBg`      | `string`   | Row glyph plate fill — colored plate when set (additive).                             |
-| `iconColor`   | `string`   | Row glyph color (additive).                                                           |
-| `iconData`    | `IconData` | Inline icon data — highest precedence, no registration step (additive).               |
-| `iconUrl`     | `string`   | Image address, rendered as `<image>` (additive).                                      |
-| `icon`        | `string`   | Icon name resolved through SnIcon: registry → built-in catalog → provider (additive). |
-| `iconClass`   | `string`   | Legacy field: an `sn-icon` name, or an image URL (lowest precedence).                 |
-| `disabled`    | `boolean`  | Disable the row — taps are ignored.                                                   |
-
-### `SnPopoverAction`
-
-| Field      | Type                        | Description                                    |
-| ---------- | --------------------------- | ---------------------------------------------- |
-| `label`    | `string`                    | Button label.                                  |
-| `type`     | `'default' \| 'danger'`     | `danger` renders the label in the danger color. |
-| `disabled` | `boolean`                   | Disable the button — taps are ignored.         |
+| Field       | Type     | Description                                                       |
+| ----------- | -------- | ----------------------------------------------------------------- |
+| `content`   | `string` | Row text.                                                          |
+| `iconClass` | `string` | Optional row icon — a name resolved through `sn-icon` (registry → built-in catalog → provider). |
 
 ## Events
 
-| Name                | Payload                                      | Description                              |
-| ------------------- | -------------------------------------------- | ---------------------------------------- |
-| `update:modelValue` | `boolean`                                    | Visibility changed.                      |
-| `open`              | —                                            | Bubble shown.                            |
-| `close`             | —                                            | Bubble hidden.                           |
-| `change`            | `{ show: boolean }`                          | Visibility changed.                      |
-| `menuclick`         | `{ item: SnPopoverMenuItem, index: number }` | A `menu` mode row was tapped.            |
-| `actionclick`       | `{ item: SnPopoverAction, index: number }`   | An action pill was tapped (additive).    |
-| `cancel`            | —                                            | The sheet Cancel pill was tapped (additive). |
+| Name                | Payload                                      | Description                          |
+| ------------------- | -------------------------------------------- | ------------------------------------ |
+| `update:modelValue` | `boolean`                                    | Visibility changed.                  |
+| `open`              | —                                            | Bubble shown.                        |
+| `close`             | —                                            | Bubble hidden.                       |
+| `change`            | `{ show: boolean }`                          | Visibility changed.                  |
+| `menuclick`         | `{ item: SnPopoverMenuItem, index: number }` | A `menu` mode row was tapped; the bubble closes. |
+
+`open` / `close` / `change` ride the shown-state watcher, so they land one
+tick after `update:modelValue`.
 
 ## Slots
 
-| Name      | Description                                           |
-| --------- | ----------------------------------------------------- |
-| `default` | Trigger content.                                      |
+| Name      | Description                                       |
+| --------- | ------------------------------------------------- |
+| `default` | Trigger content.                                   |
 | `content` | Custom bubble body; replaces `content` in both modes. |
-| `footer`  | Card footer strip under the body (additive) — a tag row, a meta line. |
 
 ## Exposed Methods
 
 | Name               | Description                                                        |
 | ------------------ | ------------------------------------------------------------------ |
-| `open()`           | Show the bubble.                                                   |
-| `close()`          | Hide the bubble.                                                   |
-| `updatePosition()` | Re-measure and re-apply the placement (real re-measure, wd parity). |
+| `open()`           | Show the bubble. Closes every other registered bubble first.        |
+| `close()`          | Hide the bubble. Idempotent — a no-op when already closed.          |
+| `updatePosition()` | Re-measure the shown bubble and re-derive the placement when its size changed. |
 
 ## Tokens Consumed (end: mp)
 
-| Token          | CSS Variable                                                                                                                                                                     | Purpose                                                                   |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Bubble palette | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`)                                                   | Bubble fill (white in the light theme) / text; resolved to a concrete value and baked into the chrome shape on every open |
-| Bubble widths  | `--sn-popover-width` (default `480rpx`), `--sn-popover-menu-width` (default `320rpx`)                                                                                            | Fixed card widths — the cross-platform replacement for `max-content` sizing (uni-app x App drops it) |
-| Header glyph   | `--sn-popover-icon-size` (default `32rpx` literal), `--sn-popover-icon-plate-size` (default `72rpx`), `--sn-popover-icon-bg` (default sunken), `--sn-popover-icon-color` (default secondary) | Tinted circle behind the card / sheet row glyph     |
-| Glyph scale    | `--sn-popover-menu-icon-size` (default `32rpx` literal), `--sn-popover-close-icon-size` (default `28rpx` literal)                                                                                                        | Menu row glyph / close glyph; both are overridable via `custom-style`     |
-| Muted text     | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                                                                                                    | Description / subtitle / menu second line                                 |
-| Disabled       | `--sn-mp-color-text-disabled`                                                                                                                                                    | Disabled row (via opacity)                                                |
-| Elevation      | `--sn-mp-shadow-md` (App fallback; H5 / MP use `filter: drop-shadow` following the silhouette)                                                                                   | Bubble + arrow elevation                                                  |
-| Card border    | `--sn-popover-border` (default transparent — borderless reference card; set it via custom-style for a custom border — the chrome stroke follows the same resolved color, one continuous outline including the arrow flanks) | Card outline                                                              |
-| Radius         | `--sn-mp-radius-lg` (card; the chrome folds arcs of the same 16rpx), `--sn-mp-radius-full` (pills / plate), `--sn-mp-radius-xl` (sheet top)                                     | Corners                                                                   |
-| Scrim          | `--sn-mp-color-background-overlay`                                                                                                                                               | Sheet mask                                                                |
-| Spacing        | `--sn-mp-spacing-1/2/3/4/5`                                                                                                                                                      | Padding / gaps                                                            |
-| Typography     | `--sn-mp-font-size-xs/sm/md/lg`, `--sn-mp-font-weight-medium/semibold`, `--sn-mp-font-line-height-normal`                                                                        | Card text hierarchy                                                       |
+| Token          | CSS Variable                                                                                             | Purpose                                                       |
+| -------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Bubble surface | `--sn-popover-bg` (default `--sn-mp-color-background-elevated`), `--sn-popover-color` (default `--sn-mp-color-text-secondary`) | Bubble fill + arrow fill / text; override through `custom-style` |
+| Radius         | `--sn-popover-radius` (default `--sn-mp-radius-md`)                                                      | Bubble corners                                                 |
+| Divider        | `--sn-popover-border` (default `--sn-mp-color-border-subtle`)                                             | Menu row dividers                                              |
+| Arrow          | `--sn-popover-arrow-size` (default `9px` — the placement math is px)                                     | Arrow leg                                                      |
+| Stack order    | `--sn-popover-z-index` (default `500`)                                                                    | Bubble layer                                                   |
+| Elevation      | `--sn-mp-shadow-md`                                                                                       | Bubble shadow                                                  |
+| Spacing        | `--sn-mp-spacing-1/2/4`, `--sn-mp-spacing-0`                                                              | Padding / icon gap                                             |
+| Typography     | `--sn-mp-font-size-md`, `--sn-mp-font-line-height-normal`                                                 | Bubble text                                                    |
+| Icons          | `--sn-mp-icon-size-medium` (menu row), `--sn-mp-icon-size-small` (close)                                 | Icon scale                                                     |
 
 ## Accessibility
 
-- Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
-- Bubble / sheet carry `role="dialog"`; the chrome layer (silhouette + arrow) and the sheet handle are `aria-hidden="true"`
-- `menu` rows carry `role="menuitem"` + `aria-disabled`
-- Action pills and the Cancel pill carry `role="button"` + `aria-label` + `aria-disabled`
-- The App trigger catcher is `aria-hidden="true"` and takes no screen-reader focus
+- The trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
+- The bubble container carries `role="dialog"`; the arrow and the hidden
+  measurement copy are `aria-hidden="true"`
+- A `menu` body carries `role="menu"`; its rows carry `role="menuitem"`
+- The close button carries `role="button"` + `aria-label`
 - Interaction uses `@tap`; no hover trigger (miniprogram has none)
 
 ## Documented Divergences
 
-- No hover trigger: there is no hover on miniprogram, so the trigger is always
-  tapped. The `trigger` prop switches between slot-internal toggling and
-  page-driven v-model toggling — it is not a hover/click selector.
-- Click-outside close (additive AUI-OPT-07): the page-root
-  `useQueue` / `closeOutside` channel closes the anchored bubble without
-  swallowing the tap (the transparent full-viewport mask was removed). The
-  trigger and the bubble bind `@tap.stop`, so sibling triggers switch bubbles
-  in one gesture; pass `closeOnClickOutside="false"` to unregister while
-  mounted. A `sheet` presentation has its own mask — the mask tap is the
-  outside close.
-- Rich card body (additive): header glyph plate + title + subtitle, footer
-  slot, action pills; menu rows gain a muted `description` line (single
-  line with an ellipsis — no wrapping) and ALWAYS render the circle plate
-  (untinted rows take the default sunken plate; iconBg / iconColor recolor
-  it per row) — one consistent glyph rhythm across the menu.
-- Sheet presentation (additive): fixed bottom panel with mask, handle,
-  centred heading, rich rows, action pills and the Cancel pill. It ignores
-  `placement` / `visibleArrow` / `offset`.
-- Fixed-width cards (additive, cross-platform): `max-content` / `min()` /
-  `vw` sizing is unsupported on uni-app x App and was the "bubble renders
-  collapsed / invisible" bug — the card width is now a component var.
-- App trigger catcher (uni-app x App): taps on slot content never reach the
-  component's own views there — an `#ifdef APP` transparent catcher over the
-  trigger box receives the tap and runs the same toggle. Web / MP strip the
-  node; there the wrapper's `@tap` fires by native bubbling.
-- One-shape chrome (SVG silhouette): the card and arrow are ONE continuous
-  path — no rotated diamond, no junction seams, no double-composited fill.
-  Outline = one stroke along the whole silhouette including the arrow
-  flanks; the outline follows `--sn-popover-border`'s resolved color (default
-  transparent = borderless reference card).
-- One-shape elevation: the card is borderless (reference design) and its
-  shadow is `filter: drop-shadow` on H5 / miniprogram — the shadow follows
-  the true rendered silhouette (chrome layer included). uni-app x App has no
-  filter support and falls back to the `box-shadow` token behind conditional
-  compilation (the doodle skin draws its own hand-drawn border).
-- Measured placement (wd-popover parity): the bubble positions from real
-  measurements (trigger rect + bubble size), not CSS anchoring — viewport
-  clamping keeps it on screen and the arrow tracks the trigger center. The
-  after-enter leg re-measures (`updatePosition()` is real). Known divergence
-  from flow-anchored CSS: on H5 / classic MP the absolute coords are not
-  page-scroll-live — call `updatePosition()` after programmatic scrolling, or
-  rely on the port's short-lived bubble UX (same trade-off as wd-popover).
-- uni-app x MP fixed layer (AUI-POP-MP-001): the vapor wrapper clips
-  absolutely-positioned overflow and no `virtualHost` escape exists in the
-  uni-x compile — the measured coords promote the bubble to `position:
-  fixed` there (probe-verified: fixed paints, absolute clips). The bubble is
-  re-measured when the window resizes; scroll-follow is best-effort through
-  the same re-measure path.
-- CSS fallback geometry (unmeasurable hosts): the placement classes and the
-  CSS diamond arrow still ship — a degenerate measurement (zero rects) keeps
-  the previous rendering instead of an invisible bubble.
-- Chrome repaints: the baked colors re-resolve on every open, so a theme
-  (dark mode) flip applies from the next bubble; a `custom-style` background
-  / border override re-bakes through the reactive paint watch.
-- Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
-  and glyph boxes follow the icon-size tokens instead of a fixed square.
-- Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,
-  AGENTS.md §112.3a); the legacy `iconClass` field keeps its wd-parity
-  name-or-image-address semantics at the lowest precedence.
-- `root-portal` is declared but not implemented.
-- `updatePosition()` re-measures the placement (no longer a no-op).
+- Menu row dividers are real elements, not `::after` (uni-app x App has no
+  pseudo-elements).
+- `iconClass` resolves through `sn-icon` instead of a font-icon class: this
+  library ships no icon font.
+- `disabled` only guards the trigger (`toggle`): a page can still drive the
+  bubble through `v-model`.
+- Outside close (AUI-OPT-07): the close rides the shared queue in
+  `utils/outside-close.ts`. The page root binds `@tap="closeOutside"` and the
+  trigger stops propagation, so a tap outside closes the bubble AND still
+  reaches whatever control sits under it. Opening one bubble closes the
+  others — one gesture switches.
+- App trigger catcher (uni-app x App): an `#ifdef APP` transparent node over
+  the trigger box receives the tap, because slot-content taps never reach the
+  component's own views there.
+- uni-app x mini-program clipping (AUI-POP-MP-001): the bubble is `absolute`
+  inside the component root, and the host wrapper clips overflow that leaves
+  it. An anchored bubble can therefore be cut off on that platform. This is
+  a deliberate trade-off — the bubble stays simple and identical on every
+  platform rather than promoting to a fixed layer.
 
 ## Disposal
 
-One transition timer keeps the bubble mounted for the fade-out leg; cleared on
-every leg change and in `onBeforeUnmount` (AGENTS.md §41). The MP color-probe
-retry timer is cleared on every open and unmount; the uni-app x MP raster
-canvas context belongs to the component and dies with it. No global listener.
+This component owns no timer — the fade legs belong to `sn-transition`, which
+clears its own on unmount. The outside-close registration is removed in
+`onBeforeUnmount`. No global listener.
 
 ## Versioning
 
-`@snui/uni@0.5.0` — SVG chrome rebuild: single-silhouette shape, baked
-colors, measured placement (wd parity), uni-app x MP fixed layer. Rich card
-body, sheet presentation and fixed-width geometry from the 0.4.0 reference
-refactor are unchanged.
+**Breaking** — wot-ui parity rewrite: measured placement with a hidden
+measurement copy, CSS border-triangle arrow, `sn-transition` fade. The
+additive sheet presentation, rich card body (title / subtitle / header icon),
+action pills, `cancelText`, `trigger`, `closeOnClickOutside`, the `footer`
+slot and the `rootPortal` placeholder prop were removed. The released version
+is assigned by changesets.

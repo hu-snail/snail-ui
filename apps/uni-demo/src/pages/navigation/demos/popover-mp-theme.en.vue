@@ -4,8 +4,8 @@
  *
  * Two contrast panes: inside the dark pane the bubble picks up the
  * `.sn-theme-dark` `--sn-mp-color-*` aliases (`--sn-popover-bg` = deep fill,
- * text = light, border = dark outline); the arrow and bubble outline follow
- * the theme automatically. The light pane keeps page-level values.
+ * text = light); the arrow shares the bubble colour and follows the theme
+ * automatically. The light pane keeps page-level values.
  *
  * Docs-preview only: `custom-class="sn-popover-contained"` anchors the bubble
  * with relative; the spacer leaves room for the bottom bubble.
@@ -26,7 +26,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="darkOpen"
         mode="normal"
-        content="Dark theme bubble: deep fill with light text; the outline and arrow flip with the theme, no extra palette needed."
+        content="Dark theme bubble: deep fill, light text"
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
@@ -41,7 +41,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="lightOpen"
         mode="normal"
-        content="Light theme bubble: white fill with dark text, contrasted against the dark pane."
+        content="Light theme bubble: white fill, dark text"
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"

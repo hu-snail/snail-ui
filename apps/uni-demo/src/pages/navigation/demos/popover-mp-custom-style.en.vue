@@ -1,48 +1,36 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — node classes & offset: custom-arrow / custom-pop /
- * offset / custom-style.
- *
- * - `custom-arrow` / `custom-pop` append classes to the arrow / bubble nodes
- * - `offset` and `custom-style` both land on the root (`offset` via CSS vars)
- * - `custom-style` can override the component tokens: the fixed card width
- *   `--sn-popover-width` and the glyph plate `--sn-popover-icon-bg` /
- *   `--sn-popover-icon-color`
- *
- * Docs-preview only: `custom-class="sn-demo-contained"` keeps the bubble
- * inside the demo.
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 
-const styledOpen = ref(false);
+const open = ref(false);
+/** custom-style overrides the bubble surface tokens on the root. */
+const surface = '--sn-popover-bg: var(--sn-mp-color-action-primary); --sn-popover-color: var(--sn-mp-color-text-on-primary);';
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="styledOpen"
-      mode="normal"
-      title="Custom look"
-      content="Outlined arrow, accent border, and an enlarged card / glyph plate through the component tokens."
-      icon="star"
-      placement="bottom-start"
-      :offset="{ x: 0, y: 4 }"
-      custom-arrow="sn-demo__arrow"
-      custom-pop="sn-demo__pop"
-      custom-class="sn-demo-contained"
-      custom-style="display: block; --sn-popover-width: 600rpx; --sn-popover-border: var(--sn-mp-color-action-primary); --sn-popover-icon-bg: var(--sn-mp-color-feedback-warning-soft); --sn-popover-icon-color: var(--sn-mp-color-feedback-warning);"
-    >
-      <SnButton block>custom-arrow / custom-pop / offset</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        content="Brand-coloured bubble"
+        placement="bottom-start"
+        :offset="12"
+        :custom-style="surface"
+        custom-class="sn-demo-contained"
+      >
+        <SnButton type="primary">Show bubble</SnButton>
+      </SnPopover>
+    </view>
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__hint"
-      >--sn-popover-width / --sn-popover-icon-bg / --sn-popover-icon-color are all overridable
-      through custom-style.</text
-    >
+    <text class="sn-demo__meta">State: {{ open ? 'Open' : 'Closed' }}</text>
+    <text class="sn-demo__hint">offset pushes the bubble further from the trigger; custom-style overrides --sn-popover-bg / --sn-popover-color and the arrow follows.</text>
   </view>
 </template>
 
@@ -52,30 +40,35 @@ const styledOpen = ref(false);
   flex-direction: column;
   gap: 16rpx;
 }
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
 .sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-.sn-popover-demo__space {
-  height: 360rpx;
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
 .sn-demo :deep(.sn-popover.sn-demo-contained) {
   position: relative;
   display: block;
-}
-/* custom-pop / custom-arrow land on the bubble and arrow nodes. */
-.sn-demo :deep(.sn-demo__pop) {
-  /* The card border rides --sn-popover-border (set via custom-style above). */
-}
-.sn-demo :deep(.sn-demo__arrow) {
-  /* Custom classes land on the arrow node — restyle the fill triangle here
-   * (e.g. border-bottom-color for a bottom-start arrow). */
 }
 
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
    弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
    节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
 .sn-popover-demo__space {
   overflow: visible;
 }

@@ -1,214 +1,156 @@
-/** Popover · uni-app x (uni-app x) — English page data. Props from sn-popover.vue; demos from the en page. */
-import type { SnDocPageData } from '../../../components/doc-page/types';
+/**
+ * Popover 气泡卡片（uni 端）组件详情页数据。
+ *
+ * Props 与默认值取自 sn-popover.vue 的 defineProps / withDefaults；
+ * demo 取自该页原有的 <Demo> 块。未经验证的值一律不写。
+ */
+import type { SnDocPageData } from '../../../../components/doc-page/types';
 
 export const popoverDocPageEn: SnDocPageData = {
   crumbs: [
-    { text: 'Docs', link: '/en/' },
-    { text: 'Navigation Components' },
-    { text: 'Popover · uni-app x' },
+    { text: "Home", link: "/en/" },
+    { text: "Navigation" },
+    { text: "Popover" },
   ],
-  title: 'Popover · uni-app x',
+  title: "Popover",
   badges: [
     { label: 'Stable', tone: 'ok', icon: 'stable' },
-    { label: 'uni-app x mobile', tone: 'accent', icon: 'dual' },
+    { label: "uni-app x mobile", tone: 'accent', icon: 'dual' },
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: 'Two presentations: the anchored bubble (' },
-    { t: 'code', s: 'anchor' },
-    { t: 'text', s: ') and a fixed bottom sheet (' },
-    { t: 'code', s: 'sheet' },
-    {
-      t: 'text',
-      s: '). The rich card carries a tinted icon plate + bold title + muted subtitle + description + full-width action pills; menu rows gain a muted second line. The card width is fixed through ',
-    },
-    { t: 'code', s: '--sn-popover-width' },
-    { t: 'text', s: ' / ' },
-    { t: 'code', s: '--sn-popover-menu-width' },
-    {
-      t: 'text',
-      s: ' — uni-app x App drops max-content sizing, so a fixed width keeps H5 / miniprogram / App identical; the height always follows the content.',
-    },
+    { t: 'text', s: "A tap-triggered bubble: normal mode shows a short text, menu mode shows an action list; it is anchored to its trigger in one of 12 placements. The content is passed through " },
+    { t: 'code', s: 'content' },
+    { t: 'text', s: " and the display mode is set by " },
+    { t: 'code', s: 'mode' },
+    { t: 'text', s: "; the bubble is single-line — it grows with its content and never wraps or clips." },
   ],
   quickActions: [
-    { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
+    {
+      icon: 'copy',
+      label: 'pnpm add @snui/uni',
+      copy: 'pnpm add @snui/uni',
+      copiedLabel: "Copied",
+    },
     {
       icon: 'link',
-      label: 'View source',
+      label: "View source",
       href: 'https://github.com/hu-snail/snail-ui/tree/main/packages/uni/src/components/sn-popover',
     },
   ],
   features: [
-    { text: 'rpx scales across devices', icon: 'layers' },
-    { text: 'easycom auto-registration', icon: 'eco' },
-    { text: 'Touch-optimised interaction', icon: 'touch' },
+    { text: "rpx scales across devices", icon: 'layers' },
+    { text: "easycom auto-register", icon: 'eco' },
+    { text: "Touch optimised", icon: 'touch' },
   ],
   usage: {
-    hint: [
-      {
-        t: 'text',
-        s: 'uni-app x registers components through easycom; an explicit import is only needed when you opt out.',
-      },
-    ],
-    fileLabel: 'Popover · uni-app x.vue',
+    hint: [{ t: 'text', s: "uni-app x registers the component through easycom — no manual import; see the code below for an explicit import." }],
+    fileLabel: "Popover.vue",
     meta: 'Vue 3 · <script setup>',
     code: `
 <script setup lang="ts">
-import { Popover } from '@snui/uni';
+import { SnPopover } from '@snui/uni';
 </script>
 
 <template>
-  <sn-popover />
+  <sn-popover v-model="open" content="A text hint">
+    <sn-button>Show bubble</sn-button>
+  </sn-popover>
 </template>`,
   },
   demos: [
-    {
-      name: 'popover-mp-basic',
-      title: 'Basic usage',
-      blurb: 'Rich card: icon plate + title + description + corner close',
-    },
-    { name: 'popover-mp-alignment', title: 'Alignment', blurb: 'top family -start / center / -end' },
-    {
-      name: 'popover-mp-placement',
-      title: 'Placement',
-      blurb: 'top / left / right / bottom bubbles with arrows',
-    },
-    {
-      name: 'popover-mp-notification',
-      title: 'Notification card',
-      blurb: 'subtitle timestamp + full-width action pill (closes by default)',
-    },
-    {
-      name: 'popover-mp-sheet',
-      title: 'Bottom sheet',
-      blurb: 'presentation="sheet": mask + handle + centred heading + rich rows + Cancel',
-    },
-    {
-      name: 'popover-mp-menu',
-      title: 'Menu mode & glyph sources',
-      blurb: 'Rich rows (content title + description line), per-row colored glyph plates and the four glyph sources',
-    },
-    {
-      name: 'popover-mp-height',
-      title: 'Auto height',
-      blurb: 'Long copy wraps inside the fixed width; the card grows, never clips',
-    },
-    {
-      name: 'popover-mp-icon-class',
-      title: 'Legacy icon field (iconClass)',
-      blurb: 'The legacy iconClass still works: names resolve through SnIcon, URLs render as images.',
-    },
-    {
-      name: 'popover-mp-content-slot',
-      title: 'content slot',
-      blurb: 'The #content slot fully replaces the bubble body in both modes.',
-    },
-    {
-      name: 'popover-mp-custom-style',
-      title: 'Node classes & offset',
-      blurb: 'custom-arrow / custom-pop append classes; custom-style overrides --sn-popover-width / glyph-plate tokens.',
-    },
-    { name: 'popover-mp-theme', title: 'Dark theme', blurb: 'Dark theme' },
+    { name: 'popover-mp-basic', title: "Basic usage", blurb: "Tap the trigger to open a text bubble; tap it again to close" },
+    { name: 'popover-mp-placement', title: "Placement", blurb: "Four directions — top / right / bottom / left" },
+    { name: 'popover-mp-alignment', title: "Alignment", blurb: "-start / centred / -end on one side" },
+    { name: 'popover-mp-menu', title: "Menu mode", blurb: "Menu mode renders content as an action list; iconClass names the row icon" },
+    { name: 'popover-mp-content-slot', title: "Content slot", blurb: "The #content slot fully replaces the bubble body" },
+    { name: 'popover-mp-custom-style', title: "Offset & custom style", blurb: "offset pushes the bubble away; custom-style recolours it" },
+    { name: 'popover-mp-height', title: "Content width", blurb: "The bubble grows with its content — no wrapping, no clipping" },
+    { name: 'popover-mp-theme', title: "Theme", blurb: "The bubble and arrow follow the dark / light theme" },
   ],
   props: {
     hint: [],
     rows: [
       {
         name: 'modelValue',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Whether the bubble is shown (v-model).',
+        type: "boolean",
+        default: "false",
+        desc: "Whether the bubble is shown (`v-model`).",
       },
       {
         name: 'content',
-        type: 'string | SnPopoverMenuItem[]',
+        type: "string | SnPopoverMenuItem[]",
         default: "''",
-        desc: 'Bubble body: a string in `normal` mode, a list in `menu` mode.',
+        desc: "A string in `normal` mode, a row list in `menu` mode; replaced by the `content` slot",
       },
-      { name: 'mode', type: 'PopoverMode', default: "'normal'", desc: 'Bubble display mode.' },
-      { name: 'placement', type: 'PopoverPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
+      {
+        name: 'mode',
+        type: "'normal' | 'menu'",
+        default: "'normal'",
+        desc: "Bubble display mode: text or action list",
+      },
+      {
+        name: 'placement',
+        type: "PopoverPlacement",
+        default: "'bottom'",
+        desc: "Where the bubble sits relative to the trigger — 12 placements",
+      },
       {
         name: 'offset',
-        type: 'PopoverOffset',
-        default: '0',
-        desc: 'Extra gap in design px — extends the gap on the placement-family axis, shifts the bubble on the cross axis (folded into the measured placement).',
+        type: "number | number[] | { x: number; y: number }",
+        default: "0",
+        desc: "Extra distance in px; on -start / -end it shifts the bubble and counter-shifts the arrow so it keeps pointing at the trigger",
       },
       {
         name: 'visibleArrow',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Render the arrow pointing at the trigger.',
+        type: "boolean",
+        default: "true",
+        desc: "Render the arrow; when off, its gap is dropped from the placement too",
       },
       {
         name: 'disabled',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Disables the trigger — taps are ignored and the bubble stays closed.',
+        type: "boolean",
+        default: "false",
+        desc: "Disables the trigger — a trigger tap is ignored; a page-driven `v-model` still works",
       },
       {
         name: 'showClose',
-        type: 'boolean',
-        default: 'false',
-        desc: 'Render a close button inside the bubble.',
+        type: "boolean",
+        default: "false",
+        desc: "Render a close button at the bubble's top-right corner",
       },
       {
-        name: 'presentation',
-        type: "'anchor' | 'sheet'",
-        default: "'anchor'",
-        desc: 'Where the popover appears (additive): pinned bubble vs fixed bottom sheet.',
-      },
-      { name: 'title', type: 'string', default: "''", desc: 'Bold card title (additive).' },
-      {
-        name: 'subtitle',
-        type: 'string',
+        name: 'customClass',
+        type: "string",
         default: "''",
-        desc: 'Muted line under the title — a timestamp, or the sheet description (additive).',
+        desc: "Extra class on the root node",
       },
-      { name: 'iconData', type: 'IconData', default: '—', desc: 'Header glyph as inline SVG data (additive). Highest precedence.' },
-      { name: 'iconUrl', type: 'string', default: "''", desc: 'Header glyph as an image address (additive).' },
-      { name: 'icon', type: 'string', default: "''", desc: 'Header glyph as an SnIcon registry name (additive).' },
-      { name: 'actions', type: 'SnPopoverAction[]', default: '[]', desc: 'Full-width pill buttons under the body (additive).' },
-      { name: 'closeOnAction', type: 'boolean', default: 'true', desc: 'Close after an action / menu row tap (additive).' },
-      {
-        name: 'cancelText',
-        type: 'string',
-        default: "''",
-        desc: 'Sheet Cancel pill label — empty hides the pill (additive).',
-      },
-      {
-        name: 'closeOnClickOutside',
-        type: 'boolean',
-        default: 'true',
-        desc: 'Close the bubble when the user taps outside it (additive, AUI-OPT-07). The close rides the page-root `closeOutside` channel and never swallows the tap — the same gesture still lands on whatever button sits under it. Pass `false` to unregister the outside-close while mounted.',
-      },
-      { name: 'customClass', type: 'string', default: "''", desc: 'Extra class on the root node.' },
       {
         name: 'customStyle',
-        type: 'string',
+        type: "string",
         default: "''",
-        desc: 'Custom inline style for the root node.',
+        desc: "Custom inline style for the root node; override `--sn-popover-*` tokens here",
       },
       {
         name: 'customArrow',
-        type: 'string',
+        type: "string",
         default: "''",
-        desc: 'Extra class on the CSS fallback arrow node (the measured SVG chrome paints its own arrow).',
+        desc: "Extra class on the arrow node",
       },
-      { name: 'customPop', type: 'string', default: "''", desc: 'Extra class on the bubble node.' },
       {
-        name: 'rootPortal',
-        type: 'boolean',
-        default: 'false',
-        desc: "Accepted for `wd-popover` parity, NOT implemented — miniprogram has no portal host, so the bubble cannot leave the page's document flow.",
+        name: 'customPop',
+        type: "string",
+        default: "''",
+        desc: "Extra class on the bubble container",
       },
     ],
   },
   ai: {
     badge: 'ai-description.md · bundled',
-    heading: 'A machine-readable contract for LLMs',
-    copy: 'Popover · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().',
-    chip: "import { Popover } from '@snui/uni';",
-    chipCopy: "import { Popover } from '@snui/uni';",
+    heading: "A machine-readable contract for LLMs",
+    copy: "Popover · uni-app x ships an AI-friendly description consumed by @snui/cli generateDocs() and generateLlmsTxt().",
+    chip: "import { SnPopover } from '@snui/uni';",
+    chipCopy: "import { SnPopover } from '@snui/uni';",
     stats: [
       { key: 'intent.action', value: 'sn-popover', tone: 'accent' },
       { key: 'intent.end', value: 'uni', tone: 'cyan' },
@@ -220,9 +162,9 @@ import { Popover } from '@snui/uni';
     next: { text: 'Form', link: '/en/components/uni/form' },
   },
   toc: [
-    { id: 'usage', text: 'Usage' },
-    { id: 'demos', text: 'Examples' },
-    { id: 'api', text: 'API reference' },
-    { id: 'ai-native', text: 'AI-native integration' },
+    { id: 'usage', text: "Usage" },
+    { id: 'demos', text: "Examples" },
+    { id: 'api', text: "API reference" },
+    { id: 'ai-native', text: "AI-native integration" },
   ],
 };
