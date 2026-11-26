@@ -22,10 +22,40 @@
  *     therefore not declared.
  *   - `root-portal` is NOT implemented (miniprogram has no portal host). It is
  *     declared for parity and marked "未实现" on the docs page.
- *   - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS
- *     (`placement` + `offset`), so there is no measurement to refresh.
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
+ *
+ * ## Measured placement (the wd-popover pipeline, SVG chrome beneath)
+ *
+ * Like the reference library, the bubble is positioned from REAL measurements
+ * (trigger rect + bubble size), not trusted to CSS anchoring: open mounts the
+ * bubble at opacity 0, measures trigger + bubble (DOM on H5 /
+ * SelectorQuery on MP), computes viewport coords + the arrow's trigger
+ * projection, applies them as inline styles, THEN fades in. The
+ * `after-enter` leg re-applies the position (`updatePosition` — the
+ * reference's handleAfterEnter parity) because auto-height content changes
+ * the bubble's size between mount and settle.
+ *
+ * The silhouette (rounded card + arrow) is ONE SVG path (sn-popover-chrome),
+ * so there is no rotated-diamond composite to seam. The chrome renders as:
+ *   - H5 / classic webview: inline `<svg><path>` (crisp, repaints free)
+ *   - mini-programs: canvas-rasterized PNG data URL on `<image>`
+ *     (WeChat `<image>` cannot decode SVG docs — sn-icon AUI-MP-003)
+ *   - uni-app x App: `<image>` + SVG-document data URL (sn-circle decoder
+ *     constraints: plain path, explicit intrinsic size)
+ * Colors (fill / stroke) are RESOLVED concrete values baked into the shape —
+ * never var() — so the WeChat custom-property chain cannot reach the chrome
+ * (the transparent-bubble class of bugs is structurally impossible there).
+ *
+ * uni-app x MP has no `virtualHost` escape in the uni-x compile
+ * (AUI-POP-MP-001: the vapor wrapper's overflow clip swallows any
+ * absolutely-positioned overflow), so there the measured coords promote the
+ * bubble to `position: fixed` — fixed nodes escape every ancestor clip
+ * (probe-verified). All other ends keep root-relative `absolute`.
+ *
+ * When measurement is unavailable (plain test environments, exotic hosts)
+ * the bubble falls back to the CSS flow-anchored placement classes — the
+ * previous geometry — so nothing degrades to invisible.
  *
  * ## Rich card body (additive, reference-design refactor)
  *
@@ -78,55 +108,28 @@
  * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
  * `trigger` prop note for when `manual` is actually needed.
  *
- * ## Cross-platform bubble geometry (H5 / mp-weixin / uni-app x App)
+ * ## Bubble sizing + palette (MP custom-property contract)
  *
  * The bubble is a FIXED-width card — `--sn-popover-width` (normal, default
- * 480rpx) / `--sn-popover-menu-width` (menu, default 320rpx) — overridable via
- * `custom-style`. The previous `width: max-content` +
- * `max-width: min(480rpx, calc(100vw - 32rpx))` pair silently broke on
- * renderers that drop unsupported declarations (uni-app x App has no
- * `max-content`, `min()` or `vw`): the bubble lost its sizing and could render
- * collapsed / invisible. Fixed width is deterministic on all three platforms;
- * the cost is no automatic edge clamping, so near the screen edge an
- * `-start` / `-end` alignment is the consumer's tool. Centering uses pure
- * `translateX/Y(-50%)` (no `calc()` inside `transform`) with the offset folded
- * into margins, which every renderer supports. The bubble stays in the
- * document flow (`position: absolute`, pure-CSS anchoring) on every platform —
- * the same proven geometry as sn-tooltip. An mp-weixin measured fixed-layer
- * experiment (SelectorQuery trigger-rect positioning) was removed: fixed
- * nodes are where WeChat MP's custom-property gaps bite hardest, and the
- * flow-anchored variant renders correctly everywhere.
+ * 480rpx) / `--sn-popover-menu-width` (menu, default 320rpx) — overridable
+ * via `custom-style`. Fixed width is deterministic on all platforms
+ * (`max-content` / `min()` / `vw` are dropped by uni-app x App). Height is
+ * measured, never assumed.
  *
- * ## MP custom-property contract (the background-fix invariant)
- *
- * WeChat MP fails to resolve a custom-property payload that itself contains
- * var() (device-verified: 849b1859 zeroed the placement margin, the alias
- * `--sn-popover-bg: var(--sn-mp-color-background-elevated)` left the bubble
- * transparent), and a consuming `var(--x, fallback)` does NOT rescue it — the
- * fallback applies only to an UNDEFINED variable, while a defined-but-
- * unresolvable one computes to initial (transparent). The contract:
- *
- *   1. Every `--sn-popover-*` DEFINITION in this component carries a literal
- *      payload (rpx / px / transparent / a hex) — never var(). Locked by a
- *      source-contract test.
- *   2. `--sn-mp-*` theme tokens are consumed DIRECTLY (single hop to the
- *      page-level definitions — the form every sibling component paints with
- *      on MP).
- *   3. Overridable surfaces use the TWO-LINE form: the plain token line
- *      first (always valid — the MP floor), then the overridable
- *      `var(--sn-popover-*, var(--sn-mp-*))` line (same specificity, wins on
- *      compliant renderers; on WeChat a broken chain drops only that line,
- *      never the paint).
- *
- * Icon-size tokens default to literal rpx (32/32/28) instead of the
- * `--sn-mp-icon-size-*` aliases for the same reason; `custom-style` can
- * still override them with any literal.
+ * The MP custom-property contract still governs the CSS-painted surfaces
+ * (content text, plates, actions): every `--sn-popover-*` definition carries
+ * a literal payload; `--sn-mp-*` tokens are consumed directly; overridable
+ * surfaces stack the overridable var() line on top of the plain token line.
+ * The chrome fill/stroke RESOLUTION reads the effective computed colors
+ * through the same probe pattern as sn-icon (concrete values pass through,
+ * token values are read back from the cascade with a literal floor), so
+ * custom-style overrides reach the baked shape on every repaint.
  *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer keeps the bubble mounted for the fade-out leg. It is
- * cleared on every leg change and in `onBeforeUnmount`; no global listener is
- * registered (miniprogram has no `document`).
+ * cleared on every leg change and in `onBeforeUnmount`; measurement observers
+ * (page scroll / window resize) are disconnected on close and unmount.
  *
  * Usage:
  *   <sn-popover v-model="open" title="Quick Tip" icon="location" content="…">
@@ -147,12 +150,25 @@ import {
   registerOutsideClosable,
   unregisterOutsideClosable,
 } from '../../utils/outside-close';
+import { resolveUniHost } from '../../utils/uni-host';
+import {
+  buildBubbleChrome,
+  type ChromeGeometry,
+  type ChromePlacement,
+} from './sn-popover-chrome';
+import { buildChromeRasterUrl, rasterizeChromePng, rasterizeChromePngOnHolder } from './sn-popover-raster';
+import {
+  computeFixedPlacement,
+  computeBubblePlacement,
+  type AnchorRect,
+  type PlacementMeasurements,
+  type PlacementOptions,
+} from './sn-popover-position';
 
 defineOptions({ name: 'SnPopover' });
 
 const instance = getCurrentInstance();
 const instanceId = instance?.uid ?? 0;
-
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
   | 'top'
@@ -242,6 +258,36 @@ export interface SnPopoverAction {
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
+
+/**
+ * Static trigger↔bubble gap in px (the stylesheet's 28rpx at a 750rpx
+ * design width on a 375px viewport). The measured placement folds the
+ * `offset` prop on top of this base gap.
+ */
+const BUBBLE_GAP_PX = 14;
+
+/**
+ * Arrow shape in px (the stylesheet diamond's 22rpx base / 11rpx half-height
+ * at the 375px reference viewport — matching the CSS fallback geometry).
+ */
+const ARROW = { protrusion: 11, base: 22 } as const;
+
+/** Card corner radius in px (16rpx at 375px). */
+const CARD_RADIUS_PX = 8;
+
+/** Border stroke width in px (2rpx at 375px). */
+const CARD_STROKE_PX = 1;
+
+/** Chrome raster scale — 2× physical pixels (sn-icon crispness rule). */
+const RASTER_SCALE = 2;
+
+/**
+ * Resolved-chrome palette floor. When the cascade probe cannot return a
+ * concrete color the chrome bakes these literals — a chrome that never
+ * paints transparently (sn-icon's never-blank-ink contract).
+ */
+const CHROME_FILL_FLOOR = '#ffffff';
+const CHROME_STROKE_FLOOR = 'transparent';
 
 /**
  * Glyph scale published as literal-rpx component tokens (see the MP contract
@@ -395,7 +441,18 @@ async function enter(): Promise<void> {
   // One tick so the hidden style is committed before the shown class lands.
   await nextTick();
   if (token !== generation) return;
+  // Measure BEFORE the fade-in: the pipeline reads the flow-anchored pop
+  // (opacity 0, CSS classes positioning it) and swaps in the inline
+  // coordinates; the fade then runs from the final position.
+  resolveChromeColors();
+  void applyMeasuredPlacement();
   isShown.value = true;
+  // after-enter parity (wd-popover handleAfterEnter): content layout may
+  // change the bubble's natural size between mount and settle — re-apply
+  // once the shown state has rendered.
+  void nextTick().then(() => {
+    if (token === generation) reapplyPlacement();
+  });
   emit('open');
   emit('change', { show: true });
   phase = 'none';
@@ -416,6 +473,13 @@ function leave(): void {
     timer = null;
     if (token !== generation) return;
     isMounted.value = false;
+    // Reset the measured placement — the next open re-measures (the trigger
+    // may have moved / resized since this bubble closed).
+    measured.value = false;
+    popPosition.value = null;
+    arrowCenterPx.value = null;
+    popSize.value = null;
+    chromeRasterUrl.value = null;
     phase = 'none';
   }, ANIMATION_DURATION);
 }
@@ -447,12 +511,8 @@ function close(): void {
   if (wasUp) leave();
 }
 
-/** Compatibility no-op — see the header note (CSS-driven placement). */
-function updatePosition(): void {
-  // Intentionally empty: nothing is measured, so there is nothing to refresh.
-}
-
-defineExpose({ open, close, updatePosition });
+// updatePosition is defined in the measured-placement section below (the
+// real re-measure, wd-popover parity). defineExpose happens after it.
 
 // Outside-close registration (tooltip parity — the transparent mask is gone):
 // while `closeOnClickOutside` is on, the mounted bubble registers an
@@ -614,24 +674,456 @@ const rootStyle = computed(() => {
   return props.customStyle ? `${base}; ${props.customStyle}` : base;
 });
 
-const popClass = computed(() => ['sn-popover__pop', props.customPop]);
+const popClass = computed(() => [
+  'sn-popover__pop',
+  { 'sn-popover__pop--measured': measured.value },
+  props.customPop,
+]);
 
-/** Gap = 28rpx in the stylesheet (static — see the placement comment). The
- * `offset` prop folds in here as an inline margin on the pop node, so it
- * stays effective on renderers that cannot resolve the var chain. */
+/* ── Measured placement (the wd-popover pipeline) ──────────────────────── */
+
+/**
+ * Whether a measured position is in effect. When true, the pop node gets
+ * inline viewport coordinates (absolute relative to the root on H5 /
+ * classic MP / App; `position: fixed` on uni-app x MP to escape the vapor
+ * wrapper clip). When false — unmeasurable host, or before the first
+ * measurement lands — the CSS flow-anchored placement classes position the
+ * bubble (the previous geometry, never worse than invisible).
+ */
+const measured = ref(false);
+
+/** Inline pop geometry: left / top (+ fixed promotion on uni-app x MP). */
+const popPosition = ref<{ left: number; top: number } | null>(null);
+
+/** Whether the current render runs on a uni-app x MP host (fixed layer). */
+const isUniXMiniProgram = ref(false);
+
+/**
+ * Arrow tip position along the anchored edge, px from the bubble's
+ * cross-axis start (the trigger projection the chrome clamps). `null`
+ * falls back to the CSS class anchor.
+ */
+const arrowCenterPx = ref<number | null>(null);
+
+/** The pop node's natural (flow) size for the placement math. */
+const popSize = ref<{ width: number; height: number } | null>(null);
+
+/** Chrome raster payload for the `<image>` channel (`null` → inline svg / CSS). */
+const chromeRasterUrl = ref<string | null>(null);
+
+/** Resolved chrome geometry — drives both the inline svg and the raster. */
+const chromeGeometry = computed<ChromeGeometry | null>(() => {
+  if (!isShown.value && !isMounted.value) return null;
+  const size = popSize.value;
+  if (size === null || size.width <= 0 || size.height <= 0) return null;
+  return buildBubbleChrome({
+    width: size.width,
+    height: size.height,
+    placement: props.placement as ChromePlacement,
+    arrow: ARROW,
+    arrowCenter: arrowCenterPx.value,
+    arrowInset: 20,
+    radius: CARD_RADIUS_PX,
+    strokeWidth: CARD_STROKE_PX,
+  });
+});
+
+/**
+ * Resolved chrome palette — the bake colors for the silhouette. Concrete
+ * values pass through; unresolved probes keep the literal floor so the
+ * chrome never paints transparently. The outline is transparent by default
+ * (reference borderless card); a consumer border arrives as the SVG stroke
+ * when `--sn-popover-border` resolves concrete — see resolveChromeColors.
+ */
+const chromePaint = computed(() => ({
+  fill: resolvedBg.value || CHROME_FILL_FLOOR,
+  stroke: resolvedBorder.value || CHROME_STROKE_FLOOR,
+  strokeWidth: CARD_STROKE_PX,
+}));
+
+/**
+ * uni-app x App channel URL — the uni-x patch swaps the inline `<svg>` for
+ * `<image :src="chromeAppUrl">`. Same geometry, SVG-document data URL inside
+ * the sn-circle decoder constraints.
+ */
+const chromeAppUrl = computed<string | null>(() => {
+  const geometry = chromeGeometry.value;
+  if (geometry === null) return null;
+  return buildChromeRasterUrl(geometry, chromePaint.value);
+});
+
+/**
+ * Chrome node URL per platform channel:
+ *   - MP (classic + uni-app x): the canvas-rasterized PNG (real devices
+ *     decode PNG only);
+ *   - uni-app x App: the SVG-document data URL (uni-x patch swaps the inline
+ *     `<svg>` for `<image>`, the decoder constraint).
+ * `null` on H5 / classic webview — those render the inline `<svg>` directly.
+ */
+const chromeUrl = computed<string | null>(() => {
+  if (chromeRasterUrl.value !== null) return chromeRasterUrl.value;
+  return null;
+});
+
+/**
+ * Whether the MP raster `<canvas>` holder must exist in the template: only
+ * uni-app x MP hosts (createCanvasContextAsync without getElementById) need
+ * a node; classic MP uses the offscreen canvas, everything else inline svg.
+ */
+const mpCanvasNeeded = computed<boolean>(() => {
+  const host = resolveUniHost<{ createCanvasContextAsync?: unknown; getElementById?: unknown }>();
+  return (
+    typeof host?.createCanvasContextAsync === 'function' &&
+    typeof host?.getElementById !== 'function'
+  );
+});
+
+/**
+ * Chrome raster lifecycle: whenever the geometry or paint changes on an MP
+ * host, re-rasterize. The offscreen path is synchronous; the uni-app x MP
+ * node path (createCanvasContextAsync) repaints through the cached context.
+ */
+const mpRasterContext = ref<{
+  holder: { getContext?(kind: string): unknown; toDataURL?: () => string } | null;
+  canvasId: string;
+} | null>(null);
+
+function repaintChromeRaster(): void {
+  const geometry = chromeGeometry.value;
+  if (geometry === null) {
+    chromeRasterUrl.value = null;
+    return;
+  }
+  const rasterWidth = Math.ceil(geometry.box.width * RASTER_SCALE);
+  const rasterHeight = Math.ceil(geometry.box.height * RASTER_SCALE);
+  // The offscreen canvas is width/height-symmetric only in the icon case;
+  // the chrome box is usually not square, so the node path resizes per leg.
+  const holder = mpRasterContext.value?.holder ?? null;
+  if (holder !== null) {
+    chromeRasterUrl.value = rasterizeChromePngOnHolder(
+      holder,
+      geometry,
+      chromePaint.value,
+      Math.max(rasterWidth, rasterHeight),
+    );
+    return;
+  }
+  chromeRasterUrl.value = rasterizeChromePng(geometry, chromePaint.value, Math.max(rasterWidth, rasterHeight));
+}
+
+watch([chromeGeometry, () => props.customStyle], () => {
+  if (mpCanvasReady.value) repaintChromeRaster();
+});
+
+/** uni-app x MP canvas node id (component-scoped). */
+const mpCanvasId = `sn-popover-chrome-${instance?.uid ?? 0}`;
+const mpCanvasReady = ref(false);
+
+onMounted(() => {
+  const host = resolveUniHost<{ createCanvasContextAsync?: (o: Record<string, unknown>) => void }>();
+  if (typeof host?.createCanvasContextAsync !== 'function') return;
+  try {
+    host.createCanvasContextAsync({
+      id: mpCanvasId,
+      component: instance?.proxy,
+      success: (value: unknown) => {
+        if (value === null || typeof value !== 'object') return;
+        const holder = value as { getContext?: (kind: string) => unknown; toDataURL?: () => string };
+        if (typeof holder.getContext !== 'function') return;
+        mpRasterContext.value = { holder, canvasId: mpCanvasId };
+        mpCanvasReady.value = true;
+      },
+      fail: () => {
+        /* 无 canvas 面 —— offscreen / CSS 回落 */
+      },
+    } as Record<string, unknown>);
+  } catch {
+    /* 回落 */
+  }
+});
+
+/**
+ * Cascade probe for the chrome palette (the sn-icon pattern): read the
+ * pop node's resolved background color back as a CONCRETE value. Custom
+ * token strings / var() chains that the probe cannot concretize keep the
+ * literal floor (never transparent). Re-probed on every open, so theme /
+ * dark-mode flips re-bake on the next bubble.
+ */
+const resolvedBg = ref('');
+
+/** Resolved card outline color (`transparent` keeps the borderless card). */
+const resolvedBorder = ref('');
+
+function resolveChromeColors(): void {
+  // Concrete custom-style override passes straight through.
+  const custom = props.customStyle;
+  const bgMatch = /(?:^|;)\s*background(?:-color)?:\s*([^;]+)/i.exec(custom ?? '');
+  if (bgMatch !== null) {
+    const value = bgMatch[1]!.trim();
+    if (/^#[0-9a-fA-F]{3,8}$|^rgba?\(|^hsla?\(/.test(value)) {
+      resolvedBg.value = value;
+      return;
+    }
+  }
+  const borderMatch = /(?:^|;)\s*--sn-popover-border:\s*([^;]+)/i.exec(custom ?? '');
+  if (borderMatch !== null) {
+    const value = borderMatch[1]!.trim();
+    resolvedBorder.value = /^#[0-9a-fA-F]{3,8}$|^rgba?\(/.test(value) ? value : '';
+  } else {
+    resolvedBorder.value = '';
+  }
+  // DOM hosts (H5 / webview): getComputedStyle on the pop node.
+  const el = (instance?.proxy as { $el?: Element | null } | undefined)?.$el;
+  if (el !== undefined && el !== null && typeof el.querySelector === 'function') {
+    try {
+      const node = el.querySelector('.sn-popover__pop') ?? el;
+      const style = el.ownerDocument?.defaultView?.getComputedStyle(node as Element);
+      const bg = style?.backgroundColor ?? '';
+      resolvedBg.value = /^rgba?\(|^#[0-9a-fA-F]{3,8}$/i.test(bg) ? bg : '';
+      return;
+    } catch {
+      /* 探测失败走地板色 */
+    }
+  }
+  // MP hosts: keep the token floor — the two-line CSS paint below still
+  // consumes --sn-mp-* live, and the chrome bakes the literal floor.
+  resolvedBg.value = '';
+}
+
+/**
+ * One measurement pass (wd-popover pipeline): trigger rect + pop size +
+ * viewport → inline position + arrow projection. Pure DOM on H5 /
+ * webview; SelectorQuery on MP (the component `$scope` first — the
+ * sn-icon / uni-host resolver pattern). Single-shot: the pass reads the
+ * pop node only while it is flow-anchored (`measured === false`); the
+ * re-apply leg (`updatePosition`) measures the pop SIZE only, never
+ * re-reads a fixed node's box (the c42f1576 phantom-rect regression).
+ */
+async function applyMeasuredPlacement(): Promise<void> {
+  if (isSheet.value) return;
+  const proxy = instance?.proxy as
+    | { $el?: Element | null; $scope?: { createSelectorQuery?: () => unknown } }
+    | undefined;
+
+  /* ── DOM path (H5 / webview / tests with happy-dom) ── */
+  const el = proxy?.$el;
+  if (el !== undefined && el !== null && typeof el.querySelector === 'function') {
+    try {
+      const doc = el.ownerDocument;
+      const triggerNode = el.querySelector('.sn-popover__trigger') as Element | null;
+      const popNode = el.querySelector('.sn-popover__pop') as Element | null;
+      if (doc === undefined || doc === null || triggerNode === null || popNode === null) return;
+      const view = doc.defaultView;
+      if (view === undefined || view === null) return;
+      const triggerRect = triggerNode.getBoundingClientRect();
+      const popRect = popNode.getBoundingClientRect();
+      if (popRect.width <= 0 || popRect.height <= 0) return;
+      const measurements: PlacementMeasurements = {
+        trigger: {
+          left: triggerRect.left,
+          top: triggerRect.top,
+          width: triggerRect.width,
+          height: triggerRect.height,
+        },
+        pop: { width: popRect.width, height: popRect.height },
+        viewport: { width: view.innerWidth, height: view.innerHeight },
+      };
+      applyPlacement(measurements);
+      popSize.value = { ...measurements.pop };
+      return;
+    } catch {
+      /* 落回 CSS 锚定 */
+    }
+    return;
+  }
+
+  /* ── SelectorQuery path (classic MP + uni-app x MP) ── */
+  const scope = proxy?.$scope as { createSelectorQuery?: () => QueryHost } | undefined;
+  const uniHost = resolveUniHost<QueryUniHost>();
+  let createQuery: (() => QueryHost) | null = null;
+  let queryScope: unknown = null;
+  if (scope !== undefined && typeof scope.createSelectorQuery === 'function') {
+    createQuery = scope.createSelectorQuery;
+    queryScope = scope;
+  } else if (typeof uniHost?.createSelectorQuery === 'function') {
+    createQuery = uniHost.createSelectorQuery;
+    queryScope = instance?.proxy;
+  }
+  if (createQuery === null) return;
+  try {
+    const rects = await measureRects(createQuery, queryScope);
+    if (rects === null || rects.trigger === null || rects.pop === null) return;
+    if (rects.pop.width <= 0 || rects.pop.height <= 0) return;
+    const windowInfo = resolveUniHost<{ getWindowInfo?: () => { windowWidth?: number; windowHeight?: number }; getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } }>();
+    const info =
+      typeof windowInfo?.getWindowInfo === 'function'
+        ? windowInfo.getWindowInfo()
+        : windowInfo?.getSystemInfoSync?.();
+    const viewport = {
+      width: typeof info?.windowWidth === 'number' && info.windowWidth > 0 ? info.windowWidth : 375,
+      height: typeof info?.windowHeight === 'number' && info.windowHeight > 0 ? info.windowHeight : 667,
+    };
+    const measurements: PlacementMeasurements = {
+      trigger: rects.trigger,
+      pop: { width: rects.pop.width, height: rects.pop.height },
+      viewport,
+    };
+    applyPlacement(measurements);
+    popSize.value = { ...measurements.pop };
+  } catch {
+    /* 落回 CSS 锚定 */
+  }
+}
+
+/** SelectorQuery shapes (subset the queries need). */
+interface QueryRect {
+  left?: number;
+  top?: number;
+  width?: number;
+  height?: number;
+}
+interface QueryNode {
+  boundingClientRect?: (cb: (rect: QueryRect | null) => void) => QueryNode;
+  fields?: (options: Record<string, unknown>, cb: (value: unknown) => void) => QueryNode;
+}
+interface QueryHost {
+  in?: (scope: unknown) => QueryHost;
+  select?: (selector: string) => QueryNode;
+  exec?: (cb?: () => void) => void;
+}
+interface QueryUniHost {
+  createSelectorQuery?: () => QueryHost;
+}
+
+/** Measure trigger + pop rects in one exec (viewport coordinates on MP). */
+function measureRects(
+  createQuery: () => QueryHost,
+  queryScope: unknown,
+): Promise<{ trigger: AnchorRect | null; pop: AnchorRect | null }> {
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (result: { trigger: AnchorRect | null; pop: AnchorRect | null }): void => {
+      if (!settled) {
+        settled = true;
+        resolve(result);
+      }
+    };
+    try {
+      const query = createQuery();
+      const scoped = typeof query.in === 'function' ? query.in(queryScope) : query;
+      const triggerChain = scoped.select?.('.sn-popover__trigger');
+      const popChain = scoped.select?.('.sn-popover__pop');
+      if (triggerChain === undefined || popChain === undefined) {
+        finish({ trigger: null, pop: null });
+        return;
+      }
+      let triggerRect: AnchorRect | null = null;
+      let popRect: AnchorRect | null = null;
+      triggerChain.boundingClientRect?.((rect) => {
+        triggerRect = toAnchorRect(rect);
+      });
+      popChain.boundingClientRect?.((rect) => {
+        popRect = toAnchorRect(rect);
+      });
+      scoped.exec?.(() => finish({ trigger: triggerRect, pop: popRect }));
+      // Hosts whose exec carries no callback still settle.
+      setTimeout(() => finish({ trigger: triggerRect, pop: popRect }), 300);
+    } catch {
+      finish({ trigger: null, pop: null });
+    }
+  });
+}
+
+function toAnchorRect(rect: QueryRect | null): AnchorRect | null {
+  if (rect === null || rect === undefined) return null;
+  const { left, top, width, height } = rect;
+  if (typeof width !== 'number' || typeof height !== 'number') return null;
+  return {
+    left: typeof left === 'number' ? left : 0,
+    top: typeof top === 'number' ? top : 0,
+    width,
+    height,
+  };
+}
+
+/** Fold one measurement pass into the reactive placement state. */
+function applyPlacement(measurements: PlacementMeasurements): void {
+  // uni-app x MP detection is runtime-capability based (sn-qr-code
+  // precedent, no compile-target assumption): createCanvasContextAsync
+  // exists only on uni-app x MP hosts; getElementById exists on App/Web.
+  const uniXHost = resolveUniHost<{ createCanvasContextAsync?: unknown; getElementById?: unknown }>();
+  const uniXMp =
+    typeof uniXHost?.createCanvasContextAsync === 'function' &&
+    typeof uniXHost?.getElementById !== 'function';
+  isUniXMiniProgram.value = uniXMp;
+  const options: PlacementOptions = {
+    placement: props.placement as ChromePlacement,
+    offset: offsetPair.value,
+    gap: BUBBLE_GAP_PX,
+    arrow: ARROW,
+    radius: CARD_RADIUS_PX,
+  };
+  if (uniXMp) {
+    const fixed = computeFixedPlacement(measurements, options);
+    popPosition.value = { left: fixed.left, top: fixed.top };
+    arrowCenterPx.value = fixed.arrowCenter;
+  } else {
+    const placed = computeBubblePlacement(measurements, options);
+    // Root-relative: subtract the root node's viewport offset so the inline
+    // absolute coords ride the existing positioning context.
+    const el = (instance?.proxy as { $el?: Element | null } | undefined)?.$el;
+    let rootLeft = 0;
+    let rootTop = 0;
+    if (el !== undefined && el !== null && typeof el.getBoundingClientRect === 'function') {
+      const rootRect = (el as Element).getBoundingClientRect();
+      rootLeft = rootRect.left;
+      rootTop = rootRect.top;
+    }
+    popPosition.value = { left: placed.viewportLeft - rootLeft, top: placed.viewportTop - rootTop };
+    arrowCenterPx.value = placed.arrowCenter;
+  }
+  measured.value = true;
+}
+
+/** after-enter parity (wd-popover handleAfterEnter): re-run the pipeline. */
+function reapplyPlacement(): void {
+  void applyMeasuredPlacement();
+}
+
+/** updatePosition expose — the reference API, now a real re-measure. */
+function updatePosition(): void {
+  if (!isShown.value && !isMounted.value) return;
+  void applyMeasuredPlacement();
+}
+
+defineExpose({ open, close, updatePosition });
+
+const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
+
 const popStyle = computed(() => {
-  const { x, y } = offsetPair.value;
-  const family = props.placement.split('-')[0];
   const parts: string[] = [];
-  if (family === 'top' || family === 'bottom') {
-    if (y !== 0) parts.push(`margin-${family === 'top' ? 'bottom' : 'top'}: calc(28rpx + ${y}px)`);
-  } else if (x !== 0) {
-    parts.push(`margin-${family === 'left' ? 'right' : 'left'}: calc(28rpx + ${x}px)`);
+  if (measured.value && popPosition.value !== null) {
+    // The chrome extends past the bubble on the arrow side; the pop keeps
+    // its own geometry — the chrome layer carries its own offset.
+    parts.push(`left: ${popPosition.value.left}px`);
+    parts.push(`top: ${popPosition.value.top}px`);
+    if (isUniXMiniProgram.value) parts.push('position: fixed');
+    // Keep the fade transition usable while positioned.
+    parts.push('margin: 0');
   }
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
-const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
+const chromeBoxStyle = computed(() => {
+  const geometry = chromeGeometry.value;
+  if (geometry === null) return undefined;
+  return [
+    `width: ${geometry.box.width}px`,
+    `height: ${geometry.box.height}px`,
+    `left: ${geometry.box.offsetLeft}px`,
+    `top: ${geometry.box.offsetTop}px`,
+  ].join('; ');
+});
 
 const sheetPanelClass = computed(() => [
   'sn-popover__sheet-panel',
@@ -691,6 +1183,20 @@ function onCancelTap(): void {
     </view>
 
     <!-- ── Anchor bubble ─────────────────────────────────────────────────── -->
+    <!--
+      The bubble silhouette (card + arrow) is ONE SVG path (sn-popover-chrome):
+      no rotated-diamond composite, no seams. Render channels:
+        - H5 / classic webview: inline <svg> (`#ifndef MP`), currentColor-free
+          baked colors;
+        - mini-programs: canvas-rasterized PNG on <image> (WeChat <image>
+          cannot decode SVG docs — sn-icon AUI-MP-003);
+        - uni-app x App: the uni-x patch swaps the inline <svg> for
+          <image :src="chromeAppUrl"> (sn-circle decoder constraints).
+      The chrome layer sits UNDER the content (absolute, offset box). The
+      pop's own CSS paint stays as the content styling + fallback floor.
+      Without a measured position (popStyle empty) the CSS placement classes
+      position the bubble — the previous geometry, still correct.
+    -->
     <view
       v-if="isMounted && !isSheet"
       :class="popClass"
@@ -698,16 +1204,62 @@ function onCancelTap(): void {
       role="dialog"
       @tap.stop
     >
-      <!--
-        Arrow, drawn as ONE piece: a rotated diamond (32rpx square) centered
-        on the card edge. The fill is the card color covering the border
-        segment behind it (interiors connect), and the outline is the SAME
-        `--sn-popover-border` token as the card border drawn on the two
-        outside edges — the slant strokes meet the card border at the two
-        junction points, so the whole callout reads as ONE continuous
-        outline. The pop's drop-shadow follows the true silhouette.
-      -->
-      <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
+      <!-- Chrome layer: one silhouette path beneath the card content. -->
+      <view v-if="chromeGeometry !== null" class="sn-popover__chrome" :style="chromeBoxStyle" aria-hidden="true">
+        <!-- #ifndef MP-WEIXIN -->
+        <svg
+          v-if="chromeUrl === null"
+          class="sn-popover__chrome-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          :viewBox="`0 0 ${chromeGeometry.box.width} ${chromeGeometry.box.height}`"
+          :width="chromeGeometry.box.width"
+          :height="chromeGeometry.box.height"
+          focusable="false"
+        >
+          <path
+            :d="chromeGeometry.path"
+            :fill="chromePaint.fill"
+            :stroke="chromePaint.stroke === 'transparent' ? undefined : chromePaint.stroke"
+            :stroke-width="chromePaint.stroke === 'transparent' ? undefined : chromePaint.strokeWidth"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <image
+          v-else
+          class="sn-popover__chrome-image"
+          :src="chromeUrl"
+          :style="`width: ${chromeGeometry.box.width}px; height: ${chromeGeometry.box.height}px`"
+          mode="scaleToFill"
+        />
+        <!-- #endif -->
+        <!-- #ifdef MP-WEIXIN -->
+        <image
+          v-if="chromeUrl !== null"
+          class="sn-popover__chrome-image"
+          :src="chromeUrl"
+          :style="`width: ${chromeGeometry.box.width}px; height: ${chromeGeometry.box.height}px`"
+          mode="scaleToFill"
+        />
+        <!-- #endif -->
+      </view>
+      <!-- uni-app x MP raster holder: an offscreen-viewport 2d canvas this
+           component owns (createCanvasContextAsync resolves only nodes; the
+           sn-icon pattern — display:none would lose the bitmap). -->
+      <!-- #ifdef MP-WEIXIN -->
+      <canvas
+        v-if="mpCanvasNeeded"
+        :id="mpCanvasId"
+        :canvas-id="mpCanvasId"
+        type="2d"
+        class="sn-popover__raster-canvas"
+        aria-hidden="true"
+      />
+      <!-- #endif -->
+
+      <!-- CSS fallback arrow: only when the chrome layer is unavailable
+           (unmeasured size / broken canvas host) — the measured bubble never
+           carries it. customArrow keeps its landing spot. -->
+      <view v-if="chromeGeometry === null && visibleArrow" :class="arrowClass" aria-hidden="true" />
 
       <view v-if="mode === 'menu'" class="sn-popover__menu">
         <slot name="content">
@@ -972,30 +1524,31 @@ function onCancelTap(): void {
   height: auto;
   box-sizing: border-box;
   /* Borderless by default (the reference card reads through fill +
-   * elevation alone) — the token lets consumers draw a custom border; the
-   * fill triangle overlaps the junction, so the border opens at the arrow
-   * and the interiors stay connected (no seam). The definition payload is a
-   * literal, so the consumption is MP-safe. */
+   * elevation alone) — the token lets consumers draw a custom border. The
+   * measured bubble paints through the SVG chrome (one silhouette, baked
+   * colors); this CSS border only paints the FALLBACK geometry when no
+   * measured chrome exists. The definition payload is a literal, so the
+   * consumption is MP-safe. */
   border: 2rpx solid var(--sn-popover-border);
   border-radius: var(--sn-mp-radius-lg);
-  /* Same uni-app x default-clip guard as the root: the arrow protrudes
-   * outside this box. */
+  /* Same uni-app x default-clip guard as the root: the chrome layer (and the
+   * fallback arrow) protrudes outside this box. */
   overflow: visible;
   /* Palette, TWO-LINE form (see the MP contract): the plain token line is
    * the always-valid MP floor; the overridable var() line wins on compliant
-   * renderers and loses only itself if a WeChat chain breaks. */
+   * renderers and loses only itself if a WeChat chain breaks. This paint is
+   * the content floor + fallback geometry; the measured bubble's chrome
+   * bakes the resolved colors INTO the SVG/PNG shape. */
   background-color: var(--sn-mp-color-background-elevated);
   background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   color: var(--sn-mp-color-text-primary);
   color: var(--sn-popover-color, var(--sn-mp-color-text-primary));
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
-  /* Elevation via drop-shadow on H5 / miniprogram: unlike box-shadow's
-   * rectangle, the drop-shadow follows the TRUE rendered silhouette — card
-   * plus protruding arrow — so the two read as one shape (the diamond's own
-   * box-shadow could never merge with the card's rectangle). uni-app x App
-   * has no filter support: falls back to the rectangle box-shadow token,
-   * gated behind conditional compilation. */
+  /* Elevation: the measured chrome carries the silhouette shadow inside the
+   * SVG/PNG paint budget is not needed — drop-shadow on the pop node follows
+   * the TRUE rendered silhouette (chrome layer included). uni-app x App has
+   * no filter support: falls back to the rectangle box-shadow token. */
   /* #ifndef APP */
   filter: drop-shadow(0 6px 16px rgba(15, 23, 42, 0.08));
   /* #endif */
@@ -1005,6 +1558,39 @@ function onCancelTap(): void {
   opacity: 0;
   transition: opacity 150ms ease;
   pointer-events: none;
+}
+
+/* Measured placement: inline coordinates land via popStyle (left / top /
+ * fixed promotion on uni-app x MP). The placement-class margins stay in the
+ * cascade but the inline styles win; `margin: 0` in popStyle clears the
+ * static gap so the measured coords are the single source of position. */
+.sn-popover__pop--measured {
+  /* No stylesheet geometry beyond the box itself — placement is inline. */
+}
+
+/* ── Chrome layer (the SVG silhouette beneath the content) ─────────────── */
+
+.sn-popover__chrome {
+  position: absolute;
+  /* The chrome box is offset (arrow side protrudes) via inline style. */
+  pointer-events: none;
+}
+
+.sn-popover__chrome-svg,
+.sn-popover__chrome-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* uni-app x MP raster holder: offscreen-viewport but rendered (display:none
+ * would lose the bitmap — the sn-icon canvas pattern). */
+.sn-popover__raster-canvas {
+  position: absolute;
+  left: -9999rpx;
+  top: 0;
+  width: 8px;
+  height: 8px;
 }
 
 .sn-popover--shown .sn-popover__pop {

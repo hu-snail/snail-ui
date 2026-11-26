@@ -120,6 +120,9 @@ describe('sn-popover', () => {
       //   2. painted surfaces consume --sn-mp-* directly (the MP floor line)
       //   3. the overridable var(--sn-popover-*, var(--sn-mp-*)) line stacks
       //      on top, so a broken chain loses only the top line
+      // The measured bubble additionally bakes RESOLVED colors into the SVG
+      // chrome (never var()) — this contract now governs the CSS-painted
+      // surfaces (content, plates, actions, fallback geometry).
       const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
       // (1) literal payloads only — the MP background regression lock.
       const defRe = /--sn-popover-[a-z-]+:\s*([^;]+);/g;
@@ -129,7 +132,7 @@ describe('sn-popover', () => {
         if (m[1]!.includes('var(')) bad.push(m[0]!);
       }
       expect(bad, `var()-payload definitions break WeChat MP: ${bad.join(' | ')}`).toEqual([]);
-      // (2)+(3) pop, arrow and sheet panel each carry the two-line palette.
+      // (2)+(3) pop and sheet panel each carry the two-line palette.
       for (const cls of ['.sn-popover__pop {', '.sn-popover__sheet-panel {']) {
         const block = source.slice(
           source.indexOf(cls),
@@ -141,37 +144,85 @@ describe('sn-popover', () => {
         );
         expect(block).toContain('color: var(--sn-mp-color-text-primary)');
       }
-      const arrow = source.slice(
-        source.indexOf('.sn-popover__arrow {'),
-        source.indexOf('}', source.indexOf('.sn-popover__arrow {')),
-      );
-      expect(arrow).toContain('background-color: var(--sn-mp-color-background-elevated)');
-      // The bubble stays flow-anchored — no fixed-layer measurement survived.
-      expect(source).not.toContain('createSelectorQuery');
-      // The anchor pop is absolute; only the full-screen sheet container is
-      // allowed to be fixed.
+      // Measured placement is real: SelectorQuery powers the MP pipeline and
+      // the uni-app x MP layer promotes to fixed (AUI-POP-MP-001).
+      expect(source).toContain('createSelectorQuery');
+      // The anchor pop is absolute by default; the uni-app x MP fixed
+      // promotion happens inline (popStyle), so the STYLESHEET keeps exactly
+      // one fixed block — the full-screen sheet container.
       const popBlock = source.slice(
         source.indexOf('.sn-popover__pop {'),
         source.indexOf('}', source.indexOf('.sn-popover__pop {')),
       );
       expect(popBlock).toContain('position: absolute');
-      expect(source.match(/position: fixed/g)).toHaveLength(1);
+      const styleBlock = source.slice(source.indexOf('<style'), source.indexOf('</style>'));
+      expect(styleBlock.match(/position: fixed/g)).toHaveLength(1);
     });
 
-    it('re-adds the gap inline on the pop node when offset-y is nonzero (top family)', () => {
-      const w = mount(SnPopover, {
-        props: { modelValue: true, offset: { x: 0, y: 8 }, placement: 'top' },
-      });
-      const style = w.find('.sn-popover__pop').attributes('style') ?? '';
-      expect(style).toContain('margin-bottom: calc(28rpx + 8px)');
+    it('keeps the CSS fallback geometry when the host cannot measure', async () => {
+      // happy-dom rects are all zeros — the DOM pipeline refuses to place on
+      // a degenerate box and the bubble keeps the CSS placement classes
+      // (never worse than the previous geometry).
+      const w = mount(SnPopover, { props: { modelValue: true, content: '气泡' } });
+      await flushPromises();
+      expect(w.find('.sn-popover__pop').classes()).not.toContain('sn-popover__pop--measured');
+      expect(w.find('.sn-popover__pop').attributes('style')).toBeUndefined();
+      // The chrome layer is absent (no size to draw) and the CSS fallback
+      // arrow renders instead.
+      expect(w.find('.sn-popover__chrome').exists()).toBe(false);
+      expect(w.find('.sn-popover__arrow').exists()).toBe(true);
     });
 
-    it('re-adds the gap inline on the pop node when offset-x is nonzero (right family)', () => {
-      const w = mount(SnPopover, {
-        props: { modelValue: true, offset: { x: 6, y: 0 }, placement: 'right' },
-      });
-      const style = w.find('.sn-popover__pop').attributes('style') ?? '';
-      expect(style).toContain('margin-left: calc(28rpx + 6px)');
+    it('positions the bubble inline and renders the SVG chrome when measurable', async () => {
+      const rect = (left: number, top: number, width: number, height: number) =>
+        ({ left, top, width, height, right: left + width, bottom: top + height, x: left, y: top }) as DOMRect;
+      // Stub BEFORE mounting: enter() measures during mount, so the spies
+      // must already be in place when the bubble renders.
+      const rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+        function (this: HTMLElement) {
+          const cls = this.className as string;
+          if (cls.includes('sn-popover__trigger')) return rect(100, 200, 120, 44);
+          if (cls.includes('sn-popover__pop')) return rect(40, 258, 240, 96);
+          return rect(0, 0, 300, 400);
+        },
+      );
+      const w = mount(SnPopover, { props: { modelValue: false, content: '气泡' } });
+      // Opening through v-model runs the enter() measurement pipeline
+      // (the initial-true mount path bypasses enter by design).
+      await w.setProps({ modelValue: true });
+      await flushPromises();
+      try {
+        expect(w.find('.sn-popover__pop').classes()).toContain('sn-popover__pop--measured');
+        const style = w.find('.sn-popover__pop').attributes('style') ?? '';
+        // bottom placement: pop top = 200 + 44 + 14 = 258; left = 100 + 60 - 120 = 40.
+        expect(style).toContain('left: 40px');
+        expect(style).toContain('top: 258px');
+        // The chrome layer replaced the CSS arrow.
+        expect(w.find('.sn-popover__chrome').exists()).toBe(true);
+        expect(w.find('.sn-popover__arrow').exists()).toBe(false);
+        const svgPath = w.find('.sn-popover__chrome-svg path');
+        expect(svgPath.exists()).toBe(true);
+        // Colors are baked literals (never var()); the bottom arrow's apex
+        // sits at pad + arrowCenter = 0.5 + 120.
+        expect(svgPath.attributes('fill')).toBe('#ffffff');
+        expect(svgPath.attributes('d')).toContain('L 120.5 0.5');
+      } finally {
+        rectSpy.mockRestore();
+        w.unmount();
+      }
+    });
+
+    it('keeps the pop node style-free in the unmeasured fallback geometry', () => {
+      // No measurable DOM (jsdom-less source check applies to the previous
+      // geometry contract): before mount settles, the pop has no inline
+      // placement — the CSS placement classes own the position.
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      // popStyle emits inline coords ONLY inside the measured branch.
+      const popStyleBlock = source.slice(
+        source.indexOf('const popStyle = computed'),
+        source.indexOf('const chromeBoxStyle'),
+      );
+      expect(popStyleBlock).toContain('if (measured.value && popPosition.value !== null)');
     });
 
     it('forwards a --sn-popover-bg / --sn-popover-color override through customStyle', () => {
@@ -486,7 +537,7 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
     }
   });
 
-  it('exposes updatePosition as a safe no-op', () => {
+  it('exposes updatePosition as a safe re-measure', () => {
     const w = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
     expect(() =>
       (w.vm as unknown as { updatePosition: () => void }).updatePosition(),
