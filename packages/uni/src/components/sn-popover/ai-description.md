@@ -1,26 +1,34 @@
 # sn-popover — AI-Friendly Component Description
-- One-shape arrow: a rotated diamond (32rpx square) centered on the card
-  edge — its fill is the card color covering the border segment behind it,
-  and its outline is the SAME `--sn-popover-border` token drawn on the two
-  outside edges, so the slant strokes join the card border at the junction
-  points: the whole callout reads as ONE continuous outline.
-- MP custom-property contract (the background-fix invariant): WeChat MP
-  cannot resolve a custom-property payload containing var() (the alias
-  `--sn-popover-bg: var(--sn-mp-color-background-elevated)` left the bubble
-  transparent on device), and a consuming `var(--x, fallback)` does not
-  rescue it — the fallback covers only an undefined variable. Therefore:
-  every `--sn-popover-*` definition in the component carries a LITERAL
-  payload (locked by a source-contract test); painted surfaces stack the
-  overridable `var(--sn-popover-*, var(--sn-mp-*))` line ON TOP of the plain
-  `--sn-mp-*` token line, so a broken chain loses only the top line; glyph
-  sizes default to literal rpx (32/32/28) instead of the
-  `--sn-mp-icon-size-*` aliases.
-- Flow-anchored geometry (fix): the bubble is `position: absolute` anchored
-  by `placement` CSS on every platform. The mp-weixin measured fixed-layer
-  variant (SelectorQuery trigger-rect positioning) was removed — fixed
-  nodes are where WeChat MP's custom-property gaps bite hardest. Host
-  wrappers that clip absolutely-positioned overflow must open their chain
-  (demo scaffold rule).
+- Single-silhouette chrome: the card (rounded rect) and the arrow merge into
+  ONE SVG path (`sn-popover-chrome.ts`) — no rotated-diamond composite, no
+  seam. Corners are true circular arcs; the arrow splices into its edge with
+  the tip clamped inside the straight segment (never over a corner).
+- Colors are BAKED: the fill / outline resolve to concrete values (cascade
+  probe → theme tokens → dark mode) and are painted INTO the shape — never
+  var(). The MP custom-property chain cannot reach the chrome, so the
+  transparent-bubble class of bugs is structurally impossible there. The
+  CSS two-line palette still governs content surfaces (text, plates, pills)
+  and the unmeasured fallback geometry.
+- Render channels: inline `<svg><path>` on H5 / classic webview; a
+  canvas-rasterized PNG data URL on `<image>` for mini-programs (WeChat
+  `<image>` cannot decode SVG documents — sn-icon AUI-MP-003); an
+  SVG-document data URL on `<image>` for uni-app x App (the uni-x patch
+  swaps the svg block; sn-circle decoder constraints: plain path, explicit
+  intrinsic size).
+- Measured placement (wd-popover parity): open mounts the bubble at opacity
+  0, measures trigger + bubble (DOM `getBoundingClientRect` on H5 /
+  `createSelectorQuery` on MP, component `$scope` first), computes viewport
+  coords + the arrow's trigger projection (`sn-popover-position.ts`), applies
+  inline coordinates, THEN fades in; the after-enter leg re-applies
+  (`updatePosition()` is a real re-measure). Viewport clamping keeps the
+  bubble on screen; the arrow re-points at the trigger after the clamp.
+- uni-app x MP promotes the measured coords to `position: fixed` — the vapor
+  wrapper's `overflow:hidden` swallows any absolutely-positioned overflow and
+  the uni-x compile has no `virtualHost` escape (AUI-POP-MP-001,
+  probe-verified: fixed paints, absolute clips). All other ends keep
+  root-relative `absolute`. Unmeasurable hosts fall back to the CSS
+  flow-anchored placement classes + the CSS diamond arrow — strictly no
+  worse than the previous geometry.
 
 > Human-readable + AI-parseable description of the uni-end sn-popover component.
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
@@ -42,7 +50,8 @@ page taps, so the App close paths are the trigger re-tap, the card's close
 button, and the sheet mask. The card is fixed-width (`--sn-popover-width`,
 default 480rpx) and auto-height: it grows with its content instead of clipping
 it. The bubble defaults to the elevated surface — white in the light theme —
-with the page text color; recolor via `--sn-popover-bg` / `--sn-popover-color`.
+with the page text color; recolor via `--sn-popover-bg` / `--sn-popover-color`
+(the bake re-resolves on every open, so theme flips follow).
 
 ## Reference Library
 
@@ -83,7 +92,7 @@ import { SnPopover } from '@snui/uni';
 | `iconUrl`             | `string`                                  | `''`       | no       | Header glyph as an image address (additive). Beats `icon`, loses to `iconData`.    |
 | `icon`                | `string`                                  | `''`       | no       | Header glyph as an SnIcon registry name (additive).                                |
 | `placement`           | 12-direction `PlacementType`              | `'bottom'` | no       | Bubble anchor (anchor presentation; ignored by `sheet`).                           |
-| `offset`              | `number \| number[] \| { x?, y? }`        | `0`        | no       | Gap in design px; published as `--sn-popover-offset-x` / `-y`.                     |
+| `offset`              | `number \| number[] \| { x?, y? }`        | `0`        | no       | Extra gap in design px, folded into the measured placement (family axis extends the gap, cross axis shifts the bubble). |
 | `visibleArrow`        | `boolean`                                 | `true`     | no       | Render the arrow (anchor presentation).                                            |
 | `disabled`            | `boolean`                                 | `false`    | no       | Disables the trigger.                                                              |
 | `showClose`           | `boolean`                                 | `false`    | no       | Render a close button in the card header.                                          |
@@ -141,25 +150,25 @@ import { SnPopover } from '@snui/uni';
 
 ## Exposed Methods
 
-| Name               | Description                                    |
-| ------------------ | ---------------------------------------------- |
-| `open()`           | Show the bubble.                               |
-| `close()`          | Hide the bubble.                               |
-| `updatePosition()` | Compatibility no-op — placement is CSS-driven. |
+| Name               | Description                                                        |
+| ------------------ | ------------------------------------------------------------------ |
+| `open()`           | Show the bubble.                                                   |
+| `close()`          | Hide the bubble.                                                   |
+| `updatePosition()` | Re-measure and re-apply the placement (real re-measure, wd parity). |
 
 ## Tokens Consumed (end: mp)
 
 | Token          | CSS Variable                                                                                                                                                                     | Purpose                                                                   |
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Bubble palette | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`)                                                   | Bubble fill (white in the light theme) / text; the arrow follows the fill |
+| Bubble palette | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`)                                                   | Bubble fill (white in the light theme) / text; resolved to a concrete value and baked into the chrome shape on every open |
 | Bubble widths  | `--sn-popover-width` (default `480rpx`), `--sn-popover-menu-width` (default `320rpx`)                                                                                            | Fixed card widths — the cross-platform replacement for `max-content` sizing (uni-app x App drops it) |
 | Header glyph   | `--sn-popover-icon-size` (default `32rpx` literal), `--sn-popover-icon-plate-size` (default `72rpx`), `--sn-popover-icon-bg` (default sunken), `--sn-popover-icon-color` (default secondary) | Tinted circle behind the card / sheet row glyph     |
 | Glyph scale    | `--sn-popover-menu-icon-size` (default `32rpx` literal), `--sn-popover-close-icon-size` (default `28rpx` literal)                                                                                                        | Menu row glyph / close glyph; both are overridable via `custom-style`     |
 | Muted text     | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary`                                                                                                                    | Description / subtitle / menu second line                                 |
 | Disabled       | `--sn-mp-color-text-disabled`                                                                                                                                                    | Disabled row (via opacity)                                                |
 | Elevation      | `--sn-mp-shadow-md` (App fallback; H5 / MP use `filter: drop-shadow` following the silhouette)                                                                                   | Bubble + arrow elevation                                                  |
-| Card border    | `--sn-popover-border` (default transparent — borderless reference card; set it via custom-style for a custom border — the arrow diamond's outline uses the same token, joining the card outline into one path) | Card outline                                                              |
-| Radius         | `--sn-mp-radius-lg` (card), `--sn-mp-radius-full` (pills / plate), `--sn-mp-radius-xl` (sheet top)                                                                               | Corners                                                                   |
+| Card border    | `--sn-popover-border` (default transparent — borderless reference card; set it via custom-style for a custom border — the chrome stroke follows the same resolved color, one continuous outline including the arrow flanks) | Card outline                                                              |
+| Radius         | `--sn-mp-radius-lg` (card; the chrome folds arcs of the same 16rpx), `--sn-mp-radius-full` (pills / plate), `--sn-mp-radius-xl` (sheet top)                                     | Corners                                                                   |
 | Scrim          | `--sn-mp-color-background-overlay`                                                                                                                                               | Sheet mask                                                                |
 | Spacing        | `--sn-mp-spacing-1/2/3/4/5`                                                                                                                                                      | Padding / gaps                                                            |
 | Typography     | `--sn-mp-font-size-xs/sm/md/lg`, `--sn-mp-font-weight-medium/semibold`, `--sn-mp-font-line-height-normal`                                                                        | Card text hierarchy                                                       |
@@ -167,7 +176,7 @@ import { SnPopover } from '@snui/uni';
 ## Accessibility
 
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
-- Bubble / sheet carry `role="dialog"`; the arrow and the sheet handle are `aria-hidden="true"`
+- Bubble / sheet carry `role="dialog"`; the chrome layer (silhouette + arrow) and the sheet handle are `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
 - Action pills and the Cancel pill carry `role="button"` + `aria-label` + `aria-disabled`
 - The App trigger catcher is `aria-hidden="true"` and takes no screen-reader focus
@@ -200,39 +209,53 @@ import { SnPopover } from '@snui/uni';
   component's own views there — an `#ifdef APP` transparent catcher over the
   trigger box receives the tap and runs the same toggle. Web / MP strip the
   node; there the wrapper's `@tap` fires by native bubbling.
-- One-shape arrow: a rotated diamond (32rpx square, Element-style
-  callout) centered on the card edge — fill = the card color covering the
-  border segment behind it (interiors connect), outline = the SAME
-  `--sn-popover-border` token as the card border drawn on the two outside
-  edges, so the slant strokes meet the card border at the junction points
-  and the whole callout reads as ONE integrated outline. The pop's
-  drop-shadow follows the true silhouette (card + diamond).
+- One-shape chrome (SVG silhouette): the card and arrow are ONE continuous
+  path — no rotated diamond, no junction seams, no double-composited fill.
+  Outline = one stroke along the whole silhouette including the arrow
+  flanks; the outline follows `--sn-popover-border`'s resolved color (default
+  transparent = borderless reference card).
 - One-shape elevation: the card is borderless (reference design) and its
   shadow is `filter: drop-shadow` on H5 / miniprogram — the shadow follows
-  the true rendered silhouette, card plus protruding arrow. uni-app x App
-  has no filter support and falls back to the `box-shadow` token behind
-  conditional compilation (breaking: `--sn-popover-border` removed with
-  the outline; the doodle skin draws its own hand-drawn border).
-- Flow-anchored geometry (fix): the bubble is `position: absolute` anchored
-  by `placement` CSS on every platform. The mp-weixin measured fixed-layer
-  variant (SelectorQuery trigger-rect positioning) was removed — WeChat MP
-  skips the inherited custom-property chain for fixed-positioned nodes, so
-  the fixed bubble rendered without a background. Host wrappers that clip
-  absolutely-positioned overflow must open their chain (demo scaffold rule).
+  the true rendered silhouette (chrome layer included). uni-app x App has no
+  filter support and falls back to the `box-shadow` token behind conditional
+  compilation (the doodle skin draws its own hand-drawn border).
+- Measured placement (wd-popover parity): the bubble positions from real
+  measurements (trigger rect + bubble size), not CSS anchoring — viewport
+  clamping keeps it on screen and the arrow tracks the trigger center. The
+  after-enter leg re-measures (`updatePosition()` is real). Known divergence
+  from flow-anchored CSS: on H5 / classic MP the absolute coords are not
+  page-scroll-live — call `updatePosition()` after programmatic scrolling, or
+  rely on the port's short-lived bubble UX (same trade-off as wd-popover).
+- uni-app x MP fixed layer (AUI-POP-MP-001): the vapor wrapper clips
+  absolutely-positioned overflow and no `virtualHost` escape exists in the
+  uni-x compile — the measured coords promote the bubble to `position:
+  fixed` there (probe-verified: fixed paints, absolute clips). The bubble is
+  re-measured when the window resizes; scroll-follow is best-effort through
+  the same re-measure path.
+- CSS fallback geometry (unmeasurable hosts): the placement classes and the
+  CSS diamond arrow still ship — a degenerate measurement (zero rects) keeps
+  the previous rendering instead of an invisible bubble.
+- Chrome repaints: the baked colors re-resolve on every open, so a theme
+  (dark mode) flip applies from the next bubble; a `custom-style` background
+  / border override re-bakes through the reactive paint watch.
 - Auto height (additive AUI-OPT-07): the card is `height: auto`, labels wrap,
   and glyph boxes follow the icon-size tokens instead of a fixed square.
 - Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,
   AGENTS.md §112.3a); the legacy `iconClass` field keeps its wd-parity
   name-or-image-address semantics at the lowest precedence.
 - `root-portal` is declared but not implemented.
-- `updatePosition()` is a no-op.
+- `updatePosition()` re-measures the placement (no longer a no-op).
 
 ## Disposal
 
 One transition timer keeps the bubble mounted for the fade-out leg; cleared on
-every leg change and in `onBeforeUnmount` (AGENTS.md §41). No global listener.
+every leg change and in `onBeforeUnmount` (AGENTS.md §41). The MP color-probe
+retry timer is cleared on every open and unmount; the uni-app x MP raster
+canvas context belongs to the component and dies with it. No global listener.
 
 ## Versioning
 
-`@snui/uni@0.4.0` — M2 overlay / interaction batch. Rich card body, sheet
-presentation and fixed-width geometry added in the reference-design refactor.
+`@snui/uni@0.5.0` — SVG chrome rebuild: single-silhouette shape, baked
+colors, measured placement (wd parity), uni-app x MP fixed layer. Rich card
+body, sheet presentation and fixed-width geometry from the 0.4.0 reference
+refactor are unchanged.

@@ -121,7 +121,12 @@ import { Popover } from '@snui/uni';
       },
       { name: 'mode', type: 'PopoverMode', default: "'normal'", desc: 'Bubble display mode.' },
       { name: 'placement', type: 'PopoverPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
-      { name: 'offset', type: 'PopoverOffset', default: '0', desc: '{ x?, y? }`' },
+      {
+        name: 'offset',
+        type: 'PopoverOffset',
+        default: '0',
+        desc: '{ x?, y? }：沿家族轴扩大间距、跨轴整体位移（折入测量定位）',
+      },
       { name: 'visibleArrow', type: 'boolean', default: 'true', desc: '是否显示箭头' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
       { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
@@ -171,7 +176,7 @@ import { Popover } from '@snui/uni';
         name: 'customArrow',
         type: 'string',
         default: "''",
-        desc: 'Extra class on the arrow node.',
+        desc: 'Extra class on the CSS fallback arrow node (the measured SVG chrome paints its own arrow).',
       },
       { name: 'customPop', type: 'string', default: "''", desc: 'Extra class on the bubble node.' },
       {

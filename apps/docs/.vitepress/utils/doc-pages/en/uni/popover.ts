@@ -131,7 +131,7 @@ import { Popover } from '@snui/uni';
         name: 'offset',
         type: 'PopoverOffset',
         default: '0',
-        desc: 'Gap between trigger and bubble, in design px.',
+        desc: 'Extra gap in design px — extends the gap on the placement-family axis, shifts the bubble on the cross axis (folded into the measured placement).',
       },
       {
         name: 'visibleArrow',
@@ -192,7 +192,7 @@ import { Popover } from '@snui/uni';
         name: 'customArrow',
         type: 'string',
         default: "''",
-        desc: 'Extra class on the arrow node.',
+        desc: 'Extra class on the CSS fallback arrow node (the measured SVG chrome paints its own arrow).',
       },
       { name: 'customPop', type: 'string', default: "''", desc: 'Extra class on the bubble node.' },
       {

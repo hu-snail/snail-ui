@@ -1,5 +1,14 @@
 # AUI-POP-MP-001 — MP 组件宿主 wrapper 裁剪越界弹层（popover / tooltip 气泡不可见）
 
+> **状态：已解决（2026-11-26，refactor/uni-popover-svg）**
+> 修复方式：uni-app x MP 端气泡改走 **fixed 测量定位层**（下方「修复方向」原定方案），
+> 并以 **SVG 单一轮廓 chrome + 烘焙色** 配套解决 fixed 节点的调色链失效。
+> 实现见 `packages/uni/src/components/sn-popover/sn-popover.vue`（测量管线 +
+> `sn-popover-position.ts` / `sn-popover-chrome.ts` / `sn-popover-raster.ts`），
+> uni-x 适配见 `packages/uni-x/src/transform/patches.ts`。
+> 经典 uni-app MP / H5 端保持 flow-anchored，测量不可用时回落 CSS 几何（不劣化）。
+> tooltip 的同构改造仍属遗留项，另行立项。
+
 ## 现象（wechatide 模拟器实测，uni-demo-x → MP-Weixin）
 
 - `sn-popover` / `sn-tooltip` 展开后，气泡（`position: absolute`，`bottom: 100%` /
