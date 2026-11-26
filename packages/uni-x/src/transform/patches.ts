@@ -642,6 +642,45 @@ const RING = '4rpx';`,
       note: 'group-ring box-shadow replaced by an in-box surface-coloured border on App',
     },
   ],
+
+  // sn-popover: the chrome silhouette renders as an inline <svg> on DOM hosts,
+  // but uni-app x has no inline svg element (same conclusion as sn-icon /
+  // sn-circle) — the SAME geometry feeds <image> as an SVG-document data URL
+  // with baked colors (plain path only, explicit intrinsic size: the decoder
+  // constraints sn-circle verified). The MP branches and the raster holder
+  // stay untouched; the canvas holder compiles under #ifdef MP-WEIXIN.
+  'sn-popover/sn-popover.vue': [
+    {
+      anchor: `        <svg
+          v-if="chromeUrl === null"
+          class="sn-popover__chrome-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          :viewBox="chromeViewBox"
+          :width="chromeGeometry.box.width"
+          :height="chromeGeometry.box.height"
+          focusable="false"
+        >
+          <path
+            :d="chromeGeometry.path"
+            :fill="chromePaint.fill"
+            :stroke="chromePaint.stroke === 'transparent' ? undefined : chromePaint.stroke"
+            :stroke-width="chromePaint.stroke === 'transparent' ? undefined : chromePaint.strokeWidth"
+            stroke-linejoin="round"
+          />
+        </svg>`,
+      replacement: `        <!-- uni-app x: no inline <svg> element — the same silhouette renders
+             as <image> with the SVG-document data URL (plain path, explicit
+             intrinsic size, baked colors). -->
+        <image
+          v-if="chromeUrl === null"
+          class="sn-popover__chrome-svg"
+          :src="chromeAppUrl"
+          :style="chromeRasterStyle"
+          mode="scaleToFill"
+        />`,
+      note: '<svg> chrome block replaced by <image :src="chromeAppUrl">',
+    },
+  ],
 };
 
 export function applyPatches(source: string, relPath: string, issues: TransformIssue[]): string {
