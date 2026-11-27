@@ -503,53 +503,135 @@ function updatePosition(): void {
  * Mini-programs render the bubble on a `fixed` layer with viewport
  * coordinates, so a page scroll walks the trigger away and leaves the bubble
  * behind. H5 / App keep the `absolute` bubble, which rides the scroll by
- * construction; the mini-program build restores the same behaviour by
- * re-anchoring the fixed bubble whenever the trigger moves.
+ * construction — mini-programs cannot: the host wrapper carries
+ * `overflow: hidden` (AUI-POP-MP-001, device-verified), so anything outside
+ * the component box is clipped.
  *
- * An IntersectionObserver cannot do this: it only reports intersection-RATIO
- * crossings, and a trigger that stays fully inside the viewport keeps ratio 1
- * while scrolling — it never fires (verified on device: no callbacks during a
- * scroll). There is no page-scroll event a component can listen for either,
- * so the bubble polls the trigger's viewport rect while it is open. A popover
- * is short-lived, and one selector query per tick is cheap.
+ * The compensation is driven by the PAGE'S scroll event — it fires every
+ * frame and carries `scrollTop`, so the trigger's new position is plain
+ * arithmetic (baseline − delta): no measurement, no polling latency. A
+ * component has no page lifecycle of its own, so the handler is installed on
+ * the current page instance (any existing `onPageScroll` is preserved) and
+ * removed again when the last bubble closes.
+ *
+ * A slow poll stays as a self-healing fallback: hosts where the page hook is
+ * not reachable still track the trigger, and any drift from async layout is
+ * corrected by a real measurement.
  */
-const FOLLOW_POLL_MS = 120;
-/** Below this movement the poll result is layout jitter, not a scroll. */
+const FOLLOW_POLL_MS = 250;
+/** Below this movement a report is layout jitter, not a scroll. */
 const FOLLOW_TOLERANCE = 1;
 
+/** Per-page hook registry key (several popovers share one patched handler). */
+const PAGE_SCROLL_HOOKS = '__snPopoverScrollHooks';
+
+type PageScrollHook = (scrollTop: number) => void;
+
+interface HookedPage {
+  onPageScroll?: (event: { scrollTop?: number }) => void;
+  [PAGE_SCROLL_HOOKS]?: Set<PageScrollHook>;
+}
+
+/**
+ * Install `hook` on the current page's `onPageScroll`. Returns the unbind
+ * function; the page's original handler and shape are restored when the last
+ * hook leaves.
+ */
+function hookPageScroll(hook: PageScrollHook): () => void {
+  const pages = (globalThis as { getCurrentPages?: () => unknown[] }).getCurrentPages?.() as
+    | HookedPage[]
+    | undefined;
+  const page = pages?.[pages.length - 1];
+  if (page === undefined || page === null) return () => undefined;
+  let hooks = page[PAGE_SCROLL_HOOKS];
+  if (hooks === undefined) {
+    hooks = new Set<PageScrollHook>();
+    page[PAGE_SCROLL_HOOKS] = hooks;
+    const original = page.onPageScroll;
+    page.onPageScroll = function (this: HookedPage, event: { scrollTop?: number }): void {
+      original?.call(this, event);
+      const top = event?.scrollTop ?? 0;
+      page[PAGE_SCROLL_HOOKS]?.forEach((each) => each(top));
+    };
+  }
+  const registered = hooks;
+  registered.add(hook);
+  return () => {
+    registered.delete(hook);
+    if (registered.size === 0) {
+      delete page[PAGE_SCROLL_HOOKS];
+      delete page.onPageScroll;
+    }
+  };
+}
+
+let followCleanup: (() => void) | null = null;
 let followTimer: ReturnType<typeof setInterval> | null = null;
-/** The trigger position seen by the previous poll (movement baseline). */
-let lastFollowPoint: { left: number; top: number } | null = null;
+/** Trigger rect captured at open: the arithmetic baseline. */
+let followBase: { left: number; top: number; width: number; height: number; bottom: number } | null = null;
+/** scrollTop of the first scroll event (the baseline's scroll position). */
+let followBaseScroll: number | null = null;
+let followDelta = 0;
+/** Previous polled trigger position (movement check for the fallback). */
+let followPollPoint: { left: number; top: number } | null = null;
 
 function teardownScrollFollow(): void {
+  followCleanup?.();
+  followCleanup = null;
   if (followTimer !== null) {
     clearInterval(followTimer);
     followTimer = null;
   }
-  lastFollowPoint = null;
+  followBase = null;
+  followBaseScroll = null;
+  followDelta = 0;
+  followPollPoint = null;
 }
 
 function installScrollFollow(): void {
   teardownScrollFollow();
   if (!IS_MINI_PROGRAM) return;
+  followBase = position.triggerRect();
+  if (followBase !== null) {
+    // Fast path: the page's scroll event drives a pure arithmetic re-anchor.
+    const unbind = hookPageScroll((scrollTop) => {
+      if (!showPopover.value || followBase === null) return;
+      if (followBaseScroll === null) {
+        followBaseScroll = scrollTop;
+        return;
+      }
+      const delta = scrollTop - followBaseScroll;
+      if (Math.abs(delta - followDelta) <= FOLLOW_TOLERANCE) return;
+      followDelta = delta;
+      position.moveTrigger({
+        left: followBase.left,
+        top: followBase.top - delta,
+        width: followBase.width,
+        height: followBase.height,
+        bottom: followBase.bottom - delta,
+      });
+      solve();
+    });
+    followCleanup = unbind;
+  }
+  // Slow fallback: real measurements also catch hosts without the page hook
+  // and compound drift the arithmetic cannot see (async layout, resizes).
   followTimer = setInterval(() => {
     if (!showPopover.value) return;
     void measureRect(targetId).then((trigger) => {
       if (trigger === null || !showPopover.value) return;
       const point = { left: trigger.left, top: trigger.top };
-      // The first poll calibrates only — it can disagree with the captured
-      // measurement by a hair and must not nudge the bubble.
-      if (lastFollowPoint === null) {
-        lastFollowPoint = point;
+      if (followPollPoint === null) {
+        followPollPoint = point;
         return;
       }
       if (
-        Math.abs(point.left - lastFollowPoint.left) <= FOLLOW_TOLERANCE &&
-        Math.abs(point.top - lastFollowPoint.top) <= FOLLOW_TOLERANCE
+        Math.abs(point.left - followPollPoint.left) <= FOLLOW_TOLERANCE &&
+        Math.abs(point.top - followPollPoint.top) <= FOLLOW_TOLERANCE
       ) {
         return;
       }
-      lastFollowPoint = point;
+      followPollPoint = point;
       position.moveTrigger(trigger);
       solve();
     });

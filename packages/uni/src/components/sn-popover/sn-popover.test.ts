@@ -833,14 +833,55 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
   });
 
-  it('follows the trigger while the page scrolls (H5 parity, never closes)', async () => {
-    // Mini-programs keep the bubble on a fixed layer; an IntersectionObserver
-    // never fires for a fully-visible trigger (ratio stays 1 while scrolling),
-    // so the bubble polls the trigger rect while open and re-anchors.
+  it('follows the trigger on every page scroll event (arithmetic, no poll delay)', async () => {
+    // Mini-programs keep the bubble fixed, so scrolling needs compensation.
+    // The page's onPageScroll fires every frame WITH scrollTop, so the
+    // re-anchor is plain arithmetic (baseline − delta) — no measurement and
+    // no polling latency. A component has no page lifecycle, so it installs
+    // a handler on the current page instance and restores it on close.
+    const OnMp = await loadOnMiniProgram();
+    const page: { onPageScroll?: (event: { scrollTop?: number }) => void } = {};
+    (globalThis as { getCurrentPages?: () => unknown[] }).getCurrentPages = () => [page];
+    try {
+      const w = mount(OnMp, { props: { modelValue: false } });
+      await flushPromises();
+      await w.find('.sn-popover__target').trigger('tap');
+      await flushPromises();
+      // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
+      expect(typeof page.onPageScroll, 'the page handler must be installed while open').toBe(
+        'function',
+      );
+
+      // The first event only calibrates the scroll baseline.
+      page.onPageScroll!({ scrollTop: 500 });
+      await flushPromises();
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
+
+      // +120px of scroll → the bubble re-anchors by arithmetic: 359 → 239.
+      page.onPageScroll!({ scrollTop: 620 });
+      await flushPromises();
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
+      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual(
+        [],
+      );
+
+      // Closing restores the page's handler shape.
+      await w.find('.sn-popover__target').trigger('tap');
+      await flushPromises();
+      expect(page.onPageScroll).toBeUndefined();
+      w.unmount();
+    } finally {
+      delete (globalThis as { getCurrentPages?: unknown }).getCurrentPages;
+    }
+  });
+
+  it('falls back to polling the trigger when the page hook is unreachable', async () => {
+    // No getCurrentPages (exotic host): the slow measurement poll still
+    // re-anchors the bubble, it just cannot be frame-accurate.
     const OnMp = await loadOnMiniProgram();
     vi.useFakeTimers();
     try {
-      // The trigger's viewport position is mutable so a scroll can be simulated.
       let triggerTop = 300;
       const pop: Rect = { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 };
       const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
@@ -869,28 +910,20 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
       await flushPromises();
       await w.find('.sn-popover__target').trigger('tap');
       await flushPromises();
-      // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
       expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-      // First poll calibrates only.
-      await vi.advanceTimersByTimeAsync(140);
+      // First poll calibrates.
+      await vi.advanceTimersByTimeAsync(300);
       await flushPromises();
       expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-
-      // The page scrolled 120px: the trigger moved up → the bubble re-anchors
-      // (bottom 220 → top 239) and stays open.
+      // The page scrolled 120px → the poll re-anchors to 239 and stays open.
       triggerTop = 180;
-      await vi.advanceTimersByTimeAsync(140);
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
-      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual([]);
-
-      // Closing stops the polling: further movement no longer re-anchors.
-      await w.find('.sn-popover__target').trigger('tap');
-      await flushPromises();
-      triggerTop = 60;
       await vi.advanceTimersByTimeAsync(300);
       await flushPromises();
       expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
+      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual(
+        [],
+      );
+      w.unmount();
     } finally {
       vi.useRealTimers();
     }

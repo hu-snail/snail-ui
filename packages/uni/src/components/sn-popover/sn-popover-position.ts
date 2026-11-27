@@ -414,6 +414,12 @@ export function createPopoverPosition(visibleArrow: boolean) {
     lastTrigger = trigger;
   }
 
+  /** The trigger rect captured by the last `init` / `moveTrigger` — the
+   * scroll-compensation baseline (viewport px). */
+  function triggerRect(): PopoverRect | null {
+    return lastTrigger;
+  }
+
   /**
    * Re-derive the styles from a freshly measured bubble size. Returns
    * whether the placement was re-derived.
@@ -442,6 +448,7 @@ export function createPopoverPosition(visibleArrow: boolean) {
     control,
     controlViewport,
     moveTrigger,
+    triggerRect,
     updatePosition,
   };
 }
