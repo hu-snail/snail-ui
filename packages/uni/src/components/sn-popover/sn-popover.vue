@@ -85,37 +85,7 @@ import { registerOutsideClosable, unregisterOutsideClosable, closeOutside } from
 
 defineOptions({ name: 'SnPopover' });
 
-/**
- * Detected from the AUTHORITATIVE platform string first (sn-qr-code's probe,
- * the repo precedent), then from the MP bridges:
- *
- * The old canvas-capability probe (`createCanvasContextAsync && no
- * getElementById`) missed WeChat MP on the uni-app x compile — the build
- * rendered the bubble `absolute` there, and the host wrapper clipped it at
- * the component box (menu rows cut mid-line, user-reported). `uniPlatform`
- * starts with `mp-` on every mini-program and is `devtools` in the simulator,
- * so the fixed layer now engages wherever a mini-program runs.
- */
-function isMiniProgramHost(): boolean {
-  try {
-    const host = resolveUniHost<{
-      getSystemInfoSync?: () => { uniPlatform?: string; platform?: string };
-    }>();
-    const info = host?.getSystemInfoSync?.();
-    const platform = info?.uniPlatform ?? info?.platform ?? '';
-    if (platform.startsWith('mp-') || platform === 'devtools') return true;
-    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
-  } catch {
-    /* fall through to the environment probe */
-  }
-  const globalHost = globalThis as Record<string, unknown>;
-  if (typeof globalHost.document === 'object' && globalHost.document !== null) return false;
-  return ['wx', 'my', 'tt', 'swan', 'qq', 'ks', 'jd'].some(
-    (name) => typeof globalHost[name] === 'object' && globalHost[name] !== null,
-  );
-}
 
-const IS_MINI_PROGRAM = isMiniProgramHost();
 
 type PopoverMode = 'normal' | 'menu';
 
@@ -297,9 +267,6 @@ const rootClass = computed(() => ['sn-popover', props.customClass]);
  * the `sn-popover__pos` rule. On mini-programs the bubble is `fixed`; its
  * layer covers the viewport.
  */
-const bubbleClass = computed(() =>
-  IS_MINI_PROGRAM ? 'sn-popover__pos sn-popover__pos--fixed' : 'sn-popover__pos',
-);
 
 /**
  * Arrow orientation classes. On mini-programs they follow the ACTUAL
@@ -401,40 +368,6 @@ async function measureRect(selector: string): Promise<PopoverRect | null> {
   return null;
 }
 
-/** The viewport in px, read once per open (mini-program solve only). */
-let viewportSize: { width: number; height: number } | null = null;
-
-/** Read the viewport size — `getWindowInfo` first, `getSystemInfoSync` after. */
-function readViewport(): { width: number; height: number } | null {
-  const host = resolveUniHost<{
-    getWindowInfo?: () => { windowWidth?: number; windowHeight?: number };
-    getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number };
-  }>();
-  const info = host?.getWindowInfo?.() ?? host?.getSystemInfoSync?.();
-  const width = info?.windowWidth;
-  const height = info?.windowHeight;
-  if (typeof width === 'number' && typeof height === 'number' && width > 0 && height > 0) {
-    return { width, height };
-  }
-  return null;
-}
-
-/**
- * Solve the placement in the coordinate space this host needs: root-relative
- * `absolute` on H5 / App, viewport `fixed` on mini-programs. Uses whatever
- * was last measured — never measures by itself, so it is always synchronous
- * and the bubble never appears at a stale spot while a query is in flight.
- */
-function solve(): void {
-  // A viewport that could not be read stays `null`: the solve then skips the
-  // flip and the clamp instead of treating the screen as zero-sized.
-  if (IS_MINI_PROGRAM) {
-    position.controlViewport(props.placement, props.offset, viewportSize);
-  } else {
-    position.control(props.placement, props.offset);
-  }
-}
-
 /**
  * Whether a successful capture has ever landed. A zero-width trigger measured
  * too early (slotted / lazily laid-out content) must NOT count — the old code
@@ -464,9 +397,17 @@ function captureRects(preferShownPop: boolean): Promise<boolean> {
  * may have been zero-sized at mount, and on mini-programs viewport
  * coordinates go stale as soon as the page scrolls.
  */
+/**
+ * Derive the inline placement styles from whatever was last measured — never
+ * measures by itself, so it is always synchronous and the bubble never
+ * appears at a stale spot while a query is in flight.
+ */
+function solve(): void {
+  position.control(props.placement, props.offset);
+}
+
 function resolvePlacement(): void {
   if (hasMeasurements) solve();
-  if (IS_MINI_PROGRAM) viewportSize = readViewport() ?? viewportSize;
   void captureRects(false).then((ok) => {
     if (!ok || !showPopover.value) return;
     solve();
@@ -478,7 +419,6 @@ function resolvePlacement(): void {
  * whenever `placement` changes (the reference `init`).
  */
 async function initPosition(): Promise<void> {
-  if (IS_MINI_PROGRAM) viewportSize = readViewport() ?? viewportSize;
   const ok = await captureRects(false);
   // The reference measures at rest and positions on open; a bubble that is
   // ALREADY open needs the fresh numbers applied right away.
@@ -497,156 +437,6 @@ function updatePosition(): void {
   });
 }
 
-/* ── Scroll follow (mini-program only) ───────────────────────────────── */
-
-/**
- * Mini-programs render the bubble on a `fixed` layer with viewport
- * coordinates, so a page scroll walks the trigger away and leaves the bubble
- * behind. H5 / App keep the `absolute` bubble, which rides the scroll by
- * construction — mini-programs cannot: the host wrapper carries
- * `overflow: hidden` (AUI-POP-MP-001, device-verified), so anything outside
- * the component box is clipped.
- *
- * The compensation is driven by the PAGE'S scroll event — it fires every
- * frame and carries `scrollTop`, so the trigger's new position is plain
- * arithmetic (baseline − delta): no measurement, no polling latency. A
- * component has no page lifecycle of its own, so the handler is installed on
- * the current page instance (any existing `onPageScroll` is preserved) and
- * removed again when the last bubble closes.
- *
- * A slow poll stays as a self-healing fallback: hosts where the page hook is
- * not reachable still track the trigger, and any drift from async layout is
- * corrected by a real measurement.
- */
-const FOLLOW_POLL_MS = 250;
-/** Below this movement a report is layout jitter, not a scroll. */
-const FOLLOW_TOLERANCE = 1;
-
-/** Per-page hook registry key (several popovers share one patched handler). */
-const PAGE_SCROLL_HOOKS = '__snPopoverScrollHooks';
-
-type PageScrollHook = (scrollTop: number) => void;
-
-interface HookedPage {
-  onPageScroll?: (event: { scrollTop?: number }) => void;
-  [PAGE_SCROLL_HOOKS]?: Set<PageScrollHook>;
-}
-
-/**
- * Install `hook` on the current page's `onPageScroll`. Returns the unbind
- * function; the page's original handler and shape are restored when the last
- * hook leaves.
- */
-function hookPageScroll(hook: PageScrollHook): () => void {
-  const pages = (globalThis as { getCurrentPages?: () => unknown[] }).getCurrentPages?.() as
-    | HookedPage[]
-    | undefined;
-  const page = pages?.[pages.length - 1];
-  if (page === undefined || page === null) return () => undefined;
-  let hooks = page[PAGE_SCROLL_HOOKS];
-  if (hooks === undefined) {
-    hooks = new Set<PageScrollHook>();
-    page[PAGE_SCROLL_HOOKS] = hooks;
-    const original = page.onPageScroll;
-    page.onPageScroll = function (this: HookedPage, event: { scrollTop?: number }): void {
-      original?.call(this, event);
-      const top = event?.scrollTop ?? 0;
-      page[PAGE_SCROLL_HOOKS]?.forEach((each) => each(top));
-    };
-  }
-  const registered = hooks;
-  registered.add(hook);
-  return () => {
-    registered.delete(hook);
-    if (registered.size === 0) {
-      delete page[PAGE_SCROLL_HOOKS];
-      delete page.onPageScroll;
-    }
-  };
-}
-
-let followCleanup: (() => void) | null = null;
-let followTimer: ReturnType<typeof setInterval> | null = null;
-/** Trigger rect captured at open: the arithmetic baseline. */
-let followBase: { left: number; top: number; width: number; height: number; bottom: number } | null = null;
-/** scrollTop of the first scroll event (the baseline's scroll position). */
-let followBaseScroll: number | null = null;
-let followDelta = 0;
-/** Previous polled trigger position (movement check for the fallback). */
-let followPollPoint: { left: number; top: number } | null = null;
-
-function teardownScrollFollow(): void {
-  followCleanup?.();
-  followCleanup = null;
-  if (followTimer !== null) {
-    clearInterval(followTimer);
-    followTimer = null;
-  }
-  followBase = null;
-  followBaseScroll = null;
-  followDelta = 0;
-  followPollPoint = null;
-}
-
-function installScrollFollow(): void {
-  teardownScrollFollow();
-  if (!IS_MINI_PROGRAM) return;
-  followBase = position.triggerRect();
-  if (followBase !== null) {
-    // Fast path: the page's scroll event drives a pure arithmetic re-anchor.
-    const unbind = hookPageScroll((scrollTop) => {
-      if (!showPopover.value || followBase === null) return;
-      if (followBaseScroll === null) {
-        followBaseScroll = scrollTop;
-        return;
-      }
-      const delta = scrollTop - followBaseScroll;
-      if (Math.abs(delta - followDelta) <= FOLLOW_TOLERANCE) return;
-      followDelta = delta;
-      position.moveTrigger({
-        left: followBase.left,
-        top: followBase.top - delta,
-        width: followBase.width,
-        height: followBase.height,
-        bottom: followBase.bottom - delta,
-      });
-      solve();
-    });
-    followCleanup = unbind;
-  }
-  // Slow fallback: real measurements also catch hosts without the page hook
-  // and compound drift the arithmetic cannot see (async layout, resizes).
-  followTimer = setInterval(() => {
-    if (!showPopover.value) return;
-    void measureRect(targetId).then((trigger) => {
-      if (trigger === null || !showPopover.value) return;
-      const point = { left: trigger.left, top: trigger.top };
-      if (followPollPoint === null) {
-        followPollPoint = point;
-        return;
-      }
-      if (
-        Math.abs(point.left - followPollPoint.left) <= FOLLOW_TOLERANCE &&
-        Math.abs(point.top - followPollPoint.top) <= FOLLOW_TOLERANCE
-      ) {
-        return;
-      }
-      followPollPoint = point;
-      position.moveTrigger(trigger);
-      solve();
-    });
-  }, FOLLOW_POLL_MS);
-}
-
-watch(
-  () => showPopover.value,
-  (value) => {
-    if (value) installScrollFollow();
-    else teardownScrollFollow();
-  },
-);
-
-onBeforeUnmount(teardownScrollFollow);
 /* ── Outside close (wd-popover useQueue parity) ───────────────────────── */
 
 /**
@@ -714,7 +504,7 @@ defineExpose({ open, close, updatePosition });
       placement classes to sn-transition's custom-class put the bubble in the
       document flow, unpositioned — the stray card over the trigger.
     -->
-    <view :class="bubbleClass" :style="popStyle">
+    <view class="sn-popover__pos" :style="popStyle">
       <!--
         The arrow is a SIBLING of the transition, not a child of the bubble:
         mini-programs force `overflow: hidden` on every view (`uvue.wxss`), and
@@ -872,16 +662,6 @@ defineExpose({ open, close, updatePosition });
   pointer-events: none;
 }
 
-/*
- * The shown bubble on mini-programs. `fixed` is the one positioning mode no
- * ancestor clip reaches — the host wrapper forces `overflow: hidden` on every
- * `view` and is not a positioning context, so an `absolute` bubble would both
- * lose its origin and be clipped at the component box (AUI-POP-MP-001). The
- * inline coordinates are viewport px from the viewport solve.
- */
-.sn-popover__pos--fixed {
-  position: fixed;
-}
 
 .sn-popover__container {
   position: relative;

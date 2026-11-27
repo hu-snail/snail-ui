@@ -560,20 +560,23 @@ describe('sn-popover', () => {
     const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
     const style = source.slice(source.indexOf('<style scoped>') + '<style scoped>'.length, source.indexOf('</style>'));
 
-    it('keeps the bubble absolute by default — fixed only behind the mini-program modifier', () => {
-      // H5 / App position the bubble relative to the component root.
+    it('keeps the bubble absolute on every platform — no fixed layer anywhere', () => {
+      // The owner verified absolute renders unclipped on the mini-program end,
+      // so the fixed viewport layer (and its whole scroll-compensation
+      // machinery) was removed. One positioning mode, one code path. The
+      // hidden measurement copy keeps its own fixed — it must stay laid out
+      // regardless of any positioning context.
       const base = style.slice(
         style.indexOf('.sn-popover__pos {'),
         style.indexOf('}', style.indexOf('.sn-popover__pos {')),
       );
       expect(base).toContain('position: absolute');
-      // The mini-program bubble opts in through a modifier class, never by
-      // making the base rule fixed (that would break every other end).
-      const fixed = style.slice(
-        style.indexOf('.sn-popover__pos--fixed {'),
-        style.indexOf('}', style.indexOf('.sn-popover__pos--fixed {')),
+      expect(style).not.toContain('sn-popover__pos--fixed');
+      const hidden = style.slice(
+        style.indexOf('.sn-popover__pos--hidden {'),
+        style.indexOf('}', style.indexOf('.sn-popover__pos--hidden {')),
       );
-      expect(fixed).toContain('position: fixed');
+      expect(hidden).toContain('position: fixed');
     });
 
     it('keeps the hidden measurement copy from depending on a positioning context', () => {
@@ -599,7 +602,7 @@ describe('sn-popover', () => {
       // document flow as a stray card. The layer must be a node THIS template
       // renders, and the transition must carry none of the placement wiring.
       const template = source.slice(source.indexOf('<template>'), source.indexOf('</template>'));
-      expect(template).toContain(':class="bubbleClass"');
+      expect(template).toContain('class="sn-popover__pos"');
       expect(template).toContain(':style="popStyle"');
       const transitionTag = template.slice(
         template.indexOf('<SnTransition'),
@@ -692,7 +695,7 @@ describe('sn-popover', () => {
         'the arrow must be a sibling of the transition, never inside it',
       ).toBe(true);
       // It must still sit inside the positioning layer that owns the bubble.
-      const posStart = template.indexOf(':class="bubbleClass"');
+      const posStart = template.indexOf('class="sn-popover__pos"');
       expect(arrowIndex).toBeGreaterThan(posStart);
     });
 
@@ -740,215 +743,3 @@ describe('sn-popover', () => {
  * be in place BEFORE the component module is (re)loaded — hence the dynamic
  * import inside each case rather than the static one at the top of the file.
  */
-describe('sn-popover (mini-program host, fixed layer)', () => {
-  const viewportRects: Record<'target' | 'pos' | 'content', Rect> = {
-    // The trigger sits at (40, 300) in VIEWPORT coords, 80 × 40.
-    target: { left: 40, top: 300, right: 120, bottom: 340, width: 80, height: 40 },
-    pos: { left: 0, top: 0, right: 160, bottom: 60, width: 160, height: 60 },
-    content: { left: 0, top: 0, right: 160, bottom: 60, width: 160, height: 60 },
-  };
-
-  /** Load a fresh component module that sees a mini-program `uni` host. */
-  async function loadOnMiniProgram(): Promise<typeof SnPopover> {
-    vi.resetModules();
-    stubSelectorQuery(viewportRects);
-    // Platform probe: the authoritative string every mini-program reports
-    // (`uniPlatform: 'mp-*'`), plus the window size for the fixed solve.
-    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    uni.getSystemInfoSync = () => ({
-      uniPlatform: 'mp-weixin',
-      windowWidth: 375,
-      windowHeight: 667,
-    });
-    uni.getWindowInfo = () => ({ windowWidth: 375, windowHeight: 667 });
-    return (await import('./sn-popover.vue')).default as typeof SnPopover;
-  }
-
-  afterEach(() => {
-    delete (globalThis as { uni?: unknown }).uni;
-    vi.restoreAllMocks();
-  });
-
-  it('positions the bubble with VIEWPORT coordinates on the fixed layer', async () => {
-    const OnMp = await loadOnMiniProgram();
-    const w = mount(OnMp, { props: { modelValue: false } });
-    await flushPromises();
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    const bubble = shownBubble(w)!;
-    expect(bubble.classes()).toContain('sn-popover__pos--fixed');
-    const style = bubble.attributes('style') ?? '';
-    // bottom: top = trigger bottom 340 + arrow 9 + gap 10; left = trigger centre 80 − pop half 80.
-    expect(style).toContain('left: 0px');
-    expect(style).toContain('top: 359px');
-  });
-
-  it('follows the trigger after the page scrolled (viewport coords are re-read on open)', async () => {
-    const OnMp = await loadOnMiniProgram();
-    const w = mount(OnMp, { props: { modelValue: false } });
-    await flushPromises();
-    // The page scrolls: the trigger's viewport position changes.
-    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    uni.createSelectorQuery = makeQuery({
-      ...viewportRects,
-      target: { left: 40, top: 100, right: 120, bottom: 140, width: 80, height: 40 },
-    });
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    // top = the NEW trigger bottom 140 + 9 + 10.
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 159px');
-  });
-
-  it('flips to the opposite side when the preferred side is off-screen', async () => {
-    const OnMp = await loadOnMiniProgram();
-    const w = mount(OnMp, { props: { modelValue: false, placement: 'right' } });
-    await flushPromises();
-    // Trigger hugging the right edge: a bubble to its right would leave the screen.
-    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    uni.createSelectorQuery = makeQuery({
-      ...viewportRects,
-      target: { left: 300, top: 300, right: 360, bottom: 340, width: 60, height: 40 },
-    });
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    const bubble = shownBubble(w)!;
-    // Flipped to the LEFT of the trigger: 300 − 9 − 10 − 160 = 121.
-    expect(bubble.attributes('style') ?? '').toContain('left: 121px');
-    // The arrow follows the flip: it now points RIGHT, at the trigger.
-    expect(bubble.find('.sn-popover__arrow').classes()).toContain('sn-popover__arrow-right');
-  });
-
-  it('never positions the fixed bubble at the origin while the viewport is unknown', async () => {
-    const OnMp = await loadOnMiniProgram();
-    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    // Platform still reports a mini-program (the fixed layer must engage),
-    // but no window size is available.
-    delete uni.getWindowInfo;
-    uni.getSystemInfoSync = () => ({ uniPlatform: 'mp-weixin' });
-    const w = mount(OnMp, { props: { modelValue: false } });
-    await flushPromises();
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    // No viewport → no clamp: the raw viewport placement is used as is.
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-  });
-
-  it('follows the trigger on every page scroll event (arithmetic, no poll delay)', async () => {
-    // Mini-programs keep the bubble fixed, so scrolling needs compensation.
-    // The page's onPageScroll fires every frame WITH scrollTop, so the
-    // re-anchor is plain arithmetic (baseline − delta) — no measurement and
-    // no polling latency. A component has no page lifecycle, so it installs
-    // a handler on the current page instance and restores it on close.
-    const OnMp = await loadOnMiniProgram();
-    const page: { onPageScroll?: (event: { scrollTop?: number }) => void } = {};
-    (globalThis as { getCurrentPages?: () => unknown[] }).getCurrentPages = () => [page];
-    try {
-      const w = mount(OnMp, { props: { modelValue: false } });
-      await flushPromises();
-      await w.find('.sn-popover__target').trigger('tap');
-      await flushPromises();
-      // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-      expect(typeof page.onPageScroll, 'the page handler must be installed while open').toBe(
-        'function',
-      );
-
-      // The first event only calibrates the scroll baseline.
-      page.onPageScroll!({ scrollTop: 500 });
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-
-      // +120px of scroll → the bubble re-anchors by arithmetic: 359 → 239.
-      page.onPageScroll!({ scrollTop: 620 });
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
-      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual(
-        [],
-      );
-
-      // Closing restores the page's handler shape.
-      await w.find('.sn-popover__target').trigger('tap');
-      await flushPromises();
-      expect(page.onPageScroll).toBeUndefined();
-      w.unmount();
-    } finally {
-      delete (globalThis as { getCurrentPages?: unknown }).getCurrentPages;
-    }
-  });
-
-  it('falls back to polling the trigger when the page hook is unreachable', async () => {
-    // No getCurrentPages (exotic host): the slow measurement poll still
-    // re-anchors the bubble, it just cannot be frame-accurate.
-    const OnMp = await loadOnMiniProgram();
-    vi.useFakeTimers();
-    try {
-      let triggerTop = 300;
-      const pop: Rect = { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 };
-      const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-      uni.createSelectorQuery = () => {
-        let picked = '';
-        const query = {
-          in: () => query,
-          select: (selector: string) => {
-            picked = selector.replace(/^#sn-popover-/, '').replace(/-\d+$/, '');
-            return {
-              boundingClientRect: (cb: (rect: Rect | null) => void) => {
-                if (picked === 'target') {
-                  cb({ left: 40, top: triggerTop, right: 120, bottom: triggerTop + 40, width: 80, height: 40 });
-                } else {
-                  cb(pop);
-                }
-                return query;
-              },
-            };
-          },
-          exec: (cb?: () => void) => cb?.(),
-        };
-        return query;
-      };
-      const w = mount(OnMp, { props: { modelValue: false } });
-      await flushPromises();
-      await w.find('.sn-popover__target').trigger('tap');
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-      // First poll calibrates.
-      await vi.advanceTimersByTimeAsync(300);
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
-      // The page scrolled 120px → the poll re-anchors to 239 and stays open.
-      triggerTop = 180;
-      await vi.advanceTimersByTimeAsync(300);
-      await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
-      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual(
-        [],
-      );
-      w.unmount();
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  /** Same shape as `stubSelectorQuery`, but as a factory for later swaps. */
-  function makeQuery(rects: Record<'target' | 'pos' | 'content', Rect>) {
-    return () => {
-      let picked = '';
-      const query = {
-        in: () => query,
-        select: (selector: string) => {
-          picked = selector.replace(/^#sn-popover-/, '').replace(/-\d+$/, '');
-          return {
-            boundingClientRect: (cb: (rect: Rect | null) => void) => {
-              cb(rects[picked] ?? null);
-              return query;
-            },
-          };
-        },
-        exec: (cb?: () => void) => {
-          cb?.();
-        },
-      };
-      return query;
-    };
-  }
-});
