@@ -833,20 +833,22 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
   });
 
-  it('closes the bubble when the page scrolls the trigger away', async () => {
-    // Mini-programs keep the bubble on a fixed layer, so a page scroll leaves
-    // it floating over unrelated content. A component cannot listen for page
-    // scroll there — an IntersectionObserver on the trigger reports its new
-    // viewport rect at each threshold crossing, and any movement against the
-    // captured baseline closes the bubble (the product rule).
+  it('follows the trigger while the page scrolls (H5 parity, never closes)', async () => {
+    // Mini-programs keep the bubble on a fixed layer, so scrolling would walk
+    // the trigger away. H5 / App ride the scroll with an absolute bubble; the
+    // mini-program build restores that by re-anchoring on every reported
+    // trigger movement (IntersectionObserver), never by dismissing.
     const OnMp = await loadOnMiniProgram();
-    let fire: ((res: { boundingClientRect?: { left: number; top: number } }) => void) | null = null;
+    let fire: ((res: { boundingClientRect?: { left: number; top: number; width: number; height: number; bottom: number } }) => void) | null = null;
     let disconnected = false;
     const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
     uni.createIntersectionObserver = () => {
       const observer = {
         relativeToViewport: () => observer,
-        observe: (_selector: string, cb: (res: { boundingClientRect?: { left: number; top: number } }) => void) => {
+        observe: (
+          _selector: string,
+          cb: (res: { boundingClientRect?: { left: number; top: number; width: number; height: number; bottom: number } }) => void,
+        ) => {
           fire = cb;
         },
         disconnect: () => {
@@ -859,32 +861,25 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     await flushPromises();
     await w.find('.sn-popover__target').trigger('tap');
     await flushPromises();
-    expect(fire, 'the scroll watch must observe the trigger while open').not.toBeNull();
+    expect(fire, 'the follow watch must observe the trigger while open').not.toBeNull();
+    // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
 
-    // §103 regression (user-reported flash: "opens then vanishes"): the FIRST
-    // observer report self-calibrates — even when it disagrees with the
-    // SelectorQuery capture (here 296 vs the captured 300) it must NOT close.
-    // (Opening already emitted update:modelValue true — look for a false.)
-    const closesBefore = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
-    fire!({ boundingClientRect: { left: 40, top: 296 } });
+    // First report calibrates only (even if it disagrees by a few px).
+    fire!({ boundingClientRect: { left: 40, top: 296, width: 80, height: 40, bottom: 336 } });
     await flushPromises();
-    expect(closesBefore).toEqual([]);
-    // A 1px jitter against the calibrated baseline is inside the tolerance.
-    fire!({ boundingClientRect: { left: 41, top: 297 } });
-    await flushPromises();
-    expect((w.emitted('update:modelValue') ?? []).filter((a) => a[0] === false)).toEqual([]);
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
 
-    // A single out-of-tolerance report is not enough (transient layout noise);
-    // a real scroll reports again at the next threshold crossing.
-    fire!({ boundingClientRect: { left: 40, top: 180 } });
+    // The page scrolled 120px: the trigger moved up, the bubble re-anchors to
+    // it (bottom 220 → top 239) and stays open.
+    fire!({ boundingClientRect: { left: 40, top: 180, width: 80, height: 40, bottom: 220 } });
     await flushPromises();
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
     expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual([]);
 
-    // The page scrolled 120px and keeps moving → the second report closes it.
-    fire!({ boundingClientRect: { left: 40, top: 150 } });
+    // Closing the bubble tears the observer down.
+    await w.find('.sn-popover__target').trigger('tap');
     await flushPromises();
-    const closes = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
-    expect(closes.length).toBeGreaterThan(0);
     expect(disconnected).toBe(true);
   });
 

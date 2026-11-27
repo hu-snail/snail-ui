@@ -497,66 +497,64 @@ function updatePosition(): void {
   });
 }
 
-/* ── Scroll watch (mini-program only) ─────────────────────────────────── */
+/* ── Scroll follow (mini-program only) ───────────────────────────────── */
 
 /**
- * Mini-programs render the bubble on a `fixed` layer, so a page scroll moves
- * the trigger away and leaves the bubble floating over unrelated content. A
- * component cannot listen for page scroll there, but it can watch where its
- * trigger sits: an IntersectionObserver with a dense threshold set fires as
- * the trigger crosses the viewport during a scroll, and any change against
- * the captured baseline closes the bubble (the product rule: scrolling page
- * dismisses an anchored mini-program popover).
+ * Mini-programs render the bubble on a `fixed` layer with viewport
+ * coordinates, so a page scroll would walk the trigger away and leave the
+ * bubble behind. H5 / App keep the `absolute` bubble, which rides the page
+ * scroll by construction; the mini-program build restores the same behaviour
+ * by re-anchoring on every trigger movement.
+ *
+ * A component cannot listen for page scroll there, but it can watch where its
+ * trigger sits: an IntersectionObserver with a dense threshold set reports the
+ * trigger's viewport rect as it crosses during a scroll, and each report
+ * re-solves the fixed bubble against the new rect.
  */
-let scrollWatch: { disconnect?: () => void } | null = null;
+let followObserver: { disconnect?: () => void } | null = null;
 
-/** The trigger is considered moved past this many px (layout jitter guard). */
-const SCROLL_CLOSE_TOLERANCE = 2;
+/** The last reported trigger position (jitter guard for the re-solve). */
+let followPoint: { left: number; top: number } | null = null;
 
-interface ScrollWatchObserver {
-  relativeToViewport?: (options?: Record<string, unknown>) => ScrollWatchObserver;
+/** Below this movement the observer report is layout jitter, not a scroll. */
+const FOLLOW_TOLERANCE = 1;
+
+interface ScrollFollowObserver {
+  relativeToViewport?: (options?: Record<string, unknown>) => ScrollFollowObserver;
   observe?: (
     selector: string,
-    callback: (res: { boundingClientRect?: { left?: number; top?: number } | null }) => void,
+    callback: (res: { boundingClientRect?: TriggerReport | null }) => void,
   ) => void;
   disconnect?: () => void;
 }
 
-/**
- * Self-calibrated trigger position. The FIRST observer report becomes the
- * baseline: the SelectorQuery capture and the observer can disagree by a hair
- * (different coordinate conventions, and the capture may predate the open),
- * which used to read as "already scrolled" and closed the bubble the instant
- * it appeared (user-reported flash).
- */
-let scrollBaseline: { left: number; top: number } | null = null;
-
-/**
- * Consecutive out-of-tolerance reports seen so far. One lone report can be a
- * transient layout artifact (the observer fires while the page settles right
- * after opening); a real scroll keeps crossing thresholds and reports again.
- */
-let scrollMovedReports = 0;
-
-function teardownScrollWatch(): void {
-  scrollWatch?.disconnect?.();
-  scrollWatch = null;
-  scrollBaseline = null;
-  scrollMovedReports = 0;
+/** The rect fields an observer report carries (viewport px). */
+interface TriggerReport {
+  left?: number;
+  top?: number;
+  width?: number;
+  height?: number;
+  bottom?: number;
 }
 
-function installScrollWatch(): void {
-  teardownScrollWatch();
+function teardownScrollFollow(): void {
+  followObserver?.disconnect?.();
+  followObserver = null;
+  followPoint = null;
+}
+
+function installScrollFollow(): void {
+  teardownScrollFollow();
   if (!IS_MINI_PROGRAM) return;
   const host = resolveUniHost<{
     createIntersectionObserver?: (
       component: unknown,
       options: Record<string, unknown>,
-    ) => ScrollWatchObserver;
+    ) => ScrollFollowObserver;
   }>();
   if (typeof host?.createIntersectionObserver !== 'function') return;
   // Dense thresholds: a crossing roughly every 2px of movement on a 40px
-  // trigger, so a scroll is detected almost immediately.
+  // trigger, so the bubble tracks the trigger closely while scrolling.
   const thresholds: number[] = [];
   for (let i = 0; i <= 20; i += 1) thresholds.push(i / 20);
   try {
@@ -566,38 +564,43 @@ function installScrollWatch(): void {
       if (!showPopover.value) return;
       const rect = res?.boundingClientRect;
       if (rect === null || rect === undefined) return;
-      const point = { left: rect.left ?? 0, top: rect.top ?? 0 };
-      if (scrollBaseline === null) {
-        scrollBaseline = point;
+      const top = rect.top ?? 0;
+      const left = rect.left ?? 0;
+      // The first report calibrates only — it can disagree with the captured
+      // measurement by a hair (coordinate conventions, timing) and must not
+      // nudge the bubble.
+      if (followPoint === null) {
+        followPoint = { left, top };
         return;
       }
-      const movedX = Math.abs(point.left - scrollBaseline.left);
-      const movedY = Math.abs(point.top - scrollBaseline.top);
-      if (movedX > SCROLL_CLOSE_TOLERANCE || movedY > SCROLL_CLOSE_TOLERANCE) {
-        // A real scroll produces several crossings in a row; a single stray
-        // report (settling layout) must not dismiss the bubble.
-        scrollMovedReports += 1;
-        if (scrollMovedReports >= 2) close();
-      } else {
-        scrollMovedReports = 0;
+      if (Math.abs(left - followPoint.left) <= FOLLOW_TOLERANCE && Math.abs(top - followPoint.top) <= FOLLOW_TOLERANCE) {
+        return;
       }
+      followPoint = { left, top };
+      position.moveTrigger({
+        left,
+        top,
+        width: rect.width ?? 0,
+        height: rect.height ?? 0,
+        bottom: rect.bottom ?? top + (rect.height ?? 0),
+      });
+      solve();
     });
-    scrollWatch = observer;
+    followObserver = observer;
   } catch {
-    /* 观察器不可用时保持不关闭，气泡仍在正确位置 */
+    /* 观察器不可用时气泡保持在打开时的位置 */
   }
 }
 
 watch(
   () => showPopover.value,
   (value) => {
-    if (value) installScrollWatch();
-    else teardownScrollWatch();
+    if (value) installScrollFollow();
+    else teardownScrollFollow();
   },
 );
 
-onBeforeUnmount(teardownScrollWatch);
-
+onBeforeUnmount(teardownScrollFollow);
 /* ── Outside close (wd-popover useQueue parity) ───────────────────────── */
 
 /**
