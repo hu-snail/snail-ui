@@ -193,7 +193,53 @@ describe('sn-popover', () => {
       expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 63px');
     });
 
-    it('follows the placement prop and points the arrow with it', async () => {
+    it('re-captures on open when the mount-time trigger measurement was unusable', async () => {
+    // §103 regression (content-slot, reproducible on H5 too): the trigger can
+    // measure zero at mount (slotted / lazily laid-out content). The old code
+    // initialised from that zero width, produced `left: 0`, and never retried —
+    // the bubble sat half a bubble off with the arrow pointing at nothing.
+    stubSelectorQuery({
+      target: { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 },
+      pos: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+      content: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+    });
+    // First target read (mount) is unusable; every later read is the real box.
+    const zero: Rect = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 };
+    const good: Rect = { left: 100, top: 200, right: 220, bottom: 244, width: 120, height: 44 };
+    const pop: Rect = { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 };
+    let targetReads = 0;
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    uni.createSelectorQuery = () => {
+      let picked = '';
+      const query = {
+        in: () => query,
+        select: (selector: string) => {
+          picked = selector.replace(/^#sn-popover-/, '').replace(/-\d+$/, '');
+          return {
+            boundingClientRect: (cb: (rect: Rect | null) => void) => {
+              if (picked === 'target') {
+                targetReads += 1;
+                cb(targetReads <= 1 ? zero : good);
+              } else {
+                cb(pop);
+              }
+              return query;
+            },
+          };
+        },
+        exec: (cb?: () => void) => cb?.(),
+      };
+      return query;
+    };
+    const w = mount(SnPopover, { props: { modelValue: false, content: '气泡' } });
+    await flushPromises();
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    // The open re-capture produced a centred placement instead of left: 0.
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('left: 60px');
+  });
+
+  it('follows the placement prop and points the arrow with it', async () => {
       stubSelectorQuery({
         'target': { left: 100, top: 200, right: 220, bottom: 244, width: 120, height: 44 },
         'pos': { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },

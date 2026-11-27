@@ -52,6 +52,17 @@ export const POP_ARROW_SIZE = 9;
  * touching the trigger edge, and -start/-end labels stop crowding it. */
 export const POP_GAP = 10;
 
+/** Border-triangle footprint (px): 2 × the leg. */
+const ARROW_WIDTH = POP_ARROW_SIZE * 2;
+
+/** Keep the arrow fully on the bubble edge — a projected centre outside
+ * the bubble (offset / viewport clamp / stale trigger) must not hang off it. */
+function clampArrow(value: number, extent: number): number {
+  const half = ARROW_WIDTH / 2;
+  const max = Math.max(half, extent - half);
+  return Math.min(Math.max(value, half), max);
+}
+
 /** Half this size is the smallest trigger edge a centred arrow can hit. */
 const MIN_CENTERED_EDGE = 17;
 
@@ -64,16 +75,16 @@ const ARROW_CLASS_BY_FAMILY: Record<string, string> = {
 
 /** The reference placement table: [pop style, arrow style] per placement. */
 const PLACEMENT_TABLE: Record<PopoverPlacement, (math: PlacementMath) => readonly [string, string]> = {
-  top: (c) => [`left: ${c.verticalX}px; bottom: ${c.verticalY}px; transform: translateX(-50%);`, `left: 50%;`],
+  top: (c) => [`left: ${c.verticalX}px; bottom: ${c.verticalY}px; transform: translateX(-50%);`, `left: ${c.centreArrowX}px; transform: translateX(-50%);`],
   'top-start': (c) => [`left: ${c.offsetX}px; bottom: ${c.verticalY}px;`, `left: ${c.arrowX}px;`],
   'top-end': (c) => [`right: ${c.offsetX}px; bottom: ${c.verticalY}px;`, `right: ${c.arrowX}px; transform: translateX(50%);`],
-  bottom: (c) => [`left: ${c.verticalX}px; top: ${c.verticalY}px; transform: translateX(-50%);`, `left: 50%;`],
+  bottom: (c) => [`left: ${c.verticalX}px; top: ${c.verticalY}px; transform: translateX(-50%);`, `left: ${c.centreArrowX}px; transform: translateX(-50%);`],
   'bottom-start': (c) => [`left: ${c.offsetX}px; top: ${c.verticalY}px;`, `left: ${c.arrowX}px;`],
   'bottom-end': (c) => [`right: ${c.offsetX}px; top: ${c.verticalY}px;`, `right: ${c.arrowX}px; transform: translateX(50%);`],
-  left: (c) => [`right: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: 50%;`],
+  left: (c) => [`right: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: ${c.centreArrowY}px; transform: translateY(-50%);`],
   'left-start': (c) => [`right: ${c.horizontalX}px; top: ${c.offsetY}px;`, `top: ${c.arrowY}px;`],
   'left-end': (c) => [`right: ${c.horizontalX}px; bottom: ${c.offsetY}px;`, `bottom: ${c.arrowY}px; transform: translateY(50%);`],
-  right: (c) => [`left: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: 50%;`],
+  right: (c) => [`left: ${c.horizontalX}px; top: ${c.horizontalY}px; transform: translateY(-50%);`, `top: ${c.centreArrowY}px; transform: translateY(-50%);`],
   'right-start': (c) => [`left: ${c.horizontalX}px; top: ${c.offsetY}px;`, `top: ${c.arrowY}px;`],
   'right-end': (c) => [`left: ${c.horizontalX}px; bottom: ${c.offsetY}px;`, `bottom: ${c.arrowY}px; transform: translateY(50%);`],
 };
@@ -87,6 +98,10 @@ interface PlacementMath {
   offsetY: number;
   arrowX: number;
   arrowY: number;
+  /** Centre-family arrow position: the trigger centre projected into the
+   * bubble (the offset shifts the arrow the other way). */
+  centreArrowX: number;
+  centreArrowY: number;
 }
 
 function familyOf(placement: PopoverPlacement): string {
@@ -285,11 +300,11 @@ function viewportStyles(
   if (family === 'top' || family === 'bottom') {
     if (align === 'end') return [popStyle, `right: ${pop.width - solved.arrowCenter}px; transform: translateX(50%);`];
     if (align === 'start') return [popStyle, `left: ${solved.arrowCenter}px;`];
-    return [popStyle, 'left: 50%;'];
+    return [popStyle, `left: ${clampArrow(solved.arrowCenter, pop.width)}px; transform: translateX(-50%);`];
   }
   if (align === 'end') return [popStyle, `bottom: ${pop.height - solved.arrowCenter}px; transform: translateY(50%);`];
   if (align === 'start') return [popStyle, `top: ${solved.arrowCenter}px;`];
-  return [popStyle, 'top: 50%;'];
+  return [popStyle, `top: ${clampArrow(solved.arrowCenter, pop.height)}px; transform: translateY(-50%);`];
 }
 /** Create one popover position controller. */
 export function createPopoverPosition(visibleArrow: boolean) {
@@ -341,6 +356,8 @@ export function createPopoverPosition(visibleArrow: boolean) {
       offsetY: edgeShift(height.value / 2, y),
       arrowX: (popWidth.value >= width.value ? width.value / 2 : popWidth.value - 25) - x,
       arrowY: (popHeight.value >= height.value ? height.value / 2 : popHeight.value - 20) - y,
+      centreArrowX: clampArrow(popWidth.value / 2 - x, popWidth.value),
+      centreArrowY: clampArrow(popHeight.value / 2 - y, popHeight.value),
     };
     const [pop, arrow] = PLACEMENT_TABLE[placement](math);
     popStyle.value = pop;

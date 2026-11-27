@@ -436,18 +436,39 @@ function solve(): void {
 }
 
 /**
- * Position the bubble for an open. Synchronous from the cached measurements
- * first, then — on mini-programs only — the trigger is re-measured, because
- * viewport coordinates go stale as soon as the page scrolls. The late solve
- * lands through the same refs, so the bubble just corrects in place.
+ * Whether a successful capture has ever landed. A zero-width trigger measured
+ * too early (slotted / lazily laid-out content) must NOT count — the old code
+ * initialised from it, produced `left: 0`, and never retried, so the bubble
+ * sat half a bubble away from its trigger with the arrow pointing at nothing
+ * (user-reported content-slot bug, reproducible on H5 too).
+ */
+let hasMeasurements = false;
+
+/** Capture trigger + hidden-bubble rects; `true` when both are usable. */
+function captureRects(preferShownPop: boolean): Promise<boolean> {
+  const popId = preferShownPop ? contentId : posId;
+  return Promise.all([measureRect(targetId), measureRect(popId)]).then(async ([trigger, primary]) => {
+    // Fall back to the other bubble node — the hidden copy and the shown body
+    // normally measure the same size, and one of them may not be laid out yet.
+    const pop = primary ?? (await measureRect(preferShownPop ? posId : contentId));
+    if (trigger === null || pop === null) return false;
+    position.init(trigger, pop);
+    hasMeasurements = true;
+    return true;
+  });
+}
+
+/**
+ * Position the bubble for an open. Paints instantly from the last good
+ * capture (never from a failed one), then always re-captures — the trigger
+ * may have been zero-sized at mount, and on mini-programs viewport
+ * coordinates go stale as soon as the page scrolls.
  */
 function resolvePlacement(): void {
-  solve();
-  if (!IS_MINI_PROGRAM) return;
-  viewportSize = readViewport() ?? viewportSize;
-  void measureRect(targetId).then((trigger) => {
-    if (trigger === null || !showPopover.value) return;
-    position.moveTrigger(trigger);
+  if (hasMeasurements) solve();
+  if (IS_MINI_PROGRAM) viewportSize = readViewport() ?? viewportSize;
+  void captureRects(false).then((ok) => {
+    if (!ok || !showPopover.value) return;
     solve();
   });
 }
@@ -457,24 +478,22 @@ function resolvePlacement(): void {
  * whenever `placement` changes (the reference `init`).
  */
 async function initPosition(): Promise<void> {
-  const [trigger, pop] = await Promise.all([measureRect(targetId), measureRect(posId)]);
-  if (trigger === null || pop === null) return;
-  position.init(trigger, pop);
   if (IS_MINI_PROGRAM) viewportSize = readViewport() ?? viewportSize;
+  const ok = await captureRects(false);
   // The reference measures at rest and positions on open; a bubble that is
   // ALREADY open needs the fresh numbers applied right away.
-  if (showPopover.value) solve();
+  if (ok && showPopover.value) solve();
 }
 
 /**
- * Re-measure the SHOWN bubble and re-derive the styles when its natural size
- * changed (the reference `handleAfterEnter`). The slotted content may settle
- * to a different size than the hidden copy predicted.
+ * Re-measure and re-derive when the SHOWN bubble's natural size changed — the
+ * slotted content may settle to a different size than the hidden copy
+ * predicted — and refresh the trigger rect along the way (the reference
+ * `handleAfterEnter`).
  */
 function updatePosition(): void {
-  void measureRect(contentId).then((pop) => {
-    if (pop === null) return;
-    position.updatePosition(pop);
+  void captureRects(true).then((ok) => {
+    if (ok && showPopover.value) solve();
   });
 }
 

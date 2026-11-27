@@ -62,7 +62,7 @@ describe('sn-popover-position', () => {
       const below = styles('bottom');
       // top = arrow 9 + trigger height 44 + gap 10 = 63 (relative to the root).
       expect(below.popStyle).toBe('left: 60px; top: 63px; transform: translateX(-50%);');
-      expect(below.arrowStyle).toBe('left: 50%;');
+      expect(below.arrowStyle).toBe('left: 100px; transform: translateX(-50%);');
 
       const above = styles('top');
       expect(above.popStyle).toBe('left: 60px; bottom: 63px; transform: translateX(-50%);');
@@ -75,7 +75,18 @@ describe('sn-popover-position', () => {
       expect(styles('right').popStyle).toBe(
         'left: 139px; top: 22px; transform: translateY(-50%);',
       );
-      expect(styles('right').arrowStyle).toBe('top: 50%;');
+      expect(styles('right').arrowStyle).toBe('top: 50px; transform: translateY(-50%);');
+    });
+
+    it('slides the centre arrow opposite the offset, clamped to the bubble', () => {
+      // §103 regression: the centre arrow was pinned at 50%, so any offset (or
+      // a viewport clamp) left it pointing away from the trigger.
+      // pop 200 wide: centre 100 − offset 6 = 94.
+      expect(styles('bottom', 6).arrowStyle).toBe('left: 94px; transform: translateX(-50%);');
+      // A huge offset clamps the arrow fully onto the bubble: [9, 191].
+      // +500 pushes the pop right → the arrow moves left; -500 mirrors it.
+      expect(styles('bottom', 500).arrowStyle).toBe('left: 9px; transform: translateX(-50%);');
+      expect(styles('bottom', -500).arrowStyle).toBe('left: 191px; transform: translateX(-50%);');
     });
 
     it('builds the arrow class from the placement family', () => {
@@ -214,7 +225,7 @@ describe('sn-popover-position', () => {
       const below = v('bottom');
       // top = trigger bottom 244 + arrow 9 + gap 10 = 263; left = trigger centre 160 − pop half 100.
       expect(below.popStyle).toBe('left: 60px; top: 263px;');
-      expect(below.arrowStyle).toBe('left: 50%;');
+      expect(below.arrowStyle).toBe('left: 100px; transform: translateX(-50%);');
     });
 
     it('places the bubble above, left and right of the trigger', () => {
