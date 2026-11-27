@@ -13,6 +13,7 @@
   "dependencies": {
     "@snui/style-packs": "workspace:*",
     "@snui/tokens": "workspace:*",
+    "@snui/tokens-mp": "workspace:*",
     "@snui/uni-x": "workspace:*"
   }
 }

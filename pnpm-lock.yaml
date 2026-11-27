@@ -223,6 +223,9 @@ importers:
       '@snui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
+      '@snui/tokens-mp':
+        specifier: workspace:*
+        version: link:../../packages/tokens-mp
       '@snui/uni-x':
         specifier: workspace:*
         version: link:../../packages/uni-x
