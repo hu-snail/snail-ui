@@ -415,16 +415,6 @@ export function createPopoverPosition(visibleArrow: boolean) {
   }
 
   /**
-   * The trigger rect captured by the last `init` / `moveTrigger` — the
-   * scroll-watch baseline. Mini-programs keep the bubble on a `fixed` layer,
-   * so a page scroll leaves it behind; the host closes the bubble as soon as
-   * the trigger is seen away from this rect.
-   */
-  function triggerRect(): PopoverRect | null {
-    return lastTrigger;
-  }
-
-  /**
    * Re-derive the styles from a freshly measured bubble size. Returns
    * whether the placement was re-derived.
    */
@@ -452,7 +442,6 @@ export function createPopoverPosition(visibleArrow: boolean) {
     control,
     controlViewport,
     moveTrigger,
-    triggerRect,
     updatePosition,
   };
 }

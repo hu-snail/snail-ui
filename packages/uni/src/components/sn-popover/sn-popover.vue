@@ -522,9 +522,19 @@ interface ScrollWatchObserver {
   disconnect?: () => void;
 }
 
+/**
+ * Self-calibrated trigger position. The FIRST observer report becomes the
+ * baseline: the SelectorQuery capture and the observer can disagree by a hair
+ * (different coordinate conventions, and the capture may predate the open),
+ * which used to read as "already scrolled" and closed the bubble the instant
+ * it appeared (user-reported flash).
+ */
+let scrollBaseline: { left: number; top: number } | null = null;
+
 function teardownScrollWatch(): void {
   scrollWatch?.disconnect?.();
   scrollWatch = null;
+  scrollBaseline = null;
 }
 
 function installScrollWatch(): void {
@@ -537,8 +547,6 @@ function installScrollWatch(): void {
     ) => ScrollWatchObserver;
   }>();
   if (typeof host?.createIntersectionObserver !== 'function') return;
-  const baseline = position.triggerRect();
-  if (baseline === null) return;
   // Dense thresholds: a crossing roughly every 2px of movement on a 40px
   // trigger, so a scroll is detected almost immediately.
   const thresholds: number[] = [];
@@ -550,8 +558,13 @@ function installScrollWatch(): void {
       if (!showPopover.value) return;
       const rect = res?.boundingClientRect;
       if (rect === null || rect === undefined) return;
-      const movedX = Math.abs((rect.left ?? 0) - baseline.left);
-      const movedY = Math.abs((rect.top ?? 0) - baseline.top);
+      const point = { left: rect.left ?? 0, top: rect.top ?? 0 };
+      if (scrollBaseline === null) {
+        scrollBaseline = point;
+        return;
+      }
+      const movedX = Math.abs(point.left - scrollBaseline.left);
+      const movedY = Math.abs(point.top - scrollBaseline.top);
       if (movedX > SCROLL_CLOSE_TOLERANCE || movedY > SCROLL_CLOSE_TOLERANCE) close();
     });
     scrollWatch = observer;

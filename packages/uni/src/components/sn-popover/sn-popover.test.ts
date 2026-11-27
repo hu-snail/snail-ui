@@ -861,12 +861,18 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     await flushPromises();
     expect(fire, 'the scroll watch must observe the trigger while open').not.toBeNull();
 
-    // The trigger is still where it was captured (baseline 40,300) → no close.
+    // §103 regression (user-reported flash: "opens then vanishes"): the FIRST
+    // observer report self-calibrates — even when it disagrees with the
+    // SelectorQuery capture (here 296 vs the captured 300) it must NOT close.
     // (Opening already emitted update:modelValue true — look for a false.)
     const closesBefore = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
-    fire!({ boundingClientRect: { left: 40, top: 300 } });
+    fire!({ boundingClientRect: { left: 40, top: 296 } });
     await flushPromises();
     expect(closesBefore).toEqual([]);
+    // A 1px jitter against the calibrated baseline is inside the tolerance.
+    fire!({ boundingClientRect: { left: 41, top: 297 } });
+    await flushPromises();
+    expect((w.emitted('update:modelValue') ?? []).filter((a) => a[0] === false)).toEqual([]);
 
     // The page scrolled 120px → the trigger moved → the bubble closes.
     fire!({ boundingClientRect: { left: 40, top: 180 } });
