@@ -796,7 +796,11 @@ defineExpose({ open, close, updatePosition });
   border-top-color: var(--sn-mp-color-background-elevated);
   border-top-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
-  bottom: calc(-1 * var(--sn-popover-arrow-size) + 1px);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  bottom: -8px;
 }
 /* Bubble below → arrow on the top edge → apex UP → coloured BOTTOM border. */
 .sn-popover__arrow-up {
@@ -807,7 +811,11 @@ defineExpose({ open, close, updatePosition });
   border-bottom-color: var(--sn-mp-color-background-elevated);
   border-bottom-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
-  top: calc(-1 * var(--sn-popover-arrow-size) + 1px);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  top: -8px;
 }
 /* Bubble left → apex RIGHT → coloured LEFT border. */
 .sn-popover__arrow-right {
@@ -818,7 +826,11 @@ defineExpose({ open, close, updatePosition });
   border-left-color: var(--sn-mp-color-background-elevated);
   border-left-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
-  right: calc(-1 * var(--sn-popover-arrow-size) + 1px);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  right: -8px;
 }
 /* Bubble right → apex LEFT → coloured RIGHT border. */
 .sn-popover__arrow-left {
@@ -829,7 +841,11 @@ defineExpose({ open, close, updatePosition });
   border-right-color: var(--sn-mp-color-background-elevated);
   border-right-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
-  left: calc(-1 * var(--sn-popover-arrow-size) + 1px);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  left: -8px;
 }
 
 /* ── Close button ─────────────────────────────────────────────────────── */
