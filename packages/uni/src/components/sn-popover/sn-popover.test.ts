@@ -536,6 +536,76 @@ describe('sn-popover', () => {
       const offenders = selectors.filter((sel) => !/^(\.[\w-]+\s*)+$/.test(sel));
       expect(offenders, `non-class selectors break uni-app x App: ${offenders.join(' | ')}`).toEqual([]);
     });
+
+    it('paints the surface with the MP-safe two-line form and literal token payloads', () => {
+      // §103 regression (device-verified on WeChat MP, 0354cf95): a custom
+      // property whose PAYLOAD contains var() is unresolvable there, and a
+      // consuming `var(--x, fallback)` does not rescue it — the bubble surface
+      // and the arrow border painted transparent (bubble showed as a
+      // "frame with no content", the arrow was invisible).
+      //   1. no `--sn-popover-*` definition may carry a var() payload;
+      //   2. every painted surface carries the plain `--sn-mp-*` floor line
+      //      AND the overridable `var(--sn-popover-*, var(--sn-mp-*))` line.
+      const definitions = [...style.matchAll(/--sn-popover-[a-z-]+:\s*([^;]+);/g)];
+      const brokenPayloads = definitions
+        .filter((m) => (m[1] ?? '').includes('var('))
+        .map((m) => m[0]);
+      expect(
+        brokenPayloads,
+        `var()-payload definitions compute to initial on WeChat MP: ${brokenPayloads.join(' | ')}`,
+      ).toEqual([]);
+
+      const twoLine = [
+        ['.sn-popover__container {', 'background-color', 'color-background-elevated'],
+        ['.sn-popover__container {', 'border-radius', 'radius-md'],
+        ['.sn-popover__inner {', 'color', 'color-text-secondary'],
+        ['.sn-popover__text {', 'color', 'color-text-secondary'],
+        ['.sn-popover__menu-divider {', 'background-color', 'color-border-subtle'],
+        ['.sn-popover__arrow-up {', 'border-bottom-color', 'color-background-elevated'],
+        ['.sn-popover__arrow-down {', 'border-top-color', 'color-background-elevated'],
+        ['.sn-popover__arrow-left {', 'border-right-color', 'color-background-elevated'],
+        ['.sn-popover__arrow-right {', 'border-left-color', 'color-background-elevated'],
+      ] as const;
+      for (const [cls, prop, token] of twoLine) {
+        const block = style.slice(style.indexOf(cls), style.indexOf('}', style.indexOf(cls)));
+        expect(
+          block,
+          `${cls} must keep the plain --sn-mp-* ${prop} floor line`,
+        ).toContain(`${prop}: var(--sn-mp-${token})`);
+        expect(block).toContain(`${prop}: var(--sn-popover-`);
+      }
+    });
+
+    it('keeps the arrow outside the transition so no ancestor clip can eat it', () => {
+      // §103 regression: mini-programs force `overflow: hidden` on every view,
+      // and `sn-transition` is another component whose root we cannot override
+      // — an arrow protruding past the bubble box was clipped away entirely.
+      const template = source.slice(source.indexOf('<template>'), source.indexOf('</template>'));
+      const transitionStart = template.indexOf('<SnTransition');
+      const transitionEnd = template.indexOf('</SnTransition>');
+      const arrowIndex = template.indexOf('sn-popover__arrow');
+      expect(arrowIndex, 'the arrow must exist in the template').toBeGreaterThan(-1);
+      expect(
+        arrowIndex < transitionStart || arrowIndex > transitionEnd,
+        'the arrow must be a sibling of the transition, never inside it',
+      ).toBe(true);
+      // It must still sit inside the positioning layer that owns the bubble.
+      const posStart = template.indexOf(':class="bubbleClass"');
+      expect(arrowIndex).toBeGreaterThan(posStart);
+    });
+
+    it('declares white-space nowrap on the text node itself', () => {
+      // §103 regression (H5 "frame with no content"): uni-app's H5 `uni-text`
+      // element carries `white-space: pre-line`, which overrides inheritance
+      // from `.sn-popover__inner` — the body broke between every CJK character
+      // and the bubble collapsed into a one-character-wide strip. Only a rule
+      // ON the text class beats the element default.
+      const block = style.slice(
+        style.indexOf('.sn-popover__text {'),
+        style.indexOf('}', style.indexOf('.sn-popover__text {')),
+      );
+      expect(block).toContain('white-space: nowrap');
+    });
   });
 });
 

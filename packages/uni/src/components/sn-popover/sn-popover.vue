@@ -520,14 +520,24 @@ defineExpose({ open, close, updatePosition });
       document flow, unpositioned — the stray card over the trigger.
     -->
     <view :class="bubbleClass" :style="popStyle">
+      <!--
+        The arrow is a SIBLING of the transition, not a child of the bubble:
+        mini-programs force `overflow: hidden` on every view (`uvue.wxss`), and
+        `sn-transition` — another component — carries no `overflow: visible`
+        override we could reach from here, so an arrow protruding past the
+        bubble box was clipped away entirely. This component's own
+        `.sn-popover__pos` stylesheet DOES set `overflow: visible`, and its box
+        coincides with the bubble box (the transition adds no box of its own),
+        so the arrow keeps the same coordinates while staying unclipped.
+      -->
+      <view
+        v-if="props.visibleArrow"
+        :class="['sn-popover__arrow', arrowClass]"
+        :style="arrowStyle"
+        aria-hidden="true"
+      />
       <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
         <view :id="contentId" :class="['sn-popover__container', props.customPop]" role="dialog">
-          <view
-            v-if="props.visibleArrow"
-            :class="['sn-popover__arrow', arrowClass]"
-            :style="arrowStyle"
-            aria-hidden="true"
-          />
           <slot name="content">
             <view v-if="mode === 'normal'" class="sn-popover__inner">
               <text class="sn-popover__text">{{ normalText }}</text>
@@ -601,17 +611,27 @@ defineExpose({ open, close, updatePosition });
 .sn-popover {
   position: relative;
   display: inline-block;
-  /* The bubble rides OUTSIDE this box (absolute, anchored to the trigger) —
-   * explicit `overflow: visible` is load-bearing: uni-app x views clip
-   * children by default, which swallowed the whole bubble there. */
+  /* The bubble rides OUTSIDE this box (the shown bubble is absolutely /
+   * fixed anchored to the trigger) — explicit `overflow: visible` is
+   * load-bearing: uni-app x views clip children by default, which swallowed
+   * the whole bubble there. */
   overflow: visible;
-  /* Bubble surface, overridable through `custom-style`. */
-  --sn-popover-bg: var(--sn-mp-color-background-elevated);
-  --sn-popover-color: var(--sn-mp-color-text-secondary);
-  --sn-popover-border: var(--sn-mp-color-border-subtle);
-  --sn-popover-radius: var(--sn-mp-radius-md);
-  /* The arrow leg: 9px in the placement table. A fixed px value, because
-   * the inline placement math is px. */
+  /* MP custom-property contract (0354cf95, device-verified): WeChat MP cannot
+   * resolve a custom-property PAYLOAD that itself contains var(), and a
+   * consuming `var(--x, fallback)` does NOT rescue it — a defined-but-
+   * unresolvable variable computes to initial (transparent), so the bubble
+   * surface AND the arrow border painted nothing. The contract:
+   *   1. `--sn-popover-*` definitions carry LITERAL payloads only (never var());
+   *   2. `--sn-mp-*` tokens are consumed DIRECTLY (the always-valid floor);
+   *   3. overridable surfaces stack the overridable `var(--sn-popover-*,
+   *      var(--sn-mp-*))` line ON TOP of the plain token line, so a broken
+   *      chain loses only the top line, never the paint.
+   * The colour / radius tokens are therefore NOT defined here at all — an
+   * undefined variable is exactly what makes the fallback line work. Consumers
+   * override them with concrete values through `custom-style`.
+   *
+   * The two remaining definitions are literals (px / unitless) and are read
+   * by the placement math's inline styles, so they stay as defaults. */
   --sn-popover-arrow-size: 9px;
   --sn-popover-z-index: 500;
 }
@@ -666,8 +686,11 @@ defineExpose({ open, close, updatePosition });
   z-index: var(--sn-popover-z-index);
   box-sizing: border-box;
   overflow: visible;
-  border-radius: var(--sn-popover-radius);
-  background-color: var(--sn-popover-bg);
+  /* Two-line palette (see the MP contract on `.sn-popover`). */
+  border-radius: var(--sn-mp-radius-md);
+  border-radius: var(--sn-popover-radius, var(--sn-mp-radius-md));
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   box-shadow: var(--sn-mp-shadow-md);
 }
 
@@ -676,14 +699,24 @@ defineExpose({ open, close, updatePosition });
   padding: var(--sn-mp-spacing-4);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
-  color: var(--sn-popover-color);
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
   white-space: nowrap;
 }
 
+/*
+ * `white-space: nowrap` is declared HERE, not inherited from `__inner`: on H5
+ * the `uni-text` element carries its own `white-space: pre-line`, which
+ * overrides inheritance — the body then broke between every CJK character and
+ * the bubble collapsed to a one-character-wide strip (the "frame with no
+ * content" bug). A class rule beats uni-app's element default.
+ */
 .sn-popover__text {
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
-  color: var(--sn-popover-color);
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
+  white-space: nowrap;
 }
 
 /* ── Menu mode ────────────────────────────────────────────────────────── */
@@ -715,7 +748,8 @@ defineExpose({ open, close, updatePosition });
   right: 0;
   left: 0;
   height: 1px;
-  background-color: var(--sn-popover-border);
+  background-color: var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-popover-border, var(--sn-mp-color-border-subtle));
 }
 
 .sn-popover__menu-icon {
@@ -745,7 +779,8 @@ defineExpose({ open, close, updatePosition });
   border-right-width: var(--sn-popover-arrow-size);
   border-bottom-width: 0;
   border-left-width: var(--sn-popover-arrow-size);
-  border-top-color: var(--sn-popover-bg);
+  border-top-color: var(--sn-mp-color-background-elevated);
+  border-top-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
   bottom: calc(-1 * var(--sn-popover-arrow-size));
 }
@@ -755,7 +790,8 @@ defineExpose({ open, close, updatePosition });
   border-right-width: var(--sn-popover-arrow-size);
   border-bottom-width: var(--sn-popover-arrow-size);
   border-left-width: var(--sn-popover-arrow-size);
-  border-bottom-color: var(--sn-popover-bg);
+  border-bottom-color: var(--sn-mp-color-background-elevated);
+  border-bottom-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
   top: calc(-1 * var(--sn-popover-arrow-size));
 }
@@ -765,7 +801,8 @@ defineExpose({ open, close, updatePosition });
   border-right-width: 0;
   border-bottom-width: var(--sn-popover-arrow-size);
   border-left-width: var(--sn-popover-arrow-size);
-  border-left-color: var(--sn-popover-bg);
+  border-left-color: var(--sn-mp-color-background-elevated);
+  border-left-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
   right: calc(-1 * var(--sn-popover-arrow-size));
 }
@@ -775,7 +812,8 @@ defineExpose({ open, close, updatePosition });
   border-right-width: var(--sn-popover-arrow-size);
   border-bottom-width: var(--sn-popover-arrow-size);
   border-left-width: 0;
-  border-right-color: var(--sn-popover-bg);
+  border-right-color: var(--sn-mp-color-background-elevated);
+  border-right-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
   left: calc(-1 * var(--sn-popover-arrow-size));
 }

@@ -553,8 +553,8 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 5 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 59): pointer-events stripped
-- unsupported property stripped — `unsupported-property` (line 148): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 69): pointer-events stripped
+- unsupported property stripped — `unsupported-property` (line 172): pointer-events stripped
 
 ### sn-popup/sn-popup.uvue
 
