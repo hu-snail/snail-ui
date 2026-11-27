@@ -1,6 +1,45 @@
 # AUI-POP-MP-001 — MP 组件宿主 wrapper 裁剪越界弹层（popover / tooltip 气泡不可见）
 
-> **状态：重新打开（2026-11-26）——上一版修复已被后续重写替换**
+> **状态：sn-popover 已修复（2026-11-27）；sn-tooltip 同构问题仍未处理**
+>
+> ### 2026-11-27 修复（sn-popover，wot-ui 对齐重写之后的回归）
+>
+> 用户在微信小程序模拟器实测（截图）：隐藏副本以一张错位白卡泄漏到屏内并压在触发器上；
+> 点击触发器后气泡本体不出现。编译产物取证，三条独立根因：
+>
+> 1. **隐藏测量副本失去定位基准**：它是 `position: absolute; left: -100vw`。小程序端组件根
+>    不是定位元素（宿主 wrapper 只有 `:host{display:flex;flex-direction:column}`），绝对定位
+>    往上找到页面级定位祖先，`-100vw` 与视口宽度算出的位置把它送回屏内。
+>    → 修法：副本改 `position: fixed; top: 0; left: 0; visibility: hidden`，不再依赖任何祖先。
+> 2. **气泡本体被宿主 wrapper 裁剪**：见下方根因链，与上一版相同。
+>    → 修法：小程序端气泡走 `position: fixed` + **视口坐标**（`computeViewportPlacement`），
+>    打开时重测触发器（视口坐标随页面滚动失效），首选方向放不下时翻转到对侧，最后才钳制。
+>    H5 / App 保持组件根内的 `absolute`（根相对坐标，行为不变）。
+> 3. **`options: { virtualHost: true }` 在 uni-app x 编译下不生效**：它在产物里只是被
+>    `defineComponent` 展开的普通选项（`{ ...{ name, options: { virtualHost } } }`），没有进入
+>    微信 `Component()` 的 json —— 本库 `sn-swipe-action` / `sn-step` 声明了它，产物 json 里同样没有。
+>    所以参考库 wd-popover 靠它去掉 wrapper 的路径在 uni-app x 上走不通，**不要再试**。
+>
+> **实现约束（踩过的坑）**：
+> - 平台分支不能用 `#ifdef MP` 切两个 `const` —— vitest 只剥离 `MP-WEIXIN` 块，两份声明会同时
+>   存在并重复声明。改用运行时能力探测（`createCanvasContextAsync` 存在且无 `getElementById`）。
+> - 视口尺寸读不到时必须保持 `null`，不能兜底成 `{0, 0}`：零尺寸视口会被钳制逻辑
+>   当成真视口，把每个气泡都钉到屏幕原点。
+> - `sn-transition` 的 `customClass` 是 `string`：传数组会被字符串化成 `"a,"`，定位类直接失效。
+>
+> **验证状态**：
+> - 单测 75 全绿（定位模块 31：含视口坐标 / 翻转 / 钳制 / 视口未知；组件 44：含小程序宿主下
+>   视口坐标、滚动后重测、翻转后箭头方向、视口未知四条回归）
+> - uni 包全量 4194 过，8 败均为 `sn-avatar-group` 存量失败
+> - uni-x 产物重建 + 物化，`check` 1503/1503 新鲜
+> - **微信开发者工具 / 真机：NOT RUN** —— 需用户在 HBuilderX 重新运行后确认
+>
+> **遗留**：`sn-tooltip` 是同构问题（同样是组件根内的 absolute 气泡），本次未改，另行立项。
+>
+> ---
+> ### 以下为历史记录（上一版 SVG chrome 修复，已被 wot-ui 对齐重写替换）
+>
+> 原状态：重新打开（2026-11-26）——上一版修复已被后续重写替换
 > 历史修复（uni-app x MP 端 fixed 测量定位层 + SVG 单一轮廓 chrome + 烘焙色）已被
 > **wot-ui 对齐重写**移除：`sn-popover` 现在在**所有端**都走组件根内的 `position: absolute`
 >（隐藏测量副本 + 12 方向定位表 + CSS border 三角箭头）。这是一次 Human 决策

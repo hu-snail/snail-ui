@@ -112,6 +112,183 @@ function resolveOffset(offset: PopoverOffset): { x: number; y: number } {
 function edgeShift(half: number, offsetAxis: number): number {
   return (half - MIN_CENTERED_EDGE > 0 ? 0 : half - 25) + offsetAxis;
 }
+
+/** One placement solved in VIEWPORT coordinates (px). */
+export interface ViewportPlacement {
+  /** Bubble top-left, viewport px (after the flip and the viewport clamp). */
+  left: number;
+  top: number;
+  /** Arrow position along the anchored edge, px from the bubble's start. */
+  arrowCenter: number;
+  /**
+   * The placement that was actually used. Differs from the requested one only
+   * when the preferred side had no room and the bubble flipped.
+   */
+  placement: PopoverPlacement;
+  /** Whether the bubble had to be pulled back inside the viewport. */
+  clamped: boolean;
+}
+
+const FLIPPED_FAMILY: Record<string, string> = {
+  top: 'bottom',
+  bottom: 'top',
+  left: 'right',
+  right: 'left',
+};
+
+/** Raw (unclamped) solution of one placement. */
+interface RawPlacement {
+  left: number;
+  top: number;
+  arrowCenter: number;
+}
+
+/** Solve one placement exactly as the reference table would, in viewport px. */
+function solveRaw(
+  placement: PopoverPlacement,
+  trigger: PopoverRect,
+  pop: { width: number; height: number },
+  offset: PopoverOffset,
+  visibleArrow: boolean,
+): RawPlacement {
+  const family = familyOf(placement);
+  const align = placement.split('-')[1];
+  const arrowSize = visibleArrow ? POP_ARROW_SIZE : 0;
+  const { x, y } = resolveOffset(offset);
+  const triggerRight = trigger.left + trigger.width;
+  const horizontal = family === 'top' || family === 'bottom';
+
+  // Family axis: the side of the trigger the bubble sits on.
+  const below = trigger.bottom + arrowSize + POP_GAP;
+  const above = trigger.top - arrowSize - POP_GAP - pop.height;
+  const before = trigger.left - arrowSize - POP_GAP - pop.width;
+  const after = triggerRight + arrowSize + POP_GAP;
+
+  // Cross axis: centre / -start / -end, folding the offset in.
+  const centreX = trigger.left + trigger.width / 2 - pop.width / 2;
+  const centreY = trigger.top + trigger.height / 2 - pop.height / 2;
+  const shiftX = edgeShift(trigger.width / 2, x);
+  const shiftY = edgeShift(trigger.height / 2, y);
+
+  let left: number;
+  let top: number;
+  if (horizontal) {
+    top = family === 'top' ? above : below;
+    left = align === 'start' ? trigger.left + shiftX : align === 'end' ? triggerRight - pop.width + shiftX : centreX + x;
+  } else {
+    left = family === 'left' ? before : after;
+    top = align === 'start' ? trigger.top + shiftY : align === 'end' ? trigger.top + trigger.height - pop.height + shiftY : centreY + y;
+  }
+
+  // Arrow: the reference inset for -start / -end (counter-shifted by the
+  // offset), otherwise the trigger's centre projected onto the anchored edge.
+  const insetX = (pop.width >= trigger.width ? trigger.width / 2 : pop.width - 25) - x;
+  const insetY = (pop.height >= trigger.height ? trigger.height / 2 : pop.height - 20) - y;
+  const project = (): number =>
+    horizontal ? trigger.left + trigger.width / 2 - left : trigger.top + trigger.height / 2 - top;
+  let arrowCenter: number;
+  if (align === 'start') arrowCenter = horizontal ? insetX : insetY;
+  else if (align === 'end') arrowCenter = horizontal ? pop.width - insetX : pop.height - insetY;
+  else arrowCenter = project();
+  return { left, top, arrowCenter };
+}
+
+/**
+ * Solve one placement in viewport coordinates — the geometry the `fixed`
+ * bubble uses on mini-programs, where the host wrapper clips anything that
+ * leaves the component box (`boundingClientRect` already reports viewport px).
+ *
+ * Three steps, in order:
+ *   1. solve the requested placement like the reference table;
+ *   2. if the bubble would leave the viewport on its anchored side and the
+ *      OPPOSITE side has room, flip to it (keeping the -start/-end alignment);
+ *   3. clamp whatever is left into the viewport, re-pointing a centred arrow
+ *      at the trigger so a pushed-back bubble still looks attached.
+ *
+ * Without a viewport (`null` — the size could not be read yet) steps 2 and 3
+ * are skipped and the raw placement is used: an unknown viewport must not be
+ * mistaken for a zero-sized one, which would pin every bubble to the origin.
+ */
+export function computeViewportPlacement(
+  placement: PopoverPlacement,
+  trigger: PopoverRect,
+  pop: { width: number; height: number },
+  viewport: { width: number; height: number } | null,
+  offset: PopoverOffset = 0,
+  visibleArrow = true,
+): ViewportPlacement {
+  const raw = solveRaw(placement, trigger, pop, offset, visibleArrow);
+  const empty: ViewportPlacement = {
+    left: raw.left,
+    top: raw.top,
+    arrowCenter: raw.arrowCenter,
+    placement,
+    clamped: false,
+  };
+  if (viewport === null) return empty;
+
+  const family = familyOf(placement);
+  // Which axis the bubble stacks on: the top / bottom families offset
+  // vertically, the left / right families horizontally.
+  const stacksVertically = family === 'top' || family === 'bottom';
+  const maxStart = stacksVertically ? viewport.height - pop.height : viewport.width - pop.width;
+  /** Position of a solution along the stacking axis. */
+  const along = (s: RawPlacement): number => (stacksVertically ? s.top : s.left);
+  const fits = (s: RawPlacement): boolean => {
+    const start = along(s);
+    return start >= 0 && start <= maxStart;
+  };
+
+  let used = placement;
+  let solved = raw;
+  if (!fits(raw)) {
+    const flippedFamily = FLIPPED_FAMILY[family] ?? family;
+    const flipped = `${flippedFamily}${placement.slice(family.length)}` as PopoverPlacement;
+    const candidate = solveRaw(flipped, trigger, pop, offset, visibleArrow);
+    if (fits(candidate)) {
+      used = flipped;
+      solved = candidate;
+    }
+  }
+
+  // Clamp into the viewport; a bubble bigger than the viewport anchors at 0.
+  const clampedLeft = Math.min(Math.max(solved.left, 0), Math.max(0, viewport.width - pop.width));
+  const clampedTop = Math.min(Math.max(solved.top, 0), Math.max(0, viewport.height - pop.height));
+  const clamped = clampedLeft !== solved.left || clampedTop !== solved.top;
+  let { arrowCenter } = solved;
+  // Only the CENTRE family tracks the trigger after a clamp — the -start /
+  // -end insets are relative to the bubble and stay valid where they are.
+  if (clamped && placement.indexOf('-') === -1) {
+    arrowCenter = stacksVertically
+      ? trigger.left + trigger.width / 2 - clampedLeft
+      : trigger.top + trigger.height / 2 - clampedTop;
+  }
+  return { left: clampedLeft, top: clampedTop, arrowCenter, placement: used, clamped };
+}
+
+/**
+ * Inline styles for the `fixed` bubble. The arrow is positioned from the
+ * bubble's own start edge on the anchored axis (the same numbers the absolute
+ * table produces): the centre family at 50%, -start at the solved inset,
+ * -end mirrored through `right` / `bottom`. Reads the ACTUAL placement so a
+ * flipped bubble gets the matching axis.
+ */
+function viewportStyles(
+  solved: ViewportPlacement,
+  pop: { width: number; height: number },
+): readonly [string, string] {
+  const family = familyOf(solved.placement);
+  const align = solved.placement.split('-')[1];
+  const popStyle = `left: ${solved.left}px; top: ${solved.top}px;`;
+  if (family === 'top' || family === 'bottom') {
+    if (align === 'end') return [popStyle, `right: ${pop.width - solved.arrowCenter}px; transform: translateX(50%);`];
+    if (align === 'start') return [popStyle, `left: ${solved.arrowCenter}px;`];
+    return [popStyle, 'left: 50%;'];
+  }
+  if (align === 'end') return [popStyle, `bottom: ${pop.height - solved.arrowCenter}px; transform: translateY(50%);`];
+  if (align === 'start') return [popStyle, `top: ${solved.arrowCenter}px;`];
+  return [popStyle, 'top: 50%;'];
+}
 /** Create one popover position controller. */
 export function createPopoverPosition(visibleArrow: boolean) {
   const popStyle = ref('');
@@ -120,8 +297,18 @@ export function createPopoverPosition(visibleArrow: boolean) {
   const popHeight = ref(0);
   const width = ref(0);
   const height = ref(0);
-  /** The last (placement, offset) `control` ran with — `updatePosition` replays it. */
+  /**
+   * The placement actually in effect — the requested one, or its opposite when
+   * the viewport solve flipped the bubble. `null` until the first solve.
+   */
+  const actualPlacement = ref<PopoverPlacement | null>(null);
+  /** The last (placement, offset) a solve ran with — `rederive` replays it. */
   let lastArgs: { placement: PopoverPlacement; offset: PopoverOffset } | null = null;
+  /** Which coordinate space the last solve ran in — replayed by `rederive`. */
+  let lastSpace: 'root' | 'viewport' = 'root';
+  /** The viewport solve needs the trigger's POSITION too, plus the viewport. */
+  let lastTrigger: PopoverRect | null = null;
+  let lastViewport: { width: number; height: number } | null = null;
 
   /** Capture the trigger + bubble measurements. */
   function init(trigger: PopoverRect, pop: PopoverRect): void {
@@ -129,6 +316,7 @@ export function createPopoverPosition(visibleArrow: boolean) {
     height.value = trigger.height;
     popWidth.value = pop.width;
     popHeight.value = pop.height;
+    lastTrigger = trigger;
   }
 
   /** Arrow orientation classes for one placement; empty when hidden. */
@@ -155,7 +343,56 @@ export function createPopoverPosition(visibleArrow: boolean) {
     const [pop, arrow] = PLACEMENT_TABLE[placement](math);
     popStyle.value = pop;
     arrowStyle.value = arrow;
+    // The absolute bubble never flips — the requested placement is the real one.
+    lastSpace = 'root';
+    actualPlacement.value = placement;
     return { popStyle: popStyle.value, arrowStyle: arrowStyle.value };
+  }
+
+  /**
+   * Derive the styles for the `fixed` bubble (mini-program): viewport
+   * coordinates, flipped / clamped into the viewport. Re-solves the trigger
+   * from the latest `init` / `moveTrigger` measurement. `actualPlacement`
+   * reflects a flip, so the arrow class follows where the bubble really is.
+   */
+  function controlViewport(
+    placement: PopoverPlacement,
+    offset: PopoverOffset,
+    viewport: { width: number; height: number } | null,
+  ): { popStyle: string; arrowStyle: string; placement: PopoverPlacement; arrowClass: string } {
+    const trigger = lastTrigger;
+    if (trigger === null) {
+      return {
+        popStyle: popStyle.value,
+        arrowStyle: arrowStyle.value,
+        placement,
+        arrowClass: arrowClass(placement),
+      };
+    }
+    lastArgs = { placement, offset };
+    lastSpace = 'viewport';
+    lastViewport = viewport;
+    const solved = computeViewportPlacement(placement, trigger, {
+      width: popWidth.value,
+      height: popHeight.value,
+    }, viewport, offset, visibleArrow);
+    const [pop, arrow] = viewportStyles(solved, { width: popWidth.value, height: popHeight.value });
+    popStyle.value = pop;
+    arrowStyle.value = arrow;
+    actualPlacement.value = solved.placement;
+    return {
+      popStyle: popStyle.value,
+      arrowStyle: arrowStyle.value,
+      placement: solved.placement,
+      arrowClass: arrowClass(solved.placement),
+    };
+  }
+
+  /** Record a fresh trigger rect without touching the bubble size. */
+  function moveTrigger(trigger: PopoverRect): void {
+    width.value = trigger.width;
+    height.value = trigger.height;
+    lastTrigger = trigger;
   }
 
   /**
@@ -166,11 +403,28 @@ export function createPopoverPosition(visibleArrow: boolean) {
     if (pop.width === popWidth.value && pop.height === popHeight.value) return false;
     popWidth.value = pop.width;
     popHeight.value = pop.height;
-    if (lastArgs !== null) control(lastArgs.placement, lastArgs.offset);
+    rederive();
     return true;
   }
 
-  return { popStyle, arrowStyle, arrowClass, init, control, updatePosition };
+  /** Replay the last solve — in the coordinate space it ran in. */
+  function rederive(): void {
+    if (lastArgs === null) return;
+    if (lastSpace === 'viewport') controlViewport(lastArgs.placement, lastArgs.offset, lastViewport);
+    else control(lastArgs.placement, lastArgs.offset);
+  }
+
+  return {
+    popStyle,
+    arrowStyle,
+    actualPlacement,
+    arrowClass,
+    init,
+    control,
+    controlViewport,
+    moveTrigger,
+    updatePosition,
+  };
 }
 
 export type PopoverPosition = ReturnType<typeof createPopoverPosition>;

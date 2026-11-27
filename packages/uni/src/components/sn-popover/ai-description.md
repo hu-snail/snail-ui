@@ -1,13 +1,22 @@
 # sn-popover — AI-Friendly Component Description
 - Measured placement: the bubble is positioned from real measurements, not
-  CSS anchoring. A hidden copy of the bubble stays mounted off-screen
-  (`visibility: hidden; left: -100vw`) so its natural size can be read; the
-  trigger box is measured the same way. Opening folds both rects through a
-  12-entry placement table (`sn-popover-position.ts`) into inline styles.
-- The bubble is `position: absolute` inside the component root on EVERY
-  platform (H5 / mini-program / App). Known limitation: on uni-app x
-  mini-programs the host wrapper clips overflow that leaves the component
-  root, so an anchored bubble may be cut off there (AUI-POP-MP-001).
+  CSS anchoring. A hidden copy of the bubble stays mounted (`position: fixed;
+  visibility: hidden`) so its natural size can be read; the trigger box is
+  measured the same way. Opening folds both rects through a 12-entry
+  placement table (`sn-popover-position.ts`) into inline styles.
+- Two coordinate spaces, one table:
+  - H5 / App — the bubble is `position: absolute` inside the component root,
+    positioned root-relative.
+  - mini-program — the bubble is `position: fixed` with VIEWPORT coordinates.
+    The host wrapper there forces `overflow: hidden` on every view and is not
+    a positioning context, so an `absolute` bubble would lose its origin and
+    be clipped at the component box (AUI-POP-MP-001). The host is detected by
+    capability (`createCanvasContextAsync` present, no DOM).
+- On mini-programs the placement adapts to the screen: when the preferred
+  side has no room and the opposite side does, the bubble flips to it (the
+  arrow follows); otherwise it is clamped inside the viewport. The trigger is
+  re-measured on every open, because viewport coordinates go stale when the
+  page scrolls. `actualPlacement` exposes the placement in effect.
 - The arrow is a CSS border triangle (per-side longhands — uni-app x App does
   not expand the 4-value `border-width` shorthand). It shares the bubble's
   fill through `--sn-popover-bg`, so one override recolours both.
@@ -147,11 +156,12 @@ tick after `update:modelValue`.
 - App trigger catcher (uni-app x App): an `#ifdef APP` transparent node over
   the trigger box receives the tap, because slot-content taps never reach the
   component's own views there.
-- uni-app x mini-program clipping (AUI-POP-MP-001): the bubble is `absolute`
-  inside the component root, and the host wrapper clips overflow that leaves
-  it. An anchored bubble can therefore be cut off on that platform. This is
-  a deliberate trade-off — the bubble stays simple and identical on every
-  platform rather than promoting to a fixed layer.
+- Mini-program fixed layer (AUI-POP-MP-001): there the bubble is `position:
+  fixed` with viewport coordinates, and it flips to the opposite side when
+  the preferred one has no room. This diverges from the reference library,
+  which relies on `virtualHost` to drop the host wrapper — an option the
+  uni-app x compile does not carry into the component's json, so the wrapper
+  is always present there and would clip an `absolute` bubble.
 
 ## Disposal
 

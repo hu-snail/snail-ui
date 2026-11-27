@@ -448,13 +448,34 @@ describe('sn-popover', () => {
     const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
     const style = source.slice(source.indexOf('<style scoped>') + '<style scoped>'.length, source.indexOf('</style>'));
 
-    it('keeps the bubble absolute on every platform', () => {
-      expect(style).not.toContain('position: fixed');
-      const block = style.slice(
+    it('keeps the bubble absolute by default — fixed only behind the mini-program modifier', () => {
+      // H5 / App position the bubble relative to the component root.
+      const base = style.slice(
         style.indexOf('.sn-popover__pos {'),
         style.indexOf('}', style.indexOf('.sn-popover__pos {')),
       );
-      expect(block).toContain('position: absolute');
+      expect(base).toContain('position: absolute');
+      // The mini-program bubble opts in through a modifier class, never by
+      // making the base rule fixed (that would break every other end).
+      const fixed = style.slice(
+        style.indexOf('.sn-popover__pos--fixed {'),
+        style.indexOf('}', style.indexOf('.sn-popover__pos--fixed {')),
+      );
+      expect(fixed).toContain('position: fixed');
+    });
+
+    it('keeps the hidden measurement copy from depending on a positioning context', () => {
+      // Regression: the copy was `absolute; left: -100vw`. On mini-programs the
+      // component root is not a positioning context, so the copy lost its
+      // origin and leaked into the viewport as a stray card over the trigger.
+      const hidden = style.slice(
+        style.indexOf('.sn-popover__pos--hidden {'),
+        style.indexOf('}', style.indexOf('.sn-popover__pos--hidden {')),
+      );
+      expect(hidden).toContain('position: fixed');
+      expect(hidden).toContain('visibility: hidden');
+      expect(hidden).toContain('pointer-events: none');
+      expect(hidden).not.toContain('-100vw');
     });
 
     it('draws the arrow as a border triangle with per-side longhands', () => {
@@ -483,4 +504,124 @@ describe('sn-popover', () => {
       expect(offenders, `non-class selectors break uni-app x App: ${offenders.join(' | ')}`).toEqual([]);
     });
   });
+});
+
+/**
+ * Mini-program host (AUI-POP-MP-001). The host wrapper there forces
+ * `overflow: hidden` on every view and is not a positioning context, so the
+ * bubble must leave the component box on a `fixed` layer with VIEWPORT
+ * coordinates.
+ *
+ * The host flavour is detected when the module is evaluated, so the stub has to
+ * be in place BEFORE the component module is (re)loaded — hence the dynamic
+ * import inside each case rather than the static one at the top of the file.
+ */
+describe('sn-popover (mini-program host, fixed layer)', () => {
+  const viewportRects: Record<'target' | 'pos' | 'content', Rect> = {
+    // The trigger sits at (40, 300) in VIEWPORT coords, 80 × 40.
+    target: { left: 40, top: 300, right: 120, bottom: 340, width: 80, height: 40 },
+    pos: { left: 0, top: 0, right: 160, bottom: 60, width: 160, height: 60 },
+    content: { left: 0, top: 0, right: 160, bottom: 60, width: 160, height: 60 },
+  };
+
+  /** Load a fresh component module that sees a mini-program `uni` host. */
+  async function loadOnMiniProgram(): Promise<typeof SnPopover> {
+    vi.resetModules();
+    stubSelectorQuery(viewportRects);
+    // Capability probe: mini-program canvas API present, no DOM.
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    uni.createCanvasContextAsync = () => undefined;
+    uni.getWindowInfo = () => ({ windowWidth: 375, windowHeight: 667 });
+    return (await import('./sn-popover.vue')).default as typeof SnPopover;
+  }
+
+  afterEach(() => {
+    delete (globalThis as { uni?: unknown }).uni;
+    vi.restoreAllMocks();
+  });
+
+  it('positions the bubble with VIEWPORT coordinates on the fixed layer', async () => {
+    const OnMp = await loadOnMiniProgram();
+    const w = mount(OnMp, { props: { modelValue: false } });
+    await flushPromises();
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    const bubble = shownBubble(w)!;
+    expect(bubble.classes()).toContain('sn-popover__pos--fixed');
+    const style = bubble.attributes('style') ?? '';
+    // bottom: top = trigger bottom 340 + arrow 9 + gap 5; left = trigger centre 80 − pop half 80.
+    expect(style).toContain('left: 0px');
+    expect(style).toContain('top: 354px');
+  });
+
+  it('follows the trigger after the page scrolled (viewport coords are re-read on open)', async () => {
+    const OnMp = await loadOnMiniProgram();
+    const w = mount(OnMp, { props: { modelValue: false } });
+    await flushPromises();
+    // The page scrolls: the trigger's viewport position changes.
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    uni.createSelectorQuery = makeQuery({
+      ...viewportRects,
+      target: { left: 40, top: 100, right: 120, bottom: 140, width: 80, height: 40 },
+    });
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    // top = the NEW trigger bottom 140 + 9 + 5.
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 154px');
+  });
+
+  it('flips to the opposite side when the preferred side is off-screen', async () => {
+    const OnMp = await loadOnMiniProgram();
+    const w = mount(OnMp, { props: { modelValue: false, placement: 'right' } });
+    await flushPromises();
+    // Trigger hugging the right edge: a bubble to its right would leave the screen.
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    uni.createSelectorQuery = makeQuery({
+      ...viewportRects,
+      target: { left: 300, top: 300, right: 360, bottom: 340, width: 60, height: 40 },
+    });
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    const bubble = shownBubble(w)!;
+    // Flipped to the LEFT of the trigger: 300 − 9 − 5 − 160 = 126.
+    expect(bubble.attributes('style') ?? '').toContain('left: 126px');
+    // The arrow follows the flip: it now points RIGHT, at the trigger.
+    expect(bubble.find('.sn-popover__arrow').classes()).toContain('sn-popover__arrow-right');
+  });
+
+  it('never positions the fixed bubble at the origin while the viewport is unknown', async () => {
+    const OnMp = await loadOnMiniProgram();
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    delete uni.getWindowInfo;
+    delete uni.getSystemInfoSync;
+    const w = mount(OnMp, { props: { modelValue: false } });
+    await flushPromises();
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    // No viewport → no clamp: the raw viewport placement is used as is.
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 354px');
+  });
+
+  /** Same shape as `stubSelectorQuery`, but as a factory for later swaps. */
+  function makeQuery(rects: Record<'target' | 'pos' | 'content', Rect>) {
+    return () => {
+      let picked = '';
+      const query = {
+        in: () => query,
+        select: (selector: string) => {
+          picked = selector.replace(/^#sn-popover-/, '').replace(/-\d+$/, '');
+          return {
+            boundingClientRect: (cb: (rect: Rect | null) => void) => {
+              cb(rects[picked] ?? null);
+              return query;
+            },
+          };
+        },
+        exec: (cb?: () => void) => {
+          cb?.();
+        },
+      };
+      return query;
+    };
+  }
 });

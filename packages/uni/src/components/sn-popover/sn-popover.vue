@@ -85,6 +85,28 @@ import { registerOutsideClosable, unregisterOutsideClosable, closeOutside } from
 
 defineOptions({ name: 'SnPopover' });
 
+/**
+ * Mini-programs wrap every component in a host node that is neither a
+ * positioning context nor free of `overflow: hidden` (`uvue.wxss` forces it on
+ * every `view`). There the bubble cannot be an `absolute` child of this root:
+ * it loses its origin and anything outside the component box is clipped. The
+ * mini-program build therefore positions the bubble in a `fixed` full-viewport
+ * layer with VIEWPORT coordinates — fixed is the one positioning mode no
+ * ancestor clip reaches (AUI-POP-MP-001, probe-verified). Every other end
+ * (H5 / App) keeps the root-relative `absolute` bubble.
+ *
+ * Detected by capability, not by conditional compilation: a host that exposes
+ * the mini-program canvas API and has no DOM is a mini-program. This keeps the
+ * same code path testable (the unit-test harness strips only `MP-WEIXIN`
+ * blocks, so a `#ifdef MP` switch would leave both branches in place there).
+ */
+function isMiniProgramHost(): boolean {
+  const host = resolveUniHost<{ createCanvasContextAsync?: unknown; getElementById?: unknown }>();
+  return typeof host?.createCanvasContextAsync === 'function' && typeof host?.getElementById !== 'function';
+}
+
+const IS_MINI_PROGRAM = isMiniProgramHost();
+
 type PopoverMode = 'normal' | 'menu';
 
 /** One `menu` mode row (wd-popover `PopoverMenuItem`). */
@@ -193,9 +215,7 @@ watch(
 watch(
   () => showPopover.value,
   (value) => {
-    if (value) {
-      position.control(props.placement, props.offset);
-    }
+    if (value) resolvePlacement();
     emit('change', { show: value });
     if (value) emit('open');
     else emit('close');
@@ -251,8 +271,24 @@ const { popStyle, arrowStyle } = position;
 /** Root class: the component block + the consumer class. */
 const rootClass = computed(() => ['sn-popover', props.customClass]);
 
-/** Arrow orientation classes; recomputed when `placement` changes. */
-const arrowClass = computed(() => [position.arrowClass(props.placement), props.customArrow]);
+/**
+ * The bubble's classes. `sn-transition` takes `customClass` as a STRING, so
+ * this joins — an array would be stringified with a trailing comma and break
+ * the `sn-popover__pos` rule. On mini-programs the bubble is `fixed`; its
+ * layer covers the viewport.
+ */
+const bubbleClass = computed(() =>
+  IS_MINI_PROGRAM ? 'sn-popover__pos sn-popover__pos--fixed' : 'sn-popover__pos',
+);
+
+/**
+ * Arrow orientation classes. On mini-programs they follow the ACTUAL
+ * placement — a bubble flipped to the opposite side needs the matching arrow.
+ */
+const arrowClass = computed(() => [
+  position.arrowClass(position.actualPlacement.value ?? props.placement),
+  props.customArrow,
+]);
 
 /** Rect fields the placement table reads (px). */
 interface MeasuredRect {
@@ -345,6 +381,57 @@ async function measureRect(selector: string): Promise<PopoverRect | null> {
   return null;
 }
 
+/** The viewport in px, read once per open (mini-program solve only). */
+let viewportSize: { width: number; height: number } | null = null;
+
+/** Read the viewport size — `getWindowInfo` first, `getSystemInfoSync` after. */
+function readViewport(): { width: number; height: number } | null {
+  const host = resolveUniHost<{
+    getWindowInfo?: () => { windowWidth?: number; windowHeight?: number };
+    getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number };
+  }>();
+  const info = host?.getWindowInfo?.() ?? host?.getSystemInfoSync?.();
+  const width = info?.windowWidth;
+  const height = info?.windowHeight;
+  if (typeof width === 'number' && typeof height === 'number' && width > 0 && height > 0) {
+    return { width, height };
+  }
+  return null;
+}
+
+/**
+ * Solve the placement in the coordinate space this host needs: root-relative
+ * `absolute` on H5 / App, viewport `fixed` on mini-programs. Uses whatever
+ * was last measured — never measures by itself, so it is always synchronous
+ * and the bubble never appears at a stale spot while a query is in flight.
+ */
+function solve(): void {
+  // A viewport that could not be read stays `null`: the solve then skips the
+  // flip and the clamp instead of treating the screen as zero-sized.
+  if (IS_MINI_PROGRAM) {
+    position.controlViewport(props.placement, props.offset, viewportSize);
+  } else {
+    position.control(props.placement, props.offset);
+  }
+}
+
+/**
+ * Position the bubble for an open. Synchronous from the cached measurements
+ * first, then — on mini-programs only — the trigger is re-measured, because
+ * viewport coordinates go stale as soon as the page scrolls. The late solve
+ * lands through the same refs, so the bubble just corrects in place.
+ */
+function resolvePlacement(): void {
+  solve();
+  if (!IS_MINI_PROGRAM) return;
+  viewportSize = readViewport() ?? viewportSize;
+  void measureRect(targetId).then((trigger) => {
+    if (trigger === null || !showPopover.value) return;
+    position.moveTrigger(trigger);
+    solve();
+  });
+}
+
 /**
  * Capture the trigger + hidden-bubble measurements. Runs on mount and again
  * whenever `placement` changes (the reference `init`).
@@ -353,9 +440,10 @@ async function initPosition(): Promise<void> {
   const [trigger, pop] = await Promise.all([measureRect(targetId), measureRect(posId)]);
   if (trigger === null || pop === null) return;
   position.init(trigger, pop);
+  if (IS_MINI_PROGRAM) viewportSize = readViewport() ?? viewportSize;
   // The reference measures at rest and positions on open; a bubble that is
   // ALREADY open needs the fresh numbers applied right away.
-  if (showPopover.value) position.control(props.placement, props.offset);
+  if (showPopover.value) solve();
 }
 
 /**
@@ -421,7 +509,7 @@ defineExpose({ open, close, updatePosition });
     </view>
 
     <SnTransition
-      custom-class="sn-popover__pos"
+      :custom-class="bubbleClass"
       :custom-style="popStyle"
       :show="showPopover"
       name="fade"
@@ -530,10 +618,32 @@ defineExpose({ open, close, updatePosition });
   overflow: visible;
 }
 
-/* The hidden measurement copy: off-screen, still laid out. */
+/*
+ * The hidden measurement copy. It is `fixed`, not `absolute`: it must not
+ * depend on an ancestor being a positioning context. On mini-programs the
+ * component root is not one (the host wrapper is a plain flex column), so an
+ * `absolute; left: -100vw` copy lost its origin and leaked into the viewport
+ * as a stray card. `fixed` pins it to the viewport edge on every host;
+ * `visibility: hidden` keeps it laid out (so it can be measured) and
+ * `pointer-events: none` keeps it from ever taking a tap.
+ */
 .sn-popover__pos--hidden {
-  left: -100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
   visibility: hidden;
+  pointer-events: none;
+}
+
+/*
+ * The shown bubble on mini-programs. `fixed` is the one positioning mode no
+ * ancestor clip reaches — the host wrapper forces `overflow: hidden` on every
+ * `view` and is not a positioning context, so an `absolute` bubble would both
+ * lose its origin and be clipped at the component box (AUI-POP-MP-001). The
+ * inline coordinates are viewport px from the viewport solve.
+ */
+.sn-popover__pos--fixed {
+  position: fixed;
 }
 
 .sn-popover__container {
