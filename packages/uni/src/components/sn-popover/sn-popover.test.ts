@@ -162,6 +162,20 @@ describe('sn-popover', () => {
       const without = mount(SnPopover, { props: { modelValue: true, visibleArrow: false } });
       expect(shownBubble(without)!.find('.sn-popover__arrow').exists()).toBe(false);
     });
+
+    it('gates the arrow opacity on the shown state — no stray triangle when closed', () => {
+      // §103 regression: the arrow sits outside the fade transition, so it
+      // must carry its own visibility gate.
+      const closed = mount(SnPopover, { props: { modelValue: false, content: 'x' } });
+      const closedArrow = shownBubble(closed)!.find('.sn-popover__arrow');
+      expect(closedArrow.exists()).toBe(true);
+      expect(closedArrow.classes()).not.toContain('sn-popover__arrow--shown');
+
+      const open = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      expect(shownBubble(open)!.find('.sn-popover__arrow').classes()).toContain(
+        'sn-popover__arrow--shown',
+      );
+    });
   });
 
   describe('placement', () => {
@@ -605,6 +619,25 @@ describe('sn-popover', () => {
         style.indexOf('}', style.indexOf('.sn-popover__text {')),
       );
       expect(block).toContain('white-space: nowrap');
+    });
+
+    it('fades the arrow itself — no stray triangle while the bubble is closed', () => {
+      // §103 regression: the arrow is a sibling of the fade transition (so
+      // ancestor clips cannot eat it), which also means it no longer inherits
+      // the transition's visibility — without its own gate a closed popover
+      // left 14 floating triangles over the demo page.
+      const block = style.slice(
+        style.indexOf('.sn-popover__arrow {'),
+        style.indexOf('}', style.indexOf('.sn-popover__arrow {')),
+      );
+      expect(block).toContain('opacity: 0');
+      const shown = style.slice(
+        style.indexOf('.sn-popover__arrow--shown {'),
+        style.indexOf('}', style.indexOf('.sn-popover__arrow--shown {')),
+      );
+      expect(shown).toContain('opacity: 1');
+      const template = source.slice(source.indexOf('<template>'), source.indexOf('</template>'));
+      expect(template).toContain("'sn-popover__arrow--shown': showPopover");
     });
   });
 });

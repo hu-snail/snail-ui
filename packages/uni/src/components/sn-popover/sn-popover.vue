@@ -532,7 +532,7 @@ defineExpose({ open, close, updatePosition });
       -->
       <view
         v-if="props.visibleArrow"
-        :class="['sn-popover__arrow', arrowClass]"
+        :class="['sn-popover__arrow', arrowClass, { 'sn-popover__arrow--shown': showPopover }]"
         :style="arrowStyle"
         aria-hidden="true"
       />
@@ -771,6 +771,16 @@ defineExpose({ open, close, updatePosition });
   border-style: solid;
   border-color: transparent;
   pointer-events: none;
+  /* The arrow lives OUTSIDE the fade transition (so no ancestor clip can eat
+   * it), which means it no longer inherits the transition's visibility — it
+   * must fade with the bubble on its own, or a closed popover leaves a stray
+   * triangle floating over the page. */
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.sn-popover__arrow--shown {
+  opacity: 1;
 }
 
 /* Bubble above → arrow on the bottom edge → apex DOWN → coloured TOP border. */
