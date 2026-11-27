@@ -1,62 +1,21 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-menu.vue sha256:af7a5dd7cfb2ba5b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-menu.vue sha256:5bfb27f788135977 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — menu mode with rich rows and per-row colored
- * glyph plates. Per AUI-DOCS-016: imports the real @snui/uni sn-popover.
- *
- * Row glyphs resolve from the documented sources, highest precedence first:
- *   - `iconData` — an inline IconData object, no registration step
- *   - `iconUrl`  — an image address, rendered as `<image>`
- *   - `icon`     — a name resolved through SnIcon (built-in catalog here)
- * The legacy `iconClass` field keeps working (name or image address).
- * The additive `description` field renders a muted second line; `iconBg` /
- * `iconColor` tint the row's glyph plate (colored icons, reference-style).
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
-import { Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
-
 const open = ref(false);
 const picked = ref('—');
-
-/** Image-typed row glyph as an inline SVG data URL — offline-safe for docs. */
-const tagImage =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
-
 const menu = [
-  {
-    content: '设为星标',
-    description: '在收藏列表置顶显示',
-    iconData: Star,
-    iconBg: 'var(--sn-mp-color-feedback-warning-soft)',
-    iconColor: 'var(--sn-mp-color-feedback-warning)',
-  },
-  {
-    content: '分享给好友',
-    description: '通过消息应用发送',
-    icon: 'share',
-    iconBg: 'var(--sn-mp-color-feedback-info-soft)',
-    iconColor: 'var(--sn-mp-color-feedback-info)',
-  },
-  { content: '添加标签', iconUrl: tagImage },
-  {
-    content: '收藏到书签',
-    iconClass: 'bookmark',
-    iconBg: 'var(--sn-mp-color-feedback-success-soft)',
-    iconColor: 'var(--sn-mp-color-feedback-success)',
-  },
-  {
-    content: '删除',
-    icon: 'trash-2',
-    disabled: true,
-    iconBg: 'var(--sn-mp-color-feedback-danger-soft)',
-    iconColor: 'var(--sn-mp-color-feedback-danger)',
-  },
+  { content: '分享给好友', iconClass: 'share-2' },
+  { content: '收藏到书签', iconClass: 'bookmark' },
+  { content: '删除', iconClass: 'trash' },
 ];
 
-function onMenuClick(payload: { item: { content?: string } }): void {
-  picked.value = payload.item.content ?? '—';
-  open.value = false;
+function onMenuClick(payload: { item: { content: string }; index: number }): void {
+  picked.value = `${payload.item.content}（第 ${payload.index + 1} 项）`;
 }
 </script>
 <template>
@@ -66,7 +25,6 @@ function onMenuClick(payload: { item: { content?: string } }): void {
         v-model="open"
         mode="menu"
         :content="menu"
-        placement="bottom"
         custom-class="sn-demo-contained"
         @menuclick="onMenuClick"
       >
@@ -77,10 +35,7 @@ function onMenuClick(payload: { item: { content?: string } }): void {
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">已选择：{{ picked }}</text>
-    <text class="sn-demo__hint"
-      >富行：content 为标题、description 为弱化副行；iconBg / iconColor
-      为行级彩色图标圆底；图标来源：iconData（内联数据 / 免注册）· icon（名称）·
-      iconUrl（图片）· iconClass（旧字段，兼容）</text>
+    <text class="sn-demo__hint">menu 模式把 content 渲染为操作列表；iconClass 指定行图标名称；点击某一行会触发 menuclick 并收起。</text>
   </view>
 </template>
 <style scoped>
@@ -103,9 +58,10 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   justify-content: center;
 }
 .sn-popover-demo__space {
-  height: 420rpx;
+  height: 220rpx;
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the demo. */
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
 
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
    弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根

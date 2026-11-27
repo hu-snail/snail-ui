@@ -1,58 +1,31 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue sha256:ebbe349cf1fcbf17 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue sha256:2f71d72122b228a3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — start / center / end alignment over a trigger
- * row (top-start / top / top-end), rich card content on all three.
+ * Demo: sn-popover (uni-end) — -start / centred / -end alignment. Per
+ * AUI-DOCS-016: imports the real @snui/uni sn-popover.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
-import { Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
-
-type Alignment = 'start' | 'center' | 'end';
-
-const alignments: { key: Alignment; label: string; placement: 'top-start' | 'top' | 'top-end' }[] =
-  [
-    { key: 'start', label: 'Start', placement: 'top-start' },
-    { key: 'center', label: 'Center', placement: 'top' },
-    { key: 'end', label: 'End', placement: 'top-end' },
-  ];
-
-const openAlignment = ref<Alignment | null>(null);
-
-function setOpen(alignment: Alignment, value: boolean): void {
-  openAlignment.value = value
-    ? alignment
-    : openAlignment.value === alignment
-      ? null
-      : openAlignment.value;
-}
+const options = ['bottom-start', 'bottom', 'bottom-end'] as const;
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="sn-popover-demo__row">
-      <view v-for="item in alignments" :key="item.key" class="sn-popover-demo__cell">
-        <SnPopover
-          :model-value="openAlignment === item.key"
-          :placement="item.placement"
-          title="Alignment"
-          :content="`Aligned to the ${item.key} of the trigger (${item.placement}).`"
-          :icon-data="Settings"
-          icon-bg="var(--sn-mp-color-feedback-info-soft)"
-          icon-color="var(--sn-mp-color-feedback-info)"
-          :visible-arrow="false"
-          custom-class="sn-demo-contained"
-          @update:model-value="setOpen(item.key, $event)"
-        >
-          <SnButton size="small"><text>{{ item.label }}</text></SnButton>
-        </SnPopover>
-      </view>
+    <view class="sn-popover-demo__grid">
+      <SnPopover
+        v-for="item in options"
+        :key="item"
+        :placement="item"
+        content="A text hint"
+        custom-class="sn-popover-demo__cell"
+      >
+        <SnButton size="small"><text>{{ item }}</text></SnButton>
+      </SnPopover>
     </view>
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__hint"
-      >12 placements = 4 directions (top / left / right / bottom) × 3 alignments (-start /
-      center / -end); this demo covers the top family.</text>
+    <text class="sn-demo__meta">Three alignments on the bottom side</text>
+    <text class="sn-demo__hint">-start flush to the start edge, centred, -end flush to the end edge; the same applies to top / left / right.</text>
   </view>
 </template>
 <style scoped>
@@ -61,37 +34,24 @@ function setOpen(alignment: Alignment, value: boolean): void {
   flex-direction: column;
   gap: 16rpx;
 }
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
 .sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-.sn-popover-demo__row {
+.sn-popover-demo__grid {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  gap: 16rpx;
-}
-.sn-popover-demo__cell {
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  justify-content: center;
+  justify-content: space-around;
 }
 .sn-popover-demo__space {
-  height: 300rpx;
+  height: 220rpx;
 }
-/* Docs-preview only — keep the bubble inside the demo flow. */
-
-/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
-   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
-   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
-.sn-popover-demo__cell {
-  overflow: visible;
-}
-.sn-popover-demo__row {
-  overflow: visible;
-}
-.sn-popover-demo__space {
+/* uni-app x 的 view 默认 overflow: hidden——包装类全链放开（AGENTS.md §103）。 */
+.sn-popover-demo__grid, .sn-popover-demo__space {
   overflow: visible;
 }
 </style>

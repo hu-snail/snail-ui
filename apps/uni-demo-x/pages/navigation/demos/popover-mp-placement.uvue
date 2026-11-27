@@ -1,80 +1,31 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:c9d3a184605f2c92 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-placement.vue sha256:1526a396f004a39a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — top / left / right / bottom placement grid.
- *
- * 参考稿布局：上行「上 / 左」、下行「右 / 下」，两端对齐留出中缝；每个气泡
- * 带彩色图标圆底 + 标题 + 描述（与基础 / 对齐 demo 同一卡片语言）。
- * -start / -end 对齐档见「对齐方式」场景。
+ * Demo: sn-popover (uni-end) — four directions. Per AUI-DOCS-016: imports the
+ * real @snui/uni sn-popover.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
-import { MapPin } from '@snui/uni-x/components/sn-icon/sn-icon-set';
-
-type Direction = 'top' | 'left' | 'right' | 'bottom';
-
-/** Corner layout: 上/左 in row 1, 右/下 in row 2 (flex, MP / App safe). */
-const firstRow: { key: Direction; label: string; side: string }[] = [
-  { key: 'top', label: 'Top', side: '上方' },
-  { key: 'left', label: 'Left', side: '左侧' },
-];
-const secondRow: { key: Direction; label: string; side: string }[] = [
-  { key: 'right', label: 'Right', side: '右侧' },
-  { key: 'bottom', label: 'Bottom', side: '下方' },
-];
-
-const openDirection = ref<Direction | null>(null);
-
-function setOpen(direction: Direction, value: boolean): void {
-  openDirection.value = value
-    ? direction
-    : openDirection.value === direction
-      ? null
-      : openDirection.value;
-}
+const options = ['top', 'right', 'bottom', 'left'] as const;
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-popover-demo__grid">
-      <view class="sn-popover-demo__row">
-        <view v-for="cell in firstRow" :key="cell.key" class="sn-popover-demo__cell">
-          <SnPopover
-            :model-value="openDirection === cell.key"
-            :placement="cell.key"
-            title="快速提示"
-            :content="`这个气泡出现在触发器的${cell.side}。`"
-            :icon-data="MapPin"
-            icon-bg="var(--sn-mp-color-feedback-info-soft)"
-            icon-color="var(--sn-mp-color-feedback-info)"
-            custom-class="sn-demo-contained"
-            @update:model-value="setOpen(cell.key, $event)"
-          >
-            <SnButton size="small"><text>{{ cell.label }}</text></SnButton>
-          </SnPopover>
-        </view>
-      </view>
-      <view class="sn-popover-demo__row">
-        <view v-for="cell in secondRow" :key="cell.key" class="sn-popover-demo__cell">
-          <SnPopover
-            :model-value="openDirection === cell.key"
-            :placement="cell.key"
-            title="快速提示"
-            :content="`这个气泡出现在触发器的${cell.side}。`"
-            :icon-data="MapPin"
-            icon-bg="var(--sn-mp-color-feedback-info-soft)"
-            icon-color="var(--sn-mp-color-feedback-info)"
-            custom-class="sn-demo-contained"
-            @update:model-value="setOpen(cell.key, $event)"
-          >
-            <SnButton size="small"><text>{{ cell.label }}</text></SnButton>
-          </SnPopover>
-        </view>
-      </view>
+      <SnPopover
+        v-for="item in options"
+        :key="item"
+        :placement="item"
+        content="文字提示"
+        custom-class="sn-popover-demo__cell"
+      >
+        <SnButton size="small"><text>{{ item }}</text></SnButton>
+      </SnPopover>
     </view>
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__hint">四个方向都带指向触发器的大箭头；点击气泡外部任意位置关闭。</text>
+    <text class="sn-demo__meta">四个方向：top / right / bottom / left</text>
+    <text class="sn-demo__hint">箭头始终指向触发器；点按钮展开，再点一次收起。</text>
   </view>
 </template>
 <style scoped>
@@ -83,43 +34,24 @@ function setOpen(direction: Direction, value: boolean): void {
   flex-direction: column;
   gap: 16rpx;
 }
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
 .sn-demo__hint {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
 .sn-popover-demo__grid {
   display: flex;
-  flex-direction: column;
-  gap: 48rpx;
-  padding: 24rpx 0;
-}
-.sn-popover-demo__row {
-  display: flex;
   flex-direction: row;
-  justify-content: space-between;
-}
-.sn-popover-demo__cell {
-  display: flex;
-  flex-direction: row;
+  justify-content: space-around;
 }
 .sn-popover-demo__space {
-  height: 340rpx;
+  height: 260rpx;
 }
-/* Docs-preview only — keep the bubble inside the demo flow. */
-
-/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
-   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
-   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
-.sn-popover-demo__cell {
-  overflow: visible;
-}
-.sn-popover-demo__grid {
-  overflow: visible;
-}
-.sn-popover-demo__row {
-  overflow: visible;
-}
-.sn-popover-demo__space {
+/* uni-app x 的 view 默认 overflow: hidden——包装类全链放开（AGENTS.md §103）。 */
+.sn-popover-demo__grid, .sn-popover-demo__space {
   overflow: visible;
 }
 </style>

@@ -1,39 +1,25 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue sha256:e3ad33b3eec559c7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue sha256:f1f50ed5760495ba —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — rich card bubble (icon plate + title + text).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
-import { MapPin } from '@snui/uni-x/components/sn-icon/sn-icon-set';
-
 const open = ref(false);
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-popover-demo__center">
-      <SnPopover
-        v-model="open"
-        title="Quick Tip"
-        content="There is no hover on miniprogram — the bubble toggles on tap. Tap anywhere outside it to close, or tap the trigger again."
-        :icon-data="MapPin"
-        icon-bg="var(--sn-mp-color-feedback-warning-soft)"
-        icon-color="var(--sn-mp-color-feedback-warning)"
-        placement="bottom"
-        :show-close="true"
-        custom-class="sn-demo-contained"
-      >
+      <SnPopover v-model="open" content="A text hint" custom-class="sn-demo-contained">
         <SnButton type="primary"><text>Show bubble</text></SnButton>
       </SnPopover>
     </view>
 
     <view class="sn-popover-demo__space" />
 
-    <text class="sn-demo__meta">State: {{ open ? 'expanded' : 'collapsed' }}</text>
-    <text class="sn-demo__hint"
-      >Rich card: icon plate + title + description + corner close; fixed card width
-      (--sn-popover-width).</text>
+    <text class="sn-demo__meta">State: {{ open ? 'Open' : 'Closed' }}</text>
+    <text class="sn-demo__hint">Tap the trigger to open the bubble and tap it again to close; tapping outside closes it too.</text>
   </view>
 </template>
 <style scoped>
@@ -55,11 +41,11 @@ const open = ref(false);
   flex-direction: row;
   justify-content: center;
 }
-/* Docs-preview only — the bubble stays anchored to the component root; the
- * spacer leaves room for the bottom-placed card instead of covering copy. */
 .sn-popover-demo__space {
-  height: 320rpx;
+  height: 220rpx;
 }
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
 
 /* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
    弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根

@@ -4,12 +4,12 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1500 |
+| .uvue 产出 | 1494 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2120 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2108 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
-| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 125 |
+| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 123 |
 
 ## App.uvue 专属改写
 
@@ -1114,16 +1114,10 @@
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-height.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-icon-class.en.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-icon-class.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-notification.en.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-notification.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-sheet.en.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-sheet.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.en.vue: ref
@@ -1340,8 +1334,6 @@
 - pages/navigation/demos/drop-menu-mp-guard.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.en.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.vue: .sn-drop-menu.sn-demo-contained
-- pages/navigation/demos/popover-mp-height.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-height.vue: .sn-popover.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.en.vue: .sn-tooltip.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.vue: .sn-tooltip.sn-demo-contained
 
@@ -2698,9 +2690,7 @@
 - pages/navigation/demos/pagination-mp-slots.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/pagination-mp-slots.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/popover-mp-alignment.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-alignment.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-alignment.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-alignment.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2711,30 +2701,18 @@
 - pages/navigation/demos/popover-mp-content-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-custom-style.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pop)"
-- pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__arrow)"
 - pages/navigation/demos/popover-mp-custom-style.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pop)"
-- pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__arrow)"
-- pages/navigation/demos/popover-mp-height.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-height.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-icon-class.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-height.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-height.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-height.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-height.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-menu.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-menu.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-notification.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-notification.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
@@ -2742,7 +2720,7 @@
 - pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/navigation/navbar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/navigation/popover.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/sidebar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
