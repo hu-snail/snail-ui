@@ -1117,7 +1117,6 @@
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue: ref
-- ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.en.vue: ref
 - ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.vue: ref
 - ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.en.vue: ref
@@ -2712,7 +2711,7 @@
 - pages/navigation/demos/popover-mp-menu.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-menu.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
