@@ -497,6 +497,79 @@ function updatePosition(): void {
   });
 }
 
+/* ── Scroll watch (mini-program only) ─────────────────────────────────── */
+
+/**
+ * Mini-programs render the bubble on a `fixed` layer, so a page scroll moves
+ * the trigger away and leaves the bubble floating over unrelated content. A
+ * component cannot listen for page scroll there, but it can watch where its
+ * trigger sits: an IntersectionObserver with a dense threshold set fires as
+ * the trigger crosses the viewport during a scroll, and any change against
+ * the captured baseline closes the bubble (the product rule: scrolling page
+ * dismisses an anchored mini-program popover).
+ */
+let scrollWatch: { disconnect?: () => void } | null = null;
+
+/** The trigger is considered moved past this many px (layout jitter guard). */
+const SCROLL_CLOSE_TOLERANCE = 2;
+
+interface ScrollWatchObserver {
+  relativeToViewport?: (options?: Record<string, unknown>) => ScrollWatchObserver;
+  observe?: (
+    selector: string,
+    callback: (res: { boundingClientRect?: { left?: number; top?: number } | null }) => void,
+  ) => void;
+  disconnect?: () => void;
+}
+
+function teardownScrollWatch(): void {
+  scrollWatch?.disconnect?.();
+  scrollWatch = null;
+}
+
+function installScrollWatch(): void {
+  teardownScrollWatch();
+  if (!IS_MINI_PROGRAM) return;
+  const host = resolveUniHost<{
+    createIntersectionObserver?: (
+      component: unknown,
+      options: Record<string, unknown>,
+    ) => ScrollWatchObserver;
+  }>();
+  if (typeof host?.createIntersectionObserver !== 'function') return;
+  const baseline = position.triggerRect();
+  if (baseline === null) return;
+  // Dense thresholds: a crossing roughly every 2px of movement on a 40px
+  // trigger, so a scroll is detected almost immediately.
+  const thresholds: number[] = [];
+  for (let i = 0; i <= 20; i += 1) thresholds.push(i / 20);
+  try {
+    const observer = host.createIntersectionObserver(instance?.proxy, { thresholds });
+    observer.relativeToViewport?.({});
+    observer.observe?.('#' + targetId, (res) => {
+      if (!showPopover.value) return;
+      const rect = res?.boundingClientRect;
+      if (rect === null || rect === undefined) return;
+      const movedX = Math.abs((rect.left ?? 0) - baseline.left);
+      const movedY = Math.abs((rect.top ?? 0) - baseline.top);
+      if (movedX > SCROLL_CLOSE_TOLERANCE || movedY > SCROLL_CLOSE_TOLERANCE) close();
+    });
+    scrollWatch = observer;
+  } catch {
+    /* 观察器不可用时保持不关闭，气泡仍在正确位置 */
+  }
+}
+
+watch(
+  () => showPopover.value,
+  (value) => {
+    if (value) installScrollWatch();
+    else teardownScrollWatch();
+  },
+);
+
+onBeforeUnmount(teardownScrollWatch);
+
 /* ── Outside close (wd-popover useQueue parity) ───────────────────────── */
 
 /**

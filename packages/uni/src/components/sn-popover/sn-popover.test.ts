@@ -833,6 +833,49 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
   });
 
+  it('closes the bubble when the page scrolls the trigger away', async () => {
+    // Mini-programs keep the bubble on a fixed layer, so a page scroll leaves
+    // it floating over unrelated content. A component cannot listen for page
+    // scroll there — an IntersectionObserver on the trigger reports its new
+    // viewport rect at each threshold crossing, and any movement against the
+    // captured baseline closes the bubble (the product rule).
+    const OnMp = await loadOnMiniProgram();
+    let fire: ((res: { boundingClientRect?: { left: number; top: number } }) => void) | null = null;
+    let disconnected = false;
+    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    uni.createIntersectionObserver = () => {
+      const observer = {
+        relativeToViewport: () => observer,
+        observe: (_selector: string, cb: (res: { boundingClientRect?: { left: number; top: number } }) => void) => {
+          fire = cb;
+        },
+        disconnect: () => {
+          disconnected = true;
+        },
+      };
+      return observer;
+    };
+    const w = mount(OnMp, { props: { modelValue: false } });
+    await flushPromises();
+    await w.find('.sn-popover__target').trigger('tap');
+    await flushPromises();
+    expect(fire, 'the scroll watch must observe the trigger while open').not.toBeNull();
+
+    // The trigger is still where it was captured (baseline 40,300) → no close.
+    // (Opening already emitted update:modelValue true — look for a false.)
+    const closesBefore = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
+    fire!({ boundingClientRect: { left: 40, top: 300 } });
+    await flushPromises();
+    expect(closesBefore).toEqual([]);
+
+    // The page scrolled 120px → the trigger moved → the bubble closes.
+    fire!({ boundingClientRect: { left: 40, top: 180 } });
+    await flushPromises();
+    const closes = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
+    expect(closes.length).toBeGreaterThan(0);
+    expect(disconnected).toBe(true);
+  });
+
   /** Same shape as `stubSelectorQuery`, but as a factory for later swaps. */
   function makeQuery(rects: Record<'target' | 'pos' | 'content', Rect>) {
     return () => {
