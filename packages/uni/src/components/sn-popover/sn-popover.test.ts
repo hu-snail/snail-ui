@@ -610,6 +610,9 @@ describe('sn-popover', () => {
 
       const twoLine = [
         ['.sn-popover__container {', 'background-color', 'color-background-elevated'],
+        // The bubble itself carries the text colour so the menu glyphs — which
+        // only inherit — match the text instead of the page default.
+        ['.sn-popover__container {', 'color', 'color-text-secondary'],
         ['.sn-popover__container {', 'border-radius', 'radius-md'],
         ['.sn-popover__inner {', 'color', 'color-text-secondary'],
         ['.sn-popover__text {', 'color', 'color-text-secondary'],
@@ -703,9 +706,14 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
   async function loadOnMiniProgram(): Promise<typeof SnPopover> {
     vi.resetModules();
     stubSelectorQuery(viewportRects);
-    // Capability probe: mini-program canvas API present, no DOM.
+    // Platform probe: the authoritative string every mini-program reports
+    // (`uniPlatform: 'mp-*'`), plus the window size for the fixed solve.
     const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    uni.createCanvasContextAsync = () => undefined;
+    uni.getSystemInfoSync = () => ({
+      uniPlatform: 'mp-weixin',
+      windowWidth: 375,
+      windowHeight: 667,
+    });
     uni.getWindowInfo = () => ({ windowWidth: 375, windowHeight: 667 });
     return (await import('./sn-popover.vue')).default as typeof SnPopover;
   }
@@ -767,8 +775,10 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
   it('never positions the fixed bubble at the origin while the viewport is unknown', async () => {
     const OnMp = await loadOnMiniProgram();
     const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+    // Platform still reports a mini-program (the fixed layer must engage),
+    // but no window size is available.
     delete uni.getWindowInfo;
-    delete uni.getSystemInfoSync;
+    uni.getSystemInfoSync = () => ({ uniPlatform: 'mp-weixin' });
     const w = mount(OnMp, { props: { modelValue: false } });
     await flushPromises();
     await w.find('.sn-popover__target').trigger('tap');

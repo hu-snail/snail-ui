@@ -86,23 +86,33 @@ import { registerOutsideClosable, unregisterOutsideClosable, closeOutside } from
 defineOptions({ name: 'SnPopover' });
 
 /**
- * Mini-programs wrap every component in a host node that is neither a
- * positioning context nor free of `overflow: hidden` (`uvue.wxss` forces it on
- * every `view`). There the bubble cannot be an `absolute` child of this root:
- * it loses its origin and anything outside the component box is clipped. The
- * mini-program build therefore positions the bubble in a `fixed` full-viewport
- * layer with VIEWPORT coordinates — fixed is the one positioning mode no
- * ancestor clip reaches (AUI-POP-MP-001, probe-verified). Every other end
- * (H5 / App) keeps the root-relative `absolute` bubble.
+ * Detected from the AUTHORITATIVE platform string first (sn-qr-code's probe,
+ * the repo precedent), then from the MP bridges:
  *
- * Detected by capability, not by conditional compilation: a host that exposes
- * the mini-program canvas API and has no DOM is a mini-program. This keeps the
- * same code path testable (the unit-test harness strips only `MP-WEIXIN`
- * blocks, so a `#ifdef MP` switch would leave both branches in place there).
+ * The old canvas-capability probe (`createCanvasContextAsync && no
+ * getElementById`) missed WeChat MP on the uni-app x compile — the build
+ * rendered the bubble `absolute` there, and the host wrapper clipped it at
+ * the component box (menu rows cut mid-line, user-reported). `uniPlatform`
+ * starts with `mp-` on every mini-program and is `devtools` in the simulator,
+ * so the fixed layer now engages wherever a mini-program runs.
  */
 function isMiniProgramHost(): boolean {
-  const host = resolveUniHost<{ createCanvasContextAsync?: unknown; getElementById?: unknown }>();
-  return typeof host?.createCanvasContextAsync === 'function' && typeof host?.getElementById !== 'function';
+  try {
+    const host = resolveUniHost<{
+      getSystemInfoSync?: () => { uniPlatform?: string; platform?: string };
+    }>();
+    const info = host?.getSystemInfoSync?.();
+    const platform = info?.uniPlatform ?? info?.platform ?? '';
+    if (platform.startsWith('mp-') || platform === 'devtools') return true;
+    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
+  } catch {
+    /* fall through to the environment probe */
+  }
+  const globalHost = globalThis as Record<string, unknown>;
+  if (typeof globalHost.document === 'object' && globalHost.document !== null) return false;
+  return ['wx', 'my', 'tt', 'swan', 'qq', 'ks', 'jd'].some(
+    (name) => typeof globalHost[name] === 'object' && globalHost[name] !== null,
+  );
 }
 
 const IS_MINI_PROGRAM = isMiniProgramHost();
@@ -184,6 +194,9 @@ const instanceId = instance?.uid ?? 0;
  * size token (MP contract rule 2).
  */
 const CLOSE_ICON_SIZE = 'var(--sn-mp-icon-size-small)';
+/** Menu row glyph size — same box-sizing trap as the close glyph (SnIcon
+ * sizes its box from __TEXT	__DATA	__OBJC	others	dec	hex, not from the wrapper font-size). */
+const MENU_ICON_SIZE = 'var(--sn-mp-icon-size-medium)';
 /** Per-instance node ids: several popovers on one page must not share nodes. */
 const targetId = `sn-popover-target-${instanceId}`;
 const posId = `sn-popover-pos-${instanceId}`;
@@ -514,7 +527,7 @@ defineExpose({ open, close, updatePosition });
           :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
         >
           <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
-            <SnIcon v-if="item.iconClass" :icon="item.iconClass" custom-class="sn-popover__icon" />
+            <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
             <text class="sn-popover__text">{{ item.content }}</text>
           </view>
         </view>
@@ -570,7 +583,7 @@ defineExpose({ open, close, updatePosition });
                 role="menuitem"
                 @tap="menuClick(index)"
               >
-                <SnIcon v-if="item.iconClass" :icon="item.iconClass" custom-class="sn-popover__menu-icon" />
+                <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__menu-icon" />
                 <text class="sn-popover__text">{{ item.content }}</text>
                 <view v-if="index > 0" class="sn-popover__menu-divider" aria-hidden="true" />
               </view>
@@ -706,11 +719,17 @@ defineExpose({ open, close, updatePosition });
   z-index: var(--sn-popover-z-index);
   box-sizing: border-box;
   overflow: visible;
-  /* Two-line palette (see the MP contract on `.sn-popover`). */
+  /* Two-line palette (see the MP contract on `.sn-popover`). The `color`
+   * lives HERE, not only on the text: menu glyphs are siblings of the text
+   * and inherit their colour — without a declaration on the bubble the icons
+   * fell back to the page default while the text stayed on the token
+   * (user-reported wrong icon colour). */
   border-radius: var(--sn-mp-radius-md);
   border-radius: var(--sn-popover-radius, var(--sn-mp-radius-md));
   background-color: var(--sn-mp-color-background-elevated);
   background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
   box-shadow: var(--sn-mp-shadow-md);
 }
 
@@ -828,7 +847,7 @@ defineExpose({ open, close, updatePosition });
   border-top-color: var(--sn-mp-color-background-elevated);
   border-top-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
-  bottom: calc(-1 * var(--sn-popover-arrow-size));
+  bottom: calc(-1 * var(--sn-popover-arrow-size) + 1px);
 }
 /* Bubble below → arrow on the top edge → apex UP → coloured BOTTOM border. */
 .sn-popover__arrow-up {
@@ -839,7 +858,7 @@ defineExpose({ open, close, updatePosition });
   border-bottom-color: var(--sn-mp-color-background-elevated);
   border-bottom-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateX(-50%);
-  top: calc(-1 * var(--sn-popover-arrow-size));
+  top: calc(-1 * var(--sn-popover-arrow-size) + 1px);
 }
 /* Bubble left → apex RIGHT → coloured LEFT border. */
 .sn-popover__arrow-right {
@@ -850,7 +869,7 @@ defineExpose({ open, close, updatePosition });
   border-left-color: var(--sn-mp-color-background-elevated);
   border-left-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
-  right: calc(-1 * var(--sn-popover-arrow-size));
+  right: calc(-1 * var(--sn-popover-arrow-size) + 1px);
 }
 /* Bubble right → apex LEFT → coloured RIGHT border. */
 .sn-popover__arrow-left {
@@ -861,7 +880,7 @@ defineExpose({ open, close, updatePosition });
   border-right-color: var(--sn-mp-color-background-elevated);
   border-right-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   transform: translateY(-50%);
-  left: calc(-1 * var(--sn-popover-arrow-size));
+  left: calc(-1 * var(--sn-popover-arrow-size) + 1px);
 }
 
 /* ── Close button ─────────────────────────────────────────────────────── */

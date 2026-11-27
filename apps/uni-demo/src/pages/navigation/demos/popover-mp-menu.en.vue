@@ -10,9 +10,9 @@ import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 const open = ref(false);
 const picked = ref('—');
 const menu = [
-  { content: 'Share with friends', iconClass: 'share-2' },
+  { content: 'Share with friends', iconClass: 'share' },
   { content: 'Save to bookmarks', iconClass: 'bookmark' },
-  { content: 'Delete', iconClass: 'trash' },
+  { content: 'Delete', iconClass: 'trash-2' },
 ];
 
 function onMenuClick(payload: { item: { content: string }; index: number }): void {
