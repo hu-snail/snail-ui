@@ -508,50 +508,57 @@ defineExpose({ open, close, updatePosition });
       </view>
     </view>
 
-    <SnTransition
-      :custom-class="bubbleClass"
-      :custom-style="popStyle"
-      :show="showPopover"
-      name="fade"
-      @after-enter="updatePosition"
-    >
-      <view :id="contentId" :class="['sn-popover__container', props.customPop]" role="dialog">
-        <view
-          v-if="props.visibleArrow"
-          :class="['sn-popover__arrow', arrowClass]"
-          :style="arrowStyle"
-          aria-hidden="true"
-        />
-        <slot name="content">
-          <view v-if="mode === 'normal'" class="sn-popover__inner">
-            <text class="sn-popover__text">{{ normalText }}</text>
-          </view>
-          <view v-if="mode === 'menu'" class="sn-popover__menu" role="menu">
-            <view
-              v-for="(item, index) in menuItems"
-              :key="index"
-              :class="['sn-popover__menu-inner', { 'sn-popover__menu-inner--first': index === 0 }]"
-              role="menuitem"
-              @tap="menuClick(index)"
-            >
-              <SnIcon v-if="item.iconClass" :icon="item.iconClass" custom-class="sn-popover__menu-icon" />
-              <text class="sn-popover__text">{{ item.content }}</text>
-              <view v-if="index > 0" class="sn-popover__menu-divider" aria-hidden="true" />
+    <!--
+      Positioning layer + transition layer are SEPARATE. The `.sn-popover__pos`
+      wrapper below is a node THIS component owns, so its scoped stylesheet
+      (position: absolute / fixed + the placement inline styles) provably
+      reaches it. Inside it, `sn-transition` only fades the CONTENT: a
+      custom-component stylesheet cannot style another component's internal
+      nodes on mini-programs (no `styleIsolation: shared` in the uni-app x
+      compile — verified: no component json carries it), so handing the
+      placement classes to sn-transition's custom-class put the bubble in the
+      document flow, unpositioned — the stray card over the trigger.
+    -->
+    <view :class="bubbleClass" :style="popStyle">
+      <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
+        <view :id="contentId" :class="['sn-popover__container', props.customPop]" role="dialog">
+          <view
+            v-if="props.visibleArrow"
+            :class="['sn-popover__arrow', arrowClass]"
+            :style="arrowStyle"
+            aria-hidden="true"
+          />
+          <slot name="content">
+            <view v-if="mode === 'normal'" class="sn-popover__inner">
+              <text class="sn-popover__text">{{ normalText }}</text>
             </view>
-          </view>
-        </slot>
+            <view v-if="mode === 'menu'" class="sn-popover__menu" role="menu">
+              <view
+                v-for="(item, index) in menuItems"
+                :key="index"
+                :class="['sn-popover__menu-inner', { 'sn-popover__menu-inner--first': index === 0 }]"
+                role="menuitem"
+                @tap="menuClick(index)"
+              >
+                <SnIcon v-if="item.iconClass" :icon="item.iconClass" custom-class="sn-popover__menu-icon" />
+                <text class="sn-popover__text">{{ item.content }}</text>
+                <view v-if="index > 0" class="sn-popover__menu-divider" aria-hidden="true" />
+              </view>
+            </view>
+          </slot>
 
-        <view
-          v-if="props.showClose"
-          class="sn-popover__close"
-          role="button"
-          aria-label="close"
-          @tap.stop="close"
-        >
-          <SnIcon :icon="XIcon" custom-class="sn-popover__close-icon" />
+          <view
+            v-if="props.showClose"
+            class="sn-popover__close"
+            role="button"
+            aria-label="close"
+            @tap.stop="close"
+          >
+            <SnIcon :icon="XIcon" custom-class="sn-popover__close-icon" />
+          </view>
         </view>
-      </view>
-    </SnTransition>
+      </SnTransition>
+    </view>
 
     <view
       :id="targetId"
@@ -611,6 +618,14 @@ defineExpose({ open, close, updatePosition });
 
 /* ── Bubble box (shared by the shown bubble and the hidden copy) ──────── */
 
+/*
+ * The positioning layer — a node THIS component owns, so this scoped
+ * stylesheet provably reaches it (the transition's internal nodes are in
+ * another custom component, whose styles this sheet can never touch on
+ * mini-programs). It wraps the fade transition and is permanently mounted:
+ * while closed it has no visible content (the transition renders none), so
+ * it paints nothing and takes no tap.
+ */
 .sn-popover__pos {
   position: absolute;
   z-index: var(--sn-popover-z-index);

@@ -20,21 +20,39 @@
 >    微信 `Component()` 的 json —— 本库 `sn-swipe-action` / `sn-step` 声明了它，产物 json 里同样没有。
 >    所以参考库 wd-popover 靠它去掉 wrapper 的路径在 uni-app x 上走不通，**不要再试**。
 >
+> ### 第二轮修复（2026-11-27 13:39 截图复验后）——第四条根因
+>
+> 第一轮三处修完后，用户复验截图症状**不变**（气泡仍在文档流、盖在触发器上方）。编译产物
+> （12:16）确认新组件已在跑——是第四条独立根因，且在 H5 单测里**测不到**：
+>
+> 4. **popover 的 scoped 样式到不了气泡节点**：气泡节点此前是 `sn-transition` 的内部 view
+>    （定位类经 `custom-class` 传入）。微信自定义组件样式默认互相隔离（`styleIsolation: isolated`），
+>    popover 的 wxss（带 popover 的 `data-v-*`）作用于 transition 组件内部的节点时**不生效**；
+>    而 uni-app x 编译同样不把 `styleIsolation: 'shared'` / `addGlobalClass` 写进组件 json
+>    （全应用 0 个 json 带它，取证）——参考库的第二条路也走不通。H5 上没有这个问题
+>    （Vue scoped 约定父组件样式作用于子组件根），所以单测全绿但 MP 上样式全部落空。
+>    → 修法：**定位层与动画层分离**。气泡的定位节点（`.sn-popover__pos`）由 popover 自己的
+>    模板渲染（样式必然可达），`sn-transition` 降级为只负责内容的淡入淡出，不再承载任何定位类
+>    / 定位样式。结构回归测试锁死「transition 不带 custom-class / custom-style / popStyle」。
+>
 > **实现约束（踩过的坑）**：
 > - 平台分支不能用 `#ifdef MP` 切两个 `const` —— vitest 只剥离 `MP-WEIXIN` 块，两份声明会同时
 >   存在并重复声明。改用运行时能力探测（`createCanvasContextAsync` 存在且无 `getElementById`）。
 > - 视口尺寸读不到时必须保持 `null`，不能兜底成 `{0, 0}`：零尺寸视口会被钳制逻辑
 >   当成真视口，把每个气泡都钉到屏幕原点。
 > - `sn-transition` 的 `customClass` 是 `string`：传数组会被字符串化成 `"a,"`，定位类直接失效。
+> - **跨组件 scoped 样式是 MP 上的硬边界**：任何「父组件样式化子组件内部节点」的写法
+>   （custom-class 传定位类是典型形态）在 MP 上都会静默失效。定位 / 尺寸类的宿主节点
+>   必须由拥有该样式的组件自己渲染。
 >
 > **验证状态**：
-> - 单测 75 全绿（定位模块 31：含视口坐标 / 翻转 / 钳制 / 视口未知；组件 44：含小程序宿主下
->   视口坐标、滚动后重测、翻转后箭头方向、视口未知四条回归）
+> - 单测 76 全绿（定位模块 31：含视口坐标 / 翻转 / 钳制 / 视口未知；组件 45：含小程序宿主四条
+>   回归 + 定位层结构回归）
 > - uni 包全量 4194 过，8 败均为 `sn-avatar-group` 存量失败
-> - uni-x 产物重建 + 物化，`check` 1503/1503 新鲜
+> - uni-x 产物重建 + 原子物化，`check` 1503/1503 新鲜
 > - **微信开发者工具 / 真机：NOT RUN** —— 需用户在 HBuilderX 重新运行后确认
 >
-> **遗留**：`sn-tooltip` 是同构问题（同样是组件根内的 absolute 气泡），本次未改，另行立项。
+> **遗留**：`sn-tooltip` 是同构问题（样式跨组件 + wrapper 裁剪双坑都在），本次未改，另行立项。
 >
 > ---
 > ### 以下为历史记录（上一版 SVG chrome 修复，已被 wot-ui 对齐重写替换）

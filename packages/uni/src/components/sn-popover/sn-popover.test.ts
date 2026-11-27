@@ -60,9 +60,22 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-/** The shown bubble root (the transition node carrying the placement styles). */
+/**
+ * The positioning layer (this component's own node, carrying the placement
+ * classes). Permanently mounted.
+ */
 function shownBubble(w: VueWrapper) {
   return w.findAll('.sn-popover__pos').find((node) => !node.classes().includes('sn-popover__pos--hidden'));
+}
+
+/**
+ * The bubble body (the container INSIDE the positioning layer). The
+ * positioning layer is permanently mounted, so "closed" means the transition
+ * renders no body — not that the layer itself is absent.
+ */
+function bubbleBody(w: VueWrapper) {
+  const layer = shownBubble(w);
+  return layer ? layer.find('.sn-popover__container') : null;
 }
 
 describe('sn-popover', () => {
@@ -70,7 +83,7 @@ describe('sn-popover', () => {
     it('renders the trigger slot and no bubble while closed', () => {
       const w = mount(SnPopover, { slots: { default: '<text>更多</text>' } });
       expect(w.text()).toContain('更多');
-      expect(shownBubble(w)).toBeUndefined();
+      expect(bubbleBody(w) === null || !bubbleBody(w)!.exists()).toBe(true);
     });
 
     it('renders the normal-mode text body', () => {
@@ -258,7 +271,7 @@ describe('sn-popover', () => {
       const w = mount(SnPopover, { props: { modelValue: false, disabled: true } });
       await w.find('.sn-popover__target').trigger('tap');
       expect(w.emitted('update:modelValue')).toBeUndefined();
-      expect(shownBubble(w)).toBeUndefined();
+      expect(bubbleBody(w) === null || !bubbleBody(w)!.exists()).toBe(true);
       expect(w.find('.sn-popover__target').attributes('aria-disabled')).toBe('true');
     });
 
@@ -389,7 +402,7 @@ describe('sn-popover', () => {
         expect(shownBubble(w)).toBeDefined();
         // sn-transition default duration is 300ms.
         await vi.advanceTimersByTimeAsync(400);
-        expect(shownBubble(w)).toBeUndefined();
+        expect(bubbleBody(w) === null || !bubbleBody(w)!.exists()).toBe(true);
       } finally {
         vi.useRealTimers();
       }
@@ -476,6 +489,26 @@ describe('sn-popover', () => {
       expect(hidden).toContain('visibility: hidden');
       expect(hidden).toContain('pointer-events: none');
       expect(hidden).not.toContain('-100vw');
+    });
+
+    it('renders the positioning layer as its own node, outside the transition', () => {
+      // Regression: the placement classes used to ride sn-transition's
+      // custom-class. A custom-component stylesheet cannot style another
+      // component's internal nodes on mini-programs (no `styleIsolation:
+      // shared` in the uni-app x compile — verified in the compiled json), so
+      // `.sn-popover__pos` never landed and the bubble rendered in the
+      // document flow as a stray card. The layer must be a node THIS template
+      // renders, and the transition must carry none of the placement wiring.
+      const template = source.slice(source.indexOf('<template>'), source.indexOf('</template>'));
+      expect(template).toContain(':class="bubbleClass"');
+      expect(template).toContain(':style="popStyle"');
+      const transitionTag = template.slice(
+        template.indexOf('<SnTransition'),
+        template.indexOf('>', template.indexOf('<SnTransition')),
+      );
+      expect(transitionTag).not.toContain('custom-class');
+      expect(transitionTag).not.toContain('custom-style');
+      expect(transitionTag).not.toContain('popStyle');
     });
 
     it('draws the arrow as a border triangle with per-side longhands', () => {
