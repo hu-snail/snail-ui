@@ -834,53 +834,66 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
   });
 
   it('follows the trigger while the page scrolls (H5 parity, never closes)', async () => {
-    // Mini-programs keep the bubble on a fixed layer, so scrolling would walk
-    // the trigger away. H5 / App ride the scroll with an absolute bubble; the
-    // mini-program build restores that by re-anchoring on every reported
-    // trigger movement (IntersectionObserver), never by dismissing.
+    // Mini-programs keep the bubble on a fixed layer; an IntersectionObserver
+    // never fires for a fully-visible trigger (ratio stays 1 while scrolling),
+    // so the bubble polls the trigger rect while open and re-anchors.
     const OnMp = await loadOnMiniProgram();
-    let fire: ((res: { boundingClientRect?: { left: number; top: number; width: number; height: number; bottom: number } }) => void) | null = null;
-    let disconnected = false;
-    const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
-    uni.createIntersectionObserver = () => {
-      const observer = {
-        relativeToViewport: () => observer,
-        observe: (
-          _selector: string,
-          cb: (res: { boundingClientRect?: { left: number; top: number; width: number; height: number; bottom: number } }) => void,
-        ) => {
-          fire = cb;
-        },
-        disconnect: () => {
-          disconnected = true;
-        },
+    vi.useFakeTimers();
+    try {
+      // The trigger's viewport position is mutable so a scroll can be simulated.
+      let triggerTop = 300;
+      const pop: Rect = { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 };
+      const uni = (globalThis as { uni?: Record<string, unknown> }).uni!;
+      uni.createSelectorQuery = () => {
+        let picked = '';
+        const query = {
+          in: () => query,
+          select: (selector: string) => {
+            picked = selector.replace(/^#sn-popover-/, '').replace(/-\d+$/, '');
+            return {
+              boundingClientRect: (cb: (rect: Rect | null) => void) => {
+                if (picked === 'target') {
+                  cb({ left: 40, top: triggerTop, right: 120, bottom: triggerTop + 40, width: 80, height: 40 });
+                } else {
+                  cb(pop);
+                }
+                return query;
+              },
+            };
+          },
+          exec: (cb?: () => void) => cb?.(),
+        };
+        return query;
       };
-      return observer;
-    };
-    const w = mount(OnMp, { props: { modelValue: false } });
-    await flushPromises();
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    expect(fire, 'the follow watch must observe the trigger while open').not.toBeNull();
-    // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
+      const w = mount(OnMp, { props: { modelValue: false } });
+      await flushPromises();
+      await w.find('.sn-popover__target').trigger('tap');
+      await flushPromises();
+      // Initial fixed placement: trigger bottom 340 + arrow 9 + gap 10 = 359.
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
+      // First poll calibrates only.
+      await vi.advanceTimersByTimeAsync(140);
+      await flushPromises();
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
 
-    // First report calibrates only (even if it disagrees by a few px).
-    fire!({ boundingClientRect: { left: 40, top: 296, width: 80, height: 40, bottom: 336 } });
-    await flushPromises();
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
+      // The page scrolled 120px: the trigger moved up → the bubble re-anchors
+      // (bottom 220 → top 239) and stays open.
+      triggerTop = 180;
+      await vi.advanceTimersByTimeAsync(140);
+      await flushPromises();
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
+      expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual([]);
 
-    // The page scrolled 120px: the trigger moved up, the bubble re-anchors to
-    // it (bottom 220 → top 239) and stays open.
-    fire!({ boundingClientRect: { left: 40, top: 180, width: 80, height: 40, bottom: 220 } });
-    await flushPromises();
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
-    expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual([]);
-
-    // Closing the bubble tears the observer down.
-    await w.find('.sn-popover__target').trigger('tap');
-    await flushPromises();
-    expect(disconnected).toBe(true);
+      // Closing stops the polling: further movement no longer re-anchors.
+      await w.find('.sn-popover__target').trigger('tap');
+      await flushPromises();
+      triggerTop = 60;
+      await vi.advanceTimersByTimeAsync(300);
+      await flushPromises();
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 239px');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   /** Same shape as `stubSelectorQuery`, but as a factory for later swaps. */

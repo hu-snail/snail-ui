@@ -501,95 +501,59 @@ function updatePosition(): void {
 
 /**
  * Mini-programs render the bubble on a `fixed` layer with viewport
- * coordinates, so a page scroll would walk the trigger away and leave the
- * bubble behind. H5 / App keep the `absolute` bubble, which rides the page
- * scroll by construction; the mini-program build restores the same behaviour
- * by re-anchoring on every trigger movement.
+ * coordinates, so a page scroll walks the trigger away and leaves the bubble
+ * behind. H5 / App keep the `absolute` bubble, which rides the scroll by
+ * construction; the mini-program build restores the same behaviour by
+ * re-anchoring the fixed bubble whenever the trigger moves.
  *
- * A component cannot listen for page scroll there, but it can watch where its
- * trigger sits: an IntersectionObserver with a dense threshold set reports the
- * trigger's viewport rect as it crosses during a scroll, and each report
- * re-solves the fixed bubble against the new rect.
+ * An IntersectionObserver cannot do this: it only reports intersection-RATIO
+ * crossings, and a trigger that stays fully inside the viewport keeps ratio 1
+ * while scrolling — it never fires (verified on device: no callbacks during a
+ * scroll). There is no page-scroll event a component can listen for either,
+ * so the bubble polls the trigger's viewport rect while it is open. A popover
+ * is short-lived, and one selector query per tick is cheap.
  */
-let followObserver: { disconnect?: () => void } | null = null;
-
-/** The last reported trigger position (jitter guard for the re-solve). */
-let followPoint: { left: number; top: number } | null = null;
-
-/** Below this movement the observer report is layout jitter, not a scroll. */
+const FOLLOW_POLL_MS = 120;
+/** Below this movement the poll result is layout jitter, not a scroll. */
 const FOLLOW_TOLERANCE = 1;
 
-interface ScrollFollowObserver {
-  relativeToViewport?: (options?: Record<string, unknown>) => ScrollFollowObserver;
-  observe?: (
-    selector: string,
-    callback: (res: { boundingClientRect?: TriggerReport | null }) => void,
-  ) => void;
-  disconnect?: () => void;
-}
-
-/** The rect fields an observer report carries (viewport px). */
-interface TriggerReport {
-  left?: number;
-  top?: number;
-  width?: number;
-  height?: number;
-  bottom?: number;
-}
+let followTimer: ReturnType<typeof setInterval> | null = null;
+/** The trigger position seen by the previous poll (movement baseline). */
+let lastFollowPoint: { left: number; top: number } | null = null;
 
 function teardownScrollFollow(): void {
-  followObserver?.disconnect?.();
-  followObserver = null;
-  followPoint = null;
+  if (followTimer !== null) {
+    clearInterval(followTimer);
+    followTimer = null;
+  }
+  lastFollowPoint = null;
 }
 
 function installScrollFollow(): void {
   teardownScrollFollow();
   if (!IS_MINI_PROGRAM) return;
-  const host = resolveUniHost<{
-    createIntersectionObserver?: (
-      component: unknown,
-      options: Record<string, unknown>,
-    ) => ScrollFollowObserver;
-  }>();
-  if (typeof host?.createIntersectionObserver !== 'function') return;
-  // Dense thresholds: a crossing roughly every 2px of movement on a 40px
-  // trigger, so the bubble tracks the trigger closely while scrolling.
-  const thresholds: number[] = [];
-  for (let i = 0; i <= 20; i += 1) thresholds.push(i / 20);
-  try {
-    const observer = host.createIntersectionObserver(instance?.proxy, { thresholds });
-    observer.relativeToViewport?.({});
-    observer.observe?.('#' + targetId, (res) => {
-      if (!showPopover.value) return;
-      const rect = res?.boundingClientRect;
-      if (rect === null || rect === undefined) return;
-      const top = rect.top ?? 0;
-      const left = rect.left ?? 0;
-      // The first report calibrates only — it can disagree with the captured
-      // measurement by a hair (coordinate conventions, timing) and must not
-      // nudge the bubble.
-      if (followPoint === null) {
-        followPoint = { left, top };
+  followTimer = setInterval(() => {
+    if (!showPopover.value) return;
+    void measureRect(targetId).then((trigger) => {
+      if (trigger === null || !showPopover.value) return;
+      const point = { left: trigger.left, top: trigger.top };
+      // The first poll calibrates only — it can disagree with the captured
+      // measurement by a hair and must not nudge the bubble.
+      if (lastFollowPoint === null) {
+        lastFollowPoint = point;
         return;
       }
-      if (Math.abs(left - followPoint.left) <= FOLLOW_TOLERANCE && Math.abs(top - followPoint.top) <= FOLLOW_TOLERANCE) {
+      if (
+        Math.abs(point.left - lastFollowPoint.left) <= FOLLOW_TOLERANCE &&
+        Math.abs(point.top - lastFollowPoint.top) <= FOLLOW_TOLERANCE
+      ) {
         return;
       }
-      followPoint = { left, top };
-      position.moveTrigger({
-        left,
-        top,
-        width: rect.width ?? 0,
-        height: rect.height ?? 0,
-        bottom: rect.bottom ?? top + (rect.height ?? 0),
-      });
+      lastFollowPoint = point;
+      position.moveTrigger(trigger);
       solve();
     });
-    followObserver = observer;
-  } catch {
-    /* 观察器不可用时气泡保持在打开时的位置 */
-  }
+  }, FOLLOW_POLL_MS);
 }
 
 watch(
