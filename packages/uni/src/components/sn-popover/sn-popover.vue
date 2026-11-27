@@ -775,6 +775,13 @@ defineExpose({ open, close, updatePosition });
   border-style: solid;
   border-color: transparent;
   pointer-events: none;
+  /* Paint ABOVE the bubble container (z 500): the container's background and
+   * its drop shadow used to cover the protruding triangle, washing the seam
+   * region in translucent shadow — the callout read as two detached pieces
+   * (user-reported: top / right / left arrows "not one piece" while the
+   * geometry measured a correct 1px overlap). One step above the container's
+   * layer puts the junction back in white-on-white. */
+  z-index: 501;
   /* The arrow lives OUTSIDE the fade transition (so no ancestor clip can eat
    * it), which means it no longer inherits the transition's visibility — it
    * must fade with the bubble on its own, or a closed popover leaves a stray
