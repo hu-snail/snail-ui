@@ -503,10 +503,16 @@ defineExpose({ open, close, updatePosition });
          shown. It carries no placement styles. -->
     <view :id="posId" class="sn-popover__pos sn-popover__pos--hidden" aria-hidden="true">
       <view :class="['sn-popover__container', props.customPop]">
-        <view v-if="!$slots.content && mode === 'normal'" class="sn-popover__inner">
+        <view
+          v-if="!$slots.content && mode === 'normal'"
+          :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+        >
           <text class="sn-popover__text">{{ normalText }}</text>
         </view>
-        <view v-if="!$slots.content && mode === 'menu' && isMenuContent" class="sn-popover__menu">
+        <view
+          v-if="!$slots.content && mode === 'menu' && isMenuContent"
+          :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+        >
           <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
             <SnIcon v-if="item.iconClass" :icon="item.iconClass" custom-class="sn-popover__icon" />
             <text class="sn-popover__text">{{ item.content }}</text>
@@ -546,10 +552,17 @@ defineExpose({ open, close, updatePosition });
       <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
         <view :id="contentId" :class="['sn-popover__container', props.customPop]" role="dialog">
           <slot name="content">
-            <view v-if="mode === 'normal'" class="sn-popover__inner">
+            <view
+              v-if="mode === 'normal'"
+              :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+            >
               <text class="sn-popover__text">{{ normalText }}</text>
             </view>
-            <view v-if="mode === 'menu'" class="sn-popover__menu" role="menu">
+            <view
+              v-if="mode === 'menu'"
+              :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+              role="menu"
+            >
               <view
                 v-for="(item, index) in menuItems"
                 :key="index"
@@ -711,6 +724,20 @@ defineExpose({ open, close, updatePosition });
   color: var(--sn-mp-color-text-secondary);
   color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
   white-space: nowrap;
+}
+
+/*
+ * Reserve space for the absolutely-positioned close button. The close box is
+ * icon 28rpx + 2 × 16rpx padding = 60rpx wide and takes no layout space, so
+ * without this the nowrap body ran underneath the × (user-reported overlap).
+ * 72rpx leaves a 12rpx breathing gap; literal rpx keeps it MP-safe.
+ */
+.sn-popover__inner--with-close {
+  padding-right: 72rpx;
+}
+
+.sn-popover__menu--with-close {
+  padding-right: 72rpx;
 }
 
 /*

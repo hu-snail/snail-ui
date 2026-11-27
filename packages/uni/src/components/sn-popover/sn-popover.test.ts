@@ -329,6 +329,33 @@ describe('sn-popover', () => {
       expect(shownBubble(w)!.find('.sn-popover__close').exists()).toBe(false);
     });
 
+    it('reserves room for the close button — the body never runs under the ×', () => {
+      // §103 regression (user report: the absolutely-positioned close sat on
+      // top of the last characters). The body reserves a right gutter while
+      // showClose is on — the hidden measurement copy included, so the bubble
+      // width and the shown layout agree.
+      const withClose = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      expect(
+        shownBubble(withClose)!.find('.sn-popover__inner').classes(),
+      ).toContain('sn-popover__inner--with-close');
+      expect(
+        withClose.find('.sn-popover__pos--hidden .sn-popover__inner').classes(),
+      ).toContain('sn-popover__inner--with-close');
+
+      const withoutClose = mount(SnPopover, { props: { modelValue: true } });
+      expect(
+        shownBubble(withoutClose)!.find('.sn-popover__inner').classes(),
+      ).not.toContain('sn-popover__inner--with-close');
+
+      // The menu body gets the same gutter.
+      const menuClose = mount(SnPopover, {
+        props: { modelValue: true, showClose: true, mode: 'menu', content: menu },
+      });
+      expect(shownBubble(menuClose)!.find('.sn-popover__menu').classes()).toContain(
+        'sn-popover__menu--with-close',
+      );
+    });
+
     it('exposes an imperative open / close pair', async () => {
       const w = mount(SnPopover, { props: { modelValue: false } });
       const vm = w.vm as unknown as { open(): void; close(): void };
