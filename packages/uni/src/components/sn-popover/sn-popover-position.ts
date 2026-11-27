@@ -47,8 +47,10 @@ export interface PopoverRect {
 /** Arrow leg (px). */
 export const POP_ARROW_SIZE = 9;
 
-/** Gap between the trigger and the bubble (px). */
-export const POP_GAP = 5;
+/** Gap between the arrow apex and the trigger (px). Roomier than the
+ * reference's tight 5px: the arrow reads as a detached pointer instead of
+ * touching the trigger edge, and -start/-end labels stop crowding it. */
+export const POP_GAP = 10;
 
 /** Half this size is the smallest trigger edge a centred arrow can hit. */
 const MIN_CENTERED_EDGE = 17;

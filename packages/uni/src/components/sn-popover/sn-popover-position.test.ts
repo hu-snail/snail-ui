@@ -43,37 +43,37 @@ function styles(
 
 describe('sn-popover-position', () => {
   describe('constants', () => {
-    it('keeps the reference geometry — 9px arrow and the 5px bubble gap', () => {
+    it('keeps the tuned geometry — 9px arrow and the 10px bubble gap (roomier than wd-popover by design)', () => {
       expect(POP_ARROW_SIZE).toBe(9);
-      expect(POP_GAP).toBe(5);
+      expect(POP_GAP).toBe(10);
     });
   });
 
   describe('init', () => {
     it('captures the trigger and pop measurements', () => {
       const below = styles('bottom');
-      // top = arrow 9 + trigger height 44 + gap 5 = 58 (relative to the root).
-      expect(below.popStyle).toContain('top: 58px');
+      // top = arrow 9 + trigger height 44 + gap 10 = 63 (relative to the root).
+      expect(below.popStyle).toContain('top: 63px');
     });
   });
 
   describe('control — centre family', () => {
     it('centres the bubble on the trigger for every direction', () => {
       const below = styles('bottom');
-      // top = arrow 9 + trigger height 44 + gap 5 = 58 (relative to the root).
-      expect(below.popStyle).toBe('left: 60px; top: 58px; transform: translateX(-50%);');
+      // top = arrow 9 + trigger height 44 + gap 10 = 63 (relative to the root).
+      expect(below.popStyle).toBe('left: 60px; top: 63px; transform: translateX(-50%);');
       expect(below.arrowStyle).toBe('left: 50%;');
 
       const above = styles('top');
-      expect(above.popStyle).toBe('left: 60px; bottom: 58px; transform: translateX(-50%);');
+      expect(above.popStyle).toBe('left: 60px; bottom: 63px; transform: translateX(-50%);');
     });
 
     it('centres vertically for left / right', () => {
       expect(styles('left').popStyle).toBe(
-        'right: 134px; top: 22px; transform: translateY(-50%);',
+        'right: 139px; top: 22px; transform: translateY(-50%);',
       );
       expect(styles('right').popStyle).toBe(
-        'left: 134px; top: 22px; transform: translateY(-50%);',
+        'left: 139px; top: 22px; transform: translateY(-50%);',
       );
       expect(styles('right').arrowStyle).toBe('top: 50%;');
     });
@@ -95,9 +95,9 @@ describe('sn-popover-position', () => {
     it('drops the arrow gap from the placement when the arrow is hidden', () => {
       const position = createPopoverPosition(false);
       position.init(trigger, pop);
-      // top = 0 (no arrow) + trigger height 44 + gap 5 = 49.
+      // top = 0 (no arrow) + trigger height 44 + gap 10 = 54.
       expect(position.control('bottom', 0).popStyle).toBe(
-        'left: 60px; top: 49px; transform: translateX(-50%);',
+        'left: 60px; top: 54px; transform: translateX(-50%);',
       );
     });
   });
@@ -105,7 +105,7 @@ describe('sn-popover-position', () => {
   describe('control — -start / -end alignment', () => {
     it('aligns top/bottom -start to the trigger start edge', () => {
       const start = styles('bottom-start');
-      expect(start.popStyle).toBe('left: 0px; top: 58px;');
+      expect(start.popStyle).toBe('left: 0px; top: 63px;');
       // pop (200) >= trigger (120) → arrow at trigger width / 2.
       expect(start.arrowStyle).toBe('left: 60px;');
     });
@@ -113,7 +113,7 @@ describe('sn-popover-position', () => {
     it('aligns top/bottom -end to the trigger end edge', () => {
       const end = styles('bottom-end');
       // Only the ARROW carries the translate here — the pop is flush to the edge.
-      expect(end.popStyle).toBe('right: 0px; top: 58px;');
+      expect(end.popStyle).toBe('right: 0px; top: 63px;');
       expect(end.arrowStyle).toBe('right: 60px; transform: translateX(50%);');
     });
 
@@ -141,8 +141,8 @@ describe('sn-popover-position', () => {
 
   describe('control — offset', () => {
     it('folds a number offset on both axes', () => {
-      expect(styles('bottom-start', 10).popStyle).toBe('left: 10px; top: 58px;');
-      expect(styles('left-start', 10).popStyle).toBe('right: 134px; top: 10px;');
+      expect(styles('bottom-start', 10).popStyle).toBe('left: 10px; top: 63px;');
+      expect(styles('left-start', 10).popStyle).toBe('right: 139px; top: 10px;');
     });
 
     it('counter-shifts the arrow by the offset so it keeps pointing at the trigger', () => {
@@ -153,28 +153,28 @@ describe('sn-popover-position', () => {
     });
 
     it('accepts an array offset and defaults y to the first element', () => {
-      expect(styles('bottom-start', [4, 8]).popStyle).toBe('left: 4px; top: 58px;');
+      expect(styles('bottom-start', [4, 8]).popStyle).toBe('left: 4px; top: 63px;');
       expect(styles('bottom-start', [4, 8]).arrowStyle).toBe('left: 56px;');
-      expect(styles('left-start', [4, 8]).popStyle).toBe('right: 134px; top: 8px;');
+      expect(styles('left-start', [4, 8]).popStyle).toBe('right: 139px; top: 8px;');
       expect(styles('left-start', [4, 8]).arrowStyle).toBe('top: 14px;');
       // y defaults to x (4) → arrow at trigger height / 2 − 4.
-      expect(styles('left-start', [4]).popStyle).toBe('right: 134px; top: 4px;');
+      expect(styles('left-start', [4]).popStyle).toBe('right: 139px; top: 4px;');
       expect(styles('left-start', [4]).arrowStyle).toBe('top: 18px;');
     });
 
     it('accepts an object offset', () => {
-      expect(styles('bottom-start', { x: 6, y: 3 }).popStyle).toBe('left: 6px; top: 58px;');
-      expect(styles('left-start', { x: 6, y: 3 }).popStyle).toBe('right: 134px; top: 3px;');
+      expect(styles('bottom-start', { x: 6, y: 3 }).popStyle).toBe('left: 6px; top: 63px;');
+      expect(styles('left-start', { x: 6, y: 3 }).popStyle).toBe('right: 139px; top: 3px;');
       expect(styles('left-start', { x: 6, y: 3 }).arrowStyle).toBe('top: 19px;');
     });
 
     it('compensates for a trigger narrower than 34px', () => {
       const tiny: PopoverRect = { ...trigger, width: 20 };
       // trigger width / 2 = 10 → (10 - 17 > 0 ? 0 : 10 - 25) = -15.
-      expect(styles('bottom-start', 0, pop, tiny).popStyle).toBe('left: -15px; top: 58px;');
+      expect(styles('bottom-start', 0, pop, tiny).popStyle).toBe('left: -15px; top: 63px;');
       // horizontalY (22) is still ≥ 17, so the left / right families shift by 0;
-      // horizontalX = trigger width 20 + arrow 9 + gap 5.
-      expect(styles('left-start', 0, pop, tiny).popStyle).toBe('right: 34px; top: 0px;');
+      // horizontalX = trigger width 20 + arrow 9 + gap 10.
+      expect(styles('left-start', 0, pop, tiny).popStyle).toBe('right: 39px; top: 0px;');
     });
   });
 
@@ -184,7 +184,7 @@ describe('sn-popover-position', () => {
       position.init(trigger, pop);
       position.control('bottom-start', 0);
       expect(position.updatePosition({ ...pop, width: 80 })).toBe(true);
-      expect(position.popStyle.value).toBe('left: 0px; top: 58px;');
+      expect(position.popStyle.value).toBe('left: 0px; top: 63px;');
       expect(position.arrowStyle.value).toBe('left: 55px;');
     });
 
@@ -212,34 +212,34 @@ describe('sn-popover-position', () => {
 
     it('places the bubble below the trigger in viewport coordinates', () => {
       const below = v('bottom');
-      // top = trigger bottom 244 + arrow 9 + gap 5 = 258; left = trigger centre 160 − pop half 100.
-      expect(below.popStyle).toBe('left: 60px; top: 258px;');
+      // top = trigger bottom 244 + arrow 9 + gap 10 = 263; left = trigger centre 160 − pop half 100.
+      expect(below.popStyle).toBe('left: 60px; top: 263px;');
       expect(below.arrowStyle).toBe('left: 50%;');
     });
 
     it('places the bubble above, left and right of the trigger', () => {
-      // top family: trigger top 200 − arrow 9 − gap 5 − pop height 100.
-      expect(v('top').popStyle).toBe('left: 60px; top: 86px;');
-      // right family would start at 220 + 9 + 5 = 234, but a 200px bubble then
-      // ends at 434 > 375 — and the left side has no room either (−114), so it
+      // top family: trigger top 200 − arrow 9 − gap 10 − pop height 100.
+      expect(v('top').popStyle).toBe('left: 60px; top: 81px;');
+      // right family would start at 220 + 9 + 10 = 239, but a 200px bubble then
+      // ends at 439 > 375 — and the left side has no room either (−119), so it
       // stays on the right and is clamped to the viewport: 375 − 200 = 175.
       expect(v('right').popStyle).toBe('left: 175px; top: 172px;');
     });
 
     it('places a narrow bubble to the right without clamping', () => {
-      // The same trigger, a bubble that fits on the right: 220 + 9 + 5 = 234,
-      // ending at 234 + 100 = 334 < 375.
+      // The same trigger, a bubble that fits on the right: 220 + 9 + 10 = 239,
+      // ending at 239 + 100 = 339 < 375.
       const position = createPopoverPosition(true);
       position.init(trigger, { ...pop, width: 100 });
       const r = position.controlViewport('right', 0, viewport);
-      expect(r.popStyle).toBe('left: 234px; top: 172px;');
+      expect(r.popStyle).toBe('left: 239px; top: 172px;');
       expect(r.placement).toBe('right');
     });
 
     describe('flip when the preferred side has no room', () => {
       // Trigger hugging the RIGHT edge of a 375px viewport (right edge at 300).
-      // Bubble to its right: 300 + arrow 9 + gap 5 = 314 → ends at 434, no room.
-      // Bubble to its left: 220 − 9 − 5 − 120 = 86 → ends at 206, fits.
+      // Bubble to its right: 300 + arrow 9 + gap 10 = 319 → ends at 439, no room.
+      // Bubble to its left: 220 − 9 − 10 − 120 = 81 → ends at 201, fits.
       const nearRight: PopoverRect = { left: 220, top: 200, width: 80, height: 44, bottom: 244 };
       const narrow = { ...pop, width: 120 };
       const solve = (placement: Parameters<ReturnType<typeof createPopoverPosition>['control']>[0]) => {
@@ -250,9 +250,9 @@ describe('sn-popover-position', () => {
 
       it('flips right → left when the right side is off-screen and the left fits', () => {
         const r = solve('right');
-        // Right would start at 300 + 14 = 314 and end at 434 → off-screen.
-        // Flipped: left of the trigger, 220 − 9 − 5 − 120 = 86.
-        expect(r.popStyle).toBe('left: 86px; top: 172px;');
+        // Right would start at 300 + 19 = 319 and end at 439 → off-screen.
+        // Flipped: left of the trigger, 220 − 9 − 10 − 120 = 81.
+        expect(r.popStyle).toBe('left: 81px; top: 172px;');
         // The arrow follows the flip: it now points RIGHT at the trigger.
         expect(r.placement).toBe('left');
         expect(r.arrowClass).toBe('sn-popover__arrow sn-popover__arrow-right');
@@ -281,15 +281,15 @@ describe('sn-popover-position', () => {
     });
 
     it('aligns -start / -end to the trigger edges and keeps the arrow on the trigger', () => {
-      expect(v('bottom-start').popStyle).toBe('left: 100px; top: 258px;');
+      expect(v('bottom-start').popStyle).toBe('left: 100px; top: 263px;');
       expect(v('bottom-start').arrowStyle).toBe('left: 60px;');
       // -end: the pop's right edge meets the trigger's right edge (220) → 220 − 200.
-      expect(v('bottom-end').popStyle).toBe('left: 20px; top: 258px;');
+      expect(v('bottom-end').popStyle).toBe('left: 20px; top: 263px;');
       expect(v('bottom-end').arrowStyle).toBe('right: 60px; transform: translateX(50%);');
     });
 
     it('folds the offset in and shifts the arrow back onto the trigger', () => {
-      expect(v('bottom-start', 10).popStyle).toBe('left: 110px; top: 258px;');
+      expect(v('bottom-start', 10).popStyle).toBe('left: 110px; top: 263px;');
       expect(v('bottom-start', 10).arrowStyle).toBe('left: 50px;');
       // Vertical offset rides the cross axis: centre 222 − 50 + 3 = 175.
       expect(v('left-start', { x: 6, y: 3 }).popStyle).toBe('left: 0px; top: 203px;');
@@ -298,7 +298,7 @@ describe('sn-popover-position', () => {
     it('drops the arrow gap when the arrow is hidden', () => {
       const position = createPopoverPosition(false);
       position.init(trigger, pop);
-      expect(position.controlViewport('bottom', 0, viewport).popStyle).toBe('left: 60px; top: 249px;');
+      expect(position.controlViewport('bottom', 0, viewport).popStyle).toBe('left: 60px; top: 254px;');
     });
   });
 
@@ -311,14 +311,14 @@ describe('sn-popover-position', () => {
       const r = computeViewportPlacement('bottom', nearEdge, { width: 200, height: 100 }, viewport);
       // Clamped to x = 0; the arrow moves right so it still sits under the trigger centre (70).
       expect(r.left).toBe(0);
-      expect(r.top).toBe(258);
+      expect(r.top).toBe(263);
       expect(r.arrowCenter).toBe(70);
       expect(r.clamped).toBe(true);
     });
 
     it('leaves a placement that already fits untouched', () => {
       const r = computeViewportPlacement('bottom', trigger, { width: 200, height: 100 }, viewport);
-      expect(r).toEqual({ left: 60, top: 258, arrowCenter: 100, placement: 'bottom', clamped: false });
+      expect(r).toEqual({ left: 60, top: 263, arrowCenter: 100, placement: 'bottom', clamped: false });
     });
 
     it('keeps a bubble taller than the viewport anchored at the top', () => {
@@ -330,7 +330,7 @@ describe('sn-popover-position', () => {
       // No viewport yet: no flip and no clamp — a null viewport must not be
       // read as a zero-sized one, which would pin every bubble to the origin.
       const r = computeViewportPlacement('bottom', trigger, { width: 200, height: 100 }, null);
-      expect(r).toEqual({ left: 60, top: 258, arrowCenter: 100, placement: 'bottom', clamped: false });
+      expect(r).toEqual({ left: 60, top: 263, arrowCenter: 100, placement: 'bottom', clamped: false });
     });
   });
 });

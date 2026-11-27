@@ -703,7 +703,9 @@ defineExpose({ open, close, updatePosition });
 
 .sn-popover__inner {
   position: relative;
-  padding: var(--sn-mp-spacing-4);
+  /* Roomier than the reference's loose padding: the body reads better with
+   * clear breathing room around the text (user-reported crowding). */
+  padding: var(--sn-mp-spacing-5);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
   color: var(--sn-mp-color-text-secondary);
@@ -841,7 +843,9 @@ defineExpose({ open, close, updatePosition });
   position: absolute;
   top: 0;
   right: 0;
-  padding: var(--sn-mp-spacing-1);
+  /* Clear of the corner and of the text: the 4rpx hug glued the × to the
+   * rounded edge (user-reported crowding). */
+  padding: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-secondary);
 }
 

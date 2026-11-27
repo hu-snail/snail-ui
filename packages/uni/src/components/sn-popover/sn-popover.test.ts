@@ -188,9 +188,9 @@ describe('sn-popover', () => {
       await flushPromises();
       await w.find('.sn-popover__target').trigger('tap');
       await flushPromises();
-      // bottom: left = trigger width / 2, top = arrow 9 + height 44 + gap 5.
+      // bottom: left = trigger width / 2, top = arrow 9 + height 44 + gap 10.
       expect(shownBubble(w)!.attributes('style') ?? '').toContain('left: 60px');
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 58px');
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 63px');
     });
 
     it('follows the placement prop and points the arrow with it', async () => {
@@ -202,7 +202,7 @@ describe('sn-popover', () => {
       await flushPromises();
       await w.find('.sn-popover__target').trigger('tap');
       await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('bottom: 58px');
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('bottom: 63px');
       const arrow = shownBubble(w)!.find('.sn-popover__arrow');
       // Bubble above → the arrow sits on the bottom edge → apex down.
       expect(arrow.classes()).toContain('sn-popover__arrow-down');
@@ -250,7 +250,7 @@ describe('sn-popover', () => {
       await flushPromises();
       await w.setProps({ placement: 'left' });
       await flushPromises();
-      expect(shownBubble(w)!.attributes('style') ?? '').toContain('right: 134px');
+      expect(shownBubble(w)!.attributes('style') ?? '').toContain('right: 139px');
       expect(shownBubble(w)!.find('.sn-popover__arrow').classes()).toContain('sn-popover__arrow-right');
     });
   });
@@ -697,9 +697,9 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     const bubble = shownBubble(w)!;
     expect(bubble.classes()).toContain('sn-popover__pos--fixed');
     const style = bubble.attributes('style') ?? '';
-    // bottom: top = trigger bottom 340 + arrow 9 + gap 5; left = trigger centre 80 − pop half 80.
+    // bottom: top = trigger bottom 340 + arrow 9 + gap 10; left = trigger centre 80 − pop half 80.
     expect(style).toContain('left: 0px');
-    expect(style).toContain('top: 354px');
+    expect(style).toContain('top: 359px');
   });
 
   it('follows the trigger after the page scrolled (viewport coords are re-read on open)', async () => {
@@ -714,8 +714,8 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     });
     await w.find('.sn-popover__target').trigger('tap');
     await flushPromises();
-    // top = the NEW trigger bottom 140 + 9 + 5.
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 154px');
+    // top = the NEW trigger bottom 140 + 9 + 10.
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 159px');
   });
 
   it('flips to the opposite side when the preferred side is off-screen', async () => {
@@ -731,8 +731,8 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     await w.find('.sn-popover__target').trigger('tap');
     await flushPromises();
     const bubble = shownBubble(w)!;
-    // Flipped to the LEFT of the trigger: 300 − 9 − 5 − 160 = 126.
-    expect(bubble.attributes('style') ?? '').toContain('left: 126px');
+    // Flipped to the LEFT of the trigger: 300 − 9 − 10 − 160 = 121.
+    expect(bubble.attributes('style') ?? '').toContain('left: 121px');
     // The arrow follows the flip: it now points RIGHT, at the trigger.
     expect(bubble.find('.sn-popover__arrow').classes()).toContain('sn-popover__arrow-right');
   });
@@ -747,7 +747,7 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     await w.find('.sn-popover__target').trigger('tap');
     await flushPromises();
     // No viewport → no clamp: the raw viewport placement is used as is.
-    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 354px');
+    expect(shownBubble(w)!.attributes('style') ?? '').toContain('top: 359px');
   });
 
   /** Same shape as `stubSelectorQuery`, but as a factory for later swaps. */
