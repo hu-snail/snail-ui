@@ -177,6 +177,13 @@ const emit = defineEmits<{
 
 const instance = getCurrentInstance();
 const instanceId = instance?.uid ?? 0;
+/**
+ * Close glyph size. SnIcon sizes its BOX from the `size` prop (default 32px),
+ * not from a CSS font-size on its wrapper — the class alone left a 32px X
+ * swallowing the bubble (user-reported). Single-hop consumption of the mp
+ * size token (MP contract rule 2).
+ */
+const CLOSE_ICON_SIZE = 'var(--sn-mp-icon-size-small)';
 /** Per-instance node ids: several popovers on one page must not share nodes. */
 const targetId = `sn-popover-target-${instanceId}`;
 const posId = `sn-popover-pos-${instanceId}`;
@@ -564,7 +571,7 @@ defineExpose({ open, close, updatePosition });
             aria-label="close"
             @tap.stop="close"
           >
-            <SnIcon :icon="XIcon" custom-class="sn-popover__close-icon" />
+            <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" custom-class="sn-popover__close-icon" />
           </view>
         </view>
       </SnTransition>

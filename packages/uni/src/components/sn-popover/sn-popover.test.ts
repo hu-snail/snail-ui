@@ -312,6 +312,18 @@ describe('sn-popover', () => {
       expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
     });
 
+    it('sizes the close glyph explicitly — never the 32px SnIcon default', () => {
+      // §103 regression (user report: the X swallowed the bubble body).
+      // SnIcon sizes its BOX from the `size` prop (default 32px); a CSS
+      // font-size on the wrapper cannot shrink it.
+      const w = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      const icon = shownBubble(w)!.find('.sn-popover__close-icon');
+      expect(icon.exists()).toBe(true);
+      const style = icon.attributes('style') ?? '';
+      expect(style).toContain('width: var(--sn-mp-icon-size-small)');
+      expect(style).toContain('height: var(--sn-mp-icon-size-small)');
+    });
+
     it('hides the close button by default', () => {
       const w = mount(SnPopover, { props: { modelValue: true } });
       expect(shownBubble(w)!.find('.sn-popover__close').exists()).toBe(false);
