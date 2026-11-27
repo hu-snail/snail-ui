@@ -531,10 +531,18 @@ interface ScrollWatchObserver {
  */
 let scrollBaseline: { left: number; top: number } | null = null;
 
+/**
+ * Consecutive out-of-tolerance reports seen so far. One lone report can be a
+ * transient layout artifact (the observer fires while the page settles right
+ * after opening); a real scroll keeps crossing thresholds and reports again.
+ */
+let scrollMovedReports = 0;
+
 function teardownScrollWatch(): void {
   scrollWatch?.disconnect?.();
   scrollWatch = null;
   scrollBaseline = null;
+  scrollMovedReports = 0;
 }
 
 function installScrollWatch(): void {
@@ -565,7 +573,14 @@ function installScrollWatch(): void {
       }
       const movedX = Math.abs(point.left - scrollBaseline.left);
       const movedY = Math.abs(point.top - scrollBaseline.top);
-      if (movedX > SCROLL_CLOSE_TOLERANCE || movedY > SCROLL_CLOSE_TOLERANCE) close();
+      if (movedX > SCROLL_CLOSE_TOLERANCE || movedY > SCROLL_CLOSE_TOLERANCE) {
+        // A real scroll produces several crossings in a row; a single stray
+        // report (settling layout) must not dismiss the bubble.
+        scrollMovedReports += 1;
+        if (scrollMovedReports >= 2) close();
+      } else {
+        scrollMovedReports = 0;
+      }
     });
     scrollWatch = observer;
   } catch {

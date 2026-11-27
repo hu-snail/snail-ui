@@ -874,8 +874,14 @@ describe('sn-popover (mini-program host, fixed layer)', () => {
     await flushPromises();
     expect((w.emitted('update:modelValue') ?? []).filter((a) => a[0] === false)).toEqual([]);
 
-    // The page scrolled 120px → the trigger moved → the bubble closes.
+    // A single out-of-tolerance report is not enough (transient layout noise);
+    // a real scroll reports again at the next threshold crossing.
     fire!({ boundingClientRect: { left: 40, top: 180 } });
+    await flushPromises();
+    expect((w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false)).toEqual([]);
+
+    // The page scrolled 120px and keeps moving → the second report closes it.
+    fire!({ boundingClientRect: { left: 40, top: 150 } });
     await flushPromises();
     const closes = (w.emitted('update:modelValue') ?? []).filter((args) => args[0] === false);
     expect(closes.length).toBeGreaterThan(0);
