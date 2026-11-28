@@ -29,11 +29,17 @@
 - `arrowShape="rounded"` swaps the triangle for a 12px rounded square rotated
   45° inline, centred on the anchored edge (it straddles it).
 - A set `borderColor` draws a 1px border on the body AND an outline triangle
-  (z 499, protrudes 10px vs the fill's 8px) that carries the colour around
-  the sharp arrow — one closed outline. The fill triangle deepens 1px
-  (`sn-popover--bordered`) so its box clears the border strip: at fractional
-  zooms the strip's antialiased lower edge would otherwise ghost across the
-  arrow mouth as a faint grey line. Rounded tips keep a body-only border.
+  that carries the colour around the sharp arrow — one closed outline. The
+  outline's full geometry is INLINE (`arrowOutlineStyle`: 11px legs, 3px
+  offset — a ~2.1px slant band that survives 3x-DPR rounding), immune to MP
+  specificity and the uni-x combinator dropper. The fill triangle deepens
+  1px (`sn-popover--bordered`) so its box clears the border strip: at
+  fractional zooms the strip's antialiased lower edge would otherwise ghost
+  across the arrow mouth as a faint grey line. Both triangles live in one
+  `.sn-popover__arrow-group` that owns the fade — the triangles never fade
+  on their own, so the tip's composite colour never shifts mid-animation
+  (a translucent white fill over the blue outline read as "blue turning
+  white"). Rounded tips keep a body-only border.
 - The after-enter leg re-measures the SHOWN bubble (`updatePosition`) and
   re-derives the styles only when its natural size changed — slotted / async
   content may settle to a different size than the hidden copy predicted.

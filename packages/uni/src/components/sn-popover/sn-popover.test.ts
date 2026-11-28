@@ -163,18 +163,22 @@ describe('sn-popover', () => {
       expect(shownBubble(without)!.find('.sn-popover__arrow').exists()).toBe(false);
     });
 
-    it('gates the arrow opacity on the shown state — no stray triangle when closed', () => {
-      // §103 regression: the arrow sits outside the fade transition, so it
-      // must carry its own visibility gate.
+    it('gates the arrow GROUP opacity on the shown state — no stray triangle when closed', () => {
+      // §103 regression: the arrow group sits outside the fade transition, so
+      // it must carry its own visibility gate.
       const closed = mount(SnPopover, { props: { modelValue: false, content: 'x' } });
-      const closedArrow = shownBubble(closed)!.find('.sn-popover__arrow');
-      expect(closedArrow.exists()).toBe(true);
-      expect(closedArrow.classes()).not.toContain('sn-popover__arrow--shown');
+      const closedGroup = shownBubble(closed)!.find('.sn-popover__arrow-group');
+      expect(closedGroup.exists()).toBe(true);
+      expect(closedGroup.classes()).not.toContain('sn-popover__arrow-group--shown');
+      // The triangles live inside the group and never fade on their own —
+      // a translucent white fill over the blue outline is what read as the
+      // arrow "turning from blue to white" mid-animation (user-reported).
+      expect(closedGroup.find('.sn-popover__arrow').exists()).toBe(true);
 
       const open = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
-      expect(shownBubble(open)!.find('.sn-popover__arrow').classes()).toContain(
-        'sn-popover__arrow--shown',
-      );
+      const group = shownBubble(open)!.find('.sn-popover__arrow-group');
+      expect(group.classes()).toContain('sn-popover__arrow-group--shown');
+      expect(group.find('.sn-popover__arrow').classes()).not.toContain('sn-popover__arrow--shown');
     });
   });
 
@@ -443,16 +447,33 @@ describe('sn-popover', () => {
       expect(shownBubble(rounded)!.find('.sn-popover__arrow-outline').exists()).toBe(false);
     });
 
-    it('paints the outline triangle below the container and 2px past the fill', () => {
+    it('paints the outline triangle 3px past the fill via inline geometry', async () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
+      });
+      await flushPromises();
+      const outline = shownBubble(w)!.find('.sn-popover__arrow-outline');
+      // 11px protrusion − 8px fill = the ~2.1px slant band continuing the
+      // border — 3px horizontal so 3x-DPR mini-program rounding cannot thin
+      // it below the body border's weight (user-reported: too thin).
+      // Read the PARSED inline declaration (browsers normalise longhands
+      // into the border-width shorthand — string matching would be
+      // environment-dependent). bottom placement → apex-up triangle →
+      // legs bottom/right/left, top 0.
+      const el = outline.element as HTMLElement;
+      expect(el.style.borderTopWidth).toBe('0px');
+      expect(el.style.borderBottomWidth).toBe('11px');
+      expect(el.style.borderRightWidth).toBe('11px');
+      expect(el.style.borderLeftWidth).toBe('11px');
+      // bottom placement → apex-up triangle → coloured border-bottom.
+      expect(el.style.borderBottomColor).toBe('#2563eb');
+      expect(el.style.top).toBe('-11px');
+      // The geometry rides INLINE: stylesheet forces (MP specificity on the
+      // equal-specificity fill-deepening rules that match this element too,
+      // and the uni-x combinator dropper) cannot clamp it back.
       const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
-      const rule = (selector: string) =>
-        source.slice(source.indexOf(selector), source.indexOf('}', source.indexOf(selector)));
-      const base = rule('.sn-popover__arrow-outline {');
-      expect(base).toContain('z-index: 499');
-      // 10px protrusion − 8px fill = the ~1.4px slant band continuing the border.
-      const down = rule('.sn-popover__arrow-outline.sn-popover__arrow-down {');
-      expect(down).toContain('bottom: -10px');
-      expect(down).toContain('border-top-width: 10px');
+      expect(source).not.toContain('.sn-popover__arrow-outline.sn-popover__arrow-down {');
+      expect(source).toContain(':style="arrowOutlineStyle"');
     });
 
     it('deepens the bordered fill triangle so the border never ghosts across the mouth', async () => {
@@ -776,11 +797,12 @@ describe('interaction', () => {
       expect(w.find('.sn-popover__target').attributes('aria-expanded')).toBe('true');
     });
 
-    it('gives the bubble a dialog role and the arrow aria-hidden', () => {
+    it('gives the bubble a dialog role and the arrow layer aria-hidden', () => {
       const w = mount(SnPopover, { props: { modelValue: true } });
       const bubble = shownBubble(w)!;
       expect(bubble.find('.sn-popover__container').attributes('role')).toBe('dialog');
-      expect(bubble.find('.sn-popover__arrow').attributes('aria-hidden')).toBe('true');
+      // The decorative triangles hide behind ONE marker on their group.
+      expect(bubble.find('.sn-popover__arrow-group').attributes('aria-hidden')).toBe('true');
     });
 
     it('tags the menu list and its rows', () => {
@@ -968,23 +990,32 @@ describe('interaction', () => {
       expect(block).toContain('white-space: nowrap');
     });
 
-    it('fades the arrow itself — no stray triangle while the bubble is closed', () => {
-      // §103 regression: the arrow is a sibling of the fade transition (so
-      // ancestor clips cannot eat it), which also means it no longer inherits
-      // the transition's visibility — without its own gate a closed popover
-      // left 14 floating triangles over the demo page.
-      const block = style.slice(
+    it('fades the arrow GROUP as one unit — the tip colour never shifts mid-animation', () => {
+      // §103 regression: the arrow group is a sibling of the fade transition
+      // (so ancestor clips cannot eat it), which also means it gates its own
+      // visibility — without that a closed popover left floating triangles
+      // over the demo page.
+      const groupBlock = style.slice(
+        style.indexOf('.sn-popover__arrow-group {'),
+        style.indexOf('}', style.indexOf('.sn-popover__arrow-group {')),
+      );
+      expect(groupBlock).toContain('opacity: 0');
+      expect(groupBlock).toContain('transition: opacity');
+      const shown = style.slice(
+        style.indexOf('.sn-popover__arrow-group--shown {'),
+        style.indexOf('}', style.indexOf('.sn-popover__arrow-group--shown {')),
+      );
+      expect(shown).toContain('opacity: 1');
+      // The triangles themselves carry NO opacity — a translucent white fill
+      // over the blue outline is what read as the tip "turning from blue to
+      // white" mid-animation (user-reported).
+      const arrowBlock = style.slice(
         style.indexOf('.sn-popover__arrow {'),
         style.indexOf('}', style.indexOf('.sn-popover__arrow {')),
       );
-      expect(block).toContain('opacity: 0');
-      const shown = style.slice(
-        style.indexOf('.sn-popover__arrow--shown {'),
-        style.indexOf('}', style.indexOf('.sn-popover__arrow--shown {')),
-      );
-      expect(shown).toContain('opacity: 1');
+      expect(arrowBlock).not.toContain('opacity');
       const template = source.slice(source.indexOf('<template>'), source.indexOf('</template>'));
-      expect(template).toContain("'sn-popover__arrow--shown': showPopover");
+      expect(template).toContain("'sn-popover__arrow-group--shown': showPopover");
     });
   });
 });

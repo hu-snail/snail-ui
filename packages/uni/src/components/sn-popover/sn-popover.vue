@@ -280,25 +280,34 @@ const containerStyle = computed(() =>
   props.borderColor ? `border: 1px solid ${props.borderColor};` : undefined,
 );
 
-/** The triangle-forming border side per placement family (matches the
- * arrow family classes: top → arrow-down colours border-top, …). */
-const OUTLINE_SIDE_BY_FAMILY: Record<string, string> = {
-  top: 'top',
-  bottom: 'bottom',
-  left: 'left',
-  right: 'right',
+/** Outline geometry per placement family: the triangle-forming border side
+ * (matches the arrow family classes — top → arrow-down colours border-top),
+ * the outward offset, and the three legs that carry width. */
+const OUTLINE_SPEC_BY_FAMILY: Record<string, { side: string; offset: string; legs: string[] }> = {
+  top: { side: 'top', offset: 'bottom: -11px;', legs: ['top', 'right', 'left'] },
+  bottom: { side: 'bottom', offset: 'top: -11px;', legs: ['bottom', 'right', 'left'] },
+  left: { side: 'left', offset: 'right: -11px;', legs: ['left', 'top', 'bottom'] },
+  right: { side: 'right', offset: 'left: -11px;', legs: ['right', 'top', 'bottom'] },
 };
 
 /**
- * Outline triangle's border colour — the triangle-forming side ONLY. The
- * border-triangle silhouette needs the other three sides transparent:
- * colouring all four turns the tip into a solid rectangle.
+ * Outline triangle's FULL inline geometry — the fill triangle grown one
+ * leg-size and pulled 3px further out. Inline on purpose: the border-triangle
+ * silhouette needs the non-forming sides transparent (colouring all four
+ * turns the tip into a solid rectangle), and inline beats every stylesheet
+ * force that would clamp it back — MP specificity on the equal-specificity
+ * `.sn-popover--bordered` fill-deepening rules (which match the outline
+ * element too) and the uni-x combinator dropper (2-level descendant
+ * selectors do not survive the transform).
  */
-const arrowOutlineColorStyle = computed(() => {
-  if (!props.borderColor) return undefined;
+const arrowOutlineStyle = computed(() => {
+  if (!props.borderColor || props.arrowShape === 'rounded') return undefined;
   const family = (position.actualPlacement.value ?? props.placement).split('-')[0] ?? '';
-  const side = OUTLINE_SIDE_BY_FAMILY[family] ?? 'top';
-  return `border-${side}-color: ${props.borderColor};`;
+  const spec = OUTLINE_SPEC_BY_FAMILY[family] ?? OUTLINE_SPEC_BY_FAMILY.top;
+  const widths = ['top', 'right', 'bottom', 'left']
+    .map((side) => `border-${side}-width: ${spec.legs.includes(side) ? '11px' : '0'};`)
+    .join('');
+  return `${position.arrowStyle.value}${widths}border-${spec.side}-color: ${props.borderColor};${spec.offset}`;
 });
 
 /** Root class: the component block + the bordered marker + the consumer class. */
@@ -628,28 +637,39 @@ defineExpose({ open, close, updatePosition });
         coincides with the bubble box (the transition adds no box of its own),
         so the arrow keeps the same coordinates while staying unclipped.
       -->
-      <!-- Bordered mode: an outline triangle UNDER the fill triangle — z 499,
-           one step BELOW the container (500), so sub-pixel rounding at the
-           abutment row can never paint consumer colour inside the bubble. It
-           protrudes 10px vs the fill's 8px: on the 45° slants that leaves a
-           ~1.4px band of the border colour (2px horizontal) continuing the
-           body's 1px border line around the tip — one closed outline. -->
-      <view
-        v-if="props.visibleArrow && props.borderColor && props.arrowShape !== 'rounded'"
-        :class="['sn-popover__arrow', 'sn-popover__arrow-outline', arrowClass, { 'sn-popover__arrow--shown': showPopover }]"
-        :style="(arrowStyle ?? '') + (arrowOutlineColorStyle ?? '')"
-        aria-hidden="true"
-      />
+      <!-- The arrow LAYER fades as ONE GROUP: the bordered tip is two stacked
+           triangles (blue outline under the white fill) — fading them
+           separately let the blue bleed through the translucent fill
+           mid-animation, reading as "the arrow turns from blue to white"
+           (user-reported). The group carries the opacity gate; the triangles
+           inside stay fully opaque, so their composite colour never shifts.
+           z 501 keeps the whole group above the container, white mouth
+           included, for the whole fade. -->
       <view
         v-if="props.visibleArrow"
-        :class="[
-          'sn-popover__arrow',
-          arrowClass,
-          { 'sn-popover__arrow--shown': showPopover, 'sn-popover__arrow--rounded': props.arrowShape === 'rounded' },
-        ]"
-        :style="props.arrowShape === 'rounded' ? roundedStyle : arrowStyle"
+        :class="['sn-popover__arrow-group', { 'sn-popover__arrow-group--shown': showPopover }]"
         aria-hidden="true"
-      />
+      >
+        <!-- Bordered mode: an outline triangle UNDER the fill triangle. It
+             protrudes 11px vs the fill's 8px: on the 45° slants that leaves
+             a ~2.1px band of the border colour (3px horizontal) continuing
+             the body's 1px border line around the tip — one closed outline,
+             and thick enough to survive 3x-DPR rounding on mini-program
+             devices (user-reported: the band read thinner than the border). -->
+        <view
+          v-if="props.borderColor && props.arrowShape !== 'rounded'"
+          :class="['sn-popover__arrow', 'sn-popover__arrow-outline', arrowClass]"
+          :style="arrowOutlineStyle"
+        />
+        <view
+          :class="[
+            'sn-popover__arrow',
+            arrowClass,
+            { 'sn-popover__arrow--rounded': props.arrowShape === 'rounded' },
+          ]"
+          :style="props.arrowShape === 'rounded' ? roundedStyle : arrowStyle"
+        />
+      </view>
       <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
         <view
           :id="contentId"
@@ -929,6 +949,29 @@ defineExpose({ open, close, updatePosition });
 
 /* ── Arrow: a border triangle, the apex pointing at the trigger ───────── */
 
+/* The arrow layer: ONE group that owns the fade. Both triangles inside stay
+ * fully opaque at all times — their composite (white fill + border band) is
+ * constant, so the entry animation never shifts the tip's colour. The group
+ * lives OUTSIDE the fade transition (so no ancestor clip can eat it), which
+ * means it must gate its own visibility, or a closed popover leaves a stray
+ * triangle floating over the page. */
+.sn-popover__arrow-group {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 501;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.sn-popover__arrow-group--shown {
+  opacity: 1;
+}
+
 .sn-popover__arrow {
   position: absolute;
   width: 0;
@@ -936,23 +979,16 @@ defineExpose({ open, close, updatePosition });
   border-style: solid;
   border-color: transparent;
   pointer-events: none;
-  /* Paint ABOVE the bubble container (z 500): the container's background and
-   * its drop shadow used to cover the protruding triangle, washing the seam
-   * region in translucent shadow — the callout read as two detached pieces
-   * (user-reported: top / right / left arrows "not one piece" while the
-   * geometry measured a correct 1px overlap). One step above the container's
-   * layer puts the junction back in white-on-white. */
+  /* Paint order INSIDE the group: the fill must always cover the outline.
+   * Single-class selectors on purpose — 2-level descendants are dropped by
+   * the uni-x transform, and a dropped outline rule collapses its box onto
+   * the fill's, where an MP paint-order flip renders the tip solid blue
+   * (user-reported). */
   z-index: 501;
-  /* The arrow lives OUTSIDE the fade transition (so no ancestor clip can eat
-   * it), which means it no longer inherits the transition's visibility — it
-   * must fade with the bubble on its own, or a closed popover leaves a stray
-   * triangle floating over the page. */
-  opacity: 0;
-  transition: opacity 200ms ease;
 }
 
-.sn-popover__arrow--shown {
-  opacity: 1;
+.sn-popover__arrow-outline {
+  z-index: 499;
 }
 
 /* Bubble above → arrow on the bottom edge → apex DOWN → coloured TOP border. */
@@ -1016,39 +1052,10 @@ defineExpose({ open, close, updatePosition });
   left: -8px;
 }
 
-/* Outline triangle (bordered mode): painted one step BELOW the container —
- * even if sub-pixel rounding bleeds its top row past the bubble edge, the
- * container's own paint (z 500) wins and no consumer colour shows inside
- * the bubble. Protruding 10px vs the fill's 8px exposes a ~1.4px colour
- * band on the 45° slant edges (2px horizontal) — the arrow-side
- * continuation of the body border. */
-.sn-popover__arrow-outline {
-  z-index: 499;
-}
-.sn-popover__arrow-outline.sn-popover__arrow-down {
-  bottom: -10px;
-  border-top-width: 10px;
-  border-right-width: 10px;
-  border-left-width: 10px;
-}
-.sn-popover__arrow-outline.sn-popover__arrow-up {
-  top: -10px;
-  border-bottom-width: 10px;
-  border-right-width: 10px;
-  border-left-width: 10px;
-}
-.sn-popover__arrow-outline.sn-popover__arrow-right {
-  right: -10px;
-  border-top-width: 10px;
-  border-bottom-width: 10px;
-  border-left-width: 10px;
-}
-.sn-popover__arrow-outline.sn-popover__arrow-left {
-  left: -10px;
-  border-top-width: 10px;
-  border-bottom-width: 10px;
-  border-right-width: 10px;
-}
+/* The outline triangle's geometry lives INLINE on the element
+ * (`arrowOutlineStyle`) — see the computed's comment for why no stylesheet
+ * rule can carry it. Its z sits below the fill triangle by DOM order inside
+ * the group, so the fill paints over it and only the slant band shows. */
 
 /* Zoom origin per placement family: the edge the arrow anchors on stays
  * pinned while the body scales in. */
