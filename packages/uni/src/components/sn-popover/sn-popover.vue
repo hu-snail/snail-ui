@@ -954,6 +954,19 @@ defineExpose({ open, close, updatePosition });
   transform-origin: left center;
 }
 
+/* Rounded arrow tip (arrowShape="rounded"): a filled rounded square
+ * rotated 45° inline — the compound selector outranks the per-family border
+ * rules above, swapping the border triangle for a soft-cornered square that
+ * straddles the bubble edge (inline offsets centre it on the edge). */
+.sn-popover__arrow.sn-popover__arrow--rounded {
+  width: 12px;
+  height: 12px;
+  border-width: 0;
+  border-radius: 3px;
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+}
+
 /* ── Close button ─────────────────────────────────────────────────────── */
 
 .sn-popover__close {

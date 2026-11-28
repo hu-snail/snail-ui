@@ -897,6 +897,11 @@
           "hasEn": true
         },
         {
+          "name": "popover-mp-border",
+          "title": "自定义边框",
+          "hasEn": true
+        },
+        {
           "name": "popover-mp-content-slot",
           "title": "content 插槽",
           "hasEn": true
@@ -919,6 +924,11 @@
         {
           "name": "popover-mp-placement",
           "title": "弹出位置",
+          "hasEn": true
+        },
+        {
+          "name": "popover-mp-rounded",
+          "title": "圆角箭头",
           "hasEn": true
         },
         {

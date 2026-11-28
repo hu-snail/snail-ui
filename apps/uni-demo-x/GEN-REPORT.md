@@ -4,9 +4,9 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1494 |
+| .uvue 产出 | 1498 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2108 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2116 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
 | docs 预览钉住规则剥离（.sn-demo-contained 主体） | 123 |
@@ -2694,6 +2694,8 @@
 - pages/navigation/demos/popover-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-basic.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-border.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-border.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-content-slot.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2712,6 +2714,8 @@
 - pages/navigation/demos/popover-mp-menu.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-rounded.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-rounded.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
@@ -2719,7 +2723,7 @@
 - pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/navigation/navbar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/navigation/popover.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/sidebar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)

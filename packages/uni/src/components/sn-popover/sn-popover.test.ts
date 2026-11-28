@@ -379,6 +379,18 @@ describe('sn-popover', () => {
       const style = arrow.attributes('style') ?? '';
       expect(style).toContain('rotate(45deg)');
       expect(style).toContain('top:');
+      // The shape rule: a filled rounded square, not the border triangle.
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      const block = source.slice(
+        source.indexOf('.sn-popover__arrow.sn-popover__arrow--rounded {'),
+        source.indexOf('}', source.indexOf('.sn-popover__arrow.sn-popover__arrow--rounded {')),
+      );
+      expect(block).toContain('width: 12px');
+      expect(block).toContain('border-width: 0');
+      expect(block).toContain('border-radius: 3px');
+      expect(block).toContain(
+        'background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated))',
+      );
     });
 
     it('expands with the zoom-in transition (scale + fade, not a bare fade)', () => {

@@ -48,6 +48,8 @@ const SCENARIO_LABELS = {
   'custom-style': '自定义样式',
   variant: '变体',
   config: '配置',
+  rounded: '圆角箭头',
+  border: '自定义边框',
   slots: '插槽',
   type: '类型',
   types: '类型',

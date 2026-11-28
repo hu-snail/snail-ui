@@ -2,12 +2,14 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— popover 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/popover-mp-alignment.vue';
 import Demo1 from './demos/popover-mp-basic.vue';
-import Demo2 from './demos/popover-mp-content-slot.vue';
-import Demo3 from './demos/popover-mp-custom-style.vue';
-import Demo4 from './demos/popover-mp-height.vue';
-import Demo5 from './demos/popover-mp-menu.vue';
-import Demo6 from './demos/popover-mp-placement.vue';
-import Demo7 from './demos/popover-mp-theme.vue';
+import Demo2 from './demos/popover-mp-border.vue';
+import Demo3 from './demos/popover-mp-content-slot.vue';
+import Demo4 from './demos/popover-mp-custom-style.vue';
+import Demo5 from './demos/popover-mp-height.vue';
+import Demo6 from './demos/popover-mp-menu.vue';
+import Demo7 from './demos/popover-mp-placement.vue';
+import Demo8 from './demos/popover-mp-rounded.vue';
+import Demo9 from './demos/popover-mp-theme.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -38,13 +40,19 @@ const { t } = useDemoUi();
         </view>
       </view>
       <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('自定义边框', 'Border')" badge="border" />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
         <DemoModuleHead
           class="demo-host"
           :title="t('content 插槽', '`content` slot')"
           badge="content-slot"
         />
         <view class="module__body">
-          <Demo2 class="demo-host" />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
@@ -54,31 +62,37 @@ const { t } = useDemoUi();
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo3 class="demo-host" />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead class="demo-host" :title="t('高度', 'Height')" badge="height" />
         <view class="module__body">
-          <Demo4 class="demo-host" />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead class="demo-host" :title="t('menu', 'Menu')" badge="menu" />
         <view class="module__body">
-          <Demo5 class="demo-host" />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead class="demo-host" :title="t('弹出位置', 'Placement')" badge="placement" />
         <view class="module__body">
-          <Demo6 class="demo-host" />
+          <Demo7 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('圆角箭头', 'Rounded')" badge="rounded" />
+        <view class="module__body">
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead class="demo-host" :title="t('主题', 'Theme')" badge="theme" />
         <view class="module__body">
-          <Demo7 class="demo-host" />
+          <Demo9 class="demo-host" />
         </view>
       </view>
     </view>

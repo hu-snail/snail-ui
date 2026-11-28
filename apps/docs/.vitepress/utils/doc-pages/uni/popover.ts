@@ -66,6 +66,16 @@ import { SnPopover } from '@snui/uni';
     { name: 'popover-mp-content-slot', title: "内容插槽", blurb: "`#content` 插槽完全替换气泡正文" },
     { name: 'popover-mp-custom-style', title: "偏移与自定义样式", blurb: "offset 拉开距离，custom-style 覆盖气泡配色" },
     { name: 'popover-mp-height', title: "内容宽度", blurb: "气泡随内容增长，不换行不截断" },
+    {
+      name: 'popover-mp-rounded',
+      title: '圆角箭头',
+      blurb: 'arrow-shape="rounded"：软角方形箭头与气泡连体；与默认尖角对比。',
+    },
+    {
+      name: 'popover-mp-border',
+      title: '自定义边框',
+      blurb: 'border-color：气泡主体画 1px 自定义颜色边框；箭头跟随底色。',
+    },
     { name: 'popover-mp-theme', title: "主题", blurb: "暗黑 / 浅色主题下气泡与箭头自动跟随" },
   ],
   props: {

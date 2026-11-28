@@ -66,6 +66,16 @@ import { SnPopover } from '@snui/uni';
     { name: 'popover-mp-content-slot', title: "Content slot", blurb: "The #content slot fully replaces the bubble body" },
     { name: 'popover-mp-custom-style', title: "Offset & custom style", blurb: "offset pushes the bubble away; custom-style recolours it" },
     { name: 'popover-mp-height', title: "Content width", blurb: "The bubble grows with its content — no wrapping, no clipping" },
+    {
+      name: 'popover-mp-rounded',
+      title: 'Rounded arrow',
+      blurb: 'arrow-shape="rounded" — a soft-cornered square tip fused with the bubble; compared with the default sharp triangle.',
+    },
+    {
+      name: 'popover-mp-border',
+      title: 'Custom border',
+      blurb: 'border-color — a 1px consumer-coloured border on the bubble body; the arrow follows the fill.',
+    },
     { name: 'popover-mp-theme', title: "Theme", blurb: "The bubble and arrow follow the dark / light theme" },
   ],
   props: {
