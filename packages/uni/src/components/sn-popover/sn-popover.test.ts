@@ -386,8 +386,18 @@ describe('sn-popover', () => {
       // opacity + scale — instead of the bare fade.
       const w = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
       const html = w.html();
-      expect(html).toContain('sn-transition--zoom-in');
-      expect(html).not.toContain('sn-transition--fade ');
+      expect(html).toContain('sn-transition--fade');
+      // The zoom rides the container's own transition (MP-safe): hidden =
+      // scaled down + transparent, shown = full size.
+      const container = shownBubble(w)!.find('.sn-popover__container');
+      expect(container.classes()).toContain('sn-popover__container--shown');
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      const containerBlock = source.slice(
+        source.indexOf('.sn-popover__container {'),
+        source.indexOf('}', source.indexOf('.sn-popover__container {')),
+      );
+      expect(containerBlock).toContain('transform: scale(0.9)');
+      expect(containerBlock).toContain('transition: opacity 200ms ease, transform 200ms ease');
     });
 
 describe('interaction', () => {

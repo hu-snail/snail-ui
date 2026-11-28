@@ -276,7 +276,13 @@ const containerStyle = computed(() =>
 );
 
 /** Root class: the component block + the consumer class. */
-const rootClass = computed(() => ['sn-popover', props.customClass]);
+const rootClass = computed(() => [
+  'sn-popover',
+  /* The zoom origin anchors on the arrow's edge, so the body scales out of
+   * the junction instead of drifting away from the arrow mid-animation. */
+  `sn-popover--origin-${props.placement.split('-')[0]}`,
+  props.customClass,
+]);
 
 /**
  * The bubble's classes. `sn-transition` takes `customClass` as a STRING, so
@@ -415,6 +421,7 @@ let hasMeasurements = false;
 
 /** Capture trigger + hidden-bubble rects; `true` when both are usable. */
 function captureRects(preferShownPop: boolean): Promise<boolean> {
+  try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'capture-start', preferShownPop }; } catch {}
   const popId = preferShownPop ? contentId : posId;
   return Promise.all([measureRect(targetId), measureRect(popId)]).then(async ([trigger, primary]) => {
     // Fall back to the other bubble node — the hidden copy and the shown body
@@ -439,12 +446,19 @@ function captureRects(preferShownPop: boolean): Promise<boolean> {
  * appears at a stale spot while a query is in flight.
  */
 function solve(): void {
-  position.control(props.placement, props.offset);
+  try {
+    position.control(props.placement, props.offset);
+    (globalThis as Record<string, unknown>).__snPopDiag = { step: 'solved', popStyle: position.popStyle.value };
+  } catch (e) {
+    (globalThis as Record<string, unknown>).__snPopDiag = { step: 'solve-throw', msg: String(e).slice(0, 120) };
+  }
 }
 
 function resolvePlacement(): void {
+  try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'resolvePlacement', hasMeasurements, shown: showPopover.value }; } catch {}
   if (hasMeasurements) solve();
   void captureRects(false).then((ok) => {
+    try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'captureDone', ok, shown: showPopover.value, hasMeasurements }; } catch {}
     if (!ok || !showPopover.value) return;
     solve();
   });
@@ -567,10 +581,14 @@ defineExpose({ open, close, updatePosition });
         :style="props.arrowShape === 'rounded' ? roundedStyle : arrowStyle"
         aria-hidden="true"
       />
-      <SnTransition :show="showPopover" name="zoom-in" @after-enter="updatePosition">
+      <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
         <view
           :id="contentId"
-          :class="['sn-popover__container', props.customPop]"
+          :class="[
+            'sn-popover__container',
+            { 'sn-popover__container--shown': showPopover },
+            props.customPop,
+          ]"
           :style="containerStyle"
           role="dialog"
         >
@@ -717,6 +735,13 @@ defineExpose({ open, close, updatePosition });
 .sn-popover__container {
   position: relative;
   z-index: var(--sn-popover-z-index);
+  /* Zoom-expand entry (user request): scale 0.9 → 1 with a fade, driven by a
+   * CSS TRANSITION on the shown gate — CSS transitions degrade gracefully on
+   * mini-programs (unsupported transform = appear without scaling), unlike
+   * the keyframes+fill-mode combo which left the bubble stuck invisible. */
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 200ms ease, transform 200ms ease;
   box-sizing: border-box;
   overflow: visible;
   /* Two-line palette (see the MP contract on `.sn-popover`). The `color`
@@ -735,6 +760,10 @@ defineExpose({ open, close, updatePosition });
    * as hard grey corner patches (no radius) — no shadow there at all. */
   box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
   /* #endif */
+}
+.sn-popover__container--shown {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .sn-popover__inner {
@@ -908,6 +937,21 @@ defineExpose({ open, close, updatePosition });
    * bubble by its whole protrusion (user-reported). Literal keeps the
    * geometry MP-safe (same rule as the two-line palette). */
   left: -8px;
+}
+
+/* Zoom origin per placement family: the edge the arrow anchors on stays
+ * pinned while the body scales in. */
+.sn-popover--origin-top .sn-popover__container {
+  transform-origin: bottom center;
+}
+.sn-popover--origin-bottom .sn-popover__container {
+  transform-origin: top center;
+}
+.sn-popover--origin-left .sn-popover__container {
+  transform-origin: right center;
+}
+.sn-popover--origin-right .sn-popover__container {
+  transform-origin: left center;
 }
 
 /* ── Close button ─────────────────────────────────────────────────────── */
