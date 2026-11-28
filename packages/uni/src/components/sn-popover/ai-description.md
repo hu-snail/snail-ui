@@ -1,11 +1,21 @@
 # sn-popover — AI-Friendly Component Description
 - Measured placement: the bubble is positioned from real measurements, not
   CSS anchoring. A hidden copy of the bubble stays mounted (`position: fixed;
-  visibility: hidden`) so its natural size can be read; the trigger box is
-  measured the same way (SelectorQuery on mini-programs, DOM
+  visibility: hidden`) so the PROP body's natural size can be read; the
+  trigger box is measured the same way (SelectorQuery on mini-programs, DOM
   `getBoundingClientRect` where a DOM exists — the H5 production bundle
   tree-shakes SelectorQuery away). Opening folds both rects through a
   12-entry placement table (`sn-popover-position.ts`) into inline styles.
+- The hidden copy carries NO slot outlet: WeChat distributes page content
+  into the FIRST same-name slot node (no `multipleSlots` in the uni-app x
+  generated json), so a second outlet stole the content and left the shown
+  bubble an empty zero-height card — only the arrow showed. Slotted bubbles
+  measure the SHOWN body through the capture fallback, with a bounded retry
+  (3 × 60ms) so the asynchronously-mounted shown body can land first. The
+  pos layer's base `width: max-content` keeps that body unclamped while it
+  is measured — an auto-width absolute layer shrink-to-fit clamps to the
+  trigger-sized containing block and would lock the clamp into the inline
+  width.
 - One coordinate space: the shown bubble is `position: absolute` on every
   host, anchored in flow around the trigger — page scroll follows for free.
   Only the hidden measurement copy is `fixed` (it must not depend on an

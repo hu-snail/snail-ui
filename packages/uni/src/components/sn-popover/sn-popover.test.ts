@@ -317,6 +317,66 @@ describe('sn-popover', () => {
       expect(style).toContain('width: 220px');
     });
 
+    it('keeps the slot outlet in the shown body ONLY — the hidden copy must not steal it', async () => {
+      // §103 regression (MP content-slot dead screen): WeChat distributes page
+      // content into the FIRST same-name slot node (no `multipleSlots` in the
+      // generated json), so a slot outlet in the hidden measurement copy
+      // swallowed the content and left the shown bubble an empty zero-height
+      // card — only the arrow showed.
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      expect(source.match(/<slot name="content"/g) ?? []).toHaveLength(1);
+      const hiddenStart = source.indexOf('sn-popover__pos--hidden');
+      const hiddenEnd = source.indexOf('</view>', source.indexOf('</view>', hiddenStart));
+      expect(source.slice(hiddenStart, hiddenEnd)).not.toContain('<slot');
+
+      // Behavior: slotted content renders in the shown body, never in the copy.
+      const w = mount(SnPopover, {
+        props: { modelValue: true, content: '' },
+        slots: { content: '<text class="custom-body">slot 文案</text>' },
+      });
+      await flushPromises();
+      expect(shownBubble(w)!.find('.custom-body').exists()).toBe(true);
+      expect(w.find('.sn-popover__pos--hidden .custom-body').exists()).toBe(false);
+      // Empty content keeps the copy's default body ungated-out (no padding
+      // ghost to mislead the measurement).
+      expect(w.find('.sn-popover__pos--hidden .sn-popover__text').exists()).toBe(false);
+    });
+
+    it('re-captures with a bounded retry when the shown body is not laid out yet', async () => {
+      // The shown body mounts asynchronously on mini-programs (the transition
+      // gates it), so the first capture after an open can run before slotted
+      // content exists. The retry must then land the placement.
+      vi.useFakeTimers();
+      try {
+        const rects = {
+          target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
+          pos: null,
+          content: null,
+        };
+        stubSelectorQuery(rects as Record<'target' | 'pos' | 'content', Rect>);
+        const w = mount(SnPopover, {
+          props: { modelValue: false, content: '' },
+          slots: { content: '<text class="custom-body">slot 文案</text>' },
+        });
+        await flushPromises();
+        await w.find('.sn-popover__target').trigger('tap');
+        await flushPromises();
+        // Nothing measured yet — no placement styles were painted from a
+        // failed capture.
+        expect(shownBubble(w)!.attributes('style') ?? '').toBe('');
+
+        // The async render lands: the shown body becomes measurable.
+        rects.content = { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 };
+        await vi.advanceTimersByTimeAsync(60);
+        await flushPromises();
+        const style = shownBubble(w)!.attributes('style') ?? '';
+        expect(style).toContain('width: 200px');
+        expect(style).toContain('top:');
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it('switches the arrow to the rounded square and its rotated style', async () => {
       stubSelectorQuery({
         target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
@@ -560,13 +620,19 @@ describe('interaction', () => {
       // top of the last characters). The body reserves a right gutter while
       // showClose is on — the hidden measurement copy included, so the bubble
       // width and the shown layout agree.
-      const withClose = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      const withClose = mount(SnPopover, {
+        props: { modelValue: true, showClose: true, content: 'x' },
+      });
       expect(
         shownBubble(withClose)!.find('.sn-popover__inner').classes(),
       ).toContain('sn-popover__inner--with-close');
       expect(
         withClose.find('.sn-popover__pos--hidden .sn-popover__inner').classes(),
       ).toContain('sn-popover__inner--with-close');
+      // Empty content: the copy renders NO body at all — an empty padding box
+      // would measure non-zero and mask the slotted bubble's capture fallback.
+      const emptyCopy = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      expect(emptyCopy.find('.sn-popover__pos--hidden .sn-popover__inner').exists()).toBe(false);
 
       const withoutClose = mount(SnPopover, { props: { modelValue: true } });
       expect(

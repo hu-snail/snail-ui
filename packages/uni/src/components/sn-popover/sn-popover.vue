@@ -481,14 +481,40 @@ function solve(): void {
   }
 }
 
-function resolvePlacement(): void {
-  try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'resolvePlacement', hasMeasurements, shown: showPopover.value }; } catch {}
-  if (hasMeasurements) solve();
-  void captureRects(false).then((ok) => {
-    try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'captureDone', ok, shown: showPopover.value, hasMeasurements }; } catch {}
-    if (!ok || !showPopover.value) return;
-    solve();
+/**
+ * Bounded re-capture while a bubble stays open. The shown body mounts
+ * asynchronously on mini-programs (sn-transition gates it on `hasRendered`,
+ * and the MP render flush lands a frame later), so the first capture after
+ * an open can run before slotted content is laid out — the capture then
+ * reports nothing and the bubble would never position (user-reported MP
+ * content-slot dead screen). §86 caps the attempts.
+ */
+const CAPTURE_RETRY_ATTEMPTS = 3;
+const CAPTURE_RETRY_DELAY_MS = 60;
+let captureRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
+function captureAndApply(preferShownPop: boolean, attemptsLeft: number): void {
+  void captureRects(preferShownPop).then((ok) => {
+    if (!showPopover.value) return;
+    if (ok) {
+      solve();
+      return;
+    }
+    if (attemptsLeft <= 0) return;
+    captureRetryTimer = setTimeout(() => {
+      captureRetryTimer = null;
+      captureAndApply(preferShownPop, attemptsLeft - 1);
+    }, CAPTURE_RETRY_DELAY_MS);
   });
+}
+
+function resolvePlacement(): void {
+  if (captureRetryTimer !== null) {
+    clearTimeout(captureRetryTimer);
+    captureRetryTimer = null;
+  }
+  if (hasMeasurements) solve();
+  captureAndApply(false, CAPTURE_RETRY_ATTEMPTS);
 }
 
 /**
@@ -509,9 +535,7 @@ async function initPosition(): Promise<void> {
  * `handleAfterEnter`).
  */
 function updatePosition(): void {
-  void captureRects(true).then((ok) => {
-    if (ok && showPopover.value) solve();
-  });
+  captureAndApply(true, CAPTURE_RETRY_ATTEMPTS);
 }
 
 /* ── Outside close (wd-popover useQueue parity) ───────────────────────── */
@@ -532,6 +556,10 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  if (captureRetryTimer !== null) {
+    clearTimeout(captureRetryTimer);
+    captureRetryTimer = null;
+  }
   unregisterOutsideClosable(instanceId);
 });
 
@@ -552,27 +580,29 @@ defineExpose({ open, close, updatePosition });
          shown. It carries no placement styles. -->
     <view :id="posId" class="sn-popover__pos sn-popover__pos--hidden" aria-hidden="true">
       <view :class="['sn-popover__container', props.customPop]">
-        <!-- The hidden copy mirrors the SHOWN body INCLUDING the #content
-             slot: an empty copy measured padding-only and every slotted
-             bubble sized itself wrong (user-reported). visibility: hidden
-             keeps the duplicate out of sight and untappable. -->
-        <slot name="content">
-          <view
-            v-if="mode === 'normal'"
-            :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
-          >
-            <text class="sn-popover__text">{{ normalText }}</text>
+        <!-- NO slot outlet here. WeChat mini-programs distribute page content
+             into the FIRST same-name slot node only (the uni-app x generated
+             json carries no `multipleSlots`), so a second outlet HERE stole
+             the content from the shown body and left it an empty zero-height
+             card — only the arrow showed (user-reported). The hidden copy
+             carries the PROP body only, gated on non-empty content so a
+             slotted bubble's copy measures zero height and the capture falls
+             through to the shown body (see captureAndApply). -->
+        <view
+          v-if="mode === 'normal' && normalText !== ''"
+          :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+        >
+          <text class="sn-popover__text">{{ normalText }}</text>
+        </view>
+        <view
+          v-if="mode === 'menu' && isMenuContent"
+          :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+        >
+          <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
+            <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
+            <text class="sn-popover__text">{{ item.content }}</text>
           </view>
-          <view
-            v-if="mode === 'menu' && isMenuContent"
-            :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
-          >
-            <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
-              <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
-              <text class="sn-popover__text">{{ item.content }}</text>
-            </view>
-          </view>
-        </slot>
+        </view>
       </view>
     </view>
 
@@ -751,6 +781,14 @@ defineExpose({ open, close, updatePosition });
   z-index: var(--sn-popover-z-index);
   box-sizing: border-box;
   overflow: visible;
+  /* max-content BEFORE the measured inline width lands: the layer's
+   * containing block is the trigger-sized inline-block root, so an
+   * auto-width absolute layer shrink-to-fit CLAMPS to the trigger width —
+   * and a slotted bubble measured in that state locks the clamp in
+   * (user-reported H5: the slot bubble measured exactly the trigger's 89px).
+   * max-content ignores the available width; solve() always overrides it
+   * with the measured inline width right after. */
+  width: max-content;
 }
 
 /*
