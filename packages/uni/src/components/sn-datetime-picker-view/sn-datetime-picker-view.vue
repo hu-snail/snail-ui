@@ -833,6 +833,10 @@ const ariaValue = computed(() => {
   align-items: stretch;
   justify-content: center;
   width: 100%;
+  /* Positioning context for the absolutely-placed wheel band (same rationale
+   * as sn-picker-view — without it the pill anchors to the nearest positioned
+   * ancestor and floats above the roller). */
+  position: relative;
   /* No vertical padding: the column is exactly visibleItemCount rows, and
      mp-weixin stretches the flex column past the padding box, leaking a
      sixth row outside the clip. Callers own any outer spacing. */

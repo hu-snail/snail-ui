@@ -728,6 +728,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   align-items: stretch;
   justify-content: center;
   width: 100%;
+  /* Positioning context for the absolutely-placed wheel band: without it the
+   * pill anchors to the nearest POSITIONED ancestor (the demo card / page)
+   * and floats a couple of rows above the roller (user-reported H5). */
+  position: relative;
   /* No vertical padding: the column is exactly visibleItemCount rows, and
      mp-weixin stretches the flex column past the padding box, leaking a
      sixth row outside the clip. Callers own any outer spacing. */
