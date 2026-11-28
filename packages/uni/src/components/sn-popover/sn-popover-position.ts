@@ -87,18 +87,22 @@ const PLACEMENT_TABLE: Record<PopoverPlacement, (math: PlacementMath) => readonl
  * sharp table centres its triangle on.
  */
 const ROUNDED_TABLE: Record<PopoverPlacement, (math: PlacementMath) => string> = {
-  top: (c) => `left: ${c.centreArrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
-  'top-start': (c) => `left: ${c.arrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
-  'top-end': (c) => `right: ${c.arrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
-  bottom: (c) => `left: ${c.centreArrowX - 6}px; top: ${c.verticalY - 6}px;`,
-  'bottom-start': (c) => `left: ${c.arrowX - 6}px; top: ${c.verticalY - 6}px;`,
-  'bottom-end': (c) => `right: ${c.arrowX - 6}px; top: ${c.verticalY - 6}px;`,
-  left: (c) => `top: ${c.centreArrowY - 6}px; right: ${c.horizontalX - 6}px;`,
-  'left-start': (c) => `top: ${c.arrowY - 6}px; right: ${c.horizontalX - 6}px;`,
-  'left-end': (c) => `bottom: ${c.arrowY - 6}px; right: ${c.horizontalX - 6}px;`,
-  right: (c) => `top: ${c.centreArrowY - 6}px; left: ${c.horizontalX - 6}px;`,
-  'right-start': (c) => `top: ${c.arrowY - 6}px; left: ${c.horizontalX - 6}px;`,
-  'right-end': (c) => `bottom: ${c.arrowY - 6}px; left: ${c.horizontalX - 6}px;`,
+  /* The perpendicular offset is -6px flat: the arrow's containing block (the
+   * pos layer) ALREADY starts at the bubble's anchored edge, so only half the
+   * 12px square protrudes past it. The along-edge coordinate comes from the
+   * same insets the sharp triangle centres on. */
+  top: (c) => `left: ${c.centreArrowX - 6}px; bottom: -6px;`,
+  'top-start': (c) => `left: ${c.arrowX - 6}px; bottom: -6px;`,
+  'top-end': (c) => `right: ${c.arrowX - 6}px; bottom: -6px;`,
+  bottom: (c) => `left: ${c.centreArrowX - 6}px; top: -6px;`,
+  'bottom-start': (c) => `left: ${c.arrowX - 6}px; top: -6px;`,
+  'bottom-end': (c) => `right: ${c.arrowX - 6}px; top: -6px;`,
+  left: (c) => `top: ${c.centreArrowY - 6}px; right: -6px;`,
+  'left-start': (c) => `top: ${c.arrowY - 6}px; right: -6px;`,
+  'left-end': (c) => `bottom: ${c.arrowY - 6}px; right: -6px;`,
+  right: (c) => `top: ${c.centreArrowY - 6}px; left: -6px;`,
+  'right-start': (c) => `top: ${c.arrowY - 6}px; left: -6px;`,
+  'right-end': (c) => `bottom: ${c.arrowY - 6}px; left: -6px;`,
 };
 
 interface PlacementMath {
