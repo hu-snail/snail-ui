@@ -13,6 +13,11 @@ const vueEsmEntry = require.resolve('vue/dist/vue.esm-bundler.js');
  * H5 perspective: MP-WEIXIN-only branches are stripped and #ifndef MP-WEIXIN
  * wrappers unwrap. (#ifdef MP blocks stay — they are inside v-else-if chains
  * and mutually exclusive with the H5 branch by construction.)
+ *
+ * SCRIPT-level `// #ifdef MP-WEIXIN` blocks strip too: inert comments would
+ * otherwise leave the guarded assignments LIVE (a platform flag like
+ * `let isMpWeixin = false; // #ifdef MP-WEIXIN isMpWeixin = true; #endif`
+ * reads true in every test and the H5 branch's v-else never renders).
  */
 function stripMpWeixinBranches(): {
   name: string;
@@ -23,6 +28,7 @@ function stripMpWeixinBranches(): {
     transform(code, id) {
       if (!id.endsWith('.vue') || !code.includes('#ifdef MP-WEIXIN')) return undefined;
       const stripped = code
+        .replace(/^[ \t]*\/\/\s*#ifdef MP-WEIXIN[ \t]*\n[\s\S]*?^[ \t]*\/\/\s*#endif[ \t]*$\n?/gm, '')
         .replace(/<!--\s*#ifdef MP-WEIXIN\s*-->[\s\S]*?<!--\s*#endif\s*-->/g, '')
         .replace(/<!--\s*#ifndef MP-WEIXIN\s*-->/g, '')
         .replace(/<!--\s*#endif\s*-->/g, '');

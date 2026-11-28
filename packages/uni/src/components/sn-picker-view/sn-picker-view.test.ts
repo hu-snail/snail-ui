@@ -689,17 +689,26 @@ describe('sn-picker-view', () => {
   });
 
   describe('conditional compilation (regression)', () => {
-    it('closes the #ifndef MP-WEIXIN block before the root view close', () => {
-      // The #endif once sat AFTER the root </view>: the MP-WEIXIN stripper
-      // removed the root close together with the block, and the uts compile
-      // died with "Element is missing end tag" at the root view (uni-demo-x).
+    it('closes the hand-rolled branch (v-else) before the root view close', () => {
+      // Regression of the #ifdef era: the #endif once sat AFTER the root
+      // </view> and the stripper ate the root close. The template ifdefs are
+      // GONE now — uni-app x's mp compiler wraps template-level
+      // `#ifdef MP-WEIXIN` blocks in a runtime `wx:if="{{r0}}"` gate it never
+      // assigns, so the native branch never rendered (user-reported blank
+      // wheel); the branch switch is the script-level `isMpWeixin` constant,
+      // and the hand-rolled branch must still close before the root view.
       const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
       const templateEnd = source.lastIndexOf('</template>');
-      const endif = source.lastIndexOf('<!-- #endif -->', templateEnd);
+      const elseClose = source.lastIndexOf('</template>', templateEnd - 1);
       const rootClose = source.lastIndexOf('</view>', templateEnd);
-      expect(endif).toBeGreaterThan(0);
+      expect(elseClose).toBeGreaterThan(0);
       expect(rootClose).toBeGreaterThan(0);
-      expect(endif).toBeLessThan(rootClose);
+      expect(elseClose).toBeLessThan(rootClose);
+      // The native branch is a REAL v-if on script data — not a template
+      // ifdef (whose compiled wx:if flag is never assigned).
+      expect(source).toContain('v-if="isMpWeixin"');
+      expect(source).toContain('<template v-else>');
+      expect(source).not.toContain('<!-- #ifdef MP-WEIXIN -->');
     });
   });
 

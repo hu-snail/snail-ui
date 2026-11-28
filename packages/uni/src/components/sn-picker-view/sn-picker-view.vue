@@ -474,6 +474,19 @@ const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
 /**
+ * The branch flag as a SCRIPT-level conditional-compilation constant. The
+ * uni-app x mp-weixin compiler wraps TEMPLATE-level `#ifdef MP-WEIXIN`
+ * blocks in a runtime `wx:if="{{r0}}"` gate whose flag it never assigns
+ * (alpha defect) — the whole native branch stayed unrendered and the wheel
+ * was blank on mp-weixin (user-reported). A script constant compiles per
+ * target and the template `v-if` binds real data.
+ */
+let isMpWeixin = false;
+// #ifdef MP-WEIXIN
+isMpWeixin = true;
+// #endif
+
+/**
  * Native picker-view selection: an index array per column, fed back through
  * bindchange. Rebuilt whenever columns or values change (cascade rebuilds
  * columns in place).
@@ -618,10 +631,12 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       (selection rows floated above the band, columns drifting). The native
       component owns clipping, centering and inertia; the wheel band stays an
       overlay aligned to the indicator row, and every prop / contract above
-      is unchanged. All other platforms keep the hand-rolled roller.
+      is unchanged. All other platforms keep the hand-rolled roller. The
+      branch switches on the script-level `isMpWeixin` constant — NOT a
+      template `#ifdef` (see the flag's comment).
     -->
-    <!-- #ifdef MP-WEIXIN -->
     <picker-view
+      v-if="isMpWeixin"
       class="sn-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"
@@ -646,8 +661,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         </view>
       </picker-view-column>
     </picker-view>
-    <!-- #endif -->
-    <!-- #ifndef MP-WEIXIN -->
+    <template v-else>
     <view
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"
@@ -702,7 +716,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         /></view>
       </view>
     </view>
-    <!-- #endif -->
+    </template>
   </view>
 </template>
 
